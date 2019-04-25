@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/cdk/overlay-prebuilt.css";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+}
+a {
+  cursor: pointer;
+}
+
+.mat-pseudo-checkbox-checked::after {
+  top: 3.2px !important;
+  left: 2px !important;
+}
+
+.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #28a745 !important;
+}
+
+.mat-tab-label, .mat-tab-label-active{
+  min-width: 0px !important;
+}
+
+.mat-tab-header-pagination {
+  display: none !important;
+}
+
+.mat-list-item-content {
+  padding: 0px 10px!important;
+}

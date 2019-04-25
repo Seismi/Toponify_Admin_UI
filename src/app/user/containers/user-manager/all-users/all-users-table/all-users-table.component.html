@@ -1,0 +1,42 @@
+<div class="container">
+<button mat-stroked-button color="primary" (click)="onAddNewUser()">New User</button>
+
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort>
+    
+    <!-- First Name Column -->
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef  mat-sort-header> First Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+    </ng-container>
+
+    <!-- Last Name Column -->
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef  mat-sort-header> Last Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+    </ng-container>
+
+    <!-- Roles Column -->
+    <ng-container matColumnDef="roles">
+      <th mat-header-cell *matHeaderCellDef> Roles </th>
+      <td mat-cell *matCellDef="let element"> {{element.roles}} </td>
+    </ng-container>
+
+    <!-- Teams Column -->
+    <ng-container matColumnDef="team">
+      <th mat-header-cell *matHeaderCellDef> Teams </th>
+      <td mat-cell *matCellDef="let element"> {{element.team}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (dblclick)="onEdit(row.id)"></tr>
+  </table>
+
+  <!-- No user found -->
+  <div *ngIf="!dataSource.filteredData.length">
+    <p class="noUserFound">No users found</p>
+  </div>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
+</div>
+</div>

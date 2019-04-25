@@ -1,0 +1,38 @@
+<app-base-header>
+    <app-toolbar-column>
+      <app-toolbar-splitter> </app-toolbar-splitter>
+      <span>Comments</span>
+      <app-toolbar-splitter> </app-toolbar-splitter>
+    </app-toolbar-column>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchComments($event)"></app-search><app-toolbar-splitter> </app-toolbar-splitter>
+    </app-toolbar-column>
+</app-base-header>
+
+<div class="row">
+    <div class="col-8">
+        <app-comments-table 
+            [data]="comments$ | async"
+            (showSelectedRowDetails)="onSelectedRow($event)"
+            (addComment)="onAddComment($event)">
+        </app-comments-table>
+    </div>
+    <div class="col-4">
+        <smi-comments-detail 
+            [group]="commentDetailsForm"
+            [addComment]="addComment"
+            [isEditable]="isEditable"
+            [disableButton]="disableButton"
+            (archiveComment)="onArchiveComment($event)"
+            (saveComment)="onSaveComment()">
+        </smi-comments-detail>
+        <smi-chatbox
+            [data]="selecetedComment?.replies"
+            [versionId]="versionId"
+            [commentId]="commentId"
+            [disableButton]="disableButton">
+        </smi-chatbox>
+    </div>
+</div>
+
+

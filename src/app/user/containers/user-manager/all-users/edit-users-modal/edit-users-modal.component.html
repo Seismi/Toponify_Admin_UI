@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{ (isEditMode) ? 'Edit' : 'Add User' }}</h1>
+<app-my-user-form
+    [disableEmailInput]="disableEmailInput"
+    [showButtons]="showButtons" 
+    [isActive]="isActive" 
+    [group]="myUserForm">
+</app-my-user-form>
+<div mat-dialog-actions>
+    <button mat-button (click)="onSubmit()">Save</button>
+    <button mat-button (click)="onCancelClick()">Cancel</button>
+</div>

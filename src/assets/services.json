@@ -1,0 +1,1022 @@
+[
+  
+    {
+      "name": "USER",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/user/{userId}",
+        "method": "getUserById()",
+        "params": ["userId"]
+      },{
+        "type": "GET",
+        "endpoint": "/user/{userId}/settings",
+        "method": "getUserSettingsById()",
+        "params": ["userId"]
+      },{
+        "type": "PUT",
+        "endpoint": "/user/{userId}",
+        "method": "updateUserById()",
+        "params": ["userId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/user",
+        "method": "setUser()",
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/user/login",
+        "method": "setUserLogin()",
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/user/logout",
+        "method": "setUserLogout()"
+      }]
+    },
+  
+    
+  
+      {
+        "name": "VERSION",
+        "items": [{
+          "type": "GET",
+          "endpoint": "/version",
+          "method": "getVersion()"
+        },{
+          "type": "PUT",
+          "endpoint": "/version",
+          "method": "updateVersion()",
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/version",
+          "method": "setVersion()",
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/version/{versionId}/reloadRequired",
+          "method": "setVersionById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "DELETE",
+          "endpoint": "/version/{versionId}",
+          "method": "deleteVersionById()",
+          "params": ["versionId"]
+        }]
+      },
+  
+      
+  
+      {
+        "name": "SYSTEM",
+        "items": [{
+          "type": "GET",
+          "endpoint": "/{versionId}/system",
+          "method": "getVersionById()",
+          "params": ["versionId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/system/{systemId}/descendants",
+          "method": "getSystemVersionAndSystemById()",
+          "params": ["versionId","systemId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/system/link",
+          "method": "getLinkVersionById()",
+          "params": ["versionId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/system/{systemId}/link",
+          "method": "getSystemLinkVersionSystemById()",
+          "params": ["versionId","systemId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/system/link/{systemLinkId}/descendants",
+          "method": "getSystemLinkById()",
+          "params": ["versionId","systemLinkId"]
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/system",
+          "method": "updateVersionById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/system/location",
+          "method": "updateLocation()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/system/link",
+          "method": "updateVersionByIdLink()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/system/link/route",
+          "method": "updateVersionByIdRoute()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/{versionId}/system",
+          "method": "setVersionById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/{versionId}/system/link",
+          "method": "setVersionByIdLink()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "DELETE",
+          "endpoint": "/{versionId}/system/{systemId}",
+          "method": "deleteSystemById()",
+          "params": ["versionId","systemId"]
+        },{
+          "type": "DELETE",
+          "endpoint": "/{versionId}/system/link/{systemLinkId}/descendants",
+          "method": "deleteSystemLinkById",
+          "params": ["versionId","systemLinkId"]
+        }]
+      },
+  
+      
+  
+      {
+        "name": "MODEL",
+        "items": [{
+          "type": "GET",
+          "endpoint": "/{versionId}/model",
+          "method": "getModelById()",
+          "params": ["versionId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/model/{modelId}/descendants",
+          "method": "getModelByIdDescendants()",
+          "params": ["versionId","modelId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/model/link",
+          "method": "getModelByIdLink()",
+          "params": ["versionId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/model/link/{modelLinkId}/descendants",
+          "method": "getModelLinkByIdDescendants()",
+          "params": ["versionId","modelLinkId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/model/{modelId}/link",
+          "method": "getModelByIdLink()",
+          "params": ["versionId","modelId"]
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/model",
+          "method": "updateModelById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/model/location",
+          "method": "updateModelLocation()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/model/link",
+          "method": "updateModelByIdLink()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/model/link/route",
+          "method": "updateModelnByIdRoute()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/{versionId}/model",
+          "method": "setModelById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/{versionId}/model/link",
+          "method": "setModelByIdLink()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "DELETE",
+          "endpoint": "/{versionId}/model/{modelId}",
+          "method": "deleteModelById()",
+          "params": ["versionId","modelId"]
+        },{
+          "type": "DELETE",
+          "endpoint": "/{versionId}/model/link/{modelLinkId}/descendants",
+          "method": "deleteModelLinkById()",
+          "params": ["versionId","modelLinkId"]
+        }]
+      },
+  
+      
+  
+      {
+        "name": "DIMENSION",
+        "items": [{
+          "type": "GET",
+          "endpoint": "/{versionId}/dimension",
+          "method": "getDimensionById()",
+          "params": ["versionId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/dimension/{dimensionId}/descendants",
+          "method": "getDimensionByIdDescendants()",
+          "params": ["versionId","dimensionId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/dimension/link",
+          "method": "getDimensionByIdLink()",
+          "params": ["versionId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/dimension/link/{dimensionLinkId}/descendants",
+          "method": "getDimensionByIdDescendants()",
+          "params": ["versionId","dimensionLinkId"]
+        },{
+          "type": "GET",
+          "endpoint": "/{versionId}/dimension/{dimensionId}/link",
+          "method": "getDimensionByIdLink()",
+          "params": ["versionId","dimensionId"]
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/dimension",
+          "method": "updateDimensionById()",
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/dimension/location",
+          "method": "updateDimensionLocation()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/dimension/link",
+          "method": "updateVersionById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "PUT",
+          "endpoint": "/{versionId}/dimension/link/route",
+          "method": "updateDimensionVersionById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/{versionId}/dimension",
+          "method": "setDimensionVersionById()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "POST",
+          "endpoint": "/{versionId}/dimension/link",
+          "method": "setDimensionByIdLink()",
+          "params": ["versionId"],
+          "payload": true
+        },{
+          "type": "DELETE",
+          "endpoint": "/{versionId}/dimension/{dimensionId}",
+          "method": "deleteDimensionById()",
+          "params": ["versionId","dimensionId"]
+        },{
+          "type": "DELETE",
+          "endpoint": "/{versionId}/dimension/link/{dimensionLinkId}/descendants",
+          "method": "deleteDimensionByIdDescendants()",
+          "params": ["versionId","dimensionLinkId"]
+        }]
+    },
+  
+    
+  
+    {
+      "name": "ELEMENT",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/{versionId}/element",
+        "method": "getElementById()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element/{elementId}/descendants",
+        "method": "getElementByIdDescendants()",
+        "params": ["versionId","elementId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element/link",
+        "method": "getElementByIdLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element/{elementId}/link",
+        "method": "getElementByIdLink()",
+        "params": ["versionId","elementId"]
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element",
+        "method": "updateElementById()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/location",
+        "method": "updateElementLocation()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/link",
+        "method": "updateElementByIdLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/link/route",
+        "method": "updateElementByIdRoute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/element",
+        "method": "setElementById()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/element/link",
+        "method": "setElementByIdLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/element/{elementId}",
+        "method": "deleteElementById()",
+        "params": ["versionId","elementId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/element/link/{elementLinkId}/descendants",
+        "method": "deleteElementByIdDescendants()",
+        "params": ["versionId","elementLinkId"]
+      }]
+    },
+  
+    
+  
+    {
+      "name": "ATTRIBUTE",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/{versionId}/attribute",
+        "method": "getAttribute()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/attribute/{attributeId}",
+        "method": "getAttributeById()",
+        "params": ["versionId","attributeId"]
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/attribute",
+        "method": "updateAttribute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/attribute",
+        "method": "setAttribute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/attribute/{attributeId}",
+        "method": "deleteAttributeById()",
+        "params": ["versionId","attributeId"]
+      }]
+    },
+  
+    
+  
+    {
+      "name": "MAPVIEW",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}",
+        "method": "getMapviewModelLinkId()",
+        "params": ["versionId","modelLinkId"]
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice",
+        "method": "updateMapviewModelLinkId()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column",
+        "method": "updateMapviewColumn()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/item",
+        "method": "updateModelLinkIdItem()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice",
+        "method": "setMapviewModelLinkId()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column",
+        "method": "setMapviewColumn()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice/{sliceId}",
+        "method": "deleteMapviewSliceId()",
+        "params": ["versionId","modelLinkId","sliceId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column/{columnId}",
+        "method": "deleteMapviewColumnId()",
+        "params": ["versionId","modelLinkId","columnId"]
+      }]
+    },
+  
+    
+  
+    {
+      "name": "COMMENT",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/{versionId}/comment",
+        "method": "getComment()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/comment/{commentId}/",
+        "method": "getCommentById()",
+        "params": ["versionId","commentId"]
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/comment/{commentId}/link",
+        "method": "updateCommentByIdLink()",
+        "params": ["versionId","commentId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/comment",
+        "method": "setComment()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/comment/query",
+        "method": "setCommentQuery()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/comment/{commentId}/link",
+        "method": "setCommentByIdLink()",
+        "params": ["versionId","commentId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/comment/{commentId}/reply",
+        "method": "setCommentByIdReply()",
+        "params": ["versionId","commentId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/comment/commentsPreview/",
+        "method": "setCommentsPreview()",
+        "params": ["versionId"],
+        "payload": true
+      }]
+    },
+  
+    
+  
+    {
+      "name": "SEARCH",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/find",
+        "method": "find()"
+      }]
+    },
+  
+    
+  
+    {
+      "name": "DIAGRAM",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/versionId/system",
+        "method": "getVersionById()"
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/system/link",
+        "method": "getVersionByIdLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/system/{systemId}/link",
+        "method": "getSystemByIdLink()",
+        "params": ["versionId","systemId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model",
+        "method": "getVersionByIdModel()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/link",
+        "method": "getModelLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}",
+        "method": "getMapviewModelLinkById()",
+        "params": ["versionId","modelLinkId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/{modelId}/link",
+        "method": "getModelByIdLink()",
+        "params": ["versionId","modelId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/dimension",
+        "method": "getVersionByIdDimension()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/dimension/link",
+        "method": "getDimensionLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/dimension/{dimensionId}/link",
+        "method": "getDimensionByIdLink()",
+        "params": ["versionId","dimensionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element",
+        "method": "getVersionByIdElement()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element/link",
+        "method": "getElementLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element/{elementId}/link",
+        "method": "getElementByIdLink()",
+        "params": ["versionId","elementId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/attribute",
+        "method": "getVersionByIdAttribute()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/attribute/{attributeId}",
+        "method": "getAttributeById()",
+        "params": ["versionId","attributeId"]
+      },{
+        "type": "PUT",
+        "endpoint": "/versionId/system",
+        "method": "updateVersionById()",
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/system/location",
+        "method": "updateLocation()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/system/link",
+        "method": "updateVersionByIdLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/system/link/route",
+        "method": "updateVersionByIdRoute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model",
+        "method": "updateVersionByIdModel()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/location",
+        "method": "updateModelLocation()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/link",
+        "method": "updateModelLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/link/route",
+        "method": "updateModelLinkRoute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice",
+        "method": "updateMapviewModelLinkByIdSlice()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice",
+        "method": "updateMapviewModelLinkByIdSlice()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column",
+        "method": "updateMapviewColumn()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/dimension",
+        "method": "updateVersionByIdDimension()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/item",
+        "method": "updateMapviewItem()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/dimension/location",
+        "method": "updateDimensionLocation()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/dimension/link",
+        "method": "updateDimensionLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/dimension/link/route",
+        "method": "updateDimensionLinkRoute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element",
+        "method": "updateVersionByIdElement()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/location",
+        "method": "updateElementLocation()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/link",
+        "method": "updateElementLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/link/route",
+        "method": "updateElementLinkRoute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/attribute",
+        "method": "updateVersionByIdAttribute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/versionId/system",
+        "method": "setVersionById()",
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/system/link",
+        "method": "setVersionByIdLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model",
+        "method": "setVersionByIdModel()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/link",
+        "method": "setModelLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice",
+        "method": "setMapviewModelLinkByIdSlice()",
+        "params": ["versionId","modeliLinkId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column",
+        "method": "setMapviewColumn()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/dimension",
+        "method": "setVersionByIdDimension()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/dimension/link",
+        "method": "setDimensionLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/element/link",
+        "method": "setElementLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/element",
+        "method": "setVersionByIdElement()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/attribute",
+        "method": "deleteVersionByIdAttribute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/system/{systemId}",
+        "method": "deleteSystemById()",
+        "params": ["versionId","systemId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/system/link/{systemLinkId}",
+        "method": "deleteSystemLinkById()",
+        "params": ["versionId","systemLinkId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/{modelId}",
+        "method": "deleteModelById()",
+        "params": ["versionId","modelId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/link/{modelLinkId}",
+        "method": "deleteModelLinkById()",
+        "params": ["versionId","modelLinkId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice/{sliceId}",
+        "method": "deleteMapviewSliceSliceById()",
+        "params": ["versionId","modelLinkId","sliceId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column/{columnId}",
+        "method": "deleteMapViewColumById()",
+        "params": ["versionId","modelLinkId","columnId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/dimension/link/{dimensionLinkId}",
+        "method": "deleteDimensionLinkById()",
+        "params": ["versionId","dimensionLinkId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/element/{elementId}",
+        "method": "deleteElementById()",
+        "params": ["versionId","elementId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/element/link/{elementLinkId}",
+        "method": "deleteElementLinkById()",
+        "params": ["versionId","elementLinkId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/attribute/{attributeId}",
+        "method": "deleteAttributeById()",
+        "params": ["versionId","attributeId"]
+      }]
+    },
+  
+    
+  
+    {
+      "name": "LINK",
+      "items": [{
+        "type": "GET",
+        "endpoint": "/{versionId}/system/link/{systemLinkId}/descendants",
+        "method": "getSystemLinkByIdDescendants()",
+        "params": ["versionId","systemLinkId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/link",
+        "method": "getVersionByIdModelLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/link/{modelLinkId}/descendants",
+        "method": "getModelLinkByIdDescendants()",
+        "params": ["versionId","modelLinkId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}",
+        "method": "getMapviewModelLinkById()",
+        "params": ["versionId","modelLinkId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/model/{modelId}/link",
+        "method": "getModelLink()",
+        "params": ["versionId","modelId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/dimension/link",
+        "method": "getDimensionLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/dimension/link/{dimensionLinkId}/descendants",
+        "method": "getDimensionLinkByIdDescendants()",
+        "params": ["versionId","dimensionLinkId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/dimension/{dimensionId}/link",
+        "method": "setDimensionByIdLink()",
+        "params": ["versionId","dimensionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element/link",
+        "method": "getElementLink()",
+        "params": ["versionId"]
+      },{
+        "type": "GET",
+        "endpoint": "/{versionId}/element/{elementId}/link",
+        "method": "getElementByIdLink()",
+        "params": ["versionId","elementId"]
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/system/link/route",
+        "method": "updateVersionByIdLinkRoute()",
+        "params": ["versionId","systemId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/link",
+        "method": "updateVersionByIdModelLink()",
+        "params": ["versionId","systemId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/link/route",
+        "method": "updateModelLinkRoute()",
+        "params": ["versionId","systemId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice",
+        "method": "updateMapviewModelLinkByIdSlice()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column",
+        "method": "updateMapviewColumn()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/item",
+        "method": "updateMapviewItem()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/dimension/link",
+        "method": "updateDimensionLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/dimension/link/route",
+        "method": "updateDimensionLinkRoute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/link",
+        "method": "updateElementLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "PUT",
+        "endpoint": "/{versionId}/element/link/route",
+        "method": "updateElementLinkRoute()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/link",
+        "method": "setVersionByIdModelLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice",
+        "method": "setMapviewModelLinkByIdSlice()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column",
+        "method": "setMapviewColumn()",
+        "params": ["versionId","modelLinkId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/dimension/link",
+        "method": "setDimensionLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "POST",
+        "endpoint": "/{versionId}/element/link",
+        "method": "setElementLink()",
+        "params": ["versionId"],
+        "payload": true
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/system/link/{systemLinkId}",
+        "method": "deleteSystemLinkById()",
+        "params": ["versionId","systeLinkId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/link/{modelLinkId}",
+        "method": "updateVersionIdRoute()",
+        "params": ["versionId","modelLinkId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/slice/{sliceId}",
+        "method": "deleteMapviewSliceById()",
+        "params": ["versionId","modelLinkId","sliceId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/model/mapView/{modelLinkId}/column/{columnId}",
+        "method": "deleteMapviewColumnById()",
+        "params": ["versionId","modelLinkId","columnId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/dimension/link/{dimensionLinkId}",
+        "method": "deleteDimensionLinkById()",
+        "params": ["versionId","dimensionLinkId"]
+      },{
+        "type": "DELETE",
+        "endpoint": "/{versionId}/element/link/{elementLinkId}",
+        "method": "deleteElementLinkById()",
+        "params": ["versionId","elementLinkId"]
+      }]
+    }]

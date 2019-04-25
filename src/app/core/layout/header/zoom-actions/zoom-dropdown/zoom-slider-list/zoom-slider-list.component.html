@@ -1,0 +1,17 @@
+<ul>
+  <li [ngClass]="{ active: 1 == viewLevel }" (click)="onViewLevelSelect(1)">
+    System view
+  </li>
+  <li [ngClass]="{ active: 2 == viewLevel }" (click)="onViewLevelSelect(2)">
+    Model view
+  </li>
+  <li [ngClass]="{ active: 3 == viewLevel }" (click)="onViewLevelSelect(3)">
+    Dimension view
+  </li>
+  <li [ngClass]="{ active: 4 == viewLevel }" (click)="onViewLevelSelect(4)">
+    Element view
+  </li>
+  <li [ngClass]="{ active: 5 == viewLevel }" (click)="onViewLevelSelect(5)">
+    Rules and Attributes view
+  </li>
+</ul>

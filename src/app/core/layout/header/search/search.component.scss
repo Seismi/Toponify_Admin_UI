@@ -1,0 +1,18 @@
+:host {
+  flex-grow: 2;
+  .search-form {
+    width: 100%;
+    padding: 0px 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    .mat-icon {
+      font-size: 25px;
+    }
+    input {
+      width: 100%;
+      border: none;
+    }
+  }
+}

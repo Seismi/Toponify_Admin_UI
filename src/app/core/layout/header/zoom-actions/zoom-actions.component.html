@@ -1,0 +1,21 @@
+<a>
+  <mat-icon [mdePopoverTriggerFor]="zoomPopover" mdePopoverTriggerOn="click" class="layers"
+  matTooltip="layout">layers</mat-icon
+  >
+</a>
+<a (click)="onZoomIn()" *ngIf="!attributesView"><mat-icon matTooltip="zoom in">zoom_in</mat-icon></a>
+<a (click)="onZoomOut()" *ngIf="!attributesView"><mat-icon matTooltip="zoom out">zoom_out</mat-icon></a>
+
+<!-- zoom view popover -->
+<mde-popover
+  #zoomPopover="mdePopover"
+  [mdePopoverOverlapTrigger]="false"
+  [mdePopoverCloseOnClick]="false"
+>
+  <app-zoom-popover
+    (viewLevelSelected)="viewLevelSelected($event)"
+    (zoomLevelSelected)="zoomLevelSelected($event)"
+    [zoomLevel]="zoomLevel$ | async"
+    [viewLevel]="viewLevel$ | async"
+  ></app-zoom-popover>
+</mde-popover>

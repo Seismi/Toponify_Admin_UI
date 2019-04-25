@@ -1,0 +1,52 @@
+<form class="my-user-form" [formGroup]="group">
+  <div class="my-user-container">
+    <!-- Email -->
+    <mat-form-field [ngClass]="{disabled: !isActive}">
+        <input matInput placeholder="Email" [readonly]="disableEmailInput" formControlName="email">
+        <mat-error>Invalid email address</mat-error>
+    </mat-form-field>
+             
+    <!-- First Name -->
+    <mat-form-field [ngClass]="{disabled: !isActive}">
+        <input matInput placeholder="First Name" formControlName="firstName">
+        <mat-error>This field is required</mat-error>
+    </mat-form-field>
+              
+    <!-- Last Name -->
+    <mat-form-field [ngClass]="{disabled: !isActive}">
+        <input matInput placeholder="Last Name" formControlName="lastName">
+        <mat-error>This field is required</mat-error>
+    </mat-form-field>
+              
+    <!-- Phone Number -->
+    <mat-form-field [ngClass]="{disabled: !isActive}">
+        <input matInput placeholder="Phone Number" formControlName="phone">
+        <mat-error>Invalid phone number</mat-error>
+    </mat-form-field>
+
+    <!-- My Teams -->
+    <mat-form-field [ngClass]="{disabled: !isActive}">
+        <mat-select placeholder="My Teams" multiple formControlName="team">
+          <mat-option *ngFor="let team of teams" [value]="team">{{team }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+      
+    <!-- Buttons -->
+    <div class="buttons-row" *ngIf="showButtons">
+        <button mat-raised-button (click)="onSave()" [ngClass]="{'changeButtonBgColor': toggle}">
+            {{toggle ? 'Save' : 'Edit'}} Personal Settings
+        </button>
+        <button mat-raised-button (click)="onChangePassword()">Change my password</button>
+    </div>
+
+    <!-- My Roles -->
+    <mat-form-field [ngClass]="{disabled: !isActive}">
+        <mat-select placeholder="My Roles" multiple formControlName="roles">
+          <mat-option *ngFor="let role of roles" [value]="role">{{role | titlecase}}</mat-option>
+        </mat-select>
+        <mat-error>Role is required</mat-error>
+    </mat-form-field>
+  </div>
+</form>
+
+

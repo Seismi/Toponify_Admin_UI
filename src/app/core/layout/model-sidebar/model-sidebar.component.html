@@ -1,0 +1,6 @@
+<ng-content></ng-content>
+<app-sidebar-dragger
+  (mousedown)="handleMouseDown($event)"
+  [position]="draggerPosition"
+  [active]="resizing"
+></app-sidebar-dragger>

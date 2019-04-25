@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  min-height: 30px;
+  &.isLast {
+    margin-left: auto;
+  }
+  &.fillFreeSpace {
+    flex: 2;
+  }
+}

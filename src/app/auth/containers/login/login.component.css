@@ -1,0 +1,26 @@
+.example-container {
+    display: flex;
+    flex-direction: column;
+}
+  
+.example-container > * {
+    width: 100%;
+}
+
+.mat-icon {
+    color: grey;
+    width: 24px;
+    margin: 20px 12px 0 0;
+}
+
+.mat-form-field{
+    width: 100%;
+}
+
+h4{
+    color: #f44336;
+    font-weight: lighter;
+    font-size: 14px;
+    text-align: center;
+    padding: 7xp 0px 7xp 0px;
+}

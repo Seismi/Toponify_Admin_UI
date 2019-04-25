@@ -1,0 +1,15 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <!-- Logo goes here-->
+    <app-menu></app-menu>
+    <app-toolbar-column>
+      <app-logo></app-logo>
+    </app-toolbar-column>
+
+    <ng-content></ng-content>
+
+    <!-- Right side action panel -->
+    <app-toolbar-column [isLast]="true">
+    </app-toolbar-column>
+  </mat-toolbar-row>
+</mat-toolbar>

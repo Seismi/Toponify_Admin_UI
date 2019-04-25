@@ -1,0 +1,24 @@
+<app-base-header>
+  <app-toolbar-column>
+    <app-toolbar-splitter> </app-toolbar-splitter>
+    <span>Version Manager</span>
+    <app-toolbar-splitter> </app-toolbar-splitter>
+  </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"
+    ><app-search (search)="onSearchVersion($event)"></app-search><app-toolbar-splitter> </app-toolbar-splitter
+  ></app-toolbar-column>
+</app-base-header>
+
+
+<app-versions-table
+    [data]="versions$ | async"
+    [checked]="checked"
+    (openVersion)="onOpenVersion($event)"
+    (openComments)="onOpenComments($event)"
+    (editVersion)="onEditVersion($event)"
+    (addVersion)="onAddVersion()"
+    (archiveVersion)="onArchiveVersion($event)"
+    (copyVersion)="onCopyVersion($event)"
+    (unarchiveVersion)="onUnarchiveVersion($event)"
+    (deleteVersion)="onDeleteVersion($event)">
+</app-versions-table>

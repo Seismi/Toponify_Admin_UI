@@ -1,0 +1,12 @@
+<i class="material-icons" [matMenuTriggerFor]="navigationMenu">menu</i>
+<mat-menu #navigationMenu="matMenu">
+    <button mat-menu-item routerLink="/version" [queryParams]="{}">Versions</button>
+    <button mat-menu-item *ngIf="userScreen">Diagram</button>
+    <button mat-menu-item *ngIf="userScreen">RADIO</button>
+    <button mat-menu-item *ngIf="userScreen">Audit</button>
+    <button mat-menu-item routerLink="/user">My User</button>
+    <button mat-menu-item routerLink="/user" *ngIf="administrator">Other Users</button>
+    <button mat-menu-item routerLink="/settings" *ngIf="administrator">Organisation</button>
+    <button mat-menu-item>Help</button>
+    <button mat-menu-item>Log out</button>
+</mat-menu>

@@ -1,0 +1,16 @@
+<mat-card>
+  <div class="row">
+    <div class="col-8">
+      <app-zoom-slider-list
+        [viewLevel]="viewLevel"
+        (viewLevelSelected)="onViewLevelSelect($event)"
+      ></app-zoom-slider-list>
+    </div>
+    <div class="col-2">
+      <app-zoom-slider
+        (zoomLevelSelected)="onZoomLevelSelect($event)"
+        [zoomLevel]="zoomLevel"
+      ></app-zoom-slider>
+    </div>
+  </div>
+</mat-card>

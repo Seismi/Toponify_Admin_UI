@@ -1,0 +1,20 @@
+i {
+padding: 3px;
+cursor: pointer;
+font-size: 28px;
+margin-top: 10px;
+}
+  
+.mat-menu-content {
+    z-index: 9999;
+    padding: 0px !important;
+}
+
+.mat-menu-panel {
+    width: 170px;
+}
+
+button:focus{
+    outline: none;
+    border: 0;
+}

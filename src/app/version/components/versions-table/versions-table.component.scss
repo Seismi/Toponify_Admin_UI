@@ -1,0 +1,164 @@
+.container {
+  margin-top: 8%;
+  width: 55%;
+}
+
+  table {
+    width: 100%;
+  }
+
+  tr.detail-row {
+    height: 0;
+  }
+  
+  tr.element-row:not(.example-expanded-row):hover {
+    background: #f5f5f5;
+  }
+  
+  tr.element-row:not(.example-expanded-row):active {
+    background: #efefef;
+  }
+  
+  .element-row td {
+    border-bottom-width: 0;
+  }
+  
+  .element-detail {
+    overflow: hidden;
+    display: flex;
+  }
+  
+  .element-diagram {
+    min-width: 80px;
+    border: 2px solid black;
+    padding: 8px;
+    font-weight: lighter;
+    margin: 8px 0;
+    height: 104px;
+  }
+  
+  .element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
+  }
+  
+  .element-description {
+    padding: 16px;
+  }
+  
+  .element-description-attribution {
+    opacity: 0.5;
+  }
+
+  td.mat-column-star {
+    width: 20px;
+    padding-right: 8px;
+  }
+
+  .options-menu {
+    outline: none
+  }
+
+  .mat-icon {
+    cursor: pointer;
+  }
+
+  tr.mat-header-row {
+    height: 35px;
+  }
+
+  td.mat-column-star {
+    width: 20px;
+    padding-top: 15px;
+  }
+
+  th.mat-column-lastUpdatedOn {
+    width: 20%;
+  }
+
+  th.mat-column-name {
+    width: 50%;
+  }
+
+  th.mat-column-previewImage {
+    width: 25%;
+  }
+
+  ::ng-deep td.mat-cell {
+    border-bottom-color: #ddd;
+  }
+
+  // paginator and checkbox
+  ::ng-deep .mat-checkbox-layout {
+    margin: 0 0 0 23px;
+  }
+
+  .mat-checkbox {
+    line-height: 58px;
+    font-size: 14px;
+  }
+
+  .mat-paginator {
+    float: right;
+  }
+
+  .mat-paginator-container {
+    float: right;
+  }
+
+  // badge
+  small {
+    font-size: 10px;
+    font-weight: lighter;
+    margin-left: 4px;
+    height: 15px;
+    margin-top: 25px;
+  }
+
+  // image
+  img {
+    height: 44px;
+  }
+
+  i {
+    font-size: 14px;
+  }
+
+
+  button {
+    margin-right: 10px;
+  }
+
+
+  div.row{
+    height: 78px;
+    line-height: 78px;
+    margin-left: 0 !important;
+  }
+
+  .noVersionFound {
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .copyOf{
+    font-weight: 500;
+    margin-right: 5px;
+  }
+
+
+    // responsive table
+    @media (max-width: 1170px) {
+      .container {
+        width: 90%;
+        margin-top: 11%;
+      }
+    }
+  
+    @media (min-width: 576px){
+      .container {
+        max-width: 90%;
+      }
+    }
+  

@@ -1,0 +1,24 @@
+<!-- zoom out icon -->
+<div class="zoom-icon">
+  <mat-icon (click)="zoomOut()">add</mat-icon>
+</div>
+
+<!-- slider -->
+<mat-card-content>
+  <mat-slider
+    vertical
+    [(ngModel)]="zoomLevel"
+    #slider
+    (change)="change()"
+    tickInterval="1"
+    [min]="min"
+    [max]="max"
+    invert
+  >
+  </mat-slider>
+</mat-card-content>
+
+<!-- zoom in icon -->
+<div class="zoom-icon">
+  <mat-icon (click)="zoomIn()">minimize</mat-icon>
+</div>
