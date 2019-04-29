@@ -1,0 +1,37 @@
+.mat-elevation-z8 {
+    width: 60%;
+    margin: auto;
+    margin-bottom: 50px;
+}
+
+table {
+    width: 100%;
+}
+
+tr.mat-header-row {
+    height: 35px;
+}
+
+button:focus {
+    outline: none;
+}
+
+.mat-icon {
+    cursor: pointer;
+}
+
+th.mat-column-refNo {
+    width: 20%;
+}
+
+th.mat-column-workPackage {
+    width: 65%;
+}
+
+th.mat-column-access {
+    width: 20%;
+}
+
+th.mat-column-star {
+    width: 5%;
+}
