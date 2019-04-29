@@ -33,6 +33,7 @@ import { MdePopoverModule } from '@material-extended/mde';
 import { ZoomPopoverComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-popover.component';
 import { ZoomSliderComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider/zoom-slider.component';
 import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider-list/zoom-slider-list.component';
+import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropd
     ZoomActionsComponent,
     ModelContainerComponent,
     ModelSidebarComponent,
-    ModelContentComponent
+    ModelContentComponent,
+    QuicklinksActionsComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -81,7 +83,8 @@ import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropd
     DraggerComponent,
     ZoomPopoverComponent,
     ZoomSliderComponent,
-    ZoomSliderListComponent
+    ZoomSliderListComponent,
+    QuicklinksActionsComponent
   ],
   providers: []
 })

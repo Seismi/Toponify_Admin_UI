@@ -1,0 +1,19 @@
+:host {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    a {
+      display: flex;
+      align-items: center;
+      margin: 0px 7px;
+      .mat-icon {
+        opacity: 0.8;
+        font-size: 25px;
+      }
+      &:hover {
+        .mat-icon {
+          opacity: 1;
+        }
+      }
+    }
+  }
