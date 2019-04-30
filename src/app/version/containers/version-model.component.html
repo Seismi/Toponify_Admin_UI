@@ -3,23 +3,26 @@
   <app-toolbar-column [fillFreeSpace]="true">
     <app-search></app-search>
   </app-toolbar-column>
-  <!-- <app-toolbar-column>
+  <app-toolbar-column>
+    <app-zoom-actions
+      [attributesView]="attributesView"
+      (zoomIn)="onZoomIn($event)"
+      (zoomOut)="onZoomOut($event)"
+    ></app-zoom-actions>
     <app-layout-actions *ngIf="!attributesView"
       (showGrid)="onShowGrid($event)"
       [showOrHide]="showOrHide"
       (navigateDiagram)="onNavigateDiagram($event)"
       [navigate]="navigate"
       (zoomMap)="onZoomMap($event)"
-    ></app-layout-actions>
-    <app-toolbar-splitter *ngIf="!attributesView"></app-toolbar-splitter>
-    <app-zoom-actions
-      [attributesView]="attributesView"
-      (zoomIn)="onZoomIn($event)"
-      (zoomOut)="onZoomOut($event)"
-    ></app-zoom-actions>
-  </app-toolbar-column> -->
+  ></app-layout-actions>
+  </app-toolbar-column>
   <app-toolbar-column>
-    <smi-quicklinks-actions></smi-quicklinks-actions>
+    <smi-quicklinks-actions 
+      [gojsView]="true" 
+      [navigate]="navigate"
+      (navigateDiagram)="onNavigateDiagram($event)">
+    </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
