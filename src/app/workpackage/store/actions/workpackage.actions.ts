@@ -1,19 +1,25 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackgeListHttpParams } from '@app/workpackage/services/workpackage.service';
+import { WorkPackageEntitiesHttpParams } from '../models/workpackage.models';
 
 export enum WorkPackageActionTypes {
-  LoadWorkPackages = '[WorkPackage] Load WorkPackage list',
-  LoadWorkPackagesSuccess = '[WorkPackage] Load WorkPackage list success',
-  LoadWorkPackagesFailure = '[WorkPackage] Load WorkPackage list failure',
-  LoadWorkPackage = '[WorkPackage] Load WorkPackage item',
-  LoadWorkPackageSuccess = '[WorkPackage] Load WorkPackage item success',
-  LoadWorkPackageFailure = '[WorkPackage] Load WorkPackage item failure',
+  LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
+  LoadWorkPackagesSuccess = '[WorkPackage] Load WorkPackage entities success',
+  LoadWorkPackagesFailure = '[WorkPackage] Load WorkPackage entities failure',
+  AddWorkPackage = '[WorkPackage] Add WorkPackage entity',
+  AddWorkPackageSuccess = '[WorkPackage] Add WorkPackage entity Success',
+  AddWorkPackageFailure = '[WorkPackage] Add WorkPackage entity Failure',
+  UpdateWorkPackage = '[WorkPackage] Update WorkPackage entity',
+  UpdateWorkPackageSuccess = '[WorkPackage] Update WorkPackage entity Success',
+  UpdateWorkPackageFailure = '[WorkPackage] Update WorkPackage entity Failure',
+  DeleteWorkPackage = '[WorkPackage] Delete WorkPackage entity',
+  DeleteWorkPackageSuccess = '[WorkPackage] Delete WorkPackage entity Success',
+  DeleteWorkPackageFailure = '[WorkPackage] Delete WorkPackage entity Failure',
 }
 
 export class LoadWorkPackages implements Action {
   readonly type = WorkPackageActionTypes.LoadWorkPackages;
-  constructor(public payload: WorkPackgeListHttpParams) {}
+  constructor(public payload: WorkPackageEntitiesHttpParams) {}
 }
 
 export class LoadWorkPackagesSuccess implements Action {
@@ -26,18 +32,48 @@ export class LoadWorkPackagesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-export class LoadWorkPackage implements Action {
-  readonly type = WorkPackageActionTypes.LoadWorkPackage;
+export class AddWorkPackageEntity implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackage;
   constructor(public payload: any) {}
 }
 
-export class LoadWorkPackageSuccess implements Action {
-  readonly type = WorkPackageActionTypes.LoadWorkPackageSuccess;
+export class AddWorkPackageEntitySuccess implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageSuccess;
   constructor(public payload: any) {}
 }
 
-export class LoadWorkPackageFailure implements Action {
-  readonly type = WorkPackageActionTypes.LoadWorkPackageFailure;
+export class AddWorkPackageEntityFailure implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class UpdateWorkPackageEntity implements Action {
+  readonly type = WorkPackageActionTypes.UpdateWorkPackage;
+  constructor(public payload: any) {}
+}
+
+export class UpdateWorkPackageEntitySuccess implements Action {
+  readonly type = WorkPackageActionTypes.UpdateWorkPackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateWorkPackageEntityFailure implements Action {
+  readonly type = WorkPackageActionTypes.UpdateWorkPackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkPackageEntity implements Action {
+  readonly type = WorkPackageActionTypes.DeleteWorkPackage;
+  constructor(public payload: any) {}
+}
+
+export class DeleteWorkPackageEntitySuccess implements Action {
+  readonly type = WorkPackageActionTypes.DeleteWorkPackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class DeleteWorkPackageEntityFailure implements Action {
+  readonly type = WorkPackageActionTypes.DeleteWorkPackageFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -45,6 +81,12 @@ export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
   | LoadWorkPackagesFailure
-  | LoadWorkPackage
-  | LoadWorkPackageSuccess
-  | LoadWorkPackageFailure;
+  | AddWorkPackageEntity
+  | AddWorkPackageEntitySuccess
+  | AddWorkPackageEntityFailure
+  | UpdateWorkPackageEntity
+  | UpdateWorkPackageEntitySuccess
+  | UpdateWorkPackageEntityFailure
+  | DeleteWorkPackageEntity
+  | DeleteWorkPackageEntitySuccess
+  | DeleteWorkPackageEntityFailure;
