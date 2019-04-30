@@ -916,10 +916,17 @@ export class DiagramService implements OnDestroy {
         new go.Binding('figure', 'category', function(category) {
           if (category === 'relational') {
             return 'Cylinder1';
-          } else {
-            // multi-dimensional system
+          } else if (category === 'analytical') {
             return 'Cube2';
+          } else if (category === 'file') {
+            return 'Document';
+          } else if (category === 'master data') {
+            return 'ManualInput';
+          } else {
+            // Reporting
+            return 'RoundedRectangle';
           }
+
         }),
         // Bind height for relational system to make consistent
         //  with previously used GoJs 1.8 shape
@@ -1064,7 +1071,7 @@ export class DiagramService implements OnDestroy {
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
-      $(go.Shape, 'Card', {
+      $(go.Shape, 'Rectangle', {
         fill: this.colours['Seismi_Blue'],
         stroke: 'black',
         strokeWidth: 1,
@@ -1084,6 +1091,26 @@ export class DiagramService implements OnDestroy {
           minSize: new go.Size(100, 100),
           margin: 5
         },
+        $(go.TextBlock,
+          {
+            alignment: go.Spot.TopRight,
+            background: null,
+            font: 'bold 20px calibri'
+          },
+          new go.Binding('text',
+            'category',
+            function (category) {
+              if (category === 'virtual') {
+                return 'V';
+              } else if (category === 'master data') {
+                return 'MD';
+              } else {
+                // Physical data set
+                return '';
+              }
+            }
+          )
+        ),
         // Model name
         $(
           go.TextBlock,
