@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: './version/version.module#VersionModule'
       },
       {
+        path: 'documentation-standards',
+        loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
+      },
+      {
         path: 'user',
         loadChildren: './user/user.module#UserModule'
       },
