@@ -1,0 +1,56 @@
+<!-- Splitter -->
+<app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
+
+<!-- Workpackage Icon -->
+<a><mat-icon matTooltip="Work Packages">business_center</mat-icon></a>
+
+<!-- Workpackage dropdown -->
+<div class="dropdown" *ngIf="gojsView">
+    <button class="dropdown-toggle btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Workpackages
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <button class="dropdown-item">Workpackage 1</button>
+        <button class="dropdown-item">Workpackage 2</button>
+        <button class="dropdown-item">Workpackage 3</button>
+    </div>
+</div>
+
+<!-- Edit diagram button -->
+<a (click)="onNavigate()"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
+
+<!-- Splitter -->
+<app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
+
+<!--Scopes and Layouts Icon -->
+<a><mat-icon matTooltip="Scopes and Layouts">pages</mat-icon></a>
+
+<!-- Scopes dropdown -->
+<div class="dropdown" *ngIf="gojsView">
+    <button class="dropdown-toggle btn btn-sm right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Scopes
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <button class="dropdown-item">Scope 1</button>
+        <button class="dropdown-item">Scope 2</button>
+        <button class="dropdown-item">Scope 3</button>
+    </div>
+</div>
+
+<!-- Layouts dropdown -->
+<div class="dropdown" *ngIf="gojsView">
+    <button class="dropdown-toggle btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Layouts
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <button class="dropdown-item">Layout 1</button>
+        <button class="dropdown-item">Layout 2</button>
+        <button class="dropdown-item">Layout 3</button>
+    </div>
+</div>
+
+<!-- RADIO Log Icon -->
+<a><mat-icon matTooltip="RADIO Log">track_changes</mat-icon></a>
+
+<!-- Help Icon -->
+<a><mat-icon matTooltip="Help">help_outline</mat-icon></a>
