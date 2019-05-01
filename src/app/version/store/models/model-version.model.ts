@@ -1,11 +1,15 @@
 export interface ModelApiResponse {
   data?: (Model)[] | null;
 }
-
+export enum dataSetCategories {
+  physical = 'physical',
+  virtual = 'virtual',
+  masterData = 'master data'
+}
 export class Model {
   id: string;
   name: string;
-  category = 'model';
+  category: dataSetCategories;
   description = '';
   tags = '';
   owner = '';
@@ -13,10 +17,11 @@ export class Model {
   customProperties?: (CustomPropertiesEntity)[] | null = [];
   dimensions?: (DimensionsEntity)[] | null = [];
 
-  constructor(options: { id: string, name: string }) {
+  constructor(options: { id: string, name: string, category: dataSetCategories }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;
+      this.category = options.category;
     }
   }
 }

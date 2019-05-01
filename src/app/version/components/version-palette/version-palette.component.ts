@@ -39,36 +39,59 @@ export class VersionPaletteComponent implements OnInit {
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;
 
     this.palette.nodeTemplateMap.add(
-      'relational',
+      'transactional',
       diagramService.getSystemNodeTemplate()
     );
+
     this.palette.nodeTemplateMap.add(
-      'multidimensional',
+      'analytical',
       diagramService.getSystemNodeTemplate()
     );
+
     this.palette.nodeTemplateMap.add(
-      'model',
+      'file',
+      diagramService.getSystemNodeTemplate()
+    );
+
+    this.palette.nodeTemplateMap.add(
+      'reporting',
+      diagramService.getSystemNodeTemplate()
+    );
+
+    this.palette.nodeTemplateMap.add(
+      'physical',
       diagramService.getModelNodeTemplate()
     );
+
+    this.palette.nodeTemplateMap.add(
+      'virtual',
+      diagramService.getModelNodeTemplate()
+    );
+
     this.palette.nodeTemplateMap.add(
       'dimension',
       diagramService.getDimensionNodeTemplate()
     );
+
     this.palette.nodeTemplateMap.add(
       'mdelement',
       diagramService.getElementNodeTemplate()
     );
+
     this.palette.nodeTemplateMap.add(
       'mdrule',
       diagramService.getRuleNodeTemplate()
     );
-    this.palette.linkTemplateMap.add(
-      'masterdata',
-      diagramService.getLinkMasterDataTemplate(true)
-    );
+
+    // Set links templates
     this.palette.linkTemplateMap.add(
       'data',
       diagramService.getLinkDataTemplate(true)
+    );
+
+    this.palette.linkTemplateMap.add(
+      'masterdata',
+      diagramService.getLinkMasterDataTemplate(true)
     );
   }
 
@@ -83,6 +106,11 @@ export class VersionPaletteComponent implements OnInit {
 
   ngOnInit() {
     this.palette.div = this.paletteRef.nativeElement;
+
+    this.diagramService.masterDataTemplate.subscribe(function(template) {
+        this.palette.nodeTemplateMap.add('master data', template);
+      }.bind(this)
+    );
     // Subscribe to source of node data for the palette
     this.diagramService.paletteNodes.subscribe(function(nodes) {
         this.palette.model.nodeDataArray = nodes;
@@ -93,5 +121,6 @@ export class VersionPaletteComponent implements OnInit {
         this.palette.model.linkDataArray = links;
       }.bind(this)
     );
+
   }
 }

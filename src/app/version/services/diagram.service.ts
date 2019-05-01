@@ -9,7 +9,7 @@ import { AddVersionSystem, UpdateVersionSystem } from '@app/version/store/action
 import { SetViewLevel } from '@app/version/store/actions/view.actions';
 import { Dimension } from '@app/version/store/models/dimension.model';
 import { Element, elementCategories, elementSubcategories } from '@app/version/store/models/element.model';
-import { Model } from '@app/version/store/models/model-version.model';
+import {Model, dataSetCategories} from '@app/version/store/models/model-version.model';
 import { Store } from '@ngrx/store';
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
@@ -169,6 +169,9 @@ export class DiagramService implements OnDestroy {
   private paletteLinksSource = new BehaviorSubject([]);
   paletteLinks = this.paletteLinksSource.asObservable();
 
+  private masterDataTemplateSource = new BehaviorSubject(this.getSystemNodeTemplate());
+  masterDataTemplate = this.masterDataTemplateSource.asObservable();
+
   filterSubscription: Subscription;
   filterServiceSubscription: Subscription;
 
@@ -230,6 +233,10 @@ export class DiagramService implements OnDestroy {
     // Clear clipboard to prevent parts being copied to the wrong view
     diagram.commandHandler.copyToClipboard(null);
 
+    diagram.nodeTemplateMap.add('master data',
+      (level === Level.model) ? this.getModelNodeTemplate() : this.getSystemNodeTemplate()
+    );
+
     // Array of nodes to be used in the palette
     let paletteViewNodes: object[] = [];
 
@@ -255,19 +262,47 @@ export class DiagramService implements OnDestroy {
         new System({
           id: 'New Transactional System',
           name: 'New Transactional System',
-          category: systemCategories.relational
+          category: systemCategories.transactional
         }),
         new System({
           id: 'New Analytical System',
           name: 'New Analytical System',
-          category: systemCategories.multiDimensional
+          category: systemCategories.analytical
+        }),
+        new System({
+          id: 'New File System',
+          name: 'New File System',
+          category: systemCategories.file
+        }),
+        new System({
+          id: 'New Reporting System',
+          name: 'New Reporting System',
+          category: systemCategories.reporting
+        }),
+        new System({
+          id: 'New Master Data System',
+          name: 'New Master Data System',
+          category: systemCategories.masterData
         })
       ];
 
       linkSourcePropName = 'sourceSys';
       linkTargetPropName = 'targetSys';
     } else if (level === Level.model) {
-      paletteViewNodes = [new Model({ id: 'New Model', name: 'New Model' })];
+      paletteViewNodes = [
+        new Model({ id: 'New Physical Data Set',
+          name: 'New Physical Data Set',
+          category: dataSetCategories.physical
+        }),
+        new Model({ id: 'New Virtual Data Set',
+          name: 'New Virtual Data Set',
+          category: dataSetCategories.virtual
+        }),
+        new Model({ id: 'New Master Data Data Set',
+          name: 'New Master Data Data Set',
+          category: dataSetCategories.masterData
+        })
+      ];
 
       linkSourcePropName = 'sourceModel';
       linkTargetPropName = 'targetModel';
@@ -376,6 +411,11 @@ export class DiagramService implements OnDestroy {
       });
     }
 
+    this.masterDataTemplateSource.next((level === Level.model) ?
+      this.getModelNodeTemplate() :
+      this.getSystemNodeTemplate()
+    );
+
     this.paletteNodesSource.next(paletteViewNodes);
     this.paletteLinksSource.next(paletteViewLinks);
   }
@@ -386,10 +426,14 @@ export class DiagramService implements OnDestroy {
     let newLevel: Level;
     let childNodeProp: string;
 
-    if (['relational', 'multidimensional'].includes(object.data.category)) {
+    if (['transactional',
+      'analytical',
+      'file',
+      'reporting',
+      'master data'].includes(object.data.category)) {
       newLevel = Level.model;
       childNodeProp = 'models';
-    } else if (object.data.category === 'model') {
+    } else if (['physical', 'virtual', 'master data'].includes(object.data.category)) {
       newLevel = Level.dimension;
       childNodeProp = 'dimensions';
     } else if (object.data.category === 'dimension') {
@@ -920,7 +964,7 @@ export class DiagramService implements OnDestroy {
       $(
         go.Shape,
         new go.Binding('figure', 'category', function(category) {
-          if (category === 'relational') {
+          if (category === 'transactional') {
             return 'Cylinder1';
           } else if (category === 'analytical') {
             return 'Cube2';
@@ -932,7 +976,6 @@ export class DiagramService implements OnDestroy {
             // Reporting
             return 'RoundedRectangle';
           }
-
         }),
         // Bind height for relational system to make consistent
         //  with previously used GoJs 1.8 shape
