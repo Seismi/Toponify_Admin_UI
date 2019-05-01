@@ -12,7 +12,8 @@ import { WorkpackageLayoutActionsComponent } from './components/layout-actions/l
 import { 
   MatTableModule,
   MatPaginatorModule,
-  MatButtonModule 
+  MatButtonModule,
+  MatSortModule 
 } from '@angular/material';
 
 
@@ -22,7 +23,8 @@ import {
     WorkpackageRoutingModule,
     MatTableModule,
     MatPaginatorModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSortModule
   ],
   exports: [],
   declarations: [
