@@ -1,0 +1,22 @@
+.table-container {
+    border: solid 1px #ddd;
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+}
+
+tr.mat-header-row {
+    height: 35px;
+    background-color: #f9f9f9;
+}
+
+tr.mat-row {
+    height: 30px;
+}
