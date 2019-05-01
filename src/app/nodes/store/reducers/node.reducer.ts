@@ -5,6 +5,8 @@ import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 export interface State {
   loading: boolean;
   entities: Node[];
+  selectedNode: Node;
+  selectedNodeLink: NodeLink;
   links: NodeLink[];
   error: Error;
 }
@@ -12,6 +14,8 @@ export interface State {
 export const initialState: State = {
   loading: false,
   entities: null,
+  selectedNode: null,
+  selectedNodeLink: null,
   links: null,
   error: null
 };
@@ -72,4 +76,11 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
     }
   }
 }
+
+export const getNodes = (state: State) => state.entities;
+export const getSelectedNode = (state: State) => state.selectedNode;
+export const getNodeLinks = (state: State) => state.entities;
+export const getSelectedNodeLink = (state: State) => state.selectedNodeLink;
+export const getLoading = (state: State) => state.loading;
+export const getError = (state: State) => state.error;
 

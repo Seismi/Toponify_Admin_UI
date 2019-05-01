@@ -1,0 +1,402 @@
+{
+    "nodes": {
+        "data": [
+            {
+                "id": "d3720a79-07cb-4001-8dca-580fb0dd0afe",
+                "category": "transactional",
+                "name": "Bought Ledger",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "78a6ff87-4e50-4966-9480-9772977aef48",
+                "category": "transactional",
+                "name": "HR",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "604aea88-e3d1-443a-9276-44bc63b1ecb1 ",
+                "category": "transactional",
+                "name": "ERP",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "78a6ff87-4e50-4966-9480-9772977aef48",
+                "category": "analytical",
+                "name": "Consolidation",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "0a156062-0b0c-451a-90ef-a492e828127e",
+                "category": "analytical",
+                "name": "Tax Calc",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "51c514e5-61f6-40fc-96c3-0e109285ffc2",
+                "category": "analytical",
+                "name": "Operational Planning",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "078b5d77-2082-4afd-9ec7-771c26cc668a",
+                "category": "analytical",
+                "name": "Corporate Planning",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "230d254b-343c-4216-80c5-1d9c945a25cc",
+                "category": "master data",
+                "name": "Master Data Management",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "d8ccb7ac-db96-4d14-a608-a9cf0b6d9c32",
+                "category": "file",
+                "name": "Files from other ledgers",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "21561ffe-70bb-413e-9aa0-1493bd9d9cb6",
+                "category": "reporting",
+                "name": "Warehouse and Business Inteligence",
+                "layer": "system",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "cb4cf65e-244e-4fde-84ef-aae4cb1d41d9",
+                "category": "virtual",
+                "name": "Primary Ledger Weekly Balances",
+                "layer": "data set",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "21ba44c7-50a6-447e-895e-cafb32f90561",
+                "category": "physical",
+                "name": "Transactions",
+                "layer": "data set",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "c1bf0b91-c695-465f-bd50-f2a1cfb05298",
+                "category": "physical",
+                "name": "Asset Management",
+                "layer": "data set",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "e8f89ec5-6c1a-4256-b132-2ea07756229e",
+                "category": "physical",
+                "name": "Accounts Payable",
+                "layer": "data set",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+                "category": "physical",
+                "name": "Primary Ledger Balances",
+                "layer": "data set",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+                "category": "physical",
+                "name": "Consolidation",
+                "layer": "data set",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "463ab8d4-99bb-4981-a0e8-6045ceb54175",
+                "category": "physical",
+                "name": "India Secondary Balances",
+                "layer": "data set",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "f023506a-4026-43c0-a38b-9d793d8baf49",
+                "category": "dimension",
+                "name": "Account",
+                "layer": "dimension",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
+                "category": "dimension",
+                "name": "Currency",
+                "layer": "dimension",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "57526c23-2bbe-4a30-a80e-0eb3cb264e5a",
+                "category": "dimension",
+                "name": "Entity",
+                "layer": "dimension",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "9e967512-1dae-40c3-8bec-0cfb1f32d68b",
+                "category": "dimension",
+                "name": "ICP",
+                "layer": "dimension",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "13dce907-7b27-4998-b01b-07ceb5d294df",
+                "category": "dimension",
+                "name": "Cost Centre",
+                "layer": "dimension",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "e5056291-0ffb-4140-8131-2155ccc04f63",
+                "category": "dimension",
+                "name": "Finance Period",
+                "layer": "dimension",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "71d86b20-3179-421a-8620-fd440ab570de",
+                "category": "dimension",
+                "name": "Product",
+                "layer": "dimension",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "81895b97-45c4-4111-a0a7-02d156ea792f",
+                "category": "key",
+                "name": "Total Entity",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "6b80ff3f-70f2-44df-a0d7-a51239613965",
+                "category": "structure",
+                "name": "Parent Entities",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "651ed81a-0702-4be9-a4d2-ab9689d447f3",
+                "category": "list",
+                "name": "Legal Entities",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "510a3225-708d-433f-a90b-654e8d5a48f5",
+                "category": "list",
+                "name": "Joint Ventures and Associates",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "59e20ad0-51b1-43ec-9370-e93bb4ba0955",
+                "category": "list",
+                "name": "Adjustment Entities",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "e261375c-1bf0-4157-bf69-37aa3d7c48a8",
+                "category": "key",
+                "name": "Total Account",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "dc20c873-d98e-483a-b3ce-1df70c0457da",
+                "category": "key",
+                "name": "Total Profit and Loss - Statutory",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "1caf87e2-73b4-4bee-bbac-44ba16220d79",
+                "category": "key",
+                "name": "Total Profit and Loss - Management",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "b233dd1f-0ad0-44e1-9ad6-cdb50cfa6dd1",
+                "category": "key",
+                "name": "Total Balance Sheet - Statutory",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "9b015e19-a506-4a83-9776-46d201d50f56",
+                "category": "key",
+                "name": "Total Balance Sheet - Management",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "daf5d75b-92bc-4fb0-a556-9005e747ceb0",
+                "category": "structure",
+                "name": "Profit and Loss Accounts",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            },
+            {
+                "id": "59d45144-ae2e-4974-9846-08fc3c0546c4",
+                "category": "structure",
+                "name": "Balance Sheet Accounts",
+                "layer": "reporting concept",
+                "description": "",
+                "tags": "",
+                "locations": [],
+                "owners": [],
+                "descendants": []
+            }
+        ]
+    }
+}
