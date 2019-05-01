@@ -1,7 +1,12 @@
-.mat-elevation-z8 {
+.title {
+    font-size: 25px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.table-container {
     width: 60%;
     margin: auto;
-    margin-bottom: 50px;
 }
 
 table {
@@ -20,12 +25,12 @@ button:focus {
     cursor: pointer;
 }
 
-th.mat-column-refNo {
-    width: 20%;
+th.mat-column-scope {
+    width: 25%;
 }
 
-th.mat-column-workPackage {
-    width: 65%;
+th.mat-column-layout {
+    width: 50%;
 }
 
 th.mat-column-access {

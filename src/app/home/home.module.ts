@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 import { HomeRoutingComponent } from './containers/home-routing.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { CoreModule } from '@app/core/core.module';
-import { RadioTableComponent } from './components/radio-table/radio-table.component';
-import { LayoutsTableComponent } from './components/layouts-table/layouts-table.component';
-import { WorkpackagesTableComponent } from './components/workpackages-table/workpackages-table.component';
+import { MyRadioTableComponent } from './components/my-radio-table/my-radio-table.component';
+import { MyLayoutsTableComponent } from './components/my-layouts-table/my-layouts-table.component';
+import { MyWorkpackagesTableComponent } from './components/my-workpackages-table/my-workpackages-table.component';
 import { 
   MatTableModule,
   MatPaginatorModule,
@@ -27,9 +27,9 @@ import {
   declarations: [
     HomeComponent, 
     HomeRoutingComponent,
-    RadioTableComponent,
-    LayoutsTableComponent,
-    WorkpackagesTableComponent
+    MyRadioTableComponent,
+    MyLayoutsTableComponent,
+    MyWorkpackagesTableComponent
   ],
   providers: [],
 })
