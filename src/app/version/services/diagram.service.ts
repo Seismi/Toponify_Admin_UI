@@ -874,19 +874,25 @@ export class DiagramService implements OnDestroy {
   // Get item template for list of node children
   getItemTemplate() {
     return $(go.Panel,
+      'Auto',
+      {
+        background: 'black',
+        stretch: go.GraphObject.Horizontal
+      },
+      $(go.Panel,
       'Horizontal',
       {
         background: 'white',
-        stretch: go.GraphObject.Horizontal,
-        margin: new go.Margin(0, 0, 1, 0)
+        margin: new go.Margin(1)
       },
-      $(go.TextBlock,
-        {
-          stroke: this.colours.Seismi_Blue,
-          font: '14px calibri'
-        },
-        new go.Binding('text', 'name'),
-        new go.Binding('visible', 'name').ofModel()
+        $(go.TextBlock,
+          {
+            stroke: 'black',
+            font: '14px calibri'
+          },
+          new go.Binding('text', 'name'),
+          new go.Binding('visible', 'name').ofModel()
+        )
       )
     );
   }
@@ -938,7 +944,7 @@ export class DiagramService implements OnDestroy {
           }
         }),
         {
-          fill: this.colours['Seismi_Blue'],
+          fill: 'white',
           stroke: 'black',
           strokeWidth: 1,
           portId: '',
@@ -964,7 +970,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'bold 16px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -976,7 +982,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'italic 15px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -988,7 +994,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1002,7 +1008,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1022,7 +1028,7 @@ export class DiagramService implements OnDestroy {
               text: 'Models',
               row: 1,
               alignment: go.Spot.Center,
-              stroke: this.colours.Faded_Blue,
+              stroke: 'black',
               font: 'bold 15.25px calibri',
               margin: new go.Margin(5, 0, 0, 0)
             },
@@ -1072,7 +1078,7 @@ export class DiagramService implements OnDestroy {
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape, 'Rectangle', {
-        fill: this.colours['Seismi_Blue'],
+        fill: 'white',
         stroke: 'black',
         strokeWidth: 1,
         portId: '',
@@ -1116,7 +1122,7 @@ export class DiagramService implements OnDestroy {
           go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'bold 16px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -1128,7 +1134,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'italic 15px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -1140,7 +1146,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1153,7 +1159,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1173,7 +1179,7 @@ export class DiagramService implements OnDestroy {
               text: 'Dimensions',
               row: 1,
               alignment: go.Spot.Center,
-              stroke: this.colours.Faded_Blue,
+              stroke: 'black',
               font: 'bold 15.25px calibri',
               margin: new go.Margin(5, 0, 0, 0)
             },
@@ -1223,7 +1229,7 @@ export class DiagramService implements OnDestroy {
       $(go.Shape,
         'RoundedRectangle',
         {
-          fill: this.colours['Seismi_Blue'],
+          fill: 'white',
           stroke: 'black',
           strokeWidth: 1,
           portId: '',
@@ -1269,7 +1275,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'bold 16px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -1281,7 +1287,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'italic 15px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -1293,7 +1299,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1307,7 +1313,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1327,7 +1333,7 @@ export class DiagramService implements OnDestroy {
               text: 'Elements',
               row: 1,
               alignment: go.Spot.Center,
-              stroke: this.colours.Faded_Blue,
+              stroke: 'black',
               font: 'bold 15.25px calibri',
               margin: new go.Margin(5, 0, 0, 0)
             },
@@ -1384,7 +1390,7 @@ export class DiagramService implements OnDestroy {
           }
         }),
         {
-          fill: this.colours['Seismi_Blue'],
+          fill: 'white',
           stroke: 'black',
           strokeWidth: 1,
           portId: '',
@@ -1408,7 +1414,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'bold 16px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -1420,7 +1426,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: 'italic 15px calibri',
             maxSize: new go.Size(100, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
@@ -1432,7 +1438,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1446,7 +1452,7 @@ export class DiagramService implements OnDestroy {
         $(go.TextBlock,
           {
             textAlign: 'center',
-            stroke: 'white',
+            stroke: 'black',
             font: '15px calibri',
             maxSize: new go.Size(100, Infinity)
           },
@@ -1466,7 +1472,7 @@ export class DiagramService implements OnDestroy {
               text: 'Attributes',
               row: 1,
               alignment: go.Spot.Center,
-              stroke: this.colours.Faded_Blue,
+              stroke: 'black',
               font: 'bold 15.25px calibri',
               margin: new go.Margin(5, 0, 0, 0)
             },
@@ -1530,7 +1536,7 @@ export class DiagramService implements OnDestroy {
             }
           }),
           {
-            fill: this.colours['Seismi_Blue'],
+            fill: 'white',
             stroke: 'black',
             strokeWidth: 1,
             desiredSize: new go.Size(50, 50),
@@ -1550,8 +1556,8 @@ export class DiagramService implements OnDestroy {
           $(go.Shape, // Box to contain rule name
             'Rectangle',
             {
-              fill: this.colours['FadeGrad'],
-              stroke: this.colours['Seismi_Blue'],
+              fill: 'white',
+              stroke: 'black',
               strokeDashArray: [1, 2]
             }
            ),
@@ -1559,7 +1565,7 @@ export class DiagramService implements OnDestroy {
             'Vertical',
             $(go.TextBlock, // Rule name
               {
-                stroke: this.colours['Seismi_Blue'],
+                stroke: 'black',
                 font: 'bold 14px calibri',
                 textAlign: 'center',
                 maxSize: new go.Size(125, Infinity)
@@ -1570,7 +1576,7 @@ export class DiagramService implements OnDestroy {
             $(go.TextBlock,
               {
                 textAlign: 'center',
-                stroke: this.colours['Seismi_Blue'],
+                stroke: 'black',
                 font: 'italic 13px calibri',
                 maxSize: new go.Size(100, Infinity),
                 margin: new go.Margin(0, 0, 5, 0)
@@ -1582,7 +1588,7 @@ export class DiagramService implements OnDestroy {
             $(go.TextBlock,
               {
                 textAlign: 'center',
-                stroke: this.colours['Seismi_Blue'],
+                stroke: 'black',
                 font: '13px calibri',
                 maxSize: new go.Size(100, Infinity)
               },
@@ -1596,7 +1602,7 @@ export class DiagramService implements OnDestroy {
             $(go.TextBlock,
               {
                 textAlign: 'center',
-                stroke: this.colours['Seismi_Blue'],
+                stroke: 'black',
                 font: '13px calibri',
                 maxSize: new go.Size(100, Infinity)
               },
@@ -1616,7 +1622,7 @@ export class DiagramService implements OnDestroy {
                   text: 'Attributes',
                   row: 1,
                   alignment: go.Spot.Center,
-                  stroke: this.colours.Seismi_Blue,
+                  stroke: 'black',
                   font: 'bold 13.5px calibri',
                   margin: new go.Margin(5, 0, 0, 0)
                 },
@@ -1642,7 +1648,7 @@ export class DiagramService implements OnDestroy {
                     },
                     $(go.TextBlock,
                       {
-                        stroke: this.colours.Seismi_Blue,
+                        stroke: 'black',
                         font: '13px calibri'
                       },
                       new go.Binding('text', 'name'),
@@ -1802,7 +1808,7 @@ export class DiagramService implements OnDestroy {
       } : {},
       $(go.Shape, {
         isPanelMain: true,
-        stroke: this.colours['Seismi_Blue'],
+        stroke: 'black',
         strokeWidth: 2.5
       },
         // If link is in palette then give it a transparent background for easier selection
@@ -1941,7 +1947,7 @@ export class DiagramService implements OnDestroy {
             {
               font: 'bold 20px calibri',
               textAlign: 'center',
-              stroke: this.colours['Seismi_Blue'],
+              stroke: 'black',
               alignment: go.Spot.TopCenter,
               stretch: go.GraphObject.Horizontal,
               width: 180
