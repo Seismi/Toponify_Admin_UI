@@ -6,7 +6,8 @@ import { CoreModule } from '@app/core/core.module';
 import { 
   MatTableModule,
   MatPaginatorModule,
-  MatButtonModule 
+  MatButtonModule,
+  MatSortModule 
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -20,7 +21,8 @@ import { ReportLibraryActionsComponent } from './components/report-library-actio
     ReportLibraryRoutingModule,
     MatTableModule,
     MatPaginatorModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSortModule
   ],
   exports: [],
   declarations: [
