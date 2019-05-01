@@ -1,0 +1,25 @@
+table {
+    width: 100%;
+}
+
+div {
+    border: solid 1px #ddd;
+}
+
+tr.mat-row {
+    height: 45px;
+}
+
+tr.mat-header-row {
+    height: 20px;
+    background-color: #f9f9f9
+}
+
+tr.mat-row {
+    height: 10px;
+}
+
+.title {
+    font-size: 15px;
+    margin-top: 20px;
+}

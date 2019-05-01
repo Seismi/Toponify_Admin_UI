@@ -1,0 +1,22 @@
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchVersion($event)"></app-search>
+    </app-toolbar-column>
+</app-base-header><br><br>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <smi-workpackages-table></smi-workpackages-table>
+        </div>
+        <div class="col">
+            <smi-workpackage-detail></smi-workpackage-detail>
+            <div class="container-2">
+                <smi-objectives-table></smi-objectives-table>
+                <smi-radio-table></smi-radio-table>
+                <smi-change-table></smi-change-table>
+            </div><br>
+            <smi-workpackage-layout-actions></smi-workpackage-layout-actions>
+        </div>
+    </div>
+</div>
