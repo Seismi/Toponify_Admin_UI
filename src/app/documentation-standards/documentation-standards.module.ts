@@ -11,7 +11,6 @@ import {
 } from '@angular/material';
 import { DocumentationStandardsTableComponent } from './components/documentation-standards-table/documentation-standards-table.component';
 import { DocumentationStandardsDetailComponent } from './components/documentation-standards-detail/documentation-standards-detail.component';
-import { DocumentationStandardsActionsComponent } from './components/documentation-standards-actions/documentation-standards-actions.component';
 
 
 @NgModule({
@@ -28,8 +27,7 @@ import { DocumentationStandardsActionsComponent } from './components/documentati
     DocumentationStandardsComponent, 
     DocumentationStandardsRoutingComponent,
     DocumentationStandardsTableComponent,
-    DocumentationStandardsDetailComponent,
-    DocumentationStandardsActionsComponent
+    DocumentationStandardsDetailComponent
   ],
   providers: [],
 })
