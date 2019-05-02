@@ -79,7 +79,7 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
 
 export const getNodes = (state: State) => state.entities;
 export const getSelectedNode = (state: State) => state.selectedNode;
-export const getNodeLinks = (state: State) => state.entities;
+export const getNodeLinks = (state: State) => state.links;
 export const getSelectedNodeLink = (state: State) => state.selectedNodeLink;
 export const getLoading = (state: State) => state.loading;
 export const getError = (state: State) => state.error;
