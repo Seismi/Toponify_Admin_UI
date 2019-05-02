@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { WorkPackageEntity, WorkPackageEntitiesHttpParams, WorkPackageApiRequest } from '../store/models/workpackage.models';
+import { WorkPackageEntitiesHttpParams, WorkPackageApiRequest, WorkPackageEntitiesResponse } from '../store/models/workpackage.models';
+import 'rxjs/add/observable/of';
+import workpackageEntities from '../../../mock/workpackage';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -12,8 +14,9 @@ export class WorkPackageService {
 
   constructor(private http: HttpClient) { }
 
-  getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntity[]> {
+  getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
+    return Observable.of(workpackageEntities);
     return this.http.get<any>(`/workpackages`, {params: params});
   }
 

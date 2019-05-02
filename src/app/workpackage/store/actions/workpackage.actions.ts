@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageEntitiesHttpParams } from '../models/workpackage.models';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '../models/workpackage.models';
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -24,7 +24,7 @@ export class LoadWorkPackages implements Action {
 
 export class LoadWorkPackagesSuccess implements Action {
   readonly type = WorkPackageActionTypes.LoadWorkPackagesSuccess;
-  constructor(public payload: any[]) {}
+  constructor(public payload: WorkPackageEntitiesResponse) {}
 }
 
 export class LoadWorkPackagesFailure implements Action {

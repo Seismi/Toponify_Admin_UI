@@ -1,15 +1,21 @@
-export interface WorkPackageStatePage {
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  number: number;
+
+export interface WorkPackageEntitiesResponse {
+  data?: (WorkPackageEntity)[] | null;
+  links: Links;
+  page: Page;
 }
 
-export interface WorkPackageStateLinks {
+export interface Links {
   first: string;
   previous: string;
   next: string;
   last: string;
+}
+export interface Page {
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  number: number;
 }
 
 export interface WorkPackageEntity {

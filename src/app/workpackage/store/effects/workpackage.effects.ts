@@ -12,7 +12,7 @@ import {
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure } from '../actions/workpackage.actions';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntity } from '../models/workpackage.models';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '../models/workpackage.models';
 
 
 @Injectable()
@@ -28,7 +28,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((payload: WorkPackageEntitiesHttpParams) => {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
-        switchMap((entities: WorkPackageEntity[]) => [new LoadWorkPackagesSuccess(entities)]),
+        switchMap((data: WorkPackageEntitiesResponse) => [new LoadWorkPackagesSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
       );
     })
