@@ -28,6 +28,10 @@ const routes: Routes = [
         loadChildren: './user/user.module#UserModule'
       },
       {
+        path: 'scopes-and-layouts',
+        loadChildren: './scopes-and-layouts/scopes-and-layouts.module#ScopesAndLayoutsModule'
+      },
+      {
         path: 'settings',
         loadChildren: './settings/settings.module#SettingsModule'
       },

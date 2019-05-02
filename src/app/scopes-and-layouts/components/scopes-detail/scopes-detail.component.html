@@ -1,0 +1,34 @@
+<form *ngIf="scopeSelected">
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Name:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Owners:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Viewers:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Filtering components:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+    <br>
+    <mat-checkbox>Is Public</mat-checkbox>
+    <div class="form-actions">
+        <button type="button">Edit</button>
+        <button type="button">Open</button>
+        <button type="button">Copy</button>
+        <button type="button">Delete</button>
+    </div>
+</form>

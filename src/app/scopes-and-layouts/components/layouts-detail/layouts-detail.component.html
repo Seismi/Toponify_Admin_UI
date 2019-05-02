@@ -1,0 +1,27 @@
+<form *ngIf="layoutSelected">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Name:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Owners:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Viewers:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control">
+        </div>
+    </div>
+
+    <mat-checkbox>Is Public</mat-checkbox>
+    <br><br>
+    <button type="button">Edit</button>
+    <button type="button">Open</button>
+    <button type="button">Copy</button>
+    <button type="button">Delete</button>
+</form>

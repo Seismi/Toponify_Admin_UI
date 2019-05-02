@@ -1,0 +1,45 @@
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchVersion($event)"></app-search>
+    </app-toolbar-column>
+    <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+</app-base-header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <!-- Scopes Table -->
+            <smi-scopes-table
+                (scopeSelected)="onScopeSelect($event)">
+            </smi-scopes-table>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col scope-details">
+                    <!-- Scopes Detail Form -->
+                    <smi-scopes-detail 
+                        [scopeSelected]="scopeSelected">
+                    </smi-scopes-detail>
+                </div>
+
+                <div class="w-100"></div>
+                
+                <div class="col">
+                    <!-- Layouts Table -->
+                    <smi-layouts-table
+                        (layoutSelected)="onLayoutSelect($event)"
+                        [scopeSelected]="scopeSelected">
+                    </smi-layouts-table>
+                </div>
+                <div class="col">
+                    <!-- Layouts Detail Form -->
+                    <smi-layouts-detail
+                        [layoutSelected]="layoutSelected">
+                    </smi-layouts-detail>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
