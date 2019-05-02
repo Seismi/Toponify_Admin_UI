@@ -1,11 +1,9 @@
-.table-container {
-    border: solid 1px #ddd;
-    margin-bottom: 30px;
+.wrapper {
+    margin: 20px 0px;
 }
 
 .title {
     font-size: 15px;
-    margin-top: 20px;
 }
 
 table {
@@ -18,5 +16,5 @@ tr.mat-header-row {
 }
 
 tr.mat-row {
-    height: 30px;
+    height: 35px;
 }

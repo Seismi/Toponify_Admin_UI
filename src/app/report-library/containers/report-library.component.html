@@ -10,12 +10,17 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <smi-report-library-table></smi-report-library-table>
+            <smi-report-library-table
+                (reportSelected)="onSelectReport($event)">
+            </smi-report-library-table>
         </div>
         <div class="col">
-            <smi-report-library-detail></smi-report-library-detail>
-            <smi-attr-and-rules-table></smi-attr-and-rules-table>
-            <smi-report-library-actions></smi-report-library-actions>
+            <smi-report-library-detail
+                [reportSelected]="reportSelected">
+            </smi-report-library-detail>
+            <smi-attr-and-rules-table 
+                [reportSelected]="reportSelected">
+            </smi-attr-and-rules-table>
         </div>
     </div>
 </div>

@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Component, ViewChild, Input } from '@angular/core';
+import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 
 export interface PeriodicElement {
   category: string;
@@ -18,10 +18,15 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['attr-and-rules-table.component.scss']
 })
 export class AttrAndRulesTableComponent  {
+
+  @Input() reportSelected = false;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   displayedColumns: string[] = ['category', 'name', 'description'];

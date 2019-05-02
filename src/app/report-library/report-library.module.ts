@@ -12,12 +12,13 @@ import {
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
 import { AttrAndRulesTableComponent } from './components/attr-and-rules-table/attr-and-rules-table.component';
-import { ReportLibraryActionsComponent } from './components/report-library-actions/report-library-actions.component';
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
   imports: [
     CoreModule,
+    CommonModule,
     ReportLibraryRoutingModule,
     MatTableModule,
     MatPaginatorModule,
@@ -30,8 +31,7 @@ import { ReportLibraryActionsComponent } from './components/report-library-actio
     ReportLibraryRoutingComponent,
     ReportLibraryTableComponent,
     ReportLibraryDetailComponent,
-    AttrAndRulesTableComponent,
-    ReportLibraryActionsComponent
+    AttrAndRulesTableComponent
   ],
   providers: [],
 })

@@ -7,7 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class ReportLibraryComponent implements OnInit {
+
+  reportSelected: boolean;
+
   constructor() { }
 
   ngOnInit() { }
+
+  onSelectReport(row) {
+    this.reportSelected = true;
+  }
+  
 }

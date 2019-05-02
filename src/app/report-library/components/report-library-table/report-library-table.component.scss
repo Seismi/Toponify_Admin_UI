@@ -13,4 +13,13 @@ tr.mat-header-row {
 tr.mat-column-name {
     width: 95%;
 }
+
+tr.mat-row {
+    height: 45px;
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: #efefef;
+}
   

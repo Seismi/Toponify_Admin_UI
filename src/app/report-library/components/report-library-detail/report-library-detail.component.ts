@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'smi-report-library-detail',
@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
 })
 export class ReportLibraryDetailComponent  {
 
+  @Input() reportSelected = false;
 
 }
