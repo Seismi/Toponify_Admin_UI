@@ -1,0 +1,12 @@
+<app-base-header>
+  <app-toolbar-column>
+    <app-toolbar-splitter> </app-toolbar-splitter>
+    <span>Architecture</span>
+    <app-toolbar-splitter> </app-toolbar-splitter>
+  </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"
+    ><app-search (search)="onSearchVersion($event)"></app-search><app-toolbar-splitter> </app-toolbar-splitter
+  ></app-toolbar-column>
+</app-base-header>
+
+
