@@ -1,5 +1,6 @@
 import { WorkpackageComponent } from './containers/workpackage.component';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { WorkpackageRoutingComponent } from './containers/workpackage-routing.component';
 import { WorkpackageRoutingModule } from './workpackage-routing.module';
 import { CoreModule } from '@app/core/core.module';
@@ -8,7 +9,6 @@ import { WorkpackageDetailComponent } from './components/workpackage-detail/work
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
 import { ChangeTableComponent } from './components/change-table/change-table.component';
-import { WorkpackageLayoutActionsComponent } from './components/layout-actions/layout-actions.component';
 import { 
   MatTableModule,
   MatPaginatorModule,
@@ -20,6 +20,7 @@ import {
 @NgModule({
   imports: [
     CoreModule,
+    CommonModule,
     WorkpackageRoutingModule,
     MatTableModule,
     MatPaginatorModule,
@@ -34,8 +35,7 @@ import {
     WorkpackageDetailComponent,
     ObjectivesTableComponent,
     RadioTableComponent,
-    ChangeTableComponent,
-    WorkpackageLayoutActionsComponent
+    ChangeTableComponent
   ],
   providers: [],
 })

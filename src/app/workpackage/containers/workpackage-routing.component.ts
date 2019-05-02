@@ -5,11 +5,8 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: 'workpackage-routing.component.html',
     styleUrls: ['workpackage-routing.component.scss']
 })
-
 export class WorkpackageRoutingComponent implements OnInit {
-
     constructor() { }
 
-    ngOnInit() { }
-    
+    ngOnInit() { } 
 }

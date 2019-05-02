@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'smi-workpackage-detail',
@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
 })
 export class WorkpackageDetailComponent  {
 
+  @Input() workpackageSelected = false;
 
 }

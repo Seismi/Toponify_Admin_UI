@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Component, ViewChild, Input } from '@angular/core';
+import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 
 export interface PeriodicElement {
     name: string;
@@ -18,10 +18,14 @@ export interface PeriodicElement {
 })
 export class ObjectivesTableComponent  {
 
+    @Input() workpackageSelected = false;
+
     @ViewChild(MatPaginator) paginator: MatPaginator;
+    @ViewChild(MatSort) sort: MatSort;
 
     ngOnInit() {
       this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     }
   
     displayedColumns: string[] = ['type', 'name'];

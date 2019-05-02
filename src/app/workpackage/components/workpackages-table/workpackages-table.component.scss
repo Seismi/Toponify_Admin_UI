@@ -2,7 +2,7 @@ table {
     width: 100%;
 }
 
-h1 {
+.title {
     font-size: 25px;
 }
 
@@ -16,4 +16,9 @@ th.mat-column-name {
 
 tr.mat-row {
     height: 45px;
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: #efefef;
 }

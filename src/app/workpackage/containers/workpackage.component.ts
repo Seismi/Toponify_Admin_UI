@@ -7,7 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class WorkpackageComponent implements OnInit {
+
+  workpackageSelected: boolean;
+
   constructor() { }
 
   ngOnInit() { }
+
+  onSelectWorkpackage(row) {
+    this.workpackageSelected = true;
+  }
 }

@@ -7,15 +7,15 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <smi-workpackages-table></smi-workpackages-table>
+            <smi-workpackages-table
+                (workpackageSelected)="onSelectWorkpackage($event)">
+            </smi-workpackages-table>
         </div>
         <div class="col">
-            <smi-workpackage-detail></smi-workpackage-detail>
-            <smi-objectives-table></smi-objectives-table>
-            <smi-radio-table></smi-radio-table>
-            <smi-change-table></smi-change-table>
-            <br>
-            <smi-workpackage-layout-actions></smi-workpackage-layout-actions>
+            <smi-workpackage-detail [workpackageSelected]="workpackageSelected"></smi-workpackage-detail>
+            <smi-objectives-table [workpackageSelected]="workpackageSelected"></smi-objectives-table>
+            <smi-radio-table [workpackageSelected]="workpackageSelected"></smi-radio-table>
+            <smi-change-table [workpackageSelected]="workpackageSelected"></smi-change-table>
         </div>
     </div>
 </div>
