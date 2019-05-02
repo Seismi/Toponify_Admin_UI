@@ -17,7 +17,7 @@
 </div>
 
 <!-- Edit diagram button -->
-<a (click)="onNavigate()"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
+<a (click)="onNavigate()" *ngIf="gojsView"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
 
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
