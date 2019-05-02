@@ -149,7 +149,7 @@ export interface NodeLinksApiResponse {
   }
   export interface ConditionTypeEntity {
     id: string;
-    ma,e: string;
+    name: string;
     orderNum: number;
   }
   export interface SlicesEntity {
