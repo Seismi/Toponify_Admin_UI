@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import * as fromNode from './../../nodes/store/reducers';
+import * as NodeActions from './../../nodes/store/actions/node.actions';
 
 @Component({
   selector: 'smi-home-component',
@@ -7,7 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class HomeComponent implements OnInit {
-  constructor() { }
+  constructor(
+    private store: Store<fromNode.NodesState>
+  ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.store.dispatch((new NodeActions.LoadNodes()));
+   }
 }
