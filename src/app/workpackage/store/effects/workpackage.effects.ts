@@ -11,8 +11,8 @@ import {
   WorkPackageActionTypes,
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
-  DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure } from '../actions/workpackage.actions';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '../models/workpackage.models';
+  DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure, LoadWorkPackage, LoadWorkPackageSuccess } from '../actions/workpackage.actions';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetailApiResponse } from '../models/workpackage.models';
 
 
 @Injectable()
@@ -30,6 +30,18 @@ export class WorkPackageEffects {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
         switchMap((data: WorkPackageEntitiesResponse) => [new LoadWorkPackagesSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadWorkPackage$ = this.actions$.pipe(
+    ofType<LoadWorkPackage>(WorkPackageActionTypes.LoadWorkPackage),
+    map(action => action.payload),
+    switchMap((id: string) => {
+      return this.workpackageService.getWorkPackage(id).pipe(
+        switchMap((workPackageDetail: WorkPackageDetailApiResponse) => [new LoadWorkPackageSuccess(workPackageDetail.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageEntityFailure(error)))
       );
     })
   );

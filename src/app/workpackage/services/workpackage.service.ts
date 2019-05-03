@@ -3,7 +3,6 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { WorkPackageEntitiesHttpParams, WorkPackageApiRequest, WorkPackageEntitiesResponse } from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
-import workpackageEntities from '../../../mock/workpackage';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -16,12 +15,11 @@ export class WorkPackageService {
 
   getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
-    return Observable.of(workpackageEntities);
     return this.http.get<any>(`/workpackages`, {params: params});
   }
 
-  getWorkPackageEntity(entityId: string): Observable<any> {
-    return this.http.get<any>(`/workpackages/${entityId}`);
+  getWorkPackage(id: string): Observable<any> {
+    return this.http.get<any>(`/workpackages/${id}`);
   }
 
   addWorkPackageEntity(entity: WorkPackageApiRequest): Observable<any> {

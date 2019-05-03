@@ -1,11 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '../models/workpackage.models';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetail } from '../models/workpackage.models';
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
   LoadWorkPackagesSuccess = '[WorkPackage] Load WorkPackage entities success',
   LoadWorkPackagesFailure = '[WorkPackage] Load WorkPackage entities failure',
+  LoadWorkPackage = '[WorkPackage] Load WorkPackage',
+  LoadWorkPackageSuccess = '[WorkPackage] Load WorkPackage success',
+  LoadWorkPackageFailure = '[WorkPackage] Load WorkPackage failure',
   AddWorkPackage = '[WorkPackage] Add WorkPackage entity',
   AddWorkPackageSuccess = '[WorkPackage] Add WorkPackage entity Success',
   AddWorkPackageFailure = '[WorkPackage] Add WorkPackage entity Failure',
@@ -29,6 +32,21 @@ export class LoadWorkPackagesSuccess implements Action {
 
 export class LoadWorkPackagesFailure implements Action {
   readonly type = WorkPackageActionTypes.LoadWorkPackagesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class LoadWorkPackage implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackage;
+  constructor(public payload: string) {}
+}
+
+export class LoadWorkPackageSuccess implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackageSuccess;
+  constructor(public payload: WorkPackageDetail) {}
+}
+
+export class LoadWorkPackageFailure implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackageFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -81,6 +99,9 @@ export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
   | LoadWorkPackagesFailure
+  | LoadWorkPackage
+  | LoadWorkPackageSuccess
+  | LoadWorkPackageFailure
   | AddWorkPackageEntity
   | AddWorkPackageEntitySuccess
   | AddWorkPackageEntityFailure

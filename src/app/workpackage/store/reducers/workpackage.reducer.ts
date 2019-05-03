@@ -1,12 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { WorkPackageActionsUnion, WorkPackageActionTypes } from '../actions/workpackage.actions';
-import { WorkPackageEntity, Page, Links } from '../models/workpackage.models';
+import { WorkPackageEntity, Page, Links, WorkPackageDetail } from '../models/workpackage.models';
 
 export interface State {
   entities: WorkPackageEntity[];
   page: Page;
   links: Links;
   loading: boolean;
+  selectedWorkPackage: WorkPackageDetail
   error?: HttpErrorResponse | { message: string };
 }
 
@@ -15,6 +16,7 @@ export const initialState: State = {
   page: null,
   links: null,
   loading: false,
+  selectedWorkPackage: null,
   error: null
 };
 
@@ -39,6 +41,29 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackage: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackageSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackageFailure: {
       return {
         ...state,
         error: action.payload,

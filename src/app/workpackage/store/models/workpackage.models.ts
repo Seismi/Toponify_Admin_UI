@@ -44,3 +44,111 @@ export interface WorkPackageEntitiesHttpParams {
 export interface WorkPackageApiRequest {
   data: WorkPackageEntity;
 }
+
+// Workpackage detail
+export interface WorkPackageDetailApiResponse {
+  data: WorkPackageDetail;
+}
+export interface WorkPackageDetail {
+  id: string;
+  name: string;
+  description: string;
+  objectives?: (ObjectivesEntityOrRadiosEntity)[] | null;
+  radios?: (ObjectivesEntityOrRadiosEntity)[] | null;
+  customProperties?: (CustomPropertiesEntity)[] | null;
+  owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
+  baseline: Baseline;
+  approvers?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
+  status: string;
+  hasErrors: boolean;
+  changes: Changes;
+}
+export interface ObjectivesEntityOrRadiosEntity {
+  id: string;
+  title: string;
+  commentText: string;
+  category: string;
+  author: AuthorOrLastUpdatedBy;
+  owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
+  status: string;
+  createdOn: string;
+  lastUpdatedOn: string;
+  lastUpdatedBy: AuthorOrLastUpdatedBy;
+  replyCount: number;
+}
+export interface AuthorOrLastUpdatedBy {
+  id: string;
+  firstName: string;
+  lastName: string;
+  team?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
+  email: string;
+  phone: string;
+  roles?: (RolesEntityOrLayout)[] | null;
+}
+export interface TeamEntityOrOwnersEntityOrApproversEntity {
+  id: string;
+  name: string;
+  type: string;
+}
+export interface RolesEntityOrLayout {
+  id: string;
+  name: string;
+}
+export interface CustomPropertiesEntity {
+  propertyId: string;
+  value: string;
+}
+export interface Baseline {
+  id: string;
+  name: string;
+  description: string;
+  owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
+  approvers?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
+  hasErrors: boolean;
+  status: string;
+}
+export interface Changes {
+  architectureItems: ArchitectureItems;
+  architectureLinks: ArchitectureLinksOrAttributesOrReports;
+  attributes: ArchitectureLinksOrAttributesOrReports;
+  reports: ArchitectureLinksOrAttributesOrReports;
+}
+export interface ArchitectureItems {
+  additions?: (AdditionsEntityOrUpdatesEntityOrDeletionsEntity)[] | null;
+  updates?: (AdditionsEntityOrUpdatesEntityOrDeletionsEntity)[] | null;
+  deletions?: (AdditionsEntityOrUpdatesEntityOrDeletionsEntity)[] | null;
+}
+export interface AdditionsEntityOrUpdatesEntityOrDeletionsEntity {
+  id: string;
+  layer: string;
+  name: string;
+  description: string;
+  category: string;
+  tags: string;
+  locations?: ((LocationsEntityEntity)[] | null)[] | null;
+  owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
+}
+export interface LocationsEntityEntity {
+  layout: RolesEntityOrLayout;
+  locationCoordinates: string;
+}
+export interface ArchitectureLinksOrAttributesOrReports {
+  additions?: (AdditionsEntityOrUpdatesEntityOrDeletionsEntity1)[] | null;
+  updates?: (AdditionsEntityOrUpdatesEntityOrDeletionsEntity1)[] | null;
+  deletions?: (AdditionsEntityOrUpdatesEntityOrDeletionsEntity1)[] | null;
+}
+export interface AdditionsEntityOrUpdatesEntityOrDeletionsEntity1 {
+  id: string;
+  layer: string;
+  name: string;
+  description: string;
+  category: string;
+  sourceId: string;
+  targetId: string;
+  routes?: ((RoutesEntityEntity)[] | null)[] | null;
+}
+export interface RoutesEntityEntity {
+  layout: RolesEntityOrLayout;
+  points?: (number)[] | null;
+}
+

@@ -9,7 +9,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 ## JSON Server
 
 npm install -g json-server
-Run json-server --watch db.json --routes
+json-server --watch db.json --routes routes.json
 
 ## Code scaffolding
 
