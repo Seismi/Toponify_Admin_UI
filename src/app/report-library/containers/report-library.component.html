@@ -14,13 +14,9 @@
                 (reportSelected)="onSelectReport($event)">
             </smi-report-library-table>
         </div>
-        <div class="col">
-            <smi-report-library-detail
-                [reportSelected]="reportSelected">
-            </smi-report-library-detail>
-            <smi-attr-and-rules-table 
-                [reportSelected]="reportSelected">
-            </smi-attr-and-rules-table>
+        <div class="col" *ngIf="reportSelected">
+            <smi-report-library-detail></smi-report-library-detail>
+            <smi-attr-and-rules-table></smi-attr-and-rules-table>
         </div>
     </div>
 </div>
