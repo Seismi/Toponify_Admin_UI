@@ -24,8 +24,6 @@ export class LayoutsTableComponent {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    @Input() scopeSelected = false;
-
     ngOnInit() {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;

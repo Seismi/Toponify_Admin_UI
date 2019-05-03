@@ -5,8 +5,4 @@ import { Component, Input } from '@angular/core';
   templateUrl: './scopes-detail.component.html',
   styleUrls: ['./scopes-detail.component.scss']
 })
-export class ScopesDetailComponent {
-
-  @Input() scopeSelected = false;
-  
-}
+export class ScopesDetailComponent {}
