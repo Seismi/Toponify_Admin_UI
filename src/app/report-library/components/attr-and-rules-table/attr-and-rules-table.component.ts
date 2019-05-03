@@ -19,8 +19,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class AttrAndRulesTableComponent  {
 
-  @Input() reportSelected = false;
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 

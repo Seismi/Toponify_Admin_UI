@@ -5,8 +5,4 @@ import { Component, Input } from '@angular/core';
   templateUrl: 'report-library-detail.component.html',
   styleUrls: ['report-library-detail.component.scss']
 })
-export class ReportLibraryDetailComponent  {
-
-  @Input() reportSelected = false;
-
-}
+export class ReportLibraryDetailComponent  {}
