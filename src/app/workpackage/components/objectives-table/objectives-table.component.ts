@@ -18,8 +18,6 @@ export interface PeriodicElement {
 })
 export class ObjectivesTableComponent  {
 
-    @Input() workpackageSelected = false;
-
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 

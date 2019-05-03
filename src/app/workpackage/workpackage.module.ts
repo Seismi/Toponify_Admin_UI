@@ -13,7 +13,7 @@ import {
   MatTableModule,
   MatPaginatorModule,
   MatButtonModule,
-  MatSortModule 
+  MatSortModule
 } from '@angular/material';
 
 

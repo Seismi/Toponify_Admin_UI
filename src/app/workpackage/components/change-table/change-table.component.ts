@@ -19,8 +19,6 @@ export interface PeriodicElement {
 })
 export class ChangeTableComponent  {
 
-    @Input() workpackageSelected = false;
-
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 

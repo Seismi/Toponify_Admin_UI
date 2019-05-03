@@ -5,8 +5,4 @@ import { Component, Input } from '@angular/core';
   templateUrl: './workpackage-detail.component.html',
   styleUrls: ['./workpackage-detail.component.scss']
 })
-export class WorkpackageDetailComponent  {
-
-  @Input() workpackageSelected = false;
-
-}
+export class WorkpackageDetailComponent  {}
