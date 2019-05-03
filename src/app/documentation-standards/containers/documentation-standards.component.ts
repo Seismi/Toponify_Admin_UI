@@ -7,7 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class DocumentationStandardsComponent implements OnInit {
+
+  rowSelected = false;
+
   constructor() { }
 
   ngOnInit() { }
+
+  onSelectDocumentation() {
+    this.rowSelected = true;
+  }
+
 }

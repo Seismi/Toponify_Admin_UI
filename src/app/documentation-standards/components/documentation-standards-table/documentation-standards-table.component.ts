@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 
 export interface PeriodicElement {
@@ -18,6 +18,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class DocumentationStandardsTableComponent implements OnInit {
 
+  selectedRowIndex: number = -1;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -28,4 +30,13 @@ export class DocumentationStandardsTableComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'levels'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+
+  @Output()
+  documentationSelected = new EventEmitter();
+
+  onSelectRow(row) {
+    this.selectedRowIndex = row.name;
+    this.documentationSelected.emit(row);
+  }
+
 }

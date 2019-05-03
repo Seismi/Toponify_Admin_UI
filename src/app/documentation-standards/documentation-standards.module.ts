@@ -1,5 +1,6 @@
 import { DocumentationStandardsComponent } from './containers/documentation-standards.component';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DocumentationStandardsRoutingComponent } from './containers/documentation-standards-routing.component';
 import { DocumentationStandardsRoutingModule } from './documentation-standards-routing.module';
 import { CoreModule } from '@app/core/core.module';
@@ -16,6 +17,7 @@ import { DocumentationStandardsDetailComponent } from './components/documentatio
 @NgModule({
   imports: [
     CoreModule,
+    CommonModule,
     DocumentationStandardsRoutingModule,
     MatTableModule,
     MatPaginatorModule,
