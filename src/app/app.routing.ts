@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: './home/home.module#HomeModule'
       },
       {
+        path: 'architecture',
+        loadChildren: './architecture/architecture.module#ArchitectureModule'
+      },
+      {
         path: 'version',
         loadChildren: './version/version.module#VersionModule'
       },
@@ -50,7 +54,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       useHash: true,
       paramsInheritanceStrategy: 'always',
-      enableTracing: false
+      enableTracing: true
       /*preloadingStrategy: PreloadAllModules*/
     })
   ],
