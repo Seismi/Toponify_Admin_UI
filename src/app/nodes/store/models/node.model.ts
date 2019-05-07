@@ -1,12 +1,34 @@
 export interface NodesApiResponse {
   data?: (Node)[] | null;
 }
+
+export enum layers {
+  system = 'system',
+  dataSet = 'data set',
+  dimension = 'dimension',
+  reportingConcept = 'reporting concept'
+}
+
+export enum nodeCategories {
+  transactional = 'transactional',
+  analytical = 'analytical',
+  file = 'file',
+  reporting = 'reporting',
+  masterData = 'master data',
+  physical = 'physical',
+  virtual = 'virtual',
+  dimension = 'dimension',
+  list = 'list',
+  structure = 'structure',
+  rollup = 'rollup'
+}
+
 export interface Node {
   id: string;
   layer: string;
   name: string;
   description: string;
-  category: string;
+  category: nodeCategories;
   tags: string;
   locations?: ((LocationsEntity)[] | null)[] | null;
   owners?: (OwnersEntity)[] | null;
@@ -25,7 +47,7 @@ export interface OwnersEntity {
   type: string;
 }
 
-// TODO Extend this off Node 
+// TODO Extend this off Node
 
 export interface NodeDetailApiResponse {
   data: NodeDetail;
@@ -35,7 +57,7 @@ export interface NodeDetail {
   layer: string;
   name: string;
   description: string;
-  category: string;
+  category: nodeCategories;
   tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;

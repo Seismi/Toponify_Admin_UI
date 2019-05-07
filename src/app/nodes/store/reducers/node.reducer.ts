@@ -1,5 +1,5 @@
-import { Node, Error } from '../models/node.model'
-import { NodeLink } from '../models/node-link.model'
+import { Node, Error } from '../models/node.model';
+import { NodeLink } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 
 export interface State {
@@ -52,7 +52,7 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
           loading: true
         };
       }
-  
+
       case NodeActionTypes.LoadNodeLinksSuccess: {
         return {
           ...state,
@@ -60,7 +60,7 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
           links: action.payload
         };
       }
-  
+
       case NodeActionTypes.LoadNodeLinksFailure: {
         return {
           ...state,

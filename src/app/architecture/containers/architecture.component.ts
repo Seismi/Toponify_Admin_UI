@@ -4,7 +4,7 @@ import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions'
 import { OnInit, Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Node } from './../../nodes/store/models/node.model'
+import { Node } from './../../nodes/store/models/node.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 
 @Component({

@@ -1,6 +1,12 @@
 export interface NodeLinksApiResponse {
     data?: (NodeLink)[] | null;
   }
+
+  export enum linkCategories {
+    data = 'data',
+    masterData = 'master data'
+  }
+
   export interface NodeLink {
     id: string;
     layer: string;
@@ -41,7 +47,7 @@ export interface NodeLinksApiResponse {
   }
 
 
-  // Detail 
+  // Detail
   // TODO: Extend this from NodeLink
   export interface NodeLinkDetailApiResponse {
     data: NodeLinkDetail;
@@ -161,5 +167,4 @@ export interface NodeLinksApiResponse {
     conditionTypeId: string;
     value: string;
   }
-  
-  
+
