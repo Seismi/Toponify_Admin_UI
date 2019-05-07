@@ -1,4 +1,4 @@
-<div class="table-container">
+<div class="wrapper">
     <!-- Title -->
     <h1 class="title">Scopes</h1>
     <div class="mat-elevation-z8">
@@ -20,7 +20,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{'highlight': selectedRowIndex == row.name}" (click)="onSelectRow(row)"></tr>
         </table>
 
-        <mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
+        <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
     </div><br>
     <button mat-raised-button color="primary">New</button>
 </div>

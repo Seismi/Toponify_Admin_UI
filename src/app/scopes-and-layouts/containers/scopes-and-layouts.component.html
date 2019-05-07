@@ -9,7 +9,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-4">
+        <div class="col" [ngClass]="{'active': scopeSelected}">
             <!-- Scopes Table -->
             <smi-scopes-table
                 (scopeSelected)="onScopeSelect($event)">
