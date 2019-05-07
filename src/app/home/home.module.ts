@@ -23,7 +23,7 @@ import { NodeModule } from '@app/nodes/nodes.moudle';
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
     NodeModule,
     HomeRoutingModule
   ],
