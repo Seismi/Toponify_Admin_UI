@@ -16,10 +16,6 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
-        path: 'workpackages',
-        loadChildren: './workpackage/workpackage.module#WorkPackageModule'
-      },
-      {
         path: 'home',
         loadChildren: './home/home.module#HomeModule'
       },
