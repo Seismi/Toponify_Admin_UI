@@ -1,10 +1,8 @@
 <app-base-header>
-  <app-toolbar-column>
-    <app-toolbar-splitter> </app-toolbar-splitter>
-    <span>Version Manager</span>
-    <app-toolbar-splitter> </app-toolbar-splitter>
+  <app-toolbar-column [fillFreeSpace]="true">
+    <app-search (search)="onSearchVersion($event)"></app-search>
   </app-toolbar-column>
-  <app-toolbar-column [fillFreeSpace]="true"
-    ><app-search (search)="onSearchVersion($event)"></app-search><app-toolbar-splitter> </app-toolbar-splitter
-  ></app-toolbar-column>
+  <app-toolbar-column>
+    <smi-quicklinks-actions></smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>

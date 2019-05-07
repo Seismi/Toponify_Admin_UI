@@ -14,7 +14,8 @@ import {
   MatSliderModule,
   MatListModule,
   MatCardModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatSelectModule
 } from '@angular/material';
 import { ZoomActionsComponent } from './layout/header/zoom-actions/zoom-actions.component';
 import { LayoutActionsComponent } from './layout/header/layout-actions/layout-actions.component';
@@ -33,6 +34,8 @@ import { MdePopoverModule } from '@material-extended/mde';
 import { ZoomPopoverComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-popover.component';
 import { ZoomSliderComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider/zoom-slider.component';
 import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider-list/zoom-slider-list.component';
+import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
+import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
 
 @NgModule({
   imports: [
@@ -49,7 +52,8 @@ import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropd
     MatTooltipModule,
     CommonModule,
     FormsModule,
-    MdePopoverModule
+    MdePopoverModule,
+    MatSelectModule
   ],
   exports: [
     MainLayoutComponent,
@@ -62,7 +66,9 @@ import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropd
     ZoomActionsComponent,
     ModelContainerComponent,
     ModelSidebarComponent,
-    ModelContentComponent
+    ModelContentComponent,
+    QuicklinksActionsComponent,
+    BreadcrumbComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -81,7 +87,9 @@ import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropd
     DraggerComponent,
     ZoomPopoverComponent,
     ZoomSliderComponent,
-    ZoomSliderListComponent
+    ZoomSliderListComponent,
+    QuicklinksActionsComponent,
+    BreadcrumbComponent
   ],
   providers: []
 })
