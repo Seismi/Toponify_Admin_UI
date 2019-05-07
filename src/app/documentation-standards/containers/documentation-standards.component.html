@@ -1,0 +1,21 @@
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchVersion($event)"></app-search>
+    </app-toolbar-column>
+    <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+</app-base-header>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <smi-documentation-standards-table
+                (documentationSelected)="onSelectDocumentation($event)">
+            </smi-documentation-standards-table>
+        </div>
+        <div class="col" *ngIf="rowSelected">
+            <smi-documentation-standards-detail></smi-documentation-standards-detail>
+        </div>
+    </div>
+</div>

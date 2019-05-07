@@ -16,10 +16,6 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
-        path: 'workpackages',
-        loadChildren: './workpackage/workpackage.module#WorkPackageModule'
-      },
-      {
         path: 'home',
         loadChildren: './home/home.module#HomeModule'
       },
@@ -34,6 +30,10 @@ const routes: Routes = [
       {
         path: 'version',
         loadChildren: './version/version.module#VersionModule'
+      },
+      {
+        path: 'documentation-standards',
+        loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
       },
       {
         path: 'work-packages',
