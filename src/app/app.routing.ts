@@ -17,15 +17,23 @@ const routes: Routes = [
       },
       {
         path: 'workpackages',
-        loadChildren: './workpackage/workpackage.module#WorkpackageModule'
+        loadChildren: './workpackage/workpackage.module#WorkPackageModule'
       },
       {
         path: 'home',
         loadChildren: './home/home.module#HomeModule'
       },
       {
+        path: 'architecture',
+        loadChildren: './architecture/architecture.module#ArchitectureModule'
+      },
+      {
         path: 'version',
         loadChildren: './version/version.module#VersionModule'
+      },
+      {
+        path: 'work-packages',
+        loadChildren: './workpackage/workpackage.module#WorkPackageModule'
       },
       {
         path: 'user',
@@ -54,7 +62,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       useHash: true,
       paramsInheritanceStrategy: 'always',
-      enableTracing: false
+      enableTracing: true
       /*preloadingStrategy: PreloadAllModules*/
     })
   ],

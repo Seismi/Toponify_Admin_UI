@@ -1,42 +1,55 @@
-import { WorkpackageComponent } from './containers/workpackage.component';
-import { NgModule } from '@angular/core';
+import { ChangeTableComponent } from './components/change-table/change-table.component';
 import { CommonModule } from '@angular/common';
-import { WorkpackageRoutingComponent } from './containers/workpackage-routing.component';
-import { WorkpackageRoutingModule } from './workpackage-routing.module';
 import { CoreModule } from '@app/core/core.module';
-import { WorkpackagesTableComponent } from './components/workpackages-table/workpackages-table.component';
-import { WorkpackageDetailComponent } from './components/workpackage-detail/workpackage-detail.component';
+import { EffectsModule } from '@ngrx/effects';
+import { FormsModule } from '@angular/forms';
+import {
+  MatButtonModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatTableModule
+  } from '@angular/material';
+import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
-import { ChangeTableComponent } from './components/change-table/change-table.component';
-import { 
-  MatTableModule,
-  MatPaginatorModule,
-  MatButtonModule,
-  MatSortModule
-} from '@angular/material';
+import { reducers } from './store/reducers';
+import { StoreModule } from '@ngrx/store';
+import { WorkPackageEffects } from './store/effects/workpackage.effects';
+import { WorkPackageRoutingModule } from './workpackage.routing.module';
+import { WorkPackageService } from './services/workpackage.service';
+import { WorkPackageRoutingComponent } from './containers/workpackage-routing.component';
+import { WorkPackageComponent } from './containers/workpackage/workpackage.component';
+import { WorkPackagesTableComponent } from './components/workpackages-table/workpackages-table.component';
+import { WorkPackageDetailComponent } from './components/workpackage-detail/workpackage-detail.component';
+
 
 
 @NgModule({
   imports: [
-    CoreModule,
-    CommonModule,
-    WorkpackageRoutingModule,
+    WorkPackageRoutingModule,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
-    MatSortModule
+    MatSortModule,
+    FormsModule,
+    CommonModule,
+    CoreModule,
+    StoreModule.forFeature('workpackageFeature', reducers),
+    EffectsModule.forFeature([ WorkPackageEffects]
+    )
   ],
   exports: [],
   declarations: [
-    WorkpackageComponent, 
-    WorkpackageRoutingComponent,
-    WorkpackagesTableComponent,
-    WorkpackageDetailComponent,
+    WorkPackageComponent, 
+    WorkPackageRoutingComponent,
+    WorkPackagesTableComponent,
+    WorkPackageDetailComponent,
     ObjectivesTableComponent,
     RadioTableComponent,
     ChangeTableComponent
   ],
-  providers: [],
+  providers: [
+    WorkPackageService
+  ],
 })
-export class WorkpackageModule { }
+export class WorkPackageModule { }

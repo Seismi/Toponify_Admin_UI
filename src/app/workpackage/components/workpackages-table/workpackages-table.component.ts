@@ -17,7 +17,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './workpackages-table.component.html',
   styleUrls: ['./workpackages-table.component.scss']
 })
-export class WorkpackagesTableComponent implements OnInit {
+export class WorkPackagesTableComponent implements OnInit {
 
   selectedRowIndex: number = -1;
 
