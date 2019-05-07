@@ -20,12 +20,32 @@ const routes: Routes = [
         loadChildren: './home/home.module#HomeModule'
       },
       {
+        path: 'report-library',
+        loadChildren: './report-library/report-library.module#ReportLibraryModule'
+      },
+      {
+        path: 'architecture',
+        loadChildren: './architecture/architecture.module#ArchitectureModule'
+      },
+      {
         path: 'version',
         loadChildren: './version/version.module#VersionModule'
       },
       {
+        path: 'documentation-standards',
+        loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
+      },
+      {
+        path: 'work-packages',
+        loadChildren: './workpackage/workpackage.module#WorkPackageModule'
+      },
+      {
         path: 'user',
         loadChildren: './user/user.module#UserModule'
+      },
+      {
+        path: 'scopes-and-layouts',
+        loadChildren: './scopes-and-layouts/scopes-and-layouts.module#ScopesAndLayoutsModule'
       },
       {
         path: 'settings',
@@ -50,7 +70,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       useHash: true,
       paramsInheritanceStrategy: 'always',
-      enableTracing: false
+      enableTracing: true
       /*preloadingStrategy: PreloadAllModules*/
     })
   ],

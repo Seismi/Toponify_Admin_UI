@@ -1,0 +1,22 @@
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchVersion($event)"></app-search>
+    </app-toolbar-column>
+    <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+</app-base-header>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <smi-report-library-table
+                (reportSelected)="onSelectReport($event)">
+            </smi-report-library-table>
+        </div>
+        <div class="col" *ngIf="reportSelected">
+            <smi-report-library-detail></smi-report-library-detail>
+            <smi-attr-and-rules-table></smi-attr-and-rules-table>
+        </div>
+    </div>
+</div>

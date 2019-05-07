@@ -12,6 +12,8 @@ import {
   MatIconModule,
   MatMenuModule 
 } from '@angular/material';
+import { NodeModule } from '@app/nodes/nodes.moudle';
+
 
 
 @NgModule({
@@ -22,6 +24,8 @@ import {
     MatPaginatorModule,
     MatIconModule,
     MatMenuModule
+    NodeModule,
+    HomeRoutingModule
   ],
   exports: [],
   declarations: [
