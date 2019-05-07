@@ -28,7 +28,7 @@ const routes: Routes = [
         loadChildren: './version/version.module#VersionModule'
       },
       {
-        path: 'workpackage',
+        path: 'work-packages',
         loadChildren: './workpackage/workpackage.module#WorkPackageModule'
       },
       {
