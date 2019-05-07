@@ -24,6 +24,10 @@ const routes: Routes = [
         loadChildren: './home/home.module#HomeModule'
       },
       {
+        path: 'report-library',
+        loadChildren: './report-library/report-library.module#ReportLibraryModule'
+      },
+      {
         path: 'architecture',
         loadChildren: './architecture/architecture.module#ArchitectureModule'
       },
