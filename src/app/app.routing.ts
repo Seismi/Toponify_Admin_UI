@@ -32,6 +32,10 @@ const routes: Routes = [
         loadChildren: './version/version.module#VersionModule'
       },
       {
+        path: 'documentation-standards',
+        loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
+      },
+      {
         path: 'work-packages',
         loadChildren: './workpackage/workpackage.module#WorkPackageModule'
       },
