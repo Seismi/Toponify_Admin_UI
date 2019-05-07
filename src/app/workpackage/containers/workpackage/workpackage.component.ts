@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { LoadWorkPackages, LoadWorkPackage } from '@app/workpackage/store/actions/workpackage.actions';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackage, LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'app-workpackage',
   templateUrl: './workpackage.component.html',
-  styleUrls: ['./workpackage.component.css']
+  styleUrls: ['./workpackage.component.scss']
 })
 export class WorkPackageComponent implements OnInit {
 
-  workpackageEntities$: Observable<WorkPackageEntity[]>;
+  public workpackageEntities$: Observable<WorkPackageEntity[]>;
+  public workpackageSelected: boolean;
 
   constructor(private store: Store<any>) {
     this.store.dispatch(new LoadWorkPackages({}));
@@ -20,6 +20,10 @@ export class WorkPackageComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  onSelectWorkpackage(row) {
+    this.workpackageSelected = true;
   }
 
 }
