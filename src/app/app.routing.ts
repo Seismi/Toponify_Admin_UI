@@ -28,6 +28,10 @@ const routes: Routes = [
         loadChildren: './version/version.module#VersionModule'
       },
       {
+        path: 'work-packages',
+        loadChildren: './workpackage/workpackage.module#WorkPackageModule'
+      },
+      {
         path: 'user',
         loadChildren: './user/user.module#UserModule'
       },
