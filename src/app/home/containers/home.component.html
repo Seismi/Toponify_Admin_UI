@@ -1,8 +1,13 @@
 <app-base-header>
   <app-toolbar-column [fillFreeSpace]="true">
-    <app-search (search)="onSearchVersion($event)"></app-search>
+    <app-search (search)="onSearchVersion($event)"></app-search><app-toolbar-splitter> </app-toolbar-splitter>
   </app-toolbar-column>
   <app-toolbar-column>
     <smi-quicklinks-actions></smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
+
+<smi-my-radio-table></smi-my-radio-table>
+<smi-my-layouts-table></smi-my-layouts-table>
+<smi-my-workpackages-table></smi-my-workpackages-table>
+

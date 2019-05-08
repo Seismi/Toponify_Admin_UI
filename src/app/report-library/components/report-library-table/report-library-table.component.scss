@@ -1,0 +1,25 @@
+table {
+    width: 100%;
+}
+
+.title {
+    font-size: 25px;
+}
+
+tr.mat-header-row {
+    height: 35px;
+}
+
+tr.mat-column-name {
+    width: 95%;
+}
+
+tr.mat-row {
+    height: 45px;
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: #efefef;
+}
+  
