@@ -11,6 +11,7 @@ import { Node, nodeCategories, layers } from '@app/nodes/store/models/node.model
 import { NodeLink, linkCategories } from '@app/nodes/store/models/node-link.model';
 import { FilterService } from '@app/architecture/services/filter.service';
 import {NodesState} from '@app/nodes/store/reducers/';
+import {ArchitectureState} from '@app/architecture/store/reducers';
 
 const $ = go.GraphObject.make;
 
@@ -138,7 +139,7 @@ export class DiagramService implements OnDestroy {
   filterServiceSubscription: Subscription;
 
   constructor(
-    private store: Store<NodesState>,
+    private store: Store<ArchitectureState>,
     public filterService: FilterService,
     public location: Location
   ) {
@@ -222,6 +223,7 @@ export class DiagramService implements OnDestroy {
         new Node({
           id: 'New Analytical System',
           name: 'New Analytical System',
+          layer: layers.system,
           category: nodeCategories.analytical
         }),
         new Node({

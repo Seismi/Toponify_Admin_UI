@@ -13,7 +13,6 @@ import {
 import { DiagramService, Level, standardDisplayOptions } from '@app/architecture/services/diagram.service';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
-import { NodeType, LinkType } from '@app/nodes/services/node.service';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -172,7 +171,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     );
 
     this.diagram.linkTemplateMap.add(
-      'masterdata',
+      'master data',
       diagramService.getLinkMasterDataTemplate()
     );
 
@@ -223,23 +222,26 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       if (deletedPart instanceof go.Node) {
 
+        /*
         // FIXME: Temporary solution. Find out more stable more stable way to calculate node type
         const nodeTypes = {
           [1]: NodeType.System,
           [2]: NodeType.Model,
           [3]: NodeType.Dimension,
           [4]: NodeType.Element
-        };
+        };*/
 
-        this.nodeDeleteRequested.emit({node: deletedPart.data, type: nodeTypes[this.viewLevel]});
+        this.nodeDeleteRequested.emit({node: deletedPart.data, /*type: nodeTypes[this.viewLevel]*/});
       } else { // part to be deleted is a link
+
+        /*
         // FIXME: Temporary solution. Find out more stable more stable way to calculate node type
         const linkTypes = {
           [1]: LinkType.System,
           [2]: LinkType.Model
-        };
+        };*/
 
-        this.linkDeleteRequested.emit({link: deletedPart.data, type: linkTypes[this.viewLevel]});
+        this.linkDeleteRequested.emit({link: deletedPart.data /*, type: linkTypes[this.viewLevel]*/});
       }
 
     }.bind(this);

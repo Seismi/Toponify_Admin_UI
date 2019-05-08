@@ -43,6 +43,8 @@ import {ColorPickerModule} from 'ngx-color-picker';
 import {DiagramService} from '@app/architecture/services/diagram.service';
 import {FilterService} from '@app/architecture/services/filter.service';
 import {NodeService} from '@app/nodes/services/node.service';
+import {StoreModule} from '@ngrx/store';
+import {reducers} from '@app/architecture/store/reducers';
 
 
 @NgModule({
@@ -70,6 +72,7 @@ import {NodeService} from '@app/nodes/services/node.service';
     MatSortModule,
     MatListModule,
     ColorPickerModule,
+    StoreModule.forFeature('architectureFeature', reducers)
   ],
     exports: [],
     declarations: [

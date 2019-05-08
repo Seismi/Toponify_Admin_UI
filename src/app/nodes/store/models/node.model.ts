@@ -23,7 +23,7 @@ export enum nodeCategories {
   rollup = 'rollup'
 }
 
-export interface Node {
+export class Node {
   id: string;
   layer: string;
   name: string;
@@ -32,6 +32,15 @@ export interface Node {
   tags: string;
   locations?: ((LocationsEntity)[] | null)[] | null;
   owners?: (OwnersEntity)[] | null;
+
+  constructor(options: { id: string, name: string, layer: layers, category: nodeCategories }) {
+    if (options) {
+      this.id = options.id;
+      this.name = options.name;
+      this.layer = options.layer;
+      this.category = options.category;
+    }
+  }
 }
 export interface LocationsEntity {
   layout: Layout;
