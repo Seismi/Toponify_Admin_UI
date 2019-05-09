@@ -1,0 +1,65 @@
+<form [formGroup]="group">
+    <!-- Name -->
+    <div class="form-group row">
+        <label class="col-4 col-form-label">Name</label>
+        <div class="col-8">
+            <input class="form-control" type="text" formControlName="name"
+                [ngClass]="{ 'is-invalid': (!group.controls['name'].valid && group.controls['name'].touched) }">
+            <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
+                <div>Name is required!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group row">
+        <label class="col-4 col-form-label">Description</label>
+        <div class="col-8">
+            <textarea rows="3" class="form-control" type="text" formControlName="description"></textarea>
+        </div>
+    </div>
+
+    <!-- Owners -->
+    <div formArrayName="owners" *ngFor="let owner of group.get('owners').controls; let i=index">
+        <div [formGroupName]="i">
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Owners</label>
+                <div class="col-8">
+                    <input class="form-control" type="text" formControlName="name">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approvers -->
+    <div formArrayName="approvers" *ngFor="let approver of group.get('approvers').controls; let i=index">
+        <div [formGroupName]="i">
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Approvers</label>
+                <div class="col-8">
+                    <input class="form-control" type="text" formControlName="name">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Baseline -->
+    <div class="form-group row">
+        <label class="col-4 col-form-label">Baseline</label>
+        <div class="col-8">
+            <button mat-raised-button color="primary">Add Baseline</button>
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div class="form-group row">
+        <label class="col-4 col-form-label">Status</label>
+        <div class="col-8">
+            <select class="form-control" formControlName="status">
+                <option [value]="workpackageStatus" *ngFor="let workpackageStatus of workpackageStatus">
+                    {{ workpackageStatus }}
+                </option>
+            </select>
+        </div>
+    </div>
+</form>
