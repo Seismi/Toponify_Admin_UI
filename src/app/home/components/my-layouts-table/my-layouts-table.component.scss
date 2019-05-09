@@ -1,0 +1,42 @@
+.title {
+    font-size: 25px;
+    text-align: center;
+}
+
+.wrapper {
+    width: 60%;
+    margin: auto;
+    margin-top: 50px;
+}
+
+table {
+    width: 100%;
+}
+
+tr.mat-header-row {
+    height: 35px;
+}
+
+button:focus {
+    outline: none;
+}
+
+.mat-icon {
+    cursor: pointer;
+}
+
+th.mat-column-scope {
+    width: 25%;
+}
+
+th.mat-column-layout {
+    width: 50%;
+}
+
+th.mat-column-access {
+    width: 20%;
+}
+
+th.mat-column-star {
+    width: 5%;
+}

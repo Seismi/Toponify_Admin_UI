@@ -32,6 +32,10 @@ const routes: Routes = [
         loadChildren: './version/version.module#VersionModule'
       },
       {
+        path: 'documentation-standards',
+        loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
+      },
+      {
         path: 'work-packages',
         loadChildren: './workpackage/workpackage.module#WorkPackageModule'
       },
@@ -40,8 +44,16 @@ const routes: Routes = [
         loadChildren: './user/user.module#UserModule'
       },
       {
+        path: 'scopes-and-layouts',
+        loadChildren: './scopes-and-layouts/scopes-and-layouts.module#ScopesAndLayoutsModule'
+      },
+      {
         path: 'settings',
         loadChildren: './settings/settings.module#SettingsModule'
+      },
+      {
+        path: 'radio',
+        loadChildren: './radio/radio.module#RadioModule'
       },
     ]
   },

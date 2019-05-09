@@ -69,18 +69,24 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
         };
       }
 
+    case NodeActionTypes.LoadNodeLinksSuccess: {
+      return {
+        ...state,
+        loading: false,
+        links: action.payload
+      };
+    }
 
+    case NodeActionTypes.LoadNodeLinksFailure: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      };
+    }
 
     default: {
       return state;
     }
   }
 }
-
-export const getNodes = (state: State) => state.entities;
-export const getSelectedNode = (state: State) => state.selectedNode;
-export const getNodeLinks = (state: State) => state.links;
-export const getSelectedNodeLink = (state: State) => state.selectedNodeLink;
-export const getLoading = (state: State) => state.loading;
-export const getError = (state: State) => state.error;
-
