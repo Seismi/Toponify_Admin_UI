@@ -1,5 +1,3 @@
-
-import * as fromNode from '../../nodes/store/reducers';
 import * as fromArchitecture from '../store/reducers';
 import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions';
 import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
@@ -18,9 +16,12 @@ import {FormGroup} from '@angular/forms';
 import {NodeType, LinkType} from '@app/nodes/services/node.service';
 import {DeleteNodeModalComponent} from '../containers/delete-node-modal/delete-node-modal.component';
 // import {DeleteNodeSuccess} from '@app/nodes/store/actions/node.actions';
-import {DeleteLinkModalComponent} from '../containers/delete-link-modal/delete-link-modal.component';
+import {DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
 // import {DeleteLinkSuccess} from '@app/nodes/store/actions/node.actions';
 import {DeleteModalComponent} from '../containers/delete-modal/delete-modal.component';
+import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
+import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.selector';
+import { getViewLevel } from '../store/selectors/view.selector';
 
 @Component({
   selector: 'smi-architecture',
@@ -56,7 +57,7 @@ export class ArchitectureComponent implements OnInit {
   private diagramComponent: ArchitectureDiagramComponent;
 
   constructor(
-    private nodeStore: Store<fromNode.NodesState>,
+    private nodeStore: Store<NodeState>,
     private store: Store<fromArchitecture.State>,
     private route:  ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
@@ -67,10 +68,11 @@ export class ArchitectureComponent implements OnInit {
       this.nodeStore.dispatch((new LoadNodes()));
       this.nodeStore.dispatch((new LoadNodeLinks()));
 
-      this.nodes$ = this.nodeStore.pipe(select(fromNode.getNodes));
-      this.nodeLinks$ = this.nodeStore.pipe(select(fromNode.getNodeLinks));
+      this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+      this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
 
-      this.viewLevel$ = this.store.pipe(select(fromArchitecture.getViewLevel));
+      
+      this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
 
       /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
@@ -100,20 +102,20 @@ export class ArchitectureComponent implements OnInit {
 
     switch (level) {
       case 1:
-        this.nodes$ = this.nodeStore.pipe(select(fromNode.getNodes));
-        this.nodeLinks$ = this.nodeStore.pipe(select(fromNode.getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
         break;
       case 2:
-        this.nodes$ = this.nodeStore.pipe(select(fromNode.getNodes));
-        this.nodeLinks$ = this.nodeStore.pipe(select(fromNode.getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
         break;
       case 3:
-        this.nodes$ = this.nodeStore.pipe(select(fromNode.getNodes));
-        this.nodeLinks$ = this.nodeStore.pipe(select(fromNode.getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
         break;
       case 4:
-        this.nodes$ = this.nodeStore.pipe(select(fromNode.getNodes));
-        this.nodeLinks$ = this.nodeStore.pipe(select(fromNode.getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
         break;
       case 5:
         // this.nodes$ = this.store.pipe(select(???));
@@ -123,8 +125,8 @@ export class ArchitectureComponent implements OnInit {
         this.nodeLinks$ = this.store.pipe(select(???));*/
         break;
       default:
-        this.nodes$ = this.nodeStore.pipe(select(fromNode.getNodes));
-        this.nodeLinks$ = this.nodeStore.pipe(select(fromNode.getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
     }
   }
 
