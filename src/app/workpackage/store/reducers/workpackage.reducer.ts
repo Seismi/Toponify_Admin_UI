@@ -7,7 +7,7 @@ export interface State {
   page: Page;
   links: Links;
   loading: boolean;
-  selectedWorkPackage: WorkPackageDetail
+  selectedWorkPackage: WorkPackageDetail;
   error?: HttpErrorResponse | { message: string };
 }
 
