@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, mergeMap } from 'rxjs/operators';
 import {
   LoadWorkPackages,
   LoadWorkPackagesFailure,
@@ -12,8 +12,7 @@ import {
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure, LoadWorkPackage, LoadWorkPackageSuccess } from '../actions/workpackage.actions';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetailApiResponse } from '../models/workpackage.models';
-
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse } from '../models/workpackage.models';
 
 @Injectable()
 export class WorkPackageEffects {
@@ -50,13 +49,14 @@ export class WorkPackageEffects {
   addWorkPackageEntity$ = this.actions$.pipe(
     ofType<AddWorkPackageEntity>(WorkPackageActionTypes.AddWorkPackage),
     map(action => action.payload),
-    switchMap((payload: any) => {
+    mergeMap((payload: WorkPackageApiRequest) => {
       return this.workpackageService.addWorkPackageEntity(payload).pipe(
-        switchMap((data: any) => [new AddWorkPackageEntitySuccess(data)]),
+        mergeMap((workpackage: WorkPackageApiResponse) => [new AddWorkPackageEntitySuccess(workpackage.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageEntityFailure(error)))
       );
     })
   );
+
 
   @Effect()
   updateWorkPackageEntity$ = this.actions$.pipe(
@@ -74,9 +74,9 @@ export class WorkPackageEffects {
   deleteWorkPackageEntity$ = this.actions$.pipe(
     ofType<DeleteWorkPackageEntity>(WorkPackageActionTypes.DeleteWorkPackage),
     map(action => action.payload),
-    switchMap((payload: any) => {
-      return this.workpackageService.deleteWorkPackageEntity(payload).pipe(
-        switchMap((data: any) => [new DeleteWorkPackageEntitySuccess(data)]),
+    switchMap((entityId: string) => {
+      return this.workpackageService.deleteWorkPackageEntity(entityId).pipe(
+        switchMap((_) => [new DeleteWorkPackageEntitySuccess(entityId)]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageEntityFailure(error)))
       );
     })
