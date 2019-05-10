@@ -1,16 +1,7 @@
-import { Component, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
-export interface PeriodicElement {
-  name: string;
-  status: string;
-  owners: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {name: 'Deploy new intergration to Group Consolidation', status: 'Draft', owners: 'FSS'},
-  {name: 'Automate Publication to Enterprise Data', status: 'Approved', owners: 'Reporting'},
-];
 
 @Component({
   selector: 'smi-workpackages-table',
@@ -19,25 +10,36 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class WorkPackagesTableComponent implements OnInit {
 
-  selectedRowIndex: number = -1;
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  ngOnInit() {
+  @Input()
+  set data(data: WorkPackageEntity[]) {
+    this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  displayedColumns: string[] = ['name', 'status', 'owners'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
+  ngOnInit() {}
+
+  public dataSource: MatTableDataSource<WorkPackageEntity>;
+  public displayedColumns: string[] = ['name', 'status', 'owners'];
+
+  selectedRowIndex: number = -1;
 
   @Output()
   workpackageSelected = new EventEmitter();
 
+  @Output()
+  addWorkpackage = new EventEmitter();
+
   onSelectRow(row) {
+    this.selectedRowIndex = row.id;
     this.workpackageSelected.emit(row);
-    this.selectedRowIndex = row.name;
+  }
+
+  onAdd() {
+    this.addWorkpackage.emit();
   }
 
 }
