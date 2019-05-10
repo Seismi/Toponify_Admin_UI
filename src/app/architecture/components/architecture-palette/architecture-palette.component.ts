@@ -74,13 +74,8 @@ export class ArchitecturePaletteComponent implements OnInit {
     );
 
     this.palette.nodeTemplateMap.add(
-      'mdelement',
+      'reporting concept',
       diagramService.getElementNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      'mdrule',
-      diagramService.getRuleNodeTemplate()
     );
 
     // Set links templates
@@ -90,7 +85,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     );
 
     this.palette.linkTemplateMap.add(
-      'masterdata',
+      'master data',
       diagramService.getLinkMasterDataTemplate(true)
     );
   }

@@ -895,7 +895,7 @@ export class DiagramService implements OnDestroy {
         doubleClick: this.changeLevelWithFilter.bind(this)
       },
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      // new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
         go.Shape,
         new go.Binding('figure', 'category', function(category) {
@@ -1011,8 +1011,8 @@ export class DiagramService implements OnDestroy {
               margin: new go.Margin(5, 0, 0, 0)
             },
             // Hide models header if system has no models
-            new go.Binding('visible', 'models',
-              function(models) {return models.length > 0; }
+            new go.Binding('visible', 'descendants',
+              function(descendants) {return descendants.length > 0; }
             )
           ),
           // Model list
@@ -1025,7 +1025,7 @@ export class DiagramService implements OnDestroy {
               stretch: go.GraphObject.Horizontal,
               itemTemplate: this.getItemTemplate()
             },
-            new go.Binding('itemArray', 'models')
+            new go.Binding('itemArray', 'descendants')
           ),
           new go.Binding('visible', 'nextLevel').ofModel()
         )
@@ -1053,7 +1053,7 @@ export class DiagramService implements OnDestroy {
         doubleClick: this.changeLevelWithFilter.bind(this)
       },
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      // new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape, 'Rectangle', {
         fill: 'white',
@@ -1162,8 +1162,8 @@ export class DiagramService implements OnDestroy {
               margin: new go.Margin(5, 0, 0, 0)
             },
             // Hide dimensions header if model has no dimensions
-            new go.Binding('visible', 'dimensions',
-              function(dimensions) {return dimensions.length > 0; }
+            new go.Binding('visible', 'descendants',
+              function(descendants) {return descendants.length > 0; }
             )
           ),
           // Dimension list
@@ -1176,7 +1176,7 @@ export class DiagramService implements OnDestroy {
               stretch: go.GraphObject.Horizontal,
               itemTemplate: this.getItemTemplate()
             },
-            new go.Binding('itemArray', 'dimensions')
+            new go.Binding('itemArray', 'descendants')
           ),
           new go.Binding('visible', 'nextLevel').ofModel()
         )
@@ -1202,7 +1202,7 @@ export class DiagramService implements OnDestroy {
         doubleClick: this.changeLevelWithFilter.bind(this)
       },
       // Have the diagram position the node if no location set
-      this.mapView ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
+      // this.mapView ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape,
         'RoundedRectangle',
@@ -1316,8 +1316,8 @@ export class DiagramService implements OnDestroy {
               margin: new go.Margin(5, 0, 0, 0)
             },
             // Hide elements header if dimension has no elements
-            new go.Binding('visible', 'elements',
-              function(elements) {return elements.length > 0; }
+            new go.Binding('visible', 'descendants',
+              function(descendants) {return descendants.length > 0; }
             )
           ),
           // Element list
@@ -1330,7 +1330,7 @@ export class DiagramService implements OnDestroy {
               stretch: go.GraphObject.Horizontal,
               itemTemplate: this.getItemTemplate()
             },
-            new go.Binding('itemArray', 'elements')
+            new go.Binding('itemArray', 'descendants')
           ),
           new go.Binding('visible', 'nextLevel').ofModel()
         )
@@ -1355,7 +1355,7 @@ export class DiagramService implements OnDestroy {
           locationSpot: go.Spot.Top
         },
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      // new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape,
         new go.Binding('figure', 'subCategory', function(subcategory) {
@@ -1494,7 +1494,7 @@ export class DiagramService implements OnDestroy {
           locationSpot: go.Spot.Top
         },
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      // new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(go.Panel,
         'Vertical',
         // Make the shape the port for links to connect to
@@ -1664,11 +1664,11 @@ export class DiagramService implements OnDestroy {
       }),
       new go.Binding('visible', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing',
+      /* new go.Binding('isLayoutPositioned', 'routeMissing',
         function(routeMissing) {
           return routeMissing || !this.standardDisplay;
         }.bind(this)
-      ),
+      ),*/
       {
         selectionAdorned: true,
         reshapable: true,
@@ -1679,7 +1679,9 @@ export class DiagramService implements OnDestroy {
         relinkableTo: true,
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
-        doubleClick: this.displayMapView.bind(this)
+        doubleClick: this.displayMapView.bind(this),
+        // TEMP
+        isLayoutPositioned: true
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly
@@ -1753,11 +1755,11 @@ export class DiagramService implements OnDestroy {
       }),
       new go.Binding('visible', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing',
+      /*new go.Binding('isLayoutPositioned', 'routeMissing',
         function(routeMissing) {
           return routeMissing || !this.standardDisplay;
         }.bind(this)
-      ),
+      ),*/
       {
         selectionAdorned: true,
         reshapable: true,
@@ -1770,7 +1772,7 @@ export class DiagramService implements OnDestroy {
         fromEndSegmentLength: 20,
         toEndSegmentLength: 20,
         // Position by layout in palette
-        isLayoutPositioned: forPalette
+        isLayoutPositioned: true // forPalette
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly

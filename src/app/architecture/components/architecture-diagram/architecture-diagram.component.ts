@@ -155,13 +155,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     );
 
     this.diagram.nodeTemplateMap.add(
-      'mdelement',
+      'reporting concept',
       diagramService.getElementNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      'mdrule',
-      diagramService.getRuleNodeTemplate()
     );
 
     // Set links templates
@@ -182,6 +177,13 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       this.handleChangedSelection.bind(this)
     );
 
+    // Temporary
+    this.diagram.addDiagramListener(
+      'BackgroundDoubleClicked',
+      function() {
+        console.log();
+      }.bind(this)
+    );
 
     this.diagram.addDiagramListener(
       'ExternalObjectsDropped',
@@ -307,6 +309,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         this.diagram.nodeTemplateMap.add('master data', template);
       }.bind(this)
     );
+
+    this.setLevel();
   }
 
   // Updates the properties associated with a node or link

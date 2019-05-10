@@ -71,7 +71,7 @@ export class ArchitectureComponent implements OnInit {
       this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
       this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
 
-      
+
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
 
