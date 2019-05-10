@@ -5,6 +5,10 @@ export interface WorkPackageEntitiesResponse {
   page: Page;
 }
 
+export interface WorkPackageApiResponse {
+  data?: WorkPackageEntity;
+}
+
 export interface Links {
   first: string;
   previous: string;
