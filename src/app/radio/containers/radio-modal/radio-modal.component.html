@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Add RADIO</h1>
+  <smi-radio-detail 
+    [addComment]="addComment"
+    [group]="radioDetailsForm"
+    [isEditable]="isEditable">
+  </smi-radio-detail>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()">Save</button>
+  <button mat-button (click)="onCancelClick()">Cancel</button>
+</div>

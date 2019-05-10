@@ -1,0 +1,8 @@
+<div mat-dialog-content>
+  <span>Please write in the description below why you whould like to change that comment?</span><br><br>
+  <smi-reply-text [group]="radioDetailsForm"></smi-reply-text>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()">Save</button>
+  <button mat-button (click)="onCancelClick()">Cancel</button>
+</div>
