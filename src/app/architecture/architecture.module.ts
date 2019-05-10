@@ -1,6 +1,4 @@
-
 import { CoreModule } from '@app/core/core.module';
-import { NodeModule } from '@app/nodes/nodes.moudle';
 import { NgModule } from '@angular/core';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
 import { ArchitectureRoutingComponent } from './containers/architecture-routing.component';
@@ -45,6 +43,7 @@ import {FilterService} from '@app/architecture/services/filter.service';
 import {NodeService} from '@app/nodes/services/node.service';
 import {StoreModule} from '@ngrx/store';
 import {reducers} from '@app/architecture/store/reducers';
+import { NodeModule } from '@app/nodes/node.module';
 
 
 @NgModule({

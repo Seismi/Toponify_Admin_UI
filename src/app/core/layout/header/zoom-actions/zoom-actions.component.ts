@@ -5,6 +5,7 @@ import { FilterService } from '@app/version/services/filter.service';
 import { Level } from '@app/version/services/diagram.service';
 import { SetZoomLevel, SetViewLevel } from '@app/version/store/actions/view.actions';
 import * as fromVersion from '../../../../version/store/reducers';
+import { getViewLevel, getZoomLevel } from '@app/architecture/store/selectors/view.selector';
 
 export const viewLevelMapping = {
   [1]: Level.system,
@@ -34,8 +35,8 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   constructor(private store: Store<fromVersion.State>, public filterService: FilterService) {}
 
   ngOnInit() {
-    this.zoomLevel$ = this.store.pipe(select(fromVersion.getViewLevel));
-    this.viewLevel$ = this.store.pipe(select(fromVersion.getViewLevel));
+    this.zoomLevel$ = this.store.pipe(select(getZoomLevel));
+    this.viewLevel$ = this.store.pipe(select(getViewLevel));
     this.zoomLevelSubscription = this.zoomLevel$.subscribe(zoom => (this.zoomLevel = zoom));
     this.viewLevelSubscription = this.viewLevel$.subscribe(level => {});
   }

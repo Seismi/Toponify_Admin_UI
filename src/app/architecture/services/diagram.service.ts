@@ -10,7 +10,6 @@ import * as uuid from 'uuid/v4';
 import { Node, nodeCategories, layers } from '@app/nodes/store/models/node.model';
 import { NodeLink, linkCategories } from '@app/nodes/store/models/node-link.model';
 import { FilterService } from '@app/architecture/services/filter.service';
-import {NodesState} from '@app/nodes/store/reducers/';
 import {ArchitectureState} from '@app/architecture/store/reducers';
 
 const $ = go.GraphObject.make;

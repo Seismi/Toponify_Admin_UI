@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import {NodesState} from '@app/nodes/store/reducers';
+import { State as NodeState } from '../../../nodes/store/reducers/node.reducer';
 import { NodeType } from '@app/nodes/services/node.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialogRef: MatDialogRef<DeleteNodeModalComponent>,
-    private store: Store<NodesState>,
+    private store: Store<NodeState>,
     private actions: Actions,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {

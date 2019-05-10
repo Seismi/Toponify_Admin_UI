@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import * as fromNode from './../../nodes/store/reducers';
+import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 import * as NodeActions from './../../nodes/store/actions/node.actions';
 
 @Component({
@@ -11,7 +11,7 @@ import * as NodeActions from './../../nodes/store/actions/node.actions';
 
 export class HomeComponent implements OnInit {
   constructor(
-    private store: Store<fromNode.NodesState>
+    private store: Store<NodeState>
   ) { }
 
   ngOnInit() {

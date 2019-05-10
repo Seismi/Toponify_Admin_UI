@@ -5,8 +5,7 @@ import { LinkType } from '@app/nodes/services/node.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import {NodesState} from '@app/nodes/store/reducers';
-
+import { State as NodeState } from '../../../nodes/store/reducers/node.reducer';
 @Component({
   selector: 'smi-delete-link-modal',
   templateUrl: './delete-link-modal.component.html',
@@ -22,7 +21,7 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialogRef: MatDialogRef<DeleteLinkModalComponent>,
-    private store: Store<NodesState>,
+    private store: Store<NodeState>,
     private actions: Actions,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
