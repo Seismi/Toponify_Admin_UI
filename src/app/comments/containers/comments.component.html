@@ -7,28 +7,30 @@
     </app-toolbar-column>
 </app-base-header>
 
-<div class="row">
+<!-- <div class="row">
     <div class="col-8">
-        <smi-radio-table
-            [data]="radio$ | async"
+        <app-comments-table 
+            [data]="comments$ | async"
             (showSelectedRowDetails)="onSelectedRow($event)"
             (addComment)="onAddComment($event)">
-        </smi-radio-table>
+        </app-comments-table>
     </div>
-    <div class="col-4 mat-elevation-z8">
-        <smi-radio-detail
-            [group]="radioDetailsForm"
+    <div class="col-4">
+        <smi-comments-detail 
+            [group]="commentDetailsForm"
             [addComment]="addComment"
             [isEditable]="isEditable"
             [disableButton]="disableButton"
             (archiveComment)="onArchiveComment($event)"
             (saveComment)="onSaveComment()">
-        </smi-radio-detail>
-        <!-- [data]="selecetedComment?.replies"
-        [versionId]="versionId"
-        [commentId]="commentId" -->
+        </smi-comments-detail>
         <smi-chatbox
+            [data]="selecetedComment?.replies"
+            [versionId]="versionId"
+            [commentId]="commentId"
             [disableButton]="disableButton">
         </smi-chatbox>
     </div>
-</div>
+</div> -->
+
+

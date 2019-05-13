@@ -36,9 +36,9 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{'highlight': selectedRowIndex == row.id}" (click)="onSelectRow(row)"></tr>
     </table>
 
-    <div *ngIf="!dataSource.filteredData.length">
+    <!-- <div *ngIf="!dataSource.filteredData.length">
       <p class="noCommentsFound">No comments found</p>
-    </div>
+    </div> -->
 
     <div class="bottom-header">
       <button mat-raised-button class="add" color="primary" (click)="onAdd()">Add Comment</button>

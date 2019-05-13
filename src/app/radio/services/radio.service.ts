@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RadioApiResponse } from '../store/models/radio.model';
+import { RadioApiResponse, AddRadioApiRequest, AddRadioApiResponse, AddReplyRadioApiResponse, AddReplyRadioApiRequest, ArchiveRadioApiRequest, ArchiveRadioApiResponse } from '../store/models/radio.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })

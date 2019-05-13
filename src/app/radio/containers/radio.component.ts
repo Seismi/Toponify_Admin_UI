@@ -11,6 +11,7 @@ import * as fromRadio from '../store/reducers'
 import * as RadioActions from '../store/actions/radio.actions';
 import { Radio } from '../store/models/radio.model';
 
+
 @Component({
     selector: 'smi-radio',
     templateUrl: 'radio.component.html',
@@ -20,6 +21,7 @@ import { Radio } from '../store/models/radio.model';
 export class RadioComponent implements OnInit {
 
     radio$: Observable<Radio[]>;
+    loading$: Observable<boolean>;
 
     disableButton = true;
     isEditable = false;
@@ -32,6 +34,7 @@ export class RadioComponent implements OnInit {
     ngOnInit() { 
         this.store.dispatch(new RadioActions.LoadRadio());
         this.radio$ = this.store.pipe(select(fromRadio.getRadio));
+        this.loading$ = this.store.pipe(select(fromRadio.getLoading));
     }
 
     get radioDetailsForm(): FormGroup {

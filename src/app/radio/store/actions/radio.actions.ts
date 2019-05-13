@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Radio } from '../models/radio.model';
+import { Radio, AddRadioApiRequest, AddReplyRadioApiRequest, ArchiveRadioApiRequest, Replies } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export enum RadioActionTypes {
@@ -22,6 +22,7 @@ export enum RadioActionTypes {
 
 export class LoadRadio implements Action {
   readonly type = RadioActionTypes.LoadRadio;
+  constructor() {}
 }
 
 export class LoadRadioSuccess implements Action {
