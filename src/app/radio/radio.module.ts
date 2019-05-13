@@ -23,7 +23,7 @@ import { RadioService } from './services/radio.service';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { RadioEffects } from './store/effects/radio.effects';
-import { reducer } from './store/reducer/radio.reducer';
+import { reducer } from './store/reducers/radio.reducer';
 
 
 @NgModule({
