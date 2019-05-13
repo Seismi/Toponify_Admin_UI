@@ -6,7 +6,6 @@ import { CoreModule } from '@app/core/core.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './store/reducers/';
 import { CommonModule } from '@angular/common';
-import { CommentsModule } from '@app/comments/comments.module';
 import { EffectsModule } from '@ngrx/effects';
 import { VersionEffects } from './store/effects/version.effects';
 import {
@@ -82,7 +81,6 @@ import { LinkEffects } from './store/effects/link.effects';
     ReactiveFormsModule,
     CommonModule,
     CoreModule,
-    CommentsModule,
     VersionRoutingModule,
     MatCardModule,
     MatDividerModule,
