@@ -657,11 +657,11 @@ export class DiagramService implements OnDestroy {
     }
 
     // Only validate master data links
-    if (oldlink.category === 'masterdata') {
+    if (oldlink.category === 'master data') {
       // Prevent multiple master data links between the same pair of nodes
       const allLinks = fromnode.findLinksBetween(tonode);
       return !allLinks.any(function (link) {
-        return (link.data.category === 'masterdata'
+        return (link.data.category === 'master data'
           // Don't count current link when checking if master data links already exist
           && oldlink.data.id !== link.data.id);
       });
@@ -1664,11 +1664,11 @@ export class DiagramService implements OnDestroy {
       }),
       new go.Binding('visible', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      /* new go.Binding('isLayoutPositioned', 'routeMissing',
+      new go.Binding('isLayoutPositioned', 'routeMissing',
         function(routeMissing) {
           return routeMissing || !this.standardDisplay;
         }.bind(this)
-      ),*/
+      ),
       {
         selectionAdorned: true,
         reshapable: true,
@@ -1755,11 +1755,11 @@ export class DiagramService implements OnDestroy {
       }),
       new go.Binding('visible', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      /*new go.Binding('isLayoutPositioned', 'routeMissing',
+      new go.Binding('isLayoutPositioned', 'routeMissing',
         function(routeMissing) {
           return routeMissing || !this.standardDisplay;
         }.bind(this)
-      ),*/
+      ),
       {
         selectionAdorned: true,
         reshapable: true,
