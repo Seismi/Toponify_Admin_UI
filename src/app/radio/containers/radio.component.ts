@@ -30,7 +30,7 @@ export class RadioComponent implements OnInit {
                 public dialog: MatDialog) { }
 
     ngOnInit() { 
-        this.store.dispatch((new RadioActions.LoadRadio()));
+        this.store.dispatch(new RadioActions.LoadRadio());
         this.radio$ = this.store.pipe(select(fromRadio.getRadio));
     }
 
