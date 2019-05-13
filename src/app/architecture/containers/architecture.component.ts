@@ -1,11 +1,12 @@
-
-import * as fromNode from '../../nodes/store/reducers';
-import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions';
-import { OnInit, Component } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { Node } from './../../nodes/store/models/node.model'
+import { Component, OnInit } from '@angular/core';
+import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.selector';
+import { LoadNodeLinks, LoadNodes } from '@app/nodes/store/actions/node.actions';
+import { Node } from './../../nodes/store/models/node.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
+import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
+
 
 @Component({
     selector: 'smi-architecture',
@@ -18,14 +19,14 @@ export class ArchitectureComponent implements OnInit {
     nodeLinks$: Observable<NodeLink[]>;
 
     constructor(
-        private store: Store<fromNode.NodesState>
+        private nodeStore: Store<NodeState>,
     ) { }
 
     ngOnInit() {
-        this.store.dispatch((new LoadNodes()));
-        this.store.dispatch((new LoadNodeLinks()));
+        this.nodeStore.dispatch((new LoadNodes()));
+        this.nodeStore.dispatch((new LoadNodeLinks()));
 
-        this.nodes$ = this.store.pipe(select(fromNode.getNodes));
-        this.nodeLinks$ = this.store.pipe(select(fromNode.getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
     }
 }
