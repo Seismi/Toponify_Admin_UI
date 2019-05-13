@@ -53,10 +53,6 @@ export class VersionsManagerComponent implements OnInit, OnDestroy {
     });
   }
 
-  onOpenComments(versionId: string) {
-    this.router.navigate(['/version/', versionId, 'comments']);
-  }
-
   onEditVersion(id: string) {
     this.subscription = this.store.pipe(select(fromVersion.getVersionById(id))).subscribe(value => {
       this.version = value;

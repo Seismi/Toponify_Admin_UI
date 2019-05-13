@@ -8,12 +8,21 @@
     <div class="row">
         <div class="col">
             <smi-workpackages-table
-                (workpackageSelected)="onSelectWorkpackage($event)">
+                [data]="workpackageEntities$ | async"
+                (workpackageSelected)="onSelectWorkpackage($event)"
+                (addWorkpackage)="onAddWorkpackage($event)">
             </smi-workpackages-table>
         </div>
         <div class="col" *ngIf="workpackageSelected">
-            <smi-workpackage-detail></smi-workpackage-detail>
+            <smi-workpackage-detail
+                [group]="workpackageDetailsForm"
+                (editWorkpackage)="onEditWorkpackage($event)"
+                (deleteWorkpackage)="onDeleteWorkpackage($event)"
+                (saveWorkpackage)="onSaveWorkpackage($event)">
+            </smi-workpackage-detail>
+
             <smi-objectives-table></smi-objectives-table>
+
             <smi-radio-table></smi-radio-table>
             <smi-change-table></smi-change-table>
         </div>

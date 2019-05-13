@@ -2,12 +2,13 @@ import { ChangeTableComponent } from './components/change-table/change-table.com
 import { CommonModule } from '@angular/common';
 import { CoreModule } from '@app/core/core.module';
 import { EffectsModule } from '@ngrx/effects';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule,
   MatPaginatorModule,
   MatSortModule,
-  MatTableModule
+  MatTableModule,
+  MatDialogModule
   } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -21,6 +22,9 @@ import { WorkPackageRoutingComponent } from './containers/workpackage-routing.co
 import { WorkPackageComponent } from './containers/workpackage/workpackage.component';
 import { WorkPackagesTableComponent } from './components/workpackages-table/workpackages-table.component';
 import { WorkPackageDetailComponent } from './components/workpackage-detail/workpackage-detail.component';
+import { WorkPackageModalComponent } from './containers/new-workpackage-modal/new-workpackage.component';
+import { NewWorkpackageFormComponent } from './components/new-workpackage-form/new-workpackage-form.component';
+import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage-modal/delete-workpackage.component';
 
 
 
@@ -31,7 +35,9 @@ import { WorkPackageDetailComponent } from './components/workpackage-detail/work
     MatPaginatorModule,
     MatButtonModule,
     MatSortModule,
+    MatDialogModule,
     FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     CoreModule,
     StoreModule.forFeature('workpackageFeature', reducer),
@@ -46,8 +52,12 @@ import { WorkPackageDetailComponent } from './components/workpackage-detail/work
     WorkPackageDetailComponent,
     ObjectivesTableComponent,
     RadioTableComponent,
-    ChangeTableComponent
+    ChangeTableComponent,
+    WorkPackageModalComponent,
+    NewWorkpackageFormComponent,
+    DeleteWorkPackageModalComponent
   ],
+  entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent],
   providers: [
     WorkPackageService
   ],

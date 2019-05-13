@@ -1,0 +1,58 @@
+<form [formGroup]="group">
+    <div class="comments-detail-container">
+        <div [ngClass]="{disabled: !isEditable}">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" class="form-control" formControlName="title"
+                    [ngClass]="{ 'is-invalid': (!group.controls['title'].valid && group.controls['title'].touched) }">
+                <div *ngIf="group.controls['title'].errors" class="invalid-feedback">
+                    <div>This field is required</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <label>Category</label>
+                    <input type="text" class="form-control" formControlName="category"
+                        [ngClass]="{ 'is-invalid': (!group.controls['category'].valid && group.controls['category'].touched) }">
+                    <div *ngIf="group.controls['category'].errors" class="invalid-feedback">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <label>Status</label>
+                    <input type="text" class="form-control" formControlName="status"
+                        [ngClass]="{ 'is-invalid': (!group.controls['status'].valid && group.controls['status'].touched) }">
+                    <div *ngIf="group.controls['status'].errors" class="invalid-feedback">
+                        <div>This field is required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Target Name</label>
+                <input type="text" class="form-control" formControlName="targetName" [readonly]="true">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" rows="3" formControlName="commentText"
+                    [ngClass]="{ 'is-invalid': (!group.controls['commentText'].valid && group.controls['commentText'].touched) }"></textarea>
+                <div *ngIf="group.controls['commentText'].errors" class="invalid-feedback">
+                    <div>This field is required</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group buttons-group">
+            <div *ngIf="addComment">
+                <div *ngIf="!isEditable">
+                    <button mat-raised-button color="primary" (click)="onEdit()"
+                        [disabled]="disableButton">Edit</button>
+                    <button mat-raised-button class="archive" (click)="onArchive()"
+                        [disabled]="disableButton">Archive</button>
+                </div>
+                <div *ngIf="isEditable">
+                    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+                    <button mat-raised-button (click)="onCancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

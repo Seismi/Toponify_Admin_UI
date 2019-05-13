@@ -60,7 +60,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
         ...state,
         loading: false,
         selectedWorkPackage: action.payload
-      };
+      }
     }
 
     case WorkPackageActionTypes.LoadWorkPackageFailure: {
@@ -153,3 +153,5 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
   }
 }
 
+export const getWorkPackageEntities = (state: State) => state.entities;
+export const getError = (state: State) => state.error;
