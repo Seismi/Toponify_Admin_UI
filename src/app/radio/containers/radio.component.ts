@@ -46,7 +46,6 @@ export class RadioComponent implements OnInit {
             title: row.title,
             category: row.category,
             status: row.status,
-            targetName: row.lastUpdatedBy,
             commentText: row.commentText
         })
 
