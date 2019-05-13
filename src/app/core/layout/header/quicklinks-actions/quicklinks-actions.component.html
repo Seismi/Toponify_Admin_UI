@@ -1,9 +1,11 @@
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
 
+<!-- Architecture Icon -->
+<a class="architecture-icon" *ngIf="!gojsView"><mat-icon matTooltip="Architecture">device_hub</mat-icon></a>
+
 <!-- Workpackage Icon -->
 <a><mat-icon matTooltip="Work Packages">business_center</mat-icon></a>
-
 <!-- Workpackage dropdown -->
 <div class="dropdown" *ngIf="gojsView">
     <button class="dropdown-toggle btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -17,14 +19,13 @@
 </div>
 
 <!-- Edit diagram button -->
-<a (click)="onNavigate()"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
+<a (click)="onNavigate()" *ngIf="gojsView"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
 
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
 
 <!--Scopes and Layouts Icon -->
 <a><mat-icon matTooltip="Scopes and Layouts">pages</mat-icon></a>
-
 <!-- Scopes dropdown -->
 <div class="dropdown" *ngIf="gojsView">
     <button class="dropdown-toggle btn btn-sm right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -36,7 +37,6 @@
         <button class="dropdown-item">Scope 3</button>
     </div>
 </div>
-
 <!-- Layouts dropdown -->
 <div class="dropdown" *ngIf="gojsView">
     <button class="dropdown-toggle btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
