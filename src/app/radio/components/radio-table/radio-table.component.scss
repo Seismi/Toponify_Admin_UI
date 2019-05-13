@@ -1,0 +1,44 @@
+.mat-elevation-z8 {
+  position: relative;
+  height: 88vh;
+  overflow-y: auto;
+}
+
+.mat-elevation-z8 .wrapper {
+  overflow: auto;
+  height: 81.35vh;
+}
+
+table {
+  width: 100%;
+}
+
+tr.mat-header-row {
+  height: 35px;
+}
+
+tr.mat-row{
+  cursor: pointer;
+}
+
+.noCommentsFound{
+  padding-top: 20px;
+  text-align: center;
+}
+
+.highlight {
+  background: #efefef;
+}
+
+.bottom-header {
+  position: absolute; 
+  bottom: 0; 
+  width: 100%; 
+  height: 50px; 
+  background-color: #eee;
+}
+
+.add{
+  margin-top: 7px;
+  margin-left: 7px;
+}
