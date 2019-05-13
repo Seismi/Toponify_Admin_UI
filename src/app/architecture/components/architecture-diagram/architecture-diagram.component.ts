@@ -311,6 +311,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     );
 
     this.setLevel();
+
   }
 
   // Updates the properties associated with a node or link
@@ -398,6 +399,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
           nodeArray.push(this.diagramService.mapView.targetModel);
         }
 
+        // Temporary - create copy to fix bug that arises when using sample data from json server
+        nodeArray = JSON.parse(JSON.stringify(nodeArray));
+
         this.diagram.model.nodeDataArray = [...nodeArray];
         if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }
       }
@@ -420,6 +424,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
               filter.filterNodeIds.includes(link[targetProp]);
           }, this);
         }
+
+        // Temporary - create copy to fix bug that arises when using sample data from json server
+        linkArray = JSON.parse(JSON.stringify(linkArray));
 
         (this.diagram.model as go.GraphLinksModel).linkDataArray = [...linkArray];
         if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }

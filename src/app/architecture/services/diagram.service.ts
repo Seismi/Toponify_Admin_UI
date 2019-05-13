@@ -195,7 +195,7 @@ export class DiagramService implements OnDestroy {
     // Clear clipboard to prevent parts being copied to the wrong view
     diagram.commandHandler.copyToClipboard(null);
 
-    diagram.nodeTemplateMap.add('master data',
+    diagram.nodeTemplateMap.add(nodeCategories.masterData,
       (level === Level.model) ? this.getModelNodeTemplate() : this.getSystemNodeTemplate()
     );
 
@@ -657,11 +657,11 @@ export class DiagramService implements OnDestroy {
     }
 
     // Only validate master data links
-    if (oldlink.category === 'master data') {
+    if (oldlink.category === linkCategories.masterData) {
       // Prevent multiple master data links between the same pair of nodes
       const allLinks = fromnode.findLinksBetween(tonode);
       return !allLinks.any(function (link) {
-        return (link.data.category === 'master data'
+        return (link.data.category === linkCategories.masterData
           // Don't count current link when checking if master data links already exist
           && oldlink.data.id !== link.data.id);
       });
@@ -892,10 +892,12 @@ export class DiagramService implements OnDestroy {
         isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this)
+        doubleClick: this.changeLevelWithFilter.bind(this),
+        // TEMP
+        isLayoutPositioned: true
       },
       // Have the diagram position the node if no location set
-      // new go.Binding('isLayoutPositioned', 'locationMissing'),
+      new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
         go.Shape,
         new go.Binding('figure', 'category', function(category) {
@@ -1050,10 +1052,12 @@ export class DiagramService implements OnDestroy {
         isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this)
+        doubleClick: this.changeLevelWithFilter.bind(this),
+        // TEMP
+        isLayoutPositioned: true
       },
       // Have the diagram position the node if no location set
-      // new go.Binding('isLayoutPositioned', 'locationMissing'),
+      new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape, 'Rectangle', {
         fill: 'white',
@@ -1199,7 +1203,9 @@ export class DiagramService implements OnDestroy {
         isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this)
+        doubleClick: this.changeLevelWithFilter.bind(this),
+        // TEMP
+        isLayoutPositioned: true
       },
       // Have the diagram position the node if no location set
       // this.mapView ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
@@ -1352,10 +1358,12 @@ export class DiagramService implements OnDestroy {
           layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
           isShadowed: false,
           portSpreading: go.Node.SpreadingEvenly,
-          locationSpot: go.Spot.Top
+          locationSpot: go.Spot.Top,
+          // TEMP
+          isLayoutPositioned: true
         },
       // Have the diagram position the node if no location set
-      // new go.Binding('isLayoutPositioned', 'locationMissing'),
+      new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape,
         new go.Binding('figure', 'subCategory', function(subcategory) {
@@ -1472,173 +1480,6 @@ export class DiagramService implements OnDestroy {
             new go.Binding('itemArray', 'attributes')
           ),
           new go.Binding('visible', 'nextLevel').ofModel()
-        )
-      )
-    );
-  }
-
-  getRuleNodeTemplate() {
-    // Template for master data rules
-    return $(
-      go.Node,
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-        {
-          selectionAdorned: true,
-          resizable: false,
-          // tslint:disable-next-line:no-bitwise
-          layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-          isShadowed: false,
-          background: 'transparent',
-          portSpreading: go.Node.SpreadingEvenly,
-          // contextMenu: PartContextMenu,
-          locationSpot: go.Spot.Top
-        },
-      // Have the diagram position the node if no location set
-      // new go.Binding('isLayoutPositioned', 'locationMissing'),
-      $(go.Panel,
-        'Vertical',
-        // Make the shape the port for links to connect to
-        $(go.Shape,
-          new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-          new go.Binding('figure', 'subCategory', function(subcategory) {
-            if (subcategory === 'or') {
-              return 'Or';
-            } else if (subcategory === 'combination') {
-              return 'Junction';
-            } else if (subcategory === 'inclusion') {
-              return 'PrimitiveToCall';
-            } else if (subcategory === 'exclusion') {
-              return 'PrimitiveFromCall';
-            } else {  // Custom rule
-              return 'Diamond';
-            }
-          }),
-          {
-            fill: 'white',
-            stroke: 'black',
-            strokeWidth: 1,
-            desiredSize: new go.Size(50, 50),
-            // Leave a gap between symbol and any rule text
-            margin: new go.Margin(0, 0, 5, 0),
-            portId: '',
-            fromLinkable: true,
-            toLinkable: true,
-            fromSpot: go.Spot.AllSides,
-            toSpot: go.Spot.AllSides,
-            name: 'shape',
-            fromLinkableDuplicates: false,
-            toLinkableDuplicates: false
-          }
-        ),
-        $(go.Panel, 'Auto',
-          $(go.Shape, // Box to contain rule name
-            'Rectangle',
-            {
-              fill: 'white',
-              stroke: 'black',
-              strokeDashArray: [1, 2]
-            }
-           ),
-          $(go.Panel,
-            'Vertical',
-            $(go.TextBlock, // Rule name
-              {
-                stroke: 'black',
-                font: 'bold 14px calibri',
-                textAlign: 'center',
-                maxSize: new go.Size(125, Infinity)
-              },
-              new go.Binding('text', 'name')
-            ),
-            // Rule description
-            $(go.TextBlock,
-              {
-                textAlign: 'center',
-                stroke: 'black',
-                font: 'italic 13px calibri',
-                maxSize: new go.Size(100, Infinity),
-                margin: new go.Margin(0, 0, 5, 0)
-              },
-              new go.Binding('text', 'description'),
-              new go.Binding('visible', 'description').ofModel()
-             ),
-            // Rule tags
-            $(go.TextBlock,
-              {
-                textAlign: 'center',
-                stroke: 'black',
-                font: '13px calibri',
-                maxSize: new go.Size(100, Infinity)
-              },
-              new go.Binding('text',
-                'tags',
-                function(tags) {return tags ? ('Tags - ' + tags) : ''; }
-              ),
-              new go.Binding('visible', 'tags').ofModel()
-            ),
-            // Rule owners
-            $(go.TextBlock,
-              {
-                textAlign: 'center',
-                stroke: 'black',
-                font: '13px calibri',
-                maxSize: new go.Size(100, Infinity)
-              },
-              new go.Binding('text',
-                'owner',
-                function(owner) {return owner ? ('Owner - ' + owner) : ''; }
-              ),
-              new go.Binding('visible', 'owner').ofModel()
-            ),
-            $(go.Panel, 'Vertical',
-              {
-                stretch: go.GraphObject.Horizontal
-              },
-              // Attribute list header
-              $(go.TextBlock,
-                {
-                  text: 'Attributes',
-                  row: 1,
-                  alignment: go.Spot.Center,
-                  stroke: 'black',
-                  font: 'bold 13.5px calibri',
-                  margin: new go.Margin(5, 0, 0, 0)
-                },
-                // Hide attributes header if element has no attributes
-                new go.Binding('visible', 'attributes',
-                  function(attributes) {return attributes.length > 0; }
-                )
-              ),
-              // Attribute list
-              $(go.Panel, 'Vertical',
-                {
-                  name: 'Attribute_List',
-                  padding: 3,
-                  alignment: go.Spot.TopLeft,
-                  defaultAlignment: go.Spot.Left,
-                  stretch: go.GraphObject.Horizontal,
-                  itemTemplate: $(go.Panel,
-                    'Horizontal',
-                    {
-                      background: 'white',
-                      stretch: go.GraphObject.Horizontal,
-                      margin: new go.Margin(0, 0, 1, 0)
-                    },
-                    $(go.TextBlock,
-                      {
-                        stroke: 'black',
-                        font: '13px calibri'
-                      },
-                      new go.Binding('text', 'name'),
-                      new go.Binding('visible', 'name').ofModel()
-                    )
-                  )
-                },
-                new go.Binding('itemArray', 'attributes')
-              ),
-              new go.Binding('visible', 'nextLevel').ofModel()
-            )
-          )
         )
       )
     );
