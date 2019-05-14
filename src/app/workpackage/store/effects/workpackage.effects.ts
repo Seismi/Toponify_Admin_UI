@@ -11,8 +11,10 @@ import {
   WorkPackageActionTypes,
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
-  DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure, LoadWorkPackage, LoadWorkPackageSuccess } from '../actions/workpackage.actions';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse } from '../models/workpackage.models';
+  DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
+  LoadWorkPackage, LoadWorkPackageSuccess } from '../actions/workpackage.actions';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
+  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse } from '../models/workpackage.models';
 
 @Injectable()
 export class WorkPackageEffects {

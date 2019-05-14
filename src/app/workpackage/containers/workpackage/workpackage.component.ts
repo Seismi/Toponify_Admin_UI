@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { LoadWorkPackage, LoadWorkPackages, DeleteWorkPackageEntity, AddWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
-import { Observable, Subscription } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
-import { WorkpackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
-import { WorkpackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { WorkPackageModalComponent } from '../new-workpackage-modal/new-workpackage.component';
+import { LoadWorkPackage, LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { MatDialog } from '@angular/material';
-import { DeleteWorkPackageModalComponent } from '../delete-workpackage-modal/delete-workpackage.component';
+import { Observable, Subscription } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
+import { WorkpackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkpackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 
 @Component({
   selector: 'app-workpackage',
@@ -27,7 +26,7 @@ export class WorkPackageComponent implements OnInit {
   workpackage: WorkPackageEntity[];
 
 
-  constructor(private store: Store<fromWorkPackagesEntities.WorkPackageFeatureState>,
+  constructor(private store: Store<WorkPackageState>,
               private workpackageDetailService: WorkpackageDetailService,
               public dialog: MatDialog) {}
 
