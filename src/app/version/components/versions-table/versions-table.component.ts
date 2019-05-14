@@ -33,9 +33,6 @@ export class VersionsTableComponent implements OnInit, OnChanges {
   openVersion = new EventEmitter();
 
   @Output()
-  openComments = new EventEmitter<string>();
-
-  @Output()
   openCurrentVersion = new EventEmitter<string>();
 
   @Output()
@@ -84,10 +81,6 @@ export class VersionsTableComponent implements OnInit, OnChanges {
 
   onOpen(versionId: string, viewLevel: string) {
     this.openVersion.emit({versionId: versionId, viewLevel: viewLevel});
-  }
-
-  onComments(versionId: string) {
-    this.openComments.emit(versionId);
   }
 
   onEdit(id: string) {

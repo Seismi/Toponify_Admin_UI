@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetail } from '../models/workpackage.models';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity } from '../models/workpackage.models';
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -52,12 +52,12 @@ export class LoadWorkPackageFailure implements Action {
 
 export class AddWorkPackageEntity implements Action {
   readonly type = WorkPackageActionTypes.AddWorkPackage;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageApiRequest) {}
 }
 
 export class AddWorkPackageEntitySuccess implements Action {
   readonly type = WorkPackageActionTypes.AddWorkPackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageEntity) {}
 }
 
 export class AddWorkPackageEntityFailure implements Action {
@@ -82,12 +82,12 @@ export class UpdateWorkPackageEntityFailure implements Action {
 
 export class DeleteWorkPackageEntity implements Action {
   readonly type = WorkPackageActionTypes.DeleteWorkPackage;
-  constructor(public payload: any) {}
+  constructor(public payload: string) {}
 }
 
 export class DeleteWorkPackageEntitySuccess implements Action {
   readonly type = WorkPackageActionTypes.DeleteWorkPackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: string) {}
 }
 
 export class DeleteWorkPackageEntityFailure implements Action {

@@ -14,6 +14,10 @@ th.mat-column-name {
     width: 60%;
 }
 
+th.mat-column-status {
+    padding-right: 20px;
+}
+
 tr.mat-row {
     height: 45px;
     cursor: pointer;
@@ -21,4 +25,23 @@ tr.mat-row {
 
 .highlight {
     background-color: #efefef;
+}
+
+.ownersList {
+    padding: 0;
+    margin: 0;
+    display: inline;
+    list-style: none;
+}
+  
+.ownersList li {
+    display: inline;
+}
+
+.ownersList::before {
+    content: ', ';
+}
+
+.ownersList:first-child::before {
+    content: '';
 }

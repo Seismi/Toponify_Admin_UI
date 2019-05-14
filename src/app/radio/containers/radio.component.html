@@ -1,1 +1,34 @@
-<h1>Radio Route</h1>
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchComments($event)"></app-search>
+    </app-toolbar-column>
+    <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+</app-base-header>
+
+<div class="row">
+    <div class="col-8">
+        <smi-radio-table
+            [data]="radio$ | async"
+            (showSelectedRowDetails)="onSelectedRow($event)"
+            (addComment)="onAddComment($event)">
+        </smi-radio-table>
+    </div>
+    <div class="col-4 mat-elevation-z8">
+        <smi-radio-detail
+            [group]="radioDetailsForm"
+            [addComment]="addComment"
+            [isEditable]="isEditable"
+            [disableButton]="disableButton"
+            (archiveComment)="onArchiveComment($event)"
+            (saveComment)="onSaveComment()">
+        </smi-radio-detail>
+        <!-- [data]="selecetedComment?.replies"
+        [versionId]="versionId"
+        [commentId]="commentId" -->
+        <smi-chatbox
+            [disableButton]="disableButton">
+        </smi-chatbox>
+    </div>
+</div>

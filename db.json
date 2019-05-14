@@ -970,5 +970,53 @@
         }
       }
     }
+  },
+  "radio": {
+    "data": [
+      {
+        "id": "d7aacfb4-7263-4d40-87c0-7557d124e306",
+        "title": "Strategic Planning Issues",
+        "commentText": "What issues will arise from including a Strategic Planning system?",
+        "category": "issue",
+        "author": {
+          "id": "bd7f2626-c07c-4e61-b0d8-fdf48a58c3db",
+          "firstName": "Jerome",
+          "lastName": "Marcq",
+          "team": []
+        },
+        "status": "open",
+        "createdOn": "2019-02-12T10:10:30.000Z",
+        "lastUpdatedOn": "2019-02-12T10:10:30.000Z",
+        "lastUpdatedBy": {
+          "id": "bd7f2626-c07c-4e61-b0d8-fdf48a58c3db",
+          "firstName": "Jerome",
+          "lastName": "Marcq",
+          "team": []
+        },
+        "replyCount": "3"
+      },
+      {
+        "id": "704abfee-76eb-4be9-ad24-b0cc1be199ab",
+        "title": "Danger Will Robinson!",
+        "commentText": "Should we beware of Doctor Zachary Smith?",
+        "category": "risk",
+        "author": {
+          "id": "bd7f2626-c07c-4e61-b0d8-fdf48a58c3db",
+          "firstName": "Jerome",
+          "lastName": "Marcq",
+          "team": []
+        },
+        "status": "open",
+        "createdOn": "2019-02-12T09:48:13.000Z",
+        "lastUpdatedOn": "2019-02-12T09:51:58.000Z",
+        "lastUpdatedBy": {
+          "id": "21e446d2-2004-4097-9ec3-95ec83e71156",
+          "firstName": "Paul",
+          "lastName": "Western",
+          "team": []
+        },
+        "replyCount": "2"
+      }
+    ]
   }
 }

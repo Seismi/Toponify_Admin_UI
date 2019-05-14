@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { VersionsManagerComponent } from './containers/versions-manager.component';
 import { VersionModelComponent } from './containers/version-model.component';
 import { VersionRoutingComponent } from './containers/version-routing.component';
-import { CommentsComponent } from '@app/comments/containers/comments.component';
 
 export const versionRoutes: Routes = [
   {
@@ -17,10 +16,6 @@ export const versionRoutes: Routes = [
       {
         path: ':id',
         component: VersionModelComponent
-      },
-      {
-        path: ':id/comments',
-        component: CommentsComponent
       },
       {
         path: ':id/audit',
