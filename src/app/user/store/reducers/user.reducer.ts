@@ -1,5 +1,12 @@
 import { UserActionsUnion, UserActionTypes } from '../actions/user.actions';
-import { UserState } from './index';
+import { User } from '../models/user.model';
+import { HttpErrorResponse } from '@angular/common/http';
+
+export interface UserState {
+  loading: boolean;
+  users: User[];
+  error?: HttpErrorResponse | { message: string };
+}
 
 export const initialState: UserState = {
   loading: false,
@@ -80,6 +87,3 @@ export function reducer(state = initialState, action: UserActionsUnion): UserSta
   }
 }
 
-export const getLoading = (state: UserState) => state.loading;
-export const getUsers = (state: UserState) => state.users;
-export const getError = (state: UserState) => state.error;

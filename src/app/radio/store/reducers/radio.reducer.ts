@@ -2,19 +2,19 @@ import { RadioActionsUnion, RadioActionTypes } from '../actions/radio.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Radio } from '../models/radio.model';
 
-export interface State {
+export interface RadioState {
   radio: Radio[];
   loading: boolean;
   error?: HttpErrorResponse | { message: string };
 }
 
-export const initialState: State = {
+export const initialState: RadioState = {
   radio: [],
   loading: false,
   error: null,
 };
 
-export function reducer(state = initialState, action: RadioActionsUnion): State {
+export function reducer(state = initialState, action: RadioActionsUnion): RadioState {
   switch (action.type) {
 
     case RadioActionTypes.LoadRadio: {
@@ -145,7 +145,3 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
     }
   }
 }
-
-export const getRadio = (state: State) => state.radio;
-export const getLoading = (state: State) => state.loading;
-export const getError = (state: State) => state.error;
