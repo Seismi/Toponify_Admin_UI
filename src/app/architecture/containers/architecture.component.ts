@@ -1,4 +1,4 @@
-import * as fromArchitecture from '../store/reducers';
+import {State as ViewState } from '../store/reducers/view.reducer';
 import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions';
 import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
 import { Store, select } from '@ngrx/store';
@@ -58,7 +58,7 @@ export class ArchitectureComponent implements OnInit {
 
   constructor(
     private nodeStore: Store<NodeState>,
-    private store: Store<fromArchitecture.State>,
+    private store: Store<ViewState>,
     private route:  ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
     public dialog: MatDialog
@@ -89,7 +89,6 @@ export class ArchitectureComponent implements OnInit {
   }
 
   setNodesLinks = (level: number) => {
-
     if (level !== 5) {
       this.showTable = false;
       this.showPalette = true;

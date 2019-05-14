@@ -42,7 +42,7 @@ import {DiagramService} from '@app/architecture/services/diagram.service';
 import {FilterService} from '@app/architecture/services/filter.service';
 import {NodeService} from '@app/nodes/services/node.service';
 import {StoreModule} from '@ngrx/store';
-import {reducers} from '@app/architecture/store/reducers';
+import {reducer} from '@app/architecture/store/reducers/view.reducer';
 import { NodeModule } from '@app/nodes/node.module';
 
 
@@ -71,7 +71,7 @@ import { NodeModule } from '@app/nodes/node.module';
     MatSortModule,
     MatListModule,
     ColorPickerModule,
-    StoreModule.forFeature('architectureFeature', reducers)
+    StoreModule.forFeature('architectureFeature', reducer)
   ],
     exports: [],
     declarations: [
