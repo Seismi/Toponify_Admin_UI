@@ -1,16 +1,12 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State } from '@app/workpackage/store/reducers/workpackage.reducer';
 
-export interface WorkPackageFeatureState {
-  workpackage: State;
-}
-
-const getWorkPackageState = createFeatureSelector<WorkPackageFeatureState>('workpackageFeature');
+const getWorkPackageState = createFeatureSelector<State>('workpackageFeature');
 
 export const getWorkPackageEntities = createSelector(
   getWorkPackageState,
   state => {
-    return state.workpackage.entities;
+    return state.entities;
   }
 );
 
@@ -18,7 +14,8 @@ export const getWorkPackageById = (id: string) => {
   return createSelector(
     getWorkPackageState,
     state => {
-      return state.workpackage.entities.filter(entity => entity.id === id);
+      return state.entities.filter(entity => entity.id === id);
     }
   );
-}
+};
+

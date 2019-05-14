@@ -1,26 +1,25 @@
-import {State as ViewState } from '../store/reducers/view.reducer';
-import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions';
-import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { LinkType, NodeType } from '@app/nodes/services/node.service';
+import { LoadNodeLinks, LoadNodes } from '@app/nodes/store/actions/node.actions';
+import { linkCategories, NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
-import {linkCategories, NodeLink} from '@app/nodes/store/models/node-link.model';
-// import {Attribute} from '?/store/models/attribute.model';
-import {ArchitectureDiagramComponent} from '../components/architecture-diagram/architecture-diagram.component';
-import {ActivatedRoute} from '@angular/router';
-import {ObjectDetailsService} from '../components/object-details-form/services/object-details-form.service';
-import {ObjectDetailsValidatorService} from '../components/object-details-form/services/object-details-form-validator.service';
-import {MatDialog} from '@angular/material';
-import {FormGroup} from '@angular/forms';
-
-import {NodeType, LinkType} from '@app/nodes/services/node.service';
-import {DeleteNodeModalComponent} from '../containers/delete-node-modal/delete-node-modal.component';
-// import {DeleteNodeSuccess} from '@app/nodes/store/actions/node.actions';
-import {DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
-// import {DeleteLinkSuccess} from '@app/nodes/store/actions/node.actions';
-import {DeleteModalComponent} from '../containers/delete-modal/delete-modal.component';
-import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.selector';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
+// import {Attribute} from '?/store/models/attribute.model';
+import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
+import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
+import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
+// import {DeleteNodeSuccess} from '@app/nodes/store/actions/node.actions';
+import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
+// import {DeleteLinkSuccess} from '@app/nodes/store/actions/node.actions';
+import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.component';
+import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
+import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 
 @Component({
