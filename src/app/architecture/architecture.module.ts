@@ -35,7 +35,7 @@ import {
 } from '@angular/material';
 import {ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {CommentsModule} from '@app/comments/comments.module';
+// import {CommentsModule} from '@app/comments/comments.module';
 import {ColorPickerModule} from 'ngx-color-picker';
 // import {AttributeService} from '@app/architecture/services/attribute.service';
 import {DiagramService} from '@app/architecture/services/diagram.service';
@@ -55,7 +55,7 @@ import { NodeModule } from '@app/nodes/node.module';
     ReactiveFormsModule,
     CommonModule,
     CoreModule,
-    CommentsModule,
+    // CommentsModule,
     MatCardModule,
     MatDividerModule,
     MatTableModule,
