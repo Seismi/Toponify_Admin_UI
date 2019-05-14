@@ -27,11 +27,12 @@ export class Node {
   id: string;
   layer: string;
   name: string;
-  description: string;
+  description = '';
   category: nodeCategories;
-  tags: string;
+  tags = '';
   locations?: ((LocationsEntity)[] | null)[] | null;
   owners?: (OwnersEntity)[] | null;
+  descendants: DescendantsEntity[] = [];
 
   constructor(options: { id: string, name: string, layer: layers, category: nodeCategories }) {
     if (options) {
@@ -39,6 +40,7 @@ export class Node {
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
+      this.owners = [];
     }
   }
 }

@@ -13,13 +13,15 @@ import {
 import { DiagramService, Level, standardDisplayOptions } from '@app/architecture/services/diagram.service';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
+import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {nodeCategories} from '@app/nodes/store/models/node.model';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
   [1]: Level.system,
-  [2]: Level.model,
+  [2]: Level.dataSet,
   [3]: Level.dimension,
-  [4]: Level.element,
+  [4]: Level.reportingConcept,
   [5]: Level.attribute,
   [9]: Level.map
 };
@@ -120,53 +122,63 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Set node templates
     this.diagram.nodeTemplateMap.add(
-      'transactional',
+      nodeCategories.transactional,
       diagramService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'analytical',
+      nodeCategories.analytical,
       diagramService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'file',
+      nodeCategories.file,
       diagramService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'reporting',
+      nodeCategories.reporting,
       diagramService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'physical',
+      nodeCategories.physical,
       diagramService.getModelNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'virtual',
+      nodeCategories.virtual,
       diagramService.getModelNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'dimension',
+      nodeCategories.dimension,
       diagramService.getDimensionNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'reporting concept',
+      nodeCategories.list,
+      diagramService.getElementNodeTemplate()
+    );
+
+    this.diagram.nodeTemplateMap.add(
+      nodeCategories.structure,
+      diagramService.getElementNodeTemplate()
+    );
+
+    this.diagram.nodeTemplateMap.add(
+      nodeCategories.rollup,
       diagramService.getElementNodeTemplate()
     );
 
     // Set links templates
     this.diagram.linkTemplateMap.add(
-      'data',
+      linkCategories.data,
       diagramService.getLinkDataTemplate()
     );
 
     this.diagram.linkTemplateMap.add(
-      'master data',
+      linkCategories.masterData,
       diagramService.getLinkMasterDataTemplate()
     );
 
@@ -306,7 +318,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.div = this.diagramRef.nativeElement;
 
     this.diagramService.masterDataTemplate.subscribe(function(template) {
-        this.diagram.nodeTemplateMap.add('master data', template);
+        this.diagram.nodeTemplateMap.add(nodeCategories.masterData, template);
       }.bind(this)
     );
 
@@ -402,6 +414,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         // Temporary - create copy to fix bug that arises when using sample data from json server
         nodeArray = JSON.parse(JSON.stringify(nodeArray));
 
+        // Filter sample data here
+        nodeArray = nodeArray.filter(function(node) {
+          return (node.layer === 'system'); // viewLevelMapping[this.viewLevel]);
+        }.bind(this));
+
         this.diagram.model.nodeDataArray = [...nodeArray];
         if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }
       }
@@ -427,6 +444,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
         // Temporary - create copy to fix bug that arises when using sample data from json server
         linkArray = JSON.parse(JSON.stringify(linkArray));
+
+        // Filter sample data here
+        linkArray = linkArray.filter(function(link) {
+          return (link.layer === 'system'); // viewLevelMapping[this.viewLevel]);
+        }.bind(this));
 
         (this.diagram.model as go.GraphLinksModel).linkDataArray = [...linkArray];
         if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }

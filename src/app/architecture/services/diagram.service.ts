@@ -1,15 +1,15 @@
-import { Location } from '@angular/common';
-import { Injectable, OnDestroy } from '@angular/core';
-import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
-import { Store } from '@ngrx/store';
+import {Location} from '@angular/common';
+import {Injectable, OnDestroy} from '@angular/core';
+import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
+import {Store} from '@ngrx/store';
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 import * as uuid from 'uuid/v4';
 // import { SetMapView } from '@app/version/store/actions/mapview.actions';
-import { Node, nodeCategories, layers } from '@app/nodes/store/models/node.model';
-import { NodeLink, linkCategories } from '@app/nodes/store/models/node-link.model';
-import { FilterService } from '@app/architecture/services/filter.service';
+import {layers, Node, nodeCategories} from '@app/nodes/store/models/node.model';
+import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {FilterService} from '@app/architecture/services/filter.service';
 import {ArchitectureState} from '@app/architecture/store/reducers';
 
 const $ = go.GraphObject.make;
@@ -17,9 +17,9 @@ const $ = go.GraphObject.make;
 // Levels in the diagram
 export enum Level {
   system = 'System',
-  model = 'Model',
+  dataSet = 'Data Set',
   dimension = 'Dimension',
-  element = 'Element',
+  reportingConcept = 'Reporting Concept',
   map = 'Map',
   attribute = 'Attribute'
 }
@@ -76,24 +76,24 @@ export const standardDisplayOptions = {
 // Numbers associated to each level in the data store
 export const viewLevelNum = {
   [Level.system]: 1,
-  [Level.model]: 2,
+  [Level.dataSet]: 2,
   [Level.dimension]: 3,
-  [Level.element]: 4,
+  [Level.reportingConcept]: 4,
   [Level.attribute]: 5,
   [Level.map]: 9
 };
 
 const lessDetailOrderMapping = {
-  [Level.element]: Level.dimension,
-  [Level.dimension]: Level.model,
-  [Level.map]: Level.model,
-  [Level.model]: Level.system
+  [Level.reportingConcept]: Level.dimension,
+  [Level.dimension]: Level.dataSet,
+  [Level.map]: Level.dataSet,
+  [Level.dataSet]: Level.system
 };
 
 const moreDetailOrderMapping = {
-  [Level.system]: Level.model,
-  [Level.model]: Level.dimension,
-  [Level.dimension]: Level.element,
+  [Level.system]: Level.dataSet,
+  [Level.dataSet]: Level.dimension,
+  [Level.dimension]: Level.reportingConcept,
 };
 
 @Injectable()
@@ -196,14 +196,14 @@ export class DiagramService implements OnDestroy {
     diagram.commandHandler.copyToClipboard(null);
 
     diagram.nodeTemplateMap.add(nodeCategories.masterData,
-      (level === Level.model) ? this.getModelNodeTemplate() : this.getSystemNodeTemplate()
+      (level === Level.dataSet) ? this.getModelNodeTemplate() : this.getSystemNodeTemplate()
     );
 
     // Array of nodes to be used in the palette
     let paletteViewNodes: object[] = [];
 
     const paletteViewLinks = [{
-      category: 'master data',
+      category: linkCategories.masterData,
       id: 'New master data link',
       name: 'New master data link',
       description: '',
@@ -245,7 +245,7 @@ export class DiagramService implements OnDestroy {
         })
       ];
 
-    } else if (level === Level.model) {
+    } else if (level === Level.dataSet) {
       paletteViewNodes = [
         new Node({ id: 'New Physical Data Set',
           name: 'New Physical Data Set',
@@ -274,7 +274,7 @@ export class DiagramService implements OnDestroy {
           })
         ];
       }
-    } else if (level === Level.element) {
+    } else if (level === Level.reportingConcept) {
       paletteViewNodes = [
         new Node({ id: 'New List Reporting Concept',
           name: 'New List Reporting Concept',
@@ -294,9 +294,9 @@ export class DiagramService implements OnDestroy {
       ];
     }
 
-    if (level === Level.system || level === Level.model ) {
+    if (level === Level.system || level === Level.dataSet ) {
       paletteViewLinks.push({
-        category: 'data',
+        category: linkCategories.data,
         id: 'New data link',
         name: 'New data link',
         description: '',
@@ -341,7 +341,7 @@ export class DiagramService implements OnDestroy {
       });
     }
 
-    this.masterDataTemplateSource.next((level === Level.model) ?
+    this.masterDataTemplateSource.next((level === Level.dataSet) ?
       this.getModelNodeTemplate() :
       this.getSystemNodeTemplate()
     );
@@ -354,25 +354,21 @@ export class DiagramService implements OnDestroy {
   //    object: node to display the children of
   changeLevelWithFilter(event: any, object: go.Node): void {
     let newLevel: Level;
-    let childNodeProp: string;
 
-    if (['transactional',
-      'analytical',
-      'file',
-      'reporting',
-      'master data'].includes(object.data.category)) {
-      newLevel = Level.model;
-      childNodeProp = 'models';
-    } else if (['physical', 'virtual', 'master data'].includes(object.data.category)) {
+    if ([nodeCategories.transactional,
+      nodeCategories.analytical,
+      nodeCategories.file,
+      nodeCategories.reporting,
+      nodeCategories.masterData].includes(object.data.category)) {
+      newLevel = Level.dataSet;
+    } else if ([nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData].includes(object.data.category)) {
       newLevel = Level.dimension;
-      childNodeProp = 'dimensions';
-    } else if (object.data.category === 'dimension') {
-      newLevel = Level.element;
-      childNodeProp = 'elements';
+    } else if (object.data.category === nodeCategories.dimension) {
+      newLevel = Level.reportingConcept;
     } else {
       return;
     }
-    const childIds = object.data[childNodeProp].map(function (child) {
+    const childIds = object.data.descendants.map(function (child) {
       return child.id;
     });
 
@@ -568,7 +564,7 @@ export class DiagramService implements OnDestroy {
           }
         }.bind(this),
         function(object: go.Part, event: object): boolean {
-          return (object as any).nodeDataArray.length > 0 && this.filter.getValue().filterLevel !== Level.element && !this.mapView;
+          return (object as any).nodeDataArray.length > 0 && this.filter.getValue().filterLevel !== Level.reportingConcept && !this.mapView;
         }.bind(this)
       ),
       makeSubMenuButton(
@@ -678,7 +674,7 @@ export class DiagramService implements OnDestroy {
     const currentLevel = this.filter.getValue().filterLevel;
 
     // Only implemented for system, model and dimension views so far
-    if (![Level.system, Level.model, Level.dimension].includes(currentLevel)) {return ; }
+    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
 
     event.subject.each(function(part: go.Part) {
 
@@ -711,7 +707,7 @@ export class DiagramService implements OnDestroy {
     const currentLevel = this.filter.getValue().filterLevel;
 
     // Only implemented for system, model and dimension views so far
-    if (![Level.system, Level.model, Level.dimension].includes(currentLevel)) {return ; }
+    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
 
     // Set to contain all parts to update
     const partsToUpdate = new go.Set();
@@ -776,7 +772,7 @@ export class DiagramService implements OnDestroy {
     const currentLevel = this.filter.getValue().filterLevel;
 
     // Only implemented for system, model and dimension views so far
-    if (![Level.system, Level.model, Level.dimension].includes(currentLevel)) {return ; }
+    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
 
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
@@ -901,13 +897,13 @@ export class DiagramService implements OnDestroy {
       $(
         go.Shape,
         new go.Binding('figure', 'category', function(category) {
-          if (category === 'transactional') {
+          if (category === nodeCategories.transactional) {
             return 'Cylinder1';
-          } else if (category === 'analytical') {
+          } else if (category === nodeCategories.analytical) {
             return 'Cube2';
-          } else if (category === 'file') {
+          } else if (category === nodeCategories.file) {
             return 'Document';
-          } else if (category === 'master data') {
+          } else if (category === nodeCategories.masterData) {
             return 'ManualInput';
           } else {
             // Reporting
@@ -1088,9 +1084,9 @@ export class DiagramService implements OnDestroy {
           new go.Binding('text',
             'category',
             function (category) {
-              if (category === 'virtual') {
+              if (category === nodeCategories.virtual) {
                 return 'V';
-              } else if (category === 'master data') {
+              } else if (category === nodeCategories.masterData) {
                 return 'MD';
               } else {
                 // Physical data set
