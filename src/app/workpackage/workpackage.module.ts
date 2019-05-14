@@ -13,7 +13,7 @@ import {
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
-import { reducers } from './store/reducers';
+import { reducer } from './store/reducers/workpackage.reducer';
 import { StoreModule } from '@ngrx/store';
 import { WorkPackageEffects } from './store/effects/workpackage.effects';
 import { WorkPackageRoutingModule } from './workpackage.routing.module';
@@ -40,13 +40,13 @@ import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage
     ReactiveFormsModule,
     CommonModule,
     CoreModule,
-    StoreModule.forFeature('workpackageFeature', reducers),
+    StoreModule.forFeature('workpackageFeature', reducer),
     EffectsModule.forFeature([ WorkPackageEffects]
     )
   ],
   exports: [],
   declarations: [
-    WorkPackageComponent, 
+    WorkPackageComponent,
     WorkPackageRoutingComponent,
     WorkPackagesTableComponent,
     WorkPackageDetailComponent,

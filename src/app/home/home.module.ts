@@ -12,7 +12,6 @@ import {
   MatIconModule,
   MatMenuModule 
 } from '@angular/material';
-import { NodeModule } from '@app/nodes/nodes.moudle';
 
 
 
@@ -24,7 +23,6 @@ import { NodeModule } from '@app/nodes/nodes.moudle';
     MatPaginatorModule,
     MatIconModule,
     MatMenuModule,
-    NodeModule,
     HomeRoutingModule
   ],
   exports: [],

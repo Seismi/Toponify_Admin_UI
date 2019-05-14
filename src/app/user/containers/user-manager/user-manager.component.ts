@@ -1,15 +1,16 @@
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { AllUsersTableComponent } from './all-users/all-users-table/all-users-table.component';
-import { Observable, Subscription } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-import { User } from '../../store/models/user.model';
-import * as fromUser from '../../store/reducers';
-import * as UserActions from '../../store/actions/user.actions';
-import { MyUserFormService } from './my-user/my-user-form/services/my-user-form.service';
-import { MyUserFormValidatorService } from './my-user/my-user-form/services/my-user-form-validator.service';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
+import { UserState } from '@app/user/store/reducers/user.reducer';
+import { getUser, getUsers, getUsersLoading } from '@app/user/store/selectors/user.selector';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import * as UserActions from '../../store/actions/user.actions';
+import { User } from '../../store/models/user.model';
+import { AllUsersTableComponent } from './all-users/all-users-table/all-users-table.component';
 import { EditUsersModalComponent } from './all-users/edit-users-modal/edit-users-modal.component';
+import { MyUserFormValidatorService } from './my-user/my-user-form/services/my-user-form-validator.service';
+import { MyUserFormService } from './my-user/my-user-form/services/my-user-form.service';
 
 @Component({
     selector: 'app-my-manager',
@@ -29,14 +30,14 @@ export class UserManagerComponent implements OnInit, OnDestroy {
         return this.myUserFormService.myUserForm;
     }
 
-    constructor(private store: Store<fromUser.UserState>, 
+    constructor(private store: Store<UserState>,
                 private myUserFormService: MyUserFormService,
                 public dialog: MatDialog) {}
 
     ngOnInit() {
         this.store.dispatch(new UserActions.LoadUsers());
-        this.loading$ = this.store.pipe(select(fromUser.getLoading));
-        this.users$ = this.store.pipe(select(fromUser.getUsers));
+        this.loading$ = this.store.pipe(select(getUsersLoading));
+        this.users$ = this.store.pipe(select(getUsers));
     }
 
     ngOnDestroy() {
@@ -52,7 +53,7 @@ export class UserManagerComponent implements OnInit, OnDestroy {
     }
 
     onEditUser(id: string){
-        this.userSubscription = this.store.pipe(select(fromUser.getUserById(id))).subscribe(value => {
+        this.userSubscription = this.store.pipe(select(getUser, {id: id})).subscribe(value => {
             this.user = value;
         });
 

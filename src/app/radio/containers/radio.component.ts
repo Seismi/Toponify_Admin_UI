@@ -7,9 +7,11 @@ import { RadioModalComponent } from './radio-modal/radio-modal.component';
 import { ReplyModalComponent } from './reply-modal/reply-modal.component';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import * as fromRadio from '../store/reducers'
+// import * as fromRadio from '../store/reducers'
 import * as RadioActions from '../store/actions/radio.actions';
 import { Radio } from '../store/models/radio.model';
+import { RadioState } from '../store/reducers/radio.reducer';
+import { getRadio, getRadioLoading } from '../store/selectors/radio.selector';
 
 
 @Component({
@@ -27,14 +29,14 @@ export class RadioComponent implements OnInit {
     isEditable = false;
     addComment = true;
 
-    constructor(private store: Store<fromRadio.RadioState>,
+    constructor(private store: Store<RadioState>,
                 private radioDetailService: RadioDetailService,
                 public dialog: MatDialog) { }
 
-    ngOnInit() { 
+    ngOnInit() {
         this.store.dispatch(new RadioActions.LoadRadio());
-        this.radio$ = this.store.pipe(select(fromRadio.getRadio));
-        this.loading$ = this.store.pipe(select(fromRadio.getLoading));
+        this.radio$ = this.store.pipe(select(getRadio));
+        this.loading$ = this.store.pipe(select(getRadioLoading));
     }
 
     get radioDetailsForm(): FormGroup {
