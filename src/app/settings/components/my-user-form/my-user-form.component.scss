@@ -1,0 +1,39 @@
+.wrapper {
+    width: 460px;
+    margin: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    padding: 30px;
+}
+
+form{
+    width: 400px;
+    margin: auto;
+}
+
+.table-container > * {
+    width: 100%;
+}
+
+button {
+    font-weight: 400;
+    width: 100%;
+    &:first-child{
+        margin-bottom: 15px;
+    }
+}
+
+.buttons-row {
+    padding: 17px 0;
+}
+
+.changeButtonBgColor {
+    background-color: #3F51B5;
+    color: #fff;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.85;   
+}
+
