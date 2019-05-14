@@ -1,0 +1,33 @@
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchUser($event)"></app-search>
+    </app-toolbar-column>
+    <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+</app-base-header>
+
+
+<mat-tab-group [@.disabled]="true">
+    <!-- My User -->
+    <mat-tab label="My User">
+        <smi-my-user-form
+            [group]="myUserForm"
+            [showButtons]="showButtons">
+        </smi-my-user-form>
+    </mat-tab>
+
+    <!-- All Users -->
+    <mat-tab label="All Users">
+        <smi-users-table 
+            [data]="users$ | async"
+            (editUser)="onEditUser($event)"
+            (addUser)="onAddUser($event)">
+        </smi-users-table>
+    </mat-tab>
+
+    <!-- Organisation -->
+    <mat-tab label="Organisation">
+        <smi-organisation></smi-organisation>
+    </mat-tab>
+</mat-tab-group>
