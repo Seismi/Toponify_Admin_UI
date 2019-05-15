@@ -1,0 +1,41 @@
+<form [formGroup]="group">
+
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="name">
+    </div>
+  
+    <div class="form-group">
+      <label>Category</label>
+      <input type="text" class="form-control" [readonly]="true" formControlName="category">
+    </div>
+  
+    <div class="form-group" *ngIf="!clickedOnLink">
+      <label>Owner</label>
+      <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="owner">
+    </div>
+  
+    <div class="form-group">
+      <label>Description</label>
+      <textarea class="form-control" rows="4" [ngClass]="{disabled: !isEditable}" formControlName="description"></textarea>
+    </div>
+  
+    <div class="form-group" *ngIf="!clickedOnLink">
+      <label>Tags</label>
+      <textarea class="form-control" rows="2" [ngClass]="{disabled: !isEditable}" formControlName="tags"></textarea>
+    </div>
+  
+    <div class="form-group" *ngIf="!clickedOnLink">
+      <label>Direct Dependencies</label>
+      <textarea class="form-control" rows="2" [ngClass]="{disabled: !isEditable}" formControlName="directDependencies"></textarea>
+    </div>
+
+  <div class="form-group">
+    <button *ngIf="!isEditable" mat-flat-button color="primary" [disabled]="nodeSelected" (click)="onEdit()">Edit</button>
+    <button *ngIf="!isEditable" mat-flat-button color="warn" [disabled]="nodeSelected" (click)="onDelete()">Delete</button>
+    <div *ngIf="isEditable">
+        <button mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
+        <button mat-flat-button (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+</form>

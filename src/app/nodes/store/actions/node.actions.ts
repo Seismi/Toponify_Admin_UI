@@ -1,7 +1,7 @@
 
 import { Action } from '@ngrx/store';
-import { Node, Error, NodeDetail } from '../models/node.model'
-import { NodeLink, NodeLinkDetail } from '../models/node-link.model'
+import { Node, Error, NodeDetail } from '../models/node.model';
+import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 
 export enum NodeActionTypes {
   LoadNodes = '[Node] Load Nodes',
@@ -19,7 +19,7 @@ export enum NodeActionTypes {
 }
 
 export class LoadNodes implements Action {
-  readonly type = NodeActionTypes.LoadNodes
+  readonly type = NodeActionTypes.LoadNodes;
 }
 
 export class LoadNodesSuccess implements Action {
@@ -33,7 +33,7 @@ export class LoadNodesFailure implements Action {
 }
 
 export class LoadNode implements Action {
-  readonly type = NodeActionTypes.LoadNode
+  readonly type = NodeActionTypes.LoadNode;
   constructor(public payload: string) { }
 }
 
@@ -48,7 +48,7 @@ export class LoadNodeFailure implements Action {
 }
 
 export class LoadNodeLinks implements Action {
-  readonly type = NodeActionTypes.LoadNodeLinks
+  readonly type = NodeActionTypes.LoadNodeLinks;
 }
 
 export class LoadNodeLinksSuccess implements Action {
@@ -62,7 +62,7 @@ export class LoadNodeLinksFailure implements Action {
 }
 
 export class LoadNodeLink implements Action {
-  readonly type = NodeActionTypes.LoadNodeLink
+  readonly type = NodeActionTypes.LoadNodeLink;
   constructor(public payload: string) { }
 }
 
@@ -90,6 +90,6 @@ export type NodeActionsUnion =
   | LoadNodeLinksFailure
   | LoadNodeLink
   | LoadNodeLinkSuccess
-  | LoadNodeLinkFailure
+  | LoadNodeLinkFailure;
 
 

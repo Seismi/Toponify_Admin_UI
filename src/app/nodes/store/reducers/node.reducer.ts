@@ -53,6 +53,22 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
         };
       }
 
+      case NodeActionTypes.LoadNodeLinksSuccess: {
+        return {
+          ...state,
+          loading: false,
+          links: action.payload
+        };
+      }
+
+      case NodeActionTypes.LoadNodeLinksFailure: {
+        return {
+          ...state,
+          loading: false,
+          error: action.payload
+        };
+      }
+
     case NodeActionTypes.LoadNodeLinksSuccess: {
       return {
         ...state,

@@ -2,8 +2,11 @@ export interface VersionSystemApiResponse {
   data?: (System)[] | null;
 }
 export enum systemCategories {
-  relational = 'relational',
-  multiDimensional = 'multidimensional'
+  transactional = 'transactional',
+  analytical = 'analytical',
+  file = 'file',
+  reporting = 'reporting',
+  masterData = 'master data'
 }
 export class System {
   id: string;

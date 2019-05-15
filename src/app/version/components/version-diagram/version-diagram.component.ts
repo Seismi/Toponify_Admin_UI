@@ -124,17 +124,32 @@ export class VersionDiagramComponent implements OnInit, OnChanges, OnDestroy {
 
     // Set node templates
     this.diagram.nodeTemplateMap.add(
-      'relational',
+      'transactional',
       diagramService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'multidimensional',
+      'analytical',
       diagramService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      'model',
+      'file',
+      diagramService.getSystemNodeTemplate()
+    );
+
+    this.diagram.nodeTemplateMap.add(
+      'reporting',
+      diagramService.getSystemNodeTemplate()
+    );
+
+    this.diagram.nodeTemplateMap.add(
+      'physical',
+      diagramService.getModelNodeTemplate()
+    );
+
+    this.diagram.nodeTemplateMap.add(
+      'virtual',
       diagramService.getModelNodeTemplate()
     );
 
@@ -288,6 +303,11 @@ export class VersionDiagramComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.diagramService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
+
+    this.diagramService.masterDataTemplate.subscribe(function(template) {
+        this.diagram.nodeTemplateMap.add('master data', template);
+      }.bind(this)
+    );
   }
 
   // Updates the properties associated with a node or link

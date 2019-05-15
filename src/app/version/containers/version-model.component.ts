@@ -254,7 +254,7 @@ export class VersionModelComponent implements OnInit, OnDestroy {
 
   }
 
-  onEditDetails(){
+  onEditDetails() {
     this.isEditable = true;
   }
 

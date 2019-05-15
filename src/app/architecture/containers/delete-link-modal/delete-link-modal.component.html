@@ -1,0 +1,38 @@
+<h1 mat-dialog-title>
+  <span *ngIf="link && link.object && link.object.name else elseBlock">Are you sure you want to delete "{{ link.object.name }}" link ?</span>
+  <ng-template #elseBlock>Are you sure you want to delete this link ?</ng-template>
+</h1>
+<mat-dialog-content>
+  <ng-container *ngIf="error">
+    <h2 class="error">{{ error }}</h2>
+  </ng-container>
+  <ng-container *ngIf="processing">
+    <mat-spinner></mat-spinner>
+  </ng-container>
+  <ng-container *ngIf="!processing">
+    <ng-container *ngIf="link.links && link.links.length > 0">
+      <p><strong>Link contain following links:</strong></p>
+      <ul>
+        <li *ngFor="let link of link.links">{{ getLinkName(link) }}</li>
+      </ul>
+    </ng-container>
+
+    <ng-container *ngIf="link.descendants && link.descendants.length > 0">
+      <p><strong>Link contain following descendants:</strong></p>
+      <ul>
+        <li *ngFor="let descendant of link.descendants">
+          {{ getNodeName(descendant) }}
+        </li>
+      </ul>
+    </ng-container>
+  </ng-container>
+</mat-dialog-content>
+<div mat-dialog-actions>
+  <ng-container *ngIf="!error">
+    <button mat-button (click)="onYes()">Yes</button>
+     <button mat-button (click)="onNo()">No</button>
+   </ng-container>
+   <ng-container *ngIf="error">
+       <button mat-button (click)="onNo()">Ok</button>
+     </ng-container>
+</div>
