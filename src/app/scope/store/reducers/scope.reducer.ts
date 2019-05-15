@@ -2,7 +2,7 @@ import { ScopeDetails, Page, Links, ScopeEntity } from '../models/scope.model';
 import { ScopeActionTypes, ScopeActionsUnion } from '../actions/scope.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
-export interface ScopeState {
+export interface State {
   loading: boolean;
   entities: ScopeEntity[];
   selected: ScopeDetails;
@@ -11,7 +11,7 @@ export interface ScopeState {
   error?: HttpErrorResponse | { message: string };
 }
 
-export const initialState: ScopeState = {
+export const initialState: State = {
   loading: false,
   entities: null,
   selected: null,
@@ -20,7 +20,7 @@ export const initialState: ScopeState = {
   error: null
 };
 
-export function reducer(state = initialState, action: ScopeActionsUnion): ScopeState {
+export function reducer(state = initialState, action: ScopeActionsUnion): State {
   switch (action.type) {
 
     case ScopeActionTypes.LoadScopes: {

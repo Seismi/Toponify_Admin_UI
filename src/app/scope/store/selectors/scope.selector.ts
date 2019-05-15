@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { ScopeState } from '../reducers/scope.reducer';
+import { State } from '../reducers/scope.reducer';
 
-export const getScopeFeatureState = createFeatureSelector<ScopeState>('scopeFeature');
+export const getScopeFeatureState = createFeatureSelector<State>('scopeFeature');
 
 export const getScopeEntities = createSelector(
     getScopeFeatureState,
