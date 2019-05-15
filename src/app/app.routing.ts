@@ -28,10 +28,6 @@ const routes: Routes = [
         loadChildren: './architecture/architecture.module#ArchitectureModule'
       },
       {
-        path: 'version',
-        loadChildren: './version/version.module#VersionModule'
-      },
-      {
         path: 'documentation-standards',
         loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
       },

@@ -7,10 +7,10 @@ import 'gojs/extensions/Figures.js';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import * as uuid from 'uuid/v4';
 // import { SetMapView } from '@app/version/store/actions/mapview.actions';
-import {layers, Node, nodeCategories} from '@app/nodes/store/models/node.model';
-import {linkCategories} from '@app/nodes/store/models/node-link.model';
-import {FilterService} from '@app/architecture/services/filter.service';
-import {ArchitectureState} from '@app/architecture/store/reducers';
+import { Node, nodeCategories, layers } from '@app/nodes/store/models/node.model';
+import { NodeLink, linkCategories } from '@app/nodes/store/models/node-link.model';
+import { FilterService } from '@app/architecture/services/filter.service';
+import { State as ArchitectureState} from '@app/architecture/store/reducers/view.reducer';
 
 const $ = go.GraphObject.make;
 

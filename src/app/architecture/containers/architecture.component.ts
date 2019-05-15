@@ -1,29 +1,26 @@
-import * as fromArchitecture from '../store/reducers';
 import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions';
 import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { LinkType, NodeType } from '@app/nodes/services/node.service';
+import { linkCategories, NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
-import {linkCategories, NodeLink} from '@app/nodes/store/models/node-link.model';
-// import {Attribute} from '?/store/models/attribute.model';
-import {ArchitectureDiagramComponent} from '../components/architecture-diagram/architecture-diagram.component';
-import {ActivatedRoute} from '@angular/router';
-import {ObjectDetailsService} from '../components/object-details-form/services/object-details-form.service';
-import {ObjectDetailsValidatorService} from '../components/object-details-form/services/object-details-form-validator.service';
-import {MatDialog} from '@angular/material';
-import {FormGroup} from '@angular/forms';
-
-import {NodeType, LinkType} from '@app/nodes/services/node.service';
-import {DeleteNodeModalComponent} from '../containers/delete-node-modal/delete-node-modal.component';
-// import {DeleteNodeSuccess} from '@app/nodes/store/actions/node.actions';
-import {DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
-// import {DeleteLinkSuccess} from '@app/nodes/store/actions/node.actions';
-import {DeleteModalComponent} from '../containers/delete-modal/delete-modal.component';
-import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.selector';
+import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
+// import {Attribute} from '?/store/models/attribute.model';
+import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
+import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
+import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
+// import {DeleteNodeSuccess} from '@app/nodes/store/actions/node.actions';
+import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
+// import {DeleteLinkSuccess} from '@app/nodes/store/actions/node.actions';
+import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.component';
+import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
+import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
-
-
 
 @Component({
   selector: 'smi-architecture',
@@ -60,7 +57,7 @@ export class ArchitectureComponent implements OnInit {
 
   constructor(
     private nodeStore: Store<NodeState>,
-    private store: Store<fromArchitecture.State>,
+    private store: Store<ViewState>,
     private route:  ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
     public dialog: MatDialog
@@ -91,7 +88,6 @@ export class ArchitectureComponent implements OnInit {
   }
 
   setNodesLinks = (level: number) => {
-
     if (level !== 5) {
       this.showTable = false;
       this.showPalette = true;
