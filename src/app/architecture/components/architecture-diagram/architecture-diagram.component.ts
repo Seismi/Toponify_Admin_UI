@@ -143,12 +143,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.physical,
-      diagramService.getModelNodeTemplate()
+      diagramService.getDataSetNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.virtual,
-      diagramService.getModelNodeTemplate()
+      diagramService.getDataSetNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
@@ -158,17 +158,17 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.list,
-      diagramService.getElementNodeTemplate()
+      diagramService.getReportingConceptNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.structure,
-      diagramService.getElementNodeTemplate()
+      diagramService.getReportingConceptNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      nodeCategories.rollup,
-      diagramService.getElementNodeTemplate()
+      nodeCategories.key,
+      diagramService.getReportingConceptNodeTemplate()
     );
 
     // Set links templates
@@ -414,11 +414,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         // Temporary - create copy to fix bug that arises when using sample data from json server
         nodeArray = JSON.parse(JSON.stringify(nodeArray));
 
-        // Filter sample data here
-        nodeArray = nodeArray.filter(function(node) {
-          return (node.layer === 'system'); // viewLevelMapping[this.viewLevel]);
-        }.bind(this));
-
         this.diagram.model.nodeDataArray = [...nodeArray];
         if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }
       }
@@ -444,11 +439,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
         // Temporary - create copy to fix bug that arises when using sample data from json server
         linkArray = JSON.parse(JSON.stringify(linkArray));
-
-        // Filter sample data here
-        linkArray = linkArray.filter(function(link) {
-          return (link.layer === 'system'); // viewLevelMapping[this.viewLevel]);
-        }.bind(this));
 
         (this.diagram.model as go.GraphLinksModel).linkDataArray = [...linkArray];
         if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }

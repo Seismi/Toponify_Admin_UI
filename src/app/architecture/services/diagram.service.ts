@@ -196,7 +196,7 @@ export class DiagramService implements OnDestroy {
     diagram.commandHandler.copyToClipboard(null);
 
     diagram.nodeTemplateMap.add(nodeCategories.masterData,
-      (level === Level.dataSet) ? this.getModelNodeTemplate() : this.getSystemNodeTemplate()
+      (level === Level.dataSet) ? this.getDataSetNodeTemplate() : this.getSystemNodeTemplate()
     );
 
     // Array of nodes to be used in the palette
@@ -286,10 +286,10 @@ export class DiagramService implements OnDestroy {
           layer: layers.reportingConcept,
           category: nodeCategories.structure
         }),
-        new Node({ id: 'New Rollup Reporting Concept',
-          name: 'New Rollup Reporting Concept',
+        new Node({ id: 'New Key Reporting Concept',
+          name: 'New Key Reporting Concept',
           layer: layers.reportingConcept,
-          category: nodeCategories.rollup
+          category: nodeCategories.key
         })
       ];
     }
@@ -342,7 +342,7 @@ export class DiagramService implements OnDestroy {
     }
 
     this.masterDataTemplateSource.next((level === Level.dataSet) ?
-      this.getModelNodeTemplate() :
+      this.getDataSetNodeTemplate() :
       this.getSystemNodeTemplate()
     );
 
@@ -673,7 +673,7 @@ export class DiagramService implements OnDestroy {
 
     const currentLevel = this.filter.getValue().filterLevel;
 
-    // Only implemented for system, model and dimension views so far
+    // Only implemented for system, data set and dimension views so far
     if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
 
     event.subject.each(function(part: go.Part) {
@@ -706,7 +706,7 @@ export class DiagramService implements OnDestroy {
 
     const currentLevel = this.filter.getValue().filterLevel;
 
-    // Only implemented for system, model and dimension views so far
+    // Only implemented for system, data set and dimension views so far
     if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
 
     // Set to contain all parts to update
@@ -771,7 +771,7 @@ export class DiagramService implements OnDestroy {
     const link = event.subject;
     const currentLevel = this.filter.getValue().filterLevel;
 
-    // Only implemented for system, model and dimension views so far
+    // Only implemented for system, data set and dimension views so far
     if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
 
     // Ignore disconnected links
@@ -888,7 +888,7 @@ export class DiagramService implements OnDestroy {
         isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this),
+        // doubleClick: this.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -998,25 +998,25 @@ export class DiagramService implements OnDestroy {
           {
             stretch: go.GraphObject.Horizontal
           },
-          // Model list header
+          // Data set list header
           $(go.TextBlock,
             {
-              text: 'Models',
+              text: 'Data Sets',
               row: 1,
               alignment: go.Spot.Center,
               stroke: 'black',
               font: 'bold 15.25px calibri',
               margin: new go.Margin(5, 0, 0, 0)
             },
-            // Hide models header if system has no models
+            // Hide data sets header if system has no data sets
             new go.Binding('visible', 'descendants',
               function(descendants) {return descendants.length > 0; }
             )
           ),
-          // Model list
+          // Data set list
           $(go.Panel, 'Vertical',
             {
-              name: 'Model_List',
+              name: 'Data_Set_List',
               padding: 3,
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
@@ -1031,9 +1031,9 @@ export class DiagramService implements OnDestroy {
     );
   }
 
-  getModelNodeTemplate() {
+  getDataSetNodeTemplate() {
 
-    // Template for Model
+    // Template for Data Set
     return $(
       go.Node,
       'Auto',
@@ -1048,7 +1048,7 @@ export class DiagramService implements OnDestroy {
         isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this),
+        // doubleClick: this.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -1095,7 +1095,7 @@ export class DiagramService implements OnDestroy {
             }
           )
         ),
-        // Model name
+        // Data set name
         $(
           go.TextBlock,
           {
@@ -1108,7 +1108,7 @@ export class DiagramService implements OnDestroy {
           new go.Binding('text', 'name'),
           new go.Binding('visible', 'name').ofModel()
         ),
-        // Model description
+        // Data set description
         $(go.TextBlock,
           {
             textAlign: 'center',
@@ -1120,7 +1120,7 @@ export class DiagramService implements OnDestroy {
           new go.Binding('text', 'description'),
           new go.Binding('visible', 'description').ofModel()
          ),
-        // Model tags
+        // Data set tags
         $(go.TextBlock,
           {
             textAlign: 'center',
@@ -1133,7 +1133,7 @@ export class DiagramService implements OnDestroy {
           }),
           new go.Binding('visible', 'tags').ofModel()
         ),
-        // Model owners
+        // Data set owners
         $(go.TextBlock,
           {
             textAlign: 'center',
@@ -1161,7 +1161,7 @@ export class DiagramService implements OnDestroy {
               font: 'bold 15.25px calibri',
               margin: new go.Margin(5, 0, 0, 0)
             },
-            // Hide dimensions header if model has no dimensions
+            // Hide dimensions header if data set has no dimensions
             new go.Binding('visible', 'descendants',
               function(descendants) {return descendants.length > 0; }
             )
@@ -1199,7 +1199,7 @@ export class DiagramService implements OnDestroy {
         isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this),
+        // doubleClick: this.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -1207,7 +1207,7 @@ export class DiagramService implements OnDestroy {
       // this.mapView ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape,
-        'RoundedRectangle',
+        'Rectangle',
         {
           fill: 'white',
           stroke: 'black',
@@ -1251,6 +1251,14 @@ export class DiagramService implements OnDestroy {
           minSize: new go.Size(100, 100),
           margin: 5
         },
+        $(go.TextBlock,
+          {
+            alignment: go.Spot.TopRight,
+            background: null,
+            font: 'bold 20px calibri',
+            text: 'D'
+          }
+        ),
         // Dimension name
         $(go.TextBlock,
           {
@@ -1307,25 +1315,25 @@ export class DiagramService implements OnDestroy {
           {
             stretch: go.GraphObject.Horizontal
           },
-          // Element list header
+          // Reporting concept list header
           $(go.TextBlock,
             {
-              text: 'Elements',
+              text: 'Reporting Concepts',
               row: 1,
               alignment: go.Spot.Center,
               stroke: 'black',
               font: 'bold 15.25px calibri',
               margin: new go.Margin(5, 0, 0, 0)
             },
-            // Hide elements header if dimension has no elements
+            // Hide reporting concepts header if dimension has no reporting concepts
             new go.Binding('visible', 'descendants',
               function(descendants) {return descendants.length > 0; }
             )
           ),
-          // Element list
+          // Reporting concept list
           $(go.Panel, 'Vertical',
             {
-              name: 'Element_List',
+              name: 'Reporting concept_List',
               padding: 3,
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
@@ -1340,9 +1348,9 @@ export class DiagramService implements OnDestroy {
     );
   }
 
-  getElementNodeTemplate() {
+  getReportingConceptNodeTemplate() {
 
-    // Template for master data elements
+    // Template for reporting concept nodes
     return $(
       go.Node,
       'Auto',
@@ -1362,13 +1370,13 @@ export class DiagramService implements OnDestroy {
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape,
-        new go.Binding('figure', 'subCategory', function(subcategory) {
-          if (subcategory === 'mdlist') {
+        new go.Binding('figure', 'category', function(category) {
+          if (category === 'key') {
+            return 'SquareArrow';
+          } else if (category === 'list') {
             return 'Process';
-          } else if (subcategory === 'mdstructure') {
-            return 'InternalStorage';
           } else {
-            return 'Document';
+            return 'InternalStorage';
           }
         }),
         {
@@ -1392,7 +1400,7 @@ export class DiagramService implements OnDestroy {
           minSize: new go.Size(100, 100),
           margin: 5
         },
-        // Element name
+        // Reporting concept name
         $(go.TextBlock,
           {
             textAlign: 'center',
@@ -1404,7 +1412,7 @@ export class DiagramService implements OnDestroy {
           new go.Binding('text', 'name'),
           new go.Binding('visible', 'name').ofModel()
          ),
-        // Element description
+        // Reporting concept description
         $(go.TextBlock,
           {
             textAlign: 'center',
@@ -1416,7 +1424,7 @@ export class DiagramService implements OnDestroy {
           new go.Binding('text', 'description'),
           new go.Binding('visible', 'description').ofModel()
          ),
-        // Element tags
+        // Reporting concept tags
         $(go.TextBlock,
           {
             textAlign: 'center',
@@ -1430,7 +1438,7 @@ export class DiagramService implements OnDestroy {
           ),
           new go.Binding('visible', 'tags').ofModel()
         ),
-        // Element owners
+        // Reporting concept owners
         $(go.TextBlock,
           {
             textAlign: 'center',
@@ -1456,9 +1464,10 @@ export class DiagramService implements OnDestroy {
               alignment: go.Spot.Center,
               stroke: 'black',
               font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0)
+              margin: new go.Margin(5, 0, 0, 0),
+              visible: false
             },
-            // Hide attributes header if element has no attributes
+            // Hide attributes header if Reporting concept has no attributes
             new go.Binding('visible', 'attributes',
               function(attributes) {return attributes.length > 0; }
             )
@@ -1516,7 +1525,7 @@ export class DiagramService implements OnDestroy {
         relinkableTo: true,
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
-        doubleClick: this.displayMapView.bind(this),
+        // doubleClick: this.displayMapView.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -1708,7 +1717,7 @@ export class DiagramService implements OnDestroy {
               }
             }
 
-            // Can reorder elements
+            // Can reorder Reporting concepts
             const ay = a.location.y;
             const by = b.location.y;
             if (isNaN(ay) || isNaN(by)) {return 0; }

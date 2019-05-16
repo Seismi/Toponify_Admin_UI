@@ -24,6 +24,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.initialScale = 0.5;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
+    this.palette.autoScrollRegion = new go.Margin(0);
     (this.palette.model as go.GraphLinksModel).linkKeyProperty = 'id';
     this.palette.model.modelData = {
       name: true,
@@ -62,12 +63,12 @@ export class ArchitecturePaletteComponent implements OnInit {
 
     this.palette.nodeTemplateMap.add(
       nodeCategories.physical,
-      diagramService.getModelNodeTemplate()
+      diagramService.getDataSetNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
       nodeCategories.virtual,
-      diagramService.getModelNodeTemplate()
+      diagramService.getDataSetNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
@@ -77,17 +78,17 @@ export class ArchitecturePaletteComponent implements OnInit {
 
     this.palette.nodeTemplateMap.add(
       nodeCategories.list,
-      diagramService.getElementNodeTemplate()
+      diagramService.getReportingConceptNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
       nodeCategories.structure,
-      diagramService.getElementNodeTemplate()
+      diagramService.getReportingConceptNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.rollup,
-      diagramService.getElementNodeTemplate()
+      nodeCategories.key,
+      diagramService.getReportingConceptNodeTemplate()
     );
 
     // Set links templates

@@ -20,7 +20,7 @@ export enum nodeCategories {
   dimension = 'dimension',
   list = 'list',
   structure = 'structure',
-  rollup = 'rollup'
+  key = 'key'
 }
 
 export class Node {

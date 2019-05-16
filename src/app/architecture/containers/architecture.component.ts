@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { LinkType, NodeType } from '@app/nodes/services/node.service';
 import { linkCategories, NodeLink } from '@app/nodes/store/models/node-link.model';
-import { Node } from '@app/nodes/store/models/node.model';
+import {Node, nodeCategories} from '@app/nodes/store/models/node.model';
 import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.selector';
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
@@ -21,6 +21,7 @@ import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.co
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
+import {filter, map} from 'rxjs/operators';
 
 @Component({
   selector: 'smi-architecture',
@@ -100,20 +101,36 @@ export class ArchitectureComponent implements OnInit {
 
     switch (level) {
       case 1:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
+          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'system'; }) : null; })
+        );
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
+          map(function(links) {return links ? links.filter(function(link) {return link.layer === 'system'; }) : null; })
+        );
         break;
       case 2:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
+          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'data set'; }) : null; })
+        );
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
+          map(function(links) {return links ? links.filter(function(link) {return link.layer === 'data set'; }) : null; })
+        );
         break;
       case 3:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
+          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'dimension'; }) : null; })
+        );
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
+          map(function(links) {return  links ? links.filter(function(link) {return link.layer === 'dimension'; }) : null; })
+        );
         break;
       case 4:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
+          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'reporting concept'; }) : null; })
+        );
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
+          map(function(links) {return  links ? links.filter(function(link) {return link.layer === 'reporting concept'; }) : null; })
+        );
         break;
       case 5:
         // this.nodes$ = this.store.pipe(select(???));
@@ -123,8 +140,12 @@ export class ArchitectureComponent implements OnInit {
         this.nodeLinks$ = this.store.pipe(select(???));*/
         break;
       default:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
+        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
+          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'system'; }) : null; })
+        );
+        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
+          map(function(links) {return links ? links.filter(function(link) {return link.layer === 'system'; }) : null; })
+        );
     }
   }
 
