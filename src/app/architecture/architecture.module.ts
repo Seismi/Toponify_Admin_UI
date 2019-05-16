@@ -21,7 +21,6 @@ import { ArchitectureDiagramComponent } from './components/architecture-diagram/
 import { ArchitecturePaletteComponent } from './components/architecture-palette/architecture-palette.component';
 import { CategoryTableComponent } from './components/category-table/category-table.component';
 import { TableCollapseComponent } from './components/category-table/table-collapse/table-collapse.component';
-import { ColorsPickerComponent } from './components/color-picker/color-picker.component';
 import { ObjectDetailsFormComponent } from './components/object-details-form/object-details-form.component';
 import { ArchitectureRoutingComponent } from './containers/architecture-routing.component';
 import { ArchitectureComponent } from './containers/architecture.component';
@@ -72,7 +71,6 @@ import { RightPanelComponent } from './containers/right-panel.component';
       TableCollapseComponent,
       LeftPanelComponent,
       AnalysisTabComponent,
-      ColorsPickerComponent,
       DeleteNodeModalComponent,
       DeleteLinkModalComponent,
       AddAttrAndRulesComponent
