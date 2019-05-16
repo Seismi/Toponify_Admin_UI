@@ -15,6 +15,11 @@ import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
 import {nodeCategories} from '@app/nodes/store/models/node.model';
+import {DiagramTemplatesService} from '../../services/diagram-templates.service';
+import {DiagramLevelService} from '../..//services/diagram-level.service';
+import {DiagramChangesService} from '../..//services/diagram-changes.service';
+import {GojsCustomObjectsService} from '../..//services/gojs-custom-objects.service';
+import {DiagramListenersService} from '@app/architecture/services/diagram-listeners.service';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -71,9 +76,15 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       : viewLevelMapping[1];
   }
 
-  constructor(public diagramService: DiagramService) {
+  constructor(
+    public diagramTemplatesService: DiagramTemplatesService,
+    public diagramLevelService: DiagramLevelService,
+    public diagramChangesService: DiagramChangesService,
+    public gojsCustomObjectsService: GojsCustomObjectsService,
+    public diagramListenersService: DiagramListenersService
+    ) {
     // Lets init url filtering
-    this.diagramService.initializeUrlFiltering();
+    this.diagramLevelService.initializeUrlFiltering();
     // // Place GoJS license key here:
     // // (go as any).licenseKey = '...'
     this.diagram = new go.Diagram();
@@ -118,110 +129,71 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     };
 
     // Set context menu
-    this.diagram.contextMenu = diagramService.getBackgroundContextMenu();
+    this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
 
     // Set node templates
     this.diagram.nodeTemplateMap.add(
       nodeCategories.transactional,
-      diagramService.getSystemNodeTemplate()
+      diagramTemplatesService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.analytical,
-      diagramService.getSystemNodeTemplate()
+      diagramTemplatesService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.file,
-      diagramService.getSystemNodeTemplate()
+      diagramTemplatesService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.reporting,
-      diagramService.getSystemNodeTemplate()
+      diagramTemplatesService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.physical,
-      diagramService.getDataSetNodeTemplate()
+      diagramTemplatesService.getDataSetNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.virtual,
-      diagramService.getDataSetNodeTemplate()
+      diagramTemplatesService.getDataSetNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.dimension,
-      diagramService.getDimensionNodeTemplate()
+      diagramTemplatesService.getDimensionNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.list,
-      diagramService.getReportingConceptNodeTemplate()
+      diagramTemplatesService.getReportingConceptNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.structure,
-      diagramService.getReportingConceptNodeTemplate()
+      diagramTemplatesService.getReportingConceptNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       nodeCategories.key,
-      diagramService.getReportingConceptNodeTemplate()
+      diagramTemplatesService.getReportingConceptNodeTemplate()
     );
 
     // Set links templates
     this.diagram.linkTemplateMap.add(
       linkCategories.data,
-      diagramService.getLinkDataTemplate()
+      diagramTemplatesService.getLinkDataTemplate()
     );
 
     this.diagram.linkTemplateMap.add(
       linkCategories.masterData,
-      diagramService.getLinkMasterDataTemplate()
+      diagramTemplatesService.getLinkMasterDataTemplate()
     );
 
-    this.diagram.groupTemplate = diagramService.getModelGroupTemplate();
-
-    this.diagram.addDiagramListener(
-      'ChangedSelection',
-      this.handleChangedSelection.bind(this)
-    );
-
-    // Temporary
-    this.diagram.addDiagramListener(
-      'BackgroundDoubleClicked',
-      function() {
-        console.log();
-      }.bind(this)
-    );
-
-    this.diagram.addDiagramListener(
-      'ExternalObjectsDropped',
-      diagramService.createObjects.bind(this.diagramService)
-    );
-
-    this.diagram.addDiagramListener(
-      'SelectionMoved',
-      diagramService.updatePosition.bind(this.diagramService)
-    );
-
-    this.diagram.addDiagramListener(
-      'LinkRelinked',
-      diagramService.updateLinkConnections.bind(this.diagramService)
-    );
-
-    this.diagram.addDiagramListener(
-      'LinkReshaped',
-      function(event: any) {
-        event.subject = new go.Set([event.subject]);
-
-        if (this.diagramService.standardDisplay) {
-          this.diagramService.updatePosition(event);
-        }
-      }.bind(this)
-    );
+    this.diagram.groupTemplate = diagramTemplatesService.getModelGroupTemplate();
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
@@ -260,24 +232,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     }.bind(this);
 
-    this.diagram.addDiagramListener('SelectionMoved', this.diagramService.relayoutGroups);
-
-    // After diagram layout, redo group layouts in map view to correct link paths
-    this.diagram.addDiagramListener('LayoutCompleted', function() {
-
-      if (this.mapView && this.diagramService.groupLayoutInitial) {
-        this.diagram.findTopLevelGroups().each(function(group) {group.invalidateLayout(); });
-        if (this.diagram.model.nodeDataArray.length !== 0) {
-          // Indicate that the initial layout for the groups has been performed
-          this.diagramService.groupLayoutInitial = false;
-          // Reset content alignment to the default after layout has been completed so that diagram can be scrolled
-          this.diagram.contentAlignment = go.Spot.Default;
-        }
-      }
-
-    }.bind(this));
-
-    this.diagram.addModelChangedListener(this.handleModelChange.bind(this));
+    diagramListenersService.enableListeners(this.diagram);
   }
 
   // Zoom out diagram
@@ -314,10 +269,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   }
 
   ngOnInit() {
-    this.diagramService.initializeUrlFiltering();
+    this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
 
-    this.diagramService.masterDataTemplate.subscribe(function(template) {
+    this.diagramLevelService.masterDataTemplate.subscribe(function(template) {
         this.diagram.nodeTemplateMap.add(nodeCategories.masterData, template);
       }.bind(this)
     );
@@ -353,7 +308,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     model.setDataProperty(model.modelData, option, event.checked);
 
     // In standard display mode if the display options are all set to their standard values
-    this.diagramService.standardDisplay = Object.keys(standardDisplayOptions).every(function(displayOption) {
+    this.diagramChangesService.standardDisplay = Object.keys(standardDisplayOptions).every(function(displayOption) {
       return (standardDisplayOptions[displayOption] === model.modelData[displayOption]);
     });
 
@@ -366,11 +321,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   }
 
   ngOnDestroy(): void {
-    this.diagramService.destroyUrlFiltering();
+    this.diagramLevelService.destroyUrlFiltering();
   }
 
   setLevel() {
-    this.diagramService.changeLevel(this.diagram, this.level);
+    this.diagramLevelService.changeLevel(this.diagram, this.level);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -391,64 +346,18 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       this.setLevel();
     }
 
-    const filter = this.diagramService.filter.getValue();
-
     if (changes.nodes) {
-      if (this.nodes && this.nodes.length > 0) {
-
-        let nodeArray = this.nodes;
-        // Check if filter is set
-        if (filter && filter.filterNodeIds) {
-
-          // Include only nodes specified in the filter
-          nodeArray = nodeArray.filter(function (node) {
-            return filter.filterNodeIds.includes(node.id);
-          }, this);
-        }
-
-        if (this.diagramService.mapView) {
-          nodeArray.push(this.diagramService.mapView.sourceModel);
-          nodeArray.push(this.diagramService.mapView.targetModel);
-        }
-
-        // Temporary - create copy to fix bug that arises when using sample data from json server
-        nodeArray = JSON.parse(JSON.stringify(nodeArray));
-
-        this.diagram.model.nodeDataArray = [...nodeArray];
-        if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }
-      }
+      this.diagramChangesService.updateNodes(this.diagram, changes.nodes);
     }
 
     if (changes.links) {
-      if (this.links && this.links.length > 0) {
-
-        const sourceProp = (this.diagram.model as any).linkFromKeyProperty;
-        const targetProp = (this.diagram.model as any).linkToKeyProperty;
-
-        let linkArray = this.links;
-
-        // Check if filter is set
-        if (filter && filter.filterNodeIds) {
-
-          // Include only links between nodes that are both specified in the filter
-          linkArray = linkArray.filter(function (link) {
-            return filter.filterNodeIds.includes(link[sourceProp]) &&
-              filter.filterNodeIds.includes(link[targetProp]);
-          }, this);
-        }
-
-        // Temporary - create copy to fix bug that arises when using sample data from json server
-        linkArray = JSON.parse(JSON.stringify(linkArray));
-
-        (this.diagram.model as go.GraphLinksModel).linkDataArray = [...linkArray];
-        if (this.diagram.layout.isValidLayout) { this.diagram.layout.isValidLayout = false; }
-      }
+      this.diagramChangesService.updateLinks(this.diagram, changes.links);
     }
 
     // In map view, perform the layout when nodes and links are both defined
     if (changes.nodes || changes.links) {
       if (this.diagram.model.nodeDataArray.length > 0 && (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0) {
-        if (this.diagramService.mapView) {
+        if (this.diagramLevelService.mapView) {
           this.diagram.layoutDiagram(true);
         }
       }
