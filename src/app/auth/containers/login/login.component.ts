@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
 
 
   onSubmit() {
-    const returnUrl: string = this.route.snapshot.queryParams['returnUrl'] || '/version';
+    const returnUrl: string = this.route.snapshot.queryParams['returnUrl'] || '/home';
     const authenticate: Authenticate = {
       username: this.loginForm.controls.username.value,
       password: this.loginForm.controls.password.value,
