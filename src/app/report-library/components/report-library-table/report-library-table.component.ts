@@ -1,17 +1,6 @@
-import { Component, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
-
-export interface PeriodicElement {
-  name: string;
-  dataSets: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {name: 'Income Statement', dataSets: 'Global Consolidation'},
-  {name: 'Balance Sheet', dataSets: 'Global Consolidation'},
-  {name: 'Cash Flow', dataSets: 'Global Consolidation'},
-  {name: 'Standart Income Statement', dataSets: 'Global Ledger'}
-];
+import { ReportLibrary } from '@app/report-library/store/models/report.model';
 
 
 @Component({
@@ -21,18 +10,23 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class ReportLibraryTableComponent implements OnInit {
 
-  selectedRowIndex: number = -1;
+  @Input()
+  set reports(reports: ReportLibrary[]) {
+    this.dataSource = new MatTableDataSource<ReportLibrary>(reports);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  public dataSource: MatTableDataSource<ReportLibrary>;
+  public displayedColumns: string[] = ['name', 'dataSets'];
+  public selectedRowIndex: number = -1;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
-  displayedColumns: string[] = ['name', 'dataSets'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
 
   @Output()
   reportSelected = new EventEmitter();
