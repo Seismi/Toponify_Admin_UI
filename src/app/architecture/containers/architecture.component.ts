@@ -21,6 +21,10 @@ import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.co
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-architecture',
@@ -35,6 +39,7 @@ export class ArchitectureComponent implements OnInit {
   public selectedPart = null;
   nodes$: Observable<Node[]>;
   nodeLinks$: Observable<NodeLink[]>;
+  workpackage$: Observable<WorkPackageEntity[]>;
   mapView: boolean;
   viewLevel$: Observable<number>;
   mapViewId$: Observable<string>;
@@ -58,6 +63,7 @@ export class ArchitectureComponent implements OnInit {
   constructor(
     private nodeStore: Store<NodeState>,
     private store: Store<ViewState>,
+    private workpackageStore: Store<WorkPackageState>,
     private route:  ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
     public dialog: MatDialog
@@ -70,6 +76,9 @@ export class ArchitectureComponent implements OnInit {
       this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
       this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
 
+      // Load Work Packages
+      this.workpackageStore.dispatch(new LoadWorkPackages({}));
+      this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities))
 
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
