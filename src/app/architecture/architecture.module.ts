@@ -30,6 +30,8 @@ import { DeleteModalComponent } from './containers/delete-modal/delete-modal.com
 import { DeleteNodeModalComponent } from './containers/delete-node-modal/delete-node-modal.component';
 import { LeftPanelComponent } from './containers/left-panel.component';
 import { RightPanelComponent } from './containers/right-panel.component';
+import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
+import { WorkPackageModule } from '@app/workpackage/workpackage.module';
 
 
 @NgModule({
@@ -41,6 +43,7 @@ import { RightPanelComponent } from './containers/right-panel.component';
     ReactiveFormsModule,
     CommonModule,
     CoreModule,
+    WorkPackageModule,
     // CommentsModule,
     MatCardModule,
     MatDividerModule,
@@ -82,7 +85,8 @@ import { RightPanelComponent } from './containers/right-panel.component';
       // AttributeService,
       DiagramService,
       FilterService,
-      NodeService
+      NodeService,
+      WorkPackageService
     ],
 })
 export class ArchitectureModule { }

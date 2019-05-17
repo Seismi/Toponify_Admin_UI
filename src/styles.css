@@ -34,3 +34,7 @@ a {
 .mat-list-item-content {
   padding: 0px 10px!important;
 }
+
+.mat-select-placeholder {
+  color: black !important;
+}
