@@ -12,8 +12,6 @@ import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.s
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
-import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
-import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 // import {DeleteNodeSuccess} from '@app/nodes/store/actions/node.actions';
 import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
 // import {DeleteLinkSuccess} from '@app/nodes/store/actions/node.actions';
@@ -26,6 +24,8 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
+import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 
 @Component({
   selector: 'smi-architecture',
@@ -190,10 +190,6 @@ export class ArchitectureComponent implements OnInit {
     // TODO: send to api new model
     console.log('Model: ', event);
   }
-
-  /* get categoryTableData() {
-    return this.attributes;
-  }*/
 
   get objectDetailsForm(): FormGroup {
     return this.objectDetailsService.objectDetailsForm;

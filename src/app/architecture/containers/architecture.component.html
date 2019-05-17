@@ -39,8 +39,8 @@
     </p>
   </app-model-sidebar>
 
-  <app-model-content
-    ><div style="padding: 5px">
+  <app-model-content>
+    <div style="padding: 5px">
       <app-architecture-diagram
         [mapView]="mapView"
         [showGrid]="showGrid"
@@ -52,15 +52,10 @@
         (nodeSelected)="partSelected($event)"
         (modelChanged)="modelChanged($event)"
         (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
-        (linkDeleteRequested)="handleLinkDeleteRequested($event)"
-      ></app-architecture-diagram>
-      <app-category-table
-        *ngIf="showTable"
-        [data]="categoryTableData"
-        [categories]="['attribute', 'rule']"
-        (selectRow)="onSelectRow($event)"
-      ></app-category-table></div
-  ></app-model-content>
+        (linkDeleteRequested)="handleLinkDeleteRequested($event)">
+      </app-architecture-diagram>
+    </div>
+  </app-model-content>
   <app-model-sidebar [isLast]="true">
     <smi-right-panel
         [group]="objectDetailsForm"
