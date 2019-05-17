@@ -51,6 +51,10 @@ const routes: Routes = [
         path: 'radio',
         loadChildren: './radio/radio.module#RadioModule'
       },
+      {
+        path: 'attributes-and-rules',
+        loadChildren: './attributes/attributes.module#AttributesModule'
+      }
     ]
   },
   {

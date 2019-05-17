@@ -424,7 +424,7 @@
       {
         "id": "8931157e-b89b-4e8a-a3d7-41a0ad250b3c",
         "category": "master data",
-        "name": "Parent Entites Entities - Joint Ventures and Associates",
+        "name": "Parent Entities - Joint Ventures and Associates",
         "layer": "reporting concept",
         "description": "",
         "sourceId": "6b80ff3f-70f2-44df-a0d7-a51239613965",
@@ -434,24 +434,13 @@
       {
         "id": "beb9ef2f-0e54-4873-a6b8-ceefd8a2ccc4",
         "category": "master data",
-        "name": "Parent Entities",
+        "name": "Parent Entities - Adjustment Entities",
         "layer": "reporting concept",
         "description": "",
         "sourceId": "6b80ff3f-70f2-44df-a0d7-a51239613965",
         "targetId": "59e20ad0-51b1-43ec-9370-e93bb4ba0955",
         "routes": []
-      },
-      {
-        "id": "d3adcc88-7225-4951-a8a0-ff1ec11ad8b1",
-        "category": "master data",
-        "name": "Parent Entities - Adjustment Entities",
-        "layer": "reporting concept",
-        "description": "",
-        "sourceId": "e261375c-1bf0-4157-bf69-37aa3d7c48a8",
-        "targetId": "dc20c873-d98e-483a-b3ce-1df70c0457da",
-        "routes": []
-      },
-      {
+      },{
         "id": "5fc1e26e-de24-43f9-9bf5-d8f5bc9a6424",
         "category": "master data",
         "name": "Total Account - Total Profit and Loss - Statutory",
@@ -520,8 +509,16 @@
         "sourceId": "b233dd1f-0ad0-44e1-9ad6-cdb50cfa6dd1",
         "targetId": "59d45144-ae2e-4974-9846-08fc3c0546c4",
         "routes": []
-      },
-      {
+      },{
+        "id": "24725bd3-5301-4d2f-b8a0-218114045de2",
+        "category": "master data",
+        "name": "Total Balance Sheet - Management - Balance Sheet Accounts",
+        "layer": "reporting concept",
+        "description": "",
+        "sourceId": "9b015e19-a506-4a83-9776-46d201d50f56",
+        "targetId": "59d45144-ae2e-4974-9846-08fc3c0546c4",
+        "routes": []
+      },{
         "id": "ceb14b90-6c73-4eaa-8be2-affe8d92b9b6",
         "category": "master data",
         "name": "Account - Cost Centre",

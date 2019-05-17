@@ -1,6 +1,8 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import {DiagramService, Level} from '@app/architecture/services/diagram.service';
 import * as go from 'gojs';
+import {nodeCategories} from '@app/nodes/store/models/node.model';
+import {linkCategories} from '@app/nodes/store/models/node-link.model';
 @Component({
   selector: 'app-architecture-palette',
   templateUrl: './architecture-palette.component.html',
@@ -22,6 +24,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.initialScale = 0.5;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
+    this.palette.autoScrollRegion = new go.Margin(0);
     (this.palette.model as go.GraphLinksModel).linkKeyProperty = 'id';
     this.palette.model.modelData = {
       name: true,
@@ -39,53 +42,63 @@ export class ArchitecturePaletteComponent implements OnInit {
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;
 
     this.palette.nodeTemplateMap.add(
-      'transactional',
+      nodeCategories.transactional,
       diagramService.getSystemNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      'analytical',
+      nodeCategories.analytical,
       diagramService.getSystemNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      'file',
+      nodeCategories.file,
       diagramService.getSystemNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      'reporting',
+      nodeCategories.reporting,
       diagramService.getSystemNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      'physical',
-      diagramService.getModelNodeTemplate()
+      nodeCategories.physical,
+      diagramService.getDataSetNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      'virtual',
-      diagramService.getModelNodeTemplate()
+      nodeCategories.virtual,
+      diagramService.getDataSetNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      'dimension',
+      nodeCategories.dimension,
       diagramService.getDimensionNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      'reporting concept',
-      diagramService.getElementNodeTemplate()
+      nodeCategories.list,
+      diagramService.getReportingConceptNodeTemplate()
+    );
+
+    this.palette.nodeTemplateMap.add(
+      nodeCategories.structure,
+      diagramService.getReportingConceptNodeTemplate()
+    );
+
+    this.palette.nodeTemplateMap.add(
+      nodeCategories.key,
+      diagramService.getReportingConceptNodeTemplate()
     );
 
     // Set links templates
     this.palette.linkTemplateMap.add(
-      'data',
+      linkCategories.data,
       diagramService.getLinkDataTemplate(true)
     );
 
     this.palette.linkTemplateMap.add(
-      'master data',
+      linkCategories.masterData,
       diagramService.getLinkMasterDataTemplate(true)
     );
   }
@@ -103,7 +116,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.div = this.paletteRef.nativeElement;
 
     this.diagramService.masterDataTemplate.subscribe(function(template) {
-        this.palette.nodeTemplateMap.add('master data', template);
+        this.palette.nodeTemplateMap.add(nodeCategories.masterData, template);
       }.bind(this)
     );
     // Subscribe to source of node data for the palette

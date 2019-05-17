@@ -9,9 +9,9 @@ import { FilterService } from '@app/architecture/services/filter.service';
 
 export const viewLevelMapping = {
   [1]: Level.system,
-  [2]: Level.model,
+  [2]: Level.dataSet,
   [3]: Level.dimension,
-  [4]: Level.element,
+  [4]: Level.reportingConcept,
   [5]: Level.attribute
 };
 
@@ -32,6 +32,12 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
 
   @Input() attributesView = false;
 
+  @Output()
+  zoomIn = new EventEmitter();
+
+  @Output()
+  zoomOut = new EventEmitter();
+
   constructor(private store: Store<ViewState>, public filterService: FilterService) {}
 
   ngOnInit() {
@@ -48,12 +54,6 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     this.zoomLevelSubscription.unsubscribe();
   }
 
-  @Output()
-  zoomIn = new EventEmitter();
-
-  @Output()
-  zoomOut = new EventEmitter();
-
   onZoomIn() {
     this.zoomIn.emit();
   }
@@ -68,8 +68,8 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
         this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
       }
     }
-    
-    //FIXME: table and diagram logic should be improved
+
+    // FIXME: table and diagram logic should be improved
     this.store.dispatch(new SetViewLevel(level));
   }
 
