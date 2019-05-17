@@ -20,6 +20,7 @@
     <smi-quicklinks-actions 
       [gojsView]="true" 
       [navigate]="navigate"
+      [data]="workpackage$ | async"
       (navigateDiagram)="onNavigateDiagram($event)">
     </smi-quicklinks-actions>
   </app-toolbar-column>
