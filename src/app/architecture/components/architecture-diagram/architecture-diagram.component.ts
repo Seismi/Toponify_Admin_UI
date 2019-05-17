@@ -10,16 +10,16 @@ import {
   OnChanges,
   OnDestroy
 } from '@angular/core';
-import { DiagramService, Level, standardDisplayOptions } from '@app/architecture/services/diagram.service';
+import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
 import {nodeCategories} from '@app/nodes/store/models/node.model';
 import {DiagramTemplatesService} from '../../services/diagram-templates.service';
-import {DiagramLevelService} from '../..//services/diagram-level.service';
-import {DiagramChangesService} from '../..//services/diagram-changes.service';
-import {GojsCustomObjectsService} from '../..//services/gojs-custom-objects.service';
-import {DiagramListenersService} from '@app/architecture/services/diagram-listeners.service';
+import {DiagramLevelService, Level} from '../..//services/diagram-level.service';
+import {DiagramChangesService, standardDisplayOptions} from '../../services/diagram-changes.service';
+import {GojsCustomObjectsService} from '../../services/gojs-custom-objects.service';
+import {DiagramListenersService} from '../../services/diagram-listeners.service';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -38,6 +38,9 @@ export const viewLevelMapping = {
 })
 export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestroy {
   private diagram: go.Diagram;
+
+  private nodeSelectedRef: Subscription = null;
+  private modelChangeRef: Subscription = null;
 
   @ViewChild('diagramDiv')
   private diagramRef: ElementRef;
@@ -102,7 +105,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.toolManager.draggingTool.dragsLink = true;
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
-    this.diagram.toolManager.relinkingTool.linkValidation = diagramService.linkingValidation;
+    this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation;
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
@@ -255,19 +258,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
   }
 
-  handleChangedSelection(event: any) {
-    const node = event.diagram.selection.first();
-    this.nodeSelected.emit(node);
-  }
-
-  handleModelChange(event: any) {
-    if (event.isTransactionFinished) {
-      console.log('Nodes:', this.diagram.model.nodeDataArray);
-      console.log('Links:', (this.diagram.model as go.GraphLinksModel).linkDataArray);
-      this.modelChanged.emit(event);
-    }
-  }
-
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
@@ -277,51 +267,24 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       }.bind(this)
     );
 
+    this.nodeSelectedRef = this.diagramListenersService.nodeSelected$
+      .subscribe(function(node) {
+        this.nodeSelected.emit(node);
+      }.bind(this));
+
+    this.modelChangeRef = this.diagramListenersService.modelChanged$
+      .subscribe(function(event) {
+        this.modelChanged.emit(event);
+      }.bind(this));
+
     this.setLevel();
-
-  }
-
-  // Updates the properties associated with a node or link
-  //  -part: part to update
-  //  -data: object containing new property values to apply
-  updatePartData(part, data) {
-
-    // Iterate through data to set each property against the part
-    Object.keys(data).forEach(function(property) {
-
-      // Do not update id or category fields as these do not change
-      if (!['id', 'category'].includes(property)
-        // Only update properties that appear in the part's data
-        && property in part.data
-        // Do not bother to update properties that have not changed
-        && data[property] !== part.data[property]) {
-
-        this.diagram.model.setDataProperty(part.data, property, data[property]);
-      }
-    }.bind(this));
-  }
-
-  // Update diagram when display options have been changed
-  updateDisplayOptions(event: any, option: string): void {
-
-    const model = this.diagram.model;
-    model.setDataProperty(model.modelData, option, event.checked);
-
-    // In standard display mode if the display options are all set to their standard values
-    this.diagramChangesService.standardDisplay = Object.keys(standardDisplayOptions).every(function(displayOption) {
-      return (standardDisplayOptions[displayOption] === model.modelData[displayOption]);
-    });
-
-    // Update the route of links after display change
-    this.diagram.links.each(function(link) {
-      // Set data property to indicate that link route should be updated
-      link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-      link.updateRoute();
-    });
   }
 
   ngOnDestroy(): void {
     this.diagramLevelService.destroyUrlFiltering();
+
+    this.nodeSelectedRef.unsubscribe();
+    this.modelChangeRef.unsubscribe();
   }
 
   setLevel() {
@@ -347,16 +310,17 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     }
 
     if (changes.nodes) {
-      this.diagramChangesService.updateNodes(this.diagram, changes.nodes);
+      this.diagramChangesService.updateNodes(this.diagram, this.nodes);
     }
 
     if (changes.links) {
-      this.diagramChangesService.updateLinks(this.diagram, changes.links);
+      this.diagramChangesService.updateLinks(this.diagram, this.links);
     }
 
     // In map view, perform the layout when nodes and links are both defined
     if (changes.nodes || changes.links) {
-      if (this.diagram.model.nodeDataArray.length > 0 && (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0) {
+      if (this.diagram.model.nodeDataArray.length > 0
+        && (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0) {
         if (this.diagramLevelService.mapView) {
           this.diagram.layoutDiagram(true);
         }

@@ -1,5 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import {DiagramService, Level} from '@app/architecture/services/diagram.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
 import {nodeCategories} from '@app/nodes/store/models/node.model';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
@@ -16,11 +15,6 @@ export class ArchitecturePaletteComponent implements OnInit {
   @ViewChild('paletteDiv')
   private paletteRef: ElementRef;
 
-  /* @Input()
-  set nodes(val: any) {
-    this.palette.model.nodeDataArray = val;
-  }
- */
   constructor( private diagramTemplatesService: DiagramTemplatesService,
     private diagramLevelService: DiagramLevelService
   ) {

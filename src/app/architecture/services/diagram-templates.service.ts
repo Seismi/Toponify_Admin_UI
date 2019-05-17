@@ -1,4 +1,5 @@
 import * as go from 'gojs';
+import 'gojs/extensions/Figures.js';
 import {nodeCategories} from '@app/nodes/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {CustomLink} from './gojs-custom-objects.service';

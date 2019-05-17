@@ -2,6 +2,7 @@ import * as go from 'gojs';
 import {Injectable} from '@angular/core';
 import {Level, DiagramLevelService} from '@app/architecture/services/diagram-level.service';
 import {FilterService} from './filter.service';
+import {linkCategories} from '@app/nodes/store/models/node-link.model';
 
 const $ = go.GraphObject.make;
 
@@ -146,9 +147,9 @@ export class DiagramChangesService {
   }
 
   // Update diagram when display options have been changed
-  updateDisplayOptions(event: any, option: string): void {
+  updateDisplayOptions(event: any, option: string, diagram): void {
 
-    const model = event.diagram.model;
+    const model = diagram.model;
     model.setDataProperty(model.modelData, option, event.checked);
 
     // In standard display mode if the display options are all set to their standard values
@@ -157,11 +158,11 @@ export class DiagramChangesService {
     });
 
     // Update the route of links after display change
-    event.diagram.links.each(function(link) {
+    diagram.links.each(function(link) {
       // Set data property to indicate that link route should be updated
-      link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+      diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
-    });
+    }.bind(this));
   }
 
   // Update back end when a link is connected to a node
@@ -304,5 +305,51 @@ export class DiagramChangesService {
       (diagram.model as go.GraphLinksModel).linkDataArray = [...linkArray];
       if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
     }
+  }
+
+  linkingValidation(fromnode: go.Node,
+    fromport: go.GraphObject,
+    tonode: go.Node,
+    toport: go.GraphObject,
+    oldlink: go.Link) {
+
+    // Only validate links that are connected at both ends
+    if (!fromnode || !tonode) {
+      return true;
+    }
+
+    // If both nodes linked are from a group, then ensure the nodes are not part of the same group
+    if (fromnode.containingGroup && tonode.containingGroup) {
+      if (fromnode.containingGroup.key === tonode.containingGroup.key) {
+        return false;
+      }
+    }
+
+    // When connecting links via drag and drop, the oldlink parameter is not passed.
+    // Therefore, set the value of this parameter here in this case.
+    if (!oldlink) {
+
+      const draggingTool = fromnode.diagram.toolManager.draggingTool;
+
+      // Copy of a link being created
+      if (draggingTool.copiedParts) {
+        oldlink = draggingTool.copiedParts.first().key as go.Link;
+      } else {  // Link being moved
+        oldlink = draggingTool.draggedParts.first().key as go.Link;
+      }
+    }
+
+    // Only validate master data links
+    if (oldlink.category === linkCategories.masterData) {
+      // Prevent multiple master data links between the same pair of nodes
+      const allLinks = fromnode.findLinksBetween(tonode);
+      return !allLinks.any(function (link) {
+        return (link.data.category === linkCategories.masterData
+          // Don't count current link when checking if master data links already exist
+          && oldlink.data.id !== link.data.id);
+      });
+    }
+
+    return true;
   }
 }
