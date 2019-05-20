@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
-import {nodeCategories} from '@app/nodes/store/models/node.model';
+import {layers} from '@app/nodes/store/models/node.model';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
 import {DiagramTemplatesService} from '../..//services/diagram-templates.service';
 import {DiagramLevelService} from '../../services/diagram-level.service';
@@ -22,6 +22,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.initialScale = 0.5;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
+    this.palette.model.nodeCategoryProperty = 'layer';
     this.palette.autoScrollRegion = new go.Margin(0);
     (this.palette.model as go.GraphLinksModel).linkKeyProperty = 'id';
     this.palette.model.modelData = {
@@ -40,52 +41,22 @@ export class ArchitecturePaletteComponent implements OnInit {
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.transactional,
+      layers.system,
       diagramTemplatesService.getSystemNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.analytical,
-      diagramTemplatesService.getSystemNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.file,
-      diagramTemplatesService.getSystemNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.reporting,
-      diagramTemplatesService.getSystemNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.physical,
+      layers.dataSet,
       diagramTemplatesService.getDataSetNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.virtual,
-      diagramTemplatesService.getDataSetNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.dimension,
+      layers.dimension,
       diagramTemplatesService.getDimensionNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.list,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.structure,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.key,
+      layers.reportingConcept,
       diagramTemplatesService.getReportingConceptNodeTemplate()
     );
 
@@ -113,10 +84,6 @@ export class ArchitecturePaletteComponent implements OnInit {
   ngOnInit() {
     this.palette.div = this.paletteRef.nativeElement;
 
-    this.diagramLevelService.masterDataTemplate.subscribe(function(template) {
-        this.palette.nodeTemplateMap.add(nodeCategories.masterData, template);
-      }.bind(this)
-    );
     // Subscribe to source of node data for the palette
     this.diagramLevelService.paletteNodes.subscribe(function(nodes) {
         this.palette.model.nodeDataArray = nodes;

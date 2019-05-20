@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
-import {nodeCategories} from '@app/nodes/store/models/node.model';
+import {layers} from '@app/nodes/store/models/node.model';
 import {DiagramTemplatesService} from '../../services/diagram-templates.service';
 import {DiagramLevelService, Level} from '../..//services/diagram-level.service';
 import {DiagramChangesService, standardDisplayOptions} from '../../services/diagram-changes.service';
@@ -140,52 +140,22 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Set node templates
     this.diagram.nodeTemplateMap.add(
-      nodeCategories.transactional,
+      layers.system,
       diagramTemplatesService.getSystemNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      nodeCategories.analytical,
-      diagramTemplatesService.getSystemNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      nodeCategories.file,
-      diagramTemplatesService.getSystemNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      nodeCategories.reporting,
-      diagramTemplatesService.getSystemNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      nodeCategories.physical,
+      layers.dataSet,
       diagramTemplatesService.getDataSetNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      nodeCategories.virtual,
-      diagramTemplatesService.getDataSetNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      nodeCategories.dimension,
+      layers.dimension,
       diagramTemplatesService.getDimensionNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
-      nodeCategories.list,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      nodeCategories.structure,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      nodeCategories.key,
+      layers.reportingConcept,
       diagramTemplatesService.getReportingConceptNodeTemplate()
     );
 
@@ -265,11 +235,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
-
-    this.diagramLevelService.masterDataTemplate.subscribe(function(template) {
-        this.diagram.nodeTemplateMap.add(nodeCategories.masterData, template);
-      }.bind(this)
-    );
 
     this.nodeSelectedRef = this.diagramListenersService.nodeSelected$
       .subscribe(function(node) {

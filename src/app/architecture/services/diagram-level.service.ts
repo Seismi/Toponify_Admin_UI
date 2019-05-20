@@ -70,9 +70,6 @@ export class DiagramLevelService implements OnDestroy {
   private paletteLinksSource = new BehaviorSubject([]);
   paletteLinks = this.paletteLinksSource.asObservable();
 
-  private masterDataTemplateSource = new BehaviorSubject(this.diagramTemplatesService.getSystemNodeTemplate());
-  masterDataTemplate = this.masterDataTemplateSource.asObservable();
-
   constructor(
     private store: Store<ArchitectureState>,
     public filterService: FilterService,
@@ -310,6 +307,7 @@ export class DiagramLevelService implements OnDestroy {
     diagram.model = $(go.GraphLinksModel, {
       nodeKeyProperty: 'id',
       linkKeyProperty: 'id',
+      nodeCategoryProperty: 'layer',
       linkFromKeyProperty: 'sourceId',
       linkToKeyProperty: 'targetId',
       modelData: diagram.model.modelData,
@@ -342,11 +340,6 @@ export class DiagramLevelService implements OnDestroy {
         isRouting: true
       });
     }
-
-    this.masterDataTemplateSource.next((level === Level.dataSet) ?
-      this.diagramTemplatesService.getDataSetNodeTemplate() :
-      this.diagramTemplatesService.getSystemNodeTemplate()
-    );
 
     this.paletteNodesSource.next(paletteViewNodes);
     this.paletteLinksSource.next(paletteViewLinks);
