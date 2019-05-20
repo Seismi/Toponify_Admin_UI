@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import {Injectable} from '@angular/core';
-import {Level, DiagramLevelService} from '@app/architecture/services/diagram-level.service';
+import {Level, DiagramLevelService} from './diagram-level.service';
 import {FilterService} from './filter.service';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
 
@@ -80,7 +80,7 @@ export class DiagramChangesService {
         // Do not bother to update properties that have not changed
         && data[property] !== part.data[property]) {
 
-        this.diagram.model.setDataProperty(part.data, property, data[property]);
+        part.diagram.model.setDataProperty(part.data, property, data[property]);
       }
     }.bind(this));
   }
@@ -147,7 +147,7 @@ export class DiagramChangesService {
   }
 
   // Update diagram when display options have been changed
-  updateDisplayOptions(event: any, option: string, diagram): void {
+  updateDisplayOptions(event: any, option: string, diagram: go.Diagram): void {
 
     const model = diagram.model;
     model.setDataProperty(model.modelData, option, event.checked);

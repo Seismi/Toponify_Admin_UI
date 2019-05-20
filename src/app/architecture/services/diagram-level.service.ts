@@ -6,7 +6,7 @@ import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {State as ArchitectureState} from '@app/architecture/store/reducers/view.reducer';
-import {FilterService} from '@app/architecture/services/filter.service';
+import {FilterService} from './filter.service';
 import {Location} from '@angular/common';
 import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
 import {DiagramTemplatesService} from './diagram-templates.service';

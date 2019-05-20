@@ -37,7 +37,7 @@ export const viewLevelMapping = {
   styleUrls: ['./architecture-diagram.component.scss']
 })
 export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestroy {
-  private diagram: go.Diagram;
+  diagram: go.Diagram;
 
   private nodeSelectedRef: Subscription = null;
   private modelChangeRef: Subscription = null;
@@ -48,6 +48,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   get model(): go.Model {
     return this.diagram.model;
   }
+
+  /*get getDiagram(): go.Diagram {
+    return this.diagram;
+  }*/
 
   @Input() nodes;
 

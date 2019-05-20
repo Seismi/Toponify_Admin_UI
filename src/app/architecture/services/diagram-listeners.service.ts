@@ -1,8 +1,7 @@
 import * as go from 'gojs';
 import {Injectable} from '@angular/core';
-import {FilterService} from './filter.service';
 import {DiagramChangesService} from './diagram-changes.service';
-import {DiagramLevelService} from '@app/architecture/services/diagram-level.service';
+import {DiagramLevelService} from './diagram-level.service';
 import { Subject } from 'rxjs/Subject';
 
 const $ = go.GraphObject.make;
@@ -17,7 +16,6 @@ export class DiagramListenersService {
   public modelChanged$ = this.modelChangedSource.asObservable();
 
   constructor(
-    public filterService: FilterService,
     public diagramChangesService: DiagramChangesService,
     public diagramLevelService: DiagramLevelService
   ) {
@@ -32,12 +30,12 @@ export class DiagramListenersService {
 
     diagram.addDiagramListener(
       'ExternalObjectsDropped',
-      this.diagramChangesService.createObjects.bind(this)
+      this.diagramChangesService.createObjects.bind(this.diagramChangesService)
     );
 
     diagram.addDiagramListener(
       'SelectionMoved',
-      this.diagramChangesService.updatePosition.bind(this)
+      this.diagramChangesService.updatePosition.bind(this.diagramChangesService)
     );
 
     // After diagram layout, redo group layouts in map view to correct link paths
@@ -56,7 +54,7 @@ export class DiagramListenersService {
 
     diagram.addDiagramListener(
       'LinkRelinked',
-       this.diagramChangesService.updateLinkConnections.bind(this)
+       this.diagramChangesService.updateLinkConnections.bind(this.diagramChangesService)
     );
 
     diagram.addDiagramListener(
@@ -64,10 +62,10 @@ export class DiagramListenersService {
       function(event: any) {
         event.subject = new go.Set([event.subject]);
 
-        if (this.diagramLevelService.standardDisplay) {
-          this.diagramChangesService.updatePosition(event);
+        if (this.standardDisplay) {
+          this.updatePosition(event);
         }
-      }.bind(this)
+      }.bind(this.diagramChangesService)
     );
 
     diagram.addModelChangedListener(this.handleModelChange.bind(this));

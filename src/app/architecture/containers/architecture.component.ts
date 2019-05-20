@@ -321,8 +321,7 @@ export class ArchitectureComponent implements OnInit {
   }
 
   displayOptionsChanged({event, option}: {event: any, option: string}) {
-    const w = this.diagramComponent.model
-    this.diagramChangesService.updateDisplayOptions(event, option);
+    this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
   }
 
   onZoomIn() {

@@ -3,7 +3,7 @@ import 'gojs/extensions/Figures.js';
 import {nodeCategories} from '@app/nodes/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {CustomLink} from './gojs-custom-objects.service';
-import {FilterService} from '@app/architecture/services/filter.service';
+import {FilterService} from './filter.service';
 
 const $ = go.GraphObject.make;
 

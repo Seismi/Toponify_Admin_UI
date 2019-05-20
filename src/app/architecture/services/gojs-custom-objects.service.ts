@@ -1,6 +1,7 @@
 import * as go from 'gojs';
-import {Injectable, OnDestroy} from '@angular/core';
-import {Level, lessDetailOrderMapping, moreDetailOrderMapping} from './diagram-level.service';
+import {forwardRef, Inject, Injectable, OnDestroy} from '@angular/core';
+import {DiagramLevelService, Level, lessDetailOrderMapping, moreDetailOrderMapping} from './diagram-level.service';
+import { FilterService } from './filter.service';
 
 const $ = go.GraphObject.make;
 
@@ -42,6 +43,13 @@ export class CustomLink extends go.Link {
 
 @Injectable()
 export class GojsCustomObjectsService {
+
+  constructor(
+    public filterService: FilterService,
+    @Inject(forwardRef(function() {return DiagramLevelService; })) public diagramLevelService: DiagramLevelService
+  ) {
+  }
+
   // Context menu for when the background is right-clicked
   getBackgroundContextMenu(): go.Adornment {
 
@@ -186,29 +194,38 @@ export class GojsCustomObjectsService {
         4,
         'More detail',
         function(event: any, object: any): void {
-          const filterLevel = moreDetailOrderMapping[this.filter.getValue().filterLevel];
+
+          const filter = this.diagramLevelService.filter;
+
+          const filterLevel = moreDetailOrderMapping[filter.getValue().filterLevel];
           if (filterLevel) {
             this.filterService.setFilter({filterLevel: filterLevel});
           }
         }.bind(this),
         function(object: go.Part, event: object): boolean {
-          return (object as any).nodeDataArray.length > 0 && this.filter.getValue().filterLevel !== Level.reportingConcept && !this.mapView;
+          return (object as any).nodeDataArray.length > 0 &&
+            this.diagramLevelService.filter.getValue().filterLevel !== Level.reportingConcept
+            && !this.mapView;
         }.bind(this)
       ),
       makeSubMenuButton(
         5,
         'Less detail',
         function(event: any, object: any): void {
-          const filterLevel = lessDetailOrderMapping[this.filter.getValue().filterLevel];
+
+          const filter = this.diagramLevelService.filter;
+          const history = this.diagramLevelService.historyOfFilters
+
+          const filterLevel = lessDetailOrderMapping[filter.getValue().filterLevel];
           if (filterLevel) {
-            let filter = { filterLevel: filterLevel };
-            if (this.historyOfFilters[filterLevel]) {
-              filter = {
+            let newFilter = { filterLevel: filterLevel };
+            if (history[filterLevel]) {
+              newFilter = {
                 filterLevel: filterLevel,
-                ...(this.historyOfFilters[filterLevel].filterNodeIds && {filterNodeIds: this.historyOfFilters[filterLevel].filterNodeIds})
+                ...(history[filterLevel].filterNodeIds && {filterNodeIds: this.historyOfFilters[filterLevel].filterNodeIds})
               };
             }
-            this.filterService.setFilter(filter);
+            this.filterService.setFilter(newFilter);
           } else {
             this.filterService.setFilter({filterLevel: Level.system});
           }
