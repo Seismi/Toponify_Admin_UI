@@ -13,7 +13,7 @@ import {
   styleUrls: ['./zoom-slider.component.scss']
 })
 export class ZoomSliderComponent implements OnInit {
-  public max = 5;
+  public max = 4;
   public min = 1;
 
   @ViewChild('slider') slider;
