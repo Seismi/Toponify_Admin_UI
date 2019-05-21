@@ -26,6 +26,7 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 
 @Component({
   selector: 'smi-architecture',
@@ -67,6 +68,7 @@ export class ArchitectureComponent implements OnInit {
     private workpackageStore: Store<WorkPackageState>,
     private route:  ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
+    private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog
   ) { }
 
@@ -238,7 +240,7 @@ export class ArchitectureComponent implements OnInit {
     // this.store.dispatch();
 
     // Update the diagram to reflect changed properties
-    this.diagramComponent.updatePartData(this.part, data);
+    this.diagramChangesService.updatePartData(this.part, data);
 
   }
 
@@ -319,7 +321,7 @@ export class ArchitectureComponent implements OnInit {
   }
 
   displayOptionsChanged({event, option}: {event: any, option: string}) {
-    this.diagramComponent.updateDisplayOptions(event, option);
+    this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
   }
 
   onZoomIn() {

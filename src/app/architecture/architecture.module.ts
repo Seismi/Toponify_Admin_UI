@@ -4,9 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
   MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
-// import {AttributeService} from '@app/architecture/services/attribute.service';
-import { DiagramService } from '@app/architecture/services/diagram.service';
-import { FilterService } from '@app/architecture/services/filter.service';
+// import {AttributeService} from './services/attribute.service';
+import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/view.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeModule } from '@app/nodes/node.module';
@@ -32,6 +31,11 @@ import { LeftPanelComponent } from './containers/left-panel.component';
 import { RightPanelComponent } from './containers/right-panel.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';
+import {DiagramChangesService} from './services/diagram-changes.service';
+import {DiagramListenersService} from './services/diagram-listeners.service';
+import {DiagramTemplatesService} from './services/diagram-templates.service';
+import {DiagramLevelService} from './services/diagram-level.service';
+import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 
 
 @NgModule({
@@ -83,7 +87,12 @@ import { WorkPackageModule } from '@app/workpackage/workpackage.module';
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [
       // AttributeService,
-      DiagramService,
+      GojsCustomObjectsService,
+      DiagramChangesService,
+      DiagramListenersService,
+      DiagramTemplatesService,
+      DiagramLevelService,
+      DiagramListenersService,
       FilterService,
       NodeService,
       WorkPackageService

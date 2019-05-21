@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { Level } from '../../../../architecture/services/diagram.service';
+import { Level } from '../../../../architecture/services/diagram-level.service';
 import { SetZoomLevel, SetViewLevel } from '../../../../architecture/store/actions/view.actions';
 import { State as ViewState } from '../../../../architecture/store/reducers/view.reducer';
 import { getViewLevel, getZoomLevel } from '@app/architecture/store/selectors/view.selector';
