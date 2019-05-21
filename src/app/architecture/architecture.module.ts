@@ -18,8 +18,6 @@ import { AddAttrAndRulesComponent } from './components/add-attr-and-rules/add-at
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
 import { ArchitecturePaletteComponent } from './components/architecture-palette/architecture-palette.component';
-import { CategoryTableComponent } from './components/category-table/category-table.component';
-import { TableCollapseComponent } from './components/category-table/table-collapse/table-collapse.component';
 import { ColorsPickerComponent } from './components/color-picker/color-picker.component';
 import { ObjectDetailsFormComponent } from './components/object-details-form/object-details-form.component';
 import { ArchitectureRoutingComponent } from './containers/architecture-routing.component';
@@ -66,7 +64,7 @@ import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-o
     ColorPickerModule,
     StoreModule.forFeature('architectureFeature', reducer)
   ],
-    exports: [],
+    exports: [ObjectDetailsFormComponent],
     declarations: [
       ArchitectureRoutingComponent,
       ArchitectureComponent,
@@ -75,8 +73,6 @@ import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-o
       RightPanelComponent,
       ObjectDetailsFormComponent,
       DeleteModalComponent,
-      CategoryTableComponent,
-      TableCollapseComponent,
       LeftPanelComponent,
       AnalysisTabComponent,
       ColorsPickerComponent,

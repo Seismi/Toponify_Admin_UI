@@ -1018,5 +1018,525 @@
         "replyCount": "2"
       }
     ]
+  },
+  "attributes": {
+    "data": [
+      {
+        "id": "a36b59c6-515a-4854-a334-dc0bd4dbadc2",
+        "name": "Account Type",
+        "category": "attribute",
+        "description": "",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "167d1af1-ef7e-444a-9db1-51e3bd0a6d7f",
+        "name": "Address",
+        "category": "attribute",
+        "description": "Legal address of an Entity",
+        "tags": "Documentation",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "041b5aa0-7834-4e20-96de-d41d290bd5f7",
+        "name": "Blocked for Posting",
+        "category": "attribute",
+        "description": "",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "3f07bcd7-be3c-43de-aa7f-d17122da0fb1",
+        "name": "Code",
+        "category": "attribute",
+        "description": "Code",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "26fa5d27-1c24-4f59-b6ad-6af989e89ec2",
+        "name": "Description",
+        "category": "attribute",
+        "description": "Member description",
+        "tags": "Shared",
+        "scope": "global",
+        "owner": "Shared",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
+        "name": "EPM Account Type",
+        "category": "attribute",
+        "description": "Standard account type definition that is then translated to application specific nomenclature.",
+        "tags": null,
+        "scope": "global",
+        "owner": null,
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "7e4fdcb7-7246-4b66-a52e-0c488155a97b",
+        "name": "HFM Account Type",
+        "category": "attribute",
+        "description": "EPM account type translated to HFM nomenclature",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
+            "name": "EPM Account Type",
+            "tags": null,
+            "related": [],
+            "category": "attribute",
+            "description": "Standard account type definition that is then translated to application specific nomenclature."
+          }
+        ]
+      },
+      {
+        "id": "652825d0-5c71-443f-aef7-d7be27835168",
+        "name": "HFM Custom1 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "e5074e25-4fe6-46f0-9bb4-917fa4f44f06",
+        "name": "HFM Custom2 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "11499188-9181-47ec-ac79-123bb509a18f",
+        "name": "HFM Custom3 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "4cde27f4-be7a-4b80-9644-354a529a8dc2",
+        "name": "HFM Custom4 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "f510f7ac-2dc7-4013-bd85-226ef51b033b",
+        "name": "HFM Enable Custom1 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "5f84e89f-e572-41ea-945d-442e52928156",
+        "name": "HFM Enable Custom2 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "8b5c7be3-bcb5-405a-8e9e-b742ab6fd207",
+        "name": "HFM Enable Custom3 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "e6fed3f5-f654-49eb-a8c5-eb5925bfbd18",
+        "name": "HFM Enable Custom4 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "78954a47-8ccc-4d52-896f-47212956e69b",
+        "name": "HFM Is Calculated",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "7dd3fdb2-bd4c-4505-94d2-18fe5c155fc3",
+        "name": "HFM Is Consolidated",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "1822bf0f-d6e3-49b8-9b90-52e00daf971c",
+        "name": "HFM Number of Decimal Places",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "c2f33f5e-850c-4ab0-846e-331d3cfba242",
+        "name": "HFM Plug Account",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "d9823ef4-eac1-41fb-99c1-9366ab3b4918",
+        "name": "HFM Scale",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "local",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "668b9d94-b362-4342-9e03-454d00fc8406",
+        "name": "HFM Security Class",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "03cd2bc3-6d25-4b6a-b86f-295a200a0c5b",
+        "name": "HFM Submission Group",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "467c0ccd-9fc9-44e2-b3ce-cfd6dd24ecc7",
+        "name": "HFM Uses Line Item",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "ad13be23-ef58-49ed-ac29-a3dbde62a8d3",
+        "name": "Is Complete",
+        "category": "attribute",
+        "description": "Flags if a rollup needs to be complete",
+        "tags": "EPM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "cbc7e7b2-0668-4981-ae12-e820d1a2e764",
+        "name": "Is HFM Data Member?",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "cbbd3151-bc29-4cc5-bff1-58f68c9da953",
+        "name": "Is MTP Data Member?",
+        "category": "attribute",
+        "description": "",
+        "tags": "MTP",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "eba66c5e-07a2-40f1-b802-5dd87c143f9f",
+        "name": "Link to HFM Custom3 consistent with HFM Account Top Custom3",
+        "category": "rule",
+        "description": "",
+        "tags": "Rule",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          },
+          {
+            "id": "cbc7e7b2-0668-4981-ae12-e820d1a2e764",
+            "name": "Is HFM Data Member?",
+            "tags": "HFM",
+            "related": [],
+            "category": "attribute",
+            "description": ""
+          }
+        ]
+      },
+      {
+        "id": "8947a1f9-3817-42e5-90ef-462255989a62",
+        "name": "Long Description",
+        "category": "attribute",
+        "description": "SAP Long description",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "26fa5d27-1c24-4f59-b6ad-6af989e89ec2",
+            "name": "Description",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Member description"
+          }
+        ]
+      },
+      {
+        "id": "f0ce5b3e-6fc7-472e-a195-b23a6b663093",
+        "name": "Master Rollup",
+        "category": "attribute",
+        "description": "",
+        "tags": "EPM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+        "name": "Name",
+        "category": "attribute",
+        "description": "Name or code of the member",
+        "tags": "Shared",
+        "scope": "global",
+        "owner": "Shared",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "a244dd0e-87fb-4d17-a6e7-577480121904",
+        "name": "SAP and HFM Account Type Aligned",
+        "category": "rule",
+        "description": "Rule that validates that SAP and HFM Account types are aligned.",
+        "tags": "",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "7e4fdcb7-7246-4b66-a52e-0c488155a97b",
+            "name": "HFM Account Type",
+            "tags": "HFM",
+            "related": [
+              {
+                "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
+                "name": "EPM Account Type",
+                "tags": null,
+                "related": [],
+                "category": "attribute",
+                "description": "Standard account type definition that is then translated to application specific nomenclature."
+              }
+            ],
+            "category": "attribute",
+            "description": "EPM account type translated to HFM nomenclature"
+          },
+          {
+            "id": "a36b59c6-515a-4854-a334-dc0bd4dbadc2",
+            "name": "Account Type",
+            "tags": "SAP",
+            "related": [],
+            "category": "attribute",
+            "description": ""
+          }
+        ]
+      },
+      {
+        "id": "0ceee4c2-79c4-40d9-82f1-5e80de1c2e62",
+        "name": "Short Description",
+        "category": "attribute",
+        "description": "SAP Short description",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "26fa5d27-1c24-4f59-b6ad-6af989e89ec2",
+            "name": "Description",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Member description"
+          }
+        ]
+      },
+      {
+        "id": "cefa429f-de81-4937-a6a1-3d15b2aaa55a",
+        "name": "Signage (HFM)",
+        "category": "attribute",
+        "description": "Indicates if debit are positive or negative values.",
+        "tags": null,
+        "scope": "global",
+        "owner": null,
+        "customProperties": [],
+        "related": [
+          {
+            "id": "7e4fdcb7-7246-4b66-a52e-0c488155a97b",
+            "name": "HFM Account Type",
+            "tags": "HFM",
+            "related": [
+              {
+                "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
+                "name": "EPM Account Type",
+                "tags": null,
+                "related": [],
+                "category": "attribute",
+                "description": "Standard account type definition that is then translated to application specific nomenclature."
+              }
+            ],
+            "category": "attribute",
+            "description": "EPM account type translated to HFM nomenclature"
+          }
+        ]
+      },
+      {
+        "id": "82bf68e0-659c-4a0b-9038-eebc1b3dcb14",
+        "name": "Workday Concur",
+        "category": "attribute",
+        "description": "",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": []
+      }
+    ]
   }
 }

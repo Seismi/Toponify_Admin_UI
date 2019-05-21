@@ -1,6 +1,6 @@
 <!--  FIXME: when mat-table component added into dom, it also add additional styles for table, with out mat-table component styles not added. Find out why. -->
 <!-- <table mat-table></table> -->
-<div class="mat-elevation-z8">
+<div class="wrapper">
   <table class="mat-table">
     <thead>
       <tr class="mat-header-row">
@@ -19,6 +19,10 @@
       </tbody>
     </ng-container>
   </table>
+  <div class="bottom-header">
+    <button mat-raised-button class="add" color="primary" (click)="onAttribute()">Attribute</button>
+    <button mat-raised-button class="add" color="primary" (click)="onRule()">Rule</button>
+  </div>
 </div>
 
 <!-- Templates -->
