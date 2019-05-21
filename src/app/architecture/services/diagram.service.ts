@@ -20,8 +20,7 @@ export enum Level {
   dataSet = 'Data Set',
   dimension = 'Dimension',
   reportingConcept = 'Reporting Concept',
-  map = 'Map',
-  attribute = 'Attribute'
+  map = 'Map'
 }
 
 // Customised link that only updates its route when a tool that can affect link route is active
@@ -79,7 +78,6 @@ export const viewLevelNum = {
   [Level.dataSet]: 2,
   [Level.dimension]: 3,
   [Level.reportingConcept]: 4,
-  [Level.attribute]: 5,
   [Level.map]: 9
 };
 

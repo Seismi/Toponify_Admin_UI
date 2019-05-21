@@ -14,13 +14,17 @@ export class ZoomPopoverComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.zoomLevel = this.viewLevel;
+  }
 
   onViewLevelSelect(level: any) {
     this.viewLevelSelected.emit(level);
+    this.zoomLevel = level;
   }
 
   onZoomLevelSelect(level: any) {
     this.zoomLevelSelected.emit(level);
+    this.viewLevel = level;
   }
 }
