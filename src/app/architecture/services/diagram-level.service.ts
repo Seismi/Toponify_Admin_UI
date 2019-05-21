@@ -206,6 +206,7 @@ export class DiagramLevelService implements OnDestroy {
       id: 'New master data link',
       name: 'New master data link',
       description: '',
+      layer: level.toLowerCase(),
       route: [0, 0, 80, -80],
       isTemporary: true
     }];
@@ -299,6 +300,7 @@ export class DiagramLevelService implements OnDestroy {
         id: 'New data link',
         name: 'New data link',
         description: '',
+        layer: level.toLowerCase(),
         route: [0, 0, 80, -80],
         isTemporary: true
       });
