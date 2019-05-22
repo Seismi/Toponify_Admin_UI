@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
@@ -24,8 +24,16 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   navigateDiagram = new EventEmitter();
 
+  @Output()
+  selectWorkPackage = new EventEmitter();
+
+
   onNavigate(){
     this.navigateDiagram.emit();
+  }
+
+  onSelect(id) {
+    this.selectWorkPackage.emit(id);
   }
 
 }

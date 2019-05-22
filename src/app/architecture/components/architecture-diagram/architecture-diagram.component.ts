@@ -53,6 +53,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     return this.diagram;
   }*/
 
+  @Input() workpackageDetail;
+
   @Input() nodes;
 
   @Input() links;

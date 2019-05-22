@@ -41,7 +41,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((id: string) => {
       return this.workpackageService.getWorkPackage(id).pipe(
-        switchMap((workPackageDetail: WorkPackageDetailApiResponse) => [new LoadWorkPackageSuccess(workPackageDetail.data)]),
+        switchMap((response: WorkPackageDetailApiResponse) => [new LoadWorkPackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageEntityFailure(error)))
       );
     })

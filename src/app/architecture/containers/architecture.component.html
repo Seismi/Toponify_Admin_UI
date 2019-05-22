@@ -21,7 +21,8 @@
       [gojsView]="true" 
       [navigate]="navigate"
       [data]="workpackage$ | async"
-      (navigateDiagram)="onNavigateDiagram($event)">
+      (navigateDiagram)="onNavigateDiagram($event)"
+      (selectWorkPackage)="onSelectWorkPackage($event)">
     </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
@@ -48,6 +49,7 @@
         *ngIf="!showTable"
         [nodes]="nodes$ | async"
         [links]="nodeLinks$ | async"
+        [workpackageDetail]="workpackageDetail"
         [viewLevel]="viewLevel$ | async"
         (nodeSelected)="partSelected($event)"
         (modelChanged)="modelChanged($event)"
