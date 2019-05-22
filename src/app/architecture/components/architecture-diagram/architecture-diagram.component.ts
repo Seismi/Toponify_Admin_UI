@@ -13,6 +13,7 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
+import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
 import {layers} from '@app/nodes/store/models/node.model';
 import {DiagramTemplatesService} from '../../services/diagram-templates.service';
@@ -107,6 +108,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
+    this.diagram.toolManager.mouseDownTools.add(new LinkShiftingTool());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
     this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation;

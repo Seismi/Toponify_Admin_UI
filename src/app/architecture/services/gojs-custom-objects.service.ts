@@ -14,13 +14,19 @@ export class CustomLink extends go.Link {
   // Override computePoints method
   public computePoints(): boolean {
 
+    // Leave link route as is if link is disconnected - prevents bug where links dragged from palette were flipping
+    if (!this.fromNode && !this.toNode) {return true; }
+
     const toolManager = this.diagram.toolManager;
+    const linkShiftingTool = toolManager.mouseDownTools.toArray().find(
+      function(tool) {return tool.name === 'LinkShifting'; }
+    );
 
     // Array of tools that can affect link routes
     const tools = [toolManager.draggingTool,
       toolManager.linkReshapingTool,
       toolManager.linkingTool,
-      toolManager.relinkingTool];
+      linkShiftingTool];
 
     // Always update route if "updateRoute" flag set or no route defined
     if (this.data.updateRoute || this.points.count === 0) {
@@ -214,7 +220,7 @@ export class GojsCustomObjectsService {
         function(event: any, object: any): void {
 
           const filter = this.diagramLevelService.filter;
-          const history = this.diagramLevelService.historyOfFilters
+          const history = this.diagramLevelService.historyOfFilters;
 
           const filterLevel = lessDetailOrderMapping[filter.getValue().filterLevel];
           if (filterLevel) {
