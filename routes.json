@@ -1,4 +1,4 @@
 {
   "/:nodes/links": "/links",
-  "/:workpackages/c288392e-6cf5-11e9-a923-1681be663d3e": "/workpackageDetail"
+  "/:workpackages/:id": "/workpackageDetail"
 }
