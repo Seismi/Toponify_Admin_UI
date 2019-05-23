@@ -8,6 +8,5 @@ import { Component, OnInit } from '@angular/core';
 export class AttributesRoutingComponent implements OnInit {
     constructor() { }
 
-    ngOnInit() {
-    }
+    ngOnInit() { }
 }
