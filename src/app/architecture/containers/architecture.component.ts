@@ -64,6 +64,7 @@ export class ArchitectureComponent implements OnInit {
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
+  public selectedWorkPackages$: Subscription;
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -88,6 +89,10 @@ export class ArchitectureComponent implements OnInit {
 
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
+
+      this.selectedWorkPackages$ = this.workpackageStore.pipe(select(getSelectedWorkPackage)).subscribe((data) => {
+        console.log(data);
+      })
 
       /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
       this.mapViewId$.subscribe(linkId => {
