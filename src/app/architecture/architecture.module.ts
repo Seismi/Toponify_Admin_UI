@@ -18,7 +18,6 @@ import { AddAttrAndRulesComponent } from './components/add-attr-and-rules/add-at
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
 import { ArchitecturePaletteComponent } from './components/architecture-palette/architecture-palette.component';
-import { ColorsPickerComponent } from './components/color-picker/color-picker.component';
 import { ObjectDetailsFormComponent } from './components/object-details-form/object-details-form.component';
 import { ArchitectureRoutingComponent } from './containers/architecture-routing.component';
 import { ArchitectureComponent } from './containers/architecture.component';
@@ -75,7 +74,6 @@ import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-o
       DeleteModalComponent,
       LeftPanelComponent,
       AnalysisTabComponent,
-      ColorsPickerComponent,
       DeleteNodeModalComponent,
       DeleteLinkModalComponent,
       AddAttrAndRulesComponent
