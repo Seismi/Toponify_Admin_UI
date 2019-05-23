@@ -29,10 +29,14 @@ export class ZoomSliderComponent implements OnInit {
   }
 
   zoomOut() {
-    this.zoomLevelSelected.emit(this.zoomLevel - 1);
+    if(this.zoomLevel > 1) {
+      this.zoomLevelSelected.emit(this.zoomLevel - 1);
+    }
   }
 
   zoomIn() {
-    this.zoomLevelSelected.emit(this.zoomLevel + 1);
+    if(this.zoomLevel < 4) {
+      this.zoomLevelSelected.emit(this.zoomLevel + 1);
+    }
   }
 }

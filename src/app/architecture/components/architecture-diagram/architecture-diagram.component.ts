@@ -28,7 +28,6 @@ export const viewLevelMapping = {
   [2]: Level.dataSet,
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
-  [5]: Level.attribute,
   [9]: Level.map
 };
 
