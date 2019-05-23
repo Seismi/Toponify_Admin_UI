@@ -53,7 +53,9 @@ export class FilterService implements OnDestroy  {
     const filters = {};
 
     if (filtersString !== null) {
-        filtersString.split(' ').forEach(filter => {
+
+        // Replaced space with "|" as in 2.0, "data set" and "reporting concept" layer names have spaces in them
+        filtersString.split('|').forEach(filter => {
             if (filter.split(':').length === 2) {
                 const [key, value] = filter.split(':');
                 if (key && value) {

@@ -1,0 +1,31 @@
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchVersion($event)"></app-search>
+    </app-toolbar-column>
+    <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+</app-base-header>
+
+
+<div class="row">
+    <div class="col mat-elevation-z8">
+        <app-category-table
+            [data]="categoryTableData"
+            [categories]="['attribute', 'rule']"
+            (selectRow)="onSelectedRow($event)"
+            (addAttribute)="onAddAttribute($event)"
+            (addRule)="onAddRule($event)">
+        </app-category-table>
+    </div>
+    <div class="col" *ngIf="!objectSelected">
+        <smi-object-details-form 
+            [group]="objectDetailsForm"
+            [isEditable]="isEditable"
+            [nodeSelected]="objectSelected"
+            (editDetails)="onEditDetails($event)"
+            (cancel)="onCancelEdit($event)"
+            (saveAttribute)="onSaveAttribute($event)">
+        </smi-object-details-form>
+    </div>
+</div>

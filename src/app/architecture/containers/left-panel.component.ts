@@ -23,6 +23,9 @@ export class LeftPanelComponent {
   @Output()
   displayOptionsChangedEvent = new EventEmitter();
 
+  @ViewChild(ArchitecturePaletteComponent)
+  private paletteComponent: ArchitecturePaletteComponent;
+
   onAddAttribute() {
     this.addAttribute.emit();
   }
@@ -30,9 +33,6 @@ export class LeftPanelComponent {
   onAddRule() {
     this.addRule.emit();
   }
-
-  @ViewChild(ArchitecturePaletteComponent)
-  private paletteComponent: ArchitecturePaletteComponent;
 
   displayOptionsChanged({event, option}: {event: any, option: string}) {
     this.displayOptionsChangedEvent.emit({event, option});

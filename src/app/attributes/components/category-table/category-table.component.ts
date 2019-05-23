@@ -25,6 +25,14 @@ export class CategoryTableComponent implements OnInit {
   @Output()
   selectRow = new EventEmitter();
 
+  @Output()
+  addAttribute = new EventEmitter();
+
+  @Output()
+  addRule = new EventEmitter();
+
+  constructor() {}
+
   ngOnInit() {}
 
   getTransformedData(category?: string): any[] {
@@ -70,4 +78,13 @@ export class CategoryTableComponent implements OnInit {
     this.selectRow.emit(entry);
     this.selectedRowIndex = entry.id;
   }
+
+  onAttribute() {
+    this.addAttribute.emit();
+  }
+
+  onRule() {
+    this.addRule.emit();
+  }
+
 }
