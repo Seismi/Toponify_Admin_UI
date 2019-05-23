@@ -49,10 +49,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     return this.diagram.model;
   }
 
-  /*get getDiagram(): go.Diagram {
-    return this.diagram;
-  }*/
-
   @Input() nodes;
 
   @Input() links;
@@ -209,6 +205,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     }.bind(this);
 
+    // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
   }
 
