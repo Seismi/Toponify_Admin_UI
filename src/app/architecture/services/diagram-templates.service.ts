@@ -587,6 +587,18 @@ export class DiagramTemplatesService {
           minSize: new go.Size(100, 100),
           margin: 5
         },
+        // Ensure that the panel does not overlap the border lines
+        // on the shapes for list and structure reporting elements
+        new go.Binding('margin',
+          'category',
+          function(category) {
+            if ([nodeCategories.list, nodeCategories.structure].includes(category)) {
+              return new go.Margin(15, 5, 5, 15);
+            } else {
+              return 5;
+            }
+          }
+        ),
         // Reporting concept name
         $(go.TextBlock,
           {
