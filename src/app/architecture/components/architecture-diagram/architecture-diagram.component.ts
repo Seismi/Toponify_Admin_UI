@@ -264,6 +264,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   ngOnChanges(changes: SimpleChanges) {
 
+    console.log(this.workpackageDetail)
+
     if (changes.showGrid) {
       this.diagram.grid.visible = this.showGrid;
     }
