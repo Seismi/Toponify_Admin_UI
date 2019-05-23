@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import * as go from 'gojs';
 import {layers, Node, nodeCategories} from '@app/nodes/store/models/node.model';
-import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {linkCategories, RoutesEntityEntity} from '@app/nodes/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
@@ -206,8 +206,8 @@ export class DiagramLevelService implements OnDestroy {
       id: 'New master data link',
       name: 'New master data link',
       description: '',
+      route: <RoutesEntityEntity['points']> [0, 0, 40, 0, 40, -80, 80, -80],
       layer: level.toLowerCase(),
-      route: [0, 0, 80, -80],
       isTemporary: true
     }];
 
@@ -300,8 +300,8 @@ export class DiagramLevelService implements OnDestroy {
         id: 'New data link',
         name: 'New data link',
         description: '',
+        route: <RoutesEntityEntity['points']> [0, 0, 40, 0, 40, -80, 80, -80],
         layer: level.toLowerCase(),
-        route: [0, 0, 80, -80],
         isTemporary: true
       });
     }

@@ -396,8 +396,8 @@ export class DiagramTemplatesService {
           portId: '',
           fromLinkable: true,
           toLinkable: true,
-          // fromSpot: go.Spot.AllSides,
-          // toSpot: go.Spot.AllSides,
+          fromSpot: go.Spot.AllSides,
+          toSpot: go.Spot.AllSides,
           name: 'shape',
           fromLinkableDuplicates: false,
           toLinkableDuplicates: false
