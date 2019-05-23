@@ -1,12 +1,72 @@
 <app-base-header>
-  <app-toolbar-column>
-    <app-toolbar-splitter> </app-toolbar-splitter>
-    <span>Architecture</span>
-    <app-toolbar-splitter> </app-toolbar-splitter>
+  <app-toolbar-column [fillFreeSpace]="true">
+    <app-search></app-search>
   </app-toolbar-column>
-  <app-toolbar-column [fillFreeSpace]="true"
-    ><app-search (search)="onSearchVersion($event)"></app-search><app-toolbar-splitter> </app-toolbar-splitter
-  ></app-toolbar-column>
+  <app-toolbar-column>
+    <app-zoom-actions
+      [attributesView]="attributesView"
+      (zoomIn)="onZoomIn($event)"
+      (zoomOut)="onZoomOut($event)"
+    ></app-zoom-actions>
+    <app-layout-actions *ngIf="!attributesView"
+      (showGrid)="onShowGrid($event)"
+      [showOrHide]="showOrHide"
+      (navigateDiagram)="onNavigateDiagram($event)"
+      [navigate]="navigate"
+      (zoomMap)="onZoomMap($event)"
+  ></app-layout-actions>
+  </app-toolbar-column>
+  <app-toolbar-column>
+    <smi-quicklinks-actions 
+      [gojsView]="true" 
+      [navigate]="navigate"
+      [data]="workpackage$ | async"
+      (navigateDiagram)="onNavigateDiagram($event)">
+    </smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>
+<app-model-container [topPadding]="64">
+  <app-model-sidebar [minWidth]="210">
+    <p>
+      <smi-left-panel
+        [showTable]="showTable"
+        [showPalette]="showPalette"
+        [allowMove]="allowMove"
+        (addAttribute)="onAddAttribute($event)"
+        (addRule)="onAddRule($event)"
+        (displayOptionsChangedEvent)="displayOptionsChanged($event)">
+      </smi-left-panel>
+    </p>
+  </app-model-sidebar>
 
-
+  <app-model-content>
+    <div style="padding: 5px">
+      <app-architecture-diagram
+        [mapView]="mapView"
+        [showGrid]="showGrid"
+        [allowMove]="allowMove"
+        *ngIf="!showTable"
+        [nodes]="nodes$ | async"
+        [links]="nodeLinks$ | async"
+        [viewLevel]="viewLevel$ | async"
+        (nodeSelected)="partSelected($event)"
+        (modelChanged)="modelChanged($event)"
+        (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
+        (linkDeleteRequested)="handleLinkDeleteRequested($event)">
+      </app-architecture-diagram>
+    </div>
+  </app-model-content>
+  <app-model-sidebar [isLast]="true">
+    <smi-right-panel
+        [group]="objectDetailsForm"
+        [clickedOnLink]="clickedOnLink"
+        [nodeSelected]="objectSelected"
+        [isEditable]="isEditable"
+        (editDetails)="onEditDetails($event)"
+        (saveAttribute)="onSaveObjectDetails($event)"
+        (deleteAttribute)="onDeleteAttribute($event)"
+        (cancelEdit)="onCancelEdit($event)"
+    >
+    </smi-right-panel>
+  </app-model-sidebar>
+</app-model-container>

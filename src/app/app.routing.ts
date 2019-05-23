@@ -28,10 +28,6 @@ const routes: Routes = [
         loadChildren: './architecture/architecture.module#ArchitectureModule'
       },
       {
-        path: 'version',
-        loadChildren: './version/version.module#VersionModule'
-      },
-      {
         path: 'documentation-standards',
         loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
       },
@@ -51,6 +47,10 @@ const routes: Routes = [
         path: 'radio',
         loadChildren: './radio/radio.module#RadioModule'
       },
+      {
+        path: 'attributes-and-rules',
+        loadChildren: './attributes/attributes.module#AttributesModule'
+      }
     ]
   },
   {
@@ -59,7 +59,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'version',
+    redirectTo: 'home',
     pathMatch: 'full'
   }
 ];

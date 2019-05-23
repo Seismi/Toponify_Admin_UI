@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MainLayoutComponent } from './layout/app-layouts/main-layout.component';
 import { RouterModule } from '@angular/router';
 import { AuthLayoutComponent } from './layout/app-layouts/auth-layout.component';
@@ -52,6 +52,7 @@ import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.compo
     MatTooltipModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MdePopoverModule,
     MatSelectModule
   ],
