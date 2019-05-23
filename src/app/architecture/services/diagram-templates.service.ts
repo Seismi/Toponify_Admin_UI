@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {nodeCategories} from '@app/nodes/store/models/node.model';
+import {nodeCategories, layers} from '@app/nodes/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
@@ -733,9 +733,8 @@ export class DiagramTemplatesService {
       } : {},
       $(go.Shape, {
           isPanelMain: true,
-          stroke: 'Black',
-          strokeWidth: 2.5,
-          strokeDashArray: [5, 5]
+          stroke: 'black',
+          strokeWidth: 2.5
         },
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
@@ -773,7 +772,10 @@ export class DiagramTemplatesService {
           scale: 1.2,
           stroke: 'Black',
           toArrow: 'Triangle'
-        }
+        },
+        new go.Binding('visible', 'layer',
+          function(layer) {return layer !== layers.system; }
+        )
       )
     );
   }
@@ -828,8 +830,9 @@ export class DiagramTemplatesService {
       } : {},
       $(go.Shape, {
           isPanelMain: true,
-          stroke: 'black',
-          strokeWidth: 2.5
+          stroke: 'Black',
+          strokeWidth: 2.5,
+          strokeDashArray: [5, 5]
         },
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
