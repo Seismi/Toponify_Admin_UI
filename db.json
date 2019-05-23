@@ -1018,5 +1018,79 @@
         "replyCount": "2"
       }
     ]
-  }
+  },
+  "customProperties": 
+    {
+      "data": [
+        {
+          "id": "11f1d2f7-a138-434f-8a11-7a04f859d9e4",
+          "type": "Boolean",
+          "name": "Is Active",
+          "description": "Use to flag any rule that is no longer use as inactive.",
+          "levels": [
+            "Attributes",
+            "Rules"
+          ]
+        },
+        {
+          "id": "21f1d2f7-a332-434f-8a12-7a04f855d9e4",
+          "type": "Text",
+          "name": "Use Case",
+          "description": "Short summary of report business use case.",
+          "levels": [
+            "Reports - All"
+          ]
+        },
+        {
+          "id": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
+          "type": "Hyperlink",
+          "name": "Functional Design Document",
+          "description": "Link to functional design document in sharepoint",
+          "levels": [
+            "Systems - All",
+            "System Links - All"
+          ]
+        },
+        {
+          "id": "41f1d2f7-a338-434f-8a14-7a04f853d9e4",
+          "type": "Number",
+          "name": "Severity level",
+          "description": "Use number between 1 and 5. 5 is high severity, 1 is low.",
+          "levels": [
+            "RADIO"
+          ]
+        },
+        {
+          "id": "51faa2f7-a338-434f-8a15-7a04f85929e4",
+          "type": "Date",
+          "name": "ETA",
+          "description": "Estimated time of arrival",
+          "levels": [
+            "Work Packages"
+          ]
+        },
+        {
+          "id": "61f1daf7-a338-434f-8a16-7a04f119d9e4",
+          "type": "Hyperlink",
+          "name": "Epic",
+          "description": "Link to the epic controlling delivery of this work package.",
+          "levels": [
+            "Work package"
+          ]
+        }
+      ],
+      "links": {
+        "first": "http://myapi?page=0&size=100",
+        "previous": "http://myapi?page=0&size=100",
+        "next": "http://myapi?page=0&size=100",
+        "last": "http://myapi?page=0&size=100"
+      },
+      "page": {
+        "size": 100,
+        "totalElements": 6,
+        "totalPages": 1,
+        "number": 1
+      }
+    }
+  
 }
