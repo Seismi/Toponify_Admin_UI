@@ -32,7 +32,6 @@ export function reducer(state = initialState, action: DocumentationStandardActio
     }
 
     case DocumentationStandardActionTypes.LoadDocumentationStandardsSuccess: {
-      debugger;
       return {
         ...state,
         loading: false,

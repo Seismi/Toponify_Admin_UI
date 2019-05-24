@@ -1,19 +1,19 @@
-<form>
+<form [formGroup]="group">
     <div class="form-group">
         <label>Name</label>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" formControlName="name">
     </div>
     <div class="form-group">
         <label>Description</label>
-        <textarea class="form-control" rows="3"></textarea>
+        <textarea class="form-control" rows="3" formControlName="description"></textarea>
     </div>
     <div class="form-group">
         <label>Type</label>
-        <input type="text" class="form-control">
+        <input type="text" class="form-control" formControlName="type">
     </div>
     <div class="form-group">
         <label>Level</label>
-        <textarea class="form-control" rows="3"></textarea>
+        <textarea class="form-control" rows="3" formControlName="levels"></textarea>
     </div>
 
     <br>
