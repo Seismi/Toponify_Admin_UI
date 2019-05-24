@@ -36,10 +36,6 @@ const routes: Routes = [
         loadChildren: './workpackage/workpackage.module#WorkPackageModule'
       },
       {
-        path: 'user',
-        loadChildren: './user/user.module#UserModule'
-      },
-      {
         path: 'scopes-and-layouts',
         loadChildren: './scopes-and-layouts/scopes-and-layouts.module#ScopesAndLayoutsModule'
       },

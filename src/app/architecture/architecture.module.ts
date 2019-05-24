@@ -4,9 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
   MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
-// import {AttributeService} from '@app/architecture/services/attribute.service';
-import { DiagramService } from '@app/architecture/services/diagram.service';
-import { FilterService } from '@app/architecture/services/filter.service';
+// import {AttributeService} from './services/attribute.service';
+import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/view.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeModule } from '@app/nodes/node.module';
@@ -19,9 +18,6 @@ import { AddAttrAndRulesComponent } from './components/add-attr-and-rules/add-at
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
 import { ArchitecturePaletteComponent } from './components/architecture-palette/architecture-palette.component';
-import { CategoryTableComponent } from './components/category-table/category-table.component';
-import { TableCollapseComponent } from './components/category-table/table-collapse/table-collapse.component';
-import { ColorsPickerComponent } from './components/color-picker/color-picker.component';
 import { ObjectDetailsFormComponent } from './components/object-details-form/object-details-form.component';
 import { ArchitectureRoutingComponent } from './containers/architecture-routing.component';
 import { ArchitectureComponent } from './containers/architecture.component';
@@ -32,6 +28,11 @@ import { LeftPanelComponent } from './containers/left-panel.component';
 import { RightPanelComponent } from './containers/right-panel.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';
+import {DiagramChangesService} from './services/diagram-changes.service';
+import {DiagramListenersService} from './services/diagram-listeners.service';
+import {DiagramTemplatesService} from './services/diagram-templates.service';
+import {DiagramLevelService} from './services/diagram-level.service';
+import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 
 
 @NgModule({
@@ -62,7 +63,7 @@ import { WorkPackageModule } from '@app/workpackage/workpackage.module';
     ColorPickerModule,
     StoreModule.forFeature('architectureFeature', reducer)
   ],
-    exports: [],
+    exports: [ObjectDetailsFormComponent],
     declarations: [
       ArchitectureRoutingComponent,
       ArchitectureComponent,
@@ -71,11 +72,8 @@ import { WorkPackageModule } from '@app/workpackage/workpackage.module';
       RightPanelComponent,
       ObjectDetailsFormComponent,
       DeleteModalComponent,
-      CategoryTableComponent,
-      TableCollapseComponent,
       LeftPanelComponent,
       AnalysisTabComponent,
-      ColorsPickerComponent,
       DeleteNodeModalComponent,
       DeleteLinkModalComponent,
       AddAttrAndRulesComponent
@@ -83,7 +81,12 @@ import { WorkPackageModule } from '@app/workpackage/workpackage.module';
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [
       // AttributeService,
-      DiagramService,
+      GojsCustomObjectsService,
+      DiagramChangesService,
+      DiagramListenersService,
+      DiagramTemplatesService,
+      DiagramLevelService,
+      DiagramListenersService,
       FilterService,
       NodeService,
       WorkPackageService
