@@ -9,7 +9,6 @@ import {State as ArchitectureState} from '@app/architecture/store/reducers/view.
 import {FilterService} from './filter.service';
 import {Location} from '@angular/common';
 import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
-import {DiagramTemplatesService} from './diagram-templates.service';
 
 const $ = go.GraphObject.make;
 
@@ -73,7 +72,6 @@ export class DiagramLevelService implements OnDestroy {
   constructor(
     private store: Store<ArchitectureState>,
     public filterService: FilterService,
-    public diagramTemplatesService: DiagramTemplatesService,
     public location: Location
   ) {
   }
@@ -192,11 +190,6 @@ export class DiagramLevelService implements OnDestroy {
   changeLevel(diagram: go.Diagram, level: Level): void {
     // Clear clipboard to prevent parts being copied to the wrong view
     diagram.commandHandler.copyToClipboard(null);
-
-    diagram.nodeTemplateMap.add(nodeCategories.masterData,
-      (level === Level.dataSet) ? this.diagramTemplatesService.getDataSetNodeTemplate() :
-        this.diagramTemplatesService.getSystemNodeTemplate()
-    );
 
     // Array of nodes to be used in the palette
     let paletteViewNodes: object[] = [];
