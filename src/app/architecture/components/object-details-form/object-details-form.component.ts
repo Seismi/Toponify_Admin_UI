@@ -25,6 +25,9 @@ export class ObjectDetailsFormComponent {
   @Output()
   editDetails = new EventEmitter();
 
+  @Output()
+  cancel = new EventEmitter();
+
   onEdit(){
     this.editDetails.emit();
   }
@@ -35,6 +38,7 @@ export class ObjectDetailsFormComponent {
   }
 
   onCancel(){
+    this.cancel.emit();
     this.isEditable = false;
   }
 

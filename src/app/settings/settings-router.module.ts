@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { OrganisationSettingsComponent } from './containers/organisation-settings/organisation-settings.component';
+import { SettingsComponent } from './containers/settings/settings.component';
 import { SettingsRoutingComponent } from './settings-router.component';
 
 export const settingsRoutes: Routes = [
@@ -10,9 +10,8 @@ export const settingsRoutes: Routes = [
     children: [
       {
         path: '',
-        component: OrganisationSettingsComponent
-      },
-
+        component: SettingsComponent
+      }
     ]
   }
 ];

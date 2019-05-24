@@ -12,8 +12,6 @@ import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.s
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
-import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
-import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 // import {DeleteNodeSuccess} from '@app/nodes/store/actions/node.actions';
 import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
 // import {DeleteLinkSuccess} from '@app/nodes/store/actions/node.actions';
@@ -26,6 +24,10 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
+import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
+
 
 @Component({
   selector: 'smi-architecture',
@@ -67,6 +69,7 @@ export class ArchitectureComponent implements OnInit {
     private workpackageStore: Store<WorkPackageState>,
     private route:  ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
+    private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog
   ) { }
 
@@ -191,10 +194,6 @@ export class ArchitectureComponent implements OnInit {
     console.log('Model: ', event);
   }
 
-  /* get categoryTableData() {
-    return this.attributes;
-  }*/
-
   get objectDetailsForm(): FormGroup {
     return this.objectDetailsService.objectDetailsForm;
   }
@@ -238,7 +237,7 @@ export class ArchitectureComponent implements OnInit {
     // this.store.dispatch();
 
     // Update the diagram to reflect changed properties
-    this.diagramComponent.updatePartData(this.part, data);
+    this.diagramChangesService.updatePartData(this.part, data);
 
   }
 
@@ -319,7 +318,7 @@ export class ArchitectureComponent implements OnInit {
   }
 
   displayOptionsChanged({event, option}: {event: any, option: string}) {
-    this.diagramComponent.updateDisplayOptions(event, option);
+    this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
   }
 
   onZoomIn() {

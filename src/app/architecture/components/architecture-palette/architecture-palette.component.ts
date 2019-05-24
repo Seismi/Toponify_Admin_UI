@@ -1,8 +1,9 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import {DiagramService, Level} from '@app/architecture/services/diagram.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
-import {nodeCategories} from '@app/nodes/store/models/node.model';
+import {layers} from '@app/nodes/store/models/node.model';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {DiagramTemplatesService} from '../..//services/diagram-templates.service';
+import {DiagramLevelService} from '../../services/diagram-level.service';
 @Component({
   selector: 'app-architecture-palette',
   templateUrl: './architecture-palette.component.html',
@@ -14,16 +15,14 @@ export class ArchitecturePaletteComponent implements OnInit {
   @ViewChild('paletteDiv')
   private paletteRef: ElementRef;
 
-  /* @Input()
-  set nodes(val: any) {
-    this.palette.model.nodeDataArray = val;
-  }
- */
-  constructor(private diagramService: DiagramService) {
+  constructor( private diagramTemplatesService: DiagramTemplatesService,
+    private diagramLevelService: DiagramLevelService
+  ) {
     this.palette = new go.Palette();
     this.palette.initialScale = 0.5;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
+    this.palette.model.nodeCategoryProperty = 'layer';
     this.palette.autoScrollRegion = new go.Margin(0);
     (this.palette.model as go.GraphLinksModel).linkKeyProperty = 'id';
     this.palette.model.modelData = {
@@ -42,64 +41,34 @@ export class ArchitecturePaletteComponent implements OnInit {
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.transactional,
-      diagramService.getSystemNodeTemplate()
+      layers.system,
+      diagramTemplatesService.getSystemNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.analytical,
-      diagramService.getSystemNodeTemplate()
+      layers.dataSet,
+      diagramTemplatesService.getDataSetNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.file,
-      diagramService.getSystemNodeTemplate()
+      layers.dimension,
+      diagramTemplatesService.getDimensionNodeTemplate()
     );
 
     this.palette.nodeTemplateMap.add(
-      nodeCategories.reporting,
-      diagramService.getSystemNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.physical,
-      diagramService.getDataSetNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.virtual,
-      diagramService.getDataSetNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.dimension,
-      diagramService.getDimensionNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.list,
-      diagramService.getReportingConceptNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.structure,
-      diagramService.getReportingConceptNodeTemplate()
-    );
-
-    this.palette.nodeTemplateMap.add(
-      nodeCategories.key,
-      diagramService.getReportingConceptNodeTemplate()
+      layers.reportingConcept,
+      diagramTemplatesService.getReportingConceptNodeTemplate()
     );
 
     // Set links templates
     this.palette.linkTemplateMap.add(
       linkCategories.data,
-      diagramService.getLinkDataTemplate(true)
+      diagramTemplatesService.getLinkDataTemplate(true)
     );
 
     this.palette.linkTemplateMap.add(
       linkCategories.masterData,
-      diagramService.getLinkMasterDataTemplate(true)
+      diagramTemplatesService.getLinkMasterDataTemplate(true)
     );
   }
 
@@ -115,17 +84,13 @@ export class ArchitecturePaletteComponent implements OnInit {
   ngOnInit() {
     this.palette.div = this.paletteRef.nativeElement;
 
-    this.diagramService.masterDataTemplate.subscribe(function(template) {
-        this.palette.nodeTemplateMap.add(nodeCategories.masterData, template);
-      }.bind(this)
-    );
     // Subscribe to source of node data for the palette
-    this.diagramService.paletteNodes.subscribe(function(nodes) {
+    this.diagramLevelService.paletteNodes.subscribe(function(nodes) {
         this.palette.model.nodeDataArray = nodes;
       }.bind(this)
     );
 
-    this.diagramService.paletteLinks.subscribe(function(links) {
+    this.diagramLevelService.paletteLinks.subscribe(function(links) {
         this.palette.model.linkDataArray = links;
       }.bind(this)
     );

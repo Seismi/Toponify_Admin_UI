@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { Level } from '../../../../architecture/services/diagram.service';
+import { Level } from '../../../../architecture/services/diagram-level.service';
 import { SetZoomLevel, SetViewLevel } from '../../../../architecture/store/actions/view.actions';
 import { State as ViewState } from '../../../../architecture/store/reducers/view.reducer';
 import { getViewLevel, getZoomLevel } from '@app/architecture/store/selectors/view.selector';
@@ -11,8 +11,7 @@ export const viewLevelMapping = {
   [1]: Level.system,
   [2]: Level.dataSet,
   [3]: Level.dimension,
-  [4]: Level.reportingConcept,
-  [5]: Level.attribute
+  [4]: Level.reportingConcept
 };
 
 @Component({
@@ -24,6 +23,7 @@ export const viewLevelMapping = {
 export class ZoomActionsComponent implements OnInit, OnDestroy {
 
   public zoomLevel: number;
+  public viewLevel: number;
   public zoomLevel$: Observable<number>;
   public viewLevel$: Observable<number>;
 
@@ -44,7 +44,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     this.zoomLevel$ = this.store.pipe(select(getZoomLevel));
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
     this.zoomLevelSubscription = this.zoomLevel$.subscribe(zoom => (this.zoomLevel = zoom));
-    this.viewLevelSubscription = this.viewLevel$.subscribe(level => {});
+    this.viewLevelSubscription = this.viewLevel$.subscribe(level => (this.viewLevel = level));
   }
 
   ngOnDestroy(): void {
@@ -68,7 +68,6 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
         this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
       }
     }
-
     // FIXME: table and diagram logic should be improved
     this.store.dispatch(new SetViewLevel(level));
   }

@@ -6,8 +6,8 @@
         "category": "transactional",
         "name": "Bought Ledger",
         "layer": "system",
-        "description": "",
-        "tags": "",
+        "description": "Purchasing and acquisitions",
+        "tags": "Sub-ledger",
         "locations": [],
         "owners": [],
         "descendants": []
@@ -17,8 +17,8 @@
         "category": "transactional",
         "name": "HR",
         "layer": "system",
-        "description": "",
-        "tags": "",
+        "description": "Staff salaries and benefits",
+        "tags": "HR",
         "locations": [],
         "owners": [],
         "descendants": []
@@ -28,14 +28,35 @@
         "category": "transactional",
         "name": "ERP",
         "layer": "system",
-        "description": "",
-        "tags": "",
+        "description": "Group Enterprise Resource Planning system",
+        "tags": "ERP",
         "locations": [],
         "owners": [],
-        "descendants": []
+        "descendants": [
+          {
+            "id": "21ba44c7-50a6-447e-895e-cafb32f90561",
+            "name": "Transactions"
+          },
+          {
+            "id": "c1bf0b91-c695-465f-bd50-f2a1cfb05298",
+            "name": "Asset Management"
+          },
+          {
+            "id": "e8f89ec5-6c1a-4256-b132-2ea07756229e",
+            "name": "Accounts Payable"
+          },
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "name": "Primary Ledger Balances"
+          },
+          {
+            "id": "463ab8d4-99bb-4981-a0e8-6045ceb54175",
+            "name": "India Secondary Balances"
+          }
+        ]
       },
       {
-        "id": "067b138f-b299-4fa9-bd05-d93a29917ad6",
+        "id": "78a6ff87-4e50-4966-9480-9772977aef48",
         "category": "analytical",
         "name": "Consolidation",
         "layer": "system",
@@ -43,7 +64,12 @@
         "tags": "",
         "locations": [],
         "owners": [],
-        "descendants": []
+        "descendants": [
+          {
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "name": "Consolidation"
+          }
+        ]
       },
       {
         "id": "0a156062-0b0c-451a-90ef-a492e828127e",
@@ -103,7 +129,7 @@
       {
         "id": "21561ffe-70bb-413e-9aa0-1493bd9d9cb6",
         "category": "reporting",
-        "name": "Warehouse and Business Inteligence",
+        "name": "Warehouse and Business Intelligence",
         "layer": "system",
         "description": "",
         "tags": "",
@@ -175,7 +201,36 @@
         "tags": "",
         "locations": [],
         "owners": [],
-        "descendants": []
+        "descendants": [
+          {
+            "id": "f023506a-4026-43c0-a38b-9d793d8baf49",
+            "name": "Account"
+          },
+          {
+            "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
+            "name": "Currency"
+          },
+          {
+            "id": "57526c23-2bbe-4a30-a80e-0eb3cb264e5a",
+            "name": "Entity"
+          },
+          {
+            "id": "19e967512-1dae-40c3-8bec-0cfb1f32d68b",
+            "name": "ICP"
+          },
+          {
+            "id": "13dce907-7b27-4998-b01b-07ceb5d294df",
+            "name": "Cost Centre"
+          },
+          {
+            "id": "e5056291-0ffb-4140-8131-2155ccc04f63",
+            "name": "Finance Period"
+          },
+          {
+            "id": "71d86b20-3179-421a-8620-fd440ab570de",
+            "name": "Product"
+          }
+        ]
       },
       {
         "id": "463ab8d4-99bb-4981-a0e8-6045ceb54175",
@@ -197,7 +252,36 @@
         "tags": "",
         "locations": [],
         "owners": [],
-        "descendants": []
+        "descendants": [
+          {
+            "id": "e261375c-1bf0-4157-bf69-37aa3d7c48a8",
+            "name": "Total Account"
+          },
+          {
+            "id": "dc20c873-d98e-483a-b3ce-1df70c0457da",
+            "name": "Total Profit and Loss - Statutory"
+          },
+          {
+            "id": "1caf87e2-73b4-4bee-bbac-44ba16220d79",
+            "name": "Total Profit and Loss - Management"
+          },
+          {
+            "id": "b233dd1f-0ad0-44e1-9ad6-cdb50cfa6dd1",
+            "name": "Total Balance Sheet - Statutory"
+          },
+          {
+            "id": "9b015e19-a506-4a83-9776-46d201d50f56",
+            "name": "Total Balance Sheet - Management"
+          },
+          {
+            "id": "daf5d75b-92bc-4fb0-a556-9005e747ceb0",
+            "name": "Profit and Loss Accounts"
+          },
+          {
+            "id": "59d45144-ae2e-4974-9846-08fc3c0546c4",
+            "name": "Balance Sheet Accounts"
+          }
+        ]
       },
       {
         "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
@@ -219,7 +303,28 @@
         "tags": "",
         "locations": [],
         "owners": [],
-        "descendants": []
+        "descendants": [
+          {
+            "id": "81895b97-45c4-4111-a0a7-02d156ea792f",
+            "name": "Total Entity"
+          },
+          {
+            "id": "6b80ff3f-70f2-44df-a0d7-a51239613965",
+            "name": "Parent Entities"
+          },
+          {
+            "id": "651ed81a-0702-4be9-a4d2-ab9689d447f3",
+            "name": "Legal Entities"
+          },
+          {
+            "id": "510a3225-708d-433f-a90b-654e8d5a48f5",
+            "name": "Joint Ventures and Associates"
+          },
+          {
+            "id": "59e20ad0-51b1-43ec-9370-e93bb4ba0955",
+            "name": "Adjustment Entities"
+          }
+        ]
       },
       {
         "id": "9e967512-1dae-40c3-8bec-0cfb1f32d68b",
@@ -440,7 +545,8 @@
         "sourceId": "6b80ff3f-70f2-44df-a0d7-a51239613965",
         "targetId": "59e20ad0-51b1-43ec-9370-e93bb4ba0955",
         "routes": []
-      },{
+      },
+      {
         "id": "5fc1e26e-de24-43f9-9bf5-d8f5bc9a6424",
         "category": "master data",
         "name": "Total Account - Total Profit and Loss - Statutory",
@@ -509,7 +615,8 @@
         "sourceId": "b233dd1f-0ad0-44e1-9ad6-cdb50cfa6dd1",
         "targetId": "59d45144-ae2e-4974-9846-08fc3c0546c4",
         "routes": []
-      },{
+      },
+      {
         "id": "24725bd3-5301-4d2f-b8a0-218114045de2",
         "category": "master data",
         "name": "Total Balance Sheet - Management - Balance Sheet Accounts",
@@ -518,7 +625,8 @@
         "sourceId": "9b015e19-a506-4a83-9776-46d201d50f56",
         "targetId": "59d45144-ae2e-4974-9846-08fc3c0546c4",
         "routes": []
-      },{
+      },
+      {
         "id": "ceb14b90-6c73-4eaa-8be2-affe8d92b9b6",
         "category": "master data",
         "name": "Account - Cost Centre",
@@ -1144,6 +1252,624 @@
       "number": 0
     }
   },
+  "customProperties": {
+    "data": [
+      {
+        "id": "11f1d2f7-a138-434f-8a11-7a04f859d9e4",
+        "type": "Boolean",
+        "name": "Is Active",
+        "description": "Use to flag any rule that is no longer use as inactive.",
+        "levels": [
+          "Attributes",
+          "Rules"
+        ]
+      },
+      {
+        "id": "21f1d2f7-a332-434f-8a12-7a04f855d9e4",
+        "type": "Text",
+        "name": "Use Case",
+        "description": "Short summary of report business use case.",
+        "levels": [
+          "Reports - All"
+        ]
+      },
+      {
+        "id": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
+        "type": "Hyperlink",
+        "name": "Functional Design Document",
+        "description": "Link to functional design document in sharepoint",
+        "levels": [
+          "Systems - All",
+          "System Links - All"
+        ]
+      },
+      {
+        "id": "41f1d2f7-a338-434f-8a14-7a04f853d9e4",
+        "type": "Number",
+        "name": "Severity level",
+        "description": "Use number between 1 and 5. 5 is high severity, 1 is low.",
+        "levels": [
+          "RADIO"
+        ]
+      },
+      {
+        "id": "51faa2f7-a338-434f-8a15-7a04f85929e4",
+        "type": "Date",
+        "name": "ETA",
+        "description": "Estimated time of arrival",
+        "levels": [
+          "Work Packages"
+        ]
+      },
+      {
+        "id": "61f1daf7-a338-434f-8a16-7a04f119d9e4",
+        "type": "Hyperlink",
+        "name": "Epic",
+        "description": "Link to the epic controlling delivery of this work package.",
+        "levels": [
+          "Work package"
+        ]
+      }
+    ],
+    "links": {
+      "first": "http://myapi?page=0&size=100",
+      "previous": "http://myapi?page=0&size=100",
+      "next": "http://myapi?page=0&size=100",
+      "last": "http://myapi?page=0&size=100"
+    },
+    "page": {
+      "size": 100,
+      "totalElements": 6,
+      "totalPages": 1,
+      "number": 1
+    }
+  },
+  "attributes": {
+    "data": [
+      {
+        "id": "a36b59c6-515a-4854-a334-dc0bd4dbadc2",
+        "name": "Account Type",
+        "category": "attribute",
+        "description": "",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "167d1af1-ef7e-444a-9db1-51e3bd0a6d7f",
+        "name": "Address",
+        "category": "attribute",
+        "description": "Legal address of an Entity",
+        "tags": "Documentation",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "041b5aa0-7834-4e20-96de-d41d290bd5f7",
+        "name": "Blocked for Posting",
+        "category": "attribute",
+        "description": "",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "3f07bcd7-be3c-43de-aa7f-d17122da0fb1",
+        "name": "Code",
+        "category": "attribute",
+        "description": "Code",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "26fa5d27-1c24-4f59-b6ad-6af989e89ec2",
+        "name": "Description",
+        "category": "attribute",
+        "description": "Member description",
+        "tags": "Shared",
+        "scope": "global",
+        "owner": "Shared",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
+        "name": "EPM Account Type",
+        "category": "attribute",
+        "description": "Standard account type definition that is then translated to application specific nomenclature.",
+        "tags": null,
+        "scope": "global",
+        "owner": null,
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "7e4fdcb7-7246-4b66-a52e-0c488155a97b",
+        "name": "HFM Account Type",
+        "category": "attribute",
+        "description": "EPM account type translated to HFM nomenclature",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
+            "name": "EPM Account Type",
+            "tags": null,
+            "related": [],
+            "category": "attribute",
+            "description": "Standard account type definition that is then translated to application specific nomenclature."
+          }
+        ]
+      },
+      {
+        "id": "652825d0-5c71-443f-aef7-d7be27835168",
+        "name": "HFM Custom1 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "e5074e25-4fe6-46f0-9bb4-917fa4f44f06",
+        "name": "HFM Custom2 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "11499188-9181-47ec-ac79-123bb509a18f",
+        "name": "HFM Custom3 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "4cde27f4-be7a-4b80-9644-354a529a8dc2",
+        "name": "HFM Custom4 Top Member",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "f510f7ac-2dc7-4013-bd85-226ef51b033b",
+        "name": "HFM Enable Custom1 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "5f84e89f-e572-41ea-945d-442e52928156",
+        "name": "HFM Enable Custom2 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "8b5c7be3-bcb5-405a-8e9e-b742ab6fd207",
+        "name": "HFM Enable Custom3 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "e6fed3f5-f654-49eb-a8c5-eb5925bfbd18",
+        "name": "HFM Enable Custom4 Aggregation",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "78954a47-8ccc-4d52-896f-47212956e69b",
+        "name": "HFM Is Calculated",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "7dd3fdb2-bd4c-4505-94d2-18fe5c155fc3",
+        "name": "HFM Is Consolidated",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "1822bf0f-d6e3-49b8-9b90-52e00daf971c",
+        "name": "HFM Number of Decimal Places",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "c2f33f5e-850c-4ab0-846e-331d3cfba242",
+        "name": "HFM Plug Account",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "d9823ef4-eac1-41fb-99c1-9366ab3b4918",
+        "name": "HFM Scale",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "local",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "668b9d94-b362-4342-9e03-454d00fc8406",
+        "name": "HFM Security Class",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "03cd2bc3-6d25-4b6a-b86f-295a200a0c5b",
+        "name": "HFM Submission Group",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "467c0ccd-9fc9-44e2-b3ce-cfd6dd24ecc7",
+        "name": "HFM Uses Line Item",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "ad13be23-ef58-49ed-ac29-a3dbde62a8d3",
+        "name": "Is Complete",
+        "category": "attribute",
+        "description": "Flags if a rollup needs to be complete",
+        "tags": "EPM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "cbc7e7b2-0668-4981-ae12-e820d1a2e764",
+        "name": "Is HFM Data Member?",
+        "category": "attribute",
+        "description": "",
+        "tags": "HFM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "cbbd3151-bc29-4cc5-bff1-58f68c9da953",
+        "name": "Is MTP Data Member?",
+        "category": "attribute",
+        "description": "",
+        "tags": "MTP",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "eba66c5e-07a2-40f1-b802-5dd87c143f9f",
+        "name": "Link to HFM Custom3 consistent with HFM Account Top Custom3",
+        "category": "rule",
+        "description": "",
+        "tags": "Rule",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          },
+          {
+            "id": "cbc7e7b2-0668-4981-ae12-e820d1a2e764",
+            "name": "Is HFM Data Member?",
+            "tags": "HFM",
+            "related": [],
+            "category": "attribute",
+            "description": ""
+          }
+        ]
+      },
+      {
+        "id": "8947a1f9-3817-42e5-90ef-462255989a62",
+        "name": "Long Description",
+        "category": "attribute",
+        "description": "SAP Long description",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "26fa5d27-1c24-4f59-b6ad-6af989e89ec2",
+            "name": "Description",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Member description"
+          }
+        ]
+      },
+      {
+        "id": "f0ce5b3e-6fc7-472e-a195-b23a6b663093",
+        "name": "Master Rollup",
+        "category": "attribute",
+        "description": "",
+        "tags": "EPM",
+        "scope": "global",
+        "owner": "EPM Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+            "name": "Name",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Name or code of the member"
+          }
+        ]
+      },
+      {
+        "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
+        "name": "Balance Sheet",
+        "description": "Local balance sheet",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
+        "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
+        "name": "Name",
+        "category": "attribute",
+        "description": "Name or code of the member",
+        "tags": "Shared",
+        "scope": "global",
+        "owner": "Shared",
+        "customProperties": [],
+        "related": []
+      },
+      {
+        "id": "a244dd0e-87fb-4d17-a6e7-577480121904",
+        "name": "SAP and HFM Account Type Aligned",
+        "category": "rule",
+        "description": "Rule that validates that SAP and HFM Account types are aligned.",
+        "tags": "",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "7e4fdcb7-7246-4b66-a52e-0c488155a97b",
+            "name": "HFM Account Type",
+            "tags": "HFM",
+            "related": [
+              {
+                "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
+                "name": "EPM Account Type",
+                "tags": null,
+                "related": [],
+                "category": "attribute",
+                "description": "Standard account type definition that is then translated to application specific nomenclature."
+              }
+            ],
+            "category": "attribute",
+            "description": "EPM account type translated to HFM nomenclature"
+          },
+          {
+            "id": "a36b59c6-515a-4854-a334-dc0bd4dbadc2",
+            "name": "Account Type",
+            "tags": "SAP",
+            "related": [],
+            "category": "attribute",
+            "description": ""
+          }
+        ]
+      },
+      {
+        "id": "ca8ec3c9-2e2c-43bc-a1cd-90cf83e30e71",
+        "name": "Cash Flow",
+        "description": "Local cash flow",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
+        "id": "0ceee4c2-79c4-40d9-82f1-5e80de1c2e62",
+        "name": "Short Description",
+        "category": "attribute",
+        "description": "SAP Short description",
+        "tags": "SAP",
+        "scope": "global",
+        "owner": "SAP Team",
+        "customProperties": [],
+        "related": [
+          {
+            "id": "26fa5d27-1c24-4f59-b6ad-6af989e89ec2",
+            "name": "Description",
+            "tags": "Shared",
+            "related": [],
+            "category": "attribute",
+            "description": "Member description"
+          }
+        ]
+      },
+      {
+        "id": "c18ec3c9-2e3c-43bc-a1cd-90cf86e30e71",
+        "name": "Consolidated Income Statement",
+        "description": "Group consolidated income statement for statutory reporting.",
+        "dataSets": [
+          {
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "category": "physical",
+            "name": "Consolidation",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      }
+    ],
+    "links": {
+      "first": "http://myapi?page=0&size=20",
+      "previous": "http://myapi?page=0&size=20",
+      "next": "http://myapi?page=0&size=20",
+      "last": "http://myapi?page=0&size=20"
+    },
+    "page": {
+      "size": 20,
+      "totalElements": 4,
+      "totalPages": 1,
+      "number": 0
+    }
+  },
   "reportDetail": {
     "data": {
       "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
@@ -1238,8 +1964,7 @@
           "owners": [],
           "descendants": []
         }
-      ],
-      "attributes": []
+      ]
     }
   }
 }
