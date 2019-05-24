@@ -25,7 +25,8 @@
             [nodeSelected]="objectSelected"
             (editDetails)="onEditDetails($event)"
             (cancel)="onCancelEdit($event)"
-            (saveAttribute)="onSaveAttribute($event)">
+            (saveAttribute)="onSaveAttribute($event)"
+            [workPackageIsEditable]="workPackageIsEditable">
         </smi-object-details-form>
     </div>
 </div>

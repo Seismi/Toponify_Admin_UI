@@ -7,7 +7,9 @@
             [isEditable]="isEditable"
             (editDetails)="onEditDetails($event)"
             (saveAttribute)="onSaveAttribute($event)"
-            (deleteAttribute)="onDeleteAttribute($event)">
+            (deleteAttribute)="onDeleteAttribute($event)"
+            (cancel)="onCancel($event)"
+            [workPackageIsEditable]="workPackageIsEditable">
         </smi-object-details-form></mat-tab>
     <mat-tab label="Comments"> Comments </mat-tab>
     <mat-tab label="Audit"> Audit </mat-tab>

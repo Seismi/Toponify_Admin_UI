@@ -21,6 +21,7 @@ export class AttributesComponent implements OnInit {
     attribute: Attribute[];
     isEditable = false;
     objectSelected = true;
+    workPackageIsEditable = false;
 
     constructor(private store: Store<AttributeState>, private objectDetailsService: ObjectDetailsService) { }
 
@@ -42,6 +43,7 @@ export class AttributesComponent implements OnInit {
     onSelectedRow(entry) {
         this.isEditable = false;
         this.objectSelected = false;
+        this.workPackageIsEditable = true;
         this.objectDetailsService.objectDetailsForm.patchValue({
             name: entry.name,
             category: entry.category,

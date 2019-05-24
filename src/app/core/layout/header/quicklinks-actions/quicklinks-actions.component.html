@@ -15,7 +15,7 @@
 
 
 <!-- Edit diagram button -->
-<a (click)="onNavigate()" *ngIf="gojsView"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
+<a (click)="allowEditWorkPackage()" *ngIf="gojsView"><mat-icon matTooltip="Edit WorkPackages">{{allowEditWorkPackages}}</mat-icon></a>
 
 
 <!-- Splitter -->
@@ -46,6 +46,9 @@
         <button class="dropdown-item">Layout 3</button>
     </div>
 </div>
+
+<!-- Edit diagram button -->
+<a (click)="allowEditLayout()" *ngIf="gojsView"><mat-icon matTooltip="Edit Layout">{{allowEditLayouts}}</mat-icon></a>
 
 
 <!-- RADIO Log Icon -->

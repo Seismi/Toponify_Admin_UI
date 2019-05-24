@@ -14,18 +14,27 @@ export class QuicklinksActionsComponent implements OnInit {
   }
 
   @Input() gojsView = false;
-  @Input() navigate: string;
+  @Input() allowEditLayouts: string;
+  @Input() allowEditWorkPackages: string;
   workpackage: any[];
 
   ngOnInit() {
-    this.navigate = 'control_camera';
+    this.allowEditLayouts = 'edit';
+    this.allowEditWorkPackages = 'edit';
   }
 
   @Output()
-  navigateDiagram = new EventEmitter();
+  editWorkPackage = new EventEmitter();
 
-  onNavigate(){
-    this.navigateDiagram.emit();
+  @Output()
+  editLayout = new EventEmitter();
+
+  allowEditWorkPackage() {
+    this.editWorkPackage.emit();
+  }
+
+  allowEditLayout() {
+    this.editLayout.emit();
   }
 
 }

@@ -10,18 +10,18 @@
     ></app-zoom-actions>
     <app-layout-actions *ngIf="!attributesView"
       (showGrid)="onShowGrid($event)"
-      [showOrHide]="showOrHide"
-      (navigateDiagram)="onNavigateDiagram($event)"
-      [navigate]="navigate"
+      [showOrHideGrid]="showOrHideGrid"
       (zoomMap)="onZoomMap($event)"
   ></app-layout-actions>
   </app-toolbar-column>
   <app-toolbar-column>
     <smi-quicklinks-actions 
       [gojsView]="true" 
-      [navigate]="navigate"
+      [allowEditLayouts]="allowEditLayouts"
+      [allowEditWorkPackages]="allowEditWorkPackages"
       [data]="workpackage$ | async"
-      (navigateDiagram)="onNavigateDiagram($event)">
+      (editWorkPackage)="allowEditWorkPackage($event)"
+      (editLayout)="allowEditLayout($event)">
     </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
@@ -31,9 +31,7 @@
       <smi-left-panel
         [showTable]="showTable"
         [showPalette]="showPalette"
-        [allowMove]="allowMove"
-        (addAttribute)="onAddAttribute($event)"
-        (addRule)="onAddRule($event)"
+        [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)">
       </smi-left-panel>
     </p>
@@ -65,7 +63,8 @@
         (editDetails)="onEditDetails($event)"
         (saveAttribute)="onSaveObjectDetails($event)"
         (deleteAttribute)="onDeleteAttribute($event)"
-        (cancelEdit)="onCancelEdit($event)"
+        (cancel)="onCancelEdit($event)"
+        [workPackageIsEditable]="workPackageIsEditable"
     >
     </smi-right-panel>
   </app-model-sidebar>
