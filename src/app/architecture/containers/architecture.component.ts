@@ -64,7 +64,7 @@ export class ArchitectureComponent implements OnInit {
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
-  public selectedWorkPackages$: Subscription;
+  public selectedWorkPackages$: Observable<WorkPackageDetail>;
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -90,9 +90,7 @@ export class ArchitectureComponent implements OnInit {
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
 
-      this.selectedWorkPackages$ = this.workpackageStore.pipe(select(getSelectedWorkPackage)).subscribe((data) => {
-        console.log(data);
-      })
+      this.selectedWorkPackages$ = this.workpackageStore.pipe(select(getSelectedWorkPackage));
 
       /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
       this.mapViewId$.subscribe(linkId => {
@@ -342,7 +340,7 @@ export class ArchitectureComponent implements OnInit {
     this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
     this.workpackageStore.pipe(select(getSelectedWorkPackage)).subscribe(data => {
       this.workpackageDetail = data;
-    })
+    });
   }
 
 }

@@ -50,6 +50,7 @@
         [nodes]="nodes$ | async"
         [links]="nodeLinks$ | async"
         [workpackageDetail]="workpackageDetail"
+        [selectedWorkPackages]= "selectedWorkPackages$ | async"
         [viewLevel]="viewLevel$ | async"
         (nodeSelected)="partSelected($event)"
         (modelChanged)="modelChanged($event)"
