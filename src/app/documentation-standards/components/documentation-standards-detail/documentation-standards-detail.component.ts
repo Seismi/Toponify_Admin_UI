@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'smi-documentation-standards-detail',
@@ -6,4 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['documentation-standards-detail.component.scss']
 })
 export class DocumentationStandardsDetailComponent {
+
+  @Input() group: FormGroup;
+
 }

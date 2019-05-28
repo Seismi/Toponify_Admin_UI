@@ -17,12 +17,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { DocumentationStandardEffects } from './store/effects/documentation-standards.effects';
 import { reducer } from '../documentation-standards/store/reducers/documentation-standards.reducer';
 import { DocumentationStandardsService } from './services/dcoumentation-standards.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   imports: [
     CoreModule,
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     DocumentationStandardsRoutingModule,
     MatTableModule,
     MatPaginatorModule,

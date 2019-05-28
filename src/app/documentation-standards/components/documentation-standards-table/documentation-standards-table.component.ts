@@ -1,15 +1,6 @@
-import { Component, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
-
-export interface PeriodicElement {
-  name: string;
-  levels: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {name: 'Functional Design Document', levels: 'Systems (All)'},
-  {name: 'Technical Design', levels: 'Data Sets Links (All)'},
-];
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { MatTableDataSource } from '@angular/material';
+import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 
 @Component({
   selector: 'smi-documentation-standards-table',
@@ -18,24 +9,23 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class DocumentationStandardsTableComponent implements OnInit {
 
-  selectedRowIndex: number = -1;
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  @Input()
+  set data(data: DocumentStandard[]) {
+    this.dataSource = new MatTableDataSource<DocumentStandard>(data);
   }
 
+  selectedRowIndex: number = -1;
+
+  ngOnInit() {}
+
+  public dataSource: MatTableDataSource<DocumentStandard>;
   displayedColumns: string[] = ['name', 'levels'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
 
   @Output()
   documentationSelected = new EventEmitter();
 
   onSelectRow(row) {
-    this.selectedRowIndex = row.name;
+    this.selectedRowIndex = row.id;
     this.documentationSelected.emit(row);
   }
 
