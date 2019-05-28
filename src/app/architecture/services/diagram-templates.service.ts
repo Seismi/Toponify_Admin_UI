@@ -777,9 +777,12 @@ export class DiagramTemplatesService {
         go.Shape, // The 'to' arrowhead
         {
           scale: 1.2,
-          stroke: 'Black',
+          stroke: 'black',
+          fill: 'Black',
           toArrow: 'Triangle'
-        }
+        },
+        new go.Binding('stroke', 'colour'),
+        new go.Binding('fill', 'colour')
       )
     );
   }

@@ -255,6 +255,9 @@ export class DiagramChangesService {
   }
 
   updateNodes(diagram, nodes, selectedWorkPackages) {
+
+    selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
+
     if (nodes && nodes.length > 0) {
 
       const filter = this.filterService.filter.getValue();
@@ -271,7 +274,7 @@ export class DiagramChangesService {
           // Additions
           nodeChanges.additions.forEach(function(addition) {
             if (addition.layer === currentLevel) {
-              Object.assign({colour: workPackageColours[index]}, addition);
+              Object.assign(addition, {colour: workPackageColours[index]});
               nodeArray.push(addition);
             }
           });
@@ -280,16 +283,13 @@ export class DiagramChangesService {
           nodeChanges.updates.forEach(function(update) {
             const updatedNode = nodeArray.find(function(node) {return node.id === update.id; });
             if (updatedNode) {
-              update = Object.assign({}, update);
-              delete update.id;
-              delete update.layer;
               Object.assign(updatedNode, update, {colour: workPackageColours[index]});
             }
           });
 
           // Deletions
           nodeChanges.deletions.forEach(function(deletion) {
-            const nodeIndex = nodeArray.indexOf(function(node) {return node.id === deletion.id; });
+            const nodeIndex = nodeArray.findIndex(function(node) {return node.id === deletion.id; });
             if (nodeIndex !== -1) {nodeArray.splice(nodeIndex, 1); }
           });
         });
@@ -318,6 +318,9 @@ export class DiagramChangesService {
   }
 
   updateLinks(diagram, links, selectedWorkPackages) {
+
+    selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
+
     if (links && links.length > 0) {
 
       const filter = this.filterService.filter.getValue();
@@ -337,7 +340,7 @@ export class DiagramChangesService {
           // Additions
           linkChanges.additions.forEach(function(addition) {
             if (addition.layer === currentLevel) {
-              Object.assign({colour: workPackageColours[index]}, addition);
+              Object.assign(addition, {colour: workPackageColours[index]});
               linkArray.push(addition);
             }
           });
@@ -346,16 +349,13 @@ export class DiagramChangesService {
           linkChanges.updates.forEach(function(update) {
             const updatedLink = linkArray.find(function(link) {return link.id === update.id; });
             if (updatedLink) {
-              update = Object.assign({}, update);
-              delete update.id;
-              delete update.layer;
               Object.assign(updatedLink, update, {colour: workPackageColours[index]});
             }
           });
 
           // Deletions
           linkChanges.deletions.forEach(function(deletion) {
-            const linkIndex = linkArray.indexOf(function(link) {return link.id === deletion.id; });
+            const linkIndex = linkArray.findIndex(function(link) {return link.id === deletion.id; });
             if (linkIndex !== -1) {linkArray.splice(linkIndex, 1); }
           });
         });
