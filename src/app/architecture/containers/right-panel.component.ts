@@ -12,8 +12,16 @@ export class RightPanelComponent {
   @Input() clickedOnLink = false;
   @Input() nodeSelected = true;
   @Input() isEditable = false;
+  @Input() data: any;
+  workpackagePage = false;
+  radioPage = false;
+  
+  displayedColumnsForWorkPackages: string[] = ['name', 'status'];
+  displayedColumnsForRADIO: string[] = ['title', 'category'];
 
   constructor() { }
+
+  ngOnInit() { }
 
   @Output()
   saveAttribute = new EventEmitter();
