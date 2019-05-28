@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Level, DiagramLevelService} from './diagram-level.service';
 import {FilterService} from './filter.service';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {Node} from '@app/nodes/store/models/node.model.ts';
 
 const $ = go.GraphObject.make;
 
@@ -254,6 +255,10 @@ export class DiagramChangesService {
     }
   }
 
+  // Update the array of nodes that are displayed in the diagram
+  //  -diagram - the diagram to update
+  //  -nodes - the array of nodes from the architecture to include
+  //  -selectedWorkPackages - the array of currently selected work packages to apply node changes from
   updateNodes(diagram, nodes, selectedWorkPackages) {
 
     selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
@@ -274,6 +279,7 @@ export class DiagramChangesService {
           // Additions
           nodeChanges.additions.forEach(function(addition) {
             if (addition.layer === currentLevel) {
+              addition = new Node(addition);
               Object.assign(addition, {colour: workPackageColours[index]});
               nodeArray.push(addition);
             }
@@ -317,6 +323,10 @@ export class DiagramChangesService {
     }
   }
 
+  // Update the array of links that are displayed in the diagram
+  //  -diagram - the diagram to update
+  //  -links - the array of links from the architecture to include
+  //  -selectedWorkPackages - the array of currently selected work packages to apply link changes from
   updateLinks(diagram, links, selectedWorkPackages) {
 
     selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
