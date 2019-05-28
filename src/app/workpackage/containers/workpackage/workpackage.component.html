@@ -12,6 +12,7 @@
         <div class="col">
             <smi-workpackages-table
                 [data]="workpackageEntities$ | async"
+                [workpackagePage]="workpackagePage"
                 (workpackageSelected)="onSelectWorkpackage($event)"
                 (addWorkpackage)="onAddWorkpackage($event)">
             </smi-workpackages-table>

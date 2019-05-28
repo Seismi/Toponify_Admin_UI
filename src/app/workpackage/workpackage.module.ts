@@ -44,7 +44,7 @@ import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage
     EffectsModule.forFeature([ WorkPackageEffects]
     )
   ],
-  exports: [],
+  exports: [WorkPackagesTableComponent],
   declarations: [
     WorkPackageComponent,
     WorkPackageRoutingComponent,

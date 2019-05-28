@@ -17,13 +17,15 @@ export class WorkPackagesTableComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
+  @Input() workpackagePage: boolean;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {}
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
-  public displayedColumns: string[] = ['name', 'status', 'owners'];
+  @Input() displayedColumns: string[] = ['name', 'status', 'owners'];
 
   selectedRowIndex: number = -1;
 

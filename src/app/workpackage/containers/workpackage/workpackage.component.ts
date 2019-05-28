@@ -24,6 +24,7 @@ export class WorkPackageComponent implements OnInit {
   workpackageSelected: boolean;
   workpackageId: string;
   workpackage: WorkPackageEntity[];
+  workpackagePage = true;
 
 
   constructor(private store: Store<WorkPackageState>,
