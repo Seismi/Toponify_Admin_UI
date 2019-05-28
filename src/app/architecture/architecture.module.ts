@@ -33,6 +33,7 @@ import {DiagramListenersService} from './services/diagram-listeners.service';
 import {DiagramTemplatesService} from './services/diagram-templates.service';
 import {DiagramLevelService} from './services/diagram-level.service';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
+import { RadioModule } from '@app/radio/radio.module';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-o
     CommonModule,
     CoreModule,
     WorkPackageModule,
+    RadioModule,
     // CommentsModule,
     MatCardModule,
     MatDividerModule,

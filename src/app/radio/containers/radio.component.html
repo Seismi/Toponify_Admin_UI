@@ -12,7 +12,8 @@
         <smi-radio-table
             [data]="radio$ | async"
             (showSelectedRowDetails)="onSelectedRow($event)"
-            (addComment)="onAddComment($event)">
+            (addComment)="onAddComment($event)"
+            [radioPage]="radioPage">
         </smi-radio-table>
     </div>
     <div class="col-4 mat-elevation-z8">

@@ -10,16 +10,16 @@ import { Radio } from '@app/radio/store/models/radio.model';
 export class RadioTableComponent implements OnInit {
 
   selectedRowIndex: number = -1;
+  @Input() radioPage: boolean;
 
   @Input()
   set data(data: Radio[]) {
     this.dataSource = new MatTableDataSource<Radio>(data);
-    this.dataSource.paginator = this.paginator;
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ['title','category','status','last_update_date','last_update_by'];
+  @Input() displayedColumns: string[] = ['title','category','status','last_update_date','last_update_by'];
   public dataSource: MatTableDataSource<Radio>;
 
   ngOnInit() {}
