@@ -1,17 +1,20 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {nodeCategories} from '@app/nodes/store/models/node.model';
+import {nodeCategories, layers} from '@app/nodes/store/models/node.model';
 import {Injectable} from '@angular/core';
-import {CustomLink} from './gojs-custom-objects.service';
+import {updateShapeShadows, CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
 
 const $ = go.GraphObject.make;
+
+// Fix shadow display issue on some shapes
+updateShapeShadows();
 
 @Injectable()
 export class DiagramTemplatesService {
 
   constructor(
-    public filterService: FilterService
+    public filterService: FilterService,
   ) {}
 
   // Get item template for list of node children
@@ -50,10 +53,10 @@ export class DiagramTemplatesService {
       ),
       {
         selectionAdorned: true,
+        isShadowed: true,
         resizable: false,
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
         // doubleClick: this.changeLevelWithFilter.bind(this),
@@ -217,10 +220,10 @@ export class DiagramTemplatesService {
       ),
       {
         selectionAdorned: true,
+        isShadowed: true,
         resizable: false,
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
         // doubleClick: this.changeLevelWithFilter.bind(this),
@@ -374,10 +377,10 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       {
         selectionAdorned: true,
+        isShadowed: true,
         resizable: false,
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
         // doubleClick: this.changeLevelWithFilter.bind(this),
@@ -396,8 +399,8 @@ export class DiagramTemplatesService {
           portId: '',
           fromLinkable: true,
           toLinkable: true,
-          // fromSpot: go.Spot.AllSides,
-          // toSpot: go.Spot.AllSides,
+          fromSpot: go.Spot.AllSides,
+          toSpot: go.Spot.AllSides,
           name: 'shape',
           fromLinkableDuplicates: false,
           toLinkableDuplicates: false
@@ -545,10 +548,10 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       {
         selectionAdorned: true,
+        isShadowed: true,
         resizable: false,
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        isShadowed: false,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
         // TEMP
@@ -589,6 +592,18 @@ export class DiagramTemplatesService {
           minSize: new go.Size(100, 100),
           margin: 5
         },
+        // Ensure that the panel does not overlap the border lines
+        // on the shapes for list and structure reporting elements
+        new go.Binding('margin',
+          'category',
+          function(category) {
+            if ([nodeCategories.list, nodeCategories.structure].includes(category)) {
+              return new go.Margin(15, 5, 5, 15);
+            } else {
+              return 5;
+            }
+          }
+        ),
         // Reporting concept name
         $(go.TextBlock,
           {
@@ -738,9 +753,8 @@ export class DiagramTemplatesService {
       } : {},
       $(go.Shape, {
           isPanelMain: true,
-          stroke: 'Black',
-          strokeWidth: 2.5,
-          strokeDashArray: [5, 5]
+          stroke: 'black',
+          strokeWidth: 2.5
         },
         new go.Binding('stroke', 'colour'),
         // If link is in palette then give it a transparent background for easier selection
@@ -782,7 +796,10 @@ export class DiagramTemplatesService {
           toArrow: 'Triangle'
         },
         new go.Binding('stroke', 'colour'),
-        new go.Binding('fill', 'colour')
+        new go.Binding('fill', 'colour'),
+        new go.Binding('visible', 'layer',
+          function(layer) {return layer !== layers.system; }
+        )
       )
     );
   }
@@ -837,8 +854,9 @@ export class DiagramTemplatesService {
       } : {},
       $(go.Shape, {
           isPanelMain: true,
-          stroke: 'black',
-          strokeWidth: 2.5
+          stroke: 'Black',
+          strokeWidth: 2.5,
+          strokeDashArray: [5, 5]
         },
         new go.Binding('stroke', 'colour'),
         // If link is in palette then give it a transparent background for easier selection
