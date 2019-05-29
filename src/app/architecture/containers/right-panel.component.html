@@ -9,20 +9,32 @@
             (saveAttribute)="onSaveAttribute($event)"
             (deleteAttribute)="onDeleteAttribute($event)">
         </smi-object-details-form></mat-tab>
-    <mat-tab label="Attributes"></mat-tab>
-    <mat-tab label="Properties"> Properties </mat-tab>
+    <mat-tab label="Attributes">
+        <app-category-table
+            [data]="data"
+            [categories]="['attribute', 'rule']"
+            [attributesPage]="hide">
+        </app-category-table>
+    </mat-tab>
+    <mat-tab label="Properties">
+        <smi-documentation-standards-table
+            [data]="data"
+            [documentStandardsPage]="hide"
+            [displayedColumns]="displayedColumnsForDocumentStandards">
+        </smi-documentation-standards-table>
+    </mat-tab>
     <mat-tab label="RADIO">
         <smi-radio-table
             [data]="data"
             [displayedColumns]="displayedColumnsForRADIO"
-            [radioPage]="radioPage">
+            [radioPage]="hide">
         </smi-radio-table>
     </mat-tab>
     <mat-tab label="Work Packages">
         <smi-workpackages-table 
             [data]="data"
             [displayedColumns]="displayedColumnsForWorkPackages"
-            [workpackagePage]="workpackagePage">
+            [workpackagePage]="hide">
         </smi-workpackages-table>
     </mat-tab>
 </mat-tab-group>

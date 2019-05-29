@@ -2,14 +2,12 @@
   <h1 class="title" *ngIf="workpackagePage">Work Packages</h1>
   <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource" matSort>
+
       <!-- Name Column -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
         <td mat-cell *matCellDef="let element">
-          <span *ngIf="workpackagePage; else elseBlock">{{element.name}}</span>
-          <ng-template #elseBlock>
-            {{element.relatedWorkPackages[0].name}}
-          </ng-template>
+          {{ (workpackagePage) ? element.name : element.relatedWorkPackages[0].name }}
         </td>
       </ng-container>
 
@@ -17,10 +15,7 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
         <td mat-cell *matCellDef="let element">
-          <span *ngIf="workpackagePage; else elseBlock2">{{element.status}}</span>
-          <ng-template #elseBlock2>
-            {{element.relatedWorkPackages[0].status}}
-          </ng-template>
+          {{ (workpackagePage) ? element.status : element.relatedWorkPackages[0].status }}
         </td>
       </ng-container>
 

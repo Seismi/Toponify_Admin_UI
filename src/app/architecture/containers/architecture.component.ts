@@ -28,7 +28,6 @@ import { ObjectDetailsValidatorService } from '../components/object-details-form
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 
-
 @Component({
   selector: 'smi-architecture',
   templateUrl: 'architecture.component.html',
@@ -55,7 +54,6 @@ export class ArchitectureComponent implements OnInit {
   showOrHide: string;
   navigate: string;
   attributeSubscription: Subscription;
-  // attributes: Attribute[];
   clickedOnLink = false;
   objectSelected = true;
   isEditable = false;
@@ -191,7 +189,7 @@ export class ArchitectureComponent implements OnInit {
     // By clicking on link show only name, category and description in the right panel
     this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
 
-    // Load Node Detail
+    // Load Node Details
     this.nodeStore.dispatch((new LoadNode(this.nodeId)));
     this.nodeDetail$ = this.nodeStore.pipe(select(getSelectedNode));
   }

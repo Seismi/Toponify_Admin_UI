@@ -4,14 +4,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
   MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
-// import {AttributeService} from './services/attribute.service';
 import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/view.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeModule } from '@app/nodes/node.module';
 import { NodeService } from '@app/nodes/services/node.service';
 import { StoreModule } from '@ngrx/store';
-// import {CommentsModule} from '@app/comments/comments.module';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
 import { AddAttrAndRulesComponent } from './components/add-attr-and-rules/add-attr-and-rules.component';
@@ -34,6 +32,9 @@ import {DiagramTemplatesService} from './services/diagram-templates.service';
 import {DiagramLevelService} from './services/diagram-level.service';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
+import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
+import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
+import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 
 
 @NgModule({
@@ -47,7 +48,7 @@ import { RadioModule } from '@app/radio/radio.module';
     CoreModule,
     WorkPackageModule,
     RadioModule,
-    // CommentsModule,
+    DocumentationStandardsModule,
     MatCardModule,
     MatDividerModule,
     MatTableModule,
@@ -65,7 +66,7 @@ import { RadioModule } from '@app/radio/radio.module';
     ColorPickerModule,
     StoreModule.forFeature('architectureFeature', reducer)
   ],
-    exports: [ObjectDetailsFormComponent],
+    exports: [ObjectDetailsFormComponent, CategoryTableComponent, TableCollapseComponent],
     declarations: [
       ArchitectureRoutingComponent,
       ArchitectureComponent,
@@ -78,11 +79,12 @@ import { RadioModule } from '@app/radio/radio.module';
       AnalysisTabComponent,
       DeleteNodeModalComponent,
       DeleteLinkModalComponent,
-      AddAttrAndRulesComponent
+      AddAttrAndRulesComponent,
+      CategoryTableComponent,
+      TableCollapseComponent 
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [
-      // AttributeService,
       GojsCustomObjectsService,
       DiagramChangesService,
       DiagramListenersService,

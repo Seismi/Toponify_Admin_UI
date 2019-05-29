@@ -21,6 +21,7 @@ export class AttributesComponent implements OnInit {
     attribute: Attribute[];
     isEditable = false;
     objectSelected = true;
+    attributesPage = true;
 
     constructor(private store: Store<AttributeState>, private objectDetailsService: ObjectDetailsService) { }
 

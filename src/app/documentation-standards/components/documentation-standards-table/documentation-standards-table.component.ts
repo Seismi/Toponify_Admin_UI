@@ -14,12 +14,13 @@ export class DocumentationStandardsTableComponent implements OnInit {
     this.dataSource = new MatTableDataSource<DocumentStandard>(data);
   }
 
+  @Input() documentStandardsPage = true;
   selectedRowIndex: number = -1;
 
   ngOnInit() {}
 
   public dataSource: MatTableDataSource<DocumentStandard>;
-  displayedColumns: string[] = ['name', 'levels'];
+  @Input() displayedColumns: string[] = ['name', 'levels'];
 
   @Output()
   documentationSelected = new EventEmitter();

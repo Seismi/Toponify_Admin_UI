@@ -13,6 +13,7 @@
         <app-category-table
             [data]="categoryTableData"
             [categories]="['attribute', 'rule']"
+            [attributesPage]="attributesPage"
             (selectRow)="onSelectedRow($event)"
             (addAttribute)="onAddAttribute($event)"
             (addRule)="onAddRule($event)">

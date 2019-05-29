@@ -1,23 +1,17 @@
+<h1 class="title" *ngIf="radioPage">RADIO</h1>
 <div class="mat-elevation-z8">
-  <div class="wrapper">
     <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>Title</th>
         <td mat-cell *matCellDef="let element">
-          <span *ngIf="radioPage; else elseBlock">{{element.title}}</span>
-          <ng-template #elseBlock>
-              {{element.relatedRadios[0].title}}
-          </ng-template>
+          {{ (radioPage) ? element.title : element.relatedRadios[0].title }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef>Category</th>
         <td mat-cell *matCellDef="let element">
-          <span *ngIf="radioPage; else elseBlock2">{{element.category}}</span>
-          <ng-template #elseBlock2>
-              {{element.relatedRadios[0].category}}
-          </ng-template>
+          {{ (radioPage) ? element.category : element.relatedRadios[0].category }}
         </td>
       </ng-container>
 
@@ -46,8 +40,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{'highlight': selectedRowIndex == row.id}" (click)="onSelectRow(row)"></tr>
     </table>
 
-    <div class="bottom-header" *ngIf="radioPage">
-      <button mat-raised-button class="add" color="primary" (click)="onAdd()">Add Comment</button>
-    </div>
-  </div>
-</div>
+    <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
+</div><br>
+
+<button mat-raised-button color="primary" (click)="onAdd()" *ngIf="radioPage">New</button>
