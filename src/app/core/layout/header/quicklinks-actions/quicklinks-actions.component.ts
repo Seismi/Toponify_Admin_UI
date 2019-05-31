@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-quicklinks-actions',
@@ -8,14 +7,10 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
 })
 export class QuicklinksActionsComponent implements OnInit {
 
-  @Input()
-  set data(data: WorkPackageEntity[]) {
-    this.workpackage = data;
-  }
-
   @Input() gojsView = false;
   @Input() navigate: string;
-  workpackage: any[];
+  @Input() data: any;
+  @Input() workpackageDetail: any;
 
   ngOnInit() {
     this.navigate = 'control_camera';
@@ -24,8 +19,15 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   navigateDiagram = new EventEmitter();
 
+  @Output()
+  selectWorkPackage = new EventEmitter();
+
   onNavigate(){
     this.navigateDiagram.emit();
+  }
+
+  onSelectWorkPackage(id) {
+    this.selectWorkPackage.emit(id);
   }
 
 }

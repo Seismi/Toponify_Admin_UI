@@ -81,6 +81,7 @@ export class DiagramTemplatesService {
             return 'RoundedRectangle';
           }
         }),
+        new go.Binding('stroke', 'colour'),
         // Bind height for transactional system to make consistent
         //  with previously used GoJs 1.8 shape
         new go.Binding('minSize', 'category', function (category) {
@@ -244,7 +245,9 @@ export class DiagramTemplatesService {
         name: 'shape',
         fromLinkableDuplicates: true,
         toLinkableDuplicates: true
-      }),
+      },
+      new go.Binding('stroke', 'colour')
+      ),
       $(go.Panel,
         'Vertical',
         {
@@ -402,6 +405,7 @@ export class DiagramTemplatesService {
           fromLinkableDuplicates: false,
           toLinkableDuplicates: false
         },
+        new go.Binding('stroke', 'colour'),
         new go.Binding('fromSpot', 'group', function (group) {
           if (this.mapView) {
             if (this.mapView.sourceModel.id === group) {
@@ -566,6 +570,7 @@ export class DiagramTemplatesService {
             return 'InternalStorage';
           }
         }),
+        new go.Binding('stroke', 'colour'),
         {
           fill: 'white',
           stroke: 'black',
@@ -751,6 +756,7 @@ export class DiagramTemplatesService {
           stroke: 'black',
           strokeWidth: 2.5
         },
+        new go.Binding('stroke', 'colour'),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
@@ -785,9 +791,12 @@ export class DiagramTemplatesService {
         go.Shape, // The 'to' arrowhead
         {
           scale: 1.2,
-          stroke: 'Black',
+          stroke: 'black',
+          fill: 'Black',
           toArrow: 'Triangle'
         },
+        new go.Binding('stroke', 'colour'),
+        new go.Binding('fill', 'colour'),
         new go.Binding('visible', 'layer',
           function(layer) {return layer !== layers.system; }
         )
@@ -849,6 +858,7 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        new go.Binding('stroke', 'colour'),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),

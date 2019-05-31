@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Level, DiagramLevelService} from './diagram-level.service';
 import {FilterService} from './filter.service';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {Node} from '@app/nodes/store/models/node.model.ts';
 
 const $ = go.GraphObject.make;
 
@@ -19,6 +20,9 @@ export const standardDisplayOptions = {
   linkName: false,
   linkLabel: false
 };
+
+// TEMPORARY HARD CODED COLOURS FOR WORK PACKAGES
+const workPackageColours = ['green', 'orange', 'blue'];
 
 @Injectable()
 export class DiagramChangesService {
@@ -251,12 +255,52 @@ export class DiagramChangesService {
     }
   }
 
-  updateNodes(diagram, nodes) {
+  // Update the array of nodes that are displayed in the diagram
+  //  -diagram - the diagram to update
+  //  -nodes - the array of nodes from the architecture to include
+  //  -selectedWorkPackages - the array of currently selected work packages to apply node changes from
+  updateNodes(diagram, nodes, selectedWorkPackages) {
+
+    selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
+
     if (nodes && nodes.length > 0) {
 
       const filter = this.filterService.filter.getValue();
+      const currentLevel = filter.filterLevel.toLowerCase();
 
-      let nodeArray = nodes;
+      let nodeArray = JSON.parse(JSON.stringify(nodes));
+
+      // Apply selected work packages
+      if (selectedWorkPackages && selectedWorkPackages.length > 0) {
+        selectedWorkPackages.forEach(function(workPackage, index) {
+
+          const nodeChanges = workPackage.changes.nodes;
+
+          // Additions
+          nodeChanges.additions.forEach(function(addition) {
+            if (addition.layer === currentLevel) {
+              addition = new Node(addition);
+              Object.assign(addition, {colour: workPackageColours[index]});
+              nodeArray.push(addition);
+            }
+          });
+
+          // Updates
+          nodeChanges.updates.forEach(function(update) {
+            const updatedNode = nodeArray.find(function(node) {return node.id === update.id; });
+            if (updatedNode) {
+              Object.assign(updatedNode, update, {colour: workPackageColours[index]});
+            }
+          });
+
+          // Deletions
+          nodeChanges.deletions.forEach(function(deletion) {
+            const nodeIndex = nodeArray.findIndex(function(node) {return node.id === deletion.id; });
+            if (nodeIndex !== -1) {nodeArray.splice(nodeIndex, 1); }
+          });
+        });
+      }
+
       // Check if filter is set
       if (filter && filter.filterNodeIds) {
 
@@ -279,15 +323,53 @@ export class DiagramChangesService {
     }
   }
 
-  updateLinks(diagram, links) {
+  // Update the array of links that are displayed in the diagram
+  //  -diagram - the diagram to update
+  //  -links - the array of links from the architecture to include
+  //  -selectedWorkPackages - the array of currently selected work packages to apply link changes from
+  updateLinks(diagram, links, selectedWorkPackages) {
+
+    selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
+
     if (links && links.length > 0) {
 
       const filter = this.filterService.filter.getValue();
+      const currentLevel = filter.filterLevel.toLowerCase();
 
       const sourceProp = diagram.model.linkFromKeyProperty;
       const targetProp = diagram.model.linkToKeyProperty;
 
-      let linkArray = links;
+      let linkArray = JSON.parse(JSON.stringify(links));
+
+      // Apply selected work packages
+      if (selectedWorkPackages && selectedWorkPackages.length > 0) {
+        selectedWorkPackages.forEach(function(workPackage, index) {
+
+          const linkChanges = workPackage.changes.nodeLinks;
+
+          // Additions
+          linkChanges.additions.forEach(function(addition) {
+            if (addition.layer === currentLevel) {
+              Object.assign(addition, {colour: workPackageColours[index]});
+              linkArray.push(addition);
+            }
+          });
+
+          // Updates
+          linkChanges.updates.forEach(function(update) {
+            const updatedLink = linkArray.find(function(link) {return link.id === update.id; });
+            if (updatedLink) {
+              Object.assign(updatedLink, update, {colour: workPackageColours[index]});
+            }
+          });
+
+          // Deletions
+          linkChanges.deletions.forEach(function(deletion) {
+            const linkIndex = linkArray.findIndex(function(link) {return link.id === deletion.id; });
+            if (linkIndex !== -1) {linkArray.splice(linkIndex, 1); }
+          });
+        });
+      }
 
       // Check if filter is set
       if (filter && filter.filterNodeIds) {

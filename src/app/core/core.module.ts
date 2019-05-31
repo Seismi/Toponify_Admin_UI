@@ -36,6 +36,7 @@ import { ZoomSliderComponent } from './layout/header/zoom-actions/zoom-dropdown/
 import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider-list/zoom-slider-list.component';
 import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
+import { WorkPackageDropdownComponent } from './layout/header/quicklinks-actions/workpackage-dropdown/workpackage-dropdown.component';
 
 @NgModule({
   imports: [
@@ -69,7 +70,8 @@ import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.compo
     ModelSidebarComponent,
     ModelContentComponent,
     QuicklinksActionsComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    WorkPackageDropdownComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -90,7 +92,8 @@ import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.compo
     ZoomSliderComponent,
     ZoomSliderListComponent,
     QuicklinksActionsComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    WorkPackageDropdownComponent
   ],
   providers: []
 })

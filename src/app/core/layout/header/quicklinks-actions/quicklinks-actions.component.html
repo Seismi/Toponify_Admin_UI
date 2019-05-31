@@ -1,27 +1,27 @@
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
 
-<!-- Architecture Icon -->
+<!-- Architecture -->
 <a class="architecture-icon" *ngIf="!gojsView"><mat-icon routerLink="/architecture" matTooltip="Architecture">device_hub</mat-icon></a>
 
-
-<!-- Workpackage -->
+<!-- WorkPackage -->
 <a><mat-icon routerLink="/work-packages" matTooltip="Work Packages">business_center</mat-icon></a>
-<mat-form-field floatLabel=never appearance="none" *ngIf="gojsView">
-    <mat-select placeholder="Work Packages" multiple [ngClass]="class1">
-        <mat-option *ngFor="let workpackage of workpackage" [value]="workpackage">{{workpackage.name}}</mat-option>
-    </mat-select>
-</mat-form-field>
 
+<!-- WorkPackage Dropdown -->
+<smi-workpackage-dropdown 
+    *ngIf="gojsView" 
+    [data]="data"
+    (selectWorkpackage)="onSelectWorkPackage($event)">
+</smi-workpackage-dropdown>
 
-<!-- Edit diagram button -->
+<!-- Enable edit diagram -->
 <a (click)="onNavigate()" *ngIf="gojsView"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
-
 
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
 
 
+<!-- TODO: Need to create separate component for Scopes And Layouts -->
 <!--Scopes and Layouts Icon -->
 <a><mat-icon routerLink="/scopes-and-layouts" matTooltip="Scopes and Layouts">pages</mat-icon></a>
 <!-- Scopes dropdown -->
@@ -48,9 +48,8 @@
 </div>
 
 
-<!-- RADIO Log Icon -->
+<!-- RADIO Log -->
 <a><mat-icon routerLink="/radio" matTooltip="RADIO Log">track_changes</mat-icon></a>
 
-
-<!-- Help Icon -->
+<!-- Help -->
 <a><mat-icon matTooltip="Help">help_outline</mat-icon></a>
