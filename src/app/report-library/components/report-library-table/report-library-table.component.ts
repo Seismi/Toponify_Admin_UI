@@ -12,9 +12,11 @@ export class ReportLibraryTableComponent implements OnInit {
 
   @Input()
   set reports(reports: ReportLibrary[]) {
-    this.dataSource = new MatTableDataSource<ReportLibrary>(reports);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    if (reports) {
+      this.dataSource = new MatTableDataSource<ReportLibrary>(reports);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   public dataSource: MatTableDataSource<ReportLibrary>;
