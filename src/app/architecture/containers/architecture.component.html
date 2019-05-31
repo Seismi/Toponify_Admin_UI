@@ -21,7 +21,8 @@
       [allowEditWorkPackages]="allowEditWorkPackages"
       [data]="workpackage$ | async"
       (editWorkPackage)="allowEditWorkPackage($event)"
-      (editLayout)="allowEditLayout($event)">
+      (editLayout)="allowEditLayout($event)"
+      (selectWorkPackage)="onSelectWorkPackage($event)">
     </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
@@ -46,6 +47,8 @@
         *ngIf="!showTable"
         [nodes]="nodes$ | async"
         [links]="nodeLinks$ | async"
+        [workpackageDetail]="workpackageDetail"
+        [selectedWorkPackages]= "selectedWorkPackages$ | async"
         [viewLevel]="viewLevel$ | async"
         (nodeSelected)="partSelected($event)"
         (modelChanged)="modelChanged($event)"

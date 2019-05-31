@@ -12,17 +12,27 @@ import {
 } from '@angular/material';
 import { DocumentationStandardsTableComponent } from './components/documentation-standards-table/documentation-standards-table.component';
 import { DocumentationStandardsDetailComponent } from './components/documentation-standards-detail/documentation-standards-detail.component';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { DocumentationStandardEffects } from './store/effects/documentation-standards.effects';
+import { reducer } from '../documentation-standards/store/reducers/documentation-standards.reducer';
+import { DocumentationStandardsService } from './services/dcoumentation-standards.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   imports: [
     CoreModule,
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     DocumentationStandardsRoutingModule,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
-    MatSortModule
+    MatSortModule,
+    StoreModule.forFeature('documentationStandardFeature', reducer),
+    EffectsModule.forFeature([ DocumentationStandardEffects ])
   ],
   exports: [],
   declarations: [
@@ -31,6 +41,8 @@ import { DocumentationStandardsDetailComponent } from './components/documentatio
     DocumentationStandardsTableComponent,
     DocumentationStandardsDetailComponent
   ],
-  providers: [],
+  providers: [
+    DocumentationStandardsService
+  ],
 })
 export class DocumentationStandardsModule { }

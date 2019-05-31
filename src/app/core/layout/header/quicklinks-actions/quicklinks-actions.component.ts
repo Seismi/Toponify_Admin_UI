@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-quicklinks-actions',
@@ -8,15 +7,10 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
 })
 export class QuicklinksActionsComponent implements OnInit {
 
-  @Input()
-  set data(data: WorkPackageEntity[]) {
-    this.workpackage = data;
-  }
-
   @Input() gojsView = false;
   @Input() allowEditLayouts: string;
   @Input() allowEditWorkPackages: string;
-  workpackage: any[];
+  @Input() data: any;
 
   ngOnInit() {
     this.allowEditLayouts = 'edit';
@@ -29,6 +23,10 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   editLayout = new EventEmitter();
 
+  @Output()
+  selectWorkPackage = new EventEmitter();
+
+
   allowEditWorkPackage() {
     this.editWorkPackage.emit();
   }
@@ -37,4 +35,7 @@ export class QuicklinksActionsComponent implements OnInit {
     this.editLayout.emit();
   }
 
+  onSelectWorkPackage(id) {
+    this.selectWorkPackage.emit(id);
+  }
 }
