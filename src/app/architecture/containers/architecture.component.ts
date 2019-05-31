@@ -21,9 +21,9 @@ import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import {filter, map} from 'rxjs/operators';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackages, LoadWorkPackage } from '@app/workpackage/store/actions/workpackage.actions';
+import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
+import { getWorkPackageEntities, getSelectedWorkPackage } from '@app/workpackage/store/selectors/workpackage.selector';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
@@ -59,9 +59,12 @@ export class ArchitectureComponent implements OnInit {
   objectSelected = true;
   isEditable = false;
   @Input() attributesView = false;
+  workpackageId: string;
+  @Input() workpackageDetail: any;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
+  public selectedWorkPackages$: Observable<WorkPackageDetail>;
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -86,6 +89,8 @@ export class ArchitectureComponent implements OnInit {
 
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
+
+      this.selectedWorkPackages$ = this.workpackageStore.pipe(select(getSelectedWorkPackage));
 
       /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
       this.mapViewId$.subscribe(linkId => {
@@ -327,6 +332,15 @@ export class ArchitectureComponent implements OnInit {
 
   onZoomOut() {
     this.diagramComponent.decreaseZoom();
+  }
+
+
+  onSelectWorkPackage(id) {
+    this.workpackageId = id;
+    this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
+    this.workpackageStore.pipe(select(getSelectedWorkPackage)).subscribe(data => {
+      this.workpackageDetail = data;
+    });
   }
 
 }

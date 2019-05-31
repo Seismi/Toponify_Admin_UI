@@ -8,6 +8,11 @@ export const getWorkPackageEntities = createSelector(
   state => state.entities
 );
 
+export const getSelectedWorkPackage = createSelector(
+  getWorkPackageState,
+  state => state.selectedWorkPackage
+);
+
 export const getWorkPackageById = (id: string) => {
   return createSelector(
     getWorkPackageState,
