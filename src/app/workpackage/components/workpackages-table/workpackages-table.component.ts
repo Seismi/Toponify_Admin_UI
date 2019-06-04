@@ -2,7 +2,6 @@ import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angu
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
-
 @Component({
   selector: 'smi-workpackages-table',
   templateUrl: './workpackages-table.component.html',
@@ -17,15 +16,13 @@ export class WorkPackagesTableComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  @Input() workpackagePage: boolean;
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {}
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
-  @Input() displayedColumns: string[] = ['name', 'status', 'owners'];
+  displayedColumns: string[] = ['name', 'status', 'owners'];
 
   selectedRowIndex: number = -1;
 

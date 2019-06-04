@@ -23,7 +23,7 @@ import { DeleteLinkModalComponent } from './containers/delete-link-modal/delete-
 import { DeleteModalComponent } from './containers/delete-modal/delete-modal.component';
 import { DeleteNodeModalComponent } from './containers/delete-node-modal/delete-node-modal.component';
 import { LeftPanelComponent } from './containers/left-panel.component';
-import { RightPanelComponent } from './containers/right-panel.component';
+import { RightPanelComponent } from './containers/right-panel/right-panel.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';
 import {DiagramChangesService} from './services/diagram-changes.service';
@@ -35,6 +35,10 @@ import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
+import { WorkPackageTabComponent } from './containers/right-panel/components/workpackage-tab/workpackage-tab.component';
+import { RadioTabComponent } from './containers/right-panel/components/radio-tab/radio-tab.component';
+import { PropertiesTabComponent } from './containers/right-panel/components/properties-tab/properties-tab.component';
+import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
 
 
 @NgModule({
@@ -81,7 +85,11 @@ import { TableCollapseComponent } from '@app/attributes/components/category-tabl
       DeleteLinkModalComponent,
       AddAttrAndRulesComponent,
       CategoryTableComponent,
-      TableCollapseComponent 
+      TableCollapseComponent,
+      WorkPackageTabComponent,
+      RadioTabComponent,
+      PropertiesTabComponent,
+      AttributesTabComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [

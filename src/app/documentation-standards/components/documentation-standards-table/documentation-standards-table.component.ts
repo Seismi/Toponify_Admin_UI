@@ -14,7 +14,6 @@ export class DocumentationStandardsTableComponent implements OnInit {
     this.dataSource = new MatTableDataSource<DocumentStandard>(data);
   }
 
-  @Input() documentStandardsPage = true;
   selectedRowIndex: number = -1;
 
   ngOnInit() {}

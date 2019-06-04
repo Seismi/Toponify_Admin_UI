@@ -28,7 +28,6 @@ export class RadioComponent implements OnInit {
     disableButton = true;
     isEditable = false;
     addComment = true;
-    radioPage = true;
 
     constructor(private store: Store<RadioState>,
                 private radioDetailService: RadioDetailService,

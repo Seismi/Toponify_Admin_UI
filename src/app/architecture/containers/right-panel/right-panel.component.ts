@@ -1,7 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { Attribute } from '@app/attributes/store/models/attributes.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -15,12 +13,6 @@ export class RightPanelComponent {
   @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() data: any;
-
-  hide = false;
-  
-  displayedColumnsForWorkPackages: string[] = ['name', 'status'];
-  displayedColumnsForRADIO: string[] = ['title', 'category'];
-  displayedColumnsForDocumentStandards: string[] = ['name', 'levels'];
 
   constructor() { }
 

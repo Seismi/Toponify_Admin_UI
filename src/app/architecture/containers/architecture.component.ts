@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { LinkType, NodeType } from '@app/nodes/services/node.service';
-import { linkCategories, NodeLink } from '@app/nodes/store/models/node-link.model';
+import { linkCategories, NodeLink, AttributesEntity } from '@app/nodes/store/models/node-link.model';
 import {Node, nodeCategories, NodeDetail} from '@app/nodes/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/nodes/store/selectors/node.selector';
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';

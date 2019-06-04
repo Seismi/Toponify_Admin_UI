@@ -1,23 +1,19 @@
-<h1 class="title" *ngIf="radioPage">RADIO</h1>
+<h1 class="title">RADIO</h1>
 <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
       <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let element">
-          {{ (radioPage) ? element.title : element.relatedRadios[0].title }}
-        </td>
+        <td mat-cell *matCellDef="let element">{{element.title}}</td>
       </ng-container>
 
       <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef>Category</th>
-        <td mat-cell *matCellDef="let element">
-          {{ (radioPage) ? element.category : element.relatedRadios[0].category }}
-        </td>
+        <td mat-cell *matCellDef="let element">{{element.category}}</td>
       </ng-container>
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+        <td mat-cell *matCellDef="let element">{{element.status}}</td>
       </ng-container>
 
       <ng-container matColumnDef="last_update_date">
@@ -43,4 +39,4 @@
     <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
 </div><br>
 
-<button mat-raised-button color="primary" (click)="onAdd()" *ngIf="radioPage">New</button>
+<button mat-raised-button color="primary" (click)="onAdd()">New</button>
