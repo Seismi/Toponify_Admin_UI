@@ -13,6 +13,7 @@ export class RightPanelComponent {
   @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() data: any;
+  @Input() workPackageIsEditable = false;
 
   constructor() { }
 
@@ -27,6 +28,9 @@ export class RightPanelComponent {
   @Output()
   editDetails = new EventEmitter();
 
+  @Output()
+  cancel = new EventEmitter();
+
   onSaveAttribute() {
     this.saveAttribute.emit();
   }
@@ -37,6 +41,10 @@ export class RightPanelComponent {
 
   onDeleteAttribute() {
     this.deleteAttribute.emit();
+  }
+
+  onCancel() {
+    this.cancel.emit();
   }
 
 }

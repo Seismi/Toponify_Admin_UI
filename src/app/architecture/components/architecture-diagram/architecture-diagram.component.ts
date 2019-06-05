@@ -49,6 +49,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     return this.diagram.model;
   }
 
+  @Input() workpackageDetail;
+
+  @Input() selectedWorkPackages;
+
   @Input() nodes;
 
   @Input() links;
@@ -276,12 +280,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       this.setLevel();
     }
 
-    if (changes.nodes) {
-      this.diagramChangesService.updateNodes(this.diagram, this.nodes);
+    if (changes.nodes || changes.selectedWorkPackages) {
+      this.diagramChangesService.updateNodes(this.diagram, this.nodes, this.selectedWorkPackages);
     }
 
-    if (changes.links) {
-      this.diagramChangesService.updateLinks(this.diagram, this.links);
+    if (changes.links || changes.selectedWorkPackages) {
+      this.diagramChangesService.updateLinks(this.diagram, this.links, this.selectedWorkPackages);
     }
 
     // In map view, perform the layout when nodes and links are both defined

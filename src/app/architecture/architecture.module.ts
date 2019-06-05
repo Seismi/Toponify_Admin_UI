@@ -12,7 +12,6 @@ import { NodeService } from '@app/nodes/services/node.service';
 import { StoreModule } from '@ngrx/store';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
-import { AddAttrAndRulesComponent } from './components/add-attr-and-rules/add-attr-and-rules.component';
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
 import { ArchitecturePaletteComponent } from './components/architecture-palette/architecture-palette.component';
@@ -82,14 +81,13 @@ import { AttributesTabComponent } from './containers/right-panel/components/attr
       LeftPanelComponent,
       AnalysisTabComponent,
       DeleteNodeModalComponent,
-      DeleteLinkModalComponent,
-      AddAttrAndRulesComponent,
       CategoryTableComponent,
       TableCollapseComponent,
       WorkPackageTabComponent,
       RadioTabComponent,
       PropertiesTabComponent,
-      AttributesTabComponent
+      AttributesTabComponent,
+      DeleteLinkModalComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [

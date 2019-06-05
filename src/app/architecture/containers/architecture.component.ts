@@ -19,11 +19,11 @@ import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.co
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, ignoreElements} from 'rxjs/operators';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackages, LoadWorkPackage } from '@app/workpackage/store/actions/workpackage.actions';
+import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
+import { getWorkPackageEntities, getSelectedWorkPackage } from '@app/workpackage/store/selectors/workpackage.selector';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
@@ -38,6 +38,8 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 
 export class ArchitectureComponent implements OnInit {
 
+  @Input() attributesView = false;
+  @Input() allowMove: boolean;
   public selectedPart = null;
   nodes$: Observable<Node[]>;
   nodeLinks$: Observable<NodeLink[]>;
@@ -50,18 +52,21 @@ export class ArchitectureComponent implements OnInit {
   showPalette: boolean;
   part: any;
   showGrid: boolean;
-  @Input() allowMove: boolean;
-  showOrHide: string;
-  navigate: string;
+  showOrHideGrid: string;
+  allowEditLayouts: string;
   attributeSubscription: Subscription;
   clickedOnLink = false;
   objectSelected = true;
   isEditable = false;
-  @Input() attributesView = false;
   nodeId: string;
+  allowEditWorkPackages: string;
+  workPackageIsEditable = false;
+  workpackageId: string;
+  workpackageDetail: any;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
+  public selectedWorkPackages$: Observable<WorkPackageDetail>;
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -86,6 +91,8 @@ export class ArchitectureComponent implements OnInit {
 
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
+
+      this.selectedWorkPackages$ = this.workpackageStore.pipe(select(getSelectedWorkPackage));
 
       /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
       this.mapViewId$.subscribe(linkId => {
@@ -203,19 +210,6 @@ export class ArchitectureComponent implements OnInit {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  onSelectRow(entry) {
-    this.selectedPart = entry;
-    this.objectSelected = false;
-    this.isEditable = false;
-    this.objectDetailsService.objectDetailsForm.patchValue({
-      id: entry.id,
-      name: entry.name,
-      category: entry.category,
-      owner: entry.owner,
-      description: entry.description,
-      tags: entry.tags
-    });
-  }
 
   // Not sure but probably there is a better way of doing this
   onSaveObjectDetails() {
@@ -250,18 +244,29 @@ export class ArchitectureComponent implements OnInit {
     this.isEditable = true;
   }
 
+  onCancelEdit() {
+    this.isEditable = false;
+  }
+
   onShowGrid() {
     this.showGrid = !this.showGrid;
     (this.showGrid === true)
-      ? this.showOrHide = 'border_clear'
-      : this.showOrHide = 'border_inner';
+      ? this.showOrHideGrid = 'border_clear'
+      : this.showOrHideGrid = 'border_inner';
   }
 
-  onNavigateDiagram() {
+  allowEditWorkPackage() {
+    this.workPackageIsEditable = !this.workPackageIsEditable;
+    (this.workPackageIsEditable === true)
+      ? this.allowEditWorkPackages = 'close'
+      : this.allowEditWorkPackages = 'edit';
+  }
+
+  allowEditLayout() {
     this.allowMove = !this.allowMove;
     (this.allowMove === true)
-      ? this.navigate = 'edit'
-      : this.navigate = 'control_camera';
+      ? this.allowEditLayouts = 'close'
+      : this.allowEditLayouts = 'edit';
   }
 
   onZoomMap() {
@@ -314,14 +319,6 @@ export class ArchitectureComponent implements OnInit {
     });
   }
 
-  onAddAttribute() {
-    // this.store.dispatch();
-  }
-
-  onAddRule() {
-    // this.store.dispatch();
-  }
-
   displayOptionsChanged({event, option}: {event: any, option: string}) {
     this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
   }
@@ -334,4 +331,13 @@ export class ArchitectureComponent implements OnInit {
     this.diagramComponent.decreaseZoom();
   }
 
+  onSelectWorkPackage(id) {
+    this.workpackageId = id;
+    this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
+    this.workpackageStore.pipe(select(getSelectedWorkPackage)).subscribe(data => {
+      this.workpackageDetail = data;
+    });
+  }
+
 }
+

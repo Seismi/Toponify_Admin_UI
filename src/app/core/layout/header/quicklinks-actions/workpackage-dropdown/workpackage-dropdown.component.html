@@ -1,0 +1,10 @@
+<mat-form-field floatLabel=never appearance="none">
+    <mat-select placeholder="Work Packages" multiple [ngClass]="class1">
+        <mat-option 
+            (onSelectionChange)="onSelect(workpackage.id, $event)" 
+            *ngFor="let workpackage of workpackage" 
+            [value]="workpackage.value">
+            {{workpackage.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
