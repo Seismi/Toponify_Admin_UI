@@ -11,7 +11,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "78a6ff87-4e50-4966-9480-9772977aef49",
         "category": "transactional",
         "name": "HR",
@@ -21,7 +22,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "604aea88-e3d1-443a-9276-44bc63b1ecb1",
         "category": "transactional",
         "name": "ERP",
@@ -52,7 +54,8 @@
             "name": "India Secondary Balances"
           }
         ]
-      },{
+      },
+      {
         "id": "78a6ff87-4e50-4966-9480-9772977aef48",
         "category": "analytical",
         "name": "Consolidation",
@@ -62,12 +65,13 @@
         "locations": [],
         "owners": [],
         "descendants": [
-            {
-              "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
-              "name": "Consolidation"
-            }
-          ]
-      },{
+          {
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "name": "Consolidation"
+          }
+        ]
+      },
+      {
         "id": "0a156062-0b0c-451a-90ef-a492e828127e",
         "category": "analytical",
         "name": "Tax Calc",
@@ -77,7 +81,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "51c514e5-61f6-40fc-96c3-0e109285ffc2",
         "category": "analytical",
         "name": "Operational Planning",
@@ -87,7 +92,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "078b5d77-2082-4afd-9ec7-771c26cc668a",
         "category": "analytical",
         "name": "Corporate Planning",
@@ -97,7 +103,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "230d254b-343c-4216-80c5-1d9c945a25cc",
         "category": "master data",
         "name": "Master Data Management",
@@ -107,7 +114,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "d8ccb7ac-db96-4d14-a608-a9cf0b6d9c32",
         "category": "file",
         "name": "Files from other ledgers",
@@ -117,7 +125,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "21561ffe-70bb-413e-9aa0-1493bd9d9cb6",
         "category": "reporting",
         "name": "Warehouse and Business Intelligence",
@@ -127,7 +136,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "cb4cf65e-244e-4fde-84ef-aae4cb1d41d9",
         "category": "virtual",
         "name": "Primary Ledger Weekly Balances",
@@ -137,7 +147,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "21ba44c7-50a6-447e-895e-cafb32f90561",
         "category": "physical",
         "name": "Transactions",
@@ -147,7 +158,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "c1bf0b91-c695-465f-bd50-f2a1cfb05298",
         "category": "physical",
         "name": "Asset Management",
@@ -157,7 +169,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "e8f89ec5-6c1a-4256-b132-2ea07756229e",
         "category": "physical",
         "name": "Accounts Payable",
@@ -167,7 +180,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "98285053-c81a-4a3b-b3dd-02512676cace",
         "category": "physical",
         "name": "Primary Ledger Balances",
@@ -177,7 +191,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
         "category": "physical",
         "name": "Consolidation",
@@ -187,36 +202,37 @@
         "locations": [],
         "owners": [],
         "descendants": [
-            {
-              "id": "f023506a-4026-43c0-a38b-9d793d8baf49",
-              "name": "Account"
-            },
-            {
-              "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
-              "name": "Currency"
-            },
-            {
-              "id": "57526c23-2bbe-4a30-a80e-0eb3cb264e5a",
-              "name": "Entity"
-            },
-            {
-              "id": "19e967512-1dae-40c3-8bec-0cfb1f32d68b",
-              "name": "ICP"
-            },
-            {
-              "id": "13dce907-7b27-4998-b01b-07ceb5d294df",
-              "name": "Cost Centre"
-            },
-            {
-              "id": "e5056291-0ffb-4140-8131-2155ccc04f63",
-              "name": "Finance Period"
-            },
-            {
-              "id": "71d86b20-3179-421a-8620-fd440ab570de",
-              "name": "Product"
-            }
-          ]
-      },{
+          {
+            "id": "f023506a-4026-43c0-a38b-9d793d8baf49",
+            "name": "Account"
+          },
+          {
+            "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
+            "name": "Currency"
+          },
+          {
+            "id": "57526c23-2bbe-4a30-a80e-0eb3cb264e5a",
+            "name": "Entity"
+          },
+          {
+            "id": "19e967512-1dae-40c3-8bec-0cfb1f32d68b",
+            "name": "ICP"
+          },
+          {
+            "id": "13dce907-7b27-4998-b01b-07ceb5d294df",
+            "name": "Cost Centre"
+          },
+          {
+            "id": "e5056291-0ffb-4140-8131-2155ccc04f63",
+            "name": "Finance Period"
+          },
+          {
+            "id": "71d86b20-3179-421a-8620-fd440ab570de",
+            "name": "Product"
+          }
+        ]
+      },
+      {
         "id": "463ab8d4-99bb-4981-a0e8-6045ceb54175",
         "category": "physical",
         "name": "India Secondary Balances",
@@ -226,7 +242,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "f023506a-4026-43c0-a38b-9d793d8baf49",
         "category": "dimension",
         "name": "Account",
@@ -236,36 +253,37 @@
         "locations": [],
         "owners": [],
         "descendants": [
-            {
-              "id": "e261375c-1bf0-4157-bf69-37aa3d7c48a8",
-              "name": "Total Account"
-            },
-            {
-              "id": "dc20c873-d98e-483a-b3ce-1df70c0457da",
-              "name": "Total Profit and Loss - Statutory"
-            },
-            {
-              "id": "1caf87e2-73b4-4bee-bbac-44ba16220d79",
-              "name": "Total Profit and Loss - Management"
-            },
-            {
-              "id": "b233dd1f-0ad0-44e1-9ad6-cdb50cfa6dd1",
-              "name": "Total Balance Sheet - Statutory"
-            },
-            {
-              "id": "9b015e19-a506-4a83-9776-46d201d50f56",
-              "name": "Total Balance Sheet - Management"
-            },
-            {
-              "id": "daf5d75b-92bc-4fb0-a556-9005e747ceb0",
-              "name": "Profit and Loss Accounts"
-            },
-            {
-              "id": "59d45144-ae2e-4974-9846-08fc3c0546c4",
-              "name": "Balance Sheet Accounts"
-            }
-          ]
-      },{
+          {
+            "id": "e261375c-1bf0-4157-bf69-37aa3d7c48a8",
+            "name": "Total Account"
+          },
+          {
+            "id": "dc20c873-d98e-483a-b3ce-1df70c0457da",
+            "name": "Total Profit and Loss - Statutory"
+          },
+          {
+            "id": "1caf87e2-73b4-4bee-bbac-44ba16220d79",
+            "name": "Total Profit and Loss - Management"
+          },
+          {
+            "id": "b233dd1f-0ad0-44e1-9ad6-cdb50cfa6dd1",
+            "name": "Total Balance Sheet - Statutory"
+          },
+          {
+            "id": "9b015e19-a506-4a83-9776-46d201d50f56",
+            "name": "Total Balance Sheet - Management"
+          },
+          {
+            "id": "daf5d75b-92bc-4fb0-a556-9005e747ceb0",
+            "name": "Profit and Loss Accounts"
+          },
+          {
+            "id": "59d45144-ae2e-4974-9846-08fc3c0546c4",
+            "name": "Balance Sheet Accounts"
+          }
+        ]
+      },
+      {
         "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
         "category": "dimension",
         "name": "Currency",
@@ -275,7 +293,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "57526c23-2bbe-4a30-a80e-0eb3cb264e5a",
         "category": "dimension",
         "name": "Entity",
@@ -285,28 +304,29 @@
         "locations": [],
         "owners": [],
         "descendants": [
-            {
-              "id": "81895b97-45c4-4111-a0a7-02d156ea792f",
-              "name": "Total Entity"
-            },
-            {
-              "id": "6b80ff3f-70f2-44df-a0d7-a51239613965",
-              "name": "Parent Entities"
-            },
-            {
-              "id": "651ed81a-0702-4be9-a4d2-ab9689d447f3",
-              "name": "Legal Entities"
-            },
-            {
-              "id": "510a3225-708d-433f-a90b-654e8d5a48f5",
-              "name": "Joint Ventures and Associates"
-            },
-            {
-              "id": "59e20ad0-51b1-43ec-9370-e93bb4ba0955",
-              "name": "Adjustment Entities"
-            }
-          ]
-      },{
+          {
+            "id": "81895b97-45c4-4111-a0a7-02d156ea792f",
+            "name": "Total Entity"
+          },
+          {
+            "id": "6b80ff3f-70f2-44df-a0d7-a51239613965",
+            "name": "Parent Entities"
+          },
+          {
+            "id": "651ed81a-0702-4be9-a4d2-ab9689d447f3",
+            "name": "Legal Entities"
+          },
+          {
+            "id": "510a3225-708d-433f-a90b-654e8d5a48f5",
+            "name": "Joint Ventures and Associates"
+          },
+          {
+            "id": "59e20ad0-51b1-43ec-9370-e93bb4ba0955",
+            "name": "Adjustment Entities"
+          }
+        ]
+      },
+      {
         "id": "9e967512-1dae-40c3-8bec-0cfb1f32d68b",
         "category": "dimension",
         "name": "ICP",
@@ -316,7 +336,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "13dce907-7b27-4998-b01b-07ceb5d294df",
         "category": "dimension",
         "name": "Cost Centre",
@@ -326,7 +347,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "e5056291-0ffb-4140-8131-2155ccc04f63",
         "category": "dimension",
         "name": "Finance Period",
@@ -336,7 +358,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "71d86b20-3179-421a-8620-fd440ab570de",
         "category": "dimension",
         "name": "Product",
@@ -346,7 +369,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "81895b97-45c4-4111-a0a7-02d156ea792f",
         "category": "key",
         "name": "Total Entity",
@@ -356,7 +380,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "6b80ff3f-70f2-44df-a0d7-a51239613965",
         "category": "structure",
         "name": "Parent Entities",
@@ -366,7 +391,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "651ed81a-0702-4be9-a4d2-ab9689d447f3",
         "category": "list",
         "name": "Legal Entities",
@@ -376,7 +402,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "510a3225-708d-433f-a90b-654e8d5a48f5",
         "category": "list",
         "name": "Joint Ventures and Associates",
@@ -386,7 +413,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "59e20ad0-51b1-43ec-9370-e93bb4ba0955",
         "category": "list",
         "name": "Adjustment Entities",
@@ -396,7 +424,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "e261375c-1bf0-4157-bf69-37aa3d7c48a8",
         "category": "key",
         "name": "Total Account",
@@ -406,7 +435,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "dc20c873-d98e-483a-b3ce-1df70c0457da",
         "category": "key",
         "name": "Total Profit and Loss - Statutory",
@@ -416,7 +446,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "1caf87e2-73b4-4bee-bbac-44ba16220d79",
         "category": "key",
         "name": "Total Profit and Loss - Management",
@@ -426,7 +457,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "b233dd1f-0ad0-44e1-9ad6-cdb50cfa6dd1",
         "category": "key",
         "name": "Total Balance Sheet - Statutory",
@@ -436,7 +468,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "9b015e19-a506-4a83-9776-46d201d50f56",
         "category": "key",
         "name": "Total Balance Sheet - Management",
@@ -446,7 +479,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "daf5d75b-92bc-4fb0-a556-9005e747ceb0",
         "category": "structure",
         "name": "Profit and Loss Accounts",
@@ -456,7 +490,8 @@
         "locations": [],
         "owners": [],
         "descendants": []
-      },{
+      },
+      {
         "id": "59d45144-ae2e-4974-9846-08fc3c0546c4",
         "category": "structure",
         "name": "Balance Sheet Accounts",
@@ -1268,79 +1303,166 @@
       }
     ]
   },
-  "customProperties": 
-    {
-      "data": [
-        {
-          "id": "11f1d2f7-a138-434f-8a11-7a04f859d9e4",
-          "type": "Boolean",
-          "name": "Is Active",
-          "description": "Use to flag any rule that is no longer use as inactive.",
-          "levels": [
-            "Attributes",
-            "Rules"
-          ]
-        },
-        {
-          "id": "21f1d2f7-a332-434f-8a12-7a04f855d9e4",
-          "type": "Text",
-          "name": "Use Case",
-          "description": "Short summary of report business use case.",
-          "levels": [
-            "Reports - All"
-          ]
-        },
-        {
-          "id": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
-          "type": "Hyperlink",
-          "name": "Functional Design Document",
-          "description": "Link to functional design document in sharepoint",
-          "levels": [
-            "Systems - All",
-            "System Links - All"
-          ]
-        },
-        {
-          "id": "41f1d2f7-a338-434f-8a14-7a04f853d9e4",
-          "type": "Number",
-          "name": "Severity level",
-          "description": "Use number between 1 and 5. 5 is high severity, 1 is low.",
-          "levels": [
-            "RADIO"
-          ]
-        },
-        {
-          "id": "51faa2f7-a338-434f-8a15-7a04f85929e4",
-          "type": "Date",
-          "name": "ETA",
-          "description": "Estimated time of arrival",
-          "levels": [
-            "Work Packages"
-          ]
-        },
-        {
-          "id": "61f1daf7-a338-434f-8a16-7a04f119d9e4",
-          "type": "Hyperlink",
-          "name": "Epic",
-          "description": "Link to the epic controlling delivery of this work package.",
-          "levels": [
-            "Work package"
-          ]
-        }
-      ],
-      "links": {
-        "first": "http://myapi?page=0&size=100",
-        "previous": "http://myapi?page=0&size=100",
-        "next": "http://myapi?page=0&size=100",
-        "last": "http://myapi?page=0&size=100"
+  "reports": {
+    "data": [
+      {
+        "id": "c98ec3c9-2e0c-43bc-a1cd-90cf82e30e71",
+        "name": "Income Statement",
+        "description": "Local income statement",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
       },
-      "page": {
-        "size": 100,
-        "totalElements": 6,
-        "totalPages": 1,
-        "number": 1
+      {
+        "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
+        "name": "Balance Sheet",
+        "description": "Local balance sheet",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
+        "id": "ca8ec3c9-2e2c-43bc-a1cd-90cf83e30e71",
+        "name": "Cash Flow",
+        "description": "Local cash flow",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
+        "id": "c18ec3c9-2e3c-43bc-a1cd-90cf86e30e71",
+        "name": "Consolidated Income Statement",
+        "description": "Group consolidated income statement for statutory reporting.",
+        "dataSets": [
+          {
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "category": "physical",
+            "name": "Consolidation",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
       }
+    ],
+    "links": {
+      "first": "http://myapi?page=0&size=20",
+      "previous": "http://myapi?page=0&size=20",
+      "next": "http://myapi?page=0&size=20",
+      "last": "http://myapi?page=0&size=20"
     },
+    "page": {
+      "size": 20,
+      "totalElements": 4,
+      "totalPages": 1,
+      "number": 0
+    }
+  },
+  "customProperties": {
+    "data": [
+      {
+        "id": "11f1d2f7-a138-434f-8a11-7a04f859d9e4",
+        "type": "Boolean",
+        "name": "Is Active",
+        "description": "Use to flag any rule that is no longer use as inactive.",
+        "levels": [
+          "Attributes",
+          "Rules"
+        ]
+      },
+      {
+        "id": "21f1d2f7-a332-434f-8a12-7a04f855d9e4",
+        "type": "Text",
+        "name": "Use Case",
+        "description": "Short summary of report business use case.",
+        "levels": [
+          "Reports - All"
+        ]
+      },
+      {
+        "id": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
+        "type": "Hyperlink",
+        "name": "Functional Design Document",
+        "description": "Link to functional design document in sharepoint",
+        "levels": [
+          "Systems - All",
+          "System Links - All"
+        ]
+      },
+      {
+        "id": "41f1d2f7-a338-434f-8a14-7a04f853d9e4",
+        "type": "Number",
+        "name": "Severity level",
+        "description": "Use number between 1 and 5. 5 is high severity, 1 is low.",
+        "levels": [
+          "RADIO"
+        ]
+      },
+      {
+        "id": "51faa2f7-a338-434f-8a15-7a04f85929e4",
+        "type": "Date",
+        "name": "ETA",
+        "description": "Estimated time of arrival",
+        "levels": [
+          "Work Packages"
+        ]
+      },
+      {
+        "id": "61f1daf7-a338-434f-8a16-7a04f119d9e4",
+        "type": "Hyperlink",
+        "name": "Epic",
+        "description": "Link to the epic controlling delivery of this work package.",
+        "levels": [
+          "Work package"
+        ]
+      }
+    ],
+    "links": {
+      "first": "http://myapi?page=0&size=100",
+      "previous": "http://myapi?page=0&size=100",
+      "next": "http://myapi?page=0&size=100",
+      "last": "http://myapi?page=0&size=100"
+    },
+    "page": {
+      "size": 100,
+      "totalElements": 6,
+      "totalPages": 1,
+      "number": 1
+    }
+  },
   "attributes": {
     "data": [
       {
@@ -1752,6 +1874,24 @@
         ]
       },
       {
+        "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
+        "name": "Balance Sheet",
+        "description": "Local balance sheet",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
         "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
         "name": "Name",
         "category": "attribute",
@@ -1800,6 +1940,24 @@
         ]
       },
       {
+        "id": "ca8ec3c9-2e2c-43bc-a1cd-90cf83e30e71",
+        "name": "Cash Flow",
+        "description": "Local cash flow",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
         "id": "0ceee4c2-79c4-40d9-82f1-5e80de1c2e62",
         "name": "Short Description",
         "category": "attribute",
@@ -1820,45 +1978,132 @@
         ]
       },
       {
-        "id": "cefa429f-de81-4937-a6a1-3d15b2aaa55a",
-        "name": "Signage (HFM)",
-        "category": "attribute",
-        "description": "Indicates if debit are positive or negative values.",
-        "tags": null,
-        "scope": "global",
-        "owner": null,
-        "customProperties": [],
-        "related": [
+        "id": "c18ec3c9-2e3c-43bc-a1cd-90cf86e30e71",
+        "name": "Consolidated Income Statement",
+        "description": "Group consolidated income statement for statutory reporting.",
+        "dataSets": [
           {
-            "id": "7e4fdcb7-7246-4b66-a52e-0c488155a97b",
-            "name": "HFM Account Type",
-            "tags": "HFM",
-            "related": [
-              {
-                "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
-                "name": "EPM Account Type",
-                "tags": null,
-                "related": [],
-                "category": "attribute",
-                "description": "Standard account type definition that is then translated to application specific nomenclature."
-              }
-            ],
-            "category": "attribute",
-            "description": "EPM account type translated to HFM nomenclature"
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "category": "physical",
+            "name": "Consolidation",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
           }
         ]
-      },
-      {
-        "id": "82bf68e0-659c-4a0b-9038-eebc1b3dcb14",
-        "name": "Workday Concur",
-        "category": "attribute",
-        "description": "",
-        "tags": "SAP",
-        "scope": "global",
-        "owner": "SAP Team",
-        "customProperties": [],
-        "related": []
       }
-    ]
+    ],
+    "links": {
+      "first": "http://myapi?page=0&size=20",
+      "previous": "http://myapi?page=0&size=20",
+      "next": "http://myapi?page=0&size=20",
+      "last": "http://myapi?page=0&size=20"
+    },
+    "page": {
+      "size": 20,
+      "totalElements": 4,
+      "totalPages": 1,
+      "number": 0
+    }
+  },
+  "reportDetail": {
+    "data": {
+      "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
+      "name": "Balance Sheet",
+      "description": "Local balance sheet",
+      "owners": [
+        {
+          "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+          "name": "FSS",
+          "type": "team"
+        }
+      ],
+      "dataSets": [
+        {
+          "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+          "category": "physical",
+          "name": "Primary Ledger Balances",
+          "layer": "data set",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        }
+      ],
+      "dimensions": [
+        {
+          "id": "f023506a-4026-43c0-a38b-9d793d8baf49",
+          "category": "dimension",
+          "name": "Account",
+          "layer": "dimension",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
+          "category": "dimension",
+          "name": "Currency",
+          "layer": "dimension",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "57526c23-2bbe-4a30-a80e-0eb3cb264e5a",
+          "category": "dimension",
+          "name": "Entity",
+          "layer": "dimension",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        }
+      ],
+      "reportingConcepts": [
+        {
+          "id": "651ed81a-0702-4be9-a4d2-ab9689d447f3",
+          "category": "list",
+          "name": "Legal Entities",
+          "layer": "reporting concept",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "9b015e19-a506-4a83-9776-46d201d50f56",
+          "category": "key",
+          "name": "Total Balance Sheet - Management",
+          "layer": "reporting concept",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "59d45144-ae2e-4974-9846-08fc3c0546c4",
+          "category": "structure",
+          "name": "Balance Sheet Accounts",
+          "layer": "reporting concept",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        }
+      ]
+    }
   }
 }
