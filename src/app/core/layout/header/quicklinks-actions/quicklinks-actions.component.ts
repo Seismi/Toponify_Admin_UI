@@ -8,26 +8,34 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 export class QuicklinksActionsComponent implements OnInit {
 
   @Input() gojsView = false;
-  @Input() navigate: string;
+  @Input() allowEditLayouts: string;
+  @Input() allowEditWorkPackages: string;
   @Input() data: any;
-  @Input() workpackageDetail: any;
 
   ngOnInit() {
-    this.navigate = 'control_camera';
+    this.allowEditLayouts = 'edit';
+    this.allowEditWorkPackages = 'edit';
   }
 
   @Output()
-  navigateDiagram = new EventEmitter();
+  editWorkPackage = new EventEmitter();
+
+  @Output()
+  editLayout = new EventEmitter();
 
   @Output()
   selectWorkPackage = new EventEmitter();
 
-  onNavigate(){
-    this.navigateDiagram.emit();
+
+  allowEditWorkPackage() {
+    this.editWorkPackage.emit();
+  }
+
+  allowEditLayout() {
+    this.editLayout.emit();
   }
 
   onSelectWorkPackage(id) {
     this.selectWorkPackage.emit(id);
   }
-
 }

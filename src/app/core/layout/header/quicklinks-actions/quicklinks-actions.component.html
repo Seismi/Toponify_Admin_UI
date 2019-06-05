@@ -14,14 +14,13 @@
     (selectWorkpackage)="onSelectWorkPackage($event)">
 </smi-workpackage-dropdown>
 
-<!-- Enable edit diagram -->
-<a (click)="onNavigate()" *ngIf="gojsView"><mat-icon matTooltip="diagram movement">{{navigate}}</mat-icon></a>
+<!-- Edit diagram button -->
+<a (click)="allowEditWorkPackage()" *ngIf="gojsView"><mat-icon matTooltip="Edit WorkPackages">{{allowEditWorkPackages}}</mat-icon></a>
 
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
 
-
-<!-- TODO: Need to create separate component for Scopes And Layouts -->
+<!-- TODO: Need to create separate component for Scopes And Layouts Dropdown -->
 <!--Scopes and Layouts Icon -->
 <a><mat-icon routerLink="/scopes-and-layouts" matTooltip="Scopes and Layouts">pages</mat-icon></a>
 <!-- Scopes dropdown -->
@@ -35,6 +34,7 @@
         <button class="dropdown-item">Scope 3</button>
     </div>
 </div>
+
 <!-- Layouts dropdown -->
 <div class="dropdown" *ngIf="gojsView">
     <button class="dropdown-toggle btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,6 +47,8 @@
     </div>
 </div>
 
+<!-- Edit diagram button -->
+<a (click)="allowEditLayout()" *ngIf="gojsView"><mat-icon matTooltip="Edit Layout">{{allowEditLayouts}}</mat-icon></a>
 
 <!-- RADIO Log -->
 <a><mat-icon routerLink="/radio" matTooltip="RADIO Log">track_changes</mat-icon></a>

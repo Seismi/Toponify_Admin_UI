@@ -14,7 +14,6 @@ import { StoreModule } from '@ngrx/store';
 // import {CommentsModule} from '@app/comments/comments.module';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
-import { AddAttrAndRulesComponent } from './components/add-attr-and-rules/add-attr-and-rules.component';
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
 import { ArchitecturePaletteComponent } from './components/architecture-palette/architecture-palette.component';
@@ -75,8 +74,7 @@ import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-o
       LeftPanelComponent,
       AnalysisTabComponent,
       DeleteNodeModalComponent,
-      DeleteLinkModalComponent,
-      AddAttrAndRulesComponent
+      DeleteLinkModalComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [
