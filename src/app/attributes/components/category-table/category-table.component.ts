@@ -7,8 +7,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class CategoryTableComponent implements OnInit {
 
+  @Input() attributesPage: boolean;
   selectedRowIndex = -1;
-
   _data: any[] = [];
 
   @Input()

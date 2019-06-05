@@ -1,4 +1,4 @@
-import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions';
+import { LoadNodes, LoadNodeLinks, LoadNode } from '@app/nodes/store/actions/node.actions';
 import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -6,9 +6,9 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { LinkType, NodeType } from '@app/nodes/services/node.service';
-import { linkCategories, NodeLink } from '@app/nodes/store/models/node-link.model';
-import {Node, nodeCategories} from '@app/nodes/store/models/node.model';
-import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.selector';
+import { linkCategories, NodeLink, AttributesEntity } from '@app/nodes/store/models/node-link.model';
+import {Node, nodeCategories, NodeDetail} from '@app/nodes/store/models/node.model';
+import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/nodes/store/selectors/node.selector';
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -28,7 +28,6 @@ import { ObjectDetailsValidatorService } from '../components/object-details-form
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 
-
 @Component({
   selector: 'smi-architecture',
   templateUrl: 'architecture.component.html',
@@ -45,6 +44,7 @@ export class ArchitectureComponent implements OnInit {
   nodes$: Observable<Node[]>;
   nodeLinks$: Observable<NodeLink[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
+  nodeDetail$: Observable<NodeDetail>;
   mapView: boolean;
   viewLevel$: Observable<number>;
   mapViewId$: Observable<string>;
@@ -58,6 +58,7 @@ export class ArchitectureComponent implements OnInit {
   clickedOnLink = false;
   objectSelected = true;
   isEditable = false;
+  nodeId: string;
   allowEditWorkPackages: string;
   workPackageIsEditable = false;
   workpackageId: string;
@@ -188,10 +189,16 @@ export class ArchitectureComponent implements OnInit {
       tags: this.selectedPart.tags,
     });
 
+    this.nodeId = this.selectedPart.id;
+
     this.part = part;
 
     // By clicking on link show only name, category and description in the right panel
     this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
+
+    // Load Node Details
+    this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+    this.nodeDetail$ = this.nodeStore.pipe(select(getSelectedNode));
   }
 
   modelChanged(event: any) {
@@ -324,7 +331,6 @@ export class ArchitectureComponent implements OnInit {
     this.diagramComponent.decreaseZoom();
   }
 
-
   onSelectWorkPackage(id) {
     this.workpackageId = id;
     this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
@@ -334,3 +340,4 @@ export class ArchitectureComponent implements OnInit {
   }
 
 }
+

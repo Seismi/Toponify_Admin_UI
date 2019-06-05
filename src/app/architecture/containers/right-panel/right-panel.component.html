@@ -1,5 +1,5 @@
 <mat-tab-group mat-stretch-tabs class="stretched-tabs mat-elevation-z4" [@.disabled]="true">
-    <mat-tab label="Object">
+    <mat-tab label="Details">
         <smi-object-details-form
             [group]="group"
             [clickedOnLink]="clickedOnLink"
@@ -11,6 +11,16 @@
             (cancel)="onCancel($event)"
             [workPackageIsEditable]="workPackageIsEditable">
         </smi-object-details-form></mat-tab>
-    <mat-tab label="Comments"> Comments </mat-tab>
-    <mat-tab label="Audit"> Audit </mat-tab>
+    <mat-tab label="Attributes">
+        <smi-attributes-tab [data]="data"></smi-attributes-tab>
+    </mat-tab>
+    <mat-tab label="Properties">
+        <smi-properties-tab [data]="data"></smi-properties-tab>
+    </mat-tab>
+    <mat-tab label="RADIO">
+        <smi-radio-tab [data]="data"></smi-radio-tab>
+    </mat-tab>
+    <mat-tab label="Work Packages">
+        <smi-workpackage-tab [data]="data"></smi-workpackage-tab>
+    </mat-tab>
 </mat-tab-group>

@@ -35,10 +35,8 @@ import { ArchitectureModule } from '@app/architecture/architecture.module';
   ],
   exports: [],
   declarations: [
-    AttributesComponent, 
-    AttributesRoutingComponent,
-    CategoryTableComponent,
-    TableCollapseComponent
+    AttributesComponent,
+    AttributesRoutingComponent
   ],
   providers: [
     AttributeService

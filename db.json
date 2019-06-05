@@ -1995,19 +1995,156 @@
           }
         ]
       }
-    ],
-    "links": {
-      "first": "http://myapi?page=0&size=20",
-      "previous": "http://myapi?page=0&size=20",
-      "next": "http://myapi?page=0&size=20",
-      "last": "http://myapi?page=0&size=20"
-    },
-    "page": {
-      "size": 20,
-      "totalElements": 4,
-      "totalPages": 1,
-      "number": 0
-    }
+    ]
+  },
+  "nodeDetail": {
+    "data": [
+      {
+        "id": "067b138f-b299-4fa9-bd05-d93a29917ad6",
+        "category": "analytical",
+        "name": "Consolidation",
+        "layer": "system",
+        "description": "Group consolidation system",
+        "tags": "",
+        "locations": [],
+        "owners": [
+          {
+            "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+            "name": "FSS",
+            "type": "team"
+          }
+        ],
+        "descendants": [
+          {
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "name": "Consolidation"
+          }
+        ],
+        "attributes": [
+          {
+            "id": "1a25ca52-8d9a-43ea-a309-26cac34ff0dc",
+            "category": "attribute",
+            "name": "Sample attribute 1",
+            "description": "Sample attribute 1",
+            "tags": "sample",
+            "related": []
+          },
+          {
+            "id": "1a25ca00-8d9a-43ea-a309-26cac34fa0dc",
+            "category": "attribute",
+            "name": "Sample attribute 2",
+            "description": "Sample attribute 2",
+            "tags": "sample",
+            "related": []
+          },
+          {
+            "id": "1a25ca52-0d9a-43ea-a339-26cac341f0dc",
+            "category": "rule",
+            "name": "Sample rule 1",
+            "description": "Sample rule 1",
+            "tags": "sample",
+            "related": [
+              {
+                "id": "1a25ca52-8d9a-43ea-a309-26cac34ff0dc",
+                "category": "attribute",
+                "name": "Sample attribute 1"
+              }
+            ]
+          }
+        ],
+        "relatedRadios": [
+          {
+            "id": "ba25ca52-0d9a-43ea-a399-26cac301f01c",
+            "title": "Manual adjustments",
+            "commentText": "Some users are loading manual adjustments directly as lock and send and not through auditable journals",
+            "category": "risk",
+            "author": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Paul",
+              "lastName": "Sandy"
+            },
+            "owners": [
+              {
+                "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+                "name": "FSS",
+                "type": "team"
+              }
+            ],
+            "status": "open",
+            "createdOn": "2012-04-23T18:25:43.5111",
+            "lastUpdatedOn": "2012-04-23T18:25:43.5111",
+            "lastUpdatedBy": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Paul",
+              "lastName": "Sandy"
+            },
+            "replyCount": 0
+          },
+          {
+            "id": "ba55ca52-0d9a-43ea-ac9c-26c78301f01c",
+            "title": "Performance degradation",
+            "commentText": "Multiple users have raised support tickets concerning performance. There is a sharp decline in overall system performance.",
+            "category": "issue",
+            "author": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Damian",
+              "lastName": "Randy"
+            },
+            "owners": [
+              {
+                "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+                "name": "FSS",
+                "type": "team"
+              }
+            ],
+            "status": "open",
+            "createdOn": "2012-04-23T18:25:43.5111",
+            "lastUpdatedOn": "2012-04-24T18:25:43.5111",
+            "lastUpdatedBy": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Paul",
+              "lastName": "Sandy"
+            },
+            "replyCount": 2
+          }
+        ],
+        "relatedWorkPackages": [
+          {
+            "id": "c288392e-6cf5-11e9-a923-1681be663d3e",
+            "name": "Replace Consolidation system",
+            "description": "Remove the current consolidation system and implement new cloud consolidation",
+            "owners": [
+              {
+                "id": "c2883fd2-6cf5-11e9-a923-1681be663d3e",
+                "name": "Contractor1",
+                "type": "team"
+              }
+            ],
+            "approvers": [
+              {
+                "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+                "name": "FSS",
+                "type": "team"
+              }
+            ],
+            "hasErrors": false,
+            "status": "draft"
+          }
+        ],
+        "customPropertyValues": [
+          {
+            "propertyId": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
+            "name": "Functional Design Document",
+            "value": "https://app.swaggerhub.com/apis-docs/Seismi/md-diagram/0.2.0#/Architecture%20Nodes/getnode"
+          },
+          {
+            "propertyId": "31f1d2f7-a3ab-434f-8a13-7a013254abe4",
+            "name": "Zendesk queue",
+            "value": "https://trello.com/b/NUX4TAFr/md-diagram-dev"
+          }
+        ]
+      }
+    ]
   },
   "reportDetail": {
     "data": {

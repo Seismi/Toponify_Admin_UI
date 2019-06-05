@@ -12,9 +12,12 @@ export class RightPanelComponent {
   @Input() clickedOnLink = false;
   @Input() nodeSelected = true;
   @Input() isEditable = false;
+  @Input() data: any;
   @Input() workPackageIsEditable = false;
 
   constructor() { }
+
+  ngOnInit() {}
 
   @Output()
   saveAttribute = new EventEmitter();

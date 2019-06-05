@@ -19,7 +19,7 @@ export class DocumentationStandardsTableComponent implements OnInit {
   ngOnInit() {}
 
   public dataSource: MatTableDataSource<DocumentStandard>;
-  displayedColumns: string[] = ['name', 'levels'];
+  @Input() displayedColumns: string[] = ['name', 'levels'];
 
   @Output()
   documentationSelected = new EventEmitter();
