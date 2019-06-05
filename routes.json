@@ -1,4 +1,3 @@
 {
-  "/:nodes/links": "/links",
   "/:workpackages/:id": "/workpackageDetail"
 }
