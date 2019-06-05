@@ -34,7 +34,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     StoreModule.forFeature('documentationStandardFeature', reducer),
     EffectsModule.forFeature([ DocumentationStandardEffects ])
   ],
-  exports: [],
+  exports: [DocumentationStandardsTableComponent],
   declarations: [
     DocumentationStandardsComponent, 
     DocumentationStandardsRoutingComponent,

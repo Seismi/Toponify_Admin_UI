@@ -424,79 +424,166 @@
       }
     ]
   },
-  "customProperties": 
-    {
-      "data": [
-        {
-          "id": "11f1d2f7-a138-434f-8a11-7a04f859d9e4",
-          "type": "Boolean",
-          "name": "Is Active",
-          "description": "Use to flag any rule that is no longer use as inactive.",
-          "levels": [
-            "Attributes",
-            "Rules"
-          ]
-        },
-        {
-          "id": "21f1d2f7-a332-434f-8a12-7a04f855d9e4",
-          "type": "Text",
-          "name": "Use Case",
-          "description": "Short summary of report business use case.",
-          "levels": [
-            "Reports - All"
-          ]
-        },
-        {
-          "id": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
-          "type": "Hyperlink",
-          "name": "Functional Design Document",
-          "description": "Link to functional design document in sharepoint",
-          "levels": [
-            "Systems - All",
-            "System Links - All"
-          ]
-        },
-        {
-          "id": "41f1d2f7-a338-434f-8a14-7a04f853d9e4",
-          "type": "Number",
-          "name": "Severity level",
-          "description": "Use number between 1 and 5. 5 is high severity, 1 is low.",
-          "levels": [
-            "RADIO"
-          ]
-        },
-        {
-          "id": "51faa2f7-a338-434f-8a15-7a04f85929e4",
-          "type": "Date",
-          "name": "ETA",
-          "description": "Estimated time of arrival",
-          "levels": [
-            "Work Packages"
-          ]
-        },
-        {
-          "id": "61f1daf7-a338-434f-8a16-7a04f119d9e4",
-          "type": "Hyperlink",
-          "name": "Epic",
-          "description": "Link to the epic controlling delivery of this work package.",
-          "levels": [
-            "Work package"
-          ]
-        }
-      ],
-      "links": {
-        "first": "http://myapi?page=0&size=100",
-        "previous": "http://myapi?page=0&size=100",
-        "next": "http://myapi?page=0&size=100",
-        "last": "http://myapi?page=0&size=100"
+  "reports": {
+    "data": [
+      {
+        "id": "c98ec3c9-2e0c-43bc-a1cd-90cf82e30e71",
+        "name": "Income Statement",
+        "description": "Local income statement",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
       },
-      "page": {
-        "size": 100,
-        "totalElements": 6,
-        "totalPages": 1,
-        "number": 1
+      {
+        "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
+        "name": "Balance Sheet",
+        "description": "Local balance sheet",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
+        "id": "ca8ec3c9-2e2c-43bc-a1cd-90cf83e30e71",
+        "name": "Cash Flow",
+        "description": "Local cash flow",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
+        "id": "c18ec3c9-2e3c-43bc-a1cd-90cf86e30e71",
+        "name": "Consolidated Income Statement",
+        "description": "Group consolidated income statement for statutory reporting.",
+        "dataSets": [
+          {
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "category": "physical",
+            "name": "Consolidation",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
       }
+    ],
+    "links": {
+      "first": "http://myapi?page=0&size=20",
+      "previous": "http://myapi?page=0&size=20",
+      "next": "http://myapi?page=0&size=20",
+      "last": "http://myapi?page=0&size=20"
     },
+    "page": {
+      "size": 20,
+      "totalElements": 4,
+      "totalPages": 1,
+      "number": 0
+    }
+  },
+  "customProperties": {
+    "data": [
+      {
+        "id": "11f1d2f7-a138-434f-8a11-7a04f859d9e4",
+        "type": "Boolean",
+        "name": "Is Active",
+        "description": "Use to flag any rule that is no longer use as inactive.",
+        "levels": [
+          "Attributes",
+          "Rules"
+        ]
+      },
+      {
+        "id": "21f1d2f7-a332-434f-8a12-7a04f855d9e4",
+        "type": "Text",
+        "name": "Use Case",
+        "description": "Short summary of report business use case.",
+        "levels": [
+          "Reports - All"
+        ]
+      },
+      {
+        "id": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
+        "type": "Hyperlink",
+        "name": "Functional Design Document",
+        "description": "Link to functional design document in sharepoint",
+        "levels": [
+          "Systems - All",
+          "System Links - All"
+        ]
+      },
+      {
+        "id": "41f1d2f7-a338-434f-8a14-7a04f853d9e4",
+        "type": "Number",
+        "name": "Severity level",
+        "description": "Use number between 1 and 5. 5 is high severity, 1 is low.",
+        "levels": [
+          "RADIO"
+        ]
+      },
+      {
+        "id": "51faa2f7-a338-434f-8a15-7a04f85929e4",
+        "type": "Date",
+        "name": "ETA",
+        "description": "Estimated time of arrival",
+        "levels": [
+          "Work Packages"
+        ]
+      },
+      {
+        "id": "61f1daf7-a338-434f-8a16-7a04f119d9e4",
+        "type": "Hyperlink",
+        "name": "Epic",
+        "description": "Link to the epic controlling delivery of this work package.",
+        "levels": [
+          "Work package"
+        ]
+      }
+    ],
+    "links": {
+      "first": "http://myapi?page=0&size=100",
+      "previous": "http://myapi?page=0&size=100",
+      "next": "http://myapi?page=0&size=100",
+      "last": "http://myapi?page=0&size=100"
+    },
+    "page": {
+      "size": 100,
+      "totalElements": 6,
+      "totalPages": 1,
+      "number": 1
+    }
+  },
   "attributes": {
     "data": [
       {
@@ -908,6 +995,24 @@
         ]
       },
       {
+        "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
+        "name": "Balance Sheet",
+        "description": "Local balance sheet",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
         "id": "68ab600d-b995-4e26-89b4-de674134b7dc",
         "name": "Name",
         "category": "attribute",
@@ -956,6 +1061,24 @@
         ]
       },
       {
+        "id": "ca8ec3c9-2e2c-43bc-a1cd-90cf83e30e71",
+        "name": "Cash Flow",
+        "description": "Local cash flow",
+        "dataSets": [
+          {
+            "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+            "category": "physical",
+            "name": "Primary Ledger Balances",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
+          }
+        ]
+      },
+      {
         "id": "0ceee4c2-79c4-40d9-82f1-5e80de1c2e62",
         "name": "Short Description",
         "category": "attribute",
@@ -976,45 +1099,269 @@
         ]
       },
       {
-        "id": "cefa429f-de81-4937-a6a1-3d15b2aaa55a",
-        "name": "Signage (HFM)",
-        "category": "attribute",
-        "description": "Indicates if debit are positive or negative values.",
-        "tags": null,
-        "scope": "global",
-        "owner": null,
-        "customProperties": [],
-        "related": [
+        "id": "c18ec3c9-2e3c-43bc-a1cd-90cf86e30e71",
+        "name": "Consolidated Income Statement",
+        "description": "Group consolidated income statement for statutory reporting.",
+        "dataSets": [
           {
-            "id": "7e4fdcb7-7246-4b66-a52e-0c488155a97b",
-            "name": "HFM Account Type",
-            "tags": "HFM",
-            "related": [
-              {
-                "id": "0853faee-009c-4949-b364-2fbe5ee61b6c",
-                "name": "EPM Account Type",
-                "tags": null,
-                "related": [],
-                "category": "attribute",
-                "description": "Standard account type definition that is then translated to application specific nomenclature."
-              }
-            ],
-            "category": "attribute",
-            "description": "EPM account type translated to HFM nomenclature"
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "category": "physical",
+            "name": "Consolidation",
+            "layer": "data set",
+            "description": "",
+            "tags": "",
+            "locations": [],
+            "owners": [],
+            "descendants": []
           }
         ]
-      },
-      {
-        "id": "82bf68e0-659c-4a0b-9038-eebc1b3dcb14",
-        "name": "Workday Concur",
-        "category": "attribute",
-        "description": "",
-        "tags": "SAP",
-        "scope": "global",
-        "owner": "SAP Team",
-        "customProperties": [],
-        "related": []
       }
     ]
+  },
+  "nodeDetail": {
+    "data": [
+      {
+        "id": "067b138f-b299-4fa9-bd05-d93a29917ad6",
+        "category": "analytical",
+        "name": "Consolidation",
+        "layer": "system",
+        "description": "Group consolidation system",
+        "tags": "",
+        "locations": [],
+        "owners": [
+          {
+            "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+            "name": "FSS",
+            "type": "team"
+          }
+        ],
+        "descendants": [
+          {
+            "id": "1b85ca52-8f9a-44ea-a309-26cac34ff0dc",
+            "name": "Consolidation"
+          }
+        ],
+        "attributes": [
+          {
+            "id": "1a25ca52-8d9a-43ea-a309-26cac34ff0dc",
+            "category": "attribute",
+            "name": "Sample attribute 1",
+            "description": "Sample attribute 1",
+            "tags": "sample",
+            "related": []
+          },
+          {
+            "id": "1a25ca00-8d9a-43ea-a309-26cac34fa0dc",
+            "category": "attribute",
+            "name": "Sample attribute 2",
+            "description": "Sample attribute 2",
+            "tags": "sample",
+            "related": []
+          },
+          {
+            "id": "1a25ca52-0d9a-43ea-a339-26cac341f0dc",
+            "category": "rule",
+            "name": "Sample rule 1",
+            "description": "Sample rule 1",
+            "tags": "sample",
+            "related": [
+              {
+                "id": "1a25ca52-8d9a-43ea-a309-26cac34ff0dc",
+                "category": "attribute",
+                "name": "Sample attribute 1"
+              }
+            ]
+          }
+        ],
+        "relatedRadios": [
+          {
+            "id": "ba25ca52-0d9a-43ea-a399-26cac301f01c",
+            "title": "Manual adjustments",
+            "commentText": "Some users are loading manual adjustments directly as lock and send and not through auditable journals",
+            "category": "risk",
+            "author": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Paul",
+              "lastName": "Sandy"
+            },
+            "owners": [
+              {
+                "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+                "name": "FSS",
+                "type": "team"
+              }
+            ],
+            "status": "open",
+            "createdOn": "2012-04-23T18:25:43.5111",
+            "lastUpdatedOn": "2012-04-23T18:25:43.5111",
+            "lastUpdatedBy": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Paul",
+              "lastName": "Sandy"
+            },
+            "replyCount": 0
+          },
+          {
+            "id": "ba55ca52-0d9a-43ea-ac9c-26c78301f01c",
+            "title": "Performance degradation",
+            "commentText": "Multiple users have raised support tickets concerning performance. There is a sharp decline in overall system performance.",
+            "category": "issue",
+            "author": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Damian",
+              "lastName": "Randy"
+            },
+            "owners": [
+              {
+                "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+                "name": "FSS",
+                "type": "team"
+              }
+            ],
+            "status": "open",
+            "createdOn": "2012-04-23T18:25:43.5111",
+            "lastUpdatedOn": "2012-04-24T18:25:43.5111",
+            "lastUpdatedBy": {
+              "id": "ba25cada-0d9a-43ea-a399-26cac301f01c",
+              "firstName": "Paul",
+              "lastName": "Sandy"
+            },
+            "replyCount": 2
+          }
+        ],
+        "relatedWorkPackages": [
+          {
+            "id": "c288392e-6cf5-11e9-a923-1681be663d3e",
+            "name": "Replace Consolidation system",
+            "description": "Remove the current consolidation system and implement new cloud consolidation",
+            "owners": [
+              {
+                "id": "c2883fd2-6cf5-11e9-a923-1681be663d3e",
+                "name": "Contractor1",
+                "type": "team"
+              }
+            ],
+            "approvers": [
+              {
+                "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+                "name": "FSS",
+                "type": "team"
+              }
+            ],
+            "hasErrors": false,
+            "status": "draft"
+          }
+        ],
+        "customPropertyValues": [
+          {
+            "propertyId": "31f1d2f7-a338-434f-8a13-7a013254d9e4",
+            "name": "Functional Design Document",
+            "value": "https://app.swaggerhub.com/apis-docs/Seismi/md-diagram/0.2.0#/Architecture%20Nodes/getnode"
+          },
+          {
+            "propertyId": "31f1d2f7-a3ab-434f-8a13-7a013254abe4",
+            "name": "Zendesk queue",
+            "value": "https://trello.com/b/NUX4TAFr/md-diagram-dev"
+          }
+        ]
+      }
+    ]
+  },
+  "reportDetail": {
+    "data": {
+      "id": "a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71",
+      "name": "Balance Sheet",
+      "description": "Local balance sheet",
+      "owners": [
+        {
+          "id": "c28843ce-6cf5-11e9-a923-1681be663d3e",
+          "name": "FSS",
+          "type": "team"
+        }
+      ],
+      "dataSets": [
+        {
+          "id": "98285053-c81a-4a3b-b3dd-02512676cace",
+          "category": "physical",
+          "name": "Primary Ledger Balances",
+          "layer": "data set",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        }
+      ],
+      "dimensions": [
+        {
+          "id": "f023506a-4026-43c0-a38b-9d793d8baf49",
+          "category": "dimension",
+          "name": "Account",
+          "layer": "dimension",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "2cc78310-cba1-40b2-a650-389acb589f5f",
+          "category": "dimension",
+          "name": "Currency",
+          "layer": "dimension",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "57526c23-2bbe-4a30-a80e-0eb3cb264e5a",
+          "category": "dimension",
+          "name": "Entity",
+          "layer": "dimension",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        }
+      ],
+      "reportingConcepts": [
+        {
+          "id": "651ed81a-0702-4be9-a4d2-ab9689d447f3",
+          "category": "list",
+          "name": "Legal Entities",
+          "layer": "reporting concept",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "9b015e19-a506-4a83-9776-46d201d50f56",
+          "category": "key",
+          "name": "Total Balance Sheet - Management",
+          "layer": "reporting concept",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        },
+        {
+          "id": "59d45144-ae2e-4974-9846-08fc3c0546c4",
+          "category": "structure",
+          "name": "Balance Sheet Accounts",
+          "layer": "reporting concept",
+          "description": "",
+          "tags": "",
+          "locations": [],
+          "owners": [],
+          "descendants": []
+        }
+      ]
+    }
   }
 }

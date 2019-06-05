@@ -30,7 +30,7 @@
       <textarea class="form-control" rows="2" [ngClass]="{disabled: !isEditable}" formControlName="directDependencies"></textarea>
     </div>
 
-  <div class="form-group">
+  <div class="form-group" *ngIf="workPackageIsEditable">
     <button *ngIf="!isEditable" mat-flat-button color="primary" [disabled]="nodeSelected" (click)="onEdit()">Edit</button>
     <button *ngIf="!isEditable" mat-flat-button color="warn" [disabled]="nodeSelected" (click)="onDelete()">Delete</button>
     <div *ngIf="isEditable">

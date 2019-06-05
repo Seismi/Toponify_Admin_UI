@@ -1,16 +1,8 @@
 <mat-tab-group mat-stretch-tabs [@.disabled]="true">
     <mat-tab label="Edit">
         <div *ngIf="showPalette">
-            <app-architecture-palette *ngIf="allowMove; else elseBlock"></app-architecture-palette>
-            <ng-template #elseBlock>
-                <i>"Please make diagram editable to see nodes"</i>
-            </ng-template>
+            <app-architecture-palette *ngIf="workPackageIsEditable"></app-architecture-palette>
         </div>
-        <smi-add-attr-and-rules 
-            *ngIf="showTable"
-            (addAttribute)="onAddAttribute($event)"
-            (addRule)="onAddRule($event)">
-        </smi-add-attr-and-rules>
     </mat-tab>
     <mat-tab label="Analysis">
       <smi-analysis-tab

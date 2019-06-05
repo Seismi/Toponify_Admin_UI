@@ -42,7 +42,7 @@ import { reducer } from './store/reducers/radio.reducer';
         StoreModule.forFeature('radioFeature', reducer),
         EffectsModule.forFeature([ RadioEffects ])
     ],
-    exports: [],
+    exports: [RadioTableComponent],
     declarations: [
         RadioComponent, 
         RadioRoutingComponent,

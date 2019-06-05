@@ -1,4 +1,4 @@
-import { LoadNodes, LoadNodeLinks } from '@app/nodes/store/actions/node.actions';
+import { LoadNodes, LoadNodeLinks, LoadNode } from '@app/nodes/store/actions/node.actions';
 import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -6,9 +6,9 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { LinkType, NodeType } from '@app/nodes/services/node.service';
-import { linkCategories, NodeLink } from '@app/nodes/store/models/node-link.model';
-import {Node, nodeCategories} from '@app/nodes/store/models/node.model';
-import { getNodeEntities, getNodeLinks } from '@app/nodes/store/selectors/node.selector';
+import { linkCategories, NodeLink, AttributesEntity } from '@app/nodes/store/models/node-link.model';
+import {Node, nodeCategories, NodeDetail} from '@app/nodes/store/models/node.model';
+import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/nodes/store/selectors/node.selector';
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -19,7 +19,7 @@ import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.co
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, ignoreElements} from 'rxjs/operators';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { LoadWorkPackages, LoadWorkPackage } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
@@ -27,7 +27,6 @@ import { getWorkPackageEntities, getSelectedWorkPackage } from '@app/workpackage
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
-
 
 @Component({
   selector: 'smi-architecture',
@@ -39,10 +38,13 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 
 export class ArchitectureComponent implements OnInit {
 
+  @Input() attributesView = false;
+  @Input() allowMove: boolean;
   public selectedPart = null;
   nodes$: Observable<Node[]>;
   nodeLinks$: Observable<NodeLink[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
+  nodeDetail$: Observable<NodeDetail>;
   mapView: boolean;
   viewLevel$: Observable<number>;
   mapViewId$: Observable<string>;
@@ -50,17 +52,17 @@ export class ArchitectureComponent implements OnInit {
   showPalette: boolean;
   part: any;
   showGrid: boolean;
-  @Input() allowMove: boolean;
-  showOrHide: string;
-  navigate: string;
+  showOrHideGrid: string;
+  allowEditLayouts: string;
   attributeSubscription: Subscription;
-  // attributes: Attribute[];
   clickedOnLink = false;
   objectSelected = true;
   isEditable = false;
-  @Input() attributesView = false;
+  nodeId: string;
+  allowEditWorkPackages: string;
+  workPackageIsEditable = false;
   workpackageId: string;
-  @Input() workpackageDetail: any;
+  workpackageDetail: any;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -187,11 +189,16 @@ export class ArchitectureComponent implements OnInit {
       tags: this.selectedPart.tags,
     });
 
+    this.nodeId = this.selectedPart.id;
+
     this.part = part;
 
     // By clicking on link show only name, category and description in the right panel
     this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
 
+    // Load Node Details
+    this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+    this.nodeDetail$ = this.nodeStore.pipe(select(getSelectedNode));
   }
 
   modelChanged(event: any) {
@@ -203,19 +210,6 @@ export class ArchitectureComponent implements OnInit {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  onSelectRow(entry) {
-    this.selectedPart = entry;
-    this.objectSelected = false;
-    this.isEditable = false;
-    this.objectDetailsService.objectDetailsForm.patchValue({
-      id: entry.id,
-      name: entry.name,
-      category: entry.category,
-      owner: entry.owner,
-      description: entry.description,
-      tags: entry.tags
-    });
-  }
 
   // Not sure but probably there is a better way of doing this
   onSaveObjectDetails() {
@@ -250,18 +244,29 @@ export class ArchitectureComponent implements OnInit {
     this.isEditable = true;
   }
 
+  onCancelEdit() {
+    this.isEditable = false;
+  }
+
   onShowGrid() {
     this.showGrid = !this.showGrid;
     (this.showGrid === true)
-      ? this.showOrHide = 'border_clear'
-      : this.showOrHide = 'border_inner';
+      ? this.showOrHideGrid = 'border_clear'
+      : this.showOrHideGrid = 'border_inner';
   }
 
-  onNavigateDiagram() {
+  allowEditWorkPackage() {
+    this.workPackageIsEditable = !this.workPackageIsEditable;
+    (this.workPackageIsEditable === true)
+      ? this.allowEditWorkPackages = 'close'
+      : this.allowEditWorkPackages = 'edit';
+  }
+
+  allowEditLayout() {
     this.allowMove = !this.allowMove;
     (this.allowMove === true)
-      ? this.navigate = 'edit'
-      : this.navigate = 'control_camera';
+      ? this.allowEditLayouts = 'close'
+      : this.allowEditLayouts = 'edit';
   }
 
   onZoomMap() {
@@ -314,14 +319,6 @@ export class ArchitectureComponent implements OnInit {
     });
   }
 
-  onAddAttribute() {
-    // this.store.dispatch();
-  }
-
-  onAddRule() {
-    // this.store.dispatch();
-  }
-
   displayOptionsChanged({event, option}: {event: any, option: string}) {
     this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
   }
@@ -334,7 +331,6 @@ export class ArchitectureComponent implements OnInit {
     this.diagramComponent.decreaseZoom();
   }
 
-
   onSelectWorkPackage(id) {
     this.workpackageId = id;
     this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
@@ -344,3 +340,4 @@ export class ArchitectureComponent implements OnInit {
   }
 
 }
+
