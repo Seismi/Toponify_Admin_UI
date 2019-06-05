@@ -30,11 +30,11 @@ export class NodeService {
   }
 
   getNodeLinks(): Observable<NodeLinksApiResponse> {
-    return this.http.get<NodeLinksApiResponse>(`/nodes/links`);
+    return this.http.get<NodeLinksApiResponse>(`/nodelinks`);
   }
 
   getNodeLink(id: string): Observable<NodeLinkDetailApiResponse> {
-    return this.http.get<NodeLinkDetailApiResponse>(`/nodes/links/${id}`);
+    return this.http.get<NodeLinkDetailApiResponse>(`/nodelinks/${id}`);
   }
 
 }
