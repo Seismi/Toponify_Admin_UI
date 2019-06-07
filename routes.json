@@ -1,6 +1,4 @@
 {
-  "/nodes/links": "/links",
-  "/nodes/:id": "/nodeDetail",
   "/reports/a98ec3c9-2e1c-43bc-a1cd-90cf82e30e71": "/reportDetail",
   "/workpackages/:id": "/workpackageDetail"
 }
