@@ -2,15 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { Observable, Subscription } from 'rxjs';
-import { User } from '@app/settings/store/models/user.model';
 import { FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { UserState } from '@app/settings/store/reducers/user.reducer';
 import { MatDialog } from '@angular/material';
-import * as UserActions from '../../store/actions/user.actions';
-import { getUser, getUsers, getUsersLoading } from '@app/settings/store/selectors/user.selector';
 import { UsersTableComponent } from '@app/settings/components/users-table/users-table.component';
 import { UserModalComponent } from '../user-modal/user-modal.component';
+import { State as UserState} from '../../store/reducers/user.reducer'
+import { User,  } from '@app/settings/store/models/user.model';
+import { LoadUsers, UpdateUser, AddUser } from '@app/settings/store/actions/user.actions';
+import { getUsers, getUserSelected, getLoading } from '@app/settings/store/selectors/user.selector';
 
 @Component({
     selector: 'smi-settings',
@@ -23,7 +23,7 @@ export class SettingsComponent implements OnInit {
     loading$: Observable<boolean>;
     users$: Observable<User[]>;
     userSubscription: Subscription;
-    user: User[];
+    user: User;
     showButtons = true;
 
     get myUserForm(): FormGroup {
@@ -35,8 +35,8 @@ export class SettingsComponent implements OnInit {
                 public dialog: MatDialog) {}
 
     ngOnInit() {
-        this.store.dispatch(new UserActions.LoadUsers());
-        this.loading$ = this.store.pipe(select(getUsersLoading));
+        this.store.dispatch(new LoadUsers({}));
+        this.loading$ = this.store.pipe(select(getLoading));
         this.users$ = this.store.pipe(select(getUsers));
     }
 
@@ -53,7 +53,7 @@ export class SettingsComponent implements OnInit {
     }
 
     onEditUser(id: string){
-        this.userSubscription = this.store.pipe(select(getUser, {id: id})).subscribe(value => {
+        this.userSubscription = this.store.pipe(select(getUserSelected, {id: id})).subscribe(value => {
             this.user = value;
         });
 
@@ -68,7 +68,7 @@ export class SettingsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((data) => {
             if (data && data.user) {
-              this.store.dispatch(new UserActions.UpdateUser({ data: data.user }));
+              this.store.dispatch(new UpdateUser(data.user));
             }
         });
     }
@@ -84,7 +84,7 @@ export class SettingsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((data) => {
             if (data && data.user) {
-              this.store.dispatch(new UserActions.AddUser({ data: data.user }));
+              this.store.dispatch(new AddUser(data.user));
             }
         });
     }
