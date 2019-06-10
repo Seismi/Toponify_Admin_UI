@@ -1,11 +1,11 @@
-import { Node, Error } from '../models/node.model';
+import { Node, Error, NodeDetail } from '../models/node.model';
 import { NodeLink } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 
 export interface State {
   loading: boolean;
   entities: Node[];
-  selectedNode: Node;
+  selectedNode: NodeDetail;
   selectedNodeLink: NodeLink;
   links: NodeLink[];
   error: Error;
@@ -35,6 +35,29 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
         ...state,
         loading: false,
         entities: action.payload
+      };
+    }
+
+    case NodeActionTypes.LoadNodeFailure: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      };
+    }
+
+    case NodeActionTypes.LoadNode: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case NodeActionTypes.LoadNodeSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedNode: action.payload
       };
     }
 

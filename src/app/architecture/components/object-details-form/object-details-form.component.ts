@@ -13,6 +13,7 @@ export class ObjectDetailsFormComponent {
   @Input() clickedOnLink = false;
   @Input() nodeSelected = true;
   @Input() isEditable = false;
+  @Input() workPackageIsEditable = false;
 
   constructor() { }
 
@@ -39,7 +40,6 @@ export class ObjectDetailsFormComponent {
 
   onCancel(){
     this.cancel.emit();
-    this.isEditable = false;
   }
 
   onDelete(){

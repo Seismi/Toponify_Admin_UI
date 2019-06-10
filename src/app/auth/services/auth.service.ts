@@ -18,7 +18,7 @@ export class AuthService {
   ) {}
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<AuthenticateApiResponse>(`${environment.api}/user/login`,
+    return this.http.post<AuthenticateApiResponse>(`${environment.api}/users/login`,
       { data:
         { username: username, password: password
         }

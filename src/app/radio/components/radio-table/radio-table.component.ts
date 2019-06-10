@@ -14,7 +14,6 @@ export class RadioTableComponent implements OnInit {
   @Input()
   set data(data: Radio[]) {
     this.dataSource = new MatTableDataSource<Radio>(data);
-    this.dataSource.paginator = this.paginator;
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

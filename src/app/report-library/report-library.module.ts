@@ -13,6 +13,11 @@ import { ReportLibraryTableComponent } from './components/report-library-table/r
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
 import { AttrAndRulesTableComponent } from './components/attr-and-rules-table/attr-and-rules-table.component';
 import { CommonModule } from '@angular/common';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { reducer } from './store/reducers/report.reducer'
+import { ReportEffects } from './store/effects/report.effects';
+import { ReportService } from './services/report.service';
 
 
 @NgModule({
@@ -23,7 +28,9 @@ import { CommonModule } from '@angular/common';
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
-    MatSortModule
+    MatSortModule,
+    StoreModule.forFeature('reportLibraryFeature', reducer),
+    EffectsModule.forFeature([ReportEffects])
   ],
   exports: [],
   declarations: [
@@ -33,6 +40,6 @@ import { CommonModule } from '@angular/common';
     ReportLibraryDetailComponent,
     AttrAndRulesTableComponent
   ],
-  providers: [],
+  providers: [ReportService],
 })
 export class ReportLibraryModule { }

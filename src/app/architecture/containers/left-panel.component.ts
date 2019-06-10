@@ -10,29 +10,15 @@ export class LeftPanelComponent {
 
   @Input() showTable = false;
   @Input() showPalette = true;
-  @Input() allowMove: boolean;
+  @Input() workPackageIsEditable = false;
 
   constructor() { }
-
-  @Output()
-  addAttribute = new EventEmitter();
-
-  @Output()
-  addRule = new EventEmitter();
 
   @Output()
   displayOptionsChangedEvent = new EventEmitter();
 
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
-
-  onAddAttribute() {
-    this.addAttribute.emit();
-  }
-
-  onAddRule() {
-    this.addRule.emit();
-  }
 
   displayOptionsChanged({event, option}: {event: any, option: string}) {
     this.displayOptionsChangedEvent.emit({event, option});

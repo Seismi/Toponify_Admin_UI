@@ -25,7 +25,6 @@ export class WorkPackageComponent implements OnInit {
   workpackageId: string;
   workpackage: WorkPackageEntity[];
 
-
   constructor(private store: Store<WorkPackageState>,
               private workpackageDetailService: WorkpackageDetailService,
               public dialog: MatDialog) {}

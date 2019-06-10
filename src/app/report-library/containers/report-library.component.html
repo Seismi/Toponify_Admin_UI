@@ -11,6 +11,7 @@
     <div class="row">
         <div class="col">
             <smi-report-library-table
+                [reports]="(reportEntities$  | async)"
                 (reportSelected)="onSelectReport($event)">
             </smi-report-library-table>
         </div>
