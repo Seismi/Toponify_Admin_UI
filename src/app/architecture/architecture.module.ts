@@ -10,7 +10,6 @@ import { CoreModule } from '@app/core/core.module';
 import { NodeModule } from '@app/nodes/node.module';
 import { NodeService } from '@app/nodes/services/node.service';
 import { StoreModule } from '@ngrx/store';
-import { ColorPickerModule } from 'ngx-color-picker';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
@@ -69,7 +68,6 @@ import { WorkPackageColorComponent } from './containers/left-panel/components/co
     MatDialogModule,
     MatSortModule,
     MatListModule,
-    ColorPickerModule,
     MatGridListModule,
     StoreModule.forFeature('architectureFeature', reducer)
   ],
