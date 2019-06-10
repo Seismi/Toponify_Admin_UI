@@ -120,5 +120,4 @@ export type UserActionsUnion =
   | UpdateUserFailure
   | DeleteUser
   | DeleteUserSuccess
-  | DeleteUserFailure
-  ;
+  | DeleteUserFailure;

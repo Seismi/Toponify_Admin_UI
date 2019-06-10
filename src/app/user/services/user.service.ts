@@ -30,9 +30,9 @@ export class UserService {
     return this.http.put<UpdateUserApiResponse>(`/users/${id}`, {data: data}, httpOptions);
   }
 
-  // deleteUser(id: string): Observable<any> {
-  //   return this.http.delete<any>(`/users/${id}`);
-  // }
+  deleteUser(id: string): Observable<any> {
+    return this.http.delete<any>(`/users/${id}`);
+  }
 
   loginUser(data: UserLoginData): Observable<any> {
     return this.http.post<any>(`/users/login`, {data: data}, httpOptions);
