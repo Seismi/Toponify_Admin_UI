@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter, ViewChild} from '@angular/core';
-import { ArchitecturePaletteComponent } from '../components/architecture-palette/architecture-palette.component';
+import { ArchitecturePaletteComponent } from '../../components/architecture-palette/architecture-palette.component';
 
 @Component({
   selector: 'smi-left-panel',
@@ -11,11 +11,18 @@ export class LeftPanelComponent {
   @Input() showTable = false;
   @Input() showPalette = true;
   @Input() workPackageIsEditable = false;
+  @Input() data: any;
 
   constructor() { }
 
   @Output()
   displayOptionsChangedEvent = new EventEmitter();
+
+  @Output()
+  selectWorkPackage = new EventEmitter();
+
+  @Output()
+  selectColor = new EventEmitter();
 
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
@@ -24,4 +31,13 @@ export class LeftPanelComponent {
     this.displayOptionsChangedEvent.emit({event, option});
     this.paletteComponent.updateDisplayOptions(event, option);
   }
+
+  onSelectWorkPackage(id) {
+    this.selectWorkPackage.emit(id);
+  }
+
+  onSelectColor(color) {
+    this.selectColor.emit(color);
+  }
+
 }

@@ -339,5 +339,9 @@ export class ArchitectureComponent implements OnInit {
     });
   }
 
+  selectColorForWorkPackage(color) {
+    //
+  }
+
 }
 
