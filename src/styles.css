@@ -27,10 +27,6 @@ a {
   min-width: 0px !important;
 }
 
-.mat-tab-header-pagination {
-  display: none !important;
-}
-
 .mat-list-item-content {
   padding: 0px 10px!important;
 }
