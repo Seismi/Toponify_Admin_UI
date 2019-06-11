@@ -16,7 +16,7 @@
             <th mat-header-cell *matHeaderCellDef> Value </th>
             <td mat-cell *matCellDef="let element">
                 <ul *ngFor="let property of element.customPropertyValues">
-                    <li (click)="onSelectRow(property)">{{ property.value }}</li>
+                    <li><a href="{{property.value}}" target="_blank">{{ property.value }}</a></li>
                 </ul>
             </td>
         </ng-container>
