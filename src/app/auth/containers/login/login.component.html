@@ -6,24 +6,24 @@
                     <img src="../../assets/images/logo.png">
                 </div>
 
-                <h4>{{error}}</h4>
+                <h4 *ngIf="error | async">{{ error | async }}</h4>
 
                 <div class="example-container">
-                <div style="display:flex">
-                    <mat-icon>lock</mat-icon>
-                    <mat-form-field hideRequiredMarker>
-                    <input data-hook="username" matInput formControlName="username" placeholder="Username" type="text" [ngClass]="{ 'is-invalid': submitted && loginForm.controls.username.errors }">
-                    <mat-error>Username is required</mat-error>
-                    </mat-form-field>
-                </div>
+                    <div style="display:flex">
+                        <mat-icon>lock</mat-icon>
+                        <mat-form-field hideRequiredMarker>
+                            <input data-hook="username" matInput formControlName="username" placeholder="Username" type="text">
+                            <mat-error>Username is required</mat-error>
+                        </mat-form-field>
+                    </div>
 
-                <div style="display:flex">
-                    <mat-icon>remove_red_eye</mat-icon>
-                    <mat-form-field hideRequiredMarker>
-                    <input data-hook="password" matInput formControlName="password" placeholder="Password" type="password" [ngClass]="{ 'is-invalid': submitted && loginForm.controls.password.errors }">
-                    <mat-error>Password is required</mat-error>
-                    </mat-form-field>
-                </div>
+                    <div style="display:flex">
+                        <mat-icon>remove_red_eye</mat-icon>
+                        <mat-form-field hideRequiredMarker>
+                            <input data-hook="password" matInput formControlName="password" placeholder="Password" type="password">
+                            <mat-error>Password is required</mat-error>
+                        </mat-form-field>
+                    </div>
                 </div>
                 <button data-hook="loginsubmit" mat-raised-button class="login-button" [disabled]="loading">Login</button>
             </form>

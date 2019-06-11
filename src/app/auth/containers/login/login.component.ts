@@ -6,6 +6,7 @@ import { Authenticate } from '@app/auth/store/models/user.model';
 import { Store } from '@ngrx/store';
 import * as fromAuth from '../../store/reducers';
 import * as AuthActions from '../../store/actions/auth.actions';
+import { getLoginPageError } from '../../store/reducers/index'
 
 
 @Component({
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
   loading = false;
   submitted = false;
-  error: string;
+  error: any;
 
   constructor(
     private store: Store<fromAuth.State>,
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit {
       returnUrl: decodeURI(returnUrl)
     };
     this.store.dispatch(new AuthActions.Login(authenticate));
+    this.error = this.store.select(getLoginPageError);
   }
 
 }
