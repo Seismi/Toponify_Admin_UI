@@ -19,7 +19,6 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
   loading = false;
   submitted = false;
-  errorMessage = '';
   error: string;
 
   constructor(
