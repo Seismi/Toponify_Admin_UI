@@ -94,6 +94,5 @@ export class ArchitecturePaletteComponent implements OnInit {
         this.palette.model.linkDataArray = links;
       }.bind(this)
     );
-
   }
 }

@@ -1,5 +1,5 @@
 import { LoadNodes, LoadNodeLinks, LoadNode } from '@app/nodes/store/actions/node.actions';
-import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
+import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy, Output} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
@@ -27,6 +27,7 @@ import { getWorkPackageEntities, getSelectedWorkPackage } from '@app/workpackage
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
+import { LeftPanelComponent } from './left-panel.component';
 
 @Component({
   selector: 'smi-architecture',
@@ -48,8 +49,6 @@ export class ArchitectureComponent implements OnInit {
   mapView: boolean;
   viewLevel$: Observable<number>;
   mapViewId$: Observable<string>;
-  showTable: boolean;
-  showPalette: boolean;
   part: any;
   showGrid: boolean;
   showOrHideGrid: string;
@@ -65,6 +64,8 @@ export class ArchitectureComponent implements OnInit {
   workpackageDetail: any;
 
   @ViewChild(ArchitectureDiagramComponent)
+  @ViewChild(LeftPanelComponent)
+  private leftPanelComponent: LeftPanelComponent;
   private diagramComponent: ArchitectureDiagramComponent;
   public selectedWorkPackages$: Observable<WorkPackageDetail>;
 
@@ -109,12 +110,8 @@ export class ArchitectureComponent implements OnInit {
 
   setNodesLinks = (level: number) => {
     if (level !== 5) {
-      this.showTable = false;
-      this.showPalette = true;
       this.attributesView = false;
     } else {
-      this.showTable = true;
-      this.showPalette = false;
       this.attributesView = true;
     }
 

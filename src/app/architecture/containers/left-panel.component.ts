@@ -8,8 +8,6 @@ import { ArchitecturePaletteComponent } from '../components/architecture-palette
 })
 export class LeftPanelComponent {
 
-  @Input() showTable = false;
-  @Input() showPalette = true;
   @Input() workPackageIsEditable = false;
 
   constructor() { }
