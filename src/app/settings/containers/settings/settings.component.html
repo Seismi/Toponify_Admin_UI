@@ -22,6 +22,7 @@
     <!-- All Users Tab -->
     <mat-tab label="All Users">
         <smi-users-table 
+            *ngIf="(users$ | async)?.length > 0"
             [data]="users$ | async"
             (editUser)="onEditUser($event)"
             (addUser)="onAddUser($event)">
