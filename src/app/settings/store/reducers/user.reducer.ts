@@ -1,24 +1,28 @@
-import { UserActionsUnion, UserActionTypes } from '../actions/user.actions';
-import { User } from '../models/user.model';
+import { User} from '../models/user.model';
+import { UserActionTypes, UserActionsUnion } from '../actions/user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
-export interface UserState {
+export interface State {
   loading: boolean;
-  users: User[];
+  entities: User[];
+  selected: User;
   error?: HttpErrorResponse | { message: string };
 }
 
-export const initialState: UserState = {
+export const initialState: State = {
   loading: false,
-  users: [],
+  entities: null,
+  selected: null,
   error: null
 };
 
-export function reducer(state = initialState, action: UserActionsUnion): UserState {
+export function reducer(state = initialState, action: UserActionsUnion): State {
   switch (action.type) {
+
     case UserActionTypes.LoadUsers: {
       return {
-        ...initialState
+        ...initialState,
+        loading: true
       };
     }
 
@@ -26,11 +30,13 @@ export function reducer(state = initialState, action: UserActionsUnion): UserSta
       return {
         ...state,
         loading: false,
-        users: action.payload,
+        entities: action.payload.data,
       };
     }
 
-    case UserActionTypes.LoadUsersFailure: {
+    case UserActionTypes.LoadUsersFailure:
+    case UserActionTypes.LoadUserFailure:
+    case UserActionTypes.DeleteUserFailure:  {
       return {
         ...state,
         loading: false,
@@ -38,48 +44,67 @@ export function reducer(state = initialState, action: UserActionsUnion): UserSta
       };
     }
 
-    
-    case UserActionTypes.UpdateUser: {
+    case UserActionTypes.LoadUser:
+    case UserActionTypes.AddUser:
+    case UserActionTypes.UpdateUser:
+    case UserActionTypes.DeleteUser:  {
       return {
         ...state,
         loading: true
       };
     }
 
-    case UserActionTypes.UpdateUserSuccess: {
+    case UserActionTypes.LoadUserSuccess: {
       return {
         ...state,
         loading: false,
-        users: state.users.map(user =>
-          user.id === action.payload.id
-            ? { ...user, ...action.payload }
-            : user
-        )
-      };
-    }
-
-    case UserActionTypes.AddUser: {
-      return {
-        ...state,
-        loading: true
+        selected: action.payload
       };
     }
 
     case UserActionTypes.AddUserSuccess: {
+      const addedEntity = action.payload.data;
       return {
         ...state,
-        loading: false,
-        users: [...state.users, action.payload]
+        entities: [...state.entities, addedEntity],
+        loading: false
       };
     }
 
-    case UserActionTypes.AddUserFailure: {
+    case UserActionTypes.AddUserFailure:
+    case UserActionTypes.UpdateUserFailure: {
       return {
         ...state,
-        loading: false,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
     }
+
+
+    case UserActionTypes.UpdateUserSuccess: {
+      const updatedEntity = action.payload.data;
+      return {
+        ...state,
+        entities: state.entities.map(entity => {
+          if (entity.id === updatedEntity.id) {
+            return updatedEntity;
+          }
+          return entity;
+        }),
+        loading: false
+      };
+    }
+
+
+    case UserActionTypes.DeleteUserSuccess: {
+      return {
+        ...state,
+        entities: state.entities.filter(entity => entity.id !== action.payload),
+        loading: false
+      };
+    }
+
+
 
     default: {
       return state;

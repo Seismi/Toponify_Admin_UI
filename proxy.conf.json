@@ -1,6 +1,6 @@
 {
     "/api": {
-      "target": "http://3.8.213.117:4001",
+      "target": "https://test1.modularise.it:4003",
       "secure": false,
       "logLevel": "debug",
       "changeOrigin": true
