@@ -18,6 +18,10 @@ export class LeftPanelComponent {
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
 
+  update() {
+    this.paletteComponent.updatePalette();
+  }
+
   displayOptionsChanged({event, option}: {event: any, option: string}) {
     this.displayOptionsChangedEvent.emit({event, option});
     this.paletteComponent.updateDisplayOptions(event, option);

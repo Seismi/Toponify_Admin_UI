@@ -81,6 +81,10 @@ export class ArchitecturePaletteComponent implements OnInit {
     }
   }
 
+  updatePalette() {
+    this.palette.requestUpdate();
+  }
+
   ngOnInit() {
     this.palette.div = this.paletteRef.nativeElement;
 

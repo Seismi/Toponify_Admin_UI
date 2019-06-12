@@ -62,12 +62,13 @@ export class ArchitectureComponent implements OnInit {
   workPackageIsEditable = false;
   workpackageId: string;
   workpackageDetail: any;
+  public selectedWorkPackages$: Observable<WorkPackageDetail>;
 
   @ViewChild(ArchitectureDiagramComponent)
-  @ViewChild(LeftPanelComponent)
-  private leftPanelComponent: LeftPanelComponent;
   private diagramComponent: ArchitectureDiagramComponent;
-  public selectedWorkPackages$: Observable<WorkPackageDetail>;
+
+  @ViewChild(LeftPanelComponent)
+  private leftPanelComponent: LeftPanelComponent
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -257,6 +258,8 @@ export class ArchitectureComponent implements OnInit {
     (this.workPackageIsEditable === true)
       ? this.allowEditWorkPackages = 'close'
       : this.allowEditWorkPackages = 'edit';
+
+    this.leftPanelComponent.update();
   }
 
   allowEditLayout() {
