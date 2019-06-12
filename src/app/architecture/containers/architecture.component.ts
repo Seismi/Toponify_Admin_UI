@@ -259,7 +259,7 @@ export class ArchitectureComponent implements OnInit {
       ? this.allowEditWorkPackages = 'close'
       : this.allowEditWorkPackages = 'edit';
 
-    this.leftPanelComponent.update();
+    this.leftPanelComponent.onUpdatePalette();
   }
 
   allowEditLayout() {

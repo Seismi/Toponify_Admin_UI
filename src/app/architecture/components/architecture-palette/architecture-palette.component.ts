@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import * as go from 'gojs';
 import {layers} from '@app/nodes/store/models/node.model';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
@@ -81,8 +81,12 @@ export class ArchitecturePaletteComponent implements OnInit {
     }
   }
 
-  updatePalette() {
+  @Output()
+  updatePalette = new EventEmitter()
+
+  update() {
     this.palette.requestUpdate();
+    this.updatePalette.emit();
   }
 
   ngOnInit() {
