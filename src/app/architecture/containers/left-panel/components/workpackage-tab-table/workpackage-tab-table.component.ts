@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 
 @Component({
   selector: 'smi-workpackage-tab-table',
@@ -10,6 +11,10 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
 export class WorkPackageTabTableComponent {
 
   checked = false;
+
+  constructor(private diagramChangesService: DiagramChangesService) {}
+
+  selectedColors: string[] = this.diagramChangesService.colors;
   
   @Input()
   set data(data: WorkPackageEntity[]) {
@@ -31,8 +36,9 @@ export class WorkPackageTabTableComponent {
     }
   }
 
-  onSelectColor(color) {
-    this.selectColor.emit(color);
+  onSelectColor(color, id) {
+    const colors = this.selectedColors.map((name, workpackageId) => ({name: color, workpackageId: id}));
+    this.selectColor.emit(colors)
   }
 
 }

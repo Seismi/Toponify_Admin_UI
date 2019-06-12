@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import { Component, ViewEncapsulation, Output, EventEmitter, Input } from '@angular/core';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 
 @Component({
@@ -9,7 +9,8 @@ import { DiagramChangesService } from '@app/architecture/services/diagram-change
 })
 export class WorkPackageColorComponent {
 
-  selectedColor: string;
+  checked = true;
+  selectedColor: string[] = [];
 
   constructor(private diagramChangesService: DiagramChangesService) {}
 
@@ -17,7 +18,7 @@ export class WorkPackageColorComponent {
   selectColor = new EventEmitter();
 
   onSelect(color) {
-    this.selectColor.emit(color);
     this.selectedColor = color;
+    this.selectColor.emit(color);
   }
 }
