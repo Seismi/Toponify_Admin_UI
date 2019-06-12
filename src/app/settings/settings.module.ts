@@ -27,8 +27,11 @@ import { UserModalComponent } from './containers/user-modal/user-modal.component
 import { UserService } from './services/user.service';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { reducer } from './store/reducers/user.reducer';
+import { reducer as UserReducer } from './store/reducers/user.reducer';
+import { reducer as TeamReducer } from './store/reducers/team.reducer';
 import { UserEffects } from './store/effects/user.effects';
+import { TeamService } from '@app/settings/services/team.service';
+import { TeamEffects } from './store/effects/team.effects';
 
 @NgModule({
   imports: [
@@ -48,8 +51,9 @@ import { UserEffects } from './store/effects/user.effects';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
-    StoreModule.forFeature('userFeature', reducer),
-    EffectsModule.forFeature([UserEffects])
+    StoreModule.forFeature('userFeature', UserReducer),
+    StoreModule.forFeature('teamFeature', TeamReducer),
+    EffectsModule.forFeature([UserEffects, TeamEffects])
   ],
   exports: [],
   declarations: [
@@ -63,6 +67,9 @@ import { UserEffects } from './store/effects/user.effects';
     UserModalComponent
   ],
   entryComponents: [ChangePasswordModalComponent, UserModalComponent],
-  providers: [UserService]
+  providers: [
+    UserService,
+    TeamService
+  ]
 })
 export class SettingsModule { }

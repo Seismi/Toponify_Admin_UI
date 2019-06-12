@@ -48,13 +48,6 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
       };
     }
 
-    case TeamActionTypes.LoadTeam: {
-      return {
-        ...initialState,
-        loading: true
-      };
-    }
-
     case TeamActionTypes.LoadTeamSuccess: {
       return {
         ...state,
@@ -63,15 +56,10 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
       };
     }
 
-    case TeamActionTypes.LoadTeamFailure: {
-      return {
-        ...state,
-        loading: false,
-        error: action.payload
-      };
-    }
-
-    case TeamActionTypes.AddTeam: {
+    case TeamActionTypes.AddTeam:
+    case TeamActionTypes.LoadTeam:
+    case TeamActionTypes.UpdateTeam:
+    case TeamActionTypes.DeleteTeam: {
       return {
         ...state,
         loading: true
@@ -84,21 +72,6 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
         ...state,
         entities: [...state.entities, addedEntity],
         loading: false
-      };
-    }
-
-    case TeamActionTypes.AddTeamFailure: {
-      return {
-        ...state,
-        error: action.payload,
-        loading: false
-      };
-    }
-
-    case TeamActionTypes.UpdateTeam: {
-      return {
-        ...state,
-        loading: true
       };
     }
 
@@ -116,7 +89,10 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
       };
     }
 
-    case TeamActionTypes.UpdateTeamFailure: {
+    case TeamActionTypes.UpdateTeamFailure:
+    case TeamActionTypes.DeleteTeamFailure:
+    case TeamActionTypes.AddTeamFailure:
+    case TeamActionTypes.LoadTeamFailure: {
       return {
         ...state,
         error: action.payload,
@@ -124,25 +100,11 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
       };
     }
 
-    case TeamActionTypes.DeleteTeam: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
 
     case TeamActionTypes.DeleteTeamSuccess: {
       return {
         ...state,
         entities: state.entities.filter(entity => entity.id !== action.payload),
-        loading: false
-      };
-    }
-
-    case TeamActionTypes.DeleteTeamFailure: {
-      return {
-        ...state,
-        error: action.payload,
         loading: false
       };
     }
