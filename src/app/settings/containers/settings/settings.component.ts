@@ -11,6 +11,7 @@ import { State as UserState} from '../../store/reducers/user.reducer'
 import { User,  } from '@app/settings/store/models/user.model';
 import { LoadUsers, UpdateUser, AddUser } from '@app/settings/store/actions/user.actions';
 import { getUsers, getUserSelected, getLoading } from '@app/settings/store/selectors/user.selector';
+import { LoadTeams } from '@app/settings/store/actions/team.actions';
 
 @Component({
     selector: 'smi-settings',
@@ -36,6 +37,7 @@ export class SettingsComponent implements OnInit {
 
     ngOnInit() {
         this.store.dispatch(new LoadUsers({}));
+        this.store.dispatch(new LoadTeams({}));
         this.loading$ = this.store.pipe(select(getLoading));
         this.users$ = this.store.pipe(select(getUsers));
     }
