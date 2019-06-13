@@ -9,6 +9,7 @@
 
 <!-- WorkPackage Dropdown -->
 <smi-workpackage-dropdown 
+    data-hook="quicklinks-workpackage-dropdown" 
     *ngIf="gojsView" 
     [data]="data"
     (selectWorkpackage)="onSelectWorkPackage($event)">
@@ -24,7 +25,7 @@
 <!--Scopes and Layouts Icon -->
 <a><mat-icon routerLink="/scopes-and-layouts" matTooltip="Scopes and Layouts">pages</mat-icon></a>
 <!-- Scopes dropdown -->
-<div class="dropdown" *ngIf="gojsView">
+<div class="dropdown" *ngIf="gojsView" data-hook="quicklinks-scopes-dropdown" >
     <button class="dropdown-toggle btn btn-sm right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Scopes
     </button>
@@ -36,7 +37,7 @@
 </div>
 
 <!-- Layouts dropdown -->
-<div class="dropdown" *ngIf="gojsView">
+<div class="dropdown" *ngIf="gojsView" data-hook="quicklinks-layouts-dropdown" >
     <button class="dropdown-toggle btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Layouts
     </button>
