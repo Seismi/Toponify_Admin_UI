@@ -14,7 +14,7 @@ export class WorkPackageTabTableComponent {
 
   constructor(private diagramChangesService: DiagramChangesService) {}
 
-  selectedColors: string[] = this.diagramChangesService.colors;
+  colors: string[] = this.diagramChangesService.colors;
   
   @Input()
   set data(data: WorkPackageEntity[]) {
@@ -37,8 +37,7 @@ export class WorkPackageTabTableComponent {
   }
 
   onSelectColor(color, id) {
-    const colors = this.selectedColors.map((name, workpackageId) => ({name: color, workpackageId: id}));
-    this.selectColor.emit(colors)
+    this.selectColor.emit(color);
   }
 
 }
