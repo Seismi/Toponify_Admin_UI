@@ -339,7 +339,7 @@ export class ArchitectureComponent implements OnInit {
 
 
   selectColorForWorkPackage(color) {
-    console.log(color[0])
+    console.log(color)
   }
 
 }
