@@ -22,9 +22,9 @@
         <ng-container matColumnDef="c">
             <th mat-header-cell *matHeaderCellDef> C </th>
             <td mat-cell *matCellDef="let element">
-                <smi-workpackage-color
+                <smi-color-picker
                     (selectColor)="onSelectColor($event, element.id)">
-                </smi-workpackage-color>
+                </smi-color-picker>
             </td>
         </ng-container>
 

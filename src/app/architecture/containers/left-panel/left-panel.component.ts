@@ -22,7 +22,7 @@ export class LeftPanelComponent {
   selectWorkPackage = new EventEmitter();
 
   @Output()
-  selectColor = new EventEmitter<{color: string[], id: string}>();
+  selectColor = new EventEmitter();
 
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
@@ -36,8 +36,8 @@ export class LeftPanelComponent {
     this.selectWorkPackage.emit(id);
   }
 
-  onSelectColor(colors) {
-    this.selectColor.emit(colors);
+  onSelectColor(color) {
+    this.selectColor.emit(color);
   }
 
 }

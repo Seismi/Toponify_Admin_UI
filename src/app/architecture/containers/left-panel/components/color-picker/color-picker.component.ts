@@ -1,16 +1,15 @@
-import { Component, ViewEncapsulation, Output, EventEmitter, Input } from '@angular/core';
+import { Component, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 
 @Component({
-  selector: 'smi-workpackage-color',
-  templateUrl: './workpackage-color.component.html',
-  styleUrls: ['./workpackage-color.component.scss'],
+  selector: 'smi-color-picker',
+  templateUrl: './color-picker.component.html',
+  styleUrls: ['./color-picker.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class WorkPackageColorComponent {
 
-  checked = true;
-  selectedColor: string[] = [];
+  selectedColor: string;
 
   constructor(private diagramChangesService: DiagramChangesService) {}
 

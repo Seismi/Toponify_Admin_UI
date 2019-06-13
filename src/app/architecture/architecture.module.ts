@@ -38,7 +38,7 @@ import { RadioTabComponent } from './containers/right-panel/components/radio-tab
 import { PropertiesTabComponent } from './containers/right-panel/components/properties-tab/properties-tab.component';
 import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
 import { WorkPackageTabTableComponent } from './containers/left-panel/components/workpackage-tab-table/workpackage-tab-table.component';
-import { WorkPackageColorComponent } from './containers/left-panel/components/color-picker/workpackage-color.component';
+import { WorkPackageColorComponent } from './containers/left-panel/components/color-picker/color-picker.component';
 
 
 @NgModule({
