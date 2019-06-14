@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>New Team</h1>
+<div mat-dialog-content>
+    <smi-team-detail 
+        [group]="teamDetailForm" 
+        [teamModal]="teamModal"
+        [isEditable]="isEditable"></smi-team-detail>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onSave()">Save</button>
+    <button mat-button (click)="onCancel()">Cancel</button>
+</div>
