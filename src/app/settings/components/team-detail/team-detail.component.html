@@ -1,0 +1,24 @@
+<form [formGroup]="group">
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" formControlName="name" [ngClass]="{disabled: !isEditable}"
+        [ngClass]="{ 'is-invalid': (!group.controls['name'].valid && group.controls['name'].touched) }">
+        <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
+            This field is required
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" rows="5" formControlName="description" [ngClass]="{disabled: !isEditable}"></textarea>
+    </div>
+    <div *ngIf="!teamModal">
+        <div class="actions" *ngIf="!isEditable">
+            <button mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+            <button mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+        </div>
+        <div class="actions" *ngIf="isEditable">
+            <button mat-raised-button color="primary" (click)="onSave()" [disabled]="group.invalid">Save</button>
+            <button mat-raised-button (click)="onCancel()">Cancle</button>
+        </div>
+    </div>
+</form>
