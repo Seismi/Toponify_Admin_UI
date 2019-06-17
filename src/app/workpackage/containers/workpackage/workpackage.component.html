@@ -11,13 +11,15 @@
     <div class="row">
         <div class="col">
             <smi-workpackages-table
+                [selectedRowIndex]="workpackageId"
                 [data]="workpackageEntities$ | async"
                 (workpackageSelected)="onSelectWorkpackage($event)"
                 (addWorkpackage)="onAddWorkpackage($event)">
             </smi-workpackages-table>
         </div>
-        <div class="col" *ngIf="workpackageSelected">
-            <smi-workpackage-detail
+
+        <router-outlet></router-outlet>
+            <!-- <smi-workpackage-detail
                 [group]="workpackageDetailsForm"
                 (editWorkpackage)="onEditWorkpackage($event)"
                 (deleteWorkpackage)="onDeleteWorkpackage($event)"
@@ -27,7 +29,6 @@
             <smi-objectives-table></smi-objectives-table>
 
             <smi-radio-table></smi-radio-table>
-            <smi-change-table></smi-change-table>
-        </div>
+            <smi-change-table></smi-change-table> -->
     </div>
 </div>

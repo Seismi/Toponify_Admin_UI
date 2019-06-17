@@ -1,5 +1,5 @@
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { LoadWorkPackage, LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { MatDialog } from '@angular/material';
@@ -9,6 +9,7 @@ import { State as WorkPackageState } from '../../../workpackage/store/reducers/w
 import { WorkpackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { WorkpackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
+import { Router, ActivatedRoute, ActivationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-workpackage',
@@ -16,8 +17,9 @@ import { WorkpackageValidatorService } from '@app/workpackage/components/workpac
   styleUrls: ['./workpackage.component.scss'],
   providers: [WorkpackageDetailService, WorkpackageValidatorService]
 })
-export class WorkPackageComponent implements OnInit {
+export class WorkPackageComponent implements OnInit, OnDestroy {
 
+  subscriptions: Subscription[] = [];
   workpackageEntities$: Observable<WorkPackageEntity[]>;
   selectedWorkPackage$: Subscription;
   selectedWorkPackage: WorkPackageEntity;
@@ -27,12 +29,22 @@ export class WorkPackageComponent implements OnInit {
 
   constructor(private store: Store<WorkPackageState>,
               private workpackageDetailService: WorkpackageDetailService,
+              private router: Router,
               public dialog: MatDialog) {}
 
 
   ngOnInit() {
     this.store.dispatch(new LoadWorkPackages({}));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getWorkPackageEntities));
+    this.subscriptions.push(this.store.pipe(select(fromWorkPackagesEntities.getSelectedWorkPackage))
+      .subscribe(workpackage => {
+        // TODO: enable when fixed api. Currently it returns list instead of details
+        // this.workpackageId = workpackage.id;
+      }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 
@@ -41,18 +53,18 @@ export class WorkPackageComponent implements OnInit {
   }
 
 
-  onSelectWorkpackage(row) {
-    this.workpackageSelected = true;
-    this.workpackageId = row.id;
+  onSelectWorkpackage(row: any) {
 
-    this.workpackageDetailService.workpackageDetailsForm.patchValue({
-      name: row.name,
-      description: row.description,
-      owners: row.owners,
-      approvers: row.approvers
-    })
+    this.router.navigate(['work-packages', row.id]);
 
-    this.store.dispatch(new LoadWorkPackage('c288392e-6cf5-11e9-a923-1681be663d3e'));
+    // this.workpackageDetailService.workpackageDetailsForm.patchValue({
+    //   name: row.name,
+    //   description: row.description,
+    //   owners: row.owners,
+    //   approvers: row.approvers
+    // })
+
+    // this.store.dispatch(new LoadWorkPackage('c288392e-6cf5-11e9-a923-1681be663d3e'));
     // this.selectedWorkPackage$ = this.store.pipe(select(fromWorkPackagesEntities.getWorkPackageById(this.workpackageId))).subscribe((data) => {
     //   this.selectedWorkPackage = {...data[0]}
     // })
