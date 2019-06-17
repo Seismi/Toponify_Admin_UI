@@ -1,9 +1,15 @@
-div {
-    min-width: 250px;
+table {
+    width: 700px;
+    border: solid 1px #ddd;
 }
 
-.mat-list-item {
+.mat-row {
     cursor: pointer;
-    border: solid 1px #eee;
-    margin-top: 1px;
+    &:hover {
+        background-color: #efefef;
+    }
+}
+
+.highlight {
+    background-color: #efefef;
 }
