@@ -38,7 +38,7 @@ import { TeamsTableComponent } from './components/teams-table/teams-table.compon
 import { TeamDetailComponent } from './components/team-detail/team-detail.component';
 import { MembersTableComponent } from './components/members-table/members-table.component';
 import { TeamModalComponent } from './containers/team-modal/team-modal.component';
-import { DeleteTeamModalComponent } from './containers/delete-team-modal/delete-team-modal.component';
+import { DeleteTeamAndMemberModalComponent } from './containers/delete-modal/delete-modal.component';
 import { MemberModalComponent } from './containers/member-modal/member-modal.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
 
@@ -80,7 +80,7 @@ import { UsersListComponent } from './components/users-list/users-list.component
     TeamDetailComponent,
     MembersTableComponent,
     TeamModalComponent,
-    DeleteTeamModalComponent,
+    DeleteTeamAndMemberModalComponent,
     MemberModalComponent,
     UsersListComponent
   ],
@@ -88,7 +88,7 @@ import { UsersListComponent } from './components/users-list/users-list.component
     ChangePasswordModalComponent, 
     UserModalComponent, 
     TeamModalComponent, 
-    DeleteTeamModalComponent,
+    DeleteTeamAndMemberModalComponent,
     MemberModalComponent
   ],
   providers: [
