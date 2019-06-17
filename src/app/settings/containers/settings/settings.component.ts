@@ -18,7 +18,7 @@ import { getTeamEntities, getTeamSelected } from '@app/settings/store/selectors/
 import { TeamDetailService } from '@app/settings/components/team-detail/services/team-detail.service';
 import { TeamValidatorService } from '@app/settings/components/team-detail/services/team-detail-validator.service';
 import { TeamModalComponent } from '../team-modal/team-modal.component';
-import { DeleteTeamModalComponent } from '../delete-team-modal/delete-team-modal.component';
+import { DeleteTeamAndMemberModalComponent } from '../delete-modal/delete-modal.component';
 import { MemberModalComponent } from '../member-modal/member-modal.component';
 
 @Component({
@@ -145,7 +145,9 @@ export class SettingsComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe((data) => {
-            this.teamStore.dispatch(new AddTeam(data.team))
+            if(data) {
+                this.teamStore.dispatch(new AddTeam(data.team))
+            }
         });
     }
 
@@ -156,7 +158,7 @@ export class SettingsComponent implements OnInit {
 
 
     onDeleteTeam() {
-        const dialogRef = this.dialog.open(DeleteTeamModalComponent, {
+        const dialogRef = this.dialog.open(DeleteTeamAndMemberModalComponent, {
             disableClose: false,
             width: 'auto',
             data: {
@@ -172,7 +174,15 @@ export class SettingsComponent implements OnInit {
     }
 
 
-    onDeleteMember(id) {}
+    onDeleteMember(data) {
+        const dialogRef = this.dialog.open(DeleteTeamAndMemberModalComponent, {
+            disableClose: false,
+            width: 'auto',
+            data: {
+                mode: 'delete'
+            }
+        });
+    }
 
 
     onSaveTeam() {
