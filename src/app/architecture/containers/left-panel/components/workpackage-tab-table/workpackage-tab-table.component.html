@@ -21,8 +21,9 @@
         <!-- C Column -->
         <ng-container matColumnDef="c">
             <th mat-header-cell *matHeaderCellDef> C </th>
-            <td mat-cell *matCellDef="let element">
+            <td mat-cell *matCellDef="let element; let i = index">
                 <smi-color-picker
+                    [workpackageColor]="this.diagramChangesService.colors[i]"
                     (selectColor)="onSelectColor($event, element.id)">
                 </smi-color-picker>
             </td>

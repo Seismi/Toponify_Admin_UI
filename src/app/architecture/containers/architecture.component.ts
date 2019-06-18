@@ -337,9 +337,8 @@ export class ArchitectureComponent implements OnInit {
     this.workpackageStore.pipe(select(getSelectedWorkPackage));
   }
 
-
-  selectColorForWorkPackage(color) {
-    console.log(color)
+  selectColorForWorkPackage(color, id) {
+    console.log(color, id)
   }
 
 }

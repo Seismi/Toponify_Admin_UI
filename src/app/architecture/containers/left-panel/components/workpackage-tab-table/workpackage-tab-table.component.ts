@@ -13,8 +13,6 @@ export class WorkPackageTabTableComponent {
   checked = false;
 
   constructor(private diagramChangesService: DiagramChangesService) {}
-
-  colors: string[] = this.diagramChangesService.colors;
   
   @Input()
   set data(data: WorkPackageEntity[]) {
@@ -28,7 +26,7 @@ export class WorkPackageTabTableComponent {
   selectWorkPackage = new EventEmitter();
 
   @Output()
-  selectColor = new EventEmitter();
+  selectColor = new EventEmitter<object>();
 
   onSelect(id, event) {
     if(event.checked) {
@@ -37,7 +35,7 @@ export class WorkPackageTabTableComponent {
   }
 
   onSelectColor(color, id) {
-    this.selectColor.emit(color);
+    this.selectColor.emit({color, id});
   }
 
 }
