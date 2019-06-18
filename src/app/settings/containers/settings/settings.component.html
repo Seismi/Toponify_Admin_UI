@@ -42,7 +42,6 @@
                     </smi-team-detail>
                     <smi-members-table
                         [data]="teamDetails$ | async"
-                        (selectMember)="onSelectMember($event)"
                         (deleteMember)="onDeleteMember($event)"
                         (addMember)="onAddMember($event)">
                     </smi-members-table>

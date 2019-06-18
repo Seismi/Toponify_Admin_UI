@@ -174,7 +174,7 @@ export class SettingsComponent implements OnInit {
     }
 
 
-    onDeleteMember(data) {
+    onDeleteMember(memberId) {
         const dialogRef = this.dialog.open(DeleteTeamAndMemberModalComponent, {
             disableClose: false,
             width: 'auto',
