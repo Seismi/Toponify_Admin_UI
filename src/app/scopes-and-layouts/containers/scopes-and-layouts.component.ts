@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'smi-scopes-and-layouts-component',
@@ -7,22 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class ScopesAndLayoutsComponent implements OnInit {
-  
+
   scopeSelected: boolean;
   layoutSelected: boolean;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() { }
 
-  onScopeSelect(row) {
-    if(this.scopeSelected = true) {
-      this.layoutSelected = false;
-    }
+  onScopeSelect(row: any) {
+    this.router.navigate(['scopes-and-layouts', row.id]);
   }
 
-  onLayoutSelect(row) {
-    this.layoutSelected = true;
-  }
-
+  onSearchVersion(evt: any) {}
 }

@@ -15,26 +15,6 @@
                 (scopeSelected)="onScopeSelect($event)">
             </smi-scopes-table>
         </div>
-        <div class="col" *ngIf="scopeSelected">
-            <div class="row">
-                <div class="col scope-details">
-                    <!-- Scopes Detail Form -->
-                    <smi-scopes-detail ></smi-scopes-detail>
-                </div>
-
-                <div class="w-100"></div>
-                
-                <div class="col">
-                    <!-- Layouts Table -->
-                    <smi-layouts-table
-                        (layoutSelected)="onLayoutSelect($event)">
-                    </smi-layouts-table>
-                </div>
-                <div class="col" *ngIf="layoutSelected">
-                    <!-- Layouts Detail Form -->
-                    <smi-layouts-detail></smi-layouts-detail>
-                </div>
-            </div>
-        </div>
+        <router-outlet></router-outlet>
     </div>
 </div>
