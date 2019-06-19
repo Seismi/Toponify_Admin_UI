@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Attribute } from '../store/models/attributes.model';
+import { Subscription, Observable } from 'rxjs';
+import { AttributeEntity } from '../store/models/attributes.model';
 import { State as AttributeState } from '../store/reducers/attributes.reducer';
 import { Store, select } from '@ngrx/store';
-import * as AttributeActions from '../store/actions/attributes.actions';
-import { getAttributes } from '../store/selectors/attributes.selector';
 import { ObjectDetailsValidatorService } from '@app/architecture/components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '@app/architecture/components/object-details-form/services/object-details-form.service';
 import { FormGroup } from '@angular/forms';
+import { LoadAttributes } from '../store/actions/attributes.actions';
+import * as fromAttributeEntities from '../store/selectors/attributes.selector';
 
 @Component({
     selector: 'smi-attributes',
@@ -18,7 +18,7 @@ import { FormGroup } from '@angular/forms';
 export class AttributesComponent implements OnInit {
 
     attributes: Subscription;
-    attribute: Attribute[];
+    attribute: AttributeEntity[];
     isEditable = false;
     objectSelected = true;
     workPackageIsEditable = false;
@@ -26,8 +26,8 @@ export class AttributesComponent implements OnInit {
     constructor(private store: Store<AttributeState>, private objectDetailsService: ObjectDetailsService) { }
 
     ngOnInit() { 
-        this.store.dispatch(new AttributeActions.LoadAttributes());
-        this.attributes = this.store.pipe(select(getAttributes)).subscribe((data) => {
+        this.store.dispatch(new LoadAttributes({}));
+        this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe((data) => {
             this.attribute = data;
         });
     }

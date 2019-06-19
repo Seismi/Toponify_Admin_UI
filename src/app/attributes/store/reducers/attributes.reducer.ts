@@ -1,16 +1,22 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { AttributeActionsUnion, AttributeActionTypes } from '../actions/attributes.actions';
-import { Attribute } from '../models/attributes.model';
+import { AttributeEntity, Page, Links, AttributeDetail } from '../models/attributes.model';
 
 export interface State {
-  attributes: Attribute[];
+  entities: AttributeEntity[];
+  page: Page;
+  links: Links;
   loading: boolean;
+  selectedAttribute: AttributeDetail;
   error?: HttpErrorResponse | { message: string };
 }
 
 export const initialState: State = {
-  attributes: null,
+  entities: [],
+  page: null,
+  links: null,
   loading: false,
+  selectedAttribute: null,
   error: null
 };
 
@@ -19,7 +25,7 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
 
     case AttributeActionTypes.LoadAttributes: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }
@@ -27,9 +33,10 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
     case AttributeActionTypes.LoadAttributesSuccess: {
       return {
         ...state,
-        loading: false,
-        error: null,
-        attributes: action.payload
+        entities: action.payload.data,
+        links: action.payload.links,
+        page: action.payload.page,
+        loading: false
       };
     }
 
@@ -41,73 +48,23 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
       };
     }
 
-    case AttributeActionTypes.UpdateAttribute: {
+
+    case AttributeActionTypes.LoadAttribute: {
       return {
         ...state,
         loading: true
       };
     }
 
-    case AttributeActionTypes.UpdateAttributeSuccess: {
+    case AttributeActionTypes.LoadAttributeSuccess: {
       return {
         ...state,
-        loading: false,
-        attributes: state.attributes.map(attribute =>
-          attribute.id === action.payload.id
-            ? { ...attribute, ...action.payload }
-            : attribute
-        )
+        selectedAttribute: action.payload,
+        loading: false
       };
     }
 
-    case AttributeActionTypes.UpdateAttributeFailure: {
-      return {
-        ...state,
-        loading: false,
-        error: action.payload
-      };
-    }
-
-
-   case AttributeActionTypes.DeleteAttribute: {
-        return {
-        ...state,
-        loading: true
-        }
-    };
-      
-    case AttributeActionTypes.DeleteAttributeSuccess: {
-      return {
-        ...state,
-        loading: false,
-        attributes: state.attributes.filter((attribute) => attribute.id !== action.payload)
-      };
-    }
-
-    case AttributeActionTypes.DeleteAttributeFailure: {
-      return {
-        ...state,
-        loading: false,
-        error: action.payload
-      };
-    }
-     
-    case AttributeActionTypes.AddAttribute: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case AttributeActionTypes.AddAttributeSuccess: {
-      return {
-        ...state,
-        loading: false,
-        attributes: [...state.attributes, action.payload]
-      };
-    }
-
-    case AttributeActionTypes.AddAttributeFailure: {
+    case AttributeActionTypes.LoadAttributeFailure: {
       return {
         ...state,
         loading: false,
