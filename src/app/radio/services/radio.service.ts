@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RadioApiResponse, AddRadioApiRequest, AddRadioApiResponse, AddReplyRadioApiResponse, AddReplyRadioApiRequest, ArchiveRadioApiRequest, ArchiveRadioApiResponse } from '../store/models/radio.model';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioApiRequest, ReplyApiRequest } from '../store/models/radio.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -12,24 +12,26 @@ export class RadioService {
 
   constructor(private http: HttpClient) { }
 
-  getRadio(): Observable<RadioApiResponse> {
-    return this.http.get<RadioApiResponse>(`/radio`);
+  getRadioEntities(queryParams: RadioEntitiesHttpParams): Observable<RadioEntitiesResponse> {
+    const params = this.toHttpParams(queryParams);
+    return this.http.get<any>(`/radios`, {params: params});
   }
 
-  getReplyRadio(): Observable<any> {
-    return this.http.get<any>(`/radio`);
+  getRadio(id: string): Observable<any> {
+    return this.http.get<any>(`/radios/${id}`);
   }
 
-  addRadio(request: any): Observable<any> {
-    return this.http.post<any>(`/radio`, request, httpOptions);
+  addRadioEntity(entity: RadioApiRequest): Observable<any> {
+    return this.http.post<any>(`/radios`, entity, httpOptions);
   }
 
-  addReplyRadio(request: any): Observable<any> {
-    return this.http.post<any>(`/radio`, request, httpOptions);
+  addRadioReply(entity: ReplyApiRequest, id: string): Observable<any> {
+    return this.http.post<any>(`/radios/${id}/reply`, entity, httpOptions);
   }
 
-  archiveRadio(request: any): Observable<any> {
-    return this.http.post<any>(`/radio`, request, httpOptions);
+  // TODO: move into sharable service
+  toHttpParams(obj: Object): HttpParams {
+    return Object.getOwnPropertyNames(obj)
+      .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
   }
-
 }

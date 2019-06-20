@@ -1,25 +1,59 @@
 import { RadioActionsUnion, RadioActionTypes } from '../actions/radio.actions';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Radio } from '../models/radio.model';
+import { RadioEntity, Page, Links, RadioDetail, Reply } from '../models/radio.model';
 
-export interface RadioState {
-  radio: Radio[];
+export interface State {
+  entities: RadioEntity[];
+  page: Page;
+  links: Links;
   loading: boolean;
+  selectedRadio: RadioDetail;
+  reply: Reply[];
   error?: HttpErrorResponse | { message: string };
 }
 
-export const initialState: RadioState = {
-  radio: [],
+export const initialState: State = {
+  entities: [],
+  page: null,
+  links: null,
   loading: false,
-  error: null,
+  selectedRadio: null,
+  reply: [],
+  error: null
 };
 
-export function reducer(state = initialState, action: RadioActionsUnion): RadioState {
+export function reducer(state = initialState, action: RadioActionsUnion): State {
   switch (action.type) {
+
+    case RadioActionTypes.LoadRadios: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case RadioActionTypes.LoadRadiosSuccess: {
+      return {
+        ...state,
+        entities: action.payload.data,
+        links: action.payload.links,
+        page: action.payload.page,
+        loading: false,
+      };
+    }
+
+    case RadioActionTypes.LoadRadiosFailure: {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      };
+    }
+
 
     case RadioActionTypes.LoadRadio: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }
@@ -28,44 +62,22 @@ export function reducer(state = initialState, action: RadioActionsUnion): RadioS
       return {
         ...state,
         loading: false,
-        radio: action.payload
-      };
-    }
-
-    case RadioActionTypes.LoadRadioFail: {
-      return {
-        ...state,
-        loading: false,
-        error: action.payload
-      };
-    }
-
-    case RadioActionTypes.LoadReplyRadio: {
-      return {
-        ...state,
-        loading: true,
-      };
-    }
-
-     case RadioActionTypes.LoadReplyRadioSuccess: {
-      return {
-        ...state,
-        loading: false,
-        radio: state.radio.map(radio =>
-          radio.id === action.payload.id
-            ? { ...radio, ...action.payload }
-            : radio
+        entities: state.entities.map(entity =>
+          entity.id === action.payload.id
+            ? { ...entity, ...action.payload }
+            : entity
         )
       };
     }
 
-    case RadioActionTypes.LoadReplyRadioFail: {
+    case RadioActionTypes.LoadRadioFailure: {
       return {
         ...state,
         loading: false,
         error: action.payload
       };
     }
+
 
     case RadioActionTypes.AddRadio: {
       return {
@@ -75,68 +87,47 @@ export function reducer(state = initialState, action: RadioActionsUnion): RadioS
     }
 
     case RadioActionTypes.AddRadioSuccess: {
+      const addedEntity = action.payload;
       return {
         ...state,
-        loading: false,
-        radio: [...state.radio, action.payload]
+        entities: [...state.entities, addedEntity],
+        loading: false
       };
     }
 
-    case RadioActionTypes.AddRadioFail: {
+    case RadioActionTypes.AddRadioFailure: {
       return {
         ...state,
-        loading: false,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
     }
 
-    case RadioActionTypes.ReplyRadio: {
+
+    case RadioActionTypes.AddReply: {
       return {
         ...state,
         loading: true
       };
     }
 
-    case RadioActionTypes.ReplyRadioSuccess: {
+    case RadioActionTypes.AddReplySuccess: {
       return {
         ...state,
         loading: false,
-        radio: state.radio.map(radio =>
-          radio.id === action.payload.id
-            ? { ...radio, ...action.payload }
-            : radio
+        entities: state.entities.map(entity =>
+          entity.id === action.payload.id
+            ? { ...entity, ...action.payload }
+            : entity
         )
       };
     }
 
-    case RadioActionTypes.ReplyRadioFail: {
+    case RadioActionTypes.AddReplyFailure: {
       return {
         ...state,
-        loading: false,
-        error: action.payload
-      };
-    }
-
-    case RadioActionTypes.ArchiveRadio: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case RadioActionTypes.ArchiveRadioSuccess: {
-      return {
-        ...state,
-        loading: false,
-        radio: [...state.radio, action.payload]
-      };
-    }
-
-    case RadioActionTypes.ArchiveRadioFail: {
-      return {
-        ...state,
-        loading: false,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
     }
 

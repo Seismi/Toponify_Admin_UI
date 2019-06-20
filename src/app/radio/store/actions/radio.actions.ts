@@ -1,115 +1,100 @@
 import { Action } from '@ngrx/store';
-import { Radio, AddRadioApiRequest, AddReplyRadioApiRequest, ArchiveRadioApiRequest, Replies } from '../models/radio.model';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest, Reply } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export enum RadioActionTypes {
+  LoadRadios = '[Radio] Load Radio entities',
+  LoadRadiosSuccess = '[Radio] Load Radio entities Success',
+  LoadRadiosFailure = '[Radio] Load Radio entities Fail',
+
   LoadRadio = '[Radio] Load Radio',
   LoadRadioSuccess = '[Radio] Load Radio Success',
-  LoadRadioFail = '[Radio] Load Radio Fail',
-  LoadReplyRadio = '[Radio] Load Reply Radio',
-  LoadReplyRadioSuccess = '[Radio] Load Reply Radio Success',
-  LoadReplyRadioFail = '[Radio] Load Reply Radio Fail',
-  AddRadio = '[Radio] Add Radio',
-  AddRadioSuccess = '[Radio] Add Radio Success',
-  AddRadioFail = '[Radio] Add Radio Fail',
-  ReplyRadio = '[Radio] Reply Radio',
-  ReplyRadioSuccess = '[Radio] Reply Radio Success',
-  ReplyRadioFail = '[Radio] Reply Radio Fail',
-  ArchiveRadio = '[Radio] Archive Radio',
-  ArchiveRadioSuccess = '[Radio] Archive Radio Success',
-  ArchiveRadioFail = '[Radio] Archive Radio Fail'
+  LoadRadioFailure = '[Radio] Load Radio Fail',
+
+  AddRadio = '[Radio] Add Radio entity',
+  AddRadioSuccess = '[Radio] Add Radio entity Success',
+  AddRadioFailure = '[Radio] Add Radio entity Failure',
+
+  AddReply = '[Radio] Add Reply',
+  AddReplySuccess = '[Radio] Add Reply Success',
+  AddReplyFailure = '[Radio] Add Reply Failure'
 }
+
+export class LoadRadios implements Action {
+  readonly type = RadioActionTypes.LoadRadios;
+  constructor(public payload: RadioEntitiesHttpParams) {}
+}
+
+export class LoadRadiosSuccess implements Action {
+  readonly type = RadioActionTypes.LoadRadiosSuccess;
+  constructor(public payload: RadioEntitiesResponse) {}
+}
+
+export class LoadRadiosFailure implements Action {
+  readonly type = RadioActionTypes.LoadRadiosFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 
 export class LoadRadio implements Action {
   readonly type = RadioActionTypes.LoadRadio;
-  constructor() {}
+  constructor(public payload: string) {}
 }
 
 export class LoadRadioSuccess implements Action {
   readonly type = RadioActionTypes.LoadRadioSuccess;
-  constructor(public payload: Radio[]) {}
+  constructor(public payload: RadioDetail) {}
 }
 
-export class LoadRadioFail implements Action {
-  readonly type = RadioActionTypes.LoadRadioFail;
+export class LoadRadioFailure implements Action {
+  readonly type = RadioActionTypes.LoadRadioFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-export class LoadReplyRadio implements Action {
-  readonly type = RadioActionTypes.LoadReplyRadio;
-  constructor(public payload: any) {}
-}
 
-export class LoadReplyRadioSuccess implements Action {
-  readonly type = RadioActionTypes.LoadReplyRadioSuccess;
-  constructor(public payload: any) {}
-}
-
-export class LoadReplyRadioFail implements Action {
-  readonly type = RadioActionTypes.LoadReplyRadioFail;
-  constructor(public payload: HttpErrorResponse | { message: string }) {}
-}
-
-export class AddRadio implements Action {
+export class AddRadioEntity implements Action {
   readonly type = RadioActionTypes.AddRadio;
-  constructor(public payload: any) {}
+  constructor(public payload: RadioApiRequest) {}
 }
 
-export class AddRadioSuccess implements Action {
+export class AddRadioEntitySuccess implements Action {
   readonly type = RadioActionTypes.AddRadioSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: RadioEntity) {}
 }
 
-export class AddRadioFail implements Action {
-  readonly type = RadioActionTypes.AddRadioFail;
+export class AddRadioEntityFailure implements Action {
+  readonly type = RadioActionTypes.AddRadioFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-export class ReplyRadio implements Action {
-  readonly type = RadioActionTypes.ReplyRadio;
-  constructor(public payload: any) {}
+
+export class AddReply implements Action {
+  readonly type = RadioActionTypes.AddReply;
+  constructor(public payload: {entity: ReplyApiRequest, id: string}) {}
 }
 
-export class ReplyRadioSuccess implements Action {
-  readonly type = RadioActionTypes.ReplyRadioSuccess;
-  constructor(public payload: any) {}
+export class AddReplySuccess implements Action {
+  readonly type = RadioActionTypes.AddReplySuccess;
+  constructor(public payload: Reply) {}
 }
 
-export class ReplyRadioFail implements Action {
-  readonly type = RadioActionTypes.ReplyRadioFail;
-  constructor(public payload: HttpErrorResponse | { message: string }) {}
-}
-
-export class ArchiveRadio implements Action {
-  readonly type = RadioActionTypes.ArchiveRadio;
-  constructor(public payload: any) {}
-}
-
-export class ArchiveRadioSuccess implements Action {
-  readonly type = RadioActionTypes.ArchiveRadioSuccess;
-  constructor(public payload: any) {}
-}
-
-export class ArchiveRadioFail implements Action {
-  readonly type = RadioActionTypes.ArchiveRadioFail;
+export class AddReplyFailure implements Action {
+  readonly type = RadioActionTypes.AddReplyFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
 export type RadioActionsUnion = 
+  | LoadRadios
+  | LoadRadiosSuccess
+  | LoadRadiosFailure
   | LoadRadio
   | LoadRadioSuccess
-  | LoadRadioFail
-  | AddRadio
-  | AddRadioSuccess
-  | AddRadioFail
-  | ReplyRadio
-  | ReplyRadioSuccess
-  | ReplyRadioFail
-  | ArchiveRadio
-  | ArchiveRadioSuccess
-  | ArchiveRadioFail
-  | LoadReplyRadio
-  | LoadReplyRadioSuccess
-  | LoadReplyRadioFail;
+  | LoadRadioFailure
+  | AddRadioEntity
+  | AddRadioEntitySuccess
+  | AddRadioEntityFailure
+  | AddReply
+  | AddReplySuccess
+  | AddReplyFailure;
 
 
