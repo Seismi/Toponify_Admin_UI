@@ -27,7 +27,9 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions.push(this.route.params.subscribe( params => {
       const id = params['scopeId'];
-      this.store.dispatch(new LoadScope(id));
+      if (!this.scope || id !== this.scope.id) {
+        this.store.dispatch(new LoadScope(id));
+      }
     }));
     this.subscriptions.push(this.store.pipe(select(getScopeSelected)).subscribe(scope => {
       this.scope = scope;

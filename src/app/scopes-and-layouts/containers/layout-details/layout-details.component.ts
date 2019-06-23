@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { LayoutState } from '../../../layout/store/reducers/layout.reducer';
 import { LoadLayout } from '@app/layout/store/actions/layout.actions';
@@ -19,7 +19,6 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
   layout: LayoutDetails;
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
     private store: Store<LayoutState>
   ) { }
@@ -27,7 +26,9 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions.push(this.route.params.subscribe( params => {
       const id = params['layoutId'];
-      this.store.dispatch(new LoadLayout(id));
+      if (!this.layout || this.layout.id !== id) {
+        this.store.dispatch(new LoadLayout(id));
+      }
     }));
     this.subscriptions.push(this.store.pipe(select(getLayoutSelected)).subscribe(layout => this.layout = layout));
   }
