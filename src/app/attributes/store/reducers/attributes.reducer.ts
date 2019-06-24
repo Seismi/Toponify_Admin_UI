@@ -72,6 +72,81 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
       };
     }
 
+
+  //   case AttributeActionTypes.UpdateAttribute: {
+  //     return {
+  //       ...state,
+  //       loading: true
+  //     };
+  //   }
+
+  //   case AttributeActionTypes.UpdateAttributeSuccess: {
+  //     return {
+  //       ...state,
+  //       loading: false,
+  //       attributes: state.attributes.map(attribute =>
+  //         attribute.id === action.payload.id
+  //           ? { ...attribute, ...action.payload }
+  //           : attribute
+  //       )
+  //     };
+  //   }
+
+  //   case AttributeActionTypes.UpdateAttributeFailure: {
+  //     return {
+  //       ...state,
+  //       loading: false,
+  //       error: action.payload
+  //     };
+  //   }
+
+
+  //  case AttributeActionTypes.DeleteAttribute: {
+  //       return {
+  //       ...state,
+  //       loading: true
+  //       }
+  //   };
+      
+  //   case AttributeActionTypes.DeleteAttributeSuccess: {
+  //     return {
+  //       ...state,
+  //       loading: false,
+  //       attributes: state.attributes.filter((attribute) => attribute.id !== action.payload)
+  //     };
+  //   }
+
+  //   case AttributeActionTypes.DeleteAttributeFailure: {
+  //     return {
+  //       ...state,
+  //       loading: false,
+  //       error: action.payload
+  //     };
+  //   }
+     
+  //   case AttributeActionTypes.AddAttribute: {
+  //     return {
+  //       ...state,
+  //       loading: true
+  //     };
+  //   }
+
+  //   case AttributeActionTypes.AddAttributeSuccess: {
+  //     return {
+  //       ...state,
+  //       loading: false,
+  //       attributes: [...state.attributes, action.payload]
+  //     };
+  //   }
+
+  //   case AttributeActionTypes.AddAttributeFailure: {
+  //     return {
+  //       ...state,
+  //       loading: false,
+  //       error: action.payload
+  //     };
+  //   }
+
     default: {
       return state;
     }

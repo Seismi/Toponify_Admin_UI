@@ -9,7 +9,19 @@ export enum AttributeActionTypes {
 
   LoadAttribute = '[Attribute] Load Attribute',
   LoadAttributeSuccess = '[Attribute] Load Attribute Success',
-  LoadAttributeFailure = '[Attribute] Load Attribute Fail'
+  LoadAttributeFailure = '[Attribute] Load Attribute Fail',
+
+  UpdateAttribute = '[Attribute] Update Attribute',
+  UpdateAttributeSuccess = '[Attribute] Update Attribute Success',
+  UpdateAttributeFailure = '[Attribute] Update Attribute Fail',
+
+  AddAttribute = '[Attribute] Add Attribute',
+  AddAttributeSuccess = '[Attribute] Add Attribute Success',
+  AddAttributeFailure = '[Attribute] Add Attribute Fail',
+  
+  DeleteAttribute = '[Attribute] Delete Attribute',
+  DeleteAttributeSuccess = '[Attribute] Delete Attribute Success',
+  DeleteAttributeFailure = '[Attribute] Delete Attribute Fail'
 }
 
 export class LoadAttributes implements Action {
@@ -44,10 +56,67 @@ export class LoadAttributeFailure implements Action {
 }
 
 
+export class UpdateAttribute implements Action {
+  readonly type = AttributeActionTypes.UpdateAttribute;
+  constructor(public payload: any) {}
+}
+
+export class UpdateAttributeSuccess implements Action {
+  readonly type = AttributeActionTypes.UpdateAttributeSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateAttributeFailure implements Action {
+  readonly type = AttributeActionTypes.UpdateAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+
+export class AddAttribute implements Action {
+  readonly type = AttributeActionTypes.AddAttribute;
+  constructor(public payload: any) {}
+}
+
+export class AddAttributeSuccess implements Action {
+  readonly type = AttributeActionTypes.AddAttributeSuccess;
+  constructor(public payload: any) {}
+}
+
+export class AddAttributeFailure implements Action {
+  readonly type = AttributeActionTypes.AddAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+
+export class DeleteAttribute implements Action {
+  readonly type = AttributeActionTypes.DeleteAttribute;
+  constructor(public payload: string) {}
+}
+
+export class DeleteAttributeSuccess implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeSuccess;
+  constructor(public payload: string) {}
+}
+
+export class DeleteAttributeFailure implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+
 export type AttributeActionsUnion =
   | LoadAttributes
   | LoadAttributesSuccess
   | LoadAttributesFailure
   | LoadAttribute
   | LoadAttributeSuccess
-  | LoadAttributeFailure;
+  | LoadAttributeFailure
+  | UpdateAttribute
+  | UpdateAttributeSuccess
+  | UpdateAttributeFailure
+  | AddAttribute
+  | AddAttributeSuccess
+  | AddAttributeFailure
+  | DeleteAttribute
+  | DeleteAttributeSuccess
+  | DeleteAttributeFailure;

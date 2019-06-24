@@ -38,4 +38,40 @@ export class AttributeEffects {
       );
     })
   );
+
+  // @Effect()
+  // addAttribute$ = this.actions$.pipe(
+  //   ofType<AttributeActions.AddAttribute>(AttributeActionTypes.AddAttribute),
+  //   map(action => action.payload),
+  //   mergeMap((payload: {attribute: AddAttributeApiRequest}) => {
+  //     return this.attributeService.addAttribute(payload.attribute).pipe(
+  //       switchMap((attribute: AttributeSingleApiResponse) => [new AttributeActions.AddAttributeSuccess(attribute.data)]),
+  //       catchError((error: HttpErrorResponse) => of(new AttributeActions.AddAttributeFailure(error)))
+  //     );
+  //   })
+  // );
+
+  // @Effect()
+  // updateAttribute$ = this.actions$.pipe(
+  //   ofType<AttributeActions.UpdateAttribute>(AttributeActionTypes.UpdateAttribute),
+  //   map(action => action.payload),
+  //   mergeMap((payload: {attribute: AttributeApiRequest}) => {
+  //     return this.attributeService.updateAttribute(payload.attribute).pipe(
+  //       switchMap((attribute: AttributeSingleApiResponse) => [new AttributeActions.UpdateAttributeSuccess(attribute.data)]),
+  //       catchError((error: HttpErrorResponse) => of(new AttributeActions.UpdateAttributeFailure(error)))
+  //     );
+  //   })
+  // );
+
+  // @Effect()
+  // deleteAttribute$ = this.actions$.pipe(
+  //   ofType<AttributeActions.DeleteAttribute>(AttributeActionTypes.DeleteAttribute),
+  //   map(action => action.payload),
+  //   mergeMap((attribute: {versionId: string, attributeId: string}) => {
+  //     return this.attributeService.deleteAttribute(attribute.attributeId).pipe(
+  //       map(_ => new AttributeActions.DeleteAttributeSuccess(attribute.attributeId)),
+  //       catchError(error => of(new AttributeActions.DeleteAttributeFailure(error)))
+  //     );
+  //   })
+  // );
 }
