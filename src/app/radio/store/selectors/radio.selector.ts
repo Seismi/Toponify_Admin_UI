@@ -1,19 +1,23 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { RadioState } from '../reducers/radio.reducer';
+import { State } from '../reducers/radio.reducer';
 
-export const getRadioFeatureState = createFeatureSelector<RadioState>('radioFeature');
+export const getRadioFeatureState = createFeatureSelector<State>('radioFeature');
 
-export const getRadio = createSelector(
+export const getRadioEntities = createSelector(
   getRadioFeatureState,
-  state => state.radio
+  state => state.entities
 );
 
-export const getRadioLoading = createSelector(
+export const getSelectedRadio = createSelector(
   getRadioFeatureState,
-  state => state.loading
+  state => state.selectedRadio
 );
 
-export const getRadioError = createSelector(
-  getRadioFeatureState,
-  state => state.error
-);
+export const getRadioById = (id: string) => {
+  return createSelector(
+    getRadioFeatureState,
+    state => {
+      return state.entities.filter(entity => entity.id === id);
+    }
+  );
+};
