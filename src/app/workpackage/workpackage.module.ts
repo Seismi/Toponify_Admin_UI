@@ -25,6 +25,7 @@ import { WorkPackageDetailComponent } from './components/workpackage-detail/work
 import { WorkPackageModalComponent } from './containers/new-workpackage-modal/new-workpackage.component';
 import { NewWorkpackageFormComponent } from './components/new-workpackage-form/new-workpackage-form.component';
 import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage-modal/delete-workpackage.component';
+import { WorkpackageDetailsComponent } from './containers/workpackage-details/workpackage-details.component';
 
 
 
@@ -55,7 +56,8 @@ import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage
     ChangeTableComponent,
     WorkPackageModalComponent,
     NewWorkpackageFormComponent,
-    DeleteWorkPackageModalComponent
+    DeleteWorkPackageModalComponent,
+    WorkpackageDetailsComponent
   ],
   entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent],
   providers: [
