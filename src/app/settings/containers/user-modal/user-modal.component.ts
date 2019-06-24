@@ -43,7 +43,7 @@ export class UserModalComponent implements OnInit {
         email: this.user.email,
         firstName: this.user.firstName,
         lastName: this.user.lastName,
-        password: this.user.password,
+        password: this.user,
         phone: this.user.phone,
         team: this.user.team,
         roles: this.user.roles,

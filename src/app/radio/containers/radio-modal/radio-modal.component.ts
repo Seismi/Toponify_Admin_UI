@@ -1,9 +1,9 @@
-import { Component, Input, Inject } from '@angular/core';
+import { Component, Input, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
-import { AddRadio } from '@app/radio/store/models/radio.model';
+import { RadioEntity } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-radio-modal',
@@ -14,13 +14,9 @@ import { AddRadio } from '@app/radio/store/models/radio.model';
 
 export class RadioModalComponent {
 
-  @Input() addComment = false;
+  @Input() addRadio = false;
   @Input() isEditable = true;
-  radio: AddRadio;
-
-  get radioDetailsForm(): FormGroup {
-    return this.radioDetailService.radioDetailsForm;
-  }
+  radio: RadioEntity;
 
   constructor(
     private radioDetailService: RadioDetailService,
@@ -28,12 +24,17 @@ export class RadioModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.radio = data.radio;
     }
+  
+
+  get radioDetailsForm(): FormGroup {
+    return this.radioDetailService.radioDetailsForm;
+  }
 
   onSubmit() {
     if (!this.radioDetailService.isValid) {
       return;
     }
-    this.dialogRef.close({ comment: this.radioDetailsForm.value });
+    this.dialogRef.close({ radio: this.radioDetailsForm.value });
   }
 
   onCancelClick() {

@@ -13,17 +13,16 @@ export class RadioDetailService {
       category: [null, Validators.required],
       status: [null, Validators.required],
       targetName: [null],
-      commentText: [null, Validators.required],
+      description: [null, Validators.required],
       replyText: [null],
       author: this.fb.array([this.author()]),
       replies: this.fb.array([this.replies()])
     });
   }
 
-  // FIXME: Need userId from the token
   author(): FormGroup {
     return this.fb.group({
-      userId: ['bd7f2626-c07c-4e61-b0d8-fdf48a58c3db']
+      id: [null]
     });
   }
 
@@ -42,5 +41,4 @@ export class RadioDetailService {
     }
     return true;
   }
-  
 }

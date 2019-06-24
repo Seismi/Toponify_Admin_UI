@@ -1,0 +1,12 @@
+label {
+    margin: 0;
+}
+
+button {
+    margin-right: 8px;
+}
+
+.disabled {
+    pointer-events: none;
+    background-color: #f9f9f9;
+}
