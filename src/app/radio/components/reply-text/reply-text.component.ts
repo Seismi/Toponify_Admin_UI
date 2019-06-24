@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -9,7 +9,16 @@ import { FormGroup } from '@angular/forms';
 
 export class ReplyTextComponent {
 
+  @Input() replyMode = false;
   @Input() rows:number = 4;
   @Input() group: FormGroup;
+  @Input() disableButton = true;
+
+  @Output()
+  sendReply = new EventEmitter();
+
+  onSend() {
+    this.sendReply.emit();
+  }
 
 }

@@ -3,6 +3,9 @@ table {
     tr.mat-header-row {
         height: 35px;
     }
+    th.mat-column-name {
+        width: 40%;
+    }
 }
 
 ul {
@@ -13,5 +16,8 @@ ul {
         padding: 7px 0px;
         margin: 3px 0px;
         cursor: pointer;
+        a {
+            font-size: 12px;
+        }
     }
 }

@@ -1,55 +1,87 @@
+export interface RadioEntitiesHttpParams {
+  ownerQuery?: string;
+  scopeQuery?: string;
+  page?: string;
+  size?: string;
+}
+
+export interface RadioEntitiesResponse {
+  data?: (RadioEntity)[] | null;
+  links: Links;
+  page: Page;
+}
+
+export interface Links {
+  first: string;
+  previous: string;
+  next: string;
+  last: string;
+}
+export interface Page {
+  size: number;
+  totalObjects: number;
+  totalPages: number;
+  number: number;
+}
+
 export interface RadioApiResponse {
-  data?: (Radio)[] | null;
+  data?: RadioEntity;
 }
 
-export interface AddRadioApiResponse {
-  data?: Radio | null;
+export interface RadioApiRequest {
+  data: AddRadioOrReplyChanges;
 }
 
-export interface AddReplyRadioApiResponse {
-  data?: Radio | null;
-}
-
-export interface ArchiveRadioApiResponse {
-  data?: Radio | null;
-}
-
-export interface Radio {
+export interface RadioEntity {
   id: string;
   title: string;
-  commentText: string;
+  description: string;
   category: string;
   author: AuthorOrLastUpdatedBy;
+  owners?: (TeamsOrOwners)[] | null;
   status: string;
-  createdOn: string;
-  lastUpdatedOn: string;
-  lastUpdatedBy: AuthorOrLastUpdatedBy;
-  replyCount: number;
-  replies: Replies;
-  replyText: string;
-}
-
-export interface Replies {
-  id: string;
-  replyText: string;
-  changes: Changes;
-  author: AuthorOrLastUpdatedBy;
-  postedOn: string;
+  createdOn?: string;
+  lastUpdatedOn?: string;
+  lastUpdatedBy?: (AuthorOrLastUpdatedBy)[] | null;
+  replyCount?: number;
 }
 
 export interface AuthorOrLastUpdatedBy {
-  userId: string;
+  id: string;
   firstName?: string;
   lastName?: string;
-  team?: (string)[] | null;
 }
 
-export interface Changes {
-  title?: string;
-  commentText?: string;
-  category?: string;
-  status?: string;
-  target?: Target;
+export interface TeamsOrOwners {
+  id: string;
+  name: string;
+  type: string;
+}
+
+export interface Roles {
+  id: string;
+  name: string;
+}
+
+// RADIO detail
+export interface RadioDetailApiResponse {
+  data: RadioDetail;
+}
+export interface RadioDetail {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  category: string;
+  author: AuthorOrLastUpdatedBy;
+  owners: (TeamsOrOwners)[] | null;
+  createdOn: string;
+  lastUpdatedOn: string;
+  lastUpdatedBy: (AuthorOrLastUpdatedBy)[] | null;
+  target?: (Target)[] | null;
+  link?: (Link)[] | null;
+  replyCount: number;
+  replies?: (Replies)[] | null;
 }
 
 export interface Target {
@@ -57,31 +89,52 @@ export interface Target {
   objectType: string;
 }
 
-export interface AddRadioApiRequest {
-  data: AddRadio;
-}
-export interface AddRadio {
+export interface Link {
+  id: string;
   title: string;
-  category: string;
-  status: string;
-  commentText: string;
-  author: AuthorOrLastUpdatedBy;
+  description: string;
 }
 
-export interface AddReplyRadioApiRequest {
-  data: AddReplyRadio;
-}
-export interface AddReplyRadio {
+export interface Replies {
+  id: string;
+  author?: (AuthorOrLastUpdatedBy)[] | null;
+  postedOn: string;
   replyText: string;
-  author: AuthorOrLastUpdatedBy;
-  changes?: Changes;
+  changes?: (Changes) | null;
+  replies?: (string)[] | null;
 }
 
-export interface ArchiveRadioApiRequest {
-  data: ArchiveRadio;
+export interface Changes {
+  hasChanges: boolean;
+  listChanges: (ListChanges)[] | null;
 }
-interface ArchiveRadio {
-  changes: Changes;
-  replyText: string;
+
+export interface ListChanges {
+  changedProperty: string;
+  changedFrom: string;
+  changedTo: string;
+}
+
+// Reply
+export interface ReplyApiRequest {
+  data: Reply;
+}
+
+export interface ReplyApiResponse {
+  data: Reply;
+}
+
+export interface Reply {
+  id?: string;
   author: AuthorOrLastUpdatedBy;
+  replyText: string;
+  changes: AddRadioOrReplyChanges;
+}
+
+interface AddRadioOrReplyChanges {
+  title?: string;
+  status?: string;
+  category?: string;
+  description?: string;
+  author?: AuthorOrLastUpdatedBy;
 }

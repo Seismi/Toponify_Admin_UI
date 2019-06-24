@@ -19,10 +19,41 @@
         </p>
     </mat-tab>
 
+    <!-- Teams-->
+    <mat-tab label="Teams">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <smi-teams-table 
+                        [data]="teams$ | async"
+                        (selectTeam)="onSelectTeam($event)"
+                        (newTeam)="onNewTeam($event)">
+                    </smi-teams-table>
+                </div>
+                <div class="col" *ngIf="teamSelected">
+                    <smi-team-detail
+                        [group]="teamDetailForm"
+                        [teamModal]="teamModal"
+                        [isEditable]="isTeamEditable"
+                        (editTeam)="onEditTeam($event)"
+                        (deleteTeam)="onDeleteTeam($event)"
+                        (saveTeam)="onSaveTeam($event)"
+                        (cancelEdit)="onCancelEdit($event)">
+                    </smi-team-detail>
+                    <smi-members-table
+                        [data]="teamDetails$ | async"
+                        (deleteMember)="onDeleteMember($event)"
+                        (addMember)="onAddMember($event)">
+                    </smi-members-table>
+                </div>
+            </div>
+        </div>
+    </mat-tab>
+
     <!-- All Users Tab -->
     <mat-tab label="All Users">
-        <smi-users-table 
-            [data]="users$ | async"
+        <smi-users-table *ngIf="(users$ | async)?.length > 0" 
+            [data]="users$ | async" 
             (editUser)="onEditUser($event)"
             (addUser)="onAddUser($event)">
         </smi-users-table>

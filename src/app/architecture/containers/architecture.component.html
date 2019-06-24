@@ -31,8 +31,6 @@
     <p>
       <smi-left-panel
         [data]="workpackage$ | async"
-        [showTable]="showTable"
-        [showPalette]="showPalette"
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
         (selectWorkPackage)="onSelectWorkPackage($event)"

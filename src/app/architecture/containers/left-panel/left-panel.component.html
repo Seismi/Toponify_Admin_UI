@@ -6,10 +6,8 @@
           (selectColor)="onSelectColor($event)">
         </smi-workpackage-tab-table>
     </mat-tab>
-    <mat-tab label="Edit">
-        <div *ngIf="showPalette">
-            <app-architecture-palette *ngIf="workPackageIsEditable"></app-architecture-palette>
-        </div>
+    <mat-tab label="Edit" *ngIf="workPackageIsEditable">
+        <app-architecture-palette *ngIf="workPackageIsEditable"></app-architecture-palette>
     </mat-tab>
     <mat-tab label="Analysis">
       <smi-analysis-tab

@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
-import { Radio } from '@app/radio/store/models/radio.model';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
 
@@ -14,7 +13,8 @@ import { RadioValidatorService } from '@app/radio/components/radio-detail/servic
 
 export class ReplyModalComponent implements OnInit {
 
-  radio: Radio;
+  replyMode = true;
+  radio: any;
 
   constructor(private radioDetailService: RadioDetailService,
               public dialogRef: MatDialogRef<ReplyModalComponent>,
@@ -29,7 +29,7 @@ export class ReplyModalComponent implements OnInit {
   }
 
   onSubmit() {
-    this.dialogRef.close({ comment: this.radioDetailsForm.value });
+    this.dialogRef.close({ radio: this.radioDetailsForm.value });
   }
 
   onCancelClick() {
