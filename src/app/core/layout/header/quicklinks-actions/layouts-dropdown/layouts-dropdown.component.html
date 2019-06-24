@@ -1,0 +1,9 @@
+<mat-form-field floatLabel=never appearance="none">
+  <mat-select placeholder="Layouts">
+    <div *ngFor="let element of layouts"> 
+      <mat-option *ngFor="let layout of element.layouts">
+        {{layout.name}}
+      </mat-option>
+    </div>
+  </mat-select>
+</mat-form-field>

@@ -10,7 +10,7 @@
 <!-- WorkPackage Dropdown -->
 <smi-workpackage-dropdown 
     *ngIf="gojsView" 
-    [data]="data"
+    [data]="workpackages"
     (selectWorkpackage)="onSelectWorkPackage($event)">
 </smi-workpackage-dropdown>
 
@@ -20,32 +20,21 @@
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
 
-<!-- TODO: Need to create separate component for Scopes And Layouts Dropdown -->
 <!--Scopes and Layouts Icon -->
 <a><mat-icon routerLink="/scopes-and-layouts" matTooltip="Scopes and Layouts">pages</mat-icon></a>
+
 <!-- Scopes dropdown -->
-<div class="dropdown" *ngIf="gojsView">
-    <button class="dropdown-toggle btn btn-sm right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Scopes
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-        <button class="dropdown-item">Scope 1</button>
-        <button class="dropdown-item">Scope 2</button>
-        <button class="dropdown-item">Scope 3</button>
-    </div>
-</div>
+<smi-scopes-dropdown 
+    *ngIf="gojsView"
+    [data]="scopes"
+    (selectScope)="onSelectScope($event)">
+</smi-scopes-dropdown>
 
 <!-- Layouts dropdown -->
-<div class="dropdown" *ngIf="gojsView">
-    <button class="dropdown-toggle btn btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Layouts
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-        <button class="dropdown-item">Layout 1</button>
-        <button class="dropdown-item">Layout 2</button>
-        <button class="dropdown-item">Layout 3</button>
-    </div>
-</div>
+<smi-layouts-dropdown 
+    *ngIf="gojsView"
+    [data]="layouts">
+</smi-layouts-dropdown>
 
 <!-- Edit diagram button -->
 <a (click)="allowEditLayout()" *ngIf="gojsView"><mat-icon matTooltip="Edit Layout">{{allowEditLayouts}}</mat-icon></a>

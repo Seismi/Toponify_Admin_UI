@@ -10,7 +10,9 @@ export class QuicklinksActionsComponent implements OnInit {
   @Input() gojsView = false;
   @Input() allowEditLayouts: string;
   @Input() allowEditWorkPackages: string;
-  @Input() data: any;
+  @Input() workpackages: any;
+  @Input() scopes: any;
+  @Input() layouts: any;
 
   ngOnInit() {
     this.allowEditLayouts = 'edit';
@@ -26,6 +28,8 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   selectWorkPackage = new EventEmitter();
 
+  @Output()
+  selectScope = new EventEmitter();
 
   allowEditWorkPackage() {
     this.editWorkPackage.emit();
@@ -38,4 +42,10 @@ export class QuicklinksActionsComponent implements OnInit {
   onSelectWorkPackage(id) {
     this.selectWorkPackage.emit(id);
   }
+
+  onSelectScope(id) {
+    this.selectScope.emit(id);
+  }
+
+  
 }

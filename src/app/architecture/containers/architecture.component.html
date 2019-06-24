@@ -15,14 +15,17 @@
   ></app-layout-actions>
   </app-toolbar-column>
   <app-toolbar-column>
-    <smi-quicklinks-actions 
+    <smi-quicklinks-actions
       [gojsView]="true" 
       [allowEditLayouts]="allowEditLayouts"
       [allowEditWorkPackages]="allowEditWorkPackages"
-      [data]="workpackage$ | async"
+      [workpackages]="workpackage$ | async"
+      [scopes]="scopes$ | async"
+      [layouts]=""
       (editWorkPackage)="allowEditWorkPackage($event)"
       (editLayout)="allowEditLayout($event)"
-      (selectWorkPackage)="onSelectWorkPackage($event)">
+      (selectWorkPackage)="onSelectWorkPackage($event)"
+      (selectScope)="onSelectScope($event)">
     </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>

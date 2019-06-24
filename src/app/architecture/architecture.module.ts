@@ -38,6 +38,8 @@ import { WorkPackageTabComponent } from './containers/right-panel/components/wor
 import { RadioTabComponent } from './containers/right-panel/components/radio-tab/radio-tab.component';
 import { PropertiesTabComponent } from './containers/right-panel/components/properties-tab/properties-tab.component';
 import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
+import { ScopeModule } from '@app/scope/scope.module';
+import { LayoutModule } from '@app/layout/layout.module';
 
 
 @NgModule({
@@ -67,6 +69,8 @@ import { AttributesTabComponent } from './containers/right-panel/components/attr
     MatSortModule,
     MatListModule,
     ColorPickerModule,
+    ScopeModule,
+    LayoutModule,
     StoreModule.forFeature('architectureFeature', reducer)
   ],
     exports: [ObjectDetailsFormComponent, CategoryTableComponent, TableCollapseComponent],
