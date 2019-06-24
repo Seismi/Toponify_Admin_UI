@@ -21,7 +21,7 @@ import { ArchitectureComponent } from './containers/architecture.component';
 import { DeleteLinkModalComponent } from './containers/delete-link-modal/delete-link-modal.component';
 import { DeleteModalComponent } from './containers/delete-modal/delete-modal.component';
 import { DeleteNodeModalComponent } from './containers/delete-node-modal/delete-node-modal.component';
-import { LeftPanelComponent } from './containers/left-panel.component';
+import { LeftPanelComponent } from './containers/left-panel/left-panel.component';
 import { RightPanelComponent } from './containers/right-panel/right-panel.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';

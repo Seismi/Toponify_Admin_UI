@@ -33,7 +33,8 @@
 <!-- Layouts dropdown -->
 <smi-layouts-dropdown 
     *ngIf="gojsView"
-    [data]="layouts">
+    [data]="layouts"
+    (selectLayout)="onSelectLayout($event)">
 </smi-layouts-dropdown>
 
 <!-- Edit diagram button -->

@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter, ViewChild} from '@angular/core';
-import { ArchitecturePaletteComponent } from '../components/architecture-palette/architecture-palette.component';
+import { ArchitecturePaletteComponent } from '../../components/architecture-palette/architecture-palette.component';
 
 @Component({
   selector: 'smi-left-panel',

@@ -30,12 +30,10 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
-import { LoadLayouts } from '@app/layout/store/actions/layout.actions';
+import { LoadLayouts, LoadLayout } from '@app/layout/store/actions/layout.actions';
 import { ScopeEntity, ScopeDetails } from '@app/scope/store/models/scope.model';
-import { LayoutEntity } from '@app/layout/store/models/layout.model';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
-import { getLayoutEntities } from '@app/layout/store/selectors/layout.selector';
-import { LeftPanelComponent } from './left-panel.component';
+import { LeftPanelComponent } from './left-panel/left-panel.component';
 
 
 @Component({
@@ -56,8 +54,7 @@ export class ArchitectureComponent implements OnInit {
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
-  layouts$: Observable<LayoutEntity[]>;
-  scopeDetail$: Observable<ScopeDetails>;
+  scopeDetails$: Observable<ScopeDetails>;
   mapView: boolean;
   viewLevel$: Observable<number>;
   mapViewId$: Observable<string>;
@@ -108,7 +105,6 @@ export class ArchitectureComponent implements OnInit {
 
       // Layouts
       this.layoutStore.dispatch(new LoadLayouts({}));
-      this.layouts$ = this.layoutStore.pipe(select(getLayoutEntities));
       
       // Load Work Packages
       this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -363,9 +359,14 @@ export class ArchitectureComponent implements OnInit {
     });
   }
 
+
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
-    this.scopeDetail$ = this.scopeStore.pipe(select(getScopeSelected));
+    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
+  }
+
+  onSelectLayout(id) {
+    this.layoutStore.dispatch(new LoadLayout(id));
   }
 
 }

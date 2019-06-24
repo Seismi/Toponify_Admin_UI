@@ -21,11 +21,12 @@
       [allowEditWorkPackages]="allowEditWorkPackages"
       [workpackages]="workpackage$ | async"
       [scopes]="scopes$ | async"
-      [layouts]=""
+      [layouts]="scopeDetails$ | async"
       (editWorkPackage)="allowEditWorkPackage($event)"
       (editLayout)="allowEditLayout($event)"
       (selectWorkPackage)="onSelectWorkPackage($event)"
-      (selectScope)="onSelectScope($event)">
+      (selectScope)="onSelectScope($event)"
+      (selectLayout)="onSelectLayout($event)">
     </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>

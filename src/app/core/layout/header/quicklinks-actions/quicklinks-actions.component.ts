@@ -31,6 +31,10 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   selectScope = new EventEmitter();
 
+  @Output()
+  selectLayout = new EventEmitter();
+
+  
   allowEditWorkPackage() {
     this.editWorkPackage.emit();
   }
@@ -47,5 +51,8 @@ export class QuicklinksActionsComponent implements OnInit {
     this.selectScope.emit(id);
   }
 
-  
+  onSelectLayout(id) {
+    this.selectLayout.emit(id);
+  }
+
 }
