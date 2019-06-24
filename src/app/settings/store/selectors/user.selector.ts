@@ -1,26 +1,24 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { UserState } from '../reducers/user.reducer';
+import { State } from '../reducers/user.reducer';
 
-export const getUserFeatureState = createFeatureSelector<UserState>('userFeature');
+export const getUserFeatureState = createFeatureSelector<State>('userFeature');
 
 export const getUsers = createSelector(
-  getUserFeatureState,
-  state => state.users
+    getUserFeatureState,
+    state => state.entities
 );
 
-export const getUsersLoading = createSelector(
-  getUserFeatureState,
-  state => state.loading
+export const getUserSelected = createSelector(
+    getUserFeatureState,
+    state => state.selected
 );
 
-export const getUsersError = createSelector(
-  getUserFeatureState,
-  state => state.error
+export const getLoading = createSelector(
+    getUserFeatureState,
+    state => state.loading
 );
 
-export const getUser = createSelector(
-  getUserFeatureState,
-  (state: UserState, props: {id: string}) => {
-    return state.users.filter(user => user.id === props.id);
-  }
+export const getUserError = createSelector(
+    getUserFeatureState,
+    state => state.error
 );

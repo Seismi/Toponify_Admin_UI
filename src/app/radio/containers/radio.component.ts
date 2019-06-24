@@ -3,16 +3,14 @@ import { RadioDetailService } from '../components/radio-detail/services/radio-de
 import { RadioValidatorService } from '../components/radio-detail/services/radio-detail-validator.service';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
+import { Observable, Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { RadioEntity } from '../store/models/radio.model';
+import { State as RadioState} from '../store/reducers/radio.reducer';
+import { LoadRadios, LoadRadio, AddRadioEntity, AddReply } from '../store/actions/radio.actions';
+import { getRadioEntities, getRadioById } from '../store/selectors/radio.selector';
 import { RadioModalComponent } from './radio-modal/radio-modal.component';
 import { ReplyModalComponent } from './reply-modal/reply-modal.component';
-import { Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-// import * as fromRadio from '../store/reducers'
-import * as RadioActions from '../store/actions/radio.actions';
-import { Radio } from '../store/models/radio.model';
-import { RadioState } from '../store/reducers/radio.reducer';
-import { getRadio, getRadioLoading } from '../store/selectors/radio.selector';
-
 
 @Component({
     selector: 'smi-radio',
@@ -22,104 +20,105 @@ import { getRadio, getRadioLoading } from '../store/selectors/radio.selector';
 })
 export class RadioComponent implements OnInit {
 
-    radio$: Observable<Radio[]>;
+    radio$: Observable<RadioEntity[]>;
     loading$: Observable<boolean>;
-
+    selectedRadio$: Subscription;
+    selecetedRadio: any;
     disableButton = true;
     isEditable = false;
-    addComment = true;
+    addRadio = true;
+    radioId: string;
 
     constructor(private store: Store<RadioState>,
                 private radioDetailService: RadioDetailService,
                 public dialog: MatDialog) { }
 
     ngOnInit() {
-        this.store.dispatch(new RadioActions.LoadRadio());
-        this.radio$ = this.store.pipe(select(getRadio));
-        this.loading$ = this.store.pipe(select(getRadioLoading));
+        this.store.dispatch(new LoadRadios({}));
+        this.radio$ = this.store.pipe(select(getRadioEntities));
     }
 
     get radioDetailsForm(): FormGroup {
         return this.radioDetailService.radioDetailsForm;
     }
 
-    onSelectedRow(row) {
+    onSelectRadio(row) {
+        this.radioId = row.id;
+        this.addRadio = true;
+        this.disableButton = false;
         this.radioDetailService.radioDetailsForm.patchValue({
             title: row.title,
             category: row.category,
             status: row.status,
-            commentText: row.commentText
+            description: row.description
         })
 
-        this.addComment = true;
-        this.disableButton = false;
+        this.store.dispatch(new LoadRadio(this.radioId));
+        this.selectedRadio$ = this.store.pipe(select(getRadioById(this.radioId))).subscribe((data)=> {
+            this.selecetedRadio = {...data[0]};
+        });
     }
 
-    onAddComment() {
-        this.isEditable = false;
+    onAddRadio() {
         const dialogRef = this.dialog.open(RadioModalComponent, {
             disableClose: false,
-            width: 'auto'
+            width: '500px'
         });
 
-        //   dialogRef.afterClosed().subscribe((data) => {
-        //     this.addComment = true;
-        //       this.store.dispatch(new CommentActions.AddComment({
-        //         versionId: this.versionId, 
-        //         comment: {
-        //           data: {
-        //             title: data.comment.title,
-        //             category: data.comment.category,
-        //             status: data.comment.status,
-        //             commentText: data.comment.commentText,
-        //             author: { userId: 'bd7f2626-c07c-4e61-b0d8-fdf48a58c3db' }
-        //           }
-        //       }}))
-        //   })
+        dialogRef.afterClosed().subscribe((data) => {
+            if (data && data.radio) {
+                this.store.dispatch(new AddRadioEntity({
+                    data: {
+                        title: data.radio.title,
+                        description: data.radio.description,
+                        status: data.radio.status,
+                        category: data.radio.category,
+                        author: {id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0'}
+                    }
+                }));
+            }
+        });
     }
 
-    onSaveComment() {
-        //   const dialogRef = this.dialog.open(ReplyCommentModalComponent, {
-        //     disableClose: false,
-        //     width: '400px'
-        //   });
-
-        //   dialogRef.afterClosed().subscribe((data) => {
-        //     if(data){
-        //       this.store.dispatch(new CommentActions.ReplyComment({
-        //         versionId: this.versionId, 
-        //         commentId: this.commentId, 
-        //         comment: {
-        //           data: {
-        //             replyText: data.comment.replyText,
-        //             changes: this.commentDetailsForm.value,
-        //             author: { userId: 'bd7f2626-c07c-4e61-b0d8-fdf48a58c3db' }
-        //           }
-        //       }}))
-        //     }
-        //   })
-    }
-
-    onArchiveComment() {
+    onSaveRadio() {
         const dialogRef = this.dialog.open(ReplyModalComponent, {
             disableClose: false,
             width: '400px'
         });
-
-        //   dialogRef.afterClosed().subscribe((data) => {
-        //     this.store.dispatch(new CommentActions.ArchiveComment({
-        //       versionId: this.versionId, 
-        //       commentId: this.commentId, 
-        //       comment: {
-        //         data: {
-        //           replyText: data.comment.replyText,
-        //           changes: { status: 'closed' },
-        //           author: { userId: 'bd7f2626-c07c-4e61-b0d8-fdf48a58c3db' }
-        //         }
-        //     }}))
-        //   })
+      
+        dialogRef.afterClosed().subscribe((data) => {
+            if(data) {
+                this.store.dispatch(new AddReply({
+                    id: this.radioId,
+                    entity: {
+                      data: {
+                        replyText: data.radio.replyText,
+                        changes: this.radioDetailsForm.value,
+                        author: {id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0'}
+                    }
+                }}))
+            }
+        })
     }
 
-    
-
+    onArchiveRadio() {
+        const dialogRef = this.dialog.open(ReplyModalComponent, {
+            disableClose: false,
+            width: '400px'
+        });
+      
+        dialogRef.afterClosed().subscribe((data) => {
+            if(data) {
+                this.store.dispatch(new AddReply({
+                    id: this.radioId,
+                    entity: {
+                      data: {
+                        replyText: data.radio.replyText,
+                        author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' },
+                        changes: { status: 'closed' }
+                      }
+                }}))
+            }
+        })
+    }
 }

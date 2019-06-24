@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
-import { User } from '@app/settings/store/models/user.model';
+import { User } from '@app/auth/store/models/user.model';
 
 @Component({
     selector: 'smi-users-table',
