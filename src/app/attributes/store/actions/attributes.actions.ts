@@ -1,11 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { Attribute, AttributeApiRequest, AddAttributeApiRequest } from '../models/attributes.model';
+import { AttributeEntitiesHttpParams, AttributeEntitiesResponse, AttributeDetail } from '../models/attributes.model';
 
 export enum AttributeActionTypes {
-  LoadAttributes = '[Attribute] Load Attributes',
-  LoadAttributesSuccess = '[Attribute] Load Attributes Success',
-  LoadAttributesFailure = '[Attribute] Load Attributes Fail',
+  LoadAttributes = '[Attribute] Load Attributes entities',
+  LoadAttributesSuccess = '[Attribute] Load Attributes entities Success',
+  LoadAttributesFailure = '[Attribute] Load Attributes entities Fail',
+
+  LoadAttribute = '[Attribute] Load Attribute',
+  LoadAttributeSuccess = '[Attribute] Load Attribute Success',
+  LoadAttributeFailure = '[Attribute] Load Attribute Fail',
 
   UpdateAttribute = '[Attribute] Update Attribute',
   UpdateAttributeSuccess = '[Attribute] Update Attribute Success',
@@ -22,12 +26,12 @@ export enum AttributeActionTypes {
 
 export class LoadAttributes implements Action {
   readonly type = AttributeActionTypes.LoadAttributes;
-  constructor() {}
+  constructor(public payload: AttributeEntitiesHttpParams) {}
 }
 
 export class LoadAttributesSuccess implements Action {
   readonly type = AttributeActionTypes.LoadAttributesSuccess;
-  constructor(public payload: Attribute[]) {}
+  constructor(public payload: AttributeEntitiesResponse) {}
 }
 
 export class LoadAttributesFailure implements Action {
@@ -35,14 +39,31 @@ export class LoadAttributesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+
+export class LoadAttribute implements Action {
+  readonly type = AttributeActionTypes.LoadAttribute;
+  constructor(public payload: string) {}
+}
+
+export class LoadAttributeSuccess implements Action {
+  readonly type = AttributeActionTypes.LoadAttributeSuccess;
+  constructor(public payload: AttributeDetail) {}
+}
+
+export class LoadAttributeFailure implements Action {
+  readonly type = AttributeActionTypes.LoadAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+
 export class UpdateAttribute implements Action {
   readonly type = AttributeActionTypes.UpdateAttribute;
-  constructor(public payload: { attribute: AttributeApiRequest, versionId: string }) {}
+  constructor(public payload: any) {}
 }
 
 export class UpdateAttributeSuccess implements Action {
   readonly type = AttributeActionTypes.UpdateAttributeSuccess;
-  constructor(public payload: Attribute) {}
+  constructor(public payload: any) {}
 }
 
 export class UpdateAttributeFailure implements Action {
@@ -50,14 +71,15 @@ export class UpdateAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+
 export class AddAttribute implements Action {
   readonly type = AttributeActionTypes.AddAttribute;
-  constructor(public payload: { attribute: AddAttributeApiRequest, versionId: string }) {}
+  constructor(public payload: any) {}
 }
 
 export class AddAttributeSuccess implements Action {
   readonly type = AttributeActionTypes.AddAttributeSuccess;
-  constructor(public payload: Attribute) {}
+  constructor(public payload: any) {}
 }
 
 export class AddAttributeFailure implements Action {
@@ -65,9 +87,10 @@ export class AddAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+
 export class DeleteAttribute implements Action {
   readonly type = AttributeActionTypes.DeleteAttribute;
-  constructor(public payload: { versionId: string, attributeId: string }) {}
+  constructor(public payload: string) {}
 }
 
 export class DeleteAttributeSuccess implements Action {
@@ -85,12 +108,15 @@ export type AttributeActionsUnion =
   | LoadAttributes
   | LoadAttributesSuccess
   | LoadAttributesFailure
+  | LoadAttribute
+  | LoadAttributeSuccess
+  | LoadAttributeFailure
   | UpdateAttribute
   | UpdateAttributeSuccess
   | UpdateAttributeFailure
-  | DeleteAttribute
-  | DeleteAttributeSuccess
-  | DeleteAttributeFailure
   | AddAttribute
   | AddAttributeSuccess
-  | AddAttributeFailure;
+  | AddAttributeFailure
+  | DeleteAttribute
+  | DeleteAttributeSuccess
+  | DeleteAttributeFailure;

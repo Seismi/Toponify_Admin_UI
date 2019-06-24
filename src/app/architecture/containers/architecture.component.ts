@@ -1,5 +1,5 @@
 import { LoadNodes, LoadNodeLinks, LoadNode } from '@app/nodes/store/actions/node.actions';
-import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy} from '@angular/core';
+import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy, Output} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
@@ -35,6 +35,8 @@ import { ScopeEntity, ScopeDetails } from '@app/scope/store/models/scope.model';
 import { LayoutEntity } from '@app/layout/store/models/layout.model';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { getLayoutEntities } from '@app/layout/store/selectors/layout.selector';
+import { LeftPanelComponent } from './left-panel.component';
+
 
 @Component({
   selector: 'smi-architecture',
@@ -59,8 +61,6 @@ export class ArchitectureComponent implements OnInit {
   mapView: boolean;
   viewLevel$: Observable<number>;
   mapViewId$: Observable<string>;
-  showTable: boolean;
-  showPalette: boolean;
   part: any;
   showGrid: boolean;
   showOrHideGrid: string;
@@ -74,10 +74,13 @@ export class ArchitectureComponent implements OnInit {
   workPackageIsEditable = false;
   workpackageId: string;
   workpackageDetail: any;
+  public selectedWorkPackages$: Observable<WorkPackageDetail>;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
-  public selectedWorkPackages$: Observable<WorkPackageDetail>;
+
+  @ViewChild(LeftPanelComponent)
+  private leftPanelComponent: LeftPanelComponent
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -132,12 +135,8 @@ export class ArchitectureComponent implements OnInit {
 
   setNodesLinks = (level: number) => {
     if (level !== 5) {
-      this.showTable = false;
-      this.showPalette = true;
       this.attributesView = false;
     } else {
-      this.showTable = true;
-      this.showPalette = false;
       this.attributesView = true;
     }
 
@@ -283,6 +282,8 @@ export class ArchitectureComponent implements OnInit {
     (this.workPackageIsEditable === true)
       ? this.allowEditWorkPackages = 'close'
       : this.allowEditWorkPackages = 'edit';
+
+    this.leftPanelComponent.onUpdatePalette();
   }
 
   allowEditLayout() {

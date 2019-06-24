@@ -33,15 +33,15 @@
             </div>
             <div class="form-group">
                 <label>Description</label>
-                <textarea class="form-control" rows="3" formControlName="commentText"
-                    [ngClass]="{ 'is-invalid': (!group.controls['commentText'].valid && group.controls['commentText'].touched) }"></textarea>
-                <div *ngIf="group.controls['commentText'].errors" class="invalid-feedback">
+                <textarea class="form-control" rows="3" formControlName="description"
+                    [ngClass]="{ 'is-invalid': (!group.controls['description'].valid && group.controls['description'].touched) }"></textarea>
+                <div *ngIf="group.controls['description'].errors" class="invalid-feedback">
                     <div>This field is required</div>
                 </div>
             </div>
         </div>
         <div class="form-group buttons-group">
-            <div *ngIf="addComment">
+            <div *ngIf="addRadio">
                 <div *ngIf="!isEditable">
                     <button mat-raised-button color="primary" (click)="onEdit()"
                         [disabled]="disableButton">Edit</button>

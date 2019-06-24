@@ -3,17 +3,21 @@ import { State } from '../reducers/attributes.reducer';
 
 export const getAttributesFeatureState = createFeatureSelector<State>('attributesFeature');
 
-export const getAttributes = createSelector(
+export const getAttributeEntities = createSelector(
     getAttributesFeatureState,
-    state => state.attributes
+    state => state.entities
 );
 
-export const getAttributesLoading = createSelector(
+export const getSelectedAttribute = createSelector(
     getAttributesFeatureState,
-    state => state.loading
+    state => state.selectedAttribute
 );
 
-export const getAttributesError = createSelector(
-    getAttributesFeatureState,
-    state => state.error
-);
+export const getAttributeById = (id: string) => {
+    return createSelector(
+      getAttributesFeatureState,
+      state => {
+        return state.entities.filter(entity => entity.id === id);
+      }
+    );
+};
