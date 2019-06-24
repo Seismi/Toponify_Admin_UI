@@ -1,16 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule } from '@angular/material';
+  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatGridListModule } from '@angular/material';
 import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/view.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeModule } from '@app/nodes/node.module';
 import { NodeService } from '@app/nodes/services/node.service';
 import { StoreModule } from '@ngrx/store';
-import { ColorPickerModule } from 'ngx-color-picker';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
@@ -21,7 +20,7 @@ import { ArchitectureComponent } from './containers/architecture.component';
 import { DeleteLinkModalComponent } from './containers/delete-link-modal/delete-link-modal.component';
 import { DeleteModalComponent } from './containers/delete-modal/delete-modal.component';
 import { DeleteNodeModalComponent } from './containers/delete-node-modal/delete-node-modal.component';
-import { LeftPanelComponent } from './containers/left-panel.component';
+import { LeftPanelComponent } from './containers/left-panel/left-panel.component';
 import { RightPanelComponent } from './containers/right-panel/right-panel.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';
@@ -38,6 +37,8 @@ import { WorkPackageTabComponent } from './containers/right-panel/components/wor
 import { RadioTabComponent } from './containers/right-panel/components/radio-tab/radio-tab.component';
 import { PropertiesTabComponent } from './containers/right-panel/components/properties-tab/properties-tab.component';
 import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
+import { WorkPackageTabTableComponent } from './containers/left-panel/components/workpackage-tab-table/workpackage-tab-table.component';
+import { WorkPackageColorComponent } from './containers/left-panel/components/color-picker/color-picker.component';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { AttributesTabComponent } from './containers/right-panel/components/attr
     NodeModule,
     ArchitectureRoutingModule,
     MatProgressSpinnerModule,
+    FormsModule,
     ReactiveFormsModule,
     CommonModule,
     CoreModule,
@@ -66,7 +68,7 @@ import { AttributesTabComponent } from './containers/right-panel/components/attr
     MatDialogModule,
     MatSortModule,
     MatListModule,
-    ColorPickerModule,
+    MatGridListModule,
     StoreModule.forFeature('architectureFeature', reducer)
   ],
     exports: [ObjectDetailsFormComponent, CategoryTableComponent, TableCollapseComponent],
@@ -87,7 +89,9 @@ import { AttributesTabComponent } from './containers/right-panel/components/attr
       RadioTabComponent,
       PropertiesTabComponent,
       AttributesTabComponent,
-      DeleteLinkModalComponent
+      DeleteLinkModalComponent,
+      WorkPackageTabTableComponent,
+      WorkPackageColorComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [

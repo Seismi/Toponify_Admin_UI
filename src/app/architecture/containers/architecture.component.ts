@@ -27,7 +27,7 @@ import { getWorkPackageEntities, getSelectedWorkPackage } from '@app/workpackage
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
-import { LeftPanelComponent } from './left-panel.component';
+import { LeftPanelComponent } from './left-panel/left-panel.component';
 
 @Component({
   selector: 'smi-architecture',
@@ -334,9 +334,11 @@ export class ArchitectureComponent implements OnInit {
   onSelectWorkPackage(id) {
     this.workpackageId = id;
     this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
-    this.workpackageStore.pipe(select(getSelectedWorkPackage)).subscribe(data => {
-      this.workpackageDetail = data;
-    });
+    this.workpackageStore.pipe(select(getSelectedWorkPackage));
+  }
+
+  selectColorForWorkPackage(color, id) {
+    console.log(color, id)
   }
 
 }
