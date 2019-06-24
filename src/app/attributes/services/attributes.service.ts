@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AttributeApiResponse, AttributeApiRequest, AttributeSingleApiResponse, AddAttributeApiRequest } from '../store/models/attributes.model';
-
+import { AttributeEntitiesHttpParams, AttributeEntitiesResponse } from '../store/models/attributes.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -13,20 +12,18 @@ export class AttributeService {
 
   constructor(private http: HttpClient) { }
 
-  getAttributes(): Observable<AttributeApiResponse> {
-    return this.http.get<AttributeApiResponse>(`/attributes`);
+  getAttributeEntities(queryParams: AttributeEntitiesHttpParams): Observable<AttributeEntitiesResponse> {
+    const params = this.toHttpParams(queryParams);
+    return this.http.get<any>(`/attributes`, {params: params});
   }
 
-  addAttribute(attribute: AddAttributeApiRequest): Observable<AttributeSingleApiResponse> {
-    return this.http.post<any>(`/attributes`, attribute, httpOptions);
+  getAttribute(id: string): Observable<any> {
+    return this.http.get<any>(`/attributes/${id}`);
   }
 
-  updateAttribute(attribute: AttributeApiRequest): Observable<AttributeSingleApiResponse> {
-    return this.http.put<any>(`/attributes`, attribute, httpOptions);
+  // TODO: move into sharable service
+  toHttpParams(obj: Object): HttpParams {
+    return Object.getOwnPropertyNames(obj)
+      .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
   }
-
-  deleteAttribute(attributeId: string): Observable<any> {
-    return this.http.delete<any>(`/attributes/${attributeId}`);
-  }
-
 }
