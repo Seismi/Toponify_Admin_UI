@@ -10,24 +10,25 @@ import { FormGroup } from '@angular/forms';
 export class RadioDetailComponent {
 
   @Input() group: FormGroup;
-  @Input() addComment = true;
+  @Input() addRadio = true;
   @Input() isEditable = false;
   @Input() disableButton = true;
 
   constructor() {}
 
   @Output()
-  archiveComment = new EventEmitter();
+  archiveRadio = new EventEmitter();
 
   @Output()
-  saveComment = new EventEmitter();
+  saveRadio = new EventEmitter();
 
   onArchive() {
-    this.archiveComment.emit();
+    this.archiveRadio.emit();
   }
 
   onSave() {
-    this.saveComment.emit();
+    this.isEditable = false;
+    this.saveRadio.emit();
   }
 
   onEdit() {
