@@ -1,21 +1,7 @@
-import * as RadioActions from '../actions/radio.actions';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import {
-  AddRadioApiRequest,
-  AddRadioApiResponse,
-  AddReplyRadioApiRequest,
-  AddReplyRadioApiResponse,
-  ArchiveRadioApiRequest,
-  ArchiveRadioApiResponse,
-  RadioApiResponse
-  } from '../models/radio.model';
-import {
-  catchError,
-  map,
-  mergeMap,
-  switchMap
-  } from 'rxjs/operators';
-import { RadioActionTypes } from '../actions/radio.actions';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetailApiResponse, RadioApiRequest, RadioApiResponse, ReplyApiRequest, ReplyApiResponse } from '../models/radio.model';
+import { catchError, map, switchMap, mergeMap } from 'rxjs/operators';
+import { RadioActionTypes, LoadRadios, LoadRadiosSuccess, LoadRadiosFailure, LoadRadio, LoadRadioSuccess, LoadRadioFailure, AddRadioEntity, AddRadioEntitySuccess, AddRadioEntityFailure, AddReply, AddReplySuccess } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -30,60 +16,49 @@ export class RadioEffects {
   ) { }
 
   @Effect()
+  loadRadioEntities$ = this.actions$.pipe(
+    ofType<LoadRadios>(RadioActionTypes.LoadRadios),
+    map(action => action.payload),
+    switchMap((payload: RadioEntitiesHttpParams) => {
+      return this.radioService.getRadioEntities(payload).pipe(
+        switchMap((data: RadioEntitiesResponse) => [new LoadRadiosSuccess(data)]),
+        catchError((error: HttpErrorResponse) => of(new LoadRadiosFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   loadRadio$ = this.actions$.pipe(
-    ofType<RadioActions.LoadRadio>(RadioActionTypes.LoadRadio),
-    switchMap(_ => {
-      return this.radioService.getRadio().pipe(
-        switchMap((radio: RadioApiResponse) => [new RadioActions.LoadRadioSuccess(radio.data)]),
-        catchError((error: HttpErrorResponse) => of(new RadioActions.LoadRadioFail(error)))
+    ofType<LoadRadio>(RadioActionTypes.LoadRadio),
+    map(action => action.payload),
+    switchMap((id: string) => {
+      return this.radioService.getRadio(id).pipe(
+        switchMap((response: RadioDetailApiResponse) => [new LoadRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new LoadRadioFailure(error)))
       );
     })
   );
 
   @Effect()
-  loadReplyRadio$ = this.actions$.pipe(
-    ofType<RadioActions.LoadReplyRadio>(RadioActionTypes.LoadReplyRadio),
+  addRadioEntity$ = this.actions$.pipe(
+    ofType<AddRadioEntity>(RadioActionTypes.AddRadio),
     map(action => action.payload),
-    switchMap((payload: any) => {
-      return this.radioService.getReplyRadio().pipe(
-        switchMap((response: any) => [new RadioActions.LoadReplyRadioSuccess(response.data)]),
-        catchError((error: HttpErrorResponse) => of(new RadioActions.LoadReplyRadioFail(error)))
+    mergeMap((payload: RadioApiRequest) => {
+      return this.radioService.addRadioEntity(payload).pipe(
+        mergeMap((radio: RadioApiResponse) => [new AddRadioEntitySuccess(radio.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddRadioEntityFailure(error)))
       );
     })
   );
 
   @Effect()
-  addRadio$ = this.actions$.pipe(
-    ofType<RadioActions.AddRadio>(RadioActionTypes.AddRadio),
+  addReply$ = this.actions$.pipe(
+    ofType<AddReply>(RadioActionTypes.AddReply),
     map(action => action.payload),
-    mergeMap((payload: any) => {
-      return this.radioService.addRadio(payload).pipe(
-        mergeMap((radio: any) => [new RadioActions.AddRadioSuccess(radio.data)]),
-        catchError((error: HttpErrorResponse) => of(new RadioActions.AddRadioFail(error)))
-      );
-    })
-  );
-
-  @Effect()
-  replyRadio$ = this.actions$.pipe(
-    ofType<RadioActions.ReplyRadio>(RadioActionTypes.ReplyRadio),
-    map(action => action.payload),
-    mergeMap((payload: any) => {
-      return this.radioService.addReplyRadio(payload).pipe(
-        mergeMap((comment: AddReplyRadioApiResponse) => [new RadioActions.ReplyRadioSuccess(comment.data)]),
-        catchError((error: HttpErrorResponse) => of(new RadioActions.ReplyRadioFail(error)))
-      );
-    })
-  );
-
-  @Effect()
-  archiveRadio$ = this.actions$.pipe(
-    ofType<RadioActions.ArchiveRadio>(RadioActionTypes.ArchiveRadio),
-    map(action => action.payload),
-    mergeMap((payload: any) => {
-      return this.radioService.archiveRadio(payload).pipe(
-        mergeMap((comment: ArchiveRadioApiResponse) => [new RadioActions.ArchiveRadioSuccess(comment.data)]),
-        catchError((error: HttpErrorResponse) => of(new RadioActions.ArchiveRadioFail(error)))
+    mergeMap((payload: {entity: ReplyApiRequest, id: string}) => {
+      return this.radioService.addRadioReply(payload.entity, payload.id).pipe(
+        mergeMap((radio: ReplyApiResponse) => [new AddReplySuccess(radio.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddRadioEntityFailure(error)))
       );
     })
   );

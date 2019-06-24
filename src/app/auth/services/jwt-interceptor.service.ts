@@ -24,7 +24,7 @@ export class JWTInterceptor implements HttpInterceptor {
     } else if (token) {
       // Use Json Server for mock data
       console.log(request.url);
-      if (request.url.includes('radio') || request.url.includes('attributes')) {
+      if (request.url.includes('attributes')) {
         request = request.clone({
           url: `http://localhost:3000${request.url}`
         })
