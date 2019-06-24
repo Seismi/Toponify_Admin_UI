@@ -8,8 +8,6 @@ import { ArchitecturePaletteComponent } from '../components/architecture-palette
 })
 export class LeftPanelComponent {
 
-  @Input() showTable = false;
-  @Input() showPalette = true;
   @Input() workPackageIsEditable = false;
 
   constructor() { }
@@ -19,6 +17,9 @@ export class LeftPanelComponent {
 
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
+
+  // Update left pelette after showing EDIT tab
+  onUpdatePalette() { }
 
   displayOptionsChanged({event, option}: {event: any, option: string}) {
     this.displayOptionsChangedEvent.emit({event, option});
