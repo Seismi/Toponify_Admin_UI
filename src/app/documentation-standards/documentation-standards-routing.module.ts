@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DocumentationStandardsComponent } from './containers/documentation-standards/documentation-standards.component';
-import { DocumentationStandardsDetailComponent } from './components/documentation-standards-detail/documentation-standards-detail.component';
+import { DocumentationStandardsDetailsComponent } from './containers/documentation-standards-details/documentation-standards-details.component';
 
 export const documentationStandardsRoutes: Routes = [
   {
@@ -10,7 +10,7 @@ export const documentationStandardsRoutes: Routes = [
     children: [
       {
         path: ':documentStandardId',
-        component: DocumentationStandardsDetailComponent
+        component: DocumentationStandardsDetailsComponent
       }
     ]
   }

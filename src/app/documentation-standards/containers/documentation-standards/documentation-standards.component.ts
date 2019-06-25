@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { State as DocumentationStandardState } from '../../store/reducers/documentation-standards.reducer'
 import { LoadDocumentationStandards } from '../../store/actions/documentation-standards.actions';
 import { getDocumentStandards } from '../../store/selectors/documentation-standards.selector';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { DocumentStandard } from '../../store/models/documentation-standards.model';
 import { Router } from '@angular/router';
 
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 
 export class DocumentationStandardsComponent implements OnInit {
 
-  selectDocumentStandard = false;
+  subscriptions: Subscription[] = [];
   documentStandards$: Observable<DocumentStandard[]>;
 
   constructor(
@@ -23,7 +23,7 @@ export class DocumentationStandardsComponent implements OnInit {
     private router: Router
   ) { }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.store.dispatch(new LoadDocumentationStandards({}));
     this.documentStandards$ = this.store.pipe(select(getDocumentStandards));
   }
