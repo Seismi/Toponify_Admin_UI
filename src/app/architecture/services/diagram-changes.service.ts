@@ -22,10 +22,13 @@ export const standardDisplayOptions = {
 };
 
 // TEMPORARY HARD CODED COLOURS FOR WORK PACKAGES
-const workPackageColours = ['green', 'orange', 'blue'];
+const workPackageColours = ['green', 'orange', 'blue', 'red'];
 
 @Injectable()
 export class DiagramChangesService {
+
+  // Colors for work packages
+  colors = workPackageColours;
 
   constructor(
     public diagramLevelService: DiagramLevelService,

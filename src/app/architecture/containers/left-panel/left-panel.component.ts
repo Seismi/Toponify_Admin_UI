@@ -9,11 +9,18 @@ import { ArchitecturePaletteComponent } from '../../components/architecture-pale
 export class LeftPanelComponent {
 
   @Input() workPackageIsEditable = false;
+  @Input() data: any;
 
   constructor() { }
 
   @Output()
   displayOptionsChangedEvent = new EventEmitter();
+
+  @Output()
+  selectWorkPackage = new EventEmitter();
+
+  @Output()
+  selectColor = new EventEmitter<object>();
 
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
@@ -25,4 +32,13 @@ export class LeftPanelComponent {
     this.displayOptionsChangedEvent.emit({event, option});
     this.paletteComponent.updateDisplayOptions(event, option);
   }
+
+  onSelectWorkPackage(id) {
+    this.selectWorkPackage.emit(id);
+  }
+
+  onSelectColor(color, id) {
+    this.selectColor.emit({color, id});
+  }
+
 }

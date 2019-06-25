@@ -354,9 +354,11 @@ export class ArchitectureComponent implements OnInit {
   onSelectWorkPackage(id) {
     this.workpackageId = id;
     this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
-    this.workpackageStore.pipe(select(getSelectedWorkPackage)).subscribe(data => {
-      this.workpackageDetail = data;
-    });
+    this.workpackageStore.pipe(select(getSelectedWorkPackage));
+  }
+
+  selectColorForWorkPackage(color, id) {
+    console.log(color, id)
   }
 
 
