@@ -8,8 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { LinkType, NodeType } from '@app/nodes/services/node.service';
 import { linkCategories, NodeLink, AttributesEntity } from '@app/nodes/store/models/node-link.model';
 import {Node, nodeCategories, NodeDetail} from '@app/nodes/store/models/node.model';
-import { getNodeEntities, getNodeLinks, getSelectedNode,
-  filterNodeEntities, filterNodeLinks } from '@app/nodes/store/selectors/node.selector';
+import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/nodes/store/selectors/node.selector';
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -40,7 +39,7 @@ import { viewLevelNum, Level } from '../services/diagram-level.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class ArchitectureComponent implements OnInit {
+export class ArchitectureComponent implements OnInit, OnDestroy {
 
   @Input() attributesView = false;
   @Input() allowMove: boolean;
@@ -98,14 +97,13 @@ export class ArchitectureComponent implements OnInit {
     this.selectedWorkPackages$ = this.workpackageStore.pipe(select(getSelectedWorkPackage));
 
     this.filterServiceSubscription = this.filterService.filter.subscribe((item: any) => {
-      const { filterLevel, id } = item;
-      this.setNodesLinks(filterLevel, id);
+      if (item) {
+        const { filterLevel, id } = item;
+        if (filterLevel) {
+          this.setNodesLinks(filterLevel, id);
+        }
+      }
     });
-
-    const filterFromQuery = this.filterService.getFilter();
-    if (!filterFromQuery.filterLevel) {
-      this.filterService.setFilter({filterLevel: Level.system});
-    }
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -118,6 +116,10 @@ export class ArchitectureComponent implements OnInit {
     /*this.attributeSubscription = this.store.pipe(select(fromNode.getAttributes)).subscribe((data) => {
       this.attributes = data.attributes;
     });*/
+  }
+
+  ngOnDestroy() {
+    this.filterServiceSubscription .unsubscribe();
   }
 
   setNodesLinks(layer: string, id?: string) {
