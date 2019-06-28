@@ -60,7 +60,7 @@ export function reducer(state = initialState, action: DocumentationStandardActio
     }
 
     case DocumentationStandardActionTypes.AddDocumentationStandardSuccess: {
-      const addedEntity = action.payload.data;
+      const addedEntity = action.payload;
       return {
         ...state,
         entities: [...state.entities, addedEntity],
@@ -69,7 +69,7 @@ export function reducer(state = initialState, action: DocumentationStandardActio
     }
 
     case DocumentationStandardActionTypes.UpdateDocumentationStandardSuccess: {
-      const updatedEntity = action.payload.data;
+      const updatedEntity = action.payload;
       return {
         ...state,
         entities: state.entities.map(entity => {

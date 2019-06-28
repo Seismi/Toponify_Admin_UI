@@ -12,7 +12,8 @@
         <div class="col">
             <smi-documentation-standards-table
                 [data]="documentStandards$ | async"
-                (documentationSelected)="onSelectDocumentation($event)">
+                (documentSelected)="onSelectDocument($event)"
+                (addDocument)="onAddDocument($event)">
             </smi-documentation-standards-table>
         </div>
         <router-outlet></router-outlet>

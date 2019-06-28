@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DocumentStandard } from '../models/documentation-standards.model';
+import { DocumentStandard, DocumentStandardApiRequest } from '../models/documentation-standards.model';
 
 export enum DocumentationStandardActionTypes {
   LoadDocumentationStandards = '[DocumentationStandard] Load DocumentationStandards',
@@ -22,7 +22,6 @@ export enum DocumentationStandardActionTypes {
   DeleteDocumentationStandard = '[DocumentationStandard] Delete DocumentationStandard entity',
   DeleteDocumentationStandardSuccess = '[DocumentationStandard] Delete DocumentationStandard entity Success',
   DeleteDocumentationStandardFailure = '[DocumentationStandard] Delete DocumentationStandard entity Failure',
-
 }
 
 export class LoadDocumentationStandards implements Action {
@@ -59,12 +58,12 @@ export class LoadDocumentationStandardFailure implements Action {
 
 export class AddDocumentationStandard implements Action {
   readonly type = DocumentationStandardActionTypes.AddDocumentationStandard;
-  constructor(public payload: any) { }
+  constructor(public payload: DocumentStandardApiRequest) { }
 }
 
 export class AddDocumentationStandardSuccess implements Action {
   readonly type = DocumentationStandardActionTypes.AddDocumentationStandardSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: DocumentStandard) { }
 }
 
 export class AddDocumentationStandardFailure implements Action {
@@ -75,12 +74,12 @@ export class AddDocumentationStandardFailure implements Action {
 
 export class UpdateDocumentationStandard implements Action {
   readonly type = DocumentationStandardActionTypes.UpdateDocumentationStandard;
-  constructor(public payload: {id: string, data: any}) { }
+  constructor(public payload: {id: string, data: DocumentStandardApiRequest}) { }
 }
 
 export class UpdateDocumentationStandardSuccess implements Action {
   readonly type = DocumentationStandardActionTypes.UpdateDocumentationStandardSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: DocumentStandard) { }
 }
 
 export class UpdateDocumentationStandardFailure implements Action {

@@ -30,7 +30,7 @@ export class RadioModalComponent {
     return this.radioDetailService.radioDetailsForm;
   }
 
-  onSubmit() {
+  onSubmit(data: any) {
     if (!this.radioDetailService.isValid) {
       return;
     }

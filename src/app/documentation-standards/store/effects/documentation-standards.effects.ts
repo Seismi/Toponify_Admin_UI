@@ -10,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
-import { DocumentStandardsApiResponse, DocumentStandardApiResponse } from '../models/documentation-standards.model';
+import { DocumentStandardsApiResponse, DocumentStandardApiResponse, DocumentStandardApiRequest } from '../models/documentation-standards.model';
 import { DocumentationStandardActionTypes } from '../actions/documentation-standards.actions';
 
 
@@ -48,10 +48,10 @@ export class DocumentationStandardEffects {
   addDocumentationStandard$ = this.actions$.pipe(
     ofType<DocumentationStandardActions.AddDocumentationStandard>(DocumentationStandardActionTypes.AddDocumentationStandard),
     map(action => action.payload),
-    mergeMap((payload: any) => {
+    mergeMap((payload: DocumentStandardApiRequest) => {
       return this.documentationStandardsService.addCustomProperty(payload).pipe(
-        mergeMap((response: any) => [new DocumentationStandardActions.AddDocumentationStandardSuccess(response)]),
-        catchError((error: HttpErrorResponse) => of(new DocumentationStandardActions.AddDocumentationStandardSuccess(error)))
+        mergeMap((response: DocumentStandardApiResponse) => [new DocumentationStandardActions.AddDocumentationStandardSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DocumentationStandardActions.AddDocumentationStandardFailure(error)))
       );
     })
   );
@@ -60,9 +60,9 @@ export class DocumentationStandardEffects {
   updateDocumentationdtandard$ = this.actions$.pipe(
     ofType<DocumentationStandardActions.UpdateDocumentationStandard>(DocumentationStandardActionTypes.UpdateDocumentationStandard),
     map(action => action.payload),
-    mergeMap((payload: any) => {
+    mergeMap((payload: {id: string, data: DocumentStandardApiRequest}) => {
       return this.documentationStandardsService.updateCustomeProperty(payload.id, payload.data).pipe(
-        mergeMap((response: any) => [new DocumentationStandardActions.UpdateDocumentationStandardSuccess(response)]),
+        mergeMap((response: DocumentStandardApiResponse) => [new DocumentationStandardActions.UpdateDocumentationStandardSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DocumentationStandardActions.UpdateDocumentationStandardFailure(error)))
       );
     })
