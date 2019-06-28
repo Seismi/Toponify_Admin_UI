@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RadioComponent } from './containers/radio.component';
+import { RadioComponent } from './containers/radio/radio.component';
 import { RadioRoutingComponent } from './containers/radio-routing.components';
 import { CoreModule } from '@app/core/core.module';
 import { CommonModule } from '@angular/common';
