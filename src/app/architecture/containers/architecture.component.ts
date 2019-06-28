@@ -27,7 +27,14 @@ import { getWorkPackageEntities, getSelectedWorkPackage } from '@app/workpackage
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
+import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
+import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
+import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
+import { LoadLayouts, LoadLayout } from '@app/layout/store/actions/layout.actions';
+import { ScopeEntity, ScopeDetails } from '@app/scope/store/models/scope.model';
+import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+
 
 @Component({
   selector: 'smi-architecture',
@@ -46,6 +53,8 @@ export class ArchitectureComponent implements OnInit {
   nodeLinks$: Observable<NodeLink[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
+  scopes$: Observable<ScopeEntity[]>;
+  scopeDetails$: Observable<ScopeDetails>;
   mapView: boolean;
   viewLevel$: Observable<number>;
   mapViewId$: Observable<string>;
@@ -72,6 +81,8 @@ export class ArchitectureComponent implements OnInit {
 
   constructor(
     private nodeStore: Store<NodeState>,
+    private scopeStore: Store<ScopeState>,
+    private layoutStore: Store<LayoutState>,
     private store: Store<ViewState>,
     private workpackageStore: Store<WorkPackageState>,
     private route:  ActivatedRoute,
@@ -81,16 +92,25 @@ export class ArchitectureComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+      // Nodes
       this.nodeStore.dispatch((new LoadNodes()));
       this.nodeStore.dispatch((new LoadNodeLinks()));
 
       this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
       this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
+      
+      // Scopes
+      this.scopeStore.dispatch(new LoadScopes({}));
+      this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
 
+      // Layouts
+      this.layoutStore.dispatch(new LoadLayouts({}));
+      
       // Load Work Packages
       this.workpackageStore.dispatch(new LoadWorkPackages({}));
       this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
 
+      // View Level
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
       this.viewLevel$.subscribe(this.setNodesLinks);
 
@@ -339,6 +359,16 @@ export class ArchitectureComponent implements OnInit {
 
   selectColorForWorkPackage(color, id) {
     console.log(color, id)
+  }
+
+
+  onSelectScope(id) {
+    this.scopeStore.dispatch(new LoadScope(id));
+    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
+  }
+
+  onSelectLayout(id) {
+    this.layoutStore.dispatch(new LoadLayout(id));
   }
 
 }
