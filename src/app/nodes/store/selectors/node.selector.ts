@@ -14,6 +14,9 @@ export const getNodeLinks = createSelector(
     if (!state.links) {
       return null;
     }
+    if (!props) {
+      return state.links;
+    }
     const { layer } = props;
     if (!layer) {
       return state.links;
@@ -27,6 +30,9 @@ export const getNodeEntities = createSelector(
   (state: State, props?: {layer?: string, id?: string}) => {
     if (!state.entities) {
       return null;
+    }
+    if (!props) {
+      return state.entities;
     }
     const { layer, id } = props;
     if (!layer) {

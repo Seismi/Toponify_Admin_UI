@@ -100,9 +100,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.dispatch((new LoadNodes()));
       this.nodeStore.dispatch((new LoadNodeLinks()));
 
-      // this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
-      // this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
-
       // Scopes
       this.scopeStore.dispatch(new LoadScopes({}));
       this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
@@ -116,7 +113,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       // View Level
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
-      // this.viewLevel$.subscribe(this.setNodesLinks);
 
     this.filterServiceSubscription = this.filterService.filter.subscribe((item: any) => {
       if (item) {
@@ -145,6 +141,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   setNodesLinks(layer: string, id?: string) {
+    layer = layer.toLowerCase();
     if (layer !== 'attribute') {
       this.attributesView = false;
     } else {
@@ -181,7 +178,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // By clicking on link show only name, category and description in the right panel
     this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-
     // Load Node Details
     this.nodeStore.dispatch((new LoadNode(this.nodeId)));
     this.nodeDetail$ = this.nodeStore.pipe(select(getSelectedNode));
