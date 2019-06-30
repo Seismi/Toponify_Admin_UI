@@ -25,7 +25,7 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
 
     case ScopeActionTypes.LoadScopes: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }
@@ -50,7 +50,7 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
 
     case ScopeActionTypes.LoadScope: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }

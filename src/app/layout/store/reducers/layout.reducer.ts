@@ -2,7 +2,7 @@ import { LayoutDetails, Page, Links, LayoutEntity } from '../models/layout.model
 import { LayoutActionTypes, LayoutActionsUnion } from '../actions/layout.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
-export interface LayoutState {
+export interface State {
   loading: boolean;
   entities: LayoutEntity[];
   selected: LayoutDetails;
@@ -11,7 +11,7 @@ export interface LayoutState {
   error?: HttpErrorResponse | { message: string };
 }
 
-export const initialState: LayoutState = {
+export const initialState: State = {
   loading: false,
   entities: null,
   selected: null,
@@ -20,7 +20,7 @@ export const initialState: LayoutState = {
   error: null
 };
 
-export function reducer(state = initialState, action: LayoutActionsUnion): LayoutState {
+export function reducer(state = initialState, action: LayoutActionsUnion): State {
   switch (action.type) {
 
     case LayoutActionTypes.LoadLayouts: {

@@ -1,7 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { LayoutState } from '../reducers/layout.reducer';
+import { State } from '../reducers/layout.reducer';
 
-export const getLayoutFeatureState = createFeatureSelector<LayoutState>('layoutFeature');
+export const getLayoutFeatureState = createFeatureSelector<State>('layoutFeature');
 
 export const getLayoutEntities = createSelector(
   getLayoutFeatureState,
