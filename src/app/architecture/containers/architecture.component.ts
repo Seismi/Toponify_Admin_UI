@@ -1,7 +1,7 @@
 import { LoadNodes, LoadNodeLinks, LoadNode } from '@app/nodes/store/actions/node.actions';
 import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy, Output} from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
@@ -34,6 +34,8 @@ import { LoadLayouts, LoadLayout } from '@app/layout/store/actions/layout.action
 import { ScopeEntity, ScopeDetails } from '@app/scope/store/models/scope.model';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { FilterService } from '../services/filter.service';
+import { viewLevelNum, Level } from '../services/diagram-level.service';
 
 
 @Component({
@@ -44,7 +46,7 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class ArchitectureComponent implements OnInit {
+export class ArchitectureComponent implements OnInit, OnDestroy {
 
   @Input() attributesView = false;
   @Input() allowMove: boolean;
@@ -72,12 +74,13 @@ export class ArchitectureComponent implements OnInit {
   workpackageId: string;
   workpackageDetail: any;
   public selectedWorkPackages$: Observable<WorkPackageDetail>;
+  filterServiceSubscription: Subscription;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
 
   @ViewChild(LeftPanelComponent)
-  private leftPanelComponent: LeftPanelComponent
+  private leftPanelComponent: LeftPanelComponent;
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -88,7 +91,8 @@ export class ArchitectureComponent implements OnInit {
     private route:  ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
     private diagramChangesService: DiagramChangesService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public filterService: FilterService,
   ) { }
 
   ngOnInit() {
@@ -96,94 +100,55 @@ export class ArchitectureComponent implements OnInit {
       this.nodeStore.dispatch((new LoadNodes()));
       this.nodeStore.dispatch((new LoadNodeLinks()));
 
-      this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
-      this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
-      
       // Scopes
       this.scopeStore.dispatch(new LoadScopes({}));
       this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
 
       // Layouts
       this.layoutStore.dispatch(new LoadLayouts({}));
-      
+
       // Load Work Packages
       this.workpackageStore.dispatch(new LoadWorkPackages({}));
       this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
 
       // View Level
       this.viewLevel$ = this.store.pipe(select(getViewLevel));
-      this.viewLevel$.subscribe(this.setNodesLinks);
 
-      this.selectedWorkPackages$ = this.workpackageStore.pipe(select(getSelectedWorkPackage));
-
-      /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
-      this.mapViewId$.subscribe(linkId => {
-        if (linkId) {
-          const payload = { linkId: linkId};
-          this.store.dispatch(new LoadMapView(payload));
+    this.filterServiceSubscription = this.filterService.filter.subscribe((item: any) => {
+      if (item) {
+        const { filterLevel, id } = item;
+        if (filterLevel) {
+          this.setNodesLinks(filterLevel, id);
         }
-        this.mapView = Boolean(linkId);
-      });*/
-      /*this.attributeSubscription = this.store.pipe(select(fromNode.getAttributes)).subscribe((data) => {
-        this.attributes = data.attributes;
-      });*/
+      }
+    });
+
+    /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
+    this.mapViewId$.subscribe(linkId => {
+      if (linkId) {
+        const payload = { linkId: linkId};
+        this.store.dispatch(new LoadMapView(payload));
+      }
+      this.mapView = Boolean(linkId);
+    });*/
+    /*this.attributeSubscription = this.store.pipe(select(fromNode.getAttributes)).subscribe((data) => {
+      this.attributes = data.attributes;
+    });*/
   }
 
-  setNodesLinks = (level: number) => {
-    if (level !== 5) {
+  ngOnDestroy() {
+    this.filterServiceSubscription .unsubscribe();
+  }
+
+  setNodesLinks(layer: string, id?: string) {
+    layer = layer.toLowerCase();
+    if (layer !== 'attribute') {
       this.attributesView = false;
     } else {
       this.attributesView = true;
     }
-
-    switch (level) {
-      case 1:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
-          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'system'; }) : null; })
-        );
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
-          map(function(links) {return links ? links.filter(function(link) {return link.layer === 'system'; }) : null; })
-        );
-        break;
-      case 2:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
-          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'data set'; }) : null; })
-        );
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
-          map(function(links) {return links ? links.filter(function(link) {return link.layer === 'data set'; }) : null; })
-        );
-        break;
-      case 3:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
-          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'dimension'; }) : null; })
-        );
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
-          map(function(links) {return  links ? links.filter(function(link) {return link.layer === 'dimension'; }) : null; })
-        );
-        break;
-      case 4:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
-          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'reporting concept'; }) : null; })
-        );
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
-          map(function(links) {return  links ? links.filter(function(link) {return link.layer === 'reporting concept'; }) : null; })
-        );
-        break;
-      case 5:
-        // this.nodes$ = this.store.pipe(select(???));
-        break;
-      case 9:
-        /*this.nodes$ = this.store.pipe(select(???));
-        this.nodeLinks$ = this.store.pipe(select(???));*/
-        break;
-      default:
-        this.nodes$ = this.nodeStore.pipe(select(getNodeEntities),
-          map(function(nodes) {return nodes ? nodes.filter(function(node) {return node.layer === 'system'; }) : null; })
-        );
-        this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks),
-          map(function(links) {return links ? links.filter(function(link) {return link.layer === 'system'; }) : null; })
-        );
-    }
+    this.nodes$ = this.nodeStore.pipe(select(getNodeEntities, {layer: layer, id: id}));
+    this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks, {layer: layer, id: id}));
   }
 
   partSelected(part: any) {
@@ -213,7 +178,6 @@ export class ArchitectureComponent implements OnInit {
 
     // By clicking on link show only name, category and description in the right panel
     this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-
     // Load Node Details
     this.nodeStore.dispatch((new LoadNode(this.nodeId)));
     this.nodeDetail$ = this.nodeStore.pipe(select(getSelectedNode));
