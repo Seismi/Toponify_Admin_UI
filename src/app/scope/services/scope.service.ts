@@ -17,6 +17,10 @@ const httpOptions = {
 @Injectable()
 export class ScopeService {
 
+  // FIXME: Move to shared service
+  selectedScopes = [];
+  selectedViewers = [];
+
   constructor(private http: HttpClient) { }
 
   getScopes(queryParams: ScopeEntitiesHttpParams): Observable<GetScopeEntitiesApiResponse> {

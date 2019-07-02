@@ -1,34 +1,51 @@
-<form>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Name:</label>
-        <div class="col-sm-9">
-            <input type="text" class="form-control">
+<form [formGroup]="group">
+    <!-- Name -->
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" formControlName="name"
+            [ngClass]="{ disabled: !isEditable, 'is-invalid': (!group.controls['name'].valid && group.controls['name'].touched)}">
+        <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
+            <div>This field is required!</div>
         </div>
     </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Owners:</label>
-        <div class="col-sm-9">
-            <input type="text" class="form-control">
+
+    <!-- Owners Dropdown -->
+    <smi-owners-dropdown *ngIf="modalMode" [data]="data"></smi-owners-dropdown>
+    <!-- Viewers Dropdown-->
+    <smi-viewers-dropdown *ngIf="modalMode" [data]="data"></smi-viewers-dropdown>
+
+    <div class="row" *ngIf="!modalMode">
+        <div class="col">
+            <smi-owners-list [data]="ownersList"></smi-owners-list>
         </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Viewers:</label>
-        <div class="col-sm-9">
-            <input type="text" class="form-control">
+        <div class="col">
+            <smi-viewers-list [data]="viewersList"></smi-viewers-list>
         </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label">Filtering components:</label>
-        <div class="col-sm-9">
-            <input type="text" class="form-control">
+    </div><br>
+
+    <!-- Filtering Components -->
+    <div class="form-group" *ngIf="!modalMode">
+        <label>Filtering Components</label>
+        <select class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="layerFilter">
+            <option
+                *ngFor="let layerFilter of layerFilter" 
+                [value]="layerFilter">
+                {{layerFilter}}
+            </option>
+        </select>
+    </div><br>
+
+    <!-- Form Actions -->
+    <div class="form-actions" *ngIf="!modalMode">
+        <div *ngIf="!isEditable">
+            <button type="button" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+            <button type="button" mat-raised-button color="primary">Open</button>
+            <button type="button" mat-raised-button color="primary">Copy</button>
+            <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
         </div>
-    </div>
-    <br>
-    <mat-checkbox>Is Public</mat-checkbox>
-    <div class="form-actions">
-        <button type="button" mat-raised-button color="primary">Edit</button>
-        <button type="button" mat-raised-button color="primary">Open</button>
-        <button type="button" mat-raised-button color="primary">Copy</button>
-        <button type="button" mat-raised-button color="warn">Delete</button>
+        <div *ngIf="isEditable">
+            <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+            <button mat-flat-button (click)="onCancel()">Cancel</button>
+        </div>
     </div>
 </form>

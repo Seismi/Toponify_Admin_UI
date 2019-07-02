@@ -60,7 +60,7 @@ export function reducer(state = initialState, action: LayoutActionsUnion): State
         ...state,
         loading: false,
         // FIXME: just for testing purposes, remove when store/api works properly
-        selected: action.payload.data ? action.payload.data : {} as any
+        selected: action.payload.data
       };
     }
 
