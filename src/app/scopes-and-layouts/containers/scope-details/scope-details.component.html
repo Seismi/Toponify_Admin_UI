@@ -3,7 +3,14 @@
     <div class="row">
         <div class="col scope-details">
             <!-- Scopes Detail Form -->
-            <smi-scopes-detail ></smi-scopes-detail>
+            <div class="scope-form-wrapper">
+                <smi-scopes-detail
+                    [group]="scopesDetailForm"
+                    [ownersList]="selecetedScope"
+                    [viewersList]="selecetedScope"
+                    (deleteScope)="onDeleteScope($event)">
+                </smi-scopes-detail>
+            </div>
         </div>
 
         <div class="w-100"></div>
@@ -11,7 +18,9 @@
         <div class="col">
             <!-- Layouts Table -->
             <smi-layouts-table
-                (layoutSelected)="onLayoutSelect($event)">
+                [data]="selecetedScope"
+                (layoutSelected)="onLayoutSelect($event)"
+                (addLayout)="onAddLayout($event)">
             </smi-layouts-table>
         </div>
         <router-outlet></router-outlet>

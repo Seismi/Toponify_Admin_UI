@@ -13,7 +13,7 @@ export interface State {
 
 export const initialState: State = {
   loading: false,
-  entities: null,
+  entities: [],
   selected: null,
   page: null,
   links: null,
@@ -25,7 +25,7 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
 
     case ScopeActionTypes.LoadScopes: {
       return {
-        ...state,
+        ...initialState,
         loading: true
       };
     }
@@ -60,7 +60,7 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
         ...state,
         loading: false,
         // FIXME: just for testing purposes, remove when store/api works properly
-        selected: action.payload.data ? action.payload.data : {id: '7497a490-925a-11e9-bc42-526af7764f64'} as any
+        selected: action.payload.data
       };
     }
 

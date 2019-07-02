@@ -1,27 +1,31 @@
-<form>
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Name:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Owners:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Viewers:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control">
+<form [formGroup]="group">
+    <!-- Name -->
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" formControlName="name"
+            [ngClass]="{ disabled: !isEditable, 'is-invalid': (!group.controls['name'].valid && group.controls['name'].touched)}">
+        <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
+            <div>This field is required!</div>
         </div>
     </div>
 
-    <mat-checkbox>Is Public</mat-checkbox>
-    <br><br>
-    <button type="button" mat-raised-button color="primary">Edit</button>
-    <button type="button" mat-raised-button color="primary">Open</button>
-    <button type="button" mat-raised-button color="primary">Copy</button>
-    <button type="button" mat-raised-button color="warn">Delete</button>
+    <!-- Owners Dropdown -->
+    <smi-owners-dropdown *ngIf="modalMode" [data]="data"></smi-owners-dropdown>
+
+    <!-- Viewers Dropdown-->
+    <smi-viewers-dropdown *ngIf="modalMode" [data]="data"></smi-viewers-dropdown>
+
+    <!-- Form actions -->
+    <div class="form-actions" *ngIf="!modalMode">
+        <div *ngIf="!isEditable">
+            <button type="button" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+            <button type="button" mat-raised-button color="primary">Open</button>
+            <button type="button" mat-raised-button color="primary">Copy</button>
+            <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+        </div>
+        <div *ngIf="isEditable">
+            <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+            <button mat-flat-button (click)="onCancel()">Cancel</button>
+        </div>
+    </div>
 </form>

@@ -22,3 +22,12 @@ export const getScopeError = createSelector(
     getScopeFeatureState,
     state => state.error
 );
+
+export const getScopeById = (id: string) => {
+    return createSelector(
+      getScopeFeatureState,
+      state => {
+        return state.entities.filter(entity => entity.id === id);
+      }
+    );
+  };
