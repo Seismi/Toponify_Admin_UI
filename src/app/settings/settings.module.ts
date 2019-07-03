@@ -16,7 +16,9 @@ import {
   MatTableModule,
   MatPaginatorModule,
   MatSortModule,
-  MatDialogModule
+  MatDialogModule,
+  MatIconModule,
+  MatListModule
 } from '@angular/material';
 import { UsersTableComponent } from './components/users-table/users-table.component';
 import { MyUserFormComponent } from './components/my-user-form/my-user-form.component';
@@ -32,6 +34,13 @@ import { reducer as TeamReducer } from './store/reducers/team.reducer';
 import { UserEffects } from './store/effects/user.effects';
 import { TeamService } from '@app/settings/services/team.service';
 import { TeamEffects } from './store/effects/team.effects';
+import { TeamsTableComponent } from './components/teams-table/teams-table.component';
+import { TeamDetailComponent } from './components/team-detail/team-detail.component';
+import { MembersTableComponent } from './components/members-table/members-table.component';
+import { TeamModalComponent } from './containers/team-modal/team-modal.component';
+import { DeleteTeamAndMemberModalComponent } from './containers/delete-modal/delete-modal.component';
+import { MemberModalComponent } from './containers/member-modal/member-modal.component';
+import { UsersListComponent } from './components/users-list/users-list.component';
 
 @NgModule({
   imports: [
@@ -51,6 +60,8 @@ import { TeamEffects } from './store/effects/team.effects';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
+    MatIconModule,
+    MatListModule,
     StoreModule.forFeature('userFeature', UserReducer),
     StoreModule.forFeature('teamFeature', TeamReducer),
     EffectsModule.forFeature([UserEffects, TeamEffects])
@@ -64,9 +75,22 @@ import { TeamEffects } from './store/effects/team.effects';
     OrganisationComponent,
     ChangePasswordFormComponent,
     ChangePasswordModalComponent,
-    UserModalComponent
+    UserModalComponent,
+    TeamsTableComponent,
+    TeamDetailComponent,
+    MembersTableComponent,
+    TeamModalComponent,
+    DeleteTeamAndMemberModalComponent,
+    MemberModalComponent,
+    UsersListComponent
   ],
-  entryComponents: [ChangePasswordModalComponent, UserModalComponent],
+  entryComponents: [
+    ChangePasswordModalComponent, 
+    UserModalComponent, 
+    TeamModalComponent, 
+    DeleteTeamAndMemberModalComponent,
+    MemberModalComponent
+  ],
   providers: [
     UserService,
     TeamService

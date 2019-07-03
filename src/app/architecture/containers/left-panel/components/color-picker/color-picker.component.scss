@@ -1,0 +1,13 @@
+input {
+    width: 25px;
+    cursor: pointer;
+    border: solid 1px;
+}
+
+button:focus {
+    outline: none;
+}
+
+.mat-menu-content:not(:empty) {
+    padding: 0;
+}

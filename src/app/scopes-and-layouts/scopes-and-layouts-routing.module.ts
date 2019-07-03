@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ScopesAndLayoutsRoutingComponent } from './containers/scopes-and-layouts-routing.component';
 import { ScopesAndLayoutsComponent } from './containers/scopes-and-layouts.component';
+import { ScopeDetailsComponent } from './containers/scope-details/scope-details.component';
+import { LayoutDetailsComponent } from './containers/layout-details/layout-details.component';
 
 export const scopesAndLayoutsRoutes: Routes = [
   {
@@ -10,7 +12,19 @@ export const scopesAndLayoutsRoutes: Routes = [
     children: [
       {
         path: '',
-        component: ScopesAndLayoutsComponent
+        component: ScopesAndLayoutsComponent,
+        children: [
+          {
+            path: ':scopeId',
+            component: ScopeDetailsComponent,
+            children: [
+              {
+                path: ':layoutId',
+                component: LayoutDetailsComponent,
+              }
+            ]
+          }
+        ]
       }
     ]
   }

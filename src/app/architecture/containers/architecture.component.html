@@ -15,25 +15,30 @@
   ></app-layout-actions>
   </app-toolbar-column>
   <app-toolbar-column>
-    <smi-quicklinks-actions 
+    <smi-quicklinks-actions
       [gojsView]="true" 
       [allowEditLayouts]="allowEditLayouts"
       [allowEditWorkPackages]="allowEditWorkPackages"
-      [data]="workpackage$ | async"
+      [workpackages]="workpackage$ | async"
+      [scopes]="scopes$ | async"
+      [layouts]="scopeDetails$ | async"
       (editWorkPackage)="allowEditWorkPackage($event)"
       (editLayout)="allowEditLayout($event)"
-      (selectWorkPackage)="onSelectWorkPackage($event)">
+      (selectWorkPackage)="onSelectWorkPackage($event)"
+      (selectScope)="onSelectScope($event)"
+      (selectLayout)="onSelectLayout($event)">
     </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <app-model-sidebar [minWidth]="210">
+  <app-model-sidebar [minWidth]="210" [maxWidth]="600">
     <p>
       <smi-left-panel
-        [showTable]="showTable"
-        [showPalette]="showPalette"
+        [data]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
-        (displayOptionsChangedEvent)="displayOptionsChanged($event)">
+        (displayOptionsChangedEvent)="displayOptionsChanged($event)"
+        (selectWorkPackage)="onSelectWorkPackage($event)"
+        (selectColor)="selectColorForWorkPackage($event)">
       </smi-left-panel>
     </p>
   </app-model-sidebar>

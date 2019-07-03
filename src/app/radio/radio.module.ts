@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RadioComponent } from './containers/radio.component';
+import { RadioComponent } from './containers/radio/radio.component';
 import { RadioRoutingComponent } from './containers/radio-routing.components';
 import { CoreModule } from '@app/core/core.module';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import {
     MatInputModule,
     MatButtonModule,
     MatPaginatorModule,
+    MatSortModule,
     MatDialogModule  
 } from '@angular/material';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
@@ -38,6 +39,7 @@ import { reducer } from './store/reducers/radio.reducer';
         MatInputModule,
         MatButtonModule,
         MatPaginatorModule,
+        MatSortModule,
         MatDialogModule,
         StoreModule.forFeature('radioFeature', reducer),
         EffectsModule.forFeature([ RadioEffects ])
@@ -53,9 +55,7 @@ import { reducer } from './store/reducers/radio.reducer';
         ReplyTextComponent,
         ChatBoxComponent
     ],
-    entryComponents: [RadioModalComponent, ReplyModalComponent],
-    providers: [
-        RadioService
-    ]
+    entryComponents: [ RadioModalComponent, ReplyModalComponent ],
+    providers: [ RadioService ]
 })
 export class RadioModule { }

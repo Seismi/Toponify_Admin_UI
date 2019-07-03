@@ -4,6 +4,7 @@ import {nodeCategories, layers} from '@app/nodes/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {updateShapeShadows, CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
+import { Level } from './diagram-level.service';
 
 const $ = go.GraphObject.make;
 
@@ -16,6 +17,24 @@ export class DiagramTemplatesService {
   constructor(
     public filterService: FilterService,
   ) {}
+
+  changeLevelWithFilter(event: any, object: go.Node): void {
+    let newLevel: Level;
+    if ([nodeCategories.transactional,
+      nodeCategories.analytical,
+      nodeCategories.file,
+      nodeCategories.reporting,
+      nodeCategories.masterData].includes(object.data.category)) {
+      newLevel = Level.dataSet;
+    } else if ([nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData].includes(object.data.category)) {
+      newLevel = Level.dimension;
+    } else if (object.data.category === nodeCategories.dimension) {
+      newLevel = Level.reportingConcept;
+    } else {
+      return;
+    }
+    this.filterService.setFilter({filterLevel: newLevel, id: object.data.id});
+  }
 
   // Get item template for list of node children
   getItemTemplate() {
@@ -59,7 +78,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        // doubleClick: this.changeLevelWithFilter.bind(this),
+        doubleClick: this.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -226,7 +245,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        // doubleClick: this.changeLevelWithFilter.bind(this),
+        doubleClick: this.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -383,7 +402,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        // doubleClick: this.changeLevelWithFilter.bind(this),
+        doubleClick: this.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },

@@ -37,6 +37,8 @@ import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropd
 import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
 import { WorkPackageDropdownComponent } from './layout/header/quicklinks-actions/workpackage-dropdown/workpackage-dropdown.component';
+import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
+import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 
 @NgModule({
   imports: [
@@ -71,7 +73,9 @@ import { WorkPackageDropdownComponent } from './layout/header/quicklinks-actions
     ModelContentComponent,
     QuicklinksActionsComponent,
     BreadcrumbComponent,
-    WorkPackageDropdownComponent
+    WorkPackageDropdownComponent,
+    ScopesDropdownComponent,
+    LayoutsDropdownComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -93,7 +97,9 @@ import { WorkPackageDropdownComponent } from './layout/header/quicklinks-actions
     ZoomSliderListComponent,
     QuicklinksActionsComponent,
     BreadcrumbComponent,
-    WorkPackageDropdownComponent
+    WorkPackageDropdownComponent,
+    ScopesDropdownComponent,
+    LayoutsDropdownComponent
   ],
   providers: []
 })

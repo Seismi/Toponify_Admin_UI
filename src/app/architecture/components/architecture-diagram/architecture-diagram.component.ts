@@ -281,11 +281,17 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     }
 
     if (changes.nodes || changes.selectedWorkPackages) {
-      this.diagramChangesService.updateNodes(this.diagram, this.nodes, this.selectedWorkPackages);
+      // FIXME: on store change sometinhg goes wrong
+      if (JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue)) {
+        this.diagramChangesService.updateNodes(this.diagram, this.nodes, this.selectedWorkPackages);
+      }
     }
 
     if (changes.links || changes.selectedWorkPackages) {
-      this.diagramChangesService.updateLinks(this.diagram, this.links, this.selectedWorkPackages);
+      // FIXME: on store change sometinhg goes wrong
+      if (JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue)) {
+        this.diagramChangesService.updateLinks(this.diagram, this.links, this.selectedWorkPackages);
+      }
     }
 
     // In map view, perform the layout when nodes and links are both defined

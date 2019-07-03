@@ -1,0 +1,19 @@
+table {
+    width: 100%;
+}
+
+.title {
+    font-size: 25px;
+}
+
+tr.mat-header-row {
+    height: 35px;
+}
+
+tr.mat-row {
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: #efefef;
+}

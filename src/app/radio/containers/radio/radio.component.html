@@ -11,24 +11,24 @@
     <div class="col-8">
         <smi-radio-table
             [data]="radio$ | async"
-            (showSelectedRowDetails)="onSelectedRow($event)"
-            (addComment)="onAddComment($event)">
+            [selectedRowIndex]="radioId"
+            (selectRadio)="onSelectRadio($event)"
+            (addRadio)="onAddRadio($event)">
         </smi-radio-table>
     </div>
     <div class="col-4 mat-elevation-z8">
         <smi-radio-detail
             data-hook="radio-details"
             [group]="radioDetailsForm"
-            [addComment]="addComment"
+            [addRadio]="addRadio"
             [isEditable]="isEditable"
             [disableButton]="disableButton"
-            (archiveComment)="onArchiveComment($event)"
-            (saveComment)="onSaveComment()">
+            (archiveRadio)="onArchiveRadio($event)"
+            (saveRadio)="onSaveRadio()">
         </smi-radio-detail>
-        <!-- [data]="selecetedComment?.replies"
-        [versionId]="versionId"
-        [commentId]="commentId" -->
         <smi-chatbox
+            [data]="selecetedRadio?.replies"
+            [radioId]="radioId"
             [disableButton]="disableButton">
         </smi-chatbox>
     </div>
