@@ -55,7 +55,7 @@ export function reducer(state = initialState, action: DocumentationStandardActio
       return {
         ...state,
         loading: false,
-        selected: action.payload.data
+        selected: action.payload
       };
     }
 

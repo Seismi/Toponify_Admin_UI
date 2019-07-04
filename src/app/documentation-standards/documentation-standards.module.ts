@@ -1,4 +1,4 @@
-import { DocumentationStandardsComponent } from './containers/documentation-standards.component';
+import { DocumentationStandardsComponent } from './containers/documentation-standards/documentation-standards.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DocumentationStandardsRoutingComponent } from './containers/documentation-standards-routing.component';
@@ -18,6 +18,7 @@ import { DocumentationStandardEffects } from './store/effects/documentation-stan
 import { reducer } from '../documentation-standards/store/reducers/documentation-standards.reducer';
 import { DocumentationStandardsService } from './services/dcoumentation-standards.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DocumentationStandardsDetailsComponent } from './containers/documentation-standards-details/documentation-standards-details.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DocumentationStandardsComponent, 
     DocumentationStandardsRoutingComponent,
     DocumentationStandardsTableComponent,
-    DocumentationStandardsDetailComponent
+    DocumentationStandardsDetailComponent,
+    DocumentationStandardsDetailsComponent
   ],
   providers: [
     DocumentationStandardsService

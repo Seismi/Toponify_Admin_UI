@@ -25,7 +25,7 @@ export class DocumentationStandardsTableComponent implements OnInit {
   documentationSelected = new EventEmitter();
 
   onSelectRow(row) {
-    this.selectedRowIndex = row.id;
+    this.selectedRowIndex = row.id
     this.documentationSelected.emit(row);
   }
 
