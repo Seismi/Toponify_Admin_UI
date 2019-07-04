@@ -86,6 +86,6 @@ export class FilterService implements OnDestroy  {
         }
     }
     );
-    return queryStrings.join(' ');
+    return queryStrings.join('|');
   }
 }

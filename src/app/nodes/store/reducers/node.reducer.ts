@@ -34,7 +34,7 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
       return {
         ...state,
         loading: false,
-        entities: action.payload
+        entities: [...action.payload]
       };
     }
 
@@ -80,7 +80,7 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
         return {
           ...state,
           loading: false,
-          links: action.payload
+          links: [...action.payload]
         };
       }
 
