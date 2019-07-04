@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DocumentationStandardsRoutingComponent } from './containers/documentation-standards-routing.component';
-import { DocumentationStandardsComponent } from './containers/documentation-standards.component';
+import { DocumentationStandardsComponent } from './containers/documentation-standards/documentation-standards.component';
+import { DocumentationStandardsDetailsComponent } from './containers/documentation-standards-details/documentation-standards-details.component';
 
 export const documentationStandardsRoutes: Routes = [
   {
     path: '',
-    component: DocumentationStandardsRoutingComponent,
+    component: DocumentationStandardsComponent,
     children: [
       {
-        path: '',
-        component: DocumentationStandardsComponent
+        path: ':documentStandardId',
+        component: DocumentationStandardsDetailsComponent
       }
     ]
   }

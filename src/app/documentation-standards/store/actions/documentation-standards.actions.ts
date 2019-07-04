@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DocumentStandard } from '../models/documentation-standards.model';
 
 export enum DocumentationStandardActionTypes {
   LoadDocumentationStandards = '[DocumentationStandard] Load DocumentationStandards',
@@ -47,7 +48,7 @@ export class LoadDocumentationStandard implements Action {
 
 export class LoadDocumentationStandardSuccess implements Action {
   readonly type = DocumentationStandardActionTypes.LoadDocumentationStandardSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: DocumentStandard) { }
 }
 
 export class LoadDocumentationStandardFailure implements Action {

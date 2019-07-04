@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RadioRoutingComponent } from './containers/radio-routing.components';
-import { RadioComponent } from './containers/radio.component';
+import { RadioComponent } from './containers/radio/radio.component';
 
 export const radioRoutes: Routes = [
   {
     path: '',
-    component: RadioRoutingComponent,
+    component: RadioComponent,
     children: [
       {
-        path: '',
+        path: ':radioId',
         component: RadioComponent
       }
     ]

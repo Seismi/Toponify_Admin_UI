@@ -10,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
-import { DocumentStandardsApiResponse } from '../models/documentation-standards.model';
+import { DocumentStandardsApiResponse, DocumentStandardApiResponse } from '../models/documentation-standards.model';
 import { DocumentationStandardActionTypes } from '../actions/documentation-standards.actions';
 
 
@@ -33,12 +33,12 @@ export class DocumentationStandardEffects {
   );
 
   @Effect()
-  loadDocumentationoStandard$ = this.actions$.pipe(
+  loadDocumentationStandard$ = this.actions$.pipe(
     ofType<DocumentationStandardActions.LoadDocumentationStandard>(DocumentationStandardActionTypes.LoadDocumentationStandard),
     map(action => action.payload),
-    switchMap((payload: any) => {
-      return this.documentationStandardsService.getCustomProperty(payload).pipe(
-        switchMap((response: any) => [new DocumentationStandardActions.LoadDocumentationStandard(response)]),
+    switchMap((id: string) => {
+      return this.documentationStandardsService.getCustomProperty(id).pipe(
+        switchMap((response: DocumentStandardApiResponse) => [new DocumentationStandardActions.LoadDocumentationStandardSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DocumentationStandardActions.LoadDocumentationStandardFailure(error)))
       );
     })
