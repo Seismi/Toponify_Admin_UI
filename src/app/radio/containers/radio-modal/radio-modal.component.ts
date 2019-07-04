@@ -1,4 +1,4 @@
-import { Component, Input, Inject, OnInit } from '@angular/core';
+import { Component, Input, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
@@ -16,6 +16,7 @@ export class RadioModalComponent {
 
   @Input() addRadio = false;
   @Input() isEditable = true;
+  modalMode = true;
   radio: RadioEntity;
 
   constructor(
@@ -24,8 +25,7 @@ export class RadioModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.radio = data.radio;
     }
-  
-
+    
   get radioDetailsForm(): FormGroup {
     return this.radioDetailService.radioDetailsForm;
   }

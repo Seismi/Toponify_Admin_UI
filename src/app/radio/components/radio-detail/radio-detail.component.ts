@@ -13,6 +13,10 @@ export class RadioDetailComponent {
   @Input() addRadio = true;
   @Input() isEditable = false;
   @Input() disableButton = true;
+  @Input() modalMode = false;
+
+  categories = ['risk', 'assumption', 'dependency', 'issue', 'opportunity'];
+  status = ['open', 'closed'];
 
   constructor() {}
 
