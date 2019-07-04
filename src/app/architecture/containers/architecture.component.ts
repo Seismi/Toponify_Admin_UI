@@ -1,4 +1,4 @@
-import { LoadNodes, LoadNodeLinks, LoadNode } from '@app/nodes/store/actions/node.actions';
+import { LoadNodes, LoadNodeLinks, LoadNode, LoadMapView } from '@app/nodes/store/actions/node.actions';
 import {OnInit, Component, OnDestroy, ViewChild, Input, ChangeDetectionStrategy, Output} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
@@ -137,16 +137,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.filterServiceSubscription .unsubscribe();
+    this.filterServiceSubscription.unsubscribe();
   }
 
   setNodesLinks(layer: string, id?: string) {
-    layer = layer.toLowerCase();
-    if (layer !== 'attribute') {
+
+    if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
       this.attributesView = true;
     }
+
+    if (layer === Level.map) {
+      this.nodeStore.dispatch((new LoadMapView(id)));
+    }
+
+    layer = layer.toLowerCase();
+
     this.nodes$ = this.nodeStore.pipe(select(getNodeEntities, {layer: layer, id: id}));
     this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks, {layer: layer, id: id}));
   }

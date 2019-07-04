@@ -46,6 +46,27 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
       };
     }
 
+    case NodeActionTypes.LoadMapView: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case NodeActionTypes.LoadMapViewSuccess: {
+      return {
+        ...state,
+        loading: false
+      };
+    }
+
+    case NodeActionTypes.LoadMapViewFailure: {
+      return {
+        ...state,
+        loading: false
+      };
+    }
+
     case NodeActionTypes.LoadNode: {
       return {
         ...state,

@@ -37,4 +37,8 @@ export class NodeService {
     return this.http.get<NodeLinkDetailApiResponse>(`/nodelinks/${id}`);
   }
 
+  getMapView(id: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.get<NodeLinkDetailApiResponse>(`/nodelinks/${id}/components`);
+  }
+
 }
