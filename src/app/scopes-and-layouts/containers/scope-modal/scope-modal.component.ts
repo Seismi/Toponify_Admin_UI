@@ -1,9 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { ScopesDetailService } from '@app/scopes-and-layouts/components/scopes-detail/services/scopes-detail.service';
 import { ScopesValidatorService } from '@app/scopes-and-layouts/components/scopes-detail/services/scopes-detail-validator.service';
-import { ScopeEntity } from '@app/scope/store/models/scope.model';
 import { Observable } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { Store, select } from '@ngrx/store';
@@ -11,7 +10,6 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
-import { ScopeService } from '@app/scope/services/scope.service';
 import { Actions, ofType } from '@ngrx/effects';
 import { ScopeActionTypes, AddScope } from '@app/scope/store/actions/scope.actions';
 
@@ -34,7 +32,6 @@ export class ScopeModalComponent implements OnInit {
 
   constructor(
     private actions: Actions,
-    private scopeService: ScopeService,
     private scopeStore: Store<ScopeState>,
     private store: Store<TeamState>,
     private scopesDetailService: ScopesDetailService,

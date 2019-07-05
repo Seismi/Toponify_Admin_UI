@@ -35,7 +35,6 @@ import { OwnersListComponent } from './components/owners-list/owners-list.compon
 import { ViewersListComponent } from './components/viewers-list/viewers-list.component';
 import { LayoutModalComponent } from './containers/layout-modal/layout-modal.component';
 
-
 @NgModule({
   imports: [
     CoreModule,

@@ -1,7 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { ScopeEntity } from '@app/scope/store/models/scope.model';
-import { ScopeService } from '@app/scope/services/scope.service';
 
 @Component({
   selector: 'smi-scopes-table',
@@ -15,12 +14,10 @@ export class ScopesTableComponent {
     @Input()
     set data(data: ScopeEntity[]) {
       this.dataSource = new MatTableDataSource<ScopeEntity>(data);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      //this.dataSource.paginator = this.paginator;
+      //this.dataSource.sort = this.sort;
     }
-
-    constructor(private scopeService: ScopeService) {}
-
+    
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 

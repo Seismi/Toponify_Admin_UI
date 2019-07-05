@@ -30,4 +30,5 @@ export const getScopeById = (id: string) => {
         return state.entities.filter(entity => entity.id === id);
       }
     );
-  };
+};
+

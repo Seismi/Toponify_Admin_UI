@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { LoadScope, DeleteScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeSelected, getScopeById } from '@app/scope/store/selectors/scope.selector';
 import { ScopeDetails } from '@app/scope/store/models/scope.model';
@@ -101,5 +101,4 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
 }
