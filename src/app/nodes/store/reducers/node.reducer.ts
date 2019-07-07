@@ -56,7 +56,9 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
     case NodeActionTypes.LoadMapViewSuccess: {
       return {
         ...state,
-        loading: false
+        loading: false,
+        entities: [...action.payload.nodes],
+        links: [...action.payload.links],
       };
     }
 

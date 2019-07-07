@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { LinkType, NodeType } from '@app/nodes/services/node.service';
 import { linkCategories, NodeLink, AttributesEntity } from '@app/nodes/store/models/node-link.model';
 import {Node, nodeCategories, NodeDetail} from '@app/nodes/store/models/node.model';
@@ -75,6 +75,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackageDetail: any;
   public selectedWorkPackages$: Observable<WorkPackageDetail>;
   filterServiceSubscription: Subscription;
+  routerSubscription: Subscription;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -89,6 +90,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private store: Store<ViewState>,
     private workpackageStore: Store<WorkPackageState>,
     private route:  ActivatedRoute,
+    private router: Router,
     private objectDetailsService: ObjectDetailsService,
     private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog,
@@ -96,23 +98,29 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-      // Nodes
-      this.nodeStore.dispatch((new LoadNodes()));
-      this.nodeStore.dispatch((new LoadNodeLinks()));
+    // If filterLevel not set, ensure to set it.
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const filterQuery = this.filterService.getFilter();
+        if (!filterQuery) {
+          this.filterService.setFilter({filterLevel: Level.system});
+        }
+      }
+    });
 
-      // Scopes
-      this.scopeStore.dispatch(new LoadScopes({}));
-      this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
+    // Scopes
+    this.scopeStore.dispatch(new LoadScopes({}));
+    this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
 
-      // Layouts
-      this.layoutStore.dispatch(new LoadLayouts({}));
+    // Layouts
+    this.layoutStore.dispatch(new LoadLayouts({}));
 
-      // Load Work Packages
-      this.workpackageStore.dispatch(new LoadWorkPackages({}));
-      this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
+    // Load Work Packages
+    this.workpackageStore.dispatch(new LoadWorkPackages({}));
+    this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
 
-      // View Level
-      this.viewLevel$ = this.store.pipe(select(getViewLevel));
+    // View Level
+    this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
     this.filterServiceSubscription = this.filterService.filter.subscribe((item: any) => {
       if (item) {
@@ -138,6 +146,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.filterServiceSubscription.unsubscribe();
+    this.routerSubscription.unsubscribe();
   }
 
   setNodesLinks(layer: string, id?: string) {
@@ -150,12 +159,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     if (layer === Level.map) {
       this.nodeStore.dispatch((new LoadMapView(id)));
+      this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
+      this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks));
+    } else {
+      this.nodeStore.dispatch((new LoadNodes()));
+      this.nodeStore.dispatch((new LoadNodeLinks()));
+      layer = layer.toLowerCase();
+      this.nodes$ = this.nodeStore.pipe(select(getNodeEntities, {layer: layer, id: id}));
+      this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks, {layer: layer, id: id}));
     }
-
-    layer = layer.toLowerCase();
-
-    this.nodes$ = this.nodeStore.pipe(select(getNodeEntities, {layer: layer, id: id}));
-    this.nodeLinks$ = this.nodeStore.pipe(select(getNodeLinks, {layer: layer, id: id}));
   }
 
   partSelected(part: any) {
