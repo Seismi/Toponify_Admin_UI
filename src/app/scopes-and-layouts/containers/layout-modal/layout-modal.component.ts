@@ -30,6 +30,8 @@ export class LayoutModalComponent implements OnInit {
   scopeId: string;
   scopeName: string;
   scope: any;
+  selectedOwners = [];
+  selectedViewers = [];
 
   constructor(
     private actions: Actions,
@@ -54,8 +56,8 @@ export class LayoutModalComponent implements OnInit {
     this.store.dispatch(new AddLayout({
       id: null,
       name: this.layoutsDetailForm.value.name,
-      owners: this.scopeService.selectedScopes,
-      viewers: this.scopeService.selectedViewers,
+      owners: this.selectedOwners,
+      viewers: this.selectedViewers,
       scope: this.scope
     }))
 
@@ -69,14 +71,14 @@ export class LayoutModalComponent implements OnInit {
       this.dialogRef.close();
     });
 
-    this.scopeService.selectedScopes = [];
-    this.scopeService.selectedViewers = [];
+    this.selectedOwners = [];
+    this.selectedViewers = [];
   }
 
   onCancel() {
     this.dialogRef.close();
-    this.scopeService.selectedScopes = [];
-    this.scopeService.selectedViewers = [];
+    this.selectedOwners = [];
+    this.selectedViewers = [];
   }
 
 }

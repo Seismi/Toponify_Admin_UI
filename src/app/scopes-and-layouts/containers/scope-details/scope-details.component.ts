@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { Subscription } from 'rxjs';
-import { LoadScope, DeleteScope } from '@app/scope/store/actions/scope.actions';
+import { LoadScope, DeleteScope, UpdateScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeSelected, getScopeById } from '@app/scope/store/selectors/scope.selector';
 import { ScopeDetails } from '@app/scope/store/models/scope.model';
 import { ScopesDetailService } from '@app/scopes-and-layouts/components/scopes-detail/services/scopes-detail.service';
@@ -55,9 +55,9 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
       });
     }));
 
-    this.selectedScope$ = this.store.pipe(select(getScopeById(this.scopeId))).subscribe((data)=> {
+    this.subscriptions.push(this.selectedScope$ = this.store.pipe(select(getScopeById(this.scopeId))).subscribe((data)=> {
       this.selecetedScope = {...data[0]}
-    })
+    }))
   }
 
   get scopesDetailForm(): FormGroup {
@@ -71,6 +71,18 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   onLayoutSelect(row: any) {
     this.scopeName = row.name;
     this.router.navigate(['scopes-and-layouts', this.scope.id, row.id]);
+  }
+
+  onSaveScope() {
+    this.store.dispatch(new UpdateScope({
+      id: this.scopeId,
+      data: {
+        id: this.scopeId,
+        name: this.scopesDetailForm.value.name,
+        layerFilter: this.scopesDetailForm.value.layerFilter,
+        owners: this.scope.owners
+      }
+    }))
   }
 
   onDeleteScope() {

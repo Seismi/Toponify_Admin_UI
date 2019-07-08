@@ -4,7 +4,9 @@
   [data]="teams$ | async"
   [group]="layoutsDetailForm"
   [isEditable]="isEditable"
-  [modalMode]="modalMode">
+  [modalMode]="modalMode"
+  [selectedOwners]="selectedOwners"
+  [selectedViewers]="selectedViewers">
 </smi-layouts-detail>
 <div mat-dialog-actions>
   <button mat-button (click)="onSave()">Save</button>

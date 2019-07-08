@@ -8,6 +8,7 @@
                     [group]="scopesDetailForm"
                     [ownersList]="selecetedScope"
                     [viewersList]="selecetedScope"
+                    (saveScope)="onSaveScope($event)"
                     (deleteScope)="onDeleteScope($event)">
                 </smi-scopes-detail>
             </div>

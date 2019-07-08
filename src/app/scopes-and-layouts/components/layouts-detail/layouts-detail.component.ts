@@ -12,6 +12,8 @@ export class LayoutsDetailComponent {
   @Input() isEditable = false;
   @Input() modalMode = false;
   @Input() data: any;
+  @Input() selectedOwners = [];
+  @Input() selectedViewers = [];
 
   onEdit() {
     this.isEditable = true;

@@ -18,10 +18,13 @@ export class ScopesDetailComponent {
   @Input() selectedOwners = [];
   @Input() selectedViewers = [];
 
-  layerFilter = ['system', 'data sets', 'dimensions', 'reporting concepts'];
+  layerFilter = ['system', 'data set', 'dimension', 'reporting concept'];
 
   @Output()
   deleteScope = new EventEmitter();
+
+  @Output()
+  saveScope = new EventEmitter();
 
   onEdit() {
     this.isEditable = true;
@@ -29,6 +32,7 @@ export class ScopesDetailComponent {
 
   onSave() {
     this.isEditable = false;
+    this.saveScope.emit();
   }
   
   onCancel() {
