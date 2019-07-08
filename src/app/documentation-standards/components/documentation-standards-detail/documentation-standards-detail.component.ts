@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -9,5 +9,35 @@ import { FormGroup } from '@angular/forms';
 export class DocumentationStandardsDetailComponent {
 
   @Input() group: FormGroup;
+  @Input() isEditable = false;
+  @Input() isDisabled = true;
+  @Input() modalMode = false;
 
+  types = ['Boolean', 'Text', 'Hyperlink', 'Number', 'Date'];
+
+  @Output()
+  saveDocument = new EventEmitter();
+
+  @Output()
+  deleteDocument = new EventEmitter();
+
+  onEdit() {
+    this.isEditable = true;
+    this.isDisabled = false;
+  }
+
+  onSave() {
+    this.isEditable = false;
+    this.isDisabled = true;
+    this.saveDocument.emit();
+  }
+
+  onCancel() {
+    this.isDisabled = true;
+    this.isEditable = false;
+  }
+
+  onDelete() {
+    this.deleteDocument.emit();
+  }
 }

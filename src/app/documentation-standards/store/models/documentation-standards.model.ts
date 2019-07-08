@@ -6,8 +6,11 @@ export interface DocumentStandardsApiResponse {
   export interface DocumentStandardApiResponse {
     data: DocumentStandard;
   }
+  export interface DocumentStandardApiRequest {
+    data: DocumentStandard;
+  }
   export interface DocumentStandard {
-    id: string;
+    id?: string;
     type: string;
     name: string;
     description: string;

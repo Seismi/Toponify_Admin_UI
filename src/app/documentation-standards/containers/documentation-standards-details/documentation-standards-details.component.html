@@ -1,5 +1,7 @@
 <div class="col">
     <smi-documentation-standards-detail
-        [group]="documentStandardsForm">
+        [group]="documentStandardsForm"
+        (saveDocument)="onSaveDocument($event)"
+        (deleteDocument)="onDeleteDocument($event)">
     </smi-documentation-standards-detail>
 </div>

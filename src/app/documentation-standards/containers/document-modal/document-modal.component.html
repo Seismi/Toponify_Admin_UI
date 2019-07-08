@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Add</h1>
+<div mat-dialog-content>
+    <smi-documentation-standards-detail 
+      [group]="documentStandardsForm"
+      [isEditable]="isEditable"
+      [modalMode]="modalMode"
+      [isDisabled]="isDisabled">
+    </smi-documentation-standards-detail>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()">Save</button>
+  <button mat-button (click)="onCancelClick()">Cancel</button>
+</div>

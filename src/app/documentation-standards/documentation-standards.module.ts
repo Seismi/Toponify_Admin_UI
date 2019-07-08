@@ -8,7 +8,14 @@ import {
   MatTableModule,
   MatPaginatorModule,
   MatButtonModule,
-  MatSortModule 
+  MatSortModule ,
+  MatListModule,
+  MatTreeModule,
+  MatCheckboxModule,
+  MatIconModule,
+  MatDialogModule,
+  MatSelectModule,
+  MatExpansionModule
 } from '@angular/material';
 import { DocumentationStandardsTableComponent } from './components/documentation-standards-table/documentation-standards-table.component';
 import { DocumentationStandardsDetailComponent } from './components/documentation-standards-detail/documentation-standards-detail.component';
@@ -19,6 +26,9 @@ import { reducer } from '../documentation-standards/store/reducers/documentation
 import { DocumentationStandardsService } from './services/dcoumentation-standards.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentationStandardsDetailsComponent } from './containers/documentation-standards-details/documentation-standards-details.component';
+import { DocumentStandardsLevelsComponent } from './components/document-standards-levels/document-standards-levels.component';
+import { DeleteDocumentModalComponent } from './containers/delete-document-modal/delete-document.component';
+import { DocumentModalComponent } from './containers/document-modal/document-modal.component';
 
 
 @NgModule({
@@ -32,19 +42,28 @@ import { DocumentationStandardsDetailsComponent } from './containers/documentati
     MatPaginatorModule,
     MatButtonModule,
     MatSortModule,
+    MatListModule,
+    MatTreeModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatExpansionModule,
     StoreModule.forFeature('documentationStandardFeature', reducer),
     EffectsModule.forFeature([ DocumentationStandardEffects ])
   ],
   exports: [DocumentationStandardsTableComponent],
   declarations: [
-    DocumentationStandardsComponent, 
+    DocumentationStandardsComponent,
     DocumentationStandardsRoutingComponent,
     DocumentationStandardsTableComponent,
     DocumentationStandardsDetailComponent,
-    DocumentationStandardsDetailsComponent
+    DocumentationStandardsDetailsComponent,
+    DocumentStandardsLevelsComponent,
+    DeleteDocumentModalComponent,
+    DocumentModalComponent
   ],
-  providers: [
-    DocumentationStandardsService
-  ],
+  providers: [DocumentationStandardsService],
+  entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent]
 })
 export class DocumentationStandardsModule { }
