@@ -15,6 +15,10 @@ import { ScopesTableComponent } from './components/scopes-table/scopes-table.com
 import { LayoutsTableComponent } from './components/layouts-table/layouts-table.component';
 import { LayoutsDetailComponent } from './components/layouts-detail/layouts-detail.component';
 import { ScopesDetailComponent } from './components/scopes-detail/scopes-detail.component';
+import { ScopeDetailsComponent } from './containers/scope-details/scope-details.component';
+import { LayoutDetailsComponent } from './containers/layout-details/layout-details.component';
+import { ScopeModule } from '@app/scope/scope.module';
+import { LayoutModule } from '@app/layout/layout.module';
 
 
 @NgModule({
@@ -26,16 +30,20 @@ import { ScopesDetailComponent } from './components/scopes-detail/scopes-detail.
     MatPaginatorModule,
     MatButtonModule,
     MatSortModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ScopeModule,
+    LayoutModule
   ],
   exports: [],
   declarations: [
-      ScopesAndLayoutsComponent, 
+      ScopesAndLayoutsComponent,
       ScopesAndLayoutsRoutingComponent,
       ScopesTableComponent,
       LayoutsTableComponent,
       LayoutsDetailComponent,
-      ScopesDetailComponent
+      ScopesDetailComponent,
+      ScopeDetailsComponent,
+      LayoutDetailsComponent
     ],
   providers: [],
 })

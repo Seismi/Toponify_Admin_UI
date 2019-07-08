@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { RadioDetailService } from '../components/radio-detail/services/radio-detail.service';
-import { RadioValidatorService } from '../components/radio-detail/services/radio-detail-validator.service';
+import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
+import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { RadioEntity } from '../store/models/radio.model';
-import { State as RadioState} from '../store/reducers/radio.reducer';
-import { LoadRadios, LoadRadio, AddRadioEntity, AddReply } from '../store/actions/radio.actions';
-import { getRadioEntities, getRadioById } from '../store/selectors/radio.selector';
-import { RadioModalComponent } from './radio-modal/radio-modal.component';
-import { ReplyModalComponent } from './reply-modal/reply-modal.component';
+import { RadioEntity } from '../../store/models/radio.model';
+import { State as RadioState} from '../../store/reducers/radio.reducer';
+import { LoadRadios, LoadRadio, AddRadioEntity, AddReply } from '../../store/actions/radio.actions';
+import { getRadioEntities, getRadioById } from '../../store/selectors/radio.selector';
+import { RadioModalComponent } from '../radio-modal/radio-modal.component';
+import { ReplyModalComponent } from '../reply-modal/reply-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'smi-radio',
@@ -28,10 +29,12 @@ export class RadioComponent implements OnInit {
     isEditable = false;
     addRadio = true;
     radioId: string;
+    modalMode = false;
 
     constructor(private store: Store<RadioState>,
                 private radioDetailService: RadioDetailService,
-                public dialog: MatDialog) { }
+                public dialog: MatDialog,
+                private router: Router) { }
 
     ngOnInit() {
         this.store.dispatch(new LoadRadios({}));
@@ -46,6 +49,7 @@ export class RadioComponent implements OnInit {
         this.radioId = row.id;
         this.addRadio = true;
         this.disableButton = false;
+        this.modalMode = true;
         this.radioDetailService.radioDetailsForm.patchValue({
             title: row.title,
             category: row.category,
@@ -57,6 +61,8 @@ export class RadioComponent implements OnInit {
         this.selectedRadio$ = this.store.pipe(select(getRadioById(this.radioId))).subscribe((data)=> {
             this.selecetedRadio = {...data[0]};
         });
+        
+        this.router.navigate(['radio', row.id]);
     }
 
     onAddRadio() {

@@ -1,0 +1,19 @@
+<div class="col">
+
+    <div class="row">
+        <div class="col scope-details">
+            <!-- Scopes Detail Form -->
+            <smi-scopes-detail ></smi-scopes-detail>
+        </div>
+
+        <div class="w-100"></div>
+        
+        <div class="col">
+            <!-- Layouts Table -->
+            <smi-layouts-table
+                (layoutSelected)="onLayoutSelect($event)">
+            </smi-layouts-table>
+        </div>
+        <router-outlet></router-outlet>
+    </div>
+</div>

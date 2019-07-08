@@ -25,7 +25,7 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
 
     case ScopeActionTypes.LoadScopes: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }
@@ -50,7 +50,7 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
 
     case ScopeActionTypes.LoadScope: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }
@@ -59,7 +59,8 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
       return {
         ...state,
         loading: false,
-        selected: action.payload.data
+        // FIXME: just for testing purposes, remove when store/api works properly
+        selected: action.payload.data ? action.payload.data : {id: '7497a490-925a-11e9-bc42-526af7764f64'} as any
       };
     }
 
