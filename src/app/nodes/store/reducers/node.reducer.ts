@@ -3,7 +3,6 @@ import { NodeLink } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 
 export interface State {
-  loading: boolean;
   entities: Node[];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLink;
@@ -12,7 +11,6 @@ export interface State {
 }
 
 export const initialState: State = {
-  loading: false,
   entities: null,
   selectedNode: null,
   selectedNodeLink: null,
@@ -23,17 +21,9 @@ export const initialState: State = {
 export function reducer(state = initialState, action: NodeActionsUnion): State {
   switch (action.type) {
 
-    case NodeActionTypes.LoadNodes: {
-      return {
-        ...initialState,
-        loading: true
-      };
-    }
-
     case NodeActionTypes.LoadNodesSuccess: {
       return {
         ...state,
-        loading: false,
         entities: [...action.payload]
       };
     }
@@ -41,22 +31,13 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
     case NodeActionTypes.LoadNodeFailure: {
       return {
         ...state,
-        loading: false,
         error: action.payload
-      };
-    }
-
-    case NodeActionTypes.LoadMapView: {
-      return {
-        ...state,
-        loading: true
       };
     }
 
     case NodeActionTypes.LoadMapViewSuccess: {
       return {
         ...state,
-        loading: false,
         entities: [...action.payload.nodes],
         links: [...action.payload.links],
       };
@@ -65,21 +46,13 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
     case NodeActionTypes.LoadMapViewFailure: {
       return {
         ...state,
-        loading: false
-      };
-    }
-
-    case NodeActionTypes.LoadNode: {
-      return {
-        ...state,
-        loading: true
+        error: action.payload
       };
     }
 
     case NodeActionTypes.LoadNodeSuccess: {
       return {
         ...state,
-        loading: false,
         selectedNode: action.payload
       };
     }
@@ -87,46 +60,20 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
     case NodeActionTypes.LoadNodeFailure: {
       return {
         ...state,
-        loading: false,
         error: action.payload
       };
     }
 
-    case NodeActionTypes.LoadNodeLinks: {
-        return {
-          ...state,
-          loading: true
-        };
-      }
-
-      case NodeActionTypes.LoadNodeLinksSuccess: {
-        return {
-          ...state,
-          loading: false,
-          links: [...action.payload]
-        };
-      }
-
-      case NodeActionTypes.LoadNodeLinksFailure: {
-        return {
-          ...state,
-          loading: false,
-          error: action.payload
-        };
-      }
-
     case NodeActionTypes.LoadNodeLinksSuccess: {
       return {
         ...state,
-        loading: false,
-        links: action.payload
+        links: [...action.payload]
       };
     }
 
     case NodeActionTypes.LoadNodeLinksFailure: {
       return {
         ...state,
-        loading: false,
         error: action.payload
       };
     }

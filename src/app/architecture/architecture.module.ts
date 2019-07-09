@@ -41,6 +41,7 @@ import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './containers/left-panel/components/workpackage-tab-table/workpackage-tab-table.component';
 import { WorkPackageColorComponent } from './containers/left-panel/components/color-picker/color-picker.component';
+import { LayerPipe } from './pipes/layer.pipe';
 
 
 @NgModule({
@@ -95,7 +96,8 @@ import { WorkPackageColorComponent } from './containers/left-panel/components/co
       AttributesTabComponent,
       DeleteLinkModalComponent,
       WorkPackageTabTableComponent,
-      WorkPackageColorComponent
+      WorkPackageColorComponent,
+      LayerPipe
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [
