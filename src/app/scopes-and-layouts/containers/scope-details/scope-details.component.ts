@@ -25,9 +25,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   scope: ScopeDetails;
   scopeId: string;
   scopeName: string;
-
-  selectedScope$: Subscription;
-  selecetedScope: ScopeDetails;
+  selectedScope: ScopeDetails;
 
   constructor(
     private dialog: MatDialog,
@@ -46,18 +44,16 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
       }
     }));
     this.subscriptions.push(this.store.pipe(select(getScopeSelected)).subscribe(scope => {
-      this.scope = scope;
-      this.scopesDetailService.scopesDetailForm.patchValue({
-        name: scope.name,
-        owners: scope.owners,
-        viewers: scope.viewers,
-        layerFilter: scope.layerFilter
-      });
+      if(scope) {
+        this.scope = scope;
+        this.scopesDetailService.scopesDetailForm.patchValue({
+          name: scope.name,
+          owners: scope.owners,
+          viewers: scope.viewers,
+          layerFilter: scope.layerFilter
+        });
+      }
     }));
-
-    this.subscriptions.push(this.selectedScope$ = this.store.pipe(select(getScopeById(this.scopeId))).subscribe((data)=> {
-      this.selecetedScope = {...data[0]}
-    }))
   }
 
   get scopesDetailForm(): FormGroup {
@@ -102,7 +98,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddLayout() {
-    this.dialog.open(LayoutModalComponent, { 
+    this.dialog.open(LayoutModalComponent, {
       disableClose: false, 
       width: '500px',
       data: {

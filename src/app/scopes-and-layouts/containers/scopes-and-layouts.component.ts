@@ -8,7 +8,6 @@ import { LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities } from '@app/scope/store/selectors/scope.selector';
 import { ScopeModalComponent } from './scope-modal/scope-modal.component';
 import { MatDialog } from '@angular/material';
-import { ScopeService } from '@app/scope/services/scope.service';
 
 @Component({
   selector: 'smi-scopes-and-layouts-component',

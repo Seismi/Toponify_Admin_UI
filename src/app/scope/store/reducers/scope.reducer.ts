@@ -59,7 +59,6 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
       return {
         ...state,
         loading: false,
-        // FIXME: just for testing purposes, remove when store/api works properly
         selected: action.payload.data
       };
     }
