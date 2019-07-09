@@ -19,7 +19,8 @@
         <div class="col">
             <!-- Layouts Table -->
             <smi-layouts-table
-                [data]="selecetedScope"
+                *ngIf="scope"
+                [data]="scope.layouts"
                 (layoutSelected)="onLayoutSelect($event)"
                 (addLayout)="onAddLayout($event)">
             </smi-layouts-table>

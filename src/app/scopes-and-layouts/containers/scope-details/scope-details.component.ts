@@ -46,18 +46,16 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
       }
     }));
     this.subscriptions.push(this.store.pipe(select(getScopeSelected)).subscribe(scope => {
-      this.scope = scope;
-      this.scopesDetailService.scopesDetailForm.patchValue({
-        name: scope.name,
-        owners: scope.owners,
-        viewers: scope.viewers,
-        layerFilter: scope.layerFilter
-      });
+      if (scope) {
+        this.scope = scope;
+        this.scopesDetailService.scopesDetailForm.patchValue({
+          name: scope.name,
+          owners: scope.owners,
+          viewers: scope.viewers,
+          layerFilter: scope.layerFilter
+        });
+      }
     }));
-
-    this.subscriptions.push(this.selectedScope$ = this.store.pipe(select(getScopeById(this.scopeId))).subscribe((data)=> {
-      this.selecetedScope = {...data[0]}
-    }))
   }
 
   get scopesDetailForm(): FormGroup {
