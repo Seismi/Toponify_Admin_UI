@@ -36,6 +36,10 @@ export class DiagramTemplatesService {
     this.filterService.setFilter({filterLevel: newLevel, id: object.data.id});
   }
 
+  displayMapView(event: any, object: go.Node): void {
+    this.filterService.setFilter({filterLevel: Level.map, id: object.data.id});
+  }
+
   // Get item template for list of node children
   getItemTemplate() {
     return $(go.Panel,
@@ -754,7 +758,7 @@ export class DiagramTemplatesService {
         relinkableTo: true,
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
-        // doubleClick: this.displayMapView.bind(this),
+        doubleClick: this.displayMapView.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
