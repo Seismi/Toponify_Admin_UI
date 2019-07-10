@@ -6,6 +6,8 @@ import { LayoutsValidatorService } from './layouts-detail-validator.service';
 export class LayoutsDetailService {
 
   public layoutsDetailForm: FormGroup;
+  scopeId: string;
+  scopeName: string;
 
   constructor(private fb: FormBuilder, private layoutsValidatorService: LayoutsValidatorService) {
     this.layoutsDetailForm = this.fb.group({
