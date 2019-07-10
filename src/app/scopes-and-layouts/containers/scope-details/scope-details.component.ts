@@ -24,7 +24,6 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   scope: ScopeDetails;
   scopeId: string;
-  scopeName: string;
   selectedScope: ScopeDetails;
 
   constructor(
@@ -65,7 +64,6 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onLayoutSelect(row: any) {
-    this.scopeName = row.name;
     this.router.navigate(['scopes-and-layouts', this.scope.id, row.id]);
   }
 
@@ -103,8 +101,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
       width: '500px',
       data: {
         scope: {
-          id: this.scopeId,
-          name: this.scopeName
+          id: this.scopeId
         }
       }
     });
