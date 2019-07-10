@@ -15,6 +15,15 @@
     <!-- Viewers Dropdown-->
     <smi-viewers-dropdown *ngIf="modalMode" [data]="data" [selectedViewers]="selectedViewers"></smi-viewers-dropdown>
 
+    <div class="row" *ngIf="!modalMode">
+        <div class="col">
+            <smi-owners-list [data]="ownersList"></smi-owners-list>
+        </div>
+        <div class="col">
+            <smi-viewers-list [data]="viewersList"></smi-viewers-list>
+        </div>
+    </div><br>
+
     <!-- Form actions -->
     <div class="form-actions" *ngIf="!modalMode">
         <div *ngIf="!isEditable">

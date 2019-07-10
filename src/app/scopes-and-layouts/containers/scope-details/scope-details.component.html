@@ -1,12 +1,12 @@
-<div class="col">
+<div class="col wrapper">
     <div class="row">
         <div class="col">
             <!-- Scopes Detail Form -->
             <div class="scope-form-wrapper">
                 <smi-scopes-detail
                     [group]="scopesDetailForm"
-                    [ownersList]="selectedScope"
-                    [viewersList]="selectedScope"
+                    [ownersList]="scope.owners"
+                    [viewersList]="scope.viewers"
                     (saveScope)="onSaveScope($event)"
                     (deleteScope)="onDeleteScope($event)">
                 </smi-scopes-detail>
@@ -15,7 +15,7 @@
 
         <div class="w-100"></div>
 
-        <div class="col">
+        <div class="col layouts-table">
             <!-- Layouts Table -->
             <smi-layouts-table
                 *ngIf="scope"

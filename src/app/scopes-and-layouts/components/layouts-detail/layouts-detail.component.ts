@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -14,6 +14,14 @@ export class LayoutsDetailComponent {
   @Input() data: any;
   @Input() selectedOwners = [];
   @Input() selectedViewers = [];
+  @Input() ownersList: any;
+  @Input() viewersList: any;
+
+  @Output()
+  deleteLayout = new EventEmitter();
+
+  @Output()
+  saveLayout = new EventEmitter();
 
   onEdit() {
     this.isEditable = true;
@@ -21,12 +29,15 @@ export class LayoutsDetailComponent {
 
   onSave() {
     this.isEditable = false;
+    this.saveLayout.emit();
   }
   
   onCancel() {
     this.isEditable = false;
   }
 
-  onDelete() {}
+  onDelete() {
+    this.deleteLayout.emit();
+  }
 
 }
