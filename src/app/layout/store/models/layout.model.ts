@@ -45,7 +45,7 @@ export interface OwnersEntityOrViewersEntity {
 
 export interface Scope {
   id: string;
-  name: string;
+  name?: string;
 }
 
 // TODO: This may be shared at some point
