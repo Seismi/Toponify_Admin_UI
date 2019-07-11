@@ -77,6 +77,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Output()
   linkDeleteRequested = new EventEmitter();
 
+  @Output()
+  updateNodeLocation = new EventEmitter();
+
   get level() {
     return viewLevelMapping[this.viewLevel]
       ? viewLevelMapping[this.viewLevel]
@@ -212,6 +215,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
+    diagramChangesService.onUpdatePosition.subscribe((data: {node: any, links: any[]}) => {
+      this.updateNodeLocation.emit(data);
+    });
   }
 
   // Zoom out diagram

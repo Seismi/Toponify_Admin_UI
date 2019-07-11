@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
+import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
+import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { LinkType, NodeType } from '@app/nodes/services/node.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes } from '@app/nodes/store/actions/node.actions';
-import { linkCategories, NodeLink } from '@app/nodes/store/models/node-link.model';
-import { Node, NodeDetail } from '@app/nodes/store/models/node.model';
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, UpdateLinks, UpdateNode } from '@app/nodes/store/actions/node.actions';
+import { linkCategories } from '@app/nodes/store/models/node-link.model';
+import { NodeDetail } from '@app/nodes/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/nodes/store/selectors/node.selector';
 import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
@@ -35,7 +37,6 @@ import { FilterService } from '../services/filter.service';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { map } from 'rxjs/operators';
 
 
 @Component({
@@ -81,7 +82,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedWorkPackages$: Observable<WorkPackageDetail>;
   filterServiceSubscription: Subscription;
   routerSubscription: Subscription;
-
+  layout: LayoutDetails;
+  layoutStoreSubscription: Subscription;
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
 
@@ -146,6 +148,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => this.layout = layout);
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -164,6 +168,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.routerSubscription.unsubscribe();
     this.nodesSubscription.unsubscribe();
     this.linksSubscription.unsubscribe();
+    this.layoutStoreSubscription.unsubscribe();
   }
 
   setNodesLinks(layer: string, id?: string) {
@@ -286,6 +291,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onZoomMap() {
     this.diagramComponent.zoomToFit();
+  }
+
+  // FIXME: types
+  handleUpdateNodeLocation(data: {node: any, links: any[]}) {
+    if (this.layout && data.node) {
+      this.store.dispatch(new UpdateNode({ layoutId: this.layout.id, node: data.node}));
+    }
+    if (this.layout && data.links && data.links.length > 0) {
+      this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links}));
+    }
   }
 
   handleNodeDeleteRequested(data: {node: any, type: NodeType}) {
