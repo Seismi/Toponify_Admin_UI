@@ -8,6 +8,10 @@ import { ObjectDetailsService } from '@app/architecture/components/object-detail
 import { FormGroup } from '@angular/forms';
 import { LoadAttributes } from '../store/actions/attributes.actions';
 import * as fromAttributeEntities from '../store/selectors/attributes.selector';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
     selector: 'smi-attributes',
@@ -19,17 +23,26 @@ export class AttributesComponent implements OnInit {
 
     attributes: Subscription;
     attribute: AttributeEntity[];
+    workpackage$: Observable<WorkPackageEntity[]>;
     isEditable = false;
     objectSelected = true;
     workPackageIsEditable = false;
 
-    constructor(private store: Store<AttributeState>, private objectDetailsService: ObjectDetailsService) { }
+    constructor(
+        private store: Store<AttributeState>, 
+        private workPackageStore: Store<WorkPackageState>,
+        private objectDetailsService: ObjectDetailsService) { }
 
-    ngOnInit() { 
+    ngOnInit() {
+        // Attributes
         this.store.dispatch(new LoadAttributes({}));
         this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe((data) => {
             this.attribute = data;
         });
+
+        // Work Packages
+        this.workPackageStore.dispatch(new LoadWorkPackages({}));
+        this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     }
 
     get categoryTableData() {
