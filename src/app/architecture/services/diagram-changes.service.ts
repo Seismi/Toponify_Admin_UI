@@ -313,10 +313,16 @@ export class DiagramChangesService {
         }, this);
       }
 
-      if (this.diagramLevelService.mapView) {
-        nodeArray.push(this.diagramLevelService.mapView.sourceModel);
-        nodeArray.push(this.diagramLevelService.mapView.targetModel);
-      }
+      /*/ In map view, sort the nodes so that the group representing the source occurs first in the array
+      if (filter.filterLevel === Level.map) {
+        nodeArray.sort(function(a, b) {
+          if (a.id === this.diagramLevelService.mapView.sourceDataSet.id) {
+            return -1;
+          } else {
+            return 1;
+          }
+        }.bind(this));
+      }*/
 
       // Temporary - create copy to fix bug that arises when using sample data from json server
       nodeArray = JSON.parse(JSON.stringify(nodeArray));

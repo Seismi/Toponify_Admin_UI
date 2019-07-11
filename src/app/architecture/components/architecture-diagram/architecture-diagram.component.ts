@@ -171,7 +171,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       diagramTemplatesService.getLinkMasterDataTemplate()
     );
 
-    this.diagram.groupTemplate = diagramTemplatesService.getModelGroupTemplate();
+    this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {

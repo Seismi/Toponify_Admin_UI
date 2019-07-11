@@ -4,7 +4,7 @@ import {nodeCategories, layers} from '@app/nodes/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {updateShapeShadows, CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
-import { Level } from './diagram-level.service';
+import { Level, DiagramLevelService } from './diagram-level.service';
 
 const $ = go.GraphObject.make;
 
@@ -16,29 +16,8 @@ export class DiagramTemplatesService {
 
   constructor(
     public filterService: FilterService,
+    public diagramLevelService: DiagramLevelService
   ) {}
-
-  changeLevelWithFilter(event: any, object: go.Node): void {
-    let newLevel: Level;
-    if ([nodeCategories.transactional,
-      nodeCategories.analytical,
-      nodeCategories.file,
-      nodeCategories.reporting,
-      nodeCategories.masterData].includes(object.data.category)) {
-      newLevel = Level.dataSet;
-    } else if ([nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData].includes(object.data.category)) {
-      newLevel = Level.dimension;
-    } else if (object.data.category === nodeCategories.dimension) {
-      newLevel = Level.reportingConcept;
-    } else {
-      return;
-    }
-    this.filterService.setFilter({filterLevel: newLevel, id: object.data.id});
-  }
-
-  displayMapView(event: any, object: go.Node): void {
-    this.filterService.setFilter({filterLevel: Level.map, id: object.data.id});
-  }
 
   // Get item template for list of node children
   getItemTemplate() {
@@ -82,7 +61,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this),
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -222,6 +201,7 @@ export class DiagramTemplatesService {
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
               stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
               itemTemplate: this.getItemTemplate()
             },
             new go.Binding('itemArray', 'descendants')
@@ -249,7 +229,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this),
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -381,6 +361,7 @@ export class DiagramTemplatesService {
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
               stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
               itemTemplate: this.getItemTemplate()
             },
             new go.Binding('itemArray', 'descendants')
@@ -406,7 +387,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.changeLevelWithFilter.bind(this),
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
         // TEMP
         isLayoutPositioned: true
       },
@@ -430,23 +411,15 @@ export class DiagramTemplatesService {
         },
         new go.Binding('stroke', 'colour'),
         new go.Binding('fromSpot', 'group', function (group) {
-          if (this.mapView) {
-            if (this.mapView.sourceModel.id === group) {
-              return go.Spot.RightSide;
-            } else {
-              return go.Spot.LeftSide;
-            }
+          if (group) {
+            return go.Spot.LeftRightSides;
           } else {
             return go.Spot.AllSides;
           }
         }.bind(this)),
         new go.Binding('toSpot', 'group', function (group) {
-          if (this.mapView) {
-            if (this.mapView.sourceModel.id === group) {
-              return go.Spot.RightSide;
-            } else {
-              return go.Spot.LeftSide;
-            }
+          if (group) {
+            return go.Spot.LeftRightSides;
           } else {
             return go.Spot.AllSides;
           }
@@ -552,6 +525,7 @@ export class DiagramTemplatesService {
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
               stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
               itemTemplate: this.getItemTemplate()
             },
             new go.Binding('itemArray', 'descendants')
@@ -713,6 +687,7 @@ export class DiagramTemplatesService {
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
               stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
               itemTemplate: this.getItemTemplate()
             },
             new go.Binding('itemArray', 'attributes')
@@ -758,7 +733,7 @@ export class DiagramTemplatesService {
         relinkableTo: true,
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
-        doubleClick: this.displayMapView.bind(this),
+        doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
         // TEMP
         isLayoutPositioned: true
       },
@@ -915,7 +890,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  getModelGroupTemplate() {
+  getDataSetGroupTemplate() {
     // Template for model groups in mapping view
     return $(
       go.Group,
@@ -929,7 +904,7 @@ export class DiagramTemplatesService {
           // Function to compare nodes for ordering during layout
           comparer: function (a, b) {
             // Only perform this comparison for initial layout. This prevents users' reordering of nodes from being overridden.
-            if (this.groupLayoutInitial) {
+            if (this.diagramLevelService.groupLayoutInitial) {
               // Get nodes connected to each node
               const aLinkedNodes = a.findNodesConnected();
               const bLinkedNodes = b.findNodesConnected();
