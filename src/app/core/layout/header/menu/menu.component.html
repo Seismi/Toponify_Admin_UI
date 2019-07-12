@@ -1,13 +1,13 @@
-<i class="material-icons" [matMenuTriggerFor]="navigationMenu">menu</i>
+<i class="material-icons" data-hook="hamburger-manu" [matMenuTriggerFor]="navigationMenu">menu</i>
 <mat-menu #navigationMenu="matMenu">
-    <button mat-menu-item routerLink="/home">Home</button>
-    <button mat-menu-item routerLink="/architecture">Architecture</button>
-    <button mat-menu-item routerLink="/report-library">Report Library</button>
-    <button mat-menu-item routerLink="/attributes-and-rules">Attributes and Rules Library</button>
-    <button mat-menu-item routerLink="/radio">RADIO</button>
-    <button mat-menu-item routerLink="/work-packages">Work Packages</button>
-    <button mat-menu-item routerLink="/scopes-and-layouts">Scopes and Layouts</button>
-    <button mat-menu-item routerLink="/documentation-standards">Documentation Standards</button>
-    <button mat-menu-item routerLink="/settings">Settings</button>
-    <button mat-menu-item>Help</button>
+    <button data-hook="home-link" mat-menu-item routerLink="/home">Home</button>
+    <button data-hook="architecture-link" mat-menu-item routerLink="/architecture">Architecture</button>
+    <button data-hook="report-library-link" mat-menu-item routerLink="/report-library">Report Library</button>
+    <button data-hook="attributes-rules-link" mat-menu-item routerLink="/attributes-and-rules">Attributes and Rules Library</button>
+    <button data-hook="radio-link" mat-menu-item routerLink="/radio">RADIO</button>
+    <button data-hook="package-link" mat-menu-item routerLink="/work-packages">Work Packages</button>
+    <button data-hook="scopes-layouts-link" mat-menu-item routerLink="/scopes-and-layouts">Scopes and Layouts</button>
+    <button data-hook="documentation-standards-link" mat-menu-item routerLink="/documentation-standards">Documentation Standards</button>
+    <button data-hook="settings-link" mat-menu-item routerLink="/settings">Settings</button>
+    <button data-hook="help-link" mat-menu-item>Help</button>
 </mat-menu>

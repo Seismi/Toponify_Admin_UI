@@ -78,6 +78,36 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
       };
     }
 
+    case NodeActionTypes.UpdateLinksSuccess: {
+      debugger;
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.UpdateLinksFailure: {
+      debugger;
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
+    case NodeActionTypes.UpdateNodeSuccess: {
+      debugger;
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.UpdateNodeFailure: {
+      debugger;
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
     default: {
       return state;
     }

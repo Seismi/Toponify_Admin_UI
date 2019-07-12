@@ -146,6 +146,14 @@ export interface CustomPropertyValuesEntity {
 }
 
 
+export interface NodeUpdatePayload {
+  layoutId: string;
+  node: {
+    id: string,
+    locationCoordinates: string
+  };
+}
+
 
 // TODO: This may be shared at some point
 
