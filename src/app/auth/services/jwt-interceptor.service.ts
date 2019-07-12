@@ -22,22 +22,13 @@ export class JWTInterceptor implements HttpInterceptor {
     if (isExpired) {
       this.router.navigate(['auth/login']);
     } else if (token) {
-      // Use Json Server for mock data
-      console.log(request.url);
-      if (request.url.includes('attributes')) {
-        request = request.clone({
-          url: `http://localhost:3000${request.url}`
-        })
-      } else {
-        request = request.clone({
-          url: environment.api + request.url,
-          setHeaders: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-      }
+      request = request.clone({
+        url: environment.api + request.url,
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      });
     }
-
     return next.handle(request);
   }
 }
