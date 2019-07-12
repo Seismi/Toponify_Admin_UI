@@ -12,13 +12,10 @@
         <div class="col">
             <smi-documentation-standards-table
                 [data]="documentStandards$ | async"
-                (documentationSelected)="onSelectDocumentation($event)">
+                (documentSelected)="onSelectDocument($event)"
+                (addDocument)="onAddDocument($event)">
             </smi-documentation-standards-table>
         </div>
-        <div class="col" *ngIf="rowSelected">
-            <smi-documentation-standards-detail
-                [group]="documentStandardsForm">
-            </smi-documentation-standards-detail>
-        </div>
+        <router-outlet></router-outlet>
     </div>
 </div>

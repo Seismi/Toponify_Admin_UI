@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DocumentStandardApiRequest } from '../store/models/documentation-standards.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -8,6 +9,8 @@ const httpOptions = {
 
 @Injectable()
 export class DocumentationStandardsService {
+
+  selectedLevels = [];
 
   constructor(private http: HttpClient) { }
 
@@ -20,12 +23,12 @@ export class DocumentationStandardsService {
     return this.http.get<any>(`/customProperties/${id}`);
   }
 
-  addCustomProperty(data: any): Observable<any> {
-    return this.http.post<any>(`/customProperties`, {data: data}, httpOptions);
+  addCustomProperty(entity: DocumentStandardApiRequest): Observable<any> {
+    return this.http.post<any>(`/customProperties`, entity, httpOptions);
   }
 
-  updateCustomeProperty(id: string, data: any): Observable<any> {
-    return this.http.put<any>(`/customProperties/${id}`, {data: data}, httpOptions);
+  updateCustomeProperty(id: string, entity: DocumentStandardApiRequest): Observable<any> {
+    return this.http.put<any>(`/customProperties/${id}`, entity, httpOptions);
   }
   
 

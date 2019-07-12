@@ -31,7 +31,7 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <app-model-sidebar [minWidth]="210" [maxWidth]="600">
+  <app-model-sidebar [minWidth]="430" [maxWidth]="1000">
     <p>
       <smi-left-panel
         [data]="workpackage$ | async"
@@ -50,8 +50,8 @@
         [showGrid]="showGrid"
         [allowMove]="allowMove"
         *ngIf="!showTable"
-        [nodes]="nodes$ | async"
-        [links]="nodeLinks$ | async"
+        [nodes]="nodes | layer:{byId: true}"
+        [links]="links | layer:{byId: false}"
         [workpackageDetail]="workpackageDetail"
         [selectedWorkPackages]= "selectedWorkPackages$ | async"
         [viewLevel]="viewLevel$ | async"

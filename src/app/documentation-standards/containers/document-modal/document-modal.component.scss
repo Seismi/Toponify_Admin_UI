@@ -1,0 +1,13 @@
+.mat-dialog-actions{
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 17px;
+}
+
+button:focus {
+    outline: none;
+}
+
+button:nth-child(1){
+    background-color: #ddd;
+}
