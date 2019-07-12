@@ -1,19 +1,9 @@
-:host {
-  .wrapper {
-    height: 93%;;
-    overflow-y: scroll;
-  }
-  .mat-table {
-    width: 100%;
-    .mat-row {
-      .mat-cell {
-        white-space: nowrap;
-        padding-left: 10px;
-        padding-right: 10px;
-        max-width: 33%;
-      }
-    }
-  }
+.wrapper {
+  border: solid 1px #ddd;
+}
+
+.mat-table {
+  width: 100%;
 }
 
 /* Materail table styles */
@@ -23,7 +13,7 @@ table.mat-table {
 }
 
 tr.mat-header-row {
-  height: 35px;
+  height: 56px;
 }
 
 tr.mat-row, tr.mat-footer-row {
@@ -51,26 +41,12 @@ th.mat-header-cell:last-child, td.mat-cell:last-child, td.mat-footer-cell:last-c
 
 tr.header{
   height: 35px;
-  background-color: #eee;
 }
 
 td {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .highlight {
   background: #efefef;
-}
-
-.bottom-header {
-  position: absolute; 
-  bottom: 0; 
-  width: 100%; 
-  height: 50px; 
-  background-color: #eee;
-}
-
-.add{
-  margin-top: 7px;
-  margin-left: 7px;
 }
