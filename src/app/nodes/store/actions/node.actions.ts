@@ -19,6 +19,12 @@ export enum NodeActionTypes {
   LoadMapView = '[Node] Load Map View',
   LoadMapViewSuccess = '[Node] Load Map View Success',
   LoadMapViewFailure = '[Node] Load Map View Fail',
+  UpdateNode = '[Node] Update node',
+  UpdateNodeSuccess = '[Node] Update node Success',
+  UpdateNodeFailure = '[Node] Update node Fail',
+  UpdateLinks = '[Node] Update links',
+  UpdateLinksSuccess = '[Node] Update links Success',
+  UpdateLinksFailure = '[Node] Update links Fail',
 }
 
 export class LoadNodes implements Action {
@@ -94,6 +100,36 @@ export class LoadNodeLinkFailure implements Action {
   constructor(public payload: Error) { }
 }
 
+export class UpdateNode implements Action {
+  readonly type = NodeActionTypes.UpdateNode;
+  constructor(public payload: {layoutId: string, node: any}) { }
+}
+
+export class UpdateNodeSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodeSuccess;
+  constructor(public payload: any) { }
+}
+
+export class UpdateNodeFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodeFailure;
+  constructor(public payload: Error) { }
+}
+
+export class UpdateLinks implements Action {
+  readonly type = NodeActionTypes.UpdateLinks;
+  constructor(public payload: {layoutId: string, links: any[]}) { }
+}
+
+export class UpdateLinksSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateLinksSuccess;
+  constructor(public payload: any) { }
+}
+
+export class UpdateLinksFailure implements Action {
+  readonly type = NodeActionTypes.UpdateLinksFailure;
+  constructor(public payload: Error) { }
+}
+
 
 
 export type NodeActionsUnion =
@@ -111,6 +147,13 @@ export type NodeActionsUnion =
   | LoadNodeLinkFailure
   | LoadMapView
   | LoadMapViewSuccess
-  | LoadMapViewFailure;
+  | LoadMapViewFailure
+  | UpdateNode
+  | UpdateNodeSuccess
+  | UpdateNodeFailure
+  | UpdateLinks
+  | UpdateLinksSuccess
+  | UpdateLinksFailure
+  ;
 
 

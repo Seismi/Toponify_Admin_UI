@@ -168,3 +168,8 @@ export interface NodeLinksApiResponse {
     value: string;
   }
 
+
+  export interface LinkUpdatePayload {
+    layoutId: string;
+    links: { id: string, points: any[]} [];
+  }
