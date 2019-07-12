@@ -298,7 +298,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     if (changes.nodes || changes.links) {
       if (this.diagram.model.nodeDataArray.length > 0
         && (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0) {
-        if (this.diagramLevelService.mapView) {
+        if (this.level === Level.map) {
           this.diagram.layoutDiagram(true);
         }
       }

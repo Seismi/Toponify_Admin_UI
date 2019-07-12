@@ -50,8 +50,6 @@ export class DiagramLevelService implements OnDestroy {
 
   historyOfFilters: any = {};
 
-  mapView = null;
-
   groupLayoutInitial = true;
 
   // Filter to apply to nodes for the diagram
@@ -320,7 +318,6 @@ export class DiagramLevelService implements OnDestroy {
 
       // Settings and layout for non-map views
     } else {
-      this.mapView = null;
 
       diagram.layout = $(go.LayeredDigraphLayout, {
         setsPortSpots: false,
