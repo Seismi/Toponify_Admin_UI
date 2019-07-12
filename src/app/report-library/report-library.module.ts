@@ -7,7 +7,8 @@ import {
   MatTableModule,
   MatPaginatorModule,
   MatButtonModule,
-  MatSortModule 
+  MatSortModule, 
+  MatTabsModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -18,17 +19,19 @@ import { EffectsModule } from '@ngrx/effects';
 import { reducer } from './store/reducers/report.reducer'
 import { ReportEffects } from './store/effects/report.effects';
 import { ReportService } from './services/report.service';
-
+import { ArchitectureModule } from '@app/architecture/architecture.module';
 
 @NgModule({
   imports: [
     CoreModule,
     CommonModule,
     ReportLibraryRoutingModule,
+    ArchitectureModule,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
     MatSortModule,
+    MatTabsModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],

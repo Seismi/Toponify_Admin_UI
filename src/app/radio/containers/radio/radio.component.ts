@@ -29,7 +29,7 @@ export class RadioComponent implements OnInit {
     isEditable = false;
     addRadio = true;
     radioId: string;
-    subscriptions: Subscription[] = [];
+    modalMode = false;
 
     constructor(private store: Store<RadioState>,
                 private radioDetailService: RadioDetailService,
@@ -49,6 +49,7 @@ export class RadioComponent implements OnInit {
         this.radioId = row.id;
         this.addRadio = true;
         this.disableButton = false;
+        this.modalMode = true;
         this.radioDetailService.radioDetailsForm.patchValue({
             title: row.title,
             category: row.category,

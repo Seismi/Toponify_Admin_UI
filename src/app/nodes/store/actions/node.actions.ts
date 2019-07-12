@@ -16,6 +16,9 @@ export enum NodeActionTypes {
   LoadNodeLink= '[Node] Load Node Link',
   LoadNodeLinkSuccess = '[Node] Load Node Link Success',
   LoadNodeLinkFailure = '[Node] Load Node Link Fail',
+  LoadMapView = '[Node] Load Map View',
+  LoadMapViewSuccess = '[Node] Load Map View Success',
+  LoadMapViewFailure = '[Node] Load Map View Fail',
 }
 
 export class LoadNodes implements Action {
@@ -35,6 +38,21 @@ export class LoadNodesFailure implements Action {
 export class LoadNode implements Action {
   readonly type = NodeActionTypes.LoadNode;
   constructor(public payload: string) { }
+}
+
+export class LoadMapView implements Action {
+  readonly type = NodeActionTypes.LoadMapView;
+  constructor(public payload: string) { }
+}
+
+export class LoadMapViewSuccess implements Action {
+  readonly type = NodeActionTypes.LoadMapViewSuccess;
+  constructor(public payload: any) { }
+}
+
+export class LoadMapViewFailure implements Action {
+  readonly type = NodeActionTypes.LoadMapViewFailure;
+  constructor(public payload: Error) { }
 }
 
 export class LoadNodeSuccess implements Action {
@@ -90,6 +108,9 @@ export type NodeActionsUnion =
   | LoadNodeLinksFailure
   | LoadNodeLink
   | LoadNodeLinkSuccess
-  | LoadNodeLinkFailure;
+  | LoadNodeLinkFailure
+  | LoadMapView
+  | LoadMapViewSuccess
+  | LoadMapViewFailure;
 
 

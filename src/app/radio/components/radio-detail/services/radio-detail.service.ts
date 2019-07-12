@@ -10,8 +10,8 @@ export class RadioDetailService {
   constructor(private fb: FormBuilder, private radioValidatorService: RadioValidatorService) {
     this.radioDetailsForm = this.fb.group({
       title: [null, Validators.required],
-      category: [null, Validators.required],
-      status: [null, Validators.required],
+      category: ['risk'],
+      status: ['open'],
       targetName: [null],
       description: [null, Validators.required],
       replyText: [null],
