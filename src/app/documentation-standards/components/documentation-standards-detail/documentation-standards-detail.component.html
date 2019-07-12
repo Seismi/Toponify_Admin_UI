@@ -1,24 +1,43 @@
 <form [formGroup]="group" data-hook="documentation-standards-details">
-    <div class="form-group">
+    <div class="form-group" [ngClass]="{disabled: !isEditable}">
         <label>Name</label>
-        <input type="text" class="form-control" formControlName="name" data-hook="documentation-standards-details-name">
+        <input type="text" class="form-control" formControlName="name"
+        [ngClass]="{ 'is-invalid': (!group.controls['name'].valid && group.controls['name'].touched) }" data-hook="documentation-standards-details-name">
+        <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
+            <div>This field is required</div>
+        </div>
     </div>
     <div class="form-group">
         <label>Description</label>
-        <textarea class="form-control" rows="3" formControlName="description" data-hook="documentation-standards-details-description"></textarea>
+        <textarea class="form-control" rows="3" formControlName="description" [ngClass]="{disabled: !isEditable}"
+            data-hook="documentation-standards-details-description"></textarea>
     </div>
     <div class="form-group">
         <label>Type</label>
-        <input type="text" class="form-control" formControlName="type" data-hook="documentation-standards-details-type">
+        <select class="form-control" formControlName="type" [ngClass]="{disabled: !isEditable}">
+            <option [ngValue]="null" *ngIf="modalMode" disabled>Please choose type</option>
+            <option *ngFor="let type of types" [value]="type" data-hook="documentation-standards-details-type">
+                {{type}}
+            </option>
+        </select>
     </div>
     <div class="form-group">
-        <label>Level</label>
-        <textarea class="form-control" rows="3" formControlName="levels" data-hook="documentation-standards-details-level"></textarea>
+        <label class="levels-label">Levels</label>
+        <smi-document-standards-levels 
+            [isDisabled]="isDisabled" 
+            [modalMode]="modalMode">
+        </smi-document-standards-levels>
     </div>
-
     <br>
-    <button type="button" mat-raised-button color="primary">Edit</button>
-    <button type="button" mat-raised-button color="primary">Open</button>
-    <button type="button" mat-raised-button color="primary">Copy</button>
-    <button type="button" mat-raised-button color="warn">Delete</button>
+    <div class="form-actions" *ngIf="!modalMode">
+        <div *ngIf="!isEditable">
+            <button type="button" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+            <button type="button" mat-raised-button color="primary">Copy</button>
+            <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+        </div>
+        <div *ngIf="isEditable">
+            <button type="button" mat-raised-button color="primary" (click)="onSave()">Save</button>
+            <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
+        </div>
+    </div>
 </form>

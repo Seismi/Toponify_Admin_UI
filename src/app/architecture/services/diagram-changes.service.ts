@@ -4,6 +4,7 @@ import {Level, DiagramLevelService} from './diagram-level.service';
 import {FilterService} from './filter.service';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
 import {Node} from '@app/nodes/store/models/node.model.ts';
+import { BehaviorSubject } from 'rxjs';
 
 const $ = go.GraphObject.make;
 
@@ -26,6 +27,8 @@ const workPackageColours = ['green', 'orange', 'blue', 'red'];
 
 @Injectable()
 export class DiagramChangesService {
+
+  public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
 
   // Colors for work packages
   colors = workPackageColours;
@@ -116,41 +119,23 @@ export class DiagramChangesService {
     });
 
     const links: any[] = [];
-
+    let node: any;
     // Update position of each part
     partsToUpdate.each(function(part: go.Part) {
-
       if (part instanceof go.Link) {
         // Ignore disconnected links
         if (part.fromNode && part.toNode) {
-
-          // Replace routes. Will need to be updated to replace individual route for the current view when views are implemented.
-          /* *REPLACE*
-          links.push({
-            [currentLevel.toLowerCase() + 'Link']: {
-              data: {id: part.key,
-                route: this.standardDisplay ? [{view: 'Default', points: part.data.route}] : []
-              }
-            },
-            versionId: this.versionId
-          });*/
+          links.push({id: part.key, points: part.data.route});
         }
       } else {  // Part is a node
-
-        // Replace locations. Will need to be updated to replace individual location for the current view when views are implemented.
-        /* *REPLACE*
-        this.store.dispatch(new updateNodeActionMapping[currentLevel]({
-          [currentLevel.toLowerCase()]: {
-            data: {id: part.key, location: [{view: 'Default', locationCoordinates: part.data.location}]}
-          },
-          versionId: this.versionId
-        }));*/
+        node = {id: part.key, locationCoordinates: part.data.location};
       }
     }.bind(this));
 
-    if (links.length > 0) {
-      // *REPLACE* this.store.dispatch( new updateLinkActionMapping[currentLevel](links) );
-    }
+    this.onUpdatePosition.next({
+      node: node,
+      links: links
+    });
   }
 
   // Update diagram when display options have been changed

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DocumentStandardsValidatorService } from './document-standards-validator.service';
 
 @Injectable()
@@ -9,9 +9,9 @@ export class DocumentStandardsService {
 
   constructor(private fb: FormBuilder, private documentStandardsValidatorService: DocumentStandardsValidatorService) {
     this.documentStandardsForm = this.fb.group({
-      name: [null],
+      name: [null, Validators.required],
       description: [null],
-      type: [null],
+      type: [null, Validators.required],
       levels: [null]
     });
   }
