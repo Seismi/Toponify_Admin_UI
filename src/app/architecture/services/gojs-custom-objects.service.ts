@@ -1,4 +1,5 @@
 import * as go from 'gojs';
+import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable, OnDestroy} from '@angular/core';
 import {DiagramLevelService, Level, lessDetailOrderMapping, moreDetailOrderMapping} from './diagram-level.service';
 import { FilterService } from './filter.service';
@@ -29,6 +30,23 @@ export function updateShapeShadows() {
     go.Shape.defineFigureGenerator(figure, figureDefinition);
 
   });
+}
+
+// Customised link shifting tool that calls process to update the link route in the back end when finished
+export class CustomLinkShift extends LinkShiftingTool {
+  constructor() {
+    super();
+  }
+
+  // Override mouseUp method
+  public doMouseUp(): void {
+
+    const shiftedLink = (this['_handle'].part as go.Adornment).adornedObject.part;
+    this.diagram.raiseDiagramEvent('LinkReshaped', shiftedLink);
+
+    LinkShiftingTool.prototype.doMouseUp.call(this);
+  }
+
 }
 
 // Customised link that only updates its route when a tool that can affect link route is active

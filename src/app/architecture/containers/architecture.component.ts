@@ -341,6 +341,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   // FIXME: types
   handleUpdateNodeLocation(data: {node: any, links: any[]}) {
+
+    // Do not update back end if using default layout
+    if (!('id' in this.layout)) {
+      return;
+    }
+
     if (this.layout && data.node) {
       this.store.dispatch(new UpdateNode({ layoutId: this.layout.id, node: data.node}));
     }

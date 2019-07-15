@@ -76,9 +76,8 @@ export class DiagramListenersService {
       function(event: any) {
         event.subject = new go.Set([event.subject]);
 
-        if (this.standardDisplay) {
-          this.updatePosition(event);
-        }
+        this.updatePosition(event);
+
       }.bind(this.diagramChangesService)
     );
 

@@ -8,20 +8,6 @@ import { BehaviorSubject } from 'rxjs';
 
 const $ = go.GraphObject.make;
 
-// Default display options, under which parts in the diagram will have their positions saved
-export const standardDisplayOptions = {
-  name: true,
-  description: false,
-  tags: true,
-  owner: false,
-  nextLevel: true,
-  responsibilities: false,
-  dataLinks: true,
-  masterDataLinks: true,
-  linkName: false,
-  linkLabel: false
-};
-
 // TEMPORARY HARD CODED COLOURS FOR WORK PACKAGES
 const workPackageColours = ['green', 'orange', 'blue', 'red'];
 
@@ -38,9 +24,6 @@ export class DiagramChangesService {
     public filterService: FilterService
   ) {
   }
-
-  // Indicates whether the default display settings are currently active
-  standardDisplay = true;
 
   // Add newly created nodes to the back end
   //  -event
@@ -102,8 +85,8 @@ export class DiagramChangesService {
 
     const currentLevel = this.filterService.filter.getValue().filterLevel;
 
-    // Only implemented for system, data set and dimension views so far
-    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
+    // Do not update positions for map view
+    if (currentLevel === Level.map) {return ; }
 
     // Set to contain all parts to update
     const partsToUpdate = new go.Set();
@@ -143,11 +126,6 @@ export class DiagramChangesService {
 
     const model = diagram.model;
     model.setDataProperty(model.modelData, option, event.checked);
-
-    // In standard display mode if the display options are all set to their standard values
-    this.standardDisplay = Object.keys(standardDisplayOptions).every(function(displayOption) {
-      return (standardDisplayOptions[displayOption] === model.modelData[displayOption]);
-    });
 
     // Update the route of links after display change
     diagram.links.each(function(link) {

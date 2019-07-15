@@ -61,9 +61,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        // TEMP
-        isLayoutPositioned: true
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
@@ -720,7 +718,7 @@ export class DiagramTemplatesService {
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing',
         function (routeMissing) {
-          return routeMissing || !this.standardDisplay;
+          return routeMissing;
         }.bind(this)
       ),
       {
@@ -821,7 +819,7 @@ export class DiagramTemplatesService {
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing',
         function (routeMissing) {
-          return routeMissing || !this.standardDisplay;
+          return routeMissing;
         }.bind(this)
       ),
       {
