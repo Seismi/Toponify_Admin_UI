@@ -236,8 +236,7 @@ export class GojsCustomObjectsService {
         }.bind(this),
         function(object: go.Part, event: object): boolean {
           return (object as any).nodeDataArray.length > 0 &&
-            this.diagramLevelService.filter.getValue().filterLevel !== Level.reportingConcept
-            && !this.mapView;
+            ![Level.reportingConcept, Level.map].includes(this.diagramLevelService.filter.getValue().filterLevel);
         }.bind(this)
       ),
       makeSubMenuButton(

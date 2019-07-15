@@ -174,7 +174,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       diagramTemplatesService.getLinkMasterDataTemplate()
     );
 
-    this.diagram.groupTemplate = diagramTemplatesService.getModelGroupTemplate();
+    this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
@@ -304,7 +304,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     if (changes.nodes || changes.links) {
       if (this.diagram.model.nodeDataArray.length > 0
         && (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0) {
-        if (this.diagramLevelService.mapView) {
+        if (this.level === Level.map) {
           this.diagram.layoutDiagram(true);
         }
       }
