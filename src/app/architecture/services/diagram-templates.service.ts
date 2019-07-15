@@ -891,7 +891,7 @@ export class DiagramTemplatesService {
   }
 
   getDataSetGroupTemplate() {
-    // Template for model groups in mapping view
+    // Template for data set groups in mapping view
     return $(
       go.Group,
       'Vertical', {

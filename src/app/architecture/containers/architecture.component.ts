@@ -37,6 +37,7 @@ import { FilterService } from '../services/filter.service';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import {map} from 'rxjs/operators';
 
 
 @Component({
@@ -115,12 +116,57 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities)).subscribe(nodes => {
-        this.nodes = nodes;
-        this.ref.detectChanges();
+    this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
+      map(nodes => {
+
+        if (nodes === null) {return null; }
+
+        let layoutLoc;
+
+        return nodes.map(function(node) {
+          if ('id' in this.layout) {
+            layoutLoc = node.locations.find(function(loc) {
+              return loc.layout/*TEMP*/[0]/*END*/.id === this.layout.id;
+            }.bind(this));
+          }
+
+          return {
+            ...node,
+            location: layoutLoc ? layoutLoc.locationCoordinates : null,
+            locationMissing: !layoutLoc
+          };
+
+        }.bind(this));
+      })
+    ).subscribe(nodes => {
+      this.nodes = nodes;
+      this.ref.detectChanges();
     });
 
-    this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks)).subscribe(links => {
+
+    this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks),
+      map(links => {
+
+        if (links === null) {return null; }
+
+        let layoutRoute;
+
+        return links.map(function(link) {
+          if ('id' in this.layout) {
+            layoutRoute = link.routes.find(function(route) {
+              return route.layout/*TEMP*/[0]/*END*/.id === this.layout.id;
+            }.bind(this));
+          }
+
+          return {
+            ...link,
+            route: layoutRoute ? layoutRoute : [],
+            routeMissing: !layoutRoute
+          };
+
+        }.bind(this));
+      })
+    ).subscribe(links => {
         this.links = links;
         this.ref.detectChanges();
     });
@@ -368,7 +414,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   selectColorForWorkPackage(color, id) {
-    console.log(color, id)
+    console.log(color, id);
   }
 
 
