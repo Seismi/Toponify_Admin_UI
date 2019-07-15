@@ -9,6 +9,7 @@
 
 <!-- WorkPackage Dropdown -->
 <smi-workpackage-dropdown 
+    data-hook="quicklinks-workpackage-dropdown" 
     *ngIf="gojsView" 
     [data]="workpackages"
     (selectWorkpackage)="onSelectWorkPackage($event)">
@@ -25,6 +26,7 @@
 
 <!-- Scopes dropdown -->
 <smi-scopes-dropdown 
+    data-hook="quicklinks-scopes-dropdown" 
     *ngIf="gojsView"
     [data]="scopes"
     (selectScope)="onSelectScope($event)">
@@ -32,6 +34,7 @@
 
 <!-- Layouts dropdown -->
 <smi-layouts-dropdown 
+    data-hook="quicklinks-layouts-dropdown"
     *ngIf="gojsView"
     [data]="layouts"
     (selectLayout)="onSelectLayout($event)">

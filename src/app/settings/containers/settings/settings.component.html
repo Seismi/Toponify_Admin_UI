@@ -55,7 +55,8 @@
         <smi-users-table *ngIf="(users$ | async)?.length > 0" 
             [data]="users$ | async" 
             (editUser)="onEditUser($event)"
-            (addUser)="onAddUser($event)">
+            (addUser)="onAddUser($event)"
+            data-hook="all-users-table">
         </smi-users-table>
     </mat-tab>
 

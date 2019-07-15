@@ -76,7 +76,7 @@ import { LayerPipe } from './pipes/layer.pipe';
     MatGridListModule,
     StoreModule.forFeature('architectureFeature', reducer)
   ],
-    exports: [ObjectDetailsFormComponent, CategoryTableComponent, TableCollapseComponent],
+    exports: [ObjectDetailsFormComponent, CategoryTableComponent, TableCollapseComponent, WorkPackageTabTableComponent],
     declarations: [
       ArchitectureRoutingComponent,
       ArchitectureComponent,
