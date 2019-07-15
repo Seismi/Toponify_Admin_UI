@@ -31,6 +31,9 @@ export class RightPanelComponent {
   @Output()
   cancel = new EventEmitter();
 
+  @Output()
+  addRadionInArchitecture = new EventEmitter();
+
   onSaveAttribute() {
     this.saveAttribute.emit();
   }
@@ -45,6 +48,10 @@ export class RightPanelComponent {
 
   onCancel() {
     this.cancel.emit();
+  }
+
+  onAddRadio() {
+    this.addRadionInArchitecture.emit();
   }
 
 }

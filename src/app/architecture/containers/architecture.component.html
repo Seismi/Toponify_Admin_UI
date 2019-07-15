@@ -75,6 +75,7 @@
         [data]="nodeDetail$ | async"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
+        (addRadionInArchitecture)="addRadionInArchitecture($event)"
     >
     </smi-right-panel>
   </app-model-sidebar>

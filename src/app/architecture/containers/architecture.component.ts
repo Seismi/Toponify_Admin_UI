@@ -37,6 +37,9 @@ import { FilterService } from '../services/filter.service';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
+import { AddRadioEntity } from '@app/radio/store/actions/radio.actions';
+import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 
 
 @Component({
@@ -95,6 +98,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private scopeStore: Store<ScopeState>,
     private layoutStore: Store<LayoutState>,
     private store: Store<ViewState>,
+    private radioStore: Store<RadioState>,
     private workpackageStore: Store<WorkPackageState>,
     private router: Router,
     private objectDetailsService: ObjectDetailsService,
@@ -379,6 +383,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectLayout(id) {
     this.layoutStore.dispatch(new LoadLayout(id));
+  }
+
+  addRadionInArchitecture() {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.radio) {
+        this.radioStore.dispatch(new AddRadioEntity({
+          data: {
+            title: data.radio.title,
+            description: data.radio.description,
+            status: data.radio.status,
+            category: data.radio.category,
+            author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' },
+            target: { id: this.nodeId }
+          }
+        }));
+      }
+    });
   }
 
 }

@@ -31,7 +31,7 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" *ngIf="!modalMode">
                 <label>Target Name</label>
                 <input type="text" class="form-control" formControlName="targetName" [readonly]="true">
             </div>
