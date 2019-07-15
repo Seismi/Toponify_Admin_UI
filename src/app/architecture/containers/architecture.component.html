@@ -72,7 +72,10 @@
         (editDetails)="onEditDetails($event)"
         (saveAttribute)="onSaveObjectDetails($event)"
         (deleteAttribute)="onDeleteAttribute($event)"
-        [data]="nodeDetail$ | async"
+        [attributes]="selectedNode?.attributes"
+        [radio]="selectedNode?.relatedRadios"
+        [properties]="selectednode?.customPropertyValues"
+        [workpackages]="selectednode?.relatedWorkPackages"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
     >
