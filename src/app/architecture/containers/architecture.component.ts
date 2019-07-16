@@ -53,6 +53,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   @Input() allowMove: boolean;
   public selectedPart = null;
 
+  showOrHideLeftPane = false;
+  selectedTab: number;
+
   nodesSubscription: Subscription;
   linksSubscription: Subscription;
 
@@ -387,5 +390,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
+  onHideLeftPane() {
+    this.showOrHideLeftPane = false;
+  }
+
+  onOpenWorkPackageTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedTab = 0;
+  }
+
+  onOpenAnalysisTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedTab = 2;
+  }
+
+  onOpenEditTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedTab = 1;
+  }
 }
 
