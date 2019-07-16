@@ -10,6 +10,7 @@ export class LeftPanelComponent {
 
   @Input() workPackageIsEditable = false;
   @Input() data: any;
+  @Input() selectedTab: number;
 
   constructor() { }
 
@@ -39,6 +40,13 @@ export class LeftPanelComponent {
 
   onSelectColor(color, id) {
     this.selectColor.emit({color, id});
+  }
+
+  @Output()
+  hideLeftPane = new EventEmitter();
+
+  onHidePane() {
+    this.hideLeftPane.emit();
   }
 
 }
