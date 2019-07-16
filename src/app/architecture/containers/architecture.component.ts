@@ -117,16 +117,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
 
     this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
+      // Get correct location for nodes, based on selected layout
       map(nodes => {
 
         if (nodes === null) {return null; }
+        if (this.filterService.getFilter().filterLevel === Level.map) {return nodes; }
 
         let layoutLoc;
 
         return nodes.map(function(node) {
           if ('id' in this.layout) {
             layoutLoc = node.locations.find(function(loc) {
-              return loc.layout/*TEMP*/[0]/*END*/.id === this.layout.id;
+              return loc.layout.id === this.layout.id;
             }.bind(this));
           }
 
@@ -145,22 +147,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
 
     this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks),
+      // Get correct route for links, based on selected layout
       map(links => {
 
         if (links === null) {return null; }
+        if (this.filterService.getFilter().filterLevel === Level.map) {return links; }
 
         let layoutRoute;
 
         return links.map(function(link) {
           if ('id' in this.layout) {
             layoutRoute = link.routes.find(function(route) {
-              return route.layout/*TEMP*/[0]/*END*/.id === this.layout.id;
+              return route.layout.id === this.layout.id;
             }.bind(this));
           }
 
           return {
             ...link,
-            route: layoutRoute ? layoutRoute : [],
+            route: layoutRoute ? layoutRoute.points : [],
             routeMissing: !layoutRoute
           };
 
@@ -423,7 +427,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     console.log(color, id);
   }
 
-
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
     this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
@@ -431,6 +434,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectLayout(id) {
     this.layoutStore.dispatch(new LoadLayout(id));
+
+    const currentLevel = this.filterService.getFilter().filterLevel;
+
+    // Reload nodes and links for new layout if not in map view
+    if (currentLevel !== Level.map) {
+      this.nodeStore.dispatch(new LoadNodes);
+      this.nodeStore.dispatch(new LoadNodeLinks);
+    }
   }
 
 }
