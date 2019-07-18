@@ -1,4 +1,4 @@
-<mat-tab-group mat-stretch-tabs class="stretched-tabs mat-elevation-z4" [@.disabled]="true">
+<mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
     <mat-tab label="Details">
         <smi-object-details-form
             [group]="group"
@@ -24,3 +24,6 @@
         <smi-workpackage-tab [data]="data"></smi-workpackage-tab>
     </mat-tab>
 </mat-tab-group>
+
+<!-- Hide right pane -->
+<button mat-button (click)="onHidePane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>

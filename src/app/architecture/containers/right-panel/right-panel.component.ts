@@ -14,6 +14,7 @@ export class RightPanelComponent {
   @Input() isEditable = false;
   @Input() data: any;
   @Input() workPackageIsEditable = false;
+  @Input() selectedRightTab: number;
 
   constructor() { }
 
@@ -31,6 +32,9 @@ export class RightPanelComponent {
   @Output()
   cancel = new EventEmitter();
 
+  @Output()
+  hideRightPane = new EventEmitter();
+
   onSaveAttribute() {
     this.saveAttribute.emit();
   }
@@ -45,6 +49,10 @@ export class RightPanelComponent {
 
   onCancel() {
     this.cancel.emit();
+  }
+
+  onHidePane() {
+    this.hideRightPane.emit();
   }
 
 }

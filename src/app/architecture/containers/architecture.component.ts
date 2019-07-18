@@ -84,9 +84,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
+  showOrHideRightPane = false;
+  selectedRightTab: number;
+
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
-
   @ViewChild(LeftPanelComponent)
   private leftPanelComponent: LeftPanelComponent;
 
@@ -387,5 +389,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
+  openRightTab(i) {
+    this.selectedRightTab = i;
+    if(this.selectedRightTab === i) {
+      this.showOrHideRightPane = true;
+    }
+  }
+
+  onHideRightPane() {
+    this.showOrHideRightPane = false;
+  }
+  
 }
 
