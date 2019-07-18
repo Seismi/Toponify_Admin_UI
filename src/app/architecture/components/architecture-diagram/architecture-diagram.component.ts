@@ -13,13 +13,12 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
-import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
 import {layers} from '@app/nodes/store/models/node.model';
 import {DiagramTemplatesService} from '../../services/diagram-templates.service';
 import {DiagramLevelService, Level} from '../..//services/diagram-level.service';
-import {DiagramChangesService, standardDisplayOptions} from '../../services/diagram-changes.service';
-import {GojsCustomObjectsService} from '../../services/gojs-custom-objects.service';
+import {DiagramChangesService} from '../../services/diagram-changes.service';
+import {GojsCustomObjectsService, CustomLinkShift} from '../../services/gojs-custom-objects.service';
 import {DiagramListenersService} from '../../services/diagram-listeners.service';
 
 // FIXME: this solution is temp, while not clear how it should work
@@ -29,6 +28,19 @@ export const viewLevelMapping = {
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
   [9]: Level.map
+};
+
+const standardDisplayOptions = {
+  name: true,
+  description: false,
+  tags: true,
+  owner: false,
+  nextLevel: true,
+  responsibilities: false,
+  dataLinks: true,
+  masterDataLinks: true,
+  linkName: false,
+  linkLabel: false
 };
 
 @Component({
@@ -42,6 +54,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   private nodeSelectedRef: Subscription = null;
   private modelChangeRef: Subscription = null;
 
+  @ViewChild('diagramDiv')
   @ViewChild('diagramDiv')
   private diagramRef: ElementRef;
 
@@ -110,7 +123,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
-    this.diagram.toolManager.mouseDownTools.add(new LinkShiftingTool());
+    this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
     this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation;
@@ -174,7 +187,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       diagramTemplatesService.getLinkMasterDataTemplate()
     );
 
-    this.diagram.groupTemplate = diagramTemplatesService.getModelGroupTemplate();
+    this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
@@ -287,14 +300,14 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     }
 
     if (changes.nodes || changes.selectedWorkPackages) {
-      // FIXME: on store change sometinhg goes wrong
+      // FIXME: on store change something goes wrong
       if (JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue)) {
         this.diagramChangesService.updateNodes(this.diagram, this.nodes, this.selectedWorkPackages);
       }
     }
 
     if (changes.links || changes.selectedWorkPackages) {
-      // FIXME: on store change sometinhg goes wrong
+      // FIXME: on store change something goes wrong
       if (JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue)) {
         this.diagramChangesService.updateLinks(this.diagram, this.links, this.selectedWorkPackages);
       }
@@ -304,7 +317,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     if (changes.nodes || changes.links) {
       if (this.diagram.model.nodeDataArray.length > 0
         && (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0) {
-        if (this.diagramLevelService.mapView) {
+        if (this.level === Level.map) {
           this.diagram.layoutDiagram(true);
         }
       }
