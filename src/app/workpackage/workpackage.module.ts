@@ -8,7 +8,11 @@ import {
   MatPaginatorModule,
   MatSortModule,
   MatTableModule,
-  MatDialogModule
+  MatDialogModule,
+  MatFormFieldModule,
+  MatSelectModule,
+  MatInputModule,
+  MatIconModule
   } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -22,10 +26,17 @@ import { WorkPackageRoutingComponent } from './containers/workpackage-routing.co
 import { WorkPackageComponent } from './containers/workpackage/workpackage.component';
 import { WorkPackagesTableComponent } from './components/workpackages-table/workpackages-table.component';
 import { WorkPackageDetailComponent } from './components/workpackage-detail/workpackage-detail.component';
-import { WorkPackageModalComponent } from './containers/new-workpackage-modal/new-workpackage.component';
-import { NewWorkpackageFormComponent } from './components/new-workpackage-form/new-workpackage-form.component';
+import { WorkPackageModalComponent } from './containers/workpackage-modal/workpackage.component';
 import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage-modal/delete-workpackage.component';
 import { WorkpackageDetailsComponent } from './containers/workpackage-details/workpackage-details.component';
+import { WpOwnersDropdownComponent } from './components/wp-owners-dropdown/wp-owners-dropdown.component';
+import { SettingsModule } from '@app/settings/settings.module';
+import { WpBaselineDropdownComponent } from './components/wp-baseline-dropdown/wp-baseline-dropdown.component';
+import { BaselineTableComponent } from './components/baseline-table/baseline-table.component';
+import { OwnersTableComponent } from './components/owners-table/owners-table.component';
+import { ApproversTableComponent } from './components/approvers-table/approvers-table.component';
+import { OwnersModalComponent } from './containers/owners-modal/owners-modal.component';
+import { OwnersListComponent } from './components/owners-list/owners-list.component';
 
 
 
@@ -37,10 +48,15 @@ import { WorkpackageDetailsComponent } from './containers/workpackage-details/wo
     MatButtonModule,
     MatSortModule,
     MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatIconModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
     CoreModule,
+    SettingsModule,
     StoreModule.forFeature('workpackageFeature', reducer),
     EffectsModule.forFeature([ WorkPackageEffects]
     )
@@ -55,11 +71,17 @@ import { WorkpackageDetailsComponent } from './containers/workpackage-details/wo
     RadioTableComponent,
     ChangeTableComponent,
     WorkPackageModalComponent,
-    NewWorkpackageFormComponent,
     DeleteWorkPackageModalComponent,
-    WorkpackageDetailsComponent
+    WorkpackageDetailsComponent,
+    WpOwnersDropdownComponent,
+    WpBaselineDropdownComponent,
+    BaselineTableComponent,
+    OwnersTableComponent,
+    ApproversTableComponent,
+    OwnersModalComponent,
+    OwnersListComponent
   ],
-  entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent],
+  entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent, OwnersModalComponent],
   providers: [
     WorkPackageService
   ],

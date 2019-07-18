@@ -1,11 +1,17 @@
 <div class="col">
   <smi-workpackage-detail
-    [group]="workpackageDetailsForm"
+    [group]="workPackageDetailForm"
     (editWorkpackage)="onEditWorkpackage($event)"
     (deleteWorkpackage)="onDeleteWorkpackage($event)"
-    (saveWorkpackage)="onSaveWorkpackage($event)">
+    (saveWorkpackage)="onSaveWorkpackage($event)"
+    [baselineTableData]="workpackage?.baseline"
+    [ownersTableData]="workpackage?.owners"
+    [approversTableData]="workpackage?.approvers"
+    (deleteOwner)="onDeleteOwner($event)"
+    (selectOwner)="onSelectOwner($event)"
+    (addOwner)="onAddOwner($event)">
   </smi-workpackage-detail>
-  <smi-objectives-table></smi-objectives-table>
-  <smi-radio-table></smi-radio-table>
-  <smi-change-table></smi-change-table>
+  <smi-objectives-table [data]="workpackage?.objectives"></smi-objectives-table>
+  <smi-radio-table [data]="workpackage?.radios"></smi-radio-table>
+  <smi-change-table [data]="workpackage?.changes?.nodes?.additions"></smi-change-table>
 </div>
