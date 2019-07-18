@@ -1,5 +1,6 @@
 <div class="col">
   <smi-workpackage-detail
+    data-hook="workpackage-detail"
     [group]="workPackageDetailForm"
     (editWorkpackage)="onEditWorkpackage($event)"
     (deleteWorkpackage)="onDeleteWorkpackage($event)"
@@ -11,7 +12,7 @@
     (selectOwner)="onSelectOwner($event)"
     (addOwner)="onAddOwner($event)">
   </smi-workpackage-detail>
-  <smi-objectives-table [data]="workpackage?.objectives"></smi-objectives-table>
-  <smi-radio-table [data]="workpackage?.radios"></smi-radio-table>
-  <smi-change-table [data]="workpackage?.changes?.nodes?.additions"></smi-change-table>
+  <smi-objectives-table data-hook="workpackage-page-objective-table" [data]="workpackage?.objectives"></smi-objectives-table>
+  <smi-radio-table data-hook="workpackage-page-radio-table" [data]="workpackage?.radios"></smi-radio-table>
+  <smi-change-table data-hook="workpackage-page-change-table" [data]="workpackage?.changes?.nodes?.additions"></smi-change-table>
 </div>

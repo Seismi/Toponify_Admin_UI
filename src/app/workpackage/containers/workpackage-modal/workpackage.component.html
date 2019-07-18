@@ -1,5 +1,6 @@
 <h1 mat-dialog-title>New Work Package</h1>
 <smi-workpackage-detail
+  data-hook="workpackage-detail-in-modal"
   [owners]="owners$ | async"
   [baseline]="baseline$ | async"
   [group]="workPackageDetailForm"
@@ -9,6 +10,6 @@
   [selectedOwners]="selectedOwners">
 </smi-workpackage-detail>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button (click)="onSubmit()" data-hook="workpackage-modal-save">Save</button>
+  <button mat-button (click)="onCancelClick()" data-hook="workpackage-modal-cancel">Cancel</button>
 </div>

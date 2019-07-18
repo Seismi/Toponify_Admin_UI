@@ -1,17 +1,18 @@
 <form [formGroup]="group">
     <!-- Name -->
     <mat-form-field [ngClass]="{disabled: !isEditable}">
-        <input matInput placeholder="Name" formControlName="name">
+        <input matInput placeholder="Name" formControlName="name" data-hook="workpackage-detail-name">
         <mat-error>This field is required!</mat-error>
     </mat-form-field>
 
     <!-- Description -->
     <mat-form-field [ngClass]="{disabled: !isEditable}">
-        <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        <textarea matInput placeholder="Description" formControlName="description" data-hook="workpackage-detail-description"></textarea>
     </mat-form-field>
 
     <!-- Baseline Table -->
-    <smi-baseline-table 
+    <smi-baseline-table
+        data-hook="workpackage-detail-baseline-table"
         *ngIf="!modalMode" 
         [data]="baselineTableData"
         [isEditable]="isEditable">
@@ -19,6 +20,7 @@
 
     <!-- Owners Table -->
     <smi-owners-table
+        data-hook="workpackage-detail-owners-table"
         *ngIf="!modalMode" 
         [data]="ownersTableData"
         (addOwner)="onAddOwner($event)"
@@ -29,17 +31,23 @@
     </smi-owners-table>
 
     <!-- Approvers Table -->
-    <smi-approvers-table *ngIf="!modalMode" [data]="approversTableData"></smi-approvers-table>
+    <smi-approvers-table
+        data-hook="workpackage-detail-approvers-table"
+        *ngIf="!modalMode" 
+        [data]="approversTableData">
+    </smi-approvers-table>
 
     <!-- Select Baseline -->
-    <smi-wp-baseline-dropdown 
+    <smi-wp-baseline-dropdown
+        data-hook="workpackage-detail-baseline-selection"
         *ngIf="modalMode"
         [data]="baseline"
         [selectedBaseline]="selectedBaseline">
     </smi-wp-baseline-dropdown>
 
     <!-- Select Owners -->
-    <smi-wp-owners-dropdown 
+    <smi-wp-owners-dropdown
+        data-hook="workpackage-detail-owners-selection"
         *ngIf="modalMode"
         [data]="owners"
         [selectedOwners]="selectedOwners">
@@ -47,7 +55,7 @@
 
     <!-- Select Status -->
     <mat-form-field *ngIf="modalMode">
-        <mat-select placeholder="Status" formControlName="status">
+        <mat-select placeholder="Status" formControlName="status" data-hook="workpackage-detail-status">
             <mat-option *ngFor="let status of workPackageStatus" [value]="status">{{status}}</mat-option>
         </mat-select>
         <mat-error>This field is required!</mat-error>
@@ -55,14 +63,14 @@
 
     <div class="form-group" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
-            <button type="button" mat-flat-button color="primary" (click)="onEdit()">Edit</button>
-            <button type="button" mat-raised-button color="primary">Open</button>
-            <button type="button" mat-raised-button color="primary">Copy</button>
-            <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
+            <button type="button" mat-flat-button color="primary" (click)="onEdit()" data-hook="workpackage-detail-edit">Edit</button>
+            <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-open">Open</button>
+            <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-copy">Copy</button>
+            <button type="button" mat-flat-button color="warn" (click)="onDelete()" data-hook="workpackage-detail-delete">Delete</button>
         </div>
         <div *ngIf="isEditable">
-            <button mat-flat-button color="primary" (click)="onSave()">Save</button>
-            <button mat-flat-button (click)="onCancel()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="onSave()" data-hook="workpackage-detail-save">Save</button>
+            <button mat-flat-button (click)="onCancel()" data-hook="workpackage-detail-cancel">Cancel</button>
         </div>
     </div>
 </form>
