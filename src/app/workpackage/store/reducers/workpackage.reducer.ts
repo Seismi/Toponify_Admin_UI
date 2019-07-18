@@ -147,6 +147,55 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+
+    case WorkPackageActionTypes.AddOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.AddOwnerSuccess: {
+      const addedEntity = action.payload;
+      return {
+        ...state,
+        entities: [...state.entities, addedEntity],
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.AddOwnerFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+
+    case WorkPackageActionTypes.DeleteOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwnerSuccess: {
+      return {
+        ...state,
+        entities: state.entities.filter((entity) => entity.id !== action.payload),
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwnerFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
     default: {
       return state;
     }
