@@ -1,4 +1,4 @@
-<mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedTab">
+<mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
     <mat-tab label="Work Packages">
         <smi-workpackage-tab-table [data]="data" (selectWorkPackage)="onSelectWorkPackage($event)"
             (selectColor)="onSelectColor($event)">

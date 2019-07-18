@@ -54,7 +54,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedPart = null;
 
   showOrHideLeftPane = false;
-  selectedTab: number;
 
   nodesSubscription: Subscription;
   linksSubscription: Subscription;
@@ -87,9 +86,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
+  selectedLeftTab: number;
+
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
-
   @ViewChild(LeftPanelComponent)
   private leftPanelComponent: LeftPanelComponent;
 
@@ -396,17 +396,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onOpenWorkPackageTab() {
     this.showOrHideLeftPane = true;
-    this.selectedTab = 0;
+    this.selectedLeftTab = 0;
   }
 
   onOpenAnalysisTab() {
     this.showOrHideLeftPane = true;
-    this.selectedTab = 2;
+    this.selectedLeftTab = 2;
   }
 
   onOpenEditTab() {
     this.showOrHideLeftPane = true;
-    this.selectedTab = 1;
+    this.selectedLeftTab = 1;
   }
 }
 

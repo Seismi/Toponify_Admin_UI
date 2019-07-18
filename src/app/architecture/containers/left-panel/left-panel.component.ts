@@ -10,7 +10,7 @@ export class LeftPanelComponent {
 
   @Input() workPackageIsEditable = false;
   @Input() data: any;
-  @Input() selectedTab: number;
+  @Input() selectedLeftTab: number;
 
   constructor() { }
 
