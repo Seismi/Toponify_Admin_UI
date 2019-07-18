@@ -1,15 +1,6 @@
 import { Component, ViewChild, Input } from '@angular/core';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
-
-export interface PeriodicElement {
-    name: string;
-    type: string;
-  }
-  
-  const ELEMENT_DATA: PeriodicElement[] = [
-    {type: 'Risk', name: 'Connector used to extract data is new unproven technology'},
-    {type: 'Dependency', name: 'Security approval for direct connection'}
-  ];
+import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-radio-table',
@@ -18,15 +9,16 @@ export interface PeriodicElement {
 })
 export class RadioTableComponent  {
 
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+  @Input()
+  set data(data: any[]) {
+    this.dataSource = new MatTableDataSource<any>(data);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
-    ngOnInit() {
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    }
-  
-    displayedColumns: string[] = ['type', 'name'];
-    dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
+  displayedColumns: string[] = ['type', 'name'];
+  public dataSource: MatTableDataSource<WorkPackageDetail>;
 }
