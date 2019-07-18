@@ -63,7 +63,7 @@
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <smi-right-sidebar *ngIf="!showOrHideRightPane" (rightTab)="openRightTab($event)">
+  <smi-right-sidebar data-hook="right-sidebar" *ngIf="!showOrHideRightPane" (rightTab)="openRightTab($event)">
   </smi-right-sidebar>
   <app-model-sidebar [isLast]="true" [maxWidth]="600" *ngIf="showOrHideRightPane">
     <p>
