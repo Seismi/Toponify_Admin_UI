@@ -1,54 +1,59 @@
 <form [formGroup]="group">
     <!-- Name -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Name:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="name">
-        </div>
-    </div>
+    <mat-form-field [ngClass]="{disabled: !isEditable}">
+        <input matInput placeholder="Name" formControlName="name">
+        <mat-error>This field is required!</mat-error>
+    </mat-form-field>
 
     <!-- Description -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Description:</label>
-        <div class="col-sm-10">
-            <textarea type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="description"></textarea>
-        </div>
-    </div>
+    <mat-form-field [ngClass]="{disabled: !isEditable}">
+        <textarea matInput placeholder="Description" formControlName="description"></textarea>
+    </mat-form-field>
 
-    <!-- Baseline -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Baseline:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}">
-        </div>
-    </div>
+    <!-- Baseline Table -->
+    <smi-baseline-table 
+        *ngIf="!modalMode" 
+        [data]="baselineTableData"
+        [isEditable]="isEditable">
+    </smi-baseline-table>
 
-    <!-- Owners -->
-    <div formArrayName="owners" *ngFor="let owner of group.get('owners').controls; let i=index">
-        <div [formGroupName]="i">
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Owners:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="name">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Approvers -->
-    <div formArrayName="approvers" *ngFor="let approver of group.get('approvers').controls; let i=index">
-        <div [formGroupName]="i">
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Approvers:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="name">
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Owners Table -->
+    <smi-owners-table
+        *ngIf="!modalMode" 
+        [data]="ownersTableData"
+        (addOwner)="onAddOwner($event)"
+        (deleteOwner)="onDeleteOwner($event)"
+        (selectOwner)="onSelectOwner($event)"
+        [isEditable]="isEditable"
+        [ngClass]="{disabled: !isEditable}">
+    </smi-owners-table>
 
-    <!-- Form Actions -->
-    <div class="form-group">
+    <!-- Approvers Table -->
+    <smi-approvers-table *ngIf="!modalMode" [data]="approversTableData"></smi-approvers-table>
+
+    <!-- Select Baseline -->
+    <smi-wp-baseline-dropdown 
+        *ngIf="modalMode"
+        [data]="baseline"
+        [selectedBaseline]="selectedBaseline">
+    </smi-wp-baseline-dropdown>
+
+    <!-- Select Owners -->
+    <smi-wp-owners-dropdown 
+        *ngIf="modalMode"
+        [data]="owners"
+        [selectedOwners]="selectedOwners">
+    </smi-wp-owners-dropdown>
+
+    <!-- Select Status -->
+    <mat-form-field *ngIf="modalMode">
+        <mat-select placeholder="Status" formControlName="status">
+            <mat-option *ngFor="let status of workPackageStatus" [value]="status">{{status}}</mat-option>
+        </mat-select>
+        <mat-error>This field is required!</mat-error>
+    </mat-form-field>
+
+    <div class="form-group" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
             <button type="button" mat-flat-button color="primary" (click)="onEdit()">Edit</button>
             <button type="button" mat-raised-button color="primary">Open</button>

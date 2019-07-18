@@ -8,14 +8,33 @@ import { FormGroup } from '@angular/forms';
 })
 export class WorkPackageDetailComponent  {
 
+  workPackageStatus = ['approved', 'draft'];
+
   @Input() group: FormGroup;
   @Input() isEditable = false;
+  @Input() modalMode = false;
+  @Input() owners: any;
+  @Input() baseline: any;
+  @Input() baselineTableData: any;
+  @Input() ownersTableData: any;
+  @Input() approversTableData: any;
+  @Input() selectedBaseline = [];
+  @Input() selectedOwners = [];
 
   @Output()
   deleteWorkpackage = new EventEmitter();
 
   @Output()
   saveWorkpackage = new EventEmitter();
+
+  @Output()
+  deleteOwner = new EventEmitter();
+
+  @Output()
+  selectOwner = new EventEmitter();
+
+  @Output()
+  addOwner = new EventEmitter();
 
   onSave() {
     this.isEditable = false;
@@ -32,6 +51,18 @@ export class WorkPackageDetailComponent  {
 
   onDelete() {
     this.deleteWorkpackage.emit();
+  }
+
+  onDeleteOwner() {
+    this.deleteOwner.emit();
+  }
+
+  onSelectOwner(row) {
+    this.selectOwner.emit(row);
+  }
+
+  onAddOwner() {
+    this.addOwner.emit();
   }
   
 }
