@@ -37,6 +37,7 @@ import { FilterService } from '../services/filter.service';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import {map} from 'rxjs/operators';
 
 
 @Component({
@@ -52,6 +53,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   @Input() attributesView = false;
   @Input() allowMove: boolean;
   public selectedPart = null;
+
+  showOrHideLeftPane = false;
 
   nodesSubscription: Subscription;
   linksSubscription: Subscription;
@@ -84,9 +87,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
+  selectedLeftTab: number;
+
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
-
   @ViewChild(LeftPanelComponent)
   private leftPanelComponent: LeftPanelComponent;
 
@@ -115,12 +119,61 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities)).subscribe(nodes => {
-        this.nodes = nodes;
-        this.ref.detectChanges();
+    this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
+      // Get correct location for nodes, based on selected layout
+      map(nodes => {
+
+        if (nodes === null) {return null; }
+        if (this.filterService.getFilter().filterLevel === Level.map) {return nodes; }
+
+        let layoutLoc;
+
+        return nodes.map(function(node) {
+          if ('id' in this.layout) {
+            layoutLoc = node.locations.find(function(loc) {
+              return loc.layout.id === this.layout.id;
+            }.bind(this));
+          }
+
+          return {
+            ...node,
+            location: layoutLoc ? layoutLoc.locationCoordinates : null,
+            locationMissing: !layoutLoc
+          };
+
+        }.bind(this));
+      })
+    ).subscribe(nodes => {
+      this.nodes = nodes;
+      this.ref.detectChanges();
     });
 
-    this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks)).subscribe(links => {
+
+    this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks),
+      // Get correct route for links, based on selected layout
+      map(links => {
+
+        if (links === null) {return null; }
+        if (this.filterService.getFilter().filterLevel === Level.map) {return links; }
+
+        let layoutRoute;
+
+        return links.map(function(link) {
+          if ('id' in this.layout) {
+            layoutRoute = link.routes.find(function(route) {
+              return route.layout.id === this.layout.id;
+            }.bind(this));
+          }
+
+          return {
+            ...link,
+            route: layoutRoute ? layoutRoute.points : [],
+            routeMissing: !layoutRoute
+          };
+
+        }.bind(this));
+      })
+    ).subscribe(links => {
         this.links = links;
         this.ref.detectChanges();
     });
@@ -377,7 +430,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     console.log(color, id);
   }
 
-
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
     this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
@@ -385,7 +437,33 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectLayout(id) {
     this.layoutStore.dispatch(new LoadLayout(id));
+
+    const currentLevel = this.filterService.getFilter().filterLevel;
+
+    // Reload nodes and links for new layout if not in map view
+    if (currentLevel !== Level.map) {
+      this.nodeStore.dispatch(new LoadNodes);
+      this.nodeStore.dispatch(new LoadNodeLinks);
+    }
   }
 
+  onHideLeftPane() {
+    this.showOrHideLeftPane = false;
+  }
+
+  onOpenWorkPackageTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedLeftTab = 0;
+  }
+
+  onOpenAnalysisTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedLeftTab = 2;
+  }
+
+  onOpenEditTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedLeftTab = 1;
+  }
 }
 
