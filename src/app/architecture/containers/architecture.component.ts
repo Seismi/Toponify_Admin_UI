@@ -22,7 +22,7 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { getSelectedWorkPackage, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
+import { State as NodeState } from '../store/reducers/architecture.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -34,7 +34,7 @@ import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.co
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { Level } from '../services/diagram-level.service';
 import { FilterService } from '../services/filter.service';
-import { State as ViewState } from '../store/reducers/view.reducer';
+import { State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 

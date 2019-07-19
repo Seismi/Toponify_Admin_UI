@@ -5,7 +5,7 @@ import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, Mat
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
   MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatGridListModule } from '@angular/material';
 import { FilterService } from './services/filter.service';
-import { reducer } from '@app/architecture/store/reducers/view.reducer';
+import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeModule } from '@app/nodes/node.module';
 import { NodeService } from '@app/nodes/services/node.service';

@@ -5,7 +5,7 @@ import {linkCategories, RoutesEntityEntity} from '@app/nodes/store/models/node-l
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {State as ArchitectureState} from '@app/architecture/store/reducers/view.reducer';
+import {State as ArchitectureState} from '@app/architecture/store/reducers/architecture.reducer';
 import {FilterService} from './filter.service';
 import {Location} from '@angular/common';
 import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
