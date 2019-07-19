@@ -162,7 +162,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // this.ref.detach();
     this.filterServiceSubscription.unsubscribe();
     if (this.nodesSubscription) {
       this.nodesSubscription.unsubscribe();
