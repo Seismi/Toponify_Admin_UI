@@ -39,9 +39,10 @@ import { PropertiesTabComponent } from './containers/right-panel/components/prop
 import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
-import { WorkPackageTabTableComponent } from './containers/left-panel/components/workpackage-tab-table/workpackage-tab-table.component';
-import { WorkPackageColorComponent } from './containers/left-panel/components/color-picker/color-picker.component';
+import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
+import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
+import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.component';
 
 
 @NgModule({
@@ -97,7 +98,8 @@ import { LayerPipe } from './pipes/layer.pipe';
       DeleteLinkModalComponent,
       WorkPackageTabTableComponent,
       WorkPackageColorComponent,
-      LayerPipe
+      LayerPipe,
+      LeftSideBarComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [
