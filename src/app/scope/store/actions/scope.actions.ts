@@ -6,7 +6,7 @@ import {
   GetScopeApiResponse, 
   ScopeDetails, 
   AddScopeApiResponse, 
-  UpdateScopeApiResponse 
+  UpdateScopeApiResponse
 } from '../models/scope.model';
 
 

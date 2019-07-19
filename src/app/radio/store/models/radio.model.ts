@@ -86,7 +86,7 @@ export interface RadioDetail {
 
 export interface Target {
   id: string;
-  objectType: string;
+  objectType?: string;
 }
 
 export interface Link {
@@ -137,4 +137,5 @@ interface AddRadioOrReplyChanges {
   category?: string;
   description?: string;
   author?: AuthorOrLastUpdatedBy;
+  target?: Target
 }

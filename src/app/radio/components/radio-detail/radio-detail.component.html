@@ -3,7 +3,7 @@
         <div [ngClass]="{disabled: !isEditable}">
             <div class="form-group">
                 <label>Title</label>
-                <input type="text" class="form-control" formControlName="title"
+                <input type="text" data-hook="radio-details-title" class="form-control" formControlName="title"
                     [ngClass]="{ 'is-invalid': (!group.controls['title'].valid && group.controls['title'].touched) }">
                 <div *ngIf="group.controls['title'].errors" class="invalid-feedback">
                     <div>This field is required</div>
@@ -12,7 +12,7 @@
             <div class="form-row">
                 <div class="col">
                     <label>Category</label>
-                    <select class="form-control" formControlName="category">
+                    <select data-hook="radio-details-category" class="form-control" formControlName="category">
                         <option
                             *ngFor="let category of categories" 
                             [value]="category">
@@ -22,7 +22,7 @@
                 </div>
                 <div class="col">
                     <label>Status</label>
-                    <select class="form-control" formControlName="status">
+                    <select data-hook="radio-details-status" class="form-control" formControlName="status">
                         <option 
                             *ngFor="let status of status" 
                             [value]="status">
@@ -31,13 +31,13 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" *ngIf="!modalMode">
                 <label>Target Name</label>
-                <input type="text" class="form-control" formControlName="targetName" [readonly]="true">
+                <input data-hook="radio-details-target-name" type="text" class="form-control" formControlName="targetName" [readonly]="true">
             </div>
             <div class="form-group">
                 <label>Description</label>
-                <textarea class="form-control" rows="3" formControlName="description"
+                <textarea data-hook="radio-details-description" class="form-control" rows="3" formControlName="description"
                     [ngClass]="{ 'is-invalid': (!group.controls['description'].valid && group.controls['description'].touched) }"></textarea>
                 <div *ngIf="group.controls['description'].errors" class="invalid-feedback">
                     <div>This field is required</div>

@@ -31,13 +31,13 @@
     <br>
     <div class="form-actions" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
-            <button type="button" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
-            <button type="button" mat-raised-button color="primary">Copy</button>
-            <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+            <button type="button" data-hook="document-standarts-details-edit" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+            <button type="button" data-hook="document-standarts-details-copy" mat-raised-button color="primary">Copy</button>
+            <button type="button" data-hook="document-standarts-details-delete" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
         </div>
         <div *ngIf="isEditable">
-            <button type="button" mat-raised-button color="primary" (click)="onSave()">Save</button>
-            <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
+            <button type="button" data-hook="document-standarts-details-save" mat-raised-button color="primary" (click)="onSave()">Save</button>
+            <button type="button" data-hook="document-standarts-details-cancel" mat-raised-button (click)="onCancel()">Cancel</button>
         </div>
     </div>
 </form>

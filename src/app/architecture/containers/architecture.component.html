@@ -31,14 +31,23 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <app-model-sidebar [minWidth]="430" [maxWidth]="1000">
+  <smi-left-side-bar 
+    *ngIf="!showOrHideLeftPane"
+    (openWorkPackageTab)="onOpenWorkPackageTab($event)"
+    (openAnalysisTab)="onOpenAnalysisTab($event)"
+    (openEditTab)="onOpenEditTab($event)"
+    [workPackageIsEditable]="workPackageIsEditable">
+  </smi-left-side-bar>
+  <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
     <p>
       <smi-left-panel
         [data]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
         (selectWorkPackage)="onSelectWorkPackage($event)"
-        (selectColor)="selectColorForWorkPackage($event)">
+        (selectColor)="selectColorForWorkPackage($event)"
+        (hideLeftPane)="onHideLeftPane($event)"
+        [selectedLeftTab]="selectedLeftTab">
       </smi-left-panel>
     </p>
   </app-model-sidebar>
@@ -78,6 +87,7 @@
         [workpackages]="selectedNode?.relatedWorkPackages"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
+        (addRadionInArchitecture)="addRadionInArchitecture($event)"
     >
     </smi-right-panel>
   </app-model-sidebar>

@@ -1,5 +1,6 @@
 .wrapper {
     margin: 20px 0px;
+    min-width: 480px;
 }
 
 .title {
@@ -11,10 +12,11 @@ table {
 }
 
 tr.mat-header-row {
-    height: 25px;
-    background-color: #f9f9f9;
+    height: 35px;
 }
 
-tr.mat-row {
-    height: 35px;
+.noResultFound {
+    color: darkred;
+    text-align: center;
+    margin: 5px 0px;
 }
