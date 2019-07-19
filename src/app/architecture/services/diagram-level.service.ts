@@ -50,9 +50,7 @@ export class DiagramLevelService implements OnDestroy {
 
   historyOfFilters: any = {};
 
-  mapView = null;
-
-  groupLayoutInitial = false;
+  groupLayoutInitial = true;
 
   // Filter to apply to nodes for the diagram
   //    filterLevel: level to apply the filter to
@@ -138,27 +136,16 @@ export class DiagramLevelService implements OnDestroy {
       return;
     }
 
-    const linkId = object.data.id;
-
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
-    this.filterService.setFilter({filterLevel: Level.map});
+    this.filterService.setFilter({filterLevel: Level.map, id: object.data.id});
 
     const fromNode = JSON.parse(JSON.stringify(object.fromNode.data));
     const toNode = JSON.parse(JSON.stringify(object.toNode.data));
 
-    fromNode.isGroup = true;
-    toNode.isGroup = true;
-
-    this.mapView = {
-      sourceModel: fromNode,
-      targetModel: toNode
-    };
-
     // Ensure that diagram content is initially centered while layouts are performed
     event.diagram.contentAlignment = go.Spot.Center;
-    // this.store.dispatch(new SetMapView(linkId));
   }
 
   // Perform layout for groups that nodes belong to
@@ -194,15 +181,21 @@ export class DiagramLevelService implements OnDestroy {
     // Array of nodes to be used in the palette
     let paletteViewNodes: object[] = [];
 
-    const paletteViewLinks = [{
-      category: linkCategories.masterData,
-      id: 'New master data link',
-      name: 'New master data link',
-      description: '',
-      route: <RoutesEntityEntity['points']> [0, 0, 40, 0, 40, -80, 80, -80],
-      layer: level.toLowerCase(),
-      isTemporary: true
-    }];
+    const paletteViewLinks = [];
+
+    if (level !== Level.map) {
+      paletteViewLinks.push(
+        {
+          category: linkCategories.masterData,
+          id: 'New master data link',
+          name: 'New master data link',
+          description: '',
+          route: <RoutesEntityEntity['points']> [0, 0, 40, 0, 40, -80, 80, -80],
+          layer: level.toLowerCase(),
+          isTemporary: true
+        }
+      );
+    }
 
     if (level === Level.system) {
       paletteViewNodes = [
@@ -258,7 +251,7 @@ export class DiagramLevelService implements OnDestroy {
       ];
     } else if (level === Level.dimension || level === Level.map) {
 
-      if (!this.mapView) {
+      if (level !== Level.map) {
         paletteViewNodes = [
           new Node({ id: 'New Dimension',
             name: 'New Dimension',
@@ -300,11 +293,11 @@ export class DiagramLevelService implements OnDestroy {
     }
 
     diagram.model = $(go.GraphLinksModel, {
-      nodeKeyProperty: 'id',
-      linkKeyProperty: 'id',
+      nodeKeyProperty: (level === Level.map) ? 'displayId' : 'id',
+      linkKeyProperty: (level === Level.map) ? 'displayId' : 'id',
       nodeCategoryProperty: 'layer',
-      linkFromKeyProperty: 'sourceId',
-      linkToKeyProperty: 'targetId',
+      linkFromKeyProperty: (level === Level.map) ? 'sourceDisplayId' : 'sourceId',
+      linkToKeyProperty: (level === Level.map) ? 'targetDisplayId' : 'targetId',
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,
@@ -325,7 +318,6 @@ export class DiagramLevelService implements OnDestroy {
 
       // Settings and layout for non-map views
     } else {
-      this.mapView = null;
 
       diagram.layout = $(go.LayeredDigraphLayout, {
         setsPortSpots: false,
