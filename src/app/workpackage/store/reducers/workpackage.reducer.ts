@@ -156,10 +156,15 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     }
 
     case WorkPackageActionTypes.AddOwnerSuccess: {
-      const addedEntity = action.payload;
+
       return {
         ...state,
-        entities: [...state.entities, addedEntity],
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        }),
         loading: false
       };
     }
