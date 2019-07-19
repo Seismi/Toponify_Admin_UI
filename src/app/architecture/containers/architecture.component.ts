@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { NavigationEnd, Router } from '@angular/router';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
@@ -12,6 +11,9 @@ import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, UpdateLinks, UpdateNod
 import { linkCategories } from '@app/nodes/store/models/node-link.model';
 import { NodeDetail } from '@app/nodes/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/nodes/store/selectors/node.selector';
+import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
+import { AddRadioEntity } from '@app/radio/store/actions/radio.actions';
+import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
@@ -22,6 +24,7 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { getSelectedWorkPackage, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { State as NodeState } from '../../nodes/store/reducers/node.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -37,10 +40,6 @@ import { FilterService } from '../services/filter.service';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity } from '@app/radio/store/actions/radio.actions';
-import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import {map} from 'rxjs/operators';
 
 
 
@@ -105,84 +104,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private store: Store<ViewState>,
     private radioStore: Store<RadioState>,
     private workpackageStore: Store<WorkPackageState>,
-    private router: Router,
     private objectDetailsService: ObjectDetailsService,
     private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog,
     public filterService: FilterService,
     private ref: ChangeDetectorRef
-  ) { }
+  ) {
+    // If filterLevel not set, ensure to set it.
+    const filter = this.filterService.getFilter();
+    if (!filter || !filter.filterLevel) {
+      this.filterService.setFilter({ filterLevel: Level.system });
+    }
+  }
 
   ngOnInit() {
-    // If filterLevel not set, ensure to set it.
-    this.routerSubscription = this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        const filterQuery = this.filterService.getFilter();
-        if (!filterQuery) {
-          this.filterService.setFilter({filterLevel: Level.system});
-        }
-      }
-    });
-
-    this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
-      // Get correct location for nodes, based on selected layout
-      map(nodes => {
-
-        if (nodes === null) {return null; }
-        if (this.filterService.getFilter().filterLevel === Level.map) {return nodes; }
-
-        let layoutLoc;
-
-        return nodes.map(function(node) {
-          if ('id' in this.layout) {
-            layoutLoc = node.locations.find(function(loc) {
-              return loc.layout.id === this.layout.id;
-            }.bind(this));
-          }
-
-          return {
-            ...node,
-            location: layoutLoc ? layoutLoc.locationCoordinates : null,
-            locationMissing: !layoutLoc
-          };
-
-        }.bind(this));
-      })
-    ).subscribe(nodes => {
-      this.nodes = nodes;
-      this.ref.detectChanges();
-    });
-
-
-    this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks),
-      // Get correct route for links, based on selected layout
-      map(links => {
-
-        if (links === null) {return null; }
-        if (this.filterService.getFilter().filterLevel === Level.map) {return links; }
-
-        let layoutRoute;
-
-        return links.map(function(link) {
-          if ('id' in this.layout) {
-            layoutRoute = link.routes.find(function(route) {
-              return route.layout.id === this.layout.id;
-            }.bind(this));
-          }
-
-          return {
-            ...link,
-            route: layoutRoute ? layoutRoute.points : [],
-            routeMissing: !layoutRoute
-          };
-
-        }.bind(this));
-      })
-    ).subscribe(links => {
-        this.links = links;
-        this.ref.detectChanges();
-    });
-
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
@@ -206,7 +141,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => this.layout = layout);
+    this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
+      this.layout = layout;
+      if (layout) {
+        this.subscribeForNodesLinksData();
+      }
+    });
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -222,10 +162,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // this.ref.detach();
     this.filterServiceSubscription.unsubscribe();
-    this.routerSubscription.unsubscribe();
-    this.nodesSubscription.unsubscribe();
-    this.linksSubscription.unsubscribe();
+    if (this.nodesSubscription) {
+      this.nodesSubscription.unsubscribe();
+    }
+    if (this.linksSubscription) {
+      this.linksSubscription.unsubscribe();
+    }
     this.layoutStoreSubscription.unsubscribe();
   }
 
@@ -395,6 +339,78 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // this.store.dispatch();
       }*/
     });
+  }
+
+  subscribeForNodesLinksData() {
+
+    this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
+      // Get correct location for nodes, based on selected layout
+      map(nodes => {
+        const filter = this.filterService.getFilter();
+        if (nodes === null) { return null; }
+        if (filter && filter.filterLevel === Level.map) { return nodes; }
+
+        let layoutLoc;
+
+        return nodes.map(function (node) {
+          if (this.layout && 'id' in this.layout) {
+            layoutLoc = node.locations.find(function (loc) {
+              return loc.layout && loc.layout.id === this.layout.id;
+            }.bind(this));
+          }
+
+          return {
+            ...node,
+            location: layoutLoc ? layoutLoc.locationCoordinates : null,
+            locationMissing: !layoutLoc
+          };
+
+        }.bind(this));
+      })
+    ).subscribe(nodes => {
+      if (nodes) {
+        this.nodes = [...nodes];
+      } else {
+        this.nodes = [];
+      }
+      this.ref.detectChanges();
+    });
+
+
+    this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks),
+      // Get correct route for links, based on selected layout
+      map(links => {
+        const filter = this.filterService.getFilter();
+        if (links === null) { return null; }
+        if (filter && filter.filterLevel === Level.map) { return links; }
+
+        let layoutRoute;
+
+        return links.map(function (link) {
+          if (this.layout && 'id' in this.layout) {
+            layoutRoute = link.routes.find(function (route) {
+              return route.layout && route.layout.id === this.layout.id;
+            }.bind(this));
+          }
+
+          return {
+            ...link,
+            route: layoutRoute ? layoutRoute.points : [],
+            routeMissing: !layoutRoute
+          };
+
+
+        }.bind(this));
+      })
+    ).subscribe(links => {
+      if (links) {
+        this.links = [...links];
+      } else {
+        this.links = [];
+      }
+      this.ref.detectChanges();
+    });
+
   }
 
   onDeleteAttribute() {
