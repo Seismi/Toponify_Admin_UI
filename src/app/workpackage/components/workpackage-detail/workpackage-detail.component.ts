@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class WorkPackageDetailComponent  {
 
-  workPackageStatus = ['approved', 'draft'];
+  disableStatusInput = true;
 
   @Input() group: FormGroup;
   @Input() isEditable = false;

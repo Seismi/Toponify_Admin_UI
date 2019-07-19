@@ -13,7 +13,7 @@ export class WorkPackageDetailService {
       description: [null],
       owners: this.fb.array([this.OwnersOrApprovers()]),
       approvers: this.fb.array([this.OwnersOrApprovers()]),
-      status: [null, Validators.required]
+      status: ['draft']
     });
   }
 

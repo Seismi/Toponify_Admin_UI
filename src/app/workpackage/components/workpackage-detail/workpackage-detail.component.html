@@ -54,12 +54,10 @@
     </smi-wp-owners-dropdown>
 
     <!-- Select Status -->
-    <mat-form-field *ngIf="modalMode">
-        <mat-select placeholder="Status" formControlName="status" data-hook="workpackage-detail-status">
-            <mat-option *ngFor="let status of workPackageStatus" [value]="status">{{status}}</mat-option>
-        </mat-select>
-        <mat-error>This field is required!</mat-error>
+    <mat-form-field [ngClass]="{disabled: disableStatusInput}" *ngIf="modalMode">
+        <input matInput placeholder="Status" formControlName="status" data-hook="workpackage-detail-status">
     </mat-form-field>
+
 
     <div class="form-group" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
