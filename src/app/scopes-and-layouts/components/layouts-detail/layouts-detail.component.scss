@@ -2,12 +2,11 @@ button {
     margin-right: 8px;
 }
 
-.form-group {
-    margin-bottom: 8px;
+.disabled {
+    pointer-events: none;
+    background-color: #f9f9f9;
 }
 
 form {
-    background-color: #fcfcfc;
-    padding: 30px;
-    border: solid 1px #ddd;
+    min-width: 450px;
 }

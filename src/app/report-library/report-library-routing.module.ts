@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ReportLibraryRoutingComponent } from './containers/report-library-routing.component';
 import { ReportLibraryComponent } from './containers/report-library.component';
+import { ReportLibraryDetailsComponent } from './containers/report-library-details/report-library-details.component';
 
 export const reportLibraryRoutes: Routes = [
   {
     path: '',
-    component: ReportLibraryRoutingComponent,
+    component: ReportLibraryComponent,
     children: [
       {
-        path: '',
-        component: ReportLibraryComponent
+        path: ':reportId',
+        component: ReportLibraryDetailsComponent
       }
     ]
   }

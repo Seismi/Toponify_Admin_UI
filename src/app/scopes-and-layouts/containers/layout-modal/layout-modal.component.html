@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Add Layout</h1>
+<div class="error" *ngIf="error"><span>Error: </span>{{error}}</div>
+<smi-layouts-detail
+  [data]="teams$ | async"
+  [group]="layoutsDetailForm"
+  [isEditable]="isEditable"
+  [modalMode]="modalMode"
+  [selectedOwners]="selectedOwners"
+  [selectedViewers]="selectedViewers">
+</smi-layouts-detail>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSave()">Save</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>

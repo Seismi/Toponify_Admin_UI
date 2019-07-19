@@ -33,9 +33,9 @@ export interface ScopeDetails {
     name: string;
     owners?: (OwnersEntityOrViewersEntity)[] | null;
     viewers?: (OwnersEntityOrViewersEntity)[] | null;
-    layerFilter: string;
-    include: Include;
-    layouts: Layout;
+    layerFilter?: string;
+    include?: Include;
+    layouts?: Layout;
 }
   
 export interface OwnersEntityOrViewersEntity {

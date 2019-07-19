@@ -1,0 +1,16 @@
+table {
+    width: 100%;
+    border: solid 1px #ddd;
+}
+
+tr.mat-row {
+    height: 30px;
+}
+
+tr.mat-header-row {
+    height: 35px;
+}
+
+.noResultFound {
+    color: darkred;
+}
