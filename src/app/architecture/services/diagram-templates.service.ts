@@ -227,9 +227,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        // TEMP
-        isLayoutPositioned: true
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
@@ -385,12 +383,10 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        // TEMP
-        isLayoutPositioned: true
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       // Have the diagram position the node if no location set
-      // this.mapView ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
+      this.filterService.getFilter().level === Level.map ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape,
         'Rectangle',
@@ -889,7 +885,7 @@ export class DiagramTemplatesService {
   }
 
   getDataSetGroupTemplate() {
-    // Template for model groups in mapping view
+    // Template for data set groups in mapping view
     return $(
       go.Group,
       'Vertical', {
