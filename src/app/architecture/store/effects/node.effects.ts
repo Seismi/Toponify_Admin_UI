@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError, mergeMap } from 'rxjs/operators';
 import * as NodeActions from '../actions/node.actions';
 import { of, forkJoin } from 'rxjs';
-import { NodeService } from '@app/nodes/services/node.service';
+import { NodeService } from '@app/architecture/services/node.service';
 import { NodeActionTypes } from '../actions/node.actions';
 import { NodesApiResponse, Error, NodeDetailApiResponse, NodeUpdatePayload } from '../models/node.model';
 import { NodeLinksApiResponse, NodeLinkDetailApiResponse, LinkUpdatePayload } from '../models/node-link.model';

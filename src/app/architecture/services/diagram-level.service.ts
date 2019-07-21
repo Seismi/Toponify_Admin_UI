@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import * as go from 'gojs';
-import {layers, Node, nodeCategories} from '@app/nodes/store/models/node.model';
-import {linkCategories, RoutesEntityEntity} from '@app/nodes/store/models/node-link.model';
+import { layers, Node, nodeCategories } from '@app/architecture/store/models/node.model';
+import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';

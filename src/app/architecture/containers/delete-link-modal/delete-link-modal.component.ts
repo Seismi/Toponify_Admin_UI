@@ -1,11 +1,11 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { LinkType } from '@app/nodes/services/node.service';
-// import { DeleteLink, LoadLinkDescendants, LinkActionTypes } from '@app/nodes/store/actions/node.actions';
+import { LinkType } from '@app/architecture/services/node.service';
+// import { DeleteLink, LoadLinkDescendants, LinkActionTypes } from '@app/architecture/store/actions/node.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { State as NodeState } from '../../../nodes/store/reducers/node.reducer';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 @Component({
   selector: 'smi-delete-link-modal',
   templateUrl: './delete-link-modal.component.html',
