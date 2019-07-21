@@ -18,7 +18,10 @@
         <smi-properties-tab [data]="data"></smi-properties-tab>
     </mat-tab>
     <mat-tab label="RADIO">
-        <smi-radio-tab [data]="data"></smi-radio-tab>
+        <smi-radio-tab 
+            [data]="data"
+            (addRadioInArchitecture)="onAddRadio($event)">
+        </smi-radio-tab>
     </mat-tab>
     <mat-tab label="Work Packages">
         <smi-workpackage-tab [data]="data"></smi-workpackage-tab>

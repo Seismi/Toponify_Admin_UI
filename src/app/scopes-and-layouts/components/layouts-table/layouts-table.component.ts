@@ -1,17 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-
-export interface PeriodicElement {
-    id: string;
-    name: string;
-    owners: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-    {id: '387d1706-9255-11e9-bc42-526af7764f64', owners: '', name: 'Default'},
-    {id: '387d19e0-9255-11e9-bc42-526af7764f64', owners: 'FSS', name: 'Budget Cycle'},
-    {id: '387d1b34-9255-11e9-bc42-526af7764f64', owners: 'FSS', name: 'Conslidation process'}
-];
+import { ScopeDetails } from '@app/scope/store/models/scope.model';
 
 @Component({
   selector: 'smi-layouts-table',
@@ -22,22 +11,31 @@ export class LayoutsTableComponent {
 
     selectedRowIndex: number = -1;
 
+    @Input()
+    set data(data: any[]) {
+      this.dataSource = new MatTableDataSource<any>(data);
+      //this.dataSource.paginator = this.paginator;
+      //this.dataSource.sort = this.sort;
+    }
+
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    ngOnInit() {
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    }
-
-    displayedColumns: string[] = ['name', 'owners'];
-    dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+    displayedColumns: string[] = ['name'];
+    public dataSource: MatTableDataSource<ScopeDetails>;
 
     @Output()
     layoutSelected = new EventEmitter();
 
+    @Output()
+    addLayout = new EventEmitter();
+
     onSelectRow(row) {
-      this.selectedRowIndex = row.name;
+      this.selectedRowIndex = row.id;
       this.layoutSelected.emit(row);
+    }
+
+    onAdd() {
+      this.addLayout.emit();
     }
 }

@@ -1,0 +1,16 @@
+<mat-form-field>
+    <mat-select placeholder="Viewers" [formControl]="viewers" multiple>
+        <mat-select-trigger>
+            {{viewers.value ? viewers.value[0] : ''}}
+            <span *ngIf="viewers.value?.length > 1" class="additional-selection">
+                (+{{viewers.value.length - 1}} {{viewers.value?.length === 2 ? 'other' : 'others'}})
+            </span>
+        </mat-select-trigger>
+        <mat-option
+            *ngFor="let viewer of teams"
+            (onSelectionChange)="onSelect($event, viewer)"
+            [value]="viewer.name">
+            {{viewer.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
