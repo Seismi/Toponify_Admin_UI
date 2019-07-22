@@ -10,8 +10,8 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 export class WorkPackageTabComponent {
 
   @Input()
-  set data(data: NodeDetail[]) {
-    this.dataSource = new MatTableDataSource<NodeDetail>(data);
+  set data(data: any[]) {
+    this.dataSource = new MatTableDataSource<any>(data);
   }
 
   public dataSource: MatTableDataSource<NodeDetail>;
