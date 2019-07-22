@@ -4,27 +4,16 @@
         <!-- Category Column -->
         <ng-container matColumnDef="category">
             <th mat-header-cell *matHeaderCellDef> Category </th>
-            <td mat-cell *matCellDef="let element">
-                <ul *ngFor="let attribute of element.attributes">
-                    <li (click)="onSelectRow(attribute)">{{ attribute.category | titlecase }}</li>
-                </ul>
-            </td>
+            <td mat-cell *matCellDef="let element">{{element.category}}</td>
         </ng-container>
 
         <!-- Name Column -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let element">
-                <ul *ngFor="let attribute of element.attributes">
-                    <li (click)="onSelectRow(attribute)">{{ attribute.name }}</li>
-                </ul>
-            </td>
+            <td mat-cell *matCellDef="let element">{{element.name | titlecase}}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 </div>
-
-
-

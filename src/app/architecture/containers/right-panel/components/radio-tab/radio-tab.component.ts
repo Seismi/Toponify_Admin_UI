@@ -10,12 +10,12 @@ import { NodeDetail } from '@app/nodes/store/models/node.model';
 export class RadioTabComponent {
 
   @Input()
-  set data(data: NodeDetail[]) {
-    this.dataSource = new MatTableDataSource<NodeDetail>(data);
+  set data(data: any[]) {
+    this.dataSource = new MatTableDataSource<any>(data);
   }
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  displayedColumns: string[] = ['type', 'name'];
+  displayedColumns: string[] = ['name'];
 
   @Output()
   addRadioInArchitecture = new EventEmitter();

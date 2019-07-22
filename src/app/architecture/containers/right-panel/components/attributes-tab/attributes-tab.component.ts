@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
 import { NodeDetail } from '@app/nodes/store/models/node.model';
+import { MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'smi-attributes-tab',
@@ -10,8 +10,8 @@ import { NodeDetail } from '@app/nodes/store/models/node.model';
 export class AttributesTabComponent {
 
   @Input()
-  set data(data: NodeDetail[]) {
-    this.dataSource = new MatTableDataSource<NodeDetail>(data);
+  set data(data: any[]) {
+    this.dataSource = new MatTableDataSource<any>(data);
   }
 
   public dataSource: MatTableDataSource<NodeDetail>;

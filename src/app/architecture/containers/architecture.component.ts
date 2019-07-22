@@ -62,6 +62,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodesSubscription: Subscription;
   linksSubscription: Subscription;
 
+  selectedNode: NodeDetail;
+  
   links: any[] = [];
   nodes: any[] = [];
 
@@ -217,7 +219,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
     // Load Node Details
     this.nodeStore.dispatch((new LoadNode(this.nodeId)));
-    this.nodeDetail$ = this.nodeStore.pipe(select(getSelectedNode));
+    this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
+      this.selectedNode = nodeDetail;
+    });
   }
 
   modelChanged(event: any) {
