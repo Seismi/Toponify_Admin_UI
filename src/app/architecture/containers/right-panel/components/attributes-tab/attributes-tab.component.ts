@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NodeDetail } from '@app/nodes/store/models/node.model';
 import { MatTableDataSource } from '@angular/material';
 
@@ -17,6 +17,11 @@ export class AttributesTabComponent {
   public dataSource: MatTableDataSource<NodeDetail>;
   displayedColumns: string[] = ['category', 'name'];
 
-  onSelectRow(attribute) {}
+  @Output()
+  addAttribute = new EventEmitter();
+
+  onAdd() {
+    this.addAttribute.emit();
+  }
 
 }

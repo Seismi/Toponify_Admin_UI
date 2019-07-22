@@ -12,7 +12,10 @@
             [workPackageIsEditable]="workPackageIsEditable">
         </smi-object-details-form></mat-tab>
     <mat-tab label="Attributes">
-        <smi-attributes-tab [data]="attributes"></smi-attributes-tab>
+        <smi-attributes-tab 
+            [data]="attributes"
+            (addAttribute)="onAddAttribute($event)">
+        </smi-attributes-tab>
     </mat-tab>
     <mat-tab label="Properties">
         <smi-properties-tab [data]="properties"></smi-properties-tab>

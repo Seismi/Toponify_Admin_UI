@@ -40,6 +40,7 @@ import { FilterService } from '../services/filter.service';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 
 
 
@@ -480,7 +481,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedLeftTab = 0;
   }
 
-  addRadionInArchitecture() {
+  onOpenAnalysisTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedLeftTab = 2;
+  }
+
+  onOpenEditTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedLeftTab = 1;
+  }
+
+  onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '500px'
@@ -502,14 +513,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onOpenAnalysisTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 2;
+  onAddAttribute() {
+    const dialogRef = this.dialog.open(AttributeModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
   }
 
-  onOpenEditTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 1;
-  }
+
 }
 

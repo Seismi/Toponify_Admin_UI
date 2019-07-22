@@ -87,7 +87,8 @@
         [workpackages]="selectedNode?.relatedWorkPackages"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
-        (addRadionInArchitecture)="addRadionInArchitecture($event)"
+        (addRadio)="onAddRadio($event)"
+        (addAttribute)="onAddAttribute($event)"
     >
     </smi-right-panel>
   </app-model-sidebar>
