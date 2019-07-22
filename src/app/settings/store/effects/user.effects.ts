@@ -6,8 +6,14 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';
 import * as UserActions from '../actions/user.actions';
 import { UserActionTypes } from '../actions/user.actions';
-import { AddUserApiResponse,
-          UpdateUserApiResponse, UserDetails, UserEntitiesHttpParams, UsersApiResponse, User, UserDetailResponse } from '../models/user.model';
+import { 
+  UserDetails, 
+  UserEntitiesHttpParams, 
+  UsersApiResponse, 
+  UserDetailResponse,
+  UserRolesApiResponse,
+  UpdateUserApiResponse
+} from '../models/user.model';
 
 
 @Injectable()
@@ -30,6 +36,17 @@ export class UserEffects {
   );
 
   @Effect()
+  loadUserRoles$ = this.actions$.pipe(
+    ofType<UserActions.LoadUserRoles>(UserActionTypes.LoadUserRoles),
+    switchMap(_ => {
+      return this.userService.getUserRoles().pipe(
+        switchMap((response: UserRolesApiResponse) => [new UserActions.LoadUserRolesSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new UserActions.LoadUserRolesFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   loadUser$ = this.actions$.pipe(
     ofType<UserActions.LoadUser>(UserActionTypes.LoadUser),
     map(action => action.payload),
@@ -47,7 +64,7 @@ export class UserEffects {
     map(action => action.payload),
     switchMap((payload: UserDetails) => {
       return this.userService.addUser(payload).pipe(
-        switchMap((resp: AddUserApiResponse) => [new UserActions.AddUserSuccess(resp)]),
+        switchMap((resp: any) => [new UserActions.AddUserSuccess(resp)]),
         catchError((error: HttpErrorResponse) => of(new UserActions.AddUserFailure(error)))
       );
     })
@@ -59,7 +76,7 @@ export class UserEffects {
     map(action => action.payload),
     switchMap((payload: {id: string, data: UserDetails}) => {
       return this.userService.updateUser(payload.id, payload.data).pipe(
-        switchMap((resp: UpdateUserApiResponse) => [new UserActions.UpdateUserSuccess(resp)]),
+        switchMap((response: UpdateUserApiResponse) => [new UserActions.UpdateUserSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UserActions.UpdateUserFailure(error)))
       );
     })
