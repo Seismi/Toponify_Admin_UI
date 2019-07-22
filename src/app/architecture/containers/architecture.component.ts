@@ -63,7 +63,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   linksSubscription: Subscription;
 
   selectedNode: NodeDetail;
-  
+
   links: any[] = [];
   nodes: any[] = [];
 

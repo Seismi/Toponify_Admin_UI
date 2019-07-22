@@ -3,6 +3,7 @@ import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable, OnDestroy} from '@angular/core';
 import {DiagramLevelService, Level, lessDetailOrderMapping, moreDetailOrderMapping} from './diagram-level.service';
 import { FilterService } from './filter.service';
+import {Subject} from 'rxjs';
 
 const $ = go.GraphObject.make;
 
@@ -90,9 +91,131 @@ export class CustomLink extends go.Link {
   }
 }
 
+// Standard highlighting for buttons when mouse cursor enters them
+function standardMouseEnter(e: object, btn: go.Part): void {
+  if (!btn.isEnabledObject()) {
+    return;
+  }
+  const shape = btn.findObject('ButtonBorder'); // the border Shape
+  if (shape instanceof go.Shape) {
+    let brush = btn['_buttonFillOver'];
+    btn['_buttonFillNormal'] = shape.fill;
+    shape.fill = brush;
+    brush = btn['_buttonStrokeOver'];
+    btn['_buttonStrokeNormal'] = shape.stroke;
+    shape.stroke = brush;
+  }
+}
+
+// Ordinary button for context menu
+function makeButton(
+  row: number,
+  text: string,
+  action: (event: object, object?: go.Part) => void,
+  visible_predicate?: (object: go.Part, event: object) => boolean
+): go.Part {
+  return $(
+    'ContextMenuButton',
+    $(go.TextBlock, text),
+    {
+      click: action,
+      name: text,
+      column: 0,
+      row: row,
+      mouseEnter: function(event: object, object: go.Part) {
+        standardMouseEnter(event, object);
+        // Hide any open submenu when user mouses over button
+        object.part.elements.each(function(button: go.Part) {
+          if (button.column === 1) {
+            button.visible = false;
+          }
+        });
+      }
+    },
+    // Don't bother with binding GraphObject.visible if there's no predicate
+    visible_predicate
+      ? new go.Binding('visible', '', function(
+          object: go.Part,
+          event: object
+        ): boolean {
+          if (object.diagram) {
+            return visible_predicate(object, event);
+          } else {
+            return false;
+          }
+        }).ofObject()
+      : {}
+  );
+}
+
+// Button to appear when a menu button is moused over
+function makeSubMenuButton(
+  row: number,
+  text: string,
+  action: (event: object, object?: go.Part) => void,
+  enabled_predicate?: (object: go.Part, event: object) => boolean
+): go.Part {
+  return $('ContextMenuButton', $(go.TextBlock, text), {
+    click: action,
+    name: text,
+    visible: false,
+    column: 1,
+    row: row
+  },
+    enabled_predicate
+      ? new go.Binding('isEnabled', '', enabled_predicate)
+      : {}
+  );
+}
+
+// Button to show a submenu when moused over
+function makeMenuButton(
+  row: number,
+  text: string,
+  subMenuNames: string[],
+  visible_predicate?: (object: go.Part, event: object) => boolean
+): go.Part {
+  return $(
+    'ContextMenuButton',
+    $(go.TextBlock, text),
+    {
+      mouseEnter: function(event: object, object: go.Part): void {
+        standardMouseEnter(event, object);
+        // Hide any open submenu that is already open
+        object.part.elements.each(function(button: go.Part): void {
+          if (button.column === 1) {
+            button.visible = false;
+          }
+        });
+        // Show any submenu buttons assigned to this menu button
+        subMenuNames.forEach(function(buttonName: string): void {
+          object.part.findObject(buttonName).visible = true;
+        });
+      },
+      column: 0,
+      row: row
+    },
+    // Don't bother with binding GraphObject.visible if there's no predicate
+    visible_predicate
+      ? new go.Binding('visible', '', function(
+          object: go.Part,
+          event: object
+        ): boolean {
+          if (object.diagram) {
+            return visible_predicate(object, event);
+          } else {
+            return false;
+          }
+        }).ofObject()
+      : {}
+  );
+}
 
 @Injectable()
 export class GojsCustomObjectsService {
+
+  private showDetailTabSource = new Subject();
+  public showDetailTab$ = this.showDetailTabSource.asObservable();
 
   constructor(
     public filterService: FilterService,
@@ -102,126 +225,6 @@ export class GojsCustomObjectsService {
 
   // Context menu for when the background is right-clicked
   getBackgroundContextMenu(): go.Adornment {
-
-    // Standard highlighting for buttons when mouse cursor enters them
-    function standardMouseEnter(e: object, btn: go.Part): void {
-      if (!btn.isEnabledObject()) {
-        return;
-      }
-      const shape = btn.findObject('ButtonBorder'); // the border Shape
-      if (shape instanceof go.Shape) {
-        let brush = btn['_buttonFillOver'];
-        btn['_buttonFillNormal'] = shape.fill;
-        shape.fill = brush;
-        brush = btn['_buttonStrokeOver'];
-        btn['_buttonStrokeNormal'] = shape.stroke;
-        shape.stroke = brush;
-      }
-    }
-
-    // Ordinary button for context menu
-    function makeButton(
-      row: number,
-      text: string,
-      action: (event: object, object?: go.Part) => void,
-      visible_predicate?: (object: go.Part, event: object) => boolean
-    ): go.Part {
-      return $(
-        'ContextMenuButton',
-        $(go.TextBlock, text),
-        {
-          click: action,
-          name: text,
-          column: 0,
-          row: row,
-          mouseEnter: function(event: object, object: go.Part) {
-            standardMouseEnter(event, object);
-            // Hide any open submenu when user mouses over button
-            object.part.elements.each(function(button: go.Part) {
-              if (button.column === 1) {
-                button.visible = false;
-              }
-            });
-          }
-        },
-        // Don't bother with binding GraphObject.visible if there's no predicate
-        visible_predicate
-          ? new go.Binding('visible', '', function(
-              object: go.Part,
-              event: object
-            ): boolean {
-              if (object.diagram) {
-                return visible_predicate(object, event);
-              } else {
-                return false;
-              }
-            }).ofObject()
-          : {}
-      );
-    }
-
-    // Button to appear when a menu button is moused over
-    function makeSubMenuButton(
-      row: number,
-      text: string,
-      action: (event: object, object?: go.Part) => void,
-      enabled_predicate?: (object: go.Part, event: object) => boolean
-    ): go.Part {
-      return $('ContextMenuButton', $(go.TextBlock, text), {
-        click: action,
-        name: text,
-        visible: false,
-        column: 1,
-        row: row
-      },
-        enabled_predicate
-          ? new go.Binding('isEnabled', '', enabled_predicate)
-          : {}
-      );
-    }
-
-    // Button to show a submenu when moused over
-    function makeMenuButton(
-      row: number,
-      text: string,
-      subMenuNames: string[],
-      visible_predicate?: (object: go.Part, event: object) => boolean
-    ): go.Part {
-      return $(
-        'ContextMenuButton',
-        $(go.TextBlock, text),
-        {
-          mouseEnter: function(event: object, object: go.Part): void {
-            standardMouseEnter(event, object);
-            // Hide any open submenu that is already open
-            object.part.elements.each(function(button: go.Part): void {
-              if (button.column === 1) {
-                button.visible = false;
-              }
-            });
-            // Show any submenu buttons assigned to this menu button
-            subMenuNames.forEach(function(buttonName: string): void {
-              object.part.findObject(buttonName).visible = true;
-            });
-          },
-          column: 0,
-          row: row
-        },
-        // Don't bother with binding GraphObject.visible if there's no predicate
-        visible_predicate
-          ? new go.Binding('visible', '', function(
-              object: go.Part,
-              event: object
-            ): boolean {
-              if (object.diagram) {
-                return visible_predicate(object, event);
-              } else {
-                return false;
-              }
-            }).ofObject()
-          : {}
-      );
-    }
 
     return $(
       go.Adornment,
@@ -315,6 +318,42 @@ export class GojsCustomObjectsService {
       makeButton(7, 'Delete', function(event: object): void {
         /*Placeholder*/
       })
+    );
+  }
+
+  getPartContextMenu(): go.Adornment {
+
+    const thisService = this;
+
+    return $(
+      'ContextMenu',
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Expand'),
+        {
+          click: function(event, object) {
+            const node = (object.part as go.Adornment).adornedObject;
+            node.doubleClick(event, node);
+          }
+        }
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'View Detail'),
+        {
+          click: function(event, object) {
+            thisService.showDetailTabSource.next();
+          }
+        }
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Create Scope'),
+        {
+          click: function(event, object) {
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          return object instanceof go.Link;
+        })
+      )
     );
   }
 }
