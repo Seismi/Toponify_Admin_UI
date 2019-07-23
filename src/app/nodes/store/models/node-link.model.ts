@@ -15,7 +15,8 @@ export interface NodeLinksApiResponse {
     category: string;
     sourceObject: SourceObjectOrTargetObject;
     targetObject: SourceObjectOrTargetObject;
-    routes?: ((RoutesEntityEntity)[] | null)[] | null;
+    route: number[];
+    routes?: RoutesEntityEntity[];
   }
   export interface SourceObjectOrTargetObject {
     id: string;

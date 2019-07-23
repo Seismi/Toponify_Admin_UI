@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { NodeDetail } from '@app/nodes/store/models/node.model';
 
@@ -10,13 +10,20 @@ import { NodeDetail } from '@app/nodes/store/models/node.model';
 export class RadioTabComponent {
 
   @Input()
-  set data(data: NodeDetail[]) {
-    this.dataSource = new MatTableDataSource<NodeDetail>(data);
+  set data(data: any[]) {
+    this.dataSource = new MatTableDataSource<any>(data);
   }
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  displayedColumns: string[] = ['type', 'name'];
+  displayedColumns: string[] = ['name'];
+
+  @Output()
+  addRadioInArchitecture = new EventEmitter();
 
   onSelectRow(radio) {}
+
+  onAdd() {
+    this.addRadioInArchitecture.emit();
+  }
 
 }
