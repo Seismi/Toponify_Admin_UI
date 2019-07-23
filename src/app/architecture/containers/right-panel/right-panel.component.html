@@ -12,15 +12,18 @@
             [workPackageIsEditable]="workPackageIsEditable">
         </smi-object-details-form></mat-tab>
     <mat-tab label="Attributes">
-        <smi-attributes-tab [data]="data"></smi-attributes-tab>
+        <smi-attributes-tab [data]="attributes"></smi-attributes-tab>
     </mat-tab>
     <mat-tab label="Properties">
-        <smi-properties-tab [data]="data"></smi-properties-tab>
+        <smi-properties-tab [data]="properties"></smi-properties-tab>
     </mat-tab>
     <mat-tab label="RADIO">
-        <smi-radio-tab [data]="data"></smi-radio-tab>
+        <smi-radio-tab 
+            [data]="data"
+            (addRadioInArchitecture)="onAddRadio($event)">
+        </smi-radio-tab>
     </mat-tab>
     <mat-tab label="Work Packages">
-        <smi-workpackage-tab [data]="data"></smi-workpackage-tab>
+        <smi-workpackage-tab [data]="workpackages"></smi-workpackage-tab>
     </mat-tab>
 </mat-tab-group>

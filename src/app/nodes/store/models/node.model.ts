@@ -30,7 +30,8 @@ export class Node {
   description = '';
   category: nodeCategories;
   tags = '';
-  locations?: ((LocationsEntity)[] | null)[] | null;
+  location: string;
+  locations?: LocationsEntity[];
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
 

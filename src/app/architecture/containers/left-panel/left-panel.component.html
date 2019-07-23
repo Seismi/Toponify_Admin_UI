@@ -1,4 +1,4 @@
-<mat-tab-group mat-stretch-tabs [@.disabled]="true">
+<mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
     <mat-tab label="Work Packages">
         <smi-workpackage-tab-table [data]="data" (selectWorkPackage)="onSelectWorkPackage($event)"
             (selectColor)="onSelectColor($event)">
@@ -13,3 +13,6 @@
         </smi-analysis-tab>
     </mat-tab>
 </mat-tab-group>
+
+<!-- Hide left pane -->
+<button mat-button (click)="onHidePane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>

@@ -24,6 +24,10 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
 
+        <div class="noResultFound" *ngIf="dataSource.data.length === 0">
+            No data found!
+        </div>
+
         <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
     </div>
 </div>

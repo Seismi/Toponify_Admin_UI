@@ -9,6 +9,7 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
 import { State as WorkPackageState} from '@app/workpackage/store/reducers/workpackage.reducer';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -24,7 +25,8 @@ export class ReportLibraryComponent implements OnInit {
 
   constructor(
     private store: Store<ReportState>,
-    private workPackageStore: Store<WorkPackageState>
+    private workPackageStore: Store<WorkPackageState>,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -38,8 +40,6 @@ export class ReportLibraryComponent implements OnInit {
   }
 
   onSelectReport(row) {
-    debugger;
-    this.reportSelected = true;
+    this.router.navigate(['report-library', row.id]);
   }
-  
 }

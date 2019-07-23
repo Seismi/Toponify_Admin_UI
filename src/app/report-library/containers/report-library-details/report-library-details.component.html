@@ -1,0 +1,13 @@
+<div class="col">
+    <smi-report-library-detail
+        [group]="reportDetailForm"
+        [dataSets]="report?.dataSets"
+        [owners]="report?.owners"
+        [dimensions]="report?.dimensions"
+        [reportingConcepts]="report?.reportingConcepts">
+    </smi-report-library-detail>
+
+    <smi-attr-and-rules-table
+        [data]="report?.attributes">
+    </smi-attr-and-rules-table>
+</div>
