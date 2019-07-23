@@ -833,8 +833,9 @@ export class DiagramTemplatesService {
         // contextMenu: PartContextMenu,
         fromEndSegmentLength: 20,
         toEndSegmentLength: 20,
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
         // Position by layout in palette
-        isLayoutPositioned: true // forPalette
+        isLayoutPositioned: forPalette
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly

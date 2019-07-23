@@ -40,6 +40,7 @@ import { FilterService } from '../services/filter.service';
 import { State as ViewState } from '../store/reducers/view.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 
 
 
@@ -52,6 +53,9 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 })
 
 export class ArchitectureComponent implements OnInit, OnDestroy {
+
+  private zoomRef;
+  private showHideGridRef;
 
   @Input() attributesView = false;
   @Input() allowMove: boolean;
@@ -110,7 +114,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog,
     public filterService: FilterService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    public gojsCustomObjectsService: GojsCustomObjectsService
   ) {
     // If filterLevel not set, ensure to set it.
     const filter = this.filterService.getFilter();
@@ -149,6 +154,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.subscribeForNodesLinksData();
       }
     });
+
+    this.zoomRef = this.gojsCustomObjectsService.zoom$.subscribe(function(zoomType: 'In' | 'Out') {
+      if (zoomType === 'In') {
+        this.onZoomIn();
+      } else {
+        this.onZoomOut();
+      }
+    }.bind(this));
+
+    this.showHideGridRef = this.gojsCustomObjectsService.showHideGrid$.subscribe(
+      function() {
+        this.onShowGrid();
+        this.ref.detectChanges();
+      }.bind(this));
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
