@@ -25,6 +25,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { RadioEffects } from './store/effects/radio.effects';
 import { reducer } from './store/reducers/radio.reducer';
+import { RadioDetailsComponent } from './containers/radio-details/radio-details.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { reducer } from './store/reducers/radio.reducer';
         RadioModalComponent,
         ReplyModalComponent,
         ReplyTextComponent,
-        ChatBoxComponent
+        ChatBoxComponent,
+        RadioDetailsComponent
     ],
     entryComponents: [ RadioModalComponent, ReplyModalComponent ],
     providers: [ RadioService ]

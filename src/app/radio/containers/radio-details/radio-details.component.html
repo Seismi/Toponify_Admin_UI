@@ -1,0 +1,17 @@
+<div class="col mat-elevation-z8">
+    <smi-radio-detail
+        data-hook="radio-details"
+        [group]="radioDetailsForm"
+        [addRadio]="addRadio"
+        [isEditable]="isEditable"
+        [modalMode]="modalMode"
+        [disableButton]="disableButton"
+        (archiveRadio)="onArchiveRadio($event)"
+        (saveRadio)="onSaveRadio()">
+    </smi-radio-detail>
+    <smi-chatbox
+        [data]="radio?.replies"
+        [radioId]="radioId"
+        [disableButton]="disableButton">
+    </smi-chatbox>
+</div>
