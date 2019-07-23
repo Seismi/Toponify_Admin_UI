@@ -1,7 +1,9 @@
+/* tslint:disable:max-line-length */
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import { WorkPackageService } from './workpackage.service';
+import { WorkpackageNode, WorkpackageNodeDescendant, WorkpackageNodeCustomProperty } from '../store/models/workpackage.models';
 
 @Injectable()
 export class WorkPackageNodesService extends WorkPackageService {
@@ -10,16 +12,16 @@ export class WorkPackageNodesService extends WorkPackageService {
    * Create new architecture node (system, data set, dimensions, reporting concept)
    * FIXME: missing types
    */
-  addNode(workPackageId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes`, data, this.httpOptions);
+  addNode(workPackageId: string, data: WorkpackageNode): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodes`, {data}, this.httpOptions);
   }
 
   /**
    * Update a specific node within the architecture
    * FIXME: missing types
    */
-  updateNode(workPackageId: string, nodeId: string, data: any): Observable<any> {
-    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}`, data, this.httpOptions);
+  updateNode(workPackageId: string, nodeId: string, data: WorkpackageNode): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}`, {data}, this.httpOptions);
   }
 
   /**
@@ -42,8 +44,8 @@ export class WorkPackageNodesService extends WorkPackageService {
    * Add a dependency to a node
    * FIXME: missing types
    */
-  addNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}`, data, this.httpOptions);
+  addNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string, data: WorkpackageNodeDescendant): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}`, {data}, this.httpOptions);
   }
 
   /**
@@ -91,7 +93,7 @@ export class WorkPackageNodesService extends WorkPackageService {
    * Add custom property to a node
    * FIXME: missing types
    */
-  addNodeCustomProperty(workPackageId: string, nodeId: string, customPropertyId: string, data: any): Observable<any> {
+  addNodeCustomProperty(workPackageId: string, nodeId: string, customPropertyId: string, data: WorkpackageNodeCustomProperty): Observable<any> {
     return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`,
     data, this.httpOptions);
   }

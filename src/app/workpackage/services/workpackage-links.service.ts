@@ -1,7 +1,9 @@
+/* tslint:disable:max-line-length */
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import { WorkPackageService } from './workpackage.service';
+import { WorkpackageLink, WorkpackageLinkCustomProperty, WorkpackageLinkSliceAdd, WorkpackageLinkSliceUpdate, WorkpackageLinkSliceCondition, WorkpackageLinkSliceConditionType } from '../store/models/workpackage.models';
 
 @Injectable()
 export class WorkPackageLinksService extends WorkPackageService {
@@ -10,99 +12,129 @@ export class WorkPackageLinksService extends WorkPackageService {
    * Create a new link between two architecture nodes
    * FIXME: missing types
    */
-  addLink(workPackageId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks`, data, this.httpOptions);
+  addLink(workPackageId: string, data: WorkpackageLink): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks`, {data}, this.httpOptions);
   }
 
   /**
    * Update a link between Architecture Nodes
    * FIXME: missing types
    */
-  updateLink(workPackageId: string, nodeLinkId: string, data: any): Observable<any> {
-    return this.http.put<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}`, data, this.httpOptions);
+  updateLink(workPackageId: string, nodeLinkId: string, data: WorkpackageLink): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}`, {data}, this.httpOptions);
   }
 
   /**
-   * Request deletion of a specific node within the architecture.
+   * Request deletion of a node link.
    * FIXME: missing types
    */
-  deleteNode(workPackageId: string, nodeId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/deleteRequest`, {});
+  deleteLink(workPackageId: string, nodeLinkId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/deleteRequest`, {});
   }
 
   /**
-   * Get the descendants of an architecture node
+   * Add attribute to a link
    * FIXME: missing types
    */
-  getNodeDescendants(workPackageId: string, nodeId: string): Observable<any> {
-    return this.http.get<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants`);
+  addLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string, data: any): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/attributes/${attributeId}`, data, this.httpOptions);
   }
 
   /**
-   * Add a dependency to a node
-   * FIXME: missing types
-   */
-  addNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}`, data, this.httpOptions);
+ * Delete attribute from a link
+ * FIXME: missing types
+ */
+  deleteLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/attributes/${attributeId}/deleteRequest`, {});
   }
 
   /**
-   * Remove a descendant from the list
+   * Add custom property to a link
    * FIXME: missing types
    */
-  deleteNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}/deleteRequest`,
-    {});
+  addLinkCustomProperty(workPackageId: string, nodeLinkId: string, customPropertyId: string, data: WorkpackageLinkCustomProperty): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/customPropertyValues/${customPropertyId}`,
+      {data}, this.httpOptions);
   }
 
   /**
-   * Add owner to a node
+   * Delete custom property from a link
    * FIXME: missing types
    */
-  addNodeOwner(workPackageId: string, nodeId: string, ownerId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/owners/${ownerId}`, data, this.httpOptions);
+  deleteLinkCustomProperty(workPackageId: string, nodeLinkId: string, customPropertyId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/customPropertyValues/${customPropertyId}/deleteRequest`, {});
   }
 
   /**
-   * Delete owner from a node
+   * Get the descendants of a link
    * FIXME: missing types
    */
-  deleteNodeOwner(workPackageId: string, nodeId: string, ownerId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/owners/${ownerId}/deleteRequest`, {});
+  getNodeDescendants(workPackageId: string, nodeLinkId: string): Observable<any> {
+    return this.http.get<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/descendants`);
   }
 
   /**
-   * Add attribute to a node
+   * Create a new slice
    * FIXME: missing types
    */
-  addNodeAttribute(workPackageId: string, nodeId: string, attributeId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}`, data, this.httpOptions);
+  addLinkSlice(workPackageId: string, nodeLinkId: string, data: WorkpackageLinkSliceAdd): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/slices/`, data, this.httpOptions);
   }
 
   /**
-   * Delete attribute from a node
+   * Update a slice
    * FIXME: missing types
    */
-  deleteNodeAttribute(workPackageId: string, nodeId: string, attributeId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}/deleteRequest`, {});
+  updateLinkSlice(workPackageId: string, nodeLinkId: string, sliceId: string, data: WorkpackageLinkSliceUpdate): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/slices/${sliceId}`, data, this.httpOptions);
   }
 
   /**
-   * Add custom property to a node
+   * Request deletion of a slice
    * FIXME: missing types
    */
-  addNodeCustomProperty(workPackageId: string, nodeId: string, customPropertyId: string, data: any): Observable<any> {
-    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`,
-    data, this.httpOptions);
+  deleteLinkSlice(workPackageId: string, nodeLinkId: string, sliceId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/slices/${sliceId}/deleteRequest`, {});
+  }
+
+
+  /**
+   * Create a new slice condition type
+   * FIXME: missing types
+   */
+  addLinkSliceConditionType(workPackageId: string, nodeLinkId: string, data: WorkpackageLinkSliceConditionType): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/sliceConditionTypes/`, data, this.httpOptions);
   }
 
   /**
-   * Delete custom property from a node
+   * Update a slice
    * FIXME: missing types
    */
-  deleteNodeCustomProperty(workPackageId: string, nodeId: string, customPropertyId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}/deleteRequest`, {});
+  updateLinkSliceConditionType(workPackageId: string, nodeLinkId: string, sliceConditionTypeId: string, data: WorkpackageLinkSliceConditionType): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/sliceConditionTypes/${sliceConditionTypeId}`, data, this.httpOptions);
   }
 
+  /**
+   * Request deletion of a slice
+   * FIXME: missing types
+   */
+  deleteLinkSliceConditionType(workPackageId: string, nodeLinkId: string, sliceConditionTypeId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/sliceConditionTypes/${sliceConditionTypeId}/deleteRequest`, {});
+  }
+
+  /**
+   * Add a slice condition
+   * FIXME: missing types
+   */
+  addLinkSliceCondition(workPackageId: string, nodeLinkId: string, data: WorkpackageLinkSliceCondition): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/sliceConditions/`, data, this.httpOptions);
+  }
+
+  /**
+   * Request deletion of a slice condition
+   * FIXME: missing types
+   */
+  deleteLinkSliceCondition(workPackageId: string, nodeLinkId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/sliceConditions/deleteRequest`, {});
+  }
 }
-
