@@ -17,6 +17,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { AttributeEffects } from './store/effects/attributes.effects';
 import { reducer } from './store/reducers/attributes.reducer';
 import { ArchitectureModule } from '@app/architecture/architecture.module';
+import { LeftSideBarComponent } from './components/left-sidebar/left-sidebar.component';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { ArchitectureModule } from '@app/architecture/architecture.module';
   exports: [],
   declarations: [
     AttributesComponent,
-    AttributesRoutingComponent
+    AttributesRoutingComponent,
+    LeftSideBarComponent
   ],
   providers: [
     AttributeService

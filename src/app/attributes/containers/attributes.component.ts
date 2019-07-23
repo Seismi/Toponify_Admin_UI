@@ -27,6 +27,8 @@ export class AttributesComponent implements OnInit {
     isEditable = false;
     objectSelected = true;
     workPackageIsEditable = false;
+    showOrHidePane = false;
+    selectedTab: number;
 
     constructor(
         private store: Store<AttributeState>, 
@@ -120,5 +122,16 @@ export class AttributesComponent implements OnInit {
         //     }
         //   }
         // }));
+      }
+
+      onOpenTab(i) {
+        this.selectedTab = i;
+        if(this.selectedTab === i) {
+          this.showOrHidePane = true;
+        }
+      }
+    
+      hidePane() {
+        this.showOrHidePane = false;
       }
 }
