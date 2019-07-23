@@ -5,10 +5,9 @@ import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, Mat
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
   MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatGridListModule } from '@angular/material';
 import { FilterService } from './services/filter.service';
-import { reducer } from '@app/architecture/store/reducers/view.reducer';
+import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
-import { NodeModule } from '@app/nodes/node.module';
-import { NodeService } from '@app/nodes/services/node.service';
+import { NodeService } from '@app/architecture/services/node.service';
 import { StoreModule } from '@ngrx/store';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
@@ -44,12 +43,13 @@ import { WorkPackageColorComponent } from './components/color-picker/color-picke
 import { LayerPipe } from './pipes/layer.pipe';
 import { RightSideBarComponent } from './components/right-sidebar/right-sidebar.component';
 import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.component';
+import { EffectsModule } from '@ngrx/effects';
+import { NodeEffects } from './store/effects/node.effects';
 
 
 @NgModule({
   imports: [
     CoreModule,
-    NodeModule,
     ArchitectureRoutingModule,
     MatProgressSpinnerModule,
     FormsModule,
@@ -76,7 +76,8 @@ import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.c
     ScopeModule,
     LayoutModule,
     MatGridListModule,
-    StoreModule.forFeature('architectureFeature', reducer)
+    StoreModule.forFeature('architectureFeature', reducer),
+    EffectsModule.forFeature([NodeEffects])
   ],
     exports: [ObjectDetailsFormComponent, CategoryTableComponent, TableCollapseComponent, WorkPackageTabTableComponent],
     declarations: [

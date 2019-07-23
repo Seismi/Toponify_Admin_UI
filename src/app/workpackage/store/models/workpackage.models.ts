@@ -156,3 +156,61 @@ export interface RoutesEntityEntity {
   points?: (number)[] | null;
 }
 
+export interface WorkpackageNode {
+  id: string;
+  layer: string;
+  name: string;
+  description: string;
+  category: string;
+  tags: string;
+}
+
+export interface WorkpackageNodeDescendant {
+  id: string;
+}
+
+export interface WorkpackageNodeCustomProperty {
+  value: string;
+}
+
+export interface WorkpackageLink {
+  id: string;
+  layer: string;
+  name: string;
+  description: string;
+  category: string;
+  sourceId: string;
+  targetId: string;
+}
+
+export interface WorkpackageLinkCustomProperty {
+  value: string;
+}
+
+export interface WorkpackageLinkSliceAdd {
+  id: string;
+  orderNum: number;
+}
+
+export interface WorkpackageLinkSliceUpdate {
+  id: string;
+  name: string;
+  description: string;
+  orderNum: number;
+}
+
+export interface WorkpackageLinkSliceConditionType {
+  id: string;
+  name: string;
+  orderNum: number;
+}
+
+export interface WorkpackageLinkSliceCondition {
+  sliceId: string;
+  conditionTypeId: string;
+  value: string;
+}
+
+
+
+

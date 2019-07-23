@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import * as go from 'gojs';
-import {layers} from '@app/nodes/store/models/node.model';
-import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import { layers } from '@app/architecture/store/models/node.model';
+import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import {DiagramTemplatesService} from '../..//services/diagram-templates.service';
 import {DiagramLevelService} from '../../services/diagram-level.service';
 @Component({
