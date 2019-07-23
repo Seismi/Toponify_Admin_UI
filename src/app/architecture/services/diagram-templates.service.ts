@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {nodeCategories, layers} from '@app/nodes/store/models/node.model';
+import { nodeCategories, layers } from '@app/architecture/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {updateShapeShadows, CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
