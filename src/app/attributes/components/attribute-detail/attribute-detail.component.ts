@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
     selector: 'smi-attribute-detail',
@@ -8,8 +9,13 @@ import { FormGroup } from '@angular/forms';
 })
 export class AttributeDetailComponent {
 
+    owners: NodeDetail[];
+    
+    @Input() set data(data: any[]) {
+        this.owners = data
+    }
+
     categories = ['rule', 'attribute'];
 
     @Input() group: FormGroup;
-    
 }

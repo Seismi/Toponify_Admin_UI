@@ -12,16 +12,14 @@ export class AttributeDetailService {
       category: [null, Validators.required],
       name: [null, Validators.required],
       description: [null],
-      owner: this.fb.array([this.Owner()]),
+      owner: [null],
       tags: [null]
     });
   }
 
   Owner(): FormGroup {
     return this.fb.group({
-      id: [null],
-      name: [null],
-      type: [null]
+      name: [null]
     });
   }
 

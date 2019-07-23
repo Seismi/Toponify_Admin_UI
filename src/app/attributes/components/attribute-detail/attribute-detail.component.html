@@ -15,7 +15,7 @@
 
     <mat-form-field>
         <mat-select placeholder="Owner" formControlName="owner">
-            <mat-option value="option">Option</mat-option>
+            <mat-option [value]="owner.name" *ngFor="let owner of owners">{{owner.name}}</mat-option>
         </mat-select>
     </mat-form-field>
 
