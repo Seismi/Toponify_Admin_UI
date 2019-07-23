@@ -1,11 +1,11 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import * as go from 'gojs';
-import {layers, Node, nodeCategories} from '@app/nodes/store/models/node.model';
-import {linkCategories, RoutesEntityEntity} from '@app/nodes/store/models/node-link.model';
+import { layers, Node, nodeCategories } from '@app/architecture/store/models/node.model';
+import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
-import {State as ArchitectureState} from '@app/architecture/store/reducers/view.reducer';
+import {State as ArchitectureState} from '@app/architecture/store/reducers/architecture.reducer';
 import {FilterService} from './filter.service';
 import {Location} from '@angular/common';
 import {SetViewLevel} from '@app/architecture/store/actions/view.actions';

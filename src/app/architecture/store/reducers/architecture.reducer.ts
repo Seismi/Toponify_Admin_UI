@@ -1,10 +1,12 @@
-import { Node, Error, NodeDetail } from '../models/node.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import { NodeLink } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-
-// TODO: node store should be moved under architecture module.
+import { NodeDetail, Node, Error } from '../models/node.model';
 
 export interface State {
+  zoomLevel: number;
+  viewLevel: number;
   entities: Node[];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLink;
@@ -13,6 +15,8 @@ export interface State {
 }
 
 export const initialState: State = {
+  zoomLevel: 3,
+  viewLevel: 1,
   entities: null,
   selectedNode: null,
   selectedNodeLink: null,
@@ -20,8 +24,21 @@ export const initialState: State = {
   error: null
 };
 
-export function reducer(state = initialState, action: NodeActionsUnion): State {
+export function reducer(state = initialState, action: ViewActionsUnion | NodeActionsUnion): State {
   switch (action.type) {
+    case ViewActionTypes.ViewModel: {
+      return {
+        ...state,
+        viewLevel: action.payload
+      };
+    }
+
+    case ViewActionTypes.ZoomModel: {
+      return {
+        ...state,
+        zoomLevel: action.payload
+      };
+    }
 
     case NodeActionTypes.LoadNodesSuccess: {
       return {

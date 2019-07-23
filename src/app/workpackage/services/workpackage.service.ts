@@ -1,17 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { WorkPackageEntitiesHttpParams, WorkPackageApiRequest, WorkPackageEntitiesResponse, WorkPackageApiResponse, OwnersEntityOrApproversEntity } from '../store/models/workpackage.models';
+import { 
+  WorkPackageEntitiesHttpParams, 
+  WorkPackageApiRequest,
+  WorkPackageEntitiesResponse, 
+  OwnersEntityOrApproversEntity
+} from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
-
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
 
 @Injectable()
 export class WorkPackageService {
 
-  constructor(private http: HttpClient) { }
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
+  constructor(public http: HttpClient) { }
 
   getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
@@ -23,11 +28,11 @@ export class WorkPackageService {
   }
 
   addWorkPackageEntity(entity: WorkPackageApiRequest): Observable<any> {
-    return this.http.post<any>(`/workpackages`, entity, httpOptions);
+    return this.http.post<any>(`/workpackages`, entity, this.httpOptions);
   }
 
-  updateWorkPackageEntity(workPackage: WorkPackageApiResponse, id: string, ): Observable<any> {
-    return this.http.put<any>(`/workpackages/${id}`, workPackage, httpOptions);
+  updateWorkPackageEntity(entityId: string, entity: WorkPackageApiRequest): Observable<any> {
+    return this.http.put<any>(`/workpackages/${entityId}`, entity, this.httpOptions);
   }
 
   deleteWorkPackageEntity(entityId: string): Observable<any> {
@@ -35,7 +40,7 @@ export class WorkPackageService {
   }
 
   addOwner(entity: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/owners/${ownerId}`, entity, httpOptions);
+    return this.http.post<any>(`/workpackages/${workPackageId}/owners/${ownerId}`, entity, this.httpOptions);
   }
 
   deleteOwner(workPackageId: string, ownerId: string): Observable<any> {
@@ -43,6 +48,71 @@ export class WorkPackageService {
   }
 
   // TODO: move into sharable service
+
+  Workpackage(workPackageId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/submit`, {});
+  }
+  /**
+   *  Validate the user is a package owner. Validate the package status is 'draft'.
+   *  Change the package status to 'submitted'. Create package approver records
+   *  for each distinct owner of an object in the package.
+   *  FIXME: missing return type
+   */
+  submitWorkpackage(workPackageId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/submit`, {});
+  }
+
+  /**
+   * Validate the user is a package approver. Validate the package status is 'submitted'.
+   * Update the approval flag on the relevant package approver record. If the flag is set
+   * for all approvers, change the package status to 'approved'.
+   * FIXME: missing return type
+   */
+  approveWorkpackage(workPackageId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/approve`, {});
+  }
+
+  /**
+   * Validate the user is a package approver. Validate the package status is 'submitted'.
+   * Delete all package approver records for this package. Change the package status to 'draft'.
+   * FIXME: missing return type
+   */
+  rejectWorkpackage(workPackageId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/reject`, {});
+  }
+
+  /**
+   * Validate the user is a package owner. Validate the package status is 'approved'. Validate
+   * that all baseline packages have a status of 'merged'. Change the package status to 'merging'.
+   * Merge each pending change into the base architecture. Change the package status to 'merged'.
+   * FIXME: missing return type
+   */
+  mergeWorkpackage(workPackageId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/merge`, {});
+  }
+
+  /**
+   * Validate the user is a package owner. Validate the package status is not 'draft',
+   * 'merging' or 'merged'. Delete all package approver records for this package. Change the package status to 'draft'.
+   * FIXME: missing return type
+   */
+  resetWorkpackage(workPackageId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/reset`, {});
+  }
+
+  /**
+   * Validate the user is a package owner. Validate the package status is not 'merging' or 'merged'.
+   * Delete all package approver records for this package. Change the package status to 'superseded'.
+   * FIXME: missing return type
+   */
+  supersedeWorkpackage(workPackageId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/supersede`, {});
+  }
+
+  // TODO: missing details POST /workpackages/{workPackageId}/objectives/{radioId}
+  // TODO: missing details DELETE /workpackages/{workPackageId}/objectives/{radioId}
+  // TODO: missing details POST /workpackages/{workPackageId}/owners/{ownerId}
+  // TODO: missing details DELETE /workpackages/{workPackageId}/owners/{ownerId}
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj)
         .reduce((p, key) => p.set(key, obj[key]), new HttpParams());

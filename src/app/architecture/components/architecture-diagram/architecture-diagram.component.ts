@@ -13,8 +13,8 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
-import {linkCategories} from '@app/nodes/store/models/node-link.model';
-import {layers} from '@app/nodes/store/models/node.model';
+import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import { layers } from '@app/architecture/store/models/node.model';
 import {DiagramTemplatesService} from '../../services/diagram-templates.service';
 import {DiagramLevelService, Level} from '../..//services/diagram-level.service';
 import {DiagramChangesService} from '../../services/diagram-changes.service';
