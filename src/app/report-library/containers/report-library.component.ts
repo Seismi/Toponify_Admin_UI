@@ -22,6 +22,8 @@ export class ReportLibraryComponent implements OnInit {
   reportSelected: boolean;
   reportEntities$: Observable<ReportLibrary[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
+  selectedTab: number;
+  showOrHidePane = false;
 
   constructor(
     private store: Store<ReportState>,
@@ -42,4 +44,16 @@ export class ReportLibraryComponent implements OnInit {
   onSelectReport(row) {
     this.router.navigate(['report-library', row.id]);
   }
+
+  onOpenTab(i) {
+    this.selectedTab = i;
+    if(this.selectedTab === i) {
+      this.showOrHidePane = true;
+    }
+  }
+
+  hidePane() {
+    this.showOrHidePane = false;
+  }
+  
 }
