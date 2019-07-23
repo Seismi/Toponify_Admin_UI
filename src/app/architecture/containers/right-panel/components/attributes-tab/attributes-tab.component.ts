@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NodeDetail } from '@app/nodes/store/models/node.model';
 import { MatTableDataSource } from '@angular/material';
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-attributes-tab',
@@ -23,5 +23,4 @@ export class AttributesTabComponent {
   onAdd() {
     this.addAttribute.emit();
   }
-
 }

@@ -2,8 +2,8 @@ import * as go from 'gojs';
 import {Injectable} from '@angular/core';
 import {Level, DiagramLevelService} from './diagram-level.service';
 import {FilterService} from './filter.service';
-import {linkCategories} from '@app/nodes/store/models/node-link.model';
-import {Node} from '@app/nodes/store/models/node.model.ts';
+import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import { Node } from '@app/architecture/store/models/node.model.ts';
 import { BehaviorSubject } from 'rxjs';
 
 const $ = go.GraphObject.make;
