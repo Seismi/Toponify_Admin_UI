@@ -12,7 +12,7 @@ import {
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
-  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure } from '../actions/workpackage.actions';
+  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess, DeleteOwnerFailure } from '../actions/workpackage.actions';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
   WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity, WorkPackageEntity } from '../models/workpackage.models';
 
@@ -63,8 +63,8 @@ export class WorkPackageEffects {
   updateWorkPackageEntity$ = this.actions$.pipe(
     ofType<UpdateWorkPackageEntity>(WorkPackageActionTypes.UpdateWorkPackage),
     map(action => action.payload),
-    switchMap((payload: {workPackage: WorkPackageApiRequest, id: string}) => {
-      return this.workpackageService.updateWorkPackageEntity(payload.workPackage, payload.id).pipe(
+    switchMap((payload: {workPackage: WorkPackageApiRequest, entityId: string}) => {
+      return this.workpackageService.updateWorkPackageEntity(payload.entityId, payload.workPackage).pipe(
         switchMap((response: WorkPackageApiResponse) => [new UpdateWorkPackageEntitySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageEntityFailure(error)))
       );
@@ -101,8 +101,8 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((payload: {workPackageId: string, ownerId: string}) => {
       return this.workpackageService.deleteOwner(payload.workPackageId, payload.ownerId).pipe(
-        switchMap((_) => [new DeleteWorkPackageEntitySuccess(payload.ownerId)]),
-        catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageEntityFailure(error)))
+        switchMap((_) => [new DeleteOwnerSuccess(payload.ownerId)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteOwnerFailure(error)))
       );
     })
   );

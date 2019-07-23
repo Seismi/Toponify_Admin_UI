@@ -10,7 +10,8 @@
     [approversTableData]="workpackage?.approvers"
     (deleteOwner)="onDeleteOwner($event)"
     (selectOwner)="onSelectOwner($event)"
-    (addOwner)="onAddOwner($event)">
+    (addOwner)="onAddOwner($event)"
+    [selectedOwner]="selectedOwner">
   </smi-workpackage-detail>
   <smi-objectives-table data-hook="workpackage-page-objective-table" [data]="workpackage?.objectives"></smi-objectives-table>
   <smi-radio-table data-hook="workpackage-page-radio-table" [data]="workpackage?.radios"></smi-radio-table>

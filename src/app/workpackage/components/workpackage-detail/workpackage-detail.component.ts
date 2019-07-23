@@ -20,6 +20,7 @@ export class WorkPackageDetailComponent  {
   @Input() approversTableData: any;
   @Input() selectedBaseline = [];
   @Input() selectedOwners = [];
+  @Input() selectedOwner: boolean;
 
   @Output()
   deleteWorkpackage = new EventEmitter();

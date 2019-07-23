@@ -26,6 +26,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   workpackageId: string;
   ownerId: string;
   owner: OwnersEntityOrApproversEntity;
+  selectedOwner: boolean;
 
   constructor(
     private dialog: MatDialog,
@@ -63,18 +64,20 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
 
   onSelectOwner(row) {
     this.ownerId = row.id;
+    this.selectedOwner = true;
   }
 
   // Save Work Package
   onSaveWorkpackage() {
     this.store.dispatch(new UpdateWorkPackageEntity({
-      id: this.workpackageId,
+      entityId: this.workpackageId,
       workPackage: { data: {
         id: this.workpackageId,
         name: this.workPackageDetailForm.value.name,
         description: this.workPackageDetailForm.value.description
       }}
     }))
+    this.selectedOwner = false;
   }
 
   // Delete Work Package
@@ -123,8 +126,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteOwner({workPackageId: this.workpackageId, ownerId: this.ownerId}))
+        this.selectedOwner = true;
       }
     });
   }
-
 }

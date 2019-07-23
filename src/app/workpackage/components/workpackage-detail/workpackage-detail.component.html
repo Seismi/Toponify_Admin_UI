@@ -27,7 +27,8 @@
         (deleteOwner)="onDeleteOwner($event)"
         (selectOwner)="onSelectOwner($event)"
         [isEditable]="isEditable"
-        [ngClass]="{disabled: !isEditable}">
+        [ngClass]="{disabled: !isEditable}"
+        [selectedOwner]="selectedOwner">
     </smi-owners-table>
 
     <!-- Approvers Table -->

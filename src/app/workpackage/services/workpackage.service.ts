@@ -31,8 +31,8 @@ export class WorkPackageService {
     return this.http.post<any>(`/workpackages`, entity, this.httpOptions);
   }
 
-  updateWorkPackageEntity(entityId: string, entity: WorkPackageApiRequest): Observable<any> {
-    return this.http.put<any>(`/workpackages/${entityId}`, entity, this.httpOptions);
+  updateWorkPackageEntity(entityId: string, workPackage: WorkPackageApiRequest): Observable<any> {
+    return this.http.put<any>(`/workpackages/${entityId}`, workPackage, this.httpOptions);
   }
 
   deleteWorkPackageEntity(entityId: string): Observable<any> {

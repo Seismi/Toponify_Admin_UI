@@ -12,7 +12,7 @@ export class OwnersTableComponent {
   @Input() isEditable = false;
   
   selectedRowIndex = -1;
-  selectedOwner = false;
+  @Input() selectedOwner = false;
 
   @Input()
   set data(data: any[]) {
@@ -32,7 +32,6 @@ export class OwnersTableComponent {
   selectOwner = new EventEmitter();
 
   onSelect(row) {
-    this.selectedOwner = true;
     this.selectedRowIndex = row.id;
     this.selectOwner.emit(row);
   }

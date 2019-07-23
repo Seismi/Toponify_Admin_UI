@@ -156,7 +156,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     }
 
     case WorkPackageActionTypes.AddOwnerSuccess: {
-
       return {
         ...state,
         entities: state.entities.map(entity => {
@@ -176,7 +175,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
         loading: false
       };
     }
-
 
     case WorkPackageActionTypes.DeleteOwner: {
       return {
@@ -207,5 +205,3 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
   }
 }
 
-export const getWorkPackageEntities = (state: State) => state.entities;
-export const getError = (state: State) => state.error;

@@ -79,7 +79,7 @@ export class AddWorkPackageEntityFailure implements Action {
 
 export class UpdateWorkPackageEntity implements Action {
   readonly type = WorkPackageActionTypes.UpdateWorkPackage;
-  constructor(public payload: {workPackage: WorkPackageApiRequest, id: string}) {}
+  constructor(public payload: {workPackage: WorkPackageApiRequest, entityId: string}) {}
 }
 
 export class UpdateWorkPackageEntitySuccess implements Action {
