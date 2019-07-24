@@ -90,6 +90,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
+  showOrHideRightPane = false;
+  selectedRightTab: number;
   selectedLeftTab: number;
 
   @ViewChild(ArchitectureDiagramComponent)
@@ -500,6 +502,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+  openRightTab(i) {
+    this.selectedRightTab = i;
+    if(this.selectedRightTab === i) {
+      this.showOrHideRightPane = true;
+    }
+  }
+
+  onHideRightPane() {
+    this.showOrHideRightPane = false;
+  }
+  
+
   onOpenAnalysisTab() {
     this.showOrHideLeftPane = true;
     this.selectedLeftTab = 2;
@@ -509,5 +523,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.showOrHideLeftPane = true;
     this.selectedLeftTab = 1;
   }
+
 }
 

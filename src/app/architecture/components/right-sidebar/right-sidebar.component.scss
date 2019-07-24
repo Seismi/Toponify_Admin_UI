@@ -1,0 +1,20 @@
+div {
+    width: 50px;
+    height: 100%;
+    background-color: #eee;
+}
+
+span {
+    color: rgba(0,0,0,.87);
+    writing-mode: vertical-lr; 
+    transform: rotate(360deg);
+    padding: 15px 13px;
+    cursor: pointer;
+    &:hover {
+        background-color: #ddd;
+    }
+}
+
+span:nth-child(1) {
+    margin-top: 30px;
+} 

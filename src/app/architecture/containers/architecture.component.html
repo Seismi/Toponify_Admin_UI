@@ -72,8 +72,12 @@
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <app-model-sidebar [isLast]="true" [maxWidth]="600">
-    <smi-right-panel
+  <smi-right-sidebar data-hook="right-sidebar" *ngIf="!showOrHideRightPane" (rightTab)="openRightTab($event)">
+  </smi-right-sidebar>
+  <app-model-sidebar [isLast]="true" [maxWidth]="600" *ngIf="showOrHideRightPane">
+    <p>
+      <smi-right-panel
+        [selectedRightTab]="selectedRightTab"
         [group]="objectDetailsForm"
         [clickedOnLink]="clickedOnLink"
         [nodeSelected]="objectSelected"
@@ -88,7 +92,9 @@
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
         (addRadionInArchitecture)="addRadionInArchitecture($event)"
-    >
-    </smi-right-panel>
+        (hideRightPane)="onHideRightPane()"
+      >
+      </smi-right-panel>
+    </p>
   </app-model-sidebar>
 </app-model-container>

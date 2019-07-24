@@ -32,15 +32,16 @@ import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
-import { WorkPackageTabComponent } from './containers/right-panel/components/workpackage-tab/workpackage-tab.component';
-import { RadioTabComponent } from './containers/right-panel/components/radio-tab/radio-tab.component';
-import { PropertiesTabComponent } from './containers/right-panel/components/properties-tab/properties-tab.component';
-import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
+import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
+import { RadioTabComponent } from './components/radio-tab/radio-tab.component';
+import { PropertiesTabComponent } from './components/properties-tab/properties-tab.component';
+import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
+import { RightSideBarComponent } from './components/right-sidebar/right-sidebar.component';
 import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.component';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeEffects } from './store/effects/node.effects';
@@ -100,6 +101,7 @@ import { NodeEffects } from './store/effects/node.effects';
       WorkPackageTabTableComponent,
       WorkPackageColorComponent,
       LayerPipe,
+      RightSideBarComponent,
       LeftSideBarComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
