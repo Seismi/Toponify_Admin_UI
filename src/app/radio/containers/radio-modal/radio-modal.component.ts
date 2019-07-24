@@ -14,8 +14,9 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 
 export class RadioModalComponent {
 
-  @Input() addRadio = false;
-  @Input() isEditable = true;
+  addRadio = false;
+  isEditable = true;
+  targetName = true;
   modalMode = true;
   radio: RadioEntity;
 

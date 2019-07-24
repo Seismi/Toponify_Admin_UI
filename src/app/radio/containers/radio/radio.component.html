@@ -7,31 +7,16 @@
     </app-toolbar-column>
 </app-base-header>
 
-<div class="row">
-    <div class="col-8">
-        <smi-radio-table
-            data-hook="radio-table"
-            [data]="radio$ | async"
-            [selectedRowIndex]="radioId"
-            (selectRadio)="onSelectRadio($event)"
-            (addRadio)="onAddRadio($event)">
-        </smi-radio-table>
-    </div>
-    <div class="col-4 mat-elevation-z8">
-        <smi-radio-detail
-            data-hook="radio-details"
-            [group]="radioDetailsForm"
-            [addRadio]="addRadio"
-            [isEditable]="isEditable"
-            [modalMode]="modalMode"
-            [disableButton]="disableButton"
-            (archiveRadio)="onArchiveRadio($event)"
-            (saveRadio)="onSaveRadio()">
-        </smi-radio-detail>
-        <smi-chatbox
-            [data]="selecetedRadio?.replies"
-            [radioId]="radioId"
-            [disableButton]="disableButton">
-        </smi-chatbox>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <smi-radio-table
+                data-hook="radio-table"
+                [data]="radio$ | async"
+                (selectRadio)="onSelectRadio($event)"
+                (addRadio)="onAddRadio($event)">
+            </smi-radio-table>
+        </div>
+        <router-outlet></router-outlet>
     </div>
 </div>
