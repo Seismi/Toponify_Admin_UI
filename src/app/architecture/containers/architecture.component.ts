@@ -61,7 +61,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   linksSubscription: Subscription;
 
   selectedNode: NodeDetail;
-  
+
   links: any[] = [];
   nodes: any[] = [];
 
@@ -90,6 +90,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
+  workpackageSubscription: Subscription;
   selectedLeftTab: number;
 
   @ViewChild(ArchitectureDiagramComponent)
@@ -148,6 +149,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+
+    this.workpackageSubscription = this.workpackage$.subscribe(workpackages => {
+      debugger;
+    });
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -170,6 +176,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.linksSubscription.unsubscribe();
     }
     this.layoutStoreSubscription.unsubscribe();
+    this.workpackageSubscription.unsubscribe();
   }
 
   setNodesLinks(layer: string, id?: string) {
@@ -183,8 +190,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (layer === Level.map) {
       this.nodeStore.dispatch(new LoadMapView(id));
     } else {
-      this.nodeStore.dispatch(new LoadNodes());
-      this.nodeStore.dispatch(new LoadNodeLinks());
+      // TODO: find selected workpackage id
+      const queryParams = {
+        workPackageQuery: [
+          '3b0c902c-5d90-4916-8b8c-fc83a22e1f06',
+          'e341f7f0-2fbe-42ca-981c-fbd312dce946',
+          '72bb06f8-ffb1-417c-a7ca-f88770baa20e'
+        ]
+      };
+      this.nodeStore.dispatch(new LoadNodes(queryParams));
+      this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
     }
   }
 
@@ -443,6 +458,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkPackage(id) {
+    debugger;
     this.workpackageId = id;
     this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
     this.workpackageStore.pipe(select(getSelectedWorkPackage));
