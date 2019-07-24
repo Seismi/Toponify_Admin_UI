@@ -91,6 +91,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
+  showOrHideRightPane = false;
+  selectedRightTab: number;
   selectedLeftTab: number;
 
   @ViewChild(ArchitectureDiagramComponent)
@@ -512,12 +514,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddAttribute() {
-    const dialogRef = this.dialog.open(AttributeModalComponent, {
-      disableClose: false,
-      width: '500px'
-    });
+    this.dialog.open(AttributeModalComponent, {width: '450px'});
   }
 
+  openRightTab(i) {
+    this.selectedRightTab = i;
+    if(this.selectedRightTab === i) {
+      this.showOrHideRightPane = true;
+    }
+  }
 
+  onHideRightPane() {
+    this.showOrHideRightPane = false;
+  }
 }
 

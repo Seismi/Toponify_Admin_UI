@@ -72,8 +72,12 @@
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <app-model-sidebar [isLast]="true" [maxWidth]="600">
-    <smi-right-panel
+  <smi-right-sidebar data-hook="right-sidebar" *ngIf="!showOrHideRightPane" (rightTab)="openRightTab($event)">
+  </smi-right-sidebar>
+  <app-model-sidebar [isLast]="true" [maxWidth]="600" *ngIf="showOrHideRightPane">
+    <p>
+      <smi-right-panel
+        [selectedRightTab]="selectedRightTab"
         [group]="objectDetailsForm"
         [clickedOnLink]="clickedOnLink"
         [nodeSelected]="objectSelected"
@@ -87,8 +91,9 @@
         [workpackages]="selectedNode?.relatedWorkPackages"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
-        (addRadio)="onAddRadio($event)"
         (addAttribute)="onAddAttribute($event)"
+        (addRadio)="onAddRadio($event)"
+        (hideRightPane)="onHideRightPane()"
     >
     </smi-right-panel>
   </app-model-sidebar>

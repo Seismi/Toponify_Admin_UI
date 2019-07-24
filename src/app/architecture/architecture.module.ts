@@ -30,15 +30,16 @@ import {DiagramLevelService} from './services/diagram-level.service';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
-import { WorkPackageTabComponent } from './containers/right-panel/components/workpackage-tab/workpackage-tab.component';
-import { RadioTabComponent } from './containers/right-panel/components/radio-tab/radio-tab.component';
-import { PropertiesTabComponent } from './containers/right-panel/components/properties-tab/properties-tab.component';
-import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
+import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
+import { RadioTabComponent } from './components/radio-tab/radio-tab.component';
+import { PropertiesTabComponent } from './components/properties-tab/properties-tab.component';
+import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
+import { RightSideBarComponent } from './components/right-sidebar/right-sidebar.component';
 import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.component';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
@@ -99,9 +100,10 @@ import { NodeEffects } from './store/effects/node.effects';
       WorkPackageTabTableComponent,
       WorkPackageColorComponent,
       LayerPipe,
-      LeftSideBarComponent,
       AttributeModalComponent,
-      AttributeDetailComponent
+      AttributeDetailComponent,
+      RightSideBarComponent,
+      LeftSideBarComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent, AttributeModalComponent],
     providers: [
