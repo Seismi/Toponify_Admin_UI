@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Add Rule or Attribute</h1>
+<smi-attribute-detail
+  [data]="node?.owners"
+  [group]="attributeDetailForm">
+</smi-attribute-detail>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSave()">Save</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>

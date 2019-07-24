@@ -21,10 +21,10 @@ export class RadioTabComponent {
   displayedColumns: string[] = ['name', 'navigate'];
 
   @Output()
-  addRadioInArchitecture = new EventEmitter();
+  addRadio = new EventEmitter();
 
   onAdd() {
-    this.addRadioInArchitecture.emit();
+    this.addRadio.emit();
   }
 
   onSelect(id){
