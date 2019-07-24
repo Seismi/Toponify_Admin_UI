@@ -91,10 +91,10 @@
         [workpackages]="selectedNode?.relatedWorkPackages"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
-        (addRadionInArchitecture)="addRadionInArchitecture($event)"
+        (addAttribute)="onAddAttribute($event)"
+        (addRadio)="onAddRadio($event)"
         (hideRightPane)="onHideRightPane()"
-      >
-      </smi-right-panel>
-    </p>
+    >
+    </smi-right-panel>
   </app-model-sidebar>
 </app-model-container>

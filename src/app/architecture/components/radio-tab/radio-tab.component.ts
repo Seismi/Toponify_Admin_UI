@@ -18,12 +18,12 @@ export class RadioTabComponent {
   displayedColumns: string[] = ['name'];
 
   @Output()
-  addRadioInArchitecture = new EventEmitter();
+  addRadio = new EventEmitter();
 
   onSelectRow(radio) {}
 
   onAdd() {
-    this.addRadioInArchitecture.emit();
+    this.addRadio.emit();
   }
 
 }
