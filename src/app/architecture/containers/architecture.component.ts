@@ -55,6 +55,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   private zoomRef;
   private showHideGridRef;
+  private showDetailTabRef;
 
   @Input() attributesView = false;
   @Input() allowMove: boolean;
@@ -169,6 +170,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.onShowGrid();
         this.ref.detectChanges();
       }.bind(this));
+
+    // Observable to capture instruction to switch to the Detail tab from GoJS context menu
+    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(function() {
+      // Show the right panel if hidden
+      this.showOrHideRightPane = true;
+      this.ref.detectChanges();
+    }.bind(this));
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
