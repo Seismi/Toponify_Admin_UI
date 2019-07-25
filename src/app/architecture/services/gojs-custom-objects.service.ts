@@ -218,6 +218,22 @@ export class GojsCustomObjectsService {
             // ..that are not in map view
             !object.group;
         })
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Return to Architecture View', {}),
+        {
+          click: function(event, object) {
+            diagramChangesService.showAllNodes(event.diagram);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the return to architecture option for nodes..
+          return event.diagram.findNodeForData(object) !== null &&
+            // ..and if some nodes in the diagram are hidden
+            event.diagram.nodes.any(function(node) {
+              return !node.visible;
+            });
+        })
       )
     );
   }

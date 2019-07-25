@@ -456,4 +456,14 @@ export class DiagramChangesService {
 
     depNode.diagram.commitTransaction('Show Dependencies');
   }
+
+  // Set all nodes in the specified diagram to visible
+  showAllNodes(diagram) {
+    diagram.startTransaction('Show All Nodes');
+    diagram.nodes.each(function(node) {
+      node.visible = true;
+    });
+    diagram.commitTransaction('Show All Nodes');
+
+  }
 }
