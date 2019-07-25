@@ -39,6 +39,7 @@ import { State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
+import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 
 
 
@@ -94,6 +95,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
+  showOrHideRightPane = false;
+  selectedRightTab: number;
   selectedLeftTab: number;
 
   @ViewChild(ArchitectureDiagramComponent)
@@ -497,7 +500,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedLeftTab = 0;
   }
 
-  addRadionInArchitecture() {
+  onOpenAnalysisTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedLeftTab = 2;
+  }
+
+  onOpenEditTab() {
+    this.showOrHideLeftPane = true;
+    this.selectedLeftTab = 1;
+  }
+
+  onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '500px'
@@ -519,14 +532,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onOpenAnalysisTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 2;
+  onAddAttribute() {
+    this.dialog.open(AttributeModalComponent, {width: '450px'});
   }
 
-  onOpenEditTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 1;
+  openRightTab(i) {
+    this.selectedRightTab = i;
+    if (this.selectedRightTab === i) {
+      this.showOrHideRightPane = true;
+    }
+  }
+
+  onHideRightPane() {
+    this.showOrHideRightPane = false;
   }
 }
 
