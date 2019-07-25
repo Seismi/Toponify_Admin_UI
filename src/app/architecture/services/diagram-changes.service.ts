@@ -460,9 +460,17 @@ export class DiagramChangesService {
   // Set all nodes in the specified diagram to visible
   showAllNodes(diagram) {
     diagram.startTransaction('Show All Nodes');
+
+    // Set all nodes to visible
     diagram.nodes.each(function(node) {
       node.visible = true;
     });
+
+    // Update bindings so that nodes no longer show the button to expand dependency levels
+    diagram.nodes.each(function(node) {
+      node.updateTargetBindings();
+    });
+
     diagram.commitTransaction('Show All Nodes');
 
   }
