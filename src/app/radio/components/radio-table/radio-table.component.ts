@@ -9,7 +9,6 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 })
 export class RadioTableComponent implements OnInit {
 
-  @Input()
   selectedRowIndex: number = -1;
 
   @Input()
@@ -34,6 +33,7 @@ export class RadioTableComponent implements OnInit {
   addRadio = new EventEmitter();
 
   onSelectRow(row) {
+    this.selectedRowIndex = row.id;
     this.selectRadio.emit(row);
   }
 

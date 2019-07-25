@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatGridListModule } from '@angular/material';
+  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatGridListModule, MatSelectModule } from '@angular/material';
 import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
@@ -30,18 +30,19 @@ import {DiagramLevelService} from './services/diagram-level.service';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
-import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
-import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
-import { WorkPackageTabComponent } from './containers/right-panel/components/workpackage-tab/workpackage-tab.component';
-import { RadioTabComponent } from './containers/right-panel/components/radio-tab/radio-tab.component';
-import { PropertiesTabComponent } from './containers/right-panel/components/properties-tab/properties-tab.component';
-import { AttributesTabComponent } from './containers/right-panel/components/attributes-tab/attributes-tab.component';
+import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
+import { RadioTabComponent } from './components/radio-tab/radio-tab.component';
+import { PropertiesTabComponent } from './components/properties-tab/properties-tab.component';
+import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
+import { RightSideBarComponent } from './components/right-sidebar/right-sidebar.component';
 import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.component';
+import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
+import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeEffects } from './store/effects/node.effects';
 
@@ -75,10 +76,11 @@ import { NodeEffects } from './store/effects/node.effects';
     ScopeModule,
     LayoutModule,
     MatGridListModule,
+    MatSelectModule,
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
   ],
-    exports: [ObjectDetailsFormComponent, CategoryTableComponent, TableCollapseComponent, WorkPackageTabTableComponent],
+    exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent],
     declarations: [
       ArchitectureRoutingComponent,
       ArchitectureComponent,
@@ -90,8 +92,6 @@ import { NodeEffects } from './store/effects/node.effects';
       LeftPanelComponent,
       AnalysisTabComponent,
       DeleteNodeModalComponent,
-      CategoryTableComponent,
-      TableCollapseComponent,
       WorkPackageTabComponent,
       RadioTabComponent,
       PropertiesTabComponent,
@@ -100,9 +100,12 @@ import { NodeEffects } from './store/effects/node.effects';
       WorkPackageTabTableComponent,
       WorkPackageColorComponent,
       LayerPipe,
+      AttributeModalComponent,
+      AttributeDetailComponent,
+      RightSideBarComponent,
       LeftSideBarComponent
     ],
-    entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
+    entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent, AttributeModalComponent],
     providers: [
       GojsCustomObjectsService,
       DiagramChangesService,

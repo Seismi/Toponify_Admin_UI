@@ -11,13 +11,12 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   private showDetailTabRef;
 
-  selectedTab = 0;
-
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
+  @Input() selectedRightTab: number;
   @Input() attributes: any;
   @Input() radio: any;
   @Input() properties: any;
@@ -36,7 +35,14 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   cancel = new EventEmitter();
 
   @Output()
-  addRadionInArchitecture = new EventEmitter();
+  addRadio = new EventEmitter();
+
+  @Output()
+  addAttribute = new EventEmitter();
+
+  @Output()
+  hideRightPane = new EventEmitter();
+
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -47,7 +53,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     // Observable to capture instruction to switch to the Detail tab from GoJS context menu
     this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(function() {
       // change selected tab to the "Details" tab
-      this.selectedTab = 0;
+      this.selectedRightTab = 0;
       this.changeDetectorRef.detectChanges();
     }.bind(this));
   }
@@ -72,8 +78,16 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.cancel.emit();
   }
 
+  onHidePane() {
+    this.hideRightPane.emit();
+  }
+
   onAddRadio() {
-    this.addRadionInArchitecture.emit();
+    this.addRadio.emit();
+  }
+
+  onAddAttribute() {
+    this.addAttribute.emit();
   }
 
 }
