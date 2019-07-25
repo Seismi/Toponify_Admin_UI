@@ -40,7 +40,7 @@ export class NodeService {
   constructor(private http: HttpClient) { }
 
   getNodes(queryParams?: GetNodesRequestQueryParams): Observable<NodesApiResponse> {
-    const params = this.toHttpParams(queryParams);
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<NodesApiResponse>(`/nodes`, {params: params});
   }
 
@@ -49,8 +49,8 @@ export class NodeService {
   }
 
   getNodeLinks(queryParams?: GetLinksRequestQueryParams): Observable<NodeLinksApiResponse> {
-    const params = this.toHttpParams(queryParams);
-    return this.http.get<NodeLinksApiResponse>(`/nodelinks`);
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<NodeLinksApiResponse>(`/nodelinks`, {params: params});
   }
 
   getNodeLink(id: string): Observable<NodeLinkDetailApiResponse> {
