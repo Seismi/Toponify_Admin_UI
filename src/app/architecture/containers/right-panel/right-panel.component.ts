@@ -16,7 +16,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
-  @Input() selectedRightTab = 0;
+  @Input() selectedRightTab: number;
   @Input() attributes: any;
   @Input() radio: any;
   @Input() properties: any;

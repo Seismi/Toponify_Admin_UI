@@ -175,6 +175,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(function() {
       // Show the right panel if hidden
       this.showOrHideRightPane = true;
+      this.selectedRightTab = 0;
       this.ref.detectChanges();
     }.bind(this));
 
