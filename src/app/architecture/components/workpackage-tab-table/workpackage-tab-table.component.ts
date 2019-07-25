@@ -29,9 +29,7 @@ export class WorkPackageTabTableComponent {
   selectColor = new EventEmitter<object>();
 
   onSelect(id, event) {
-    if(event.checked) {
-      this.selectWorkPackage.emit(id)
-    }
+    this.selectWorkPackage.emit(id);
   }
 
   onSelectColor(color, id) {

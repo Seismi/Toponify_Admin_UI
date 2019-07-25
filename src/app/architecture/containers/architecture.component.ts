@@ -2,15 +2,15 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
-import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
-import { LayoutDetails } from '@app/layout/store/models/layout.model';
-import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
-import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { LinkType, NodeType } from '@app/architecture/services/node.service';
 import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, UpdateLinks, UpdateNode } from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
+import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
+import { LayoutDetails } from '@app/layout/store/models/layout.model';
+import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
+import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
@@ -18,14 +18,13 @@ import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
-import { LoadWorkPackage, LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkPackage, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { State as NodeState } from '../store/reducers/architecture.reducer';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -35,8 +34,10 @@ import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.co
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { Level } from '../services/diagram-level.service';
 import { FilterService } from '../services/filter.service';
-import { State as ViewState } from '../store/reducers/architecture.reducer';
+import { SelectWorkpackage } from '../store/actions/workpackage.actions';
+import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
+import { getSelectedWorkpackages } from '../store/selectors/workpackage.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 
 
@@ -133,11 +134,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
-    this.filterServiceSubscription = this.filterService.filter.subscribe((item: any) => {
-      if (item) {
-        const { filterLevel, id } = item;
+    this.filterServiceSubscription = combineLatest(this.filterService.filter, this.nodeStore.pipe(select(getSelectedWorkpackages)))
+      .subscribe(([filter, workpackages]) => {
+      if (filter) {
+        const { filterLevel, id } = filter;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id);
+          this.setNodesLinks(filterLevel, id, workpackages);
         }
       }
     });
@@ -147,11 +149,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (layout) {
         this.subscribeForNodesLinksData();
       }
-    });
-
-
-    this.workpackageSubscription = this.workpackage$.subscribe(workpackages => {
-      debugger;
     });
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
@@ -176,11 +173,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.linksSubscription.unsubscribe();
     }
     this.layoutStoreSubscription.unsubscribe();
-    this.workpackageSubscription.unsubscribe();
   }
 
-  setNodesLinks(layer: string, id?: string) {
-
+  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
@@ -190,13 +185,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (layer === Level.map) {
       this.nodeStore.dispatch(new LoadMapView(id));
     } else {
-      // TODO: find selected workpackage id
       const queryParams = {
-        workPackageQuery: [
-          '3b0c902c-5d90-4916-8b8c-fc83a22e1f06',
-          'e341f7f0-2fbe-42ca-981c-fbd312dce946',
-          '72bb06f8-ffb1-417c-a7ca-f88770baa20e'
-        ]
+        workPackageQuery: workpackageIds
       };
       this.nodeStore.dispatch(new LoadNodes(queryParams));
       this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
@@ -458,10 +448,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkPackage(id) {
-    debugger;
     this.workpackageId = id;
-    this.workpackageStore.dispatch(new LoadWorkPackage(this.workpackageId));
-    this.workpackageStore.pipe(select(getSelectedWorkPackage));
+    this.nodeStore.dispatch(new SelectWorkpackage(this.workpackageId));
   }
 
   selectColorForWorkPackage(color, id) {
