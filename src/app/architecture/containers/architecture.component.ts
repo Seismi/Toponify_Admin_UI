@@ -62,7 +62,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   linksSubscription: Subscription;
 
   selectedNode: NodeDetail;
-  
+
   links: any[] = [];
   nodes: any[] = [];
 
@@ -474,21 +474,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onHideLeftPane() {
     this.showOrHideLeftPane = false;
+    this.diagramComponent.updateDiagramArea();
   }
 
   onOpenWorkPackageTab() {
     this.showOrHideLeftPane = true;
     this.selectedLeftTab = 0;
+    this.diagramComponent.updateDiagramArea();
   }
 
   onOpenAnalysisTab() {
     this.showOrHideLeftPane = true;
     this.selectedLeftTab = 2;
+    this.diagramComponent.updateDiagramArea();
   }
 
   onOpenEditTab() {
     this.showOrHideLeftPane = true;
     this.selectedLeftTab = 1;
+    this.diagramComponent.updateDiagramArea();
   }
 
   onAddRadio() {
@@ -519,13 +523,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   openRightTab(i) {
     this.selectedRightTab = i;
-    if(this.selectedRightTab === i) {
+    if (this.selectedRightTab === i) {
       this.showOrHideRightPane = true;
     }
+    this.diagramComponent.updateDiagramArea();
   }
 
   onHideRightPane() {
     this.showOrHideRightPane = false;
+    this.diagramComponent.updateDiagramArea();
   }
 }
 

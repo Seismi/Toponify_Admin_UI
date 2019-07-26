@@ -253,6 +253,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
   }
 
+  updateDiagramArea(): void {
+    this.diagram.requestUpdate();
+  }
+
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
