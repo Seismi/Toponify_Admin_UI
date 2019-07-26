@@ -39,6 +39,7 @@ import { State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
+import {go} from 'gojs/release/go-module';
 
 
 
@@ -62,7 +63,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   linksSubscription: Subscription;
 
   selectedNode: NodeDetail;
-  
+
   links: any[] = [];
   nodes: any[] = [];
 
@@ -191,7 +192,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  partSelected(part: any) {
+  partSelected(part: go.Part) {
     if (part && part.data) {
       this.selectedPart = part.data;
     } else {
@@ -216,13 +217,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.part = part;
 
-    // By clicking on link show only name, category and description in the right panel
-    this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-    // Load Node Details
-    this.nodeStore.dispatch((new LoadNode(this.nodeId)));
-    this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
-      this.selectedNode = nodeDetail;
-    });
+    if (part) {
+      // By clicking on link show only name, category and description in the right panel
+      this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
+      // Load Node Details
+      this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+      this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
+        this.selectedNode = nodeDetail;
+      });
+    }
   }
 
   modelChanged(event: any) {
@@ -519,7 +522,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   openRightTab(i) {
     this.selectedRightTab = i;
-    if(this.selectedRightTab === i) {
+    if (this.selectedRightTab === i) {
       this.showOrHideRightPane = true;
     }
   }
