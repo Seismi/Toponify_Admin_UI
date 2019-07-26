@@ -15,6 +15,9 @@ export class ArchitecturePaletteComponent implements OnInit {
   @ViewChild('paletteDiv')
   private paletteRef: ElementRef;
 
+  @Output()
+  updatePalette = new EventEmitter();
+
   constructor( private diagramTemplatesService: DiagramTemplatesService,
     private diagramLevelService: DiagramLevelService
   ) {
@@ -80,9 +83,6 @@ export class ArchitecturePaletteComponent implements OnInit {
       model.setDataProperty(model.modelData, option, event.checked);
     }
   }
-
-  @Output()
-  updatePalette = new EventEmitter()
 
   update() {
     this.palette.requestUpdate();

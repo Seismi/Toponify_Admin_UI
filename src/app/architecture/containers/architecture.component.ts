@@ -53,7 +53,7 @@ import { AttributeModalComponent } from '@app/attributes/containers/attribute-mo
 export class ArchitectureComponent implements OnInit, OnDestroy {
 
   @Input() attributesView = false;
-  @Input() allowMove: boolean;
+  @Input() allowMove = false;
   public selectedPart = null;
 
   showOrHideLeftPane = false;
@@ -62,7 +62,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   linksSubscription: Subscription;
 
   selectedNode: NodeDetail;
-  
+
   links: any[] = [];
   nodes: any[] = [];
 
@@ -519,7 +519,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   openRightTab(i) {
     this.selectedRightTab = i;
-    if(this.selectedRightTab === i) {
+    if (this.selectedRightTab === i) {
       this.showOrHideRightPane = true;
     }
   }
