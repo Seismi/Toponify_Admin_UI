@@ -134,7 +134,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
-    this.filterServiceSubscription = combineLatest(this.filterService.filter, this.nodeStore.pipe(select(getSelectedWorkpackages)))
+    this.filterServiceSubscription = combineLatest(
+      this.filterService.filter,
+      this.nodeStore.pipe(select(getSelectedWorkpackages)),
+      // this.layoutStore.pipe(select(getLayoutSelected))
+      )
       .subscribe(([filter, workpackages]) => {
       if (filter) {
         const { filterLevel, id } = filter;
@@ -147,7 +151,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
       this.layout = layout;
       if (layout) {
-        this.subscribeForNodesLinksData();
+        const currentLevel = this.filterService.getFilter().filterLevel;
+
+        // Reload nodes and links for new layout if not in map view
+        if (currentLevel !== Level.map) {
+          this.subscribeForNodesLinksData();
+        }
       }
     });
 
@@ -463,14 +472,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectLayout(id) {
     this.layoutStore.dispatch(new LoadLayout(id));
-
-    const currentLevel = this.filterService.getFilter().filterLevel;
-
-    // Reload nodes and links for new layout if not in map view
-    if (currentLevel !== Level.map) {
-      this.nodeStore.dispatch(new LoadNodes);
-      this.nodeStore.dispatch(new LoadNodeLinks);
-    }
   }
 
   onHideLeftPane() {
