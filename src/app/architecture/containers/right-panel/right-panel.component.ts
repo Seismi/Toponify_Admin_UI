@@ -13,6 +13,7 @@ export class RightPanelComponent {
   @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
+  @Input() selectedRightTab: number;
   @Input() attributes: any;
   @Input() radio: any;
   @Input() properties: any;
@@ -35,7 +36,14 @@ export class RightPanelComponent {
   cancel = new EventEmitter();
 
   @Output()
-  addRadionInArchitecture = new EventEmitter();
+  addRadio = new EventEmitter();
+
+  @Output()
+  addAttribute = new EventEmitter();
+
+  @Output()
+  hideRightPane = new EventEmitter();
+
 
   onSaveAttribute() {
     this.saveAttribute.emit();
@@ -53,8 +61,16 @@ export class RightPanelComponent {
     this.cancel.emit();
   }
 
+  onHidePane() {
+    this.hideRightPane.emit();
+  }
+
   onAddRadio() {
-    this.addRadionInArchitecture.emit();
+    this.addRadio.emit();
+  }
+
+  onAddAttribute() {
+    this.addAttribute.emit();
   }
 
 }

@@ -1,0 +1,25 @@
+<form [formGroup]="group">
+    <mat-form-field>
+        <mat-select placeholder="Category" formControlName="category">
+            <mat-option *ngFor="let category of categories" [value]="category">{{category}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Name" formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field>
+        <textarea matInput placeholder="Description" formControlName="description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select placeholder="Owner" formControlName="owner">
+            <mat-option [value]="owner.name" *ngFor="let owner of owners">{{owner.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Tags" formControlName="tags">
+    </mat-form-field>
+</form>
