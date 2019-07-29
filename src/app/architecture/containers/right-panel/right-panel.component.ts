@@ -15,9 +15,11 @@ export class RightPanelComponent {
   @Input() workPackageIsEditable = false;
   @Input() selectedRightTab: number;
   @Input() attributes: any;
-  @Input() radio: any;
+  @Input() relatedRadios: any;
   @Input() properties: any;
   @Input() workpackages: any;
+  @Input() objectSelected = false;
+  @Input() radio: any;
 
   constructor() { }
 
@@ -36,13 +38,16 @@ export class RightPanelComponent {
   cancel = new EventEmitter();
 
   @Output()
-  addRadio = new EventEmitter();
+  addRelatedRadio = new EventEmitter();
 
   @Output()
   addAttribute = new EventEmitter();
 
   @Output()
   hideRightPane = new EventEmitter();
+
+  @Output()
+  addRadio = new EventEmitter();
 
 
   onSaveAttribute() {
@@ -65,12 +70,16 @@ export class RightPanelComponent {
     this.hideRightPane.emit();
   }
 
-  onAddRadio() {
-    this.addRadio.emit();
+  onAddRelatedRadio() {
+    this.addRelatedRadio.emit();
   }
 
   onAddAttribute() {
     this.addAttribute.emit();
+  }
+
+  onAddRadio() {
+    this.addRadio.emit();
   }
 
 }

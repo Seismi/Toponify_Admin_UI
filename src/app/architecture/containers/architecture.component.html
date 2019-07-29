@@ -33,13 +33,11 @@
 <app-model-container [topPadding]="64">
   <smi-left-side-bar 
     *ngIf="!showOrHideLeftPane"
-    (openWorkPackageTab)="onOpenWorkPackageTab($event)"
-    (openAnalysisTab)="onOpenAnalysisTab($event)"
-    (openEditTab)="onOpenEditTab($event)"
+    (leftTab)="openLeftTab($event)"
     [workPackageIsEditable]="workPackageIsEditable">
   </smi-left-side-bar>
   <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
-    <p>
+    <p class="leftPane">
       <smi-left-panel
         [data]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -72,10 +70,14 @@
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <smi-right-sidebar data-hook="right-sidebar" *ngIf="!showOrHideRightPane" (rightTab)="openRightTab($event)">
+  <smi-right-sidebar 
+    data-hook="right-sidebar" 
+    *ngIf="!showOrHideRightPane" 
+    (rightTab)="openRightTab($event)"
+    [objectSelected]="objectSelected">
   </smi-right-sidebar>
   <app-model-sidebar [isLast]="true" [maxWidth]="600" *ngIf="showOrHideRightPane">
-    <p>
+    <p class="rightPane">
       <smi-right-panel
         [selectedRightTab]="selectedRightTab"
         [group]="objectDetailsForm"
@@ -86,14 +88,17 @@
         (saveAttribute)="onSaveObjectDetails($event)"
         (deleteAttribute)="onDeleteAttribute($event)"
         [attributes]="selectedNode?.attributes"
-        [radio]="selectedNode?.relatedRadios"
+        [relatedRadios]="selectedNode?.relatedRadios"
+        [radio]="radio$ | async"
         [properties]="selectedNode?.customPropertyValues"
         [workpackages]="selectedNode?.relatedWorkPackages"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
         (addAttribute)="onAddAttribute($event)"
-        (addRadio)="onAddRadio($event)"
+        (addRelatedRadio)="onAddRelatedRadio($event)"
         (hideRightPane)="onHideRightPane()"
+        [objectSelected]="objectSelected"
+        (addRadio)="onAddRadio()"
     >
     </smi-right-panel>
   </app-model-sidebar>

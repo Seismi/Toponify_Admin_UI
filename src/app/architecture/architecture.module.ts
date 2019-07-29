@@ -45,6 +45,7 @@ import { AttributeModalComponent } from '@app/attributes/containers/attribute-mo
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeEffects } from './store/effects/node.effects';
+import { RadioTableInArchitectureComponent } from './components/radio-table/radio-table.component';
 
 
 @NgModule({
@@ -103,7 +104,8 @@ import { NodeEffects } from './store/effects/node.effects';
       AttributeModalComponent,
       AttributeDetailComponent,
       RightSideBarComponent,
-      LeftSideBarComponent
+      LeftSideBarComponent,
+      RadioTableInArchitectureComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent, AttributeModalComponent],
     providers: [

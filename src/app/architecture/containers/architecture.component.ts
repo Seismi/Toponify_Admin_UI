@@ -12,7 +12,7 @@ import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
@@ -39,6 +39,9 @@ import { State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
+import { go } from 'gojs/release/go-module';
+import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 
 
 
@@ -69,6 +72,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
+  radio$: Observable<RadioEntity[]>;
   scopeDetails$: Observable<ScopeDetails>;
   mapView: boolean;
   viewLevel$: Observable<number>;
@@ -79,7 +83,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditLayouts: string;
   attributeSubscription: Subscription;
   clickedOnLink = false;
-  objectSelected = true;
+  objectSelected = false;
   isEditable = false;
   nodeId: string;
   allowEditWorkPackages: string;
@@ -131,6 +135,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
+
+    // RADIO
+    this.radioStore.dispatch(new LoadRadios({}));
+    this.radio$ = this.radioStore.pipe(select(getRadioEntities));
+
 
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
@@ -191,7 +200,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  partSelected(part: any) {
+  partSelected(part: go.Part) {
     if (part && part.data) {
       this.selectedPart = part.data;
     } else {
@@ -215,6 +224,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodeId = this.selectedPart.id;
 
     this.part = part;
+
+    if(part) {
+      this.objectSelected = true;
+    } else {
+      this.objectSelected = false;
+    }
 
     // By clicking on link show only name, category and description in the right panel
     this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
@@ -472,26 +487,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
+  openLeftTab(i) {
+    this.selectedLeftTab = i;
+    if(this.selectedLeftTab === i) {
+      this.showOrHideLeftPane = true;
+    }
+  }
+
   onHideLeftPane() {
     this.showOrHideLeftPane = false;
   }
 
-  onOpenWorkPackageTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 0;
-  }
-
-  onOpenAnalysisTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 2;
-  }
-
-  onOpenEditTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 1;
-  }
-
-  onAddRadio() {
+  onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '500px'
@@ -527,5 +534,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onHideRightPane() {
     this.showOrHideRightPane = false;
   }
+
+  onAddRadio() {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.radio) {
+        this.store.dispatch(new AddRadioEntity({
+          data: {
+            title: data.radio.title,
+            description: data.radio.description,
+            status: data.radio.status,
+            category: data.radio.category,
+            author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' }
+          }
+        }));
+      }
+    });
+  }
+
+  
 }
 

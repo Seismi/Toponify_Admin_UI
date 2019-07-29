@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
   selector: 'smi-right-sidebar',
@@ -7,7 +7,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 })
 export class RightSideBarComponent {
 
-  tabs = ['Details', 'Attributes', 'Properties', 'RADIO', 'Work Packages']
+  @Input() objectSelected = false;
 
   @Output()
   rightTab = new EventEmitter();
