@@ -42,7 +42,6 @@ import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
-import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.component';
 
 
 @NgModule({
@@ -98,8 +97,7 @@ import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.c
       DeleteLinkModalComponent,
       WorkPackageTabTableComponent,
       WorkPackageColorComponent,
-      LayerPipe,
-      LeftSideBarComponent
+      LayerPipe
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent],
     providers: [

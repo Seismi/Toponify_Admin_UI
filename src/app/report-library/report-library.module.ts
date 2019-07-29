@@ -29,7 +29,6 @@ import { ReportDataSetTableComponent } from './components/data-set-table/data-se
 import { ReportOwnersTableComponent } from './components/owners-table/owners-table.component';
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
-import { LeftSideBarComponent } from './components/left-sidebar/left-sidebar.component';
 
 @NgModule({
   imports: [
@@ -61,8 +60,7 @@ import { LeftSideBarComponent } from './components/left-sidebar/left-sidebar.com
     ReportDataSetTableComponent,
     ReportOwnersTableComponent,
     ReportDimensionsTableComponent,
-    ReportReportingConceptsTableComponent,
-    LeftSideBarComponent
+    ReportReportingConceptsTableComponent
   ],
   providers: [ReportService],
 })
