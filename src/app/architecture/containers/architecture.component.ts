@@ -62,7 +62,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   linksSubscription: Subscription;
 
   selectedNode: NodeDetail;
-  
+
   links: any[] = [];
   nodes: any[] = [];
 
@@ -284,8 +284,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     (this.workPackageIsEditable === true)
       ? this.allowEditWorkPackages = 'close'
       : this.allowEditWorkPackages = 'edit';
-
-    this.leftPanelComponent.onUpdatePalette();
   }
 
   allowEditLayout() {

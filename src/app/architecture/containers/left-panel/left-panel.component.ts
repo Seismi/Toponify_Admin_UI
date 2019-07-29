@@ -26,9 +26,6 @@ export class LeftPanelComponent {
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
 
-  // Update left pelette after showing EDIT tab
-  onUpdatePalette() { }
-
   displayOptionsChanged({event, option}: {event: any, option: string}) {
     this.displayOptionsChangedEvent.emit({event, option});
     this.paletteComponent.updateDisplayOptions(event, option);
