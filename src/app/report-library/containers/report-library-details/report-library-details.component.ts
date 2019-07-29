@@ -21,6 +21,9 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
   report: Report;
+  reportSelected: boolean;
+  selectedRightTab: number;
+  showOrHideRightPane = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,10 +42,12 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       if(report) {
         this.reportLibraryDetailService.reportDetailForm.patchValue({
           name: report.name,
-          description: report.description,
+          description: report.description
         });
       }
     }));
+    
+    this.reportSelected = true;
   }
 
   ngOnDestroy(): void {
@@ -53,4 +58,14 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     return this.reportLibraryDetailService.reportDetailForm;
   }
 
+  openRightTab(i) {
+    this.selectedRightTab = i;
+    if(this.selectedRightTab === i) {
+      this.showOrHideRightPane = true;
+    }
+  }
+
+  onHideRightPane() {
+    this.showOrHideRightPane = false;
+  }
 }
