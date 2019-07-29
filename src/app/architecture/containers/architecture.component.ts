@@ -39,6 +39,7 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { getSelectedWorkpackages } from '../store/selectors/workpackage.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 
 
@@ -52,6 +53,10 @@ import { AttributeModalComponent } from '@app/attributes/containers/attribute-mo
 })
 
 export class ArchitectureComponent implements OnInit, OnDestroy {
+
+  private zoomRef;
+  private showHideGridRef;
+  private showDetailTabRef;
 
   @Input() attributesView = false;
   @Input() allowMove: boolean;
@@ -113,7 +118,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog,
     public filterService: FilterService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    public gojsCustomObjectsService: GojsCustomObjectsService
   ) {
     // If filterLevel not set, ensure to set it.
     const filter = this.filterService.getFilter();
@@ -162,6 +168,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.zoomRef = this.gojsCustomObjectsService.zoom$.subscribe(function(zoomType: 'In' | 'Out') {
+      if (zoomType === 'In') {
+        this.onZoomIn();
+      } else {
+        this.onZoomOut();
+      }
+    }.bind(this));
+
+    this.showHideGridRef = this.gojsCustomObjectsService.showHideGrid$.subscribe(
+      function() {
+        this.onShowGrid();
+        this.ref.detectChanges();
+      }.bind(this));
+
+    // Observable to capture instruction to switch to the Detail tab from GoJS context menu
+    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(function() {
+      // Show the right panel if hidden
+      this.showOrHideRightPane = true;
+      this.selectedRightTab = 0;
+      this.ref.detectChanges();
+    }.bind(this));
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -524,7 +552,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   openRightTab(i) {
     this.selectedRightTab = i;
-    if(this.selectedRightTab === i) {
+    if (this.selectedRightTab === i) {
       this.showOrHideRightPane = true;
     }
   }
