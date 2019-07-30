@@ -67,4 +67,5 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   onSaveAttribute() {
     this.isEditable = false;
   }
+  
 }
