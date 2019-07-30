@@ -59,7 +59,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
   @Input() attributesView = false;
-  @Input() allowMove: boolean;
+  @Input() allowMove = false;
   public selectedPart = null;
 
   showOrHideLeftPane = false;
