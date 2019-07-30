@@ -23,6 +23,22 @@ export const initialState: State = {
 export function reducer(state = initialState, action: WorkPackageActionsUnion): State {
   switch (action.type) {
 
+    case WorkPackageActionTypes.SetWorkpackageDisplayColour: {
+      const { workpackageId, colour} = action.payload;
+      return {
+        ...state,
+        entities: state.entities.map(item => {
+          if (item.id === workpackageId) {
+            return {
+              ...item,
+              displayColour: colour
+            };
+          }
+          return item;
+        })
+      };
+    }
+
     case WorkPackageActionTypes.LoadWorkPackages: {
       return {
         ...state,

@@ -18,7 +18,7 @@ import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages, SetWorkpackageDisplayColour } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -492,9 +492,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodeStore.dispatch(new SelectWorkpackage(this.workpackageId));
   }
 
-  selectColorForWorkPackage(color, id) {
-    // TODO: add color into store for provided workpackage.
-    console.log(color, id);
+  selectColorForWorkPackage(data: {color: string, id: string}) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id}));
   }
 
   onSelectScope(id) {

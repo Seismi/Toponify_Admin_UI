@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity } from '../models/workpackage.models';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
+  WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity } from '../models/workpackage.models';
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -18,6 +19,7 @@ export enum WorkPackageActionTypes {
   DeleteWorkPackage = '[WorkPackage] Delete WorkPackage entity',
   DeleteWorkPackageSuccess = '[WorkPackage] Delete WorkPackage entity Success',
   DeleteWorkPackageFailure = '[WorkPackage] Delete WorkPackage entity Failure',
+  SetWorkpackageDisplayColour = '[WorkPackage] Set Display Colour',
 }
 
 export class LoadWorkPackages implements Action {
@@ -95,6 +97,11 @@ export class DeleteWorkPackageEntityFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class SetWorkpackageDisplayColour implements Action {
+  readonly type = WorkPackageActionTypes.SetWorkpackageDisplayColour;
+  constructor(public payload: {colour: string, workpackageId: string}) { }
+}
+
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
@@ -110,4 +117,5 @@ export type WorkPackageActionsUnion =
   | UpdateWorkPackageEntityFailure
   | DeleteWorkPackageEntity
   | DeleteWorkPackageEntitySuccess
-  | DeleteWorkPackageEntityFailure;
+  | DeleteWorkPackageEntityFailure
+  | SetWorkpackageDisplayColour;
