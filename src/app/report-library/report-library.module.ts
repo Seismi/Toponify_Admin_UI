@@ -11,7 +11,8 @@ import {
   MatSortModule, 
   MatInputModule,
   MatTabsModule,
-  MatFormFieldModule
+  MatFormFieldModule,
+  MatIconModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -44,6 +45,7 @@ import { ReportReportingConceptsTableComponent } from './components/reporting-co
     MatSortModule,
     MatTabsModule,
     MatInputModule,
+    MatIconModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
