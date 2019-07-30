@@ -6,6 +6,7 @@ import {updateShapeShadows, CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
 import { Level, DiagramLevelService } from './diagram-level.service';
 import {GojsCustomObjectsService} from './gojs-custom-objects.service';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 
 const $ = go.GraphObject.make;
 
@@ -17,7 +18,8 @@ export class DiagramTemplatesService {
   constructor(
     public filterService: FilterService,
     public diagramLevelService: DiagramLevelService,
-    public gojsCustomObjectsService: GojsCustomObjectsService
+    public gojsCustomObjectsService: GojsCustomObjectsService,
+    public diagramChangesService: DiagramChangesService
   ) {}
 
   // Get item template for list of node children
@@ -46,7 +48,38 @@ export class DiagramTemplatesService {
     );
   }
 
-  getSystemNodeTemplate() {
+  // Get button for revealing the next level of dependencies
+  getDependencyExpandButton() {
+    return $('Button',
+      {
+        alignment: go.Spot.TopRight,
+        desiredSize: new go.Size(20, 20),
+        click: function(event, button) {
+          const node = button.part;
+          this.diagramChangesService.showDependencies(node);
+        }.bind(this)
+      },
+      $(go.TextBlock,
+        '+',
+        {
+          alignment: go.Spot.Center,
+          font: 'bold 18px calibri',
+          desiredSize: new go.Size(20, 20),
+          textAlign: 'center',
+          verticalAlignment: go.Spot.Center
+        }
+      ),
+      // Only show button for nodes with hidden dependent nodes
+      new go.Binding('visible', '', function(node) {
+        const connectedNodes = node.findNodesConnected();
+        return connectedNodes.any(function(connectedNode) {
+          return !connectedNode.visible;
+        });
+      }).ofObject()
+    );
+  }
+
+  getSystemNodeTemplate(forPalette: boolean = false) {
 
     return $(
       go.Node,
@@ -62,9 +95,11 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
@@ -116,6 +151,7 @@ export class DiagramTemplatesService {
           minSize: new go.Size(100, 100),
           margin: 5
         },
+        this.getDependencyExpandButton(),
         // System name
         $(go.TextBlock,
           {
@@ -212,7 +248,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  getDataSetNodeTemplate() {
+  getDataSetNodeTemplate(forPalette: boolean = false) {
 
     // Template for Data Set
     return $(
@@ -229,9 +265,11 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -257,6 +295,7 @@ export class DiagramTemplatesService {
           minSize: new go.Size(100, 100),
           margin: 5
         },
+        this.getDependencyExpandButton(),
         $(go.TextBlock,
           {
             alignment: go.Spot.TopRight,
@@ -274,6 +313,12 @@ export class DiagramTemplatesService {
                 // Physical data set
                 return '';
               }
+            }
+          ),
+          new go.Binding('visible',
+            'category',
+            function(category) {
+              return category !== nodeCategories.physical;
             }
           )
         ),
@@ -371,7 +416,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  getDimensionNodeTemplate() {
+  getDimensionNodeTemplate(forPalette: boolean = false) {
 
     // Template for dimension
     return $(
@@ -386,9 +431,11 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       this.filterService.getFilter().level === Level.map ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -430,6 +477,7 @@ export class DiagramTemplatesService {
           minSize: new go.Size(100, 100),
           margin: 5
         },
+        this.getDependencyExpandButton(),
         $(go.TextBlock,
           {
             alignment: go.Spot.TopRight,
@@ -534,7 +582,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  getReportingConceptNodeTemplate() {
+  getReportingConceptNodeTemplate(forPalette: boolean = false) {
 
     // Template for reporting concept nodes
     return $(
@@ -548,11 +596,11 @@ export class DiagramTemplatesService {
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
-        // TEMP
-        isLayoutPositioned: true
+        locationSpot: go.Spot.Top
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -600,6 +648,7 @@ export class DiagramTemplatesService {
             }
           }
         ),
+        this.getDependencyExpandButton(),
         // Reporting concept name
         $(go.TextBlock,
           {
@@ -732,12 +781,12 @@ export class DiagramTemplatesService {
         relinkableTo: true,
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
-        doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+        doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly
         locationSpot: go.Spot.TopCenter,
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
         // Correct locationSpot on selection highlight adornment when link in palette
         selectionAdornmentTemplate: $(go.Adornment, 'Link', {
             locationSpot: new go.Spot(0.5, 0, 1, 0)
@@ -746,7 +795,9 @@ export class DiagramTemplatesService {
             isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
           })
         )
-      } : {},
+      } : { // Enable context menu for links not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      },
       $(go.Shape, {
           isPanelMain: true,
           stroke: 'black',
@@ -833,7 +884,6 @@ export class DiagramTemplatesService {
         // contextMenu: PartContextMenu,
         fromEndSegmentLength: 20,
         toEndSegmentLength: 20,
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
         // Position by layout in palette
         isLayoutPositioned: forPalette
       },
@@ -848,7 +898,9 @@ export class DiagramTemplatesService {
             isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
           })
         )
-      } : {},
+      } : { // Enable context menu for links not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
+      },
       $(go.Shape, {
           isPanelMain: true,
           stroke: 'Black',
