@@ -29,6 +29,7 @@ export enum NodeActionTypes {
 
 export class LoadNodes implements Action {
   readonly type = NodeActionTypes.LoadNodes;
+  constructor(public payload?: any) { }
 }
 
 export class LoadNodesSuccess implements Action {
@@ -73,6 +74,7 @@ export class LoadNodeFailure implements Action {
 
 export class LoadNodeLinks implements Action {
   readonly type = NodeActionTypes.LoadNodeLinks;
+  constructor(public payload?: any) { }
 }
 
 export class LoadNodeLinksSuccess implements Action {
