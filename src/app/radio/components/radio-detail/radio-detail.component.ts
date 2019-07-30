@@ -14,6 +14,7 @@ export class RadioDetailComponent {
   @Input() isEditable = false;
   @Input() disableButton = true;
   @Input() modalMode = false;
+  @Input() targetName = false;
 
   categories = ['risk', 'assumption', 'dependency', 'issue', 'opportunity'];
   status = ['open', 'closed'];
