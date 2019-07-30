@@ -1,5 +1,5 @@
 <div>
-    <span (click)="openWorkPackage()">Work Packages</span>
-    <span *ngIf="workPackageIsEditable" (click)="openEdit()">Edit</span>
-    <span (click)="openAnalysis()">Analysis</span>
+    <span (click)="onOpenLeftTab(0)">Work Packages</span>
+    <span (click)="onOpenLeftTab(1)" *ngIf="workPackageIsEditable">Edit</span>
+    <span (click)="onOpenLeftTab(2)" *ngIf="!hideTab">Analysis</span>
 </div>

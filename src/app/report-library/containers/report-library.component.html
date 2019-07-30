@@ -8,10 +8,10 @@
 </app-base-header>
 
 <app-model-container [topPadding]="64">
-    <smi-left-sidebar (openTab)="onOpenTab($event)" *ngIf="!showOrHidePane"></smi-left-sidebar>
+    <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="hideTab" *ngIf="!showOrHidePane"></smi-left-sidebar>
     <app-model-sidebar [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
         <p>
-            <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedTab">
+            <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
                 <mat-tab label="Work Packages">
                     <smi-workpackage-tab-table
                         [data]="workpackage$ | async">

@@ -471,13 +471,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  onHideLeftPane() {
-    this.showOrHideLeftPane = false;
+  openLeftTab(i) {
+    this.selectedLeftTab = i;
+    if(this.selectedLeftTab === i) {
+      this.showOrHideLeftPane = true;
+    }
   }
 
-  onOpenWorkPackageTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 0;
+  onHideLeftPane() {
+    this.showOrHideLeftPane = false;
   }
 
   addRadionInArchitecture() {
@@ -500,16 +502,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }));
       }
     });
-  }
-
-  onOpenAnalysisTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 2;
-  }
-
-  onOpenEditTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 1;
   }
 }
 
