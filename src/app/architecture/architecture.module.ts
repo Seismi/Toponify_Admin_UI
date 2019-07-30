@@ -45,6 +45,8 @@ import { AttributeModalComponent } from '@app/attributes/containers/attribute-mo
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeEffects } from './store/effects/node.effects';
+import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
+import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 
 
 @NgModule({
@@ -80,7 +82,7 @@ import { NodeEffects } from './store/effects/node.effects';
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
   ],
-    exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent],
+    exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
     declarations: [
       ArchitectureRoutingComponent,
       ArchitectureComponent,
@@ -103,7 +105,9 @@ import { NodeEffects } from './store/effects/node.effects';
       AttributeModalComponent,
       AttributeDetailComponent,
       RightSideBarComponent,
-      LeftSideBarComponent
+      LeftSideBarComponent,
+      CategoryTableComponent,
+      TableCollapseComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent, AttributeModalComponent],
     providers: [

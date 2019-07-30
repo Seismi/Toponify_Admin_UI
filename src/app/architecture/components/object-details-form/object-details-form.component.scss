@@ -3,6 +3,7 @@ form {
     padding: 5px 10px;
     font-size: 14px;
     margin-top: 10px;
+    width: 300px;
 }
 
 label {
@@ -22,10 +23,10 @@ textarea {
     background-color: #f9f9f9;
 }
 
-input[readonly]{
+input[readonly] {
     background-color: #f9f9f9;
 }
 
-button:nth-child(2){
+button:nth-child(2) {
     margin-left: 10px;
 }

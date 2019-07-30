@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CoreModule } from '@app/core/core.module';
 import { RouterModule } from '@angular/router';
 import { AttributesRoutingModule } from './attributes-router.module';
-import { AttributesComponent } from './containers/attributes.component';
+import { AttributesComponent } from './containers/attributes/attributes.component';
 import { AttributesRoutingComponent } from './containers/attributes-router.component';
 import { CategoryTableComponent } from './components/category-table/category-table.component';
 import { TableCollapseComponent } from './components/category-table/table-collapse/table-collapse.component';
@@ -19,6 +19,7 @@ import { reducer } from './store/reducers/attributes.reducer';
 import { ArchitectureModule } from '@app/architecture/architecture.module';
 import { AttributeDetailComponent } from './components/attribute-detail/attribute-detail.component';
 import { AttributeModalComponent } from './containers/attribute-modal/attribute-modal.component';
+import { AttributeDetailsComponent } from './containers/attribute-details/attribute-details.component';
 
 @NgModule({
   imports: [
@@ -39,8 +40,7 @@ import { AttributeModalComponent } from './containers/attribute-modal/attribute-
   declarations: [
     AttributesComponent,
     AttributesRoutingComponent,
-    //AttributeDetailComponent,
-    //AttributeModalComponent
+    AttributeDetailsComponent
   ],
   entryComponents: [AttributeModalComponent],
   providers: [
