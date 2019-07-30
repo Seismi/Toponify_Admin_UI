@@ -462,6 +462,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   selectColorForWorkPackage(color, id) {
+    // TODO: add color into store for provided workpackage.
     console.log(color, id);
   }
 
