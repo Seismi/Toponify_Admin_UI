@@ -1,13 +1,9 @@
 .container {
     max-width: 100%;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 .col {
     padding: 0;
     margin: 0;
-}
-
-.right-side {
-    max-width: 300px;
 }

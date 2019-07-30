@@ -3,9 +3,6 @@ import { Subscription, Observable } from 'rxjs';
 import { AttributeEntity } from '../../store/models/attributes.model';
 import { State as AttributeState } from '../../store/reducers/attributes.reducer';
 import { Store, select } from '@ngrx/store';
-import { ObjectDetailsValidatorService } from '@app/architecture/components/object-details-form/services/object-details-form-validator.service';
-import { ObjectDetailsService } from '@app/architecture/components/object-details-form/services/object-details-form.service';
-import { FormGroup } from '@angular/forms';
 import { LoadAttributes } from '../../store/actions/attributes.actions';
 import * as fromAttributeEntities from '../../store/selectors/attributes.selector';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
@@ -17,22 +14,17 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'smi-attributes',
     templateUrl: 'attributes.component.html',
-    styleUrls: ['attributes.component.scss'],
-    providers: [ObjectDetailsValidatorService, ObjectDetailsService],
+    styleUrls: ['attributes.component.scss']
 })
 export class AttributesComponent implements OnInit {
 
     attributes: Subscription;
     attribute: AttributeEntity[];
     workpackage$: Observable<WorkPackageEntity[]>;
-    isEditable = false;
-    objectSelected = true;
-    workPackageIsEditable = false;
 
     constructor(
-        private store: Store<AttributeState>, 
+        private store: Store<AttributeState>,
         private workPackageStore: Store<WorkPackageState>,
-        private objectDetailsService: ObjectDetailsService,
         private router: Router) { }
 
     ngOnInit() {
@@ -51,24 +43,7 @@ export class AttributesComponent implements OnInit {
         return this.attribute;
     }
 
-    get objectDetailsForm(): FormGroup {
-        return this.objectDetailsService.objectDetailsForm;
-    }
-
     onSelectAttribute(entry) {
         this.router.navigate(['/attributes-and-rules', entry.id])
     }
-
-    onEditDetails() {
-        this.isEditable = true;
-    }
-
-    onCancelEdit() {
-        this.isEditable = false;
-    }
-
-    onSaveAttribute() {
-        this.isEditable = false;
-    }
-
 }
