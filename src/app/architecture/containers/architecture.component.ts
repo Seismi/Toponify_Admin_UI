@@ -41,6 +41,7 @@ import { getSelectedWorkpackages } from '../store/selectors/workpackage.selector
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
+import {go} from 'gojs/release/go-module';
 
 
 
@@ -233,7 +234,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  partSelected(part: any) {
+  partSelected(part: go.Part) {
     if (part && part.data) {
       this.selectedPart = part.data;
     } else {
@@ -258,13 +259,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.part = part;
 
-    // By clicking on link show only name, category and description in the right panel
-    this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-    // Load Node Details
-    this.nodeStore.dispatch((new LoadNode(this.nodeId)));
-    this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
-      this.selectedNode = nodeDetail;
-    });
+    if (part) {
+      // By clicking on link show only name, category and description in the right panel
+      this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
+      // Load Node Details
+      this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+      this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
+        this.selectedNode = nodeDetail;
+      });
+    }
   }
 
   modelChanged(event: any) {
