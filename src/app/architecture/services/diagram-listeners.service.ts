@@ -11,7 +11,7 @@ const $ = go.GraphObject.make;
 export class DiagramListenersService {
 
   private nodeSelectedSource = new Subject();
-  public nodeSelected$ = this.nodeSelectedSource.asObservable();
+  public partsSelected$ = this.nodeSelectedSource.asObservable();
 
   private modelChangedSource = new Subject();
   public modelChanged$ = this.modelChangedSource.asObservable();
@@ -86,8 +86,8 @@ export class DiagramListenersService {
   }
 
   handleChangedSelection(event: go.DiagramEvent) {
-    const node = event.diagram.selection.first();
-    this.nodeSelectedSource.next(node);
+    const parts = event.diagram.selection.toArray();
+    this.nodeSelectedSource.next(parts);
   }
 
   handleModelChange(event: go.ChangedEvent) {

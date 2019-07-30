@@ -11,16 +11,10 @@ import {DiagramLevelService} from '../../services/diagram-level.service';
 })
 export class ArchitecturePaletteComponent implements OnInit {
 
-  @Output()
-  updatePalette = new EventEmitter();
-
   private palette: go.Palette;
 
   @ViewChild('paletteDiv')
   private paletteRef: ElementRef;
-
-  @Output()
-  updatePalette = new EventEmitter();
 
   constructor( private diagramTemplatesService: DiagramTemplatesService,
     private diagramLevelService: DiagramLevelService
@@ -86,11 +80,6 @@ export class ArchitecturePaletteComponent implements OnInit {
     if (option === 'dataLinks' || option === 'masterDataLinks') {
       model.setDataProperty(model.modelData, option, event.checked);
     }
-  }
-
-  update() {
-    this.palette.requestUpdate();
-    this.updatePalette.emit();
   }
 
   ngOnInit() {

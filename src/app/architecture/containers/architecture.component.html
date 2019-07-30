@@ -16,7 +16,7 @@
   </app-toolbar-column>
   <app-toolbar-column>
     <smi-quicklinks-actions
-      [gojsView]="true" 
+      [gojsView]="true"
       [allowEditLayouts]="allowEditLayouts"
       [allowEditWorkPackages]="allowEditWorkPackages"
       [workpackages]="workpackage$ | async"
@@ -31,7 +31,7 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-side-bar 
+  <smi-left-side-bar
     *ngIf="!showOrHideLeftPane"
     (openWorkPackageTab)="onOpenWorkPackageTab($event)"
     (openAnalysisTab)="onOpenAnalysisTab($event)"
@@ -65,7 +65,7 @@
         [workpackageDetail]="workpackageDetail"
         [selectedWorkPackages]= "selectedWorkPackages$ | async"
         [viewLevel]="viewLevel$ | async"
-        (nodeSelected)="partSelected($event)"
+        (partsSelected)="partsSelected($event)"
         (modelChanged)="modelChanged($event)"
         (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
         (linkDeleteRequested)="handleLinkDeleteRequested($event)"
