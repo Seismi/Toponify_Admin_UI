@@ -76,7 +76,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   @Input() showGrid: boolean;
 
-  @Input() allowMove: boolean;
+  @Input() allowMove = false;
+
+  @Input() workPackageIsEditable = false;
 
   @Output()
   nodeSelected = new EventEmitter();
@@ -294,6 +296,45 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     if (changes.allowMove) {
       this.diagram.allowMove = this.allowMove;
       this.diagram.allowDelete = this.allowMove;
+      this.diagram.toolManager.linkReshapingTool.isEnabled = this.allowMove;
+      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(
+        function(tool) {return tool.name === 'LinkShifting'; }
+      );
+      linkShiftingTool.isEnabled = this.allowMove;
+
+      // Handle changes tool-related adornments if a link is selected
+      this.diagram.selection.each(function(part) {
+
+        // Remove tool-related adornments from selected link (if any) for disabled tools
+        if (!linkShiftingTool.isEnabled) {
+          part.removeAdornment('LinkShiftingFrom');
+          part.removeAdornment('LinkShiftingTo');
+        }
+        if (!part.diagram.toolManager.linkReshapingTool.isEnabled) {
+          part.removeAdornment('LinkReshaping');
+        }
+
+        // Add tool-related adornments to selected link (if any) for enabled tools
+        part.updateAdornments();
+      });
+    }
+
+    if (changes.workPackageIsEditable) {
+
+      const toolManager = this.diagram.toolManager;
+      toolManager.relinkingTool.isEnabled = this.workPackageIsEditable;
+
+      this.diagram.selection.each(function(part) {
+
+        // Remove tool-related adornments from selected link (if any) for disabled tools
+        if (!toolManager.relinkingTool.isEnabled) {
+          part.removeAdornment('RelinkFrom');
+          part.removeAdornment('RelinkTo');
+        }
+
+        // Add tool-related adornments to selected link (if any) for enabled tools
+        part.updateAdornments();
+      });
     }
 
     if (

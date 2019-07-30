@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 import {updateShapeShadows, CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
 import { Level, DiagramLevelService } from './diagram-level.service';
+import {GojsCustomObjectsService} from './gojs-custom-objects.service';
 
 const $ = go.GraphObject.make;
 
@@ -13,10 +14,10 @@ updateShapeShadows();
 
 @Injectable()
 export class DiagramTemplatesService {
-
   constructor(
     public filterService: FilterService,
-    public diagramLevelService: DiagramLevelService
+    public diagramLevelService: DiagramLevelService,
+    public gojsCustomObjectsService: GojsCustomObjectsService
   ) {}
 
   // Get item template for list of node children
@@ -61,7 +62,8 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
@@ -227,7 +229,8 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
@@ -383,7 +386,8 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       },
       // Have the diagram position the node if no location set
       this.filterService.getFilter().level === Level.map ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
@@ -545,6 +549,7 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
         // TEMP
         isLayoutPositioned: true
       },
@@ -728,8 +733,7 @@ export class DiagramTemplatesService {
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
         doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
-        // TEMP
-        isLayoutPositioned: true
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly
@@ -829,8 +833,9 @@ export class DiagramTemplatesService {
         // contextMenu: PartContextMenu,
         fromEndSegmentLength: 20,
         toEndSegmentLength: 20,
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
         // Position by layout in palette
-        isLayoutPositioned: true // forPalette
+        isLayoutPositioned: forPalette
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly

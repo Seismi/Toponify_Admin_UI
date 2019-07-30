@@ -3,6 +3,7 @@ import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import { NodeLink } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 import { NodeDetail, Node, Error } from '../models/node.model';
+import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 
 export interface State {
   zoomLevel: number;
@@ -12,6 +13,7 @@ export interface State {
   selectedNodeLink: NodeLink;
   links: NodeLink[];
   error: Error;
+  selectedWorkpackages: string[];
 }
 
 export const initialState: State = {
@@ -21,11 +23,22 @@ export const initialState: State = {
   selectedNode: null,
   selectedNodeLink: null,
   links: null,
-  error: null
+  error: null,
+  selectedWorkpackages: []
 };
 
-export function reducer(state = initialState, action: ViewActionsUnion | NodeActionsUnion): State {
+export function reducer(state = initialState, action: ViewActionsUnion | NodeActionsUnion | WorkpackageActionsUnion): State {
   switch (action.type) {
+
+    case WorkpackageActionTypes.SelectWorkpackage: {
+      return {
+        ...state,
+        selectedWorkpackages: state.selectedWorkpackages.includes(action.payload)
+          ? state.selectedWorkpackages.filter(id => id !== action.payload)
+          : [...state.selectedWorkpackages, action.payload]
+      };
+    }
+
     case ViewActionTypes.ViewModel: {
       return {
         ...state,

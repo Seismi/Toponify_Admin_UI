@@ -58,6 +58,7 @@
         [mapView]="mapView"
         [showGrid]="showGrid"
         [allowMove]="allowMove"
+        [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
         [nodes]="nodes | layer:{byId: true}"
         [links]="links | layer:{byId: false}"
