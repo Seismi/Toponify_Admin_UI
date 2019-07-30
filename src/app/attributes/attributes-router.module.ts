@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AttributesComponent } from './containers/attributes.component';
-import { AttributesRoutingComponent } from './containers/attributes-router.component';
+import { AttributesComponent } from './containers/attributes/attributes.component';
+import { AttributeDetailsComponent } from './containers/attribute-details/attribute-details.component';
 
 export const attributesRoutes: Routes = [
   {
     path: '',
-    component: AttributesRoutingComponent,
+    component: AttributesComponent,
     children: [
       {
-        path: '',
-        component: AttributesComponent
+        path: ':attributeId',
+        component: AttributeDetailsComponent
       }
     ]
   }
