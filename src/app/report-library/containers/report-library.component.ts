@@ -53,7 +53,7 @@ export class ReportLibraryComponent implements OnInit {
     }
   }
 
-  hidePane() {
+  hideLeftPane() {
     this.showOrHidePane = false;
   }
   

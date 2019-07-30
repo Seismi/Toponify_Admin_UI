@@ -1,11 +1,11 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-// import { DeleteNode, LoadNodeDescendants, VersionNodeActionTypes } from '@app/nodes/store/actions/node.actions';
+// import { DeleteNode, LoadNodeDescendants, VersionNodeActionTypes } from '@app/architecture/store/actions/node.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { State as NodeState } from '../../../nodes/store/reducers/node.reducer';
-import { NodeType } from '@app/nodes/services/node.service';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { NodeType } from '@app/architecture/services/node.service';
 
 @Component({
   selector: 'smi-delete-node-modal',

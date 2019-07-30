@@ -10,13 +10,15 @@ import { CategoryTableComponent } from './components/category-table/category-tab
 import { TableCollapseComponent } from './components/category-table/table-collapse/table-collapse.component';
 import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatSnackBarModule } from '@angular/material';
+  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatSnackBarModule, MatSelectModule } from '@angular/material';
 import { AttributeService } from './services/attributes.service';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { AttributeEffects } from './store/effects/attributes.effects';
 import { reducer } from './store/reducers/attributes.reducer';
 import { ArchitectureModule } from '@app/architecture/architecture.module';
+import { AttributeDetailComponent } from './components/attribute-detail/attribute-detail.component';
+import { AttributeModalComponent } from './containers/attribute-modal/attribute-modal.component';
 
 @NgModule({
   imports: [
@@ -29,7 +31,7 @@ import { ArchitectureModule } from '@app/architecture/architecture.module';
     ArchitectureModule,
     MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-    MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatSnackBarModule,
+    MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatSnackBarModule, MatSelectModule,
     StoreModule.forFeature('attributesFeature', reducer),
     EffectsModule.forFeature([ AttributeEffects ])
   ],
@@ -38,6 +40,7 @@ import { ArchitectureModule } from '@app/architecture/architecture.module';
     AttributesComponent,
     AttributesRoutingComponent
   ],
+  entryComponents: [AttributeModalComponent],
   providers: [
     AttributeService
   ],

@@ -132,7 +132,7 @@ export class AttributesComponent implements OnInit {
         }
       }
     
-      hidePane() {
+      hideLeftPane() {
         this.showOrHidePane = false;
       }
 }

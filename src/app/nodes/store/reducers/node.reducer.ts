@@ -2,6 +2,8 @@ import { Node, Error, NodeDetail } from '../models/node.model';
 import { NodeLink } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 
+// TODO: node store should be moved under architecture module.
+
 export interface State {
   entities: Node[];
   selectedNode: NodeDetail;
