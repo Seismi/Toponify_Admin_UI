@@ -1,7 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 
 @Component({
   selector: 'smi-workpackage-tab-table',
@@ -9,11 +8,6 @@ import { DiagramChangesService } from '@app/architecture/services/diagram-change
   styleUrls: ['./workpackage-tab-table.component.scss']
 })
 export class WorkPackageTabTableComponent {
-
-  checked = false;
-
-  constructor(private diagramChangesService: DiagramChangesService) {}
-
   @Input()
   set data(data: WorkPackageEntity[]) {
     this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);

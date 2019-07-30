@@ -39,6 +39,22 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.SetWorkpackageSelected: {
+      const { workpackageId } = action.payload;
+      return {
+        ...state,
+        entities: state.entities.map(item => {
+          if (item.id === workpackageId) {
+            return {
+              ...item,
+              selected: !item.selected
+            };
+          }
+          return item;
+        })
+      };
+    }
+
     case WorkPackageActionTypes.LoadWorkPackages: {
       return {
         ...state,

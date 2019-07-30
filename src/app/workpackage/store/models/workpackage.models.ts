@@ -31,6 +31,7 @@ export interface WorkPackageEntity {
   hasErrors: boolean;
   status: string;
   displayColour?: string;
+  selected?: boolean;
 }
 
 export interface OwnersEntityOrApproversEntity {

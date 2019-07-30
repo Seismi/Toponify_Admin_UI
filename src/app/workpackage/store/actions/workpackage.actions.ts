@@ -20,6 +20,7 @@ export enum WorkPackageActionTypes {
   DeleteWorkPackageSuccess = '[WorkPackage] Delete WorkPackage entity Success',
   DeleteWorkPackageFailure = '[WorkPackage] Delete WorkPackage entity Failure',
   SetWorkpackageDisplayColour = '[WorkPackage] Set Display Colour',
+  SetWorkpackageSelected = '[WorkPackage] Set Selected',
 }
 
 export class LoadWorkPackages implements Action {
@@ -102,6 +103,11 @@ export class SetWorkpackageDisplayColour implements Action {
   constructor(public payload: {colour: string, workpackageId: string}) { }
 }
 
+export class SetWorkpackageSelected implements Action {
+  readonly type = WorkPackageActionTypes.SetWorkpackageSelected;
+  constructor(public payload: { workpackageId: string }) { }
+}
+
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
@@ -118,4 +124,5 @@ export type WorkPackageActionsUnion =
   | DeleteWorkPackageEntity
   | DeleteWorkPackageEntitySuccess
   | DeleteWorkPackageEntityFailure
-  | SetWorkpackageDisplayColour;
+  | SetWorkpackageDisplayColour
+  | SetWorkpackageSelected;

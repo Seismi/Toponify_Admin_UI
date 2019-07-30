@@ -13,6 +13,11 @@ export const getSelectedWorkPackage = createSelector(
   state => state.selectedWorkPackage
 );
 
+export const getSelectedWorkpackages = createSelector(
+  getWorkPackageState,
+  state => state.entities.filter(item => item.selected)
+);
+
 export const getWorkPackageById = (id: string) => {
   return createSelector(
     getWorkPackageState,
