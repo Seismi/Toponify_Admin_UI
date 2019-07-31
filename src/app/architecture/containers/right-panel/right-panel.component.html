@@ -1,9 +1,8 @@
-<mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
+<mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
     <mat-tab label="Details" *ngIf="objectSelected">
         <smi-object-details-form
             [group]="group"
             [clickedOnLink]="clickedOnLink"
-            [nodeSelected]="nodeSelected"
             [isEditable]="isEditable"
             (editDetails)="onEditDetails($event)"
             (saveAttribute)="onSaveAttribute($event)"

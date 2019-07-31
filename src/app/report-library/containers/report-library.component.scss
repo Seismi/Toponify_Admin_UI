@@ -2,3 +2,14 @@
     max-width: 100%;
     margin-top: 10px;
 }
+
+button {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    z-index: 99999;
+}
+
+.leftPane {
+    padding-right: 5px;
+}

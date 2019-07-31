@@ -1,18 +1,20 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
-  selector: 'smi-left-side-bar',
-  templateUrl: './left-side-bar.component.html',
-  styleUrls: ['./left-side-bar.component.scss']
+  selector: 'smi-left-sidebar',
+  templateUrl: './left-sidebar.component.html',
+  styleUrls: ['./left-sidebar.component.scss']
 })
 export class LeftSideBarComponent {
 
   @Input() workPackageIsEditable = false;
+  @Input() hideTab = false;
 
   @Output()
   leftTab = new EventEmitter();
 
-  openLeftTab(i) {
+  onOpenLeftTab(i) {
     this.leftTab.emit(i);
   }
+
 }

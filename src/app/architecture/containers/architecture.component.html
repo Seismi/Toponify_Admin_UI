@@ -31,11 +31,11 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-side-bar 
+  <smi-left-sidebar
     *ngIf="!showOrHideLeftPane"
     (leftTab)="openLeftTab($event)"
     [workPackageIsEditable]="workPackageIsEditable">
-  </smi-left-side-bar>
+  </smi-left-sidebar>
   <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
     <p class="leftPane">
       <smi-left-panel
@@ -56,6 +56,7 @@
         [mapView]="mapView"
         [showGrid]="showGrid"
         [allowMove]="allowMove"
+        [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
         [nodes]="nodes | layer:{byId: true}"
         [links]="links | layer:{byId: false}"
@@ -82,7 +83,6 @@
         [selectedRightTab]="selectedRightTab"
         [group]="objectDetailsForm"
         [clickedOnLink]="clickedOnLink"
-        [nodeSelected]="objectSelected"
         [isEditable]="isEditable"
         (editDetails)="onEditDetails($event)"
         (saveAttribute)="onSaveObjectDetails($event)"

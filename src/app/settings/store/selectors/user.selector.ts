@@ -8,6 +8,11 @@ export const getUsers = createSelector(
     state => state.entities
 );
 
+export const getUserRolesEntities = createSelector(
+    getUserFeatureState,
+    state => state.roles
+)
+
 export const getUserSelected = createSelector(
     getUserFeatureState,
     state => state.selected
@@ -22,3 +27,12 @@ export const getUserError = createSelector(
     getUserFeatureState,
     state => state.error
 );
+
+export const getUserById = (id: string) => {
+    return createSelector(
+        getUserFeatureState,
+      state => {
+        return state.entities.filter(user => user.id === id);
+      }
+    );
+}

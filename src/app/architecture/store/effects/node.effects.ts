@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError, mergeMap } from 'rxjs/operators';
 import * as NodeActions from '../actions/node.actions';
 import { of, forkJoin } from 'rxjs';
-import { NodeService } from '@app/architecture/services/node.service';
+import { NodeService, GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 import { NodeActionTypes } from '../actions/node.actions';
 import { NodesApiResponse, Error, NodeDetailApiResponse, NodeUpdatePayload } from '../models/node.model';
 import { NodeLinksApiResponse, NodeLinkDetailApiResponse, LinkUpdatePayload } from '../models/node-link.model';
@@ -19,8 +19,9 @@ export class NodeEffects {
   @Effect()
   loadNodes$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodes>(NodeActionTypes.LoadNodes),
-    switchMap(_ => {
-      return this.nodeService.getNodes().pipe(
+    map(action => action.payload),
+    switchMap((queryParams: GetNodesRequestQueryParams) => {
+      return this.nodeService.getNodes(queryParams).pipe(
         switchMap((nodes: NodesApiResponse) => [new NodeActions.LoadNodesSuccess(nodes.data)]),
         catchError((error: Error) => of(new NodeActions.LoadNodesFailure(error)))
       );
@@ -30,8 +31,9 @@ export class NodeEffects {
   @Effect()
   loadNodeLinks$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodeLinks>(NodeActionTypes.LoadNodeLinks),
-    switchMap(_ => {
-      return this.nodeService.getNodeLinks().pipe(
+    map(action => action.payload),
+    switchMap((queryParams: GetNodesRequestQueryParams) => {
+      return this.nodeService.getNodeLinks(queryParams).pipe(
         switchMap((nodeLinks: NodeLinksApiResponse) => [new NodeActions.LoadNodeLinksSuccess(nodeLinks.data)]),
         catchError((error: Error) => of(new NodeActions.LoadNodeLinksFailure(error)))
       );

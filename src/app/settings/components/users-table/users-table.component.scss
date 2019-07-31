@@ -29,3 +29,22 @@ tr.mat-row:hover {
 button{
     margin-bottom: 20px;
 }
+
+.list {
+    padding: 0;
+    margin: 0;
+    display: inline;
+    list-style: none;
+}
+  
+.list li {
+    display: inline;
+}
+
+.list::before {
+    content: '; ';
+}
+
+.list:first-child::before {
+    content: '';
+}
