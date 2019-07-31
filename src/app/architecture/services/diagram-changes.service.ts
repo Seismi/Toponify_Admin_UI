@@ -2,8 +2,8 @@ import * as go from 'gojs';
 import {Injectable} from '@angular/core';
 import {Level, DiagramLevelService} from './diagram-level.service';
 import {FilterService} from './filter.service';
-import {linkCategories} from '@app/nodes/store/models/node-link.model';
-import {Node} from '@app/nodes/store/models/node.model.ts';
+import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import { Node } from '@app/architecture/store/models/node.model.ts';
 import { BehaviorSubject } from 'rxjs';
 
 const $ = go.GraphObject.make;
@@ -405,5 +405,73 @@ export class DiagramChangesService {
     }
 
     return true;
+  }
+
+  // Hide all nodes except the specified node and all nodes directly linked to it
+  hideNonDependencies(depNode: go.Node) {
+
+    depNode.diagram.startTransaction('Analyse Dependencies');
+
+    // Get direct dependencies
+    const dependencies = [depNode.key];
+    depNode.findNodesConnected().each(function(connectedNode) {
+      dependencies.push(connectedNode.key);
+    });
+
+    // Hide all non-directly-dependent nodes
+    depNode.diagram.nodes.each(function(node) {
+      if (!dependencies.includes(node.key)) {
+        node.visible = false;
+      }
+    });
+
+    // Update bindings so that the appropriate nodes show the button to expand dependency levels shown
+    depNode.diagram.nodes.each(function(node) {
+      if (node.visible) {
+        node.updateTargetBindings();
+      }
+    });
+
+    depNode.diagram.commitTransaction('Analyse Dependencies');
+
+    // Centre diagram view on the specified node
+    depNode.diagram.centerRect(depNode.actualBounds);
+  }
+
+  // Show all nodes that are directly linked to the specified node
+  showDependencies(depNode: go.Node) {
+    depNode.diagram.startTransaction('Show Dependencies');
+
+    // Get linked nodes and ensure they are visible
+    depNode.findNodesConnected().each(function(connectedNode) {
+      connectedNode.visible = true;
+    });
+
+    // Update bindings so that the appropriate nodes show the button to expand dependency levels shown
+    depNode.diagram.nodes.each(function(node) {
+      if (node.visible) {
+        node.updateTargetBindings();
+      }
+    });
+
+    depNode.diagram.commitTransaction('Show Dependencies');
+  }
+
+  // Set all nodes in the specified diagram to visible
+  showAllNodes(diagram) {
+    diagram.startTransaction('Show All Nodes');
+
+    // Set all nodes to visible
+    diagram.nodes.each(function(node) {
+      node.visible = true;
+    });
+
+    // Update bindings so that nodes no longer show the button to expand dependency levels
+    diagram.nodes.each(function(node) {
+      node.updateTargetBindings();
+    });
+
+    diagram.commitTransaction('Show All Nodes');
+
   }
 }

@@ -31,13 +31,11 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-side-bar 
+  <smi-left-sidebar
     *ngIf="!showOrHideLeftPane"
-    (openWorkPackageTab)="onOpenWorkPackageTab($event)"
-    (openAnalysisTab)="onOpenAnalysisTab($event)"
-    (openEditTab)="onOpenEditTab($event)"
+    (leftTab)="openLeftTab($event)"
     [workPackageIsEditable]="workPackageIsEditable">
-  </smi-left-side-bar>
+  </smi-left-sidebar>
   <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
     <p>
       <smi-left-panel
@@ -58,6 +56,7 @@
         [mapView]="mapView"
         [showGrid]="showGrid"
         [allowMove]="allowMove"
+        [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
         [nodes]="nodes | layer:{byId: true}"
         [links]="links | layer:{byId: false}"
@@ -72,8 +71,12 @@
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <app-model-sidebar [isLast]="true" [maxWidth]="600">
-    <smi-right-panel
+  <smi-right-sidebar data-hook="right-sidebar" *ngIf="!showOrHideRightPane" (rightTab)="openRightTab($event)">
+  </smi-right-sidebar>
+  <app-model-sidebar [isLast]="true" [maxWidth]="600" *ngIf="showOrHideRightPane">
+    <p>
+      <smi-right-panel
+        [selectedRightTab]="selectedRightTab"
         [group]="objectDetailsForm"
         [clickedOnLink]="clickedOnLink"
         [nodeSelected]="objectSelected"
@@ -87,7 +90,9 @@
         [workpackages]="selectedNode?.relatedWorkPackages"
         (cancel)="onCancelEdit($event)"
         [workPackageIsEditable]="workPackageIsEditable"
-        (addRadionInArchitecture)="addRadionInArchitecture($event)"
+        (addAttribute)="onAddAttribute($event)"
+        (addRadio)="onAddRadio($event)"
+        (hideRightPane)="onHideRightPane()"
     >
     </smi-right-panel>
   </app-model-sidebar>

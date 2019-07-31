@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import * as go from 'gojs';
-import {layers} from '@app/nodes/store/models/node.model';
-import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import { layers } from '@app/architecture/store/models/node.model';
+import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import {DiagramTemplatesService} from '../..//services/diagram-templates.service';
 import {DiagramLevelService} from '../../services/diagram-level.service';
 @Component({
@@ -10,6 +10,10 @@ import {DiagramLevelService} from '../../services/diagram-level.service';
   styleUrls: ['./architecture-palette.component.scss']
 })
 export class ArchitecturePaletteComponent implements OnInit {
+
+  @Output()
+  updatePalette = new EventEmitter();
+
   private palette: go.Palette;
 
   @ViewChild('paletteDiv')
@@ -42,22 +46,22 @@ export class ArchitecturePaletteComponent implements OnInit {
 
     this.palette.nodeTemplateMap.add(
       layers.system,
-      diagramTemplatesService.getSystemNodeTemplate()
+      diagramTemplatesService.getSystemNodeTemplate(true)
     );
 
     this.palette.nodeTemplateMap.add(
       layers.dataSet,
-      diagramTemplatesService.getDataSetNodeTemplate()
+      diagramTemplatesService.getDataSetNodeTemplate(true)
     );
 
     this.palette.nodeTemplateMap.add(
       layers.dimension,
-      diagramTemplatesService.getDimensionNodeTemplate()
+      diagramTemplatesService.getDimensionNodeTemplate(true)
     );
 
     this.palette.nodeTemplateMap.add(
       layers.reportingConcept,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
+      diagramTemplatesService.getReportingConceptNodeTemplate(true)
     );
 
     // Set links templates
@@ -80,9 +84,6 @@ export class ArchitecturePaletteComponent implements OnInit {
       model.setDataProperty(model.modelData, option, event.checked);
     }
   }
-
-  @Output()
-  updatePalette = new EventEmitter()
 
   update() {
     this.palette.requestUpdate();

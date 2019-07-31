@@ -27,6 +27,9 @@ export class AttributesComponent implements OnInit {
     isEditable = false;
     objectSelected = true;
     workPackageIsEditable = false;
+    showOrHidePane = false;
+    selectedLeftTab: number;
+    hideTab = true;
 
     constructor(
         private store: Store<AttributeState>, 
@@ -120,5 +123,16 @@ export class AttributesComponent implements OnInit {
         //     }
         //   }
         // }));
+      }
+
+      openLeftTab(i) {
+        this.selectedLeftTab = i;
+        if(this.selectedLeftTab === i) {
+          this.showOrHidePane = true;
+        }
+      }
+    
+      hideLeftPane() {
+        this.showOrHidePane = false;
       }
 }
