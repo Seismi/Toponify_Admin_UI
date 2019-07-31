@@ -12,16 +12,16 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -37,12 +37,12 @@ import { FilterService } from '../services/filter.service';
 import { SelectWorkpackage } from '../store/actions/workpackage.actions';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
-import { getSelectedWorkpackages } from '../store/selectors/workpackage.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import {go} from 'gojs/release/go-module';
-
+import { go } from 'gojs/release/go-module';
+import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 
 
 @Component({
@@ -76,6 +76,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
+  radio$: Observable<RadioEntity[]>;
   scopeDetails$: Observable<ScopeDetails>;
   mapView: boolean;
   viewLevel$: Observable<number>;
@@ -86,7 +87,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditLayouts: string;
   attributeSubscription: Subscription;
   clickedOnLink = false;
-  objectSelected = true;
+  objectSelected = false;
   isEditable = false;
   nodeId: string;
   allowEditWorkPackages: string;
@@ -141,19 +142,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
 
+    // RADIO
+    this.radioStore.dispatch(new LoadRadios({}));
+    this.radio$ = this.radioStore.pipe(select(getRadioEntities));
+
+
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
     this.filterServiceSubscription = combineLatest(
       this.filterService.filter,
-      this.nodeStore.pipe(select(getSelectedWorkpackages)),
+      this.workpackageStore.pipe(select(getSelectedWorkpackages))
       // this.layoutStore.pipe(select(getLayoutSelected))
       )
       .subscribe(([filter, workpackages]) => {
+        const workpackageIds = workpackages.map(item => item.id);
       if (filter) {
         const { filterLevel, id } = filter;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackages);
+          this.setNodesLinks(filterLevel, id, workpackageIds);
         }
       }
     });
@@ -267,6 +274,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
         this.selectedNode = nodeDetail;
       });
+
+      this.objectSelected = true;
+    } else {
+      this.objectSelected = false;
     }
   }
 
@@ -490,11 +501,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectWorkPackage(id) {
     this.workpackageId = id;
-    this.nodeStore.dispatch(new SelectWorkpackage(this.workpackageId));
+    this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
 
-  selectColorForWorkPackage(color, id) {
-    console.log(color, id);
+  selectColorForWorkPackage(data: {color: string, id: string}) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id}));
   }
 
   onSelectScope(id) {
@@ -506,30 +517,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
+  openLeftTab(i) {
+    this.selectedLeftTab = i;
+    if(this.selectedLeftTab === i) {
+      this.showOrHideLeftPane = true;
+    }
+    this.diagramComponent.updateDiagramArea();
+  }
+
   onHideLeftPane() {
     this.showOrHideLeftPane = false;
     this.diagramComponent.updateDiagramArea();
   }
 
-  onOpenWorkPackageTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 0;
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  onOpenAnalysisTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 2;
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  onOpenEditTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 1;
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  onAddRadio() {
+  onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '500px'
@@ -566,6 +567,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onHideRightPane() {
     this.showOrHideRightPane = false;
     this.diagramComponent.updateDiagramArea();
+  }
+
+  onAddRadio() {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.radio) {
+        this.store.dispatch(new AddRadioEntity({
+          data: {
+            title: data.radio.title,
+            description: data.radio.description,
+            status: data.radio.status,
+            category: data.radio.category,
+            author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' }
+          }
+        }));
+      }
+    });
   }
 }
 

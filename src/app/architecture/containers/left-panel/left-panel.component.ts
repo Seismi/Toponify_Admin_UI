@@ -35,8 +35,8 @@ export class LeftPanelComponent {
     this.selectWorkPackage.emit(id);
   }
 
-  onSelectColor(color, id) {
-    this.selectColor.emit({color, id});
+  onSelectColor(event) {
+    this.selectColor.emit(event);
   }
 
   @Output()

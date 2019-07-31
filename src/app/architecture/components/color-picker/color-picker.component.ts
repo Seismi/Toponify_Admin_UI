@@ -16,8 +16,12 @@ export class WorkPackageColorComponent {
   @Output()
   selectColor = new EventEmitter();
 
+  get colours() {
+    return this.diagramChangesService.colors;
+  }
+
   onSelect(color) {
     this.workpackageColor = color;
     this.selectColor.emit(color);
-  } 
+  }
 }

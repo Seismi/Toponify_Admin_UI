@@ -38,9 +38,7 @@ import { AttributeModalComponent } from './containers/attribute-modal/attribute-
   exports: [],
   declarations: [
     AttributesComponent,
-    AttributesRoutingComponent,
-    //AttributeDetailComponent,
-    //AttributeModalComponent
+    AttributesRoutingComponent
   ],
   entryComponents: [AttributeModalComponent],
   providers: [
