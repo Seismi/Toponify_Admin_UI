@@ -9,6 +9,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
+import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
 
 @Component({
   selector: 'app-workpackage',
@@ -47,5 +48,14 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
 
   onSelectWorkpackage(row: any) {
     this.router.navigate(['work-packages', row.id]);
+  }
+
+  onOpenWorkPackageTree() {
+    this.dialog.open(WorkPackageTreeModalComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
+    });
   }
 }

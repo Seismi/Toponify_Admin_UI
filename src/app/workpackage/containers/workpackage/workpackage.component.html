@@ -14,7 +14,8 @@
                 [selectedRowIndex]="workpackageId"
                 [data]="workpackageEntities$ | async"
                 (workpackageSelected)="onSelectWorkpackage($event)"
-                (addWorkpackage)="onAddWorkpackage($event)">
+                (addWorkpackage)="onAddWorkpackage($event)"
+                (openWorkPackageTree)="onOpenWorkPackageTree($event)">
             </smi-workpackages-table>
         </div>
         <router-outlet></router-outlet>
