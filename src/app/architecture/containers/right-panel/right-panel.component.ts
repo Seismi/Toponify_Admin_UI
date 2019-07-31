@@ -1,27 +1,27 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 
 @Component({
   selector: 'smi-right-panel',
   templateUrl: './right-panel.component.html',
   styleUrls: ['./right-panel.component.scss']
 })
-export class RightPanelComponent {
+export class RightPanelComponent implements OnInit, OnDestroy {
+
+  private showDetailTabRef;
 
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
-  @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
   @Input() selectedRightTab: number;
   @Input() attributes: any;
-  @Input() radio: any;
+  @Input() relatedRadios: any;
   @Input() properties: any;
   @Input() workpackages: any;
-
-  constructor() { }
-
-  ngOnInit() {}
+  @Input() objectSelected = false;
+  @Input() radio: any;
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -36,7 +36,7 @@ export class RightPanelComponent {
   cancel = new EventEmitter();
 
   @Output()
-  addRadio = new EventEmitter();
+  addRelatedRadio = new EventEmitter();
 
   @Output()
   addAttribute = new EventEmitter();
@@ -44,6 +44,27 @@ export class RightPanelComponent {
   @Output()
   hideRightPane = new EventEmitter();
 
+  @Output()
+  addRadio = new EventEmitter();
+
+
+  constructor(
+    public gojsCustomObjectsService: GojsCustomObjectsService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) { }
+
+  ngOnInit() {
+    // Observable to capture instruction to switch to the Detail tab from GoJS context menu
+    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(function() {
+      // change selected tab to the "Details" tab
+      this.selectedRightTab = 0;
+      this.changeDetectorRef.detectChanges();
+    }.bind(this));
+  }
+
+  ngOnDestroy() {
+    this.showDetailTabRef.unsubscribe();
+  }
 
   onSaveAttribute() {
     this.saveAttribute.emit();
@@ -65,12 +86,16 @@ export class RightPanelComponent {
     this.hideRightPane.emit();
   }
 
-  onAddRadio() {
-    this.addRadio.emit();
+  onAddRelatedRadio() {
+    this.addRelatedRadio.emit();
   }
 
   onAddAttribute() {
     this.addAttribute.emit();
+  }
+
+  onAddRadio() {
+    this.addRadio.emit();
   }
 
 }

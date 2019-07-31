@@ -39,11 +39,11 @@ import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
-import { LeftSideBarComponent } from '../core/layout/left-sidebar/left-sidebar.component';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeEffects } from './store/effects/node.effects';
+import { RadioTableInArchitectureComponent } from './components/radio-table/radio-table.component';
 import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 
@@ -103,7 +103,7 @@ import { TableCollapseComponent } from '@app/attributes/components/category-tabl
       LayerPipe,
       AttributeModalComponent,
       AttributeDetailComponent,
-      LeftSideBarComponent,
+      RadioTableInArchitectureComponent,
       CategoryTableComponent,
       TableCollapseComponent
     ],

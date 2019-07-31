@@ -1,32 +1,37 @@
-<mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
-    <mat-tab label="Details">
+<mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
+    <mat-tab label="Details" *ngIf="objectSelected">
         <smi-object-details-form
             [group]="group"
             [clickedOnLink]="clickedOnLink"
-            [nodeSelected]="nodeSelected"
             [isEditable]="isEditable"
             (editDetails)="onEditDetails($event)"
             (saveAttribute)="onSaveAttribute($event)"
             (deleteAttribute)="onDeleteAttribute($event)"
             (cancel)="onCancel($event)"
             [workPackageIsEditable]="workPackageIsEditable">
-        </smi-object-details-form></mat-tab>
-    <mat-tab label="Attributes">
+        </smi-object-details-form>
+    </mat-tab>
+    <mat-tab label="Attributes" *ngIf="objectSelected">
         <smi-attributes-tab 
             [data]="attributes"
             (addAttribute)="onAddAttribute($event)">
         </smi-attributes-tab>
     </mat-tab>
-    <mat-tab label="Properties">
+    <mat-tab label="Properties" *ngIf="objectSelected">
         <smi-properties-tab [data]="properties"></smi-properties-tab>
     </mat-tab>
     <mat-tab label="RADIO">
-        <smi-radio-tab 
+        <smi-radio-tab *ngIf="objectSelected"
+            [data]="relatedRadios"
+            (addRadio)="onAddRelatedRadio($event)">
+        </smi-radio-tab>
+        <smi-radio-table-in-architecture 
+            *ngIf="!objectSelected"
             [data]="radio"
             (addRadio)="onAddRadio($event)">
-        </smi-radio-tab>
+        </smi-radio-table-in-architecture>
     </mat-tab>
-    <mat-tab label="Work Packages">
+    <mat-tab label="Work Packages" *ngIf="objectSelected">
         <smi-workpackage-tab [data]="workpackages"></smi-workpackage-tab>
     </mat-tab>
 </mat-tab-group>

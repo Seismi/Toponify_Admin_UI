@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserEntitiesHttpParams, UserDetails, AddUserApiResponse, UpdateUserApiResponse, UserLoginData, UsersApiResponse, User, UserDetailResponse } from '../store/models/user.model';
+import { UserEntitiesHttpParams, UserDetails, UserLoginData, UsersApiResponse, UserRolesApiResponse, UpdateUserApiRequest, UpdateUserApiResponse } from '../store/models/user.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -17,16 +17,20 @@ export class UserService {
     return this.http.get<UsersApiResponse>(`/users`, {params: params});
   }
 
-  getUser(id: string): Observable<UserDetailResponse> {
-    return this.http.get<UserDetailResponse>(`/users/${id}`);
+  getUserRoles(): Observable<UserRolesApiResponse> {
+    return this.http.get<UserRolesApiResponse>(`/roles`);
   }
 
-  addUser(data: UserDetails): Observable<AddUserApiResponse> {
-    return this.http.post<AddUserApiResponse>(`/users`, {data: data}, httpOptions);
+  getUser(id: string): Observable<any> {
+    return this.http.get<any>(`/users/${id}`);
   }
 
-  updateUser(id: string, data: UserDetails): Observable<UpdateUserApiResponse> {
-    return this.http.put<UpdateUserApiResponse>(`/users/${id}`, {data: data}, httpOptions);
+  addUser(data: UserDetails): Observable<any> {
+    return this.http.post<any>(`/users`, {data: data}, httpOptions);
+  }
+
+  updateUser(id: string, data: UserDetails): Observable<any> {
+    return this.http.put<any>(`/users/${id}`, {data: data}, httpOptions);
   }
 
   deleteUser(id: string): Observable<any> {

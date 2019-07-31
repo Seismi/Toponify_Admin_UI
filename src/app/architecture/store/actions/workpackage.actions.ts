@@ -1,8 +1,8 @@
 import { Action } from '@ngrx/store';
 
 export enum WorkpackageActionTypes {
-  SelectWorkpackage = '[Architecture - Workpackage] Zoom Level',
-  UnSelectWorkpackage = '[Architecture - Workpackage] View level'
+  SelectWorkpackage = '[Architecture - Workpackage] Select Workpackage',
+  UnSelectWorkpackage = '[Architecture - Workpackage] Unselect Workpackage'
 }
 
 export class SelectWorkpackage implements Action {
