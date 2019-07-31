@@ -21,7 +21,8 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   attribute: AttributeDetail;
   isEditable = false;
-  workPackageIsEditable = true;
+  showOrHideRightPane = false;
+  selectedRightTab: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,6 +55,17 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
 
   get objectDetailsForm(): FormGroup {
     return this.objectDetailsService.objectDetailsForm;
+  }
+
+  openRightTab(i) {
+    this.selectedRightTab = i;
+    if(this.selectedRightTab === i) {
+      this.showOrHideRightPane = true;
+    }
+  }
+
+  onHideRightPane() {
+    this.showOrHideRightPane = false;
   }
 
   onEditDetails() {
