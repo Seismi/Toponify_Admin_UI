@@ -16,7 +16,7 @@
   </app-toolbar-column>
   <app-toolbar-column>
     <smi-quicklinks-actions
-      [gojsView]="true" 
+      [gojsView]="true"
       [allowEditLayouts]="allowEditLayouts"
       [allowEditWorkPackages]="allowEditWorkPackages"
       [workpackages]="workpackage$ | async"
@@ -63,7 +63,7 @@
         [workpackageDetail]="workpackageDetail"
         [selectedWorkPackages]= "selectedWorkPackages$ | async"
         [viewLevel]="viewLevel$ | async"
-        (nodeSelected)="partSelected($event)"
+        (partsSelected)="partsSelected($event)"
         (modelChanged)="modelChanged($event)"
         (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
         (linkDeleteRequested)="handleLinkDeleteRequested($event)"
