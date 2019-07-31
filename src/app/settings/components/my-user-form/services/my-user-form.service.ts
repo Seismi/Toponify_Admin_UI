@@ -10,9 +10,9 @@ export class MyUserFormService {
   constructor(private fb: FormBuilder, private myUserFormValidatorService: MyUserFormValidatorService) {
     this.myUserForm = this.fb.group({
       id: [null],
-      email: [null, emailValidator],
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
+      email: [null, emailValidator],
       password: ['P1ssw4rd'],
       phone: [null, phoneNumberValidator],
       team: [null],

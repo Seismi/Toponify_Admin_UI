@@ -1,10 +1,11 @@
-import { User} from '../models/user.model';
+import { User, RolesEntity} from '../models/user.model';
 import { UserActionTypes, UserActionsUnion } from '../actions/user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export interface State {
   loading: boolean;
   entities: User[];
+  roles: RolesEntity[];
   selected: User;
   error?: HttpErrorResponse | { message: string };
 }
@@ -13,7 +14,8 @@ export const initialState: State = {
   loading: false,
   entities: null,
   selected: null,
-  error: null
+  error: null,
+  roles: []
 };
 
 export function reducer(state = initialState, action: UserActionsUnion): State {
@@ -34,6 +36,7 @@ export function reducer(state = initialState, action: UserActionsUnion): State {
       };
     }
 
+    case UserActionTypes.LoadUserRolesFailure:
     case UserActionTypes.LoadUsersFailure:
     case UserActionTypes.LoadUserFailure:
     case UserActionTypes.DeleteUserFailure:  {
@@ -82,7 +85,7 @@ export function reducer(state = initialState, action: UserActionsUnion): State {
 
 
     case UserActionTypes.UpdateUserSuccess: {
-      const updatedEntity = action.payload.data;
+      const updatedEntity = action.payload;
       return {
         ...state,
         entities: state.entities.map(entity => {
@@ -104,7 +107,20 @@ export function reducer(state = initialState, action: UserActionsUnion): State {
       };
     }
 
+    case UserActionTypes.LoadUserRoles: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
 
+    case UserActionTypes.LoadUserRolesSuccess: {
+      return {
+        ...state,
+        loading: false,
+        roles: action.payload
+      };
+    }
 
     default: {
       return state;
