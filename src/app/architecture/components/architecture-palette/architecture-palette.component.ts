@@ -19,9 +19,6 @@ export class ArchitecturePaletteComponent implements OnInit {
   @ViewChild('paletteDiv')
   private paletteRef: ElementRef;
 
-  @Output()
-  updatePalette = new EventEmitter();
-
   constructor( private diagramTemplatesService: DiagramTemplatesService,
     private diagramLevelService: DiagramLevelService
   ) {

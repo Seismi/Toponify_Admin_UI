@@ -40,7 +40,8 @@ import { AttributeDetailsComponent } from './containers/attribute-details/attrib
   declarations: [
     AttributesComponent,
     AttributesRoutingComponent,
-    AttributeDetailsComponent
+    AttributeDetailsComponent,
+    AttributesRoutingComponent
   ],
   entryComponents: [AttributeModalComponent],
   providers: [

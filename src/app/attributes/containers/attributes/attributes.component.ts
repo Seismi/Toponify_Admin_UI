@@ -21,6 +21,9 @@ export class AttributesComponent implements OnInit {
     attributes: Subscription;
     attribute: AttributeEntity[];
     workpackage$: Observable<WorkPackageEntity[]>;
+    hideTab = true;
+    selectedLeftTab: number;
+    showOrHidePane: boolean;
 
     constructor(
         private store: Store<AttributeState>,
@@ -45,5 +48,16 @@ export class AttributesComponent implements OnInit {
 
     onSelectAttribute(entry) {
         this.router.navigate(['/attributes-and-rules', entry.id])
+    }
+
+    openLeftTab(i) {
+        this.selectedLeftTab = i;
+        if(this.selectedLeftTab === i) {
+          this.showOrHidePane = true;
+        }
+      }
+    
+    hideLeftPane() {
+        this.showOrHidePane = false;
     }
 }

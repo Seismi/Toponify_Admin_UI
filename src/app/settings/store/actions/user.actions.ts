@@ -1,7 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { AddUserApiResponse, UserDetailResponse, UsersApiResponse,
-  UpdateUserApiResponse, UserDetails, UserEntitiesHttpParams, User } from '../models/user.model';
+import { 
+  UsersApiResponse, 
+  UserDetails, 
+  UserEntitiesHttpParams, 
+  User, 
+  RolesEntity
+} from '../models/user.model';
 
 
 export enum UserActionTypes {
@@ -23,7 +28,11 @@ export enum UserActionTypes {
 
   DeleteUser = '[User] Delete User entity',
   DeleteUserSuccess = '[User] Delete User entity Success',
-  DeleteUserFailure = '[User] Delete User entity Failure'
+  DeleteUserFailure = '[User] Delete User entity Failure',
+
+  LoadUserRoles = '[User] Load Roles',
+  LoadUserRolesSuccess = '[User] Load Roles Success',
+  LoadUserRolesFailure = '[User] Load Roles Fail'
 }
 
 export class LoadUsers implements Action {
@@ -65,7 +74,7 @@ export class AddUser implements Action {
 
 export class AddUserSuccess implements Action {
   readonly type = UserActionTypes.AddUserSuccess;
-  constructor(public payload: AddUserApiResponse) { }
+  constructor(public payload: any) { }
 }
 
 export class AddUserFailure implements Action {
@@ -81,7 +90,7 @@ export class UpdateUser implements Action {
 
 export class UpdateUserSuccess implements Action {
   readonly type = UserActionTypes.UpdateUserSuccess;
-  constructor(public payload: UpdateUserApiResponse) { }
+  constructor(public payload: User) { }
 }
 
 export class UpdateUserFailure implements Action {
@@ -105,6 +114,22 @@ export class DeleteUserFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+
+export class LoadUserRoles implements Action {
+  readonly type = UserActionTypes.LoadUserRoles;
+  constructor() { }
+}
+
+export class LoadUserRolesSuccess implements Action {
+  readonly type = UserActionTypes.LoadUserRolesSuccess;
+  constructor(public payload: RolesEntity[]) { }
+}
+
+export class LoadUserRolesFailure implements Action {
+  readonly type = UserActionTypes.LoadUserRolesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
 export type UserActionsUnion =
   | LoadUsers
   | LoadUsersSuccess
@@ -120,4 +145,7 @@ export type UserActionsUnion =
   | UpdateUserFailure
   | DeleteUser
   | DeleteUserSuccess
-  | DeleteUserFailure;
+  | DeleteUserFailure
+  | LoadUserRoles
+  | LoadUserRolesSuccess
+  | LoadUserRolesFailure;

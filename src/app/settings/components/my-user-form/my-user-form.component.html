@@ -27,7 +27,7 @@
     <!-- My Teams -->
     <mat-form-field [ngClass]="{disabled: !isActive}">
       <mat-select placeholder="My Teams" multiple formControlName="team">
-        <mat-option *ngFor="let team of teams" [value]="team">{{team}}</mat-option>
+        <mat-option *ngFor="let team of teams" [value]="team.name" (onSelectionChange)="onSelectTeam($event, team)">{{team.name}}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -42,7 +42,7 @@
     <!-- My Roles -->
     <mat-form-field [ngClass]="{disabled: !isActive}">
       <mat-select placeholder="My Roles" multiple formControlName="roles">
-        <mat-option *ngFor="let role of roles" [value]="role">{{role | titlecase}}</mat-option>
+        <mat-option *ngFor="let role of roles" [value]="role.name" (onSelectionChange)="onSelectRoles($event, role)">{{role.name}}</mat-option>
       </mat-select>
       <mat-error>Role is required</mat-error>
     </mat-form-field>
