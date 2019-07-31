@@ -11,7 +11,6 @@ export class ObjectDetailsFormComponent {
 
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
-  @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
 

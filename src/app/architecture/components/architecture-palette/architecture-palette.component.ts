@@ -21,6 +21,7 @@ export class ArchitecturePaletteComponent implements OnInit {
   ) {
     this.palette = new go.Palette();
     this.palette.initialScale = 0.5;
+    this.palette.animationManager.isEnabled = false;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
     this.palette.model.nodeCategoryProperty = 'layer';

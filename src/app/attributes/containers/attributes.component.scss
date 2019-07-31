@@ -8,13 +8,13 @@
     margin: 0;
 }
 
-.right-side {
-    max-width: 300px;
-}
-
 button {
     position: absolute;
     bottom: 12px;
     right: 16px;
     z-index: 99999;
+}
+
+.leftPane {
+    padding-right: 5px;
 }
