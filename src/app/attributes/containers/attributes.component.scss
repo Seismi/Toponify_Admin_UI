@@ -1,6 +1,6 @@
 .container {
-    width: 100%;
-    overflow: scroll
+    max-width: 100%;
+    overflow-y: scroll;
 }
 
 .col {
@@ -10,4 +10,11 @@
 
 .right-side {
     max-width: 300px;
+}
+
+button {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    z-index: 99999;
 }

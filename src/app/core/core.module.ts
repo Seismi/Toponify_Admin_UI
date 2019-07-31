@@ -39,6 +39,7 @@ import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.compo
 import { WorkPackageDropdownComponent } from './layout/header/quicklinks-actions/workpackage-dropdown/workpackage-dropdown.component';
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
 import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
+import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.component';
 
 @NgModule({
   imports: [
@@ -75,7 +76,8 @@ import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/lay
     BreadcrumbComponent,
     WorkPackageDropdownComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent
+    LayoutsDropdownComponent,
+    LeftSideBarComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -99,7 +101,8 @@ import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/lay
     BreadcrumbComponent,
     WorkPackageDropdownComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent
+    LayoutsDropdownComponent,
+    LeftSideBarComponent
   ],
   providers: []
 })

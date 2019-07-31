@@ -514,26 +514,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
+  openLeftTab(i) {
+    this.selectedLeftTab = i;
+    if(this.selectedLeftTab === i) {
+      this.showOrHideLeftPane = true;
+    }
+    this.diagramComponent.updateDiagramArea();
+  }
+
   onHideLeftPane() {
     this.showOrHideLeftPane = false;
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  onOpenWorkPackageTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 0;
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  onOpenAnalysisTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 2;
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  onOpenEditTab() {
-    this.showOrHideLeftPane = true;
-    this.selectedLeftTab = 1;
     this.diagramComponent.updateDiagramArea();
   }
 
@@ -575,5 +565,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.showOrHideRightPane = false;
     this.diagramComponent.updateDiagramArea();
   }
+
 }
 

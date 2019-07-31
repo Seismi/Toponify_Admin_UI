@@ -40,11 +40,12 @@ import { WorkPackageTabTableComponent } from './components/workpackage-tab-table
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
 import { RightSideBarComponent } from './components/right-sidebar/right-sidebar.component';
-import { LeftSideBarComponent } from './components/left-side-bar/left-side-bar.component';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeEffects } from './store/effects/node.effects';
+import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
+import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 
 
 @NgModule({
@@ -80,7 +81,7 @@ import { NodeEffects } from './store/effects/node.effects';
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
   ],
-    exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent],
+    exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
     declarations: [
       ArchitectureRoutingComponent,
       ArchitectureComponent,
@@ -103,7 +104,8 @@ import { NodeEffects } from './store/effects/node.effects';
       AttributeModalComponent,
       AttributeDetailComponent,
       RightSideBarComponent,
-      LeftSideBarComponent
+      CategoryTableComponent,
+      TableCollapseComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent, AttributeModalComponent],
     providers: [

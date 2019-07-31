@@ -31,13 +31,11 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-side-bar
+  <smi-left-sidebar
     *ngIf="!showOrHideLeftPane"
-    (openWorkPackageTab)="onOpenWorkPackageTab($event)"
-    (openAnalysisTab)="onOpenAnalysisTab($event)"
-    (openEditTab)="onOpenEditTab($event)"
+    (leftTab)="openLeftTab($event)"
     [workPackageIsEditable]="workPackageIsEditable">
-  </smi-left-side-bar>
+  </smi-left-sidebar>
   <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
     <p>
       <smi-left-panel
