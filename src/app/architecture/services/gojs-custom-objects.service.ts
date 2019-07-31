@@ -6,6 +6,7 @@ import { FilterService } from './filter.service';
 import {Subject} from 'rxjs';
 import {layers} from '@app/nodes/store/models/node.model';
 import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 
 const $ = go.GraphObject.make;
 
@@ -111,6 +112,7 @@ export class GojsCustomObjectsService {
 
   constructor(
     public filterService: FilterService,
+    public diagramChangesService: DiagramChangesService,
     @Inject(forwardRef(function() {return DiagramLevelService; })) public diagramLevelService: DiagramLevelService
   ) {
   }
@@ -122,24 +124,27 @@ export class GojsCustomObjectsService {
 
     return $(
       'ContextMenu',
+      // Toggle the background grid on or off
       $('ContextMenuButton',
-        $(go.TextBlock, 'Enable/Disable Grid'),
+        $(go.TextBlock, 'Enable/Disable Grid', {}),
         {
           click: function(event, object) {
             thisService.showHideGridSource.next();
           }
         }
       ),
+      // Zoom in a bit
       $('ContextMenuButton',
-        $(go.TextBlock, 'Zoom in'),
+        $(go.TextBlock, 'Zoom in', {}),
         {
           click: function(event, object) {
             thisService.zoomSource.next('In');
           }
         }
       ),
+      // Zoom out a bit
       $('ContextMenuButton',
-        $(go.TextBlock, 'Zoom out'),
+        $(go.TextBlock, 'Zoom out', {}),
         {
           click: function(event, object) {
             thisService.zoomSource.next('Out');
@@ -149,9 +154,11 @@ export class GojsCustomObjectsService {
     );
   }
 
+  // Context menu for when a node or link is right-clicked
   getPartContextMenu(): go.Adornment {
 
     const thisService = this;
+    const diagramChangesService = this.diagramChangesService;
 
     return $(
       'ContextMenu',
@@ -174,16 +181,18 @@ export class GojsCustomObjectsService {
           }
         })
       ),
+      // View detail for the node/link in the right hand panel
       $('ContextMenuButton',
-        $(go.TextBlock, 'View Detail'),
+        $(go.TextBlock, 'View Detail', {}),
         {
           click: function(event, object) {
             thisService.showDetailTabSource.next();
           }
         }
       ),
+      // Create a scope that includes the node
       $('ContextMenuButton',
-        $(go.TextBlock, 'Create Scope'),
+        $(go.TextBlock, 'Create Scope', {}),
         {
           click: function(event, object) {
             thisService.createScopeWithNodeSource.next(object);
@@ -192,6 +201,38 @@ export class GojsCustomObjectsService {
         new go.Binding('visible', '', function(object, event) {
           // Only show the create scope option for nodes
           return event.diagram.findNodeForData(object) !== null;
+        })
+      ),
+      // Analyse dependencies of a node
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Analyse Dependencies', {}),
+        {
+          click: function(event, object) {
+            const part = (object.part as go.Adornment).adornedObject;
+            diagramChangesService.hideNonDependencies(part as go.Node);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the analyse dependencies option for nodes..
+          return event.diagram.findNodeForData(object) !== null &&
+            // ..that are not in map view
+            !object.group;
+        })
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Return to Architecture View', {}),
+        {
+          click: function(event, object) {
+            diagramChangesService.showAllNodes(event.diagram);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the return to architecture option for nodes..
+          return event.diagram.findNodeForData(object) !== null &&
+            // ..and if some nodes in the diagram are hidden
+            event.diagram.nodes.any(function(node) {
+              return !node.visible;
+            });
         })
       )
     );
