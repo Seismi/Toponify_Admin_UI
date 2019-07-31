@@ -30,6 +30,8 @@ export interface WorkPackageEntity {
   approvers?: (OwnersEntityOrApproversEntity)[] | null;
   hasErrors: boolean;
   status: string;
+  displayColour?: string;
+  selected?: boolean;
 }
 
 export interface OwnersEntityOrApproversEntity {

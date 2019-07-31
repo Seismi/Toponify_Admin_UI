@@ -18,10 +18,10 @@ import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -37,7 +37,6 @@ import { FilterService } from '../services/filter.service';
 import { SelectWorkpackage } from '../store/actions/workpackage.actions';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
-import { getSelectedWorkpackages } from '../store/selectors/workpackage.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
@@ -146,14 +145,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = combineLatest(
       this.filterService.filter,
-      this.nodeStore.pipe(select(getSelectedWorkpackages)),
+      this.workpackageStore.pipe(select(getSelectedWorkpackages))
       // this.layoutStore.pipe(select(getLayoutSelected))
       )
       .subscribe(([filter, workpackages]) => {
+        const workpackageIds = workpackages.map(item => item.id);
       if (filter) {
         const { filterLevel, id } = filter;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackages);
+          this.setNodesLinks(filterLevel, id, workpackageIds);
         }
       }
     });
@@ -492,11 +492,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectWorkPackage(id) {
     this.workpackageId = id;
-    this.nodeStore.dispatch(new SelectWorkpackage(this.workpackageId));
+    this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
 
-  selectColorForWorkPackage(color, id) {
-    console.log(color, id);
+  selectColorForWorkPackage(data: {color: string, id: string}) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id}));
   }
 
   onSelectScope(id) {
