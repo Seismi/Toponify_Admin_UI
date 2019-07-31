@@ -60,12 +60,12 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   openRightTab(i) {
     this.selectedRightTab = i;
     if(this.selectedRightTab === i) {
-      this.showOrHideRightPane = true;
+      this.showOrHideRightPane = false;
     }
   }
 
   onHideRightPane() {
-    this.showOrHideRightPane = false;
+    this.showOrHideRightPane = true;
   }
 
   onEditDetails() {

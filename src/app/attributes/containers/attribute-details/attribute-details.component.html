@@ -1,10 +1,10 @@
 <smi-right-sidebar
-    *ngIf="!showOrHideRightPane"
+    *ngIf="showOrHideRightPane"
     [objectSelected]="true"
     (rightTab)="openRightTab($event)">
 </smi-right-sidebar>
 
-<app-model-container *ngIf="showOrHideRightPane">
+<app-model-container *ngIf="!showOrHideRightPane">
     <app-model-sidebar [maxWidth]="600" [isLast]="true">
         <p class="rightPane">
             <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
