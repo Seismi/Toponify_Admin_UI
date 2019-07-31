@@ -13,14 +13,15 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
-  @Input() nodeSelected = true;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
   @Input() selectedRightTab: number;
   @Input() attributes: any;
-  @Input() radio: any;
+  @Input() relatedRadios: any;
   @Input() properties: any;
   @Input() workpackages: any;
+  @Input() objectSelected = false;
+  @Input() radio: any;
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -35,13 +36,16 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   cancel = new EventEmitter();
 
   @Output()
-  addRadio = new EventEmitter();
+  addRelatedRadio = new EventEmitter();
 
   @Output()
   addAttribute = new EventEmitter();
 
   @Output()
   hideRightPane = new EventEmitter();
+
+  @Output()
+  addRadio = new EventEmitter();
 
 
   constructor(
@@ -82,12 +86,16 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.hideRightPane.emit();
   }
 
-  onAddRadio() {
-    this.addRadio.emit();
+  onAddRelatedRadio() {
+    this.addRelatedRadio.emit();
   }
 
   onAddAttribute() {
     this.addAttribute.emit();
+  }
+
+  onAddRadio() {
+    this.addRadio.emit();
   }
 
 }

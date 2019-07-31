@@ -12,7 +12,7 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
@@ -40,8 +40,9 @@ import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import {go} from 'gojs/release/go-module';
-
+import { go } from 'gojs/release/go-module';
+import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 
 
 @Component({
@@ -75,6 +76,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
+  radio$: Observable<RadioEntity[]>;
   scopeDetails$: Observable<ScopeDetails>;
   mapView: boolean;
   viewLevel$: Observable<number>;
@@ -85,7 +87,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditLayouts: string;
   attributeSubscription: Subscription;
   clickedOnLink = false;
-  objectSelected = true;
+  objectSelected = false;
   isEditable = false;
   nodeId: string;
   allowEditWorkPackages: string;
@@ -139,6 +141,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
+
+    // RADIO
+    this.radioStore.dispatch(new LoadRadios({}));
+    this.radio$ = this.radioStore.pipe(select(getRadioEntities));
+
 
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
@@ -267,6 +274,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
         this.selectedNode = nodeDetail;
       });
+
+      this.objectSelected = true;
+    } else {
+      this.objectSelected = false;
     }
   }
 
@@ -521,7 +532,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.updateDiagramArea();
   }
 
-  onAddRadio() {
+  onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '500px'
@@ -560,5 +571,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.updateDiagramArea();
   }
 
+  onAddRadio() {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.radio) {
+        this.store.dispatch(new AddRadioEntity({
+          data: {
+            title: data.radio.title,
+            description: data.radio.description,
+            status: data.radio.status,
+            category: data.radio.category,
+            author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' }
+          }
+        }));
+      }
+    });
+  }
 }
 
