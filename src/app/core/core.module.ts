@@ -29,7 +29,6 @@ import { ModelContainerComponent } from './layout/model-container/model-containe
 import { ModelSidebarComponent } from './layout/model-sidebar/model-sidebar.component';
 import { ModelContentComponent } from './layout/model-content/model-content.component';
 import { DraggerComponent } from './layout/model-sidebar/dragger/dragger.component';
-
 import { MdePopoverModule } from '@material-extended/mde';
 import { ZoomPopoverComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-popover.component';
 import { ZoomSliderComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider/zoom-slider.component';
@@ -39,8 +38,8 @@ import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.compo
 import { WorkPackageDropdownComponent } from './layout/header/quicklinks-actions/workpackage-dropdown/workpackage-dropdown.component';
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
 import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
-import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.component';
 import { RightSideBarComponent } from './layout/right-sidebar/right-sidebar.component';
+import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.component';
 
 @NgModule({
   imports: [
@@ -78,8 +77,8 @@ import { RightSideBarComponent } from './layout/right-sidebar/right-sidebar.comp
     WorkPackageDropdownComponent,
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
-    LeftSideBarComponent,
-    RightSideBarComponent
+    RightSideBarComponent,
+    LeftSideBarComponent
   ],
   declarations: [
     MainLayoutComponent,
