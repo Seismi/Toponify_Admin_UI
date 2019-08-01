@@ -34,12 +34,19 @@ export class WorkPackagesTableComponent implements OnInit {
   @Output()
   addWorkpackage = new EventEmitter();
 
+  @Output()
+  openWorkPackageTree = new EventEmitter();
+
   onSelectRow(row) {
     this.workpackageSelected.emit(row);
   }
 
   onAdd() {
     this.addWorkpackage.emit();
+  }
+
+  onOpenWorkPackageTree() {
+    this.openWorkPackageTree.emit();
   }
 
 }
