@@ -241,43 +241,49 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  partSelected(part: go.Part) {
-    if (part && part.data) {
-      this.selectedPart = part.data;
-    } else {
-      this.selectedPart = '';
-      this.clickedOnLink = false;
-    }
+  partsSelected(parts: go.Part[]) {
 
-    // Enable "Edit" and "Delete" buttons then GoJS object is selected
-    this.objectSelected = false;
-    this.isEditable = false;
 
-    this.objectDetailsService.objectDetailsForm.patchValue({
-      id: this.selectedPart.id,
-      name: this.selectedPart.name,
-      category: this.selectedPart.category,
-      owner: this.selectedPart.owner,
-      description: this.selectedPart.description,
-      tags: this.selectedPart.tags,
-    });
+    if (parts.length < 2) {
+      const part = parts[0];
 
-    this.nodeId = this.selectedPart.id;
+      if (part && part.data) {
+        this.selectedPart = part.data;
+      } else {
+        this.selectedPart = '';
+        this.clickedOnLink = false;
+      }
 
-    this.part = part;
+      // Enable "Edit" and "Delete" buttons then GoJS object is selected
+      this.objectSelected = false;
+      this.isEditable = false;
 
-    if (part) {
-      // By clicking on link show only name, category and description in the right panel
-      this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-      // Load Node Details
-      this.nodeStore.dispatch((new LoadNode(this.nodeId)));
-      this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
-        this.selectedNode = nodeDetail;
+      this.objectDetailsService.objectDetailsForm.patchValue({
+        id: this.selectedPart.id,
+        name: this.selectedPart.name,
+        category: this.selectedPart.category,
+        owner: this.selectedPart.owner,
+        description: this.selectedPart.description,
+        tags: this.selectedPart.tags,
       });
 
-      this.objectSelected = true;
-    } else {
-      this.objectSelected = false;
+      this.nodeId = this.selectedPart.id;
+
+      this.part = part;
+
+      if (part) {
+        // By clicking on link show only name, category and description in the right panel
+        this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
+        // Load Node Details
+        this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+        this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
+          this.selectedNode = nodeDetail;
+        });
+
+        this.objectSelected = true;
+      } else {
+        this.objectSelected = false;
+      }
     }
   }
 
@@ -340,8 +346,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     (this.workPackageIsEditable === true)
       ? this.allowEditWorkPackages = 'close'
       : this.allowEditWorkPackages = 'edit';
-
-    this.leftPanelComponent.onUpdatePalette();
   }
 
   allowEditLayout() {
