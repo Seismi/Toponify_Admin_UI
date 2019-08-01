@@ -75,7 +75,8 @@
     data-hook="right-sidebar" 
     *ngIf="!showOrHideRightPane" 
     (rightTab)="openRightTab($event)"
-    [objectSelected]="objectSelected">
+    [objectSelected]="objectSelected"
+    [multipleSelected]="multipleSelected">
   </smi-right-sidebar>
   <app-model-sidebar [isLast]="true" [maxWidth]="600" *ngIf="showOrHideRightPane">
     <p class="rightPane">
@@ -99,6 +100,8 @@
         (hideRightPane)="onHideRightPane()"
         [objectSelected]="objectSelected"
         (addRadio)="onAddRadio()"
+        [multipleSelected]="multipleSelected"
+        (addScope)="onAddScope($event)"
     >
     </smi-right-panel>
   </app-model-sidebar>

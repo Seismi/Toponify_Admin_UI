@@ -12,8 +12,6 @@ export class LayoutsDetailComponent {
   @Input() isEditable = false;
   @Input() modalMode = false;
   @Input() data: any;
-  @Input() selectedOwners = [];
-  @Input() selectedViewers = [];
   @Input() ownersList: any;
   @Input() viewersList: any;
 

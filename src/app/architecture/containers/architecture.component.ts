@@ -14,7 +14,7 @@ import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
+import { LoadScope, LoadScopes, AddScope } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
@@ -43,6 +43,8 @@ import { AttributeModalComponent } from '@app/attributes/containers/attribute-mo
 import { go } from 'gojs/release/go-module';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
+import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
+import { SharedService } from '@app/services/shared-service';
 
 
 @Component({
@@ -103,6 +105,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   showOrHideRightPane = false;
   selectedRightTab: number;
   selectedLeftTab: number;
+  multipleSelected = false;
+  selectedMultipleNodes = [];
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -110,6 +114,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
 
   constructor(
+    private sharedService: SharedService,
     private nodeStore: Store<NodeState>,
     private scopeStore: Store<ScopeState>,
     private layoutStore: Store<LayoutState>,
@@ -243,6 +248,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   partsSelected(parts: go.Part[]) {
 
+    if(parts.length > 1) {
+      parts.forEach(part => {
+        this.selectedMultipleNodes.push(part.data);
+      })
+    }
 
     if (parts.length < 2) {
       const part = parts[0];
@@ -279,12 +289,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
           this.selectedNode = nodeDetail;
         });
-
         this.objectSelected = true;
       } else {
         this.objectSelected = false;
+        this.multipleSelected = false;
       }
+
+    } else {
+      this.objectSelected = false;
+      this.multipleSelected = true;
     }
+
   }
 
   modelChanged(event: any) {
@@ -595,5 +610,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  onAddScope() {
+    const dialogRef = this.dialog.open(ScopeModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data) {
+        this.store.dispatch(new AddScope({
+          id: null,
+          name: data.scope.name,
+          owners: this.sharedService.selectedOwners,
+          viewers: this.sharedService.selectedViewers,
+          layerFilter: this.filterService.getFilter().filterLevel.toLowerCase(),
+          include: this.selectedMultipleNodes
+        }))
+      }
+      this.selectedMultipleNodes = [];
+    });
+  }
+
 }
 
