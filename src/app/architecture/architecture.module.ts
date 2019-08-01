@@ -56,7 +56,6 @@ import { TableCollapseComponent } from '@app/attributes/components/category-tabl
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    CoreModule,
     WorkPackageModule,
     RadioModule,
     DocumentationStandardsModule,

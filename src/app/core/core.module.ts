@@ -103,8 +103,8 @@ import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.compone
     WorkPackageDropdownComponent,
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
-    RightSideBarComponent,
-    LeftSideBarComponent
+    LeftSideBarComponent,
+    RightSideBarComponent
   ],
   providers: []
 })
