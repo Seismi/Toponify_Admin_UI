@@ -629,6 +629,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }))
       }
       this.selectedMultipleNodes = [];
+      this.sharedService.selectedOwners = [];
+      this.sharedService.selectedViewers = [];
     });
   }
 
