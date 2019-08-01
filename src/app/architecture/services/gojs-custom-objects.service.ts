@@ -237,4 +237,31 @@ export class GojsCustomObjectsService {
       )
     );
   }
+
+  createCustomBrush(colours: string[], fromSpot = go.Spot.Top, toSpot = go.Spot.Bottom): go.Brush {
+
+    colours = colours.map(function(colour) {return colour || 'black'; });
+
+    if (colours.length === 1) {return $(go.Brush, {color: colours[0]}); }
+
+    const newBrushParams: any = {};
+    const temp: string[] = [];
+
+    colours.forEach(function(colour) {
+      temp.push(colour);
+      temp.push(colour);
+      temp.push(colour);
+    });
+
+    colours = temp;
+
+    colours.forEach(function(colour, index) {
+      newBrushParams[String(index / (colours.length - 1))] = colour;
+    });
+
+    newBrushParams.start = fromSpot;
+    newBrushParams.end = toSpot;
+
+    return $(go.Brush, 'Linear', newBrushParams);
+  }
 }

@@ -64,6 +64,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   @Input() workpackageDetail;
 
+  @Input() workpackages;
+
   @Input() selectedWorkPackages;
 
   @Input() nodes;
@@ -344,14 +346,27 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       this.setLevel();
     }
 
-    if (changes.nodes || changes.selectedWorkPackages) {
+    if (changes.workpackages) {
+      const model = this.diagram.model;
+      model.setDataProperty(model.modelData, 'workpackages', this.workpackages);
+      this.diagram.startTransaction('Update workpackage colours');
+      this.diagram.nodes.each(function(node) {
+        node.updateTargetBindings('impactedByWorkPackages');
+      });
+      this.diagram.links.each(function(link) {
+        link.updateTargetBindings('impactedByWorkPackages');
+      });
+      this.diagram.commitTransaction('Update workpackage colours');
+    }
+
+    if (changes.nodes) {
       // FIXME: on store change something goes wrong
       if (JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue)) {
         this.diagramChangesService.updateNodes(this.diagram, this.nodes, this.selectedWorkPackages);
       }
     }
 
-    if (changes.links || changes.selectedWorkPackages) {
+    if (changes.links) {
       // FIXME: on store change something goes wrong
       if (JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue)) {
         this.diagramChangesService.updateLinks(this.diagram, this.links, this.selectedWorkPackages);

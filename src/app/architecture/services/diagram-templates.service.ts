@@ -79,6 +79,29 @@ export class DiagramTemplatesService {
     );
   }
 
+  getStrokeForImpactedWorkPackages(impactedPackages, part) {
+    const allWorkpackages = part.diagram.model.modelData.workpackages;
+
+    if (impactedPackages.length === 0) {return 'black'; }
+
+    const colours = allWorkpackages.filter(function(workpackage) {
+      return impactedPackages.some(function(impactedPackage) {
+        return impactedPackage.id === workpackage.id;
+      });
+    }).map(function(workpackage) {
+      return workpackage.displayColour;
+    });
+
+    const args = [colours];
+
+    if (part instanceof go.Link) {
+      args.push(go.Spot.TopLeft);
+      args.push(go.Spot.BottomRight);
+    }
+
+    return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
+  }
+
   getSystemNodeTemplate(forPalette: boolean = false) {
 
     return $(
@@ -118,7 +141,9 @@ export class DiagramTemplatesService {
             return 'RoundedRectangle';
           }
         }),
-        new go.Binding('stroke', 'colour'),
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         // Bind height for transactional system to make consistent
         //  with previously used GoJs 1.8 shape
         new go.Binding('minSize', 'category', function (category) {
@@ -286,7 +311,9 @@ export class DiagramTemplatesService {
         fromLinkableDuplicates: true,
         toLinkableDuplicates: true
       },
-      new go.Binding('stroke', 'colour')
+      new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+        return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+      }.bind(this))
       ),
       $(go.Panel,
         'Vertical',
@@ -454,7 +481,9 @@ export class DiagramTemplatesService {
           fromLinkableDuplicates: false,
           toLinkableDuplicates: false
         },
-        new go.Binding('stroke', 'colour'),
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         new go.Binding('fromSpot', 'group', function (group) {
           if (group) {
             return go.Spot.LeftRightSides;
@@ -614,7 +643,9 @@ export class DiagramTemplatesService {
             return 'InternalStorage';
           }
         }),
-        new go.Binding('stroke', 'colour'),
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         {
           fill: 'white',
           stroke: 'black',
@@ -799,11 +830,14 @@ export class DiagramTemplatesService {
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       },
       $(go.Shape, {
+          name: 'shape',
           isPanelMain: true,
           stroke: 'black',
           strokeWidth: 2.5
         },
-        new go.Binding('stroke', 'colour'),
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
@@ -838,12 +872,10 @@ export class DiagramTemplatesService {
         go.Shape, // The 'to' arrowhead
         {
           scale: 1.2,
-          stroke: 'black',
-          fill: 'Black',
           toArrow: 'Triangle'
         },
-        new go.Binding('stroke', 'colour'),
-        new go.Binding('fill', 'colour'),
+        new go.Binding('fill', 'stroke').ofObject('shape'),
+        new go.Binding('stroke', 'stroke').ofObject('shape'),
         new go.Binding('visible', 'layer',
           function(layer) {return layer !== layers.system; }
         )
@@ -907,7 +939,9 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
-        new go.Binding('stroke', 'colour'),
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
