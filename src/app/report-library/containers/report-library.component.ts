@@ -24,7 +24,6 @@ export class ReportLibraryComponent implements OnInit {
   selectedLeftTab: number;
   showOrHidePane = false;
   hideTab = true;
-  workPackageId: string;
 
   constructor(
     private store: Store<ReportState>,
@@ -65,7 +64,6 @@ export class ReportLibraryComponent implements OnInit {
   }
 
   onSelectWorkPackage(id) {
-    this.workPackageId = id;
     this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
   }
   
