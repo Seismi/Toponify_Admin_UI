@@ -51,7 +51,7 @@ const standardDisplayOptions = {
 export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestroy {
   diagram: go.Diagram;
 
-  private nodeSelectedRef: Subscription = null;
+  private partsSelectedRef: Subscription = null;
   private modelChangeRef: Subscription = null;
 
   @ViewChild('diagramDiv')
@@ -83,7 +83,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Input() workPackageIsEditable = false;
 
   @Output()
-  nodeSelected = new EventEmitter();
+  partsSelected = new EventEmitter();
 
   @Output()
   modelChanged = new EventEmitter();
@@ -116,8 +116,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     // // (go as any).licenseKey = '...'
     this.diagram = new go.Diagram();
     this.diagram.initialContentAlignment = go.Spot.Center;
-    // Allow only one part selected at one time
-    this.diagram.maxSelectionCount = 1;
     this.diagram.allowDrop = true;
     this.diagram.grid.visible = true;
     this.diagram.undoManager.isEnabled = false;
@@ -265,9 +263,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
 
-    this.nodeSelectedRef = this.diagramListenersService.nodeSelected$
+    this.partsSelectedRef = this.diagramListenersService.partsSelected$
       .subscribe(function(node) {
-        this.nodeSelected.emit(node);
+        this.partsSelected.emit(node);
       }.bind(this));
 
     this.modelChangeRef = this.diagramListenersService.modelChanged$
@@ -281,7 +279,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   ngOnDestroy(): void {
     this.diagramLevelService.destroyUrlFiltering();
 
-    this.nodeSelectedRef.unsubscribe();
+    this.partsSelectedRef.unsubscribe();
     this.modelChangeRef.unsubscribe();
   }
 

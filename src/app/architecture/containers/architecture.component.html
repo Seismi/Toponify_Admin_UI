@@ -31,7 +31,7 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-sidebar
+  <smi-left-sidebar 
     *ngIf="!showOrHideLeftPane"
     (leftTab)="openLeftTab($event)"
     [workPackageIsEditable]="workPackageIsEditable">
@@ -64,7 +64,7 @@
         [selectedWorkPackages]= "selectedWorkPackages$ | async"
         [workpackages]="workpackage$ | async"
         [viewLevel]="viewLevel$ | async"
-        (nodeSelected)="partSelected($event)"
+        (partsSelected)="partsSelected($event)"
         (modelChanged)="modelChanged($event)"
         (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
         (linkDeleteRequested)="handleLinkDeleteRequested($event)"

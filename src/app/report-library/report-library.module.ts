@@ -29,6 +29,7 @@ import { ReportDataSetTableComponent } from './components/data-set-table/data-se
 import { ReportOwnersTableComponent } from './components/owners-table/owners-table.component';
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
+import { RadioTableInReportComponent } from './components/radio-table/radio-table.component';
 
 @NgModule({
   imports: [
@@ -60,7 +61,8 @@ import { ReportReportingConceptsTableComponent } from './components/reporting-co
     ReportDataSetTableComponent,
     ReportOwnersTableComponent,
     ReportDimensionsTableComponent,
-    ReportReportingConceptsTableComponent
+    ReportReportingConceptsTableComponent,
+    RadioTableInReportComponent
   ],
   providers: [ReportService],
 })

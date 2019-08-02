@@ -13,8 +13,7 @@ export class LeftSideBarComponent {
   @Output()
   leftTab = new EventEmitter();
 
-  onOpenLeftTab(i) {
+  openLeftTab(i) {
     this.leftTab.emit(i);
   }
-
 }

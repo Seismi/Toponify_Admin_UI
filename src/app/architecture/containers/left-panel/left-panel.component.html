@@ -5,8 +5,10 @@
         </smi-workpackage-tab-table>
     </mat-tab>
     <mat-tab label="Edit" *ngIf="workPackageIsEditable">
-        <app-architecture-palette (updatePalette)="onUpdatePalette($event)">
+      <ng-template matTabContent>
+        <app-architecture-palette>
         </app-architecture-palette>
+      </ng-template>
     </mat-tab>
     <mat-tab label="Analysis">
         <smi-analysis-tab (displayOptionsChanged)="displayOptionsChanged($event)">

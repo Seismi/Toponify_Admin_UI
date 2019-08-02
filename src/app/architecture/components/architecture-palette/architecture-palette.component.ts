@@ -11,9 +11,6 @@ import {DiagramLevelService} from '../../services/diagram-level.service';
 })
 export class ArchitecturePaletteComponent implements OnInit {
 
-  @Output()
-  updatePalette = new EventEmitter();
-
   private palette: go.Palette;
 
   @ViewChild('paletteDiv')
@@ -24,6 +21,7 @@ export class ArchitecturePaletteComponent implements OnInit {
   ) {
     this.palette = new go.Palette();
     this.palette.initialScale = 0.5;
+    this.palette.animationManager.isEnabled = false;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
     this.palette.model.nodeCategoryProperty = 'layer';
@@ -83,11 +81,6 @@ export class ArchitecturePaletteComponent implements OnInit {
     if (option === 'dataLinks' || option === 'masterDataLinks') {
       model.setDataProperty(model.modelData, option, event.checked);
     }
-  }
-
-  update() {
-    this.palette.requestUpdate();
-    this.updatePalette.emit();
   }
 
   ngOnInit() {
