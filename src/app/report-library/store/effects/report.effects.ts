@@ -39,7 +39,7 @@ export class ReportEffects {
   loadReport$ = this.actions$.pipe(
     ofType<ReportActions.LoadReport>(ReportActionTypes.LoadReport),
     map(action => action.payload),
-    switchMap((payload: any) => {
+    switchMap((payload: string) => {
       return this.reportService.getReport(payload).pipe(
         switchMap((response: any) => [new ReportActions.LoadReportSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.LoadReportFail(error)))
