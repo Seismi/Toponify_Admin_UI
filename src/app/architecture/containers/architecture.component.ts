@@ -525,7 +525,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   openLeftTab(i) {
     this.selectedLeftTab = i;
-    if(this.selectedLeftTab === i) {
+    if (this.selectedLeftTab === i) {
       this.showOrHideLeftPane = true;
     }
     this.diagramComponent.updateDiagramArea();

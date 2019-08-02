@@ -55,7 +55,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   private modelChangeRef: Subscription = null;
 
   @ViewChild('diagramDiv')
-  @ViewChild('diagramDiv')
   private diagramRef: ElementRef;
 
   get model(): go.Model {
