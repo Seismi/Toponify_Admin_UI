@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ReportLibraryApiResponse, ReportDetailApiRespoonse } from '../store/models/report.model';
 
@@ -7,13 +7,18 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+export interface GetReportLibraryRequestQueryParams {
+  workPackageQuery?: string[];
+}
+
 @Injectable()
 export class ReportService {
 
   constructor(private http: HttpClient) { }
 
-  getReports(): Observable<ReportLibraryApiResponse> {
-    return this.http.get<ReportLibraryApiResponse>(`/reports`);
+  getReports(queryParams?: GetReportLibraryRequestQueryParams): Observable<ReportLibraryApiResponse> {
+    const params = this.toHttpParams(queryParams);
+    return this.http.get<ReportLibraryApiResponse>(`/reports`, {params: params});
   }
 
   getReport(id: string): Observable<ReportDetailApiRespoonse> {
@@ -32,4 +37,18 @@ export class ReportService {
     return this.http.delete<any>(`/workpackages/${workPackageId}/reports/${reportId}`);
   }
 
+  // TODO: move into sharable service
+  toHttpParams(obj: Object): HttpParams {
+    let httpParams = new HttpParams();
+    Object.getOwnPropertyNames(obj).forEach(key => {
+      if (Array.isArray(obj[key])) {
+        obj[key].forEach(item => {
+          httpParams = httpParams.append(`${key}[]`, item);
+        });
+      } else {
+        httpParams = httpParams.set(key, obj[key]);
+      }
+    });
+    return httpParams;
+  }
 }
