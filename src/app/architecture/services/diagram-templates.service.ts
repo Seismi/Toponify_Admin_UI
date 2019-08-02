@@ -79,11 +79,14 @@ export class DiagramTemplatesService {
     );
   }
 
+  // Calculate stroke for parts, based on impacted work packages
   getStrokeForImpactedWorkPackages(impactedPackages, part) {
     const allWorkpackages = part.diagram.model.modelData.workpackages;
 
+    // return black by default if part not impacted by any work packages
     if (impactedPackages.length === 0) {return 'black'; }
 
+    // get colours for work packages impacted by
     const colours = allWorkpackages.filter(function(workpackage) {
       return impactedPackages.some(function(impactedPackage) {
         return impactedPackage.id === workpackage.id;
@@ -92,11 +95,38 @@ export class DiagramTemplatesService {
       return workpackage.displayColour;
     });
 
+    // arguments to pass to createCustomBrush
     const args = [colours];
 
+    // if part is a link then calculate start and end points of the
+    // brush based on the relative locations of the connected nodes
     if (part instanceof go.Link) {
-      args.push(go.Spot.TopLeft);
-      args.push(go.Spot.BottomRight);
+
+      const fromLocation = part.fromNode.location;
+      const toLocation = part.toNode.location;
+      let startAlign: string;
+      let endAlign: string;
+
+      // vertical brush direction
+      if (fromLocation.y < toLocation.y) {
+        startAlign = 'Top';
+        endAlign = 'Bottom';
+      } else {
+        startAlign = 'Bottom';
+        endAlign = 'Top';
+      }
+      // add horizontal brush direction
+      if (fromLocation.x < toLocation.x) {
+        startAlign = startAlign + 'Left';
+        endAlign = endAlign + 'Right';
+      } else {
+        startAlign = startAlign + 'Right';
+        endAlign = endAlign + 'Left';
+      }
+      // fromSpot
+      args.push(go.Spot[startAlign]);
+      // toSpot
+      args.push(go.Spot[endAlign]);
     }
 
     return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
@@ -141,6 +171,7 @@ export class DiagramTemplatesService {
             return 'RoundedRectangle';
           }
         }),
+        // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
@@ -311,6 +342,7 @@ export class DiagramTemplatesService {
         fromLinkableDuplicates: true,
         toLinkableDuplicates: true
       },
+      // Bind stroke to multicoloured brush based on work packages impacted by
       new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
         return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
       }.bind(this))
@@ -481,6 +513,7 @@ export class DiagramTemplatesService {
           fromLinkableDuplicates: false,
           toLinkableDuplicates: false
         },
+        // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
@@ -643,6 +676,7 @@ export class DiagramTemplatesService {
             return 'InternalStorage';
           }
         }),
+        // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
@@ -835,6 +869,7 @@ export class DiagramTemplatesService {
           stroke: 'black',
           strokeWidth: 2.5
         },
+        // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
@@ -939,6 +974,7 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),

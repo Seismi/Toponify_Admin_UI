@@ -238,13 +238,21 @@ export class GojsCustomObjectsService {
     );
   }
 
+  // Create a linear gradient brush through the provided colours
+  // Inputs:
+  //    colours - array of colours to go through
+  //    fromSpot - spot where brush should start
+  //    toSpot - spot brush should end
   createCustomBrush(colours: string[], fromSpot = go.Spot.Top, toSpot = go.Spot.Bottom): go.Brush {
 
+    // Replace any nulls in colours array with default black
     colours = colours.map(function(colour) {return colour || 'black'; });
 
-    if (colours.length === 1) {return $(go.Brush, {color: colours[0]}); }
-
+    // Parameters for brush
     const newBrushParams: any = {};
+
+    // -- Triple up colours in array in order to ensure less gradual --
+    // -- transition between colours --
     const temp: string[] = [];
 
     colours.forEach(function(colour) {
@@ -255,10 +263,14 @@ export class GojsCustomObjectsService {
 
     colours = temp;
 
+    // -- End of tripling up process --
+
+    // Distribute points for colours evenly across the brush
     colours.forEach(function(colour, index) {
       newBrushParams[String(index / (colours.length - 1))] = colour;
     });
 
+    // Set start and end spots for the brush
     newBrushParams.start = fromSpot;
     newBrushParams.end = toSpot;
 
