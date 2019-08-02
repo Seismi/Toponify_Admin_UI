@@ -248,14 +248,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   partsSelected(parts: go.Part[]) {
 
-    if(parts.length > 1) {
-      for (let i = 0; i < parts.length; i++) {
-        if (this.selectedMultipleNodes.indexOf(parts[i].data) === -1) {
-          this.selectedMultipleNodes.push(parts[i].data);
-        }
-      }
-    }
-
     if (parts.length < 2) {
       const part = parts[0];
 
@@ -301,6 +293,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     } else {
       this.objectSelected = false;
       this.multipleSelected = true;
+    }
+
+    // Multiple selection
+    if(parts.length > 1) {
+      for (let i=0; i<parts.length; i++) {
+        // Prevent select links on multiple selection
+        if(parts[i].data.category === 'data' || parts[i].data.category === 'master data') {
+          parts[i].isSelected = false;
+        } else {
+          // Select node and prevent to push duplicate values
+          if (this.selectedMultipleNodes.indexOf(parts[i].data) === -1) {
+            this.selectedMultipleNodes.push(parts[i].data);
+          }
+        }
+      }
     }
 
   }
