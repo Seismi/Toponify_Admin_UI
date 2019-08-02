@@ -249,9 +249,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   partsSelected(parts: go.Part[]) {
 
     if(parts.length > 1) {
-      parts.forEach(part => {
-        this.selectedMultipleNodes.push(part.data);
-      })
+      for (let i = 0; i < parts.length; i++) {
+        if (this.selectedMultipleNodes.indexOf(parts[i].data) === -1) {
+          this.selectedMultipleNodes.push(parts[i].data);
+        }
+      }
     }
 
     if (parts.length < 2) {
@@ -293,6 +295,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       } else {
         this.objectSelected = false;
         this.multipleSelected = false;
+        this.selectedMultipleNodes = [];
       }
 
     } else {
