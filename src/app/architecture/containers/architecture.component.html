@@ -62,6 +62,7 @@
         [links]="links | layer:{byId: false}"
         [workpackageDetail]="workpackageDetail"
         [selectedWorkPackages]= "selectedWorkPackages$ | async"
+        [workpackages]="workpackage$ | async"
         [viewLevel]="viewLevel$ | async"
         (partsSelected)="partsSelected($event)"
         (modelChanged)="modelChanged($event)"
