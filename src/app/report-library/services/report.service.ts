@@ -21,8 +21,9 @@ export class ReportService {
     return this.http.get<ReportLibraryApiResponse>(`/reports`, {params: params});
   }
 
-  getReport(id: string): Observable<ReportDetailApiRespoonse> {
-    return this.http.get<ReportDetailApiRespoonse>(`/reports/${id}`);
+  getReport(id: string, queryParams?: GetReportLibraryRequestQueryParams): Observable<ReportDetailApiRespoonse> {
+    const params = this.toHttpParams(queryParams);
+    return this.http.get<ReportDetailApiRespoonse>(`/reports/${id}`, {params: params});
   }
 
   addReport(workPackageId: string, request: any): Observable<any> {

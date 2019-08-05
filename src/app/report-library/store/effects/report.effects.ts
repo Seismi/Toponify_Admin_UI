@@ -39,8 +39,8 @@ export class ReportEffects {
   loadReport$ = this.actions$.pipe(
     ofType<ReportActions.LoadReport>(ReportActionTypes.LoadReport),
     map(action => action.payload),
-    switchMap((payload: any) => {
-      return this.reportService.getReport(payload).pipe(
+    switchMap((payload: { id: string, queryParams?: GetReportLibraryRequestQueryParams }) => {
+      return this.reportService.getReport(payload.id, payload.queryParams).pipe(
         switchMap((response: any) => [new ReportActions.LoadReportSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.LoadReportFail(error)))
       );

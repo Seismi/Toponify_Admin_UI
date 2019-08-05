@@ -38,7 +38,7 @@ export class LoadReportsFail implements Action {
 
 export class LoadReport implements Action {
     readonly type = ReportActionTypes.LoadReport;
-    constructor(public payload: string ) { }
+    constructor(public payload: { id: string, queryParams?: any }) { }
 }
 
 export class LoadReportSuccess implements Action {
