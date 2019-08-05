@@ -23,32 +23,23 @@ export class WorkPackageTreeModalComponent implements OnInit {
   constructor(
     public workPackageDiagramService: WorkPackageDiagramService,
     public dialogRef: MatDialogRef<WorkPackageTreeModalComponent>,
+    // Workpackage data sent from workpackage.components.ts
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     // // Place GoJS license key here:
     // // (go as any).licenseKey = '...'
     this.diagram = new go.Diagram();
     this.diagram.initialContentAlignment = go.Spot.Center;
-    // this.diagram.allowSelect = false;
+    this.diagram.allowSelect = false;
   }
 
   ngOnInit() {
+    // Initialise diagram with
     this.diagram.div = this.diagramRef.nativeElement;
     this.diagram.nodeTemplate = this.workPackageDiagramService.getNodeTemplate();
-    this.diagram.linkTemplate =
-      $(go.Link,
-        $(go.Shape,
-          {strokeWidth: 1, stroke: 'black'}
-        )
-      );
+    this.diagram.linkTemplate = this.workPackageDiagramService.getLinkTemplate();
     this.diagram.layout = this.workPackageDiagramService.getLayout();
-    this.diagram.model = $(go.GraphLinksModel, {
-      nodeKeyProperty: 'id',
-      isReadOnly: true,
-      nodeDataArray: this.data.workpackages,
-      linkDataArray: this.workPackageDiagramService.getLinksForPackages(this.data.workpackages)
-    });
-
+    this.diagram.model = this.workPackageDiagramService.getModel(this.data.workpackages);
   }
 
   onClose() {
