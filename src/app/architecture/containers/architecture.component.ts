@@ -363,7 +363,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   handleUpdateNodeLocation(data: {node: any, links: any[]}) {
 
     // Do not update back end if using default layout
-    if (!('id' in this.layout)) {
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
 
