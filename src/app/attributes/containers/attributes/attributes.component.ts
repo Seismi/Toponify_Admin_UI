@@ -7,8 +7,8 @@ import { LoadAttributes } from '../../store/actions/attributes.actions';
 import * as fromAttributeEntities from '../../store/selectors/attributes.selector';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackages, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
+import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Router } from '@angular/router';
 
 @Component({
@@ -31,15 +31,23 @@ export class AttributesComponent implements OnInit {
         private router: Router) { }
 
     ngOnInit() {
-        // Attributes
-        this.store.dispatch(new LoadAttributes({}));
+        this.workPackageStore.dispatch(new LoadWorkPackages({}));
+        this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
+        this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+            const workPackageIds = workpackages.map(item => item.id)
+            this.setWorkPackage(workPackageIds);
+        })
+
         this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe((data) => {
             this.attribute = data;
         });
+    }
 
-        // Work Packages
-        this.workPackageStore.dispatch(new LoadWorkPackages({}));
-        this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
+    setWorkPackage(workpackageIds: string[] = []) {
+        const queryParams = {
+          workPackageQuery: workpackageIds
+        };
+        this.store.dispatch(new LoadAttributes(queryParams));
     }
 
     get categoryTableData() {
@@ -50,12 +58,16 @@ export class AttributesComponent implements OnInit {
         this.router.navigate(['/attributes-and-rules', entry.id])
     }
 
+    onSelectWorkPackage(id) {
+        this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
+    }
+
     openLeftTab(i) {
         this.selectedLeftTab = i;
         if(this.selectedLeftTab === i) {
           this.showOrHidePane = true;
         }
-      }
+    }
     
     hideLeftPane() {
         this.showOrHidePane = false;
