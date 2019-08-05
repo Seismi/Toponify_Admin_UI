@@ -262,6 +262,18 @@ export class DiagramChangesService {
         }, this);
       }
 
+      // TEST
+      nodeArray.forEach(function(node) {
+        const testArray = [];
+        const size = Math.random() * 5;
+
+        for (let i = 1; i < size; i++) {
+          testArray.push({});
+        }
+
+        node.relatedRadios = testArray;
+      });
+
       /*/ In map view, sort the nodes so that the group representing the source occurs first in the array
       if (filter.filterLevel === Level.map) {
         nodeArray.sort(function(a, b) {

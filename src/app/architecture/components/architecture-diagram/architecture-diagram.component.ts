@@ -40,7 +40,8 @@ const standardDisplayOptions = {
   dataLinks: true,
   masterDataLinks: true,
   linkName: false,
-  linkLabel: false
+  linkLabel: false,
+  showRadioAlerts: true
 };
 
 @Component({
@@ -54,7 +55,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   private partsSelectedRef: Subscription = null;
   private modelChangeRef: Subscription = null;
 
-  @ViewChild('diagramDiv')
   @ViewChild('diagramDiv')
   private diagramRef: ElementRef;
 
