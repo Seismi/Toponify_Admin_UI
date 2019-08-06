@@ -35,7 +35,11 @@ export class ReportLibraryComponent implements OnInit {
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-      const workPackageIds = workpackages.map(item => item.id)
+      const workPackageIds = workpackages.map(item => item.id);
+      const selected = workpackages.map(item => item.selected);
+      if(!selected.length) {
+        this.router.navigate(['report-library']);
+      }
       this.setWorkPackage(workPackageIds);
     })
   }
