@@ -298,7 +298,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Multiple selection
     if(parts.length > 1) {
       for (let i=0; i<parts.length; i++) {
-        if(parts[i].data.category === 'data' || parts[i].data.category === 'master data') {
+        if(parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
           // links
         } else {
           // Push only objects (not links)
