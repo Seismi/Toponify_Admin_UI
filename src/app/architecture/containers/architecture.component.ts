@@ -298,11 +298,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Multiple selection
     if(parts.length > 1) {
       for (let i=0; i<parts.length; i++) {
-        // Prevent select links on multiple selection
         if(parts[i].data.category === 'data' || parts[i].data.category === 'master data') {
-          parts[i].isSelected = false;
+          // links
         } else {
-          // Select node and prevent to push duplicate values
+          // Push only objects (not links)
           if (this.selectedMultipleNodes.indexOf(parts[i].data) === -1) {
             this.selectedMultipleNodes.push(parts[i].data);
           }
