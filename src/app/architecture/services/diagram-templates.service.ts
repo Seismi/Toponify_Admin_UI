@@ -209,7 +209,8 @@ export class DiagramTemplatesService {
           'Vertical',
           {
             row: 0,
-            alignment: go.Spot.TopCenter
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
           this.getDependencyExpandButton(),
           // System name
@@ -276,7 +277,6 @@ export class DiagramTemplatesService {
             $(go.TextBlock,
               {
                 text: 'Data Sets',
-                row: 1,
                 alignment: go.Spot.Center,
                 stroke: 'black',
                 font: 'bold 15.25px calibri',
@@ -313,7 +313,7 @@ export class DiagramTemplatesService {
             visible: false
           },
           new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadios.length > 0) && node.diagram.model.modelData.showRadioAlerts;
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
           }).ofObject(),
           $(go.Shape,
             'circle',
@@ -328,9 +328,7 @@ export class DiagramTemplatesService {
               stroke: 'white',
               font: '12px calibri'
             },
-           new go.Binding('text', 'relatedRadios', function (radios) {
-             return radios.length.toString();
-           })
+           new go.Binding('text', 'relatedRadioCount')
           )
         )
       )
@@ -392,7 +390,8 @@ export class DiagramTemplatesService {
           'Vertical',
           {
             alignment: go.Spot.TopCenter,
-            row: 0
+            row: 0,
+            minSize: new go.Size(90, NaN)
           },
           this.getDependencyExpandButton(),
           $(go.TextBlock,
@@ -511,34 +510,32 @@ export class DiagramTemplatesService {
             ),
             new go.Binding('visible', 'nextLevel').ofModel()
           )
-        )
-      ),
-      $(go.Panel,
-        'Auto',
-        {
-          row: 1,
-          alignment: go.Spot.BottomRight,
-          visible: false
-        },
-        new go.Binding('visible', '', function (node) {
-          return (node.data.relatedRadios.length > 0) && node.diagram.model.modelData.showRadioAlerts;
-        }).ofObject(),
-        $(go.Shape,
-          'circle',
-          {
-            fill: 'red',
-            desiredSize: new go.Size(25, 25)
-          }
         ),
-        $(go.TextBlock,
+        $(go.Panel,
+          'Auto',
           {
-            textAlign: 'center',
-            stroke: 'white',
-            font: '12px calibri'
+            row: 1,
+            alignment: go.Spot.BottomRight,
+            visible: false
           },
-         new go.Binding('text', 'relatedRadios', function (radios) {
-           return radios.length.toString();
-         })
+          new go.Binding('visible', '', function (node) {
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+          }).ofObject(),
+          $(go.Shape,
+            'circle',
+            {
+              fill: 'red',
+              desiredSize: new go.Size(25, 25)
+            }
+          ),
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'white',
+              font: '12px calibri'
+            },
+           new go.Binding('text', 'relatedRadioCount')
+          )
         )
       )
     );
@@ -611,8 +608,7 @@ export class DiagramTemplatesService {
           'Vertical',
           {
             alignment: go.Spot.TopCenter,
-            minSize: new go.Size(100, 100),
-            margin: 5
+            minSize: new go.Size(90, NaN)
           },
           this.getDependencyExpandButton(),
           $(go.TextBlock,
@@ -724,7 +720,7 @@ export class DiagramTemplatesService {
             visible: false
           },
           new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadios.length > 0) && node.diagram.model.modelData.showRadioAlerts;
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
           }).ofObject(),
           $(go.Shape,
             'circle',
@@ -739,9 +735,7 @@ export class DiagramTemplatesService {
               stroke: 'white',
               font: '12px calibri'
             },
-           new go.Binding('text', 'relatedRadios', function (radios) {
-             return radios.length.toString();
-           })
+           new go.Binding('text', 'relatedRadioCount')
           )
         )
       )
@@ -799,11 +793,9 @@ export class DiagramTemplatesService {
         }
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
-          minSize: new go.Size(100, 100),
-          margin: 5
+          minSize: new go.Size(100, 100)
         },
         // Ensure that the panel does not overlap the border lines
         // on the shapes for list and structure reporting elements
@@ -817,99 +809,131 @@ export class DiagramTemplatesService {
             }
           }
         ),
-        this.getDependencyExpandButton(),
-        // Reporting concept name
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
-        ),
-        // Reporting concept description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // Reporting concept tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'tags',
-            function (tags) {
-              return tags ? ('Tags - ' + tags) : '';
-            }
-          ),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // Reporting concept owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Attribute list header
+          this.getDependencyExpandButton(),
+          // Reporting concept name
           $(go.TextBlock,
             {
-              text: 'Attributes',
-              row: 1,
-              alignment: go.Spot.Center,
+              textAlign: 'center',
               stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0),
-              visible: false
+              font: 'bold 16px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
             },
-            // Hide attributes header if Reporting concept has no attributes
-            new go.Binding('visible', 'attributes',
-              function (attributes) {
-                return attributes.length > 0;
-              }
-            )
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'name').ofModel()
           ),
-          // Attribute list
+          // Reporting concept description
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'italic 15px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'description'),
+            new go.Binding('visible', 'description').ofModel()
+          ),
+          // Reporting concept tags
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'tags',
+              function (tags) {
+                return tags ? ('Tags - ' + tags) : '';
+              }
+            ),
+            new go.Binding('visible', 'tags').ofModel()
+          ),
+          // Reporting concept owners
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'owner',
+              function (owner) {
+                return owner ? ('Owner - ' + owner) : '';
+              }
+            ),
+            new go.Binding('visible', 'owner').ofModel()
+          ),
           $(go.Panel, 'Vertical',
             {
-              name: 'Attribute_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
+              stretch: go.GraphObject.Horizontal
             },
-            new go.Binding('itemArray', 'attributes')
+            // Attribute list header
+            $(go.TextBlock,
+              {
+                text: 'Attributes',
+                alignment: go.Spot.Center,
+                stroke: 'black',
+                font: 'bold 15.25px calibri',
+                margin: new go.Margin(5, 0, 0, 0),
+                visible: false
+              },
+              // Hide attributes header if Reporting concept has no attributes
+              new go.Binding('visible', 'attributes',
+                function (attributes) {
+                  return attributes.length > 0;
+                }
+              )
+            ),
+            // Attribute list
+            $(go.Panel, 'Vertical',
+              {
+                name: 'Attribute_List',
+                padding: 3,
+                alignment: go.Spot.TopLeft,
+                defaultAlignment: go.Spot.Left,
+                stretch: go.GraphObject.Horizontal,
+                itemCategoryProperty: '',
+                itemTemplate: this.getItemTemplate()
+              },
+              new go.Binding('itemArray', 'attributes')
+            ),
+            new go.Binding('visible', 'nextLevel').ofModel()
+          )
+        ),
+        $(go.Panel,
+          'Auto',
+          {
+            row: 1,
+            alignment: go.Spot.BottomRight,
+            visible: false
+          },
+          new go.Binding('visible', '', function (node) {
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+          }).ofObject(),
+          $(go.Shape,
+            'circle',
+            {
+              fill: 'red',
+              desiredSize: new go.Size(25, 25)
+            }
           ),
-          new go.Binding('visible', 'nextLevel').ofModel()
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'white',
+              font: '12px calibri'
+            },
+           new go.Binding('text', 'relatedRadioCount')
+          )
         )
       )
     );
