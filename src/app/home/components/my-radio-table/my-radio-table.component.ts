@@ -1,17 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-
-export interface PeriodicElement {
-  empty: string;
-  type: string;
-  name: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {empty: 'New', type: 'Risk', name: 'HFM and Planning can fall out of alignment'},
-  {empty: 'New', type: 'Workpackage', name: 'Governing HFM to Planning mappings from DRM'},
-  {empty: 'Updated', type: 'Opportunity', name: 'Mappings from HFM to Planning not maintained using DRM'},
-];
+import { RadioEntity } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-my-radio-table',
@@ -19,13 +8,16 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./my-radio-table.component.scss']
 })
 export class MyRadioTableComponent implements OnInit {
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  ngOnInit() {
+  @Input()
+  set data(data: any[]) {
+    this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
   }
 
-  displayedColumns: string[] = ['empty', 'type', 'name', 'star'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  ngOnInit() { }
+
+  displayedColumns: string[] = ['date', 'name', 'navigate'];
+  public dataSource: MatTableDataSource<RadioEntity>;
 }
