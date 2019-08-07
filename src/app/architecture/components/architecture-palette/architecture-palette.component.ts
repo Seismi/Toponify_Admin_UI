@@ -37,7 +37,8 @@ export class ArchitecturePaletteComponent implements OnInit {
       dataLinks: true,
       masterDataLinks: true,
       linkName: false,
-      linkLabel: false
+      linkLabel: false,
+      relatedRadioAlerts: false
     };
 
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;

@@ -40,7 +40,8 @@ const standardDisplayOptions = {
   dataLinks: true,
   masterDataLinks: true,
   linkName: false,
-  linkLabel: false
+  linkLabel: false,
+  showRadioAlerts: true
 };
 
 @Component({
