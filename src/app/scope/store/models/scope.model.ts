@@ -34,7 +34,7 @@ export interface ScopeDetails {
     owners?: (OwnersEntityOrViewersEntity)[] | null;
     viewers?: (OwnersEntityOrViewersEntity)[] | null;
     layerFilter?: string;
-    include?: Include;
+    include?: (Include)[] | null;
     layouts?: Layout;
 }
   
@@ -51,9 +51,9 @@ export interface Include {
     layer: string;
     description: string;
     tags: string;
-    locations: ((LocationsEntityEntity)[] | null)[] | null;
-    owners: (OwnersEntityOrViewersEntity)[] | null;
-    descendants: (Descendants)[] | null;
+    locations?: ((LocationsEntityEntity)[] | null)[] | null;
+    owners?: (OwnersEntityOrViewersEntity)[] | null;
+    descendants?: (Descendants)[] | null;
 }
 
 export interface LocationsEntityEntity {

@@ -8,6 +8,7 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 export class RightSideBarComponent {
 
   @Input() objectSelected = false;
+  @Input() multipleSelected = false;
 
   @Output()
   rightTab = new EventEmitter();

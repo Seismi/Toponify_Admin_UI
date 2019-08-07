@@ -46,6 +46,7 @@ import { NodeEffects } from './store/effects/node.effects';
 import { RadioTableInArchitectureComponent } from './components/radio-table/radio-table.component';
 import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
+import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layouts.module';
 
 
 @NgModule({
@@ -77,6 +78,7 @@ import { TableCollapseComponent } from '@app/attributes/components/category-tabl
     LayoutModule,
     MatGridListModule,
     MatSelectModule,
+    ScopesAndLayoutsModule,
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
   ],
