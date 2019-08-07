@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { State as ReportState} from '../store/reducers/report.reducer'
+import { State as ReportState} from '../store/reducers/report.reducer';
 import { LoadReports } from '../store/actions/report.actions';
 import { Observable } from 'rxjs';
 import { ReportLibrary } from '../store/models/report.model';
@@ -19,7 +19,6 @@ import { Router } from '@angular/router';
 
 export class ReportLibraryComponent implements OnInit {
 
-  reportSelected: boolean;
   reportEntities$: Observable<ReportLibrary[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   selectedLeftTab: number;
@@ -33,11 +32,9 @@ export class ReportLibraryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Reports
     this.store.dispatch(new LoadReports());
     this.reportEntities$ = this.store.pipe(select(getReportEntities));
 
-    // Work Packages
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
   }

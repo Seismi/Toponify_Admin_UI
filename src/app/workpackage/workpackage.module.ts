@@ -8,7 +8,8 @@ import {
   MatPaginatorModule,
   MatSortModule,
   MatTableModule,
-  MatDialogModule
+  MatDialogModule,
+  MatIconModule
   } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -26,6 +27,7 @@ import { WorkPackageModalComponent } from './containers/new-workpackage-modal/ne
 import { NewWorkpackageFormComponent } from './components/new-workpackage-form/new-workpackage-form.component';
 import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage-modal/delete-workpackage.component';
 import { WorkpackageDetailsComponent } from './containers/workpackage-details/workpackage-details.component';
+import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-modal/workpackage-tree-modal.component';
 
 
 
@@ -37,6 +39,7 @@ import { WorkpackageDetailsComponent } from './containers/workpackage-details/wo
     MatButtonModule,
     MatSortModule,
     MatDialogModule,
+    MatIconModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
@@ -57,9 +60,10 @@ import { WorkpackageDetailsComponent } from './containers/workpackage-details/wo
     WorkPackageModalComponent,
     NewWorkpackageFormComponent,
     DeleteWorkPackageModalComponent,
-    WorkpackageDetailsComponent
+    WorkpackageDetailsComponent,
+    WorkPackageTreeModalComponent
   ],
-  entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent],
+  entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent, WorkPackageTreeModalComponent],
   providers: [
     WorkPackageService
   ],

@@ -32,5 +32,4 @@ export class ReportService {
     return this.http.delete<any>(`/workpackages/${workPackageId}/reports/${reportId}`);
   }
 
-
 }

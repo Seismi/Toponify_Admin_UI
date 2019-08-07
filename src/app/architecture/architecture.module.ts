@@ -39,7 +39,6 @@ import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
-import { RightSideBarComponent } from '../core/layout/right-sidebar/right-sidebar.component';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
 import { EffectsModule } from '@ngrx/effects';
@@ -58,7 +57,6 @@ import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layou
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    CoreModule,
     WorkPackageModule,
     RadioModule,
     DocumentationStandardsModule,
@@ -106,7 +104,6 @@ import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layou
       LayerPipe,
       AttributeModalComponent,
       AttributeDetailComponent,
-      RightSideBarComponent,
       RadioTableInArchitectureComponent,
       CategoryTableComponent,
       TableCollapseComponent

@@ -9,6 +9,8 @@ import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
+import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
+import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-diagram.service';
 
 @Component({
   selector: 'app-workpackage',
@@ -20,11 +22,12 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
   workpackageEntities$: Observable<WorkPackageEntity[]>;
+  workpackagesSubscription: Subscription;
   selectedWorkPackage$: Subscription;
   selectedWorkPackage: WorkPackageEntity;
   workpackageSelected: boolean;
   workpackageId: string;
-  workpackage: WorkPackageEntity[];
+  workpackages: WorkPackageEntity[];
 
   constructor(private store: Store<WorkPackageState>,
               private router: Router,
@@ -34,6 +37,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.dispatch(new LoadWorkPackages({}));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getWorkPackageEntities));
+    this.workpackagesSubscription = this.workpackageEntities$.subscribe(workpackages => (this.workpackages = workpackages));
     this.subscriptions.push(this.store.pipe(select(fromWorkPackagesEntities.getSelectedWorkPackage))
       .subscribe(workpackage => {
         // TODO: enable when api fixed. Currently returns list instead of details
@@ -47,5 +51,17 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
 
   onSelectWorkpackage(row: any) {
     this.router.navigate(['work-packages', row.id]);
+  }
+
+  onOpenWorkPackageTree() {
+    this.dialog.open(WorkPackageTreeModalComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
+      data: {
+        workpackages: this.workpackages
+      }
+    });
   }
 }

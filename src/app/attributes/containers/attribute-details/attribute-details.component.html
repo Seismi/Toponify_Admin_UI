@@ -1,27 +1,24 @@
 <smi-right-sidebar
     *ngIf="showOrHideRightPane"
-    [objectSelected]="reportSelected"
+    [objectSelected]="true"
     (rightTab)="openRightTab($event)">
 </smi-right-sidebar>
 
 <app-model-container *ngIf="!showOrHideRightPane">
-    <app-model-sidebar [minWidth]="400" [maxWidth]="600" [isLast]="true">
+    <app-model-sidebar [maxWidth]="600" [isLast]="true">
         <p class="rightPane">
             <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
                 <mat-tab label="Details">
-                    <smi-report-library-detail
-                        [group]="reportDetailForm"
-                        [dataSets]="report?.dataSets"
-                        [owners]="report?.owners"
-                        [dimensions]="report?.dimensions"
-                        [reportingConcepts]="report?.reportingConcepts">
-                    </smi-report-library-detail>
+                    <smi-object-details-form 
+                        [group]="objectDetailsForm" 
+                        [isEditable]="isEditable"
+                        (editDetails)="onEditDetails($event)" 
+                        (cancel)="onCancelEdit($event)"
+                        (saveAttribute)="onSaveAttribute($event)" 
+                        [workPackageIsEditable]="true">
+                    </smi-object-details-form>
                 </mat-tab>
-                <mat-tab label="Attributes">
-                    <smi-attr-and-rules-table
-                        [data]="report?.attributes">
-                    </smi-attr-and-rules-table>
-                </mat-tab>
+                <mat-tab label="Attributes"></mat-tab>
                 <mat-tab label="Properties"></mat-tab>
                 <mat-tab label="RADIO"></mat-tab>
                 <mat-tab label="Work Packages"></mat-tab>

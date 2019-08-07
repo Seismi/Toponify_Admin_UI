@@ -150,6 +150,16 @@ export class GojsCustomObjectsService {
             thisService.zoomSource.next('Out');
           }
         }
+      ),
+      // Toggle RADIO alert on nodes
+      $('ContextMenuButton',
+        $(go.TextBlock, 'show / hide RADIO alert', {}),
+        {
+          click: function(event, object) {
+            const modelData = event.diagram.model.modelData;
+            event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
+          }
+        }
       )
     );
   }
@@ -236,5 +246,44 @@ export class GojsCustomObjectsService {
         })
       )
     );
+  }
+
+  // Create a linear gradient brush through the provided colours
+  // Inputs:
+  //    colours - array of colours to go through
+  //    fromSpot - spot where brush should start
+  //    toSpot - spot brush should end
+  createCustomBrush(colours: string[], fromSpot = go.Spot.Top, toSpot = go.Spot.Bottom): go.Brush {
+
+    // Replace any nulls in colours array with default black
+    colours = colours.map(function(colour) {return colour || 'black'; });
+
+    // Parameters for brush
+    const newBrushParams: any = {};
+
+    // -- Triple up colours in array in order to ensure less gradual --
+    // -- transition between colours --
+    const temp: string[] = [];
+
+    colours.forEach(function(colour) {
+      temp.push(colour);
+      temp.push(colour);
+      temp.push(colour);
+    });
+
+    colours = temp;
+
+    // -- End of tripling up process --
+
+    // Distribute points for colours evenly across the brush
+    colours.forEach(function(colour, index) {
+      newBrushParams[String(index / (colours.length - 1))] = colour;
+    });
+
+    // Set start and end spots for the brush
+    newBrushParams.start = fromSpot;
+    newBrushParams.end = toSpot;
+
+    return $(go.Brush, 'Linear', newBrushParams);
   }
 }
