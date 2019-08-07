@@ -1076,7 +1076,6 @@ export class DiagramTemplatesService {
         curve: go.Link.JumpOver,
         relinkableFrom: true,
         relinkableTo: true,
-        // contextMenu: PartContextMenu,
         fromEndSegmentLength: 20,
         toEndSegmentLength: 20,
         // Position by layout in palette
