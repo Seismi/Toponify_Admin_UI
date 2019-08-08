@@ -40,7 +40,7 @@ export class AttributesComponent implements OnInit {
               this.router.navigate(['/attributes-and-rules']);
             }
             this.setWorkPackage(workPackageIds);
-        })
+        });
 
         this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe((data) => {
             this.attribute = data;
@@ -58,21 +58,21 @@ export class AttributesComponent implements OnInit {
         return this.attribute;
     }
 
-    onSelectAttribute(entry) {
-        this.router.navigate(['/attributes-and-rules', entry.id])
+    onSelectAttribute(entry: AttributeEntity) {
+        this.router.navigate(['/attributes-and-rules', entry.id]);
     }
 
-    onSelectWorkPackage(id) {
+    onSelectWorkPackage(id: string) {
         this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
     }
 
-    openLeftTab(i) {
-        this.selectedLeftTab = i;
-        if(this.selectedLeftTab === i) {
+    openLeftTab(index: number) {
+      this.selectedLeftTab = index;
+      if (this.selectedLeftTab === index) {
           this.showOrHidePane = true;
         }
     }
-    
+
     hideLeftPane() {
         this.showOrHidePane = false;
     }
