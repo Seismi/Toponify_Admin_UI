@@ -52,13 +52,13 @@ export class ReportLibraryComponent implements OnInit {
     this.reportEntities$ = this.store.pipe(select(getReportEntities));
   }
 
-  onSelectReport(row) {
+  onSelectReport(row: ReportLibrary) {
     this.router.navigate(['report-library', row.id]);
   }
 
-  openLeftTab(i) {
-    this.selectedLeftTab = i;
-    if(this.selectedLeftTab === i) {
+  openLeftTab(index: number) {
+    this.selectedLeftTab = index;
+    if (this.selectedLeftTab === index) {
       this.showOrHidePane = true;
     }
   }
@@ -67,7 +67,7 @@ export class ReportLibraryComponent implements OnInit {
     this.showOrHidePane = false;
   }
 
-  onSelectWorkPackage(id) {
+  onSelectWorkPackage(id: string) {
     this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
   }
   
