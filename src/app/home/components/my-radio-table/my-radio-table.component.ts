@@ -18,6 +18,6 @@ export class MyRadioTableComponent implements OnInit {
 
   ngOnInit() { }
 
-  displayedColumns: string[] = ['date', 'name', 'navigate'];
+  displayedColumns: string[] = ['date', 'type', 'name', 'navigate'];
   public dataSource: MatTableDataSource<RadioEntity>;
 }
