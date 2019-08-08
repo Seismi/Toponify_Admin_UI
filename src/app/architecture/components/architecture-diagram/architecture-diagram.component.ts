@@ -27,7 +27,8 @@ export const viewLevelMapping = {
   [2]: Level.dataSet,
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
-  [9]: Level.map
+  [9]: Level.map,
+  [10]: Level.usage
 };
 
 const standardDisplayOptions = {
@@ -54,7 +55,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   private partsSelectedRef: Subscription = null;
   private modelChangeRef: Subscription = null;
 
-  @ViewChild('diagramDiv')
   @ViewChild('diagramDiv')
   private diagramRef: ElementRef;
 
@@ -187,6 +187,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.linkTemplateMap.add(
       linkCategories.masterData,
       diagramTemplatesService.getLinkMasterDataTemplate()
+    );
+
+    this.diagram.linkTemplateMap.add(
+      '',
+      diagramTemplatesService.getLinkParentChildTemplate()
     );
 
     this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();

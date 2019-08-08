@@ -31,7 +31,7 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-sidebar 
+  <smi-left-sidebar
     *ngIf="!showOrHideLeftPane"
     (leftTab)="openLeftTab($event)"
     [workPackageIsEditable]="workPackageIsEditable">
@@ -39,6 +39,7 @@
   <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
     <p class="leftPane">
       <smi-left-panel
+        [viewLevel]="viewLevel$ | async"
         [data]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
@@ -72,9 +73,9 @@
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <smi-right-sidebar 
-    data-hook="right-sidebar" 
-    *ngIf="!showOrHideRightPane" 
+  <smi-right-sidebar
+    data-hook="right-sidebar"
+    *ngIf="!showOrHideRightPane"
     (rightTab)="openRightTab($event)"
     [objectSelected]="objectSelected">
   </smi-right-sidebar>

@@ -147,8 +147,10 @@ export class DiagramTemplatesService {
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        locationSpot: go.Spot.TopCenter,
+        locationObjectName: 'location panel',
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
+        movable: this.filterService.getFilter().level === Level.usage
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
@@ -198,6 +200,15 @@ export class DiagramTemplatesService {
           fromLinkableDuplicates: true,
           toLinkableDuplicates: true,
           name: 'shape'
+        }
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel,
+        {
+          alignment: go.Spot.TopCenter,
+          desiredSize: new go.Size(0, 0),
+          name: 'location panel'
         }
       ),
       $(go.Panel,
@@ -320,8 +331,10 @@ export class DiagramTemplatesService {
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        locationSpot: go.Spot.TopCenter,
+        locationObjectName: 'location panel',
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
+        movable: this.filterService.getFilter().level === Level.usage
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
@@ -346,6 +359,15 @@ export class DiagramTemplatesService {
       new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
         return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
       }.bind(this))
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel,
+        {
+          alignment: go.Spot.TopCenter,
+          desiredSize: new go.Size(0, 0),
+          name: 'location panel'
+        }
       ),
       $(go.Panel,
         'Vertical',
@@ -489,8 +511,10 @@ export class DiagramTemplatesService {
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        locationSpot: go.Spot.TopCenter,
+        locationObjectName: 'location panel',
+        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
+        movable: this.filterService.getFilter().level === Level.usage
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
@@ -531,6 +555,15 @@ export class DiagramTemplatesService {
             return go.Spot.AllSides;
           }
         }.bind(this))
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel,
+        {
+          alignment: go.Spot.TopCenter,
+          desiredSize: new go.Size(0, 0),
+          name: 'location panel'
+        }
       ),
       $(go.Panel,
         'Vertical',
@@ -658,7 +691,9 @@ export class DiagramTemplatesService {
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top
+        locationSpot: go.Spot.TopCenter,
+        locationObjectName: 'location panel',
+        movable: this.filterService.getFilter().level === Level.usage
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
@@ -692,6 +727,15 @@ export class DiagramTemplatesService {
           name: 'shape',
           fromLinkableDuplicates: false,
           toLinkableDuplicates: false
+        }
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel,
+        {
+          alignment: go.Spot.TopCenter,
+          desiredSize: new go.Size(0, 0),
+          name: 'location panel'
         }
       ),
       $(go.Panel,
@@ -1008,6 +1052,23 @@ export class DiagramTemplatesService {
             new go.Binding('visible', 'linkLabel').ofModel()
           )
         ) : {},
+    );
+  }
+
+  getLinkParentChildTemplate() {
+    return $(go.Link,
+      {
+        routing: go.Link.AvoidsNodes,
+        selectable: false,
+        isLayoutPositioned: true
+      },
+      $(go.Shape,
+        {
+          isPanelMain: true,
+          stroke: 'black',
+          strokeWidth: 1.5
+        }
+      )
     );
   }
 

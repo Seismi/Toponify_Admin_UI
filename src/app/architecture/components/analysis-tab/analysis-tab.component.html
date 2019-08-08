@@ -19,18 +19,19 @@
             <mat-checkbox checked="true" (change)="checkboxClicked($event, 'nextLevel')">Next level</mat-checkbox>
         </mat-list-item>
     </mat-list><br>
-
-    <p>Link Display:</p>
-    <mat-list role="list">
-        <mat-list-item role="listitem">
-            <mat-checkbox checked="true" (change)="checkboxClicked($event, 'dataLinks')">Show Data Links</mat-checkbox>
-        </mat-list-item>
-        <mat-list-item role="listitem">
-            <mat-checkbox checked="true" (change)="checkboxClicked($event, 'masterDataLinks')">Show Master Data Links
-            </mat-checkbox>
-        </mat-list-item>
-        <mat-list-item role="listitem">
-            <mat-checkbox (change)="checkboxClicked($event, 'linkName')">Name</mat-checkbox>
-        </mat-list-item>
+    <div *ngIf="!(viewLevel===10)">
+      <p>Link Display:</p>
+      <mat-list role="list">
+          <mat-list-item role="listitem">
+              <mat-checkbox checked="true" (change)="checkboxClicked($event, 'dataLinks')">Show Data Links</mat-checkbox>
+          </mat-list-item>
+          <mat-list-item role="listitem">
+              <mat-checkbox checked="true" (change)="checkboxClicked($event, 'masterDataLinks')">Show Master Data Links
+              </mat-checkbox>
+          </mat-list-item>
+          <mat-list-item role="listitem">
+              <mat-checkbox (change)="checkboxClicked($event, 'linkName')">Name</mat-checkbox>
+          </mat-list-item>
     </mat-list>
+    </div>
 </div>

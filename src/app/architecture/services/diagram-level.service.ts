@@ -19,7 +19,8 @@ export enum Level {
   dimension = 'Dimension',
   reportingConcept = 'Reporting Concept',
   map = 'Map',
-  attribute = 'Attribute'
+  attribute = 'Attribute',
+  usage = 'usage'
 }
 
 // Numbers associated to each level in the data store
@@ -29,7 +30,8 @@ export const viewLevelNum = {
   [Level.dimension]: 3,
   [Level.reportingConcept]: 4,
   [Level.attribute]: 5,
-  [Level.map]: 9
+  [Level.map]: 9,
+  [Level.usage]: 10
 };
 
 export const lessDetailOrderMapping = {
@@ -109,15 +111,11 @@ export class DiagramLevelService implements OnDestroy {
   changeLevelWithFilter(event: any, object: go.Node): void {
     let newLevel: Level;
 
-    if ([nodeCategories.transactional,
-      nodeCategories.analytical,
-      nodeCategories.file,
-      nodeCategories.reporting,
-      nodeCategories.masterData].includes(object.data.category)) {
+    if (object.data.layer === layers.system) {
       newLevel = Level.dataSet;
-    } else if ([nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData].includes(object.data.category)) {
+    } else if (object.data.layer === layers.dataSet) {
       newLevel = Level.dimension;
-    } else if (object.data.category === nodeCategories.dimension) {
+    } else if (object.data.layer === layers.dimension) {
       newLevel = Level.reportingConcept;
     } else {
       return;
@@ -157,6 +155,10 @@ export class DiagramLevelService implements OnDestroy {
     });
   }
 
+  displayUsageView(event, object) {
+    this.filterService.setFilter({filterLevel: Level.usage, id: object.data.id});
+  }
+
   ngOnDestroy() {
     this.destroyUrlFiltering();
   }
@@ -183,7 +185,7 @@ export class DiagramLevelService implements OnDestroy {
 
     const paletteViewLinks = [];
 
-    if (level !== Level.map) {
+    if (![Level.map, Level.usage].includes(level)) {
       paletteViewLinks.push(
         {
           category: linkCategories.masterData,
@@ -249,17 +251,14 @@ export class DiagramLevelService implements OnDestroy {
           category: nodeCategories.masterData
         })
       ];
-    } else if (level === Level.dimension || level === Level.map) {
-
-      if (level !== Level.map) {
-        paletteViewNodes = [
-          new Node({ id: 'New Dimension',
-            name: 'New Dimension',
-            layer: layers.dimension,
-            category: nodeCategories.dimension
-          })
-        ];
-      }
+    } else if (level === Level.dimension) {
+      paletteViewNodes = [
+        new Node({ id: 'New Dimension',
+          name: 'New Dimension',
+          layer: layers.dimension,
+          category: nodeCategories.dimension
+        })
+      ];
     } else if (level === Level.reportingConcept) {
       paletteViewNodes = [
         new Node({ id: 'New List Reporting Concept',
@@ -296,8 +295,10 @@ export class DiagramLevelService implements OnDestroy {
       nodeKeyProperty: (level === Level.map) ? 'displayId' : 'id',
       linkKeyProperty: (level === Level.map) ? 'displayId' : 'id',
       nodeCategoryProperty: 'layer',
-      linkFromKeyProperty: (level === Level.map) ? 'sourceDisplayId' : 'sourceId',
-      linkToKeyProperty: (level === Level.map) ? 'targetDisplayId' : 'targetId',
+      linkFromKeyProperty: (level === Level.map) ? 'sourceDisplayId' :
+        (level === Level.usage) ? 'parentId' : 'sourceId',
+      linkToKeyProperty: (level === Level.map) ? 'targetDisplayId' :
+        (level === Level.usage) ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,
@@ -320,11 +321,13 @@ export class DiagramLevelService implements OnDestroy {
     } else {
 
       diagram.layout = $(go.LayeredDigraphLayout, {
-        setsPortSpots: false,
-        isOngoing: false, // Prevent rearranging diagram automatically
+        setsPortSpots: (level === Level.usage),
+        isOngoing: (level === Level.usage), // Prevent rearranging diagram automatically unless in usage view
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
-        isRouting: true
+        isRouting: true,
+        // Arrange nodes from top down in node usage view
+        direction: level === Level.usage ? 90 : 0
       });
     }
 
