@@ -5,9 +5,16 @@
 }
 
 
-button {
+.hide-pane-button {
     position: absolute;
     bottom: 12px;
     left: 16px;
     z-index: 99999;
 }
+
+.mat-raised-button {
+    position: relative;
+    margin-top: 20px;
+    left: 35%;
+}
+

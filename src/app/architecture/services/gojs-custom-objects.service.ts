@@ -150,6 +150,16 @@ export class GojsCustomObjectsService {
             thisService.zoomSource.next('Out');
           }
         }
+      ),
+      // Toggle RADIO alert on nodes
+      $('ContextMenuButton',
+        $(go.TextBlock, 'show / hide RADIO alert', {}),
+        {
+          click: function(event, object) {
+            const modelData = event.diagram.model.modelData;
+            event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
+          }
+        }
       )
     );
   }
