@@ -158,6 +158,11 @@ export class GojsCustomObjectsService {
           click: function(event, object) {
             const modelData = event.diagram.model.modelData;
             event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
+
+            // Redo layout for node usage view after updating RADIO alert display setting
+            if (thisService.filterService.getFilter().filterLevel === Level.usage) {
+              event.diagram.layout.isValidLayout = false;
+            }
           }
         }
       )
