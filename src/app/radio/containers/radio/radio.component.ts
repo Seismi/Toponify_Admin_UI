@@ -10,10 +10,6 @@ import { LoadRadios, AddRadioEntity } from '../../store/actions/radio.actions';
 import { getRadioEntities } from '../../store/selectors/radio.selector';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { Router } from '@angular/router';
-import { State as SearchState } from '@app/core/store/reducers/search.reducer';
-import { Search } from '@app/core/store/actions/search.actions';
-import { getSearchResults } from '@app/core/store/selectors/search.selectors';
-import { SearchEntity } from '@app/core/store/models/search.models';
 
 @Component({
     selector: 'smi-radio',
@@ -23,13 +19,11 @@ import { SearchEntity } from '@app/core/store/models/search.models';
 })
 export class RadioComponent implements OnInit {
 
-    search$: Observable<SearchEntity[]>;
     radio$: Observable<RadioEntity[]>;
     loading$: Observable<boolean>;
     radioId: string;
 
     constructor(
-        private searchStore: Store<SearchState>,
         private store: Store<RadioState>,
         public dialog: MatDialog,
         private router: Router) { }
@@ -64,17 +58,4 @@ export class RadioComponent implements OnInit {
         });
     }
 
-
-    onSearch(query: string) {
-        this.search(query);
-    }
-    
-    search(text: string) {
-        const queryParams = {
-          text: text
-        };
-
-        this.searchStore.dispatch(new Search(queryParams));
-        this.search$ = this.searchStore.pipe(select(getSearchResults));
-    }
 }

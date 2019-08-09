@@ -20,10 +20,6 @@ import { TeamValidatorService } from '@app/settings/components/team-detail/servi
 import { TeamModalComponent } from '../team-modal/team-modal.component';
 import { DeleteTeamAndMemberModalComponent } from '../delete-modal/delete-modal.component';
 import { MemberModalComponent } from '../member-modal/member-modal.component';
-import { State as SearchState } from '@app/core/store/reducers/search.reducer';
-import { Search } from '@app/core/store/actions/search.actions';
-import { getSearchResults } from '@app/core/store/selectors/search.selectors';
-import { SearchEntity } from '@app/core/store/models/search.models';
 
 @Component({
     selector: 'smi-settings',
@@ -34,7 +30,6 @@ import { SearchEntity } from '@app/core/store/models/search.models';
 
 export class SettingsComponent implements OnInit {
 
-    search$: Observable<SearchEntity[]>;
     loading$: Observable<boolean>;
     users$: Observable<User[]>;
     teams$: Observable<TeamEntity[]>
@@ -59,7 +54,6 @@ export class SettingsComponent implements OnInit {
     }
 
     constructor(
-        private searchStore: Store<SearchState>,
         private userStore: Store<UserState>,
         private teamStore: Store<TeamState>,
         private teamDetailService: TeamDetailService,
@@ -249,17 +243,5 @@ export class SettingsComponent implements OnInit {
             disableClose: false
         });
     }
-
-    onSearch(query: string) {
-        this.search(query);
-    }
     
-    search(text: string) {
-        const queryParams = {
-          text: text
-        };
-
-        this.searchStore.dispatch(new Search(queryParams));
-        this.search$ = this.searchStore.pipe(select(getSearchResults));
-    }
 }

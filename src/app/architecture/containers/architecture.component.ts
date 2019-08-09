@@ -45,10 +45,6 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
-import { State as SearchState } from '@app/core/store/reducers/search.reducer';
-import { Search } from '@app/core/store/actions/search.actions';
-import { SearchEntity } from '@app/core/store/models/search.models';
-import { getSearchResults } from '@app/core/store/selectors/search.selectors';
 
 
 @Component({
@@ -79,7 +75,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   links: any[] = [];
   nodes: any[] = [];
 
-  search$: Observable<SearchEntity[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
@@ -120,7 +115,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   constructor(
     private sharedService: SharedService,
-    private searchStore: Store<SearchState>,
     private nodeStore: Store<NodeState>,
     private scopeStore: Store<ScopeState>,
     private layoutStore: Store<LayoutState>,
@@ -649,17 +643,4 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSearch(query: string) {
-    this.search(query);
-  }
-
-  search(text: string) {
-    const queryParams = {
-      text: text
-    };
-    this.searchStore.dispatch(new Search(queryParams));
-    this.search$ = this.searchStore.pipe(select(getSearchResults));
-  }
-
 }
-

@@ -1,9 +1,9 @@
 <div class="search-form">
-  <mat-icon>search</mat-icon><input placeholder="Search" (keyup)="applyFilter($event.target.value)" value="" />
+  <mat-icon>search</mat-icon><input placeholder="Search" (keyup)="onSearch($event.target.value)" value="" />
 </div>
 
 <div class="search-results mat-elevation-z8">
-  <ul *ngFor="let result of results">
+  <ul *ngFor="let result of results$ | async">
     <li>
       {{result.name}}:
       <small>{{result.objectType}}</small> -
