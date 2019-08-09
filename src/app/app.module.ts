@@ -12,6 +12,7 @@ import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app.routing';
 import { AuthModule } from './auth/auth.module';
 import { HttpClientModule } from '@angular/common/http';
+import { SharedService } from './services/shared-service';
 
 @NgModule({
   imports: [
@@ -33,7 +34,7 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     AppComponent,
   ],
-  providers: [],
+  providers: [SharedService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

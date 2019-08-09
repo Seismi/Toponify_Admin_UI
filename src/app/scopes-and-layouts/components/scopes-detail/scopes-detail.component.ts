@@ -15,8 +15,6 @@ export class ScopesDetailComponent {
   @Input() selectedScopes = [];
   @Input() ownersList: any;
   @Input() viewersList: any;
-  @Input() selectedOwners = [];
-  @Input() selectedViewers = [];
 
   layerFilter = ['system', 'data set', 'dimension', 'reporting concept'];
 

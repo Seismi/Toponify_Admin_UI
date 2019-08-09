@@ -10,17 +10,11 @@
     </div>
 
     <!-- Owners Dropdown -->
-    <smi-owners-dropdown 
-        *ngIf="modalMode" 
-        [data]="data" 
-        [selectedOwners]="selectedOwners">
+    <smi-owners-dropdown *ngIf="modalMode" [data]="data">
     </smi-owners-dropdown>
     
     <!-- Viewers Dropdown-->
-    <smi-viewers-dropdown 
-        *ngIf="modalMode" 
-        [data]="data"
-        [selectedViewers]="selectedViewers">
+    <smi-viewers-dropdown *ngIf="modalMode" [data]="data">
     </smi-viewers-dropdown>
 
 
