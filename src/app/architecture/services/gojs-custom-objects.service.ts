@@ -160,6 +160,14 @@ export class GojsCustomObjectsService {
             event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
           }
         }
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Reorganise'),
+        {
+          click: function(event, object) {
+            thisService.diagramChangesService.reorganise(event.diagram);
+          }
+        }
       )
     );
   }

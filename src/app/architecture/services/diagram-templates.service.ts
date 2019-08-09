@@ -958,7 +958,7 @@ export class DiagramTemplatesService {
         return Path;
       }),
       new go.Binding('visible', 'dataLinks').ofModel(),
-      // Have the diagram position the link if no route set or if not using standard display options
+      // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing',
         function (routeMissing) {
           return routeMissing;
