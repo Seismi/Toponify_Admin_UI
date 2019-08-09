@@ -9,10 +9,9 @@ import { LayoutsValidatorService } from '@app/scopes-and-layouts/components/layo
 import { Observable } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
-import { ScopeService } from '@app/scope/services/scope.service';
-import { AddLayout } from '@app/layout/store/actions/layout.actions';
+import { AddLayout, LayoutActionTypes } from '@app/layout/store/actions/layout.actions';
+import { SharedService } from '@app/services/shared-service';
 import { Actions, ofType } from '@ngrx/effects';
-import { LayoutActionTypes } from '@app/layout/store/actions/layout.actions'
 
 @Component({
   selector: 'smi-layout-modal',
@@ -27,20 +26,17 @@ export class LayoutModalComponent implements OnInit {
   modalMode = true;
   teams$: Observable<TeamEntity[]>;
   error: string;
-  scopeId: string;
-  scopeName: string;
   scope: any;
-  selectedOwners = [];
-  selectedViewers = [];
+
 
   constructor(
+    private sharedService: SharedService,
     private actions: Actions,
-    private scopeService: ScopeService,
     private layoutsDetailService: LayoutsDetailService,
     private store: Store<TeamState>,
     public dialogRef: MatDialogRef<LayoutModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.scope = data.scope
+      this.scope = data.scope;
     }
 
   ngOnInit() {
@@ -56,8 +52,8 @@ export class LayoutModalComponent implements OnInit {
     this.store.dispatch(new AddLayout({
       id: null,
       name: this.layoutsDetailForm.value.name,
-      owners: this.selectedOwners,
-      viewers: this.selectedViewers,
+      owners: this.sharedService.selectedOwners,
+      viewers: this.sharedService.selectedViewers,
       scope: this.scope
     }))
 
@@ -71,14 +67,14 @@ export class LayoutModalComponent implements OnInit {
       this.dialogRef.close();
     });
 
-    this.selectedOwners = [];
-    this.selectedViewers = [];
+    this.sharedService.selectedOwners = [];
+    this.sharedService.selectedViewers = [];
   }
 
   onCancel() {
     this.dialogRef.close();
-    this.selectedOwners = [];
-    this.selectedViewers = [];
+    this.sharedService.selectedOwners = [];
+    this.sharedService.selectedViewers = [];
   }
 
 }

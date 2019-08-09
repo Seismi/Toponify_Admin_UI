@@ -22,6 +22,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() workpackages: any;
   @Input() objectSelected = false;
   @Input() radio: any;
+  @Input() multipleSelected = false;
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -46,6 +47,9 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output()
   addRadio = new EventEmitter();
+
+  @Output()
+  addScope = new EventEmitter();
 
 
   constructor(
@@ -96,6 +100,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAddRadio() {
     this.addRadio.emit();
+  }
+
+  onAddScope() {
+    this.addScope.emit();
   }
 
 }
