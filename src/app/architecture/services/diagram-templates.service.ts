@@ -150,8 +150,11 @@ export class DiagramTemplatesService {
         locationSpot: go.Spot.TopCenter,
         locationObjectName: 'location panel',
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        movable: this.filterService.getFilter().level === Level.usage
+        movable: true
       },
+      new go.Binding('movable', '', function() {
+        return this.filterService.getFilter().filterLevel !== Level.usage;
+      }.bind(this)),
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       } : {},
@@ -365,8 +368,11 @@ export class DiagramTemplatesService {
         locationSpot: go.Spot.TopCenter,
         locationObjectName: 'location panel',
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        movable: this.filterService.getFilter().level === Level.usage
+        movable: true
       },
+      new go.Binding('movable', '', function() {
+        return this.filterService.getFilter().filterLevel !== Level.usage;
+      }.bind(this)),
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       } : {},
@@ -580,13 +586,16 @@ export class DiagramTemplatesService {
         locationSpot: go.Spot.TopCenter,
         locationObjectName: 'location panel',
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this),
-        movable: this.filterService.getFilter().level === Level.usage
+        movable: true
       },
+      new go.Binding('movable', '', function() {
+        return this.filterService.getFilter().filterLevel !== Level.usage;
+      }.bind(this)),
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       } : {},
       // Have the diagram position the node if no location set
-      this.filterService.getFilter().level === Level.map ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
+      this.filterService.getFilter().filterLevel === Level.map ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
       $(go.Shape,
         'Rectangle',
@@ -791,8 +800,11 @@ export class DiagramTemplatesService {
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.TopCenter,
         locationObjectName: 'location panel',
-        movable: this.filterService.getFilter().level === Level.usage
+        movable: true
       },
+      new go.Binding('movable', '', function() {
+        return this.filterService.getFilter().filterLevel !== Level.usage;
+      }.bind(this)),
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       } : {},
