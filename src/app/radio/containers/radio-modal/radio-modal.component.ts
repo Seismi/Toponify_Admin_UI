@@ -16,7 +16,7 @@ export class RadioModalComponent {
 
   addRadio = false;
   isEditable = true;
-  target = true;
+  modal = true;
   modalMode = true;
   radio: RadioEntity;
 

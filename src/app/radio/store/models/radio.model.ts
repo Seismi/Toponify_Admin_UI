@@ -71,8 +71,11 @@ export interface RadioDetail {
   id: string;
   title: string;
   description: string;
+  mitigation: string;
   status: string;
   category: string;
+  assignedTo: AssignedTo;
+  actionBy: string;
   author: AuthorOrLastUpdatedBy;
   owners: (TeamsOrOwners)[] | null;
   createdOn: string;
@@ -82,6 +85,13 @@ export interface RadioDetail {
   link?: (Link)[] | null;
   replyCount: number;
   replies?: (Replies)[] | null;
+}
+
+export interface AssignedTo {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export interface Target {

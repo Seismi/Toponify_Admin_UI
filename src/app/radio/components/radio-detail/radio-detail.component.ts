@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { RadioDetail } from '@app/radio/store/models/radio.model';
+import { MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'smi-radio-detail',
@@ -14,7 +16,7 @@ export class RadioDetailComponent {
   @Input() isEditable = false;
   @Input() disableButton = true;
   @Input() modalMode = false;
-  @Input() targetName = false;
+  @Input() modal = false;
 
   categories = ['risk', 'assumption', 'dependency', 'issue', 'opportunity'];
   status = ['open', 'closed'];

@@ -51,8 +51,11 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
         this.radio = radio;
         this.radioDetailService.radioDetailsForm.patchValue({
           title: radio.title,
+          actionBy: radio.actionBy,
+          assignedTo: (radio.assignedTo.firstName) ? radio.assignedTo.firstName + ' ' + radio.assignedTo.lastName : '',
           category: radio.category,
           status: radio.status,
+          mitigation: radio.mitigation,
           description: radio.description
         });
       }

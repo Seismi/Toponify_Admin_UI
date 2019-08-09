@@ -31,9 +31,22 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group" *ngIf="!targetName">
+            <div class="form-group" *ngIf="!modal">
+                <label>Action By</label>
+                <input data-hook="radio-details-action-by" type="text" class="form-control" formControlName="actionBy"
+                [value]="group.get('actionBy').value | date">
+            </div>
+            <div class="form-group" *ngIf="!modal">
+                <label>Assigned To</label>
+                <input data-hook="radio-details-assigned-to" type="text" class="form-control" formControlName="assignedTo" [readonly]="true">
+            </div>
+            <div class="form-group" *ngIf="!modal">
                 <label>Target Name</label>
                 <input data-hook="radio-details-target-name" type="text" class="form-control" formControlName="targetName" [readonly]="true">
+            </div>
+            <div class="form-group" *ngIf="!modal">
+                <label>Mitigation</label>
+                <input data-hook="radio-details-mitigation" type="text" class="form-control" formControlName="mitigation">
             </div>
             <div class="form-group">
                 <label>Description</label>
