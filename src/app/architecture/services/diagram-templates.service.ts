@@ -974,6 +974,8 @@ export class DiagramTemplatesService {
         relinkableTo: true,
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
+        // Position by layout in palette
+        isLayoutPositioned: forPalette,
         doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
       },
       forPalette ? {
@@ -1076,8 +1078,8 @@ export class DiagramTemplatesService {
         curve: go.Link.JumpOver,
         relinkableFrom: true,
         relinkableTo: true,
-        fromEndSegmentLength: 20,
-        toEndSegmentLength: 20,
+        fromEndSegmentLength: 10,
+        toEndSegmentLength: 10,
         // Position by layout in palette
         isLayoutPositioned: forPalette
       },

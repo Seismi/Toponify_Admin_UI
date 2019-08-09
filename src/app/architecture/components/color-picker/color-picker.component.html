@@ -1,10 +1,10 @@
-<input [matMenuTriggerFor]="colorMenu" [ngStyle]="{'background-color': workpackageColor}" readonly="readonly">
+<input [matMenuTriggerFor]="colorMenu" [ngStyle]="{'background-color': workpackageColour}" readonly="readonly">
 <mat-menu #colorMenu="matMenu">
   <mat-grid-list cols="4" rowHeight="1:1">
     <mat-grid-tile
-        *ngFor="let color of colours"
-        [ngStyle]="{'background-color': color}"
-        (click)="onSelect(color)">
+        *ngFor="let colour of colours"
+        [ngStyle]="{'background-color': colour}"
+        (click)="onSelect(colour)">
     </mat-grid-tile>
   </mat-grid-list>
 </mat-menu>

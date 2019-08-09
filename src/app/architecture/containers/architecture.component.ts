@@ -534,8 +534,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
 
-  selectColorForWorkPackage(data: {color: string, id: string}) {
-    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id}));
+  selectColourForWorkPackage(data: {colour: string, id: string}) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.colour, workpackageId: data.id}));
   }
 
   onSelectScope(id) {

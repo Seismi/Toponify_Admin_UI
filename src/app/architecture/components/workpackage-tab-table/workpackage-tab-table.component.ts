@@ -20,13 +20,13 @@ export class WorkPackageTabTableComponent {
   selectWorkPackage = new EventEmitter();
 
   @Output()
-  selectColor = new EventEmitter<object>();
+  selectColour = new EventEmitter<object>();
 
   onSelect(id, event) {
     this.selectWorkPackage.emit(id);
   }
 
-  onSelectColor(color, id) {
-    this.selectColor.emit({color, id});
+  onSelectColour(colour, id) {
+    this.selectColour.emit({colour, id});
   }
 }

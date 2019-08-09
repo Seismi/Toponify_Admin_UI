@@ -9,19 +9,38 @@ import { DiagramChangesService } from '@app/architecture/services/diagram-change
 })
 export class WorkPackageColorComponent {
 
-  @Input() workpackageColor;
+  @Input() workpackageColour;
 
   constructor(private diagramChangesService: DiagramChangesService) {}
 
   @Output()
-  selectColor = new EventEmitter();
+  selectColour = new EventEmitter();
 
   get colours() {
-    return this.diagramChangesService.colors;
+    return [
+      '#f44336',
+      '#E91E63',
+      '#9C27B0',
+      '#673AB7',
+      '#3F51B5',
+      '#2196F3',
+      '#03A9F4',
+      '#009688',
+      '#4CAF50',
+      '#8BC34A',
+      '#CDDC39',
+      '#FFEB3B',
+      '#FFC107',
+      '#FF9800',
+      '#FF5722',
+      '#795548',
+      '#9E9E9E',
+      '#607D8B'
+    ];
   }
 
-  onSelect(color) {
-    this.workpackageColor = color;
-    this.selectColor.emit(color);
+  onSelect(colour) {
+    this.workpackageColour = colour;
+    this.selectColour.emit(colour);
   }
 }
