@@ -649,7 +649,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSearch(query) {
+  onSearch(query: string) {
     this.search(query);
   }
 

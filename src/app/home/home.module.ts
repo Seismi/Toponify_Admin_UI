@@ -12,6 +12,7 @@ import {
   MatIconModule,
   MatMenuModule
 } from '@angular/material';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -23,7 +24,8 @@ import {
     MatPaginatorModule,
     MatIconModule,
     MatMenuModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    CommonModule
   ],
   exports: [],
   declarations: [

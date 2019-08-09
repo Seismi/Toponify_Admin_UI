@@ -10,6 +10,10 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { LoadWorkPackages, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
 import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Router } from '@angular/router';
+import { State as SearchState } from '@app/core/store/reducers/search.reducer';
+import { Search } from '@app/core/store/actions/search.actions';
+import { getSearchResults } from '@app/core/store/selectors/search.selectors';
+import { SearchEntity } from '@app/core/store/models/search.models';
 
 @Component({
     selector: 'smi-attributes',
@@ -18,6 +22,7 @@ import { Router } from '@angular/router';
 })
 export class AttributesComponent implements OnInit {
 
+    search$: Observable<SearchEntity[]>;
     attributes: Subscription;
     attribute: AttributeEntity[];
     workpackage$: Observable<WorkPackageEntity[]>;
@@ -26,6 +31,7 @@ export class AttributesComponent implements OnInit {
     showOrHidePane: boolean;
 
     constructor(
+        private searchStore: Store<SearchState>,
         private store: Store<AttributeState>,
         private workPackageStore: Store<WorkPackageState>,
         private router: Router) { }
@@ -75,5 +81,18 @@ export class AttributesComponent implements OnInit {
 
     hideLeftPane() {
         this.showOrHidePane = false;
+    }
+
+    onSearch(query: string) {
+        this.search(query);
+    }
+    
+    search(text: string) {
+        const queryParams = {
+          text: text
+        };
+
+        this.searchStore.dispatch(new Search(queryParams));
+        this.search$ = this.searchStore.pipe(select(getSearchResults));
     }
 }

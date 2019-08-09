@@ -1,6 +1,9 @@
 <app-base-header>
     <app-toolbar-column [fillFreeSpace]="true">
-        <app-search (search)="onSearchUser($event)"></app-search>
+        <app-search 
+            [data]="search$ | async" 
+            (search)="onSearch($event)">
+        </app-search>
     </app-toolbar-column>
     <app-toolbar-column>
         <smi-quicklinks-actions></smi-quicklinks-actions>

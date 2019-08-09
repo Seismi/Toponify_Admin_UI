@@ -11,6 +11,10 @@ import { MatDialog } from '@angular/material';
 import { LayoutsDetailService } from '../components/layouts-detail/services/layouts-detail.service';
 import { LayoutsValidatorService } from '../components/layouts-detail/services/layouts-detail-validator.service';
 import { SharedService } from '@app/services/shared-service';
+import { State as SearchState } from '@app/core/store/reducers/search.reducer';
+import { Search } from '@app/core/store/actions/search.actions';
+import { getSearchResults } from '@app/core/store/selectors/search.selectors';
+import { SearchEntity } from '@app/core/store/models/search.models';
 
 @Component({
   selector: 'smi-scopes-and-layouts-component',
@@ -24,8 +28,10 @@ export class ScopesAndLayoutsComponent implements OnInit {
   scopeSelected: boolean;
   layoutSelected: boolean;
   scopes$: Observable<ScopeEntity[]>;
+  search$: Observable<SearchEntity[]>;
 
   constructor(
+    private searchStore: Store<SearchState>,
     private layoutsDetailService: LayoutsDetailService,
     private store: Store<ScopeState>,
     private router: Router,
@@ -65,6 +71,19 @@ export class ScopesAndLayoutsComponent implements OnInit {
       this.sharedService.selectedOwners = [];
       this.sharedService.selectedViewers = [];
     });
+  }
+
+  onSearch(query: string) {
+    this.search(query);
+  }
+
+  search(text: string) {
+    const queryParams = {
+      text: text
+    };
+
+    this.searchStore.dispatch(new Search(queryParams));
+    this.search$ = this.searchStore.pipe(select(getSearchResults));
   }
 
 }

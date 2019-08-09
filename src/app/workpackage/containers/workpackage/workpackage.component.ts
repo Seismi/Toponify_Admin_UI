@@ -11,6 +11,11 @@ import { State as WorkPackageState } from '../../../workpackage/store/reducers/w
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
 import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
 import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-diagram.service';
+import { State as SearchState } from '@app/core/store/reducers/search.reducer';
+import { Search } from '@app/core/store/actions/search.actions';
+import { getSearchResults } from '@app/core/store/selectors/search.selectors';
+import { SearchEntity } from '@app/core/store/models/search.models';
+
 
 @Component({
   selector: 'app-workpackage',
@@ -20,6 +25,7 @@ import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-d
 })
 export class WorkPackageComponent implements OnInit, OnDestroy {
 
+  search$: Observable<SearchEntity[]>;
   subscriptions: Subscription[] = [];
   workpackageEntities$: Observable<WorkPackageEntity[]>;
   workpackagesSubscription: Subscription;
@@ -29,9 +35,11 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   workpackageId: string;
   workpackages: WorkPackageEntity[];
 
-  constructor(private store: Store<WorkPackageState>,
-              private router: Router,
-              public dialog: MatDialog) {}
+  constructor(
+    private searchStore: Store<SearchState>,
+    private store: Store<WorkPackageState>,
+    private router: Router,
+    public dialog: MatDialog) {}
 
 
   ngOnInit() {
@@ -63,5 +71,18 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
         workpackages: this.workpackages
       }
     });
+  }
+
+  onSearch(query: string) {
+    this.search(query);
+  }
+
+  search(text: string) {
+    const queryParams = {
+      text: text
+    };
+
+    this.searchStore.dispatch(new Search(queryParams));
+    this.search$ = this.searchStore.pipe(select(getSearchResults));
   }
 }

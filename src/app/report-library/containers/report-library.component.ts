@@ -10,6 +10,10 @@ import { State as WorkPackageState} from '@app/workpackage/store/reducers/workpa
 import { LoadWorkPackages, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
 import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Router } from '@angular/router';
+import { SearchEntity } from '@app/core/store/models/search.models';
+import { State as SearchState } from '@app/core/store/reducers/search.reducer';
+import { Search } from '@app/core/store/actions/search.actions';
+import { getSearchResults } from '@app/core/store/selectors/search.selectors';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -19,6 +23,7 @@ import { Router } from '@angular/router';
 
 export class ReportLibraryComponent implements OnInit {
 
+  search$: Observable<SearchEntity[]>;
   reportEntities$: Observable<ReportLibrary[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   selectedLeftTab: number;
@@ -26,6 +31,7 @@ export class ReportLibraryComponent implements OnInit {
   hideTab = true;
 
   constructor(
+    private searchStore: Store<SearchState>,
     private store: Store<ReportState>,
     private workPackageStore: Store<WorkPackageState>,
     private router: Router
@@ -69,6 +75,18 @@ export class ReportLibraryComponent implements OnInit {
 
   onSelectWorkPackage(id: string) {
     this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
+  }
+
+  onSearch(query: string) {
+    this.search(query);
+  }
+
+  search(text: string) {
+    const queryParams = {
+      text: text
+    };
+    this.searchStore.dispatch(new Search(queryParams));
+    this.search$ = this.searchStore.pipe(select(getSearchResults));
   }
   
 }
