@@ -5,6 +5,11 @@ import {FilterService} from './filter.service';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { Node } from '@app/architecture/store/models/node.model.ts';
 import { BehaviorSubject } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { State as WorkPackageState} from '../../workpackage/store/reducers/workpackage.reducer';
+import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { AddWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
 
 const $ = go.GraphObject.make;
 
@@ -37,11 +42,14 @@ export class DiagramChangesService {
 
   // Colors for work packages
   colors = workPackageColours;
+  workpackages = [];
 
   constructor(
     public diagramLevelService: DiagramLevelService,
-    public filterService: FilterService
+    public filterService: FilterService,
+    private workpackageStore: Store<WorkPackageState>,
   ) {
+    this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => this.workpackages = workpackages);
   }
 
   // Add newly created nodes to the back end
@@ -54,25 +62,15 @@ export class DiagramChangesService {
     // Only implemented for system, data set and dimension views so far
     if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
 
-    event.subject.each(function(part: go.Part) {
+    event.subject.each((part: go.Part) => {
 
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
-
-        // Create copy of node data with route in format required for back end
-        const sendData = Object.assign({}, part.data);
-
-        // Replace locations. Will need to be updated to replace individual location for the current view when views are implemented.
-        // *REPLACE* sendData.location = [{view: 'Default', locationCoordinates: part.data.location}];
-
-        // Add node to back end database
-        /* *REPLACE*
-        this.store.dispatch(new addNodeActionMapping[currentLevel]({
-          [currentLevel.toLowerCase()]: {
-            data: sendData
-          },
-          versionId: this.versionId
-        }));*/
+        const node = Object.assign({}, part.data);
+        node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
+        this.workpackages.forEach(workpackage => {
+            this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node }));
+        });
       }
     });
   }
@@ -178,19 +176,14 @@ export class DiagramChangesService {
       if (link.data.isTemporary) {
 
         // Create copy of link data with route in format required for back end
-        const sendData = Object.assign({}, link.data);
+        const newLink = Object.assign({}, link.data);
 
         // Only save route if using standard display settings
-        // *REPLACE* sendData.route = this.standardDisplay ? [{view: 'Default', points: link.data.route}] : [];
+        newLink.route = [{ view: 'Default', points: link.data.route}];
 
-        // Add link to database
-        /* *REPLACE*
-        this.store.dispatch(new addLinkActionMapping[currentLevel]({
-          [currentLevel.toLowerCase() + 'Link']: {
-            data: sendData
-          },
-          versionId: this.versionId
-        }));*/
+        this.workpackages.forEach(workpackage => {
+          this.workpackageStore.dispatch(new AddWorkPackageLink({ workpackageId: workpackage.id, link: newLink }));
+        });
 
         // Flag that link now exists in the database
         link.data.isTemporary = false;
@@ -207,18 +200,16 @@ export class DiagramChangesService {
         const sourceProp = event.diagram.model.linkFromKeyProperty;
         const targetProp = event.diagram.model.linkToKeyProperty;
 
-        // Update link source and target in the database
-        /* *REPLACE*
-        this.store.dispatch(new updateLinkActionMapping[currentLevel]({
-          [currentLevel.toLowerCase() + 'Link']: {
-            data: {id: link.key,
-              [sourceProp]: link.fromNode.key,
-              [targetProp]: link.toNode.key,
-              route: this.standardDisplay ? [{view: 'Default', points: link.data.route}] : []
-            }
-          },
-          versionId: this.versionId
-        }));*/
+        const updatedLink = {
+          id: link.key,
+          [sourceProp]: link.fromNode.key,
+          [targetProp]: link.toNode.key,
+          route: [{ view: 'Default', points: link.data.route }]
+        };
+
+        this.workpackages.forEach(workpackage => {
+          this.workpackageStore.dispatch(new UpdateWorkPackageLink({ workpackageId: workpackage.id, linkId: link.key, link: updatedLink }));
+        });
       }
 
       /* When a link is newly connected between two nodes, other links between the same two nodes are

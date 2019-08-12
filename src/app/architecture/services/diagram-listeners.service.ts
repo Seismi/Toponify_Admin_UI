@@ -112,8 +112,6 @@ export class DiagramListenersService {
 
   handleModelChange(event: go.ChangedEvent) {
     if (event.isTransactionFinished) {
-      console.log('Nodes:', event.model.nodeDataArray);
-      console.log('Links:', (event.model as go.GraphLinksModel).linkDataArray);
       this.modelChangedSource.next(event);
     }
   }

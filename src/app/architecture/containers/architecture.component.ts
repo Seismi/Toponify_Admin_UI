@@ -46,7 +46,6 @@ import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
 
-
 @Component({
   selector: 'smi-architecture',
   templateUrl: 'architecture.component.html',
@@ -311,15 +310,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   }
 
-  modelChanged(event: any) {
-    // TODO: send to api new model
-    console.log('Model: ', event);
-  }
+  // FIXME: should be removed as createObject/node/link handled inside change service
+  modelChanged( event: any) {}
 
   get objectDetailsForm(): FormGroup {
     return this.objectDetailsService.objectDetailsForm;
   }
-
 
   // Not sure but probably there is a better way of doing this
   onSaveObjectDetails() {

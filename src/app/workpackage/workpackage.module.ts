@@ -28,8 +28,10 @@ import { NewWorkpackageFormComponent } from './components/new-workpackage-form/n
 import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage-modal/delete-workpackage.component';
 import { WorkpackageDetailsComponent } from './containers/workpackage-details/workpackage-details.component';
 import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-modal/workpackage-tree-modal.component';
-
-
+import { WorkPackageNodeEffects } from './store/effects/workpackage-node.effects';
+import { WorkPackageNodesService } from './services/workpackage-nodes.service';
+import { WorkPackageLinkEffects } from './store/effects/workpackage-link.effects';
+import { WorkPackageLinksService } from './services/workpackage-links.service';
 
 @NgModule({
   imports: [
@@ -45,8 +47,7 @@ import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-mod
     CommonModule,
     CoreModule,
     StoreModule.forFeature('workpackageFeature', reducer),
-    EffectsModule.forFeature([ WorkPackageEffects]
-    )
+    EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects])
   ],
   exports: [WorkPackagesTableComponent],
   declarations: [
@@ -65,7 +66,9 @@ import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-mod
   ],
   entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent, WorkPackageTreeModalComponent],
   providers: [
-    WorkPackageService
+    WorkPackageService,
+    WorkPackageNodesService,
+    WorkPackageLinksService
   ],
 })
 export class WorkPackageModule { }
