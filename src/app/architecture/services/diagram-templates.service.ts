@@ -22,6 +22,70 @@ export class DiagramTemplatesService {
     public diagramChangesService: DiagramChangesService
   ) {}
 
+  getStandardNodeOptions(forPalette) {
+    return Object.assign({
+      selectionAdorned: true,
+      isShadowed: true,
+      resizable: false,
+      // tslint:disable-next-line:no-bitwise
+      layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
+      portSpreading: go.Node.SpreadingEvenly,
+      locationSpot: go.Spot.Top
+    },
+    !forPalette ? { // Enable context menu for nodes not in the palette
+      contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+    } : {});
+  }
+
+  getStandardNodeShapeOptions() {
+    return {
+      fill: 'white',
+      stroke: 'black',
+      strokeWidth: 1,
+      portId: '',
+      fromLinkable: true,
+      toLinkable: true,
+      fromSpot: go.Spot.AllSides,
+      toSpot: go.Spot.AllSides,
+      fromLinkableSelfNode: false,
+      toLinkableSelfNode: false,
+      fromLinkableDuplicates: true,
+      toLinkableDuplicates: true,
+      name: 'shape'
+    };
+  }
+
+  getStandardLinkOptions(forPalette) {
+    return Object.assign({
+      selectionAdorned: true,
+      reshapable: true,
+      routing: go.Link.AvoidsNodes,
+      corner: 5,
+      curve: go.Link.JumpOver,
+      relinkableFrom: true,
+      relinkableTo: true,
+      fromEndSegmentLength: 10,
+      toEndSegmentLength: 10,
+      // Position by layout in palette
+      isLayoutPositioned: forPalette
+    },
+    forPalette ? {
+      // Set locationSpot in order for palette to arrange link correctly
+      locationSpot: go.Spot.TopCenter,
+      contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
+      // Correct locationSpot on selection highlight adornment when link in palette
+      selectionAdornmentTemplate: $(go.Adornment, 'Link', {
+          locationSpot: new go.Spot(0.5, 0, 1, 0)
+        },
+        $(go.Shape, {
+          isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
+        })
+      )
+    } : { // Enable context menu for links not in the palette
+      contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+    });
+  }
+
   // Get item template for list of node children
   getItemTemplate() {
     return $(go.Panel,
@@ -132,6 +196,64 @@ export class DiagramTemplatesService {
     return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
   }
 
+  getRadioAlertIndicator() {
+    return $(go.Panel,
+      'Auto',
+      {
+        row: 1,
+        alignment: go.Spot.BottomRight,
+        visible: false
+      },
+      new go.Binding('visible', '', function (node) {
+        return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+      }).ofObject(),
+      $(go.Shape,
+        'circle',
+        {
+          fill: 'red',
+          desiredSize: new go.Size(25, 25)
+        }
+      ),
+      $(go.TextBlock,
+        {
+          textAlign: 'center',
+          stroke: 'white',
+          font: '12px calibri'
+        },
+       new go.Binding('text', 'relatedRadioCount')
+      )
+    );
+  }
+
+  getLinkLabel() {
+    return $(go.Panel, 'Vertical',
+      $(go.TextBlock,
+        {
+          font: 'bold 14px calibri'
+        },
+        new go.Binding('areaBackground', 'name',
+          function (name) {
+            return (name ? 'white' : null);
+          }
+        ),
+        new go.Binding('text', 'name'),
+        new go.Binding('visible', 'linkName').ofModel()
+      ),
+      $(go.TextBlock,
+        {
+          font: '13px calibri'
+        },
+        new go.Binding('areaBackground', 'label',
+          function (label) {
+            return (label ? 'white' : null);
+          }
+        ),
+        new go.Binding('text', 'label'),
+        new go.Binding('visible', 'linkLabel').ofModel()
+      )
+    );
+  }
+
   getSystemNodeTemplate(forPalette: boolean = false) {
 
     return $(
@@ -140,14 +262,8 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
         go.Point.stringify
       ),
+      this.getStandardNodeOptions(forPalette),
       {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
@@ -175,21 +291,7 @@ export class DiagramTemplatesService {
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
-        {
-          fill: 'white',
-          stroke: 'black',
-          strokeWidth: 1,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          fromSpot: go.Spot.AllSides,
-          toSpot: go.Spot.AllSides,
-          fromLinkableSelfNode: false,
-          toLinkableSelfNode: false,
-          fromLinkableDuplicates: true,
-          toLinkableDuplicates: true,
-          name: 'shape'
-        }
+        this.getStandardNodeShapeOptions()
       ),
       $(go.Panel,
         'Table',
@@ -305,32 +407,7 @@ export class DiagramTemplatesService {
             new go.Binding('visible', 'nextLevel').ofModel()
           )
         ),
-        $(go.Panel,
-          'Auto',
-          {
-            row: 1,
-            alignment: go.Spot.BottomRight,
-            visible: false
-          },
-          new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
-          }).ofObject(),
-          $(go.Shape,
-            'circle',
-            {
-              fill: 'red',
-              desiredSize: new go.Size(25, 25)
-            }
-          ),
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'white',
-              font: '12px calibri'
-            },
-           new go.Binding('text', 'relatedRadioCount')
-          )
-        )
+        this.getRadioAlertIndicator()
       )
     );
   }
@@ -344,14 +421,8 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
         go.Point.stringify
       ),
+      this.getStandardNodeOptions(forPalette),
       {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
@@ -362,19 +433,7 @@ export class DiagramTemplatesService {
       // Make the shape the port for links to connect to
       $(go.Shape,
         'Rectangle',
-        {
-          fill: 'white',
-          stroke: 'black',
-          strokeWidth: 1,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          fromSpot: go.Spot.AllSides,
-          toSpot: go.Spot.AllSides,
-          name: 'shape',
-          fromLinkableDuplicates: true,
-          toLinkableDuplicates: true
-        },
+        this.getStandardNodeShapeOptions(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
@@ -511,32 +570,7 @@ export class DiagramTemplatesService {
             new go.Binding('visible', 'nextLevel').ofModel()
           )
         ),
-        $(go.Panel,
-          'Auto',
-          {
-            row: 1,
-            alignment: go.Spot.BottomRight,
-            visible: false
-          },
-          new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
-          }).ofObject(),
-          $(go.Shape,
-            'circle',
-            {
-              fill: 'red',
-              desiredSize: new go.Size(25, 25)
-            }
-          ),
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'white',
-              font: '12px calibri'
-            },
-           new go.Binding('text', 'relatedRadioCount')
-          )
-        )
+        this.getRadioAlertIndicator()
       )
     );
   }
@@ -548,14 +582,8 @@ export class DiagramTemplatesService {
       go.Node,
       'Auto',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
+      this.getStandardNodeOptions(forPalette),
       {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
@@ -566,19 +594,7 @@ export class DiagramTemplatesService {
       // Make the shape the port for links to connect to
       $(go.Shape,
         'Rectangle',
-        {
-          fill: 'white',
-          stroke: 'black',
-          strokeWidth: 1,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          fromSpot: go.Spot.AllSides,
-          toSpot: go.Spot.AllSides,
-          name: 'shape',
-          fromLinkableDuplicates: false,
-          toLinkableDuplicates: false
-        },
+        this.getStandardNodeShapeOptions(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
@@ -712,32 +728,7 @@ export class DiagramTemplatesService {
             new go.Binding('visible', 'nextLevel').ofModel()
           )
         ),
-        $(go.Panel,
-          'Auto',
-          {
-            row: 1,
-            alignment: go.Spot.BottomRight,
-            visible: false
-          },
-          new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
-          }).ofObject(),
-          $(go.Shape,
-            'circle',
-            {
-              fill: 'red',
-              desiredSize: new go.Size(25, 25)
-            }
-          ),
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'white',
-              font: '12px calibri'
-            },
-           new go.Binding('text', 'relatedRadioCount')
-          )
-        )
+        this.getRadioAlertIndicator()
       )
     );
   }
@@ -749,15 +740,7 @@ export class DiagramTemplatesService {
       go.Node,
       'Auto',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top
-      },
+      this.getStandardNodeOptions(forPalette),
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       } : {},
@@ -778,19 +761,7 @@ export class DiagramTemplatesService {
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
-        {
-          fill: 'white',
-          stroke: 'black',
-          strokeWidth: 1,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          fromSpot: go.Spot.AllSides,
-          toSpot: go.Spot.AllSides,
-          name: 'shape',
-          fromLinkableDuplicates: false,
-          toLinkableDuplicates: false
-        }
+        this.getStandardNodeShapeOptions()
       ),
       $(go.Panel,
         'Table',
@@ -871,70 +842,9 @@ export class DiagramTemplatesService {
               }
             ),
             new go.Binding('visible', 'owner').ofModel()
-          ),
-          $(go.Panel, 'Vertical',
-            {
-              stretch: go.GraphObject.Horizontal
-            },
-            // Attribute list header
-            $(go.TextBlock,
-              {
-                text: 'Attributes',
-                alignment: go.Spot.Center,
-                stroke: 'black',
-                font: 'bold 15.25px calibri',
-                margin: new go.Margin(5, 0, 0, 0),
-                visible: false
-              },
-              // Hide attributes header if Reporting concept has no attributes
-              new go.Binding('visible', 'attributes',
-                function (attributes) {
-                  return attributes.length > 0;
-                }
-              )
-            ),
-            // Attribute list
-            $(go.Panel, 'Vertical',
-              {
-                name: 'Attribute_List',
-                padding: 3,
-                alignment: go.Spot.TopLeft,
-                defaultAlignment: go.Spot.Left,
-                stretch: go.GraphObject.Horizontal,
-                itemCategoryProperty: '',
-                itemTemplate: this.getItemTemplate()
-              },
-              new go.Binding('itemArray', 'attributes')
-            ),
-            new go.Binding('visible', 'nextLevel').ofModel()
           )
         ),
-        $(go.Panel,
-          'Auto',
-          {
-            row: 1,
-            alignment: go.Spot.BottomRight,
-            visible: false
-          },
-          new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
-          }).ofObject(),
-          $(go.Shape,
-            'circle',
-            {
-              fill: 'red',
-              desiredSize: new go.Size(25, 25)
-            }
-          ),
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'white',
-              font: '12px calibri'
-            },
-           new go.Binding('text', 'relatedRadioCount')
-          )
-        )
+        this.getRadioAlertIndicator()
       )
     );
   }
@@ -959,39 +869,10 @@ export class DiagramTemplatesService {
       }),
       new go.Binding('visible', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing',
-        function (routeMissing) {
-          return routeMissing;
-        }.bind(this)
-      ),
+      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      this.getStandardLinkOptions(forPalette),
       {
-        selectionAdorned: true,
-        reshapable: true,
-        routing: go.Link.AvoidsNodes,
-        corner: 5,
-        curve: go.Link.JumpOver,
-        relinkableFrom: true,
-        relinkableTo: true,
-        fromEndSegmentLength: 10,
-        toEndSegmentLength: 10,
-        // Position by layout in palette
-        isLayoutPositioned: forPalette,
         doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
-      },
-      forPalette ? {
-        // Set locationSpot in order for palette to arrange link correctly
-        locationSpot: go.Spot.TopCenter,
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
-        // Correct locationSpot on selection highlight adornment when link in palette
-        selectionAdornmentTemplate: $(go.Adornment, 'Link', {
-            locationSpot: new go.Spot(0.5, 0, 1, 0)
-          },
-          $(go.Shape, {
-            isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
-          })
-        )
-      } : { // Enable context menu for links not in the palette
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       },
       $(go.Shape, {
           name: 'shape',
@@ -1006,33 +887,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
-      !forPalette ?
-        $(go.Panel, 'Vertical',
-          $(go.TextBlock,
-            {
-              font: 'bold 14px calibri'
-            },
-            new go.Binding('areaBackground', 'name',
-              function (name) {
-                return (name ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'linkName').ofModel()
-          ),
-          $(go.TextBlock,
-            {
-              font: '13px calibri'
-            },
-            new go.Binding('areaBackground', 'label',
-              function (label) {
-                return (label ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'label'),
-            new go.Binding('visible', 'linkLabel').ofModel()
-          )
-        ) : {},
+      !forPalette ? this.getLinkLabel() : {},
       $(
         go.Shape, // The 'to' arrowhead
         {
@@ -1065,38 +920,8 @@ export class DiagramTemplatesService {
       }),
       new go.Binding('visible', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing',
-        function (routeMissing) {
-          return routeMissing;
-        }.bind(this)
-      ),
-      {
-        selectionAdorned: true,
-        reshapable: true,
-        routing: go.Link.AvoidsNodes,
-        corner: 5,
-        curve: go.Link.JumpOver,
-        relinkableFrom: true,
-        relinkableTo: true,
-        fromEndSegmentLength: 10,
-        toEndSegmentLength: 10,
-        // Position by layout in palette
-        isLayoutPositioned: forPalette
-      },
-      forPalette ? {
-        // Set locationSpot in order for palette to arrange link correctly
-        locationSpot: go.Spot.TopCenter,
-        // Correct locationSpot on selection highlight adornment when link in palette
-        selectionAdornmentTemplate: $(go.Adornment, 'Link', {
-            locationSpot: go.Spot.TopCenter
-          },
-          $(go.Shape, {
-            isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
-          })
-        )
-      } : { // Enable context menu for links not in the palette
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
-      },
+      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      this.getStandardLinkOptions(forPalette),
       $(go.Shape, {
           isPanelMain: true,
           stroke: 'Black',
@@ -1110,33 +935,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
-      !forPalette ?
-        $(go.Panel, 'Vertical',
-          $(go.TextBlock,
-            {
-              font: 'bold 14px calibri'
-            },
-            new go.Binding('areaBackground', 'name',
-              function (name) {
-                return (name ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'linkName').ofModel()
-          ),
-          $(go.TextBlock,
-            {
-              font: '13px calibri'
-            },
-            new go.Binding('areaBackground', 'label',
-              function (label) {
-                return (label ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'label'),
-            new go.Binding('visible', 'linkLabel').ofModel()
-          )
-        ) : {},
+      !forPalette ? this.getLinkLabel() : {}
     );
   }
 
