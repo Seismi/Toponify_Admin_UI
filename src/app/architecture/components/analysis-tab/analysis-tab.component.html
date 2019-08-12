@@ -18,6 +18,12 @@
         <mat-list-item role="listitem">
             <mat-checkbox checked="true" (change)="checkboxClicked($event, 'nextLevel')">Next level</mat-checkbox>
         </mat-list-item>
+        <mat-list-item role="listitem">
+            <mat-checkbox (change)="checkboxClicked($event, 'attributes')">Attributes</mat-checkbox>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+            <mat-checkbox (change)="checkboxClicked($event, 'rules')">Rules</mat-checkbox>
+        </mat-list-item>
     </mat-list><br>
 
     <p>Link Display:</p>
