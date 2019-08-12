@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TeamEntity } from '@app/settings/store/models/team.model';
+import { SharedService } from '@app/services/shared-service';
 
 @Component({
   selector: 'smi-owners-dropdown',
@@ -11,21 +12,22 @@ export class OwnersDropdownComponent {
 
   teams: TeamEntity[];
   owners = new FormControl();
-  @Input() selectedOwners = [];
 
   @Input()
   set data(data: any[]) {
     this.teams = data;
   }
 
+  constructor(private sharedService: SharedService) {}
+
   onSelect(event, owner) {
     if(event.source.selected) {
-      this.selectedOwners.push(owner)
+      this.sharedService.selectedOwners.push(owner)
     }
     if(!event.source.selected) {
-      let index = this.selectedOwners.indexOf(owner);
+      let index = this.sharedService.selectedOwners.indexOf(owner);
       if(index > -1) {
-        this.selectedOwners.splice(index, 1);
+        this.sharedService.selectedOwners.splice(index, 1);
       }
     }
   }

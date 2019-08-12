@@ -9,7 +9,26 @@ import { BehaviorSubject } from 'rxjs';
 const $ = go.GraphObject.make;
 
 // TEMPORARY HARD CODED COLOURS FOR WORK PACKAGES
-const workPackageColours = ['green', 'orange', 'blue', 'red'];
+const workPackageColours = [
+  '#f44336',
+  '#E91E63',
+  '#9C27B0',
+  '#673AB7',
+  '#3F51B5',
+  '#2196F3',
+  '#03A9F4',
+  '#009688',
+  '#4CAF50',
+  '#8BC34A',
+  '#CDDC39',
+  '#FFEB3B',
+  '#FFC107',
+  '#FF9800',
+  '#FF5722',
+  '#795548',
+  '#9E9E9E',
+  '#607D8B'
+];
 
 @Injectable()
 export class DiagramChangesService {
@@ -225,9 +244,7 @@ export class DiagramChangesService {
   //  -diagram - the diagram to update
   //  -nodes - the array of nodes from the architecture to include
   //  -selectedWorkPackages - the array of currently selected work packages to apply node changes from
-  updateNodes(diagram, nodes, selectedWorkPackages) {
-
-    selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
+  updateNodes(diagram, nodes) {
 
     if (nodes && nodes.length > 0) {
 
@@ -235,37 +252,6 @@ export class DiagramChangesService {
       const currentLevel = filter.filterLevel.toLowerCase();
 
       let nodeArray = JSON.parse(JSON.stringify(nodes));
-
-      // Apply selected work packages
-      if (selectedWorkPackages && selectedWorkPackages.length > 0) {
-        selectedWorkPackages.forEach(function(workPackage, index) {
-
-          const nodeChanges = workPackage.changes.nodes;
-
-          // Additions
-          nodeChanges.additions.forEach(function(addition) {
-            if (addition.layer === currentLevel) {
-              addition = new Node(addition);
-              Object.assign(addition, {colour: workPackageColours[index]});
-              nodeArray.push(addition);
-            }
-          });
-
-          // Updates
-          nodeChanges.updates.forEach(function(update) {
-            const updatedNode = nodeArray.find(function(node) {return node.id === update.id; });
-            if (updatedNode) {
-              Object.assign(updatedNode, update, {colour: workPackageColours[index]});
-            }
-          });
-
-          // Deletions
-          nodeChanges.deletions.forEach(function(deletion) {
-            const nodeIndex = nodeArray.findIndex(function(node) {return node.id === deletion.id; });
-            if (nodeIndex !== -1) {nodeArray.splice(nodeIndex, 1); }
-          });
-        });
-      }
 
       // Check if filter is set
       if (filter && filter.filterNodeIds) {
@@ -299,9 +285,7 @@ export class DiagramChangesService {
   //  -diagram - the diagram to update
   //  -links - the array of links from the architecture to include
   //  -selectedWorkPackages - the array of currently selected work packages to apply link changes from
-  updateLinks(diagram, links, selectedWorkPackages) {
-
-    selectedWorkPackages = JSON.parse(JSON.stringify(selectedWorkPackages));
+  updateLinks(diagram, links) {
 
     if (links && links.length > 0) {
 
@@ -312,36 +296,6 @@ export class DiagramChangesService {
       const targetProp = diagram.model.linkToKeyProperty;
 
       let linkArray = JSON.parse(JSON.stringify(links));
-
-      // Apply selected work packages
-      if (selectedWorkPackages && selectedWorkPackages.length > 0) {
-        selectedWorkPackages.forEach(function(workPackage, index) {
-
-          const linkChanges = workPackage.changes.nodeLinks;
-
-          // Additions
-          linkChanges.additions.forEach(function(addition) {
-            if (addition.layer === currentLevel) {
-              Object.assign(addition, {colour: workPackageColours[index]});
-              linkArray.push(addition);
-            }
-          });
-
-          // Updates
-          linkChanges.updates.forEach(function(update) {
-            const updatedLink = linkArray.find(function(link) {return link.id === update.id; });
-            if (updatedLink) {
-              Object.assign(updatedLink, update, {colour: workPackageColours[index]});
-            }
-          });
-
-          // Deletions
-          linkChanges.deletions.forEach(function(deletion) {
-            const linkIndex = linkArray.findIndex(function(link) {return link.id === deletion.id; });
-            if (linkIndex !== -1) {linkArray.splice(linkIndex, 1); }
-          });
-        });
-      }
 
       // Check if filter is set
       if (filter && filter.filterNodeIds) {
@@ -405,5 +359,73 @@ export class DiagramChangesService {
     }
 
     return true;
+  }
+
+  // Hide all nodes except the specified node and all nodes directly linked to it
+  hideNonDependencies(depNode: go.Node) {
+
+    depNode.diagram.startTransaction('Analyse Dependencies');
+
+    // Get direct dependencies
+    const dependencies = [depNode.key];
+    depNode.findNodesConnected().each(function(connectedNode) {
+      dependencies.push(connectedNode.key);
+    });
+
+    // Hide all non-directly-dependent nodes
+    depNode.diagram.nodes.each(function(node) {
+      if (!dependencies.includes(node.key)) {
+        node.visible = false;
+      }
+    });
+
+    // Update bindings so that the appropriate nodes show the button to expand dependency levels shown
+    depNode.diagram.nodes.each(function(node) {
+      if (node.visible) {
+        node.updateTargetBindings();
+      }
+    });
+
+    depNode.diagram.commitTransaction('Analyse Dependencies');
+
+    // Centre diagram view on the specified node
+    depNode.diagram.centerRect(depNode.actualBounds);
+  }
+
+  // Show all nodes that are directly linked to the specified node
+  showDependencies(depNode: go.Node) {
+    depNode.diagram.startTransaction('Show Dependencies');
+
+    // Get linked nodes and ensure they are visible
+    depNode.findNodesConnected().each(function(connectedNode) {
+      connectedNode.visible = true;
+    });
+
+    // Update bindings so that the appropriate nodes show the button to expand dependency levels shown
+    depNode.diagram.nodes.each(function(node) {
+      if (node.visible) {
+        node.updateTargetBindings();
+      }
+    });
+
+    depNode.diagram.commitTransaction('Show Dependencies');
+  }
+
+  // Set all nodes in the specified diagram to visible
+  showAllNodes(diagram) {
+    diagram.startTransaction('Show All Nodes');
+
+    // Set all nodes to visible
+    diagram.nodes.each(function(node) {
+      node.visible = true;
+    });
+
+    // Update bindings so that nodes no longer show the button to expand dependency levels
+    diagram.nodes.each(function(node) {
+      node.updateTargetBindings();
+    });
+
+    diagram.commitTransaction('Show All Nodes');
+
   }
 }

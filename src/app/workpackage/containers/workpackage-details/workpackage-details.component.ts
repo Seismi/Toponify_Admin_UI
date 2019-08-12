@@ -27,6 +27,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   ownerId: string;
   owner: OwnersEntityOrApproversEntity;
   selectedOwner: boolean;
+  selectedBaseline: boolean;
 
   constructor(
     private dialog: MatDialog,
@@ -67,7 +68,6 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     this.selectedOwner = true;
   }
 
-  // Save Work Package
   onSaveWorkpackage() {
     this.store.dispatch(new UpdateWorkPackageEntity({
       entityId: this.workpackageId,
@@ -78,9 +78,14 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       }}
     }))
     this.selectedOwner = false;
+    this.selectedBaseline = false;
   }
 
-  // Delete Work Package
+  onCancel() {
+    this.selectedOwner = false;
+    this.selectedBaseline = false;
+  }
+
   onDeleteWorkpackage() {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
@@ -130,4 +135,13 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  onAddBaseline() { }
+
+  onDeleteBaseline() { }
+
+  onSelectBaseline(row) {
+    this.selectedBaseline = true;
+  }
+
 }

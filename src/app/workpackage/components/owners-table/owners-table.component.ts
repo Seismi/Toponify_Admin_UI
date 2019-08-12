@@ -9,9 +9,8 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
 })
 export class OwnersTableComponent {
 
-  @Input() isEditable = false;
-  
   selectedRowIndex = -1;
+  @Input() isEditable = false;
   @Input() selectedOwner = false;
 
   @Input()

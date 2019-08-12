@@ -11,7 +11,8 @@ import {
   MatSortModule, 
   MatInputModule,
   MatTabsModule,
-  MatFormFieldModule
+  MatFormFieldModule,
+  MatIconModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -28,6 +29,7 @@ import { ReportDataSetTableComponent } from './components/data-set-table/data-se
 import { ReportOwnersTableComponent } from './components/owners-table/owners-table.component';
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
+import { RadioTableInReportComponent } from './components/radio-table/radio-table.component';
 
 @NgModule({
   imports: [
@@ -44,6 +46,7 @@ import { ReportReportingConceptsTableComponent } from './components/reporting-co
     MatSortModule,
     MatTabsModule,
     MatInputModule,
+    MatIconModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
@@ -58,7 +61,8 @@ import { ReportReportingConceptsTableComponent } from './components/reporting-co
     ReportDataSetTableComponent,
     ReportOwnersTableComponent,
     ReportDimensionsTableComponent,
-    ReportReportingConceptsTableComponent
+    ReportReportingConceptsTableComponent,
+    RadioTableInReportComponent
   ],
   providers: [ReportService],
 })

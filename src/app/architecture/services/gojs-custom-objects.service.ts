@@ -3,6 +3,10 @@ import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable, OnDestroy} from '@angular/core';
 import {DiagramLevelService, Level, lessDetailOrderMapping, moreDetailOrderMapping} from './diagram-level.service';
 import { FilterService } from './filter.service';
+import {Subject} from 'rxjs';
+import {layers} from '@app/nodes/store/models/node.model';
+import {linkCategories} from '@app/nodes/store/models/node-link.model';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 
 const $ = go.GraphObject.make;
 
@@ -90,12 +94,25 @@ export class CustomLink extends go.Link {
   }
 }
 
-
 @Injectable()
 export class GojsCustomObjectsService {
 
+  // Observable to indicate that the detail tab should be displayed
+  private showDetailTabSource = new Subject();
+  public showDetailTab$ = this.showDetailTabSource.asObservable();
+  // Observable to indicate that a new scope should be created for the selected node
+  private createScopeWithNodeSource = new Subject();
+  public createScopeWithNode$ = this.createScopeWithNodeSource.asObservable();
+  // Observable to indicate that the grid display should be toggled
+  private showHideGridSource = new Subject();
+  public showHideGrid$ = this.showHideGridSource.asObservable();
+  // Observable to indicate that the diagram should be zoomed in or out
+  private zoomSource = new Subject();
+  public zoom$ = this.zoomSource.asObservable();
+
   constructor(
     public filterService: FilterService,
+    public diagramChangesService: DiagramChangesService,
     @Inject(forwardRef(function() {return DiagramLevelService; })) public diagramLevelService: DiagramLevelService
   ) {
   }
@@ -103,218 +120,170 @@ export class GojsCustomObjectsService {
   // Context menu for when the background is right-clicked
   getBackgroundContextMenu(): go.Adornment {
 
-    // Standard highlighting for buttons when mouse cursor enters them
-    function standardMouseEnter(e: object, btn: go.Part): void {
-      if (!btn.isEnabledObject()) {
-        return;
-      }
-      const shape = btn.findObject('ButtonBorder'); // the border Shape
-      if (shape instanceof go.Shape) {
-        let brush = btn['_buttonFillOver'];
-        btn['_buttonFillNormal'] = shape.fill;
-        shape.fill = brush;
-        brush = btn['_buttonStrokeOver'];
-        btn['_buttonStrokeNormal'] = shape.stroke;
-        shape.stroke = brush;
-      }
-    }
-
-    // Ordinary button for context menu
-    function makeButton(
-      row: number,
-      text: string,
-      action: (event: object, object?: go.Part) => void,
-      visible_predicate?: (object: go.Part, event: object) => boolean
-    ): go.Part {
-      return $(
-        'ContextMenuButton',
-        $(go.TextBlock, text),
-        {
-          click: action,
-          name: text,
-          column: 0,
-          row: row,
-          mouseEnter: function(event: object, object: go.Part) {
-            standardMouseEnter(event, object);
-            // Hide any open submenu when user mouses over button
-            object.part.elements.each(function(button: go.Part) {
-              if (button.column === 1) {
-                button.visible = false;
-              }
-            });
-          }
-        },
-        // Don't bother with binding GraphObject.visible if there's no predicate
-        visible_predicate
-          ? new go.Binding('visible', '', function(
-              object: go.Part,
-              event: object
-            ): boolean {
-              if (object.diagram) {
-                return visible_predicate(object, event);
-              } else {
-                return false;
-              }
-            }).ofObject()
-          : {}
-      );
-    }
-
-    // Button to appear when a menu button is moused over
-    function makeSubMenuButton(
-      row: number,
-      text: string,
-      action: (event: object, object?: go.Part) => void,
-      enabled_predicate?: (object: go.Part, event: object) => boolean
-    ): go.Part {
-      return $('ContextMenuButton', $(go.TextBlock, text), {
-        click: action,
-        name: text,
-        visible: false,
-        column: 1,
-        row: row
-      },
-        enabled_predicate
-          ? new go.Binding('isEnabled', '', enabled_predicate)
-          : {}
-      );
-    }
-
-    // Button to show a submenu when moused over
-    function makeMenuButton(
-      row: number,
-      text: string,
-      subMenuNames: string[],
-      visible_predicate?: (object: go.Part, event: object) => boolean
-    ): go.Part {
-      return $(
-        'ContextMenuButton',
-        $(go.TextBlock, text),
-        {
-          mouseEnter: function(event: object, object: go.Part): void {
-            standardMouseEnter(event, object);
-            // Hide any open submenu that is already open
-            object.part.elements.each(function(button: go.Part): void {
-              if (button.column === 1) {
-                button.visible = false;
-              }
-            });
-            // Show any submenu buttons assigned to this menu button
-            subMenuNames.forEach(function(buttonName: string): void {
-              object.part.findObject(buttonName).visible = true;
-            });
-          },
-          column: 0,
-          row: row
-        },
-        // Don't bother with binding GraphObject.visible if there's no predicate
-        visible_predicate
-          ? new go.Binding('visible', '', function(
-              object: go.Part,
-              event: object
-            ): boolean {
-              if (object.diagram) {
-                return visible_predicate(object, event);
-              } else {
-                return false;
-              }
-            }).ofObject()
-          : {}
-      );
-    }
+    const thisService = this;
 
     return $(
-      go.Adornment,
-      'Table',
-      makeButton(0, 'Edit', function(event: any): void {
-        /*Placeholder*/
-      }),
-      makeButton(1, 'Cut', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeButton(2, 'Copy', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeButton(3, 'Paste', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeMenuButton(4, 'Level', ['More detail', 'Less detail']),
-      // --Level submenu buttons--
-      makeSubMenuButton(
-        4,
-        'More detail',
-        function(event: any, object: any): void {
-
-          const filter = this.diagramLevelService.filter;
-
-          const filterLevel = moreDetailOrderMapping[filter.getValue().filterLevel];
-          if (filterLevel) {
-            this.filterService.setFilter({filterLevel: filterLevel});
+      'ContextMenu',
+      // Toggle the background grid on or off
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Enable/Disable Grid', {}),
+        {
+          click: function(event, object) {
+            thisService.showHideGridSource.next();
           }
-        }.bind(this),
-        function(object: go.Part, event: object): boolean {
-          return (object as any).nodeDataArray.length > 0 &&
-            ![Level.reportingConcept, Level.map].includes(this.diagramLevelService.filter.getValue().filterLevel);
-        }.bind(this)
+        }
       ),
-      makeSubMenuButton(
-        5,
-        'Less detail',
-        function(event: any, object: any): void {
-
-          const filter = this.diagramLevelService.filter;
-          const history = this.diagramLevelService.historyOfFilters;
-
-          const filterLevel = lessDetailOrderMapping[filter.getValue().filterLevel];
-          if (filterLevel) {
-            let newFilter = { filterLevel: filterLevel };
-            if (history[filterLevel]) {
-              newFilter = {
-                filterLevel: filterLevel,
-                ...(history[filterLevel].filterNodeIds && {filterNodeIds: this.historyOfFilters[filterLevel].filterNodeIds})
-              };
-            }
-            this.filterService.setFilter(newFilter);
-          } else {
-            this.filterService.setFilter({filterLevel: Level.system});
+      // Zoom in a bit
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Zoom in', {}),
+        {
+          click: function(event, object) {
+            thisService.zoomSource.next('In');
           }
-        }.bind(this)
+        }
       ),
-      // --End of level submenu buttons--
-      makeMenuButton(5, 'Comment', [
-        'New Risk',
-        'New Assumption',
-        'New Dependency',
-        'New Issue',
-        'New Opportunity',
-        'Other note'
-      ]),
-      // --Comment submenu buttons--
-      makeSubMenuButton(5, 'New Risk', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeSubMenuButton(6, 'New Assumption', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeSubMenuButton(7, 'New Dependency', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeSubMenuButton(8, 'New Issue', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeSubMenuButton(9, 'New Opportunity', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeSubMenuButton(10, 'Other note', function(event: object): void {
-        /*Placeholder*/
-      }),
-      // --End of comment submenu buttons--
-      makeButton(6, 'Filter', function(event: object): void {
-        /*Placeholder*/
-      }),
-      makeButton(7, 'Delete', function(event: object): void {
-        /*Placeholder*/
-      })
+      // Zoom out a bit
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Zoom out', {}),
+        {
+          click: function(event, object) {
+            thisService.zoomSource.next('Out');
+          }
+        }
+      ),
+      // Toggle RADIO alert on nodes
+      $('ContextMenuButton',
+        $(go.TextBlock, 'show / hide RADIO alert', {}),
+        {
+          click: function(event, object) {
+            const modelData = event.diagram.model.modelData;
+            event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
+          }
+        }
+      )
     );
+  }
+
+  // Context menu for when a node or link is right-clicked
+  getPartContextMenu(): go.Adornment {
+
+    const thisService = this;
+    const diagramChangesService = this.diagramChangesService;
+
+    return $(
+      'ContextMenu',
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Expand'),
+        {
+          click: function(event, object) {
+            const part = (object.part as go.Adornment).adornedObject;
+            part.doubleClick(event, part);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          if (event.diagram.findNodeForData(object) !== null) {
+            // Can only expand nodes if not reporting concept
+            return object.layer !== layers.reportingConcept;
+          } else {
+            // Can only expand link if category is data and layer is data set
+            return object.category === linkCategories.data &&
+              object.layer === layers.dataSet;
+          }
+        })
+      ),
+      // View detail for the node/link in the right hand panel
+      $('ContextMenuButton',
+        $(go.TextBlock, 'View Detail', {}),
+        {
+          click: function(event, object) {
+            thisService.showDetailTabSource.next();
+          }
+        }
+      ),
+      // Create a scope that includes the node
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Create Scope', {}),
+        {
+          click: function(event, object) {
+            thisService.createScopeWithNodeSource.next(object);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the create scope option for nodes
+          return event.diagram.findNodeForData(object) !== null;
+        })
+      ),
+      // Analyse dependencies of a node
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Analyse Dependencies', {}),
+        {
+          click: function(event, object) {
+            const part = (object.part as go.Adornment).adornedObject;
+            diagramChangesService.hideNonDependencies(part as go.Node);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the analyse dependencies option for nodes..
+          return event.diagram.findNodeForData(object) !== null &&
+            // ..that are not in map view
+            !object.group;
+        })
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Return to Architecture View', {}),
+        {
+          click: function(event, object) {
+            diagramChangesService.showAllNodes(event.diagram);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the return to architecture option for nodes..
+          return event.diagram.findNodeForData(object) !== null &&
+            // ..and if some nodes in the diagram are hidden
+            event.diagram.nodes.any(function(node) {
+              return !node.visible;
+            });
+        })
+      )
+    );
+  }
+
+  // Create a linear gradient brush through the provided colours
+  // Inputs:
+  //    colours - array of colours to go through
+  //    fromSpot - spot where brush should start
+  //    toSpot - spot brush should end
+  createCustomBrush(colours: string[], fromSpot = go.Spot.Top, toSpot = go.Spot.Bottom): go.Brush {
+
+    // Replace any nulls in colours array with default black
+    colours = colours.map(function(colour) {return colour || 'black'; });
+
+    // Parameters for brush
+    const newBrushParams: any = {};
+
+    // -- Triple up colours in array in order to ensure less gradual --
+    // -- transition between colours --
+    const temp: string[] = [];
+
+    colours.forEach(function(colour) {
+      temp.push(colour);
+      temp.push(colour);
+      temp.push(colour);
+    });
+
+    colours = temp;
+
+    // -- End of tripling up process --
+
+    // Distribute points for colours evenly across the brush
+    colours.forEach(function(colour, index) {
+      newBrushParams[String(index / (colours.length - 1))] = colour;
+    });
+
+    // Set start and end spots for the brush
+    newBrushParams.start = fromSpot;
+    newBrushParams.end = toSpot;
+
+    return $(go.Brush, 'Linear', newBrushParams);
   }
 }

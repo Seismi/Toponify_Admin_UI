@@ -5,6 +5,8 @@ import {Injectable} from '@angular/core';
 import {updateShapeShadows, CustomLink} from './gojs-custom-objects.service';
 import {FilterService} from './filter.service';
 import { Level, DiagramLevelService } from './diagram-level.service';
+import {GojsCustomObjectsService} from './gojs-custom-objects.service';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 
 const $ = go.GraphObject.make;
 
@@ -13,10 +15,11 @@ updateShapeShadows();
 
 @Injectable()
 export class DiagramTemplatesService {
-
   constructor(
     public filterService: FilterService,
-    public diagramLevelService: DiagramLevelService
+    public diagramLevelService: DiagramLevelService,
+    public gojsCustomObjectsService: GojsCustomObjectsService,
+    public diagramChangesService: DiagramChangesService
   ) {}
 
   // Get item template for list of node children
@@ -45,7 +48,91 @@ export class DiagramTemplatesService {
     );
   }
 
-  getSystemNodeTemplate() {
+  // Get button for revealing the next level of dependencies
+  getDependencyExpandButton() {
+    return $('Button',
+      {
+        alignment: go.Spot.TopRight,
+        desiredSize: new go.Size(20, 20),
+        click: function(event, button) {
+          const node = button.part;
+          this.diagramChangesService.showDependencies(node);
+        }.bind(this)
+      },
+      $(go.TextBlock,
+        '+',
+        {
+          alignment: go.Spot.Center,
+          font: 'bold 18px calibri',
+          desiredSize: new go.Size(20, 20),
+          textAlign: 'center',
+          verticalAlignment: go.Spot.Center
+        }
+      ),
+      // Only show button for nodes with hidden dependent nodes
+      new go.Binding('visible', '', function(node) {
+        const connectedNodes = node.findNodesConnected();
+        return connectedNodes.any(function(connectedNode) {
+          return !connectedNode.visible;
+        });
+      }).ofObject()
+    );
+  }
+
+  // Calculate stroke for parts, based on impacted work packages
+  getStrokeForImpactedWorkPackages(impactedPackages, part) {
+    const allWorkpackages = part.diagram.model.modelData.workpackages;
+
+    // return black by default if part not impacted by any work packages
+    if (impactedPackages.length === 0) {return 'black'; }
+
+    // get colours for work packages impacted by
+    const colours = allWorkpackages.filter(function(workpackage) {
+      return impactedPackages.some(function(impactedPackage) {
+        return impactedPackage.id === workpackage.id;
+      });
+    }).map(function(workpackage) {
+      return workpackage.displayColour;
+    });
+
+    // arguments to pass to createCustomBrush
+    const args = [colours];
+
+    // if part is a link then calculate start and end points of the
+    // brush based on the relative locations of the connected nodes
+    if (part instanceof go.Link) {
+
+      const fromLocation = part.fromNode.location;
+      const toLocation = part.toNode.location;
+      let startAlign: string;
+      let endAlign: string;
+
+      // vertical brush direction
+      if (fromLocation.y < toLocation.y) {
+        startAlign = 'Top';
+        endAlign = 'Bottom';
+      } else {
+        startAlign = 'Bottom';
+        endAlign = 'Top';
+      }
+      // add horizontal brush direction
+      if (fromLocation.x < toLocation.x) {
+        startAlign = startAlign + 'Left';
+        endAlign = endAlign + 'Right';
+      } else {
+        startAlign = startAlign + 'Right';
+        endAlign = endAlign + 'Left';
+      }
+      // fromSpot
+      args.push(go.Spot[startAlign]);
+      // toSpot
+      args.push(go.Spot[endAlign]);
+    }
+
+    return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
+  }
+
+  getSystemNodeTemplate(forPalette: boolean = false) {
 
     return $(
       go.Node,
@@ -63,6 +150,9 @@ export class DiagramTemplatesService {
         locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
@@ -81,16 +171,10 @@ export class DiagramTemplatesService {
             return 'RoundedRectangle';
           }
         }),
-        new go.Binding('stroke', 'colour'),
-        // Bind height for transactional system to make consistent
-        //  with previously used GoJs 1.8 shape
-        new go.Binding('minSize', 'category', function (category) {
-          if (category === 'transactional') {
-            return new go.Size(NaN, 157.14285714285714);
-          } else {
-            return new go.Size(NaN, NaN);
-          }
-        }),
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         {
           fill: 'white',
           stroke: 'black',
@@ -108,109 +192,150 @@ export class DiagramTemplatesService {
         }
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
-          minSize: new go.Size(100, 100),
           margin: 5
         },
-        // System name
-        $(go.TextBlock,
+        // Bind height for transactional system to make consistent
+        //  with previously used GoJs 1.8 shape
+        new go.Binding('minSize', 'category', function (category) {
+          if (category === 'transactional') {
+            return new go.Size(100, 140);
+          } else {
+            return new go.Size(100, 100);
+          }
+        }),
+        $(go.Panel,
+          'Vertical',
           {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
+            row: 0,
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
-        ),
-        // System description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // System tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'tags',
-            function (tags) {
-              return tags ? ('Tags - ' + tags) : '';
-            }
-          ),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // System owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Data set list header
+          this.getDependencyExpandButton(),
+          // System name
           $(go.TextBlock,
             {
-              text: 'Data Sets',
-              row: 1,
-              alignment: go.Spot.Center,
+              textAlign: 'center',
               stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0)
+              font: 'bold 16px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
             },
-            // Hide data sets header if system has no data sets
-            new go.Binding('visible', 'descendants',
-              function (descendants) {
-                return descendants.length > 0;
-              }
-            )
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'name').ofModel()
           ),
-          // Data set list
+          // System description
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'italic 15px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'description'),
+            new go.Binding('visible', 'description').ofModel()
+          ),
+          // System tags
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'tags',
+              function (tags) {
+                return tags ? ('Tags - ' + tags) : '';
+              }
+            ),
+            new go.Binding('visible', 'tags').ofModel()
+          ),
+          // System owners
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'owner',
+              function (owner) {
+                return owner ? ('Owner - ' + owner) : '';
+              }
+            ),
+            new go.Binding('visible', 'owner').ofModel()
+          ),
           $(go.Panel, 'Vertical',
             {
-              name: 'Data_Set_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
+              stretch: go.GraphObject.Horizontal
             },
-            new go.Binding('itemArray', 'descendants')
+            // Data set list header
+            $(go.TextBlock,
+              {
+                text: 'Data Sets',
+                alignment: go.Spot.Center,
+                stroke: 'black',
+                font: 'bold 15.25px calibri',
+                margin: new go.Margin(5, 0, 0, 0)
+              },
+              // Hide data sets header if system has no data sets
+              new go.Binding('visible', 'descendants',
+                function (descendants) {
+                  return descendants.length > 0;
+                }
+              )
+            ),
+            // Data set list
+            $(go.Panel, 'Vertical',
+              {
+                name: 'Data_Set_List',
+                padding: 3,
+                alignment: go.Spot.TopLeft,
+                defaultAlignment: go.Spot.Left,
+                stretch: go.GraphObject.Horizontal,
+                itemCategoryProperty: '',
+                itemTemplate: this.getItemTemplate()
+              },
+              new go.Binding('itemArray', 'descendants')
+            ),
+            new go.Binding('visible', 'nextLevel').ofModel()
+          )
+        ),
+        $(go.Panel,
+          'Auto',
+          {
+            row: 1,
+            alignment: go.Spot.BottomRight,
+            visible: false
+          },
+          new go.Binding('visible', '', function (node) {
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+          }).ofObject(),
+          $(go.Shape,
+            'circle',
+            {
+              fill: 'red',
+              desiredSize: new go.Size(25, 25)
+            }
           ),
-          new go.Binding('visible', 'nextLevel').ofModel()
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'white',
+              font: '12px calibri'
+            },
+           new go.Binding('text', 'relatedRadioCount')
+          )
         )
       )
     );
   }
 
-  getDataSetNodeTemplate() {
+  getDataSetNodeTemplate(forPalette: boolean = false) {
 
     // Template for Data Set
     return $(
@@ -229,146 +354,194 @@ export class DiagramTemplatesService {
         locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
-      $(go.Shape, 'Rectangle', {
-        fill: 'white',
-        stroke: 'black',
-        strokeWidth: 1,
-        portId: '',
-        fromLinkable: true,
-        toLinkable: true,
-        fromSpot: go.Spot.AllSides,
-        toSpot: go.Spot.AllSides,
-        name: 'shape',
-        fromLinkableDuplicates: true,
-        toLinkableDuplicates: true
-      },
-      new go.Binding('stroke', 'colour')
+      $(go.Shape,
+        'Rectangle',
+        {
+          fill: 'white',
+          stroke: 'black',
+          strokeWidth: 1,
+          portId: '',
+          fromLinkable: true,
+          toLinkable: true,
+          fromSpot: go.Spot.AllSides,
+          toSpot: go.Spot.AllSides,
+          name: 'shape',
+          fromLinkableDuplicates: true,
+          toLinkableDuplicates: true
+        },
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this))
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
           minSize: new go.Size(100, 100),
           margin: 5
         },
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            alignment: go.Spot.TopRight,
-            background: null,
-            font: 'bold 20px calibri'
+            alignment: go.Spot.TopCenter,
+            row: 0,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text',
-            'category',
-            function (category) {
-              if (category === nodeCategories.virtual) {
-                return 'V';
-              } else if (category === nodeCategories.masterData) {
-                return 'MD';
-              } else {
-                // Physical data set
-                return '';
-              }
-            }
-          )
-        ),
-        // Data set name
-        $(
-          go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
-        ),
-        // Data set description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // Data set tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text', 'tags', function (tags) {
-            return tags ? 'Tags - ' + tags : '';
-          }),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // Data set owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Dimension list header
+          this.getDependencyExpandButton(),
           $(go.TextBlock,
             {
-              text: 'Dimensions',
-              row: 1,
-              alignment: go.Spot.Center,
-              stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0)
+              alignment: go.Spot.TopRight,
+              background: null,
+              font: 'bold 20px calibri'
             },
-            // Hide dimensions header if data set has no dimensions
-            new go.Binding('visible', 'descendants',
-              function (descendants) {
-                return descendants.length > 0;
+            new go.Binding('text',
+              'category',
+              function (category) {
+                if (category === nodeCategories.virtual) {
+                  return 'V';
+                } else if (category === nodeCategories.masterData) {
+                  return 'MD';
+                } else {
+                  // Physical data set
+                  return '';
+                }
+              }
+            ),
+            new go.Binding('visible',
+              'category',
+              function(category) {
+                return category !== nodeCategories.physical;
               }
             )
           ),
-          // Dimension list
+          // Data set name
+          $(
+            go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'bold 16px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'name').ofModel()
+          ),
+          // Data set description
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'italic 15px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'description'),
+            new go.Binding('visible', 'description').ofModel()
+          ),
+          // Data set tags
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text', 'tags', function (tags) {
+              return tags ? 'Tags - ' + tags : '';
+            }),
+            new go.Binding('visible', 'tags').ofModel()
+          ),
+          // Data set owners
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'owner',
+              function (owner) {
+                return owner ? ('Owner - ' + owner) : '';
+              }
+            ),
+            new go.Binding('visible', 'owner').ofModel()
+          ),
           $(go.Panel, 'Vertical',
             {
-              name: 'Dimension_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
+              stretch: go.GraphObject.Horizontal
             },
-            new go.Binding('itemArray', 'descendants')
+            // Dimension list header
+            $(go.TextBlock,
+              {
+                text: 'Dimensions',
+                row: 1,
+                alignment: go.Spot.Center,
+                stroke: 'black',
+                font: 'bold 15.25px calibri',
+                margin: new go.Margin(5, 0, 0, 0)
+              },
+              // Hide dimensions header if data set has no dimensions
+              new go.Binding('visible', 'descendants',
+                function (descendants) {
+                  return descendants.length > 0;
+                }
+              )
+            ),
+            // Dimension list
+            $(go.Panel, 'Vertical',
+              {
+                name: 'Dimension_List',
+                padding: 3,
+                alignment: go.Spot.TopLeft,
+                defaultAlignment: go.Spot.Left,
+                stretch: go.GraphObject.Horizontal,
+                itemCategoryProperty: '',
+                itemTemplate: this.getItemTemplate()
+              },
+              new go.Binding('itemArray', 'descendants')
+            ),
+            new go.Binding('visible', 'nextLevel').ofModel()
+          )
+        ),
+        $(go.Panel,
+          'Auto',
+          {
+            row: 1,
+            alignment: go.Spot.BottomRight,
+            visible: false
+          },
+          new go.Binding('visible', '', function (node) {
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+          }).ofObject(),
+          $(go.Shape,
+            'circle',
+            {
+              fill: 'red',
+              desiredSize: new go.Size(25, 25)
+            }
           ),
-          new go.Binding('visible', 'nextLevel').ofModel()
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'white',
+              font: '12px calibri'
+            },
+           new go.Binding('text', 'relatedRadioCount')
+          )
         )
       )
     );
   }
 
-  getDimensionNodeTemplate() {
+  getDimensionNodeTemplate(forPalette: boolean = false) {
 
     // Template for dimension
     return $(
@@ -385,6 +558,9 @@ export class DiagramTemplatesService {
         locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       this.filterService.getFilter().level === Level.map ? {} : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -403,7 +579,10 @@ export class DiagramTemplatesService {
           fromLinkableDuplicates: false,
           toLinkableDuplicates: false
         },
-        new go.Binding('stroke', 'colour'),
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         new go.Binding('fromSpot', 'group', function (group) {
           if (group) {
             return go.Spot.LeftRightSides;
@@ -420,117 +599,150 @@ export class DiagramTemplatesService {
         }.bind(this))
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
           minSize: new go.Size(100, 100),
           margin: 5
         },
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            alignment: go.Spot.TopRight,
-            background: null,
-            font: 'bold 20px calibri',
-            text: 'D'
-          }
-        ),
-        // Dimension name
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
-        ),
-        // Dimension description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // Dimension tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'tags',
-            function (tags) {
-              return tags ? ('Tags - ' + tags) : '';
-            }
-          ),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // Dimension owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Reporting concept list header
+          this.getDependencyExpandButton(),
           $(go.TextBlock,
             {
-              text: 'Reporting Concepts',
-              row: 1,
-              alignment: go.Spot.Center,
-              stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0)
-            },
-            // Hide reporting concepts header if dimension has no reporting concepts
-            new go.Binding('visible', 'descendants',
-              function (descendants) {
-                return descendants.length > 0;
-              }
-            )
+              alignment: go.Spot.TopRight,
+              background: null,
+              font: 'bold 20px calibri',
+              text: 'D'
+            }
           ),
-          // Reporting concept list
+          // Dimension name
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'bold 16px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'name').ofModel()
+          ),
+          // Dimension description
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'italic 15px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'description'),
+            new go.Binding('visible', 'description').ofModel()
+          ),
+          // Dimension tags
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'tags',
+              function (tags) {
+                return tags ? ('Tags - ' + tags) : '';
+              }
+            ),
+            new go.Binding('visible', 'tags').ofModel()
+          ),
+          // Dimension owners
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'owner',
+              function (owner) {
+                return owner ? ('Owner - ' + owner) : '';
+              }
+            ),
+            new go.Binding('visible', 'owner').ofModel()
+          ),
           $(go.Panel, 'Vertical',
             {
-              name: 'Reporting concept_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
+              stretch: go.GraphObject.Horizontal
             },
-            new go.Binding('itemArray', 'descendants')
+            // Reporting concept list header
+            $(go.TextBlock,
+              {
+                text: 'Reporting Concepts',
+                row: 1,
+                alignment: go.Spot.Center,
+                stroke: 'black',
+                font: 'bold 15.25px calibri',
+                margin: new go.Margin(5, 0, 0, 0)
+              },
+              // Hide reporting concepts header if dimension has no reporting concepts
+              new go.Binding('visible', 'descendants',
+                function (descendants) {
+                  return descendants.length > 0;
+                }
+              )
+            ),
+            // Reporting concept list
+            $(go.Panel, 'Vertical',
+              {
+                name: 'Reporting concept_List',
+                padding: 3,
+                alignment: go.Spot.TopLeft,
+                defaultAlignment: go.Spot.Left,
+                stretch: go.GraphObject.Horizontal,
+                itemCategoryProperty: '',
+                itemTemplate: this.getItemTemplate()
+              },
+              new go.Binding('itemArray', 'descendants')
+            ),
+            new go.Binding('visible', 'nextLevel').ofModel()
+          )
+        ),
+        $(go.Panel,
+          'Auto',
+          {
+            row: 1,
+            alignment: go.Spot.BottomRight,
+            visible: false
+          },
+          new go.Binding('visible', '', function (node) {
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+          }).ofObject(),
+          $(go.Shape,
+            'circle',
+            {
+              fill: 'red',
+              desiredSize: new go.Size(25, 25)
+            }
           ),
-          new go.Binding('visible', 'nextLevel').ofModel()
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'white',
+              font: '12px calibri'
+            },
+           new go.Binding('text', 'relatedRadioCount')
+          )
         )
       )
     );
   }
 
-  getReportingConceptNodeTemplate() {
+  getReportingConceptNodeTemplate(forPalette: boolean = false) {
 
     // Template for reporting concept nodes
     return $(
@@ -544,10 +756,11 @@ export class DiagramTemplatesService {
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
-        // TEMP
-        isLayoutPositioned: true
+        locationSpot: go.Spot.Top
       },
+      !forPalette ? { // Enable context menu for nodes not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      } : {},
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -561,7 +774,10 @@ export class DiagramTemplatesService {
             return 'InternalStorage';
           }
         }),
-        new go.Binding('stroke', 'colour'),
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         {
           fill: 'white',
           stroke: 'black',
@@ -577,11 +793,9 @@ export class DiagramTemplatesService {
         }
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
-          minSize: new go.Size(100, 100),
-          margin: 5
+          minSize: new go.Size(100, 100)
         },
         // Ensure that the panel does not overlap the border lines
         // on the shapes for list and structure reporting elements
@@ -595,98 +809,131 @@ export class DiagramTemplatesService {
             }
           }
         ),
-        // Reporting concept name
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
-        ),
-        // Reporting concept description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // Reporting concept tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'tags',
-            function (tags) {
-              return tags ? ('Tags - ' + tags) : '';
-            }
-          ),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // Reporting concept owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Attribute list header
+          this.getDependencyExpandButton(),
+          // Reporting concept name
           $(go.TextBlock,
             {
-              text: 'Attributes',
-              row: 1,
-              alignment: go.Spot.Center,
+              textAlign: 'center',
               stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0),
-              visible: false
+              font: 'bold 16px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
             },
-            // Hide attributes header if Reporting concept has no attributes
-            new go.Binding('visible', 'attributes',
-              function (attributes) {
-                return attributes.length > 0;
-              }
-            )
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'name').ofModel()
           ),
-          // Attribute list
+          // Reporting concept description
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'italic 15px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'description'),
+            new go.Binding('visible', 'description').ofModel()
+          ),
+          // Reporting concept tags
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'tags',
+              function (tags) {
+                return tags ? ('Tags - ' + tags) : '';
+              }
+            ),
+            new go.Binding('visible', 'tags').ofModel()
+          ),
+          // Reporting concept owners
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: '15px calibri',
+              maxSize: new go.Size(100, Infinity)
+            },
+            new go.Binding('text',
+              'owner',
+              function (owner) {
+                return owner ? ('Owner - ' + owner) : '';
+              }
+            ),
+            new go.Binding('visible', 'owner').ofModel()
+          ),
           $(go.Panel, 'Vertical',
             {
-              name: 'Attribute_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
+              stretch: go.GraphObject.Horizontal
             },
-            new go.Binding('itemArray', 'attributes')
+            // Attribute list header
+            $(go.TextBlock,
+              {
+                text: 'Attributes',
+                alignment: go.Spot.Center,
+                stroke: 'black',
+                font: 'bold 15.25px calibri',
+                margin: new go.Margin(5, 0, 0, 0),
+                visible: false
+              },
+              // Hide attributes header if Reporting concept has no attributes
+              new go.Binding('visible', 'attributes',
+                function (attributes) {
+                  return attributes.length > 0;
+                }
+              )
+            ),
+            // Attribute list
+            $(go.Panel, 'Vertical',
+              {
+                name: 'Attribute_List',
+                padding: 3,
+                alignment: go.Spot.TopLeft,
+                defaultAlignment: go.Spot.Left,
+                stretch: go.GraphObject.Horizontal,
+                itemCategoryProperty: '',
+                itemTemplate: this.getItemTemplate()
+              },
+              new go.Binding('itemArray', 'attributes')
+            ),
+            new go.Binding('visible', 'nextLevel').ofModel()
+          )
+        ),
+        $(go.Panel,
+          'Auto',
+          {
+            row: 1,
+            alignment: go.Spot.BottomRight,
+            visible: false
+          },
+          new go.Binding('visible', '', function (node) {
+            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+          }).ofObject(),
+          $(go.Shape,
+            'circle',
+            {
+              fill: 'red',
+              desiredSize: new go.Size(25, 25)
+            }
           ),
-          new go.Binding('visible', 'nextLevel').ofModel()
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'white',
+              font: '12px calibri'
+            },
+           new go.Binding('text', 'relatedRadioCount')
+          )
         )
       )
     );
@@ -727,13 +974,12 @@ export class DiagramTemplatesService {
         relinkableTo: true,
         fromEndSegmentLength: 10,
         toEndSegmentLength: 10,
-        doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
-        // TEMP
-        isLayoutPositioned: true
+        doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly
         locationSpot: go.Spot.TopCenter,
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
         // Correct locationSpot on selection highlight adornment when link in palette
         selectionAdornmentTemplate: $(go.Adornment, 'Link', {
             locationSpot: new go.Spot(0.5, 0, 1, 0)
@@ -742,13 +988,19 @@ export class DiagramTemplatesService {
             isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
           })
         )
-      } : {},
+      } : { // Enable context menu for links not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+      },
       $(go.Shape, {
+          name: 'shape',
           isPanelMain: true,
           stroke: 'black',
           strokeWidth: 2.5
         },
-        new go.Binding('stroke', 'colour'),
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
@@ -783,12 +1035,10 @@ export class DiagramTemplatesService {
         go.Shape, // The 'to' arrowhead
         {
           scale: 1.2,
-          stroke: 'black',
-          fill: 'Black',
           toArrow: 'Triangle'
         },
-        new go.Binding('stroke', 'colour'),
-        new go.Binding('fill', 'colour'),
+        new go.Binding('fill', 'stroke').ofObject('shape'),
+        new go.Binding('stroke', 'stroke').ofObject('shape'),
         new go.Binding('visible', 'layer',
           function(layer) {return layer !== layers.system; }
         )
@@ -826,11 +1076,10 @@ export class DiagramTemplatesService {
         curve: go.Link.JumpOver,
         relinkableFrom: true,
         relinkableTo: true,
-        // contextMenu: PartContextMenu,
         fromEndSegmentLength: 20,
         toEndSegmentLength: 20,
         // Position by layout in palette
-        isLayoutPositioned: true // forPalette
+        isLayoutPositioned: forPalette
       },
       forPalette ? {
         // Set locationSpot in order for palette to arrange link correctly
@@ -843,14 +1092,19 @@ export class DiagramTemplatesService {
             isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
           })
         )
-      } : {},
+      } : { // Enable context menu for links not in the palette
+        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
+      },
       $(go.Shape, {
           isPanelMain: true,
           stroke: 'Black',
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
-        new go.Binding('stroke', 'colour'),
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this)),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),

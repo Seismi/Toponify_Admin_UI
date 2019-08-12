@@ -10,6 +10,7 @@ import {DiagramLevelService} from '../../services/diagram-level.service';
   styleUrls: ['./architecture-palette.component.scss']
 })
 export class ArchitecturePaletteComponent implements OnInit {
+
   private palette: go.Palette;
 
   @ViewChild('paletteDiv')
@@ -20,6 +21,7 @@ export class ArchitecturePaletteComponent implements OnInit {
   ) {
     this.palette = new go.Palette();
     this.palette.initialScale = 0.5;
+    this.palette.animationManager.isEnabled = false;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
     this.palette.model.nodeCategoryProperty = 'layer';
@@ -35,29 +37,30 @@ export class ArchitecturePaletteComponent implements OnInit {
       dataLinks: true,
       masterDataLinks: true,
       linkName: false,
-      linkLabel: false
+      linkLabel: false,
+      relatedRadioAlerts: false
     };
 
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;
 
     this.palette.nodeTemplateMap.add(
       layers.system,
-      diagramTemplatesService.getSystemNodeTemplate()
+      diagramTemplatesService.getSystemNodeTemplate(true)
     );
 
     this.palette.nodeTemplateMap.add(
       layers.dataSet,
-      diagramTemplatesService.getDataSetNodeTemplate()
+      diagramTemplatesService.getDataSetNodeTemplate(true)
     );
 
     this.palette.nodeTemplateMap.add(
       layers.dimension,
-      diagramTemplatesService.getDimensionNodeTemplate()
+      diagramTemplatesService.getDimensionNodeTemplate(true)
     );
 
     this.palette.nodeTemplateMap.add(
       layers.reportingConcept,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
+      diagramTemplatesService.getReportingConceptNodeTemplate(true)
     );
 
     // Set links templates
@@ -79,14 +82,6 @@ export class ArchitecturePaletteComponent implements OnInit {
     if (option === 'dataLinks' || option === 'masterDataLinks') {
       model.setDataProperty(model.modelData, option, event.checked);
     }
-  }
-
-  @Output()
-  updatePalette = new EventEmitter()
-
-  update() {
-    this.palette.requestUpdate();
-    this.updatePalette.emit();
   }
 
   ngOnInit() {

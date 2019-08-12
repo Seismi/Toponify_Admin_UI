@@ -9,6 +9,8 @@ import { ReportLibraryDetailService } from '@app/report-library/components/repor
 import { ReportLibraryValidatorService } from '@app/report-library/components/report-library-detail/services/report-library-validator.service';
 import { FormGroup } from '@angular/forms';
 import { Report } from '@app/report-library/store/models/report.model';
+import { State as WorkPackageState} from '@app/workpackage/store/reducers/workpackage.reducer';
+import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -21,17 +23,26 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
   report: Report;
+  reportSelected: boolean;
+  selectedRightTab: number;
+  showOrHideRightPane = false;
+  reportId: string;
 
   constructor(
+    private workPackageStore: Store<WorkPackageState>,
     private route: ActivatedRoute,
     private store: Store<ReportState>,
     private reportLibraryDetailService: ReportLibraryDetailService
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {    
     this.subscriptions.push(this.route.params.subscribe( params => {
       const id = params['reportId'];
-      this.store.dispatch(new LoadReport(id));
+      this.reportId = id;
+      this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        const workPackageIds = workpackages.map(item => item.id)
+        this.setWorkPackage(workPackageIds);
+      })
     }));
 
     this.subscriptions.push(this.store.pipe(select(getReportSelected)).subscribe(report => {
@@ -39,10 +50,19 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       if(report) {
         this.reportLibraryDetailService.reportDetailForm.patchValue({
           name: report.name,
-          description: report.description,
+          description: report.description
         });
       }
     }));
+    
+    this.reportSelected = true;
+  }
+
+  setWorkPackage(workpackageIds: string[] = []) {
+    const queryParams = {
+      workPackageQuery: workpackageIds
+    };
+    this.store.dispatch(new LoadReport({id: this.reportId, queryParams: queryParams}));
   }
 
   ngOnDestroy(): void {
@@ -53,4 +73,14 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     return this.reportLibraryDetailService.reportDetailForm;
   }
 
+  openRightTab(i) {
+    this.selectedRightTab = i;
+    if(this.selectedRightTab === i) {
+      this.showOrHideRightPane = false;
+    }
+  }
+
+  onHideRightPane() {
+    this.showOrHideRightPane = true;
+  }
 }

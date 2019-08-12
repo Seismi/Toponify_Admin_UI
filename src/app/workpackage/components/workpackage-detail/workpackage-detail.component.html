@@ -12,14 +12,20 @@
 
     <!-- Baseline Table -->
     <smi-baseline-table
+        [ngClass]="{disabled: !isEditable}"
         data-hook="workpackage-detail-baseline-table"
         *ngIf="!modalMode" 
         [data]="baselineTableData"
-        [isEditable]="isEditable">
+        [isEditable]="isEditable"
+        (selectBaseline)="onSelectBaseline($event)"
+        (addBaseline)="onAddBaseline($event)"
+        (deleteBaseline)="onDeleteBaseline($event)"
+        [selectedBaseline]="selectedBaseline">
     </smi-baseline-table>
 
     <!-- Owners Table -->
     <smi-owners-table
+        [ngClass]="{disabled: !isEditable}"
         data-hook="workpackage-detail-owners-table"
         *ngIf="!modalMode" 
         [data]="ownersTableData"
@@ -27,7 +33,6 @@
         (deleteOwner)="onDeleteOwner($event)"
         (selectOwner)="onSelectOwner($event)"
         [isEditable]="isEditable"
-        [ngClass]="{disabled: !isEditable}"
         [selectedOwner]="selectedOwner">
     </smi-owners-table>
 
@@ -43,7 +48,7 @@
         data-hook="workpackage-detail-baseline-selection"
         *ngIf="modalMode"
         [data]="baseline"
-        [selectedBaseline]="selectedBaseline">
+        [selectedBaseline]="selectedBaselines">
     </smi-wp-baseline-dropdown>
 
     <!-- Select Owners -->

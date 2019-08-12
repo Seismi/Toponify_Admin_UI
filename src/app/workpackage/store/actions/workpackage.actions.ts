@@ -1,6 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse, WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity, OwnersEntityOrApproversEntity, WorkPackageApiResponse } from '../models/workpackage.models';
+import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
+  WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity, OwnersEntityOrApproversEntity } from '../models/workpackage.models';
+
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -29,7 +31,10 @@ export enum WorkPackageActionTypes {
 
   DeleteOwner = '[WorkPackage] Delete Owner',
   DeleteOwnerSuccess = '[WorkPackage] Delete Owner Success',
-  DeleteOwnerFailure = '[WorkPackage] Delete Owner Failure'
+  DeleteOwnerFailure = '[WorkPackage] Delete Owner Failure',
+
+  SetWorkpackageDisplayColour = '[WorkPackage] Set Display Colour',
+  SetWorkpackageSelected = '[WorkPackage] Set Selected'
 }
 
 export class LoadWorkPackages implements Action {
@@ -107,7 +112,6 @@ export class DeleteWorkPackageEntityFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class AddOwner implements Action {
   readonly type = WorkPackageActionTypes.AddOwner;
   constructor(public payload: { owners: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string }) {}
@@ -123,7 +127,6 @@ export class AddOwnerFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class DeleteOwner implements Action {
   readonly type = WorkPackageActionTypes.DeleteOwner;
   constructor(public payload: { workPackageId: string, ownerId: string }) {}
@@ -137,6 +140,16 @@ export class DeleteOwnerSuccess implements Action {
 export class DeleteOwnerFailure implements Action {
   readonly type = WorkPackageActionTypes.DeleteOwnerFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class SetWorkpackageDisplayColour implements Action {
+  readonly type = WorkPackageActionTypes.SetWorkpackageDisplayColour;
+  constructor(public payload: {colour: string, workpackageId: string}) { }
+}
+
+export class SetWorkpackageSelected implements Action {
+  readonly type = WorkPackageActionTypes.SetWorkpackageSelected;
+  constructor(public payload: { workpackageId: string }) { }
 }
 
 
@@ -161,4 +174,6 @@ export type WorkPackageActionsUnion =
   | DeleteOwnerFailure
   | AddOwner
   | AddOwnerSuccess
-  | AddOwnerFailure;
+  | AddOwnerFailure
+  | SetWorkpackageDisplayColour
+  | SetWorkpackageSelected;

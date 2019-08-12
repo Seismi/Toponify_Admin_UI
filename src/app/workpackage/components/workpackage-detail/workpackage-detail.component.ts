@@ -18,9 +18,10 @@ export class WorkPackageDetailComponent  {
   @Input() baselineTableData: any;
   @Input() ownersTableData: any;
   @Input() approversTableData: any;
-  @Input() selectedBaseline = [];
+  @Input() selectedBaselines = [];
   @Input() selectedOwners = [];
   @Input() selectedOwner: boolean;
+  @Input() selectedBaseline: boolean;
 
   @Output()
   deleteWorkpackage = new EventEmitter();
@@ -37,6 +38,18 @@ export class WorkPackageDetailComponent  {
   @Output()
   addOwner = new EventEmitter();
 
+  @Output()
+  cancel = new EventEmitter();
+
+  @Output()
+  addBaseline = new EventEmitter();
+
+  @Output()
+  deleteBaseline = new EventEmitter();
+
+  @Output()
+  selectBaseline = new EventEmitter();
+
   onSave() {
     this.isEditable = false;
     this.saveWorkpackage.emit();
@@ -48,6 +61,7 @@ export class WorkPackageDetailComponent  {
   
   onCancel() {
     this.isEditable = false;
+    this.cancel.emit();
   }
 
   onDelete() {
@@ -64,6 +78,18 @@ export class WorkPackageDetailComponent  {
 
   onAddOwner() {
     this.addOwner.emit();
+  }
+
+  onAddBaseline() {
+    this.addBaseline.emit();
+  }
+
+  onDeleteBaseline() {
+    this.deleteBaseline.emit();
+  }
+
+  onSelectBaseline(row) {
+    this.selectBaseline.emit(row);
   }
   
 }

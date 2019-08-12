@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
@@ -9,9 +9,9 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
 })
 export class BaselineTableComponent {
 
+  @Input() selectedRowIndex = -1;
   @Input() isEditable = false;
-  selectedRowIndex = -1;
-  selectedBaseline = false;
+  @Input() selectedBaseline = false;
 
   @Input()
   set data(data: any[]) {
@@ -21,16 +21,26 @@ export class BaselineTableComponent {
   displayedColumns: string[] = ['name'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 
+
+  @Output()
+  addBaseline = new EventEmitter();
+
+  @Output()
+  deleteBaseline = new EventEmitter();
+
+  @Output()
+  selectBaseline = new EventEmitter();
+
   onSelect(row) {
-    this.selectedBaseline = true;
     this.selectedRowIndex = row.id;
+    this.selectBaseline.emit(row);
   }
 
   onAdd() {
-
+    this.addBaseline.emit();
   }
 
   onDelete() {
-
+    this.deleteBaseline.emit();
   }
 }

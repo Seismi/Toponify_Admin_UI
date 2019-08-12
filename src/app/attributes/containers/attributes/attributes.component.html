@@ -1,0 +1,39 @@
+<app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true">
+        <app-search (search)="onSearchVersion($event)"></app-search>
+    </app-toolbar-column>
+    <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+</app-base-header>
+
+
+<app-model-container [topPadding]="64">
+    <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="hideTab" *ngIf="!showOrHidePane"></smi-left-sidebar>
+    <app-model-sidebar [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
+        <p class="leftPane">
+            <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
+                <mat-tab label="Work Packages">
+                    <smi-workpackage-tab-table 
+                        [data]="workpackage$ | async"
+                        (selectWorkPackage)="onSelectWorkPackage($event)">
+                    </smi-workpackage-tab-table>
+                </mat-tab>
+            </mat-tab-group>
+            <button mat-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>
+        </p>
+    </app-model-sidebar>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <app-category-table
+                    [data]="categoryTableData"
+                    [categories]="['attribute', 'rule']"
+                    (selectRow)="onSelectAttribute($event)">
+                </app-category-table>
+            </div>
+        </div>
+    </div>
+    <router-outlet></router-outlet>
+</app-model-container>

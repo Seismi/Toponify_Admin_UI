@@ -40,7 +40,8 @@ const standardDisplayOptions = {
   dataLinks: true,
   masterDataLinks: true,
   linkName: false,
-  linkLabel: false
+  linkLabel: false,
+  showRadioAlerts: true
 };
 
 @Component({
@@ -51,10 +52,9 @@ const standardDisplayOptions = {
 export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestroy {
   diagram: go.Diagram;
 
-  private nodeSelectedRef: Subscription = null;
+  private partsSelectedRef: Subscription = null;
   private modelChangeRef: Subscription = null;
 
-  @ViewChild('diagramDiv')
   @ViewChild('diagramDiv')
   private diagramRef: ElementRef;
 
@@ -63,6 +63,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   }
 
   @Input() workpackageDetail;
+
+  @Input() workpackages;
 
   @Input() selectedWorkPackages;
 
@@ -76,10 +78,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   @Input() showGrid: boolean;
 
-  @Input() allowMove: boolean;
+  @Input() allowMove = false;
+
+  @Input() workPackageIsEditable = false;
 
   @Output()
-  nodeSelected = new EventEmitter();
+  partsSelected = new EventEmitter();
 
   @Output()
   modelChanged = new EventEmitter();
@@ -112,8 +116,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     // // (go as any).licenseKey = '...'
     this.diagram = new go.Diagram();
     this.diagram.initialContentAlignment = go.Spot.Center;
-    // Allow only one part selected at one time
-    this.diagram.maxSelectionCount = 1;
     this.diagram.allowDrop = true;
     this.diagram.grid.visible = true;
     this.diagram.undoManager.isEnabled = false;
@@ -253,13 +255,17 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
   }
 
+  updateDiagramArea(): void {
+    this.diagram.requestUpdate();
+  }
+
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
 
-    this.nodeSelectedRef = this.diagramListenersService.nodeSelected$
+    this.partsSelectedRef = this.diagramListenersService.partsSelected$
       .subscribe(function(node) {
-        this.nodeSelected.emit(node);
+        this.partsSelected.emit(node);
       }.bind(this));
 
     this.modelChangeRef = this.diagramListenersService.modelChanged$
@@ -273,7 +279,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   ngOnDestroy(): void {
     this.diagramLevelService.destroyUrlFiltering();
 
-    this.nodeSelectedRef.unsubscribe();
+    this.partsSelectedRef.unsubscribe();
     this.modelChangeRef.unsubscribe();
   }
 
@@ -290,6 +296,45 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     if (changes.allowMove) {
       this.diagram.allowMove = this.allowMove;
       this.diagram.allowDelete = this.allowMove;
+      this.diagram.toolManager.linkReshapingTool.isEnabled = this.allowMove;
+      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(
+        function(tool) {return tool.name === 'LinkShifting'; }
+      );
+      linkShiftingTool.isEnabled = this.allowMove;
+
+      // Handle changes tool-related adornments if a link is selected
+      this.diagram.selection.each(function(part) {
+
+        // Remove tool-related adornments from selected link (if any) for disabled tools
+        if (!linkShiftingTool.isEnabled) {
+          part.removeAdornment('LinkShiftingFrom');
+          part.removeAdornment('LinkShiftingTo');
+        }
+        if (!part.diagram.toolManager.linkReshapingTool.isEnabled) {
+          part.removeAdornment('LinkReshaping');
+        }
+
+        // Add tool-related adornments to selected link (if any) for enabled tools
+        part.updateAdornments();
+      });
+    }
+
+    if (changes.workPackageIsEditable) {
+
+      const toolManager = this.diagram.toolManager;
+      toolManager.relinkingTool.isEnabled = this.workPackageIsEditable;
+
+      this.diagram.selection.each(function(part) {
+
+        // Remove tool-related adornments from selected link (if any) for disabled tools
+        if (!toolManager.relinkingTool.isEnabled) {
+          part.removeAdornment('RelinkFrom');
+          part.removeAdornment('RelinkTo');
+        }
+
+        // Add tool-related adornments to selected link (if any) for enabled tools
+        part.updateAdornments();
+      });
     }
 
     if (
@@ -299,17 +344,38 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       this.setLevel();
     }
 
-    if (changes.nodes || changes.selectedWorkPackages) {
+    if (changes.workpackages) {
+      const model = this.diagram.model;
+
+      // Update part colours on workpackage colour change
+      model.setDataProperty(model.modelData, 'workpackages', this.workpackages);
+      this.diagram.startTransaction('Update workpackage colours');
+      this.diagram.nodes.each(function(node) {
+        node.updateTargetBindings('impactedByWorkPackages');
+      });
+      this.diagram.links.each(function(link) {
+        link.updateTargetBindings('impactedByWorkPackages');
+      });
+      this.diagram.commitTransaction('Update workpackage colours');
+    }
+
+    if (changes.nodes) {
       // FIXME: on store change something goes wrong
       if (JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue)) {
-        this.diagramChangesService.updateNodes(this.diagram, this.nodes, this.selectedWorkPackages);
+        this.diagramChangesService.updateNodes(this.diagram, this.nodes);
+
+        this.diagram.startTransaction('Update link workpackage colours');
+        this.diagram.links.each(function(link) {
+          link.updateTargetBindings('impactedByWorkPackages');
+        });
+        this.diagram.commitTransaction('Update link workpackage colours');
       }
     }
 
-    if (changes.links || changes.selectedWorkPackages) {
+    if (changes.links) {
       // FIXME: on store change something goes wrong
       if (JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue)) {
-        this.diagramChangesService.updateLinks(this.diagram, this.links, this.selectedWorkPackages);
+        this.diagramChangesService.updateLinks(this.diagram, this.links);
       }
     }
 

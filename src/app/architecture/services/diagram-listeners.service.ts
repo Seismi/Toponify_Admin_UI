@@ -11,7 +11,7 @@ const $ = go.GraphObject.make;
 export class DiagramListenersService {
 
   private nodeSelectedSource = new Subject();
-  public nodeSelected$ = this.nodeSelectedSource.asObservable();
+  public partsSelected$ = this.nodeSelectedSource.asObservable();
 
   private modelChangedSource = new Subject();
   public modelChanged$ = this.modelChangedSource.asObservable();
@@ -38,6 +38,26 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'SelectionMoved',
       this.diagramChangesService.updatePosition.bind(this.diagramChangesService)
+    );
+
+    // Update brush direction for links connected to moved nodes
+    diagram.addDiagramListener(
+      'SelectionMoved',
+      function(event) {
+        event.diagram.startTransaction('Recalculate link colours');
+        const linksToUpdate = new go.Set();
+
+        event.subject.each(function(part) {
+          if (part instanceof go.Node) {
+            linksToUpdate.addAll(part.linksConnected);
+          }
+        });
+
+        linksToUpdate.each(function(link: go.Link) {
+          link.updateTargetBindings('impactedByWorkPackages');
+        });
+        event.diagram.commitTransaction('Recalculate link colours');
+      }
     );
 
     diagram.addDiagramListener('SelectionMoved', this.diagramLevelService.relayoutGroups);
@@ -86,8 +106,8 @@ export class DiagramListenersService {
   }
 
   handleChangedSelection(event: go.DiagramEvent) {
-    const node = event.diagram.selection.first();
-    this.nodeSelectedSource.next(node);
+    const parts = event.diagram.selection.toArray();
+    this.nodeSelectedSource.next(parts);
   }
 
   handleModelChange(event: go.ChangedEvent) {

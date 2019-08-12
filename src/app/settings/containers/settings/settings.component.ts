@@ -10,7 +10,7 @@ import { UserModalComponent } from '../user-modal/user-modal.component';
 import { State as UserState} from '../../store/reducers/user.reducer'
 import { User } from '@app/settings/store/models/user.model';
 import { LoadUsers, UpdateUser, AddUser } from '@app/settings/store/actions/user.actions';
-import { getUsers, getUserSelected, getLoading } from '@app/settings/store/selectors/user.selector';
+import { getUsers, getLoading, getUserById } from '@app/settings/store/selectors/user.selector';
 import { LoadTeams, LoadTeam, AddTeam, UpdateTeam, DeleteTeam } from '@app/settings/store/actions/team.actions';
 import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '../../store/reducers/team.reducer';
@@ -35,13 +35,15 @@ export class SettingsComponent implements OnInit {
     teams$: Observable<TeamEntity[]>
     teamDetails$: Observable<TeamDetails>
     userSubscription: Subscription;
-    user: User;
+    user: User[];
     showButtons = true;
     teamSelected = false;
     team: TeamEntity[];
     teamId: string;
     teamModal = false;
     isTeamEditable = false;
+    selectedTeams = [];
+    selectedRoles = [];
 
     get myUserForm(): FormGroup {
         return this.myUserFormService.myUserForm;
@@ -82,7 +84,7 @@ export class SettingsComponent implements OnInit {
 
 
     onEditUser(id: string){
-        this.userSubscription = this.userStore.pipe(select(getUserSelected, {id: id})).subscribe(value => {
+        this.userSubscription = this.userStore.pipe(select(getUserById(id))).subscribe(value => {
             this.user = value;
         });
 
@@ -91,14 +93,31 @@ export class SettingsComponent implements OnInit {
             width: 'auto',
             data: {
               mode: 'edit',
-              user: { ...this.user[0] }
+              user: {...this.user[0]},
+              selectedTeams: this.selectedTeams,
+              selectedRoles: this.selectedRoles
             }
         });
 
         dialogRef.afterClosed().subscribe((data) => {
             if (data && data.user) {
-              this.userStore.dispatch(new UpdateUser(data.user));
+              this.userStore.dispatch(new UpdateUser({
+                  id: id,
+                  data: {
+                    id: id,
+                    firstName: data.user.firstName,
+                    lastName: data.user.lastName,
+                    phone: data.user.phone,
+                    roles: this.selectedRoles,
+                    team: this.selectedTeams,
+                    email: data.user.email,
+                    password: data.user.password,
+                    userStatus: data.user.userStatus
+                  }
+              }));
             }
+            this.selectedTeams = [];
+            this.selectedRoles = [];
         });
     }
 
@@ -108,14 +127,28 @@ export class SettingsComponent implements OnInit {
             disableClose: false,
             width: 'auto',
             data: {
-                mode: 'add'
+                mode: 'add',
+                selectedTeams: this.selectedTeams,
+                selectedRoles: this.selectedRoles
             }
         });
 
         dialogRef.afterClosed().subscribe((data) => {
             if (data && data.user) {
-              this.userStore.dispatch(new AddUser(data.user));
+              this.userStore.dispatch(new AddUser({
+                    id: null,
+                    firstName: data.user.firstName,
+                    lastName: data.user.lastName,
+                    email: data.user.email,
+                    phone: data.user.phone,
+                    team: this.selectedTeams,
+                    roles: this.selectedRoles,
+                    password: data.user.password,
+                    userStatus: data.user.userStatus
+              }));
             }
+            this.selectedTeams = [];
+            this.selectedRoles = [];
         });
     }
 

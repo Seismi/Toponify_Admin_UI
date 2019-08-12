@@ -14,7 +14,8 @@
                 data-hook="workpackage-table"
                 [data]="workpackageEntities$ | async"
                 (workpackageSelected)="onSelectWorkpackage($event)"
-                (addWorkpackage)="onAddWorkPackage($event)">
+                (addWorkpackage)="onAddWorkPackage($event)"
+                (openWorkPackageTree)="onOpenWorkPackageTree($event)">
             </smi-workpackages-table>
         </div>
         <router-outlet></router-outlet>

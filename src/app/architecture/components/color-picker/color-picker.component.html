@@ -1,8 +1,8 @@
 <input [matMenuTriggerFor]="colorMenu" [ngStyle]="{'background-color': workpackageColor}" readonly="readonly">
 <mat-menu #colorMenu="matMenu">
-  <mat-grid-list cols="2" rowHeight="2:1">
+  <mat-grid-list cols="4" rowHeight="1:1">
     <mat-grid-tile
-        *ngFor="let color of this.diagramChangesService.colors"
+        *ngFor="let color of colours"
         [ngStyle]="{'background-color': color}"
         (click)="onSelect(color)">
     </mat-grid-tile>

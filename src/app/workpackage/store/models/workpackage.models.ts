@@ -1,4 +1,3 @@
-
 export interface WorkPackageEntitiesResponse {
   data?: (WorkPackageEntity)[] | null;
   links: Links;
@@ -31,6 +30,8 @@ export interface WorkPackageEntity {
   baseline?: (Baseline)[] | null;
   hasErrors?: boolean;
   status?: string;
+  displayColour?: string;
+  selected?: boolean;
 }
 
 export interface OwnersEntityOrApproversEntity {

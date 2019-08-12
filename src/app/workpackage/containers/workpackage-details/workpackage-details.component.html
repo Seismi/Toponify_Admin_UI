@@ -2,16 +2,20 @@
   <smi-workpackage-detail
     data-hook="workpackage-detail"
     [group]="workPackageDetailForm"
-    (editWorkpackage)="onEditWorkpackage($event)"
     (deleteWorkpackage)="onDeleteWorkpackage($event)"
     (saveWorkpackage)="onSaveWorkpackage($event)"
+    (cancel)="onCancel($event)"
     [baselineTableData]="workpackage?.baseline"
     [ownersTableData]="workpackage?.owners"
     [approversTableData]="workpackage?.approvers"
     (deleteOwner)="onDeleteOwner($event)"
     (selectOwner)="onSelectOwner($event)"
     (addOwner)="onAddOwner($event)"
-    [selectedOwner]="selectedOwner">
+    [selectedOwner]="selectedOwner"
+    (addBaseline)="onAddBaseline($event)"
+    (deleteBaseline)="onDeleteBaseline($event)"
+    (selectBaseline)="onSelectBaseline($event)"
+    [selectedBaseline]="selectedBaseline">
   </smi-workpackage-detail>
   <smi-objectives-table data-hook="workpackage-page-objective-table" [data]="workpackage?.objectives"></smi-objectives-table>
   <smi-radio-table data-hook="workpackage-page-radio-table" [data]="workpackage?.radios"></smi-radio-table>

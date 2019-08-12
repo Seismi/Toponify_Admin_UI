@@ -34,6 +34,9 @@ export class WorkPackagesTableComponent implements OnInit {
   @Output()
   addWorkpackage = new EventEmitter();
 
+  @Output()
+  openWorkPackageTree = new EventEmitter();
+
   onSelectRow(row) {
     this.selectedRowIndex = row.id;
     this.workpackageSelected.emit(row);
@@ -41,6 +44,10 @@ export class WorkPackagesTableComponent implements OnInit {
 
   onAdd() {
     this.addWorkpackage.emit();
+  }
+
+  onOpenWorkPackageTree() {
+    this.openWorkPackageTree.emit();
   }
 
 }

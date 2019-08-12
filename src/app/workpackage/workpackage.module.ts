@@ -37,7 +37,7 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
 import { ApproversTableComponent } from './components/approvers-table/approvers-table.component';
 import { OwnersModalComponent } from './containers/owners-modal/owners-modal.component';
 import { OwnersListComponent } from './components/owners-list/owners-list.component';
-
+import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-modal/workpackage-tree-modal.component';
 
 
 @NgModule({
@@ -79,9 +79,15 @@ import { OwnersListComponent } from './components/owners-list/owners-list.compon
     OwnersTableComponent,
     ApproversTableComponent,
     OwnersModalComponent,
-    OwnersListComponent
+    OwnersListComponent,
+    WorkPackageTreeModalComponent
   ],
-  entryComponents: [WorkPackageModalComponent, DeleteWorkPackageModalComponent, OwnersModalComponent],
+  entryComponents: [
+    WorkPackageModalComponent, 
+    DeleteWorkPackageModalComponent, 
+    OwnersModalComponent,
+    WorkPackageTreeModalComponent
+  ],
   providers: [
     WorkPackageService
   ],
