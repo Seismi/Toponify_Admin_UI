@@ -22,7 +22,7 @@ export class DiagramChangesService {
   // Add newly created nodes to the back end
   //  -event
   //    -subject: set of nodes to add to the database
-  createObjects(event: any): void {
+  createObjects(event: go.DiagramEvent): void {
 
     const currentLevel = this.diagramLevelService.filter.getValue().filterLevel;
 
@@ -55,7 +55,7 @@ export class DiagramChangesService {
   // Updates the properties associated with a node or link
   //  -part: part to update
   //  -data: object containing new property values to apply
-  updatePartData(part, data) {
+  updatePartData(part: go.Part, data: any) {
 
     // Iterate through data to set each property against the part
     Object.keys(data).forEach(function(property) {
@@ -122,7 +122,7 @@ export class DiagramChangesService {
     model.setDataProperty(model.modelData, option, event.checked);
 
     // Update the route of links after display change
-    diagram.links.each(function(link) {
+    diagram.links.each(function(link: go.Link) {
       // Set data property to indicate that link route should be updated
       diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
@@ -132,7 +132,7 @@ export class DiagramChangesService {
   // Update back end when a link is connected to a node
   //  -event
   //    -subject: link that has been connected
-  updateLinkConnections(event: any): void {
+  updateLinkConnections(event: go.DiagramEvent): void {
 
     const draggingTool = event.diagram.toolManager.draggingTool;
     const relinkingTool = event.diagram.toolManager.relinkingTool;
@@ -178,12 +178,13 @@ export class DiagramChangesService {
           return ;
         }
 
+        /* *REPLACE*
         // Source/target properties
         const sourceProp = event.diagram.model.linkFromKeyProperty;
         const targetProp = event.diagram.model.linkToKeyProperty;
 
         // Update link source and target in the database
-        /* *REPLACE*
+
         this.store.dispatch(new updateLinkActionMapping[currentLevel]({
           [currentLevel.toLowerCase() + 'Link']: {
             data: {id: link.key,
@@ -260,7 +261,7 @@ export class DiagramChangesService {
   //  -diagram - the diagram to update
   //  -links - the array of links from the architecture to include
   //  -selectedWorkPackages - the array of currently selected work packages to apply link changes from
-  updateLinks(diagram, links) {
+  updateLinks(diagram, links: go.Link[]): void {
 
     if (links && links.length > 0) {
 
@@ -294,7 +295,7 @@ export class DiagramChangesService {
     fromport: go.GraphObject,
     tonode: go.Node,
     toport: go.GraphObject,
-    oldlink: go.Link) {
+    oldlink: go.Link): boolean {
 
     // Only validate links that are connected at both ends
     if (!fromnode || !tonode) {
@@ -337,7 +338,7 @@ export class DiagramChangesService {
   }
 
   // Hide all nodes except the specified node and all nodes directly linked to it
-  hideNonDependencies(depNode: go.Node) {
+  hideNonDependencies(depNode: go.Node): void {
 
     depNode.diagram.startTransaction('Analyse Dependencies');
 
@@ -368,7 +369,7 @@ export class DiagramChangesService {
   }
 
   // Show all nodes that are directly linked to the specified node
-  showDependencies(depNode: go.Node) {
+  showDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Show Dependencies');
 
     // Get linked nodes and ensure they are visible
@@ -387,7 +388,7 @@ export class DiagramChangesService {
   }
 
   // Set all nodes in the specified diagram to visible
-  showAllNodes(diagram) {
+  showAllNodes(diagram: go.Diagram): void {
     diagram.startTransaction('Show All Nodes');
 
     // Set all nodes to visible

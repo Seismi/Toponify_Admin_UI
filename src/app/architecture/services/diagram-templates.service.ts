@@ -22,7 +22,8 @@ export class DiagramTemplatesService {
     public diagramChangesService: DiagramChangesService
   ) {}
 
-  getStandardNodeOptions(forPalette) {
+  // Get standard options used for nodes
+  getStandardNodeOptions(forPalette: boolean): object {
     return Object.assign({
       selectionAdorned: true,
       isShadowed: true,
@@ -37,7 +38,8 @@ export class DiagramTemplatesService {
     } : {});
   }
 
-  getStandardNodeShapeOptions() {
+  // Get standard options used for node shapes
+  getStandardNodeShapeOptions(): object {
     return {
       fill: 'white',
       stroke: 'black',
@@ -55,7 +57,8 @@ export class DiagramTemplatesService {
     };
   }
 
-  getStandardLinkOptions(forPalette) {
+  // Get standard options used for links
+  getStandardLinkOptions(forPalette: boolean): object {
     return Object.assign({
       selectionAdorned: true,
       reshapable: true,
@@ -87,7 +90,7 @@ export class DiagramTemplatesService {
   }
 
   // Get item template for list of node children
-  getItemTemplate() {
+  getItemTemplate(): go.Panel {
     return $(go.Panel,
       'Auto',
       {
@@ -113,7 +116,7 @@ export class DiagramTemplatesService {
   }
 
   // Get button for revealing the next level of dependencies
-  getDependencyExpandButton() {
+  getDependencyExpandButton(): go.Panel {
     return $('Button',
       {
         alignment: go.Spot.TopRight,
@@ -144,7 +147,7 @@ export class DiagramTemplatesService {
   }
 
   // Calculate stroke for parts, based on impacted work packages
-  getStrokeForImpactedWorkPackages(impactedPackages, part) {
+  getStrokeForImpactedWorkPackages(impactedPackages, part: go.Part): go.BrushLike {
     const allWorkpackages = part.diagram.model.modelData.workpackages;
 
     // return black by default if part not impacted by any work packages
@@ -196,7 +199,8 @@ export class DiagramTemplatesService {
     return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
   }
 
-  getRadioAlertIndicator() {
+  // Get alert indicator for RADIOs against nodes
+  getRadioAlertIndicator(): go.Panel {
     return $(go.Panel,
       'Auto',
       {
@@ -225,7 +229,8 @@ export class DiagramTemplatesService {
     );
   }
 
-  getLinkLabel() {
+  // Get name label for links
+  getLinkLabel(): go.Panel {
     return $(go.Panel, 'Vertical',
       $(go.TextBlock,
         {
@@ -254,7 +259,103 @@ export class DiagramTemplatesService {
     );
   }
 
-  getSystemNodeTemplate(forPalette: boolean = false) {
+  // Get standard sections for nodes
+  // Sections included:
+  //   name
+  //   description
+  //   tags
+  //   owner
+  // Returns an array of node sections
+  getStandardNodeSections(): go.TextBlock[] {
+
+    const sections = [
+      {
+        sectionName: 'name',
+        font: 'bold 16px calibri',
+        initialText: ''
+      },
+      {
+        sectionName: 'description',
+        font: 'italic 15px calibri',
+        initialText: ''
+      },
+      {
+        sectionName: 'tags',
+        font: '15px calibri',
+        initialText: 'Tags - '
+      },
+      {
+        sectionName: 'owner',
+        font: '15px calibri',
+        initialText: 'Owner - '
+      }
+    ];
+
+    return sections.map(
+      function(section) {
+        return $(go.TextBlock,
+          {
+            textAlign: 'center',
+            stroke: 'black',
+            font: section.font,
+            maxSize: new go.Size(100, Infinity),
+            margin: new go.Margin(0, 0, 5, 0)
+          },
+          new go.Binding('text',
+            section.sectionName,
+            function(input) {
+              return input ? (section.initialText + input) : '';
+            }
+          ),
+          new go.Binding('visible', section.sectionName).ofModel()
+        );
+      }
+    );
+  }
+
+  // Get list of descendants for nodes.
+  //   Input: header (title to be displayed above list)
+  getDescendantsNodeSection(header: string): go.Panel {
+    return $(go.Panel,
+      'Vertical',
+      {
+        stretch: go.GraphObject.Horizontal
+      },
+      // Descendants list header
+      $(go.TextBlock,
+        {
+          text: header,
+          alignment: go.Spot.Center,
+          stroke: 'black',
+          font: 'bold 15.25px calibri',
+          margin: new go.Margin(5, 0, 0, 0)
+        },
+        // Hide descendants header if node has no descendants
+        new go.Binding('visible', 'descendants',
+          function (descendants) {
+            return descendants.length > 0;
+          }
+        )
+      ),
+      // Descendants list
+      $(go.Panel, 'Vertical',
+        {
+          name: header + '_List',
+          padding: 3,
+          alignment: go.Spot.TopLeft,
+          defaultAlignment: go.Spot.Left,
+          stretch: go.GraphObject.Horizontal,
+          itemCategoryProperty: '',
+          itemTemplate: this.getItemTemplate()
+        },
+        new go.Binding('itemArray', 'descendants')
+      ),
+      new go.Binding('visible', 'nextLevel').ofModel()
+    );
+  }
+
+  // Get template for system nodes
+  getSystemNodeTemplate(forPalette: boolean = false): go.Node {
 
     return $(
       go.Node,
@@ -315,104 +416,16 @@ export class DiagramTemplatesService {
             minSize: new go.Size(90, NaN)
           },
           this.getDependencyExpandButton(),
-          // System name
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'bold 16px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'name').ofModel()
-          ),
-          // System description
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'italic 15px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'description'),
-            new go.Binding('visible', 'description').ofModel()
-          ),
-          // System tags
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text',
-              'tags',
-              function (tags) {
-                return tags ? ('Tags - ' + tags) : '';
-              }
-            ),
-            new go.Binding('visible', 'tags').ofModel()
-          ),
-          // System owners
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text',
-              'owner',
-              function (owner) {
-                return owner ? ('Owner - ' + owner) : '';
-              }
-            ),
-            new go.Binding('visible', 'owner').ofModel()
-          ),
-          $(go.Panel, 'Vertical',
-            {
-              stretch: go.GraphObject.Horizontal
-            },
-            // Data set list header
-            $(go.TextBlock,
-              {
-                text: 'Data Sets',
-                alignment: go.Spot.Center,
-                stroke: 'black',
-                font: 'bold 15.25px calibri',
-                margin: new go.Margin(5, 0, 0, 0)
-              },
-              // Hide data sets header if system has no data sets
-              new go.Binding('visible', 'descendants',
-                function (descendants) {
-                  return descendants.length > 0;
-                }
-              )
-            ),
-            // Data set list
-            $(go.Panel, 'Vertical',
-              {
-                name: 'Data_Set_List',
-                padding: 3,
-                alignment: go.Spot.TopLeft,
-                defaultAlignment: go.Spot.Left,
-                stretch: go.GraphObject.Horizontal,
-                itemCategoryProperty: '',
-                itemTemplate: this.getItemTemplate()
-              },
-              new go.Binding('itemArray', 'descendants')
-            ),
-            new go.Binding('visible', 'nextLevel').ofModel()
-          )
+          ...this.getStandardNodeSections(),
+          this.getDescendantsNodeSection('Data Sets')
         ),
         this.getRadioAlertIndicator()
       )
     );
   }
 
-  getDataSetNodeTemplate(forPalette: boolean = false) {
+  // Get template for data set nodes
+  getDataSetNodeTemplate(forPalette: boolean = false): go.Node {
 
     // Template for Data Set
     return $(
@@ -479,103 +492,16 @@ export class DiagramTemplatesService {
               }
             )
           ),
-          // Data set name
-          $(
-            go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'bold 16px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'name').ofModel()
-          ),
-          // Data set description
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'italic 15px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'description'),
-            new go.Binding('visible', 'description').ofModel()
-          ),
-          // Data set tags
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text', 'tags', function (tags) {
-              return tags ? 'Tags - ' + tags : '';
-            }),
-            new go.Binding('visible', 'tags').ofModel()
-          ),
-          // Data set owners
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text',
-              'owner',
-              function (owner) {
-                return owner ? ('Owner - ' + owner) : '';
-              }
-            ),
-            new go.Binding('visible', 'owner').ofModel()
-          ),
-          $(go.Panel, 'Vertical',
-            {
-              stretch: go.GraphObject.Horizontal
-            },
-            // Dimension list header
-            $(go.TextBlock,
-              {
-                text: 'Dimensions',
-                row: 1,
-                alignment: go.Spot.Center,
-                stroke: 'black',
-                font: 'bold 15.25px calibri',
-                margin: new go.Margin(5, 0, 0, 0)
-              },
-              // Hide dimensions header if data set has no dimensions
-              new go.Binding('visible', 'descendants',
-                function (descendants) {
-                  return descendants.length > 0;
-                }
-              )
-            ),
-            // Dimension list
-            $(go.Panel, 'Vertical',
-              {
-                name: 'Dimension_List',
-                padding: 3,
-                alignment: go.Spot.TopLeft,
-                defaultAlignment: go.Spot.Left,
-                stretch: go.GraphObject.Horizontal,
-                itemCategoryProperty: '',
-                itemTemplate: this.getItemTemplate()
-              },
-              new go.Binding('itemArray', 'descendants')
-            ),
-            new go.Binding('visible', 'nextLevel').ofModel()
-          )
+          ...this.getStandardNodeSections(),
+          this.getDescendantsNodeSection('Dimensions')
         ),
         this.getRadioAlertIndicator()
       )
     );
   }
 
-  getDimensionNodeTemplate(forPalette: boolean = false) {
+  // Get template for dimension nodes
+  getDimensionNodeTemplate(forPalette: boolean = false): go.Node {
 
     // Template for dimension
     return $(
@@ -635,105 +561,16 @@ export class DiagramTemplatesService {
               text: 'D'
             }
           ),
-          // Dimension name
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'bold 16px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'name').ofModel()
-          ),
-          // Dimension description
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'italic 15px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'description'),
-            new go.Binding('visible', 'description').ofModel()
-          ),
-          // Dimension tags
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text',
-              'tags',
-              function (tags) {
-                return tags ? ('Tags - ' + tags) : '';
-              }
-            ),
-            new go.Binding('visible', 'tags').ofModel()
-          ),
-          // Dimension owners
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text',
-              'owner',
-              function (owner) {
-                return owner ? ('Owner - ' + owner) : '';
-              }
-            ),
-            new go.Binding('visible', 'owner').ofModel()
-          ),
-          $(go.Panel, 'Vertical',
-            {
-              stretch: go.GraphObject.Horizontal
-            },
-            // Reporting concept list header
-            $(go.TextBlock,
-              {
-                text: 'Reporting Concepts',
-                row: 1,
-                alignment: go.Spot.Center,
-                stroke: 'black',
-                font: 'bold 15.25px calibri',
-                margin: new go.Margin(5, 0, 0, 0)
-              },
-              // Hide reporting concepts header if dimension has no reporting concepts
-              new go.Binding('visible', 'descendants',
-                function (descendants) {
-                  return descendants.length > 0;
-                }
-              )
-            ),
-            // Reporting concept list
-            $(go.Panel, 'Vertical',
-              {
-                name: 'Reporting concept_List',
-                padding: 3,
-                alignment: go.Spot.TopLeft,
-                defaultAlignment: go.Spot.Left,
-                stretch: go.GraphObject.Horizontal,
-                itemCategoryProperty: '',
-                itemTemplate: this.getItemTemplate()
-              },
-              new go.Binding('itemArray', 'descendants')
-            ),
-            new go.Binding('visible', 'nextLevel').ofModel()
-          )
+          ...this.getStandardNodeSections(),
+          this.getDescendantsNodeSection('Reporting Concepts')
         ),
         this.getRadioAlertIndicator()
       )
     );
   }
 
-  getReportingConceptNodeTemplate(forPalette: boolean = false) {
+  // Get template for reporting concept nodes
+  getReportingConceptNodeTemplate(forPalette: boolean = false): go.Node {
 
     // Template for reporting concept nodes
     return $(
@@ -787,73 +624,15 @@ export class DiagramTemplatesService {
             minSize: new go.Size(90, NaN)
           },
           this.getDependencyExpandButton(),
-          // Reporting concept name
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'bold 16px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'name').ofModel()
-          ),
-          // Reporting concept description
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'italic 15px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'description'),
-            new go.Binding('visible', 'description').ofModel()
-          ),
-          // Reporting concept tags
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text',
-              'tags',
-              function (tags) {
-                return tags ? ('Tags - ' + tags) : '';
-              }
-            ),
-            new go.Binding('visible', 'tags').ofModel()
-          ),
-          // Reporting concept owners
-          $(go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: '15px calibri',
-              maxSize: new go.Size(100, Infinity)
-            },
-            new go.Binding('text',
-              'owner',
-              function (owner) {
-                return owner ? ('Owner - ' + owner) : '';
-              }
-            ),
-            new go.Binding('visible', 'owner').ofModel()
-          )
+          ...this.getStandardNodeSections(),
         ),
         this.getRadioAlertIndicator()
       )
     );
   }
 
-  CustomLink() {
-    go.Link.call(this);
-  }
-
-  getLinkDataTemplate(forPalette: boolean = false) {
+  // Get template for data links
+  getLinkDataTemplate(forPalette: boolean = false): CustomLink {
     return $(
       CustomLink,
       new go.Binding('points', 'route').makeTwoWay(function (points) {
@@ -903,7 +682,8 @@ export class DiagramTemplatesService {
     );
   }
 
-  getLinkMasterDataTemplate(forPalette: boolean = false) {
+  // Get template for master data links
+  getLinkMasterDataTemplate(forPalette: boolean = false): CustomLink {
     return $(
       CustomLink,
       new go.Binding('points', 'route').makeTwoWay(function (points) {
@@ -939,7 +719,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  getDataSetGroupTemplate() {
+  getDataSetGroupTemplate(): go.Group {
     // Template for data set groups in mapping view
     return $(
       go.Group,
