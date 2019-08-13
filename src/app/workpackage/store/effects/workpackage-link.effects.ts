@@ -6,7 +6,9 @@ import { of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AddWorkPackageLink, WorkPackageLinkActionTypes,
   AddWorkPackageLinkSuccess, AddWorkPackageLinkFailure, UpdateWorkPackageLink,
-  UpdateWorkPackageLinkSuccess, UpdateWorkPackageLinkFailure } from '../actions/workpackage-link.actions';
+  UpdateWorkPackageLinkSuccess, UpdateWorkPackageLinkFailure, LoadWorkpackageLinkDescendants,
+  LoadWorkpackageLinkDescendantsSuccess, LoadWorkpackageLinkDescendantsFailure, DeleteWorkpackageLink,
+  DeleteWorkpackageLinkSuccess, DeleteWorkpackageLinkFailure } from '../actions/workpackage-link.actions';
 
 @Injectable()
 export class WorkPackageLinkEffects {
@@ -37,5 +39,29 @@ export class WorkPackageLinkEffects {
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageLinkFailure(error)))
       );
     })
+  );
+
+  @Effect()
+  loadWorkpackageLinkDescendants$ = this.actions$.pipe(
+    ofType<LoadWorkpackageLinkDescendants>(WorkPackageLinkActionTypes.LoadWorkpackageLinkDescendants),
+    map(action => action.payload),
+    mergeMap((payload: { workpackageId: string, linkId: string }) => {
+      return this.workpackageLinkService.getLinkDescendants(payload.workpackageId, payload.linkId).pipe(
+        map(data => new LoadWorkpackageLinkDescendantsSuccess(data.data)),
+        catchError(error => of(new LoadWorkpackageLinkDescendantsFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteWorkpackageLink$ = this.actions$.pipe(
+    ofType<DeleteWorkpackageLink>(WorkPackageLinkActionTypes.DeleteWorkpackageLink),
+    map(action => action.payload),
+      mergeMap((payload: { workpackageId: string, linkId: string }) => {
+        return this.workpackageLinkService.deleteLink(payload.workpackageId, payload.linkId).pipe(
+          map(data => new DeleteWorkpackageLinkSuccess(data.data)),
+          catchError(error => of(new DeleteWorkpackageLinkFailure(error)))
+        );
+      })
   );
 }

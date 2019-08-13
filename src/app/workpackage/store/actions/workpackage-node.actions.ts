@@ -5,6 +5,12 @@ export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
   AddWorkPackageNodeSuccess = '[WorkPackage] Add node success',
   AddWorkPackageNodeFailure = '[WorkPackage] Add node failure',
+  LoadWorkPackageNodeDescendants = '[WorkPackage] Load node descendants',
+  LoadWorkPackageNodeDescendantsSuccess = '[WorkPackage] Load node descendants success',
+  LoadWorkPackageNodeDescendantsFailure = '[WorkPackage] Load node descendants failure',
+  DeleteWorkpackageNode = '[WorkPackage] Delete Node',
+  DeleteWorkpackageNodeSuccess = '[WorkPackage] Delete Node Success',
+  DeleteWorkpackageNodeFailure = '[WorkPackage] Delete Node Fail',
 }
 
 export class AddWorkPackageNode implements Action {
@@ -22,7 +28,43 @@ export class AddWorkPackageNodeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadWorkPackageNodeDescendants implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeDescendants;
+  constructor(public payload: { workpackageId: string, nodeId: string }) { }
+}
+
+export class LoadWorkPackageNodeDescendantsSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeDescendantsSuccess;
+  constructor(public payload: any) { }
+}
+
+export class LoadWorkPackageNodeDescendantsFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeDescendantsFailure;
+  constructor(public payload: any) { }
+}
+
+export class DeleteWorkpackageNode implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkpackageNode;
+  constructor(public payload: { workpackageId: string, nodeId: string }) { }
+}
+
+export class DeleteWorkpackageNodeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkpackageNodeSuccess;
+  constructor(public payload: any) { }
+}
+
+export class DeleteWorkpackageNodeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkpackageNodeFailure;
+  constructor(public payload: any) { }
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
-  | AddWorkPackageNodeFailure;
+  | AddWorkPackageNodeFailure
+  | LoadWorkPackageNodeDescendants
+  | LoadWorkPackageNodeDescendantsSuccess
+  | LoadWorkPackageNodeDescendantsFailure
+  | DeleteWorkpackageNode
+  | DeleteWorkpackageNodeSuccess
+  | DeleteWorkpackageNodeFailure;

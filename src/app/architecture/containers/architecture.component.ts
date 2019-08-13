@@ -395,33 +395,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleNodeDeleteRequested(data: {node: any, type: NodeType}) {
-    const {node, type} = data;
+  handleNodeDeleteRequested(node: any) {
     this.dialog.open(DeleteNodeModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        payload: {nodeId: node.id, nodeType: type}
+        payload: node
       }
     }).beforeClosed().subscribe(action  => {
-      /*if (action instanceof DeleteNodeSuccess) {
-        this.store.dispatch();
-      }*/
+      // if (action instanceof DeleteNodeSuccess) {
+        debugger;
+      // }
     });
   }
 
-  handleLinkDeleteRequested(data: {link: any, type: LinkType}) {
-    const {link, type} = data;
+  handleLinkDeleteRequested(link: any) {
     this.dialog.open(DeleteLinkModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        payload: {linkId: link.id, linkType: type}
+        payload: link
       }
     }).beforeClosed().subscribe(action  => {
-      /* if (action instanceof DeleteLinkSuccess) {
+      // if (action instanceof DeleteLinkSuccess) {
         // this.store.dispatch();
-      }*/
+        debugger;
+      // }
     });
   }
 
