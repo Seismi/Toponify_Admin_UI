@@ -18,13 +18,25 @@
                     </smi-report-library-detail>
                 </mat-tab>
                 <mat-tab label="Attributes">
-                    <smi-attr-and-rules-table
+                    <smi-attributes-table-in-reports-page
                         [data]="report?.attributes">
-                    </smi-attr-and-rules-table>
+                    </smi-attributes-table-in-reports-page>
                 </mat-tab>
-                <mat-tab label="Properties"></mat-tab>
-                <mat-tab label="RADIO"></mat-tab>
-                <mat-tab label="Work Packages"></mat-tab>
+                <mat-tab label="Properties">
+                    <smi-properties-table-in-reports-page
+                        [data]="report?.customPropertyValues">
+                    </smi-properties-table-in-reports-page>
+                </mat-tab>
+                <mat-tab label="RADIO">
+                    <smi-radio-table-in-reports-page
+                        [data]="report?.relatedRadios">
+                    </smi-radio-table-in-reports-page>
+                </mat-tab>
+                <mat-tab label="Work Packages">
+                    <smi-workpackage-table-in-reports-page 
+                        [data]="report?.relatedWorkPackages">
+                    </smi-workpackage-table-in-reports-page>
+                </mat-tab>
             </mat-tab-group>
             <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
         </p>

@@ -1,6 +1,5 @@
-<div class="mat-elevation-z8">
+<div *ngIf="dataSource.data.length > 0">
     <table mat-table [dataSource]="dataSource">
-
         <!-- Name Column -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
@@ -14,12 +13,12 @@
                 <mat-icon [routerLink]="['/radio', element.id]">open_in_new</mat-icon>
             </td>
         </ng-container>
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns" (dblclick)="onSelect(row.id)"></tr>
     </table>
+    <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
+</div>
 
-    <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
-</div><br>
-
-<button mat-raised-button color="primary" (click)="onAdd()">New</button>
+<div class="no-data-found" *ngIf="dataSource.data.length === 0">
+    <i>No data found...</i>
+</div>
