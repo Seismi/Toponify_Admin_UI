@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div class="mat-elevation-z8" *ngIf="dataSource.data.length > 0">
     <table mat-table [dataSource]="dataSource">
 
         <!-- Name Column -->
@@ -19,6 +19,10 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns" (dblclick)="onSelect(row.id)"></tr>
     </table>
     <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
-</div><br>
+</div>
+
+<div class="no-data-found" *ngIf="dataSource.data.length === 0">
+    <i>No data found...</i>
+</div>
 
 <button mat-raised-button color="primary" (click)="onAdd()">Raise New</button>

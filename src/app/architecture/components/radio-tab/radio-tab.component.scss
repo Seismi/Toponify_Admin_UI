@@ -1,3 +1,7 @@
+.mat-elevation-z8 {
+    margin-bottom: 20px;
+}
+
 table {
     width: 100%;
     tr.mat-header-row {
@@ -20,4 +24,9 @@ ul {
         margin: 3px 0px;
         cursor: pointer;
     }
+}
+
+.no-data-found {
+    width: 100%;
+    padding: 15px;
 }
