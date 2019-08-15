@@ -12,6 +12,8 @@ import { FormGroup } from '@angular/forms';
 import { DeleteScopesAndLayoutsModalComponent } from '../delete-modal/delete-scopes-and-layouts.component';
 import { MatDialog } from '@angular/material';
 import { LayoutModalComponent } from '../layout-modal/layout-modal.component';
+import { AddLayout } from '@app/layout/store/actions/layout.actions';
+import { SharedService } from '@app/services/shared-service';
 
 @Component({
   selector: 'app-scope-details',
@@ -31,7 +33,8 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private store: Store<ScopeState>,
-    private scopesDetailService: ScopesDetailService
+    private scopesDetailService: ScopesDetailService,
+    private sharedService: SharedService
   ) { }
 
   ngOnInit() {
@@ -97,7 +100,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
 
   onAddLayout() {
     this.dialog.open(LayoutModalComponent, {
-      disableClose: false, 
+      disableClose: false,
       width: '500px',
       data: {
         scope: {

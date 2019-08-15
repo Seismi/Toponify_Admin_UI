@@ -7,12 +7,10 @@ import { Observable } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
 import { Actions, ofType } from '@ngrx/effects';
-import { ScopeActionTypes, AddScope } from '@app/scope/store/actions/scope.actions';
-
+import { ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
 
 @Component({
   selector: 'smi-scope-modal',
@@ -27,19 +25,16 @@ export class ScopeModalComponent implements OnInit {
   modalMode = true;
   teams$: Observable<TeamEntity[]>;
   error: string;
-  selectedOwners = [];
-  selectedViewers = [];
 
   constructor(
     private actions: Actions,
-    private scopeStore: Store<ScopeState>,
     private store: Store<TeamState>,
     private scopesDetailService: ScopesDetailService,
     public dialogRef: MatDialogRef<ScopeModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {
-    this.store.dispatch(new LoadTeams({}))
+    this.store.dispatch(new LoadTeams({}));
     this.teams$ = this.store.pipe(select(getTeamEntities));
   }
 
@@ -48,31 +43,14 @@ export class ScopeModalComponent implements OnInit {
   }
 
   onSave() {
-    this.scopeStore.dispatch(new AddScope({
-      id: null,
-      name: this.scopesDetailForm.value.name,
-      owners: this.selectedOwners,
-      viewers: this.selectedViewers,
-      layerFilter: 'system'
-    }))
-
-    // Error
     this.actions.pipe(ofType(ScopeActionTypes.AddScopeFailure)).subscribe((error: any) => {
-      this.error = error.payload;
-    });
-
-    // Success
-    this.actions.pipe(ofType(ScopeActionTypes.AddScopeSuccess)).subscribe(() => {
-      this.dialogRef.close();
-    });
-
-    this.selectedOwners = [];
-    this.selectedViewers = [];
+      alert('ERROR: ' + error.payload);
+    })
+    
+    this.dialogRef.close({ scope: this.scopesDetailForm.value });
   }
 
   onCancel() {
     this.dialogRef.close();
-    this.selectedOwners = [];
-    this.selectedViewers = [];
   }
 }

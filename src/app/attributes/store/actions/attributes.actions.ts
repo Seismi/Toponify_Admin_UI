@@ -26,7 +26,7 @@ export enum AttributeActionTypes {
 
 export class LoadAttributes implements Action {
   readonly type = AttributeActionTypes.LoadAttributes;
-  constructor(public payload: AttributeEntitiesHttpParams) {}
+  constructor(public payload?: any) {}
 }
 
 export class LoadAttributesSuccess implements Action {
@@ -42,7 +42,7 @@ export class LoadAttributesFailure implements Action {
 
 export class LoadAttribute implements Action {
   readonly type = AttributeActionTypes.LoadAttribute;
-  constructor(public payload: string) {}
+  constructor(public payload: { id: string, queryParams?: any }) {}
 }
 
 export class LoadAttributeSuccess implements Action {

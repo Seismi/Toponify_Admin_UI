@@ -9,6 +9,8 @@ import { State as AttributeState } from '@app/attributes/store/reducers/attribut
 import { LoadAttribute } from '@app/attributes/store/actions/attributes.actions';
 import { getSelectedAttribute } from '@app/attributes/store/selectors/attributes.selector';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
+import { State as WorkPackageState} from '@app/workpackage/store/reducers/workpackage.reducer';
+import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'app-attribute-details',
@@ -23,8 +25,10 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   isEditable = false;
   showOrHideRightPane = false;
   selectedRightTab: number;
+  attributeId: string;
 
   constructor(
+    private workPackageStore: Store<WorkPackageState>,
     private route: ActivatedRoute,
     private objectDetailsService: ObjectDetailsService,
     private store: Store<AttributeState>
@@ -33,7 +37,11 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions.push(this.route.params.subscribe(params => {
       const id = params['attributeId'];
-      this.store.dispatch(new LoadAttribute(id));
+      this.attributeId = id;
+      this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        const workPackageIds = workpackages.map(item => item.id)
+        this.setWorkPackage(workPackageIds);
+      })
     }));
 
     this.subscriptions.push(this.store.pipe(select(getSelectedAttribute)).subscribe(attribute => {
@@ -47,6 +55,13 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         });
       }
     }));
+  }
+
+  setWorkPackage(workpackageIds: string[] = []) {
+    const queryParams = {
+      workPackageQuery: workpackageIds
+    };
+    this.store.dispatch(new LoadAttribute({id: this.attributeId, queryParams: queryParams}));
   }
 
   ngOnDestroy(): void {

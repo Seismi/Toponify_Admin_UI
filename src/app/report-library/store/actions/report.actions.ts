@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Report, ReportLibrary, ReportLibraryApiResponse } from '../models/report.model';
+import { ReportLibrary, ReportLibraryApiResponse } from '../models/report.model';
 
 export enum ReportActionTypes {
     LoadReports = '[Report] Load Reports',
@@ -23,7 +23,7 @@ export enum ReportActionTypes {
 
 export class LoadReports implements Action {
     readonly type = ReportActionTypes.LoadReports;
-    constructor() { }
+    constructor(public payload?: any) { }
 }
 
 export class LoadReportsSuccess implements Action {
@@ -38,7 +38,7 @@ export class LoadReportsFail implements Action {
 
 export class LoadReport implements Action {
     readonly type = ReportActionTypes.LoadReport;
-    constructor(public payload: string ) { }
+    constructor(public payload: { id: string, queryParams?: any }) { }
 }
 
 export class LoadReportSuccess implements Action {

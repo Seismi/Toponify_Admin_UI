@@ -26,7 +26,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
 
     case ReportActionTypes.LoadReports: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }
@@ -51,7 +51,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
 
     case ReportActionTypes.LoadReport: {
       return {
-        ...initialState,
+        ...state,
         loading: true
       };
     }

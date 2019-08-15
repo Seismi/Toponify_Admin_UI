@@ -22,8 +22,75 @@ export class DiagramTemplatesService {
     public diagramChangesService: DiagramChangesService
   ) {}
 
+  // Get standard options used for nodes
+  getStandardNodeOptions(forPalette: boolean): object {
+    return Object.assign({
+      selectionAdorned: true,
+      isShadowed: true,
+      resizable: false,
+      // tslint:disable-next-line:no-bitwise
+      layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
+      portSpreading: go.Node.SpreadingEvenly,
+      locationSpot: go.Spot.Top
+    },
+    !forPalette ? { // Enable context menu for nodes not in the palette
+      contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+    } : {});
+  }
+
+  // Get standard options used for node shapes
+  getStandardNodeShapeOptions(): object {
+    return {
+      fill: 'white',
+      stroke: 'black',
+      strokeWidth: 1,
+      portId: '',
+      fromLinkable: true,
+      toLinkable: true,
+      fromSpot: go.Spot.AllSides,
+      toSpot: go.Spot.AllSides,
+      fromLinkableSelfNode: false,
+      toLinkableSelfNode: false,
+      fromLinkableDuplicates: true,
+      toLinkableDuplicates: true,
+      name: 'shape'
+    };
+  }
+
+  // Get standard options used for links
+  getStandardLinkOptions(forPalette: boolean): object {
+    return Object.assign({
+      selectionAdorned: true,
+      reshapable: true,
+      routing: go.Link.AvoidsNodes,
+      corner: 5,
+      curve: go.Link.JumpOver,
+      relinkableFrom: true,
+      relinkableTo: true,
+      fromEndSegmentLength: 10,
+      toEndSegmentLength: 10,
+      // Position by layout in palette
+      isLayoutPositioned: forPalette
+    },
+    forPalette ? {
+      // Set locationSpot in order for palette to arrange link correctly
+      locationSpot: go.Spot.TopCenter,
+      contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
+      // Correct locationSpot on selection highlight adornment when link in palette
+      selectionAdornmentTemplate: $(go.Adornment, 'Link', {
+          locationSpot: new go.Spot(0.5, 0, 1, 0)
+        },
+        $(go.Shape, {
+          isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
+        })
+      )
+    } : { // Enable context menu for links not in the palette
+      contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+    });
+  }
+
   // Get item template for list of node children
-  getItemTemplate() {
+  getItemTemplate(): go.Panel {
     return $(go.Panel,
       'Auto',
       {
@@ -49,7 +116,7 @@ export class DiagramTemplatesService {
   }
 
   // Get button for revealing the next level of dependencies
-  getDependencyExpandButton() {
+  getDependencyExpandButton(): go.Panel {
     return $('Button',
       {
         alignment: go.Spot.TopRight,
@@ -80,7 +147,7 @@ export class DiagramTemplatesService {
   }
 
   // Calculate stroke for parts, based on impacted work packages
-  getStrokeForImpactedWorkPackages(impactedPackages, part) {
+  getStrokeForImpactedWorkPackages(impactedPackages, part: go.Part): go.BrushLike {
     const allWorkpackages = part.diagram.model.modelData.workpackages;
 
     // return black by default if part not impacted by any work packages
@@ -132,7 +199,163 @@ export class DiagramTemplatesService {
     return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
   }
 
-  getSystemNodeTemplate(forPalette: boolean = false) {
+  // Get alert indicator for RADIOs against nodes
+  getRadioAlertIndicator(): go.Panel {
+    return $(go.Panel,
+      'Auto',
+      {
+        row: 1,
+        alignment: go.Spot.BottomRight,
+        visible: false
+      },
+      new go.Binding('visible', '', function (node) {
+        return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+      }).ofObject(),
+      $(go.Shape,
+        'circle',
+        {
+          fill: 'red',
+          desiredSize: new go.Size(25, 25)
+        }
+      ),
+      $(go.TextBlock,
+        {
+          textAlign: 'center',
+          stroke: 'white',
+          font: '12px calibri'
+        },
+       new go.Binding('text', 'relatedRadioCount')
+      )
+    );
+  }
+
+  // Get name label for links
+  getLinkLabel(): go.Panel {
+    return $(go.Panel, 'Vertical',
+      $(go.TextBlock,
+        {
+          font: 'bold 14px calibri'
+        },
+        new go.Binding('areaBackground', 'name',
+          function (name) {
+            return (name ? 'white' : null);
+          }
+        ),
+        new go.Binding('text', 'name'),
+        new go.Binding('visible', 'linkName').ofModel()
+      ),
+      $(go.TextBlock,
+        {
+          font: '13px calibri'
+        },
+        new go.Binding('areaBackground', 'label',
+          function (label) {
+            return (label ? 'white' : null);
+          }
+        ),
+        new go.Binding('text', 'label'),
+        new go.Binding('visible', 'linkLabel').ofModel()
+      )
+    );
+  }
+
+  // Get standard sections for nodes
+  // Sections included:
+  //   name
+  //   description
+  //   tags
+  //   owner
+  // Returns an array of node sections
+  getStandardNodeSections(): go.TextBlock[] {
+
+    const sections = [
+      {
+        sectionName: 'name',
+        font: 'bold 16px calibri',
+        initialText: ''
+      },
+      {
+        sectionName: 'description',
+        font: 'italic 15px calibri',
+        initialText: ''
+      },
+      {
+        sectionName: 'tags',
+        font: '15px calibri',
+        initialText: 'Tags - '
+      },
+      {
+        sectionName: 'owner',
+        font: '15px calibri',
+        initialText: 'Owner - '
+      }
+    ];
+
+    return sections.map(
+      function(section) {
+        return $(go.TextBlock,
+          {
+            textAlign: 'center',
+            stroke: 'black',
+            font: section.font,
+            maxSize: new go.Size(100, Infinity),
+            margin: new go.Margin(0, 0, 5, 0)
+          },
+          new go.Binding('text',
+            section.sectionName,
+            function(input) {
+              return input ? (section.initialText + input) : '';
+            }
+          ),
+          new go.Binding('visible', section.sectionName).ofModel()
+        );
+      }
+    );
+  }
+
+  // Get list of descendants for nodes.
+  //   Input: header (title to be displayed above list)
+  getDescendantsNodeSection(header: string): go.Panel {
+    return $(go.Panel,
+      'Vertical',
+      {
+        stretch: go.GraphObject.Horizontal
+      },
+      // Descendants list header
+      $(go.TextBlock,
+        {
+          text: header,
+          alignment: go.Spot.Center,
+          stroke: 'black',
+          font: 'bold 15.25px calibri',
+          margin: new go.Margin(5, 0, 0, 0)
+        },
+        // Hide descendants header if node has no descendants
+        new go.Binding('visible', 'descendants',
+          function (descendants) {
+            return descendants.length > 0;
+          }
+        )
+      ),
+      // Descendants list
+      $(go.Panel, 'Vertical',
+        {
+          name: header + '_List',
+          padding: 3,
+          alignment: go.Spot.TopLeft,
+          defaultAlignment: go.Spot.Left,
+          stretch: go.GraphObject.Horizontal,
+          itemCategoryProperty: '',
+          itemTemplate: this.getItemTemplate()
+        },
+        new go.Binding('itemArray', 'descendants')
+      ),
+      new go.Binding('visible', 'nextLevel').ofModel()
+    );
+  }
+
+  // Get template for system nodes
+  getSystemNodeTemplate(forPalette: boolean = false): go.Node {
 
     return $(
       go.Node,
@@ -140,14 +363,8 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
         go.Point.stringify
       ),
+      this.getStandardNodeOptions(forPalette),
       {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
@@ -175,136 +392,40 @@ export class DiagramTemplatesService {
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
+        this.getStandardNodeShapeOptions()
+      ),
+      $(go.Panel,
+        'Table',
+        {
+          margin: 5
+        },
         // Bind height for transactional system to make consistent
         //  with previously used GoJs 1.8 shape
         new go.Binding('minSize', 'category', function (category) {
           if (category === 'transactional') {
-            return new go.Size(NaN, 157.14285714285714);
+            return new go.Size(100, 140);
           } else {
-            return new go.Size(NaN, NaN);
+            return new go.Size(100, 100);
           }
         }),
-        {
-          fill: 'white',
-          stroke: 'black',
-          strokeWidth: 1,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          fromSpot: go.Spot.AllSides,
-          toSpot: go.Spot.AllSides,
-          fromLinkableSelfNode: false,
-          toLinkableSelfNode: false,
-          fromLinkableDuplicates: true,
-          toLinkableDuplicates: true,
-          name: 'shape'
-        }
-      ),
-      $(go.Panel,
-        'Vertical',
-        {
-          alignment: go.Spot.TopCenter,
-          minSize: new go.Size(100, 100),
-          margin: 5
-        },
-        this.getDependencyExpandButton(),
-        // System name
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
+            row: 0,
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
+          this.getDependencyExpandButton(),
+          ...this.getStandardNodeSections(),
+          this.getDescendantsNodeSection('Data Sets')
         ),
-        // System description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // System tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'tags',
-            function (tags) {
-              return tags ? ('Tags - ' + tags) : '';
-            }
-          ),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // System owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Data set list header
-          $(go.TextBlock,
-            {
-              text: 'Data Sets',
-              row: 1,
-              alignment: go.Spot.Center,
-              stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0)
-            },
-            // Hide data sets header if system has no data sets
-            new go.Binding('visible', 'descendants',
-              function (descendants) {
-                return descendants.length > 0;
-              }
-            )
-          ),
-          // Data set list
-          $(go.Panel, 'Vertical',
-            {
-              name: 'Data_Set_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
-            },
-            new go.Binding('itemArray', 'descendants')
-          ),
-          new go.Binding('visible', 'nextLevel').ofModel()
-        )
+        this.getRadioAlertIndicator()
       )
     );
   }
 
-  getDataSetNodeTemplate(forPalette: boolean = false) {
+  // Get template for data set nodes
+  getDataSetNodeTemplate(forPalette: boolean = false): go.Node {
 
     // Template for Data Set
     return $(
@@ -313,14 +434,8 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
         go.Point.stringify
       ),
+      this.getStandardNodeOptions(forPalette),
       {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
@@ -329,167 +444,72 @@ export class DiagramTemplatesService {
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
-      $(go.Shape, 'Rectangle', {
-        fill: 'white',
-        stroke: 'black',
-        strokeWidth: 1,
-        portId: '',
-        fromLinkable: true,
-        toLinkable: true,
-        fromSpot: go.Spot.AllSides,
-        toSpot: go.Spot.AllSides,
-        name: 'shape',
-        fromLinkableDuplicates: true,
-        toLinkableDuplicates: true
-      },
-      // Bind stroke to multicoloured brush based on work packages impacted by
-      new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
-        return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-      }.bind(this))
+      $(go.Shape,
+        'Rectangle',
+        this.getStandardNodeShapeOptions(),
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
+          return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+        }.bind(this))
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
           minSize: new go.Size(100, 100),
           margin: 5
         },
-        this.getDependencyExpandButton(),
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            alignment: go.Spot.TopRight,
-            background: null,
-            font: 'bold 20px calibri'
+            alignment: go.Spot.TopCenter,
+            row: 0,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text',
-            'category',
-            function (category) {
-              if (category === nodeCategories.virtual) {
-                return 'V';
-              } else if (category === nodeCategories.masterData) {
-                return 'MD';
-              } else {
-                // Physical data set
-                return '';
-              }
-            }
-          ),
-          new go.Binding('visible',
-            'category',
-            function(category) {
-              return category !== nodeCategories.physical;
-            }
-          )
-        ),
-        // Data set name
-        $(
-          go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
-        ),
-        // Data set description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // Data set tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text', 'tags', function (tags) {
-            return tags ? 'Tags - ' + tags : '';
-          }),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // Data set owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Dimension list header
+          this.getDependencyExpandButton(),
           $(go.TextBlock,
             {
-              text: 'Dimensions',
-              row: 1,
-              alignment: go.Spot.Center,
-              stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0)
+              alignment: go.Spot.TopRight,
+              background: null,
+              font: 'bold 20px calibri'
             },
-            // Hide dimensions header if data set has no dimensions
-            new go.Binding('visible', 'descendants',
-              function (descendants) {
-                return descendants.length > 0;
+            new go.Binding('text',
+              'category',
+              function (category) {
+                if (category === nodeCategories.virtual) {
+                  return 'V';
+                } else if (category === nodeCategories.masterData) {
+                  return 'MD';
+                } else {
+                  // Physical data set
+                  return '';
+                }
+              }
+            ),
+            new go.Binding('visible',
+              'category',
+              function(category) {
+                return category !== nodeCategories.physical;
               }
             )
           ),
-          // Dimension list
-          $(go.Panel, 'Vertical',
-            {
-              name: 'Dimension_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
-            },
-            new go.Binding('itemArray', 'descendants')
-          ),
-          new go.Binding('visible', 'nextLevel').ofModel()
-        )
+          ...this.getStandardNodeSections(),
+          this.getDescendantsNodeSection('Dimensions')
+        ),
+        this.getRadioAlertIndicator()
       )
     );
   }
 
-  getDimensionNodeTemplate(forPalette: boolean = false) {
+  // Get template for dimension nodes
+  getDimensionNodeTemplate(forPalette: boolean = false): go.Node {
 
     // Template for dimension
     return $(
       go.Node,
       'Auto',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
+      this.getStandardNodeOptions(forPalette),
       {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top,
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
       },
       !forPalette ? { // Enable context menu for nodes not in the palette
@@ -500,19 +520,7 @@ export class DiagramTemplatesService {
       // Make the shape the port for links to connect to
       $(go.Shape,
         'Rectangle',
-        {
-          fill: 'white',
-          stroke: 'black',
-          strokeWidth: 1,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          fromSpot: go.Spot.AllSides,
-          toSpot: go.Spot.AllSides,
-          name: 'shape',
-          fromLinkableDuplicates: false,
-          toLinkableDuplicates: false
-        },
+        this.getStandardNodeShapeOptions(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
@@ -533,133 +541,43 @@ export class DiagramTemplatesService {
         }.bind(this))
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
           minSize: new go.Size(100, 100),
           margin: 5
         },
-        this.getDependencyExpandButton(),
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            alignment: go.Spot.TopRight,
-            background: null,
-            font: 'bold 20px calibri',
-            text: 'D'
-          }
-        ),
-        // Dimension name
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
-        ),
-        // Dimension description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // Dimension tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'tags',
-            function (tags) {
-              return tags ? ('Tags - ' + tags) : '';
-            }
-          ),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // Dimension owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Reporting concept list header
+          this.getDependencyExpandButton(),
           $(go.TextBlock,
             {
-              text: 'Reporting Concepts',
-              row: 1,
-              alignment: go.Spot.Center,
-              stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0)
-            },
-            // Hide reporting concepts header if dimension has no reporting concepts
-            new go.Binding('visible', 'descendants',
-              function (descendants) {
-                return descendants.length > 0;
-              }
-            )
+              alignment: go.Spot.TopRight,
+              background: null,
+              font: 'bold 20px calibri',
+              text: 'D'
+            }
           ),
-          // Reporting concept list
-          $(go.Panel, 'Vertical',
-            {
-              name: 'Reporting concept_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
-            },
-            new go.Binding('itemArray', 'descendants')
-          ),
-          new go.Binding('visible', 'nextLevel').ofModel()
-        )
+          ...this.getStandardNodeSections(),
+          this.getDescendantsNodeSection('Reporting Concepts')
+        ),
+        this.getRadioAlertIndicator()
       )
     );
   }
 
-  getReportingConceptNodeTemplate(forPalette: boolean = false) {
+  // Get template for reporting concept nodes
+  getReportingConceptNodeTemplate(forPalette: boolean = false): go.Node {
 
     // Template for reporting concept nodes
     return $(
       go.Node,
       'Auto',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      {
-        selectionAdorned: true,
-        isShadowed: true,
-        resizable: false,
-        // tslint:disable-next-line:no-bitwise
-        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
-        portSpreading: go.Node.SpreadingEvenly,
-        locationSpot: go.Spot.Top
-      },
+      this.getStandardNodeOptions(forPalette),
       !forPalette ? { // Enable context menu for nodes not in the palette
         contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       } : {},
@@ -680,26 +598,12 @@ export class DiagramTemplatesService {
         new go.Binding('stroke', 'impactedByWorkPackages', function(impactedPackages, shape) {
           return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
         }.bind(this)),
-        {
-          fill: 'white',
-          stroke: 'black',
-          strokeWidth: 1,
-          portId: '',
-          fromLinkable: true,
-          toLinkable: true,
-          fromSpot: go.Spot.AllSides,
-          toSpot: go.Spot.AllSides,
-          name: 'shape',
-          fromLinkableDuplicates: false,
-          toLinkableDuplicates: false
-        }
+        this.getStandardNodeShapeOptions()
       ),
       $(go.Panel,
-        'Vertical',
+        'Table',
         {
-          alignment: go.Spot.TopCenter,
-          minSize: new go.Size(100, 100),
-          margin: 5
+          minSize: new go.Size(100, 100)
         },
         // Ensure that the panel does not overlap the border lines
         // on the shapes for list and structure reporting elements
@@ -713,109 +617,22 @@ export class DiagramTemplatesService {
             }
           }
         ),
-        this.getDependencyExpandButton(),
-        // Reporting concept name
-        $(go.TextBlock,
+        $(go.Panel,
+          'Vertical',
           {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'bold 16px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
+            alignment: go.Spot.TopCenter,
+            minSize: new go.Size(90, NaN)
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
+          this.getDependencyExpandButton(),
+          ...this.getStandardNodeSections(),
         ),
-        // Reporting concept description
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: 'italic 15px calibri',
-            maxSize: new go.Size(100, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'description'),
-          new go.Binding('visible', 'description').ofModel()
-        ),
-        // Reporting concept tags
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'tags',
-            function (tags) {
-              return tags ? ('Tags - ' + tags) : '';
-            }
-          ),
-          new go.Binding('visible', 'tags').ofModel()
-        ),
-        // Reporting concept owners
-        $(go.TextBlock,
-          {
-            textAlign: 'center',
-            stroke: 'black',
-            font: '15px calibri',
-            maxSize: new go.Size(100, Infinity)
-          },
-          new go.Binding('text',
-            'owner',
-            function (owner) {
-              return owner ? ('Owner - ' + owner) : '';
-            }
-          ),
-          new go.Binding('visible', 'owner').ofModel()
-        ),
-        $(go.Panel, 'Vertical',
-          {
-            stretch: go.GraphObject.Horizontal
-          },
-          // Attribute list header
-          $(go.TextBlock,
-            {
-              text: 'Attributes',
-              row: 1,
-              alignment: go.Spot.Center,
-              stroke: 'black',
-              font: 'bold 15.25px calibri',
-              margin: new go.Margin(5, 0, 0, 0),
-              visible: false
-            },
-            // Hide attributes header if Reporting concept has no attributes
-            new go.Binding('visible', 'attributes',
-              function (attributes) {
-                return attributes.length > 0;
-              }
-            )
-          ),
-          // Attribute list
-          $(go.Panel, 'Vertical',
-            {
-              name: 'Attribute_List',
-              padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
-              stretch: go.GraphObject.Horizontal,
-              itemCategoryProperty: '',
-              itemTemplate: this.getItemTemplate()
-            },
-            new go.Binding('itemArray', 'attributes')
-          ),
-          new go.Binding('visible', 'nextLevel').ofModel()
-        )
+        this.getRadioAlertIndicator()
       )
     );
   }
 
-  CustomLink() {
-    go.Link.call(this);
-  }
-
-  getLinkDataTemplate(forPalette: boolean = false) {
+  // Get template for data links
+  getLinkDataTemplate(forPalette: boolean = false): CustomLink {
     return $(
       CustomLink,
       new go.Binding('points', 'route').makeTwoWay(function (points) {
@@ -831,37 +648,10 @@ export class DiagramTemplatesService {
       }),
       new go.Binding('visible', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing',
-        function (routeMissing) {
-          return routeMissing;
-        }.bind(this)
-      ),
+      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      this.getStandardLinkOptions(forPalette),
       {
-        selectionAdorned: true,
-        reshapable: true,
-        routing: go.Link.AvoidsNodes,
-        corner: 5,
-        curve: go.Link.JumpOver,
-        relinkableFrom: true,
-        relinkableTo: true,
-        fromEndSegmentLength: 10,
-        toEndSegmentLength: 10,
         doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
-      },
-      forPalette ? {
-        // Set locationSpot in order for palette to arrange link correctly
-        locationSpot: go.Spot.TopCenter,
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
-        // Correct locationSpot on selection highlight adornment when link in palette
-        selectionAdornmentTemplate: $(go.Adornment, 'Link', {
-            locationSpot: new go.Spot(0.5, 0, 1, 0)
-          },
-          $(go.Shape, {
-            isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
-          })
-        )
-      } : { // Enable context menu for links not in the palette
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
       },
       $(go.Shape, {
           name: 'shape',
@@ -876,33 +666,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
-      !forPalette ?
-        $(go.Panel, 'Vertical',
-          $(go.TextBlock,
-            {
-              font: 'bold 14px calibri'
-            },
-            new go.Binding('areaBackground', 'name',
-              function (name) {
-                return (name ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'linkName').ofModel()
-          ),
-          $(go.TextBlock,
-            {
-              font: '13px calibri'
-            },
-            new go.Binding('areaBackground', 'label',
-              function (label) {
-                return (label ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'label'),
-            new go.Binding('visible', 'linkLabel').ofModel()
-          )
-        ) : {},
+      !forPalette ? this.getLinkLabel() : {},
       $(
         go.Shape, // The 'to' arrowhead
         {
@@ -918,7 +682,8 @@ export class DiagramTemplatesService {
     );
   }
 
-  getLinkMasterDataTemplate(forPalette: boolean = false) {
+  // Get template for master data links
+  getLinkMasterDataTemplate(forPalette: boolean = false): CustomLink {
     return $(
       CustomLink,
       new go.Binding('points', 'route').makeTwoWay(function (points) {
@@ -935,39 +700,8 @@ export class DiagramTemplatesService {
       }),
       new go.Binding('visible', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing',
-        function (routeMissing) {
-          return routeMissing;
-        }.bind(this)
-      ),
-      {
-        selectionAdorned: true,
-        reshapable: true,
-        routing: go.Link.AvoidsNodes,
-        corner: 5,
-        curve: go.Link.JumpOver,
-        relinkableFrom: true,
-        relinkableTo: true,
-        // contextMenu: PartContextMenu,
-        fromEndSegmentLength: 20,
-        toEndSegmentLength: 20,
-        // Position by layout in palette
-        isLayoutPositioned: forPalette
-      },
-      forPalette ? {
-        // Set locationSpot in order for palette to arrange link correctly
-        locationSpot: go.Spot.TopCenter,
-        // Correct locationSpot on selection highlight adornment when link in palette
-        selectionAdornmentTemplate: $(go.Adornment, 'Link', {
-            locationSpot: go.Spot.TopCenter
-          },
-          $(go.Shape, {
-            isPanelMain: true, fill: null, stroke: 'dodgerblue', strokeWidth: 3
-          })
-        )
-      } : { // Enable context menu for links not in the palette
-        contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
-      },
+      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      this.getStandardLinkOptions(forPalette),
       $(go.Shape, {
           isPanelMain: true,
           stroke: 'Black',
@@ -981,37 +715,11 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? {areaBackground: 'transparent'} : {}
       ),
-      !forPalette ?
-        $(go.Panel, 'Vertical',
-          $(go.TextBlock,
-            {
-              font: 'bold 14px calibri'
-            },
-            new go.Binding('areaBackground', 'name',
-              function (name) {
-                return (name ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'linkName').ofModel()
-          ),
-          $(go.TextBlock,
-            {
-              font: '13px calibri'
-            },
-            new go.Binding('areaBackground', 'label',
-              function (label) {
-                return (label ? 'white' : null);
-              }
-            ),
-            new go.Binding('text', 'label'),
-            new go.Binding('visible', 'linkLabel').ofModel()
-          )
-        ) : {},
+      !forPalette ? this.getLinkLabel() : {}
     );
   }
 
-  getDataSetGroupTemplate() {
+  getDataSetGroupTemplate(): go.Group {
     // Template for data set groups in mapping view
     return $(
       go.Group,
