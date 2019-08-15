@@ -10,23 +10,14 @@
     <mat-spinner></mat-spinner>
   </ng-container>
   <!-- TODO: find out how descendants should be displayed -->
-  <!-- <ng-container *ngIf="!processing">
+  <ng-container *ngIf="!processing">
     <ng-container *ngIf="descendants && descendants.length > 0">
-      <p><strong>Node contain following links:</strong></p>
+      <p><strong>Descendants:</strong></p>
       <ul>
-        <li *ngFor="let link of node.links">{{ getLinkName(link) }}</li>
+        <li *ngFor="let item of descendants">{{ item.name }}</li>
       </ul>
     </ng-container>
-
-    <ng-container *ngIf="node.descendants && node.descendants.length > 0">
-      <p><strong>Node contain following descendants:</strong></p>
-      <ul>
-        <li *ngFor="let descendant of node.descendants">
-          {{ getNodeName(descendant) }}
-        </li>
-      </ul>
-    </ng-container>
-  </ng-container> -->
+  </ng-container>
 </mat-dialog-content>
 <div mat-dialog-actions>
   <ng-container *ngIf="!error">

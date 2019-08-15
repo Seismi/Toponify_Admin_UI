@@ -2,27 +2,35 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
-import { LinkType, NodeType } from '@app/architecture/services/node.service';
+import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, UpdateLinks, UpdateNode } from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
+import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
+import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { LoadScope, LoadScopes, AddScope } from '@app/scope/store/actions/scope.actions';
+import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
+import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
+import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
+import { SharedService } from '@app/services/shared-service';
+import { DeleteWorkpackageLinkSuccess } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { DeleteWorkpackageNodeSuccess, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkpackages, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
+import { go } from 'gojs/release/go-module';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
@@ -34,17 +42,10 @@ import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.co
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { Level } from '../services/diagram-level.service';
 import { FilterService } from '../services/filter.service';
-import { SelectWorkpackage } from '../store/actions/workpackage.actions';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
-import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { go } from 'gojs/release/go-module';
-import { RadioEntity } from '@app/radio/store/models/radio.model';
-import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
-import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
-import { SharedService } from '@app/services/shared-service';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'smi-architecture',
@@ -125,7 +126,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public filterService: FilterService,
     private ref: ChangeDetectorRef,
-    public gojsCustomObjectsService: GojsCustomObjectsService
+    public gojsCustomObjectsService: GojsCustomObjectsService,
+    public actions: Actions
   ) {
     // If filterLevel not set, ensure to set it.
     const filter = this.filterService.getFilter();
@@ -155,11 +157,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
     this.filterServiceSubscription = combineLatest(
+      // TODO: find a way to trigger event for subscribers
       this.filterService.filter,
-      this.workpackageStore.pipe(select(getSelectedWorkpackages))
+      this.workpackageStore.pipe(select(getSelectedWorkpackages)),
+      // this.actions.pipe(ofType(WorkPackageNodeActionTypes.LoadWorkPackageNodeDescendantsSuccess))
       // this.layoutStore.pipe(select(getLayoutSelected))
       )
       .subscribe(([filter, workpackages]) => {
+        debugger;
         const workpackageIds = workpackages.map(item => item.id);
       if (filter) {
         const { filterLevel, id } = filter;
@@ -403,9 +408,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         payload: node
       }
     }).beforeClosed().subscribe(action  => {
-      // if (action instanceof DeleteNodeSuccess) {
+      if (action instanceof DeleteWorkpackageNodeSuccess) {
+        // Dispatch data
         debugger;
-      // }
+      }
     });
   }
 
@@ -417,10 +423,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         payload: link
       }
     }).beforeClosed().subscribe(action  => {
-      // if (action instanceof DeleteLinkSuccess) {
+      if (action instanceof DeleteWorkpackageLinkSuccess) {
         // this.store.dispatch();
         debugger;
-      // }
+      }
     });
   }
 

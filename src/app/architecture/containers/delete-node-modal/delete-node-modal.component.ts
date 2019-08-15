@@ -52,14 +52,6 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
       }));
   }
 
-  getLinkName(link: any) {
-    return link.name ? link.name : link.id;
-  }
-
-  getNodeName(node: any) {
-    return node.object && node.object.name ? node.object.name : '<No title>';
-  }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
