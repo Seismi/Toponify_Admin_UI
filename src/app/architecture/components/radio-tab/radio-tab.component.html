@@ -18,6 +18,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns" (dblclick)="onSelect(row.id)"></tr>
     </table>
+    <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
 </div><br>
 
 <button mat-raised-button color="primary" (click)="onAdd()">Raise New</button>

@@ -11,7 +11,9 @@
       </ng-template>
     </mat-tab>
     <mat-tab label="Analysis">
-        <smi-analysis-tab (displayOptionsChanged)="displayOptionsChanged($event)">
+        <smi-analysis-tab
+          [checked]="checked"
+          (displayOptionsChanged)="displayOptionsChanged($event)">
         </smi-analysis-tab>
     </mat-tab>
 </mat-tab-group>

@@ -60,6 +60,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private zoomRef;
   private showHideGridRef;
   private showDetailTabRef;
+  private showHideRadioAlertRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -107,6 +108,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedLeftTab: number;
   multipleSelected = false;
   selectedMultipleNodes = [];
+  radioAlertChecked = true;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -203,6 +205,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.selectedRightTab = 0;
       this.ref.detectChanges();
     }.bind(this));
+
+    this.showHideRadioAlertRef = this.gojsCustomObjectsService.showHideRadioAlert$.subscribe(
+      function() {
+        this.radioAlertChecked = !this.radioAlertChecked;
+        this.ref.detectChanges();
+      }.bind(this));
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -547,9 +555,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  openLeftTab(i) {
-    this.selectedLeftTab = i;
-    if (this.selectedLeftTab === i) {
+  openLeftTab(index: number) {
+    this.selectedLeftTab = index;
+    if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
     this.diagramComponent.updateDiagramArea();
@@ -586,9 +594,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.dialog.open(AttributeModalComponent, {width: '450px'});
   }
 
-  openRightTab(i) {
-    this.selectedRightTab = i;
-    if (this.selectedRightTab === i) {
+  openRightTab(index: number) {
+    this.selectedRightTab = index;
+    if (this.selectedRightTab === index) {
       this.showOrHideRightPane = true;
     }
     this.diagramComponent.updateDiagramArea();

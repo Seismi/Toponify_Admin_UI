@@ -11,6 +11,7 @@ export class LeftPanelComponent {
   @Input() workPackageIsEditable = false;
   @Input() data: any;
   @Input() selectedLeftTab: number;
+  @Input() checked: boolean;
 
   constructor() { }
 

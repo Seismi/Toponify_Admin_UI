@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output, Input} from '@angular/core';
 
 @Component({
   selector: 'smi-analysis-tab',
@@ -6,6 +6,8 @@ import {Component, EventEmitter, Output} from '@angular/core';
   styleUrls: ['./analysis-tab.component.scss']
 })
 export class AnalysisTabComponent {
+
+  @Input() checked: boolean;
 
   @Output()
   displayOptionsChanged = new EventEmitter();
