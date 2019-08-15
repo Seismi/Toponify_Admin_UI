@@ -313,7 +313,7 @@ export class DiagramTemplatesService {
             visible: false
           },
           new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+            return (node.data.relatedRadioCount) > 0 && node.diagram.model.modelData.showRadioAlerts;
           }).ofObject(),
           $(go.Shape,
             'circle',
@@ -519,7 +519,7 @@ export class DiagramTemplatesService {
             visible: false
           },
           new go.Binding('visible', '', function (node) {
-            return (node.data.relatedRadioCount > 0) && node.diagram.model.modelData.showRadioAlerts;
+            return (node.data.relatedRadioCount) > 0 && node.diagram.model.modelData.showRadioAlerts;
           }).ofObject(),
           $(go.Shape,
             'circle',
@@ -535,7 +535,8 @@ export class DiagramTemplatesService {
               font: '12px calibri'
             },
            new go.Binding('text', 'relatedRadioCount')
-          )
+          ),
+          new go.Binding('visible', 'relatedRadioCount').ofModel()
         )
       )
     );
@@ -736,7 +737,8 @@ export class DiagramTemplatesService {
               font: '12px calibri'
             },
            new go.Binding('text', 'relatedRadioCount')
-          )
+          ),
+          new go.Binding('visible', 'relatedRadioCount').ofModel()
         )
       )
     );
@@ -933,7 +935,8 @@ export class DiagramTemplatesService {
               font: '12px calibri'
             },
            new go.Binding('text', 'relatedRadioCount')
-          )
+          ),
+          new go.Binding('visible', 'relatedRadioCount').ofModel()
         )
       )
     );
