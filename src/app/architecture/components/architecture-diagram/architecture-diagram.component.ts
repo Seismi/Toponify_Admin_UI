@@ -31,6 +31,7 @@ export const viewLevelMapping = {
   [10]: Level.usage
 };
 
+// Default display settings
 const standardDisplayOptions = {
   name: true,
   description: false,
@@ -195,6 +196,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       diagramTemplatesService.getLinkParentChildTemplate()
     );
 
+    // Set group template
     this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();
 
     // Override command handler delete method to emit delete event to angular
@@ -261,6 +263,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
   }
 
+  // Recalculate the area that the diagram takes up.
+  // Call when the diagram DIV changes size.
   updateDiagramArea(): void {
     this.diagram.requestUpdate();
   }

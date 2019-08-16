@@ -10,7 +10,7 @@ import {
   switchMap
   } from 'rxjs/operators';
 import { ReportActionTypes } from '../actions/report.actions';
-import { ReportService } from '../../services/report.service';
+import { ReportService, GetReportLibraryRequestQueryParams  } from '../../services/report.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
@@ -26,8 +26,9 @@ export class ReportEffects {
   @Effect()
   loadReports$ = this.actions$.pipe(
     ofType<ReportActions.LoadReports>(ReportActionTypes.LoadReports),
-    switchMap(_ => {
-      return this.reportService.getReports().pipe(
+    map(action => action.payload),
+    switchMap((queryParams: GetReportLibraryRequestQueryParams) => {
+      return this.reportService.getReports(queryParams).pipe(
         switchMap((response: ReportLibraryApiResponse) => [new ReportActions.LoadReportsSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.LoadReportsFail(error)))
       );
@@ -38,8 +39,8 @@ export class ReportEffects {
   loadReport$ = this.actions$.pipe(
     ofType<ReportActions.LoadReport>(ReportActionTypes.LoadReport),
     map(action => action.payload),
-    switchMap((payload: any) => {
-      return this.reportService.getReport(payload).pipe(
+    switchMap((payload: { id: string, queryParams?: GetReportLibraryRequestQueryParams }) => {
+      return this.reportService.getReport(payload.id, payload.queryParams).pipe(
         switchMap((response: any) => [new ReportActions.LoadReportSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.LoadReportFail(error)))
       );

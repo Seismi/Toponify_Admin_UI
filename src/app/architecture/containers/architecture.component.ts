@@ -307,9 +307,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
 
     // Multiple selection
-    if(parts.length > 1) {
-      for (let i=0; i<parts.length; i++) {
-        if(parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
+    if (parts.length > 1) {
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
           // links
         } else {
           // Push only objects (not links)
@@ -546,8 +546,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
 
-  selectColorForWorkPackage(data: {color: string, id: string}) {
-    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id}));
+  selectColourForWorkPackage(data: {colour: string, id: string}) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.colour, workpackageId: data.id}));
   }
 
   onSelectScope(id) {
@@ -559,7 +559,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  openLeftTab(i) {
+  openLeftTab(i: number) {
     this.selectedLeftTab = i;
     if (this.selectedLeftTab === i) {
       this.showOrHideLeftPane = true;
@@ -647,7 +647,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           viewers: this.sharedService.selectedViewers,
           layerFilter: this.filterService.getFilter().filterLevel.toLowerCase(),
           include: this.selectedMultipleNodes
-        }))
+        }));
       }
       this.selectedMultipleNodes = [];
       this.sharedService.selectedOwners = [];

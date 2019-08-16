@@ -25,18 +25,33 @@ button:focus {
     cursor: pointer;
 }
 
-th.mat-column-scope {
-    width: 25%;
-}
-
-th.mat-column-layout {
-    width: 50%;
-}
-
-th.mat-column-access {
-    width: 20%;
-}
-
 th.mat-column-star {
     width: 5%;
+}
+
+.list {
+    padding: 0;
+    margin: 0;
+    display: inline;
+    list-style: none;
+}
+  
+.list li {
+    display: inline;
+}
+
+.list::before {
+    content: '; ';
+}
+
+.list:first-child::before {
+    content: '';
+}
+
+.noDataFound {
+    background-color: #fff;
+    border-bottom: solid 1px #ddd;
+    font-size: 15px;
+    padding: 20px 0px;
+    text-align: center;
 }

@@ -76,7 +76,7 @@ export class DiagramLevelService implements OnDestroy {
   ) {
   }
 
-  public initializeUrlFiltering() {
+  public initializeUrlFiltering(): void {
 
     this.filterSubscription = this.filter.subscribe(filter => {
       this.store.dispatch(new SetViewLevel(viewLevelNum[filter.filterLevel]));
