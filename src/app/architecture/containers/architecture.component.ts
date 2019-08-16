@@ -31,8 +31,8 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { getSelectedWorkpackages, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable, Subscription, of, BehaviorSubject } from 'rxjs';
+import { map, filter, defaultIfEmpty } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -46,6 +46,11 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Actions, ofType } from '@ngrx/effects';
+
+enum Events {
+  NodesLinksReload = 0
+}
+
 
 @Component({
   selector: 'smi-architecture',
@@ -74,6 +79,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   links: any[] = [];
   nodes: any[] = [];
+
+  public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  nodesLinks$: Observable<any>;
 
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
@@ -156,18 +165,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
-    this.filterServiceSubscription = combineLatest(
+
+    this.nodesLinks$ = combineLatest(
       // TODO: find a way to trigger event for subscribers
       this.filterService.filter,
       this.workpackageStore.pipe(select(getSelectedWorkpackages)),
-      // this.actions.pipe(ofType(WorkPackageNodeActionTypes.LoadWorkPackageNodeDescendantsSuccess))
-      // this.layoutStore.pipe(select(getLayoutSelected))
-      )
-      .subscribe(([filter, workpackages]) => {
-        debugger;
+      this.eventEmitter // .pipe(filter(event => event === Events.NodesLinksReload))
+    );
+
+    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, event]) => {
         const workpackageIds = workpackages.map(item => item.id);
-      if (filter) {
-        const { filterLevel, id } = filter;
+        if (fil) {
+        const { filterLevel, id } = fil;
         if (filterLevel) {
           this.setNodesLinks(filterLevel, id, workpackageIds);
         }
@@ -409,8 +418,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     }).beforeClosed().subscribe(action  => {
       if (action instanceof DeleteWorkpackageNodeSuccess) {
-        // Dispatch data
-        debugger;
+        this.eventEmitter.next(Events.NodesLinksReload);
       }
     });
   }
@@ -424,8 +432,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     }).beforeClosed().subscribe(action  => {
       if (action instanceof DeleteWorkpackageLinkSuccess) {
-        // this.store.dispatch();
-        debugger;
+        this.eventEmitter.next(Events.NodesLinksReload);
       }
     });
   }
