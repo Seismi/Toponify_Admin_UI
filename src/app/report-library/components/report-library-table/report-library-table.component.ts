@@ -34,7 +34,7 @@ export class ReportLibraryTableComponent implements OnInit {
   reportSelected = new EventEmitter();
 
   onSelectRow(row) {
-    this.selectedRowIndex = row.name;
+    this.selectedRowIndex = row.id;
     this.reportSelected.emit(row);
   }
 

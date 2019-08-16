@@ -7,23 +7,37 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+export interface GetAttributeRequestQueryParams {
+  workPackageQuery?: string[];
+}
+
 @Injectable()
 export class AttributeService {
 
   constructor(private http: HttpClient) { }
 
-  getAttributeEntities(queryParams: AttributeEntitiesHttpParams): Observable<AttributeEntitiesResponse> {
+  getAttributeEntities(queryParams?: GetAttributeRequestQueryParams): Observable<AttributeEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
     return this.http.get<any>(`/attributes`, {params: params});
   }
 
-  getAttribute(id: string): Observable<any> {
-    return this.http.get<any>(`/attributes/${id}`);
+  getAttribute(id: string, queryParams?: GetAttributeRequestQueryParams): Observable<any> {
+    const params = this.toHttpParams(queryParams);
+    return this.http.get<any>(`/attributes/${id}`, {params: params});
   }
 
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
-    return Object.getOwnPropertyNames(obj)
-      .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
+    let httpParams = new HttpParams();
+    Object.getOwnPropertyNames(obj).forEach(key => {
+      if (Array.isArray(obj[key])) {
+        obj[key].forEach(item => {
+          httpParams = httpParams.append(`${key}[]`, item);
+        });
+      } else {
+        httpParams = httpParams.set(key, obj[key]);
+      }
+    });
+    return httpParams;
   }
 }

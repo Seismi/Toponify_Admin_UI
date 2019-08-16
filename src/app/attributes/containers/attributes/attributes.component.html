@@ -15,7 +15,8 @@
             <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
                 <mat-tab label="Work Packages">
                     <smi-workpackage-tab-table 
-                        [data]="workpackage$ | async">
+                        [data]="workpackage$ | async"
+                        (selectWorkPackage)="onSelectWorkPackage($event)">
                     </smi-workpackage-tab-table>
                 </mat-tab>
             </mat-tab-group>
