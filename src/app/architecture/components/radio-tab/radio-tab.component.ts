@@ -9,7 +9,6 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   styleUrls: ['./radio-tab.component.scss']
 })
 export class RadioTabComponent {
-
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
@@ -33,5 +32,4 @@ export class RadioTabComponent {
   onSelect(id){
     this.router.navigate(['/radio/' + id]);
   }
-
 }

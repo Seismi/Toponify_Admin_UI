@@ -8,7 +8,6 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   styleUrls: ['./properties-tab.component.scss']
 })
 export class PropertiesTabComponent {
-
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
@@ -19,7 +18,4 @@ export class PropertiesTabComponent {
 
   public dataSource: MatTableDataSource<NodeDetail>;
   displayedColumns: string[] = ['name', 'value'];
-
-  onSelectRow(property) {}
-
 }

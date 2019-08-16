@@ -8,7 +8,6 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   styleUrls: ['./attributes-tab.component.scss']
 })
 export class AttributesTabComponent {
-
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);

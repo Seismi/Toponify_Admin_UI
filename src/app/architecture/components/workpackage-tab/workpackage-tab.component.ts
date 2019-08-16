@@ -19,7 +19,4 @@ export class WorkPackageTabComponent {
 
   public dataSource: MatTableDataSource<NodeDetail>;
   displayedColumns: string[] = ['name', 'status'];
-
-  onSelectRow(workpackage) {}
-
 }
