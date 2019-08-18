@@ -22,11 +22,19 @@ export class WorkPackageTabTableComponent {
   @Output()
   selectColor = new EventEmitter<object>();
 
+  @Output()
+  setWorkpackageEditMode = new EventEmitter();
+
   onSelect(id, event) {
     this.selectWorkPackage.emit(id);
   }
 
   onSelectColor(color, id) {
-    this.selectColor.emit({color, id});
+    this.selectColor.emit({ color, id });
+  }
+
+  // FIXME: set proper type of workpackage
+  onSetWorkpackageEditMode(_: any, workpackage: any) {
+    this.setWorkpackageEditMode.emit(workpackage);
   }
 }

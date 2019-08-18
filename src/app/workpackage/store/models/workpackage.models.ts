@@ -31,6 +31,7 @@ export interface WorkPackageEntity {
   hasErrors: boolean;
   status: string;
   displayColour?: string;
+  edit?: boolean;
   selected?: boolean;
 }
 

@@ -8,6 +8,9 @@ export enum WorkPackageNodeActionTypes {
   LoadWorkPackageNodeDescendants = '[WorkPackage] Load node descendants',
   LoadWorkPackageNodeDescendantsSuccess = '[WorkPackage] Load node descendants success',
   LoadWorkPackageNodeDescendantsFailure = '[WorkPackage] Load node descendants failure',
+  UpdateWorkPackageNode = '[WorkPackage] Update node',
+  UpdateWorkPackageNodeSuccess = '[WorkPackage] Update node success',
+  UpdateWorkPackageNodeFailure = '[WorkPackage] Update node failure',
   DeleteWorkpackageNode = '[WorkPackage] Delete Node',
   DeleteWorkpackageNodeSuccess = '[WorkPackage] Delete Node Success',
   DeleteWorkpackageNodeFailure = '[WorkPackage] Delete Node Fail',
@@ -26,6 +29,21 @@ export class AddWorkPackageNodeSuccess implements Action {
 export class AddWorkPackageNodeFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class UpdateWorkPackageNode implements Action {
+  readonly type = WorkPackageNodeActionTypes.UpdateWorkPackageNode;
+  constructor(public payload: { workpackageId: string, nodeId: string, node: any }) { }
+}
+
+export class UpdateWorkPackageNodeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess;
+  constructor(public payload: any) { }
+}
+
+export class UpdateWorkPackageNodeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.UpdateWorkPackageNodeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
 }
 
 export class LoadWorkPackageNodeDescendants implements Action {
@@ -62,6 +80,9 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
   | AddWorkPackageNodeFailure
+  | UpdateWorkPackageNode
+  | UpdateWorkPackageNodeSuccess
+  | UpdateWorkPackageNodeFailure
   | LoadWorkPackageNodeDescendants
   | LoadWorkPackageNodeDescendantsSuccess
   | LoadWorkPackageNodeDescendantsFailure

@@ -7,7 +7,8 @@ import { catchError, map, switchMap, mergeMap } from 'rxjs/operators';
 import { AddWorkPackageNode, AddWorkPackageNodeFailure,
   AddWorkPackageNodeSuccess, WorkPackageNodeActionTypes, LoadWorkPackageNodeDescendants,
   LoadWorkPackageNodeDescendantsSuccess, LoadWorkPackageNodeDescendantsFailure, DeleteWorkpackageNode,
-  DeleteWorkpackageNodeSuccess, DeleteWorkpackageNodeFailure } from '../actions/workpackage-node.actions';
+  DeleteWorkpackageNodeSuccess, DeleteWorkpackageNodeFailure, UpdateWorkPackageNode,
+  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure } from '../actions/workpackage-node.actions';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -24,6 +25,18 @@ export class WorkPackageNodeEffects {
       return this.workpackageNodeService.addNode(payload.workpackageId, payload.node).pipe(
         switchMap((data: any) => [new AddWorkPackageNodeSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  updateWorkpackageLink$ = this.actions$.pipe(
+    ofType<UpdateWorkPackageNode>(WorkPackageNodeActionTypes.UpdateWorkPackageNode),
+    map(action => action.payload),
+    mergeMap((payload: { workpackageId: string, nodeId: string, node: any }) => {
+      return this.workpackageNodeService.updateNode(payload.workpackageId, payload.nodeId, payload.node).pipe(
+        switchMap((data: any) => [new UpdateWorkPackageNodeSuccess(data)]),
+        catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageNodeFailure(error)))
       );
     })
   );

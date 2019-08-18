@@ -23,12 +23,14 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
-import { DeleteWorkpackageLinkSuccess } from '@app/workpackage/store/actions/workpackage-link.actions';
-import { DeleteWorkpackageNodeSuccess, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
+import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { DeleteWorkpackageNodeSuccess, WorkPackageNodeActionTypes, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageSelected,
+  SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkpackages, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkpackages, getWorkPackageEntities,
+  getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { combineLatest, Observable, Subscription, of, BehaviorSubject } from 'rxjs';
@@ -111,6 +113,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
   workpackageSubscription: Subscription;
+  editedWorkpackageSubscription: Subscription;
   showOrHideRightPane = false;
   selectedRightTab: number;
   selectedLeftTab: number;
@@ -170,7 +173,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       // TODO: find a way to trigger event for subscribers
       this.filterService.filter,
       this.workpackageStore.pipe(select(getSelectedWorkpackages)),
-      this.eventEmitter // .pipe(filter(event => event === Events.NodesLinksReload))
+      this.eventEmitter.pipe(filter(event => event === Events.NodesLinksReload || event === null ))
     );
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, event]) => {
@@ -217,6 +220,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.ref.detectChanges();
     }.bind(this));
 
+    this.editedWorkpackageSubscription = this.workpackageStore.pipe(select(getEditWorkpackages)).subscribe((workpackages) => {
+      this.allowMove = workpackages.length > 0;
+      (this.allowMove === true)
+        ? this.allowEditLayouts = 'close'
+        : this.allowEditLayouts = 'edit';
+
+      this.workPackageIsEditable = this.allowMove;
+      (this.workPackageIsEditable === true)
+        ? this.allowEditWorkPackages = 'close'
+        : this.allowEditWorkPackages = 'edit';
+    });
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -239,6 +254,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.linksSubscription.unsubscribe();
     }
     this.layoutStoreSubscription.unsubscribe();
+    this.editedWorkpackageSubscription.unsubscribe();
   }
 
   setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
@@ -293,6 +309,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
         // Load Node Details
         this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+        // FIXME: think we need to store this subscription so we can rewrite/destroy it when not needed anymore.
         this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
           this.selectedNode = nodeDetail;
         });
@@ -333,34 +350,36 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   // Not sure but probably there is a better way of doing this
   onSaveObjectDetails() {
+    if (this.clickedOnLink) {
 
-    const data = {
-      id:  this.selectedPart.id,
-      category: this.selectedPart.category,
-      name: this.objectDetailsForm.value.name,
-      owner: this.objectDetailsForm.value.owner,
-      description: this.objectDetailsForm.value.description,
-      tags: this.objectDetailsForm.value.tags
-    };
+      const linkData = {
+        id: this.selectedPart.id,
+        category: this.selectedPart.category,
+        name: this.objectDetailsForm.value.name,
+        description: this.objectDetailsForm.value.description
+      } ;
 
-    const dataLink = {
-      id: this.selectedPart.id,
-      category: this.selectedPart.category,
-      name: this.objectDetailsForm.value.name,
-      description: this.objectDetailsForm.value.description
-    };
+      this.selectedPart.impactedByWorkPackages.forEach(workpackage => this.workpackageStore.dispatch(new UpdateWorkPackageLink({
+        workpackageId: workpackage.id, linkId: linkData.id, link: linkData})));
+      this.diagramChangesService.updatePartData(this.part, linkData);
+    } else {
 
-    // Node
-    // this.store.dispatch();
-    // Node Link
-    // this.store.dispatch();
+      const nodeData = {
+        id: this.selectedPart.id,
+        category: this.selectedPart.category,
+        name: this.objectDetailsForm.value.name,
+        owner: this.objectDetailsForm.value.owner,
+        description: this.objectDetailsForm.value.description,
+        tags: this.objectDetailsForm.value.tags
+      };
 
-    // Update the diagram to reflect changed properties
-    this.diagramChangesService.updatePartData(this.part, data);
-
+      this.selectedPart.impactedByWorkPackages.forEach(workpackage => this.workpackageStore.dispatch(new UpdateWorkPackageNode({
+        workpackageId: workpackage.id, nodeId: nodeData.id, node: nodeData})));
+      this.diagramChangesService.updatePartData(this.part, nodeData);
+    }
   }
 
-  onEditDetails() {
+  onEditDetails(details: any) {
     this.isEditable = true;
   }
 
@@ -540,6 +559,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSelectWorkPackage(id) {
     this.workpackageId = id;
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
+  }
+  // FIXME: set proper type of workpackage
+  onSelectEditWorkpackage(workpackage: any) {
+    this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
   selectColorForWorkPackage(data: {color: string, id: string}) {

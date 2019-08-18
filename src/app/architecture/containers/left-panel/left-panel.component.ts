@@ -7,12 +7,11 @@ import { ArchitecturePaletteComponent } from '../../components/architecture-pale
   styleUrls: ['./left-panel.component.scss']
 })
 export class LeftPanelComponent {
-
   @Input() workPackageIsEditable = false;
   @Input() data: any;
   @Input() selectedLeftTab: number;
 
-  constructor() { }
+  constructor() {}
 
   @Output()
   displayOptionsChangedEvent = new EventEmitter();
@@ -23,12 +22,23 @@ export class LeftPanelComponent {
   @Output()
   selectColor = new EventEmitter<object>();
 
+  @Output()
+  setWorkpackageEditMode = new EventEmitter<object>();
+
+  @Output()
+  hideLeftPane = new EventEmitter();
+
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
 
-  displayOptionsChanged({event, option}: {event: any, option: string}) {
-    this.displayOptionsChangedEvent.emit({event, option});
+  displayOptionsChanged({ event, option }: { event: any; option: string }) {
+    this.displayOptionsChangedEvent.emit({ event, option });
     this.paletteComponent.updateDisplayOptions(event, option);
+  }
+
+  // FIXME: set proper type of workpackage
+  onSetWorkPackageEditMode(workpackage: any) {
+    this.setWorkpackageEditMode.emit(workpackage);
   }
 
   onSelectWorkPackage(id) {
@@ -39,11 +49,7 @@ export class LeftPanelComponent {
     this.selectColor.emit(event);
   }
 
-  @Output()
-  hideLeftPane = new EventEmitter();
-
   onHidePane() {
     this.hideLeftPane.emit();
   }
-
 }

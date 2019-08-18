@@ -23,6 +23,28 @@ export const initialState: State = {
 export function reducer(state = initialState, action: WorkPackageActionsUnion): State {
   switch (action.type) {
 
+    case WorkPackageActionTypes.SetWorkpackageEditMode: {
+      const { id } = action.payload;
+      return {
+        ...state,
+        entities: state.entities.map(item => {
+          if (item.id === id) {
+            return {
+              ...item,
+              selected: !item.selected && !item.edit ? true : item.selected,
+              edit: !item.edit
+            };
+          } else {
+            return {
+              ...item,
+              edit: false
+            };
+          }
+        })
+      };
+    }
+
+
     case WorkPackageActionTypes.SetWorkpackageDisplayColour: {
       const { workpackageId, colour} = action.payload;
       return {

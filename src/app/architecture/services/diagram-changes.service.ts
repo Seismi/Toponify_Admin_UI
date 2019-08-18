@@ -7,7 +7,7 @@ import { Node } from '@app/architecture/store/models/node.model.ts';
 import { BehaviorSubject } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as WorkPackageState} from '../../workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { AddWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
 
@@ -49,7 +49,7 @@ export class DiagramChangesService {
     public filterService: FilterService,
     private workpackageStore: Store<WorkPackageState>,
   ) {
-    this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => this.workpackages = workpackages);
+    this.workpackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => this.workpackages = workpackages);
   }
 
   // Add newly created nodes to the back end
