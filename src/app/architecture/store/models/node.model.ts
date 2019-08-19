@@ -33,6 +33,7 @@ export class Node {
   locations?: ((LocationsEntity)[] | null)[] | null;
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
+  relatedRadioCount: number;
 
   constructor(options: { id: string, name: string, layer: layers, category: nodeCategories }) {
     if (options) {

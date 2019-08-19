@@ -584,6 +584,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             target: { id: this.nodeId }
           }
         }));
+        this.diagramChangesService.updateRadioCount(this.part);
       }
     });
   }

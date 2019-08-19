@@ -72,6 +72,12 @@ export class DiagramChangesService {
     }.bind(this));
   }
 
+  // Update radio count after new radio is created
+  updateRadioCount(part: go.Part) {
+    let radioCount = parseFloat(part.data.relatedRadioCount);
+    part.diagram.model.setDataProperty(part.data, 'relatedRadioCount', radioCount + 1);
+  }
+
   // Update position of links or nodes in the back end
   //  -event
   //    -subject: set of parts to update the positions of
