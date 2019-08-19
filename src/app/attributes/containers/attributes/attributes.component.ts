@@ -81,4 +81,5 @@ export class AttributesComponent implements OnInit {
     hideLeftPane() {
         this.showOrHidePane = false;
     }
+
 }
