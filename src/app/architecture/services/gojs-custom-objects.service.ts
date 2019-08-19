@@ -11,10 +11,10 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 const $ = go.GraphObject.make;
 
 // Correct GoJS shapes with unwanted shadow behaviour
-export function updateShapeShadows() {
+export function updateShapeShadows(): void {
   const shapesToCorrect = ['Cube2', 'Cylinder1', 'Process', 'InternalStorage'];
 
-  shapesToCorrect.forEach(function(figure) {
+  shapesToCorrect.forEach(function(figure: string) {
 
     let figureDefinition = go.Shape.getFigureGenerators().getValue(figure);
     const definitionCopy = (figureDefinition as (a: go.Shape, b: number, c: number) => go.Geometry).bind(null);
@@ -229,6 +229,7 @@ export class GojsCustomObjectsService {
             !object.group;
         })
       ),
+      // Return to architecture view from dependency analysis view
       $('ContextMenuButton',
         $(go.TextBlock, 'Return to Architecture View', {}),
         {
