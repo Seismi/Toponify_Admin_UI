@@ -16,7 +16,7 @@ import {
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
-import { AttrAndRulesTableComponent } from './components/attr-and-rules-table/attr-and-rules-table.component';
+import { AttributesTableInReportsPageComponent } from './components/attributes-table/attributes-table.component';
 import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -29,7 +29,9 @@ import { ReportDataSetTableComponent } from './components/data-set-table/data-se
 import { ReportOwnersTableComponent } from './components/owners-table/owners-table.component';
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
-import { RadioTableInReportComponent } from './components/radio-table/radio-table.component';
+import { RadioTableInReportsPageComponent } from './components/radio-table/radio-table.component';
+import { PropertiesTableInReportsPageComponent } from './components/properties-table/properties-table.component';
+import { WorkPackageTableInReportsPageComponent } from './components/workpackage-table/workpackage-table.component';
 
 @NgModule({
   imports: [
@@ -56,13 +58,15 @@ import { RadioTableInReportComponent } from './components/radio-table/radio-tabl
     ReportLibraryRoutingComponent,
     ReportLibraryTableComponent,
     ReportLibraryDetailComponent,
-    AttrAndRulesTableComponent,
+    AttributesTableInReportsPageComponent,
     ReportLibraryDetailsComponent,
     ReportDataSetTableComponent,
     ReportOwnersTableComponent,
     ReportDimensionsTableComponent,
     ReportReportingConceptsTableComponent,
-    RadioTableInReportComponent
+    RadioTableInReportsPageComponent,
+    PropertiesTableInReportsPageComponent,
+    WorkPackageTableInReportsPageComponent
   ],
   providers: [ReportService],
 })

@@ -7,7 +7,19 @@
   </app-toolbar-column>
 </app-base-header>
 
-<smi-my-radio-table data-hook="radio-table"></smi-my-radio-table>
-<smi-my-layouts-table data-hook="layouts-table"></smi-my-layouts-table>
-<smi-my-workpackages-table data-hook="package-table"></smi-my-workpackages-table>
+<smi-my-radio-table
+  data-hook="radio-table"
+  [data]="myRadios$ | async">
+</smi-my-radio-table>
 
+<smi-my-layouts-table
+  data-hook="layouts-table"
+  [data]="myLayouts$ | async"
+  (openLayout)="onOpenLayout($event)">
+</smi-my-layouts-table>
+
+<smi-my-workpackages-table
+  data-hook="package-table"
+  [data]="myWorkPackages$ | async"
+  (openWorkPackage)="onOpenWorkPackage($event)">
+</smi-my-workpackages-table>
