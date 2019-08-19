@@ -31,7 +31,7 @@
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-sidebar 
+  <smi-left-sidebar
     *ngIf="!showOrHideLeftPane"
     (leftTab)="openLeftTab($event)"
     [workPackageIsEditable]="workPackageIsEditable">
@@ -43,7 +43,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
         (selectWorkPackage)="onSelectWorkPackage($event)"
-        (selectColor)="selectColorForWorkPackage($event)"
+        (selectColour)="selectColourForWorkPackage($event)"
         (hideLeftPane)="onHideLeftPane($event)"
         [selectedLeftTab]="selectedLeftTab">
       </smi-left-panel>
@@ -72,9 +72,9 @@
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <smi-right-sidebar 
-    data-hook="right-sidebar" 
-    *ngIf="!showOrHideRightPane" 
+  <smi-right-sidebar
+    data-hook="right-sidebar"
+    *ngIf="!showOrHideRightPane"
     (rightTab)="openRightTab($event)"
     [objectSelected]="objectSelected"
     [multipleSelected]="multipleSelected">

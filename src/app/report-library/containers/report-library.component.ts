@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State as ReportState} from '../store/reducers/report.reducer';
 import { LoadReports } from '../store/actions/report.actions';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ReportLibrary } from '../store/models/report.model';
 import { getReportEntities } from '../store/selecrtors/report.selectors';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
@@ -17,13 +17,14 @@ import { Router } from '@angular/router';
   styleUrls: ['report-library.component.scss']
 })
 
-export class ReportLibraryComponent implements OnInit {
+export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   reportEntities$: Observable<ReportLibrary[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   selectedLeftTab: number;
   showOrHidePane = false;
   hideTab = true;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private store: Store<ReportState>,
@@ -34,14 +35,18 @@ export class ReportLibraryComponent implements OnInit {
   ngOnInit() {
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
-    this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+    this.subscriptions.push(this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
       const workPackageIds = workpackages.map(item => item.id);
       const selected = workpackages.map(item => item.selected);
       if(!selected.length) {
         this.router.navigate(['report-library']);
       }
       this.setWorkPackage(workPackageIds);
-    })
+    }))
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   setWorkPackage(workpackageIds: string[] = []) {
