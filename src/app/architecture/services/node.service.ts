@@ -44,7 +44,7 @@ export class NodeService {
     return this.http.get<NodesApiResponse>(`/nodes`, {params: params});
   }
 
-  getNode(id: string): Observable<NodeDetailApiResponse> {
+  getNode(id: string, ): Observable<NodeDetailApiResponse> {
     return this.http.get<NodeDetailApiResponse>(`/nodes/${id}`);
   }
 
@@ -60,6 +60,12 @@ export class NodeService {
   getMapView(id: string): Observable<any> {
     return this.http.get<any>(`/nodelinks/${id}/components`);
   }
+
+  getNodeUsageView(id: string, queryParams?: {workPackageQuery: string[]}): Observable<any> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/nodes/${id}/usage`, {params: params});
+  }
+
   // FIXME: define missing types
   updateLayoutNodesLocation(layoutId: string, data: {id: string, locationCoordinates: string}): Observable<any> {
     return this.http.put<any>(`/layouts/${layoutId}/nodes/location`, {data: data}, httpOptions);

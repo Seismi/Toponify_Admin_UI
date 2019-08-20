@@ -121,6 +121,18 @@ export class DiagramChangesService {
     const model = diagram.model;
     model.setDataProperty(model.modelData, option, event.checked);
 
+    // Redo layout for node usage view after updating display options
+    if (this.filterService.getFilter().filterLevel === Level.usage) {
+      diagram.layout.isValidLayout = false;
+    } else {
+      // Update the route of links after display change
+      diagram.links.each(function(link) {
+        // Set data property to indicate that link route should be updated
+        diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.updateRoute();
+      }.bind(this));
+    }
+
     // Update the route of links after display change
     diagram.links.each(function(link: go.Link) {
       // Set data property to indicate that link route should be updated

@@ -158,6 +158,11 @@ export class GojsCustomObjectsService {
           click: function(event, object) {
             const modelData = event.diagram.model.modelData;
             event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
+
+            // Redo layout for node usage view after updating RADIO alert display setting
+            if (thisService.filterService.getFilter().filterLevel === Level.usage) {
+              event.diagram.layout.isValidLayout = false;
+            }
           }
         }
       ),
@@ -177,6 +182,7 @@ export class GojsCustomObjectsService {
 
     const thisService = this;
     const diagramChangesService = this.diagramChangesService;
+    const diagramLevelService = this.diagramLevelService;
 
     return $(
       'ContextMenu',
@@ -252,6 +258,19 @@ export class GojsCustomObjectsService {
             event.diagram.nodes.any(function(node) {
               return !node.visible;
             });
+        })
+      ),
+      // Go to node usage view, for the current node
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Show Use Across Levels', {}),
+        {
+          click: function(event, object) {
+            diagramLevelService.displayUsageView(event, (object.part as go.Adornment).adornedObject);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the node usage view option for nodes
+          return event.diagram.findNodeForData(object) !== null;
         })
       )
     );
