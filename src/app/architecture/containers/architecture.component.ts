@@ -119,6 +119,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedLeftTab: number;
   multipleSelected = false;
   selectedMultipleNodes = [];
+  selectedWorkpackages = [];
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -170,18 +171,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
 
     this.nodesLinks$ = combineLatest(
-      // TODO: find a way to trigger event for subscribers
       this.filterService.filter,
       this.workpackageStore.pipe(select(getSelectedWorkpackages)),
       this.eventEmitter.pipe(filter(event => event === Events.NodesLinksReload || event === null ))
     );
 
-    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, event]) => {
-        const workpackageIds = workpackages.map(item => item.id);
+    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _event]) => {
+        this.selectedWorkpackages = workpackages;
         if (fil) {
         const { filterLevel, id } = fil;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackageIds);
+          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id));
         }
       }
     });
@@ -429,6 +429,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   handleNodeDeleteRequested(node: any) {
+    // check if particular node is under any workpackage
+    if (node.impactedByWorkPackages && node.impactedByWorkPackages.length < 1) {
+      // check if any workpackage selected
+      if (this.selectedWorkpackages.length < 1) {
+        return;
+      }
+      // lets add selected workpackages in to node/link
+      node = { ...node, impactedByWorkPackages: this.selectedWorkpackages };
+    }
     this.dialog.open(DeleteNodeModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -443,6 +452,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   handleLinkDeleteRequested(link: any) {
+    // check if particular node is under any workpackage
+    if (link.impactedByWorkPackages && link.impactedByWorkPackages.length < 1) {
+      // check if any workpackage selected
+      if (this.selectedWorkpackages.length < 1) {
+        return;
+      }
+      // lets add selected workpackages in to node/link
+      link = { ...link, impactedByWorkPackages: this.selectedWorkpackages };
+    }
     this.dialog.open(DeleteLinkModalComponent, {
       disableClose: false,
       width: 'auto',
