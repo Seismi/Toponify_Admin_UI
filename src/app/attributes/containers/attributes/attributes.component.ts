@@ -24,6 +24,7 @@ export class AttributesComponent implements OnInit {
     hideTab = true;
     selectedLeftTab: number;
     showOrHidePane: boolean;
+    subscriptions: Subscription[] = [];
 
     constructor(
         private store: Store<AttributeState>,
@@ -33,18 +34,22 @@ export class AttributesComponent implements OnInit {
     ngOnInit() {
         this.workPackageStore.dispatch(new LoadWorkPackages({}));
         this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
-        this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.subscriptions.push(this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
             const workPackageIds = workpackages.map(item => item.id);
             const selected = workpackages.map(item => item.selected);
             if(!selected.length) {
               this.router.navigate(['/attributes-and-rules']);
             }
             this.setWorkPackage(workPackageIds);
-        });
+        }));
 
         this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe((data) => {
             this.attribute = data;
         });
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     setWorkPackage(workpackageIds: string[] = []) {
@@ -76,4 +81,5 @@ export class AttributesComponent implements OnInit {
     hideLeftPane() {
         this.showOrHidePane = false;
     }
+
 }

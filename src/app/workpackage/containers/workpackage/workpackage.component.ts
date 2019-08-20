@@ -13,6 +13,7 @@ import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.comp
 import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
 import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-diagram.service';
 
+
 @Component({
   selector: 'app-workpackage',
   templateUrl: './workpackage.component.html',
@@ -76,4 +77,5 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
 }

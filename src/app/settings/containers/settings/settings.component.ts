@@ -29,7 +29,7 @@ import { MemberModalComponent } from '../member-modal/member-modal.component';
 })
 
 export class SettingsComponent implements OnInit {
-    
+
     loading$: Observable<boolean>;
     users$: Observable<User[]>;
     teams$: Observable<TeamEntity[]>
@@ -53,11 +53,12 @@ export class SettingsComponent implements OnInit {
         return this.teamDetailService.teamDetailForm;
     }
 
-    constructor(private userStore: Store<UserState>,
-                private teamStore: Store<TeamState>,
-                private teamDetailService: TeamDetailService,
-                private myUserFormService: MyUserFormService,
-                public dialog: MatDialog) {}
+    constructor(
+        private userStore: Store<UserState>,
+        private teamStore: Store<TeamState>,
+        private teamDetailService: TeamDetailService,
+        private myUserFormService: MyUserFormService,
+        public dialog: MatDialog) {}
 
     ngOnInit() {
         this.loading$ = this.userStore.pipe(select(getLoading));
@@ -242,4 +243,5 @@ export class SettingsComponent implements OnInit {
             disableClose: false
         });
     }
+    
 }

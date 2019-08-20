@@ -41,8 +41,10 @@ export class ArchitecturePaletteComponent implements OnInit {
       relatedRadioAlerts: false
     };
 
+    // Display palette parts in a single column
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;
 
+    // Set node templates
     this.palette.nodeTemplateMap.add(
       layers.system,
       diagramTemplatesService.getSystemNodeTemplate(true)
@@ -75,7 +77,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     );
   }
 
-  updateDisplayOptions(event, option) {
+  updateDisplayOptions(event: any, option: string) {
 
     const model = this.palette.model;
 
@@ -93,6 +95,7 @@ export class ArchitecturePaletteComponent implements OnInit {
       }.bind(this)
     );
 
+    // Subscribe to source of link data for the palette
     this.diagramLevelService.paletteLinks.subscribe(function(links) {
         this.palette.model.linkDataArray = links;
       }.bind(this)

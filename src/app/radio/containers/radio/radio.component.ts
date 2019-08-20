@@ -23,9 +23,10 @@ export class RadioComponent implements OnInit {
     loading$: Observable<boolean>;
     radioId: string;
 
-    constructor(private store: Store<RadioState>,
-                public dialog: MatDialog,
-                private router: Router) { }
+    constructor(
+        private store: Store<RadioState>,
+        public dialog: MatDialog,
+        private router: Router) { }
 
     ngOnInit() {
         this.store.dispatch(new LoadRadios({}));
@@ -56,4 +57,5 @@ export class RadioComponent implements OnInit {
             }
         });
     }
+
 }

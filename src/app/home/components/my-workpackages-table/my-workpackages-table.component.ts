@@ -1,16 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-
-export interface PeriodicElement {
-  refNo: string;
-  workpackage: string;
-  status: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {refNo: 'MD001', workpackage: 'Govering HFM to Planning mappings from DRM', status: 'Draft'},
-  {refNo: 'FS001', workpackage: 'Building intergration to load actual data from HFM to Planning for forecast', status: 'Completed'},
-];
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-my-workpackages-table',
@@ -18,13 +8,23 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./my-workpackages-table.component.scss']
 })
 export class MyWorkpackagesTableComponent implements OnInit {
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  ngOnInit() {
+  @Input()
+  set data(data: any[]) {
+    this.dataSource = new MatTableDataSource<any>(data);
     this.dataSource.paginator = this.paginator;
   }
 
-  displayedColumns: string[] = ['refNo', 'workpackage', 'status', 'star'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  ngOnInit() { }
+
+  displayedColumns: string[] = ['name', 'status', 'hasErrors', 'star'];
+  public dataSource: MatTableDataSource<WorkPackageEntity>;
+
+  @Output()
+  openWorkPackage = new EventEmitter();
+
+  onOpen(id) {
+    this.openWorkPackage.emit(id);
+  }
 }

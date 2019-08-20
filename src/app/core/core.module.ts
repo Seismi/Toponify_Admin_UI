@@ -40,6 +40,11 @@ import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scop
 import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { RightSideBarComponent } from './layout/right-sidebar/right-sidebar.component';
 import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.component';
+import { SearchService } from './services/search.service';
+import { StoreModule } from '@ngrx/store';
+import { reducer } from '../core/store/reducers/search.reducer';
+import { SearchEffects } from './store/effects/search.effects';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   imports: [
@@ -58,7 +63,9 @@ import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.compone
     FormsModule,
     ReactiveFormsModule,
     MdePopoverModule,
-    MatSelectModule
+    MatSelectModule,
+    StoreModule.forFeature('searchFeature', reducer),
+    EffectsModule.forFeature([SearchEffects])
   ],
   exports: [
     MainLayoutComponent,
@@ -106,6 +113,8 @@ import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.compone
     LeftSideBarComponent,
     RightSideBarComponent
   ],
-  providers: []
+  providers: [
+    SearchService
+  ]
 })
 export class CoreModule {}

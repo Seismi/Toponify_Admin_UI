@@ -1,15 +1,14 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { Report } from '@app/report-library/store/models/report.model';
 
 @Component({
-  selector: 'smi-radio-table-in-report',
+  selector: 'smi-radio-table-in-reports-page',
   templateUrl: './radio-table.component.html',
   styleUrls: ['./radio-table.component.scss']
 })
-export class RadioTableInReportComponent {
-
+export class RadioTableInReportsPageComponent {
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
@@ -20,17 +19,10 @@ export class RadioTableInReportComponent {
 
   constructor(private router: Router) {}
 
-  public dataSource: MatTableDataSource<NodeDetail>;
+  public dataSource: MatTableDataSource<Report>;
   displayedColumns: string[] = ['name', 'navigate'];
-
-  @Output()
-  addRadio = new EventEmitter();
-
-  onAdd() {
-    this.addRadio.emit();
-  }
 
   onSelect(id){
     this.router.navigate(['/radio/' + id]);
   }
-} 
+}

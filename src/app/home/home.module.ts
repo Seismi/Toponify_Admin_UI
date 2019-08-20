@@ -1,4 +1,5 @@
 import { HomeComponent } from './containers/home.component';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { HomeRoutingComponent } from './containers/home-routing.component';
 import { HomeRoutingModule } from './home-routing.module';
@@ -12,18 +13,26 @@ import {
   MatIconModule,
   MatMenuModule
 } from '@angular/material';
-
+import { HomePageService } from './services/home.service';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { reducer } from './store/reducers/home.reducers'
+import { HomePageEffects } from './store/effects/home.effects';
 
 
 @NgModule({
   imports: [
     CoreModule,
+    CommonModule,
     HomeRoutingModule,
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
     MatMenuModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    CommonModule,
+    StoreModule.forFeature('homePageFeature', reducer),
+    EffectsModule.forFeature([HomePageEffects])
   ],
   exports: [],
   declarations: [
@@ -33,6 +42,8 @@ import {
     MyLayoutsTableComponent,
     MyWorkpackagesTableComponent
   ],
-  providers: [],
+  providers: [
+    HomePageService
+  ],
 })
 export class HomeModule { }

@@ -20,6 +20,9 @@ import { ArchitectureModule } from '@app/architecture/architecture.module';
 import { AttributeDetailComponent } from './components/attribute-detail/attribute-detail.component';
 import { AttributeModalComponent } from './containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailsComponent } from './containers/attribute-details/attribute-details.component';
+import { PropertiesTableInAttributesPageComponent } from './components/properties-table/properties-table.component';
+import { RadioTableInAttributesPageComponent } from './components/radio-table/radio-table.component';
+import { WorkPackageTableInAttributesPageComponent } from './components/workpackage-table/workpackage-table.component';
 
 @NgModule({
   imports: [
@@ -41,7 +44,10 @@ import { AttributeDetailsComponent } from './containers/attribute-details/attrib
     AttributesComponent,
     AttributesRoutingComponent,
     AttributeDetailsComponent,
-    AttributesRoutingComponent
+    AttributesRoutingComponent,
+    PropertiesTableInAttributesPageComponent,
+    RadioTableInAttributesPageComponent,
+    WorkPackageTableInAttributesPageComponent
   ],
   entryComponents: [AttributeModalComponent],
   providers: [
