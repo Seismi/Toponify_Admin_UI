@@ -24,7 +24,7 @@ import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/s
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
 import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
-import { DeleteWorkpackageNodeSuccess, WorkPackageNodeActionTypes, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageSelected,
   SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';

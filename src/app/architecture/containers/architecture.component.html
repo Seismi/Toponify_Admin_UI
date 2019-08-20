@@ -19,6 +19,7 @@
     <smi-quicklinks-actions
       [gojsView]="true"
       [allowEditLayouts]="allowEditLayouts"
+      (editLayout)="allowEditLayout($event)"
       [allowEditWorkPackages]="allowEditWorkPackages"
       [workpackages]="workpackage$ | async"
       [scopes]="scopes$ | async"
