@@ -39,6 +39,7 @@
   <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
     <p class="leftPane">
       <smi-left-panel
+        [viewLevel]="viewLevel$ | async"
         [data]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
