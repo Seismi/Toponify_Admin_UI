@@ -644,4 +644,3 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
 }
-
