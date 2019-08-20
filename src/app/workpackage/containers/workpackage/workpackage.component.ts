@@ -12,6 +12,7 @@ import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.sel
 import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
 import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-diagram.service';
 
+
 @Component({
   selector: 'app-workpackage',
   templateUrl: './workpackage.component.html',
@@ -29,9 +30,10 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   workpackageId: string;
   workpackages: WorkPackageEntity[];
 
-  constructor(private store: Store<WorkPackageState>,
-              private router: Router,
-              public dialog: MatDialog) {}
+  constructor(
+    private store: Store<WorkPackageState>,
+    private router: Router,
+    public dialog: MatDialog) {}
 
 
   ngOnInit() {
@@ -64,4 +66,5 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
 }

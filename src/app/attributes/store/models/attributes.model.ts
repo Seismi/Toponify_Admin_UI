@@ -66,6 +66,30 @@ export interface AttributeDetail {
     owners?: (Owners)[] | null;
     customProperties?: (CustomProperties)[] | null;
     related?: (RelatedEntity)[]| null;
+    customPropertyValues?: (CustomPropertyValues)[] | null;
+    relatedRadios?: (RelatedRadios)[] | null;
+    relatedWorkPackages?: (RelatedWorkPackages)[] | null;
+}
+
+export interface RelatedWorkPackages {
+    id: string;
+    name: string;
+    description: string;
+    hasErrors: boolean;
+    status: string;
+}
+
+export interface RelatedRadios {
+    id: string;
+    title: string;
+    description: string;
+}
+
+export interface CustomPropertyValues {
+    propertyId: string;
+    name: string;
+    type: boolean;
+    value: string;
 }
 
 export interface Owners {
