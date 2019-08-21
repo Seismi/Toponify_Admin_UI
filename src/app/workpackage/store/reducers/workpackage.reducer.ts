@@ -190,6 +190,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.AddOwnerSuccess: {
       return {
         ...state,
+        selectedWorkPackage: action.payload,
         entities: state.entities.map(entity => {
           if (entity.id === action.payload.id) {
             return action.payload;
@@ -218,8 +219,14 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.DeleteOwnerSuccess: {
       return {
         ...state,
-        entities: state.entities.filter((entity) => entity.id !== action.payload),
-        loading: false
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
       };
     }
 

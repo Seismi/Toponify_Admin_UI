@@ -119,7 +119,7 @@ export class AddOwner implements Action {
 
 export class AddOwnerSuccess implements Action {
   readonly type = WorkPackageActionTypes.AddOwnerSuccess;
-  constructor(public payload: WorkPackageEntity) {}
+  constructor(public payload: any) {}
 }
 
 export class AddOwnerFailure implements Action {
@@ -134,7 +134,7 @@ export class DeleteOwner implements Action {
 
 export class DeleteOwnerSuccess implements Action {
   readonly type = WorkPackageActionTypes.DeleteOwnerSuccess;
-  constructor(public payload: string) {}
+  constructor(public payload: any) {}
 }
 
 export class DeleteOwnerFailure implements Action {

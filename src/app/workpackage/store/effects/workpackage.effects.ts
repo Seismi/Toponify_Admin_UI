@@ -89,7 +89,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     mergeMap((payload: { owners: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string }) => {
       return this.workpackageService.addOwner(payload.owners, payload.workPackageId, payload.ownerId).pipe(
-        mergeMap((response: WorkPackageApiResponse) => [new AddOwnerSuccess(response.data)]),
+        mergeMap((response: any) => [new AddOwnerSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddOwnerFailure(error)))
       );
     })
@@ -101,7 +101,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((payload: {workPackageId: string, ownerId: string}) => {
       return this.workpackageService.deleteOwner(payload.workPackageId, payload.ownerId).pipe(
-        switchMap((_) => [new DeleteOwnerSuccess(payload.ownerId)]),
+        switchMap((response: any) => [new DeleteOwnerSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteOwnerFailure(error)))
       );
     })
