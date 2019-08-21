@@ -1,5 +1,7 @@
-.wrapper {
-    margin-bottom: 15px;
+table {
+    width: 100%;
+    border: solid 1px #ddd;
+    margin-bottom: 20px;
 }
 
 tr.mat-header-row {
@@ -8,12 +10,6 @@ tr.mat-header-row {
 
 tr.mat-row {
     height: 35px;
-    cursor: pointer;
-}
-
-table {
-    width: 100%;
-    border: solid 1px #ddd;
 }
 
 .mat-icon {
@@ -33,14 +29,4 @@ span {
 .disabled {
     pointer-events: none;
     opacity: 0.2;
-}
-
-.noResultFound {
-    border: solid 1px #ddd;
-    border-top: none;
-    font-size: 12px;
-    padding: 8px 0px;
-    i {
-        margin-left: 24px;
-    }
 }

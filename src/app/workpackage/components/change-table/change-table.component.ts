@@ -11,9 +11,11 @@ export class ChangeTableComponent {
 
   @Input()
   set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    if(data) {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

@@ -15,7 +15,9 @@ export class OwnersTableComponent {
 
   @Input()
   set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+    if(data) {
+      this.dataSource = new MatTableDataSource<any>(data);
+    }
   }
 
   displayedColumns: string[] = ['name'];
