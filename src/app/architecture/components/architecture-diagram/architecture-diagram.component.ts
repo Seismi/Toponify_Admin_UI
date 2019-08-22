@@ -27,7 +27,8 @@ export const viewLevelMapping = {
   [2]: Level.dataSet,
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
-  [9]: Level.map
+  [9]: Level.map,
+  [10]: Level.usage
 };
 
 // Default display settings
@@ -188,6 +189,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.linkTemplateMap.add(
       linkCategories.masterData,
       diagramTemplatesService.getLinkMasterDataTemplate()
+    );
+
+    this.diagram.linkTemplateMap.add(
+      '',
+      diagramTemplatesService.getLinkParentChildTemplate()
     );
 
     // Set group template

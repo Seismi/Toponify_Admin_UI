@@ -3,7 +3,15 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { LinkType, NodeType } from '@app/architecture/services/node.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, UpdateLinks, UpdateNode } from '@app/architecture/store/actions/node.actions';
+import {
+  LoadMapView,
+  LoadNode,
+  LoadNodeLinks,
+  LoadNodes,
+  LoadNodeUsageView,
+  UpdateLinks,
+  UpdateNode
+} from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
@@ -235,12 +243,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.attributesView = true;
     }
 
+    const queryParams = {
+        workPackageQuery: workpackageIds
+    };
+
     if (layer === Level.map) {
       this.nodeStore.dispatch(new LoadMapView(id));
+    } else if (layer === Level.usage) {
+      this.nodeStore.dispatch(new LoadNodeUsageView({node: id, query: queryParams}));
     } else {
-      const queryParams = {
-        workPackageQuery: workpackageIds
-      };
       this.nodeStore.dispatch(new LoadNodes(queryParams));
       this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
     }
@@ -441,6 +452,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         let layoutLoc;
 
         return nodes.map(function (node) {
+
           if (this.layout && 'id' in this.layout) {
             layoutLoc = node.locations.find(function (loc) {
               return loc.layout && loc.layout.id === this.layout.id;
@@ -470,7 +482,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       map(links => {
         const filter = this.filterService.getFilter();
         if (links === null) { return null; }
-        if (filter && filter.filterLevel === Level.map) { return links; }
+        if (filter && [Level.map, Level.usage].includes(filter.filterLevel)) { return links; }
 
         let layoutRoute;
 

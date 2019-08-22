@@ -44,6 +44,11 @@ export class NodeService {
   getMapView(id: string): Observable<any> {
     return this.http.get<any>(`/nodelinks/${id}/components`);
   }
+
+  getNodeUsageView(id: string): Observable<any> {
+    return this.http.get<any>(`/nodes/${id}/usage`);
+  }
+
   // FIXME: define missing types
   updateLayoutNodesLocation(layoutId: string, data: {id: string, locationCoordinates: string}): Observable<any> {
     return this.http.put<any>(`/layouts/${layoutId}/nodes/location`, {data: data}, httpOptions);
