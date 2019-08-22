@@ -179,11 +179,68 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+
+    case WorkPackageActionTypes.AddOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.AddOwnerSuccess: {
+      return {
+        ...state,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        }),
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.AddOwnerFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwnerSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwnerFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
     default: {
       return state;
     }
   }
 }
 
-export const getWorkPackageEntities = (state: State) => state.entities;
-export const getError = (state: State) => state.error;

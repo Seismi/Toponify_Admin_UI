@@ -16,7 +16,7 @@ export class WorkPackagesTableComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
-  @Input()
+
   selectedRowIndex = -1;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -38,6 +38,7 @@ export class WorkPackagesTableComponent implements OnInit {
   openWorkPackageTree = new EventEmitter();
 
   onSelectRow(row) {
+    this.selectedRowIndex = row.id;
     this.workpackageSelected.emit(row);
   }
 
