@@ -182,21 +182,20 @@ export class DiagramChangesService {
         if (!draggingTool.isActive && !relinkingTool.isActive) {
           return;
         }
-        // FIXME: event.diagram.model doesn't have properties linkFromKeyProperty & linkToKeyProperty
-        // Source/target properties
-        // const sourceProp = event.diagram.model.linkFromKeyProperty;
-        // const targetProp = event.diagram.model.linkToKeyProperty;
+        // FIXME: temp solution, needs to be fixed
+        const sourceProp = (event.diagram.model as any).linkFromKeyProperty;
+        const targetProp = (event.diagram.model as any).linkToKeyProperty;
 
-        // const updatedLink = {
-        //   id: link.key,
-        //   [sourceProp]: link.fromNode.key,
-        //   [targetProp]: link.toNode.key,
-        //   route: [{ view: 'Default', points: link.data.route }]
-        // };
+        const updatedLink = {
+          id: link.key,
+          [sourceProp]: link.fromNode.key,
+          [targetProp]: link.toNode.key,
+          route: [{ view: 'Default', points: link.data.route }]
+        };
 
-        // this.workpackages.forEach(workpackage => {
-        //   this.workpackageStore.dispatch(new UpdateWorkPackageLink({ workpackageId: workpackage.id, linkId: link.key, link: updatedLink }));
-        // });
+        this.workpackages.forEach(workpackage => {
+          this.workpackageStore.dispatch(new UpdateWorkPackageLink({ workpackageId: workpackage.id, linkId: link.key, link: updatedLink }));
+        });
       }
 
       /* When a link is newly connected between two nodes, other links between the same two nodes are
