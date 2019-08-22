@@ -12,9 +12,9 @@ import {
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
-  LoadWorkPackage, LoadWorkPackageSuccess } from '../actions/workpackage.actions';
+  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess, DeleteOwnerFailure } from '../actions/workpackage.actions';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
-  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse } from '../models/workpackage.models';
+  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity, WorkPackageEntity } from '../models/workpackage.models';
 
 @Injectable()
 export class WorkPackageEffects {
@@ -59,14 +59,13 @@ export class WorkPackageEffects {
     })
   );
 
-
   @Effect()
   updateWorkPackageEntity$ = this.actions$.pipe(
     ofType<UpdateWorkPackageEntity>(WorkPackageActionTypes.UpdateWorkPackage),
     map(action => action.payload),
-    switchMap((payload: any) => {
-      return this.workpackageService.updateWorkPackageEntity(payload.entityId, payload.entity).pipe(
-        switchMap((data: any) => [new UpdateWorkPackageEntitySuccess(data)]),
+    switchMap((payload: {workPackage: WorkPackageApiRequest, entityId: string}) => {
+      return this.workpackageService.updateWorkPackageEntity(payload.entityId, payload.workPackage).pipe(
+        switchMap((response: WorkPackageApiResponse) => [new UpdateWorkPackageEntitySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageEntityFailure(error)))
       );
     })
@@ -80,6 +79,30 @@ export class WorkPackageEffects {
       return this.workpackageService.deleteWorkPackageEntity(entityId).pipe(
         switchMap((_) => [new DeleteWorkPackageEntitySuccess(entityId)]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageEntityFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addOwner$ = this.actions$.pipe(
+    ofType<AddOwner>(WorkPackageActionTypes.AddOwner),
+    map(action => action.payload),
+    mergeMap((payload: { owners: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string }) => {
+      return this.workpackageService.addOwner(payload.owners, payload.workPackageId, payload.ownerId).pipe(
+        mergeMap((response: any) => [new AddOwnerSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteOwner$ = this.actions$.pipe(
+    ofType<DeleteOwner>(WorkPackageActionTypes.DeleteOwner),
+    map(action => action.payload),
+    switchMap((payload: {workPackageId: string, ownerId: string}) => {
+      return this.workpackageService.deleteOwner(payload.workPackageId, payload.ownerId).pipe(
+        switchMap((response: any) => [new DeleteOwnerSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteOwnerFailure(error)))
       );
     })
   );

@@ -10,6 +10,7 @@ export class LeftPanelComponent {
   @Input() workPackageIsEditable = false;
   @Input() data: any;
   @Input() selectedLeftTab: number;
+  @Input() viewLevel: number;
 
   constructor() {}
 
@@ -20,13 +21,13 @@ export class LeftPanelComponent {
   selectWorkPackage = new EventEmitter();
 
   @Output()
-  selectColor = new EventEmitter<object>();
-
-  @Output()
-  setWorkpackageEditMode = new EventEmitter<object>();
+  selectColour = new EventEmitter<object>();
 
   @Output()
   hideLeftPane = new EventEmitter();
+
+  @Output()
+  setWorkpackageEditMode = new EventEmitter<object>();
 
   @ViewChild(ArchitecturePaletteComponent)
   private paletteComponent: ArchitecturePaletteComponent;
@@ -45,8 +46,8 @@ export class LeftPanelComponent {
     this.selectWorkPackage.emit(id);
   }
 
-  onSelectColor(event) {
-    this.selectColor.emit(event);
+  onSelectColour(event) {
+    this.selectColour.emit(event);
   }
 
   onHidePane() {

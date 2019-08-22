@@ -26,18 +26,14 @@ button:focus {
     cursor: pointer;
 }
 
-th.mat-column-refNo {
-    width: 20%;
-}
-
-th.mat-column-workPackage {
-    width: 65%;
-}
-
-th.mat-column-access {
-    width: 20%;
-}
-
 th.mat-column-star {
     width: 5%;
+}
+
+.noDataFound {
+    background-color: #fff;
+    border-bottom: solid 1px #ddd;
+    font-size: 15px;
+    padding: 20px 0px;
+    text-align: center;
 }

@@ -3,7 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, UpdateLinks, UpdateNode } from '@app/architecture/store/actions/node.actions';
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode
+} from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
@@ -25,16 +26,17 @@ import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-mo
 import { SharedService } from '@app/services/shared-service';
 import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageSelected,
-  SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected
+} from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkpackages, getWorkPackageEntities,
-  getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getEditWorkpackages, getSelectedWorkpackages, getWorkPackageEntities
+} from '@app/workpackage/store/selectors/workpackage.selector';
+import { Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { combineLatest, Observable, Subscription, of, BehaviorSubject } from 'rxjs';
-import { map, filter, defaultIfEmpty } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -47,7 +49,6 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { Actions, ofType } from '@ngrx/effects';
 
 enum Events {
   NodesLinksReload = 0
@@ -264,15 +265,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.attributesView = true;
     }
 
+    const queryParams = {
+        workPackageQuery: workpackageIds
+    };
+
     if (layer === Level.map) {
       this.nodeStore.dispatch(new LoadMapView(id));
+    } else if (layer === Level.usage) {
+      this.nodeStore.dispatch(new LoadNodeUsageView({node: id, query: queryParams}));
     } else {
-      const queryParams = {
-        workPackageQuery: workpackageIds
-      };
       this.nodeStore.dispatch(new LoadNodes(queryParams));
       this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
     }
+  }
+
+  selectColorForWorkPackage(data: { color: string, id: string }) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id }));
   }
 
   partsSelected(parts: go.Part[]) {
@@ -326,9 +334,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
 
     // Multiple selection
-    if(parts.length > 1) {
-      for (let i=0; i<parts.length; i++) {
-        if(parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
+    if (parts.length > 1) {
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
           // links
         } else {
           // Push only objects (not links)
@@ -496,6 +504,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         let layoutLoc;
 
         return nodes.map(function (node) {
+
           if (this.layout && 'id' in this.layout) {
             layoutLoc = node.locations.find(function (loc) {
               return loc.layout && loc.layout.id === this.layout.id;
@@ -525,7 +534,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       map(links => {
         const filter = this.filterService.getFilter();
         if (links === null) { return null; }
-        if (filter && filter.filterLevel === Level.map) { return links; }
+        if (filter && [Level.map, Level.usage].includes(filter.filterLevel)) { return links; }
 
         let layoutRoute;
 
@@ -593,8 +602,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
-  selectColorForWorkPackage(data: {color: string, id: string}) {
-    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id}));
+  selectColourForWorkPackage(data: {colour: string, id: string}) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.colour, workpackageId: data.id}));
   }
 
   onSelectScope(id) {
@@ -606,7 +615,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  openLeftTab(i) {
+  openLeftTab(i: number) {
     this.selectedLeftTab = i;
     if (this.selectedLeftTab === i) {
       this.showOrHideLeftPane = true;
@@ -694,7 +703,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           viewers: this.sharedService.selectedViewers,
           layerFilter: this.filterService.getFilter().filterLevel.toLowerCase(),
           include: this.selectedMultipleNodes
-        }))
+        }));
       }
       this.selectedMultipleNodes = [];
       this.sharedService.selectedOwners = [];
@@ -703,4 +712,3 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
 }
-

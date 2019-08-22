@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'smi-analysis-tab',
@@ -9,6 +9,9 @@ export class AnalysisTabComponent {
 
   @Output()
   displayOptionsChanged = new EventEmitter();
+
+  @Input()
+  viewLevel: number;
 
   constructor() { }
 

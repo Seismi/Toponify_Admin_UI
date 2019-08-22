@@ -1,6 +1,6 @@
 <app-base-header>
     <app-toolbar-column [fillFreeSpace]="true">
-        <app-search (search)="onSearchVersion($event)"></app-search>
+        <app-search></app-search>
     </app-toolbar-column>
     <app-toolbar-column>
         <smi-quicklinks-actions></smi-quicklinks-actions>
@@ -11,10 +11,10 @@
     <div class="row">
         <div class="col">
             <smi-workpackages-table
-                [selectedRowIndex]="workpackageId"
+                data-hook="workpackage-table"
                 [data]="workpackageEntities$ | async"
                 (workpackageSelected)="onSelectWorkpackage($event)"
-                (addWorkpackage)="onAddWorkpackage($event)"
+                (addWorkpackage)="onAddWorkPackage($event)"
                 (openWorkPackageTree)="onOpenWorkPackageTree($event)">
             </smi-workpackages-table>
         </div>

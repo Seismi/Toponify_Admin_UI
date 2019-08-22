@@ -17,47 +17,30 @@
       <th mat-header-cell *matHeaderCellDef>Work Package Name</th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
-
     <!-- C Column -->
     <ng-container matColumnDef="c">
-      <th mat-header-cell *matHeaderCellDef>C</th>
-      <td mat-cell *matCellDef="let element; let i = index">
-        <smi-color-picker
-          [workpackageColor]="element.displayColour"
-          (selectColor)="onSelectColor($event, element.id)"
-        >
-        </smi-color-picker>
-      </td>
+        <th mat-header-cell *matHeaderCellDef> C </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+            <smi-color-picker
+                [workpackageColour]="element.displayColour"
+                (selectColour)="onSelectColour($event, element.id)">
+            </smi-color-picker>
+        </td>
     </ng-container>
-
     <!-- E Column -->
     <ng-container matColumnDef="e">
       <th mat-header-cell *matHeaderCellDef>E</th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon
-          *ngIf="!element.edit"
-          (click)="onSetWorkpackageEditMode($event, element)"
-          >edit</mat-icon
-        >
-        <mat-icon
-          *ngIf="element.edit"
-          (click)="onSetWorkpackageEditMode($event, element)"
-          >close</mat-icon
-        >
+        <mat-icon *ngIf="!element.edit" (click)="onSetWorkpackageEditMode($event, element)">edit</mat-icon>
+        <mat-icon *ngIf="element.edit" (click)="onSetWorkpackageEditMode($event, element)">close</mat-icon>
       </td>
     </ng-container>
-
     <!-- D Column -->
     <ng-container matColumnDef="d">
-      <th mat-header-cell *matHeaderCellDef>D</th>
-      <td mat-cell *matCellDef="let element">
-        <mat-icon [routerLink]="['/work-packages', element.id]"
-          >open_in_new</mat-icon
-        >
-      </td>
+        <th mat-header-cell *matHeaderCellDef> D </th>
+        <td mat-cell *matCellDef="let element"><mat-icon [routerLink]="['/work-packages', element.id]">open_in_new</mat-icon></td>
     </ng-container>
-
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+    </table>
 </div>
