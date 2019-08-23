@@ -7,21 +7,7 @@
 <!-- WorkPackage -->
 <a><mat-icon routerLink="/work-packages" matTooltip="Work Packages">business_center</mat-icon></a>
 
-<!-- WorkPackage Dropdown -->
-<smi-workpackage-dropdown 
-    data-hook="quicklinks-workpackage-dropdown" 
-    *ngIf="gojsView" 
-    [data]="workpackages"
-    (selectWorkpackage)="onSelectWorkPackage($event)">
-</smi-workpackage-dropdown>
-
-<!-- Edit diagram button -->
-<a (click)="allowEditWorkPackage()" *ngIf="gojsView"><mat-icon matTooltip="Edit WorkPackages">{{allowEditWorkPackages}}</mat-icon></a>
-
-<!-- Splitter -->
-<app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
-
-<!--Scopes and Layouts Icon -->
+<!--Scopes and Layouts -->
 <a><mat-icon routerLink="/scopes-and-layouts" matTooltip="Scopes and Layouts">pages</mat-icon></a>
 
 <!-- Scopes dropdown -->
