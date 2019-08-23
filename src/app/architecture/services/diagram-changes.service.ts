@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
-import { AddWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { AddWorkPackageNode, UpdateWorkPackageNode} from '@app/workpackage/store/actions/workpackage-node.actions';
 import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
@@ -68,6 +68,29 @@ export class DiagramChangesService {
         part.diagram.model.setDataProperty(part.data, property, data[property]);
       }
     }.bind(this));
+
+    // Add currently editing workpackage to array of workpackages impacted by if not there already
+    if (part.data.impactedByWorkPackages.every(function(workpackage) {
+        return workpackage.id !== this.workpackages[0].id;
+      }.bind(this))
+    ) {
+      part.diagram.model.setDataProperty(part.data,
+        'impactedByWorkPackages',
+        part.data.impactedByWorkPackages.concat([this.workpackages[0]])
+      );
+    }
+
+    // Update part data in backend
+    if (part instanceof go.Node) {
+      this.workpackageStore.dispatch(new UpdateWorkPackageNode(
+        {workpackageId: this.workpackages[0].id, nodeId: data.id, node: data}
+      ));
+    } else if (part instanceof go.Link) {
+      this.workpackageStore.dispatch(new UpdateWorkPackageLink(
+        {workpackageId: this.workpackages[0].id, linkId: data.id, link: data}
+      ));
+    }
+
   }
 
   // Update position of links or nodes in the back end
@@ -165,7 +188,6 @@ export class DiagramChangesService {
         // Create copy of link data with route in format required for back end
         const newLink = Object.assign({}, link.data);
 
-        // Only save route if using standard display settings
         newLink.route = [{ view: 'Default', points: link.data.route}];
 
         this.workpackages.forEach(workpackage => {
