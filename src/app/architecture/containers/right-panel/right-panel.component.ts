@@ -51,6 +51,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output()
   addScope = new EventEmitter();
 
+  @Output()
+  editProperties = new EventEmitter();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -104,6 +106,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAddScope() {
     this.addScope.emit();
+  }
+
+  onEditProperties(id: string) {
+    this.editProperties.emit(id);
   }
 
 }

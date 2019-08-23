@@ -32,3 +32,8 @@ export const getError = createSelector(
   getNodeFeatureState,
   state => state.error
 );
+
+export const getNodeById = createSelector(
+  getNodeFeatureState,
+  state => state.selectedNode
+);

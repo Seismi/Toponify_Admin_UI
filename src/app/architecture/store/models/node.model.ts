@@ -142,6 +142,8 @@ export interface RelatedWorkPackagesEntity {
 }
 export interface CustomPropertyValuesEntity {
   propertyId: string;
+  name: string;
+  description: string;
   value: string;
 }
 

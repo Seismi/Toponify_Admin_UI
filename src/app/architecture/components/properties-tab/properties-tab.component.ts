@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 
@@ -9,14 +9,20 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 })
 export class PropertiesTabComponent {
 
+  @Input() workPackageIsEditable: boolean;
+
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
   }
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  displayedColumns: string[] = ['name', 'value'];
+  displayedColumns: string[] = ['name', 'value', 'edit'];
 
-  onSelectRow(property) {}
+  @Output()
+  editProperties = new EventEmitter();
 
+  onEdit(id: string) {
+    this.editProperties.emit(id);
+  }
 }

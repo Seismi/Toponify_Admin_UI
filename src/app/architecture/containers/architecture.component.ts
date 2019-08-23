@@ -3,11 +3,11 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess
 } from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
-import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
+import { getNodeEntities, getNodeLinks, getSelectedNode, getNodeById } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
@@ -49,6 +49,7 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -85,8 +86,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
-
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
@@ -709,6 +710,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.sharedService.selectedOwners = [];
       this.sharedService.selectedViewers = [];
     });
+  }
+
+  onEditProperties(propertyId: string) {
+    this.nodeStore.pipe(select(getNodeById)).subscribe((data) => {this.customProperties = data});
+    const dialogRef = this.dialog.open(DocumentModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        mode: 'edit',
+        customProperties: {...this.customProperties}
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {});
   }
 
 }
