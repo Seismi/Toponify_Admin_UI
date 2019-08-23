@@ -405,4 +405,20 @@ export class DiagramChangesService {
     diagram.commitTransaction('Show All Nodes');
 
   }
+
+  // Rerun the diagram's layout for all nodes and links
+  reorganise(diagram) {
+    diagram.startTransaction('Clear set positions');
+    diagram.nodes.each(function(node) {
+      diagram.model.setDataProperty(node.data, 'locationMissing', true);
+    });
+    diagram.links.each(function(link) {
+      diagram.model.setDataProperty(link.data, 'routeMissing', true);
+    });
+    diagram.commitTransaction('Clear set positions');
+    diagram.layout.isValidLayout = false;
+
+    // Placeholder - update all node and link positions in back end for current layout
+    // Needs store update before implementation
+  }
 }

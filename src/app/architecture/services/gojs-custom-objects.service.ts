@@ -170,6 +170,14 @@ export class GojsCustomObjectsService {
             }
           }
         }
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Reorganise'),
+        {
+          click: function(event, object) {
+            thisService.diagramChangesService.reorganise(event.diagram);
+          }
+        }
       )
     );
   }
