@@ -20,11 +20,35 @@ export const initialState: State = {
   error: null
 };
 
-export function reducer(state = initialState, action: WorkPackageActionsUnion): State {
+export function reducer(
+  state = initialState,
+  action: WorkPackageActionsUnion
+): State {
   switch (action.type) {
+    case WorkPackageActionTypes.SetWorkpackageEditMode: {
+      const { id } = action.payload;
+      return {
+        ...state,
+        entities: state.entities.map(item => {
+          if (item.id === id) {
+            return {
+              ...item,
+              selected: !item.edit,
+              edit: !item.edit
+            };
+          } else {
+            return {
+              ...item,
+              edit: false,
+              selected: false
+            };
+          }
+        })
+      };
+    }
 
     case WorkPackageActionTypes.SetWorkpackageDisplayColour: {
-      const { workpackageId, colour} = action.payload;
+      const { workpackageId, colour } = action.payload;
       return {
         ...state,
         entities: state.entities.map(item => {
@@ -47,10 +71,12 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
           if (item.id === workpackageId) {
             return {
               ...item,
+              edit: item.selected ? false : item.edit,
               selected: !item.selected
             };
+          } else {
+            return { ...item, edit: false };
           }
-          return item;
         })
       };
     }

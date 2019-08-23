@@ -34,7 +34,8 @@ export enum WorkPackageActionTypes {
   DeleteOwnerFailure = '[WorkPackage] Delete Owner Failure',
 
   SetWorkpackageDisplayColour = '[WorkPackage] Set Display Colour',
-  SetWorkpackageSelected = '[WorkPackage] Set Selected'
+  SetWorkpackageEditMode = '[WorkPackage] Set edit mode',
+  SetWorkpackageSelected = '[WorkPackage] Set Selected',
 }
 
 export class LoadWorkPackages implements Action {
@@ -147,6 +148,11 @@ export class SetWorkpackageDisplayColour implements Action {
   constructor(public payload: {colour: string, workpackageId: string}) { }
 }
 
+export class SetWorkpackageEditMode implements Action {
+  readonly type = WorkPackageActionTypes.SetWorkpackageEditMode;
+  constructor(public payload: { id: string }) { }
+}
+
 export class SetWorkpackageSelected implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageSelected;
   constructor(public payload: { workpackageId: string }) { }
@@ -176,4 +182,5 @@ export type WorkPackageActionsUnion =
   | AddOwnerSuccess
   | AddOwnerFailure
   | SetWorkpackageDisplayColour
+  | SetWorkpackageEditMode
   | SetWorkpackageSelected;

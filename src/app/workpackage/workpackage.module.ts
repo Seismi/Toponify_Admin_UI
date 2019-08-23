@@ -38,7 +38,10 @@ import { ApproversTableComponent } from './components/approvers-table/approvers-
 import { OwnersModalComponent } from './containers/owners-modal/owners-modal.component';
 import { OwnersListComponent } from './components/owners-list/owners-list.component';
 import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-modal/workpackage-tree-modal.component';
-
+import { WorkPackageNodeEffects } from './store/effects/workpackage-node.effects';
+import { WorkPackageNodesService } from './services/workpackage-nodes.service';
+import { WorkPackageLinkEffects } from './store/effects/workpackage-link.effects';
+import { WorkPackageLinksService } from './services/workpackage-links.service';
 
 @NgModule({
   imports: [
@@ -58,8 +61,7 @@ import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-mod
     CoreModule,
     SettingsModule,
     StoreModule.forFeature('workpackageFeature', reducer),
-    EffectsModule.forFeature([ WorkPackageEffects]
-    )
+    EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects])
   ],
   exports: [WorkPackagesTableComponent],
   declarations: [
@@ -83,13 +85,15 @@ import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-mod
     WorkPackageTreeModalComponent
   ],
   entryComponents: [
-    WorkPackageModalComponent, 
-    DeleteWorkPackageModalComponent, 
+    WorkPackageModalComponent,
+    DeleteWorkPackageModalComponent,
     OwnersModalComponent,
     WorkPackageTreeModalComponent
   ],
   providers: [
-    WorkPackageService
+    WorkPackageService,
+    WorkPackageNodesService,
+    WorkPackageLinksService
   ],
 })
 export class WorkPackageModule { }
