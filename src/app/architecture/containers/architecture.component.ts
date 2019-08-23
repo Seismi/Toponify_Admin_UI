@@ -114,7 +114,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedRightTab: number;
   selectedLeftTab: number;
   multipleSelected = false;
+  singleOrMultipleSelect = true;
   selectedMultipleNodes = [];
+  radioTab = true;
+  detailsTab = false;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -286,6 +289,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       this.part = part;
 
+      this.detailsTab = false;
+
       if (part) {
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
@@ -295,7 +300,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.selectedNode = nodeDetail;
         });
         this.objectSelected = true;
+        this.radioTab = false;
       } else {
+        this.radioTab = true;
         this.objectSelected = false;
         this.multipleSelected = false;
         this.selectedMultipleNodes = [];
@@ -304,6 +311,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     } else {
       this.objectSelected = false;
       this.multipleSelected = true;
+      this.detailsTab = true;
     }
 
     // Multiple selection

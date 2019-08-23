@@ -1,4 +1,10 @@
-.col {
-    min-width: 600px;
-    padding-bottom: 30px;
+.rightPane {
+    padding-left: 7px;
+}
+
+button {
+    position: absolute;
+    bottom: 12px;
+    left: 16px;
+    z-index: 99999;
 }
