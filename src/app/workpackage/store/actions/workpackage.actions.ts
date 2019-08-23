@@ -1,25 +1,40 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
-  WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity } from '../models/workpackage.models';
+  WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity, OwnersEntityOrApproversEntity } from '../models/workpackage.models';
+
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
   LoadWorkPackagesSuccess = '[WorkPackage] Load WorkPackage entities success',
   LoadWorkPackagesFailure = '[WorkPackage] Load WorkPackage entities failure',
+
   LoadWorkPackage = '[WorkPackage] Load WorkPackage',
   LoadWorkPackageSuccess = '[WorkPackage] Load WorkPackage success',
   LoadWorkPackageFailure = '[WorkPackage] Load WorkPackage failure',
+
   AddWorkPackage = '[WorkPackage] Add WorkPackage entity',
   AddWorkPackageSuccess = '[WorkPackage] Add WorkPackage entity Success',
   AddWorkPackageFailure = '[WorkPackage] Add WorkPackage entity Failure',
+
   UpdateWorkPackage = '[WorkPackage] Update WorkPackage entity',
   UpdateWorkPackageSuccess = '[WorkPackage] Update WorkPackage entity Success',
   UpdateWorkPackageFailure = '[WorkPackage] Update WorkPackage entity Failure',
+
   DeleteWorkPackage = '[WorkPackage] Delete WorkPackage entity',
   DeleteWorkPackageSuccess = '[WorkPackage] Delete WorkPackage entity Success',
   DeleteWorkPackageFailure = '[WorkPackage] Delete WorkPackage entity Failure',
+
+  AddOwner = '[WorkPackage] Add Owner',
+  AddOwnerSuccess = '[WorkPackage] Add Owner Success',
+  AddOwnerFailure = '[WorkPackage] Add Owner Failure',
+
+  DeleteOwner = '[WorkPackage] Delete Owner',
+  DeleteOwnerSuccess = '[WorkPackage] Delete Owner Success',
+  DeleteOwnerFailure = '[WorkPackage] Delete Owner Failure',
+
   SetWorkpackageDisplayColour = '[WorkPackage] Set Display Colour',
+  SetWorkpackageEditMode = '[WorkPackage] Set edit mode',
   SetWorkpackageSelected = '[WorkPackage] Set Selected',
 }
 
@@ -70,12 +85,12 @@ export class AddWorkPackageEntityFailure implements Action {
 
 export class UpdateWorkPackageEntity implements Action {
   readonly type = WorkPackageActionTypes.UpdateWorkPackage;
-  constructor(public payload: any) {}
+  constructor(public payload: {workPackage: WorkPackageApiRequest, entityId: string}) {}
 }
 
 export class UpdateWorkPackageEntitySuccess implements Action {
   readonly type = WorkPackageActionTypes.UpdateWorkPackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageEntity) {}
 }
 
 export class UpdateWorkPackageEntityFailure implements Action {
@@ -98,15 +113,51 @@ export class DeleteWorkPackageEntityFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddOwner implements Action {
+  readonly type = WorkPackageActionTypes.AddOwner;
+  constructor(public payload: { owners: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string }) {}
+}
+
+export class AddOwnerSuccess implements Action {
+  readonly type = WorkPackageActionTypes.AddOwnerSuccess;
+  constructor(public payload: any) {}
+}
+
+export class AddOwnerFailure implements Action {
+  readonly type = WorkPackageActionTypes.AddOwnerFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteOwner implements Action {
+  readonly type = WorkPackageActionTypes.DeleteOwner;
+  constructor(public payload: { workPackageId: string, ownerId: string }) {}
+}
+
+export class DeleteOwnerSuccess implements Action {
+  readonly type = WorkPackageActionTypes.DeleteOwnerSuccess;
+  constructor(public payload: any) {}
+}
+
+export class DeleteOwnerFailure implements Action {
+  readonly type = WorkPackageActionTypes.DeleteOwnerFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class SetWorkpackageDisplayColour implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageDisplayColour;
   constructor(public payload: {colour: string, workpackageId: string}) { }
+}
+
+export class SetWorkpackageEditMode implements Action {
+  readonly type = WorkPackageActionTypes.SetWorkpackageEditMode;
+  constructor(public payload: { id: string }) { }
 }
 
 export class SetWorkpackageSelected implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageSelected;
   constructor(public payload: { workpackageId: string }) { }
 }
+
 
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
@@ -124,5 +175,12 @@ export type WorkPackageActionsUnion =
   | DeleteWorkPackageEntity
   | DeleteWorkPackageEntitySuccess
   | DeleteWorkPackageEntityFailure
+  | DeleteOwner
+  | DeleteOwnerSuccess
+  | DeleteOwnerFailure
+  | AddOwner
+  | AddOwnerSuccess
+  | AddOwnerFailure
   | SetWorkpackageDisplayColour
+  | SetWorkpackageEditMode
   | SetWorkpackageSelected;

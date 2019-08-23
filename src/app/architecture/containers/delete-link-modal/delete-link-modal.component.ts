@@ -1,23 +1,23 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { LinkType } from '@app/architecture/services/node.service';
-// import { DeleteLink, LoadLinkDescendants, LinkActionTypes } from '@app/architecture/store/actions/node.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { LoadWorkpackageLinkDescendants, DeleteWorkpackageLink,
+   WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
 @Component({
   selector: 'smi-delete-link-modal',
   templateUrl: './delete-link-modal.component.html',
   styleUrls: ['./delete-link-modal.component.scss']
 })
 export class DeleteLinkModalComponent implements OnInit, OnDestroy {
-  link: any = null;
+  descendants: any[] = [];
   processing = false;
   error: string = null;
   subscriptions: Subscription[] = [];
 
-  payload: {linkId: string, linkType: LinkType} = null;
+  payload: any = null;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteLinkModalComponent>,
@@ -28,33 +28,27 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
     this.processing = true;
     this.payload = data.payload;
 
-    /*this.subscriptions.push(this.actions.pipe(ofType(LinkActionTypes.LoadLinkDescendantsSuccess)).subscribe((action: any) => {
-      this.link = action.payload;
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.LoadWorkpackageLinkDescendantsSuccess))
+    .subscribe((action: any) => {
+      this.descendants = action.payload;
       this.processing = false;
-    }));*/
+    }));
 
-    /*this.subscriptions.push(this.actions.pipe(ofType(LinkActionTypes.LoadLinkDescendantsFailure)).subscribe((error: any) => {
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.LoadWorkpackageLinkDescendantsFailure))
+    .subscribe((error: any) => {
         // FIXME: should be improved
         this.error = error.payload.join(' ');
         this.processing = false;
-    }));*/
+    }));
 
-    /*this.subscriptions.push(this.actions.pipe(ofType(LinkActionTypes.DeleteLinkSuccess))
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.DeleteWorkpackageLinkSuccess))
       .subscribe(action => this.dialogRef.close(action)));
 
-    this.subscriptions.push(this.actions.pipe(ofType(LinkActionTypes.DeleteLinkFailure))
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.DeleteWorkpackageLinkFailure))
       .subscribe((error: any) => {
         // FIXME: should be improved
         this.error = error.payload.toString();
-      }));*/
-  }
-
-  getLinkName(link: any) {
-    return link.name ? link.name : link.id;
-  }
-
-  getNodeName(node: any) {
-    return node.object && node.object.name ? node.object.name : '<No title>';
+      }));
   }
 
   ngOnDestroy(): void {
@@ -63,17 +57,29 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
     });
   }
 
+  findWorkpackageLinkIds(link: any): { workpackageId: string, linkId: string } {
+    if (!link.id) {
+      throw new Error('Missing link id');
+    }
+    if (!link.impactedByWorkPackages || link.impactedByWorkPackages.length < 1) {
+      throw new Error('Workpackage missing');
+    }
+    return { linkId: link.id, workpackageId: link.impactedByWorkPackages[0].id };
+  }
+
   ngOnInit(): void {
-    // Lets load node descendants
-    /*this.store.dispatch(
-      new LoadLinkDescendants(this.payload)
-    );*/
+    try {
+      const { workpackageId, linkId } = this.findWorkpackageLinkIds(this.payload);
+      this.store.dispatch(new LoadWorkpackageLinkDescendants({ workpackageId, linkId }));
+    } catch (err) {
+      // TODO: handle error
+      console.error(err);
+    }
   }
 
   onYes() {
-    /*this.store.dispatch(
-      new DeleteLink(this.payload)
-    );*/
+    const { workpackageId, linkId } = this.findWorkpackageLinkIds(this.payload);
+    this.store.dispatch(new DeleteWorkpackageLink({ workpackageId, linkId }));
   }
 
   onNo(): void {

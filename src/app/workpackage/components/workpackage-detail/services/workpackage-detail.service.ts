@@ -1,35 +1,35 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { WorkpackageValidatorService } from './workpackage-detail-validator.service';
+import { WorkPackageValidatorService } from './workpackage-detail-validator.service';
 
 @Injectable()
-export class WorkpackageDetailService {
+export class WorkPackageDetailService {
 
-  public workpackageDetailsForm: FormGroup;
+  public workPackageDetailForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private workpackageValidatorService: WorkpackageValidatorService) {
-    this.workpackageDetailsForm = this.fb.group({
+  constructor(private fb: FormBuilder, private workPackageValidatorService: WorkPackageValidatorService) {
+    this.workPackageDetailForm = this.fb.group({
       name: [null, Validators.required],
       description: [null],
       owners: this.fb.array([this.OwnersOrApprovers()]),
-      approvers: this.fb.array([this.OwnersOrApprovers()])
+      approvers: this.fb.array([this.OwnersOrApprovers()]),
+      status: ['draft']
     });
   }
-
 
   OwnersOrApprovers(): FormGroup {
     return this.fb.group({
-      name: [null]
+      id: [null],
+      name: [null],
+      type: [null]
     });
   }
 
-
   get isValid(): boolean {
-    if (!this.workpackageDetailsForm.valid) {
-      this.workpackageValidatorService.validateAllFormFields(this.workpackageDetailsForm);
+    if (!this.workPackageDetailForm.valid) {
+      this.workPackageValidatorService.validateAllFormFields(this.workPackageDetailForm);
       return false;
     }
     return true;
   }
-  
 }

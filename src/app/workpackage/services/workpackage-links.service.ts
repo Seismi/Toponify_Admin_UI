@@ -69,7 +69,7 @@ export class WorkPackageLinksService extends WorkPackageService {
    * Get the descendants of a link
    * FIXME: missing types
    */
-  getNodeDescendants(workPackageId: string, nodeLinkId: string): Observable<any> {
+  getLinkDescendants(workPackageId: string, nodeLinkId: string): Observable<any> {
     return this.http.get<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/descendants`);
   }
 

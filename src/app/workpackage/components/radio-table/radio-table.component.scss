@@ -3,12 +3,11 @@ table {
 }
 
 tr.mat-row {
-    height: 35px;
+    cursor: pointer;
 }
 
 tr.mat-header-row {
-    height: 20px;
-    background-color: #f9f9f9
+    height: 30px;
 }
 
 .title {
@@ -18,4 +17,10 @@ tr.mat-header-row {
 
 .wrapper {
     margin: 5px 0px;
+}
+
+.noResultFound {
+    text-align: center;
+    font-size: 12px;
+    padding-top: 10px;
 }

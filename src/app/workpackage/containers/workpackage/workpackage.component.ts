@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { WorkpackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
-import { WorkpackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
+import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
+import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
+import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
 import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
 import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-diagram.service';
 
@@ -17,7 +18,7 @@ import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-d
   selector: 'app-workpackage',
   templateUrl: './workpackage.component.html',
   styleUrls: ['./workpackage.component.scss'],
-  providers: [WorkpackageDetailService, WorkpackageValidatorService]
+  providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkPackageComponent implements OnInit, OnDestroy {
 
@@ -28,6 +29,8 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   selectedWorkPackage: WorkPackageEntity;
   workpackageSelected: boolean;
   workpackageId: string;
+  selectedOwners = [];
+  selectedBaseline = [];
   workpackages: WorkPackageEntity[];
 
   constructor(
@@ -53,6 +56,14 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
 
   onSelectWorkpackage(row: any) {
     this.router.navigate(['work-packages', row.id]);
+  }
+
+
+  onAddWorkPackage() {
+    this.dialog.open(WorkPackageModalComponent, {
+      disableClose: false,
+      width: '500px'
+    })
   }
 
   onOpenWorkPackageTree() {
