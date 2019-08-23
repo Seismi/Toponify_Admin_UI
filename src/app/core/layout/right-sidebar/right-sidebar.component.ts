@@ -7,14 +7,23 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 })
 export class RightSideBarComponent {
 
-  @Input() objectSelected = false;
-  @Input() multipleSelected = false;
+  @Input() workPackagePage = false;
+  @Input() attributesPage = false;
+  @Input() reportLibraryPage = false;
+  @Input() architecturePage = false;
+  @Input() architectureRadioTab = false;
+  @Input() architectureDetailsTab = false;
+
+  architectureTabs = ['Details', 'Attributes', 'Properties', 'RADIO', 'Work Packages'];
+  reportLibraryTabs = ['Details', 'Attributes', 'Properties', 'RADIO', 'Work Packages'];
+  attributesTabs = ['Details', 'Properties', 'RADIO', 'Work Packages'];
+  workPackageTabs = ['Details', 'Properties', 'Objectives', 'RADIO', 'Change Summary'];
 
   @Output()
   rightTab = new EventEmitter();
 
-  openRightTab(i) {
-    this.rightTab.emit(i);
+  openRightTab(index: number) {
+    this.rightTab.emit(index);
   }
 
 }

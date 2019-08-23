@@ -1,7 +1,27 @@
 <div>
-    <span (click)="openRightTab(0)" *ngIf="objectSelected || multipleSelected">Details</span>
-    <span (click)="openRightTab(1)" *ngIf="objectSelected">Attributes</span>
-    <span (click)="openRightTab(2)" *ngIf="objectSelected">Properties</span>
-    <span (click)="openRightTab(3)" *ngIf="!multipleSelected">RADIO</span>
-    <span (click)="openRightTab(4)" *ngIf="objectSelected">Work Packages</span>
+    <!-- Architecture Page -->
+    <div *ngIf="architecturePage">
+        <span *ngFor="let tabs of architectureTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+    </div>
+
+    <!-- Show this tab when 0 objects selected in diagram (architecture page) -->
+    <span (click)="openRightTab(0)" *ngIf="architectureRadioTab">RADIO</span>
+
+    <!-- Show this tab when multiple objects selected in diagram (architecture page) -->
+    <span (click)="openRightTab(0)" *ngIf="architectureDetailsTab">Details</span>
+
+    <!-- Report Library Page -->
+    <div *ngIf="reportLibraryPage">
+        <span *ngFor="let tabs of reportLibraryTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+    </div>
+
+    <!-- Attributes Page -->
+    <div *ngIf="attributesPage">
+        <span *ngFor="let tabs of attributesTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+    </div>
+
+    <!-- Workpackage Page -->
+    <div *ngIf="workPackagePage">
+        <span *ngFor="let tabs of workPackageTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+    </div>
 </div>
