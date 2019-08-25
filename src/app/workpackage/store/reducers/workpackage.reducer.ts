@@ -25,6 +25,7 @@ export function reducer(
   action: WorkPackageActionsUnion
 ): State {
   switch (action.type) {
+
     case WorkPackageActionTypes.SetWorkpackageEditMode: {
       const { id } = action.payload;
       return {
