@@ -406,6 +406,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
+
+    this.isEditable = false;
   }
 
   onEditDetails(details: any) {
@@ -606,10 +608,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectWorkPackage(id) {
     this.workpackageId = id;
+    this.objectSelected = false;
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
+    this.objectSelected = false;
+    this.part.isSelected = false;
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
