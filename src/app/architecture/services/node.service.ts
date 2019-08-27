@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { NodesApiResponse, NodeDetailApiResponse } from '../store/models/node.model';
+import { NodesApiResponse, NodeDetailApiResponse, CustomPropertyApiRequest } from '../store/models/node.model';
 import { NodeLinksApiResponse, NodeLinkDetailApiResponse } from '../store/models/node-link.model';
 
 export interface GetNodesRequestQueryParams {
@@ -64,6 +64,10 @@ export class NodeService {
   getNodeUsageView(id: string, queryParams?: {workPackageQuery: string[]}): Observable<any> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<any>(`/nodes/${id}/usage`, {params: params});
+  }
+
+  updateCustomPropertyValues(workPackageId: string, nodeId: string, customPropertyId: string, data: CustomPropertyApiRequest): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`, data, httpOptions);
   }
 
   // FIXME: define missing types

@@ -2,6 +2,14 @@ export interface NodesApiResponse {
   data?: (Node)[] | null;
 }
 
+export interface NodeApiResponse {
+  data: Node;
+}
+
+export interface CustomPropertyApiRequest {
+  data: CustomPropertyValuesEntity;
+}
+
 export enum layers {
   system = 'system',
   dataSet = 'data set',
@@ -141,9 +149,9 @@ export interface RelatedWorkPackagesEntity {
   status: string;
 }
 export interface CustomPropertyValuesEntity {
-  propertyId: string;
-  name: string;
-  description: string;
+  propertyId?: string;
+  name?: string;
+  description?: string;
   value: string;
 }
 

@@ -151,6 +151,31 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
       };
     }
 
+    case NodeActionTypes.UpdateCustomProperty: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.UpdateCustomPropertySuccess: {
+      return {
+        ...state,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case NodeActionTypes.UpdateCustomPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
     default: {
       return state;
     }
