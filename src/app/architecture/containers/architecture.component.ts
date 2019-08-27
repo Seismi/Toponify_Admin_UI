@@ -3,11 +3,11 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess, UpdateCustomProperty
 } from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
-import { getNodeEntities, getNodeLinks, getSelectedNode, getNodeById } from '@app/architecture/store/selectors/node.selector';
+import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
@@ -396,6 +396,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
+    this.isEditable = false;
   }
 
   onEditDetails(details: any) {
@@ -713,7 +714,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onEditProperties(propertyId: string) {
-    this.nodeStore.pipe(select(getNodeById)).subscribe((data) => {this.customProperties = data});
+    this.nodeStore.pipe(select(getSelectedNode)).subscribe((data) => {this.customProperties = data});
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
@@ -723,7 +724,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {});
+    const workpackages = this.selectedPart.impactedByWorkPackages.length < 1
+    ? this.selectedWorkpackages
+    : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
+
+    dialogRef.afterClosed().subscribe((data) => {
+      workpackages.forEach(workpackage => {
+        if (data && data.customProperties) {
+          this.nodeStore.dispatch(new UpdateCustomProperty({
+            workPackageId: workpackage.id,
+            nodeId: this.selectedPart.id,
+            customPropertyId: propertyId,
+            data: { data: { value: data.customProperties.value } }
+          }))
+        }
+      })
+    })
   }
+
 
 }

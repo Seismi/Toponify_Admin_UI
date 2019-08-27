@@ -48,7 +48,7 @@ export class DocumentModalComponent implements OnInit {
     if (!this.documentStandardsService.isValid) {
       return;
     }
-    this.dialogRef.close({ documentStandard: this.documentStandardsForm.value, mode: this.mode });
+    this.dialogRef.close({ customProperties: this.documentStandardsForm.value, mode: this.mode });
   }
 
   onCancelClick() {
