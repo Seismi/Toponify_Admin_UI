@@ -1,4 +1,5 @@
 <form [formGroup]="group" data-hook="documentation-standards-details">
+  <div *ngIf="!isEditMode">
     <!-- Name -->
     <mat-form-field [ngClass]="{disabled: !isEditable}">
         <input matInput placeholder="Name" formControlName="name" data-hook="documentation-standards-details-name">
@@ -22,13 +23,20 @@
     </mat-form-field>
 
     <!-- Levels -->
-    <div class="form-group" *ngIf="!isEditMode">
+    <div class="form-group">
         <label class="levels-label">Levels</label>
         <smi-document-standards-levels 
             [isDisabled]="isDisabled" 
             [modalMode]="modalMode">
         </smi-document-standards-levels>
-    </div><br>
+    </div>
+  </div>
+
+    <!-- Value -->
+    <mat-form-field *ngIf="isEditMode">
+        <input matInput placeholder="Value" formControlName="value" data-hook="documentation-standards-details-value">
+        <mat-error>Not Valid</mat-error>
+    </mat-form-field>
 
     <div class="form-actions" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
