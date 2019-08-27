@@ -34,10 +34,18 @@ export class DiagramChangesService {
 
     const currentLevel = this.diagramLevelService.filter.getValue().filterLevel;
 
-    // Only implemented for system, data set and dimension views so far
-    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
+    const shortEditWorkpackage = {
+      id: this.workpackages[0].id,
+      name: this.workpackages[0].name,
+      description: this.workpackages[0].description,
+      hasErrors: this.workpackages[0].hasErrors,
+      status: this.workpackages[0].status
+    };
 
     event.subject.each((part: go.Part) => {
+
+      // Set workpackage currently being edited as "impacted by" workpackage for the part
+      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
@@ -153,13 +161,6 @@ export class DiagramChangesService {
         link.updateRoute();
       }.bind(this));
     }
-
-    // Update the route of links after display change
-    diagram.links.each(function(link: go.Link) {
-      // Set data property to indicate that link route should be updated
-      diagram.model.setDataProperty(link.data, 'updateRoute', true);
-      link.updateRoute();
-    }.bind(this));
   }
 
   // Update back end when a link is connected to a node
@@ -173,14 +174,23 @@ export class DiagramChangesService {
     const link = event.subject;
     const currentLevel = this.filterService.filter.getValue().filterLevel;
 
-    // Only implemented for system, data set and dimension views so far
-    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
-
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
 
       // Update link route
+      link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
+
+      // Add currently editing workpackage to array of workpackages impacted by if not there already
+      if (link.data.impactedByWorkPackages.every(function(workpackage) {
+          return workpackage.id !== this.workpackages[0].id;
+        }.bind(this))
+      ) {
+        link.diagram.model.setDataProperty(link.data,
+          'impactedByWorkPackages',
+          link.data.impactedByWorkPackages.concat([this.workpackages[0]])
+        );
+      }
 
       // Create link if not already in database
       if (link.data.isTemporary) {
@@ -248,7 +258,6 @@ export class DiagramChangesService {
     if (nodes && nodes.length > 0) {
 
       const filter = this.filterService.filter.getValue();
-      const currentLevel = filter.filterLevel.toLowerCase();
 
       let nodeArray = JSON.parse(JSON.stringify(nodes));
 
