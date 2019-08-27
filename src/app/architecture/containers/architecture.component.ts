@@ -279,8 +279,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectColorForWorkPackage(data: { color: string, id: string }) {
-    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id }));
+  selectColourForWorkPackage(data: { colour: string, id: string }) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.colour, workpackageId: data.id }));
   }
 
   partsSelected(parts: go.Part[]) {
@@ -619,10 +619,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.part.isSelected = false;
     }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
-  }
-
-  selectColourForWorkPackage(data: {colour: string, id: string}) {
-    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.colour, workpackageId: data.id}));
   }
 
   onSelectScope(id) {
