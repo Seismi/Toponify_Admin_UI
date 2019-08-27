@@ -280,8 +280,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectColorForWorkPackage(data: { color: string, id: string }) {
-    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.color, workpackageId: data.id }));
+  selectColourForWorkPackage(data: { colour: string, id: string }) {
+    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.colour, workpackageId: data.id }));
   }
 
   partsSelected(parts: go.Part[]) {
@@ -317,7 +317,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
         // Load Node Details
-        this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+        this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+          const workPackageIds = workpackages.map(item => item.id)
+          this.setWorkPackage(workPackageIds);
+        })
+        //this.nodeStore.dispatch((new LoadNode(this.nodeId)));
         // FIXME: think we need to store this subscription so we can rewrite/destroy it when not needed anymore.
         this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
           this.selectedNode = nodeDetail;
@@ -348,6 +352,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     }
 
+  }
+
+  setWorkPackage(workpackageIds: string[] = []) {
+    const queryParams = {
+      workPackageQuery: workpackageIds
+    };
+    this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}));
   }
 
   // FIXME: should be removed as createObject/node/link handled inside change service
@@ -396,6 +407,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
+    
     this.isEditable = false;
   }
 
@@ -597,15 +609,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectWorkPackage(id) {
     this.workpackageId = id;
+    this.objectSelected = false;
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
+  
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
+    this.objectSelected = false;
+    if(this.part) {
+      this.part.isSelected = false;
+    }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
-  }
-
-  selectColourForWorkPackage(data: {colour: string, id: string}) {
-    this.workpackageStore.dispatch(new SetWorkpackageDisplayColour({ colour: data.colour, workpackageId: data.id}));
   }
 
   onSelectScope(id) {

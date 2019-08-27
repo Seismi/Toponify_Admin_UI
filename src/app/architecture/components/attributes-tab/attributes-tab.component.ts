@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
@@ -12,7 +12,10 @@ export class AttributesTabComponent {
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
+    this.dataSource.paginator = this.paginator;
   }
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<NodeDetail>;
   displayedColumns: string[] = ['category', 'name'];

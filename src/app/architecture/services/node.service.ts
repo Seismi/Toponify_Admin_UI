@@ -44,8 +44,9 @@ export class NodeService {
     return this.http.get<NodesApiResponse>(`/nodes`, {params: params});
   }
 
-  getNode(id: string, ): Observable<NodeDetailApiResponse> {
-    return this.http.get<NodeDetailApiResponse>(`/nodes/${id}`);
+  getNode(id: string, queryParams?: GetNodesRequestQueryParams): Observable<NodeDetailApiResponse> {
+    const params = this.toHttpParams(queryParams);
+    return this.http.get<NodeDetailApiResponse>(`/nodes/${id}`, {params: params});
   }
 
   getNodeLinks(queryParams?: GetLinksRequestQueryParams): Observable<NodeLinksApiResponse> {

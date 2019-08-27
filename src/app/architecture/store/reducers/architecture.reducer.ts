@@ -160,12 +160,7 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
     case NodeActionTypes.UpdateCustomPropertySuccess: {
       return {
         ...state,
-        entities: state.entities.map(entity => {
-          if (entity.id === action.payload.id) {
-            return action.payload;
-          }
-          return entity;
-        })
+        selectedNode: action.payload
       };
     }
 

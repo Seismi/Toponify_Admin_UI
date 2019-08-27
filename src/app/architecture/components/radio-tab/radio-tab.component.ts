@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 
@@ -13,7 +13,10 @@ export class RadioTabComponent {
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
+    this.dataSource.paginator = this.paginator;
   }
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private router: Router) {}
 
