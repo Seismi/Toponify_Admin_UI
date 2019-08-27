@@ -611,10 +611,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.objectSelected = false;
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
+  
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
     this.objectSelected = false;
-    this.part.isSelected = false;
+    if(this.part) {
+      this.part.isSelected = false;
+    }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
