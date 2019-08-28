@@ -211,27 +211,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       }
 
       if (deletedPart instanceof go.Node) {
-
-        /*
-        // FIXME: Temporary solution. Find out more stable more stable way to calculate node type
-        const nodeTypes = {
-          [1]: NodeType.System,
-          [2]: NodeType.Model,
-          [3]: NodeType.Dimension,
-          [4]: NodeType.Element
-        };*/
-
-        this.nodeDeleteRequested.emit({node: deletedPart.data, /*type: nodeTypes[this.viewLevel]*/});
+        this.nodeDeleteRequested.emit(deletedPart.data);
       } else { // part to be deleted is a link
-
-        /*
-        // FIXME: Temporary solution. Find out more stable more stable way to calculate node type
-        const linkTypes = {
-          [1]: LinkType.System,
-          [2]: LinkType.Model
-        };*/
-
-        this.linkDeleteRequested.emit({link: deletedPart.data /*, type: linkTypes[this.viewLevel]*/});
+        this.linkDeleteRequested.emit(deletedPart.data);
       }
 
     }.bind(this);

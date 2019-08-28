@@ -62,6 +62,11 @@ export class CustomLink extends go.Link {
   // Override computePoints method
   public computePoints(): boolean {
 
+    // Failsafe - call ordinary computePoints process for any links that are partially disconnected and have no route
+    if ((!this.fromNode || !this.toNode) && this.points.count === 0) {
+      return go.Link.prototype.computePoints.call(this);
+    }
+
     // Leave link route as is if link is disconnected - prevents bug where links dragged from palette were flipping
     if (!this.fromNode && !this.toNode) {return true; }
 
@@ -163,6 +168,14 @@ export class GojsCustomObjectsService {
             if (thisService.filterService.getFilter().filterLevel === Level.usage) {
               event.diagram.layout.isValidLayout = false;
             }
+          }
+        }
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Reorganise'),
+        {
+          click: function(event, object) {
+            thisService.diagramChangesService.reorganise(event.diagram);
           }
         }
       )
