@@ -62,6 +62,11 @@ export class CustomLink extends go.Link {
   // Override computePoints method
   public computePoints(): boolean {
 
+    // Failsafe - call ordinary computePoints process for any links that are partially disconnected and have no route
+    if ((!this.fromNode || !this.toNode) && this.points.count === 0) {
+      return go.Link.prototype.computePoints.call(this);
+    }
+
     // Leave link route as is if link is disconnected - prevents bug where links dragged from palette were flipping
     if (!this.fromNode && !this.toNode) {return true; }
 
@@ -162,6 +167,19 @@ export class GojsCustomObjectsService {
             thisService.showHideRadioAlertSource.next();
             const modelData = event.diagram.model.modelData;
             event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
+
+            // Redo layout for node usage view after updating RADIO alert display setting
+            if (thisService.filterService.getFilter().filterLevel === Level.usage) {
+              event.diagram.layout.isValidLayout = false;
+            }
+          }
+        }
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Reorganise'),
+        {
+          click: function(event, object) {
+            thisService.diagramChangesService.reorganise(event.diagram);
           }
         }
       )
@@ -173,6 +191,7 @@ export class GojsCustomObjectsService {
 
     const thisService = this;
     const diagramChangesService = this.diagramChangesService;
+    const diagramLevelService = this.diagramLevelService;
 
     return $(
       'ContextMenu',
@@ -248,6 +267,19 @@ export class GojsCustomObjectsService {
             event.diagram.nodes.any(function(node) {
               return !node.visible;
             });
+        })
+      ),
+      // Go to node usage view, for the current node
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Show Use Across Levels', {}),
+        {
+          click: function(event, object) {
+            diagramLevelService.displayUsageView(event, (object.part as go.Adornment).adornedObject);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the node usage view option for nodes
+          return event.diagram.findNodeForData(object) !== null;
         })
       )
     );

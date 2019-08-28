@@ -1,11 +1,11 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-// import { DeleteNode, LoadNodeDescendants, VersionNodeActionTypes } from '@app/architecture/store/actions/node.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { NodeType } from '@app/architecture/services/node.service';
+import { LoadWorkPackageNodeDescendants, DeleteWorkpackageNode,
+  WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
 
 @Component({
   selector: 'smi-delete-node-modal',
@@ -13,10 +13,10 @@ import { NodeType } from '@app/architecture/services/node.service';
   styleUrls: ['./delete-node-modal.component.scss']
 })
 export class DeleteNodeModalComponent implements OnInit, OnDestroy {
-  node: any = null;
+  descendants: any[] = [];
   processing = false;
   error: string = null;
-  payload: {nodeId: string, nodeType: NodeType} = null;
+  payload: any = null;
 
   subscriptions: Subscription[] = [];
 
@@ -29,47 +29,56 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
     this.processing = true;
     this.payload = data.payload;
 
-    /*this.subscriptions.push(this.actions.pipe(ofType(VersionNodeActionTypes.LoadNodeDescendantsSuccess))
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageNodeActionTypes.LoadWorkPackageNodeDescendantsSuccess))
       .subscribe((action: any) => {
-        this.node = action.payload;
+        this.descendants = action.payload;
         this.processing = false;
-      }));*/
+      }));
 
-    /*this.subscriptions.push(this.actions.pipe(ofType(VersionNodeActionTypes.LoadNodeDescendantsFailure))
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageNodeActionTypes.LoadWorkPackageNodeDescendantsFailure))
       .subscribe((error: any) => {
         // FIXME: should be improved
         this.error = error.payload.join(' ');
         this.processing = false;
-      }));*/
+      }));
 
-    /*this.subscriptions.push(this.actions.pipe(ofType(VersionNodeActionTypes.DeleteNodeSuccess))
-      .subscribe(action => this.dialogRef.close(action)));*/
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageNodeActionTypes.DeleteWorkpackageNodeSuccess))
+      .subscribe(action => this.dialogRef.close(action)));
 
-    /*this.subscriptions.push(this.actions.pipe(ofType(VersionNodeActionTypes.DeleteNodeFailure))
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageNodeActionTypes.DeleteWorkpackageNodeFailure))
       .subscribe((error: any) => {
         // FIXME: should be improved
         this.error = error.payload.toString();
-      }));*/
-  }
-
-  getLinkName(link: any) {
-    return link.name ? link.name : link.id;
-  }
-
-  getNodeName(node: any) {
-    return node.object && node.object.name ? node.object.name : '<No title>';
+      }));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
+  findWorkpackageNodeIds(node: any): {workpackageId: string, nodeId: string} {
+    if (!node.id) {
+      throw new Error('Missing node id');
+    }
+    if (!node.impactedByWorkPackages || node.impactedByWorkPackages.length < 1) {
+      throw new Error('Workpackage missing');
+    }
+    return { nodeId: node.id, workpackageId: node.impactedByWorkPackages[0].id };
+  }
+
   ngOnInit(): void {
-    // this.store.dispatch(new LoadNodeDescendants(this.payload));
+    try {
+      const { workpackageId, nodeId} = this.findWorkpackageNodeIds(this.payload);
+      this.store.dispatch(new LoadWorkPackageNodeDescendants({ workpackageId, nodeId}));
+    } catch (err) {
+      // TODO: handle error
+      console.error(err);
+    }
   }
 
   onYes() {
-    // this.store.dispatch(new DeleteNode(this.payload));
+    const { workpackageId, nodeId } = this.findWorkpackageNodeIds(this.payload);
+    this.store.dispatch(new DeleteWorkpackageNode({ workpackageId, nodeId }));
   }
 
   onNo(): void {

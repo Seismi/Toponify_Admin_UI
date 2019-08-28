@@ -1,0 +1,13 @@
+<mat-form-field>
+    <mat-select placeholder="Owners" [formControl]="owners" multiple>
+        <mat-select-trigger>
+            {{owners.value ? owners.value[0] : ''}}
+            <span *ngIf="owners.value?.length > 1" class="additional-selection">
+                (+{{owners.value.length - 1}} {{owners.value?.length === 2 ? 'other' : 'others'}})
+            </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let owner of teams" (onSelectionChange)="onSelect($event, owner)" [value]="owner.name">
+            {{owner.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>

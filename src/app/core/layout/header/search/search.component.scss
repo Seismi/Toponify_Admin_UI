@@ -1,7 +1,8 @@
 :host {
   flex-grow: 2;
+  padding: 0px 25px;
   .search-form {
-    width: 70%;
+    width: 100%;
     padding: 0px 10px;
     border: 1px solid grey;
     border-radius: 5px;
@@ -17,6 +18,29 @@
       border: none;
       &:focus {
         outline: none;
+      }
+    }
+  }
+}
+
+.search-results {
+  position: absolute;
+  top: 70px;
+  margin: auto;
+  background-color: #fff;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 9999;
+  ul {
+    padding: 0;
+    margin: 0;
+    li {
+      padding: 0 10px;
+      list-style: none;
+      font-size: 16px;
+      cursor: pointer;
+      &:hover {
+        background-color: #eee;
       }
     }
   }

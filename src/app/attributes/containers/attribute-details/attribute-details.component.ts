@@ -72,9 +72,9 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  openRightTab(i) {
-    this.selectedRightTab = i;
-    if(this.selectedRightTab === i) {
+  openRightTab(index: number) {
+    this.selectedRightTab = index;
+    if(this.selectedRightTab === index) {
       this.showOrHideRightPane = false;
     }
   }

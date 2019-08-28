@@ -1,22 +1,33 @@
-<mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
-    <mat-tab label="Work Packages">
-        <smi-workpackage-tab-table [data]="data" (selectWorkPackage)="onSelectWorkPackage($event)"
-            (selectColour)="onSelectColour($event)">
-        </smi-workpackage-tab-table>
-    </mat-tab>
-    <mat-tab label="Edit" *ngIf="workPackageIsEditable">
-      <ng-template matTabContent>
-        <app-architecture-palette>
-        </app-architecture-palette>
-      </ng-template>
-    </mat-tab>
-    <mat-tab label="Analysis">
-        <smi-analysis-tab
-          [checked]="checked"
-          (displayOptionsChanged)="displayOptionsChanged($event)">
-        </smi-analysis-tab>
-    </mat-tab>
+<mat-tab-group
+  mat-stretch-tabs
+  [@.disabled]="true"
+  [selectedIndex]="selectedLeftTab"
+>
+  <mat-tab label="Work Packages">
+    <smi-workpackage-tab-table
+      [data]="data"
+      (selectWorkPackage)="onSelectWorkPackage($event)"
+      (selectColour)="onSelectColour($event)"
+      (setWorkpackageEditMode)="onSetWorkPackageEditMode($event)"
+    >
+    </smi-workpackage-tab-table>
+  </mat-tab>
+  <mat-tab label="Edit" *ngIf="workPackageIsEditable">
+    <ng-template matTabContent>
+      <app-architecture-palette> </app-architecture-palette>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Analysis">
+    <smi-analysis-tab
+      (displayOptionsChanged)="displayOptionsChanged($event)"
+      [viewLevel]="viewLevel"
+      [checked]="checked"
+    >
+    </smi-analysis-tab>
+  </mat-tab>
 </mat-tab-group>
 
 <!-- Hide left pane -->
-<button mat-button (click)="onHidePane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>
+<button mat-button (click)="onHidePane()">
+  <mat-icon>keyboard_arrow_left</mat-icon>Hide
+</button>

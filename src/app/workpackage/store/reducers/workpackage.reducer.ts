@@ -20,11 +20,36 @@ export const initialState: State = {
   error: null
 };
 
-export function reducer(state = initialState, action: WorkPackageActionsUnion): State {
+export function reducer(
+  state = initialState,
+  action: WorkPackageActionsUnion
+): State {
   switch (action.type) {
 
+    case WorkPackageActionTypes.SetWorkpackageEditMode: {
+      const { id } = action.payload;
+      return {
+        ...state,
+        entities: state.entities.map(item => {
+          if (item.id === id) {
+            return {
+              ...item,
+              selected: !item.edit,
+              edit: !item.edit
+            };
+          } else {
+            return {
+              ...item,
+              edit: false,
+              selected: false
+            };
+          }
+        })
+      };
+    }
+
     case WorkPackageActionTypes.SetWorkpackageDisplayColour: {
-      const { workpackageId, colour} = action.payload;
+      const { workpackageId, colour } = action.payload;
       return {
         ...state,
         entities: state.entities.map(item => {
@@ -47,10 +72,12 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
           if (item.id === workpackageId) {
             return {
               ...item,
+              edit: item.selected ? false : item.edit,
               selected: !item.selected
             };
+          } else {
+            return { ...item, edit: false };
           }
-          return item;
         })
       };
     }
@@ -179,11 +206,68 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+
+    case WorkPackageActionTypes.AddOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.AddOwnerSuccess: {
+      return {
+        ...state,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        }),
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.AddOwnerFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwnerSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteOwnerFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
     default: {
       return state;
     }
   }
 }
 
-export const getWorkPackageEntities = (state: State) => state.entities;
-export const getError = (state: State) => state.error;
