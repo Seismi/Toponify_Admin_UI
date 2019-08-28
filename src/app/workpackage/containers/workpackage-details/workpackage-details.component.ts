@@ -30,6 +30,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   selectedBaseline: boolean;
   showOrHideRightPane = false;
   selectedRightTab: number;
+  statusDraft: boolean;
+  isEditable = false;
 
   constructor(
     private dialog: MatDialog,
@@ -51,6 +53,9 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
           name: workpackage.name,
           description: workpackage.description
         });
+        // Show edit button if work package status is draft
+        (workpackage.status === 'draft') ? this.statusDraft = true : this.statusDraft = false;
+        this.isEditable = false;
       }
     }));
   }
@@ -90,11 +95,17 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     }))
     this.selectedOwner = false;
     this.selectedBaseline = false;
+    this.isEditable = false;
+  }
+
+  onEditWorkPackage() {
+    this.isEditable = true;
   }
 
   onCancel() {
     this.selectedOwner = false;
     this.selectedBaseline = false;
+    this.isEditable = false;
   }
 
   onDeleteWorkpackage() {

@@ -9,24 +9,29 @@
     <p class="rightPane">
       <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
         <mat-tab label="Details">
-          <smi-workpackage-detail 
-            data-hook="workpackage-detail" 
-            [group]="workPackageDetailForm"
-            (deleteWorkpackage)="onDeleteWorkpackage($event)" 
-            (saveWorkpackage)="onSaveWorkpackage($event)"
-            (cancel)="onCancel($event)" 
-            [baselineTableData]="workpackage?.baseline"
-            [ownersTableData]="workpackage?.owners" 
-            [approversTableData]="workpackage?.approvers"
-            (deleteOwner)="onDeleteOwner($event)" 
-            (selectOwner)="onSelectOwner($event)" 
-            (addOwner)="onAddOwner($event)"
-            [selectedOwner]="selectedOwner" 
-            (addBaseline)="onAddBaseline($event)"
-            (deleteBaseline)="onDeleteBaseline($event)" 
-            (selectBaseline)="onSelectBaseline($event)"
-            [selectedBaseline]="selectedBaseline">
-          </smi-workpackage-detail>
+          <p class="detailsTab">
+            <smi-workpackage-detail 
+              data-hook="workpackage-detail" 
+              [group]="workPackageDetailForm"
+              (deleteWorkpackage)="onDeleteWorkpackage($event)" 
+              (saveWorkpackage)="onSaveWorkpackage($event)"
+              (editWorkPackage)="onEditWorkPackage($event)"
+              (cancel)="onCancel($event)" 
+              [baselineTableData]="workpackage?.baseline"
+              [ownersTableData]="workpackage?.owners" 
+              [approversTableData]="workpackage?.approvers"
+              (deleteOwner)="onDeleteOwner($event)" 
+              (selectOwner)="onSelectOwner($event)" 
+              (addOwner)="onAddOwner($event)"
+              [selectedOwner]="selectedOwner" 
+              (addBaseline)="onAddBaseline($event)"
+              (deleteBaseline)="onDeleteBaseline($event)" 
+              (selectBaseline)="onSelectBaseline($event)"
+              [selectedBaseline]="selectedBaseline"
+              [statusDraft]="statusDraft"
+              [isEditable]="isEditable">
+            </smi-workpackage-detail>
+          </p>
         </mat-tab>
         <mat-tab label="Properties">
           <smi-properties-table
