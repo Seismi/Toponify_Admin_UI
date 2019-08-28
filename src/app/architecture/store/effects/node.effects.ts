@@ -44,8 +44,8 @@ export class NodeEffects {
   loadNode$ = this.actions$.pipe(
     ofType<NodeActions.LoadNode>(NodeActionTypes.LoadNode),
     map(action => action.payload),
-    switchMap((id: string) => {
-      return this.nodeService.getNode(id).pipe(
+    switchMap((payload: { id: string, queryParams?: GetNodesRequestQueryParams }) => {
+      return this.nodeService.getNode(payload.id, payload.queryParams).pipe(
         switchMap((node: NodeDetailApiResponse) => [new NodeActions.LoadNodeSuccess(node.data)]),
         catchError((error: Error) => of(new NodeActions.LoadNodeFailure(error)))
       );
