@@ -121,6 +121,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   multipleSelected = false;
   selectedMultipleNodes = [];
   selectedWorkpackages = [];
+  subscriptions: Subscription[] = [];
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -233,6 +234,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         : this.allowEditWorkPackages = 'edit';
     });
 
+    this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
+      this.selectedNode = nodeDetail;
+      this.ref.detectChanges();
+    }));
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -256,6 +262,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
@@ -317,14 +324,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
         // Load Node Details
         this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-          const workPackageIds = workpackages.map(item => item.id)
+          const workPackageIds = workpackages.map(item => item.id);
           this.setWorkPackage(workPackageIds);
-        })
-        //this.nodeStore.dispatch((new LoadNode(this.nodeId)));
-        // FIXME: think we need to store this subscription so we can rewrite/destroy it when not needed anymore.
-        this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
-          this.selectedNode = nodeDetail;
         });
+        // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
         this.objectSelected = true;
       } else {
         this.objectSelected = false;
@@ -725,5 +728,4 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.sharedService.selectedViewers = [];
     });
   }
-
 }
