@@ -35,7 +35,6 @@ import { ZoomSliderComponent } from './layout/header/zoom-actions/zoom-dropdown/
 import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider-list/zoom-slider-list.component';
 import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
-import { WorkPackageDropdownComponent } from './layout/header/quicklinks-actions/workpackage-dropdown/workpackage-dropdown.component';
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
 import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { RightSideBarComponent } from './layout/right-sidebar/right-sidebar.component';
@@ -81,7 +80,6 @@ import { EffectsModule } from '@ngrx/effects';
     ModelContentComponent,
     QuicklinksActionsComponent,
     BreadcrumbComponent,
-    WorkPackageDropdownComponent,
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
     RightSideBarComponent,
@@ -107,7 +105,6 @@ import { EffectsModule } from '@ngrx/effects';
     ZoomSliderListComponent,
     QuicklinksActionsComponent,
     BreadcrumbComponent,
-    WorkPackageDropdownComponent,
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
     LeftSideBarComponent,
