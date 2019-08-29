@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
 import { LayoutEntitiesHttpParams, GetLayoutEntitiesApiResponse } from '@app/layout/store/models/layout.model';
+import { UserApiResponse } from '@app/settings/store/models/user.model';
 
 @Injectable()
 export class HomePageService {
@@ -27,6 +28,10 @@ export class HomePageService {
   getMyLayouts(queryParams: LayoutEntitiesHttpParams): Observable<GetLayoutEntitiesApiResponse> {
     const params = this.toHttpParams(queryParams);
     return this.http.get<any>(`/navigate/mylayouts`, {params: params});
+  }
+
+  getMyProfile(): Observable<UserApiResponse> {
+    return this.http.get<any>(`/navigate/myprofile`);
   }
 
   toHttpParams(obj: Object): HttpParams {
