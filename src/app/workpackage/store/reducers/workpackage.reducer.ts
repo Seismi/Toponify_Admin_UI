@@ -4,6 +4,7 @@ import { WorkPackageEntity, Page, Links, WorkPackageDetail } from '../models/wor
 
 export interface State {
   entities: WorkPackageEntity[];
+  avaialabilities: any[];
   page: Page;
   links: Links;
   loading: boolean;
@@ -13,6 +14,7 @@ export interface State {
 
 export const initialState: State = {
   entities: [],
+  avaialabilities: [],
   page: null,
   links: null,
   loading: false,
@@ -79,6 +81,29 @@ export function reducer(
             return { ...item, edit: false };
           }
         })
+      };
+    }
+
+    case WorkPackageActionTypes.GetWorkpackageAvailability: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.GetWorkpackageAvailabilitySuccess: {
+      return {
+        ...state,
+        avaialabilities: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.GetWorkpackageAvailabilityFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
       };
     }
 

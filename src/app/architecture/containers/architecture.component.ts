@@ -232,11 +232,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         ? this.allowEditWorkPackages = 'close'
         : this.allowEditWorkPackages = 'edit';
     });
-
-    this.workpackageStore.dispatch(new GetWorkpackageAvailability({
-      workPackageQuery: ['53b218c9-a1a2-aeb7-a883-b9f7b9344a83', '53b218c1-a1a2-ceb7-a883-b9f7b9344a81']
-    }));
-
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -324,7 +319,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           const workPackageIds = workpackages.map(item => item.id)
           this.setWorkPackage(workPackageIds);
         })
-        //this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+        // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
         // FIXME: think we need to store this subscription so we can rewrite/destroy it when not needed anymore.
         this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
           this.selectedNode = nodeDetail;
@@ -615,7 +610,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.objectSelected = false;
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
-  
+
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
     this.objectSelected = false;

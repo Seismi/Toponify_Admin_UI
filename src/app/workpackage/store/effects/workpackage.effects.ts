@@ -12,9 +12,12 @@ import {
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
-  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess, DeleteOwnerFailure, GetWorkpackageAvailability, GetWorkpackageAvailabilitySuccess, GetWorkpackageAvailabilityFailure } from '../actions/workpackage.actions';
+  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess,
+  DeleteOwnerFailure, GetWorkpackageAvailability, GetWorkpackageAvailabilitySuccess, 
+  GetWorkpackageAvailabilityFailure } from '../actions/workpackage.actions';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
-  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity, WorkPackageEntity } from '../models/workpackage.models';
+  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity,
+  WorkPackageEntity } from '../models/workpackage.models';
 
 @Injectable()
 export class WorkPackageEffects {
@@ -29,7 +32,9 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((payload: WorkPackageEntitiesHttpParams) => {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
-        switchMap((data: WorkPackageEntitiesResponse) => [new LoadWorkPackagesSuccess(data)]),
+        switchMap((data: WorkPackageEntitiesResponse) => [
+          new LoadWorkPackagesSuccess(data),
+          new GetWorkpackageAvailability({workPackageQuery: []})]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
       );
     })

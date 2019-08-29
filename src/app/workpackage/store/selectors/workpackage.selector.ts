@@ -5,7 +5,13 @@ const getWorkPackageState = createFeatureSelector<State>('workpackageFeature');
 
 export const getWorkPackageEntities = createSelector(
   getWorkPackageState,
-  state => state.entities
+  state => state.entities.map(entity => {
+    const wa = state.avaialabilities.find(availability => availability.id === entity.id);
+    return {
+      ...entity,
+      ...(wa && { ...wa})
+    };
+  })
 );
 
 export const getSelectedWorkPackage = createSelector(
