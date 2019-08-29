@@ -26,7 +26,7 @@ import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-mo
 import { SharedService } from '@app/services/shared-service';
 import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected
+import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected, GetWorkpackageAvailability
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
@@ -232,6 +232,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         ? this.allowEditWorkPackages = 'close'
         : this.allowEditWorkPackages = 'edit';
     });
+
+    this.workpackageStore.dispatch(new GetWorkpackageAvailability({
+      workPackageQuery: ['53b218c9-a1a2-aeb7-a883-b9f7b9344a83', '53b218c1-a1a2-ceb7-a883-b9f7b9344a81']
+    }));
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
