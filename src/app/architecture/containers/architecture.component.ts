@@ -121,6 +121,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   multipleSelected = false;
   selectedMultipleNodes = [];
   selectedWorkpackages = [];
+  subscriptions: Subscription[] = [];
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -233,6 +234,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         : this.allowEditWorkPackages = 'edit';
     });
 
+    this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
+      this.selectedNode = nodeDetail;
+      this.ref.detectChanges();
+    }));
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -256,6 +262,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
@@ -316,11 +323,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
         // Load Node Details
-        this.nodeStore.dispatch((new LoadNode(this.nodeId)));
-        // FIXME: think we need to store this subscription so we can rewrite/destroy it when not needed anymore.
-        this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
-          this.selectedNode = nodeDetail;
+        this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+          const workPackageIds = workpackages.map(item => item.id);
+          this.setWorkPackage(workPackageIds);
         });
+        // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
         this.objectSelected = true;
       } else {
         this.objectSelected = false;
@@ -347,6 +354,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     }
 
+  }
+
+  setWorkPackage(workpackageIds: string[] = []) {
+    const queryParams = {
+      workPackageQuery: workpackageIds
+    };
+    this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}));
   }
 
   // FIXME: should be removed as createObject/node/link handled inside change service
@@ -396,6 +410,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
+
+    this.isEditable = false;
   }
 
   onEditDetails(details: any) {
@@ -596,10 +612,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectWorkPackage(id) {
     this.workpackageId = id;
+    this.objectSelected = false;
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
+
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
+    this.objectSelected = false;
+    if (this.part) {
+      this.part.isSelected = false;
+    }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
@@ -707,5 +729,4 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.sharedService.selectedViewers = [];
     });
   }
-
 }
