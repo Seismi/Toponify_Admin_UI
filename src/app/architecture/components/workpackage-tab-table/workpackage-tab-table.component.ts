@@ -29,6 +29,14 @@ export class WorkPackageTabTableComponent {
     this.selectWorkPackage.emit(id);
   }
 
+  canSelect(workpackage: any): boolean {
+    return !!workpackage.isSelectable;
+  }
+
+  canEdit(workpackage: any): boolean {
+    return !!workpackage.isSelectable && !!workpackage.isEditable;
+  }
+
   // FIXME: set proper type of workpackage
   onSetWorkpackageEditMode(_: any, workpackage: any) {
     this.setWorkpackageEditMode.emit(workpackage);
