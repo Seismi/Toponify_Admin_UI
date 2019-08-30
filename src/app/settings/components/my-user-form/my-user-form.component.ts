@@ -1,9 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { ChangePasswordModalComponent } from '../../containers/change-password-modal/change-password.component';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { RolesEntity } from '@app/settings/store/models/user.model';
+import { RolesEntity, User } from '@app/settings/store/models/user.model';
 
 @Component({
   selector: 'smi-my-user-form',
@@ -15,28 +14,20 @@ export class MyUserFormComponent {
   teams: TeamEntity[];
   roles: RolesEntity[];
 
+  @Input() teamTableData: User;
+  @Input() roleTableData: User;
   @Input() set team(team: any) {this.teams = team};
   @Input() set role(role: any) {this.roles = role};
   @Input() group: FormGroup;
-  @Input() showButtons = true;
-  @Input() isActive = false;
+  @Input() showButtons: boolean;
+  @Input() isActive: boolean;
+  @Input() editMode: boolean;
+  @Input() addMode: boolean;
   @Input() disableEmailInput = true;
   @Input() selectedTeams = [];
   @Input() selectedRoles = [];
-  toggle = false;
 
   constructor(public dialog: MatDialog) { }
-
-  onSave() {
-    this.isActive = !this.isActive;
-    this.toggle = !this.toggle;
-  }
-
-  onChangePassword() {
-    const dialogRef = this.dialog.open(ChangePasswordModalComponent, {
-      width: '400px',
-    });
-  }
 
   onSelectTeam(event, team) {
     if(event.source.selected) {
@@ -61,4 +52,27 @@ export class MyUserFormComponent {
       }
     }
   }
+
+  @Output()
+  saveMyUser = new EventEmitter();
+
+  @Output()
+  editMyUser = new EventEmitter();
+
+  @Output()
+  changePassword = new EventEmitter();
+
+
+  onSave() {
+    this.saveMyUser.emit();
+  }
+
+  onEdit() {
+    this.editMyUser.emit();
+  }
+
+  onChangePassword() {
+    this.changePassword.emit();
+  }
+  
 }

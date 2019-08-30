@@ -2,10 +2,13 @@
 <smi-my-user-form
     [team]="teams$ | async"
     [role]="roles$ | async"
+    [teamTableData]="user?.team"
+    [roleTableData]="user?.roles"
     [disableEmailInput]="disableEmailInput"
     [showButtons]="showButtons" 
     [isActive]="isActive" 
     [group]="myUserForm"
+    [addMode]="addMode"
     [selectedTeams]="selectedTeams"
     [selectedRoles]="selectedRoles">
 </smi-my-user-form>
