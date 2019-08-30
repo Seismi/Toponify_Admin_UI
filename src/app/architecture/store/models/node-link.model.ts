@@ -16,6 +16,7 @@ export interface NodeLinksApiResponse {
     sourceObject: SourceObjectOrTargetObject;
     targetObject: SourceObjectOrTargetObject;
     routes?: ((RoutesEntityEntity)[] | null)[] | null;
+    impactedByWorkPackages;
   }
   export interface SourceObjectOrTargetObject {
     id: string;
