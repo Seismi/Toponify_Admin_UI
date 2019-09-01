@@ -170,8 +170,8 @@ export class DiagramTemplatesService {
     // brush based on the relative locations of the connected nodes
     if (part instanceof go.Link) {
 
-      const fromLocation = part.fromNode.location;
-      const toLocation = part.toNode.location;
+      const fromLocation = part.fromNode ? part.fromNode.location : part.points.first();
+      const toLocation = part.toNode ? part.toNode.location : part.points.last();
       let startAlign: string;
       let endAlign: string;
 
