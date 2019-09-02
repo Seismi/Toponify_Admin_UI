@@ -13,15 +13,18 @@ import {
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
   LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess,
-  DeleteOwnerFailure, GetWorkpackageAvailability, GetWorkpackageAvailabilitySuccess, 
+  DeleteOwnerFailure, GetWorkpackageAvailability, GetWorkpackageAvailabilitySuccess,
   GetWorkpackageAvailabilityFailure } from '../actions/workpackage.actions';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
   WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity,
   WorkPackageEntity } from '../models/workpackage.models';
+import { State as WorkpackageState } from '../reducers/workpackage.reducer';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class WorkPackageEffects {
   constructor(
+    private store$: Store<WorkpackageState>,
     private actions$: Actions,
     private workpackageService: WorkPackageService
   ) {}

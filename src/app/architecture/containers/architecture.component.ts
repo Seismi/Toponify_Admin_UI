@@ -35,8 +35,8 @@ import { getEditWorkpackages, getSelectedWorkpackages, getWorkPackageEntities
 import { Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription, of } from 'rxjs';
+import { filter, map, switchMap, exhaustMap } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -49,6 +49,7 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -142,7 +143,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public filterService: FilterService,
     private ref: ChangeDetectorRef,
     public gojsCustomObjectsService: GojsCustomObjectsService,
-    public actions: Actions
+    public actions: Actions,
+    public workpackageService: WorkPackageService
   ) {
     // If filterLevel not set, ensure to set it.
     const currentFilter = this.filterService.getFilter();
@@ -161,7 +163,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
-    this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
+    // this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
+
+    this.workpackage$ = combineLatest(
+      this.workpackageStore.pipe(
+        select(getSelectedWorkpackages),
+        map((w: any) => w.map(i => i.id)),
+        exhaustMap(ids => this.workpackageService.getWorkPackageAvailability(ids)),
+        map(data => data.data)
+      ),
+      this.workpackageStore.pipe(select(getWorkPackageEntities))
+    ).pipe(
+      map(([availabilities, workpackages]) => workpackages.map(workpackage => {
+        const wa = availabilities.find(availability => availability.id === workpackage.id);
+        return {
+          ...workpackage,
+          ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable })
+        };
+      }))
+    );
 
     // RADIO
     this.radioStore.dispatch(new LoadRadios({}));

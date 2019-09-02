@@ -7,10 +7,11 @@ export const getWorkPackageEntities = createSelector(
   getWorkPackageState,
   state => state.entities.map(entity => {
     const wa = state.avaialabilities.find(availability => availability.id === entity.id);
-    return {
+    const newEntity = {
       ...entity,
-      ...(wa && { ...wa})
+      ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable  })
     };
+    return newEntity;
   })
 );
 
