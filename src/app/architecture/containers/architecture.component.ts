@@ -169,7 +169,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.workpackageStore.pipe(
         select(getSelectedWorkpackages),
         map((w: any) => w.map(i => i.id)),
-        exhaustMap(ids => this.workpackageService.getWorkPackageAvailability(ids)),
+        switchMap(ids => this.workpackageService.getWorkPackageAvailability({workPackageQuery: ids})),
         map(data => data.data)
       ),
       this.workpackageStore.pipe(select(getWorkPackageEntities))
