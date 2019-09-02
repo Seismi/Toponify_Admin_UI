@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { AddTeamApiResponse, GetTeamApiResponse, GetTeamEntitiesApiResponse,
-  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse } from '../models/team.model';
+  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse, MembersEntity } from '../models/team.model';
 
 
 export enum TeamActionTypes {
@@ -23,7 +23,15 @@ export enum TeamActionTypes {
 
   DeleteTeam = '[Team] Delete Team entity',
   DeleteTeamSuccess = '[Team] Delete Team entity Success',
-  DeleteTeamFailure = '[Team] Delete Team entity Failure'
+  DeleteTeamFailure = '[Team] Delete Team entity Failure',
+
+  AddMember = '[Team] Add Member',
+  AddMemberSuccess = '[Team] Add Member Success',
+  AddMemberFailure = '[Team] Add Member Failure',
+
+  DeleteMember = '[Team] Delete Member',
+  DeleteMemberSuccess = '[Team] Delete Member Success',
+  DeleteMemberFailure = '[Team] Delete Member Failure'
 }
 
 export class LoadTeams implements Action {
@@ -105,6 +113,39 @@ export class DeleteTeamFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+
+export class AddMember implements Action {
+  readonly type = TeamActionTypes.AddMember;
+  constructor(public payload: {data: MembersEntity, teamId: string, userId: string}) { }
+}
+
+export class AddMemberSuccess implements Action {
+  readonly type = TeamActionTypes.AddMemberSuccess;
+  constructor(public payload: any) { }
+}
+
+export class AddMemberFailure implements Action {
+  readonly type = TeamActionTypes.AddMemberFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
+
+export class DeleteMember implements Action {
+  readonly type = TeamActionTypes.DeleteMember;
+  constructor(public payload: {teamId: string, userId: string}) { }
+}
+
+export class DeleteMemberSuccess implements Action {
+  readonly type = TeamActionTypes.DeleteMemberSuccess;
+  constructor(public payload: any) { }
+}
+
+export class DeleteMemberFailure implements Action {
+  readonly type = TeamActionTypes.DeleteMemberFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
+
 export type TeamActionsUnion =
   | LoadTeams
   | LoadTeamsSuccess
@@ -121,4 +162,10 @@ export type TeamActionsUnion =
   | DeleteTeam
   | DeleteTeamSuccess
   | DeleteTeamFailure
+  | AddMember
+  | AddMemberSuccess
+  | AddMemberFailure
+  | DeleteMember
+  | DeleteMemberSuccess
+  | DeleteMemberFailure
   ;

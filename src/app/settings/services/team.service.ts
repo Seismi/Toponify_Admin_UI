@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AddTeamApiResponse, GetTeamApiResponse, GetTeamEntitiesApiResponse,
-  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse } from '../store/models/team.model';
+  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse, MembersEntity } from '../store/models/team.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -32,6 +32,14 @@ export class TeamService {
 
   deleteTeam(id: string): Observable<any> {
     return this.http.delete<any>(`/teams/${id}`);
+  }
+
+  addMembers(data: MembersEntity, teamId: string, userId: string): Observable<any> {
+    return this.http.post<any>(`/teams/${teamId}/members/${userId}`, {data: data}, httpOptions);
+  }
+
+  deleteMembers(teamId: string, userId): Observable<any> {
+    return this.http.delete<any>(`/teams/${teamId}/members/${userId}`);
   }
 
   // TODO: move into sharable service

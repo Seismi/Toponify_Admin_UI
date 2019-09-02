@@ -7,7 +7,7 @@ import { TeamService } from '../../services/team.service';
 import * as TeamActions from '../actions/team.actions';
 import { TeamActionTypes } from '../actions/team.actions';
 import { AddTeamApiResponse, GetTeamApiResponse, GetTeamEntitiesApiResponse,
-  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse } from '../models/team.model';
+  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse, MembersEntity } from '../models/team.model';
 
 
 @Injectable()
@@ -73,6 +73,30 @@ export class TeamEffects {
       return this.teamService.deleteTeam(id).pipe(
         switchMap(_ => [new TeamActions.DeleteTeamSuccess(id)]),
         catchError((error: HttpErrorResponse) => of(new TeamActions.DeleteTeamFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addMember$ = this.actions$.pipe(
+    ofType<TeamActions.AddMember>(TeamActionTypes.AddMember),
+    map(action => action.payload),
+    switchMap((payload: {data: MembersEntity, teamId: string, userId: string}) => {
+      return this.teamService.addMembers(payload.data, payload.teamId, payload.userId).pipe(
+        switchMap((response: any) => [new TeamActions.AddMemberSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new TeamActions.DeleteMemberFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteMember$ = this.actions$.pipe(
+    ofType<TeamActions.DeleteMember>(TeamActionTypes.DeleteMember),
+    map(action => action.payload),
+    switchMap((payload: {teamId: string, userId: string}) => {
+      return this.teamService.deleteMembers(payload.teamId, payload.userId).pipe(
+        switchMap((response: any) => [new TeamActions.DeleteMemberSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new TeamActions.DeleteMemberFailure(error)))
       );
     })
   );
