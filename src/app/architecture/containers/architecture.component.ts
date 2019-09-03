@@ -124,6 +124,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   radioTab = true;
   detailsTab = false;
   selectedWorkpackages = [];
+  subscriptions: Subscription[] = [];
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -147,8 +148,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public actions: Actions
   ) {
     // If filterLevel not set, ensure to set it.
-    const filter = this.filterService.getFilter();
-    if (!filter || !filter.filterLevel) {
+    const currentFilter = this.filterService.getFilter();
+    if (!currentFilter || !currentFilter.filterLevel) {
       this.filterService.setFilter({ filterLevel: Level.system });
     }
   }
@@ -236,6 +237,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         : this.allowEditWorkPackages = 'edit';
     });
 
+    this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
+      this.selectedNode = nodeDetail;
+      this.ref.detectChanges();
+    }));
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -259,6 +265,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
@@ -322,14 +329,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
         // Load Node Details
         this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-          const workPackageIds = workpackages.map(item => item.id)
+          const workPackageIds = workpackages.map(item => item.id);
           this.setWorkPackage(workPackageIds);
-        })
-        //this.nodeStore.dispatch((new LoadNode(this.nodeId)));
-        // FIXME: think we need to store this subscription so we can rewrite/destroy it when not needed anymore.
-        this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
-          this.selectedNode = nodeDetail;
         });
+        // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
         this.objectSelected = true;
         this.radioTab = false;
       } else {
@@ -397,6 +400,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       const nodeData = {
         id: this.selectedPart.id,
+        layer: this.selectedPart.layer,
         category: this.selectedPart.category,
         name: this.objectDetailsForm.value.name,
         owner: this.objectDetailsForm.value.owner,
@@ -518,9 +522,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
       // Get correct location for nodes, based on selected layout
       map(nodes => {
-        const filter = this.filterService.getFilter();
+        const currentFilter = this.filterService.getFilter();
         if (nodes === null) { return null; }
-        if (filter && filter.filterLevel === Level.map) { return nodes; }
+        if (currentFilter && currentFilter.filterLevel === Level.map) { return nodes; }
 
         let layoutLoc;
 
@@ -553,9 +557,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.linksSubscription = this.nodeStore.pipe(select(getNodeLinks),
       // Get correct route for links, based on selected layout
       map(links => {
-        const filter = this.filterService.getFilter();
+        const currentFilter = this.filterService.getFilter();
         if (links === null) { return null; }
-        if (filter && [Level.map, Level.usage].includes(filter.filterLevel)) { return links; }
+        if (currentFilter && [Level.map, Level.usage].includes(currentFilter.filterLevel)) { return links; }
 
         let layoutRoute;
 
@@ -619,11 +623,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.objectSelected = false;
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
   }
-  
+
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
     this.objectSelected = false;
-    if(this.part) {
+    if (this.part) {
       this.part.isSelected = false;
     }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
@@ -733,5 +737,4 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.sharedService.selectedViewers = [];
     });
   }
-
 }
