@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Constants } from '../../constants';
 
 @Component({
   selector: 'smi-right-sidebar',
@@ -14,10 +15,10 @@ export class RightSideBarComponent {
   @Input() architectureRadioTab = false;
   @Input() architectureDetailsTab = false;
 
-  architectureTabs = ['Details', 'Attributes', 'Properties', 'RADIO', 'Work Packages'];
-  reportLibraryTabs = ['Details', 'Attributes', 'Properties', 'RADIO', 'Work Packages'];
-  attributesTabs = ['Details', 'Properties', 'RADIO', 'Work Packages'];
-  workPackageTabs = ['Details', 'Properties', 'Objectives', 'RADIO', 'Change Summary'];
+  architectureTabs = Constants.ARCHITECTURE_TABS;
+  reportLibraryTabs = Constants.REPORT_LIBRARY_TABS;
+  attributesTabs = Constants.ATTRIBUTE_TABS;
+  workPackageTabs = Constants.WORKPACKAGE_TABS;
 
   @Output()
   rightTab = new EventEmitter();
