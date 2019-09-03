@@ -22,6 +22,7 @@ export class WorkPackageDetailComponent  {
   @Input() selectedOwners = [];
   @Input() selectedOwner: boolean;
   @Input() selectedBaseline: boolean;
+  @Input() statusDraft: boolean;
 
   @Output()
   deleteWorkpackage = new EventEmitter();
@@ -42,6 +43,9 @@ export class WorkPackageDetailComponent  {
   cancel = new EventEmitter();
 
   @Output()
+  editWorkPackage = new EventEmitter();
+
+  @Output()
   addBaseline = new EventEmitter();
 
   @Output()
@@ -50,17 +54,16 @@ export class WorkPackageDetailComponent  {
   @Output()
   selectBaseline = new EventEmitter();
 
+
   onSave() {
-    this.isEditable = false;
     this.saveWorkpackage.emit();
   }
 
   onEdit() {
-    this.isEditable = true;
+    this.editWorkPackage.emit();
   }
   
   onCancel() {
-    this.isEditable = false;
     this.cancel.emit();
   }
 
@@ -91,5 +94,4 @@ export class WorkPackageDetailComponent  {
   onSelectBaseline(row) {
     this.selectBaseline.emit(row);
   }
-  
 }

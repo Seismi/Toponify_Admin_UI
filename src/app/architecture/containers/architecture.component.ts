@@ -119,7 +119,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedRightTab: number;
   selectedLeftTab: number;
   multipleSelected = false;
+  singleOrMultipleSelect = true;
   selectedMultipleNodes = [];
+  radioTab = true;
+  detailsTab = false;
   selectedWorkpackages = [];
   subscriptions: Subscription[] = [];
 
@@ -319,6 +322,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       this.part = part;
 
+      this.detailsTab = false;
+
       if (part) {
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
@@ -329,7 +334,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         });
         // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
         this.objectSelected = true;
+        this.radioTab = false;
       } else {
+        this.radioTab = true;
         this.objectSelected = false;
         this.multipleSelected = false;
         this.selectedMultipleNodes = [];
@@ -338,6 +345,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     } else {
       this.objectSelected = false;
       this.multipleSelected = true;
+      this.detailsTab = true;
     }
 
     // Multiple selection

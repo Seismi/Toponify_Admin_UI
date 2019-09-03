@@ -1,6 +1,6 @@
 <smi-right-sidebar
     *ngIf="showOrHideRightPane"
-    [objectSelected]="reportSelected"
+    [reportLibraryPage]="true"
     (rightTab)="openRightTab($event)">
 </smi-right-sidebar>
 
@@ -38,6 +38,7 @@
                     </smi-workpackage-table-in-reports-page>
                 </mat-tab>
             </mat-tab-group>
+            <br>
             <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
         </p>
     </app-model-sidebar>

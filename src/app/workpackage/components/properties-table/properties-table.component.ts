@@ -3,11 +3,11 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
-  selector: 'smi-objectives-table',
-  templateUrl: './objectives-table.component.html',
-  styleUrls: ['./objectives-table.component.scss']
+  selector: 'smi-properties-table',
+  templateUrl: './properties-table.component.html',
+  styleUrls: ['./properties-table.component.scss']
 })
-export class ObjectivesTableComponent  {
+export class PropertiesTableComponent {
   @Input()
   set data(data: any[]) {
     if(data) {
@@ -17,7 +17,7 @@ export class ObjectivesTableComponent  {
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  
-  displayedColumns: string[] = ['type', 'name'];
+
+  displayedColumns: string[] = ['name', 'value'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 }

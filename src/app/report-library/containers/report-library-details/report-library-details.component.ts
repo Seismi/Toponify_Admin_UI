@@ -23,7 +23,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
   report: Report;
-  reportSelected: boolean;
   selectedRightTab: number;
   showOrHideRightPane = false;
   reportId: string;
@@ -54,8 +53,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         });
       }
     }));
-    
-    this.reportSelected = true;
   }
 
   setWorkPackage(workpackageIds: string[] = []) {
