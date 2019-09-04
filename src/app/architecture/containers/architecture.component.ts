@@ -36,7 +36,7 @@ import { Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription, of } from 'rxjs';
-import { filter, map, switchMap, exhaustMap } from 'rxjs/operators';
+import { filter, map, switchMap, mergeMap, shareReplay } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -163,24 +163,35 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
-    // this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
 
-    this.workpackage$ = combineLatest(
-      this.workpackageStore.pipe(
-        select(getSelectedWorkpackages),
-        map((w: any) => w.map(i => i.id)),
-        switchMap(ids => this.workpackageService.getWorkPackageAvailability({workPackageQuery: ids})),
-        map(data => data.data)
-      ),
-      this.workpackageStore.pipe(select(getWorkPackageEntities))
-    ).pipe(
-      map(([availabilities, workpackages]) => workpackages.map(workpackage => {
-        const wa = availabilities.find(availability => availability.id === workpackage.id);
-        return {
-          ...workpackage,
-          ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable })
-        };
-      }))
+    this.workpackage$ = this.workpackageStore.pipe(
+      // Get selected workpackages
+      select(getSelectedWorkpackages),
+      // Map for id's only
+      map((workpackages: {id: string}[]) => workpackages.map(workpackage => workpackage.id)),
+      // Do api request for workpackage availability with particular selection
+      switchMap(ids => this.workpackageService.getWorkPackageAvailability({workPackageQuery: ids})),
+      // Map for availabilities
+      map((availabilitiesResponse: any) => availabilitiesResponse.data),
+      // Merge availabilities with workapackage entities
+      mergeMap((availabilities: { id: string, isSelectable: Boolean, isEditable: Boolean }[]) => {
+        return this.workpackageStore.pipe(
+          // Get workpackage entities
+          select(getWorkPackageEntities),
+          // Merge availability inside every workpackage entity
+          map((workpackages: any[]): any[] => {
+            return workpackages.map(workpackage => {
+              const wa = availabilities.find(availability => availability.id === workpackage.id);
+              return {
+                ...workpackage,
+                ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable })
+              };
+            });
+          }),
+        )
+      }),
+      // Use for sharing result between subscribers
+      shareReplay()
     );
 
     // RADIO
