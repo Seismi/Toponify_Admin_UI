@@ -47,6 +47,22 @@ export class WorkPackageService {
     return this.http.delete<any>(`/workpackages/${workPackageId}/owners/${ownerId}`);
   }
 
+  addObjective(data: any, workPackageId: string, radioId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/objectives/${radioId}`, data, this.httpOptions);
+  }
+
+  deleteObjective(workPackageId: string, radioId: string): Observable<any> {
+    return this.http.delete<any>(`/workpackages/${workPackageId}/objectives/${radioId}`);
+  }
+
+  addRadio(data: any, workPackageId: string, radioId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/radios/${radioId}`, data, this.httpOptions);
+  }
+
+  deleteRadio(workPackageId: string, radioId: string): Observable<any> {
+    return this.http.delete<any>(`/workpackages/${workPackageId}/radios/${radioId}`);
+  }
+
   // TODO: move into sharable service
 
   Workpackage(workPackageId: string): Observable<any> {
