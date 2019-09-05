@@ -326,18 +326,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part instanceof Link;
 
-        // Load node link details
-        if (part instanceof Link) {
-          this.store.dispatch(new LoadNodeLink(this.nodeId));
-        }
-
         // Load node details
-        if (part instanceof Node) {
-          this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-            const workPackageIds = workpackages.map(item => item.id);
-            this.setWorkPackage(workPackageIds);
-          });
-        }
+        this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+          const workPackageIds = workpackages.map(item => item.id);
+          this.setWorkPackage(workPackageIds);
+        });
 
         this.objectSelected = true;
         this.radioTab = false;
@@ -374,8 +367,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}));
+    (this.part instanceof Node)
+      ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
+      : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
   }
+
 
   // FIXME: should be removed as createObject/node/link handled inside change service
   modelChanged( event: any) {}

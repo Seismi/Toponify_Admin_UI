@@ -54,8 +54,9 @@ export class NodeService {
     return this.http.get<NodeLinksApiResponse>(`/nodelinks`, {params: params});
   }
 
-  getNodeLink(id: string): Observable<NodeLinkDetailApiResponse> {
-    return this.http.get<NodeLinkDetailApiResponse>(`/nodelinks/${id}`);
+  getNodeLink(id: string, queryParams?: GetLinksRequestQueryParams): Observable<NodeLinkDetailApiResponse> {
+    const params = this.toHttpParams(queryParams);
+    return this.http.get<NodeLinkDetailApiResponse>(`/nodelinks/${id}`, {params: params});
   }
 
   getMapView(id: string): Observable<any> {

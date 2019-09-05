@@ -107,7 +107,7 @@ export class LoadNodeLinksFailure implements Action {
 
 export class LoadNodeLink implements Action {
   readonly type = NodeActionTypes.LoadNodeLink;
-  constructor(public payload: string) { }
+  constructor(public payload: { id: string, queryParams?: any }) { }
 }
 
 export class LoadNodeLinkSuccess implements Action {
