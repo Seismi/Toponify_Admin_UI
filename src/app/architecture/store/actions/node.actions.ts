@@ -13,7 +13,7 @@ export enum NodeActionTypes {
   LoadNodeLinks = '[Node] Load Node Links',
   LoadNodeLinksSuccess = '[Node] Load Node Links Success',
   LoadNodeLinksFailure = '[Node] Load Node Links Fail',
-  LoadNodeLink= '[Node] Load Node Link',
+  LoadNodeLink = '[Node] Load Node Link',
   LoadNodeLinkSuccess = '[Node] Load Node Link Success',
   LoadNodeLinkFailure = '[Node] Load Node Link Fail',
   LoadMapView = '[Node] Load Map View',

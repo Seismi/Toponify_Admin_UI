@@ -3,11 +3,11 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, LoadNodeLink
 } from '@app/architecture/store/actions/node.actions';
-import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import { linkCategories, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
-import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
+import { getNodeEntities, getNodeLinks, getSelectedNode, getSelectedNodeLink } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
@@ -49,6 +49,7 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { Link, Node } from 'gojs';
 
 enum Events {
   NodesLinksReload = 0
@@ -78,7 +79,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodesSubscription: Subscription;
   linksSubscription: Subscription;
 
-  selectedNode: NodeDetail;
+  selectedNode: NodeDetail | NodeLinkDetail;
 
   links: any[] = [];
   nodes: any[] = [];
@@ -170,7 +171,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.radioStore.dispatch(new LoadRadios({}));
     this.radio$ = this.radioStore.pipe(select(getRadioEntities));
 
-
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
@@ -242,6 +242,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.ref.detectChanges();
     }));
 
+    this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {
+      this.selectedNode = nodeLinkDetail;
+      this.ref.detectChanges();
+    }));
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -309,14 +314,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.objectSelected = false;
       this.isEditable = false;
 
-      this.objectDetailsService.objectDetailsForm.patchValue({
-        id: this.selectedPart.id,
-        name: this.selectedPart.name,
-        category: this.selectedPart.category,
-        owner: this.selectedPart.owner,
-        description: this.selectedPart.description,
-        tags: this.selectedPart.tags,
-      });
+      this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
@@ -326,13 +324,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       if (part) {
         // By clicking on link show only name, category and description in the right panel
-        this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-        // Load Node Details
-        this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-          const workPackageIds = workpackages.map(item => item.id);
-          this.setWorkPackage(workPackageIds);
-        });
-        // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+        this.clickedOnLink = part instanceof Link;
+
+        // Load node link details
+        if (part instanceof Link) {
+          this.store.dispatch(new LoadNodeLink(this.nodeId));
+        }
+
+        // Load node details
+        if (part instanceof Node) {
+          this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+            const workPackageIds = workpackages.map(item => item.id);
+            this.setWorkPackage(workPackageIds);
+          });
+        }
+
         this.objectSelected = true;
         this.radioTab = false;
       } else {
@@ -351,7 +357,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Multiple selection
     if (parts.length > 1) {
       for (let i = 0; i < parts.length; i++) {
-        if (parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
+        if (parts[i] instanceof Link) {
           // links
         } else {
           // Push only objects (not links)
