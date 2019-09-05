@@ -26,17 +26,17 @@ import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-mo
 import { SharedService } from '@app/services/shared-service';
 import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected
+import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected, GetWorkpackageAvailability
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getEditWorkpackages, getSelectedWorkpackages, getWorkPackageEntities
+import { getEditWorkpackages, getSelectedWorkpackages, getWorkPackageEntities, getSelectedWorkpackageIds, workpackageSelectAllowed
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription, of } from 'rxjs';
+import { filter, map, switchMap, mergeMap, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -49,6 +49,7 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -125,6 +126,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   detailsTab = false;
   selectedWorkpackages = [];
   subscriptions: Subscription[] = [];
+  sw: string[] = [];
+  canSelectWorkpackages: boolean = false;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -145,7 +148,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public filterService: FilterService,
     private ref: ChangeDetectorRef,
     public gojsCustomObjectsService: GojsCustomObjectsService,
-    public actions: Actions
+    public actions: Actions,
+    public workpackageService: WorkPackageService
   ) {
     // If filterLevel not set, ensure to set it.
     const currentFilter = this.filterService.getFilter();
@@ -164,7 +168,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
-    this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities));
+
+    this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities), shareReplay());
+
+    this.subscriptions.push(this.workpackageStore.pipe(
+      select(getSelectedWorkpackageIds)
+    ).subscribe((ids) => {
+      if(JSON.stringify(this.sw) !== JSON.stringify(ids)) {
+        this.sw = ids;
+        this.workpackageStore.dispatch(new GetWorkpackageAvailability({workPackageQuery: ids}));
+      }
+    }));
+
+    this.workpackageStore.pipe(select(workpackageSelectAllowed)).subscribe(canSelect => this.canSelectWorkpackages = canSelect);
 
     // RADIO
     this.radioStore.dispatch(new LoadRadios({}));

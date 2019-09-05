@@ -8,9 +8,10 @@ import { ArchitecturePaletteComponent } from '../../components/architecture-pale
 })
 export class LeftPanelComponent {
   @Input() workPackageIsEditable = false;
-  @Input() data: any;
+  @Input() workpackages: any;
   @Input() selectedLeftTab: number;
   @Input() viewLevel: number;
+  @Input() canSelectWorkpackages: boolean;
 
   constructor() {}
 

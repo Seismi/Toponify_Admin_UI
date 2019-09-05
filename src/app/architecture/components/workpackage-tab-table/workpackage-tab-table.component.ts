@@ -13,6 +13,9 @@ export class WorkPackageTabTableComponent {
     this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
   }
 
+  @Input()
+  canSelectWorkpackage: boolean;
+
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 
@@ -27,6 +30,14 @@ export class WorkPackageTabTableComponent {
 
   onSelect(id, event) {
     this.selectWorkPackage.emit(id);
+  }
+
+  canSelect(workpackage: any): boolean {
+    return this.canSelectWorkpackage && !!workpackage.isSelectable;
+  }
+
+  canEdit(workpackage: any): boolean {
+    return this.canSelectWorkpackage && !!workpackage.isSelectable && !!workpackage.isEditable;
   }
 
   // FIXME: set proper type of workpackage
