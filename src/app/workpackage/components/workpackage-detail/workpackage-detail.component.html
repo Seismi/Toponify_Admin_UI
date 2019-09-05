@@ -67,10 +67,10 @@
 
     <div class="form-group" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
-            <button type="button" mat-flat-button color="primary" *ngIf="statusDraft" (click)="onEdit()" data-hook="workpackage-detail-edit">Edit</button>
+            <button type="button" mat-flat-button color="primary" [disabled]="!statusDraft" (click)="onEdit()" data-hook="workpackage-detail-edit">Edit</button>
             <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-open">Open</button>
             <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-copy">Copy</button>
-            <button type="button" mat-flat-button color="warn" (click)="onDelete()" data-hook="workpackage-detail-delete">Delete</button>
+            <button type="button" mat-flat-button color="warn" [disabled]="!statusDraft" (click)="onDelete()" data-hook="workpackage-detail-delete">Delete</button>
         </div>
         <div *ngIf="isEditable">
             <button mat-flat-button color="primary" (click)="onSave()" data-hook="workpackage-detail-save">Save</button>

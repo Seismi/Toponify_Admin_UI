@@ -6,9 +6,13 @@
     padding: 10px;
 }
 
-button {
+.hide-pane-button {
     position: absolute;
     bottom: 12px;
     left: 16px;
     z-index: 1;
+}
+
+.add-radio-button {
+    margin-top: 10px;
 }

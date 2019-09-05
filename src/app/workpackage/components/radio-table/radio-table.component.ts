@@ -1,13 +1,16 @@
-import { Component, ViewChild, Input } from '@angular/core';
+import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
-  selector: 'smi-radio-table',
+  selector: 'smi-radios-table',
   templateUrl: './radio-table.component.html',
   styleUrls: ['./radio-table.component.scss']
 })
-export class RadioTableComponent  {
+export class RadiosTableComponent  {
+  
+  @Input() statusDraft: boolean = false;
+
   @Input()
   set data(data: any[]) {
     if(data) {
@@ -18,6 +21,13 @@ export class RadioTableComponent  {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ['type', 'name'];
+  displayedColumns: string[] = ['type', 'name', 'delete'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
+
+  @Output()
+  deleteRadio = new EventEmitter();
+
+  onDelete(radio) {
+    this.deleteRadio.emit(radio);
+  }
 }

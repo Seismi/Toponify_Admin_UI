@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { LoadWorkPackage, DeleteWorkPackageEntity, DeleteOwner, AddOwner, UpdateWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadWorkPackage, DeleteWorkPackageEntity, DeleteOwner, AddOwner, UpdateWorkPackageEntity, AddObjective, AddRadio, DeleteObjective, DeleteRadio } from '@app/workpackage/store/actions/workpackage.actions';
 import { Store, select } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import { getSelectedWorkPackage } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -12,6 +12,12 @@ import { FormGroup } from '@angular/forms';
 import { DeleteWorkPackageModalComponent } from '../delete-workpackage-modal/delete-workpackage.component';
 import { MatDialog } from '@angular/material';
 import { OwnersModalComponent } from '../owners-modal/owners-modal.component';
+import { RadioListModalComponent } from '../radio-list-modal/radio-list-modal.component';
+import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
+import { RadioEffects } from '@app/radio/store/effects/radio.effects';
+import { Actions, ofType } from '@ngrx/effects';
+import { RadioEntity } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -34,6 +40,9 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   isEditable = false;
 
   constructor(
+    private router: Router,
+    private actions: Actions,
+    private radioEffects: RadioEffects,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private store: Store<WorkPackageState>,
@@ -113,13 +122,15 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        mode: 'delete',
+        name: this.workpackage.name
       }
     });
 
     dialogRef.afterClosed().subscribe((data) => {
-      if (data.mode === 'delete') {
+      if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteWorkPackageEntity(this.workpackageId));
+        this.router.navigate(['work-packages']);
       }
     });
   }
@@ -151,7 +162,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((data) => {
-      if (data.mode === 'delete') {
+      if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteOwner({workPackageId: this.workpackageId, ownerId: this.ownerId}))
         this.selectedOwner = false;
       }
@@ -165,4 +176,87 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onSelectBaseline(row) {
     this.selectedBaseline = true;
   }
+
+
+  onAddObjectiveOrRadio(value) {
+    const dialogRef = this.dialog.open(RadioListModalComponent, {
+      disableClose: false, width: '650px' });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.radio) {
+        if (value.objective) {
+          this.store.dispatch(new AddObjective({
+            workPackageId: this.workpackageId,
+            radioId: data.radio.id,
+            data: data.radio
+          }))
+        } else {
+          this.store.dispatch(new AddRadio({
+            workPackageId: this.workpackageId,
+            radioId: data.radio.id,
+            data: data.radio
+          }))
+        }
+      }
+    });
+
+    // Create new radio
+    dialogRef.componentInstance.addNewRadio.subscribe(_ => {
+      const dialogRef2 = this.dialog.open(RadioModalComponent, {
+        disableClose: false, width: '500px' });
+
+      dialogRef2.afterClosed().subscribe((data) => {
+        if (data && data.radio) {
+          this.store.dispatch(new AddRadioEntity({
+            data: {
+              title: data.radio.title,
+              description: data.radio.description,
+              status: data.radio.status,
+              category: data.radio.category,
+              author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' }
+            }
+          }));
+
+          // Add objective or radio to workpackage after new radio is created
+          this.subscriptions.push(this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
+            if (value.objective) {
+              this.store.dispatch(new AddObjective({
+                workPackageId: this.workpackageId,
+                radioId: this.radioEffects.radioId,
+                data: data.radio
+              }))
+            } else {
+              this.store.dispatch(new AddRadio({
+                workPackageId: this.workpackageId,
+                radioId: this.radioEffects.radioId,
+                data: data.radio
+              }));
+            }
+          }));
+        }
+      });
+    });
+  }
+
+
+  onDeleteObjectiveOrRadio(radio: RadioEntity, value) {
+    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete',
+        name: radio.title
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.mode === 'delete') {
+        (value.objective)
+          ? this.store.dispatch(new DeleteObjective({workPackageId: this.workpackageId, radioId: radio.id}))
+          : this.store.dispatch(new DeleteRadio({workPackageId: this.workpackageId, radioId: radio.id}));
+      }
+    });
+  }
+
+
 }
