@@ -15,6 +15,11 @@ export const getWorkPackageEntities = createSelector(
   })
 );
 
+export const workpackageSelectAllowed = createSelector(
+  getWorkPackageState,
+  state => !state.loading
+);
+
 export const getSelectedWorkPackage = createSelector(
   getWorkPackageState,
   state => state.selectedWorkPackage
@@ -24,6 +29,12 @@ export const getSelectedWorkpackages = createSelector(
   getWorkPackageState,
   state => state.entities.filter(item => item.selected)
 );
+
+export const getSelectedWorkpackageIds = createSelector(
+  getWorkPackageState,
+  state => state.entities.filter(item => item.selected).map(item => item.id)
+);
+
 
 export const getEditWorkpackages = createSelector(
   getWorkPackageState,

@@ -58,7 +58,7 @@ export function reducer(
           if (item.id === workpackageId) {
             return {
               ...item,
-              displayColour: colour
+              displayColour: colour,
             };
           }
           return item;
@@ -70,6 +70,7 @@ export function reducer(
       const { workpackageId } = action.payload;
       return {
         ...state,
+        loading: true,
         entities: state.entities.map(item => {
           if (item.id === workpackageId) {
             return {

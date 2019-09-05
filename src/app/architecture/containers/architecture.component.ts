@@ -30,13 +30,13 @@ import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, 
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getEditWorkpackages, getSelectedWorkpackages, getWorkPackageEntities
+import { getEditWorkpackages, getSelectedWorkpackages, getWorkPackageEntities, getSelectedWorkpackageIds, workpackageSelectAllowed
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription, of } from 'rxjs';
-import { filter, map, switchMap, mergeMap, shareReplay } from 'rxjs/operators';
+import { filter, map, switchMap, mergeMap, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -123,6 +123,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedMultipleNodes = [];
   selectedWorkpackages = [];
   subscriptions: Subscription[] = [];
+  sw: string[] = [];
+  canSelectWorkpackages: boolean = false;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -164,35 +166,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
 
-    this.workpackage$ = this.workpackageStore.pipe(
-      // Get selected workpackages
-      select(getSelectedWorkpackages),
-      // Map for id's only
-      map((workpackages: {id: string}[]) => workpackages.map(workpackage => workpackage.id)),
-      // Do api request for workpackage availability with particular selection
-      switchMap(ids => this.workpackageService.getWorkPackageAvailability({workPackageQuery: ids})),
-      // Map for availabilities
-      map((availabilitiesResponse: any) => availabilitiesResponse.data),
-      // Merge availabilities with workapackage entities
-      mergeMap((availabilities: { id: string, isSelectable: Boolean, isEditable: Boolean }[]) => {
-        return this.workpackageStore.pipe(
-          // Get workpackage entities
-          select(getWorkPackageEntities),
-          // Merge availability inside every workpackage entity
-          map((workpackages: any[]): any[] => {
-            return workpackages.map(workpackage => {
-              const wa = availabilities.find(availability => availability.id === workpackage.id);
-              return {
-                ...workpackage,
-                ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable })
-              };
-            });
-          }),
-        )
-      }),
-      // Use for sharing result between subscribers
-      shareReplay()
-    );
+    this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities), shareReplay());
+
+    this.subscriptions.push(this.workpackageStore.pipe(
+      select(getSelectedWorkpackageIds)
+    ).subscribe((ids) => {
+      if(JSON.stringify(this.sw) !== JSON.stringify(ids)) {
+        this.sw = ids;
+        this.workpackageStore.dispatch(new GetWorkpackageAvailability({workPackageQuery: ids}));
+      }
+    }));
+
+    this.workpackageStore.pipe(select(workpackageSelectAllowed)).subscribe(canSelect => this.canSelectWorkpackages = canSelect);
 
     // RADIO
     this.radioStore.dispatch(new LoadRadios({}));

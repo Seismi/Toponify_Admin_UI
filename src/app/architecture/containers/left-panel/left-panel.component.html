@@ -5,6 +5,7 @@
 >
   <mat-tab label="Work Packages">
     <smi-workpackage-tab-table
+      [canSelectWorkpackage]="canSelectWorkpackages"
       [data]="workpackages"
       (selectWorkPackage)="onSelectWorkPackage($event)"
       (selectColour)="onSelectColour($event)"
