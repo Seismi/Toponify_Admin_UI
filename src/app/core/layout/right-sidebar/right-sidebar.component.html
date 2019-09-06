@@ -24,4 +24,9 @@
     <div *ngIf="workPackagePage">
         <span *ngFor="let tabs of workPackageTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
     </div>
+
+    <!-- RADIO Page -->
+    <div *ngIf="radioPage">
+        <span *ngFor="let tabs of radioTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+    </div>
 </div>

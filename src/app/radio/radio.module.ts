@@ -12,7 +12,12 @@ import {
     MatButtonModule,
     MatPaginatorModule,
     MatSortModule,
-    MatDialogModule  
+    MatDialogModule,  
+    MatSelectModule,
+    MatTabsModule,
+    MatDatepickerModule,
+    MatIconModule,
+    MatNativeDateModule
 } from '@angular/material';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
 import { RadioModalComponent } from './containers/radio-modal/radio-modal.component';
@@ -26,6 +31,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { RadioEffects } from './store/effects/radio.effects';
 import { reducer } from './store/reducers/radio.reducer';
 import { RadioDetailsComponent } from './containers/radio-details/radio-details.component';
+import { RadioPropertiesTabComponent } from './components/properties-tab/properties-tab.component';
+import { SettingsModule } from '@app/settings/settings.module';
 
 
 @NgModule({
@@ -35,6 +42,7 @@ import { RadioDetailsComponent } from './containers/radio-details/radio-details.
         ReactiveFormsModule,
         CoreModule,
         CommonModule,
+        SettingsModule,
         MatTableModule,
         MatFormFieldModule,
         MatInputModule,
@@ -42,6 +50,11 @@ import { RadioDetailsComponent } from './containers/radio-details/radio-details.
         MatPaginatorModule,
         MatSortModule,
         MatDialogModule,
+        MatSelectModule,
+        MatTabsModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
         StoreModule.forFeature('radioFeature', reducer),
         EffectsModule.forFeature([ RadioEffects ])
     ],
@@ -55,7 +68,8 @@ import { RadioDetailsComponent } from './containers/radio-details/radio-details.
         ReplyModalComponent,
         ReplyTextComponent,
         ChatBoxComponent,
-        RadioDetailsComponent
+        RadioDetailsComponent,
+        RadioPropertiesTabComponent
     ],
     entryComponents: [ RadioModalComponent, ReplyModalComponent ],
     providers: [ RadioService ]

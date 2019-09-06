@@ -7,16 +7,18 @@
     </app-toolbar-column>
 </app-base-header>
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <smi-radio-table
-                data-hook="radio-table"
-                [data]="radio$ | async"
-                (selectRadio)="onSelectRadio($event)"
-                (addRadio)="onAddRadio($event)">
-            </smi-radio-table>
+<app-model-container [topPadding]="64">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <smi-radio-table 
+                    data-hook="radio-table" 
+                    [data]="radio$ | async" 
+                    (selectRadio)="onSelectRadio($event)"
+                    (addRadio)="onAddRadio($event)">
+                </smi-radio-table>
+            </div>
+            <router-outlet></router-outlet>
         </div>
-        <router-outlet></router-outlet>
     </div>
-</div>
+</app-model-container>

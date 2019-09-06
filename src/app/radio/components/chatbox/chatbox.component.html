@@ -11,10 +11,5 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
     </div>
-    <smi-reply-text 
-        [rows]="1" 
-        [group]="radioDetailsForm"
-        [disableButton]="disableButton"
-        (sendReply)="onSend($event)">
-    </smi-reply-text>
+    <smi-reply-text [group]="group" [rows]="1" (sendReply)="onSend($event)"></smi-reply-text>
 </div>

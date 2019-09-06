@@ -1,9 +1,14 @@
-import { Component, Input, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
-import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { RadioDetail } from '@app/radio/store/models/radio.model';
+import { Observable } from 'rxjs';
+import { User } from '@app/settings/store/models/user.model';
+import { Store, select } from '@ngrx/store';
+import { State as UserState } from '@app/settings/store/reducers/user.reducer';
+import { getUsers } from '@app/settings/store/selectors/user.selector';
 
 @Component({
   selector: 'smi-radio-modal',
@@ -12,20 +17,24 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   providers: [RadioDetailService, RadioValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
 
-export class RadioModalComponent {
+export class RadioModalComponent implements OnInit {
 
-  addRadio = false;
+  users$: Observable<User[]>;
   isEditable = true;
-  modal = true;
   modalMode = true;
-  radio: RadioEntity;
+  radio: RadioDetail;
 
   constructor(
+    private store: Store<UserState>,
     private radioDetailService: RadioDetailService,
     public dialogRef: MatDialogRef<RadioModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.radio = data.radio;
     }
+
+  ngOnInit() {
+    this.users$ = this.store.pipe(select(getUsers));
+  }
     
   get radioDetailsForm(): FormGroup {
     return this.radioDetailService.radioDetailsForm;

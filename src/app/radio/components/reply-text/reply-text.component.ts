@@ -12,7 +12,6 @@ export class ReplyTextComponent {
   @Input() replyMode = false;
   @Input() rows:number = 4;
   @Input() group: FormGroup;
-  @Input() disableButton = true;
 
   @Output()
   sendReply = new EventEmitter();

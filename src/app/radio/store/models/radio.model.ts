@@ -135,8 +135,6 @@ export interface ReplyApiResponse {
 }
 
 export interface Reply {
-  id?: string;
-  author: AuthorOrLastUpdatedBy;
   replyText: string;
   changes: AddRadioOrReplyChanges;
 }
@@ -147,5 +145,4 @@ interface AddRadioOrReplyChanges {
   category?: string;
   description?: string;
   author?: AuthorOrLastUpdatedBy;
-  target?: Target
 }
