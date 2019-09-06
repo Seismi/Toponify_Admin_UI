@@ -2,10 +2,6 @@ table {
     width: 100%;
 }
 
-.wrapper {
-    margin: 5px 0px;
-}
-
 tr.mat-row {
     cursor: pointer;
 }
@@ -14,17 +10,6 @@ tr.mat-header-row {
     height: 30px;
 }
 
-.title {
-    font-size: 15px;
-    margin-top: 20px;
-}
-
 th.mat-column-object {
     width: 50%;
-}
-
-.noResultFound {
-    text-align: center;
-    font-size: 12px;
-    padding-top: 10px;
 }

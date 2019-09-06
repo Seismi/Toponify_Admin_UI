@@ -34,6 +34,7 @@ export class Node {
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
+  impactedByWorkPackages = [];
 
   constructor(options: { id: string, name: string, layer: layers, category: nodeCategories }) {
     if (options) {
@@ -42,6 +43,7 @@ export class Node {
       this.layer = options.layer;
       this.category = options.category;
       this.owners = [];
+      this.impactedByWorkPackages = [];
     }
   }
 }

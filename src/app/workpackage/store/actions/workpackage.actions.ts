@@ -36,6 +36,10 @@ export enum WorkPackageActionTypes {
   SetWorkpackageDisplayColour = '[WorkPackage] Set Display Colour',
   SetWorkpackageEditMode = '[WorkPackage] Set edit mode',
   SetWorkpackageSelected = '[WorkPackage] Set Selected',
+
+  GetWorkpackageAvailability = '[Workpackage] Get workpackage availability',
+  GetWorkpackageAvailabilitySuccess = '[Workpackage] Get workpackage availability success',
+  GetWorkpackageAvailabilityFailure = '[Workpackage] Get workpackage availability failure',
 }
 
 export class LoadWorkPackages implements Action {
@@ -158,6 +162,21 @@ export class SetWorkpackageSelected implements Action {
   constructor(public payload: { workpackageId: string }) { }
 }
 
+export class GetWorkpackageAvailability implements Action {
+  readonly type = WorkPackageActionTypes.GetWorkpackageAvailability;
+  constructor(public payload: any) { }
+}
+
+export class GetWorkpackageAvailabilitySuccess implements Action {
+  readonly type = WorkPackageActionTypes.GetWorkpackageAvailabilitySuccess;
+  constructor(public payload: any) { }
+}
+
+export class GetWorkpackageAvailabilityFailure implements Action {
+  readonly type = WorkPackageActionTypes.GetWorkpackageAvailabilityFailure;
+  constructor(public payload: any) { }
+}
+
 
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
@@ -183,4 +202,7 @@ export type WorkPackageActionsUnion =
   | AddOwnerFailure
   | SetWorkpackageDisplayColour
   | SetWorkpackageEditMode
-  | SetWorkpackageSelected;
+  | SetWorkpackageSelected
+  | GetWorkpackageAvailability
+  | GetWorkpackageAvailabilitySuccess
+  | GetWorkpackageAvailabilityFailure;
