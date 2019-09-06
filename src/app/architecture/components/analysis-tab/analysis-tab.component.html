@@ -18,6 +18,9 @@
         <mat-list-item role="listitem">
             <mat-checkbox checked="true" (change)="checkboxClicked($event, 'nextLevel')">Next level</mat-checkbox>
         </mat-list-item>
+        <mat-list-item role="listitem">
+            <mat-checkbox [checked]="checked" (change)="checkboxClicked($event, 'showRadioAlerts')">Show RADIO Alert</mat-checkbox>
+        </mat-list-item>
     </mat-list><br>
     <div *ngIf="!(viewLevel===10)">
       <p>Link Display:</p>

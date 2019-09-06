@@ -69,6 +69,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private zoomRef;
   private showHideGridRef;
   private showDetailTabRef;
+  private showHideRadioAlertRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -107,7 +108,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodeId: string;
   allowEditWorkPackages: string;
   workPackageIsEditable = false;
-  workpackageId: string;
   workpackageDetail: any;
   public selectedWorkPackages$: Observable<WorkPackageDetail>;
   filterServiceSubscription: Subscription;
@@ -122,6 +122,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   multipleSelected = false;
   singleOrMultipleSelect = true;
   selectedMultipleNodes = [];
+  radioAlertChecked = true;
   radioTab = true;
   detailsTab = false;
   selectedWorkpackages = [];
@@ -240,6 +241,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.selectedRightTab = 0;
       this.ref.detectChanges();
     }.bind(this));
+
+
+    this.showHideRadioAlertRef = this.gojsCustomObjectsService.showHideRadioAlert$.subscribe(
+      function() {
+        this.radioAlertChecked = !this.radioAlertChecked;
+        this.ref.detectChanges();
+      }.bind(this));
 
     this.editedWorkpackageSubscription = this.workpackageStore.pipe(select(getEditWorkpackages)).subscribe((workpackages) => {
       this.allowMove = workpackages.length > 0;
@@ -635,9 +643,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkPackage(id) {
-    this.workpackageId = id;
     this.objectSelected = false;
-    this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
+    this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
   }
 
   // FIXME: set proper type of workpackage
@@ -658,9 +665,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  openLeftTab(i: number) {
-    this.selectedLeftTab = i;
-    if (this.selectedLeftTab === i) {
+  openLeftTab(index: number) {
+    this.selectedLeftTab = index;
+    if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
     this.diagramComponent.updateDiagramArea();
@@ -689,6 +696,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             target: { id: this.nodeId }
           }
         }));
+        if(data.radio.status === 'open') {
+          this.diagramChangesService.updateRadioCount(this.part);
+        }
       }
     });
   }
@@ -697,9 +707,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.dialog.open(AttributeModalComponent, {width: '450px'});
   }
 
-  openRightTab(i) {
-    this.selectedRightTab = i;
-    if (this.selectedRightTab === i) {
+  openRightTab(index: number) {
+    this.selectedRightTab = index;
+    if (this.selectedRightTab === index) {
       this.showOrHideRightPane = true;
     }
     this.diagramComponent.updateDiagramArea();
