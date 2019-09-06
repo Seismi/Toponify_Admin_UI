@@ -13,6 +13,9 @@ export class WorkPackageTabTableComponent {
     this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
   }
 
+  @Input()
+  canSelectWorkpackage: boolean;
+
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 
@@ -20,13 +23,29 @@ export class WorkPackageTabTableComponent {
   selectWorkPackage = new EventEmitter();
 
   @Output()
-  selectColor = new EventEmitter<object>();
+  selectColour = new EventEmitter<object>();
+
+  @Output()
+  setWorkpackageEditMode = new EventEmitter();
 
   onSelect(id, event) {
     this.selectWorkPackage.emit(id);
   }
 
-  onSelectColor(color, id) {
-    this.selectColor.emit({color, id});
+  canSelect(workpackage: any): boolean {
+    return this.canSelectWorkpackage && !!workpackage.isSelectable;
+  }
+
+  canEdit(workpackage: any): boolean {
+    return this.canSelectWorkpackage && !!workpackage.isSelectable && !!workpackage.isEditable;
+  }
+
+  // FIXME: set proper type of workpackage
+  onSetWorkpackageEditMode(_: any, workpackage: any) {
+    this.setWorkpackageEditMode.emit(workpackage);
+  }
+
+  onSelectColour(colour, id) {
+    this.selectColour.emit({colour, id});
   }
 }

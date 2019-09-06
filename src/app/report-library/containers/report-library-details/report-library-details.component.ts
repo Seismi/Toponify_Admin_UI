@@ -23,7 +23,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
   report: Report;
-  reportSelected: boolean;
   selectedRightTab: number;
   showOrHideRightPane = false;
   reportId: string;
@@ -54,8 +53,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         });
       }
     }));
-    
-    this.reportSelected = true;
   }
 
   setWorkPackage(workpackageIds: string[] = []) {
@@ -73,9 +70,9 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     return this.reportLibraryDetailService.reportDetailForm;
   }
 
-  openRightTab(i) {
-    this.selectedRightTab = i;
-    if(this.selectedRightTab === i) {
+  openRightTab(index: number) {
+    this.selectedRightTab = index;
+    if(this.selectedRightTab === index) {
       this.showOrHideRightPane = false;
     }
   }

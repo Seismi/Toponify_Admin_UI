@@ -46,7 +46,6 @@ export interface ReportLibraryApiResponse {
   }
 
   // Report Detail
-
   export interface ReportDetailApiRespoonse {
     data: Report;
   }
@@ -59,7 +58,32 @@ export interface ReportLibraryApiResponse {
     dimensions?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
     reportingConcepts?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
     attributes?: (AttributesEntity)[] | null;
+    customPropertyValues?: (CustomPropertyValues)[] | null;
+    relatedRadios?: (RelatedRadios)[] | null;
+    relatedWorkPackages?: (RelatedWorkPackages)[] | null;
   }
+
+  export interface RelatedWorkPackages {
+    id: string;
+    name: string;
+    description: string;
+    hasErrors: boolean;
+    status: string;
+  }
+
+  export interface RelatedRadios {
+    id: string;
+    title: string;
+    description: string;
+  }
+
+  export interface CustomPropertyValues {
+    propertyId: string;
+    name: string;
+    type: boolean;
+    value: string;
+  }
+
   export interface OwnersEntity {
     id: string;
     name: string;

@@ -1,7 +1,6 @@
 import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'smi-workpackages-table',
@@ -16,7 +15,7 @@ export class WorkPackagesTableComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
-  @Input()
+
   selectedRowIndex = -1;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -38,6 +37,7 @@ export class WorkPackagesTableComponent implements OnInit {
   openWorkPackageTree = new EventEmitter();
 
   onSelectRow(row) {
+    this.selectedRowIndex = row.id;
     this.workpackageSelected.emit(row);
   }
 

@@ -1,11 +1,65 @@
-<div class="col">
-  <smi-workpackage-detail
-    [group]="workpackageDetailsForm"
-    (editWorkpackage)="onEditWorkpackage($event)"
-    (deleteWorkpackage)="onDeleteWorkpackage($event)"
-    (saveWorkpackage)="onSaveWorkpackage($event)">
-  </smi-workpackage-detail>
-  <smi-objectives-table></smi-objectives-table>
-  <smi-radio-table></smi-radio-table>
-  <smi-change-table></smi-change-table>
-</div>
+<smi-right-sidebar 
+  *ngIf="showOrHideRightPane" 
+  [workPackagePage]="true"
+  (rightTab)="openRightTab($event)">
+</smi-right-sidebar>
+
+<app-model-container *ngIf="!showOrHideRightPane">
+  <app-model-sidebar [minWidth]="400" [maxWidth]="600" [isLast]="true">
+    <p class="rightPane">
+      <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
+        <mat-tab label="Details">
+          <p class="detailsTab">
+            <smi-workpackage-detail 
+              data-hook="workpackage-detail" 
+              [group]="workPackageDetailForm"
+              (deleteWorkpackage)="onDeleteWorkpackage($event)" 
+              (saveWorkpackage)="onSaveWorkpackage($event)"
+              (editWorkPackage)="onEditWorkPackage($event)"
+              (cancel)="onCancel($event)" 
+              [baselineTableData]="workpackage?.baseline"
+              [ownersTableData]="workpackage?.owners" 
+              [approversTableData]="workpackage?.approvers"
+              (deleteOwner)="onDeleteOwner($event)" 
+              (selectOwner)="onSelectOwner($event)" 
+              (addOwner)="onAddOwner($event)"
+              [selectedOwner]="selectedOwner" 
+              (addBaseline)="onAddBaseline($event)"
+              (deleteBaseline)="onDeleteBaseline($event)" 
+              (selectBaseline)="onSelectBaseline($event)"
+              [selectedBaseline]="selectedBaseline"
+              [statusDraft]="statusDraft"
+              [isEditable]="isEditable">
+            </smi-workpackage-detail>
+          </p>
+        </mat-tab>
+        <mat-tab label="Properties">
+          <smi-properties-table
+            data-hook="workpackage-page-properties-table"
+            [data]="workpackage?.customPropertyValues">
+          </smi-properties-table>
+        </mat-tab>
+        <mat-tab label="Objectives">
+          <smi-objectives-table 
+            data-hook="workpackage-page-objective-table" 
+            [data]="workpackage?.objectives">
+          </smi-objectives-table>
+        </mat-tab>
+        <mat-tab label="RADIO">
+          <smi-radio-table 
+            data-hook="workpackage-page-radio-table" 
+            [data]="workpackage?.radios">
+          </smi-radio-table>
+        </mat-tab>
+        <mat-tab label="Change Summary">
+          <smi-change-table 
+            data-hook="workpackage-page-change-table" 
+            [data]="workpackage?.changes?.nodes?.additions">
+          </smi-change-table>
+        </mat-tab>
+      </mat-tab-group>
+      <br>
+      <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
+    </p>
+  </app-model-sidebar>
+</app-model-container>

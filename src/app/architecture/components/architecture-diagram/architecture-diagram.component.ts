@@ -27,9 +27,11 @@ export const viewLevelMapping = {
   [2]: Level.dataSet,
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
-  [9]: Level.map
+  [9]: Level.map,
+  [10]: Level.usage
 };
 
+// Default display settings
 const standardDisplayOptions = {
   name: true,
   description: false,
@@ -189,6 +191,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       diagramTemplatesService.getLinkMasterDataTemplate()
     );
 
+    this.diagram.linkTemplateMap.add(
+      '',
+      diagramTemplatesService.getLinkParentChildTemplate()
+    );
+
+    // Set group template
     this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();
 
     // Override command handler delete method to emit delete event to angular
@@ -203,27 +211,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       }
 
       if (deletedPart instanceof go.Node) {
-
-        /*
-        // FIXME: Temporary solution. Find out more stable more stable way to calculate node type
-        const nodeTypes = {
-          [1]: NodeType.System,
-          [2]: NodeType.Model,
-          [3]: NodeType.Dimension,
-          [4]: NodeType.Element
-        };*/
-
-        this.nodeDeleteRequested.emit({node: deletedPart.data, /*type: nodeTypes[this.viewLevel]*/});
+        this.nodeDeleteRequested.emit(deletedPart.data);
       } else { // part to be deleted is a link
-
-        /*
-        // FIXME: Temporary solution. Find out more stable more stable way to calculate node type
-        const linkTypes = {
-          [1]: LinkType.System,
-          [2]: LinkType.Model
-        };*/
-
-        this.linkDeleteRequested.emit({link: deletedPart.data /*, type: linkTypes[this.viewLevel]*/});
+        this.linkDeleteRequested.emit(deletedPart.data);
       }
 
     }.bind(this);
@@ -255,6 +245,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
   }
 
+  // Recalculate the area that the diagram takes up.
+  // Call when the diagram DIV changes size.
   updateDiagramArea(): void {
     this.diagram.requestUpdate();
   }

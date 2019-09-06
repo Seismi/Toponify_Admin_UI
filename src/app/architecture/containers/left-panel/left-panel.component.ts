@@ -7,12 +7,14 @@ import { ArchitecturePaletteComponent } from '../../components/architecture-pale
   styleUrls: ['./left-panel.component.scss']
 })
 export class LeftPanelComponent {
-
   @Input() workPackageIsEditable = false;
-  @Input() data: any;
+  @Input() workpackages: any;
   @Input() selectedLeftTab: number;
+  @Input() checked: boolean;
+  @Input() viewLevel: number;
+  @Input() canSelectWorkpackages: boolean;
 
-  constructor() { }
+  constructor() {}
 
   @Output()
   displayOptionsChangedEvent = new EventEmitter();
@@ -21,29 +23,32 @@ export class LeftPanelComponent {
   selectWorkPackage = new EventEmitter();
 
   @Output()
-  selectColor = new EventEmitter<object>();
+  selectColour = new EventEmitter<object>();
 
-  @ViewChild(ArchitecturePaletteComponent)
-  private paletteComponent: ArchitecturePaletteComponent;
+  @Output()
+  hideLeftPane = new EventEmitter();
 
-  displayOptionsChanged({event, option}: {event: any, option: string}) {
-    this.displayOptionsChangedEvent.emit({event, option});
-    this.paletteComponent.updateDisplayOptions(event, option);
+  @Output()
+  setWorkpackageEditMode = new EventEmitter<object>();
+
+  displayOptionsChanged({ event, option }: { event: any; option: string }) {
+    this.displayOptionsChangedEvent.emit({ event, option });
+  }
+
+  // FIXME: set proper type of workpackage
+  onSetWorkPackageEditMode(workpackage: any) {
+    this.setWorkpackageEditMode.emit(workpackage);
   }
 
   onSelectWorkPackage(id) {
     this.selectWorkPackage.emit(id);
   }
 
-  onSelectColor(event) {
-    this.selectColor.emit(event);
+  onSelectColour(event) {
+    this.selectColour.emit(event);
   }
-
-  @Output()
-  hideLeftPane = new EventEmitter();
 
   onHidePane() {
     this.hideLeftPane.emit();
   }
-
 }

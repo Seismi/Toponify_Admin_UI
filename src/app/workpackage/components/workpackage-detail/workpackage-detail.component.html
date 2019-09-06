@@ -1,63 +1,80 @@
 <form [formGroup]="group">
     <!-- Name -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Name:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="name">
-        </div>
-    </div>
+    <mat-form-field [ngClass]="{disabled: !isEditable}">
+        <input matInput placeholder="Name" formControlName="name" data-hook="workpackage-detail-name">
+        <mat-error>This field is required!</mat-error>
+    </mat-form-field>
 
     <!-- Description -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Description:</label>
-        <div class="col-sm-10">
-            <textarea type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="description"></textarea>
-        </div>
-    </div>
+    <mat-form-field [ngClass]="{disabled: !isEditable}">
+        <textarea matInput placeholder="Description" formControlName="description" data-hook="workpackage-detail-description"></textarea>
+    </mat-form-field>
 
-    <!-- Baseline -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">Baseline:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}">
-        </div>
-    </div>
+    <!-- Baseline Table -->
+    <smi-baseline-table
+        [ngClass]="{disabled: !isEditable}"
+        data-hook="workpackage-detail-baseline-table"
+        *ngIf="!modalMode" 
+        [data]="baselineTableData"
+        [isEditable]="isEditable"
+        (selectBaseline)="onSelectBaseline($event)"
+        (addBaseline)="onAddBaseline($event)"
+        (deleteBaseline)="onDeleteBaseline($event)"
+        [selectedBaseline]="selectedBaseline">
+    </smi-baseline-table>
 
-    <!-- Owners -->
-    <div formArrayName="owners" *ngFor="let owner of group.get('owners').controls; let i=index">
-        <div [formGroupName]="i">
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Owners:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="name">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Approvers -->
-    <div formArrayName="approvers" *ngFor="let approver of group.get('approvers').controls; let i=index">
-        <div [formGroupName]="i">
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Approvers:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" [ngClass]="{disabled: !isEditable}" formControlName="name">
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Owners Table -->
+    <smi-owners-table
+        [ngClass]="{disabled: !isEditable}"
+        data-hook="workpackage-detail-owners-table"
+        *ngIf="!modalMode" 
+        [data]="ownersTableData"
+        (addOwner)="onAddOwner($event)"
+        (deleteOwner)="onDeleteOwner($event)"
+        (selectOwner)="onSelectOwner($event)"
+        [isEditable]="isEditable"
+        [selectedOwner]="selectedOwner">
+    </smi-owners-table>
 
-    <!-- Form Actions -->
-    <div class="form-group">
+    <!-- Approvers Table -->
+    <smi-approvers-table
+        data-hook="workpackage-detail-approvers-table"
+        *ngIf="!modalMode" 
+        [data]="approversTableData">
+    </smi-approvers-table>
+
+    <!-- Select Baseline -->
+    <smi-wp-baseline-dropdown
+        data-hook="workpackage-detail-baseline-selection"
+        *ngIf="modalMode"
+        [data]="baseline"
+        [selectedBaseline]="selectedBaselines">
+    </smi-wp-baseline-dropdown>
+
+    <!-- Select Owners -->
+    <smi-wp-owners-dropdown
+        data-hook="workpackage-detail-owners-selection"
+        *ngIf="modalMode"
+        [data]="owners"
+        [selectedOwners]="selectedOwners">
+    </smi-wp-owners-dropdown>
+
+    <!-- Select Status -->
+    <mat-form-field [ngClass]="{disabled: disableStatusInput}" *ngIf="modalMode">
+        <input matInput placeholder="Status" formControlName="status" data-hook="workpackage-detail-status">
+    </mat-form-field>
+
+
+    <div class="form-group" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
-            <button type="button" mat-flat-button color="primary" (click)="onEdit()">Edit</button>
-            <button type="button" mat-raised-button color="primary">Open</button>
-            <button type="button" mat-raised-button color="primary">Copy</button>
-            <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
+            <button type="button" mat-flat-button color="primary" *ngIf="statusDraft" (click)="onEdit()" data-hook="workpackage-detail-edit">Edit</button>
+            <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-open">Open</button>
+            <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-copy">Copy</button>
+            <button type="button" mat-flat-button color="warn" (click)="onDelete()" data-hook="workpackage-detail-delete">Delete</button>
         </div>
         <div *ngIf="isEditable">
-            <button mat-flat-button color="primary" (click)="onSave()">Save</button>
-            <button mat-flat-button (click)="onCancel()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="onSave()" data-hook="workpackage-detail-save">Save</button>
+            <button mat-flat-button (click)="onCancel()" data-hook="workpackage-detail-cancel">Cancel</button>
         </div>
     </div>
 </form>

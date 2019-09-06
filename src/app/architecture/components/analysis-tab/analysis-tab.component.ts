@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'smi-analysis-tab',
@@ -7,13 +7,17 @@ import {Component, EventEmitter, Output} from '@angular/core';
 })
 export class AnalysisTabComponent {
 
+  @Input() checked: boolean;
+
   @Output()
   displayOptionsChanged = new EventEmitter();
+
+  @Input()
+  viewLevel: number;
 
   constructor() { }
 
   checkboxClicked(event: any, option: string): void {
     this.displayOptionsChanged.emit({event: event, option: option});
   }
-
 }

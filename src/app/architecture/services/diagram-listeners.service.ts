@@ -23,7 +23,8 @@ export class DiagramListenersService {
   ) {
   }
 
-  enableListeners(diagram: go.Diagram) {
+  // Add all needed listeners to the diagram
+  enableListeners(diagram: go.Diagram): void {
 
     diagram.addDiagramListener(
       'ChangedSelection',
@@ -105,15 +106,13 @@ export class DiagramListenersService {
 
   }
 
-  handleChangedSelection(event: go.DiagramEvent) {
+  handleChangedSelection(event: go.DiagramEvent): void {
     const parts = event.diagram.selection.toArray();
     this.nodeSelectedSource.next(parts);
   }
 
-  handleModelChange(event: go.ChangedEvent) {
+  handleModelChange(event: go.ChangedEvent): void {
     if (event.isTransactionFinished) {
-      console.log('Nodes:', event.model.nodeDataArray);
-      console.log('Links:', (event.model as go.GraphLinksModel).linkDataArray);
       this.modelChangedSource.next(event);
     }
   }

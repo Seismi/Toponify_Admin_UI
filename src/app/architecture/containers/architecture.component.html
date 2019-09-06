@@ -8,44 +8,55 @@
       (zoomIn)="onZoomIn($event)"
       (zoomOut)="onZoomOut($event)"
     ></app-zoom-actions>
-    <app-layout-actions *ngIf="!attributesView"
+    <app-layout-actions
+      *ngIf="!attributesView"
       (showGrid)="onShowGrid($event)"
       [showOrHideGrid]="showOrHideGrid"
       (zoomMap)="onZoomMap($event)"
-  ></app-layout-actions>
+    ></app-layout-actions>
   </app-toolbar-column>
   <app-toolbar-column>
     <smi-quicklinks-actions
       [gojsView]="true"
       [allowEditLayouts]="allowEditLayouts"
+      (editLayout)="allowEditLayout($event)"
       [allowEditWorkPackages]="allowEditWorkPackages"
       [workpackages]="workpackage$ | async"
       [scopes]="scopes$ | async"
       [layouts]="scopeDetails$ | async"
-      (editWorkPackage)="allowEditWorkPackage($event)"
-      (editLayout)="allowEditLayout($event)"
       (selectWorkPackage)="onSelectWorkPackage($event)"
       (selectScope)="onSelectScope($event)"
-      (selectLayout)="onSelectLayout($event)">
+      (selectLayout)="onSelectLayout($event)"
+    >
     </smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
 <app-model-container [topPadding]="64">
-  <smi-left-sidebar 
+  <smi-left-sidebar
     *ngIf="!showOrHideLeftPane"
     (leftTab)="openLeftTab($event)"
-    [workPackageIsEditable]="workPackageIsEditable">
+    [workPackageIsEditable]="workPackageIsEditable"
+  >
   </smi-left-sidebar>
-  <app-model-sidebar [minWidth]="430" [maxWidth]="1000" *ngIf="showOrHideLeftPane">
+  <app-model-sidebar
+    [minWidth]="430"
+    [maxWidth]="1000"
+    *ngIf="showOrHideLeftPane"
+  >
     <p class="leftPane">
       <smi-left-panel
-        [data]="workpackage$ | async"
+        [viewLevel]="viewLevel$ | async"
+        [workpackages]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
         (selectWorkPackage)="onSelectWorkPackage($event)"
-        (selectColor)="selectColorForWorkPackage($event)"
+        (selectColour)="selectColourForWorkPackage($event)"
+        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
         (hideLeftPane)="onHideLeftPane($event)"
-        [selectedLeftTab]="selectedLeftTab">
+        [selectedLeftTab]="selectedLeftTab"
+        [checked]="radioAlertChecked"
+        [canSelectWorkpackages]="canSelectWorkpackages"
+      >
       </smi-left-panel>
     </p>
   </app-model-sidebar>
@@ -58,28 +69,35 @@
         [allowMove]="allowMove"
         [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
-        [nodes]="nodes | layer:{byId: true}"
-        [links]="links | layer:{byId: false}"
+        [nodes]="nodes | layer: { byId: true }"
+        [links]="links | layer: { byId: false }"
         [workpackageDetail]="workpackageDetail"
-        [selectedWorkPackages]= "selectedWorkPackages$ | async"
+        [selectedWorkPackages]="selectedWorkPackages$ | async"
         [workpackages]="workpackage$ | async"
         [viewLevel]="viewLevel$ | async"
         (partsSelected)="partsSelected($event)"
         (modelChanged)="modelChanged($event)"
         (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
         (linkDeleteRequested)="handleLinkDeleteRequested($event)"
-        (updateNodeLocation)="handleUpdateNodeLocation($event)">
+        (updateNodeLocation)="handleUpdateNodeLocation($event)"
+      >
       </app-architecture-diagram>
     </div>
   </app-model-content>
-  <smi-right-sidebar 
-    data-hook="right-sidebar" 
-    *ngIf="!showOrHideRightPane" 
+  <smi-right-sidebar
+    data-hook="right-sidebar"
+    *ngIf="!showOrHideRightPane"
     (rightTab)="openRightTab($event)"
-    [objectSelected]="objectSelected"
-    [multipleSelected]="multipleSelected">
+    [architecturePage]="objectSelected"
+    [architectureRadioTab]="radioTab"
+    [architectureDetailsTab]="detailsTab"
+  >
   </smi-right-sidebar>
-  <app-model-sidebar [isLast]="true" [maxWidth]="600" *ngIf="showOrHideRightPane">
+  <app-model-sidebar
+    [isLast]="true"
+    [maxWidth]="600"
+    *ngIf="showOrHideRightPane"
+  >
     <p class="rightPane">
       <smi-right-panel
         [selectedRightTab]="selectedRightTab"
@@ -103,7 +121,7 @@
         (addRadio)="onAddRadio()"
         [multipleSelected]="multipleSelected"
         (addScope)="onAddScope($event)"
-    >
-    </smi-right-panel>
-  </app-model-sidebar>
+      >
+      </smi-right-panel></p
+  ></app-model-sidebar>
 </app-model-container>

@@ -11,10 +11,10 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 const $ = go.GraphObject.make;
 
 // Correct GoJS shapes with unwanted shadow behaviour
-export function updateShapeShadows() {
+export function updateShapeShadows(): void {
   const shapesToCorrect = ['Cube2', 'Cylinder1', 'Process', 'InternalStorage'];
 
-  shapesToCorrect.forEach(function(figure) {
+  shapesToCorrect.forEach(function(figure: string) {
 
     let figureDefinition = go.Shape.getFigureGenerators().getValue(figure);
     const definitionCopy = (figureDefinition as (a: go.Shape, b: number, c: number) => go.Geometry).bind(null);
@@ -61,6 +61,11 @@ export class CustomLink extends go.Link {
 
   // Override computePoints method
   public computePoints(): boolean {
+
+    // Failsafe - call ordinary computePoints process for any links that are partially disconnected and have no route
+    if ((!this.fromNode || !this.toNode) && this.points.count === 0) {
+      return go.Link.prototype.computePoints.call(this);
+    }
 
     // Leave link route as is if link is disconnected - prevents bug where links dragged from palette were flipping
     if (!this.fromNode && !this.toNode) {return true; }
@@ -109,6 +114,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that the diagram should be zoomed in or out
   private zoomSource = new Subject();
   public zoom$ = this.zoomSource.asObservable();
+  // Observable to indicate that the radio alert should be toggled
+  private showHideRadioAlertSource = new Subject();
+  public showHideRadioAlert$ = this.showHideRadioAlertSource.asObservable();
 
   constructor(
     public filterService: FilterService,
@@ -156,8 +164,22 @@ export class GojsCustomObjectsService {
         $(go.TextBlock, 'show / hide RADIO alert', {}),
         {
           click: function(event, object) {
+            thisService.showHideRadioAlertSource.next();
             const modelData = event.diagram.model.modelData;
             event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
+
+            // Redo layout for node usage view after updating RADIO alert display setting
+            if (thisService.filterService.getFilter().filterLevel === Level.usage) {
+              event.diagram.layout.isValidLayout = false;
+            }
+          }
+        }
+      ),
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Reorganise'),
+        {
+          click: function(event, object) {
+            thisService.diagramChangesService.reorganise(event.diagram);
           }
         }
       )
@@ -169,6 +191,7 @@ export class GojsCustomObjectsService {
 
     const thisService = this;
     const diagramChangesService = this.diagramChangesService;
+    const diagramLevelService = this.diagramLevelService;
 
     return $(
       'ContextMenu',
@@ -229,6 +252,7 @@ export class GojsCustomObjectsService {
             !object.group;
         })
       ),
+      // Return to architecture view from dependency analysis view
       $('ContextMenuButton',
         $(go.TextBlock, 'Return to Architecture View', {}),
         {
@@ -243,6 +267,19 @@ export class GojsCustomObjectsService {
             event.diagram.nodes.any(function(node) {
               return !node.visible;
             });
+        })
+      ),
+      // Go to node usage view, for the current node
+      $('ContextMenuButton',
+        $(go.TextBlock, 'Show Use Across Levels', {}),
+        {
+          click: function(event, object) {
+            diagramLevelService.displayUsageView(event, (object.part as go.Adornment).adornedObject);
+          }
+        },
+        new go.Binding('visible', '', function(object, event) {
+          // Only show the node usage view option for nodes
+          return event.diagram.findNodeForData(object) !== null;
         })
       )
     );

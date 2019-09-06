@@ -1,78 +1,59 @@
-import * as go from 'gojs';
-import {Injectable} from '@angular/core';
-import {Level, DiagramLevelService} from './diagram-level.service';
-import {FilterService} from './filter.service';
+import { Injectable } from '@angular/core';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
-import { Node } from '@app/architecture/store/models/node.model.ts';
+import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { AddWorkPackageNode, UpdateWorkPackageNode} from '@app/workpackage/store/actions/workpackage-node.actions';
+import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { select, Store } from '@ngrx/store';
+import * as go from 'gojs';
 import { BehaviorSubject } from 'rxjs';
+import { State as WorkPackageState } from '../../workpackage/store/reducers/workpackage.reducer';
+import { DiagramLevelService, Level } from './diagram-level.service';
+import { FilterService } from './filter.service';
 
 const $ = go.GraphObject.make;
-
-// TEMPORARY HARD CODED COLOURS FOR WORK PACKAGES
-const workPackageColours = [
-  '#f44336',
-  '#E91E63',
-  '#9C27B0',
-  '#673AB7',
-  '#3F51B5',
-  '#2196F3',
-  '#03A9F4',
-  '#009688',
-  '#4CAF50',
-  '#8BC34A',
-  '#CDDC39',
-  '#FFEB3B',
-  '#FFC107',
-  '#FF9800',
-  '#FF5722',
-  '#795548',
-  '#9E9E9E',
-  '#607D8B'
-];
 
 @Injectable()
 export class DiagramChangesService {
 
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
 
-  // Colors for work packages
-  colors = workPackageColours;
+  workpackages = [];
 
   constructor(
     public diagramLevelService: DiagramLevelService,
-    public filterService: FilterService
+    public filterService: FilterService,
+    private workpackageStore: Store<WorkPackageState>,
   ) {
+    this.workpackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => this.workpackages = workpackages);
   }
 
   // Add newly created nodes to the back end
   //  -event
   //    -subject: set of nodes to add to the database
-  createObjects(event: any): void {
+  createObjects(event: go.DiagramEvent): void {
 
     const currentLevel = this.diagramLevelService.filter.getValue().filterLevel;
 
-    // Only implemented for system, data set and dimension views so far
-    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
+    const shortEditWorkpackage = {
+      id: this.workpackages[0].id,
+      name: this.workpackages[0].name,
+      description: this.workpackages[0].description,
+      hasErrors: this.workpackages[0].hasErrors,
+      status: this.workpackages[0].status
+    };
 
-    event.subject.each(function(part: go.Part) {
+    event.subject.each((part: go.Part) => {
+
+      // Set workpackage currently being edited as "impacted by" workpackage for the part
+      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
-
-        // Create copy of node data with route in format required for back end
-        const sendData = Object.assign({}, part.data);
-
-        // Replace locations. Will need to be updated to replace individual location for the current view when views are implemented.
-        // *REPLACE* sendData.location = [{view: 'Default', locationCoordinates: part.data.location}];
-
-        // Add node to back end database
-        /* *REPLACE*
-        this.store.dispatch(new addNodeActionMapping[currentLevel]({
-          [currentLevel.toLowerCase()]: {
-            data: sendData
-          },
-          versionId: this.versionId
-        }));*/
+        const node = Object.assign({}, part.data);
+        node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
+        this.workpackages.forEach(workpackage => {
+            this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node }));
+        });
       }
     });
   }
@@ -80,7 +61,7 @@ export class DiagramChangesService {
   // Updates the properties associated with a node or link
   //  -part: part to update
   //  -data: object containing new property values to apply
-  updatePartData(part, data) {
+  updatePartData(part: go.Part, data: any) {
 
     // Iterate through data to set each property against the part
     Object.keys(data).forEach(function(property) {
@@ -95,6 +76,34 @@ export class DiagramChangesService {
         part.diagram.model.setDataProperty(part.data, property, data[property]);
       }
     }.bind(this));
+
+    // Add currently editing workpackage to array of workpackages impacted by if not there already
+    if (part.data.impactedByWorkPackages.every(function(workpackage) {
+        return workpackage.id !== this.workpackages[0].id;
+      }.bind(this))
+    ) {
+      part.diagram.model.setDataProperty(part.data,
+        'impactedByWorkPackages',
+        part.data.impactedByWorkPackages.concat([this.workpackages[0]])
+      );
+    }
+
+    // Update part data in backend
+    if (part instanceof go.Node) {
+      this.workpackageStore.dispatch(new UpdateWorkPackageNode(
+        {workpackageId: this.workpackages[0].id, nodeId: data.id, node: data}
+      ));
+    } else if (part instanceof go.Link) {
+      this.workpackageStore.dispatch(new UpdateWorkPackageLink(
+        {workpackageId: this.workpackages[0].id, linkId: data.id, link: data}
+      ));
+    }
+
+  }
+
+  // Update radio count after new radio is created
+  updateRadioCount(part: go.Part) {
+    part.diagram.model.setDataProperty(part.data, 'relatedRadioCount', part.data.relatedRadioCount + 1);
   }
 
   // Update position of links or nodes in the back end
@@ -146,18 +155,23 @@ export class DiagramChangesService {
     const model = diagram.model;
     model.setDataProperty(model.modelData, option, event.checked);
 
-    // Update the route of links after display change
-    diagram.links.each(function(link) {
-      // Set data property to indicate that link route should be updated
-      diagram.model.setDataProperty(link.data, 'updateRoute', true);
-      link.updateRoute();
-    }.bind(this));
+    // Redo layout for node usage view after updating display options
+    if (this.filterService.getFilter().filterLevel === Level.usage) {
+      diagram.layout.isValidLayout = false;
+    } else {
+      // Update the route of links after display change
+      diagram.links.each(function(link) {
+        // Set data property to indicate that link route should be updated
+        diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.updateRoute();
+      }.bind(this));
+    }
   }
 
   // Update back end when a link is connected to a node
   //  -event
   //    -subject: link that has been connected
-  updateLinkConnections(event: any): void {
+  updateLinkConnections(event: go.DiagramEvent): void {
 
     const draggingTool = event.diagram.toolManager.draggingTool;
     const relinkingTool = event.diagram.toolManager.relinkingTool;
@@ -165,32 +179,35 @@ export class DiagramChangesService {
     const link = event.subject;
     const currentLevel = this.filterService.filter.getValue().filterLevel;
 
-    // Only implemented for system, data set and dimension views so far
-    if (![Level.system, Level.dataSet, Level.dimension].includes(currentLevel)) {return ; }
-
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
 
       // Update link route
+      link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
+
+      // Add currently editing workpackage to array of workpackages impacted by if not there already
+      if (link.data.impactedByWorkPackages.every(function(workpackage) {
+          return workpackage.id !== this.workpackages[0].id;
+        }.bind(this))
+      ) {
+        link.diagram.model.setDataProperty(link.data,
+          'impactedByWorkPackages',
+          link.data.impactedByWorkPackages.concat([this.workpackages[0]])
+        );
+      }
 
       // Create link if not already in database
       if (link.data.isTemporary) {
 
         // Create copy of link data with route in format required for back end
-        const sendData = Object.assign({}, link.data);
+        const newLink = Object.assign({}, link.data);
 
-        // Only save route if using standard display settings
-        // *REPLACE* sendData.route = this.standardDisplay ? [{view: 'Default', points: link.data.route}] : [];
+        newLink.route = [{ view: 'Default', points: link.data.route}];
 
-        // Add link to database
-        /* *REPLACE*
-        this.store.dispatch(new addLinkActionMapping[currentLevel]({
-          [currentLevel.toLowerCase() + 'Link']: {
-            data: sendData
-          },
-          versionId: this.versionId
-        }));*/
+        this.workpackages.forEach(workpackage => {
+          this.workpackageStore.dispatch(new AddWorkPackageLink({ workpackageId: workpackage.id, link: newLink }));
+        });
 
         // Flag that link now exists in the database
         link.data.isTemporary = false;
@@ -200,25 +217,22 @@ export class DiagramChangesService {
 
         // Prevent process from running twice when updating both ends of a link by dragging
         if (!draggingTool.isActive && !relinkingTool.isActive) {
-          return ;
+          return;
         }
+        // FIXME: temp solution, needs to be fixed
+        const sourceProp = (event.diagram.model as any).linkFromKeyProperty;
+        const targetProp = (event.diagram.model as any).linkToKeyProperty;
 
-        // Source/target properties
-        const sourceProp = event.diagram.model.linkFromKeyProperty;
-        const targetProp = event.diagram.model.linkToKeyProperty;
+        const updatedLink = {
+          id: link.key,
+          [sourceProp]: link.fromNode.key,
+          [targetProp]: link.toNode.key,
+          route: [{ view: 'Default', points: link.data.route }]
+        };
 
-        // Update link source and target in the database
-        /* *REPLACE*
-        this.store.dispatch(new updateLinkActionMapping[currentLevel]({
-          [currentLevel.toLowerCase() + 'Link']: {
-            data: {id: link.key,
-              [sourceProp]: link.fromNode.key,
-              [targetProp]: link.toNode.key,
-              route: this.standardDisplay ? [{view: 'Default', points: link.data.route}] : []
-            }
-          },
-          versionId: this.versionId
-        }));*/
+        this.workpackages.forEach(workpackage => {
+          this.workpackageStore.dispatch(new UpdateWorkPackageLink({ workpackageId: workpackage.id, linkId: link.key, link: updatedLink }));
+        });
       }
 
       /* When a link is newly connected between two nodes, other links between the same two nodes are
@@ -249,7 +263,6 @@ export class DiagramChangesService {
     if (nodes && nodes.length > 0) {
 
       const filter = this.filterService.filter.getValue();
-      const currentLevel = filter.filterLevel.toLowerCase();
 
       let nodeArray = JSON.parse(JSON.stringify(nodes));
 
@@ -285,7 +298,7 @@ export class DiagramChangesService {
   //  -diagram - the diagram to update
   //  -links - the array of links from the architecture to include
   //  -selectedWorkPackages - the array of currently selected work packages to apply link changes from
-  updateLinks(diagram, links) {
+  updateLinks(diagram, links: go.Link[]): void {
 
     if (links && links.length > 0) {
 
@@ -319,7 +332,7 @@ export class DiagramChangesService {
     fromport: go.GraphObject,
     tonode: go.Node,
     toport: go.GraphObject,
-    oldlink: go.Link) {
+    oldlink: go.Link): boolean {
 
     // Only validate links that are connected at both ends
     if (!fromnode || !tonode) {
@@ -362,7 +375,7 @@ export class DiagramChangesService {
   }
 
   // Hide all nodes except the specified node and all nodes directly linked to it
-  hideNonDependencies(depNode: go.Node) {
+  hideNonDependencies(depNode: go.Node): void {
 
     depNode.diagram.startTransaction('Analyse Dependencies');
 
@@ -393,7 +406,7 @@ export class DiagramChangesService {
   }
 
   // Show all nodes that are directly linked to the specified node
-  showDependencies(depNode: go.Node) {
+  showDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Show Dependencies');
 
     // Get linked nodes and ensure they are visible
@@ -412,7 +425,7 @@ export class DiagramChangesService {
   }
 
   // Set all nodes in the specified diagram to visible
-  showAllNodes(diagram) {
+  showAllNodes(diagram: go.Diagram): void {
     diagram.startTransaction('Show All Nodes');
 
     // Set all nodes to visible
@@ -427,5 +440,21 @@ export class DiagramChangesService {
 
     diagram.commitTransaction('Show All Nodes');
 
+  }
+
+  // Rerun the diagram's layout for all nodes and links
+  reorganise(diagram) {
+    diagram.startTransaction('Clear set positions');
+    diagram.nodes.each(function(node) {
+      diagram.model.setDataProperty(node.data, 'locationMissing', true);
+    });
+    diagram.links.each(function(link) {
+      diagram.model.setDataProperty(link.data, 'routeMissing', true);
+    });
+    diagram.commitTransaction('Clear set positions');
+    diagram.layout.isValidLayout = false;
+
+    // Placeholder - update all node and link positions in back end for current layout
+    // Needs store update before implementation
   }
 }

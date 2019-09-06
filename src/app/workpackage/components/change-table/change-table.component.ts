@@ -1,33 +1,23 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
-
-export interface PeriodicElement {
-    change: string;
-    layer: string;
-    object: string;
-  }
-  
-  const ELEMENT_DATA: PeriodicElement[] = [
-    {layer: 'System Link', object: 'ERP to HFM actuals', change: 'New'},
-    {layer: 'System', object: 'HFM', change: 'Update'}
-  ];
+import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-change-table',
   templateUrl: './change-table.component.html',
   styleUrls: ['./change-table.component.scss']
 })
-export class ChangeTableComponent  {
-
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
-
-    ngOnInit() {
+export class ChangeTableComponent {
+  @Input()
+  set data(data: any[]) {
+    if(data) {
+      this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
     }
-  
-    displayedColumns: string[] = ['change', 'layer', 'object'];
-    dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  }
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  displayedColumns: string[] = ['change', 'layer', 'object'];
+  public dataSource: MatTableDataSource<WorkPackageDetail>;
 }

@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { WorkPackageEntitiesHttpParams, WorkPackageApiRequest,
-  WorkPackageEntitiesResponse } from '../store/models/workpackage.models';
+import { 
+  WorkPackageEntitiesHttpParams, 
+  WorkPackageApiRequest,
+  WorkPackageEntitiesResponse, 
+  OwnersEntityOrApproversEntity
+} from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
 
 @Injectable()
@@ -13,6 +17,12 @@ export class WorkPackageService {
   };
 
   constructor(public http: HttpClient) { }
+
+  // FIXME: set type
+  getWorkPackageAvailability(queryParams: any): Observable<any> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/workpackages/selector/availability`, { params: params });
+  }
 
   getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
@@ -27,13 +37,23 @@ export class WorkPackageService {
     return this.http.post<any>(`/workpackages`, entity, this.httpOptions);
   }
 
-  updateWorkPackageEntity(entityId: string, entity: WorkPackageApiRequest): Observable<any> {
-    return this.http.put<any>(`/workpackages/${entityId}`, entity, this.httpOptions);
+  updateWorkPackageEntity(entityId: string, workPackage: WorkPackageApiRequest): Observable<any> {
+    return this.http.put<any>(`/workpackages/${entityId}`, workPackage, this.httpOptions);
   }
 
   deleteWorkPackageEntity(entityId: string): Observable<any> {
     return this.http.delete<any>(`/workpackages/${entityId}`);
   }
+
+  addOwner(entity: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/owners/${ownerId}`, entity, this.httpOptions);
+  }
+
+  deleteOwner(workPackageId: string, ownerId: string): Observable<any> {
+    return this.http.delete<any>(`/workpackages/${workPackageId}/owners/${ownerId}`);
+  }
+
+  // TODO: move into sharable service
 
   Workpackage(workPackageId: string): Observable<any> {
     return this.http.post<any>(`/workpackages/${workPackageId}/submit`, {});
@@ -99,9 +119,17 @@ export class WorkPackageService {
   // TODO: missing details DELETE /workpackages/{workPackageId}/objectives/{radioId}
   // TODO: missing details POST /workpackages/{workPackageId}/owners/{ownerId}
   // TODO: missing details DELETE /workpackages/{workPackageId}/owners/{ownerId}
-
   toHttpParams(obj: Object): HttpParams {
-    return Object.getOwnPropertyNames(obj)
-        .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
+    let httpParams = new HttpParams();
+    Object.getOwnPropertyNames(obj).forEach(key => {
+      if (Array.isArray(obj[key])) {
+        obj[key].forEach(item => {
+          httpParams = httpParams.append(`${key}[]`, item);
+        });
+      } else {
+        httpParams = httpParams.set(key, obj[key]);
+      }
+    });
+    return httpParams;
   }
 }

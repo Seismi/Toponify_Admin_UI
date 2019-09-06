@@ -1,0 +1,33 @@
+table {
+    width: 100%;
+    border: solid 1px #ddd;
+    margin-bottom: 20px;
+}
+
+tr.mat-header-row {
+    height: 35px;
+}
+
+tr.mat-row {
+    height: 35px;
+    cursor: pointer;
+}
+
+.mat-icon {
+    float: right;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.highlight {
+    background-color: #efefef;
+}
+
+span {
+    line-height: 2;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.2;
+}

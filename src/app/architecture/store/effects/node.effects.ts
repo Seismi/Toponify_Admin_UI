@@ -44,8 +44,8 @@ export class NodeEffects {
   loadNode$ = this.actions$.pipe(
     ofType<NodeActions.LoadNode>(NodeActionTypes.LoadNode),
     map(action => action.payload),
-    switchMap((id: string) => {
-      return this.nodeService.getNode(id).pipe(
+    switchMap((payload: { id: string, queryParams?: GetNodesRequestQueryParams }) => {
+      return this.nodeService.getNode(payload.id, payload.queryParams).pipe(
         switchMap((node: NodeDetailApiResponse) => [new NodeActions.LoadNodeSuccess(node.data)]),
         catchError((error: Error) => of(new NodeActions.LoadNodeFailure(error)))
       );
@@ -72,6 +72,18 @@ export class NodeEffects {
       return this.nodeService.getMapView(id).pipe(
         switchMap((data: any) => [new NodeActions.LoadMapViewSuccess(data.data)]),
         catchError((error: Error) => of(new NodeActions.LoadMapViewFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadNodeUsageView$ = this.actions$.pipe(
+    ofType<NodeActions.LoadNodeUsageView>(NodeActionTypes.LoadNodeUsageView),
+    map(action => action.payload),
+    switchMap((payload: {node: string, query: {workPackageQuery: string[]}}) => {
+      return this.nodeService.getNodeUsageView(payload.node, payload.query).pipe(
+        switchMap((data: any) => [new NodeActions.LoadNodeUsageViewSuccess(data.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadNodeUsageViewFailure(error)))
       );
     })
   );

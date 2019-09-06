@@ -75,6 +75,18 @@ export class NodeEffects {
   );
 
   @Effect()
+  loadNodeUsageView$ = this.actions$.pipe(
+    ofType<NodeActions.LoadNodeUsageView>(NodeActionTypes.LoadNodeUsageView),
+    map(action => action.payload),
+    switchMap((payload: string) => {
+      return this.nodeService.getNodeUsageView(payload).pipe(
+        switchMap((data: any) => [new NodeActions.LoadNodeUsageViewSuccess(data.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadNodeUsageViewFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   updateLinks$ = this.actions$.pipe(
     ofType<NodeActions.UpdateLinks>(NodeActionTypes.UpdateLinks),
     map(action => action.payload),

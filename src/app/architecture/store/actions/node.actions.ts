@@ -19,6 +19,9 @@ export enum NodeActionTypes {
   LoadMapView = '[Node] Load Map View',
   LoadMapViewSuccess = '[Node] Load Map View Success',
   LoadMapViewFailure = '[Node] Load Map View Fail',
+  LoadNodeUsageView = '[Node] Load Node Usage View',
+  LoadNodeUsageViewSuccess = '[Node] Load Node Usage View Success',
+  LoadNodeUsageViewFailure = '[Node] Load Node Usage View Fail',
   UpdateNode = '[Node] Update node',
   UpdateNodeSuccess = '[Node] Update node Success',
   UpdateNodeFailure = '[Node] Update node Fail',
@@ -44,7 +47,17 @@ export class LoadNodesFailure implements Action {
 
 export class LoadNode implements Action {
   readonly type = NodeActionTypes.LoadNode;
-  constructor(public payload: string) { }
+  constructor(public payload: { id: string, queryParams?: any }) { }
+}
+
+export class LoadNodeSuccess implements Action {
+  readonly type = NodeActionTypes.LoadNodeSuccess;
+  constructor(public payload: NodeDetail) { }
+}
+
+export class LoadNodeFailure implements Action {
+  readonly type = NodeActionTypes.LoadNodeFailure;
+  constructor(public payload: Error) { }
 }
 
 export class LoadMapView implements Action {
@@ -62,13 +75,18 @@ export class LoadMapViewFailure implements Action {
   constructor(public payload: Error) { }
 }
 
-export class LoadNodeSuccess implements Action {
-  readonly type = NodeActionTypes.LoadNodeSuccess;
-  constructor(public payload: NodeDetail) { }
+export class LoadNodeUsageView implements Action {
+  readonly type = NodeActionTypes.LoadNodeUsageView;
+  constructor(public payload: {node: string, query: {workPackageQuery: string[]}}) { }
 }
 
-export class LoadNodeFailure implements Action {
-  readonly type = NodeActionTypes.LoadNodeFailure;
+export class LoadNodeUsageViewSuccess implements Action {
+  readonly type = NodeActionTypes.LoadNodeUsageViewSuccess;
+  constructor(public payload: any) { }
+}
+
+export class LoadNodeUsageViewFailure implements Action {
+  readonly type = NodeActionTypes.LoadNodeUsageViewFailure;
   constructor(public payload: Error) { }
 }
 
@@ -150,6 +168,9 @@ export type NodeActionsUnion =
   | LoadMapView
   | LoadMapViewSuccess
   | LoadMapViewFailure
+  | LoadNodeUsageView
+  | LoadNodeUsageViewSuccess
+  | LoadNodeUsageViewFailure
   | UpdateNode
   | UpdateNodeSuccess
   | UpdateNodeFailure

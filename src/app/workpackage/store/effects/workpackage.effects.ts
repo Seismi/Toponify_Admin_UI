@@ -12,13 +12,19 @@ import {
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
-  LoadWorkPackage, LoadWorkPackageSuccess } from '../actions/workpackage.actions';
+  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess,
+  DeleteOwnerFailure, GetWorkpackageAvailability, GetWorkpackageAvailabilitySuccess,
+  GetWorkpackageAvailabilityFailure } from '../actions/workpackage.actions';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
-  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse } from '../models/workpackage.models';
+  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity,
+  WorkPackageEntity } from '../models/workpackage.models';
+import { State as WorkpackageState } from '../reducers/workpackage.reducer';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class WorkPackageEffects {
   constructor(
+    private store$: Store<WorkpackageState>,
     private actions$: Actions,
     private workpackageService: WorkPackageService
   ) {}
@@ -29,7 +35,9 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((payload: WorkPackageEntitiesHttpParams) => {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
-        switchMap((data: WorkPackageEntitiesResponse) => [new LoadWorkPackagesSuccess(data)]),
+        switchMap((data: WorkPackageEntitiesResponse) => [
+          new LoadWorkPackagesSuccess(data),
+          new GetWorkpackageAvailability({workPackageQuery: []})]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
       );
     })
@@ -59,14 +67,13 @@ export class WorkPackageEffects {
     })
   );
 
-
   @Effect()
   updateWorkPackageEntity$ = this.actions$.pipe(
     ofType<UpdateWorkPackageEntity>(WorkPackageActionTypes.UpdateWorkPackage),
     map(action => action.payload),
-    switchMap((payload: any) => {
-      return this.workpackageService.updateWorkPackageEntity(payload.entityId, payload.entity).pipe(
-        switchMap((data: any) => [new UpdateWorkPackageEntitySuccess(data)]),
+    switchMap((payload: {workPackage: WorkPackageApiRequest, entityId: string}) => {
+      return this.workpackageService.updateWorkPackageEntity(payload.entityId, payload.workPackage).pipe(
+        switchMap((response: WorkPackageApiResponse) => [new UpdateWorkPackageEntitySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageEntityFailure(error)))
       );
     })
@@ -83,4 +90,41 @@ export class WorkPackageEffects {
       );
     })
   );
+
+  @Effect()
+  addOwner$ = this.actions$.pipe(
+    ofType<AddOwner>(WorkPackageActionTypes.AddOwner),
+    map(action => action.payload),
+    mergeMap((payload: { owners: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string }) => {
+      return this.workpackageService.addOwner(payload.owners, payload.workPackageId, payload.ownerId).pipe(
+        mergeMap((response: any) => [new AddOwnerSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteOwner$ = this.actions$.pipe(
+    ofType<DeleteOwner>(WorkPackageActionTypes.DeleteOwner),
+    map(action => action.payload),
+    switchMap((payload: {workPackageId: string, ownerId: string}) => {
+      return this.workpackageService.deleteOwner(payload.workPackageId, payload.ownerId).pipe(
+        switchMap((response: any) => [new DeleteOwnerSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  getWorkpackageAvailability$ = this.actions$.pipe(
+    ofType<GetWorkpackageAvailability>(WorkPackageActionTypes.GetWorkpackageAvailability),
+    map(action => action.payload),
+    switchMap((params: any) => {
+      return this.workpackageService.getWorkPackageAvailability(params).pipe(
+        switchMap((response: any) => [new GetWorkpackageAvailabilitySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new GetWorkpackageAvailabilityFailure(error)))
+      );
+    })
+  );
+
 }
