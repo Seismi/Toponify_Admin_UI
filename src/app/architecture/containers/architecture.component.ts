@@ -534,6 +534,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   subscribeForNodesLinksData() {
+    debugger;
 
     this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
       // Get correct location for nodes, based on selected layout
