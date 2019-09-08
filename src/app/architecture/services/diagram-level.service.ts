@@ -110,15 +110,11 @@ export class DiagramLevelService implements OnDestroy {
   //    object: node to display the children of
   changeLevelWithFilter(_event: any, object: go.Node): void {
     let newLevel: Level;
-    if ([nodeCategories.transactional,
-      nodeCategories.analytical,
-      nodeCategories.file,
-      nodeCategories.reporting,
-      nodeCategories.masterData].includes(object.data.category)) {
+    if (object.data.layer === layers.system) {
       newLevel = Level.dataSet;
-    } else if ([nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData].includes(object.data.category)) {
+    } else if (object.data.layer === layers.dataSet) {
       newLevel = Level.dimension;
-    } else if (object.data.category === nodeCategories.dimension) {
+    } else if (object.data.layer === layers.dimension) {
       newLevel = Level.reportingConcept;
     } else {
       return;
