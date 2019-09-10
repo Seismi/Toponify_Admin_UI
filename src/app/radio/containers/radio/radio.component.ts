@@ -23,7 +23,6 @@ export class RadioComponent implements OnInit {
 
   radio$: Observable<RadioEntity[]>;
   loading$: Observable<boolean>;
-  radioId: string;
 
   constructor(
     private userStore: Store<UserState>,
@@ -34,6 +33,7 @@ export class RadioComponent implements OnInit {
 
   ngOnInit() {
     this.userStore.dispatch(new LoadUsers({}));
+    
     this.store.dispatch(new LoadRadios({}));
     this.radio$ = this.store.pipe(select(getRadioEntities));
   }

@@ -111,6 +111,7 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       return {
         ...state,
         loading: false,
+        selectedRadio: action.payload,
         entities: state.entities.map(entity =>
           entity.id === action.payload.id
             ? { ...entity, ...action.payload }

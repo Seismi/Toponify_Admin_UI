@@ -8,10 +8,14 @@ import { FormGroup } from '@angular/forms';
 })
 
 export class ReplyTextComponent {
-
-  @Input() replyMode = false;
-  @Input() rows:number = 4;
   @Input() group: FormGroup;
+  @Input() replyMode: boolean = false;
+  @Input() rows: number = 4;
+  disabled: boolean = true;
+
+  onType(event) {
+    (event.length) ? this.disabled = false : this.disabled = true;
+  }
 
   @Output()
   sendReply = new EventEmitter();
@@ -19,5 +23,4 @@ export class ReplyTextComponent {
   onSend() {
     this.sendReply.emit();
   }
-
 }

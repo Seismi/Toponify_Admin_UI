@@ -25,6 +25,10 @@ export class RadioDetailComponent {
   categories = Constants.RADIO_CATEGORIES;
   status = Constants.RADIO_STATUS;
 
+  compareUsers(u1: any, u2: any): boolean {
+    return u1.name === u2.name && u1.id === u2.id;
+  }
+
   constructor() {}
 
   @Output()
