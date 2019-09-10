@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
@@ -11,10 +11,13 @@ export class WorkPackageTabTableComponent {
   @Input()
   set data(data: WorkPackageEntity[]) {
     this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
+    this.dataSource.paginator = this.paginator;
   }
 
   @Input()
   canSelectWorkpackage: boolean;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
