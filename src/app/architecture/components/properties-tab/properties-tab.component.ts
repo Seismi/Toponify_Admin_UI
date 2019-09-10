@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 
@@ -8,6 +8,9 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   styleUrls: ['./properties-tab.component.scss']
 })
 export class PropertiesTabComponent {
+  
+  @Input() workPackageIsEditable: boolean;
+
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
@@ -17,5 +20,12 @@ export class PropertiesTabComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  displayedColumns: string[] = ['name', 'value'];
+  displayedColumns: string[] = ['name', 'value', 'edit'];
+
+  @Output()
+  editProperties = new EventEmitter();
+
+  onEdit(id: string) {
+    this.editProperties.emit(id);
+  }
 }

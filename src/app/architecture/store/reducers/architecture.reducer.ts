@@ -151,6 +151,26 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
       };
     }
 
+    case NodeActionTypes.UpdateCustomProperty: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.UpdateCustomPropertySuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case NodeActionTypes.UpdateCustomPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
     default: {
       return state;
     }
