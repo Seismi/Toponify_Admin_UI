@@ -5,7 +5,8 @@ import {
   UserDetails, 
   UserEntitiesHttpParams, 
   User, 
-  RolesEntity
+  RolesEntity,
+  UserPassword
 } from '../models/user.model';
 
 
@@ -32,7 +33,11 @@ export enum UserActionTypes {
 
   LoadUserRoles = '[User] Load Roles',
   LoadUserRolesSuccess = '[User] Load Roles Success',
-  LoadUserRolesFailure = '[User] Load Roles Fail'
+  LoadUserRolesFailure = '[User] Load Roles Fail',
+
+  UpdateUserPassword = '[User] Update User Password',
+  UpdateUserPasswordSuccess = '[User] Update User Password Success',
+  UpdateUserPasswordFailure = '[User] Update User Password Failure'
 }
 
 export class LoadUsers implements Action {
@@ -130,6 +135,22 @@ export class LoadUserRolesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) { }
 }
 
+
+export class UpdateUserPassword implements Action {
+  readonly type = UserActionTypes.UpdateUserPassword;
+  constructor(public payload: UserPassword) { }
+}
+
+export class UpdateUserPasswordSuccess implements Action {
+  readonly type = UserActionTypes.UpdateUserPasswordSuccess;
+  constructor(public payload: any) { }
+}
+
+export class UpdateUserPasswordFailure implements Action {
+  readonly type = UserActionTypes.UpdateUserPasswordFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
 export type UserActionsUnion =
   | LoadUsers
   | LoadUsersSuccess
@@ -148,4 +169,7 @@ export type UserActionsUnion =
   | DeleteUserFailure
   | LoadUserRoles
   | LoadUserRolesSuccess
-  | LoadUserRolesFailure;
+  | LoadUserRolesFailure
+  | UpdateUserPassword
+  | UpdateUserPasswordSuccess
+  | UpdateUserPasswordFailure;

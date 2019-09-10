@@ -1,4 +1,4 @@
-import { User, RolesEntity} from '../models/user.model';
+import { User, RolesEntity, UserPassword} from '../models/user.model';
 import { UserActionTypes, UserActionsUnion } from '../actions/user.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -50,7 +50,8 @@ export function reducer(state = initialState, action: UserActionsUnion): State {
     case UserActionTypes.LoadUser:
     case UserActionTypes.AddUser:
     case UserActionTypes.UpdateUser:
-    case UserActionTypes.DeleteUser:  {
+    case UserActionTypes.DeleteUser:
+    case UserActionTypes.UpdateUserPassword:  {
       return {
         ...state,
         loading: true
@@ -75,7 +76,8 @@ export function reducer(state = initialState, action: UserActionsUnion): State {
     }
 
     case UserActionTypes.AddUserFailure:
-    case UserActionTypes.UpdateUserFailure: {
+    case UserActionTypes.UpdateUserFailure:
+    case UserActionTypes.UpdateUserPasswordFailure: {
       return {
         ...state,
         error: action.payload,
@@ -98,6 +100,19 @@ export function reducer(state = initialState, action: UserActionsUnion): State {
       };
     }
 
+    case UserActionTypes.UpdateUserPasswordSuccess: {
+      const updatedEntity = action.payload.data;
+      return {
+        ...state,
+        entities: state.entities.map(entity => {
+          if (entity.id === updatedEntity.id) {
+            return updatedEntity;
+          }
+          return entity;
+        }),
+        loading: false
+      }
+    }
 
     case UserActionTypes.DeleteUserSuccess: {
       return {

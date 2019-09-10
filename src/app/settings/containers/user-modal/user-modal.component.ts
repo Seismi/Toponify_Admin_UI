@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '../../components/my-user-form/services/my-user-form.service';
@@ -8,10 +8,10 @@ import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '../../store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
 import { State as UserState } from '../../store/reducers/user.reducer';
-import { LoadUserRoles } from '@app/settings/store/actions/user.actions';
+import { LoadUserRoles, LoadUser } from '@app/settings/store/actions/user.actions';
 import { getUserRolesEntities } from '@app/settings/store/selectors/user.selector';
 
 @Component({
@@ -21,7 +21,7 @@ import { getUserRolesEntities } from '@app/settings/store/selectors/user.selecto
   providers: [MyUserFormService, MyUserFormValidatorService]
 })
 
-export class UserModalComponent implements OnInit {
+export class UserModalComponent implements OnInit, OnDestroy {
 
   teams$: Observable<TeamEntity[]>;
   roles$: Observable<RolesEntity[]>;
@@ -33,6 +33,8 @@ export class UserModalComponent implements OnInit {
   user: User;
   selectedTeams = [];
   selectedRoles = [];
+  subscriptions: Subscription[] = [];
+  addMode = false;
 
   get myUserForm(): FormGroup {
     return this.myUserFormService.myUserForm;
@@ -54,16 +56,23 @@ export class UserModalComponent implements OnInit {
   }
   
   ngOnInit() {
-    this.store.dispatch(new LoadTeams({}));
-    this.teams$ = this.store.pipe(select(getTeamEntities));
-
-    this.userStore.dispatch(new LoadUserRoles());
-    this.roles$ = this.userStore.pipe(select(getUserRolesEntities))
-
-    if(this.isEditMode){
-      this.disableEmailInput = true;
-      this.myUserFormService.myUserForm.patchValue({...this.user});
+    if(!this.isEditMode) {
+      this.addMode = true;
+      this.store.dispatch(new LoadTeams({}));
+      this.teams$ = this.store.pipe(select(getTeamEntities));
+      this.userStore.dispatch(new LoadUserRoles());
+      this.roles$ = this.userStore.pipe(select(getUserRolesEntities))
     }
+
+    if(this.isEditMode) {
+      this.disableEmailInput = true;
+    }
+
+    this.myUserFormService.myUserForm.patchValue({...this.user});
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   onSubmit(data: any) {
