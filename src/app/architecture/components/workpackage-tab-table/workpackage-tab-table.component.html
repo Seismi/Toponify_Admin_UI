@@ -5,6 +5,7 @@
       <th mat-header-cell *matHeaderCellDef>Show</th>
       <td mat-cell *matCellDef="let element">
         <mat-checkbox
+          [disabled]="!canSelect(element)"
           [checked]="element.selected"
           (change)="onSelect(element.id, $event)"
         >
@@ -31,8 +32,14 @@
     <ng-container matColumnDef="e">
       <th mat-header-cell *matHeaderCellDef>E</th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon *ngIf="!element.edit" (click)="onSetWorkpackageEditMode($event, element)">edit</mat-icon>
-        <mat-icon *ngIf="element.edit" (click)="onSetWorkpackageEditMode($event, element)">close</mat-icon>
+        <ng-container *ngIf="canEdit(element); else elseBlock">
+          <mat-icon *ngIf="!element.edit" (click)="onSetWorkpackageEditMode($event, element)">edit</mat-icon>
+          <mat-icon *ngIf="element.edit" (click)="onSetWorkpackageEditMode($event, element)">close</mat-icon>
+        </ng-container>
+        <ng-template #elseBlock>
+          <!-- TODO: What to show when user doesn't have permissions to edit ? -->
+          <!-- <mat-icon>error</mat-icon> -->
+        </ng-template>
       </td>
     </ng-container>
     <!-- D Column -->

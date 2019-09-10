@@ -11,7 +11,6 @@ import { State as WorkPackageState } from '../../../workpackage/store/reducers/w
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
 import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
 import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
-import {WorkPackageDiagramService} from '@app/workpackage/services/workpackage-diagram.service';
 
 
 @Component({
@@ -77,5 +76,4 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 }

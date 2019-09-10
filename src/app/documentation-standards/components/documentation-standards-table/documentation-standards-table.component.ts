@@ -13,9 +13,11 @@ export class DocumentationStandardsTableComponent {
 
   @Input()
   set data(data: DocumentStandard[]) {
-    this.dataSource = new MatTableDataSource<DocumentStandard>(data);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    if (data) {
+      this.dataSource = new MatTableDataSource<DocumentStandard>(data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
