@@ -1,6 +1,5 @@
 <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
-
         <!-- Name Column -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
@@ -20,5 +19,4 @@
     </table>
     <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
 </div><br>
-
 <button mat-raised-button color="primary" (click)="onAdd()">Raise New</button>

@@ -8,7 +8,7 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   styleUrls: ['./properties-tab.component.scss']
 })
 export class PropertiesTabComponent {
-
+  
   @Input() workPackageIsEditable: boolean;
 
   @Input()

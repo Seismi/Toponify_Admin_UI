@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { DocumentStandardsService } from '@app/documentation-standards/components/documentation-standards-detail/services/document-standards.service';
 import { DocumentStandardsValidatorService } from '@app/documentation-standards/components/documentation-standards-detail/services/document-standards-validator.service';
 import { NodeDetail } from '@app/nodes/store/models/node.model';
+import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 
 @Component({
   selector: 'smi-document-modal',
@@ -14,6 +15,7 @@ import { NodeDetail } from '@app/nodes/store/models/node.model';
 
 export class DocumentModalComponent implements OnInit {
 
+  documentStandard: DocumentStandard;
   customProperties: NodeDetail;
   modalMode = true;
   isEditable = true;
@@ -25,6 +27,7 @@ export class DocumentModalComponent implements OnInit {
     private documentStandardsService: DocumentStandardsService,
     public dialogRef: MatDialogRef<DocumentModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.documentStandard = data.documentStandard;
       this.customProperties = data.customProperties;
       this.mode = data.mode;
       (this.mode === 'edit')
@@ -48,7 +51,11 @@ export class DocumentModalComponent implements OnInit {
     if (!this.documentStandardsService.isValid) {
       return;
     }
-    this.dialogRef.close({ customProperties: this.documentStandardsForm.value, mode: this.mode });
+    this.dialogRef.close({ 
+      customProperties: this.documentStandardsForm.value, 
+      mode: this.mode, documentStandard: 
+      this.documentStandardsForm.value 
+    });
   }
 
   onCancelClick() {

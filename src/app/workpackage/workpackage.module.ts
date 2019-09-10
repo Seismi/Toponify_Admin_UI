@@ -12,7 +12,8 @@ import {
   MatFormFieldModule,
   MatSelectModule,
   MatInputModule,
-  MatIconModule
+  MatIconModule,
+  MatTabsModule
   } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -38,10 +39,12 @@ import { ApproversTableComponent } from './components/approvers-table/approvers-
 import { OwnersModalComponent } from './containers/owners-modal/owners-modal.component';
 import { OwnersListComponent } from './components/owners-list/owners-list.component';
 import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-modal/workpackage-tree-modal.component';
+import { PropertiesTableComponent } from './components/properties-table/properties-table.component';
 import { WorkPackageNodeEffects } from './store/effects/workpackage-node.effects';
 import { WorkPackageNodesService } from './services/workpackage-nodes.service';
 import { WorkPackageLinkEffects } from './store/effects/workpackage-link.effects';
 import { WorkPackageLinksService } from './services/workpackage-links.service';
+
 
 @NgModule({
   imports: [
@@ -55,6 +58,7 @@ import { WorkPackageLinksService } from './services/workpackage-links.service';
     MatSelectModule,
     MatInputModule,
     MatIconModule,
+    MatTabsModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
@@ -82,7 +86,8 @@ import { WorkPackageLinksService } from './services/workpackage-links.service';
     ApproversTableComponent,
     OwnersModalComponent,
     OwnersListComponent,
-    WorkPackageTreeModalComponent
+    WorkPackageTreeModalComponent,
+    PropertiesTableComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,

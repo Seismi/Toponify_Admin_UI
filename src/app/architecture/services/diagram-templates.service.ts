@@ -170,8 +170,8 @@ export class DiagramTemplatesService {
     // brush based on the relative locations of the connected nodes
     if (part instanceof go.Link) {
 
-      const fromLocation = part.fromNode.location;
-      const toLocation = part.toNode.location;
+      const fromLocation = part.fromNode ? part.fromNode.location : part.points.first();
+      const toLocation = part.toNode ? part.toNode.location : part.points.last();
       let startAlign: string;
       let endAlign: string;
 
@@ -226,7 +226,8 @@ export class DiagramTemplatesService {
           font: '12px calibri'
         },
        new go.Binding('text', 'relatedRadioCount')
-      )
+      ),
+      new go.Binding('visible', 'relatedRadioCount').ofModel()
     );
   }
 
@@ -431,6 +432,32 @@ export class DiagramTemplatesService {
           this.getDependencyExpandButton(),
           ...this.getStandardNodeSections(),
           this.getDescendantsNodeSection('Data Sets')
+        ),
+        $(go.Panel,
+          'Auto',
+          {
+            row: 1,
+            alignment: go.Spot.BottomRight,
+            visible: false
+          },
+          new go.Binding('visible', '', function (node) {
+            return (node.data.relatedRadioCount) > 0 && node.diagram.model.modelData.showRadioAlerts;
+          }).ofObject(),
+          $(go.Shape,
+            'circle',
+            {
+              fill: 'red',
+              desiredSize: new go.Size(25, 25)
+            }
+          ),
+          $(go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'white',
+              font: '12px calibri'
+            },
+           new go.Binding('text', 'relatedRadioCount')
+          )
         ),
         this.getRadioAlertIndicator()
       )

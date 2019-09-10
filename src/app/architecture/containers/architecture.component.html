@@ -46,7 +46,7 @@
     <p class="leftPane">
       <smi-left-panel
         [viewLevel]="viewLevel$ | async"
-        [data]="workpackage$ | async"
+        [workpackages]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
         (selectWorkPackage)="onSelectWorkPackage($event)"
@@ -54,6 +54,8 @@
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
         (hideLeftPane)="onHideLeftPane($event)"
         [selectedLeftTab]="selectedLeftTab"
+        [checked]="radioAlertChecked"
+        [canSelectWorkpackages]="canSelectWorkpackages"
       >
       </smi-left-panel>
     </p>
@@ -86,8 +88,9 @@
     data-hook="right-sidebar"
     *ngIf="!showOrHideRightPane"
     (rightTab)="openRightTab($event)"
-    [objectSelected]="objectSelected"
-    [multipleSelected]="multipleSelected"
+    [architecturePage]="objectSelected"
+    [architectureRadioTab]="radioTab"
+    [architectureDetailsTab]="detailsTab"
   >
   </smi-right-sidebar>
   <app-model-sidebar

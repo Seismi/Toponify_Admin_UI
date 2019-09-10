@@ -5,19 +5,21 @@
     <app-toolbar-column>
         <smi-quicklinks-actions></smi-quicklinks-actions>
     </app-toolbar-column>
-</app-base-header><br><br>
+</app-base-header>
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <smi-workpackages-table
-                data-hook="workpackage-table"
-                [data]="workpackageEntities$ | async"
-                (workpackageSelected)="onSelectWorkpackage($event)"
-                (addWorkpackage)="onAddWorkPackage($event)"
-                (openWorkPackageTree)="onOpenWorkPackageTree($event)">
-            </smi-workpackages-table>
+<app-model-container [topPadding]="64">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <smi-workpackages-table 
+                    data-hook="workpackage-table" 
+                    [data]="workpackageEntities$ | async"
+                    (workpackageSelected)="onSelectWorkpackage($event)" 
+                    (addWorkpackage)="onAddWorkPackage($event)"
+                    (openWorkPackageTree)="onOpenWorkPackageTree($event)">
+                </smi-workpackages-table>
+            </div>
+            <router-outlet></router-outlet>
         </div>
-        <router-outlet></router-outlet>
     </div>
-</div>
+</app-model-container>

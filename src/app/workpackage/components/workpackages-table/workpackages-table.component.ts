@@ -1,7 +1,6 @@
 import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'smi-workpackages-table',

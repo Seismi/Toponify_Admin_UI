@@ -1,6 +1,5 @@
 <div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource">
-
         <!-- Category Column -->
         <ng-container matColumnDef="category">
             <th mat-header-cell *matHeaderCellDef> Category </th>
@@ -18,5 +17,4 @@
     </table>
     <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
 </div><br>
-
 <button mat-raised-button color="primary" (click)="onAdd()">Create New</button>

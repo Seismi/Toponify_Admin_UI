@@ -14,7 +14,7 @@ export class DocumentStandardsService {
       description: [null],
       type: [null, Validators.required],
       levels: [null],
-      value: [null, [Validators.required, Validators.pattern(reg)]]
+      value: [null, [Validators.pattern(reg)]],
     });
   }
 

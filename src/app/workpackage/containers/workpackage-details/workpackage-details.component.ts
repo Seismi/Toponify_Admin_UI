@@ -28,6 +28,10 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   owner: OwnersEntityOrApproversEntity;
   selectedOwner: boolean;
   selectedBaseline: boolean;
+  showOrHideRightPane = false;
+  selectedRightTab: number;
+  statusDraft: boolean;
+  isEditable = false;
 
   constructor(
     private dialog: MatDialog,
@@ -47,10 +51,11 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       if(workpackage) {
         this.workPackageDetailService.workPackageDetailForm.patchValue({
           name: workpackage.name,
-          description: workpackage.description,
-          owners: workpackage.owners,
-          approvers: workpackage.approvers
+          description: workpackage.description
         });
+        // Show edit button if work package status is draft
+        (workpackage.status === 'draft') ? this.statusDraft = true : this.statusDraft = false;
+        this.isEditable = false;
       }
     }));
   }
@@ -61,6 +66,17 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
 
   get workPackageDetailForm(): FormGroup {
     return this.workPackageDetailService.workPackageDetailForm;
+  }
+
+  openRightTab(index: number) {
+    this.selectedRightTab = index;
+    if(this.selectedRightTab === index) {
+      this.showOrHideRightPane = false;
+    }
+  }
+
+  onHideRightPane() {
+    this.showOrHideRightPane = true;
   }
 
   onSelectOwner(row) {
@@ -79,11 +95,17 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     }))
     this.selectedOwner = false;
     this.selectedBaseline = false;
+    this.isEditable = false;
+  }
+
+  onEditWorkPackage() {
+    this.isEditable = true;
   }
 
   onCancel() {
     this.selectedOwner = false;
     this.selectedBaseline = false;
+    this.isEditable = false;
   }
 
   onDeleteWorkpackage() {
@@ -131,7 +153,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteOwner({workPackageId: this.workpackageId, ownerId: this.ownerId}))
-        this.selectedOwner = true;
+        this.selectedOwner = false;
       }
     });
   }
@@ -143,5 +165,4 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onSelectBaseline(row) {
     this.selectedBaseline = true;
   }
-
 }
