@@ -64,6 +64,9 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output()
   deleteOwner = new EventEmitter();
 
+  @Output()
+  editProperties = new EventEmitter();
+
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -129,6 +132,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onDeleteOwner() {
     this.deleteOwner.emit();
+  }
+
+  onEditProperties(id: string) {
+    this.editProperties.emit(id);
   }
 
 }

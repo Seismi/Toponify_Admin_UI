@@ -3,7 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess, UpdateCustomProperty
 } from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
@@ -49,6 +49,7 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
@@ -93,8 +94,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
-
   owners$: Observable<TeamEntity[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
@@ -460,7 +461,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-
+    
     this.isEditable = false;
   }
 
@@ -823,6 +824,35 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSelectOwner(ownerId) {
     this.selectedOwnerIndex = ownerId;
     this.selectedOwner = true;
+  }
+
+  onEditProperties(propertyId: string) {
+    this.nodeStore.pipe(select(getSelectedNode)).subscribe((data) => {this.customProperties = data});
+    const dialogRef = this.dialog.open(DocumentModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        mode: 'edit',
+        customProperties: {...this.customProperties}
+      }
+    });
+
+    const workpackages = this.selectedPart.impactedByWorkPackages.length < 1
+    ? this.selectedWorkpackages
+    : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
+
+    dialogRef.afterClosed().subscribe((data) => {
+      workpackages.forEach(workpackage => {
+        if (data && data.customProperties) {
+          this.nodeStore.dispatch(new UpdateCustomProperty({
+            workPackageId: workpackage.id,
+            nodeId: this.selectedPart.id,
+            customPropertyId: propertyId,
+            data: { data: { value: data.customProperties.value } }
+          }))
+        }
+      })
+    })
   }
 
 }

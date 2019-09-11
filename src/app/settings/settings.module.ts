@@ -41,6 +41,9 @@ import { TeamModalComponent } from './containers/team-modal/team-modal.component
 import { DeleteTeamAndMemberModalComponent } from './containers/delete-modal/delete-modal.component';
 import { MemberModalComponent } from './containers/member-modal/member-modal.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
+import { MyTeamTableComponent } from './components/my-team-table/my-team-table.component';
+import { MyRolesTableComponent } from './components/my-roles-table/my-roles-table.component';
+import { HomeModule } from '@app/home/home.module';
 
 @NgModule({
   imports: [
@@ -49,6 +52,7 @@ import { UsersListComponent } from './components/users-list/users-list.component
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    HomeModule,
     CoreModule,
     MatTabsModule,
     MatCardModule,
@@ -82,7 +86,9 @@ import { UsersListComponent } from './components/users-list/users-list.component
     TeamModalComponent,
     DeleteTeamAndMemberModalComponent,
     MemberModalComponent,
-    UsersListComponent
+    UsersListComponent,
+    MyTeamTableComponent,
+    MyRolesTableComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent, 
