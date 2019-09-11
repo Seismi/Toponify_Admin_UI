@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
-import { AddWorkPackageNode, UpdateWorkPackageNode} from '@app/workpackage/store/actions/workpackage-node.actions';
+import { AddWorkPackageNode, UpdateWorkPackageNode, AddWorkPackageNodeDescendant} from '@app/workpackage/store/actions/workpackage-node.actions';
 import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
@@ -32,7 +32,7 @@ export class DiagramChangesService {
   //    -subject: set of nodes to add to the database
   createObjects(event: go.DiagramEvent): void {
 
-    const currentLevel = this.diagramLevelService.filter.getValue().filterLevel;
+    const { id: nodeId } = this.filterService.getFilter();
 
     const shortEditWorkpackage = {
       id: this.workpackages[0].id,
@@ -52,7 +52,11 @@ export class DiagramChangesService {
         const node = Object.assign({}, part.data);
         node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
         this.workpackages.forEach(workpackage => {
+          if (nodeId) {
+            this.workpackageStore.dispatch(new AddWorkPackageNodeDescendant({workpackageId: workpackage.id, nodeId: nodeId, node}))
+          } else {
             this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node }));
+          }
         });
       }
     });
