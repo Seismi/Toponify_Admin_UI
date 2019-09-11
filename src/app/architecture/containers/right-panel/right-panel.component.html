@@ -1,15 +1,22 @@
 <mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
     <mat-tab label="Details" *ngIf="objectSelected || multipleSelected">
+      <p class="detailsTab">
         <smi-object-details-form
             *ngIf="objectSelected"
+            [owners]="owners"
             [group]="group"
             [clickedOnLink]="clickedOnLink"
             [isEditable]="isEditable"
+            [selectedOwner]="selectedOwner"
+            [selectedOwnerIndex]="selectedOwnerIndex"
             (editDetails)="onEditDetails($event)"
             (saveAttribute)="onSaveAttribute($event)"
             (deleteAttribute)="onDeleteAttribute($event)"
             (cancel)="onCancel($event)"
-            [workPackageIsEditable]="workPackageIsEditable">
+            [workPackageIsEditable]="workPackageIsEditable"
+            (addOwner)="onAddOwner($event)"
+            (selectOwner)="onSelectOwner($event)"
+            (deleteOwner)="onDeleteOwner($event)">
         </smi-object-details-form>
         <!-- Add Scope Button -->
         <button
@@ -19,10 +26,12 @@
             (click)="onAddScope()">
             Add Scope
         </button>
+      </p>
     </mat-tab>
     <mat-tab label="Attributes" *ngIf="objectSelected">
         <smi-attributes-tab 
             [data]="attributes"
+            [workPackageIsEditable]="workPackageIsEditable"
             (addAttribute)="onAddAttribute($event)">
         </smi-attributes-tab>
     </mat-tab>
@@ -32,6 +41,7 @@
     <mat-tab label="RADIO" *ngIf="!multipleSelected">
         <smi-radio-tab *ngIf="objectSelected"
             [data]="relatedRadios"
+            [workPackageIsEditable]="workPackageIsEditable"
             (addRadio)="onAddRelatedRadio($event)">
         </smi-radio-tab>
         <smi-radio-table-in-architecture 

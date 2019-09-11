@@ -1,0 +1,47 @@
+.wrapper {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    background-color: #eee;
+}
+
+th.mat-header-cell {
+    padding: 0;
+    border: none;
+}
+
+td.mat-cell {
+    border: none;
+    padding: 0px 16px;
+    cursor: pointer;
+}
+
+tr.mat-header-row {
+    height: 35px;
+}
+
+tr.mat-row {
+    height: 30px;
+}
+
+.mat-icon {
+    float: right;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+span {
+    line-height: 2;
+    font-size: 14px;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.2;
+}
+
+.highlight {
+    background-color: #ddd;
+}

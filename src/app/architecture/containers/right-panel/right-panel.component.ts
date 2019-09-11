@@ -1,6 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -11,6 +12,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   private showDetailTabRef;
 
+  @Input() owners: NodeDetail;
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() isEditable = false;
@@ -23,6 +25,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() objectSelected = false;
   @Input() radio: any;
   @Input() multipleSelected = false;
+  @Input() selectedOwner: boolean;
+  @Input() selectedOwnerIndex: any;
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -50,6 +54,15 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output()
   addScope = new EventEmitter();
+
+  @Output()
+  addOwner = new EventEmitter();
+
+  @Output()
+  selectOwner = new EventEmitter();
+
+  @Output()
+  deleteOwner = new EventEmitter();
 
 
   constructor(
@@ -104,6 +117,18 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAddScope() {
     this.addScope.emit();
+  }
+
+  onAddOwner() {
+    this.addOwner.emit();
+  }
+
+  onSelectOwner(ownerId) {
+    this.selectOwner.emit(ownerId);
+  }
+
+  onDeleteOwner() {
+    this.deleteOwner.emit();
   }
 
 }

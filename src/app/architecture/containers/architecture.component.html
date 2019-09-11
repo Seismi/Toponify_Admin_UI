@@ -100,10 +100,13 @@
   >
     <p class="rightPane">
       <smi-right-panel
+        [owners]="selectedNode?.owners"
         [selectedRightTab]="selectedRightTab"
         [group]="objectDetailsForm"
         [clickedOnLink]="clickedOnLink"
         [isEditable]="isEditable"
+        [selectedOwner]="selectedOwner"
+        [selectedOwnerIndex]="selectedOwnerIndex"
         (editDetails)="onEditDetails($event)"
         (saveAttribute)="onSaveObjectDetails($event)"
         (deleteAttribute)="onDeleteAttribute($event)"
@@ -121,6 +124,9 @@
         (addRadio)="onAddRadio()"
         [multipleSelected]="multipleSelected"
         (addScope)="onAddScope($event)"
+        (addOwner)="onAddOwner($event)"
+        (selectOwner)="onSelectOwner($event)"
+        (deleteOwner)="onDeleteOwner($event)"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

@@ -47,6 +47,7 @@ import { RadioTableInArchitectureComponent } from './components/radio-table/radi
 import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layouts.module';
+import { OwnersTableComponent } from './components/owners-table/owners-table.component';
 
 
 @NgModule({
@@ -106,7 +107,8 @@ import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layou
       AttributeDetailComponent,
       RadioTableInArchitectureComponent,
       CategoryTableComponent,
-      TableCollapseComponent
+      TableCollapseComponent,
+      OwnersTableComponent
     ],
     entryComponents: [DeleteModalComponent, DeleteNodeModalComponent, DeleteLinkModalComponent, AttributeModalComponent],
     providers: [
