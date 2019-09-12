@@ -9,7 +9,7 @@ import { State as TeamState } from '../../store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { Observable, Subscription } from 'rxjs';
-import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as UserState } from '../../store/reducers/user.reducer';
 import { LoadUserRoles, LoadUser } from '@app/settings/store/actions/user.actions';
 import { getUserRolesEntities } from '@app/settings/store/selectors/user.selector';
