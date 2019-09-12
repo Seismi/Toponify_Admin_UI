@@ -13,7 +13,7 @@ export enum NodeActionTypes {
   LoadNodeLinks = '[Node] Load Node Links',
   LoadNodeLinksSuccess = '[Node] Load Node Links Success',
   LoadNodeLinksFailure = '[Node] Load Node Links Fail',
-  LoadNodeLink= '[Node] Load Node Link',
+  LoadNodeLink = '[Node] Load Node Link',
   LoadNodeLinkSuccess = '[Node] Load Node Link Success',
   LoadNodeLinkFailure = '[Node] Load Node Link Fail',
   LoadMapView = '[Node] Load Map View',
@@ -110,7 +110,7 @@ export class LoadNodeLinksFailure implements Action {
 
 export class LoadNodeLink implements Action {
   readonly type = NodeActionTypes.LoadNodeLink;
-  constructor(public payload: string) { }
+  constructor(public payload: { id: string, queryParams?: any }) { }
 }
 
 export class LoadNodeLinkSuccess implements Action {

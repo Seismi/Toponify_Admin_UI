@@ -6,6 +6,10 @@ export enum WorkPackageNodeActionTypes {
   AddWorkPackageNodeSuccess = '[WorkPackage] Add node success',
   AddWorkPackageNodeFailure = '[WorkPackage] Add node failure',
 
+  AddWorkPackageNodeDescendant = '[WorkPackage] Add node descendant',
+  AddWorkPackageNodeDescendantSuccess = '[WorkPackage] Add node descendant success',
+  AddWorkPackageNodeDescendantFailure = '[WorkPackage] Add node descendant failure',
+
   LoadWorkPackageNodeDescendants = '[WorkPackage] Load node descendants',
   LoadWorkPackageNodeDescendantsSuccess = '[WorkPackage] Load node descendants success',
   LoadWorkPackageNodeDescendantsFailure = '[WorkPackage] Load node descendants failure',
@@ -39,6 +43,21 @@ export class AddWorkPackageNodeSuccess implements Action {
 
 export class AddWorkPackageNodeFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddWorkPackageNodeDescendant implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant;
+  constructor(public payload: {workpackageId: string, nodeId: string, node: any}) {}
+}
+
+export class AddWorkPackageNodeDescendantSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantSuccess;
+  constructor(public payload: any) {}
+}
+
+export class AddWorkPackageNodeDescendantFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -121,6 +140,9 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
   | AddWorkPackageNodeFailure
+  | AddWorkPackageNodeDescendant
+  | AddWorkPackageNodeDescendantSuccess
+  | AddWorkPackageNodeDescendantFailure
   | UpdateWorkPackageNode
   | UpdateWorkPackageNodeSuccess
   | UpdateWorkPackageNodeFailure

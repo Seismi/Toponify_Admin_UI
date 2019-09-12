@@ -8,7 +8,10 @@ import { AddWorkPackageNode, AddWorkPackageNodeFailure,
   AddWorkPackageNodeSuccess, WorkPackageNodeActionTypes, LoadWorkPackageNodeDescendants,
   LoadWorkPackageNodeDescendantsSuccess, LoadWorkPackageNodeDescendantsFailure, DeleteWorkpackageNode,
   DeleteWorkpackageNodeSuccess, DeleteWorkpackageNodeFailure, UpdateWorkPackageNode,
-  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure, AddWorkpackageNodeOwner, AddWorkpackageNodeOwnerSuccess, AddWorkpackageNodeOwnerFailure, DeleteWorkpackageNodeOwner, DeleteWorkpackageNodeOwnerSuccess, DeleteWorkpackageNodeOwnerFailure } from '../actions/workpackage-node.actions';
+  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure, AddWorkpackageNodeOwner, 
+  AddWorkpackageNodeOwnerSuccess, AddWorkpackageNodeOwnerFailure, DeleteWorkpackageNodeOwner, 
+  DeleteWorkpackageNodeOwnerSuccess, DeleteWorkpackageNodeOwnerFailure, AddWorkPackageNodeDescendant, 
+  AddWorkPackageNodeDescendantSuccess, AddWorkPackageNodeDescendantFailure } from '../actions/workpackage-node.actions';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -25,6 +28,18 @@ export class WorkPackageNodeEffects {
       return this.workpackageNodeService.addNode(payload.workpackageId, payload.node).pipe(
         switchMap((data: any) => [new AddWorkPackageNodeSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkpackageNodeDescenadant$ = this.actions$.pipe(
+    ofType<AddWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant),
+    map(action => action.payload),
+    mergeMap((payload: {workpackageId: string, nodeId: string, node: any}) => {
+      return this.workpackageNodeService.addNodeDescendant(payload.workpackageId, payload.nodeId, payload.node.id, payload.node).pipe(
+        switchMap((data: any) => [new AddWorkPackageNodeDescendantSuccess(data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeDescendantFailure(error)))
       );
     })
   );

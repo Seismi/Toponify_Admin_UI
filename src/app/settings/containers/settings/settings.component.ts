@@ -1,20 +1,19 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { Observable, Subscription } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material';
-import { UsersTableComponent } from '@app/settings/components/users-table/users-table.component';
 import { UserModalComponent } from '../user-modal/user-modal.component';
 import { State as UserState } from '../../store/reducers/user.reducer'
 import { User, UserDetails } from '@app/settings/store/models/user.model';
 import { LoadUsers, UpdateUser, AddUser, UpdateUserPassword } from '@app/settings/store/actions/user.actions';
 import { getUsers, getLoading, getUserById } from '@app/settings/store/selectors/user.selector';
-import { LoadTeams, LoadTeam, AddTeam, UpdateTeam, DeleteTeam } from '@app/settings/store/actions/team.actions';
+import { LoadTeams, LoadTeam, AddTeam, UpdateTeam, DeleteTeam, DeleteMember, AddMember } from '@app/settings/store/actions/team.actions';
 import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '../../store/reducers/team.reducer';
-import { getTeamEntities, getTeamSelected } from '@app/settings/store/selectors/scope.selector';
+import { getTeamEntities, getTeamSelected } from '@app/settings/store/selectors/team.selector';
 import { TeamDetailService } from '@app/settings/components/team-detail/services/team-detail.service';
 import { TeamValidatorService } from '@app/settings/components/team-detail/services/team-detail-validator.service';
 import { TeamModalComponent } from '../team-modal/team-modal.component';
@@ -37,7 +36,7 @@ export class SettingsComponent implements OnInit {
   loading$: Observable<boolean>;
   users$: Observable<User[]>;
   teams$: Observable<TeamEntity[]>;
-  teamDetails$: Observable<TeamDetails>;
+  selectedTeam: TeamDetails;
   users: User[];
   user: UserDetails;
   showButtons = true;
@@ -90,9 +89,6 @@ export class SettingsComponent implements OnInit {
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-
-  @ViewChild(UsersTableComponent) AllUsersTableComponent: UsersTableComponent;
-
 
   onSaveMyUser() {
     this.isActive = false;
@@ -176,17 +172,16 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-
   onSelectTeam(row) {
     this.teamSelected = true;
     this.teamId = row.id;
 
     this.teamStore.dispatch(new LoadTeam(this.teamId));
-    this.teamDetails$ = this.teamStore.pipe(select(getTeamSelected));
+    this.teamStore.pipe(select(getTeamSelected)).subscribe(team => {
+      this.selectedTeam = team;
+    });
 
-    this.teamDetailService.teamDetailForm.patchValue({
-      name: row.name
-    })
+    this.teamDetailService.teamDetailForm.patchValue({name: row.name})
   }
 
   onSelectMember(member) {
@@ -220,7 +215,7 @@ export class SettingsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((data) => {
-      if (data.mode === 'delete') {
+      if (data && data.mode === 'delete') {
         this.teamStore.dispatch(new DeleteTeam(this.teamId));
       }
     });
@@ -232,6 +227,12 @@ export class SettingsComponent implements OnInit {
       width: 'auto',
       data: {
         mode: 'delete'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.mode === 'delete') {
+        this.teamStore.dispatch(new DeleteMember({teamId: this.teamId, userId: memberId}));
       }
     });
   }
@@ -254,8 +255,20 @@ export class SettingsComponent implements OnInit {
   }
 
   onAddMember() {
-    const dialogRef = this.dialog.open(MemberModalComponent, {
-      disableClose: false
+    const dialogRef = this.dialog.open(MemberModalComponent, { 
+      disableClose: false,
+      width: '600px' 
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.member) {
+        this.teamStore.dispatch(new AddMember({
+          data: data.member,
+          teamId: this.teamId,
+          userId: data.member.id
+        }))
+      }
     });
   }
+
 }

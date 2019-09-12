@@ -5,7 +5,7 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
-import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({

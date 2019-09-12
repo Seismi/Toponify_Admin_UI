@@ -10,15 +10,16 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
 export class WorkPackageTabTableComponent {
   @Input()
   set data(data: WorkPackageEntity[]) {
-    this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
-    this.dataSource.paginator = this.paginator;
+    if (data) {
+      this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   @Input()
   canSelectWorkpackage: boolean;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 

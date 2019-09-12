@@ -3,11 +3,11 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess, UpdateCustomProperty
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess, UpdateCustomProperty, LoadNodeLink
 } from '@app/architecture/store/actions/node.actions';
-import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import { linkCategories, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
-import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
+import { getNodeEntities, getNodeLinks, getSelectedNode, getSelectedNodeLink } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
@@ -49,14 +49,16 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { Link, Node } from 'gojs';
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
-import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
+
 
 enum Events {
   NodesLinksReload = 0
@@ -87,7 +89,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodesSubscription: Subscription;
   linksSubscription: Subscription;
 
-  selectedNode: NodeDetail;
+  selectedNode: NodeDetail | NodeLinkDetail;
 
   links: any[] = [];
   nodes: any[] = [];
@@ -203,7 +205,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.radioStore.dispatch(new LoadRadios({}));
     this.radio$ = this.radioStore.pipe(select(getRadioEntities));
 
-
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
@@ -223,6 +224,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    // FIXME: fixing 
+    // this.filterService.filter.subscribe(({workpackages}) => {
+    //   console.info("###: ", workpackages);
+    //   workpackages.forEach(workpackage => this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: workpackage})));
+    //   // this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: workpackage}));
+    // })
 
     this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
       this.layout = layout;
@@ -279,6 +287,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
       this.selectedNode = nodeDetail;
+      this.ref.detectChanges();
+    }));
+
+    this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {
+      this.selectedNode = nodeLinkDetail;
       this.ref.detectChanges();
     }));
 
@@ -350,14 +363,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.isEditable = false
 
 
-      this.objectDetailsService.objectDetailsForm.patchValue({
-        id: this.selectedPart.id,
-        name: this.selectedPart.name,
-        category: this.selectedPart.category,
-        owner: this.selectedPart.owners,
-        description: this.selectedPart.description,
-        tags: this.selectedPart.tags,
-      });
+      this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
@@ -369,13 +375,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.selectedOwnerIndex = null;
         this.selectedOwner = false;
         // By clicking on link show only name, category and description in the right panel
-        this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-        // Load Node Details
+        this.clickedOnLink = part instanceof Link;
+
+        // Load node details
         this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
           this.setWorkPackage(workPackageIds);
         });
-        // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+
         this.objectSelected = true;
         this.radioTab = false;
       } else {
@@ -394,7 +401,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Multiple selection
     if (parts.length > 1) {
       for (let i = 0; i < parts.length; i++) {
-        if (parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
+        if (parts[i] instanceof Link) {
           // links
         } else {
           // Push only objects (not links)
@@ -411,8 +418,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}));
+    (this.part instanceof Node)
+      ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
+      : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
   }
+
 
   // FIXME: should be removed as createObject/node/link handled inside change service
   modelChanged( event: any) {}
@@ -563,7 +573,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   subscribeForNodesLinksData() {
-
     this.nodesSubscription = this.nodeStore.pipe(select(getNodeEntities),
       // Get correct location for nodes, based on selected layout
       map(nodes => {
@@ -665,6 +674,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectWorkPackage(id) {
     this.objectSelected = false;
+    // const filter = this.filterService.getFilter();
+    // if (filter.workpackages && filter.workpackages.length > 0) {
+    //   const workpackageAlreadySelected = filter.workpackages.find(workpackageId => workpackageId === id);
+    //   if (workpackageAlreadySelected) {
+    //     const filteredWorkpackageIds = filter.workpackages.filter(workpackageId => workpackageId !== id);
+    //     if (filteredWorkpackageIds.length > 0) {
+    //       this.filterService.setFilter({ ...filter, workpackages: filteredWorkpackageIds});
+    //     } else {
+    //       delete filter.workpackages;
+    //       this.filterService.setFilter({ ...filter})
+    //     }
+    //   } else {
+    //     this.filterService.setFilter({ ...filter, workpackages: [...filter.workpackages, id] })
+    //   }
+    // } else {
+    //   this.filterService.setFilter({ ...filter, workpackages: [id] })
+    // }
     this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
   }
 
