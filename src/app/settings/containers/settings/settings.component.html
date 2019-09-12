@@ -8,15 +8,20 @@
 </app-base-header>
 
 
-<mat-tab-group [@.disabled]="true">
+<mat-tab-group [@.disabled]="true" (selectedTabChange)="onSelectTab($event)">
     <!-- My User Tab-->
     <mat-tab label="My User">
         <p class="mat-elevation-z8">
-            <smi-my-user-form 
-                [group]="myUserForm" 
+            <smi-my-user-form
+                [teamTableData]="user?.team"
+                [roleTableData]="user?.roles"
+                [group]="myUserForm"
                 [showButtons]="showButtons"
-                [selectedTeams]="selectedTeams"
-                [selectedRoles]="selectedRoles">
+                [isActive]="isActive"
+                [editMode]="editMode"
+                (saveMyUser)="onSaveMyUser($event)"
+                (editMyUser)="onEditMyUser($event)"
+                (changePassword)="onChangePassword($event)">
             </smi-my-user-form>
         </p>
     </mat-tab>

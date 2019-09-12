@@ -46,7 +46,7 @@
     <p class="leftPane">
       <smi-left-panel
         [viewLevel]="viewLevel$ | async"
-        [data]="workpackage$ | async"
+        [workpackages]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
         (displayOptionsChangedEvent)="displayOptionsChanged($event)"
         (selectWorkPackage)="onSelectWorkPackage($event)"
@@ -54,6 +54,8 @@
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
         (hideLeftPane)="onHideLeftPane($event)"
         [selectedLeftTab]="selectedLeftTab"
+        [checked]="radioAlertChecked"
+        [canSelectWorkpackages]="canSelectWorkpackages"
       >
       </smi-left-panel>
     </p>
@@ -119,6 +121,7 @@
         (addRadio)="onAddRadio()"
         [multipleSelected]="multipleSelected"
         (addScope)="onAddScope($event)"
+        (editProperties)="onEditProperties($event)"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

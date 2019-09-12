@@ -3,11 +3,13 @@ import { HomePageActionsUnion, HomePageActionTypes } from '../actions/home.actio
 import { Page, Links, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { LayoutEntity } from '@app/layout/store/models/layout.model';
+import { UserDetails } from '@app/settings/store/models/user.model';
 
 export interface State {
   workpackages: WorkPackageEntity[];
   radios: RadioEntity[];
   layouts: LayoutEntity[];
+  profile: UserDetails;
   loading: boolean;
   page: Page;
   links: Links;
@@ -18,6 +20,7 @@ export const initialState: State = {
   workpackages: [],
   radios: [],
   layouts: [],
+  profile: null,
   page: null,
   links: null,
   loading: false,
@@ -93,6 +96,28 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
     }
 
     case HomePageActionTypes.LoadMyLayoutsFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+
+    case HomePageActionTypes.LoadMyProfile: {
+      return {
+        ...state
+      };
+    }
+
+    case HomePageActionTypes.LoadMyProfileSuccess: {
+      return {
+        ...state,
+        profile: action.payload.data
+      };
+    }
+
+    case HomePageActionTypes.LoadMyProfileFailure: {
       return {
         ...state,
         error: action.payload,

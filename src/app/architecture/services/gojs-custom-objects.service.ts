@@ -114,6 +114,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that the diagram should be zoomed in or out
   private zoomSource = new Subject();
   public zoom$ = this.zoomSource.asObservable();
+  // Observable to indicate that the radio alert should be toggled
+  private showHideRadioAlertSource = new Subject();
+  public showHideRadioAlert$ = this.showHideRadioAlertSource.asObservable();
 
   constructor(
     public filterService: FilterService,
@@ -161,6 +164,7 @@ export class GojsCustomObjectsService {
         $(go.TextBlock, 'show / hide RADIO alert', {}),
         {
           click: function(event, object) {
+            thisService.showHideRadioAlertSource.next();
             const modelData = event.diagram.model.modelData;
             event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
 

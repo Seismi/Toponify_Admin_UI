@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
 import { LayoutEntitiesHttpParams, GetLayoutEntitiesApiResponse } from '@app/layout/store/models/layout.model';
+import { UserApiResponse } from '@app/settings/store/models/user.model';
 
 export enum HomePageActionTypes {
   LoadMyWorkPackages = '[HomePage] Load My WorkPackages',
@@ -15,7 +16,11 @@ export enum HomePageActionTypes {
 
   LoadMyLayouts = '[HomePage] Load My Layouts',
   LoadMyLayoutsSuccess = '[HomePage] Load My Layouts Success',
-  LoadMyLayoutsFailure = '[HomePage] Load My Layouts Failure'
+  LoadMyLayoutsFailure = '[HomePage] Load My Layouts Failure',
+
+  LoadMyProfile = '[HomePage] Load My Profile',
+  LoadMyProfileSuccess = '[HomePage] Load My Profile Success',
+  LoadMyProfileFailure = '[HomePage] Load My Profile Failure'
 }
 
 export class LoadMyWorkPackages implements Action {
@@ -63,6 +68,21 @@ export class LoadMyLayoutsFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadMyProfile implements Action {
+  readonly type = HomePageActionTypes.LoadMyProfile;
+  constructor() {}
+}
+
+export class LoadMyProfileSuccess implements Action {
+  readonly type = HomePageActionTypes.LoadMyProfileSuccess;
+  constructor(public payload: UserApiResponse) {}
+}
+
+export class LoadMyProfileFailure implements Action {
+  readonly type = HomePageActionTypes.LoadMyProfileFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type HomePageActionsUnion =
   | LoadMyWorkPackages
   | LoadMyWorkPackagesSuccess
@@ -72,4 +92,7 @@ export type HomePageActionsUnion =
   | LoadMyRadiosFailure
   | LoadMyLayouts
   | LoadMyLayoutsSuccess
-  | LoadMyLayoutsFailure;
+  | LoadMyLayoutsFailure
+  | LoadMyProfile
+  | LoadMyProfileSuccess
+  | LoadMyProfileFailure;

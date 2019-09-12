@@ -52,7 +52,11 @@ export enum WorkPackageActionTypes {
 
   DeleteRadio = '[WorkPackage] Delete Radio',
   DeleteRadioSuccess = '[WorkPackage] Delete Radio Success',
-  DeleteRadioFailure = '[WorkPackage] Delete Radio Failure'
+  DeleteRadioFailure = '[WorkPackage] Delete Radio Failure',
+
+  GetWorkpackageAvailability = '[Workpackage] Get workpackage availability',
+  GetWorkpackageAvailabilitySuccess = '[Workpackage] Get workpackage availability success',
+  GetWorkpackageAvailabilityFailure = '[Workpackage] Get workpackage availability failure',
 }
 
 export class LoadWorkPackages implements Action {
@@ -235,6 +239,22 @@ export class DeleteRadioFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class GetWorkpackageAvailability implements Action {
+  readonly type = WorkPackageActionTypes.GetWorkpackageAvailability;
+  constructor(public payload: any) { }
+}
+
+export class GetWorkpackageAvailabilitySuccess implements Action {
+  readonly type = WorkPackageActionTypes.GetWorkpackageAvailabilitySuccess;
+  constructor(public payload: any) { }
+}
+
+export class GetWorkpackageAvailabilityFailure implements Action {
+  readonly type = WorkPackageActionTypes.GetWorkpackageAvailabilityFailure;
+  constructor(public payload: any) { }
+}
+
+
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
@@ -272,4 +292,7 @@ export type WorkPackageActionsUnion =
   | DeleteRadio
   | DeleteRadioSuccess
   | DeleteRadioFailure
+  | GetWorkpackageAvailability
+  | GetWorkpackageAvailabilitySuccess
+  | GetWorkpackageAvailabilityFailure
   ;

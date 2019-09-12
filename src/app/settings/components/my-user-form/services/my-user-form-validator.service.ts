@@ -23,7 +23,7 @@ export class MyUserFormValidatorService {
 // Phone number validator
 export function phoneNumberValidator(control: AbstractControl): { [key: string]: any } | null {
   if (control.value) {
-    const valid = control.value.match(/^\d+$/);
+    const valid = control.value.match(/^\+?[1-9]{1}[0-9]{3,15}$/);
     return valid ? null : { 'invalidNumber': true };
   } else {
     return null;
