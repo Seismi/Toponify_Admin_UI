@@ -281,7 +281,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
       this.eventEmitter.next(Events.NodesLinksReload);
-      
+    }));
+
     this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {
       this.selectedNode = nodeLinkDetail;
       this.ref.detectChanges();
