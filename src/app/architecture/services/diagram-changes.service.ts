@@ -53,7 +53,10 @@ export class DiagramChangesService {
         node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
         this.workpackages.forEach(workpackage => {
           if (nodeId) {
-            this.workpackageStore.dispatch(new AddWorkPackageNodeDescendant({workpackageId: workpackage.id, nodeId: nodeId, node}))
+            this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node: {
+              ...node,
+              parentId: nodeId
+            } }));
           } else {
             this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node }));
           }

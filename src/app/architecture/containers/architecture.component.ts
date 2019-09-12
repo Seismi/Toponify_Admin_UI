@@ -207,6 +207,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+    // FIXME: fixing 
+    // this.filterService.filter.subscribe(({workpackages}) => {
+    //   console.info("###: ", workpackages);
+    //   workpackages.forEach(workpackage => this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: workpackage})));
+    //   // this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: workpackage}));
+    // })
+
     this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
       this.layout = layout;
       if (layout) {
@@ -636,7 +643,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSelectWorkPackage(id) {
     this.workpackageId = id;
     this.objectSelected = false;
-    this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: this.workpackageId}));
+    // const filter = this.filterService.getFilter();
+    // if (filter.workpackages && filter.workpackages.length > 0) {
+    //   const workpackageAlreadySelected = filter.workpackages.find(workpackageId => workpackageId === id);
+    //   if (workpackageAlreadySelected) {
+    //     const filteredWorkpackageIds = filter.workpackages.filter(workpackageId => workpackageId !== id);
+    //     if (filteredWorkpackageIds.length > 0) {
+    //       this.filterService.setFilter({ ...filter, workpackages: filteredWorkpackageIds});
+    //     } else {
+    //       delete filter.workpackages;
+    //       this.filterService.setFilter({ ...filter})
+    //     }
+    //   } else {
+    //     this.filterService.setFilter({ ...filter, workpackages: [...filter.workpackages, id] })
+    //   }
+    // } else {
+    //   this.filterService.setFilter({ ...filter, workpackages: [id] })
+    // }
+    this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
   }
 
   // FIXME: set proper type of workpackage
