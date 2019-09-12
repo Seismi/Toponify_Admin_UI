@@ -8,7 +8,6 @@
     <!-- Description -->
     <mat-form-field [ngClass]="{disabled: !isEditable}">
         <textarea matInput placeholder="Description" formControlName="description"></textarea>
-        <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <div *ngIf="!teamModal">

@@ -59,7 +59,9 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
     case TeamActionTypes.AddTeam:
     case TeamActionTypes.LoadTeam:
     case TeamActionTypes.UpdateTeam:
-    case TeamActionTypes.DeleteTeam: {
+    case TeamActionTypes.DeleteTeam:
+    case TeamActionTypes.AddMember:
+    case TeamActionTypes.DeleteMember: {
       return {
         ...state,
         loading: true
@@ -71,6 +73,14 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
       return {
         ...state,
         entities: [...state.entities, addedEntity],
+        loading: false
+      };
+    }
+
+    case TeamActionTypes.AddMemberSuccess: {
+      return {
+        ...state,
+        selected: action.payload,
         loading: false
       };
     }
@@ -92,7 +102,9 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
     case TeamActionTypes.UpdateTeamFailure:
     case TeamActionTypes.DeleteTeamFailure:
     case TeamActionTypes.AddTeamFailure:
-    case TeamActionTypes.LoadTeamFailure: {
+    case TeamActionTypes.LoadTeamFailure:
+    case TeamActionTypes.AddMemberFailure:
+    case TeamActionTypes.DeleteMemberFailure: {
       return {
         ...state,
         error: action.payload,
@@ -105,6 +117,14 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
       return {
         ...state,
         entities: state.entities.filter(entity => entity.id !== action.payload),
+        loading: false
+      };
+    }
+
+    case TeamActionTypes.DeleteMemberSuccess: {
+      return {
+        ...state,
+        selected: action.payload,
         loading: false
       };
     }

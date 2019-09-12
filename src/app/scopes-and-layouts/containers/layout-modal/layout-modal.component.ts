@@ -8,7 +8,7 @@ import { LayoutsDetailService } from '@app/scopes-and-layouts/components/layouts
 import { LayoutsValidatorService } from '@app/scopes-and-layouts/components/layouts-detail/services/layouts-detail-validator.service';
 import { Observable } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { AddLayout, LayoutActionTypes } from '@app/layout/store/actions/layout.actions';
 import { SharedService } from '@app/services/shared-service';
 import { Actions, ofType } from '@ngrx/effects';

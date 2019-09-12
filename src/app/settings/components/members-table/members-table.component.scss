@@ -1,10 +1,13 @@
-.title {
-    font-size: 25px;
-    margin-top: 20px;
+.wrapper {
+    margin-top: 25px;
 }
 
 table {
     width: 100%;
+}
+
+.title {
+    font-size: 25px;
 }
 
 tr.mat-header-row {
@@ -14,4 +17,8 @@ tr.mat-header-row {
 .mat-icon {
     margin-top: 5px;
     cursor: pointer;
+}
+
+th.mat-column-delete {
+    width: 5%;
 }
