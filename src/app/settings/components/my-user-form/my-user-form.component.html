@@ -25,28 +25,33 @@
     </mat-form-field>
 
     <!-- My Teams -->
-    <mat-form-field [ngClass]="{disabled: !isActive}">
+    <mat-form-field [ngClass]="{disabled: !isActive}" *ngIf="addMode">
       <mat-select placeholder="My Teams" multiple formControlName="team">
-        <mat-option *ngFor="let team of teams" [value]="team.name" (onSelectionChange)="onSelectTeam($event, team)">{{team.name}}</mat-option>
+        <mat-option *ngFor="let team of teams" [value]="team.name" (onSelectionChange)="onSelectTeam($event, team)">
+          {{team.name}}</mat-option>
       </mat-select>
     </mat-form-field>
-
-    <!-- Buttons -->
-    <div class="buttons-row" *ngIf="showButtons">
-      <button mat-raised-button (click)="onSave()" [ngClass]="{'changeButtonBgColor': toggle}">
-        {{toggle ? 'Save' : 'Edit'}} Personal Settings
-      </button>
-      <button mat-raised-button (click)="onChangePassword()">Change my password</button>
-    </div>
-
+    
     <!-- My Roles -->
-    <mat-form-field [ngClass]="{disabled: !isActive}">
+    <mat-form-field [ngClass]="{disabled: !isActive}" *ngIf="addMode">
       <mat-select placeholder="My Roles" multiple formControlName="roles">
-        <mat-option *ngFor="let role of roles" [value]="role.name" (onSelectionChange)="onSelectRoles($event, role)">{{role.name}}</mat-option>
+        <mat-option *ngFor="let role of roles" [value]="role.name" (onSelectionChange)="onSelectRoles($event, role)">
+          {{role.name}}</mat-option>
       </mat-select>
       <mat-error>Role is required</mat-error>
     </mat-form-field>
+
+    <!-- Team Table -->
+    <smi-my-team-table [data]="teamTableData" *ngIf="!addMode"></smi-my-team-table>
+
+    <!-- Roles Table -->
+    <smi-my-roles-table [data]="roleTableData" *ngIf="!addMode"></smi-my-roles-table>
+
+    <!-- Buttons -->
+    <div *ngIf="showButtons">
+      <button mat-raised-button *ngIf="editMode" (click)="onSave()" class="save-btn" [disabled]="!group.valid">Save Personal Settings</button>
+      <button mat-raised-button *ngIf="!editMode" (click)="onEdit()">Edit Personal Settings</button>
+      <button mat-raised-button (click)="onChangePassword()">Change my password</button>
+    </div>
   </div>
 </form>
-
-

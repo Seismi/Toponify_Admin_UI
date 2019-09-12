@@ -1,5 +1,5 @@
 import { Component, ViewChild, Input } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
@@ -8,18 +8,15 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./change-table.component.scss']
 })
 export class ChangeTableComponent {
-
   @Input()
   set data(data: any[]) {
     if(data) {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
     }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
   displayedColumns: string[] = ['change', 'layer', 'object'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;

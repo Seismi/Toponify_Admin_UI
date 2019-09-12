@@ -9,7 +9,7 @@
     <mat-form-field [ngClass]="{disabled: !isEditable}">
         <textarea matInput placeholder="Description" formControlName="description"></textarea>
     </mat-form-field>
-    
+
     <div *ngIf="!teamModal">
         <div class="actions" *ngIf="!isEditable">
             <button mat-raised-button color="primary" (click)="onEdit()">Edit</button>

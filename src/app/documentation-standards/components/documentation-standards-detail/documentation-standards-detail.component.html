@@ -1,26 +1,28 @@
 <form [formGroup]="group" data-hook="documentation-standards-details">
-    <div class="form-group" [ngClass]="{disabled: !isEditable}">
-        <label>Name</label>
-        <input type="text" class="form-control" formControlName="name"
-        [ngClass]="{ 'is-invalid': (!group.controls['name'].valid && group.controls['name'].touched) }" data-hook="documentation-standards-details-name">
-        <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
-            <div>This field is required</div>
-        </div>
-    </div>
-    <div class="form-group">
-        <label>Description</label>
-        <textarea class="form-control" rows="3" formControlName="description" [ngClass]="{disabled: !isEditable}"
-            data-hook="documentation-standards-details-description"></textarea>
-    </div>
-    <div class="form-group">
-        <label>Type</label>
-        <select class="form-control" formControlName="type" [ngClass]="{disabled: !isEditable}">
-            <option [ngValue]="null" *ngIf="modalMode" disabled>Please choose type</option>
-            <option *ngFor="let type of types" [value]="type" data-hook="documentation-standards-details-type">
-                {{type}}
-            </option>
-        </select>
-    </div>
+  <div *ngIf="!isEditMode">
+    <!-- Name -->
+    <mat-form-field [ngClass]="{disabled: !isEditable}">
+        <input matInput placeholder="Name" formControlName="name" data-hook="documentation-standards-details-name">
+        <mat-error>This field is required!</mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field [ngClass]="{disabled: !isEditable}">
+        <textarea matInput placeholder="Description" formControlName="description" data-hook="documentation-standards-details-description"></textarea>
+    </mat-form-field>
+
+    <!-- Type -->
+    <mat-form-field>
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type" [ngClass]="{disabled: !isEditable}">
+          <mat-option *ngFor="let type of types" [value]="type" data-hook="documentation-standards-details-type">
+              {{type}}
+          </mat-option>
+        </mat-select>
+        <mat-error>This field is required!</mat-error>
+    </mat-form-field>
+
+    <!-- Levels -->
     <div class="form-group">
         <label class="levels-label">Levels</label>
         <smi-document-standards-levels 
@@ -28,7 +30,14 @@
             [modalMode]="modalMode">
         </smi-document-standards-levels>
     </div>
-    <br>
+  </div>
+
+    <!-- Value -->
+    <mat-form-field *ngIf="isEditMode">
+        <input matInput placeholder="Value" formControlName="value" data-hook="documentation-standards-details-value">
+        <mat-error>Not Valid</mat-error>
+    </mat-form-field>
+
     <div class="form-actions" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
             <button type="button" data-hook="document-standarts-details-edit" mat-raised-button color="primary" (click)="onEdit()">Edit</button>

@@ -84,7 +84,7 @@ export class TeamEffects {
     switchMap((payload: {data: MembersEntity, teamId: string, userId: string}) => {
       return this.teamService.addMembers(payload.data, payload.teamId, payload.userId).pipe(
         switchMap((response: any) => [new TeamActions.AddMemberSuccess(response.data)]),
-        catchError((error: HttpErrorResponse) => of(new TeamActions.DeleteMemberFailure(error)))
+        catchError((error: HttpErrorResponse) => of(new TeamActions.AddMemberFailure(error)))
       );
     })
   );

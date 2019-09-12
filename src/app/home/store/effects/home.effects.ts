@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { HomePageService } from '@app/home/services/home.service';
-import { LoadMyWorkPackages, HomePageActionTypes, LoadMyWorkPackagesSuccess, LoadMyWorkPackagesFailure, LoadMyRadios, LoadMyRadiosSuccess, LoadMyRadiosFailure, LoadMyLayouts, LoadMyLayoutsSuccess, LoadMyLayoutsFailure } from '../actions/home.actions';
+import { LoadMyWorkPackages, HomePageActionTypes, LoadMyWorkPackagesSuccess, LoadMyWorkPackagesFailure, LoadMyRadios, LoadMyRadiosSuccess, LoadMyRadiosFailure, LoadMyLayouts, LoadMyLayoutsSuccess, LoadMyLayoutsFailure, LoadMyProfile, LoadMyProfileSuccess, LoadMyProfileFailure } from '../actions/home.actions';
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
 import { LayoutEntitiesHttpParams, GetLayoutEntitiesApiResponse } from '@app/layout/store/models/layout.model';
+import { UserApiResponse } from '@app/settings/store/models/user.model';
 
 
 @Injectable()
@@ -49,6 +50,17 @@ export class HomePageEffects {
       return this.homePageService.getMyLayouts(payload).pipe(
         switchMap((response: GetLayoutEntitiesApiResponse) => [new LoadMyLayoutsSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new LoadMyLayoutsFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadMyProfile$ = this.actions$.pipe(
+    ofType<LoadMyProfile>(HomePageActionTypes.LoadMyProfile),
+    switchMap(_ => {
+      return this.homePageService.getMyProfile().pipe(
+        switchMap((response: UserApiResponse) => [new LoadMyProfileSuccess(response)]),
+        catchError((error: HttpErrorResponse) => of(new LoadMyProfileFailure(error)))
       );
     })
   );
