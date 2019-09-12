@@ -13,7 +13,7 @@ export class RadioDetailService {
       category: ['risk'],
       status: ['open'],
       mitigation: [null],
-      assignedTo: [null],
+      assignedTo: {},
       actionBy: [null],
       description: [null, Validators.required],
       replyText: [null],
