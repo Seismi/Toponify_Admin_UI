@@ -8,7 +8,7 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
-import { getTeamEntities } from '@app/settings/store/selectors/scope.selector';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
 import { ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
 

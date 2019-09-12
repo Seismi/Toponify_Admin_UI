@@ -54,6 +54,7 @@
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
         (hideLeftPane)="onHideLeftPane($event)"
         [selectedLeftTab]="selectedLeftTab"
+        [checked]="radioAlertChecked"
         [canSelectWorkpackages]="canSelectWorkpackages"
       >
       </smi-left-panel>
@@ -119,6 +120,7 @@
         (addRadio)="onAddRadio()"
         [multipleSelected]="multipleSelected"
         (addScope)="onAddScope($event)"
+        (editProperties)="onEditProperties($event)"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

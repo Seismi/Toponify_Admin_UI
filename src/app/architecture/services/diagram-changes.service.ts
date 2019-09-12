@@ -108,6 +108,11 @@ export class DiagramChangesService {
 
   }
 
+  // Update radio count after new radio is created
+  updateRadioCount(part: go.Part) {
+    part.diagram.model.setDataProperty(part.data, 'relatedRadioCount', part.data.relatedRadioCount + 1);
+  }
+
   // Update position of links or nodes in the back end
   //  -event
   //    -subject: set of parts to update the positions of

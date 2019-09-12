@@ -13,4 +13,11 @@ export const getDocumentStandard = createSelector(
     state => state.selected
 );
 
-
+export const getDocumentStandardById = (id: string) => {
+    return createSelector(
+      getDocumentStandardFeatureState,
+      state => {
+        return state.entities.filter(entity => entity.id === id);
+      }
+    );
+};

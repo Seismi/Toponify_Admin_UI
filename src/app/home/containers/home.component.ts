@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State as HomePageState } from '../store/reducers/home.reducers';
-import { LoadMyWorkPackages, LoadMyRadios, LoadMyLayouts } from '../store/actions/home.actions';
+import { LoadMyWorkPackages, LoadMyRadios, LoadMyLayouts, LoadMyProfile } from '../store/actions/home.actions';
 import { Observable } from 'rxjs';
 import { getMyWorkPackages, getMyRadios, getMyLayouts } from '../store/selectors/home.selectors';
 import { Router } from '@angular/router';

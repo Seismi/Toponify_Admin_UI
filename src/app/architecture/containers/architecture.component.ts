@@ -3,11 +3,11 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess, UpdateCustomProperty, LoadNodeLink
 } from '@app/architecture/store/actions/node.actions';
-import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import { linkCategories, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
-import { getNodeEntities, getNodeLinks, getSelectedNode } from '@app/architecture/store/selectors/node.selector';
+import { getNodeEntities, getNodeLinks, getSelectedNode, getSelectedNodeLink } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
@@ -49,7 +49,10 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { Link, Node } from 'gojs';
+import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
+
 
 enum Events {
   NodesLinksReload = 0
@@ -69,6 +72,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private zoomRef;
   private showHideGridRef;
   private showDetailTabRef;
+  private showHideRadioAlertRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -79,15 +83,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodesSubscription: Subscription;
   linksSubscription: Subscription;
 
-  selectedNode: NodeDetail;
+  selectedNode: NodeDetail | NodeLinkDetail;
 
   links: any[] = [];
   nodes: any[] = [];
 
   public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
-
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
@@ -107,7 +111,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodeId: string;
   allowEditWorkPackages: string;
   workPackageIsEditable = false;
-  workpackageId: string;
   workpackageDetail: any;
   public selectedWorkPackages$: Observable<WorkPackageDetail>;
   filterServiceSubscription: Subscription;
@@ -122,6 +125,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   multipleSelected = false;
   singleOrMultipleSelect = true;
   selectedMultipleNodes = [];
+  radioAlertChecked = true;
   radioTab = true;
   detailsTab = false;
   selectedWorkpackages = [];
@@ -186,7 +190,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.radioStore.dispatch(new LoadRadios({}));
     this.radio$ = this.radioStore.pipe(select(getRadioEntities));
 
-
     // View Level
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
@@ -248,6 +251,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.ref.detectChanges();
     }.bind(this));
 
+
+    this.showHideRadioAlertRef = this.gojsCustomObjectsService.showHideRadioAlert$.subscribe(
+      function() {
+        this.radioAlertChecked = !this.radioAlertChecked;
+        this.ref.detectChanges();
+      }.bind(this));
+
     this.editedWorkpackageSubscription = this.workpackageStore.pipe(select(getEditWorkpackages)).subscribe((workpackages) => {
       this.allowMove = workpackages.length > 0;
       (this.allowMove === true)
@@ -271,6 +281,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
       this.eventEmitter.next(Events.NodesLinksReload);
+      
+    this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {
+      this.selectedNode = nodeLinkDetail;
+      this.ref.detectChanges();
     }));
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
@@ -340,14 +354,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.objectSelected = false;
       this.isEditable = false;
 
-      this.objectDetailsService.objectDetailsForm.patchValue({
-        id: this.selectedPart.id,
-        name: this.selectedPart.name,
-        category: this.selectedPart.category,
-        owner: this.selectedPart.owner,
-        description: this.selectedPart.description,
-        tags: this.selectedPart.tags,
-      });
+      this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
@@ -357,13 +364,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       if (part) {
         // By clicking on link show only name, category and description in the right panel
-        this.clickedOnLink = part.category === linkCategories.data || part.category === linkCategories.masterData;
-        // Load Node Details
+        this.clickedOnLink = part instanceof Link;
+
+        // Load node details
         this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
           this.setWorkPackage(workPackageIds);
         });
-        // this.nodeStore.dispatch((new LoadNode(this.nodeId)));
+
         this.objectSelected = true;
         this.radioTab = false;
       } else {
@@ -382,7 +390,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Multiple selection
     if (parts.length > 1) {
       for (let i = 0; i < parts.length; i++) {
-        if (parts[i].category === linkCategories.data || parts[i].category === linkCategories.masterData) {
+        if (parts[i] instanceof Link) {
           // links
         } else {
           // Push only objects (not links)
@@ -399,8 +407,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}));
+    (this.part instanceof Node)
+      ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
+      : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
   }
+
 
   // FIXME: should be removed as createObject/node/link handled inside change service
   modelChanged( event: any) {}
@@ -449,7 +460,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-
+    
     this.isEditable = false;
   }
 
@@ -649,7 +660,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkPackage(id) {
-    this.workpackageId = id;
     this.objectSelected = false;
     // const filter = this.filterService.getFilter();
     // if (filter.workpackages && filter.workpackages.length > 0) {
@@ -689,9 +699,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  openLeftTab(i: number) {
-    this.selectedLeftTab = i;
-    if (this.selectedLeftTab === i) {
+  openLeftTab(index: number) {
+    this.selectedLeftTab = index;
+    if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
     this.diagramComponent.updateDiagramArea();
@@ -720,6 +730,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             target: { id: this.nodeId }
           }
         }));
+        if(data.radio.status === 'open') {
+          this.diagramChangesService.updateRadioCount(this.part);
+        }
       }
     });
   }
@@ -728,9 +741,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.dialog.open(AttributeModalComponent, {width: '450px'});
   }
 
-  openRightTab(i) {
-    this.selectedRightTab = i;
-    if (this.selectedRightTab === i) {
+  openRightTab(index: number) {
+    this.selectedRightTab = index;
+    if (this.selectedRightTab === index) {
       this.showOrHideRightPane = true;
     }
     this.diagramComponent.updateDiagramArea();
@@ -784,4 +797,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.sharedService.selectedViewers = [];
     });
   }
+
+  onEditProperties(propertyId: string) {
+    this.nodeStore.pipe(select(getSelectedNode)).subscribe((data) => {this.customProperties = data});
+    const dialogRef = this.dialog.open(DocumentModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        mode: 'edit',
+        customProperties: {...this.customProperties}
+      }
+    });
+
+    const workpackages = this.selectedPart.impactedByWorkPackages.length < 1
+    ? this.selectedWorkpackages
+    : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
+
+    dialogRef.afterClosed().subscribe((data) => {
+      workpackages.forEach(workpackage => {
+        if (data && data.customProperties) {
+          this.nodeStore.dispatch(new UpdateCustomProperty({
+            workPackageId: workpackage.id,
+            nodeId: this.selectedPart.id,
+            customPropertyId: propertyId,
+            data: { data: { value: data.customProperties.value } }
+          }))
+        }
+      })
+    })
+  }
+
 }

@@ -40,11 +40,13 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
       this.store.dispatch(new LoadDocumentationStandard(id));
     }));
     this.subscriptions.push(this.store.pipe(select(getDocumentStandard)).subscribe(documentStandard => {
-      this.documentStandardsService.documentStandardsForm.patchValue({
-        name: documentStandard.name,
-        description: documentStandard.description,
-        type: documentStandard.type
-      });
+      if(documentStandard) {
+        this.documentStandardsService.documentStandardsForm.patchValue({
+          name: documentStandard.name,
+          description: documentStandard.description,
+          type: documentStandard.type
+        });
+      }
     }));
   }
 

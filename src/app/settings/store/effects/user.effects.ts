@@ -12,7 +12,8 @@ import {
   UsersApiResponse, 
   UserDetailResponse,
   UserRolesApiResponse,
-  UpdateUserApiResponse
+  UpdateUserApiResponse,
+  UserPassword
 } from '../models/user.model';
 
 
@@ -90,6 +91,18 @@ export class UserEffects {
       return this.userService.deleteUser(id).pipe(
         switchMap(_ => [new UserActions.DeleteUserSuccess(id)]),
         catchError((error: HttpErrorResponse) => of(new UserActions.DeleteUserFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  updateUserPassword$ = this.actions$.pipe(
+    ofType<UserActions.UpdateUserPassword>(UserActionTypes.UpdateUserPassword),
+    map(action => action.payload),
+    switchMap((payload: UserPassword) => {
+      return this.userService.updateUserPassword(payload).pipe(
+        switchMap((response: any) => [new UserActions.UpdateUserPasswordSuccess(response)]),
+        catchError((error: HttpErrorResponse) => of(new UserActions.UpdateUserPasswordFailure(error)))
       );
     })
   );

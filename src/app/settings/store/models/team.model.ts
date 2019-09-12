@@ -38,12 +38,12 @@ export interface TeamDetails {
 }
 
 export interface MembersEntity {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   team?: (Team)[] | null;
   email: string;
-  phone: string;
+  phone?: string;
   roles?: (Roles)[] | null;
 }
 

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
-import { NodeLink } from '../models/node-link.model';
+import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 import { NodeDetail, Node, Error } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
@@ -10,7 +10,7 @@ export interface State {
   viewLevel: number;
   entities: Node[];
   selectedNode: NodeDetail;
-  selectedNodeLink: NodeLink;
+  selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
   error: Error;
   selectedWorkpackages: string[];
@@ -125,6 +125,20 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
       };
     }
 
+    case NodeActionTypes.LoadNodeLinkSuccess: {
+      return {
+        ...state,
+        selectedNodeLink: action.payload
+      };
+    }
+
+    case NodeActionTypes.LoadNodeLinkFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
     case NodeActionTypes.UpdateLinksSuccess: {
       return {
         ...state
@@ -145,6 +159,26 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
     }
 
     case NodeActionTypes.UpdateNodeFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
+    case NodeActionTypes.UpdateCustomProperty: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.UpdateCustomPropertySuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case NodeActionTypes.UpdateCustomPropertyFailure: {
       return {
         ...state,
         error: action.payload
