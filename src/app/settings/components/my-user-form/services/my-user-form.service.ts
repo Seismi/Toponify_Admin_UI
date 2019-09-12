@@ -13,7 +13,7 @@ export class MyUserFormService {
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
       email: [null, emailValidator],
-      password: ['P1ssw4rd'],
+      password: [null],
       phone: [null, phoneNumberValidator],
       team: [null],
       roles: [null, Validators.required],

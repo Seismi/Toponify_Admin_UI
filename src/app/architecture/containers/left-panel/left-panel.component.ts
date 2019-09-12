@@ -10,6 +10,7 @@ export class LeftPanelComponent {
   @Input() workPackageIsEditable = false;
   @Input() workpackages: any;
   @Input() selectedLeftTab: number;
+  @Input() checked: boolean;
   @Input() viewLevel: number;
   @Input() canSelectWorkpackages: boolean;
 
@@ -30,12 +31,8 @@ export class LeftPanelComponent {
   @Output()
   setWorkpackageEditMode = new EventEmitter<object>();
 
-  @ViewChild(ArchitecturePaletteComponent)
-  private paletteComponent: ArchitecturePaletteComponent;
-
   displayOptionsChanged({ event, option }: { event: any; option: string }) {
     this.displayOptionsChangedEvent.emit({ event, option });
-    this.paletteComponent.updateDisplayOptions(event, option);
   }
 
   // FIXME: set proper type of workpackage

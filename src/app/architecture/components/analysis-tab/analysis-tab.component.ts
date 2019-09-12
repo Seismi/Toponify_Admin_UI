@@ -7,6 +7,8 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 })
 export class AnalysisTabComponent {
 
+  @Input() checked: boolean;
+
   @Output()
   displayOptionsChanged = new EventEmitter();
 
@@ -18,5 +20,4 @@ export class AnalysisTabComponent {
   checkboxClicked(event: any, option: string): void {
     this.displayOptionsChanged.emit({event: event, option: option});
   }
-
 }

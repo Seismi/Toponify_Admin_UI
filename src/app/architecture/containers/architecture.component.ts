@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode
+import { LoadMapView, LoadNode, LoadNodeLinks, LoadNodes, LoadNodeUsageView, UpdateLinks, UpdateNode, UpdateNodeSuccess, UpdateCustomProperty
 } from '@app/architecture/store/actions/node.actions';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
@@ -49,6 +49,7 @@ import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 
 enum Events {
@@ -69,6 +70,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private zoomRef;
   private showHideGridRef;
   private showDetailTabRef;
+  private showHideRadioAlertRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -86,8 +88,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
-
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
@@ -107,7 +109,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodeId: string;
   allowEditWorkPackages: string;
   workPackageIsEditable = false;
-  workpackageId: string;
   workpackageDetail: any;
   public selectedWorkPackages$: Observable<WorkPackageDetail>;
   filterServiceSubscription: Subscription;
@@ -122,6 +123,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   multipleSelected = false;
   singleOrMultipleSelect = true;
   selectedMultipleNodes = [];
+  radioAlertChecked = true;
   radioTab = true;
   detailsTab = false;
   selectedWorkpackages = [];
@@ -247,6 +249,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.selectedRightTab = 0;
       this.ref.detectChanges();
     }.bind(this));
+
+
+    this.showHideRadioAlertRef = this.gojsCustomObjectsService.showHideRadioAlert$.subscribe(
+      function() {
+        this.radioAlertChecked = !this.radioAlertChecked;
+        this.ref.detectChanges();
+      }.bind(this));
 
     this.editedWorkpackageSubscription = this.workpackageStore.pipe(select(getEditWorkpackages)).subscribe((workpackages) => {
       this.allowMove = workpackages.length > 0;
@@ -441,7 +450,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-
+    
     this.isEditable = false;
   }
 
@@ -641,7 +650,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkPackage(id) {
-    this.workpackageId = id;
     this.objectSelected = false;
     // const filter = this.filterService.getFilter();
     // if (filter.workpackages && filter.workpackages.length > 0) {
@@ -681,9 +689,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  openLeftTab(i: number) {
-    this.selectedLeftTab = i;
-    if (this.selectedLeftTab === i) {
+  openLeftTab(index: number) {
+    this.selectedLeftTab = index;
+    if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
     this.diagramComponent.updateDiagramArea();
@@ -712,6 +720,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             target: { id: this.nodeId }
           }
         }));
+        if(data.radio.status === 'open') {
+          this.diagramChangesService.updateRadioCount(this.part);
+        }
       }
     });
   }
@@ -720,9 +731,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.dialog.open(AttributeModalComponent, {width: '450px'});
   }
 
-  openRightTab(i) {
-    this.selectedRightTab = i;
-    if (this.selectedRightTab === i) {
+  openRightTab(index: number) {
+    this.selectedRightTab = index;
+    if (this.selectedRightTab === index) {
       this.showOrHideRightPane = true;
     }
     this.diagramComponent.updateDiagramArea();
@@ -776,4 +787,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.sharedService.selectedViewers = [];
     });
   }
+
+  onEditProperties(propertyId: string) {
+    this.nodeStore.pipe(select(getSelectedNode)).subscribe((data) => {this.customProperties = data});
+    const dialogRef = this.dialog.open(DocumentModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        mode: 'edit',
+        customProperties: {...this.customProperties}
+      }
+    });
+
+    const workpackages = this.selectedPart.impactedByWorkPackages.length < 1
+    ? this.selectedWorkpackages
+    : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
+
+    dialogRef.afterClosed().subscribe((data) => {
+      workpackages.forEach(workpackage => {
+        if (data && data.customProperties) {
+          this.nodeStore.dispatch(new UpdateCustomProperty({
+            workPackageId: workpackage.id,
+            nodeId: this.selectedPart.id,
+            customPropertyId: propertyId,
+            data: { data: { value: data.customProperties.value } }
+          }))
+        }
+      })
+    })
+  }
+
 }
