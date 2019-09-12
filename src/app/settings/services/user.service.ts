@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserEntitiesHttpParams, UserDetails, UserLoginData, UsersApiResponse, UserRolesApiResponse, UpdateUserApiRequest, UpdateUserApiResponse } from '../store/models/user.model';
+import { UserEntitiesHttpParams, UserDetails, UserLoginData, UsersApiResponse, UserRolesApiResponse, UpdateUserApiRequest, UpdateUserApiResponse, UserPassword } from '../store/models/user.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -35,6 +35,10 @@ export class UserService {
 
   deleteUser(id: string): Observable<any> {
     return this.http.delete<any>(`/users/${id}`);
+  }
+
+  updateUserPassword(user: UserPassword): Observable<any> {
+    return this.http.put<any>(`/users/password/change`, {data: user}, httpOptions);
   }
 
   loginUser(data: UserLoginData): Observable<any> {

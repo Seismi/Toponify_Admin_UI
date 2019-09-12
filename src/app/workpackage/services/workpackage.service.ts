@@ -18,6 +18,12 @@ export class WorkPackageService {
 
   constructor(public http: HttpClient) { }
 
+  // FIXME: set type
+  getWorkPackageAvailability(queryParams: any): Observable<any> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/workpackages/selector/availability`, { params: params });
+  }
+
   getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
     return this.http.get<any>(`/workpackages`, {params: params});
@@ -114,7 +120,16 @@ export class WorkPackageService {
   // TODO: missing details POST /workpackages/{workPackageId}/owners/{ownerId}
   // TODO: missing details DELETE /workpackages/{workPackageId}/owners/{ownerId}
   toHttpParams(obj: Object): HttpParams {
-    return Object.getOwnPropertyNames(obj)
-        .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
+    let httpParams = new HttpParams();
+    Object.getOwnPropertyNames(obj).forEach(key => {
+      if (Array.isArray(obj[key])) {
+        obj[key].forEach(item => {
+          httpParams = httpParams.append(`${key}[]`, item);
+        });
+      } else {
+        httpParams = httpParams.set(key, obj[key]);
+      }
+    });
+    return httpParams;
   }
 }

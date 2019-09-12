@@ -5,7 +5,7 @@ import * as NodeActions from '../actions/node.actions';
 import { of, forkJoin } from 'rxjs';
 import { NodeService, GetNodesRequestQueryParams, GetLinksRequestQueryParams } from '@app/architecture/services/node.service';
 import { NodeActionTypes } from '../actions/node.actions';
-import { NodesApiResponse, Error, NodeDetailApiResponse, NodeUpdatePayload } from '../models/node.model';
+import { NodesApiResponse, Error, NodeDetailApiResponse, NodeUpdatePayload, NodeApiResponse, CustomPropertyApiRequest } from '../models/node.model';
 import { NodeLinksApiResponse, NodeLinkDetailApiResponse, LinkUpdatePayload } from '../models/node-link.model';
 
 
@@ -117,6 +117,23 @@ export class NodeEffects {
       return this.nodeService.updateLayoutNodesLocation(payload.layoutId, payload.node).pipe(
         mergeMap((data: any) => [new NodeActions.UpdateNodeSuccess(data.data)]),
         catchError((error: Error) => of(new NodeActions.UpdateNodeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  updateCustomProperty$ = this.actions$.pipe(
+    ofType<NodeActions.UpdateCustomProperty>(NodeActionTypes.UpdateCustomProperty),
+    map(action => action.payload),
+    switchMap((payload: {workPackageId: string, nodeId: string, customPropertyId: string, data: CustomPropertyApiRequest}) => {
+      return this.nodeService.updateCustomPropertyValues(
+          payload.workPackageId,
+          payload.nodeId,
+          payload.customPropertyId,
+          payload.data
+      ).pipe(
+        switchMap((response: NodeApiResponse) => [new NodeActions.UpdateCustomPropertySuccess(response.data)]),
+        catchError((error: Error) => of(new NodeActions.UpdateCustomPropertyFailure(error)))
       );
     })
   );

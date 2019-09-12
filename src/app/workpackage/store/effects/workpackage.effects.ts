@@ -12,13 +12,19 @@ import {
   AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
   DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
-  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess, DeleteOwnerFailure } from '../actions/workpackage.actions';
+  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess,
+  DeleteOwnerFailure, GetWorkpackageAvailability, GetWorkpackageAvailabilitySuccess,
+  GetWorkpackageAvailabilityFailure } from '../actions/workpackage.actions';
 import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
-  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity, WorkPackageEntity } from '../models/workpackage.models';
+  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity,
+  WorkPackageEntity } from '../models/workpackage.models';
+import { State as WorkpackageState } from '../reducers/workpackage.reducer';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class WorkPackageEffects {
   constructor(
+    private store$: Store<WorkpackageState>,
     private actions$: Actions,
     private workpackageService: WorkPackageService
   ) {}
@@ -29,7 +35,9 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((payload: WorkPackageEntitiesHttpParams) => {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
-        switchMap((data: WorkPackageEntitiesResponse) => [new LoadWorkPackagesSuccess(data)]),
+        switchMap((data: WorkPackageEntitiesResponse) => [
+          new LoadWorkPackagesSuccess(data),
+          new GetWorkpackageAvailability({workPackageQuery: []})]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
       );
     })
@@ -106,4 +114,17 @@ export class WorkPackageEffects {
       );
     })
   );
+
+  @Effect()
+  getWorkpackageAvailability$ = this.actions$.pipe(
+    ofType<GetWorkpackageAvailability>(WorkPackageActionTypes.GetWorkpackageAvailability),
+    map(action => action.payload),
+    switchMap((params: any) => {
+      return this.workpackageService.getWorkPackageAvailability(params).pipe(
+        switchMap((response: any) => [new GetWorkpackageAvailabilitySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new GetWorkpackageAvailabilityFailure(error)))
+      );
+    })
+  );
+
 }

@@ -27,7 +27,11 @@
         </smi-attributes-tab>
     </mat-tab>
     <mat-tab label="Properties" *ngIf="objectSelected">
-        <smi-properties-tab [data]="properties"></smi-properties-tab>
+        <smi-properties-tab 
+            [data]="properties"
+            (editProperties)="onEditProperties($event)"
+            [workPackageIsEditable]="workPackageIsEditable">
+        </smi-properties-tab>
     </mat-tab>
     <mat-tab label="RADIO" *ngIf="!multipleSelected">
         <smi-radio-tab *ngIf="objectSelected"

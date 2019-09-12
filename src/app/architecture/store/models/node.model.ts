@@ -2,6 +2,14 @@ export interface NodesApiResponse {
   data?: (Node)[] | null;
 }
 
+export interface NodeApiResponse {
+  data: Node;
+}
+
+export interface CustomPropertyApiRequest {
+  data: CustomPropertyValuesEntity;
+}
+
 export enum layers {
   system = 'system',
   dataSet = 'data set',
@@ -33,6 +41,7 @@ export class Node {
   locations?: ((LocationsEntity)[] | null)[] | null;
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
+  relatedRadioCount: number;
   impactedByWorkPackages = [];
 
   constructor(options: { id: string, name: string, layer: layers, category: nodeCategories }) {
@@ -143,7 +152,9 @@ export interface RelatedWorkPackagesEntity {
   status: string;
 }
 export interface CustomPropertyValuesEntity {
-  propertyId: string;
+  propertyId?: string;
+  name?: string;
+  description?: string;
   value: string;
 }
 
