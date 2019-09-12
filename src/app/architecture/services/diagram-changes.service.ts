@@ -262,20 +262,21 @@ export class DiagramChangesService {
   //  -selectedWorkPackages - the array of currently selected work packages to apply node changes from
   updateNodes(diagram, nodes) {
 
-    if (nodes && nodes.length > 0) {
+    if (nodes && Array.isArray(nodes) ) {
 
-      const filter = this.filterService.filter.getValue();
+      // const filter = this.filterService.filter.getValue();
 
-      let nodeArray = JSON.parse(JSON.stringify(nodes));
+      const nodeArray = JSON.parse(JSON.stringify(nodes));
 
       // Check if filter is set
-      if (filter && filter.filterNodeIds) {
+      // FIXME: think it's not needed anymore, pipe does same job
+      /* if (filter && filter.filterNodeIds) {
 
         // Include only nodes specified in the filter
         nodeArray = nodeArray.filter(function (node) {
           return filter.filterNodeIds.includes(node.id);
         }, this);
-      }
+      }*/
 
       /*/ In map view, sort the nodes so that the group representing the source occurs first in the array
       if (filter.filterLevel === Level.map) {
@@ -288,10 +289,8 @@ export class DiagramChangesService {
         }.bind(this));
       }*/
 
-      // Temporary - create copy to fix bug that arises when using sample data from json server
-      nodeArray = JSON.parse(JSON.stringify(nodeArray));
 
-      diagram.model.nodeDataArray = [...nodeArray];
+      diagram.model.nodeDataArray = nodeArray;
       if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
     }
   }
