@@ -1,12 +1,6 @@
 <form [formGroup]="group">
-    <div class="textarea-container">
-        <textarea [rows]="rows" class="form-control" formControlName="replyText"></textarea>
-        <button 
-            *ngIf="!replyMode"
-            class="btn btn-primary" 
-            (click)="onSend()" 
-            [disabled]="disableButton">
-            Send
-        </button>
-    </div>
+  <div class="textarea-container">
+    <textarea [rows]="rows" class="form-control" (ngModelChange)="onType($event)" formControlName="replyText"></textarea>
+    <button *ngIf="!replyMode" [disabled]="disabled" class="btn btn-primary" (click)="onSend()">Send</button>
+  </div>
 </form>

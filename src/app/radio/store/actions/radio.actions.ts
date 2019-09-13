@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest, Reply } from '../models/radio.model';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export enum RadioActionTypes {
@@ -75,7 +75,7 @@ export class AddReply implements Action {
 
 export class AddReplySuccess implements Action {
   readonly type = RadioActionTypes.AddReplySuccess;
-  constructor(public payload: Reply) {}
+  constructor(public payload: RadioDetail) {}
 }
 
 export class AddReplyFailure implements Action {
