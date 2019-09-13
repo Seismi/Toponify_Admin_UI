@@ -13,6 +13,10 @@ export interface UsersApiResponse {
   data?: (User)[] | null;
 }
 
+export interface UserApiResponse {
+  data?: UserDetails;
+}
+
 export interface UserRolesApiResponse {
   data?: (RolesEntity)[] | null;
 }
@@ -34,18 +38,19 @@ export interface User {
   phone: string;
   roles?: (RolesEntity)[] | null;
   password?: string;
+  userStatus: string;
 }
 
 export interface UserDetails {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   team?: (OwnersEntityOrViewersEntity)[] | null;
   email: string;
   phone: string;
   roles?: string[];
-  password: string;
-  userStatus: string;
+  password?: string;
+  userStatus?: string;
   layerFilter?: string;
   include?: Include;
   layouts?: Layout;
@@ -106,6 +111,12 @@ export interface Layout {
 
 export interface Descendants {
     test?: any;
+}
+
+export interface UserPassword {
+  userId: string;
+  oldPassword: string;
+  newPassword: string;
 }
 
 // TODO: This may be shared at some point

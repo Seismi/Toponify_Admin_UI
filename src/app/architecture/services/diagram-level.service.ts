@@ -108,9 +108,8 @@ export class DiagramLevelService implements OnDestroy {
 
   // Display the next level of detail in the diagram, filtered to include only children of a specific node
   //    object: node to display the children of
-  changeLevelWithFilter(event: any, object: go.Node): void {
+  changeLevelWithFilter(_event: any, object: go.Node): void {
     let newLevel: Level;
-
     if (object.data.layer === layers.system) {
       newLevel = Level.dataSet;
     } else if (object.data.layer === layers.dataSet) {
@@ -120,11 +119,7 @@ export class DiagramLevelService implements OnDestroy {
     } else {
       return;
     }
-    const childIds = object.data.descendants.map(function (child) {
-      return child.id;
-    });
-
-    this.filterService.setFilter({filterLevel: newLevel, filterNodeIds:  childIds});
+    this.filterService.setFilter({filterLevel: newLevel, id: object.data.id});
   }
 
   displayMapView(event: any, object: go.Link): void {

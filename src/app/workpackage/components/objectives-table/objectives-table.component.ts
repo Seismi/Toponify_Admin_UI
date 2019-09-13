@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input } from '@angular/core';
+import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
@@ -8,6 +8,9 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./objectives-table.component.scss']
 })
 export class ObjectivesTableComponent  {
+
+  @Input() statusDraft: boolean = false;
+
   @Input()
   set data(data: any[]) {
     if(data) {
@@ -18,6 +21,13 @@ export class ObjectivesTableComponent  {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
-  displayedColumns: string[] = ['type', 'name'];
+  displayedColumns: string[] = ['type', 'name', 'delete'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
+
+  @Output()
+  deleteObjective = new EventEmitter();
+
+  onDelete(radio) {
+    this.deleteObjective.emit(radio)
+  }
 }

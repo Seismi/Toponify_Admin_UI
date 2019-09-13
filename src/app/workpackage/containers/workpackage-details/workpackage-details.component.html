@@ -42,14 +42,20 @@
         <mat-tab label="Objectives">
           <smi-objectives-table 
             data-hook="workpackage-page-objective-table" 
-            [data]="workpackage?.objectives">
+            [data]="workpackage?.objectives"
+            [statusDraft]="statusDraft"
+            (deleteObjective)="onDeleteObjectiveOrRadio($event, {objective: true})">
           </smi-objectives-table>
+          <button *ngIf="statusDraft" class="add-radio-button" mat-raised-button color="primary" (click)="onAddObjectiveOrRadio({objective: true})">Add</button>
         </mat-tab>
         <mat-tab label="RADIO">
-          <smi-radio-table 
-            data-hook="workpackage-page-radio-table" 
-            [data]="workpackage?.radios">
-          </smi-radio-table>
+          <smi-radios-table
+            data-hook="workpackage-page-radio-table"
+            [data]="workpackage?.radios"
+            [statusDraft]="statusDraft"
+            (deleteRadio)="onDeleteObjectiveOrRadio($event, {objective: false})">
+          </smi-radios-table>
+          <button *ngIf="statusDraft" class="add-radio-button" mat-raised-button color="primary" (click)="onAddObjectiveOrRadio({objective: false})">Add</button>
         </mat-tab>
         <mat-tab label="Change Summary">
           <smi-change-table 
@@ -59,7 +65,7 @@
         </mat-tab>
       </mat-tab-group>
       <br>
-      <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
+      <button class="hide-pane-button" mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
     </p>
   </app-model-sidebar>
 </app-model-container>

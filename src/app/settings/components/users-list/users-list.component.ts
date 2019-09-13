@@ -3,9 +3,9 @@ import { TeamDetails } from '@app/settings/store/models/team.model';
 import { MatTableDataSource } from '@angular/material';
 
 @Component({
-    selector: 'smi-users-list',
-    templateUrl: 'users-list.component.html',
-    styleUrls: ['users-list.component.scss']
+  selector: 'smi-users-list',
+  templateUrl: 'users-list.component.html',
+  styleUrls: ['users-list.component.scss']
 })
 export class UsersListComponent {
 

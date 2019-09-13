@@ -1,10 +1,11 @@
-<h1 mat-dialog-title>Add</h1>
+<h1 mat-dialog-title>{{(isEditMode) ? 'Edit' : 'Add'}}</h1>
 <div mat-dialog-content>
     <smi-documentation-standards-detail 
       [group]="documentStandardsForm"
       [isEditable]="isEditable"
       [modalMode]="modalMode"
-      [isDisabled]="isDisabled">
+      [isDisabled]="isDisabled"
+      [isEditMode]="isEditMode">
     </smi-documentation-standards-detail>
 </div>
 <div mat-dialog-actions>

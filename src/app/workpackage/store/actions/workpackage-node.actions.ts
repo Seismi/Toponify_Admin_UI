@@ -5,15 +5,30 @@ export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
   AddWorkPackageNodeSuccess = '[WorkPackage] Add node success',
   AddWorkPackageNodeFailure = '[WorkPackage] Add node failure',
+
+  AddWorkPackageNodeDescendant = '[WorkPackage] Add node descendant',
+  AddWorkPackageNodeDescendantSuccess = '[WorkPackage] Add node descendant success',
+  AddWorkPackageNodeDescendantFailure = '[WorkPackage] Add node descendant failure',
+
   LoadWorkPackageNodeDescendants = '[WorkPackage] Load node descendants',
   LoadWorkPackageNodeDescendantsSuccess = '[WorkPackage] Load node descendants success',
   LoadWorkPackageNodeDescendantsFailure = '[WorkPackage] Load node descendants failure',
+
   UpdateWorkPackageNode = '[WorkPackage] Update node',
   UpdateWorkPackageNodeSuccess = '[WorkPackage] Update node success',
   UpdateWorkPackageNodeFailure = '[WorkPackage] Update node failure',
+
   DeleteWorkpackageNode = '[WorkPackage] Delete Node',
   DeleteWorkpackageNodeSuccess = '[WorkPackage] Delete Node Success',
   DeleteWorkpackageNodeFailure = '[WorkPackage] Delete Node Fail',
+
+  AddWorkpackageNodeOwner = '[WorkPackage] Add Node Owner',
+  AddWorkpackageNodeOwnerSuccess = '[WorkPackage] Add Node Owner Success',
+  AddWorkpackageNodeOwnerFailure = '[WorkPackage] Add Node Owner Failure',
+
+  DeleteWorkpackageNodeOwner = '[WorkPackage] Delete Node Owner',
+  DeleteWorkpackageNodeOwnerSuccess = '[WorkPackage] Delete Node Owner Success',
+  DeleteWorkpackageNodeOwnerFailure = '[WorkPackage] Delete Node Owner Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -28,6 +43,21 @@ export class AddWorkPackageNodeSuccess implements Action {
 
 export class AddWorkPackageNodeFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddWorkPackageNodeDescendant implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant;
+  constructor(public payload: {workpackageId: string, nodeId: string, node: any}) {}
+}
+
+export class AddWorkPackageNodeDescendantSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantSuccess;
+  constructor(public payload: any) {}
+}
+
+export class AddWorkPackageNodeDescendantFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -76,10 +106,43 @@ export class DeleteWorkpackageNodeFailure implements Action {
   constructor(public payload: any) { }
 }
 
+export class AddWorkpackageNodeOwner implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkpackageNodeOwner;
+  constructor(public payload: { workpackageId: string, nodeId: string, ownerId: string, data: any }) { }
+}
+
+export class AddWorkpackageNodeOwnerSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkpackageNodeOwnerSuccess;
+  constructor(public payload: any) { }
+}
+
+export class AddWorkpackageNodeOwnerFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkpackageNodeOwnerFailure;
+  constructor(public payload: any) { }
+}
+
+export class DeleteWorkpackageNodeOwner implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkpackageNodeOwner;
+  constructor(public payload: { workpackageId: string, nodeId: string, ownerId: string }) { }
+}
+
+export class DeleteWorkpackageNodeOwnerSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkpackageNodeOwnerSuccess;
+  constructor(public payload: any) { }
+}
+
+export class DeleteWorkpackageNodeOwnerFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkpackageNodeOwnerFailure;
+  constructor(public payload: any) { }
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
   | AddWorkPackageNodeFailure
+  | AddWorkPackageNodeDescendant
+  | AddWorkPackageNodeDescendantSuccess
+  | AddWorkPackageNodeDescendantFailure
   | UpdateWorkPackageNode
   | UpdateWorkPackageNodeSuccess
   | UpdateWorkPackageNodeFailure
@@ -88,4 +151,10 @@ export type WorkPackageNodeActionsUnion =
   | LoadWorkPackageNodeDescendantsFailure
   | DeleteWorkpackageNode
   | DeleteWorkpackageNodeSuccess
-  | DeleteWorkpackageNodeFailure;
+  | DeleteWorkpackageNodeFailure
+  | AddWorkpackageNodeOwner
+  | AddWorkpackageNodeOwnerSuccess
+  | AddWorkpackageNodeOwnerFailure
+  | DeleteWorkpackageNodeOwner
+  | DeleteWorkpackageNodeOwnerSuccess
+  | DeleteWorkpackageNodeOwnerFailure;

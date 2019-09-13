@@ -12,6 +12,7 @@ export class DocumentationStandardsDetailComponent {
   @Input() isEditable = false;
   @Input() isDisabled = true;
   @Input() modalMode = false;
+  @Input() isEditMode: boolean;
 
   types = ['Boolean', 'Text', 'Hyperlink', 'Number', 'Date'];
 

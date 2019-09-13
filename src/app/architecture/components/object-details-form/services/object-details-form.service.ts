@@ -9,7 +9,6 @@ export class ObjectDetailsService {
 
   constructor(private fb: FormBuilder, private objectDetailsValidatorService: ObjectDetailsValidatorService) {
     this.objectDetailsForm = this.fb.group({
-      id: [null],
       name: [null, Validators.required],
       category: [null],
       owner: [null],
@@ -26,5 +25,4 @@ export class ObjectDetailsService {
     }
     return true;
   }
-
 }

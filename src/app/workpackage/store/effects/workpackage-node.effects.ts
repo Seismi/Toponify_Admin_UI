@@ -8,7 +8,10 @@ import { AddWorkPackageNode, AddWorkPackageNodeFailure,
   AddWorkPackageNodeSuccess, WorkPackageNodeActionTypes, LoadWorkPackageNodeDescendants,
   LoadWorkPackageNodeDescendantsSuccess, LoadWorkPackageNodeDescendantsFailure, DeleteWorkpackageNode,
   DeleteWorkpackageNodeSuccess, DeleteWorkpackageNodeFailure, UpdateWorkPackageNode,
-  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure } from '../actions/workpackage-node.actions';
+  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure, AddWorkpackageNodeOwner, 
+  AddWorkpackageNodeOwnerSuccess, AddWorkpackageNodeOwnerFailure, DeleteWorkpackageNodeOwner, 
+  DeleteWorkpackageNodeOwnerSuccess, DeleteWorkpackageNodeOwnerFailure, AddWorkPackageNodeDescendant, 
+  AddWorkPackageNodeDescendantSuccess, AddWorkPackageNodeDescendantFailure } from '../actions/workpackage-node.actions';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -25,6 +28,18 @@ export class WorkPackageNodeEffects {
       return this.workpackageNodeService.addNode(payload.workpackageId, payload.node).pipe(
         switchMap((data: any) => [new AddWorkPackageNodeSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkpackageNodeDescenadant$ = this.actions$.pipe(
+    ofType<AddWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant),
+    map(action => action.payload),
+    mergeMap((payload: {workpackageId: string, nodeId: string, node: any}) => {
+      return this.workpackageNodeService.addNodeDescendant(payload.workpackageId, payload.nodeId, payload.node.id, payload.node).pipe(
+        switchMap((data: any) => [new AddWorkPackageNodeDescendantSuccess(data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeDescendantFailure(error)))
       );
     })
   );
@@ -64,4 +79,34 @@ export class WorkPackageNodeEffects {
       );
     })
   );
+
+  @Effect()
+  addNodeOwner$ = this.actions$.pipe(
+    ofType<AddWorkpackageNodeOwner>(WorkPackageNodeActionTypes.AddWorkpackageNodeOwner),
+    map(action => action.payload),
+    mergeMap((payload: { workpackageId: string, nodeId: string, ownerId: string, data: any }) => {
+      return this.workpackageNodeService.addNodeOwner(
+        payload.workpackageId,
+        payload.nodeId,
+        payload.ownerId,
+        payload.data
+      ).pipe(
+        mergeMap((response: any) => [new AddWorkpackageNodeOwnerSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkpackageNodeOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteNodeOwner$ = this.actions$.pipe(
+    ofType<DeleteWorkpackageNodeOwner>(WorkPackageNodeActionTypes.DeleteWorkpackageNodeOwner),
+    map(action => action.payload),
+    mergeMap((payload: { workpackageId: string, nodeId: string, ownerId: string }) => {
+      return this.workpackageNodeService.deleteNodeOwner(payload.workpackageId, payload.nodeId, payload.ownerId).pipe(
+        map(data => new DeleteWorkpackageNodeOwnerSuccess(data.data)),
+        catchError(error => of(new DeleteWorkpackageNodeOwnerFailure(error)))
+      );
+    })
+  );
+
 }
