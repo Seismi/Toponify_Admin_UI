@@ -9,15 +9,47 @@ import {
   LoadWorkPackagesFailure,
   LoadWorkPackagesSuccess,
   WorkPackageActionTypes,
-  AddWorkPackageEntity, UpdateWorkPackageEntity, AddWorkPackageEntitySuccess, AddWorkPackageEntityFailure,
-  UpdateWorkPackageEntitySuccess, UpdateWorkPackageEntityFailure, DeleteWorkPackageEntity,
-  DeleteWorkPackageEntitySuccess, DeleteWorkPackageEntityFailure,
-  LoadWorkPackage, LoadWorkPackageSuccess, DeleteOwner, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwnerSuccess,
-  DeleteOwnerFailure, GetWorkpackageAvailability, GetWorkpackageAvailabilitySuccess,
-  GetWorkpackageAvailabilityFailure } from '../actions/workpackage.actions';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
-  WorkPackageDetailApiResponse, WorkPackageApiRequest, WorkPackageApiResponse, OwnersEntityOrApproversEntity,
-  WorkPackageEntity } from '../models/workpackage.models';
+  AddWorkPackageEntity, 
+  UpdateWorkPackageEntity, 
+  AddWorkPackageEntitySuccess, 
+  AddWorkPackageEntityFailure,
+  UpdateWorkPackageEntitySuccess, 
+  UpdateWorkPackageEntityFailure, 
+  DeleteWorkPackageEntity,
+  DeleteWorkPackageEntitySuccess, 
+  DeleteWorkPackageEntityFailure,
+  LoadWorkPackage, 
+  LoadWorkPackageSuccess, 
+  DeleteOwner, 
+  AddOwner, 
+  AddOwnerSuccess, 
+  AddOwnerFailure, 
+  DeleteOwnerSuccess, 
+  DeleteOwnerFailure, 
+  AddObjective, 
+  AddObjectiveSuccess, 
+  AddObjectiveFailure, 
+  DeleteObjective, 
+  DeleteObjectiveSuccess, 
+  DeleteObjectiveFailure, 
+  AddRadio, 
+  AddRadioSuccess, 
+  AddRadioFailure, 
+  DeleteRadio, 
+  DeleteRadioSuccess, 
+  DeleteRadioFailure, 
+  GetWorkpackageAvailability,
+  GetWorkpackageAvailabilitySuccess,
+  GetWorkpackageAvailabilityFailure
+} from '../actions/workpackage.actions';
+import { 
+  WorkPackageEntitiesHttpParams, 
+  WorkPackageEntitiesResponse,
+  WorkPackageDetailApiResponse, 
+  WorkPackageApiRequest, 
+  WorkPackageApiResponse, 
+  OwnersEntityOrApproversEntity
+} from '../models/workpackage.models';
 import { State as WorkpackageState } from '../reducers/workpackage.reducer';
 import { Store } from '@ngrx/store';
 
@@ -116,6 +148,30 @@ export class WorkPackageEffects {
   );
 
   @Effect()
+  addObjective$ = this.actions$.pipe(
+    ofType<AddObjective>(WorkPackageActionTypes.AddObjective),
+    map(action => action.payload),
+    mergeMap((payload: {data: any, workPackageId: string, radioId: string}) => {
+      return this.workpackageService.addObjective(payload.data, payload.workPackageId, payload.radioId).pipe(
+        mergeMap((response: any) => [new AddObjectiveSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddObjectiveFailure(error)))
+      )
+    })
+  )
+
+  @Effect()
+  deleteObjective$ = this.actions$.pipe(
+    ofType<DeleteObjective>(WorkPackageActionTypes.DeleteObjective),
+    map(action => action.payload),
+    switchMap((payload: {workPackageId: string, radioId: string}) => {
+      return this.workpackageService.deleteObjective(payload.workPackageId, payload.radioId).pipe(
+        switchMap((response: any) => [new DeleteObjectiveSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteObjectiveFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   getWorkpackageAvailability$ = this.actions$.pipe(
     ofType<GetWorkpackageAvailability>(WorkPackageActionTypes.GetWorkpackageAvailability),
     map(action => action.payload),
@@ -127,4 +183,27 @@ export class WorkPackageEffects {
     })
   );
 
+  @Effect()
+  addRadio$ = this.actions$.pipe(
+    ofType<AddRadio>(WorkPackageActionTypes.AddRadio),
+    map(action => action.payload),
+    mergeMap((payload: {data: any, workPackageId: string, radioId: string}) => {
+      return this.workpackageService.addRadio(payload.data, payload.workPackageId, payload.radioId).pipe(
+        mergeMap((response: any) => [new AddRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddRadioFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteRadio$ = this.actions$.pipe(
+    ofType<DeleteRadio>(WorkPackageActionTypes.DeleteRadio),
+    map(action => action.payload),
+    switchMap((payload: {workPackageId: string, radioId: string}) => {
+      return this.workpackageService.deleteRadio(payload.workPackageId, payload.radioId).pipe(
+        switchMap((response: any) => [new DeleteRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteRadioFailure(error)))
+      );
+    })
+  );
 }

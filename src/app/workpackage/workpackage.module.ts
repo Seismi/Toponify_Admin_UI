@@ -17,7 +17,7 @@ import {
   } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
-import { RadioTableComponent } from './components/radio-table/radio-table.component';
+import { RadiosTableComponent } from './components/radio-table/radio-table.component';
 import { reducer } from './store/reducers/workpackage.reducer';
 import { StoreModule } from '@ngrx/store';
 import { WorkPackageEffects } from './store/effects/workpackage.effects';
@@ -44,6 +44,9 @@ import { WorkPackageNodeEffects } from './store/effects/workpackage-node.effects
 import { WorkPackageNodesService } from './services/workpackage-nodes.service';
 import { WorkPackageLinkEffects } from './store/effects/workpackage-link.effects';
 import { WorkPackageLinksService } from './services/workpackage-links.service';
+import { RadioListComponent } from './components/radio-list/radio-list.component';
+import { RadioListModalComponent } from './containers/radio-list-modal/radio-list-modal.component';
+import { RadioModule } from '@app/radio/radio.module';
 
 
 @NgModule({
@@ -64,6 +67,7 @@ import { WorkPackageLinksService } from './services/workpackage-links.service';
     CommonModule,
     CoreModule,
     SettingsModule,
+    RadioModule,
     StoreModule.forFeature('workpackageFeature', reducer),
     EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects])
   ],
@@ -74,7 +78,7 @@ import { WorkPackageLinksService } from './services/workpackage-links.service';
     WorkPackagesTableComponent,
     WorkPackageDetailComponent,
     ObjectivesTableComponent,
-    RadioTableComponent,
+    RadiosTableComponent,
     ChangeTableComponent,
     WorkPackageModalComponent,
     DeleteWorkPackageModalComponent,
@@ -87,13 +91,16 @@ import { WorkPackageLinksService } from './services/workpackage-links.service';
     OwnersModalComponent,
     OwnersListComponent,
     WorkPackageTreeModalComponent,
-    PropertiesTableComponent
+    PropertiesTableComponent,
+    RadioListComponent,
+    RadioListModalComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,
     DeleteWorkPackageModalComponent,
     OwnersModalComponent,
-    WorkPackageTreeModalComponent
+    WorkPackageTreeModalComponent,
+    RadioListModalComponent
   ],
   providers: [
     WorkPackageService,

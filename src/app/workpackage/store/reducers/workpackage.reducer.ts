@@ -291,9 +291,98 @@ export function reducer(
       };
     }
 
+    case WorkPackageActionTypes.AddObjective: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.AddObjectiveSuccess: {
+      return {
+        ...state,
+        selectedWorkPackage: action.payload
+      }
+    }
+
+    case WorkPackageActionTypes.AddObjectiveFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteObjective: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteObjectiveSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteObjectiveFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.AddRadio: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.AddRadioSuccess: {
+      return {
+        ...state,
+        selectedWorkPackage: action.payload
+      }
+    }
+
+    case WorkPackageActionTypes.AddRadioFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteRadio: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteRadioSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteRadioFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
     default: {
       return state;
     }
   }
 }
-

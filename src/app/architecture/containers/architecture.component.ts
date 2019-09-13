@@ -831,7 +831,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteOwner() {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {

@@ -1,6 +1,6 @@
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetailApiResponse, RadioApiRequest, RadioApiResponse, ReplyApiRequest, ReplyApiResponse } from '../models/radio.model';
-import { catchError, map, switchMap, mergeMap } from 'rxjs/operators';
+import { catchError, map, switchMap, mergeMap, first, tap } from 'rxjs/operators';
 import { RadioActionTypes, LoadRadios, LoadRadiosSuccess, LoadRadiosFailure, LoadRadio, LoadRadioSuccess, LoadRadioFailure, AddRadioEntity, AddRadioEntitySuccess, AddRadioEntityFailure, AddReply, AddReplySuccess } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,6 +14,9 @@ export class RadioEffects {
     private actions$: Actions,
     private radioService: RadioService
   ) { }
+
+  // Newly created radio id
+  public radioId: string;
 
   @Effect()
   loadRadioEntities$ = this.actions$.pipe(
@@ -46,6 +49,7 @@ export class RadioEffects {
     mergeMap((payload: RadioApiRequest) => {
       return this.radioService.addRadioEntity(payload).pipe(
         mergeMap((radio: RadioApiResponse) => [new AddRadioEntitySuccess(radio.data)]),
+        tap(({payload}) => { this.radioId = payload.id }),
         catchError((error: HttpErrorResponse) => of(new AddRadioEntityFailure(error)))
       );
     })
