@@ -1,29 +1,9 @@
-form {
-    max-width: 100%;
-    padding: 5px 10px;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-label {
-    margin: 0;
-}
-
-textarea {
-    resize: none;
-}
-
-.form-group {
-    margin-bottom: 10px;
+.mat-form-field {
+    width: 100%;
 }
 
 .disabled {
     pointer-events: none;
-    background-color: #f9f9f9;
-}
-
-input[readonly] {
-    background-color: #f9f9f9;
 }
 
 button:nth-child(2) {

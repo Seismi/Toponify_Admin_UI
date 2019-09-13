@@ -16,11 +16,10 @@ export class WorkPackageTabTableComponent {
     }
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
   @Input()
   canSelectWorkpackage: boolean;
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 

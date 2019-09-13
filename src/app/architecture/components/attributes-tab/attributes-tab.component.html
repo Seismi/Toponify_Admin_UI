@@ -16,5 +16,5 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
     <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
-</div><br>
-<button mat-raised-button color="primary" (click)="onAdd()">Create New</button>
+</div>
+<button mat-raised-button color="primary" *ngIf="workPackageIsEditable" (click)="onAdd()">Create New</button>
