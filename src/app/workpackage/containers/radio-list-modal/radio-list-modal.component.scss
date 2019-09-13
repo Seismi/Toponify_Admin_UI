@@ -1,0 +1,22 @@
+.mat-dialog-actions{
+  padding: 25px 0px;
+}
+
+button:focus {
+  outline: none;
+}
+
+.save-btn{
+  background-color: #ddd;
+}
+
+.btn-action-1 {
+  display: block; 
+  width: 20%;
+}
+
+.btn-action-2 {
+  display: inline-block; 
+  text-align: right; 
+  width: 79%;
+}

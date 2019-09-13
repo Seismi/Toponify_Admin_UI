@@ -11,7 +11,7 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as WorkPackageState } from '../../store/reducers/workpackage.reducer';
-import { LoadWorkPackages, AddWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
+import { AddWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
@@ -43,8 +43,6 @@ export class WorkPackageModalComponent implements OnInit {
   ngOnInit() {
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
-
-    this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.baseline$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
   }
 

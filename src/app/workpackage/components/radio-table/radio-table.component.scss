@@ -2,10 +2,14 @@ table {
     width: 100%;
 }
 
-tr.mat-row {
-    cursor: pointer;
-}
-
 tr.mat-header-row {
     height: 30px;
+}
+
+th.mat-column-delete {
+    width: 5%;
+}
+
+.mat-icon {
+    cursor: pointer;
 }
