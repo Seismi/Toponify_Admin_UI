@@ -8,7 +8,7 @@ import { AddWorkPackageNode, AddWorkPackageNodeFailure,
   AddWorkPackageNodeSuccess, WorkPackageNodeActionTypes, LoadWorkPackageNodeDescendants,
   LoadWorkPackageNodeDescendantsSuccess, LoadWorkPackageNodeDescendantsFailure, DeleteWorkpackageNode,
   DeleteWorkpackageNodeSuccess, DeleteWorkpackageNodeFailure, UpdateWorkPackageNode,
-  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure } from '../actions/workpackage-node.actions';
+  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure, AddWorkPackageNodeDescendantFailure, AddWorkPackageNodeDescendantSuccess, AddWorkPackageNodeDescendant } from '../actions/workpackage-node.actions';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -25,6 +25,18 @@ export class WorkPackageNodeEffects {
       return this.workpackageNodeService.addNode(payload.workpackageId, payload.node).pipe(
         switchMap((data: any) => [new AddWorkPackageNodeSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkpackageNodeDescenadant$ = this.actions$.pipe(
+    ofType<AddWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant),
+    map(action => action.payload),
+    mergeMap((payload: {workpackageId: string, nodeId: string, node: any}) => {
+      return this.workpackageNodeService.addNodeDescendant(payload.workpackageId, payload.nodeId, payload.node.id, payload.node).pipe(
+        switchMap((data: any) => [new AddWorkPackageNodeDescendantSuccess(data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeDescendantFailure(error)))
       );
     })
   );
