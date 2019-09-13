@@ -24,9 +24,13 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput [matDatepicker]="picker1" placeholder="Action By" formControlName="actionBy">
-      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-      <mat-datepicker #picker1></mat-datepicker>
+      <textarea matInput placeholder="Description" data-hook="radio-details-description"
+        formControlName="description"></textarea>
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="!modalMode">
+      <input matInput placeholder="Target Name" data-hook="radio-details-target-name" [readonly]="true">
     </mat-form-field>
 
     <mat-form-field>
@@ -38,18 +42,14 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field *ngIf="!modalMode">
-      <input matInput placeholder="Target Name" data-hook="radio-details-target-name" [readonly]="true">
+    <mat-form-field>
+      <input matInput [matDatepicker]="picker1" placeholder="Action By" formControlName="actionBy">
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field>
       <input matInput placeholder="Mitigation" data-hook="radio-details-mitigation" formControlName="mitigation">
-    </mat-form-field>
-
-    <mat-form-field>
-      <textarea matInput placeholder="Description" data-hook="radio-details-description"
-        formControlName="description"></textarea>
-      <mat-error>This field is required</mat-error>
     </mat-form-field>
   </div>
 
