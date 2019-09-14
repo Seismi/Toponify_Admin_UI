@@ -265,73 +265,35 @@ export class DiagramChangesService {
   //  -diagram - the diagram to update
   //  -nodes - the array of nodes from the architecture to include
   //  -selectedWorkPackages - the array of currently selected work packages to apply node changes from
-  updateNodes(diagram, nodes) {
-
-    if (nodes && Array.isArray(nodes) ) {
-
-      // const filter = this.filterService.filter.getValue();
-
-      const nodeArray = JSON.parse(JSON.stringify(nodes));
-
-      // Check if filter is set
-      // FIXME: think it's not needed anymore, pipe does same job
-      /* if (filter && filter.filterNodeIds) {
-
-        // Include only nodes specified in the filter
-        nodeArray = nodeArray.filter(function (node) {
-          return filter.filterNodeIds.includes(node.id);
-        }, this);
-      }*/
-
-      /*/ In map view, sort the nodes so that the group representing the source occurs first in the array
-      if (filter.filterLevel === Level.map) {
-        nodeArray.sort(function(a, b) {
-          if (a.id === this.diagramLevelService.mapView.sourceDataSet.id) {
-            return -1;
-          } else {
-            return 1;
-          }
-        }.bind(this));
-      }*/
-
-
-      diagram.model.nodeDataArray = nodeArray;
-      if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
+  updateNodes(diagram: any, nodes: go.Node[]) {
+    if (!nodes || !Array.isArray(nodes) ) {
+        throw new Error("Invalid nodes type");
     }
+
+    diagram.model.nodeDataArray = JSON.parse(JSON.stringify(nodes));
+    if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
   }
 
   // Update the array of links that are displayed in the diagram
   //  -diagram - the diagram to update
   //  -links - the array of links from the architecture to include
   //  -selectedWorkPackages - the array of currently selected work packages to apply link changes from
-  updateLinks(diagram, links: go.Link[]): void {
-
-    if (links && links.length > 0) {
-
-      const filter = this.filterService.filter.getValue();
-      const currentLevel = filter.filterLevel.toLowerCase();
-
-      const sourceProp = diagram.model.linkFromKeyProperty;
-      const targetProp = diagram.model.linkToKeyProperty;
-
-      let linkArray = JSON.parse(JSON.stringify(links));
-
-      // Check if filter is set
-      if (filter && filter.filterNodeIds) {
-
-        // Include only links between nodes that are both specified in the filter
-        linkArray = linkArray.filter(function (link) {
-          return filter.filterNodeIds.includes(link[sourceProp]) &&
-            filter.filterNodeIds.includes(link[targetProp]);
-        }, this);
-      }
-
-      // Temporary - create copy to fix bug that arises when using sample data from json server
-      linkArray = JSON.parse(JSON.stringify(linkArray));
-
-      (diagram.model as go.GraphLinksModel).linkDataArray = [...linkArray];
-      if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
+  updateLinks(diagram: any, links: go.Link[], nodesIds: string[]): void {
+    if (!links || !Array.isArray(links)) {
+      throw new Error("Invalid links type");
     }
+
+    if (!nodesIds || !Array.isArray(nodesIds)) {
+      throw new Error("Invalid nodesIds type");
+    }
+
+    const sourceProp = diagram.model.linkFromKeyProperty;
+    const targetProp = diagram.model.linkToKeyProperty;
+
+    const linkArray = links.filter(link => nodesIds.includes(link[sourceProp]) && nodesIds.includes(link[targetProp]));
+
+    (diagram.model as go.GraphLinksModel).linkDataArray = linkArray;
+    if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
   }
 
   linkingValidation(fromnode: go.Node,
