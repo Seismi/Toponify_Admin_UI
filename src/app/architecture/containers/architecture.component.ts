@@ -24,15 +24,15 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
-import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
-import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode, AddWorkpackageNodeOwner, DeleteWorkpackageNodeOwner } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode, WorkPackageNodeActionTypes, DeleteWorkpackageNodeOwner, AddWorkpackageNodeOwner } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected, GetWorkpackageAvailability, AddOwner
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { getEditWorkpackages, getSelectedWorkpackages, getWorkPackageEntities, getSelectedWorkpackageIds, workpackageSelectAllowed
 } from '@app/workpackage/store/selectors/workpackage.selector';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription, of } from 'rxjs';
@@ -215,7 +215,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.eventEmitter.pipe(filter(event => event === Events.NodesLinksReload || event === null ))
     );
 
-    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _event]) => {
+    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
         this.selectedWorkpackages = workpackages;
         if (fil) {
         const { filterLevel, id } = fil;
@@ -288,6 +288,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
       this.selectedNode = nodeDetail;
       this.ref.detectChanges();
+    }));
+
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
+      this.eventEmitter.next(Events.NodesLinksReload);
+    }));
+
+    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
+      this.eventEmitter.next(Events.NodesLinksReload);
     }));
 
     this.subscriptions.push(this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {

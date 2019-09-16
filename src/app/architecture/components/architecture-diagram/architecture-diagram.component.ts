@@ -351,23 +351,23 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       this.diagram.commitTransaction('Update workpackage colours');
     }
 
-    if (changes.nodes) {
-      // FIXME: on store change something goes wrong
-      if (JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue)) {
-        this.diagramChangesService.updateNodes(this.diagram, this.nodes);
+    if (changes.links || changes.nodes) {
+      const nodesHasBeenChanged =  changes.nodes && JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue);
+      const linksHasBeenChanged = changes.links && JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue);
 
+      if (nodesHasBeenChanged) {
+        this.diagramChangesService.updateNodes(this.diagram, this.nodes);
+        const nodeIds = this.nodes.map((node: any) => node.id);
+        this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
         this.diagram.startTransaction('Update link workpackage colours');
         this.diagram.links.each(function(link) {
           link.updateTargetBindings('impactedByWorkPackages');
         });
         this.diagram.commitTransaction('Update link workpackage colours');
       }
-    }
-
-    if (changes.links) {
-      // FIXME: on store change something goes wrong
-      if (JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue)) {
-        this.diagramChangesService.updateLinks(this.diagram, this.links);
+      if (linksHasBeenChanged) {
+        const nodeIds = this.nodes.map((node: any) => node.id);
+        this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
       }
     }
 
