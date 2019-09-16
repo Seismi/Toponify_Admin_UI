@@ -14,11 +14,13 @@ export class RightSideBarComponent {
   @Input() architecturePage = false;
   @Input() architectureRadioTab = false;
   @Input() architectureDetailsTab = false;
+  @Input() radioPage = false;
 
   architectureTabs = Constants.ARCHITECTURE_TABS;
   reportLibraryTabs = Constants.REPORT_LIBRARY_TABS;
   attributesTabs = Constants.ATTRIBUTE_TABS;
   workPackageTabs = Constants.WORKPACKAGE_TABS;
+  radioTabs = Constants.RADIO_TABS;
 
   @Output()
   rightTab = new EventEmitter();

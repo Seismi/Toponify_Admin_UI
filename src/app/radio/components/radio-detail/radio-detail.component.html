@@ -1,75 +1,66 @@
 <form [formGroup]="group">
-    <div class="comments-detail-container">
-        <div [ngClass]="{disabled: !isEditable}">
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" data-hook="radio-details-title" class="form-control" formControlName="title"
-                    [ngClass]="{ 'is-invalid': (!group.controls['title'].valid && group.controls['title'].touched) }">
-                <div *ngIf="group.controls['title'].errors" class="invalid-feedback">
-                    <div>This field is required</div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col">
-                    <label>Category</label>
-                    <select data-hook="radio-details-category" class="form-control" formControlName="category">
-                        <option
-                            *ngFor="let category of categories" 
-                            [value]="category">
-                            {{(modalMode) ? category : null}}
-                        </option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label>Status</label>
-                    <select data-hook="radio-details-status" class="form-control" formControlName="status">
-                        <option 
-                            *ngFor="let status of status" 
-                            [value]="status">
-                            {{(modalMode) ? status : null}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group" *ngIf="!modal">
-                <label>Action By</label>
-                <input data-hook="radio-details-action-by" type="text" class="form-control" formControlName="actionBy"
-                [value]="group.get('actionBy').value | date">
-            </div>
-            <div class="form-group" *ngIf="!modal">
-                <label>Assigned To</label>
-                <input data-hook="radio-details-assigned-to" type="text" class="form-control" formControlName="assignedTo" [readonly]="true">
-            </div>
-            <div class="form-group" *ngIf="!modal">
-                <label>Target Name</label>
-                <input data-hook="radio-details-target-name" type="text" class="form-control" formControlName="targetName" [readonly]="true">
-            </div>
-            <div class="form-group" *ngIf="!modal">
-                <label>Mitigation</label>
-                <input data-hook="radio-details-mitigation" type="text" class="form-control" formControlName="mitigation">
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea data-hook="radio-details-description" class="form-control" rows="3" formControlName="description"
-                    [ngClass]="{ 'is-invalid': (!group.controls['description'].valid && group.controls['description'].touched) }"></textarea>
-                <div *ngIf="group.controls['description'].errors" class="invalid-feedback">
-                    <div>This field is required</div>
-                </div>
-            </div>
-        </div>
-        <div class="form-group buttons-group">
-            <div *ngIf="addRadio">
-                <div *ngIf="!isEditable">
-                    <button mat-raised-button color="primary" (click)="onEdit()"
-                        [disabled]="disableButton">Edit</button>
-                    <button mat-raised-button class="archive" (click)="onArchive()"
-                        [disabled]="disableButton">Archive</button>
-                </div>
-                <div *ngIf="isEditable">
-                    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
-                    <button mat-raised-button (click)="onCancel()">Cancel</button>
-                </div>
-            </div>
-        </div>
+  <div [ngClass]="{disabled: !isEditable}">
+    <mat-form-field>
+      <input matInput placeholder="Title" data-hook="radio-details-title" formControlName="title">
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Category</mat-label>
+      <mat-select data-hook="radio-details-category" formControlName="category">
+        <mat-option *ngFor="let category of categories" [value]="category">
+          {{category}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select data-hook="radio-details-status" formControlName="status">
+        <mat-option *ngFor="let status of status" [value]="status">
+          {{status}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea matInput placeholder="Description" data-hook="radio-details-description"
+        formControlName="description"></textarea>
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="!modalMode">
+      <input matInput placeholder="Target Name" data-hook="radio-details-target-name" [readonly]="true">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Assigned To</mat-label>
+      <mat-select data-hook="radio-details-assignedTo" formControlName="assignedTo" [compareWith]="compareUsers">
+        <mat-option *ngFor="let user of users" [value]="user">
+          {{user.firstName}} {{user.lastName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput [matDatepicker]="picker1" placeholder="Action By" formControlName="actionBy">
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Mitigation" data-hook="radio-details-mitigation" formControlName="mitigation">
+    </mat-form-field>
+  </div>
+
+  <div class="buttons-group" *ngIf="!modalMode">
+    <div *ngIf="!isEditable">
+      <button mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+      <button mat-raised-button class="archive-btn" [disabled]="statusClosed" (click)="onArchive()">Archive</button>
     </div>
+    <div *ngIf="isEditable">
+      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+      <button mat-raised-button (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
 </form>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
@@ -25,8 +25,8 @@ import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/s
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
 import { DeleteWorkpackageLinkSuccess, UpdateWorkPackageLink, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
-import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode, AddWorkPackageNodeSuccess, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected, GetWorkpackageAvailability
+import { DeleteWorkpackageNodeSuccess, UpdateWorkPackageNode, WorkPackageNodeActionTypes, DeleteWorkpackageNodeOwner, AddWorkpackageNodeOwner } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { LoadWorkPackages, SetWorkpackageDisplayColour, SetWorkpackageEditMode, SetWorkpackageSelected, GetWorkpackageAvailability, AddOwner
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
@@ -52,6 +52,12 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node } from 'gojs';
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
+import { TeamEntity } from '@app/settings/store/models/team.model';
+import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
+import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
+import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
+import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 
 
 enum Events {
@@ -92,6 +98,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
+  owners$: Observable<TeamEntity[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   nodeDetail$: Observable<NodeDetail>;
   scopes$: Observable<ScopeEntity[]>;
@@ -132,6 +139,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   sw: string[] = [];
   canSelectWorkpackages: boolean = false;
+  workpackageId: string;
+  selectedOwner: boolean = false;
+  selectedOwnerIndex: any;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -140,6 +150,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   constructor(
     private sharedService: SharedService,
+    private teamStore: Store<TeamState>,
     private nodeStore: Store<NodeState>,
     private scopeStore: Store<ScopeState>,
     private layoutStore: Store<LayoutState>,
@@ -172,6 +183,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
+
+    // Teams
+    this.teamStore.dispatch(new LoadTeams({}));
+    this.owners$ = this.teamStore.pipe(select(getTeamEntities));
 
     this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities), shareReplay());
 
@@ -353,7 +368,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       // Enable "Edit" and "Delete" buttons then GoJS object is selected
       this.objectSelected = false;
-      this.isEditable = false;
+      this.isEditable = false
+
 
       this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
 
@@ -364,6 +380,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.detailsTab = false;
 
       if (part) {
+        this.selectedOwnerIndex = null;
+        this.selectedOwner = false;
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part instanceof Link;
 
@@ -421,8 +439,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  // Not sure but probably there is a better way of doing this
   onSaveObjectDetails() {
+    this.selectedOwner = false;
+    this.selectedOwnerIndex = null;
     if (this.clickedOnLink) {
 
       const linkData = {
@@ -446,7 +465,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         layer: this.selectedPart.layer,
         category: this.selectedPart.category,
         name: this.objectDetailsForm.value.name,
-        owner: this.objectDetailsForm.value.owner,
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
       };
@@ -471,6 +489,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onCancelEdit() {
     this.isEditable = false;
+    this.selectedOwner = false;
+    this.selectedOwnerIndex = null;
   }
 
   onShowGrid() {
@@ -684,6 +704,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
+    this.workpackageId = workpackage.id;
     this.objectSelected = false;
     if (this.part) {
       this.part.isSelected = false;
@@ -797,6 +818,46 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.sharedService.selectedOwners = [];
       this.sharedService.selectedViewers = [];
     });
+  }
+
+  onAddOwner() {
+    const dialogRef = this.dialog.open(OwnersModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if(data && data.owner) {
+        this.nodeStore.dispatch(new AddWorkpackageNodeOwner({
+          workpackageId: this.workpackageId,
+          nodeId: this.nodeId,
+          ownerId: data.owner.id,
+          data: data.owner
+        }))
+      }
+    });
+  }
+
+  onDeleteOwner() {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.mode === 'delete') {
+        this.nodeStore.dispatch(new DeleteWorkpackageNodeOwner({workpackageId: this.workpackageId, nodeId: this.nodeId, ownerId: this.selectedOwnerIndex}))
+        this.selectedOwner = false;
+      }
+    });
+  }
+
+  onSelectOwner(ownerId) {
+    this.selectedOwnerIndex = ownerId;
+    this.selectedOwner = true;
   }
 
   onEditProperties(propertyId: string) {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
@@ -17,7 +17,8 @@ import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpac
   selector: 'app-workpackage',
   templateUrl: './workpackage.component.html',
   styleUrls: ['./workpackage.component.scss'],
-  providers: [WorkPackageDetailService, WorkPackageValidatorService]
+  providers: [WorkPackageDetailService, WorkPackageValidatorService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkPackageComponent implements OnInit, OnDestroy {
 

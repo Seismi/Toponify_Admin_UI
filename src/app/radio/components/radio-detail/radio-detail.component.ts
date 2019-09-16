@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { RadioDetail } from '@app/radio/store/models/radio.model';
-import { MatTableDataSource } from '@angular/material';
+import { Constants } from '@app/core/constants';
+import { User } from '@app/settings/store/models/user.model';
 
 @Component({
   selector: 'smi-radio-detail',
@@ -10,16 +10,24 @@ import { MatTableDataSource } from '@angular/material';
 })
 
 export class RadioDetailComponent {
-
+  
+  users: User[];
   @Input() group: FormGroup;
-  @Input() addRadio = true;
   @Input() isEditable = false;
-  @Input() disableButton = true;
   @Input() modalMode = false;
-  @Input() modal = false;
+  @Input() statusClosed = false;
 
-  categories = ['risk', 'assumption', 'dependency', 'issue', 'opportunity'];
-  status = ['open', 'closed'];
+  @Input()
+  set data(data: any[]) {
+    this.users = data;
+  }
+
+  categories = Constants.RADIO_CATEGORIES;
+  status = Constants.RADIO_STATUS;
+
+  compareUsers(u1: any, u2: any): boolean {
+    return u1.name === u2.name && u1.id === u2.id;
+  }
 
   constructor() {}
 

@@ -1,17 +1,38 @@
-<div class="col mat-elevation-z8">
-    <smi-radio-detail
-        data-hook="radio-details"
-        [group]="radioDetailsForm"
-        [addRadio]="addRadio"
-        [isEditable]="isEditable"
-        [modalMode]="modalMode"
-        [disableButton]="disableButton"
-        (archiveRadio)="onArchiveRadio($event)"
-        (saveRadio)="onSaveRadio()">
-    </smi-radio-detail>
-    <smi-chatbox
-        [data]="radio?.replies"
-        [radioId]="radioId"
-        [disableButton]="disableButton">
-    </smi-chatbox>
-</div>
+<smi-right-sidebar
+  *ngIf="showOrHideRightPane"
+  [radioPage]="true"
+  (rightTab)="openRightTab($event)">
+</smi-right-sidebar>
+
+<app-model-container *ngIf="!showOrHideRightPane">
+  <app-model-sidebar [minWidth]="800" [maxWidth]="1000" [isLast]="true">
+      <p class="rightPane">
+          <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
+              <mat-tab label="Details">
+                  <p class="detailsTab">
+                    <smi-radio-detail
+                      data-hook="radio-details"
+                      [data]="users$ | async"
+                      [group]="radioDetailsForm"
+                      [isEditable]="isEditable"
+                      [modalMode]="modalMode"
+                      [statusClosed]="statusClosed"
+                      (archiveRadio)="onArchiveRadio($event)"
+                      (saveRadio)="onSaveRadio()">
+                    </smi-radio-detail>
+                    <smi-chatbox
+                      [group]="radioDetailsForm"
+                      [data]="radio?.replies"
+                      (sendReply)="onSendReply($event)">
+                    </smi-chatbox>
+                  </p>
+              </mat-tab>
+              <mat-tab label="Properties">
+                <smi-radio-properties-tab [data]="radio?.customPropertyValues"></smi-radio-properties-tab>
+              </mat-tab>
+          </mat-tab-group>
+          <br><br>
+          <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
+      </p>
+  </app-model-sidebar>
+</app-model-container>

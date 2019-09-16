@@ -11,9 +11,11 @@ export class WorkPackagesTableComponent implements OnInit {
 
   @Input()
   set data(data: WorkPackageEntity[]) {
-    this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    if (data) {
+      this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
   }
 
   selectedRowIndex = -1;

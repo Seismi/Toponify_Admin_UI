@@ -1,9 +1,8 @@
 <h1 mat-dialog-title>Add RADIO</h1>
   <smi-radio-detail
-    [addRadio]="addRadio"
+    [data]="users$ | async"
     [group]="radioDetailsForm"
     [isEditable]="isEditable"
-    [modal]="modal"
     [modalMode]="modalMode">
   </smi-radio-detail>
 <div mat-dialog-actions>

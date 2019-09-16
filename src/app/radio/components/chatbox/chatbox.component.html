@@ -1,20 +1,23 @@
 <div class="container">
-    <div class="wrapper">
-        <table mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="title">
-                <td mat-cell *matCellDef="let element">
-                    <span>{{ element.author.firstName }} {{element.author.lastName}}
-                    <small>{{ element.postedOn | date}}</small></span><br>
-                    {{ element.replyText }}
-                </td>
-            </ng-container>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-    </div>
-    <smi-reply-text 
-        [rows]="1" 
-        [group]="radioDetailsForm"
-        [disableButton]="disableButton"
-        (sendReply)="onSend($event)">
-    </smi-reply-text>
+  <div class="wrapper">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="title">
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ element.author.firstName }} {{element.author.lastName}}
+            <small>
+              {{ element.postedOn | date}}
+            </small>
+          </span><br>
+          {{ element.replyText }}
+        </td>
+      </ng-container>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <smi-reply-text 
+    [rows]="1" 
+    [group]="group"  
+    (sendReply)="onSend($event)">
+  </smi-reply-text>
 </div>
