@@ -3,7 +3,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
-export class FilterService implements OnDestroy  {
+export class FilterService implements OnDestroy {
   public filter: BehaviorSubject<any>;
   private filterKey = 'filter';
   private queryParamSubscription: Subscription;
@@ -11,7 +11,9 @@ export class FilterService implements OnDestroy  {
   constructor(public router: Router, private route: ActivatedRoute) {
     const filterString = this.route.snapshot.queryParams[this.filterKey];
 
-    this.filter = new BehaviorSubject( filterString ? this.transformToObject(filterString) : null );
+    this.filter = new BehaviorSubject(
+      filterString ? this.transformToObject(filterString) : null
+    );
 
     this.queryParamSubscription = route.queryParams.subscribe(params => {
       const filters = params[this.filterKey];
@@ -53,24 +55,21 @@ export class FilterService implements OnDestroy  {
     const filters = {};
 
     if (filtersString !== null) {
+      // Replaced space with "|" as in 2.0, "data set" and "reporting concept" layer names have spaces in them
+      filtersString.split('|').forEach(filter => {
+        if (filter.split(':').length === 2) {
+          const [key, value] = filter.split(':');
+          if (key && value) {
+            const values = value.split(',');
 
-        // Replaced space with "|" as in 2.0, "data set" and "reporting concept" layer names have spaces in them
-        filtersString.split('|').forEach(filter => {
-            if (filter.split(':').length === 2) {
-                const [key, value] = filter.split(':');
-                if (key && value) {
-
-                    const values = value.split(',');
-
-                    if (values.length === 1) {
-                        filters[key] = values.pop();
-                    } else {
-                        filters[key] = values.filter(item => item !== '');
-                    }
-                }
+            if (values.length === 1) {
+              filters[key] = values.pop();
+            } else {
+              filters[key] = values.filter(item => item !== '');
             }
+          }
         }
-        );
+      });
     }
     return filters;
   }
@@ -78,14 +77,13 @@ export class FilterService implements OnDestroy  {
   private filtersAsUrlQuery(filters: any): string {
     const queryStrings = [];
     Object.keys(filters).forEach(key => {
-        if (typeof filters[key] === 'string') {
-            queryStrings.push(`${key}:${filters[key]}`);
-        }
-        if (typeof filters[key] !== 'string') {
-            queryStrings.push(`${key}:${filters[key].join(',')},`);
-        }
-    }
-    );
+      if (typeof filters[key] === 'string') {
+        queryStrings.push(`${key}:${filters[key]}`);
+      }
+      if (typeof filters[key] !== 'string') {
+        queryStrings.push(`${key}:${filters[key].join(',')},`);
+      }
+    });
     return queryStrings.join('|');
   }
 }

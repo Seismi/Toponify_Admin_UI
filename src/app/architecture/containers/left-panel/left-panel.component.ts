@@ -1,5 +1,5 @@
-import {Component, Input, Output, EventEmitter, ViewChild} from '@angular/core';
-import { ArchitecturePaletteComponent } from '../../components/architecture-palette/architecture-palette.component';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatCheckboxChange } from '@angular/material';
 
 @Component({
   selector: 'smi-left-panel',
@@ -16,22 +16,18 @@ export class LeftPanelComponent {
 
   constructor() {}
 
-  @Output()
-  displayOptionsChangedEvent = new EventEmitter();
+  @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
 
-  @Output()
-  selectWorkPackage = new EventEmitter();
+  @Output() selectWorkPackage = new EventEmitter<string>();
 
-  @Output()
-  selectColour = new EventEmitter<object>();
+  @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
-  @Output()
-  hideLeftPane = new EventEmitter();
+  @Output() hideLeftPane = new EventEmitter<void>();
 
   @Output()
   setWorkpackageEditMode = new EventEmitter<object>();
 
-  displayOptionsChanged({ event, option }: { event: any; option: string }) {
+  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }) {
     this.displayOptionsChangedEvent.emit({ event, option });
   }
 
@@ -40,11 +36,11 @@ export class LeftPanelComponent {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectWorkPackage(id) {
+  onSelectWorkPackage(id: string) {
     this.selectWorkPackage.emit(id);
   }
 
-  onSelectColour(event) {
+  onSelectColour(event: { colour: string; id: string }) {
     this.selectColour.emit(event);
   }
 

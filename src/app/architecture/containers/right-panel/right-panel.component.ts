@@ -1,7 +1,15 @@
-import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
+import { AttributesEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -9,16 +17,15 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   styleUrls: ['./right-panel.component.scss']
 })
 export class RightPanelComponent implements OnInit, OnDestroy {
-
   private showDetailTabRef;
 
-  @Input() owners: NodeDetail;
+  @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
   @Input() selectedRightTab: number;
-  @Input() attributes: any;
+  @Input() attributes: AttributesEntity[] | null;
   @Input() relatedRadios: any;
   @Input() properties: any;
   @Input() workpackages: any;
@@ -26,7 +33,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() radio: any;
   @Input() multipleSelected = false;
   @Input() selectedOwner: boolean;
-  @Input() selectedOwnerIndex: any;
+  @Input() selectedOwnerIndex: string | null;
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -58,8 +65,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output()
   addOwner = new EventEmitter();
 
-  @Output()
-  selectOwner = new EventEmitter();
+  @Output() selectOwner = new EventEmitter<string>();
 
   @Output()
   deleteOwner = new EventEmitter();
@@ -67,19 +73,20 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output()
   editProperties = new EventEmitter();
 
-
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
     private changeDetectorRef: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     // Observable to capture instruction to switch to the Detail tab from GoJS context menu
-    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(function() {
-      // change selected tab to the "Details" tab
-      this.selectedRightTab = 0;
-      this.changeDetectorRef.detectChanges();
-    }.bind(this));
+    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(
+      function() {
+        // change selected tab to the "Details" tab
+        this.selectedRightTab = 0;
+        this.changeDetectorRef.detectChanges();
+      }.bind(this)
+    );
   }
 
   ngOnDestroy() {
@@ -126,7 +133,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.addOwner.emit();
   }
 
-  onSelectOwner(ownerId) {
+  onSelectOwner(ownerId: string) {
     this.selectOwner.emit(ownerId);
   }
 
@@ -137,5 +144,4 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   onEditProperties(id: string) {
     this.editProperties.emit(id);
   }
-
 }

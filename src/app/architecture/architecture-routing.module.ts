@@ -1,4 +1,3 @@
-
 import { ArchitectureRoutingComponent } from './containers/architecture-routing.component';
 import { ArchitectureComponent } from './containers/architecture.component';
 import { NgModule } from '@angular/core';
@@ -12,8 +11,7 @@ export const architectureRoutes: Routes = [
       {
         path: '',
         component: ArchitectureComponent
-      },
-     
+      }
     ]
   }
 ];

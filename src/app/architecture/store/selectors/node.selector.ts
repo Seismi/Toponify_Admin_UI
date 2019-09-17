@@ -1,8 +1,10 @@
-import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State } from '../reducers/architecture.reducer';
 import { Level } from '@app/architecture/services/diagram-level.service';
 
-export const getNodeFeatureState = createFeatureSelector<State>('architectureFeature');
+export const getNodeFeatureState = createFeatureSelector<State>(
+  'architectureFeature'
+);
 
 export const getSelectedNode = createSelector(
   getNodeFeatureState,
@@ -28,7 +30,6 @@ export const getSelectedNodeLink = createSelector(
   state => state.selectedNodeLink
 );
 
-
 export const getError = createSelector(
   getNodeFeatureState,
   state => state.error
@@ -36,7 +37,7 @@ export const getError = createSelector(
 
 export const getNodeLinksBy = createSelector(
   getNodeFeatureState,
-  (state: State, props?: {layer?: string, id?: string}) => {
+  (state: State, props?: { layer?: string; id?: string }) => {
     if (!state.links) {
       return null;
     }
@@ -53,7 +54,7 @@ export const getNodeLinksBy = createSelector(
 
 export const getNodeEntitiesBy = createSelector(
   getNodeFeatureState,
-  (state: State, props?: {layer?: string, id?: string}) => {
+  (state: State, props?: { layer?: string; id?: string }) => {
     if (!state.entities) {
       return null;
     }
@@ -75,4 +76,3 @@ export const getNodeEntitiesBy = createSelector(
     return filteredNodes;
   }
 );
-

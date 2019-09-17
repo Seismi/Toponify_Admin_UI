@@ -44,7 +44,12 @@ export class Node {
   relatedRadioCount: number;
   impactedByWorkPackages = [];
 
-  constructor(options: { id: string, name: string, layer: layers, category: nodeCategories }) {
+  constructor(options: {
+    id: string;
+    name: string;
+    layer: layers;
+    category: nodeCategories;
+  }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;
@@ -158,15 +163,13 @@ export interface CustomPropertyValuesEntity {
   value: string;
 }
 
-
 export interface NodeUpdatePayload {
   layoutId: string;
   node: {
-    id: string,
-    locationCoordinates: string
+    id: string;
+    locationCoordinates: string;
   };
 }
-
 
 // TODO: This may be shared at some point
 
@@ -182,4 +185,3 @@ export interface Source {
   title: string;
   detail: string;
 }
-

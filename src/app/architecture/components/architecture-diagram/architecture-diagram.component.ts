@@ -1,25 +1,31 @@
 import {
   Component,
   ElementRef,
-  Input,
-  OnInit,
-  ViewChild,
-  Output,
   EventEmitter,
-  SimpleChanges,
+  Input,
   OnChanges,
-  OnDestroy
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { layers } from '@app/architecture/store/models/node.model';
-import {DiagramTemplatesService} from '../../services/diagram-templates.service';
-import {DiagramLevelService, Level} from '../..//services/diagram-level.service';
-import {DiagramChangesService} from '../../services/diagram-changes.service';
-import {GojsCustomObjectsService, CustomLinkShift} from '../../services/gojs-custom-objects.service';
-import {DiagramListenersService} from '../../services/diagram-listeners.service';
+import { DiagramTemplatesService } from '../../services/diagram-templates.service';
+import {
+  DiagramLevelService,
+  Level
+} from '../..//services/diagram-level.service';
+import { DiagramChangesService } from '../../services/diagram-changes.service';
+import {
+  CustomLinkShift,
+  GojsCustomObjectsService
+} from '../../services/gojs-custom-objects.service';
+import { DiagramListenersService } from '../../services/diagram-listeners.service';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -51,7 +57,8 @@ const standardDisplayOptions = {
   templateUrl: './architecture-diagram.component.html',
   styleUrls: ['./architecture-diagram.component.scss']
 })
-export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestroy {
+export class ArchitectureDiagramComponent
+  implements OnInit, OnChanges, OnDestroy {
   diagram: go.Diagram;
 
   private partsSelectedRef: Subscription = null;
@@ -111,7 +118,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     public diagramChangesService: DiagramChangesService,
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public diagramListenersService: DiagramListenersService
-    ) {
+  ) {
     // Lets init url filtering
     this.diagramLevelService.initializeUrlFiltering();
     // // Place GoJS license key here:
@@ -123,25 +130,28 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.undoManager.isEnabled = false;
     this.diagram.allowCopy = false;
     this.diagram.toolManager.draggingTool = new GuidedDraggingTool();
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
+    (this.diagram.toolManager
+      .draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
+    (this.diagram.toolManager
+      .draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
+    (this.diagram.toolManager
+      .draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
-    this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation;
+    this.diagram.toolManager.relinkingTool.linkValidation =
+      diagramChangesService.linkingValidation;
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
     this.diagram.toolManager.draggingTool.doActivate = function(): void {
-
       go.DraggingTool.prototype.doActivate.call(this);
 
       // Only use drag guidelines for nodes and not for links
-      this.isGuidelineEnabled = this.draggedParts.toKeySet().first() instanceof go.Node;
+      this.isGuidelineEnabled =
+        this.draggedParts.toKeySet().first() instanceof go.Node;
     };
-
 
     // Override standard hideContextMenu method on context menu tool to also hide any opened sub-menus
     this.diagram.toolManager.contextMenuTool.hideContextMenu = function(): void {
@@ -201,28 +211,31 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
-
       const deletedPart = this.diagram.selection.first();
 
       // Delete links that have not yet been connected to a node at both ends
       if (deletedPart.data.isTemporary) {
-        go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
+        go.CommandHandler.prototype.deleteSelection.call(
+          this.diagram.commandHandler
+        );
         return;
       }
 
       if (deletedPart instanceof go.Node) {
         this.nodeDeleteRequested.emit(deletedPart.data);
-      } else { // part to be deleted is a link
+      } else {
+        // part to be deleted is a link
         this.linkDeleteRequested.emit(deletedPart.data);
       }
-
     }.bind(this);
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
-    diagramChangesService.onUpdatePosition.subscribe((data: {node: any, links: any[]}) => {
-      this.updateNodeLocation.emit(data);
-    });
+    diagramChangesService.onUpdatePosition.subscribe(
+      (data: { node: any; links: any[] }) => {
+        this.updateNodeLocation.emit(data);
+      }
+    );
   }
 
   // Zoom out diagram
@@ -242,7 +255,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   // Method to perform delete after user has confirmed
   deleteConfirmed(): void {
-    go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
+    go.CommandHandler.prototype.deleteSelection.call(
+      this.diagram.commandHandler
+    );
   }
 
   // Recalculate the area that the diagram takes up.
@@ -255,15 +270,17 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
 
-    this.partsSelectedRef = this.diagramListenersService.partsSelected$
-      .subscribe(function(node) {
+    this.partsSelectedRef = this.diagramListenersService.partsSelected$.subscribe(
+      function(node) {
         this.partsSelected.emit(node);
-      }.bind(this));
+      }.bind(this)
+    );
 
-    this.modelChangeRef = this.diagramListenersService.modelChanged$
-      .subscribe(function(event) {
+    this.modelChangeRef = this.diagramListenersService.modelChanged$.subscribe(
+      function(event) {
         this.modelChanged.emit(event);
-      }.bind(this));
+      }.bind(this)
+    );
 
     this.setLevel();
   }
@@ -280,7 +297,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   }
 
   ngOnChanges(changes: SimpleChanges) {
-
     if (changes.showGrid) {
       this.diagram.grid.visible = this.showGrid;
     }
@@ -289,14 +305,15 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       this.diagram.allowMove = this.allowMove;
       this.diagram.allowDelete = this.allowMove;
       this.diagram.toolManager.linkReshapingTool.isEnabled = this.allowMove;
-      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(
-        function(tool) {return tool.name === 'LinkShifting'; }
-      );
+      const linkShiftingTool = this.diagram.toolManager.mouseDownTools
+        .toArray()
+        .find(function(tool) {
+          return tool.name === 'LinkShifting';
+        });
       linkShiftingTool.isEnabled = this.allowMove;
 
       // Handle changes tool-related adornments if a link is selected
       this.diagram.selection.each(function(part) {
-
         // Remove tool-related adornments from selected link (if any) for disabled tools
         if (!linkShiftingTool.isEnabled) {
           part.removeAdornment('LinkShiftingFrom');
@@ -312,12 +329,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     }
 
     if (changes.workPackageIsEditable) {
-
       const toolManager = this.diagram.toolManager;
       toolManager.relinkingTool.isEnabled = this.workPackageIsEditable;
 
       this.diagram.selection.each(function(part) {
-
         // Remove tool-related adornments from selected link (if any) for disabled tools
         if (!toolManager.relinkingTool.isEnabled) {
           part.removeAdornment('RelinkFrom');
@@ -353,7 +368,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.nodes) {
       // FIXME: on store change something goes wrong
-      if (JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue)) {
+      if (
+        JSON.stringify(changes.nodes.currentValue) !==
+        JSON.stringify(changes.nodes.previousValue)
+      ) {
         this.diagramChangesService.updateNodes(this.diagram, this.nodes);
 
         this.diagram.startTransaction('Update link workpackage colours');
@@ -366,15 +384,20 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.links) {
       // FIXME: on store change something goes wrong
-      if (JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue)) {
+      if (
+        JSON.stringify(changes.links.currentValue) !==
+        JSON.stringify(changes.links.previousValue)
+      ) {
         this.diagramChangesService.updateLinks(this.diagram, this.links);
       }
     }
 
     // In map view, perform the layout when nodes and links are both defined
     if (changes.nodes || changes.links) {
-      if (this.diagram.model.nodeDataArray.length > 0
-        && (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0) {
+      if (
+        this.diagram.model.nodeDataArray.length > 0 &&
+        (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0
+      ) {
         if (this.level === Level.map) {
           this.diagram.layoutDiagram(true);
         }
