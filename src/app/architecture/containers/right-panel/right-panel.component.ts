@@ -1,7 +1,7 @@
 import {Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -13,6 +13,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
   @Input() owners: NodeDetail;
+  @Input() descendants: DescendantsEntity;
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() isEditable = false;
@@ -66,6 +67,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output()
   editProperties = new EventEmitter();
+
+  @Output() addDescendant = new EventEmitter<void>();
+
+  @Output() deleteDescendant = new EventEmitter<string>();
 
 
   constructor(
@@ -136,6 +141,14 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onEditProperties(id: string) {
     this.editProperties.emit(id);
+  }
+
+  onAddDescendant() {
+    this.addDescendant.emit();
+  }
+
+  onDeleteDescendant(id: string) {
+    this.deleteDescendant.emit(id);
   }
 
 }

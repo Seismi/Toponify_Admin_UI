@@ -52,7 +52,7 @@ export class WorkPackageNodesService extends WorkPackageService {
    * Remove a descendant from the list
    * FIXME: missing types
    */
-  deleteNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string, data: any): Observable<any> {
+  deleteNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string): Observable<any> {
     return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}/deleteRequest`,
     {});
   }

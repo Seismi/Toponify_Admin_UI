@@ -27,9 +27,12 @@
       <input matInput placeholder="Tags" formControlName="tags">
     </mat-form-field>
 
-    <mat-form-field *ngIf="!clickedOnLink">
-      <input matInput placeholder="Direct Dependencies" formControlName="directDependencies">
-    </mat-form-field>
+    <smi-descendants-table-in-architecture
+      *ngIf="!clickedOnLink" [data]="descendants"
+      [isEditable]="isEditable"
+      (addDescendant)="onAddDescendant()"
+      (deleteDescendant)="onDeleteDescendant($event)">
+    </smi-descendants-table-in-architecture>
   </div>
 
   <div class="form-group" *ngIf="workPackageIsEditable">
