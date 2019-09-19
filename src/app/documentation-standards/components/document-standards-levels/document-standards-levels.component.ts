@@ -32,9 +32,9 @@ const Levels = {
     },
     'Dimensions - All': null,
     'Reporting Concepts - All': {
-        'Reporting Concept - Structures': null,
-        'Reporting Concept - Lists': null,
-        'Reporting Concept - Key': null,
+        'Reporting Concepts - Structures': null,
+        'Reporting Concepts - Lists': null,
+        'Reporting Concepts - Key': null,
     },
     'Links - All': {
         'System Links - All': {
