@@ -866,7 +866,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddDescendant() {
     const dialogRef = this.dialog.open(DescendantsModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        currentLevel: this.selectedNode.layer
+      }
     });
 
     dialogRef.afterClosed().subscribe((data) => {

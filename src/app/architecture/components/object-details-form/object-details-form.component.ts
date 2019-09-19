@@ -64,6 +64,18 @@ export class ObjectDetailsFormComponent {
     this.deleteAttribute.emit();
   }
 
+  onAddOwner() {
+    this.addOwner.emit();
+  }
+
+  onSelectOwner(ownerId: string) {
+    this.selectOwner.emit(ownerId);
+  }
+
+  onDeleteOwner() {
+    this.deleteOwner.emit();
+  }
+
   onAddDescendant() {
     this.addDescendant.emit();
   }

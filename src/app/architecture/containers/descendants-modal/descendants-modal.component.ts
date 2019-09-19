@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MatTableDataSource } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { select, Store } from '@ngrx/store';
 import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
@@ -25,13 +25,13 @@ export class DescendantsModalComponent implements OnInit {
   constructor(
     private store: Store<ArchitectureState>,
     private filterService: FilterService,
-    public dialogRef: MatDialogRef<DescendantsModalComponent>) {
+    public dialogRef: MatDialogRef<DescendantsModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: {currentLevel: Level}) {
   }
 
   ngOnInit() {
-    const currentFilter = this.filterService.getFilter();
     let layer: Level;
-    switch (currentFilter.filterLevel) {
+    switch (this.data.currentLevel) {
       case Level.system: {
         layer = Level.dataSet;
       }

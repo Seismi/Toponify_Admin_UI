@@ -30,6 +30,7 @@ import {
   DeleteWorkPackageNodeDescendant,
   DeleteWorkPackageNodeDescendantSuccess, DeleteWorkPackageNodeDescendantFailure
 } from '../actions/workpackage-node.actions';
+import { UpdateNodeDescendants } from '@app/architecture/store/actions/node.actions';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -56,7 +57,10 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     mergeMap((payload: {workpackageId: string, nodeId: string, node: any}) => {
       return this.workpackageNodeService.addNodeDescendant(payload.workpackageId, payload.nodeId, payload.node.id, payload.node).pipe(
-        switchMap((data: any) => [new AddWorkPackageNodeDescendantSuccess(data)]),
+        switchMap((data: any) => [
+          new AddWorkPackageNodeDescendantSuccess(data),
+          new UpdateNodeDescendants({descendants: data.data, nodeId: payload.nodeId})
+        ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeDescendantFailure(error)))
       );
     })
@@ -68,7 +72,10 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     mergeMap((payload: {workpackageId: string, nodeId: string, descendantId: string}) => {
       return this.workpackageNodeService.deleteNodeDescendant(payload.workpackageId, payload.nodeId, payload.descendantId).pipe(
-        switchMap((data: any) => [new DeleteWorkPackageNodeDescendantSuccess(data)]),
+        switchMap((data: any) => [
+          new DeleteWorkPackageNodeDescendantSuccess(data),
+          new UpdateNodeDescendants({descendants: data.data, nodeId: payload.nodeId})
+        ]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodeDescendantFailure(error)))
       );
     })
