@@ -9,7 +9,7 @@ export class Node {
     children: Node[];
     item: string;
 }
-  
+
 export class FlatNode {
     item: string;
     level: number;
@@ -17,41 +17,41 @@ export class FlatNode {
 }
 
 const Levels = {
-    "Work Packages": null,
-    "Systems - All": {
+    'Work Packages': null,
+    'Systems - All': {
         'System - Transactional': null,
         'System - Analytical': null,
         'System - Reporting': null,
         'System - MasterData': null,
         'System - Files': null
     },
-    "Data Sets - All": {
+    'Data Sets - All': {
         'Data Sets - Physical': null,
         'Data Sets - Virtual': null,
         'Data Sets - MasterData': null,
     },
-    "Dimensions - All": null,
-    "Reporting Concepts - All": {
+    'Dimensions - All': null,
+    'Reporting Concepts - All': {
         'Reporting Concept - Structures': null,
         'Reporting Concept - Lists': null,
         'Reporting Concept - Key': null,
     },
-    "Links - All": {
-        "System Links - All": {
+    'Links - All': {
+        'System Links - All': {
             'System Links - MasterData': null,
             'System Links - Data': null,
         },
-        "Data Set Links - All": {
+        'Data Set Links - All': {
             'Data Set Links - Master Data': null,
             'Data Set Links - Data': null,
         },
-        "Dimensions Links": null,
-        "Reporting Concept Links": null,
+        'Dimension Links': null,
+        'Reporting Concept Links': null,
     },
-    "Reports - All": null,
-    "Attributes": null,
-    "Rules": null,
-    "RADIO": null,
+    'Reports - All': null,
+    'Attributes': null,
+    'Rules': null,
+    'RADIO': null,
 };
 
 @Injectable()
@@ -170,18 +170,18 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
       this.checklistSelection.isSelected(child)
     );
 
-    for(let item of descendants) {
+    for (const item of descendants) {
       if ($event.checked) {
         this.documentStandardsService.selectedLevels.push(item.item);
       }
       if (!$event.checked) {
-        let index = this.documentStandardsService.selectedLevels.indexOf(item.item);
+        const index = this.documentStandardsService.selectedLevels.indexOf(item.item);
         if (index > -1) {
           this.documentStandardsService.selectedLevels.splice(index, 1);
         }
       }
     }
-    
+
     this.checkAllParentsSelection(node);
   }
 
@@ -243,11 +243,11 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
     for (let i = 0; i < this.treeControl.dataNodes.length; i++) {
       this.checklistSelection.toggle(this.treeControl.dataNodes[i]);
       this.treeControl.expand(this.treeControl.dataNodes[i]);
-      if(event.checked) {
+      if (event.checked) {
         this.documentStandardsService.selectedLevels.push(this.treeControl.dataNodes[i].item);
       }
-      if(!event.checked) {
-        let index = this.documentStandardsService.selectedLevels.indexOf(this.treeControl.dataNodes[i].item);
+      if (!event.checked) {
+        const index = this.documentStandardsService.selectedLevels.indexOf(this.treeControl.dataNodes[i].item);
         if (index > -1) {
           this.documentStandardsService.selectedLevels.splice(index, 1);
         }
@@ -257,11 +257,11 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
 
   /* Select level */
   onSelectLevelEntity(event, node) {
-    if(event.checked) {
+    if (event.checked) {
       this.documentStandardsService.selectedLevels.push(node.item);
     }
-    if(!event.checked) {
-      let index = this.documentStandardsService.selectedLevels.indexOf(node.item);
+    if (!event.checked) {
+      const index = this.documentStandardsService.selectedLevels.indexOf(node.item);
       if (index > -1) {
         this.documentStandardsService.selectedLevels.splice(index, 1);
       }
