@@ -29,6 +29,9 @@ export class LayerPipe implements PipeTransform {
       // Sorting by id is optional
       if (props && props.byId && id) {
         const parentNode = items.find(item => item.id === id);
+        if (!parentNode) {
+          return [];
+        }
         const childNodeIds = parentNode.descendants.map(item => item.id);
         return filteredItems.filter(item => childNodeIds.includes(item.id));
       }
