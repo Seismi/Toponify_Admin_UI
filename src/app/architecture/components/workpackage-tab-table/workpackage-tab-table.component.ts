@@ -1,5 +1,11 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
@@ -16,23 +22,19 @@ export class WorkPackageTabTableComponent {
     }
   }
 
-  @Input()
-  canSelectWorkpackage: boolean;
+  @Input() canSelectWorkpackage: boolean;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public dataSource: MatTableDataSource<WorkPackageEntity>;
-  displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
+  public displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 
-  @Output()
-  selectWorkPackage = new EventEmitter();
+  @Output() selectWorkPackage = new EventEmitter<string>();
 
-  @Output()
-  selectColour = new EventEmitter<object>();
+  @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
-  @Output()
-  setWorkpackageEditMode = new EventEmitter();
+  @Output() setWorkpackageEditMode = new EventEmitter();
 
-  onSelect(id, event) {
+  onSelect(id: string): void {
     this.selectWorkPackage.emit(id);
   }
 
@@ -41,15 +43,19 @@ export class WorkPackageTabTableComponent {
   }
 
   canEdit(workpackage: any): boolean {
-    return this.canSelectWorkpackage && !!workpackage.isSelectable && !!workpackage.isEditable;
+    return (
+      this.canSelectWorkpackage &&
+      !!workpackage.isSelectable &&
+      !!workpackage.isEditable
+    );
   }
 
   // FIXME: set proper type of workpackage
-  onSetWorkpackageEditMode(_: any, workpackage: any) {
+  onSetWorkpackageEditMode(workpackage: any) {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectColour(colour, id) {
-    this.selectColour.emit({colour, id});
+  onSelectColour(colour: string, id: string) {
+    this.selectColour.emit({ colour, id });
   }
 }

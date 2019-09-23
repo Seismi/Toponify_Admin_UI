@@ -1,22 +1,23 @@
-import { Component, ElementRef, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
 import { layers } from '@app/architecture/store/models/node.model';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
-import {DiagramTemplatesService} from '../..//services/diagram-templates.service';
-import {DiagramLevelService} from '../../services/diagram-level.service';
+import { DiagramTemplatesService } from '../..//services/diagram-templates.service';
+import { DiagramLevelService } from '../../services/diagram-level.service';
+
 @Component({
   selector: 'app-architecture-palette',
   templateUrl: './architecture-palette.component.html',
   styleUrls: ['./architecture-palette.component.scss']
 })
 export class ArchitecturePaletteComponent implements OnInit {
-
   private palette: go.Palette;
 
   @ViewChild('paletteDiv')
   private paletteRef: ElementRef;
 
-  constructor( private diagramTemplatesService: DiagramTemplatesService,
+  constructor(
+    private diagramTemplatesService: DiagramTemplatesService,
     private diagramLevelService: DiagramLevelService
   ) {
     this.palette = new go.Palette();
@@ -78,7 +79,6 @@ export class ArchitecturePaletteComponent implements OnInit {
   }
 
   updateDisplayOptions(event: any, option: string) {
-
     const model = this.palette.model;
 
     if (option === 'dataLinks' || option === 'masterDataLinks') {
@@ -90,13 +90,15 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.div = this.paletteRef.nativeElement;
 
     // Subscribe to source of node data for the palette
-    this.diagramLevelService.paletteNodes.subscribe(function(nodes) {
+    this.diagramLevelService.paletteNodes.subscribe(
+      function(nodes) {
         this.palette.model.nodeDataArray = nodes;
       }.bind(this)
     );
 
     // Subscribe to source of link data for the palette
-    this.diagramLevelService.paletteLinks.subscribe(function(links) {
+    this.diagramLevelService.paletteLinks.subscribe(
+      function(links) {
         this.palette.model.linkDataArray = links;
       }.bind(this)
     );

@@ -4,10 +4,12 @@ import { ObjectDetailsValidatorService } from './object-details-form-validator.s
 
 @Injectable()
 export class ObjectDetailsService {
-
   public objectDetailsForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private objectDetailsValidatorService: ObjectDetailsValidatorService) {
+  constructor(
+    private fb: FormBuilder,
+    private objectDetailsValidatorService: ObjectDetailsValidatorService
+  ) {
     this.objectDetailsForm = this.fb.group({
       name: [null, Validators.required],
       category: [null],
@@ -20,7 +22,9 @@ export class ObjectDetailsService {
 
   get isValid(): boolean {
     if (!this.objectDetailsForm.valid) {
-      this.objectDetailsValidatorService.validateAllFormFields(this.objectDetailsForm);
+      this.objectDetailsValidatorService.validateAllFormFields(
+        this.objectDetailsForm
+      );
       return false;
     }
     return true;

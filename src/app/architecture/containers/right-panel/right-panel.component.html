@@ -9,19 +9,19 @@
             [isEditable]="isEditable"
             [selectedOwner]="selectedOwner"
             [selectedOwnerIndex]="selectedOwnerIndex"
-            (editDetails)="onEditDetails($event)"
-            (saveAttribute)="onSaveAttribute($event)"
-            (deleteAttribute)="onDeleteAttribute($event)"
-            (cancel)="onCancel($event)"
+            (editDetails)="onEditDetails()"
+            (saveAttribute)="onSaveAttribute()"
+            (deleteAttribute)="onDeleteAttribute()"
+            (cancel)="onCancel()"
             [workPackageIsEditable]="workPackageIsEditable"
-            (addOwner)="onAddOwner($event)"
+            (addOwner)="onAddOwner()"
             (selectOwner)="onSelectOwner($event)"
-            (deleteOwner)="onDeleteOwner($event)">
+            (deleteOwner)="onDeleteOwner()">
         </smi-object-details-form>
         <!-- Add Scope Button -->
         <button
             *ngIf="multipleSelected"
-            mat-raised-button color="primary" 
+            mat-raised-button color="primary"
             id="add-scope-button"
             (click)="onAddScope()">
             Add Scope
@@ -29,14 +29,14 @@
       </p>
     </mat-tab>
     <mat-tab label="Attributes" *ngIf="objectSelected">
-        <smi-attributes-tab 
+        <smi-attributes-tab
             [data]="attributes"
             [workPackageIsEditable]="workPackageIsEditable"
-            (addAttribute)="onAddAttribute($event)">
+            (addAttribute)="onAddAttribute()">
         </smi-attributes-tab>
     </mat-tab>
     <mat-tab label="Properties" *ngIf="objectSelected">
-        <smi-properties-tab 
+        <smi-properties-tab
             [data]="properties"
             (editProperties)="onEditProperties($event)"
             [workPackageIsEditable]="workPackageIsEditable">
@@ -46,12 +46,12 @@
         <smi-radio-tab *ngIf="objectSelected"
             [data]="relatedRadios"
             [workPackageIsEditable]="workPackageIsEditable"
-            (addRadio)="onAddRelatedRadio($event)">
+            (addRadio)="onAddRelatedRadio()">
         </smi-radio-tab>
-        <smi-radio-table-in-architecture 
+        <smi-radio-table-in-architecture
             *ngIf="!objectSelected"
             [data]="radio"
-            (addRadio)="onAddRadio($event)">
+            (addRadio)="onAddRadio()">
         </smi-radio-table-in-architecture>
     </mat-tab>
     <mat-tab label="Work Packages" *ngIf="objectSelected">

@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
-import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
-import { AddWorkPackageNode, UpdateWorkPackageNode, AddWorkPackageNodeDescendant} from '@app/workpackage/store/actions/workpackage-node.actions';
+import {
+  AddWorkPackageLink,
+  UpdateWorkPackageLink
+} from '@app/workpackage/store/actions/workpackage-link.actions';
+import {
+  AddWorkPackageNode,
+  UpdateWorkPackageNode
+} from '@app/workpackage/store/actions/workpackage-node.actions';
 import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
@@ -14,7 +20,6 @@ const $ = go.GraphObject.make;
 
 @Injectable()
 export class DiagramChangesService {
-
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
 
   workpackages = [];
@@ -22,16 +27,17 @@ export class DiagramChangesService {
   constructor(
     public diagramLevelService: DiagramLevelService,
     public filterService: FilterService,
-    private workpackageStore: Store<WorkPackageState>,
+    private workpackageStore: Store<WorkPackageState>
   ) {
-    this.workpackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => this.workpackages = workpackages);
+    this.workpackageStore
+      .pipe(select(getEditWorkpackages))
+      .subscribe(workpackages => (this.workpackages = workpackages));
   }
 
   // Add newly created nodes to the back end
   //  -event
   //    -subject: set of nodes to add to the database
   createObjects(event: go.DiagramEvent): void {
-
     const { id: nodeId } = this.filterService.getFilter();
 
     const shortEditWorkpackage = {
@@ -43,22 +49,32 @@ export class DiagramChangesService {
     };
 
     event.subject.each((part: go.Part) => {
-
       // Set workpackage currently being edited as "impacted by" workpackage for the part
-      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
+      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [
+        shortEditWorkpackage
+      ]);
 
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
         const node = Object.assign({}, part.data);
-        node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
+        node.location = [
+          { view: 'Default', locationCoordinates: part.data.location }
+        ];
         this.workpackages.forEach(workpackage => {
           if (nodeId) {
-            this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node: {
-              ...node,
-              parentId: nodeId
-            } }));
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNode({
+                workpackageId: workpackage.id,
+                node: {
+                  ...node,
+                  parentId: nodeId
+                }
+              })
+            );
           } else {
-            this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node }));
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNode({ workpackageId: workpackage.id, node })
+            );
           }
         });
       }
@@ -69,27 +85,36 @@ export class DiagramChangesService {
   //  -part: part to update
   //  -data: object containing new property values to apply
   updatePartData(part: go.Part, data: any) {
-
     // Iterate through data to set each property against the part
-    Object.keys(data).forEach(function(property) {
-
-      // Do not update id or category fields as these do not change
-      if (!['id', 'category'].includes(property)
-        // Only update properties that appear in the part's data
-        && property in part.data
-        // Do not bother to update properties that have not changed
-        && data[property] !== part.data[property]) {
-
-        part.diagram.model.setDataProperty(part.data, property, data[property]);
-      }
-    }.bind(this));
+    Object.keys(data).forEach(
+      function(property) {
+        // Do not update id or category fields as these do not change
+        if (
+          !['id', 'category'].includes(property) &&
+          // Only update properties that appear in the part's data
+          property in part.data &&
+          // Do not bother to update properties that have not changed
+          data[property] !== part.data[property]
+        ) {
+          part.diagram.model.setDataProperty(
+            part.data,
+            property,
+            data[property]
+          );
+        }
+      }.bind(this)
+    );
 
     // Add currently editing workpackage to array of workpackages impacted by if not there already
-    if (part.data.impactedByWorkPackages.every(function(workpackage) {
-        return workpackage.id !== this.workpackages[0].id;
-      }.bind(this))
+    if (
+      part.data.impactedByWorkPackages.every(
+        function(workpackage) {
+          return workpackage.id !== this.workpackages[0].id;
+        }.bind(this)
+      )
     ) {
-      part.diagram.model.setDataProperty(part.data,
+      part.diagram.model.setDataProperty(
+        part.data,
         'impactedByWorkPackages',
         part.data.impactedByWorkPackages.concat([this.workpackages[0]])
       );
@@ -97,31 +122,43 @@ export class DiagramChangesService {
 
     // Update part data in backend
     if (part instanceof go.Node) {
-      this.workpackageStore.dispatch(new UpdateWorkPackageNode(
-        {workpackageId: this.workpackages[0].id, nodeId: data.id, node: data}
-      ));
+      this.workpackageStore.dispatch(
+        new UpdateWorkPackageNode({
+          workpackageId: this.workpackages[0].id,
+          nodeId: data.id,
+          node: data
+        })
+      );
     } else if (part instanceof go.Link) {
-      this.workpackageStore.dispatch(new UpdateWorkPackageLink(
-        {workpackageId: this.workpackages[0].id, linkId: data.id, link: data}
-      ));
+      this.workpackageStore.dispatch(
+        new UpdateWorkPackageLink({
+          workpackageId: this.workpackages[0].id,
+          linkId: data.id,
+          link: data
+        })
+      );
     }
-
   }
 
   // Update radio count after new radio is created
   updateRadioCount(part: go.Part) {
-    part.diagram.model.setDataProperty(part.data, 'relatedRadioCount', part.data.relatedRadioCount + 1);
+    part.diagram.model.setDataProperty(
+      part.data,
+      'relatedRadioCount',
+      part.data.relatedRadioCount + 1
+    );
   }
 
   // Update position of links or nodes in the back end
   //  -event
   //    -subject: set of parts to update the positions of
   updatePosition(event: any): void {
-
     const currentLevel = this.filterService.filter.getValue().filterLevel;
 
     // Do not update positions for map view
-    if (currentLevel === Level.map) {return ; }
+    if (currentLevel === Level.map) {
+      return;
+    }
 
     // Set to contain all parts to update
     const partsToUpdate = new go.Set();
@@ -139,16 +176,19 @@ export class DiagramChangesService {
     const links: any[] = [];
     let node: any;
     // Update position of each part
-    partsToUpdate.each(function(part: go.Part) {
-      if (part instanceof go.Link) {
-        // Ignore disconnected links
-        if (part.fromNode && part.toNode) {
-          links.push({id: part.key, points: part.data.route});
+    partsToUpdate.each(
+      function(part: go.Part) {
+        if (part instanceof go.Link) {
+          // Ignore disconnected links
+          if (part.fromNode && part.toNode) {
+            links.push({ id: part.key, points: part.data.route });
+          }
+        } else {
+          // Part is a node
+          node = { id: part.key, locationCoordinates: part.data.location };
         }
-      } else {  // Part is a node
-        node = {id: part.key, locationCoordinates: part.data.location};
-      }
-    }.bind(this));
+      }.bind(this)
+    );
 
     this.onUpdatePosition.next({
       node: node,
@@ -158,7 +198,6 @@ export class DiagramChangesService {
 
   // Update diagram when display options have been changed
   updateDisplayOptions(event: any, option: string, diagram: go.Diagram): void {
-
     const model = diagram.model;
     model.setDataProperty(model.modelData, option, event.checked);
 
@@ -167,11 +206,13 @@ export class DiagramChangesService {
       diagram.layout.isValidLayout = false;
     } else {
       // Update the route of links after display change
-      diagram.links.each(function(link) {
-        // Set data property to indicate that link route should be updated
-        diagram.model.setDataProperty(link.data, 'updateRoute', true);
-        link.updateRoute();
-      }.bind(this));
+      diagram.links.each(
+        function(link) {
+          // Set data property to indicate that link route should be updated
+          diagram.model.setDataProperty(link.data, 'updateRoute', true);
+          link.updateRoute();
+        }.bind(this)
+      );
     }
   }
 
@@ -179,7 +220,6 @@ export class DiagramChangesService {
   //  -event
   //    -subject: link that has been connected
   updateLinkConnections(event: go.DiagramEvent): void {
-
     const draggingTool = event.diagram.toolManager.draggingTool;
     const relinkingTool = event.diagram.toolManager.relinkingTool;
 
@@ -188,17 +228,20 @@ export class DiagramChangesService {
 
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
-
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
 
       // Add currently editing workpackage to array of workpackages impacted by if not there already
-      if (link.data.impactedByWorkPackages.every(function(workpackage) {
-          return workpackage.id !== this.workpackages[0].id;
-        }.bind(this))
+      if (
+        link.data.impactedByWorkPackages.every(
+          function(workpackage) {
+            return workpackage.id !== this.workpackages[0].id;
+          }.bind(this)
+        )
       ) {
-        link.diagram.model.setDataProperty(link.data,
+        link.diagram.model.setDataProperty(
+          link.data,
           'impactedByWorkPackages',
           link.data.impactedByWorkPackages.concat([this.workpackages[0]])
         );
@@ -206,21 +249,28 @@ export class DiagramChangesService {
 
       // Create link if not already in database
       if (link.data.isTemporary) {
-
         // Create copy of link data with route in format required for back end
         const newLink = Object.assign({}, link.data);
 
-        newLink.route = [{ view: 'Default', points: link.data.route}];
+        newLink.route = [{ view: 'Default', points: link.data.route }];
 
         this.workpackages.forEach(workpackage => {
-          this.workpackageStore.dispatch(new AddWorkPackageLink({ workpackageId: workpackage.id, link: newLink }));
+          this.workpackageStore.dispatch(
+            new AddWorkPackageLink({
+              workpackageId: workpackage.id,
+              link: newLink
+            })
+          );
         });
 
         // Flag that link now exists in the database
         link.data.isTemporary = false;
 
-        if (draggingTool.isActive) {draggingTool.doDeactivate(); }
-      } else { // Link already exists in database, therefore do update
+        if (draggingTool.isActive) {
+          draggingTool.doDeactivate();
+        }
+      } else {
+        // Link already exists in database, therefore do update
 
         // Prevent process from running twice when updating both ends of a link by dragging
         if (!draggingTool.isActive && !relinkingTool.isActive) {
@@ -238,7 +288,13 @@ export class DiagramChangesService {
         };
 
         this.workpackages.forEach(workpackage => {
-          this.workpackageStore.dispatch(new UpdateWorkPackageLink({ workpackageId: workpackage.id, linkId: link.key, link: updatedLink }));
+          this.workpackageStore.dispatch(
+            new UpdateWorkPackageLink({
+              workpackageId: workpackage.id,
+              linkId: link.key,
+              link: updatedLink
+            })
+          );
         });
       }
 
@@ -254,10 +310,13 @@ export class DiagramChangesService {
       // Gojs does not normally calculate the new routes until later.
       //  Therefore, make Gojs update the routes now so that accurate
       //  routes can be added to the back end.
-      neighbourLinks.each(function(NLink: go.Link) {NLink.invalidateRoute(); NLink.updateRoute(); });
+      neighbourLinks.each(function(NLink: go.Link) {
+        NLink.invalidateRoute();
+        NLink.updateRoute();
+      });
 
       // Update position of neighbouring links in back end
-      this.updatePosition({subject: neighbourLinks});
+      this.updatePosition({ subject: neighbourLinks });
     }
   }
 
@@ -271,7 +330,9 @@ export class DiagramChangesService {
     }
 
     diagram.model.nodeDataArray = JSON.parse(JSON.stringify(nodes));
-    if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
+      if (diagram.layout.isValidLayout) {
+        diagram.layout.isValidLayout = false;
+      }
   }
 
   // Update the array of links that are displayed in the diagram
@@ -282,8 +343,7 @@ export class DiagramChangesService {
     if (!links || !Array.isArray(links)) {
       throw new Error("Invalid links type");
     }
-
-    if (!nodesIds || !Array.isArray(nodesIds)) {
+      if (!nodesIds || !Array.isArray(nodesIds)) {
       throw new Error("Invalid nodesIds type");
     }
 
@@ -296,12 +356,13 @@ export class DiagramChangesService {
     if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
   }
 
-  linkingValidation(fromnode: go.Node,
+  linkingValidation(
+    fromnode: go.Node,
     fromport: go.GraphObject,
     tonode: go.Node,
     toport: go.GraphObject,
-    oldlink: go.Link): boolean {
-
+    oldlink: go.Link
+  ): boolean {
     // Only validate links that are connected at both ends
     if (!fromnode || !tonode) {
       return true;
@@ -317,13 +378,13 @@ export class DiagramChangesService {
     // When connecting links via drag and drop, the oldlink parameter is not passed.
     // Therefore, set the value of this parameter here in this case.
     if (!oldlink) {
-
       const draggingTool = fromnode.diagram.toolManager.draggingTool;
 
       // Copy of a link being created
       if (draggingTool.copiedParts) {
         oldlink = draggingTool.copiedParts.first().key as go.Link;
-      } else {  // Link being moved
+      } else {
+        // Link being moved
         oldlink = draggingTool.draggedParts.first().key as go.Link;
       }
     }
@@ -332,10 +393,12 @@ export class DiagramChangesService {
     if (oldlink.category === linkCategories.masterData) {
       // Prevent multiple master data links between the same pair of nodes
       const allLinks = fromnode.findLinksBetween(tonode);
-      return !allLinks.any(function (link) {
-        return (link.data.category === linkCategories.masterData
+      return !allLinks.any(function(link) {
+        return (
+          link.data.category === linkCategories.masterData &&
           // Don't count current link when checking if master data links already exist
-          && oldlink.data.id !== link.data.id);
+          oldlink.data.id !== link.data.id
+        );
       });
     }
 
@@ -344,7 +407,6 @@ export class DiagramChangesService {
 
   // Hide all nodes except the specified node and all nodes directly linked to it
   hideNonDependencies(depNode: go.Node): void {
-
     depNode.diagram.startTransaction('Analyse Dependencies');
 
     // Get direct dependencies
@@ -407,7 +469,6 @@ export class DiagramChangesService {
     });
 
     diagram.commitTransaction('Show All Nodes');
-
   }
 
   // Rerun the diagram's layout for all nodes and links

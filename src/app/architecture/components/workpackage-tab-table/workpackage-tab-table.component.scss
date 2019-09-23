@@ -1,23 +1,23 @@
 table {
-    width: 100%;
-    tr.mat-header-row {
-        height: 35px;
-    }
-    td {
-        font-size: 12px;
-    }
-    td:nth-child(1) {
-        padding-top: 10px;
-    }
-    tr.mat-row {
-        cursor: pointer;
-    }
+  width: 100%;
+  tr.mat-header-row {
+    height: 35px;
+  }
+  td {
+    font-size: 12px;
+  }
+  td:nth-child(1) {
+    padding-top: 10px;
+  }
+  tr.mat-row {
+    cursor: pointer;
+  }
 }
 
 .mat-icon {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .mat-checkbox {
-    margin-top: 10px;
+  margin-top: 10px;
 }
