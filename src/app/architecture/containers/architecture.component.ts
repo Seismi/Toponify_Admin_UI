@@ -332,13 +332,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
-      this.eventEmitter.next(Events.NodesLinksReload);
-    }));
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
+        this.eventEmitter.next(Events.NodesLinksReload);
+      })
+    );
 
-    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
-      this.eventEmitter.next(Events.NodesLinksReload);
-    }));
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
+        this.eventEmitter.next(Events.NodesLinksReload);
+      })
+    );
 
     this.subscriptions.push(
       this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {
@@ -494,20 +498,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         description: this.objectDetailsForm.value.description
       };
 
-      const workpackages =
-        this.selectedPart.impactedByWorkPackages.length < 1
-          ? this.selectedWorkpackages
-          : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
-
-      workpackages.forEach(workpackage =>
-        this.workpackageStore.dispatch(
-          new UpdateWorkPackageLink({
-            workpackageId: workpackage.id,
-            linkId: linkData.id,
-            link: linkData
-          })
-        )
-      );
       this.diagramChangesService.updatePartData(this.part, linkData);
     } else {
       const nodeData = {
@@ -519,20 +509,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         tags: this.objectDetailsForm.value.tags
       };
 
-      const workpackages =
-        this.selectedPart.impactedByWorkPackages.length < 1
-          ? this.selectedWorkpackages
-          : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
-
-      workpackages.forEach(workpackage => {
-        this.workpackageStore.dispatch(
-          new UpdateWorkPackageNode({
-            workpackageId: workpackage.id,
-            nodeId: nodeData.id,
-            node: nodeData
-          })
-        );
-      });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
 
