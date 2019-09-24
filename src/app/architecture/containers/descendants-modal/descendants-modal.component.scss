@@ -1,0 +1,32 @@
+.mat-dialog-actions{
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 17px;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:nth-child(1){
+  background-color: #ddd;
+}
+
+table {
+  width: 100%;
+  border: solid 1px #ddd;
+  margin-bottom: 15px;
+}
+
+tr.mat-row {
+  cursor: pointer;
+}
+
+.highlight {
+  background-color: #efefef;
+}
+
+.table-container {
+  max-height: calc(100vh - 200px);
+  overflow: auto;
+}

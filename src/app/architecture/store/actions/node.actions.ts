@@ -6,6 +6,7 @@ import {
   NodeDetail
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
+import { DescendantsEntity } from '@app/nodes/store/models/node.model';
 
 export enum NodeActionTypes {
   LoadNodes = '[Node] Load Nodes',
@@ -34,7 +35,9 @@ export enum NodeActionTypes {
   UpdateLinksFailure = '[Node] Update links Fail',
   UpdateCustomProperty = '[Node] Update Custom Property',
   UpdateCustomPropertySuccess = '[Node] Update Custom Property Success',
-  UpdateCustomPropertyFailure = '[Node] Update Custom Property Failure'
+  UpdateCustomPropertyFailure = '[Node] Update Custom Property Failure',
+  UpdateNodeDescendants = '[Node] Update Node Descendants'
+
 }
 
 export class LoadNodes implements Action {
@@ -181,6 +184,11 @@ export class UpdateCustomPropertyFailure implements Action {
   constructor(public payload: Error) {}
 }
 
+export class UpdateNodeDescendants implements Action {
+  readonly type = NodeActionTypes.UpdateNodeDescendants;
+  constructor(public payload: {descendants: DescendantsEntity[], nodeId: string}) {}
+}
+
 export type NodeActionsUnion =
   | LoadNodes
   | LoadNodesSuccess
@@ -208,4 +216,5 @@ export type NodeActionsUnion =
   | UpdateLinksFailure
   | UpdateCustomProperty
   | UpdateCustomPropertySuccess
-  | UpdateCustomPropertyFailure;
+  | UpdateCustomPropertyFailure
+  | UpdateNodeDescendants;

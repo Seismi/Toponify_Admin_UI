@@ -100,6 +100,7 @@
     <p class="rightPane">
       <smi-right-panel
         [owners]="selectedNode?.owners"
+        [descendants]="selectedNode?.descendants"
         [selectedRightTab]="selectedRightTab"
         [group]="objectDetailsForm"
         [clickedOnLink]="clickedOnLink"
@@ -127,6 +128,8 @@
         (selectOwner)="onSelectOwner($event)"
         (deleteOwner)="onDeleteOwner()"
         (editProperties)="onEditProperties($event)"
+        (addDescendant)="onAddDescendant()"
+        (deleteDescendant)="onDeleteDescendant($event)"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

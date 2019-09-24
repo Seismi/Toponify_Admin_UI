@@ -10,6 +10,7 @@ import {
   WorkPackageNodeActionsUnion,
   WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { DescendantsEntity } from '@app/nodes/store/models/node.model';
 
 export interface State {
   zoomLevel: number;
@@ -216,8 +217,33 @@ export function reducer(
     case NodeActionTypes.UpdateCustomPropertyFailure: {
       return {
         ...state,
-        error: action.payload
+        error: <Error>action.payload
       };
+    }
+
+    case NodeActionTypes.UpdateNodeDescendants: {
+      const {nodeId, descendants} = <{descendants: DescendantsEntity[], nodeId: string}>action.payload;
+      const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
+      if (nodeIndex > -1) {
+        const updatedNode = {...state.entities[nodeIndex], descendants: descendants};
+        const entities = [...state.entities];
+        entities[nodeIndex] = updatedNode;
+        if (state.selectedNode.id ===  nodeId) {
+          return  {
+            ...state,
+            entities,
+            selectedNode: updatedNode
+          };
+        }
+        return {
+          ...state,
+          entities,
+        };
+      } else {
+        return {
+          ...state
+        };
+      }
     }
 
     default: {
