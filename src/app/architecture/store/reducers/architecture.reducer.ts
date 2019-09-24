@@ -1,10 +1,15 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import { NodeDetail, Node, Error } from '../models/node.model';
-import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
-import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { Error, Node, NodeDetail } from '../models/node.model';
+import {
+  WorkpackageActionsUnion,
+  WorkpackageActionTypes
+} from '../actions/workpackage.actions';
+import {
+  WorkPackageNodeActionsUnion,
+  WorkPackageNodeActionTypes
+} from '@app/workpackage/store/actions/workpackage-node.actions';
 import { DescendantsEntity } from '@app/nodes/store/models/node.model';
 
 export interface State {
@@ -29,13 +34,21 @@ export const initialState: State = {
   selectedWorkpackages: []
 };
 
-export function reducer(state = initialState, action: ViewActionsUnion | NodeActionsUnion | WorkpackageActionsUnion | WorkPackageNodeActionsUnion): State {
+export function reducer(
+  state = initialState,
+  action:
+    | ViewActionsUnion
+    | NodeActionsUnion
+    | WorkpackageActionsUnion
+    | WorkPackageNodeActionsUnion
+): State {
   switch (action.type) {
-
     case WorkpackageActionTypes.SelectWorkpackage: {
       return {
         ...state,
-        selectedWorkpackages: state.selectedWorkpackages.includes(action.payload)
+        selectedWorkpackages: state.selectedWorkpackages.includes(
+          action.payload
+        )
           ? state.selectedWorkpackages.filter(id => id !== action.payload)
           : [...state.selectedWorkpackages, action.payload]
       };
@@ -61,7 +74,6 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
         selectedNode: action.payload
       };
     }
-
 
     case WorkPackageNodeActionTypes.DeleteWorkpackageNodeOwnerFailure: {
       return {
@@ -102,7 +114,7 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
       return {
         ...state,
         entities: [...action.payload.nodes],
-        links: [...action.payload.links],
+        links: [...action.payload.links]
       };
     }
 
@@ -117,7 +129,7 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
       return {
         ...state,
         entities: [...action.payload.nodes],
-        links: [...action.payload.links],
+        links: [...action.payload.links]
       };
     }
 
@@ -132,13 +144,6 @@ export function reducer(state = initialState, action: ViewActionsUnion | NodeAct
       return {
         ...state,
         selectedNode: action.payload
-      };
-    }
-
-    case NodeActionTypes.LoadNodeFailure: {
-      return {
-        ...state,
-        error: action.payload
       };
     }
 

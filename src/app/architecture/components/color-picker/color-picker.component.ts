@@ -1,5 +1,10 @@
-import { Component, ViewEncapsulation, Output, EventEmitter, Input } from '@angular/core';
-import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewEncapsulation
+} from '@angular/core';
 
 @Component({
   selector: 'smi-color-picker',
@@ -8,15 +13,12 @@ import { DiagramChangesService } from '@app/architecture/services/diagram-change
   encapsulation: ViewEncapsulation.None
 })
 export class WorkPackageColorComponent {
+  @Input() workpackageColour: string;
+  @Output() selectColour = new EventEmitter<string>();
 
-  @Input() workpackageColour;
+  constructor() {}
 
-  constructor(private diagramChangesService: DiagramChangesService) {}
-
-  @Output()
-  selectColour = new EventEmitter();
-
-  get colours() {
+  get colours(): string[] {
     return [
       '#f44336',
       '#E91E63',
@@ -39,7 +41,7 @@ export class WorkPackageColorComponent {
     ];
   }
 
-  onSelect(colour) {
+  onSelect(colour: string) {
     this.workpackageColour = colour;
     this.selectColour.emit(colour);
   }

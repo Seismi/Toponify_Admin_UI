@@ -1,5 +1,11 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild
+} from '@angular/core';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 
@@ -9,12 +15,11 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   styleUrls: ['./radio-tab.component.scss']
 })
 export class RadioTabComponent {
-
-  @Input() workPackageIsEditable:boolean;
+  @Input() workPackageIsEditable: boolean;
 
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: NodeDetail[]) {
+    this.dataSource = new MatTableDataSource<NodeDetail>(data);
     this.dataSource.paginator = this.paginator;
   }
 
@@ -23,16 +28,16 @@ export class RadioTabComponent {
   constructor(private router: Router) {}
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  displayedColumns: string[] = ['name', 'navigate'];
+  public displayedColumns: string[] = ['name', 'navigate'];
 
   @Output()
-  addRadio = new EventEmitter();
+  addRadio = new EventEmitter<void>();
 
-  onAdd() {
+  onAdd(): void {
     this.addRadio.emit();
   }
 
-  onSelect(id){
+  onSelect(id: string) {
     this.router.navigate(['/radio/' + id]);
   }
 }

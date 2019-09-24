@@ -1,17 +1,17 @@
-.mat-dialog-actions{
-    display: flex;
-    justify-content: flex-end;
-    padding-bottom: 17px;
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 17px;
 }
 
-button:nth-child(1){
-    background-color: #ddd;
+button:nth-child(1) {
+  background-color: #ddd;
 }
 
-button:focus{
-    outline: none;
+button:focus {
+  outline: none;
 }
 
 .error {
-  color: darkRed
+  color: darkRed;
 }

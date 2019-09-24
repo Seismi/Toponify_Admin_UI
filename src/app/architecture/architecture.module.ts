@@ -1,9 +1,25 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
-  MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatGridListModule, MatSelectModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatDialogModule,
+  MatDividerModule,
+  MatFormFieldModule,
+  MatGridListModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatPaginatorModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule,
+  MatTabsModule
+} from '@angular/material';
 import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
@@ -23,11 +39,11 @@ import { LeftPanelComponent } from './containers/left-panel/left-panel.component
 import { RightPanelComponent } from './containers/right-panel/right-panel.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';
-import {DiagramChangesService} from './services/diagram-changes.service';
-import {DiagramListenersService} from './services/diagram-listeners.service';
-import {DiagramTemplatesService} from './services/diagram-templates.service';
-import {DiagramLevelService} from './services/diagram-level.service';
-import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
+import { DiagramChangesService } from './services/diagram-changes.service';
+import { DiagramListenersService } from './services/diagram-listeners.service';
+import { DiagramTemplatesService } from './services/diagram-templates.service';
+import { DiagramLevelService } from './services/diagram-level.service';
+import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
@@ -50,7 +66,6 @@ import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layou
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
-
 
 @NgModule({
   imports: [
@@ -85,32 +100,37 @@ import { DescendantsModalComponent } from './containers/descendants-modal/descen
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
   ],
-    exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
-    declarations: [
-      ArchitectureRoutingComponent,
-      ArchitectureComponent,
-      ArchitectureDiagramComponent,
-      ArchitecturePaletteComponent,
-      RightPanelComponent,
-      ObjectDetailsFormComponent,
-      DeleteModalComponent,
-      LeftPanelComponent,
-      AnalysisTabComponent,
-      DeleteNodeModalComponent,
-      WorkPackageTabComponent,
-      RadioTabComponent,
-      PropertiesTabComponent,
-      AttributesTabComponent,
-      DeleteLinkModalComponent,
-      WorkPackageTabTableComponent,
-      WorkPackageColorComponent,
-      LayerPipe,
-      AttributeModalComponent,
-      AttributeDetailComponent,
-      RadioTableInArchitectureComponent,
-      CategoryTableComponent,
-      TableCollapseComponent,
-      OwnersTableComponent,
+  exports: [
+    ObjectDetailsFormComponent,
+    WorkPackageTabTableComponent,
+    CategoryTableComponent,
+    TableCollapseComponent
+  ],
+  declarations: [
+    ArchitectureRoutingComponent,
+    ArchitectureComponent,
+    ArchitectureDiagramComponent,
+    ArchitecturePaletteComponent,
+    RightPanelComponent,
+    ObjectDetailsFormComponent,
+    DeleteModalComponent,
+    LeftPanelComponent,
+    AnalysisTabComponent,
+    DeleteNodeModalComponent,
+    WorkPackageTabComponent,
+    RadioTabComponent,
+    PropertiesTabComponent,
+    AttributesTabComponent,
+    DeleteLinkModalComponent,
+    WorkPackageTabTableComponent,
+    WorkPackageColorComponent,
+    LayerPipe,
+    AttributeModalComponent,
+    AttributeDetailComponent,
+    RadioTableInArchitectureComponent,
+    CategoryTableComponent,
+    TableCollapseComponent,
+    OwnersTableComponent,
       DescendantsTableComponent,
       DescendantsModalComponent
     ],
@@ -131,6 +151,6 @@ import { DescendantsModalComponent } from './containers/descendants-modal/descen
       FilterService,
       NodeService,
       WorkPackageService
-    ],
+    ]
 })
-export class ArchitectureModule { }
+export class ArchitectureModule {}

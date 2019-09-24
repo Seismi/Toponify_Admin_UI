@@ -1,70 +1,60 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 
 @Component({
   selector: 'smi-object-details-form',
   templateUrl: './object-details-form.component.html',
   styleUrls: ['./object-details-form.component.scss']
 })
-
 export class ObjectDetailsFormComponent {
-
-  @Input() owners: NodeDetail;
+  @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
   @Input() selectedOwner: boolean;
-  @Input() selectedOwnerIndex: any;
+  @Input() selectedOwnerIndex: string | null;
 
-  constructor() { }
+  constructor() {}
 
-  @Output()
-  saveAttribute = new EventEmitter();
+  @Output() saveAttribute = new EventEmitter<void>();
 
-  @Output()
-  deleteAttribute = new EventEmitter();
+  @Output() deleteAttribute = new EventEmitter<void>();
 
-  @Output()
-  editDetails = new EventEmitter();
+  @Output() editDetails = new EventEmitter<void>();
 
-  @Output()
-  cancel = new EventEmitter();
+  @Output() cancel = new EventEmitter<void>();
 
-  @Output()
-  addOwner = new EventEmitter();
+  @Output() addOwner = new EventEmitter<void>();
 
-  @Output()
-  selectOwner = new EventEmitter();
+  @Output() selectOwner = new EventEmitter<string>();
 
-  @Output()
-  deleteOwner = new EventEmitter();
+  @Output() deleteOwner = new EventEmitter<void>();
 
   @Output() addDescendant = new EventEmitter<void>();
 
   @Output() deleteDescendant = new EventEmitter<string>();
 
-
-  onEdit(){
+  onEdit(): void {
     this.editDetails.emit();
   }
 
-  onSave(){
+  onSave(): void {
     this.saveAttribute.emit();
     this.isEditable = false;
   }
 
-  onCancel(){
+  onCancel(): void {
     this.cancel.emit();
   }
 
-  onDelete(){
+  onDelete(): void {
     this.deleteAttribute.emit();
   }
 
-  onAddOwner() {
+  onAddOwner(): void {
     this.addOwner.emit();
   }
 
@@ -72,7 +62,7 @@ export class ObjectDetailsFormComponent {
     this.selectOwner.emit(ownerId);
   }
 
-  onDeleteOwner() {
+  onDeleteOwner(): void {
     this.deleteOwner.emit();
   }
 

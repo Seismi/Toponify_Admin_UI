@@ -1,7 +1,9 @@
-import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State } from '../reducers/architecture.reducer';
 
-export const getViewFeatureState = createFeatureSelector<State>('architectureFeature');
+export const getViewFeatureState = createFeatureSelector<State>(
+  'architectureFeature'
+);
 
 export const getZoomLevel = createSelector(
   getViewFeatureState,

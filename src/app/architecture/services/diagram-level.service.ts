@@ -1,14 +1,21 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import * as go from 'gojs';
-import { layers, Node, nodeCategories } from '@app/architecture/store/models/node.model';
-import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
+import {
+  layers,
+  Node,
+  nodeCategories
+} from '@app/architecture/store/models/node.model';
+import {
+  linkCategories,
+  RoutesEntityEntity
+} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {Store} from '@ngrx/store';
-import {State as ArchitectureState} from '@app/architecture/store/reducers/architecture.reducer';
-import {FilterService} from './filter.service';
-import {Location} from '@angular/common';
-import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
+import { FilterService } from './filter.service';
+import { Location } from '@angular/common';
+import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
 
 const $ = go.GraphObject.make;
 
@@ -44,12 +51,11 @@ export const lessDetailOrderMapping = {
 export const moreDetailOrderMapping = {
   [Level.system]: Level.dataSet,
   [Level.dataSet]: Level.dimension,
-  [Level.dimension]: Level.reportingConcept,
+  [Level.dimension]: Level.reportingConcept
 };
 
 @Injectable()
 export class DiagramLevelService implements OnDestroy {
-
   historyOfFilters: any = {};
 
   groupLayoutInitial = true;
@@ -57,7 +63,10 @@ export class DiagramLevelService implements OnDestroy {
   // Filter to apply to nodes for the diagram
   //    filterLevel: level to apply the filter to
   //    filterNodeIds: array of node Ids specified for inclusion
-  filter: BehaviorSubject<{filterLevel: Level, filterNodeIds?: string[]}> = new BehaviorSubject({filterLevel: Level.system});
+  filter: BehaviorSubject<{
+    filterLevel: Level;
+    filterNodeIds?: string[];
+  }> = new BehaviorSubject({ filterLevel: Level.system });
 
   filterSubscription: Subscription;
   filterServiceSubscription: Subscription;
@@ -73,18 +82,16 @@ export class DiagramLevelService implements OnDestroy {
     private store: Store<ArchitectureState>,
     public filterService: FilterService,
     public location: Location
-  ) {
-  }
+  ) {}
 
   public initializeUrlFiltering(): void {
-
     this.filterSubscription = this.filter.subscribe(filter => {
       this.store.dispatch(new SetViewLevel(viewLevelNum[filter.filterLevel]));
       if (!filter.filterNodeIds && filter.filterLevel === Level.system) {
         this.historyOfFilters = {};
       }
       this.historyOfFilters[filter.filterLevel] = {
-        ...(filter.filterNodeIds && {filterNodeIds: filter.filterNodeIds})
+        ...(filter.filterNodeIds && { filterNodeIds: filter.filterNodeIds })
       };
     });
 
@@ -92,18 +99,23 @@ export class DiagramLevelService implements OnDestroy {
     if (filterFromQuery) {
       this.filter.next(filterFromQuery);
     } else {
-      this.filterService.setFilter({filterLevel: Level.system});
+      this.filterService.setFilter({ filterLevel: Level.system });
     }
 
-    this.filterServiceSubscription = this.filterService.filter.subscribe(filter => {
-      if (filter && JSON.stringify(filter) !== JSON.stringify(this.filter.getValue())) {
-        this.filter.next(filter);
-      }
+    this.filterServiceSubscription = this.filterService.filter.subscribe(
+      filter => {
+        if (
+          filter &&
+          JSON.stringify(filter) !== JSON.stringify(this.filter.getValue())
+        ) {
+          this.filter.next(filter);
+        }
 
-      if (!filter) {
-        this.filter.next({filterLevel: Level.system});
+        if (!filter) {
+          this.filter.next({ filterLevel: Level.system });
+        }
       }
-    });
+    );
   }
 
   // Display the next level of detail in the diagram, filtered to include only children of a specific node
@@ -119,11 +131,10 @@ export class DiagramLevelService implements OnDestroy {
     } else {
       return;
     }
-    this.filterService.setFilter({filterLevel: newLevel, id: object.data.id});
+    this.filterService.setFilter({ filterLevel: newLevel, id: object.data.id });
   }
 
   displayMapView(event: any, object: go.Link): void {
-
     // Do not display map view for data links without detail available
     if (!(object.data.category === linkCategories.data)) {
       return;
@@ -132,7 +143,10 @@ export class DiagramLevelService implements OnDestroy {
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
-    this.filterService.setFilter({filterLevel: Level.map, id: object.data.id});
+    this.filterService.setFilter({
+      filterLevel: Level.map,
+      id: object.data.id
+    });
 
     const fromNode = JSON.parse(JSON.stringify(object.fromNode.data));
     const toNode = JSON.parse(JSON.stringify(object.toNode.data));
@@ -151,7 +165,10 @@ export class DiagramLevelService implements OnDestroy {
   }
 
   displayUsageView(event, object) {
-    this.filterService.setFilter({filterLevel: Level.usage, id: object.data.id});
+    this.filterService.setFilter({
+      filterLevel: Level.usage,
+      id: object.data.id
+    });
   }
 
   ngOnDestroy() {
@@ -181,18 +198,16 @@ export class DiagramLevelService implements OnDestroy {
     const paletteViewLinks = [];
 
     if (![Level.map, Level.usage].includes(level)) {
-      paletteViewLinks.push(
-        {
-          category: linkCategories.masterData,
-          id: 'New master data link',
-          name: 'New master data link',
-          description: '',
-          route: <RoutesEntityEntity['points']> [0, 0, 40, 0, 40, -80, 80, -80],
-          layer: level.toLowerCase(),
-          isTemporary: true,
-          impactedByWorkPackages: []
-        }
-      );
+      paletteViewLinks.push({
+        category: linkCategories.masterData,
+        id: 'New master data link',
+        name: 'New master data link',
+        description: '',
+        route: <RoutesEntityEntity['points']>[0, 0, 40, 0, 40, -80, 80, -80],
+        layer: level.toLowerCase(),
+        isTemporary: true,
+        impactedByWorkPackages: []
+      });
     }
 
     if (level === Level.system) {
@@ -228,20 +243,22 @@ export class DiagramLevelService implements OnDestroy {
           category: nodeCategories.masterData
         })
       ];
-
     } else if (level === Level.dataSet) {
       paletteViewNodes = [
-        new Node({ id: 'New Physical Data Set',
+        new Node({
+          id: 'New Physical Data Set',
           name: 'New Physical Data Set',
           layer: layers.dataSet,
           category: nodeCategories.physical
         }),
-        new Node({ id: 'New Virtual Data Set',
+        new Node({
+          id: 'New Virtual Data Set',
           name: 'New Virtual Data Set',
           layer: layers.dataSet,
           category: nodeCategories.virtual
         }),
-        new Node({ id: 'New Master Data Data Set',
+        new Node({
+          id: 'New Master Data Data Set',
           name: 'New Master Data Data Set',
           layer: layers.dataSet,
           category: nodeCategories.masterData
@@ -249,7 +266,8 @@ export class DiagramLevelService implements OnDestroy {
       ];
     } else if (level === Level.dimension) {
       paletteViewNodes = [
-        new Node({ id: 'New Dimension',
+        new Node({
+          id: 'New Dimension',
           name: 'New Dimension',
           layer: layers.dimension,
           category: nodeCategories.dimension
@@ -257,17 +275,20 @@ export class DiagramLevelService implements OnDestroy {
       ];
     } else if (level === Level.reportingConcept) {
       paletteViewNodes = [
-        new Node({ id: 'New List Reporting Concept',
+        new Node({
+          id: 'New List Reporting Concept',
           name: 'New List Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.list
         }),
-        new Node({ id: 'New Structural Reporting Concept',
+        new Node({
+          id: 'New Structural Reporting Concept',
           name: 'New Structural Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.structure
         }),
-        new Node({ id: 'New Key Reporting Concept',
+        new Node({
+          id: 'New Key Reporting Concept',
           name: 'New Key Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.key
@@ -275,13 +296,13 @@ export class DiagramLevelService implements OnDestroy {
       ];
     }
 
-    if (level === Level.system || level === Level.dataSet ) {
+    if (level === Level.system || level === Level.dataSet) {
       paletteViewLinks.push({
         category: linkCategories.data,
         id: 'New data link',
         name: 'New data link',
         description: '',
-        route: <RoutesEntityEntity['points']> [0, 0, 40, 0, 40, -80, 80, -80],
+        route: <RoutesEntityEntity['points']>[0, 0, 40, 0, 40, -80, 80, -80],
         layer: level.toLowerCase(),
         isTemporary: true,
         impactedByWorkPackages: []
@@ -289,24 +310,35 @@ export class DiagramLevelService implements OnDestroy {
     }
 
     diagram.model = $(go.GraphLinksModel, {
-      nodeKeyProperty: (level === Level.map) ? 'displayId' : 'id',
-      linkKeyProperty: (level === Level.map) ? 'displayId' : 'id',
+      nodeKeyProperty: level === Level.map ? 'displayId' : 'id',
+      linkKeyProperty: level === Level.map ? 'displayId' : 'id',
       nodeCategoryProperty: 'layer',
-      linkFromKeyProperty: (level === Level.map) ? 'sourceDisplayId' :
-        (level === Level.usage) ? 'parentId' : 'sourceId',
-      linkToKeyProperty: (level === Level.map) ? 'targetDisplayId' :
-        (level === Level.usage) ? 'childId' : 'targetId',
+      linkFromKeyProperty:
+        level === Level.map
+          ? 'sourceDisplayId'
+          : level === Level.usage
+          ? 'parentId'
+          : 'sourceId',
+      linkToKeyProperty:
+        level === Level.map
+          ? 'targetDisplayId'
+          : level === Level.usage
+          ? 'childId'
+          : 'targetId',
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,
-      makeUniqueKeyFunction: function() {return uuid(); },
-      makeUniqueLinkKeyFunction: function() {return uuid(); }
+      makeUniqueKeyFunction: function() {
+        return uuid();
+      },
+      makeUniqueLinkKeyFunction: function() {
+        return uuid();
+      }
     });
-
 
     // Settings and layout for map view
     if (level === Level.map) {
-      diagram.layout =  $(go.GridLayout, {
+      diagram.layout = $(go.GridLayout, {
         spacing: new go.Size(100, 100),
         alignment: go.GridLayout.Position,
         wrappingWidth: Infinity,
@@ -316,10 +348,9 @@ export class DiagramLevelService implements OnDestroy {
 
       // Settings and layout for non-map views
     } else {
-
       diagram.layout = $(go.LayeredDigraphLayout, {
-        setsPortSpots: (level === Level.usage),
-        isOngoing: (level === Level.usage), // Prevent rearranging diagram automatically unless in usage view
+        setsPortSpots: level === Level.usage,
+        isOngoing: level === Level.usage, // Prevent rearranging diagram automatically unless in usage view
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
         isRouting: true,
