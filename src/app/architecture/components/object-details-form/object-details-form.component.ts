@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DescendantsEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-object-details-form',

@@ -9,7 +9,8 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { AttributesEntity, DescendantsEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { AttributesEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-right-panel',
