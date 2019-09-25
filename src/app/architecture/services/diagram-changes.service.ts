@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
-import {
-  AddWorkPackageLink,
-  UpdateWorkPackageLink
-} from '@app/workpackage/store/actions/workpackage-link.actions';
-import {
-  AddWorkPackageNode,
-  UpdateWorkPackageNode
-} from '@app/workpackage/store/actions/workpackage-node.actions';
+import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
@@ -15,6 +9,8 @@ import { BehaviorSubject } from 'rxjs';
 import { State as WorkPackageState } from '../../workpackage/store/reducers/workpackage.reducer';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { FilterService } from './filter.service';
+import { MatDialog } from '@angular/material';
+import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 
 const $ = go.GraphObject.make;
 
@@ -27,6 +23,7 @@ export class DiagramChangesService {
   constructor(
     public diagramLevelService: DiagramLevelService,
     public filterService: FilterService,
+    public dialog: MatDialog,
     private workpackageStore: Store<WorkPackageState>
   ) {
     this.workpackageStore
@@ -50,32 +47,37 @@ export class DiagramChangesService {
 
     event.subject.each((part: go.Part) => {
       // Set workpackage currently being edited as "impacted by" workpackage for the part
-      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [
-        shortEditWorkpackage
-      ]);
+      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
         const node = Object.assign({}, part.data);
-        node.location = [
-          { view: 'Default', locationCoordinates: part.data.location }
-        ];
-        this.workpackages.forEach(workpackage => {
-          if (nodeId) {
-            this.workpackageStore.dispatch(
-              new AddWorkPackageNode({
-                workpackageId: workpackage.id,
-                node: {
-                  ...node,
-                  parentId: nodeId
-                }
-              })
-            );
-          } else {
-            this.workpackageStore.dispatch(
-              new AddWorkPackageNode({ workpackageId: workpackage.id, node })
-            );
+        node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
+        const dialogRef = this.dialog.open(EditNameModalComponent, {
+          disableClose: false,
+          width: 'auto',
+          data: {
+            name: node.name
           }
+        });
+
+        dialogRef.afterClosed().subscribe((data: { name: string }) => {
+          node.name = data.name;
+          this.workpackages.forEach(workpackage => {
+            if (nodeId) {
+              this.workpackageStore.dispatch(
+                new AddWorkPackageNode({
+                  workpackageId: workpackage.id,
+                  node: {
+                    ...node,
+                    parentId: nodeId
+                  }
+                })
+              );
+            } else {
+              this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node }));
+            }
+          });
         });
       }
     });
@@ -96,11 +98,7 @@ export class DiagramChangesService {
           // Do not bother to update properties that have not changed
           data[property] !== part.data[property]
         ) {
-          part.diagram.model.setDataProperty(
-            part.data,
-            property,
-            data[property]
-          );
+          part.diagram.model.setDataProperty(part.data, property, data[property]);
         }
       }.bind(this)
     );
@@ -142,11 +140,7 @@ export class DiagramChangesService {
 
   // Update radio count after new radio is created
   updateRadioCount(part: go.Part) {
-    part.diagram.model.setDataProperty(
-      part.data,
-      'relatedRadioCount',
-      part.data.relatedRadioCount + 1
-    );
+    part.diagram.model.setDataProperty(part.data, 'relatedRadioCount', part.data.relatedRadioCount + 1);
   }
 
   // Update position of links or nodes in the back end
@@ -325,14 +319,14 @@ export class DiagramChangesService {
   //  -nodes - the array of nodes from the architecture to include
   //  -selectedWorkPackages - the array of currently selected work packages to apply node changes from
   updateNodes(diagram: any, nodes: go.Node[]) {
-    if (!nodes || !Array.isArray(nodes) ) {
-        throw new Error("Invalid nodes type");
+    if (!nodes || !Array.isArray(nodes)) {
+      throw new Error('Invalid nodes type');
     }
 
     diagram.model.nodeDataArray = JSON.parse(JSON.stringify(nodes));
-      if (diagram.layout.isValidLayout) {
-        diagram.layout.isValidLayout = false;
-      }
+    if (diagram.layout.isValidLayout) {
+      diagram.layout.isValidLayout = false;
+    }
   }
 
   // Update the array of links that are displayed in the diagram
@@ -341,10 +335,10 @@ export class DiagramChangesService {
   //  -selectedWorkPackages - the array of currently selected work packages to apply link changes from
   updateLinks(diagram: any, links: go.Link[], nodesIds: string[]): void {
     if (!links || !Array.isArray(links)) {
-      throw new Error("Invalid links type");
+      throw new Error('Invalid links type');
     }
-      if (!nodesIds || !Array.isArray(nodesIds)) {
-      throw new Error("Invalid nodesIds type");
+    if (!nodesIds || !Array.isArray(nodesIds)) {
+      throw new Error('Invalid nodesIds type');
     }
 
     const sourceProp = diagram.model.linkFromKeyProperty;
@@ -353,7 +347,9 @@ export class DiagramChangesService {
     const linkArray = links.filter(link => nodesIds.includes(link[sourceProp]) && nodesIds.includes(link[targetProp]));
 
     (diagram.model as go.GraphLinksModel).linkDataArray = linkArray;
-    if (diagram.layout.isValidLayout) { diagram.layout.isValidLayout = false; }
+    if (diagram.layout.isValidLayout) {
+      diagram.layout.isValidLayout = false;
+    }
   }
 
   linkingValidation(
