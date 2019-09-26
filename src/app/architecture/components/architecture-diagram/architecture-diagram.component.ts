@@ -129,6 +129,7 @@ export class ArchitectureDiagramComponent
     this.diagram.grid.visible = true;
     this.diagram.undoManager.isEnabled = false;
     this.diagram.allowCopy = false;
+    this.diagram.animationManager.isEnabled = false;
     this.diagram.toolManager.draggingTool = new GuidedDraggingTool();
     (this.diagram.toolManager
       .draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
