@@ -21,12 +21,12 @@ const $ = go.GraphObject.make;
 
 // Levels in the diagram
 export enum Level {
-  system = 'System',
-  dataSet = 'Data Set',
-  dimension = 'Dimension',
-  reportingConcept = 'Reporting Concept',
-  map = 'Map',
-  attribute = 'Attribute',
+  system = 'system',
+  dataSet = 'data set',
+  dimension = 'dimension',
+  reportingConcept = 'reporting concept',
+  map = 'map',
+  attribute = 'attribute',
   usage = 'usage'
 }
 

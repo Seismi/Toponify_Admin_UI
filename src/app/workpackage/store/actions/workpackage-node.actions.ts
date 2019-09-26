@@ -10,6 +10,10 @@ export enum WorkPackageNodeActionTypes {
   AddWorkPackageNodeDescendantSuccess = '[WorkPackage] Add node descendant success',
   AddWorkPackageNodeDescendantFailure = '[WorkPackage] Add node descendant failure',
 
+  DeleteWorkPackageNodeDescendant = '[WorkPackage] Delete node descendant',
+  DeleteWorkPackageNodeDescendantSuccess = '[WorkPackage] Delete node descendant success',
+  DeleteWorkPackageNodeDescendantFailure = '[WorkPackage] Delete node descendant failure',
+
   LoadWorkPackageNodeDescendants = '[WorkPackage] Load node descendants',
   LoadWorkPackageNodeDescendantsSuccess = '[WorkPackage] Load node descendants success',
   LoadWorkPackageNodeDescendantsFailure = '[WorkPackage] Load node descendants failure',
@@ -58,6 +62,21 @@ export class AddWorkPackageNodeDescendantSuccess implements Action {
 
 export class AddWorkPackageNodeDescendantFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkPackageNodeDescendant implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendant;
+  constructor(public payload: {workpackageId: string, nodeId: string, descendantId: string}) {}
+}
+
+export class DeleteWorkPackageNodeDescendantSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendantSuccess;
+  constructor(public payload: any) {}
+}
+
+export class DeleteWorkPackageNodeDescendantFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendantFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -157,4 +176,7 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkpackageNodeOwnerFailure
   | DeleteWorkpackageNodeOwner
   | DeleteWorkpackageNodeOwnerSuccess
-  | DeleteWorkpackageNodeOwnerFailure;
+  | DeleteWorkpackageNodeOwnerFailure
+  | DeleteWorkPackageNodeDescendant
+  | DeleteWorkPackageNodeDescendantSuccess
+  | DeleteWorkPackageNodeDescendantFailure;

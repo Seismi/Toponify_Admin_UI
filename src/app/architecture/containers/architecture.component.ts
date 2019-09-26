@@ -56,7 +56,9 @@ import {
   DeleteWorkpackageNodeOwner,
   DeleteWorkpackageNodeSuccess,
   UpdateWorkPackageNode,
-  WorkPackageNodeActionTypes
+  WorkPackageNodeActionTypes,
+  AddWorkPackageNodeDescendant,
+  DeleteWorkPackageNodeDescendant
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -98,6 +100,9 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
+import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
+import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
+
 
 enum Events {
   NodesLinksReload = 0
@@ -332,13 +337,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
-      this.eventEmitter.next(Events.NodesLinksReload);
-    }));
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
+        this.eventEmitter.next(Events.NodesLinksReload);
+      })
+    );
 
-    this.subscriptions.push(this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
-      this.eventEmitter.next(Events.NodesLinksReload);
-    }));
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
+        this.eventEmitter.next(Events.NodesLinksReload);
+      })
+    );
 
     this.subscriptions.push(
       this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {
@@ -494,20 +503,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         description: this.objectDetailsForm.value.description
       };
 
-      const workpackages =
-        this.selectedPart.impactedByWorkPackages.length < 1
-          ? this.selectedWorkpackages
-          : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
-
-      workpackages.forEach(workpackage =>
-        this.workpackageStore.dispatch(
-          new UpdateWorkPackageLink({
-            workpackageId: workpackage.id,
-            linkId: linkData.id,
-            link: linkData
-          })
-        )
-      );
       this.diagramChangesService.updatePartData(this.part, linkData);
     } else {
       const nodeData = {
@@ -519,20 +514,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         tags: this.objectDetailsForm.value.tags
       };
 
-      const workpackages =
-        this.selectedPart.impactedByWorkPackages.length < 1
-          ? this.selectedWorkpackages
-          : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
-
-      workpackages.forEach(workpackage => {
-        this.workpackageStore.dispatch(
-          new UpdateWorkPackageNode({
-            workpackageId: workpackage.id,
-            nodeId: nodeData.id,
-            node: nodeData
-          })
-        );
-      });
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
 
@@ -938,6 +919,43 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           })
         );
         this.selectedOwner = false;
+      }
+    });
+  }
+
+  onAddDescendant() {
+    const dialogRef = this.dialog.open(DescendantsModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        currentLevel: this.selectedNode.layer
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.descendant) {
+        this.workpackageStore.dispatch(new AddWorkPackageNodeDescendant({
+          workpackageId: this.workpackageId,
+          nodeId: this.nodeId,
+          node: data.descendant
+        }));
+      }
+    });
+  }
+
+  onDeleteDescendant(id: string) {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.mode === 'delete') {
+        this.workpackageStore.dispatch(new DeleteWorkPackageNodeDescendant({workpackageId: this.workpackageId, nodeId: this.nodeId, descendantId: id}));
+
       }
     });
   }

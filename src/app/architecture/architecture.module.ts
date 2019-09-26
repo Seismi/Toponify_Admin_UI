@@ -64,6 +64,8 @@ import { CategoryTableComponent } from '@app/attributes/components/category-tabl
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layouts.module';
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
+import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
+import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 
 @NgModule({
   imports: [
@@ -128,24 +130,27 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
     RadioTableInArchitectureComponent,
     CategoryTableComponent,
     TableCollapseComponent,
-    OwnersTableComponent
-  ],
-  entryComponents: [
-    DeleteModalComponent,
-    DeleteNodeModalComponent,
-    DeleteLinkModalComponent,
-    AttributeModalComponent
-  ],
-  providers: [
-    GojsCustomObjectsService,
-    DiagramChangesService,
-    DiagramListenersService,
-    DiagramTemplatesService,
-    DiagramLevelService,
-    DiagramListenersService,
-    FilterService,
-    NodeService,
-    WorkPackageService
-  ]
+    OwnersTableComponent,
+      DescendantsTableComponent,
+      DescendantsModalComponent
+    ],
+    entryComponents: [
+      DeleteModalComponent,
+      DeleteNodeModalComponent,
+      DeleteLinkModalComponent,
+      AttributeModalComponent,
+      DescendantsModalComponent
+    ],
+    providers: [
+      GojsCustomObjectsService,
+      DiagramChangesService,
+      DiagramListenersService,
+      DiagramTemplatesService,
+      DiagramLevelService,
+      DiagramListenersService,
+      FilterService,
+      NodeService,
+      WorkPackageService
+    ]
 })
 export class ArchitectureModule {}

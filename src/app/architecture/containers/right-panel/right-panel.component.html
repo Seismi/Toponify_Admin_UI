@@ -4,6 +4,7 @@
         <smi-object-details-form
             *ngIf="objectSelected"
             [owners]="owners"
+            [descendants]="descendants"
             [group]="group"
             [clickedOnLink]="clickedOnLink"
             [isEditable]="isEditable"
@@ -16,7 +17,9 @@
             [workPackageIsEditable]="workPackageIsEditable"
             (addOwner)="onAddOwner()"
             (selectOwner)="onSelectOwner($event)"
-            (deleteOwner)="onDeleteOwner()">
+            (deleteOwner)="onDeleteOwner()"
+            (addDescendant)="onAddDescendant()"
+            (deleteDescendant)="onDeleteDescendant($event)">
         </smi-object-details-form>
         <!-- Add Scope Button -->
         <button

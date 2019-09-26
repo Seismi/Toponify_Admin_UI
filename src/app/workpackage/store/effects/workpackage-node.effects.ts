@@ -4,14 +4,33 @@ import { WorkPackageNodesService } from '@app/workpackage/services/workpackage-n
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, mergeMap } from 'rxjs/operators';
-import { AddWorkPackageNode, AddWorkPackageNodeFailure,
-  AddWorkPackageNodeSuccess, WorkPackageNodeActionTypes, LoadWorkPackageNodeDescendants,
-  LoadWorkPackageNodeDescendantsSuccess, LoadWorkPackageNodeDescendantsFailure, DeleteWorkpackageNode,
-  DeleteWorkpackageNodeSuccess, DeleteWorkpackageNodeFailure, UpdateWorkPackageNode,
-  UpdateWorkPackageNodeSuccess, UpdateWorkPackageNodeFailure, AddWorkpackageNodeOwner, 
-  AddWorkpackageNodeOwnerSuccess, AddWorkpackageNodeOwnerFailure, DeleteWorkpackageNodeOwner, 
-  DeleteWorkpackageNodeOwnerSuccess, DeleteWorkpackageNodeOwnerFailure, AddWorkPackageNodeDescendant, 
-  AddWorkPackageNodeDescendantSuccess, AddWorkPackageNodeDescendantFailure } from '../actions/workpackage-node.actions';
+import {
+  AddWorkPackageNode,
+  AddWorkPackageNodeFailure,
+  AddWorkPackageNodeSuccess,
+  WorkPackageNodeActionTypes,
+  LoadWorkPackageNodeDescendants,
+  LoadWorkPackageNodeDescendantsSuccess,
+  LoadWorkPackageNodeDescendantsFailure,
+  DeleteWorkpackageNode,
+  DeleteWorkpackageNodeSuccess,
+  DeleteWorkpackageNodeFailure,
+  UpdateWorkPackageNode,
+  UpdateWorkPackageNodeSuccess,
+  UpdateWorkPackageNodeFailure,
+  AddWorkpackageNodeOwner,
+  AddWorkpackageNodeOwnerSuccess,
+  AddWorkpackageNodeOwnerFailure,
+  DeleteWorkpackageNodeOwner,
+  DeleteWorkpackageNodeOwnerSuccess,
+  DeleteWorkpackageNodeOwnerFailure,
+  AddWorkPackageNodeDescendant,
+  AddWorkPackageNodeDescendantSuccess,
+  AddWorkPackageNodeDescendantFailure,
+  DeleteWorkPackageNodeDescendant,
+  DeleteWorkPackageNodeDescendantSuccess, DeleteWorkPackageNodeDescendantFailure
+} from '../actions/workpackage-node.actions';
+import { UpdateNodeDescendants } from '@app/architecture/store/actions/node.actions';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -38,8 +57,26 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     mergeMap((payload: {workpackageId: string, nodeId: string, node: any}) => {
       return this.workpackageNodeService.addNodeDescendant(payload.workpackageId, payload.nodeId, payload.node.id, payload.node).pipe(
-        switchMap((data: any) => [new AddWorkPackageNodeDescendantSuccess(data)]),
+        switchMap((data: any) => [
+          new AddWorkPackageNodeDescendantSuccess(data),
+          new UpdateNodeDescendants({descendants: data.data, nodeId: payload.nodeId})
+        ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeDescendantFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteWorkpackageNodeDescenadant$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendant),
+    map(action => action.payload),
+    mergeMap((payload: {workpackageId: string, nodeId: string, descendantId: string}) => {
+      return this.workpackageNodeService.deleteNodeDescendant(payload.workpackageId, payload.nodeId, payload.descendantId).pipe(
+        switchMap((data: any) => [
+          new DeleteWorkPackageNodeDescendantSuccess(data),
+          new UpdateNodeDescendants({descendants: data.data, nodeId: payload.nodeId})
+        ]),
+        catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodeDescendantFailure(error)))
       );
     })
   );

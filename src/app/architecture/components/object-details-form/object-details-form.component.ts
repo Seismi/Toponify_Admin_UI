@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-object-details-form',
@@ -9,6 +10,7 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
 })
 export class ObjectDetailsFormComponent {
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
+  @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() isEditable = false;
@@ -31,6 +33,10 @@ export class ObjectDetailsFormComponent {
   @Output() selectOwner = new EventEmitter<string>();
 
   @Output() deleteOwner = new EventEmitter<void>();
+
+  @Output() addDescendant = new EventEmitter<void>();
+
+  @Output() deleteDescendant = new EventEmitter<string>();
 
   onEdit(): void {
     this.editDetails.emit();
@@ -60,4 +66,13 @@ export class ObjectDetailsFormComponent {
   onDeleteOwner(): void {
     this.deleteOwner.emit();
   }
+
+  onAddDescendant() {
+    this.addDescendant.emit();
+  }
+
+  onDeleteDescendant(id: string) {
+    this.deleteDescendant.emit(id);
+  }
+
 }
