@@ -62,7 +62,9 @@ export class DiagramChangesService {
         });
 
         dialogRef.afterClosed().subscribe((data: { name: string }) => {
-          node.name = data.name;
+          if (data && data.name) {
+            node.name = data.name;
+          }
           this.workpackages.forEach(workpackage => {
             if (nodeId) {
               this.workpackageStore.dispatch(
