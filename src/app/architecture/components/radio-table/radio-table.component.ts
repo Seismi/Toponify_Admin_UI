@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
@@ -17,6 +11,9 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 export class RadioTableInArchitectureComponent {
   @Input()
   set data(data: NodeDetail[]) {
+    if (!data) {
+      data = [];
+    }
     this.dataSource = new MatTableDataSource<NodeDetail>(data);
     this.dataSource.paginator = this.paginator;
   }

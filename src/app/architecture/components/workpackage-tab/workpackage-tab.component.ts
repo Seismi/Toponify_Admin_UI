@@ -10,6 +10,9 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 export class WorkPackageTabComponent {
   @Input()
   set data(data: NodeDetail[]) {
+    if (!data) {
+      data = [];
+    }
     this.dataSource = new MatTableDataSource<NodeDetail>(data);
     this.dataSource.paginator = this.paginator;
   }
