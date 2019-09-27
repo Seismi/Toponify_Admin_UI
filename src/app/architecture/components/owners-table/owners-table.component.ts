@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 
 @Component({
@@ -15,9 +14,10 @@ export class OwnersTableComponent {
 
   @Input()
   set data(data: OwnersEntityOrTeamEntityOrApproversEntity[]) {
-    if (data) {
-      this.dataSource = new MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>(data);
+    if (!data) {
+      data = [];
     }
+    this.dataSource = new MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>(data);
   }
 
   displayedColumns: string[] = ['name'];

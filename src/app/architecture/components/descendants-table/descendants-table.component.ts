@@ -8,14 +8,14 @@ import { DescendantsEntity } from '@app/architecture/store/models/node.model';
   styleUrls: ['./descendants-table.component.scss']
 })
 export class DescendantsTableComponent {
-
   @Input() isEditable = false;
 
   @Input()
   set data(data: DescendantsEntity[]) {
-    if (data) {
-      this.dataSource = new MatTableDataSource<DescendantsEntity>(data);
+    if (!data) {
+      data = [];
     }
+    this.dataSource = new MatTableDataSource<DescendantsEntity>(data);
   }
 
   public selectDescendantId: string;
@@ -37,5 +37,4 @@ export class DescendantsTableComponent {
   onDelete() {
     this.deleteDescendant.emit(this.selectDescendantId);
   }
-
 }

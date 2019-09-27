@@ -66,6 +66,7 @@ import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layou
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
+import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 
 @NgModule({
   imports: [
@@ -100,12 +101,7 @@ import { DescendantsModalComponent } from './containers/descendants-modal/descen
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
   ],
-  exports: [
-    ObjectDetailsFormComponent,
-    WorkPackageTabTableComponent,
-    CategoryTableComponent,
-    TableCollapseComponent
-  ],
+  exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
     ArchitectureRoutingComponent,
     ArchitectureComponent,
@@ -131,26 +127,28 @@ import { DescendantsModalComponent } from './containers/descendants-modal/descen
     CategoryTableComponent,
     TableCollapseComponent,
     OwnersTableComponent,
-      DescendantsTableComponent,
-      DescendantsModalComponent
-    ],
-    entryComponents: [
-      DeleteModalComponent,
-      DeleteNodeModalComponent,
-      DeleteLinkModalComponent,
-      AttributeModalComponent,
-      DescendantsModalComponent
-    ],
-    providers: [
-      GojsCustomObjectsService,
-      DiagramChangesService,
-      DiagramListenersService,
-      DiagramTemplatesService,
-      DiagramLevelService,
-      DiagramListenersService,
-      FilterService,
-      NodeService,
-      WorkPackageService
-    ]
+    DescendantsTableComponent,
+    DescendantsModalComponent,
+    EditNameModalComponent
+  ],
+  entryComponents: [
+    DeleteModalComponent,
+    DeleteNodeModalComponent,
+    DeleteLinkModalComponent,
+    AttributeModalComponent,
+    DescendantsModalComponent,
+    EditNameModalComponent
+  ],
+  providers: [
+    GojsCustomObjectsService,
+    DiagramChangesService,
+    DiagramListenersService,
+    DiagramTemplatesService,
+    DiagramLevelService,
+    DiagramListenersService,
+    FilterService,
+    NodeService,
+    WorkPackageService
+  ]
 })
 export class ArchitectureModule {}

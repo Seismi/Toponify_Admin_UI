@@ -1,12 +1,5 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { AttributesEntity } from '@app/architecture/store/models/node-link.model';
 
 @Component({
@@ -19,6 +12,9 @@ export class AttributesTabComponent {
 
   @Input()
   set data(data: AttributesEntity[]) {
+    if (!data) {
+      data = [];
+    }
     this.dataSource = new MatTableDataSource<AttributesEntity>(data);
     this.dataSource.paginator = this.paginator;
   }
