@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'smi-left-sidebar',
@@ -6,14 +6,12 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
   styleUrls: ['./left-sidebar.component.scss']
 })
 export class LeftSideBarComponent {
-
   @Input() workPackageIsEditable = false;
   @Input() hideTab = false;
 
-  @Output()
-  leftTab = new EventEmitter();
+  @Output() leftTab = new EventEmitter<number>();
 
-  openLeftTab(i) {
+  openLeftTab(i: number) {
     this.leftTab.emit(i);
   }
 }
