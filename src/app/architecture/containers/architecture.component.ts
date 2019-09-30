@@ -20,7 +20,7 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNode
+  UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
@@ -552,14 +552,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   // FIXME: types
-  handleUpdateNodeLocation(data: { node: any; links: any[] }) {
+  handleUpdateNodeLocation(data: { nodes: any[]; links: any[] }) {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
 
-    if (this.layout && data.node) {
-      this.store.dispatch(new UpdateNode({ layoutId: this.layout.id, node: data.node }));
+    if (this.layout && data.nodes && data.nodes.length > 0) {
+      this.store.dispatch(new UpdateNodes({ layoutId: this.layout.id, nodes: data.nodes }));
     }
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
@@ -954,7 +954,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.mode === 'delete') {
-        this.workpackageStore.dispatch(new DeleteWorkPackageNodeDescendant({workpackageId: this.workpackageId, nodeId: this.nodeId, descendantId: id}));
+        this.workpackageStore.dispatch(new DeleteWorkPackageNodeDescendant(
+          {workpackageId: this.workpackageId, nodeId: this.nodeId, descendantId: id})
+        );
 
       }
     });

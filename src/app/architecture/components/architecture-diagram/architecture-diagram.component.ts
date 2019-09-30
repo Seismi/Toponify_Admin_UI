@@ -233,7 +233,7 @@ export class ArchitectureDiagramComponent
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
     diagramChangesService.onUpdatePosition.subscribe(
-      (data: { node: any; links: any[] }) => {
+      (data: { nodes: any[]; links: any[] }) => {
         this.updateNodeLocation.emit(data);
       }
     );

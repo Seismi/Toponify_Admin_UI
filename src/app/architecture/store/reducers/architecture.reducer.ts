@@ -188,13 +188,13 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.UpdateNodeSuccess: {
+    case NodeActionTypes.UpdateNodesSuccess: {
       return {
         ...state
       };
     }
 
-    case NodeActionTypes.UpdateNodeFailure: {
+    case NodeActionTypes.UpdateNodesFailure: {
       return {
         ...state,
         error: action.payload

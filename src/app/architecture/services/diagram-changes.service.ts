@@ -171,7 +171,7 @@ export class DiagramChangesService {
 
     // Also fix position of any node that has no position currently defined.
     event.diagram.nodes.each(function(node: go.Node) {
-      if (node.data.locationMissing) {
+      if (node.data && node.data.locationMissing) {
         partsToUpdate.add(node);
       }
     });
@@ -194,7 +194,7 @@ export class DiagramChangesService {
     );
 
     this.onUpdatePosition.next({
-      node: nodes[0],
+      nodes: nodes,
       links: links
     });
   }
@@ -319,7 +319,7 @@ export class DiagramChangesService {
       });
 
       // Update position of neighbouring links in back end
-      this.updatePosition({ subject: neighbourLinks });
+      this.updatePosition({ subject: neighbourLinks, diagram: link.diagram });
     }
   }
 

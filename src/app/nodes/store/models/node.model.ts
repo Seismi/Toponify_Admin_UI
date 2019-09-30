@@ -149,10 +149,10 @@ export interface CustomPropertyValuesEntity {
 
 export interface NodeUpdatePayload {
   layoutId: string;
-  node: {
+  nodes: {
     id: string,
     locationCoordinates: string
-  };
+  }[];
 }
 
 

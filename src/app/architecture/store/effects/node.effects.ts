@@ -157,20 +157,28 @@ export class NodeEffects {
   );
 
   @Effect()
-  updateNode$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateNode>(NodeActionTypes.UpdateNode),
+  updateNodes$ = this.actions$.pipe(
+    ofType<NodeActions.UpdateNodes>(NodeActionTypes.UpdateNodes),
     map(action => action.payload),
-    mergeMap((payload: NodeUpdatePayload) => {
-      return this.nodeService
-        .updateLayoutNodesLocation(payload.layoutId, payload.node)
-        .pipe(
-          mergeMap((data: any) => [
-            new NodeActions.UpdateNodeSuccess(data.data)
-          ]),
-          catchError((error: Error) =>
-            of(new NodeActions.UpdateNodeFailure(error))
-          )
-        );
+    switchMap((payload: NodeUpdatePayload) => {
+      const observables = payload.nodes.map((item: any) => {
+        return this.nodeService
+          .updateLayoutNodesLocation(
+            payload.layoutId,
+            item
+          );
+      });
+
+      return forkJoin(observables).pipe(
+        map((data: any) => {
+          const mappedNodes = {};
+          data.forEach(item => (mappedNodes[item.data.id] = item.data));
+          return new NodeActions.UpdateNodesSuccess(mappedNodes);
+        }),
+        catchError((error: Error) =>
+          of(new NodeActions.UpdateNodesFailure(error))
+        )
+      );
     })
   );
 
