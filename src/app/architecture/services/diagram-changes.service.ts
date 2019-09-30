@@ -169,8 +169,15 @@ export class DiagramChangesService {
       }
     });
 
+    // Also fix position of any node that has no position currently defined.
+    event.diagram.nodes.each(function(node: go.Node) {
+      if (node.data.locationMissing) {
+        partsToUpdate.add(node);
+      }
+    });
+
     const links: any[] = [];
-    let node: any;
+    const nodes: any[] = [];
     // Update position of each part
     partsToUpdate.each(
       function(part: go.Part) {
@@ -181,13 +188,13 @@ export class DiagramChangesService {
           }
         } else {
           // Part is a node
-          node = { id: part.key, locationCoordinates: part.data.location };
+          nodes.push({ id: part.key, locationCoordinates: part.data.location });
         }
       }.bind(this)
     );
 
     this.onUpdatePosition.next({
-      node: node,
+      node: nodes[0],
       links: links
     });
   }
