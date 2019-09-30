@@ -100,9 +100,8 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
-import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
-
+import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -252,15 +251,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesLinks$ = combineLatest(
       this.filterService.filter,
       this.workpackageStore.pipe(select(getSelectedWorkpackages)),
+      this.scopeStore.pipe(select(getScopeSelected)),
       this.eventEmitter.pipe(filter(event => event === Events.NodesLinksReload || event === null))
     );
 
-    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
+    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, scope, _]) => {
       this.selectedWorkpackages = workpackages;
       if (fil) {
         const { filterLevel, id } = fil;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id));
+          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
         }
       }
     });
@@ -382,16 +382,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
+  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = [], scope?: ScopeDetails) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
       this.attributesView = true;
     }
 
-    const queryParams = {
+    const queryParams: GetNodesRequestQueryParams = {
       workPackageQuery: workpackageIds
     };
+    if (scope) {
+      queryParams.scopeQuery = scope.id;
+    }
 
     if (layer === Level.map) {
       this.nodeStore.dispatch(new LoadMapView(id));
@@ -932,13 +935,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.descendant) {
-        this.workpackageStore.dispatch(new AddWorkPackageNodeDescendant({
-          workpackageId: this.workpackageId,
-          nodeId: this.nodeId,
-          node: data.descendant
-        }));
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeDescendant({
+            workpackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            node: data.descendant
+          })
+        );
       }
     });
   }
@@ -952,10 +957,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.workpackageStore.dispatch(new DeleteWorkPackageNodeDescendant({workpackageId: this.workpackageId, nodeId: this.nodeId, descendantId: id}));
-
+        this.workpackageStore.dispatch(
+          new DeleteWorkPackageNodeDescendant({
+            workpackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            descendantId: id
+          })
+        );
       }
     });
   }

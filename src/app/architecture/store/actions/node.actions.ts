@@ -7,6 +7,7 @@ import {
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/nodes/store/models/node.model';
+import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 
 export enum NodeActionTypes {
   LoadNodes = '[Node] Load Nodes',
@@ -42,7 +43,7 @@ export enum NodeActionTypes {
 
 export class LoadNodes implements Action {
   readonly type = NodeActionTypes.LoadNodes;
-  constructor(public payload?: any) {}
+  constructor(public payload?: GetNodesRequestQueryParams) {}
 }
 
 export class LoadNodesSuccess implements Action {
