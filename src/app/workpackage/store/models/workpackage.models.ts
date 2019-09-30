@@ -67,8 +67,17 @@ export interface WorkPackageDetail {
   baseline: Baseline;
   approvers?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
   status: string;
+  availableActions: AvailableActions;
   hasErrors: boolean;
   changes: Changes;
+}
+export interface AvailableActions {
+  merge: boolean,
+  reset: boolean,
+  reject: boolean,
+  submit: boolean,
+  approve: boolean,
+  supersede: boolean
 }
 export interface ObjectivesEntityOrRadiosEntity {
   id: string;

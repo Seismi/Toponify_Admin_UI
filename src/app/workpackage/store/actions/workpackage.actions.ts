@@ -57,6 +57,30 @@ export enum WorkPackageActionTypes {
   GetWorkpackageAvailability = '[Workpackage] Get workpackage availability',
   GetWorkpackageAvailabilitySuccess = '[Workpackage] Get workpackage availability success',
   GetWorkpackageAvailabilityFailure = '[Workpackage] Get workpackage availability failure',
+
+  SubmitWorkpackage = '[Workpackage] Submit Workpackage',
+  SubmitWorkpackageSuccess = '[Workpackage] Submit Workpackage Success',
+  SubmitWorkpackageFailure = '[Workpackage] Submit Workpackage Failure',
+
+  ApproveWorkpackage = '[Workpackage] Approve Workpackage',
+  ApproveWorkpackageSuccess = '[Workpackage] Approve Workpackage Success',
+  ApproveWorkpackageFailure = '[Workpackage] Approve Workpackage Failure',
+
+  RejectWorkpackage = '[Workpackage] Reject Workpackage',
+  RejectWorkpackageSuccess = '[Workpackage] Reject Workpackage Success',
+  RejectWorkpackageFailure = '[Workpackage] Reject Workpackage Failure',
+
+  MergeWorkpackage = '[Workpackage] Merge Workpackage',
+  MergeWorkpackageSuccess = '[Workpackage] Merge Workpackage Success',
+  MergeWorkpackageFailure = '[Workpackage] Merge Workpackage Failure',
+
+  ResetWorkpackage = '[Workpackage] Reset Workpackage',
+  ResetWorkpackageSuccess = '[Workpackage] Reset Workpackage Success',
+  ResetWorkpackageFailure = '[Workpackage] Reset Workpackage Failure',
+
+  SupersedeWorkpackage = '[Workpackage] Supersede Workpackage',
+  SupersedeWorkpackageSuccess = '[Workpackage] Supersede Workpackage Success',
+  SupersedeWorkpackageFailure = '[Workpackage] Supersede Workpackage Failure',
 }
 
 export class LoadWorkPackages implements Action {
@@ -254,6 +278,95 @@ export class GetWorkpackageAvailabilityFailure implements Action {
   constructor(public payload: any) { }
 }
 
+export class SubmitWorkpackage implements Action {
+  readonly type = WorkPackageActionTypes.SubmitWorkpackage;
+  constructor(public payload: string) {}
+}
+
+export class SubmitWorkpackageSuccess implements Action {
+  readonly type = WorkPackageActionTypes.SubmitWorkpackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class SubmitWorkpackageFailure implements Action {
+  readonly type = WorkPackageActionTypes.SubmitWorkpackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class ApproveWorkpackage implements Action {
+  readonly type = WorkPackageActionTypes.ApproveWorkpackage;
+  constructor(public payload: string) {}
+}
+
+export class ApproveWorkpackageSuccess implements Action {
+  readonly type = WorkPackageActionTypes.ApproveWorkpackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class ApproveWorkpackageFailure implements Action {
+  readonly type = WorkPackageActionTypes.ApproveWorkpackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class RejectWorkpackage implements Action {
+  readonly type = WorkPackageActionTypes.RejectWorkpackage;
+  constructor(public payload: string) {}
+}
+
+export class RejectWorkpackageSuccess implements Action {
+  readonly type = WorkPackageActionTypes.RejectWorkpackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class RejectWorkpackageFailure implements Action {
+  readonly type = WorkPackageActionTypes.RejectWorkpackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class MergeWorkpackage implements Action {
+  readonly type = WorkPackageActionTypes.MergeWorkpackage;
+  constructor(public payload: string) {}
+}
+
+export class MergeWorkpackageSuccess implements Action {
+  readonly type = WorkPackageActionTypes.MergeWorkpackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class MergeWorkpackageFailure implements Action {
+  readonly type = WorkPackageActionTypes.MergeWorkpackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class ResetWorkpackage implements Action {
+  readonly type = WorkPackageActionTypes.ResetWorkpackage;
+  constructor(public payload: string) {}
+}
+
+export class ResetWorkpackageSuccess implements Action {
+  readonly type = WorkPackageActionTypes.ResetWorkpackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class ResetWorkpackageFailure implements Action {
+  readonly type = WorkPackageActionTypes.ResetWorkpackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class SupersedeWorkpackage implements Action {
+  readonly type = WorkPackageActionTypes.SupersedeWorkpackage;
+  constructor(public payload: string) {}
+}
+
+export class SupersedeWorkpackageSuccess implements Action {
+  readonly type = WorkPackageActionTypes.SupersedeWorkpackageSuccess;
+  constructor(public payload: any) {}
+}
+
+export class SupersedeWorkpackageFailure implements Action {
+  readonly type = WorkPackageActionTypes.SupersedeWorkpackageFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
 
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
@@ -295,4 +408,22 @@ export type WorkPackageActionsUnion =
   | GetWorkpackageAvailability
   | GetWorkpackageAvailabilitySuccess
   | GetWorkpackageAvailabilityFailure
+  | SubmitWorkpackage
+  | SubmitWorkpackageSuccess
+  | SubmitWorkpackageFailure
+  | ApproveWorkpackage
+  | ApproveWorkpackageSuccess
+  | ApproveWorkpackageFailure
+  | RejectWorkpackage
+  | RejectWorkpackageSuccess
+  | RejectWorkpackageFailure
+  | MergeWorkpackage
+  | MergeWorkpackageSuccess
+  | MergeWorkpackageFailure
+  | ResetWorkpackage
+  | ResetWorkpackageSuccess
+  | ResetWorkpackageFailure
+  | SupersedeWorkpackage
+  | SupersedeWorkpackageSuccess
+  | SupersedeWorkpackageFailure
   ;
