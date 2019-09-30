@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadWorkPackage, DeleteWorkPackageEntity, DeleteOwner, AddOwner, UpdateWorkPackageEntity, AddObjective, AddRadio, DeleteObjective, DeleteRadio } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackage, DeleteWorkPackageEntity, DeleteOwner, AddOwner, UpdateWorkPackageEntity, AddObjective, AddRadio, DeleteObjective, DeleteRadio, SubmitWorkpackage, ApproveWorkpackage, RejectWorkpackage, MergeWorkpackage, ResetWorkpackage, SupersedeWorkpackage } from '@app/workpackage/store/actions/workpackage.actions';
 import { Store, select } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import { getSelectedWorkPackage } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -18,6 +18,7 @@ import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-mod
 import { RadioEffects } from '@app/radio/store/effects/radio.effects';
 import { Actions, ofType } from '@ngrx/effects';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { WorkPackageActionTypes } from '@app/workpackage/store/actions/workpackage.actions';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -38,6 +39,12 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   selectedRightTab: number;
   statusDraft: boolean;
   isEditable = false;
+  workpackageActionSubmit: boolean;
+  workpackageActionApprove: boolean;
+  workpackageActionReject: boolean;
+  workpackageActionMerge: boolean;
+  workpackageActionReset: boolean;
+  workpackageActionSupersede: boolean;
 
   constructor(
     private router: Router,
@@ -65,6 +72,13 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         // Show edit button if work package status is draft
         (workpackage.status === 'draft') ? this.statusDraft = true : this.statusDraft = false;
         this.isEditable = false;
+        
+        (workpackage.availableActions.merge) ? this.workpackageActionMerge = true : this.workpackageActionMerge = false;
+        (workpackage.availableActions.reset) ? this.workpackageActionReset = true : this.workpackageActionReset = false;
+        (workpackage.availableActions.reject) ? this.workpackageActionReject = true : this.workpackageActionReject = false;
+        (workpackage.availableActions.submit) ? this.workpackageActionSubmit = true : this.workpackageActionSubmit = false;
+        (workpackage.availableActions.approve) ? this.workpackageActionApprove = true : this.workpackageActionApprove = false;
+        (workpackage.availableActions.supersede) ? this.workpackageActionSupersede = true : this.workpackageActionSupersede = false;
       }
     }));
   }
@@ -258,5 +272,51 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  submitWorkpackage() {
+    this.actions.pipe(ofType(WorkPackageActionTypes.SubmitWorkpackageFailure)).subscribe((error: any) => {
+      alert('ERROR: ' + error.payload);
+    })
+    this.store.dispatch(new SubmitWorkpackage(this.workpackageId));
+  }
+
+
+  approveWorkpackage() {
+    this.actions.pipe(ofType(WorkPackageActionTypes.ApproveWorkpackageFailure)).subscribe((error: any) => {
+      alert('ERROR: ' + error.payload);
+    })
+    this.store.dispatch(new ApproveWorkpackage(this.workpackageId));
+  }
+
+
+  rejectWorkpackage() {
+    this.actions.pipe(ofType(WorkPackageActionTypes.RejectWorkpackageFailure)).subscribe((error: any) => {
+      alert('ERROR: ' + error.payload);
+    })
+    this.store.dispatch(new RejectWorkpackage(this.workpackageId));
+  }
+
+
+  mergeWorkpackage() {
+    this.actions.pipe(ofType(WorkPackageActionTypes.MergeWorkpackageFailure)).subscribe((error: any) => {
+      alert('ERROR: ' + error.payload);
+    })
+    this.store.dispatch(new MergeWorkpackage(this.workpackageId));
+  }
+
+
+  resetWorkpackage() {
+    this.actions.pipe(ofType(WorkPackageActionTypes.ResetWorkpackageFailure)).subscribe((error: any) => {
+      alert('ERROR: ' + error.payload);
+    })
+    this.store.dispatch(new ResetWorkpackage(this.workpackageId));
+  }
+
+
+  supersedeWorkpackage() {
+    this.actions.pipe(ofType(WorkPackageActionTypes.SupersedeWorkpackageFailure)).subscribe((error: any) => {
+      alert('ERROR: ' + error.payload);
+    })
+    this.store.dispatch(new SupersedeWorkpackage(this.workpackageId));
+  }
 
 }
