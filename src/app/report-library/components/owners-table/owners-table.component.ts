@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { Report } from '@app/report-library/store/models/report.model';
+import { OwnersEntity } from '@app/report-library/store/models/report.model';
 
 @Component({
   selector: 'smi-report-owners-table',
@@ -8,12 +8,14 @@ import { Report } from '@app/report-library/store/models/report.model';
   styleUrls: ['owners-table.component.scss']
 })
 export class ReportOwnersTableComponent {
-
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: OwnersEntity[]) {
+    if (!data) {
+      data = [];
+    }
+    this.dataSource = new MatTableDataSource<OwnersEntity>(data);
   }
 
-  public dataSource: MatTableDataSource<Report>;
+  public dataSource: MatTableDataSource<OwnersEntity>;
   public displayedColumns: string[] = ['name'];
 }
