@@ -30,9 +30,6 @@ import { ModelSidebarComponent } from './layout/model-sidebar/model-sidebar.comp
 import { ModelContentComponent } from './layout/model-content/model-content.component';
 import { DraggerComponent } from './layout/model-sidebar/dragger/dragger.component';
 import { MdePopoverModule } from '@material-extended/mde';
-import { ZoomPopoverComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-popover.component';
-import { ZoomSliderComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider/zoom-slider.component';
-import { ZoomSliderListComponent } from './layout/header/zoom-actions/zoom-dropdown/zoom-slider-list/zoom-slider-list.component';
 import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
@@ -100,9 +97,6 @@ import { EffectsModule } from '@ngrx/effects';
     ModelSidebarComponent,
     ModelContentComponent,
     DraggerComponent,
-    ZoomPopoverComponent,
-    ZoomSliderComponent,
-    ZoomSliderListComponent,
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,

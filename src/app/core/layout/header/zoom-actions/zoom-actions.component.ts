@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Level } from '../../../../architecture/services/diagram-level.service';
-import { SetZoomLevel, SetViewLevel } from '../../../../architecture/store/actions/view.actions';
+import { SetViewLevel } from '../../../../architecture/store/actions/view.actions';
 import { State as ViewState } from '../../../../architecture/store/reducers/architecture.reducer';
-import { getViewLevel, getZoomLevel } from '@app/architecture/store/selectors/view.selector';
 import { FilterService } from '@app/architecture/services/filter.service';
 
 export const viewLevelMapping = {
@@ -20,39 +18,35 @@ export const viewLevelMapping = {
   styleUrls: ['./zoom-actions.component.scss'],
   providers: [FilterService]
 })
-export class ZoomActionsComponent implements OnInit, OnDestroy {
+export class ZoomActionsComponent implements OnInit {
 
-  public zoomLevel: number;
-  public viewLevel: number;
-  public zoomLevel$: Observable<number>;
-  public viewLevel$: Observable<number>;
+  selected = this.filterService.getFilter().filterLevel;
 
-  zoomLevelSubscription: Subscription;
-  viewLevelSubscription: Subscription;
+  layers = [
+    { level: 1, name: 'system' },
+    { level: 2, name: 'data set' },
+    { level: 3, name: 'dimension' },
+    { level: 4, name: 'reporting concept' }
+  ]
 
-  @Input() attributesView = false;
+  ngOnInit() { }
+
+  constructor(private store: Store<ViewState>, public filterService: FilterService) {}
+
+  onViewLevelSelected(level: any) {
+    if (viewLevelMapping[level]) {
+      if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
+        this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
+      }
+    }
+    this.store.dispatch(new SetViewLevel(level));
+  }
 
   @Output()
   zoomIn = new EventEmitter();
 
   @Output()
   zoomOut = new EventEmitter();
-
-  constructor(private store: Store<ViewState>, public filterService: FilterService) {}
-
-  ngOnInit() {
-    this.zoomLevel$ = this.store.pipe(select(getZoomLevel));
-    this.viewLevel$ = this.store.pipe(select(getViewLevel));
-    this.zoomLevelSubscription = this.zoomLevel$.subscribe(zoom => (this.zoomLevel = zoom));
-    this.viewLevelSubscription = this.viewLevel$.subscribe(level => (this.viewLevel = level));
-  }
-
-  ngOnDestroy(): void {
-    // Called once, before the instance is destroyed.
-    // Add 'implements OnDestroy' to the class.
-    this.viewLevelSubscription.unsubscribe();
-    this.zoomLevelSubscription.unsubscribe();
-  }
 
   onZoomIn() {
     this.zoomIn.emit();
@@ -61,23 +55,5 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   onZoomOut() {
     this.zoomOut.emit();
   }
-
-  viewLevelSelected(level: any) {
-    if (viewLevelMapping[level]) {
-      if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
-      }
-    }
-    // FIXME: table and diagram logic should be improved
-    this.store.dispatch(new SetViewLevel(level));
-  }
-
-  zoomLevelSelected(level: any) {
-    if (viewLevelMapping[level]) {
-      if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
-      }
-    }
-    this.store.dispatch(new SetZoomLevel(level));
-  }
+  
 }

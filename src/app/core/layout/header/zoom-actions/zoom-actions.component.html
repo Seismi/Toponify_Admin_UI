@@ -1,24 +1,14 @@
-<!-- Architecture button -->
-<a class="architecture-icon"><mat-icon matTooltip="Architecture">device_hub</mat-icon></a>
+<mat-form-field floatLabel=never appearance="none">
+  <mat-select [(value)]="selected">
+    <mat-option
+        *ngFor="let layer of layers"
+        [ngClass]="{ active: layer.level == viewLevel }"
+        (click)="onViewLevelSelected(layer.level)" 
+        [value]="layer.name">
+        {{layer.name | titlecase}} View
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
-<a>
-  <mat-icon [mdePopoverTriggerFor]="zoomPopover" mdePopoverTriggerOn="click" class="layers"
-  matTooltip="Layout">layers</mat-icon
-  >
-</a>
-<a (click)="onZoomIn()" *ngIf="!attributesView"><mat-icon matTooltip="Zoom in">zoom_in</mat-icon></a>
-<a (click)="onZoomOut()" *ngIf="!attributesView"><mat-icon matTooltip="Zoom out">zoom_out</mat-icon></a>
-
-<!-- zoom view popover -->
-<mde-popover
-  #zoomPopover="mdePopover"
-  [mdePopoverOverlapTrigger]="false"
-  [mdePopoverCloseOnClick]="false"
->
-  <app-zoom-popover
-    (viewLevelSelected)="viewLevelSelected($event)"
-    (zoomLevelSelected)="zoomLevelSelected($event)"
-    [zoomLevel]="zoomLevel$ | async"
-    [viewLevel]="viewLevel$ | async"
-  ></app-zoom-popover>
-</mde-popover>
+<a (click)="onZoomIn()"><mat-icon matTooltip="Zoom in">zoom_in</mat-icon></a>
+<a (click)="onZoomOut()"><mat-icon matTooltip="Zoom out">zoom_out</mat-icon></a>
