@@ -1,25 +1,24 @@
 table {
-    width: 100%;
+  width: 100%;
 }
 
 .title {
-    font-size: 25px;
-    margin-top: 10px;
+  font-size: 25px;
+  margin-top: 10px;
 }
 
 tr.mat-header-row {
-    height: 35px;
+  height: 35px;
 }
 
 tr.mat-column-name {
-    width: 95%;
+  width: 95%;
 }
 
 tr.mat-row {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .highlight {
-    background-color: #efefef;
+  background-color: #efefef;
 }
-  

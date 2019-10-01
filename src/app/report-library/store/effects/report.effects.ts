@@ -1,27 +1,16 @@
 import * as ReportActions from '../actions/report.actions';
-import { Actions, Effect, ofType } from '@ngrx/effects';
-import {
-  ReportLibraryApiResponse
-  } from '../models/report.model';
-import {
-  catchError,
-  map,
-  mergeMap,
-  switchMap
-  } from 'rxjs/operators';
 import { ReportActionTypes } from '../actions/report.actions';
-import { ReportService, GetReportLibraryRequestQueryParams  } from '../../services/report.service';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { ReportDetailApiRespoonse, ReportLibraryApiResponse } from '../models/report.model';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { GetReportLibraryRequestQueryParams, ReportService } from '../../services/report.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 
-
 @Injectable()
 export class ReportEffects {
-  constructor(
-    private actions$: Actions,
-    private reportService: ReportService
-  ) { }
+  constructor(private actions$: Actions, private reportService: ReportService) {}
 
   @Effect()
   loadReports$ = this.actions$.pipe(
@@ -39,9 +28,9 @@ export class ReportEffects {
   loadReport$ = this.actions$.pipe(
     ofType<ReportActions.LoadReport>(ReportActionTypes.LoadReport),
     map(action => action.payload),
-    switchMap((payload: { id: string, queryParams?: GetReportLibraryRequestQueryParams }) => {
+    switchMap((payload: { id: string; queryParams?: GetReportLibraryRequestQueryParams }) => {
       return this.reportService.getReport(payload.id, payload.queryParams).pipe(
-        switchMap((response: any) => [new ReportActions.LoadReportSuccess(response.data)]),
+        switchMap((response: ReportDetailApiRespoonse) => [new ReportActions.LoadReportSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.LoadReportFail(error)))
       );
     })
@@ -53,12 +42,11 @@ export class ReportEffects {
     map(action => action.payload),
     mergeMap((payload: any) => {
       return this.reportService.addReport(payload.workPackageId, payload.reportId).pipe(
-        mergeMap((report: any) => [new ReportActions.AddReportSuccess(report.data)]),
+        mergeMap((report: ReportDetailApiRespoonse) => [new ReportActions.AddReportSuccess(report.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.AddReportFail(error)))
       );
     })
   );
-
 
   @Effect()
   deleteReport$ = this.actions$.pipe(
