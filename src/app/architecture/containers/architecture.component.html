@@ -1,10 +1,9 @@
 <app-base-header>
   <app-toolbar-column [fillFreeSpace]="true">
-    <app-search></app-search>
   </app-toolbar-column>
+  <app-search></app-search>
   <app-toolbar-column>
     <app-zoom-actions
-      [attributesView]="attributesView"
       (zoomIn)="onZoomIn()"
       (zoomOut)="onZoomOut()"
     ></app-zoom-actions>
