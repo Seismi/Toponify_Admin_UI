@@ -1,19 +1,19 @@
 .container {
-    max-width: 100%;
-    margin-top: 0px;
+  max-width: 100%;
+  margin-top: 0;
 }
 
 .row {
-    height: 100%;
+  height: 100%;
 }
 
 button {
-    position: absolute;
-    bottom: 12px;
-    right: 16px;
-    z-index: 99999;
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  z-index: 99999;
 }
 
 .leftPane {
-    padding-right: 5px;
+  padding-right: 5px;
 }

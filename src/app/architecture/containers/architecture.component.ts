@@ -103,7 +103,6 @@ import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/o
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 
-
 enum Events {
   NodesLinksReload = 0
 }
@@ -394,7 +393,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     };
 
     if (layer === Level.map) {
-      this.nodeStore.dispatch(new LoadMapView(id));
+      this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
     } else {
@@ -932,13 +931,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.descendant) {
-        this.workpackageStore.dispatch(new AddWorkPackageNodeDescendant({
-          workpackageId: this.workpackageId,
-          nodeId: this.nodeId,
-          node: data.descendant
-        }));
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeDescendant({
+            workpackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            node: data.descendant
+          })
+        );
       }
     });
   }
@@ -952,12 +953,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.workpackageStore.dispatch(new DeleteWorkPackageNodeDescendant(
-          {workpackageId: this.workpackageId, nodeId: this.nodeId, descendantId: id})
+        this.workpackageStore.dispatch(
+          new DeleteWorkPackageNodeDescendant({
+            workpackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            descendantId: id
+          })
         );
-
       }
     });
   }

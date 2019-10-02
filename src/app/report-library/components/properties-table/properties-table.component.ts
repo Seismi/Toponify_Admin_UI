@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { Report } from '@app/report-library/store/models/report.model';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { CustomPropertyValues } from '@app/report-library/store/models/report.model';
 
 @Component({
   selector: 'smi-properties-table-in-reports-page',
@@ -9,13 +9,16 @@ import { Report } from '@app/report-library/store/models/report.model';
 })
 export class PropertiesTableInReportsPageComponent {
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: CustomPropertyValues[]) {
+    if (!data) {
+      data = [];
+    }
+    this.dataSource = new MatTableDataSource<CustomPropertyValues>(data);
     this.dataSource.paginator = this.paginator;
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public dataSource: MatTableDataSource<Report>;
+  public dataSource: MatTableDataSource<CustomPropertyValues>;
   public displayedColumns: string[] = ['name', 'value'];
 }

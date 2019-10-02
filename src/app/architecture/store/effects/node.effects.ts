@@ -101,8 +101,8 @@ export class NodeEffects {
   loadMapView$ = this.actions$.pipe(
     ofType<NodeActions.LoadMapView>(NodeActionTypes.LoadMapView),
     map(action => action.payload),
-    switchMap((id: string) => {
-      return this.nodeService.getMapView(id).pipe(
+    switchMap((payload) => {
+      return this.nodeService.getMapView(payload.id, payload.queryParams).pipe(
         switchMap((data: any) => [
           new NodeActions.LoadMapViewSuccess(data.data)
         ]),

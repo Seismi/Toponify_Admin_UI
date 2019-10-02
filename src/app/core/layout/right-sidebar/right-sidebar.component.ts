@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Constants } from '../../constants';
 
 @Component({
@@ -7,7 +7,6 @@ import { Constants } from '../../constants';
   styleUrls: ['./right-sidebar.component.scss']
 })
 export class RightSideBarComponent {
-
   @Input() workPackagePage = false;
   @Input() attributesPage = false;
   @Input() reportLibraryPage = false;
@@ -22,11 +21,9 @@ export class RightSideBarComponent {
   workPackageTabs = Constants.WORKPACKAGE_TABS;
   radioTabs = Constants.RADIO_TABS;
 
-  @Output()
-  rightTab = new EventEmitter();
+  @Output() rightTab = new EventEmitter<number>();
 
   openRightTab(index: number) {
     this.rightTab.emit(index);
   }
-
 }
