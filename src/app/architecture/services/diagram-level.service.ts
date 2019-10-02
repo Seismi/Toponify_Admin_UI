@@ -92,7 +92,7 @@ export class DiagramLevelService implements OnDestroy {
     if (filterFromQuery && filterFromQuery.filterLevel) {
       this.filter.next({ filterLevel: filterFromQuery.filterLevel });
     } else {
-      this.filterService.setFilter({ filterLevel: Level.system });
+      this.filterService.addFilter({ filterLevel: Level.system });
     }
 
     this.filterServiceSubscription = this.filterService.filter.subscribe(filter => {
@@ -119,7 +119,7 @@ export class DiagramLevelService implements OnDestroy {
     } else {
       return;
     }
-    this.filterService.setFilter({ filterLevel: newLevel, id: object.data.id });
+    this.filterService.addFilter({ filterLevel: newLevel, id: object.data.id });
   }
 
   displayMapView(event: any, object: go.Link): void {
@@ -131,7 +131,7 @@ export class DiagramLevelService implements OnDestroy {
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
-    this.filterService.setFilter({
+    this.filterService.addFilter({
       filterLevel: Level.map,
       id: object.data.id
     });
@@ -153,7 +153,7 @@ export class DiagramLevelService implements OnDestroy {
   }
 
   displayUsageView(event, object) {
-    this.filterService.setFilter({
+    this.filterService.addFilter({
       filterLevel: Level.usage,
       id: object.data.id
     });
