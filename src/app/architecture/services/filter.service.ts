@@ -42,8 +42,12 @@ export class FilterService implements OnDestroy {
       queryParams: queryParams
     });
   }
-  addFilter(filter: {[key: string]: any}): void {
-    this.setFilter({...this.getFilter(), ...filter});
+  addFilter(filter: {[key: string]: any}, removeKeyFromFilter?: string): void {
+    const newFilter = {...this.getFilter(), ...filter};
+    if (removeKeyFromFilter) {
+      delete newFilter[removeKeyFromFilter];
+    }
+    this.setFilter(newFilter);
   }
 
   transformToString(filter: any): string {
