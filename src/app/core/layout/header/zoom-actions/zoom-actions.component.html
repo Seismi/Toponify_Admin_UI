@@ -2,8 +2,7 @@
   <mat-select [(value)]="selected">
     <mat-option
         *ngFor="let layer of layers"
-        [ngClass]="{ active: layer.level == viewLevel }"
-        (click)="onViewLevelSelected(layer.level)" 
+        (click)="onViewLevelSelected(layer.level)"
         [value]="layer.name">
         {{layer.name | titlecase}} View
     </mat-option>
