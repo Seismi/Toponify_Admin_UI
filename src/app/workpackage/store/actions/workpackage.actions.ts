@@ -285,7 +285,7 @@ export class SubmitWorkpackage implements Action {
 
 export class SubmitWorkpackageSuccess implements Action {
   readonly type = WorkPackageActionTypes.SubmitWorkpackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class SubmitWorkpackageFailure implements Action {
@@ -300,7 +300,7 @@ export class ApproveWorkpackage implements Action {
 
 export class ApproveWorkpackageSuccess implements Action {
   readonly type = WorkPackageActionTypes.ApproveWorkpackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class ApproveWorkpackageFailure implements Action {
@@ -315,7 +315,7 @@ export class RejectWorkpackage implements Action {
 
 export class RejectWorkpackageSuccess implements Action {
   readonly type = WorkPackageActionTypes.RejectWorkpackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class RejectWorkpackageFailure implements Action {
@@ -330,7 +330,7 @@ export class MergeWorkpackage implements Action {
 
 export class MergeWorkpackageSuccess implements Action {
   readonly type = WorkPackageActionTypes.MergeWorkpackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class MergeWorkpackageFailure implements Action {
@@ -345,7 +345,7 @@ export class ResetWorkpackage implements Action {
 
 export class ResetWorkpackageSuccess implements Action {
   readonly type = WorkPackageActionTypes.ResetWorkpackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class ResetWorkpackageFailure implements Action {
@@ -360,7 +360,7 @@ export class SupersedeWorkpackage implements Action {
 
 export class SupersedeWorkpackageSuccess implements Action {
   readonly type = WorkPackageActionTypes.SupersedeWorkpackageSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class SupersedeWorkpackageFailure implements Action {

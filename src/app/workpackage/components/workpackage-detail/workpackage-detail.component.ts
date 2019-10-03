@@ -61,22 +61,22 @@ export class WorkPackageDetailComponent  {
   selectBaseline = new EventEmitter();
 
   @Output()
-  submit = new EventEmitter();
+  submit = new EventEmitter<string>();
 
   @Output()
-  approve = new EventEmitter();
+  approve = new EventEmitter<string>();
 
   @Output()
-  reject = new EventEmitter();
+  reject = new EventEmitter<string>();
 
   @Output()
-  merge = new EventEmitter();
+  merge = new EventEmitter<string>();
 
   @Output()
-  reset = new EventEmitter();
+  reset = new EventEmitter<string>();
 
   @Output()
-  supersede = new EventEmitter();
+  supersede = new EventEmitter<string>();
 
 
   onSave() {

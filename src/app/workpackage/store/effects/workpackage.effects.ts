@@ -66,7 +66,8 @@ import {
   WorkPackageDetailApiResponse, 
   WorkPackageApiRequest, 
   WorkPackageApiResponse, 
-  OwnersEntityOrApproversEntity
+  OwnersEntityOrApproversEntity,
+  WorkPackageDetail
 } from '../models/workpackage.models';
 import { State as WorkpackageState } from '../reducers/workpackage.reducer';
 import { Store } from '@ngrx/store';
@@ -231,7 +232,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.workpackageService.submitWorkpackage(payload).pipe(
-        mergeMap((response: any) => [new SubmitWorkpackageSuccess(response.data)]),
+        mergeMap((response: WorkPackageDetailApiResponse) => [new SubmitWorkpackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new SubmitWorkpackageFailure(error)))
       );
     })
@@ -243,7 +244,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.workpackageService.approveWorkpackage(payload).pipe(
-        mergeMap((response: any) => [new ApproveWorkpackageSuccess(response.data)]),
+        mergeMap((response: WorkPackageDetailApiResponse) => [new ApproveWorkpackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ApproveWorkpackageFailure(error)))
       );
     })
@@ -255,7 +256,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.workpackageService.rejectWorkpackage(payload).pipe(
-        mergeMap((response: any) => [new RejectWorkpackageSuccess(response.data)]),
+        mergeMap((response: WorkPackageDetailApiResponse) => [new RejectWorkpackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new RejectWorkpackageFailure(error)))
       );
     })
@@ -267,7 +268,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.workpackageService.mergeWorkpackage(payload).pipe(
-        mergeMap((response: any) => [new MergeWorkpackageSuccess(response.data)]),
+        mergeMap((response: WorkPackageDetailApiResponse) => [new MergeWorkpackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new MergeWorkpackageFailure(error)))
       );
     })
@@ -279,7 +280,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.workpackageService.resetWorkpackage(payload).pipe(
-        mergeMap((response: any) => [new ResetWorkpackageSuccess(response.data)]),
+        mergeMap((response: WorkPackageDetailApiResponse) => [new ResetWorkpackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ResetWorkpackageFailure(error)))
       );
     })
@@ -291,7 +292,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.workpackageService.supersedeWorkpackage(payload).pipe(
-        mergeMap((response: any) => [new SupersedeWorkpackageSuccess(response.data)]),
+        mergeMap((response: WorkPackageDetailApiResponse) => [new SupersedeWorkpackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new SupersedeWorkpackageFailure(error)))
       );
     })
