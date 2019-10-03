@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { Report } from '@app/report-library/store/models/report.model';
+import { DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity } from '@app/report-library/store/models/report.model';
 
 @Component({
   selector: 'smi-report-dimensions-table',
@@ -8,12 +8,14 @@ import { Report } from '@app/report-library/store/models/report.model';
   styleUrls: ['dimensions-table.component.scss']
 })
 export class ReportDimensionsTableComponent {
-
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[]) {
+    if (!data) {
+      data = [];
+    }
+    this.dataSource = new MatTableDataSource<DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity>(data);
   }
 
-  public dataSource: MatTableDataSource<Report>;
+  public dataSource: MatTableDataSource<DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity>;
   public displayedColumns: string[] = ['name'];
 }

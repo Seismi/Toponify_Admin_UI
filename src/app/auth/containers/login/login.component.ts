@@ -7,12 +7,13 @@ import { Store } from '@ngrx/store';
 import * as fromAuth from '../../store/reducers';
 import * as AuthActions from '../../store/actions/auth.actions';
 import { getLoginPageError } from '../../store/reducers/index'
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 
 export class LoginComponent implements OnInit {
@@ -21,6 +22,15 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   error: any;
+  myInterval: number = 4500;
+  activeSlideIndex: number = 0;
+ 
+  slides = [
+    {image: 'assets/images/display1.jpg'},
+    {image: 'assets/images/display2.jpg'},
+    {image: 'assets/images/display3.jpg'},
+    {image: 'assets/images/display4.jpg'}
+  ];
 
   constructor(
     private store: Store<fromAuth.State>,

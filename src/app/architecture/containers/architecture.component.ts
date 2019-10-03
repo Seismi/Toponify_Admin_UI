@@ -411,7 +411,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
 
     if (layer === Level.map) {
-      this.nodeStore.dispatch(new LoadMapView(id));
+      this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
     } else {

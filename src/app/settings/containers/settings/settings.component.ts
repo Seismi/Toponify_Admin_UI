@@ -179,9 +179,13 @@ export class SettingsComponent implements OnInit {
     this.teamStore.dispatch(new LoadTeam(this.teamId));
     this.teamStore.pipe(select(getTeamSelected)).subscribe(team => {
       this.selectedTeam = team;
+      if (this.selectedTeam) {
+        this.teamDetailService.teamDetailForm.patchValue({
+          name: this.selectedTeam.name,
+          description: this.selectedTeam.description
+        })
+      }
     });
-
-    this.teamDetailService.teamDetailForm.patchValue({name: row.name})
   }
 
   onSelectMember(member) {
@@ -218,6 +222,7 @@ export class SettingsComponent implements OnInit {
       if (data && data.mode === 'delete') {
         this.teamStore.dispatch(new DeleteTeam(this.teamId));
       }
+      this.teamSelected = false;
     });
   }
 
