@@ -11,15 +11,16 @@
 <a><mat-icon routerLink="/scopes-and-layouts" matTooltip="Scopes and Layouts">pages</mat-icon></a>
 
 <!-- Scopes dropdown -->
-<smi-scopes-dropdown 
-    data-hook="quicklinks-scopes-dropdown" 
+<smi-scopes-dropdown
+    data-hook="quicklinks-scopes-dropdown"
     *ngIf="gojsView"
     [data]="scopes"
+    [selectedScope]="selectedScope"
     (selectScope)="onSelectScope($event)">
 </smi-scopes-dropdown>
 
 <!-- Layouts dropdown -->
-<smi-layouts-dropdown 
+<smi-layouts-dropdown
     data-hook="quicklinks-layouts-dropdown"
     *ngIf="gojsView"
     [data]="layouts"
