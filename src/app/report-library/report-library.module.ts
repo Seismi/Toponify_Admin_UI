@@ -1,18 +1,17 @@
 import { ReportLibraryComponent } from './containers/report-library.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { ReportLibraryRoutingComponent } from './containers/report-library-routing.component';
 import { ReportLibraryRoutingModule } from './report-library-routing.module';
 import { CoreModule } from '@app/core/core.module';
-import { 
-  MatTableModule,
-  MatPaginatorModule,
+import {
   MatButtonModule,
-  MatSortModule, 
-  MatInputModule,
-  MatTabsModule,
   MatFormFieldModule,
-  MatIconModule
+  MatIconModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatTableModule,
+  MatTabsModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -20,7 +19,7 @@ import { AttributesTableInReportsPageComponent } from './components/attributes-t
 import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { reducer } from './store/reducers/report.reducer'
+import { reducer } from './store/reducers/report.reducer';
 import { ReportEffects } from './store/effects/report.effects';
 import { ReportService } from './services/report.service';
 import { ArchitectureModule } from '@app/architecture/architecture.module';
@@ -54,8 +53,7 @@ import { WorkPackageTableInReportsPageComponent } from './components/workpackage
   ],
   exports: [],
   declarations: [
-    ReportLibraryComponent, 
-    ReportLibraryRoutingComponent,
+    ReportLibraryComponent,
     ReportLibraryTableComponent,
     ReportLibraryDetailComponent,
     AttributesTableInReportsPageComponent,
@@ -68,6 +66,6 @@ import { WorkPackageTableInReportsPageComponent } from './components/workpackage
     PropertiesTableInReportsPageComponent,
     WorkPackageTableInReportsPageComponent
   ],
-  providers: [ReportService],
+  providers: [ReportService]
 })
-export class ReportLibraryModule { }
+export class ReportLibraryModule {}

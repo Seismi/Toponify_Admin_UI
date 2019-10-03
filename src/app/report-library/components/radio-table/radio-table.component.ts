@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
-import { Report } from '@app/report-library/store/models/report.model';
+import { RelatedRadios } from '@app/report-library/store/models/report.model';
 
 @Component({
   selector: 'smi-radio-table-in-reports-page',
@@ -10,8 +10,11 @@ import { Report } from '@app/report-library/store/models/report.model';
 })
 export class RadioTableInReportsPageComponent {
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: RelatedRadios[]) {
+    if (!data) {
+      data = [];
+    }
+    this.dataSource = new MatTableDataSource<RelatedRadios>(data);
     this.dataSource.paginator = this.paginator;
   }
 
@@ -19,10 +22,10 @@ export class RadioTableInReportsPageComponent {
 
   constructor(private router: Router) {}
 
-  public dataSource: MatTableDataSource<Report>;
+  public dataSource: MatTableDataSource<RelatedRadios>;
   displayedColumns: string[] = ['name', 'navigate'];
 
-  onSelect(id){
+  onSelect(id: string) {
     this.router.navigate(['/radio/' + id]);
   }
 }

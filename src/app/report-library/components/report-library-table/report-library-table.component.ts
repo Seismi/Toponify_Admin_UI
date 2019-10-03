@@ -1,7 +1,6 @@
-import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ReportLibrary } from '@app/report-library/store/models/report.model';
-
 
 @Component({
   selector: 'smi-report-library-table',
@@ -9,7 +8,6 @@ import { ReportLibrary } from '@app/report-library/store/models/report.model';
   styleUrls: ['report-library-table.component.scss']
 })
 export class ReportLibraryTableComponent implements OnInit {
-
   @Input()
   set reports(reports: ReportLibrary[]) {
     if (reports) {
@@ -19,23 +17,19 @@ export class ReportLibraryTableComponent implements OnInit {
     }
   }
 
+  @Output() reportSelected = new EventEmitter<ReportLibrary>();
+
   public dataSource: MatTableDataSource<ReportLibrary>;
   public displayedColumns: string[] = ['name', 'dataSets'];
-  public selectedRowIndex: number = -1;
+  public selectedRowId: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-
-  @Output()
-  reportSelected = new EventEmitter();
-
-  onSelectRow(row) {
-    this.selectedRowIndex = row.id;
+  onSelectRow(row: ReportLibrary) {
+    this.selectedRowId = row.id;
     this.reportSelected.emit(row);
   }
-
 }

@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { Report } from '@app/report-library/store/models/report.model';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { RelatedWorkPackages } from '@app/report-library/store/models/report.model';
 
 @Component({
   selector: 'smi-workpackage-table-in-reports-page',
@@ -9,13 +9,13 @@ import { Report } from '@app/report-library/store/models/report.model';
 })
 export class WorkPackageTableInReportsPageComponent {
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: RelatedWorkPackages[]) {
+    this.dataSource = new MatTableDataSource<RelatedWorkPackages>(data);
     this.dataSource.paginator = this.paginator;
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public dataSource: MatTableDataSource<Report>;
+  public dataSource: MatTableDataSource<RelatedWorkPackages>;
   public displayedColumns: string[] = ['name', 'status'];
 }

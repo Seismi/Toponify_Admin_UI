@@ -1,5 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import {
+  DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity,
+  OwnersEntity
+} from '@app/report-library/store/models/report.model';
 
 @Component({
   selector: 'smi-report-library-detail',
@@ -7,13 +11,12 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['report-library-detail.component.scss']
 })
 export class ReportLibraryDetailComponent {
-
   @Input() isEditable = false;
   @Input() group: FormGroup;
-  @Input() dataSets: any;
-  @Input() owners: any;
-  @Input() dimensions: any;
-  @Input() reportingConcepts: any;
+  @Input() dataSets: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
+  @Input() owners: OwnersEntity[];
+  @Input() dimensions: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
+  @Input() reportingConcepts: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
 
   onSave() {
     this.isEditable = false;
@@ -22,11 +25,10 @@ export class ReportLibraryDetailComponent {
   onEdit() {
     this.isEditable = true;
   }
-  
+
   onCancel() {
     this.isEditable = false;
   }
 
   onDelete() {}
-  
 }
