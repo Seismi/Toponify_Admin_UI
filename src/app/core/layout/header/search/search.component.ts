@@ -14,6 +14,8 @@ import { Store, select } from '@ngrx/store';
 export class SearchComponent implements OnInit {
 
   results$: Observable<SearchEntity[]>;
+  
+  toggleSearch: boolean = false;
 
   constructor(private searchStore: Store<SearchState>) {}
 
@@ -27,6 +29,14 @@ export class SearchComponent implements OnInit {
     const queryParams = { text: text };
     this.searchStore.dispatch(new Search(queryParams));
     this.results$ = this.searchStore.pipe(select(getSearchResults));
+  }
+
+  openSearch() {
+    this.toggleSearch = true;
+  }
+
+  searchClose() {
+    this.toggleSearch = false;
   }
 
 }
