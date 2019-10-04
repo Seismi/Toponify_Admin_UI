@@ -22,7 +22,7 @@ export const viewLevelMapping = {
 })
 export class ZoomActionsComponent implements OnInit, OnDestroy {
 
-  selected: string = 'system';
+  selected: string;
 
   public viewLevel: number;
   public viewLevel$: Observable<number>;
