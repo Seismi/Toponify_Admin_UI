@@ -29,7 +29,19 @@
               (selectBaseline)="onSelectBaseline($event)"
               [selectedBaseline]="selectedBaseline"
               [statusDraft]="statusDraft"
-              [isEditable]="isEditable">
+              [isEditable]="isEditable"
+              [workpackageActionSubmit]="workpackageActionSubmit"
+              [workpackageActionApprove]="workpackageActionApprove"
+              [workpackageActionReject]="workpackageActionReject"
+              [workpackageActionMerge]="workpackageActionMerge"
+              [workpackageActionReset]="workpackageActionReset"
+              [workpackageActionSupersede]="workpackageActionSupersede"
+              (submit)="submitWorkpackage()"
+              (approve)="approveWorkpackage()"
+              (reject)="rejectWorkpackage()"
+              (merge)="mergeWorkpackage()"
+              (reset)="resetWorkpackage()"
+              (supersede)="supersedeWorkpackage()">
             </smi-workpackage-detail>
           </p>
         </mat-tab>

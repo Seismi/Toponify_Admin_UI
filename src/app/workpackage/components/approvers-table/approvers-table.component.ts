@@ -18,10 +18,6 @@ export class ApproversTableComponent {
     }
   }
 
-  displayedColumns: string[] = ['name'];
+  displayedColumns: string[] = ['name', 'status'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
-
-  onSelect(row) {
-    this.selectedRowIndex = row.id;
-  }
 }
