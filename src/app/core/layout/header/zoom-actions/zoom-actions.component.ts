@@ -56,7 +56,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   onViewLevelSelected(level: any) {
     if (viewLevelMapping[level]) {
       if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
+        this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, 'id');
       }
     }
     this.store.dispatch(new SetViewLevel(level));
