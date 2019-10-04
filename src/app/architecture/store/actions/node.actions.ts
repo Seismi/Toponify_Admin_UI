@@ -23,9 +23,9 @@ export enum NodeActionTypes {
   LoadNodeUsageView = '[Node] Load Node Usage View',
   LoadNodeUsageViewSuccess = '[Node] Load Node Usage View Success',
   LoadNodeUsageViewFailure = '[Node] Load Node Usage View Fail',
-  UpdateNode = '[Node] Update node',
-  UpdateNodeSuccess = '[Node] Update node Success',
-  UpdateNodeFailure = '[Node] Update node Fail',
+  UpdateNodes = '[Node] Update nodes',
+  UpdateNodesSuccess = '[Node] Update nodes Success',
+  UpdateNodesFailure = '[Node] Update nodes Fail',
   UpdateLinks = '[Node] Update links',
   UpdateLinksSuccess = '[Node] Update links Success',
   UpdateLinksFailure = '[Node] Update links Fail',
@@ -125,18 +125,18 @@ export class LoadNodeLinkFailure implements Action {
   constructor(public payload: Error) {}
 }
 
-export class UpdateNode implements Action {
-  readonly type = NodeActionTypes.UpdateNode;
-  constructor(public payload: { layoutId: string; node: any }) {}
+export class UpdateNodes implements Action {
+  readonly type = NodeActionTypes.UpdateNodes;
+  constructor(public payload: { layoutId: string; nodes: any[] }) {}
 }
 
-export class UpdateNodeSuccess implements Action {
-  readonly type = NodeActionTypes.UpdateNodeSuccess;
+export class UpdateNodesSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodesSuccess;
   constructor(public payload: any) {}
 }
 
-export class UpdateNodeFailure implements Action {
-  readonly type = NodeActionTypes.UpdateNodeFailure;
+export class UpdateNodesFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodesFailure;
   constructor(public payload: Error) {}
 }
 
@@ -201,9 +201,9 @@ export type NodeActionsUnion =
   | LoadNodeUsageView
   | LoadNodeUsageViewSuccess
   | LoadNodeUsageViewFailure
-  | UpdateNode
-  | UpdateNodeSuccess
-  | UpdateNodeFailure
+  | UpdateNodes
+  | UpdateNodesSuccess
+  | UpdateNodesFailure
   | UpdateLinks
   | UpdateLinksSuccess
   | UpdateLinksFailure
