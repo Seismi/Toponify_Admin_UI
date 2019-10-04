@@ -141,8 +141,18 @@ export class DiagramChangesService {
   }
 
   // Update radio count after new radio is created
-  updateRadioCount(part: go.Part) {
-    part.diagram.model.setDataProperty(part.data, 'relatedRadioCount', part.data.relatedRadioCount + 1);
+  updateRadioCount(part: go.Part, category: string) {
+
+    // Get the plural of the RADIO category
+    const categoryPlural = category.replace('y', 'ie') + 's';
+
+    // Create a copy of the current relatedRadioCounts object
+    const radioCounts = Object.assign({}, part.data.relatedRadioCounts);
+    // Increment the relevant count
+    radioCounts[categoryPlural]++;
+
+    // Set the relatedRadioCount property to the updated value
+    part.diagram.model.setDataProperty(part.data, 'relatedRadioCounts', radioCounts);
   }
 
   // Update position of links or nodes in the back end
@@ -169,8 +179,15 @@ export class DiagramChangesService {
       }
     });
 
+    // Also fix position of any node that has no position currently defined.
+    event.diagram.nodes.each(function(node: go.Node) {
+      if (node.data && node.data.locationMissing) {
+        partsToUpdate.add(node);
+      }
+    });
+
     const links: any[] = [];
-    let node: any;
+    const nodes: any[] = [];
     // Update position of each part
     partsToUpdate.each(
       function(part: go.Part) {
@@ -181,13 +198,13 @@ export class DiagramChangesService {
           }
         } else {
           // Part is a node
-          node = { id: part.key, locationCoordinates: part.data.location };
+          nodes.push({ id: part.key, locationCoordinates: part.data.location });
         }
       }.bind(this)
     );
 
     this.onUpdatePosition.next({
-      node: node,
+      nodes: nodes,
       links: links
     });
   }
@@ -312,7 +329,7 @@ export class DiagramChangesService {
       });
 
       // Update position of neighbouring links in back end
-      this.updatePosition({ subject: neighbourLinks });
+      this.updatePosition({ subject: neighbourLinks, diagram: link.diagram });
     }
   }
 

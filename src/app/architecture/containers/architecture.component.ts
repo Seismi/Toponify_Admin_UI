@@ -20,7 +20,7 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNode
+  UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
@@ -100,8 +100,8 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
-import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
+import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -178,6 +178,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackageId: string;
   selectedOwner = false;
   selectedOwnerIndex: string | null;
+  public selectedScope$: Observable<ScopeEntity>;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -212,6 +213,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
+    this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
@@ -257,12 +259,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
       this.selectedWorkpackages = workpackages;
       if (fil) {
-        const { filterLevel, id } = fil;
+        const { filterLevel, id, scope } = fil;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id));
+          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
         }
       }
     });
+
+    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
+      if (scope) {
+        this.filterService.addFilter({ scope: scope.id });
+      }
+    });
+
+    const currentFilter = this.filterService.getFilter();
+    if (currentFilter.scope) {
+      this.scopeStore.dispatch(new LoadScope(currentFilter.scope));
+    } else {
+      this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
+    }
 
     // FIXME: fixing
     // this.filterService.filter.subscribe(({workpackages}) => {
@@ -381,16 +396,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
+  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = [], scope?: string) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
       this.attributesView = true;
     }
 
-    const queryParams = {
+    const queryParams: GetNodesRequestQueryParams = {
       workPackageQuery: workpackageIds
     };
+    if (scope) {
+      queryParams.scopeQuery = scope;
+    }
 
     if (layer === Level.map) {
       this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
@@ -551,14 +569,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   // FIXME: types
-  handleUpdateNodeLocation(data: { node: any; links: any[] }) {
+  handleUpdateNodeLocation(data: { nodes: any[]; links: any[] }) {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
 
-    if (this.layout && data.node) {
-      this.store.dispatch(new UpdateNode({ layoutId: this.layout.id, node: data.node }));
+    if (this.layout && data.nodes && data.nodes.length > 0) {
+      this.store.dispatch(new UpdateNodes({ layoutId: this.layout.id, nodes: data.nodes }));
     }
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
@@ -808,7 +826,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           })
         );
         if (data.radio.status === 'open') {
-          this.diagramChangesService.updateRadioCount(this.part);
+          this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
       }
     });

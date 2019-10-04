@@ -108,13 +108,13 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
       };
     }
 
-    case NodeActionTypes.UpdateNodeSuccess: {
+    case NodeActionTypes.UpdateNodesSuccess: {
       return {
         ...state
       };
     }
 
-    case NodeActionTypes.UpdateNodeFailure: {
+    case NodeActionTypes.UpdateNodesFailure: {
       return {
         ...state,
         error: action.payload

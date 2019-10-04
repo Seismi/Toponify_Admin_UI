@@ -1,3 +1,18 @@
+.mat-form-field {
+  font-size: 12px;
+  margin-top: 8px;
+  width: 170px;
+  opacity: 1;
+  margin-left: 5px;
+  margin-right: 35px;
+}
+
+.mat-select {
+  background-color: #ddd;
+  padding: 10px 8px;
+  border-radius: 5px;
+}
+
 :host {
   display: flex;
   align-items: stretch;
@@ -15,12 +30,4 @@
       }
     }
   }
-}
-
-.layers {
-  margin-right: 6px;
-}
-
-.architecture-icon {
-  margin-right: 8px;
 }
