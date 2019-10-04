@@ -262,7 +262,7 @@ export class DiagramTemplatesService {
         go.TextBlock,
         {
           textAlign: 'center',
-          stroke: 'white',
+          stroke: radioColours[type] === 'yellow' ? 'black' : 'white',
           font: '12px calibri'
         },
         new go.Binding('text', 'relatedRadioCounts', function(counts) {
