@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ScopeEntity } from '@app/scope/store/models/scope.model';
 
 @Component({
   selector: 'smi-quicklinks-actions',
@@ -6,18 +7,13 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./quicklinks-actions.component.scss']
 })
 export class QuicklinksActionsComponent implements OnInit {
-
   @Input() gojsView = false;
   @Input() allowEditLayouts: string;
   @Input() allowEditWorkPackages: string;
   @Input() workpackages: any;
   @Input() scopes: any;
   @Input() layouts: any;
-
-  ngOnInit() {
-    this.allowEditLayouts = 'edit';
-    this.allowEditWorkPackages = 'edit';
-  }
+  @Input() selectedScope: ScopeEntity;
 
   @Output()
   editWorkPackage = new EventEmitter();
@@ -28,13 +24,16 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   selectWorkPackage = new EventEmitter();
 
-  @Output()
-  selectScope = new EventEmitter();
+  @Output() selectScope = new EventEmitter<string>();
 
   @Output()
   selectLayout = new EventEmitter();
 
-  
+  ngOnInit() {
+    this.allowEditLayouts = 'edit';
+    this.allowEditWorkPackages = 'edit';
+  }
+
   allowEditWorkPackage() {
     this.editWorkPackage.emit();
   }
@@ -54,5 +53,4 @@ export class QuicklinksActionsComponent implements OnInit {
   onSelectLayout(id) {
     this.selectLayout.emit(id);
   }
-
 }

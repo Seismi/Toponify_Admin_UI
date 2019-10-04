@@ -1,32 +1,51 @@
-<mat-grid-list cols="1" rowHeight="500px">
-    <mat-grid-tile class='login-element'>
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <div>
+        <img src="../../assets/images/toponify_logo_transparent.png" class="logo" />
         <div class="login-container">
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <div class="login-box-header">
-                    <img src="../../assets/images/logo.png">
-                </div>
-
-                <h4 *ngIf="error | async">{{ error | async }}</h4>
-
-                <div class="example-container">
-                    <div style="display:flex">
-                        <mat-icon>lock</mat-icon>
-                        <mat-form-field hideRequiredMarker>
-                            <input data-hook="username" matInput formControlName="username" placeholder="Username" type="text">
-                            <mat-error>Username is required</mat-error>
-                        </mat-form-field>
-                    </div>
-
-                    <div style="display:flex">
-                        <mat-icon>remove_red_eye</mat-icon>
-                        <mat-form-field hideRequiredMarker>
-                            <input data-hook="password" matInput formControlName="password" placeholder="Password" type="password">
-                            <mat-error>Password is required</mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <button data-hook="loginsubmit" mat-raised-button class="login-button" [disabled]="loading">Login</button>
-            </form>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="example-container">
+              <div style="display:flex">
+                <mat-form-field hideRequiredMarker>
+                  <input data-hook="username" matInput formControlName="username" placeholder="Username" type="text">
+                  <mat-error>Username is required</mat-error>
+                </mat-form-field>
+              </div>
+              <div style="display:flex">
+                <mat-form-field hideRequiredMarker>
+                  <input data-hook="password" matInput formControlName="password" placeholder="Password"
+                    type="password">
+                  <mat-error>Password is required</mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            <button data-hook="loginsubmit" mat-raised-button class="login-button" [disabled]="loading">Login</button>
+          </form>
+          <div class="copy-right-block">
+            <p class="copy-right-text">Copyright @2019 Seismi Limited</p>
+          </div>
         </div>
-    </mat-grid-tile>
-</mat-grid-list>
+        <div class="error-block">
+          <h4 class="error-text" *ngIf="error | async">{{ error | async }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col mat-elevation-z8">
+      <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="d-block w-100" src="../../assets/images/display1.jpg" alt="First slide">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="../../assets/images/display2.jpg" alt="Second slide">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="../../assets/images/display3.jpg" alt="Third slide">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,3 @@
-
 import { State as ReportState } from '../reducers/report.reducer';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 

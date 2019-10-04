@@ -100,9 +100,8 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
-import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
-
+import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -179,6 +178,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackageId: string;
   selectedOwner = false;
   selectedOwnerIndex: string | null;
+  public selectedScope$: Observable<ScopeEntity>;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -213,6 +213,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
+    this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
@@ -258,12 +259,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
       this.selectedWorkpackages = workpackages;
       if (fil) {
-        const { filterLevel, id } = fil;
+        const { filterLevel, id, scope } = fil;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id));
+          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
         }
       }
     });
+
+    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
+      if (scope) {
+        this.filterService.addFilter({ scope: scope.id });
+      }
+    });
+
+    const currentFilter = this.filterService.getFilter();
+    if (currentFilter.scope) {
+      this.scopeStore.dispatch(new LoadScope(currentFilter.scope));
+    } else {
+      this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
+    }
 
     // FIXME: fixing
     // this.filterService.filter.subscribe(({workpackages}) => {
@@ -382,19 +396,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
-  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = []) {
+  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = [], scope?: string) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
       this.attributesView = true;
     }
 
-    const queryParams = {
+    const queryParams: GetNodesRequestQueryParams = {
       workPackageQuery: workpackageIds
     };
+    if (scope) {
+      queryParams.scopeQuery = scope;
+    }
 
     if (layer === Level.map) {
-      this.nodeStore.dispatch(new LoadMapView(id));
+      this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
     } else {
@@ -932,13 +949,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.descendant) {
-        this.workpackageStore.dispatch(new AddWorkPackageNodeDescendant({
-          workpackageId: this.workpackageId,
-          nodeId: this.nodeId,
-          node: data.descendant
-        }));
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeDescendant({
+            workpackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            node: data.descendant
+          })
+        );
       }
     });
   }
@@ -952,10 +971,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.workpackageStore.dispatch(new DeleteWorkPackageNodeDescendant({workpackageId: this.workpackageId, nodeId: this.nodeId, descendantId: id}));
-
+        this.workpackageStore.dispatch(
+          new DeleteWorkPackageNodeDescendant({
+            workpackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            descendantId: id
+          })
+        );
       }
     });
   }

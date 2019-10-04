@@ -1,12 +1,8 @@
 import { Action } from '@ngrx/store';
-import {
-  CustomPropertyApiRequest,
-  Error,
-  Node,
-  NodeDetail
-} from '../models/node.model';
+import { CustomPropertyApiRequest, Error, Node, NodeDetail } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/nodes/store/models/node.model';
+import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 
 export enum NodeActionTypes {
   LoadNodes = '[Node] Load Nodes',
@@ -37,12 +33,11 @@ export enum NodeActionTypes {
   UpdateCustomPropertySuccess = '[Node] Update Custom Property Success',
   UpdateCustomPropertyFailure = '[Node] Update Custom Property Failure',
   UpdateNodeDescendants = '[Node] Update Node Descendants'
-
 }
 
 export class LoadNodes implements Action {
   readonly type = NodeActionTypes.LoadNodes;
-  constructor(public payload?: any) {}
+  constructor(public payload?: GetNodesRequestQueryParams) {}
 }
 
 export class LoadNodesSuccess implements Action {
@@ -72,7 +67,7 @@ export class LoadNodeFailure implements Action {
 
 export class LoadMapView implements Action {
   readonly type = NodeActionTypes.LoadMapView;
-  constructor(public payload: string) {}
+  constructor(public payload: { id: string; queryParams: GetNodesRequestQueryParams }) {}
 }
 
 export class LoadMapViewSuccess implements Action {
@@ -87,9 +82,7 @@ export class LoadMapViewFailure implements Action {
 
 export class LoadNodeUsageView implements Action {
   readonly type = NodeActionTypes.LoadNodeUsageView;
-  constructor(
-    public payload: { node: string; query: { workPackageQuery: string[] } }
-  ) {}
+  constructor(public payload: { node: string; query: { workPackageQuery: string[] } }) {}
 }
 
 export class LoadNodeUsageViewSuccess implements Action {
@@ -186,7 +179,7 @@ export class UpdateCustomPropertyFailure implements Action {
 
 export class UpdateNodeDescendants implements Action {
   readonly type = NodeActionTypes.UpdateNodeDescendants;
-  constructor(public payload: {descendants: DescendantsEntity[], nodeId: string}) {}
+  constructor(public payload: { descendants: DescendantsEntity[]; nodeId: string }) {}
 }
 
 export type NodeActionsUnion =

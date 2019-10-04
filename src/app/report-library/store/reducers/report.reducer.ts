@@ -1,12 +1,11 @@
-
 import { HttpErrorResponse } from '@angular/common/http';
-import { ReportLibrary, Page, Links } from '../models/report.model';
+import { Links, Page, Report, ReportLibrary } from '../models/report.model';
 import { ReportActionsUnion, ReportActionTypes } from '../actions/report.actions';
 
 export interface State {
   loading: boolean;
   entities: ReportLibrary[];
-  selected: ReportLibrary;
+  selected: Report;
   page: Page;
   links: Links;
   error?: HttpErrorResponse | { message: string };
@@ -23,7 +22,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: ReportActionsUnion): State {
   switch (action.type) {
-
     case ReportActionTypes.LoadReports: {
       return {
         ...state,
