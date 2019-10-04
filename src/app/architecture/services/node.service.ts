@@ -8,7 +8,7 @@ export interface GetNodesRequestQueryParams {
   layerQuery?: string;
   scopeQuery?: string;
   layoutQuery?: string;
-  workPackageQuery?: string[];
+  workPackageQuery: string[];
 }
 
 export interface GetLinksRequestQueryParams {

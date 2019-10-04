@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class FilterService implements OnDestroy {
-  public filter: BehaviorSubject<any>;
+  public filter: BehaviorSubject<{[key: string]: any} >;
   private filterKey = 'filter';
   private queryParamSubscription: Subscription;
 
@@ -12,7 +12,7 @@ export class FilterService implements OnDestroy {
     const filterString = this.route.snapshot.queryParams[this.filterKey];
 
     this.filter = new BehaviorSubject(
-      filterString ? this.transformToObject(filterString) : null
+      filterString ? this.transformToObject(filterString) : {}
     );
 
     this.queryParamSubscription = route.queryParams.subscribe(params => {
@@ -29,7 +29,7 @@ export class FilterService implements OnDestroy {
     this.queryParamSubscription.unsubscribe();
   }
 
-  getFilter(): any {
+  getFilter(): {[key: string]: any}  {
     return this.filter.getValue();
   }
 
@@ -42,16 +42,23 @@ export class FilterService implements OnDestroy {
       queryParams: queryParams
     });
   }
+  addFilter(filter: {[key: string]: any}, removeKeyFromFilter?: string): void {
+    const newFilter = {...this.getFilter(), ...filter};
+    if (removeKeyFromFilter) {
+      delete newFilter[removeKeyFromFilter];
+    }
+    this.setFilter(newFilter);
+  }
 
   transformToString(filter: any): string {
     return this.filtersAsUrlQuery(filter);
   }
 
-  transformToObject(filter: string): any {
+  transformToObject(filter: string): {[key: string]: string}  {
     return this.filtersStringToObject(filter);
   }
 
-  private filtersStringToObject(filtersString: string): any {
+  private filtersStringToObject(filtersString: string): {[key: string]: string} {
     const filters = {};
 
     if (filtersString !== null) {
