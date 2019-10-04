@@ -826,7 +826,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           })
         );
         if (data.radio.status === 'open') {
-          this.diagramChangesService.updateRadioCount(this.part);
+          this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
       }
     });
