@@ -1,0 +1,106 @@
+.container {
+    min-width: 99%;
+    padding: 0;
+    margin: 0;
+}
+
+.row {
+    min-width: 100%;
+    height: 100vh;
+}
+
+.col-3 {
+    min-width: 350px;
+    padding: 0;
+    margin: 0;
+}
+
+.login-container {
+    width: 270px;
+    margin: auto;
+    margin-top: 25px;
+}
+
+.logo {
+    width: 250px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 200px;
+}
+
+.mat-form-field {
+    width: 100%;
+}
+
+.login-button {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    margin-left: 0;
+    width: 100%;
+    background-color: #0741ad;
+    border: none;
+    color: #fff;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.error-block {
+    width: 270px;
+    margin: auto;
+}
+
+.error-text {
+    color: #f44336;
+    font-weight: lighter;
+    font-size: 14px;
+    text-align: center;
+    padding: 7xp 0px 7xp 0px;
+}
+
+.copy-right-block {
+    width: 270px;
+    margin: auto;
+    position: absolute;
+    bottom: 0;
+}
+
+.copy-right-text {
+    font-size: 12px;
+    text-align: center;
+}
+
+.col {
+    background-color: #0741ad;
+    padding: 0;
+    margin: 0;
+}
+
+.image-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+}
+
+#carouselExampleFade img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+
+@media only screen and (max-width: 768px) {
+    .col {
+        display: none;
+    }
+    .col-3 {
+        min-width: 100%;
+    }
+    .logo {
+        padding-top: 130px;
+    }
+}

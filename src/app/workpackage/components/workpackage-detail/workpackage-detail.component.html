@@ -68,8 +68,12 @@
     <div class="form-group" *ngIf="!modalMode">
         <div *ngIf="!isEditable">
             <button type="button" mat-flat-button color="primary" [disabled]="!statusDraft" (click)="onEdit()" data-hook="workpackage-detail-edit">Edit</button>
-            <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-open">Open</button>
-            <button type="button" mat-raised-button color="primary" data-hook="workpackage-detail-copy">Copy</button>
+            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionSubmit" (click)="submitWorkpackage()" data-hook="workpackage-detail-submit">Submit</button>
+            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionApprove" (click)="approveWorkpackage()" data-hook="workpackage-detail-approve">Approve</button>
+            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionReject" (click)="rejectWorkpackage()" data-hook="workpackage-detail-reject">Reject</button>
+            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionMerge" (click)="mergeWorkpackage()" data-hook="workpackage-detail-merge">Merge</button>
+            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionReset" (click)="resetWorkpackage()" data-hook="workpackage-detail-reset">Reset</button>
+            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionSupersede" (click)="supersedeWorkpackage()" data-hook="workpackage-detail-supersede">Supersede</button>
             <button type="button" mat-flat-button color="warn" [disabled]="!statusDraft" (click)="onDelete()" data-hook="workpackage-detail-delete">Delete</button>
         </div>
         <div *ngIf="isEditable">

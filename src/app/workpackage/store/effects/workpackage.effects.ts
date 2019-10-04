@@ -40,7 +40,25 @@ import {
   DeleteRadioFailure, 
   GetWorkpackageAvailability,
   GetWorkpackageAvailabilitySuccess,
-  GetWorkpackageAvailabilityFailure
+  GetWorkpackageAvailabilityFailure,
+  SubmitWorkpackage,
+  SubmitWorkpackageSuccess,
+  SubmitWorkpackageFailure,
+  ApproveWorkpackage,
+  ApproveWorkpackageSuccess,
+  ApproveWorkpackageFailure,
+  RejectWorkpackage,
+  RejectWorkpackageSuccess,
+  RejectWorkpackageFailure,
+  MergeWorkpackage,
+  MergeWorkpackageSuccess,
+  MergeWorkpackageFailure,
+  ResetWorkpackage,
+  ResetWorkpackageSuccess,
+  ResetWorkpackageFailure,
+  SupersedeWorkpackage,
+  SupersedeWorkpackageSuccess,
+  SupersedeWorkpackageFailure
 } from '../actions/workpackage.actions';
 import { 
   WorkPackageEntitiesHttpParams, 
@@ -48,7 +66,8 @@ import {
   WorkPackageDetailApiResponse, 
   WorkPackageApiRequest, 
   WorkPackageApiResponse, 
-  OwnersEntityOrApproversEntity
+  OwnersEntityOrApproversEntity,
+  WorkPackageDetail
 } from '../models/workpackage.models';
 import { State as WorkpackageState } from '../reducers/workpackage.reducer';
 import { Store } from '@ngrx/store';
@@ -203,6 +222,78 @@ export class WorkPackageEffects {
       return this.workpackageService.deleteRadio(payload.workPackageId, payload.radioId).pipe(
         switchMap((response: any) => [new DeleteRadioSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteRadioFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  submitWorkpackage$ = this.actions$.pipe(
+    ofType<SubmitWorkpackage>(WorkPackageActionTypes.SubmitWorkpackage),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.workpackageService.submitWorkpackage(payload).pipe(
+        mergeMap((response: WorkPackageDetailApiResponse) => [new SubmitWorkpackageSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new SubmitWorkpackageFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  approveWorkpackage$ = this.actions$.pipe(
+    ofType<ApproveWorkpackage>(WorkPackageActionTypes.ApproveWorkpackage),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.workpackageService.approveWorkpackage(payload).pipe(
+        mergeMap((response: WorkPackageDetailApiResponse) => [new ApproveWorkpackageSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ApproveWorkpackageFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  rejectWorkpackage$ = this.actions$.pipe(
+    ofType<RejectWorkpackage>(WorkPackageActionTypes.RejectWorkpackage),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.workpackageService.rejectWorkpackage(payload).pipe(
+        mergeMap((response: WorkPackageDetailApiResponse) => [new RejectWorkpackageSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new RejectWorkpackageFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  mergeWorkpackage$ = this.actions$.pipe(
+    ofType<MergeWorkpackage>(WorkPackageActionTypes.MergeWorkpackage),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.workpackageService.mergeWorkpackage(payload).pipe(
+        mergeMap((response: WorkPackageDetailApiResponse) => [new MergeWorkpackageSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new MergeWorkpackageFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  resetWorkpackage$ = this.actions$.pipe(
+    ofType<ResetWorkpackage>(WorkPackageActionTypes.ResetWorkpackage),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.workpackageService.resetWorkpackage(payload).pipe(
+        mergeMap((response: WorkPackageDetailApiResponse) => [new ResetWorkpackageSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ResetWorkpackageFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  supersedeWorkpackage$ = this.actions$.pipe(
+    ofType<SupersedeWorkpackage>(WorkPackageActionTypes.SupersedeWorkpackage),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.workpackageService.supersedeWorkpackage(payload).pipe(
+        mergeMap((response: WorkPackageDetailApiResponse) => [new SupersedeWorkpackageSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new SupersedeWorkpackageFailure(error)))
       );
     })
   );

@@ -64,11 +64,20 @@ export interface WorkPackageDetail {
   radios?: (ObjectivesEntityOrRadiosEntity)[] | null;
   customProperties?: (CustomPropertiesEntity)[] | null;
   owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
-  baseline: Baseline;
+  baseline: (Baseline)[] | null;
   approvers?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
   status: string;
+  availableActions?: AvailableActions;
   hasErrors: boolean;
-  changes: Changes;
+  changes?: Changes;
+}
+export interface AvailableActions {
+  merge: boolean,
+  reset: boolean,
+  reject: boolean,
+  submit: boolean,
+  approve: boolean,
+  supersede: boolean
 }
 export interface ObjectivesEntityOrRadiosEntity {
   id: string;
@@ -213,7 +222,3 @@ export interface WorkpackageLinkSliceCondition {
   conditionTypeId: string;
   value: string;
 }
-
-
-
-

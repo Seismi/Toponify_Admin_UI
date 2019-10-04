@@ -1,14 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import * as go from 'gojs';
-import {
-  layers,
-  Node,
-  nodeCategories
-} from '@app/architecture/store/models/node.model';
-import {
-  linkCategories,
-  RoutesEntityEntity
-} from '@app/architecture/store/models/node-link.model';
+import { layers, Node, nodeCategories } from '@app/architecture/store/models/node.model';
+import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -96,26 +89,21 @@ export class DiagramLevelService implements OnDestroy {
     });
 
     const filterFromQuery = this.filterService.getFilter();
-    if (filterFromQuery) {
-      this.filter.next(filterFromQuery);
+    if (filterFromQuery && filterFromQuery.filterLevel) {
+      this.filter.next({ filterLevel: filterFromQuery.filterLevel });
     } else {
-      this.filterService.setFilter({ filterLevel: Level.system });
+      this.filterService.addFilter({ filterLevel: Level.system });
     }
 
-    this.filterServiceSubscription = this.filterService.filter.subscribe(
-      filter => {
-        if (
-          filter &&
-          JSON.stringify(filter) !== JSON.stringify(this.filter.getValue())
-        ) {
-          this.filter.next(filter);
-        }
-
-        if (!filter) {
-          this.filter.next({ filterLevel: Level.system });
+    this.filterServiceSubscription = this.filterService.filter.subscribe(filter => {
+      if (filter && JSON.stringify(filter) !== JSON.stringify(this.filter.getValue())) {
+        if (filter.filterLevel) {
+          return this.filter.next({ filterLevel: filter.filterLevel });
         }
       }
-    );
+
+      this.filter.next({ filterLevel: Level.system });
+    });
   }
 
   // Display the next level of detail in the diagram, filtered to include only children of a specific node
@@ -131,7 +119,7 @@ export class DiagramLevelService implements OnDestroy {
     } else {
       return;
     }
-    this.filterService.setFilter({ filterLevel: newLevel, id: object.data.id });
+    this.filterService.addFilter({ filterLevel: newLevel, id: object.data.id });
   }
 
   displayMapView(event: any, object: go.Link): void {
@@ -143,7 +131,7 @@ export class DiagramLevelService implements OnDestroy {
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
-    this.filterService.setFilter({
+    this.filterService.addFilter({
       filterLevel: Level.map,
       id: object.data.id
     });
@@ -165,7 +153,7 @@ export class DiagramLevelService implements OnDestroy {
   }
 
   displayUsageView(event, object) {
-    this.filterService.setFilter({
+    this.filterService.addFilter({
       filterLevel: Level.usage,
       id: object.data.id
     });
@@ -313,18 +301,8 @@ export class DiagramLevelService implements OnDestroy {
       nodeKeyProperty: level === Level.map ? 'displayId' : 'id',
       linkKeyProperty: level === Level.map ? 'displayId' : 'id',
       nodeCategoryProperty: 'layer',
-      linkFromKeyProperty:
-        level === Level.map
-          ? 'sourceDisplayId'
-          : level === Level.usage
-          ? 'parentId'
-          : 'sourceId',
-      linkToKeyProperty:
-        level === Level.map
-          ? 'targetDisplayId'
-          : level === Level.usage
-          ? 'childId'
-          : 'targetId',
+      linkFromKeyProperty: level === Level.map ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
+      linkToKeyProperty: level === Level.map ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,

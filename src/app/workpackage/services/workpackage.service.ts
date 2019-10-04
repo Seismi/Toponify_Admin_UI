@@ -5,7 +5,8 @@ import {
   WorkPackageEntitiesHttpParams, 
   WorkPackageApiRequest,
   WorkPackageEntitiesResponse, 
-  OwnersEntityOrApproversEntity
+  OwnersEntityOrApproversEntity,
+  WorkPackageDetail
 } from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
 

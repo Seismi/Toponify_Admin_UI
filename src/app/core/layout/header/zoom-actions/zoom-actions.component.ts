@@ -65,7 +65,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   viewLevelSelected(level: any) {
     if (viewLevelMapping[level]) {
       if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
+        this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, 'id');
       }
     }
     // FIXME: table and diagram logic should be improved
@@ -75,7 +75,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   zoomLevelSelected(level: any) {
     if (viewLevelMapping[level]) {
       if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.setFilter({filterLevel: viewLevelMapping[level]});
+        this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, 'id');
       }
     }
     this.store.dispatch(new SetZoomLevel(level));
