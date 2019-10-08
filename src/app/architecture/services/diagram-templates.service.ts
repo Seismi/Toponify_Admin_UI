@@ -815,7 +815,8 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'dataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
@@ -832,6 +833,10 @@ export class DiagramTemplatesService {
           stroke: 'black',
           strokeWidth: 2.5
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'dataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -877,7 +882,8 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'masterDataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
@@ -889,6 +895,10 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
