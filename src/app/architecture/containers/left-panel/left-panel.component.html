@@ -2,6 +2,8 @@
   mat-stretch-tabs
   [@.disabled]="true"
   [selectedIndex]="selectedLeftTab"
+  (selectedTabChange)="onTabClick($event)"
+  [style.width.vw]="1 == tabIndex ? 13 : 25"
 >
   <mat-tab label="Work Packages">
     <smi-workpackage-tab-table
@@ -15,7 +17,9 @@
   </mat-tab>
   <mat-tab label="Edit" *ngIf="workPackageIsEditable">
     <ng-template matTabContent>
-      <app-architecture-palette> </app-architecture-palette>
+      <p class="palette">
+        <app-architecture-palette></app-architecture-palette>
+      </p>
     </ng-template>
   </mat-tab>
   <mat-tab label="Analysis">

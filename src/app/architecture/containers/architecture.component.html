@@ -39,12 +39,14 @@
   >
   </smi-left-sidebar>
   <app-model-sidebar
-    [minWidth]="430"
-    [maxWidth]="1000"
+    [minWidth]="auto"
+    [maxWidth]="auto"
     *ngIf="showOrHideLeftPane"
   >
     <p class="leftPane">
       <smi-left-panel
+        [tabIndex]="editTabIndex"
+        (tabClick)="onTabClick($event)"
         [viewLevel]="viewLevel$ | async"
         [workpackages]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
