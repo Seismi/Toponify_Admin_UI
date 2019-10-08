@@ -365,7 +365,7 @@ export class DiagramChangesService {
 
     const linkArray = links.filter(link => nodesIds.includes(link[sourceProp]) && nodesIds.includes(link[targetProp]));
 
-    (diagram.model as go.GraphLinksModel).linkDataArray = linkArray;
+    (diagram.model as go.GraphLinksModel).linkDataArray = JSON.parse(JSON.stringify(linkArray));
     if (diagram.layout.isValidLayout) {
       diagram.layout.isValidLayout = false;
     }
