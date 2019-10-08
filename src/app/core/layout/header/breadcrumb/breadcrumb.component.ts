@@ -8,12 +8,14 @@ import { Router } from '@angular/router';
 })
 export class BreadcrumbComponent implements OnInit {
 
+  url: string;
   breadcrumb: string;
 
   constructor(private router: Router) { }
 
-  ngOnInit() { 
-    this.breadcrumb = this.router.url.split("?")[0];
+  ngOnInit() {
+    this.url = this.router.url.split("?")[0];
+    this.breadcrumb = this.url.replace(/[^\w\s]/gi, ' ');
   }
 
 }
