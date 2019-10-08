@@ -3,7 +3,7 @@
   [@.disabled]="true"
   [selectedIndex]="selectedLeftTab"
   (selectedTabChange)="onTabClick($event)"
-  [style.width.vw]="1 == tabIndex ? 13 : 25"
+  [style.width.px]="1 == tabIndex ? 200 : 420"
 >
   <mat-tab label="Work Packages">
     <smi-workpackage-tab-table
