@@ -308,17 +308,9 @@ export class DiagramTemplatesService {
         new go.Binding('text', 'name'),
         new go.Binding('visible', 'linkName').ofModel()
       ),
-      $(
-        go.TextBlock,
-        {
-          font: '13px calibri'
-        },
-        new go.Binding('areaBackground', 'label', function(label) {
-          return label ? 'white' : null;
-        }),
-        new go.Binding('text', 'label'),
-        new go.Binding('visible', 'linkLabel').ofModel()
-      )
+      new go.Binding('visible', 'strokeWidth', function(width) {
+        return width !== 0;
+      }).ofObject('shape')
     );
   }
 
@@ -890,6 +882,7 @@ export class DiagramTemplatesService {
       $(
         go.Shape,
         {
+          name: 'shape',
           isPanelMain: true,
           stroke: 'Black',
           strokeWidth: 2.5,
