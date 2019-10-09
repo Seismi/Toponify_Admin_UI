@@ -214,6 +214,24 @@ export class DiagramChangesService {
     const model = diagram.model;
     model.setDataProperty(model.modelData, option, event.checked);
 
+    // If option to show data links disabled then deselect any data links
+    if (option === 'dataLinks' && !event.checked) {
+      diagram.selection.each(function(part) {
+        if (part instanceof go.Link && part.category === linkCategories.data) {
+          part.isSelected = false;
+        }
+      });
+    }
+
+    // If option to show master data links disabled then deselect any master data links
+    if (option === 'masterDataLinks' && !event.checked) {
+      diagram.selection.each(function(part) {
+        if (part instanceof go.Link && part.category === linkCategories.masterData) {
+          part.isSelected = false;
+        }
+      });
+    }
+
     // Redo layout for node usage view after updating display options
     if (this.filterService.getFilter().filterLevel === Level.usage) {
       diagram.layout.isValidLayout = false;
