@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <table mat-table [dataSource]="dataSource">
+  <table mat-table [dataSource]="dataSource" [ngClass]="{ editable: isEditable }">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span>Descendants</span>
