@@ -180,6 +180,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwner = false;
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
+  editTabIndex: number;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -799,11 +800,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
+  onTabClick(index: number) {
+    (this.workPackageIsEditable === true && index === 1)
+      ? this.editTabIndex = 1
+      : this.editTabIndex = null;
+    this.diagramComponent.updateDiagramArea();
+  }
+
   openLeftTab(index: number) {
     this.selectedLeftTab = index;
     if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
+
+    (this.selectedLeftTab === 0 || this.selectedLeftTab === 2)
+      ?  this.editTabIndex = null
+      : this.editTabIndex = 1;
+
     this.diagramComponent.updateDiagramArea();
   }
 
