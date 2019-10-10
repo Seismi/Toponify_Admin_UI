@@ -292,25 +292,46 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get name label for links
+  // Get name and RADIO alert label for links
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
-      'Vertical',
-      $(
-        go.TextBlock,
+      'Auto',
+      $(go.Shape,
         {
-          font: 'bold 14px calibri'
-        },
-        new go.Binding('areaBackground', 'name', function(name) {
-          return name ? 'white' : null;
-        }),
-        new go.Binding('text', 'name'),
-        new go.Binding('visible', 'linkName').ofModel()
-      ),
-      new go.Binding('visible', 'strokeWidth', function(width) {
-        return width !== 0;
-      }).ofObject('shape')
+          figure: 'RoundedRectangle',
+          fill: 'white',
+          opacity: 0.85
+        }
+       ),
+        // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
+        new go.Binding('visible', '', function(link) {
+
+          if (link.findObject('shape').strokeWidth === 0) {
+            return false;
+          } else {
+
+            const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
+              return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
+            }, false);
+
+            return (link.diagram.model.modelData.linkName && link.data.name !== '')
+              || (link.diagram.model.modelData.showRadioAlerts && anyRadios);
+          }
+        }).ofObject(),
+      $(
+        go.Panel,
+        'Vertical',
+        $(
+          go.TextBlock,
+          {
+            font: 'bold 14px calibri'
+          },
+          new go.Binding('text', 'name'),
+          new go.Binding('visible', 'linkName').ofModel()
+        ),
+        this.getRadioAlertIndicators()
+      )
     );
   }
 
