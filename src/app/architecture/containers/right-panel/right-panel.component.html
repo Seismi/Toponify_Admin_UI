@@ -1,6 +1,6 @@
 <mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
     <mat-tab label="Details" *ngIf="objectSelected || multipleSelected">
-      <p class="detailsTab" [ngClass]="{ editable: isEditable }">
+      <p class="detailsTab">
         <smi-object-details-form
             *ngIf="objectSelected"
             [owners]="owners"
