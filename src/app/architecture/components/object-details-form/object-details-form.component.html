@@ -1,7 +1,7 @@
 <form [formGroup]="group">
   <div [ngClass]="{disabled: !isEditable}">
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name">
+      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: isEditable }">
     </mat-form-field>
 
     <mat-form-field>
@@ -20,11 +20,11 @@
     </smi-owners-table-in-architecture>
 
     <mat-form-field>
-      <textarea matInput placeholder="Description" rows="4" formControlName="description"></textarea>
+      <textarea matInput placeholder="Description" rows="4" formControlName="description" [ngClass]="{ editable: isEditable }"></textarea>
     </mat-form-field>
 
     <mat-form-field *ngIf="!clickedOnLink">
-      <input matInput placeholder="Tags" formControlName="tags">
+      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: isEditable }">
     </mat-form-field>
 
     <smi-descendants-table-in-architecture
