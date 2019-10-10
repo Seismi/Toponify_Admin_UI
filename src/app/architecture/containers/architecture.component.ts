@@ -102,6 +102,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
+import {LayoutActionTypes} from '@app/layout/store/actions/layout.actions';
 
 enum Events {
   NodesLinksReload = 0
@@ -179,6 +180,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwner = false;
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
+  editTabIndex: number;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -358,7 +360,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
+      this.actions.pipe(ofType(LayoutActionTypes.LoadLayoutSuccess)).subscribe(_ => {
+        this.eventEmitter.next(Events.NodesLinksReload);
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
@@ -792,11 +800,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
+  onTabClick(index: number) {
+    (this.workPackageIsEditable === true && index === 1)
+      ? this.editTabIndex = 1
+      : this.editTabIndex = null;
+    this.diagramComponent.updateDiagramArea();
+  }
+
   openLeftTab(index: number) {
     this.selectedLeftTab = index;
     if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
+
+    (this.selectedLeftTab === 0 || this.selectedLeftTab === 2)
+      ?  this.editTabIndex = null
+      : this.editTabIndex = 1;
+
     this.diagramComponent.updateDiagramArea();
   }
 

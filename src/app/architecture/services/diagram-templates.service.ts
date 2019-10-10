@@ -308,17 +308,9 @@ export class DiagramTemplatesService {
         new go.Binding('text', 'name'),
         new go.Binding('visible', 'linkName').ofModel()
       ),
-      $(
-        go.TextBlock,
-        {
-          font: '13px calibri'
-        },
-        new go.Binding('areaBackground', 'label', function(label) {
-          return label ? 'white' : null;
-        }),
-        new go.Binding('text', 'label'),
-        new go.Binding('visible', 'linkLabel').ofModel()
-      )
+      new go.Binding('visible', 'strokeWidth', function(width) {
+        return width !== 0;
+      }).ofObject('shape')
     );
   }
 
@@ -815,7 +807,8 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'dataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
@@ -832,6 +825,10 @@ export class DiagramTemplatesService {
           stroke: 'black',
           strokeWidth: 2.5
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'dataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -877,18 +874,24 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'masterDataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       $(
         go.Shape,
         {
+          name: 'shape',
           isPanelMain: true,
           stroke: 'Black',
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
