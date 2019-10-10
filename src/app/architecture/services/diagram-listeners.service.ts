@@ -69,8 +69,8 @@ export class DiagramListenersService {
         // Ensure links are updated in map view after group layout is performed
         if (currentLevel === Level.map) {
           event.diagram.links.each(function(link) {
-            event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-            link.invalidateRoute(true);
+            link.data = Object.assign({}, link.data, {updateRoute: true});
+            link.invalidateRoute();
           });
         }
 
