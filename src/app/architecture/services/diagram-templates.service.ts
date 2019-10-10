@@ -103,6 +103,15 @@ export class DiagramTemplatesService {
                 stroke: 'dodgerblue',
                 strokeWidth: 3
               })
+            ),
+            toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150
+                },
+                new go.Binding("text", "tooltip")
+              )
             )
           }
         : {
@@ -438,7 +447,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+        toolTip:
+          $("ToolTip",
+            $(go.TextBlock, 
+              { 
+                width: 150
+              },
+              new go.Binding("text", "tooltip")
+            )
+          )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
@@ -534,7 +553,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -631,7 +660,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       this.filterService.getFilter().filterLevel === Level.map
         ? {}
@@ -733,7 +772,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
