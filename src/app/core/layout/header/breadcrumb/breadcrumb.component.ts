@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'smi-breadcrumb',
   templateUrl: './breadcrumb.component.html',
   styleUrls: ['./breadcrumb.component.scss']
 })
-export class BreadcrumbComponent implements OnInit {
+export class BreadcrumbComponent {
 
-  url: string;
   breadcrumb: string;
 
-  constructor(private router: Router) { }
-
-  ngOnInit() {
-    this.url = this.router.url.split("?")[0];
-    this.breadcrumb = this.url.replace(/[^\w\s]/gi, ' ');
+  constructor(router: Router) { 
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        const urlDelimitators = new RegExp(/[?//,;&:#$+=]/);
+        let currentUrlPath = event.url.slice(1).split(urlDelimitators)[0].replace(/[^\w\s]/gi, ' ');
+        this.breadcrumb = currentUrlPath;
+      }
+    });
   }
 
 }
