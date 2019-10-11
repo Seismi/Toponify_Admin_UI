@@ -1,5 +1,5 @@
 <mat-form-field floatLabel=never appearance="none">
-  <mat-select placeholder="Default">
+  <mat-select [(value)]="selected">
     <mat-option *ngFor="let layout of layouts?.layouts"
       [value]="layout.name"
       (click)="onSelect(layout.id)">

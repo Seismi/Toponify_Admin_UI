@@ -9,6 +9,7 @@ import { State as ArchitectureState } from '@app/architecture/store/reducers/arc
 import { FilterService } from './filter.service';
 import { Location } from '@angular/common';
 import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
+import { NodeToolTips } from '@app/core/node-tooltips';
 
 const $ = go.GraphObject.make;
 
@@ -172,6 +173,30 @@ export class DiagramLevelService implements OnDestroy {
     }
   }
 
+  getToolTipForMasterDataLinks(level) {
+    let tooltip: string;
+    if (level === Level.system) {
+      tooltip = NodeToolTips[5].Tooltip;
+    } else if (level === Level.dataSet) {
+      tooltip = NodeToolTips[10].Tooltip;
+    } else if (level === Level.dimension) {
+      tooltip = NodeToolTips[13].Tooltip;
+    } else if (level === Level.reportingConcept) {
+      tooltip = NodeToolTips[17].Tooltip;
+    }
+    return tooltip;
+  }
+
+  getToolTipForDataLinks(level) {
+    let tooltip: string;
+    if (level === Level.system) {
+      tooltip = NodeToolTips[6].Tooltip;
+    } else if (level === Level.dataSet) {
+      tooltip = NodeToolTips[11].Tooltip;
+    }
+    return tooltip;
+  }
+
   // Change the currently displayed diagram level
   //  params:
   //    diagram: the diagram object
@@ -194,7 +219,8 @@ export class DiagramLevelService implements OnDestroy {
         route: <RoutesEntityEntity['points']>[0, 0, 40, 0, 40, -80, 80, -80],
         layer: level.toLowerCase(),
         isTemporary: true,
-        impactedByWorkPackages: []
+        impactedByWorkPackages: [],
+        tooltip: this.getToolTipForMasterDataLinks(level)
       });
     }
 
@@ -204,31 +230,36 @@ export class DiagramLevelService implements OnDestroy {
           id: 'New Transactional System',
           name: 'New Transactional System',
           layer: layers.system,
-          category: nodeCategories.transactional
+          category: nodeCategories.transactional,
+          tooltip: NodeToolTips[0].Tooltip
         }),
         new Node({
           id: 'New Analytical System',
           name: 'New Analytical System',
           layer: layers.system,
-          category: nodeCategories.analytical
+          category: nodeCategories.analytical,
+          tooltip: NodeToolTips[1].Tooltip
         }),
         new Node({
           id: 'New File System',
           name: 'New File System',
           layer: layers.system,
-          category: nodeCategories.file
+          category: nodeCategories.file,
+          tooltip: NodeToolTips[2].Tooltip
         }),
         new Node({
           id: 'New Reporting System',
           name: 'New Reporting System',
           layer: layers.system,
-          category: nodeCategories.reporting
+          category: nodeCategories.reporting,
+          tooltip: NodeToolTips[3].Tooltip
         }),
         new Node({
           id: 'New Master Data System',
           name: 'New Master Data System',
           layer: layers.system,
-          category: nodeCategories.masterData
+          category: nodeCategories.masterData,
+          tooltip: NodeToolTips[4].Tooltip
         })
       ];
     } else if (level === Level.dataSet) {
@@ -237,19 +268,22 @@ export class DiagramLevelService implements OnDestroy {
           id: 'New Physical Data Set',
           name: 'New Physical Data Set',
           layer: layers.dataSet,
-          category: nodeCategories.physical
+          category: nodeCategories.physical,
+          tooltip: NodeToolTips[7].Tooltip
         }),
         new Node({
           id: 'New Virtual Data Set',
           name: 'New Virtual Data Set',
           layer: layers.dataSet,
-          category: nodeCategories.virtual
+          category: nodeCategories.virtual,
+          tooltip: NodeToolTips[8].Tooltip
         }),
         new Node({
           id: 'New Master Data Data Set',
           name: 'New Master Data Data Set',
           layer: layers.dataSet,
-          category: nodeCategories.masterData
+          category: nodeCategories.masterData,
+          tooltip: NodeToolTips[9].Tooltip
         })
       ];
     } else if (level === Level.dimension) {
@@ -258,7 +292,8 @@ export class DiagramLevelService implements OnDestroy {
           id: 'New Dimension',
           name: 'New Dimension',
           layer: layers.dimension,
-          category: nodeCategories.dimension
+          category: nodeCategories.dimension,
+          tooltip: NodeToolTips[12].Tooltip
         })
       ];
     } else if (level === Level.reportingConcept) {
@@ -267,19 +302,22 @@ export class DiagramLevelService implements OnDestroy {
           id: 'New List Reporting Concept',
           name: 'New List Reporting Concept',
           layer: layers.reportingConcept,
-          category: nodeCategories.list
+          category: nodeCategories.list,
+          tooltip: NodeToolTips[14].Tooltip
         }),
         new Node({
           id: 'New Structural Reporting Concept',
           name: 'New Structural Reporting Concept',
           layer: layers.reportingConcept,
-          category: nodeCategories.structure
+          category: nodeCategories.structure,
+          tooltip: NodeToolTips[15].Tooltip
         }),
         new Node({
           id: 'New Key Reporting Concept',
           name: 'New Key Reporting Concept',
           layer: layers.reportingConcept,
-          category: nodeCategories.key
+          category: nodeCategories.key,
+          tooltip: NodeToolTips[16].Tooltip
         })
       ];
     }
@@ -293,7 +331,8 @@ export class DiagramLevelService implements OnDestroy {
         route: <RoutesEntityEntity['points']>[0, 0, 40, 0, 40, -80, 80, -80],
         layer: level.toLowerCase(),
         isTemporary: true,
-        impactedByWorkPackages: []
+        impactedByWorkPackages: [],
+        tooltip: this.getToolTipForDataLinks(level)
       });
     }
 
