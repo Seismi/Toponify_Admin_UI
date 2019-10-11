@@ -217,8 +217,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
 
+    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
+
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
+    this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -793,7 +796,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
-    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
   }
 
   onSelectLayout(id) {
