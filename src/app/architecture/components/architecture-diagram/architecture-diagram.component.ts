@@ -233,7 +233,7 @@ export class ArchitectureDiagramComponent
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
     diagramChangesService.onUpdatePosition.subscribe(
-      (data: { node: any; links: any[] }) => {
+      (data: { nodes: any[]; links: any[] }) => {
         this.updateNodeLocation.emit(data);
       }
     );
@@ -370,14 +370,19 @@ export class ArchitectureDiagramComponent
     if (changes.links || changes.nodes) {
       const nodesHasBeenChanged =  changes.nodes &&
         JSON.stringify(changes.nodes.currentValue) !==
-        JSON.stringify(changes.nodes.previousValue)
-      ;
-      const linksHasBeenChanged = changes.links && JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue);
+        JSON.stringify(changes.nodes.previousValue);
+
+      const linksHasBeenChanged = changes.links &&
+        JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue);
+
+      const nodeKeyProp = this.diagram.model.nodeKeyProperty as string;
 
       if (nodesHasBeenChanged) {
         this.diagramChangesService.updateNodes(this.diagram, this.nodes);
-        const nodeIds = this.nodes.map((node: any) => node.id);
+
+        const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
         this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
+
         this.diagram.startTransaction('Update link workpackage colours');
         this.diagram.links.each(function(link) {
           link.updateTargetBindings('impactedByWorkPackages');
@@ -385,8 +390,8 @@ export class ArchitectureDiagramComponent
         this.diagram.commitTransaction('Update link workpackage colours');
       }
       if (linksHasBeenChanged) {
-        const nodeIds = this.nodes.map((node: any) => node.id)
-      ;
+        const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
+
         this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
       }
     }

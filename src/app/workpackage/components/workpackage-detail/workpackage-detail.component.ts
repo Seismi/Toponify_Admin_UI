@@ -23,6 +23,12 @@ export class WorkPackageDetailComponent  {
   @Input() selectedOwner: boolean;
   @Input() selectedBaseline: boolean;
   @Input() statusDraft: boolean;
+  @Input() workpackageActionSubmit: boolean;
+  @Input() workpackageActionApprove: boolean;
+  @Input() workpackageActionReject: boolean;
+  @Input() workpackageActionMerge: boolean;
+  @Input() workpackageActionReset: boolean;
+  @Input() workpackageActionSupersede: boolean;
 
   @Output()
   deleteWorkpackage = new EventEmitter();
@@ -53,6 +59,24 @@ export class WorkPackageDetailComponent  {
 
   @Output()
   selectBaseline = new EventEmitter();
+
+  @Output()
+  submit = new EventEmitter<string>();
+
+  @Output()
+  approve = new EventEmitter<string>();
+
+  @Output()
+  reject = new EventEmitter<string>();
+
+  @Output()
+  merge = new EventEmitter<string>();
+
+  @Output()
+  reset = new EventEmitter<string>();
+
+  @Output()
+  supersede = new EventEmitter<string>();
 
 
   onSave() {
@@ -93,5 +117,29 @@ export class WorkPackageDetailComponent  {
 
   onSelectBaseline(row) {
     this.selectBaseline.emit(row);
+  }
+
+  submitWorkpackage() {
+    this.submit.emit();
+  }
+
+  approveWorkpackage() {
+    this.approve.emit();
+  }
+
+  rejectWorkpackage() {
+    this.reject.emit();
+  }
+
+  mergeWorkpackage() {
+    this.merge.emit();
+  }
+
+  resetWorkpackage() {
+    this.reset.emit();
+  }
+
+  supersedeWorkpackage() {
+    this.supersede.emit();
   }
 }

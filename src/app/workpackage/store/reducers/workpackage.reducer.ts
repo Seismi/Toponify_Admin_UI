@@ -381,6 +381,172 @@ export function reducer(
       };
     }
 
+    case WorkPackageActionTypes.SubmitWorkpackage: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.SubmitWorkpackageSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.ApproveWorkpackage: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.ApproveWorkpackageSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.ApproveWorkpackageFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.RejectWorkpackage: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.RejectWorkpackageSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.RejectWorkpackageFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.MergeWorkpackage: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.MergeWorkpackageSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.MergeWorkpackageFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.ResetWorkpackage: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.ResetWorkpackageSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.ResetWorkpackageFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.SupersedeWorkpackage: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case WorkPackageActionTypes.SupersedeWorkpackageSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedWorkPackage: action.payload,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
+          }
+          return entity;
+        })
+      };
+    }
+
+    case WorkPackageActionTypes.SupersedeWorkpackageFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
     default: {
       return state;
     }

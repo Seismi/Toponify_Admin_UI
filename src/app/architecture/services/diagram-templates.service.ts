@@ -103,6 +103,15 @@ export class DiagramTemplatesService {
                 stroke: 'dodgerblue',
                 strokeWidth: 3
               })
+            ),
+            toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150
+                },
+                new go.Binding("text", "tooltip")
+              )
             )
           }
         : {
@@ -233,36 +242,62 @@ export class DiagramTemplatesService {
     return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
   }
 
-  // Get alert indicator for RADIOs against nodes
-  getRadioAlertIndicator(): go.Panel {
+  // Get alert indicator for RADIOs of the given type against nodes
+  getRadioAlertIndicator(type: string): go.Panel {
+
+    const radioColours = {
+      risks: 'orange',
+      assumptions: 'yellow',
+      dependencies: 'blue',
+      issues: 'red',
+      opportunities: 'green'
+    };
+
     return $(
       go.Panel,
       'Auto',
       {
-        row: 1,
-        alignment: go.Spot.BottomRight,
         visible: false
       },
-      new go.Binding('visible', '', function(node) {
-        return (
-          node.data.relatedRadioCount > 0 &&
-          node.diagram.model.modelData.showRadioAlerts
-        );
-      }).ofObject(),
+      new go.Binding('visible', 'relatedRadioCounts', function(counts) {
+        return counts[type] > 0;
+      }),
       $(go.Shape, 'circle', {
-        fill: 'red',
-        desiredSize: new go.Size(25, 25)
+        fill: radioColours[type],
+        desiredSize: new go.Size(25, 25),
+        margin: new go.Margin(5, 1, 5, 1)
       }),
       $(
         go.TextBlock,
         {
           textAlign: 'center',
-          stroke: 'white',
+          stroke: radioColours[type] === 'yellow' ? 'black' : 'white',
           font: '12px calibri'
         },
-        new go.Binding('text', 'relatedRadioCount')
-      ),
-      new go.Binding('visible', 'relatedRadioCount').ofModel()
+        new go.Binding('text', 'relatedRadioCounts', function(counts) {
+          return counts[type];
+        })
+      )
+    );
+  }
+
+  // Get the whole set of indicators for the different types of RADIOs
+  getRadioAlertIndicators(): go.Panel {
+    return $(
+      go.Panel,
+      'Horizontal',
+      {
+        row: 1,
+        alignment: go.Spot.BottomRight,
+        visible: false
+      },
+      new go.Binding('visible', 'showRadioAlerts').ofModel(),
+      ...['risks',
+        'assumptions',
+        'dependencies',
+        'issues',
+        'opportunities'
+      ].map(function(type) {return this.getRadioAlertIndicator(type); }.bind(this))
     );
   }
 
@@ -282,17 +317,9 @@ export class DiagramTemplatesService {
         new go.Binding('text', 'name'),
         new go.Binding('visible', 'linkName').ofModel()
       ),
-      $(
-        go.TextBlock,
-        {
-          font: '13px calibri'
-        },
-        new go.Binding('areaBackground', 'label', function(label) {
-          return label ? 'white' : null;
-        }),
-        new go.Binding('text', 'label'),
-        new go.Binding('visible', 'linkLabel').ofModel()
-      )
+      new go.Binding('visible', 'strokeWidth', function(width) {
+        return width !== 0;
+      }).ofObject('shape')
     );
   }
 
@@ -412,7 +439,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+        toolTip:
+          $("ToolTip",
+            $(go.TextBlock, 
+              { 
+                width: 150
+              },
+              new go.Binding("text", "tooltip")
+            )
+          )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
@@ -455,7 +492,7 @@ export class DiagramTemplatesService {
         go.Panel,
         'Table',
         {
-          margin: 5
+          margin: new go.Margin(5, 4, 0, 4)
         },
         // Bind height for transactional system to make consistent
         //  with previously used GoJs 1.8 shape
@@ -478,35 +515,7 @@ export class DiagramTemplatesService {
           ...this.getStandardNodeSections(),
           this.getDescendantsNodeSection('Data Sets')
         ),
-        $(
-          go.Panel,
-          'Auto',
-          {
-            row: 1,
-            alignment: go.Spot.BottomRight,
-            visible: false
-          },
-          new go.Binding('visible', '', function(node) {
-            return (
-              node.data.relatedRadioCount > 0 &&
-              node.diagram.model.modelData.showRadioAlerts
-            );
-          }).ofObject(),
-          $(go.Shape, 'circle', {
-            fill: 'red',
-            desiredSize: new go.Size(25, 25)
-          }),
-          $(
-            go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'white',
-              font: '12px calibri'
-            },
-            new go.Binding('text', 'relatedRadioCount')
-          )
-        ),
-        this.getRadioAlertIndicator()
+        this.getRadioAlertIndicators()
       )
     );
   }
@@ -536,7 +545,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -568,7 +587,7 @@ export class DiagramTemplatesService {
         'Table',
         {
           minSize: new go.Size(100, 100),
-          margin: 5
+          margin: new go.Margin(5, 4, 0, 4)
         },
         $(
           go.Panel,
@@ -603,7 +622,7 @@ export class DiagramTemplatesService {
           ...this.getStandardNodeSections(),
           this.getDescendantsNodeSection('Dimensions')
         ),
-        this.getRadioAlertIndicator()
+        this.getRadioAlertIndicators()
       )
     );
   }
@@ -633,7 +652,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       this.filterService.getFilter().filterLevel === Level.map
         ? {}
@@ -689,7 +718,7 @@ export class DiagramTemplatesService {
         'Table',
         {
           minSize: new go.Size(100, 100),
-          margin: 5
+          margin: new go.Margin(5, 4, 0, 4)
         },
         $(
           go.Panel,
@@ -708,7 +737,7 @@ export class DiagramTemplatesService {
           ...this.getStandardNodeSections(),
           this.getDescendantsNodeSection('Reporting Concepts')
         ),
-        this.getRadioAlertIndicator()
+        this.getRadioAlertIndicators()
       )
     );
   }
@@ -735,7 +764,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -782,9 +821,9 @@ export class DiagramTemplatesService {
           if (
             [nodeCategories.list, nodeCategories.structure].includes(category)
           ) {
-            return new go.Margin(15, 5, 5, 15);
+            return new go.Margin(15, 4, 0, 14);
           } else {
-            return 5;
+            return new go.Margin(5, 4, 0, 4);
           }
         }),
         $(
@@ -797,7 +836,7 @@ export class DiagramTemplatesService {
           this.getDependencyExpandButton(),
           ...this.getStandardNodeSections()
         ),
-        this.getRadioAlertIndicator()
+        this.getRadioAlertIndicators()
       )
     );
   }
@@ -817,7 +856,8 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'dataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
@@ -834,6 +874,10 @@ export class DiagramTemplatesService {
           stroke: 'black',
           strokeWidth: 2.5
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'dataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -879,18 +923,24 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'masterDataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       $(
         go.Shape,
         {
+          name: 'shape',
           isPanelMain: true,
           stroke: 'Black',
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',

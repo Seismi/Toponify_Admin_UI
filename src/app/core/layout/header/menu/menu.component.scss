@@ -1,9 +1,9 @@
 i {
     padding: 5px;
     cursor: pointer;
-    font-size: 28px;
-    margin-top: 10px;
-    margin-right: 7px;
+    font-size: 25px;
+    margin-top: 5px;
+    margin-right: 10px;
 }
   
 .mat-menu-content {
@@ -18,4 +18,8 @@ i {
 button:focus{
     outline: none;
     border: 0;
+}
+
+a {
+    text-decoration: none;
 }

@@ -1,10 +1,9 @@
 <app-base-header>
   <app-toolbar-column [fillFreeSpace]="true">
-    <app-search></app-search>
   </app-toolbar-column>
+  <app-search></app-search>
   <app-toolbar-column>
     <app-zoom-actions
-      [attributesView]="attributesView"
       (zoomIn)="onZoomIn()"
       (zoomOut)="onZoomOut()"
     ></app-zoom-actions>
@@ -40,12 +39,15 @@
   >
   </smi-left-sidebar>
   <app-model-sidebar
-    [minWidth]="430"
-    [maxWidth]="1000"
+    [minWidth]="auto"
+    [maxWidth]="auto"
+    [isLast]="true"
     *ngIf="showOrHideLeftPane"
   >
     <p class="leftPane">
       <smi-left-panel
+        [tabIndex]="editTabIndex"
+        (tabClick)="onTabClick($event)"
         [viewLevel]="viewLevel$ | async"
         [workpackages]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"

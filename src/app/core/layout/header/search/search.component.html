@@ -1,12 +1,22 @@
-<div class="search-form">
-  <mat-icon>search</mat-icon><input placeholder="Search" (keyup)="onSearch($event.target.value)" value="" />
+<div class="eaton mat-typography" style="overflow-x: hidden;" fxFlexFill cdkScrollable>
+  <button mat-icon-button  (click)="openSearch()" class="open-search-button">
+    <mat-icon>search</mat-icon>
+  </button>
+  <mat-toolbar class="search-block mat-elevation-z4" [class.active]="toggleSearch">
+    <mat-toolbar-row style="padding: 0 5px;">
+      <button mat-button mat-icon-button (click)="searchClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <input class="search-control" placeholder="Search" (keyup)="onSearch($event.target.value)">
+  </mat-toolbar-row>
+  </mat-toolbar>
 </div>
 
-<div class="search-results mat-elevation-z8">
+<div class="results-container mat-elevation-z8" *ngIf="toggleSearch">
   <ul *ngFor="let result of results$ | async">
     <li>
       {{result.name}}:
-      <small>{{result.objectType}}</small> -
+      <small>{{ result.objectType}}</small> -
       <small>{{(result.workPackage.lenght) ? result.workPackage.name : 'N/A'}}</small>
     </li>
   </ul>

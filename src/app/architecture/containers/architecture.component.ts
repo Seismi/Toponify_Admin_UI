@@ -20,7 +20,7 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNode
+  UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
@@ -102,6 +102,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
+import {LayoutActionTypes} from '@app/layout/store/actions/layout.actions';
 
 enum Events {
   NodesLinksReload = 0
@@ -179,6 +180,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwner = false;
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
+  editTabIndex: number;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -215,8 +217,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
 
+    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
+
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
+    this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -358,7 +363,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess)).subscribe(_ => {
+      this.actions.pipe(ofType(LayoutActionTypes.LoadLayoutSuccess)).subscribe(_ => {
+        this.eventEmitter.next(Events.NodesLinksReload);
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
@@ -569,14 +580,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   // FIXME: types
-  handleUpdateNodeLocation(data: { node: any; links: any[] }) {
+  handleUpdateNodeLocation(data: { nodes: any[]; links: any[] }) {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
 
-    if (this.layout && data.node) {
-      this.store.dispatch(new UpdateNode({ layoutId: this.layout.id, node: data.node }));
+    if (this.layout && data.nodes && data.nodes.length > 0) {
+      this.store.dispatch(new UpdateNodes({ layoutId: this.layout.id, nodes: data.nodes }));
     }
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
@@ -770,11 +781,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
-    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
   }
 
   onSelectLayout(id) {
     this.layoutStore.dispatch(new LoadLayout(id));
+  }
+
+  onTabClick(index: number) {
+    (this.workPackageIsEditable === true && index === 1)
+      ? this.editTabIndex = 1
+      : this.editTabIndex = null;
+    this.diagramComponent.updateDiagramArea();
   }
 
   openLeftTab(index: number) {
@@ -782,6 +799,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
+
+    (this.selectedLeftTab === 0 || this.selectedLeftTab === 2)
+      ?  this.editTabIndex = null
+      : this.editTabIndex = 1;
+
     this.diagramComponent.updateDiagramArea();
   }
 
@@ -811,7 +833,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           })
         );
         if (data.radio.status === 'open') {
-          this.diagramChangesService.updateRadioCount(this.part);
+          this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
       }
     });
