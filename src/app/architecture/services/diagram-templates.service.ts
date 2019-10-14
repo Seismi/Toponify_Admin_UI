@@ -8,7 +8,8 @@ import { Injectable } from '@angular/core';
 import {
   CustomLink,
   GojsCustomObjectsService,
-  updateShapeShadows
+  updateShapeShadows,
+  customIcons
 } from './gojs-custom-objects.service';
 import { FilterService } from './filter.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
@@ -105,12 +106,12 @@ export class DiagramTemplatesService {
               })
             ),
             toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
                   width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
           }
@@ -441,12 +442,12 @@ export class DiagramTemplatesService {
           }
         : {
         toolTip:
-          $("ToolTip",
-            $(go.TextBlock, 
-              { 
+          $('ToolTip',
+            $(go.TextBlock,
+              {
                 width: 150
               },
-              new go.Binding("text", "tooltip")
+              new go.Binding('text', 'tooltip')
             )
           )
         },
@@ -547,12 +548,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -654,12 +655,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -766,12 +767,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -780,15 +781,7 @@ export class DiagramTemplatesService {
       // Make the shape the port for links to connect to
       $(
         go.Shape,
-        new go.Binding('figure', 'category', function(category) {
-          if (category === 'key') {
-            return 'SquareArrow';
-          } else if (category === 'list') {
-            return 'Process';
-          } else {
-            return 'InternalStorage';
-          }
-        }),
+        'rectangle',
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -815,17 +808,6 @@ export class DiagramTemplatesService {
         {
           minSize: new go.Size(100, 100)
         },
-        // Ensure that the panel does not overlap the border lines
-        // on the shapes for list and structure reporting elements
-        new go.Binding('margin', 'category', function(category) {
-          if (
-            [nodeCategories.list, nodeCategories.structure].includes(category)
-          ) {
-            return new go.Margin(15, 4, 0, 14);
-          } else {
-            return new go.Margin(5, 4, 0, 4);
-          }
-        }),
         $(
           go.Panel,
           'Vertical',
@@ -833,8 +815,35 @@ export class DiagramTemplatesService {
             alignment: go.Spot.TopCenter,
             minSize: new go.Size(90, NaN)
           },
+          $(
+            go.Shape,
+            {
+              alignment: go.Spot.TopRight,
+              geometry: customIcons.flag
+            },
+            new go.Binding('geometry', 'category', function(category) {
+              if (category === nodeCategories.key) {
+                return customIcons.flag;
+              } else if (category === nodeCategories.list) {
+                return customIcons.list;
+              } else { // Structure reporting concept
+                return customIcons.tree;
+              }
+            })
+          ),
           this.getDependencyExpandButton(),
-          ...this.getStandardNodeSections()
+          $(
+            go.TextBlock,
+            {
+              textAlign: 'center',
+              stroke: 'black',
+              font: 'bold 16px calibri',
+              maxSize: new go.Size(100, Infinity),
+              margin: new go.Margin(0, 0, 5, 0)
+            },
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'name').ofModel()
+          )
         ),
         this.getRadioAlertIndicators()
       )
