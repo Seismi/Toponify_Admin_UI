@@ -43,18 +43,21 @@ export class Node {
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
   impactedByWorkPackages = [];
+  tooltip?: string;
 
   constructor(options: {
     id: string;
     name: string;
     layer: layers;
     category: nodeCategories;
+    tooltip: string;
   }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
+      this.tooltip = options.tooltip;
       this.owners = [];
       this.impactedByWorkPackages = [];
     }
