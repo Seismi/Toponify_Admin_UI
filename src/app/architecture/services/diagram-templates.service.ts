@@ -815,6 +815,7 @@ export class DiagramTemplatesService {
             alignment: go.Spot.TopCenter,
             minSize: new go.Size(90, NaN)
           },
+          this.getDependencyExpandButton(),
           $(
             go.Shape,
             {
@@ -831,19 +832,7 @@ export class DiagramTemplatesService {
               }
             })
           ),
-          this.getDependencyExpandButton(),
-          $(
-            go.TextBlock,
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              font: 'bold 16px calibri',
-              maxSize: new go.Size(100, Infinity),
-              margin: new go.Margin(0, 0, 5, 0)
-            },
-            new go.Binding('text', 'name'),
-            new go.Binding('visible', 'name').ofModel()
-          )
+          ...this.getStandardNodeSections()
         ),
         this.getRadioAlertIndicators()
       )
