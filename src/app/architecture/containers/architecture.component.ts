@@ -180,6 +180,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwner = false;
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
+  editTabIndex: number;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -216,8 +217,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
 
+    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
+
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
+    this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -792,11 +796,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
-    this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
   }
 
   onSelectLayout(id) {
     this.layoutStore.dispatch(new LoadLayout(id));
+  }
+
+  onTabClick(index: number) {
+    (this.workPackageIsEditable === true && index === 1)
+      ? this.editTabIndex = 1
+      : this.editTabIndex = null;
+    this.diagramComponent.updateDiagramArea();
   }
 
   openLeftTab(index: number) {
@@ -804,6 +814,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
+
+    (this.selectedLeftTab === 0 || this.selectedLeftTab === 2)
+      ?  this.editTabIndex = null
+      : this.editTabIndex = 1;
+
     this.diagramComponent.updateDiagramArea();
   }
 
