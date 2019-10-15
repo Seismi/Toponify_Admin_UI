@@ -105,12 +105,12 @@ export class DiagramTemplatesService {
               })
             ),
             toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
                   width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
           }
@@ -320,6 +320,8 @@ export class DiagramTemplatesService {
             return false;
           } else {
 
+            if (!link.data.relatedRadioCounts) {return false; }
+
             const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
               return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
             }, false);
@@ -462,12 +464,12 @@ export class DiagramTemplatesService {
           }
         : {
         toolTip:
-          $("ToolTip",
-            $(go.TextBlock, 
-              { 
+          $('ToolTip',
+            $(go.TextBlock,
+              {
                 width: 150
               },
-              new go.Binding("text", "tooltip")
+              new go.Binding('text', 'tooltip')
             )
           )
         },
@@ -568,12 +570,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -675,12 +677,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -787,12 +789,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -877,6 +879,12 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      new go.Binding('relinkableFrom', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
+      }),
+      new go.Binding('relinkableTo', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
+      }),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
@@ -944,6 +952,12 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      new go.Binding('relinkableFrom', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
+      }),
+      new go.Binding('relinkableTo', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
+      }),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
@@ -958,6 +972,13 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        new go.Binding('strokeDashArray', 'id', function(id) {
+          if (id === '00000000-0000-0000-0000-000000000000') {
+            return [2.5, 1.5];
+          } else {
+            return [5, 5];
+          }
+        }),
         // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
         new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
           return dataLinks ? 2.5 : 0;

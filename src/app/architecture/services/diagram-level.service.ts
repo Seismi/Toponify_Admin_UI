@@ -4,12 +4,13 @@ import { layers, Node, nodeCategories } from '@app/architecture/store/models/nod
 import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { Store } from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
 import { FilterService } from './filter.service';
 import { Location } from '@angular/common';
 import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
 import { NodeToolTips } from '@app/core/node-tooltips';
+import {getNodeLinksBy} from '@app/architecture/store/selectors/node.selector';
 
 const $ = go.GraphObject.make;
 
@@ -124,7 +125,7 @@ export class DiagramLevelService implements OnDestroy {
   }
 
   displayMapView(event: any, object: go.Link): void {
-    // Do not display map view for data links without detail available
+    // Do not display map view for data links
     if (!(object.data.category === linkCategories.data)) {
       return;
     }
@@ -134,7 +135,8 @@ export class DiagramLevelService implements OnDestroy {
 
     this.filterService.addFilter({
       filterLevel: Level.map,
-      id: object.data.id
+      id: object.data.id/*,
+      mapLayer: moreDetailOrderMapping[object.data.layer]*/
     });
 
     const fromNode = JSON.parse(JSON.stringify(object.fromNode.data));
@@ -210,7 +212,11 @@ export class DiagramLevelService implements OnDestroy {
 
     const paletteViewLinks = [];
 
-    if (![Level.map, Level.usage].includes(level)) {
+    if (level === Level.map) {
+      // Need to get link layer from store
+    }
+
+    if (level !== Level.usage) {
       paletteViewLinks.push({
         category: linkCategories.masterData,
         id: 'New master data link',

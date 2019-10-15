@@ -259,6 +259,11 @@ export class DiagramChangesService {
 
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
+
+      /* Workaround for links having layer set to 'map' in map view */
+      link.data.layer = link.fromNode.data.layer;
+      /* --- */
+
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
@@ -280,10 +285,11 @@ export class DiagramChangesService {
 
       // Create link if not already in database
       if (link.data.isTemporary) {
-        // Create copy of link data with route in format required for back end
+        // Create copy of link data
         const newLink = Object.assign({}, link.data);
 
-        newLink.route = [{ view: 'Default', points: link.data.route }];
+        newLink.sourceId = link.fromNode.data.id;
+        newLink.targetId = link.toNode.data.id;
 
         this.workpackages.forEach(workpackage => {
           this.workpackageStore.dispatch(
@@ -307,22 +313,18 @@ export class DiagramChangesService {
         if (!draggingTool.isActive && !relinkingTool.isActive) {
           return;
         }
-        // FIXME: temp solution, needs to be fixed
-        const sourceProp = (event.diagram.model as any).linkFromKeyProperty;
-        const targetProp = (event.diagram.model as any).linkToKeyProperty;
 
         const updatedLink = {
-          id: link.key,
-          [sourceProp]: link.fromNode.key,
-          [targetProp]: link.toNode.key,
-          route: [{ view: 'Default', points: link.data.route }]
+          id: link.data.id,
+          sourceId: link.fromNode.data.id,
+          targetId: link.toNode.data.id
         };
 
         this.workpackages.forEach(workpackage => {
           this.workpackageStore.dispatch(
             new UpdateWorkPackageLink({
               workpackageId: workpackage.id,
-              linkId: link.key,
+              linkId: link.data.id,
               link: updatedLink
             })
           );
