@@ -775,7 +775,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.part) {
       this.part.isSelected = false;
     }
-    this.updateWorkpackageFilter(this.workpackageId);
+    this.updateWorkpackageFilter(this.workpackageId, true);
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
@@ -1030,9 +1030,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateWorkpackageFilter(id: string) {
+  updateWorkpackageFilter(id: string, reset?: boolean) {
     const existingFilter = this.filterService.getFilter();
-    if (existingFilter.workpackages && existingFilter.workpackages.length > 0) {
+    if (reset) {
+      return this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
+    }
+    if (existingFilter.workpackages && existingFilter.workpackages.length > 0 ) {
       const workpackageAlreadySelected = existingFilter.workpackages.find(workpackageId => workpackageId === id);
       if (workpackageAlreadySelected) {
         const filteredWorkpackageIds = existingFilter.workpackages.filter(workpackageId => workpackageId !== id);
