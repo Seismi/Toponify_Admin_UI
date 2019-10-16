@@ -965,9 +965,11 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       {
-        doubleClick: this.diagramLevelService.displayMapView.bind(
-          this.diagramLevelService
-        )
+        doubleClick: function(event, object) {
+          if ([layers.system, layers.dataSet].includes(object.data.layer)) {
+            this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, object);
+          }
+        }.bind(this)
       },
       $(
         go.Shape,
