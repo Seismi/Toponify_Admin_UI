@@ -4,13 +4,12 @@ import { layers, Node, nodeCategories } from '@app/architecture/store/models/nod
 import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import {select, Store} from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
 import { FilterService } from './filter.service';
 import { Location } from '@angular/common';
 import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
 import { NodeToolTips } from '@app/core/node-tooltips';
-import {getNodeLinksBy} from '@app/architecture/store/selectors/node.selector';
 
 const $ = go.GraphObject.make;
 
@@ -20,7 +19,8 @@ export enum Level {
   dataSet = 'data set',
   dimension = 'dimension',
   reportingConcept = 'reporting concept',
-  map = 'map',
+  systemMap = 'system map',
+  dataSetMap = 'data set map',
   attribute = 'attribute',
   usage = 'usage'
 }
@@ -32,14 +32,16 @@ export const viewLevelNum = {
   [Level.dimension]: 3,
   [Level.reportingConcept]: 4,
   [Level.attribute]: 5,
-  [Level.map]: 9,
+  [Level.systemMap]: 8,
+  [Level.dataSetMap]: 9,
   [Level.usage]: 10
 };
 
 export const lessDetailOrderMapping = {
   [Level.reportingConcept]: Level.dimension,
   [Level.dimension]: Level.dataSet,
-  [Level.map]: Level.dataSet,
+  [Level.systemMap]: Level.system,
+  [Level.dataSetMap]: Level.dataSet,
   [Level.dataSet]: Level.system
 };
 
@@ -125,18 +127,13 @@ export class DiagramLevelService implements OnDestroy {
   }
 
   displayMapView(event: any, object: go.Link): void {
-    // Do not display map view for data links
-    if (!(object.data.category === linkCategories.data)) {
-      return;
-    }
 
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
     this.filterService.addFilter({
-      filterLevel: Level.map,
-      id: object.data.id/*,
-      mapLayer: moreDetailOrderMapping[object.data.layer]*/
+      filterLevel: object.data.layer + ' map',
+      id: object.data.id
     });
 
     const fromNode = JSON.parse(JSON.stringify(object.fromNode.data));
@@ -179,9 +176,9 @@ export class DiagramLevelService implements OnDestroy {
     let tooltip: string;
     if (level === Level.system) {
       tooltip = NodeToolTips[5].Tooltip;
-    } else if (level === Level.dataSet) {
+    } else if (level === Level.dataSet || level === Level.systemMap) {
       tooltip = NodeToolTips[10].Tooltip;
-    } else if (level === Level.dimension) {
+    } else if (level === Level.dimension || level === Level.dataSetMap) {
       tooltip = NodeToolTips[13].Tooltip;
     } else if (level === Level.reportingConcept) {
       tooltip = NodeToolTips[17].Tooltip;
@@ -193,7 +190,7 @@ export class DiagramLevelService implements OnDestroy {
     let tooltip: string;
     if (level === Level.system) {
       tooltip = NodeToolTips[6].Tooltip;
-    } else if (level === Level.dataSet) {
+    } else if (level === Level.dataSet || level === Level.systemMap) {
       tooltip = NodeToolTips[11].Tooltip;
     }
     return tooltip;
@@ -212,9 +209,9 @@ export class DiagramLevelService implements OnDestroy {
 
     const paletteViewLinks = [];
 
-    if (level === Level.map) {
-      // Need to get link layer from store
-    }
+    const linkLayer = level === Level.systemMap ? layers.dataSet :
+      level === Level.dataSetMap ? layers.dimension :
+        level.toLowerCase();
 
     if (level !== Level.usage) {
       paletteViewLinks.push({
@@ -223,7 +220,7 @@ export class DiagramLevelService implements OnDestroy {
         name: 'New master data link',
         description: '',
         route: <RoutesEntityEntity['points']>[0, 0, 40, 0, 40, -80, 80, -80],
-        layer: level.toLowerCase(),
+        layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForMasterDataLinks(level)
@@ -328,14 +325,14 @@ export class DiagramLevelService implements OnDestroy {
       ];
     }
 
-    if (level === Level.system || level === Level.dataSet) {
+    if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
       paletteViewLinks.push({
         category: linkCategories.data,
         id: 'New data link',
         name: 'New data link',
         description: '',
         route: <RoutesEntityEntity['points']>[0, 0, 40, 0, 40, -80, 80, -80],
-        layer: level.toLowerCase(),
+        layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForDataLinks(level)
@@ -343,11 +340,11 @@ export class DiagramLevelService implements OnDestroy {
     }
 
     diagram.model = $(go.GraphLinksModel, {
-      nodeKeyProperty: level === Level.map ? 'displayId' : 'id',
-      linkKeyProperty: level === Level.map ? 'displayId' : 'id',
+      nodeKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
+      linkKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
       nodeCategoryProperty: 'layer',
-      linkFromKeyProperty: level === Level.map ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
-      linkToKeyProperty: level === Level.map ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
+      linkFromKeyProperty: level.endsWith('map') ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
+      linkToKeyProperty: level.endsWith('map') ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,
@@ -360,7 +357,7 @@ export class DiagramLevelService implements OnDestroy {
     });
 
     // Settings and layout for map view
-    if (level === Level.map) {
+    if (level.endsWith('map')) {
       diagram.layout = $(go.GridLayout, {
         spacing: new go.Size(100, 100),
         alignment: go.GridLayout.Position,

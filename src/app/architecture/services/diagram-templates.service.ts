@@ -687,7 +687,7 @@ export class DiagramTemplatesService {
             )
         },
       // Have the diagram position the node if no location set
-      this.filterService.getFilter().filterLevel === Level.map
+      this.filterService.getFilter().filterLevel.endsWith('map')
         ? {}
         : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -952,6 +952,7 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      // Do not allow relinking map view dummy links
       new go.Binding('relinkableFrom', 'id', function(id) {
         return id !== '00000000-0000-0000-0000-000000000000';
       }),
@@ -963,6 +964,11 @@ export class DiagramTemplatesService {
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
+      {
+        doubleClick: this.diagramLevelService.displayMapView.bind(
+          this.diagramLevelService
+        )
+      },
       $(
         go.Shape,
         {
@@ -972,6 +978,7 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        // Show dotted line for map view dummy links
         new go.Binding('strokeDashArray', 'id', function(id) {
           if (id === '00000000-0000-0000-0000-000000000000') {
             return [2.5, 1.5];
@@ -1097,6 +1104,7 @@ export class DiagramTemplatesService {
         }),
         computesBoundsAfterDrag: true,
         computesBoundsIncludingLocation: true,
+        computesBoundsIncludingLinks: false,
         locationSpot: go.Spot.TopCenter,
         locationObjectName: 'shape',
         isLayoutPositioned: true,

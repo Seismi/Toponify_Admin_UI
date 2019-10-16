@@ -81,6 +81,10 @@ export class DiagramChangesService {
             }
           });
         });
+      } else {
+        if ('displayId' in part.data) {
+          part.data.id = part.data.displayId;
+        }
       }
     });
   }
@@ -162,7 +166,7 @@ export class DiagramChangesService {
     const currentLevel = this.filterService.filter.getValue().filterLevel;
 
     // Do not update positions for map view
-    if (currentLevel === Level.map) {
+    if (currentLevel.endsWith('map')) {
       return;
     }
 
@@ -260,27 +264,26 @@ export class DiagramChangesService {
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
 
-      /* Workaround for links having layer set to 'map' in map view */
-      link.data.layer = link.fromNode.data.layer;
-      /* --- */
-
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
 
-      // Add currently editing workpackage to array of workpackages impacted by if not there already
-      if (
-        link.data.impactedByWorkPackages.every(
-          function(workpackage) {
-            return workpackage.id !== this.workpackages[0].id;
-          }.bind(this)
-        )
-      ) {
-        link.diagram.model.setDataProperty(
-          link.data,
-          'impactedByWorkPackages',
-          link.data.impactedByWorkPackages.concat([this.workpackages[0]])
-        );
+      // TEMPORARY - condition to prevent error while impactedByWorkPackages missing from nodeLink components response
+      if (!currentLevel.endsWith('map')) {
+        // Add currently editing workpackage to array of workpackages impacted by if not there already
+        if (
+          link.data.impactedByWorkPackages.every(
+            function (workpackage) {
+              return workpackage.id !== this.workpackages[0].id;
+            }.bind(this)
+          )
+        ) {
+          link.diagram.model.setDataProperty(
+            link.data,
+            'impactedByWorkPackages',
+            link.data.impactedByWorkPackages.concat([this.workpackages[0]])
+          );
+        }
       }
 
       // Create link if not already in database

@@ -45,7 +45,7 @@ export const getNodeLinksBy = createSelector(
     if (!layer) {
       return state.links;
     }
-    if (layer === Level.map) {
+    if (layer.endsWith('map')) {
       return state.entities;
     }
     return state.links.filter(item => item.layer === layer);
@@ -63,7 +63,7 @@ export const getNodeEntitiesBy = createSelector(
       return state.entities;
     }
 
-    if (layer === Level.map) {
+    if (layer.endsWith('map')) {
       return state.entities;
     }
 
