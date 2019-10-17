@@ -18,7 +18,7 @@ export class DocumentStandardsService {
 
   getPropertyValueValidator(type: string, reg: any) {
     if (type === 'Text') {
-      reg = '[a-zA-Z ]*';
+      reg = null;
     } else if (type === 'Number') {
       reg = '^[0-9]{0,50}$';
     } else if (type === 'Hyperlink') {
