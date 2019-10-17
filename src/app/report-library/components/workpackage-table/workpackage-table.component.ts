@@ -10,6 +10,9 @@ import { RelatedWorkPackages } from '@app/report-library/store/models/report.mod
 export class WorkPackageTableInReportsPageComponent {
   @Input()
   set data(data: RelatedWorkPackages[]) {
+    if (!data) {
+      data = [];
+    }
     this.dataSource = new MatTableDataSource<RelatedWorkPackages>(data);
     this.dataSource.paginator = this.paginator;
   }
