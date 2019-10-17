@@ -103,6 +103,15 @@ export class DiagramTemplatesService {
                 stroke: 'dodgerblue',
                 strokeWidth: 3
               })
+            ),
+            toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150
+                },
+                new go.Binding("text", "tooltip")
+              )
             )
           }
         : {
@@ -292,32 +301,45 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get name label for links
+  // Get name and RADIO alert label for links
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
-      'Vertical',
-      $(
-        go.TextBlock,
+      'Auto',
+      $(go.Shape,
         {
-          font: 'bold 14px calibri'
-        },
-        new go.Binding('areaBackground', 'name', function(name) {
-          return name ? 'white' : null;
-        }),
-        new go.Binding('text', 'name'),
-        new go.Binding('visible', 'linkName').ofModel()
-      ),
+          figure: 'RoundedRectangle',
+          fill: 'white',
+          opacity: 0.85
+        }
+       ),
+        // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
+        new go.Binding('visible', '', function(link) {
+
+          if (link.findObject('shape').strokeWidth === 0) {
+            return false;
+          } else {
+
+            const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
+              return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
+            }, false);
+
+            return (link.diagram.model.modelData.linkName && link.data.name !== '')
+              || (link.diagram.model.modelData.showRadioAlerts && anyRadios);
+          }
+        }).ofObject(),
       $(
-        go.TextBlock,
-        {
-          font: '13px calibri'
-        },
-        new go.Binding('areaBackground', 'label', function(label) {
-          return label ? 'white' : null;
-        }),
-        new go.Binding('text', 'label'),
-        new go.Binding('visible', 'linkLabel').ofModel()
+        go.Panel,
+        'Vertical',
+        $(
+          go.TextBlock,
+          {
+            font: 'bold 14px calibri'
+          },
+          new go.Binding('text', 'name'),
+          new go.Binding('visible', 'linkName').ofModel()
+        ),
+        this.getRadioAlertIndicators()
       )
     );
   }
@@ -438,7 +460,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+        toolTip:
+          $("ToolTip",
+            $(go.TextBlock, 
+              { 
+                width: 150
+              },
+              new go.Binding("text", "tooltip")
+            )
+          )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
@@ -534,7 +566,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -631,7 +673,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       this.filterService.getFilter().filterLevel === Level.map
         ? {}
@@ -733,7 +785,17 @@ export class DiagramTemplatesService {
             // Enable context menu for nodes not in the palette
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
-        : {},
+        : {
+          toolTip:
+            $("ToolTip",
+              $(go.TextBlock, 
+                { 
+                  width: 150 
+                },
+                new go.Binding("text", "tooltip")
+              )
+            )
+        },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -815,7 +877,8 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'dataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
@@ -832,6 +895,10 @@ export class DiagramTemplatesService {
           stroke: 'black',
           strokeWidth: 2.5
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'dataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -877,18 +944,24 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('visible', 'masterDataLinks').ofModel(),
+      // Disable select for links that are set to not be shown
+      new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       $(
         go.Shape,
         {
+          name: 'shape',
           isPanelMain: true,
           stroke: 'Black',
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
+        new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
+          return dataLinks ? 2.5 : 0;
+        }).ofModel(),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
