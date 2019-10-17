@@ -17,7 +17,10 @@ export class ReportLibraryTableComponent implements OnInit {
     }
   }
 
+  @Input() workPackageIsEditable: boolean;
+
   @Output() reportSelected = new EventEmitter<ReportLibrary>();
+  @Output() addReport = new EventEmitter<void>();
 
   public dataSource: MatTableDataSource<ReportLibrary>;
   public displayedColumns: string[] = ['name', 'dataSets'];
@@ -32,4 +35,9 @@ export class ReportLibraryTableComponent implements OnInit {
     this.selectedRowId = row.id;
     this.reportSelected.emit(row);
   }
+
+  onAdd() {
+    this.addReport.emit();
+  }
+  
 }
