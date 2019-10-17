@@ -9,13 +9,26 @@
         <p class="rightPane">
             <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
                 <mat-tab label="Details">
+                  <p class="detailsTabContainer">
                     <smi-report-library-detail
                         [group]="reportDetailForm"
+                        [workPackageIsEditable]="workPackageIsEditable"
+                        [isEditable]="isEditable"
+                        [selectedOwnerIndex]="selectedOwnerIndex"
                         [dataSets]="report?.dataSets"
                         [owners]="report?.owners"
                         [dimensions]="report?.dimensions"
-                        [reportingConcepts]="report?.reportingConcepts">
+                        [reportingConcepts]="report?.reportingConcepts"
+                        (saveReport)="onSaveReport()"
+                        (editReport)="onEditReport()"
+                        (cancel)="onCancel()"
+                        (deleteReport)="onDeleteReport()"
+                        [selectedOwner]="selectedOwner"
+                        (addOwner)="onAddOwner()"
+                        (selectOwner)="onSelectOwner($event)"
+                        (deleteOwner)="onDeleteOwner()">
                     </smi-report-library-detail>
+                  </p>
                 </mat-tab>
                 <mat-tab label="Attributes">
                     <smi-attributes-table-in-reports-page
