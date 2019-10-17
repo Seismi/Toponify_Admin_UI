@@ -1,34 +1,49 @@
 <div class="wrapper">
   <form [formGroup]="group">
-    <mat-form-field [ngClass]="{disabled: !isEditable}">
-      <input matInput placeholder="Name" formControlName="name">
-    </mat-form-field>
+    <div [ngClass]="{disabled: !isEditable}">
+      <mat-form-field>
+        <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: isEditable}">
+        <mat-error>This field is required</mat-error>
+      </mat-form-field>
+    
+      <mat-form-field>
+        <textarea matInput placeholder="Description" formControlName="description"
+          [ngClass]="{ editable: isEditable}"></textarea>
+      </mat-form-field>
 
-    <mat-form-field [ngClass]="{disabled: !isEditable}">
-      <textarea matInput placeholder="Description" formControlName="description"></textarea>
-    </mat-form-field>
+      <!-- Owners -->
+      <smi-report-owners-table
+        *ngIf="!modalMode"
+        [data]="owners" 
+        [isEditable]="isEditable"
+        [selectedOwner]="selectedOwner"
+        [selectedOwnerIndex]="selectedOwnerIndex"
+        (addOwner)="onAddOwner()"
+        (selectOwner)="onSelectOwner($event)"
+        (deleteOwner)="onDeleteOwner()">
+      </smi-report-owners-table>
 
-    <!-- Owners -->
-    <smi-report-owners-table [data]="owners"></smi-report-owners-table>
+      <!-- Source Data Sets -->
+      <smi-report-data-set-table [data]="dataSets" *ngIf="!modalMode"></smi-report-data-set-table>
 
-    <!-- Source Data Sets -->
-    <smi-report-data-set-table [data]="dataSets"></smi-report-data-set-table>
+      <!-- Dimensions -->
+      <smi-report-dimensions-table [data]="dimensions" *ngIf="!modalMode"></smi-report-dimensions-table>
 
-    <!-- Dimensions -->
-    <smi-report-dimensions-table [data]="dimensions"></smi-report-dimensions-table>
-
-    <!-- Reporting Concepts -->
-    <smi-reporting-concepts-table [data]="reportingConcepts"></smi-reporting-concepts-table>
+      <!-- Reporting Concepts -->
+      <smi-reporting-concepts-table [data]="reportingConcepts" *ngIf="!modalMode"></smi-reporting-concepts-table>
+    </div>
   </form>
 
-  <div *ngIf="!isEditable">
-    <button type="button" mat-flat-button color="primary" (click)="onEdit()">Edit</button>
-    <button type="button" mat-raised-button color="primary">Open</button>
-    <button type="button" mat-raised-button color="primary">Copy</button>
-    <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
-  </div>
-  <div *ngIf="isEditable">
-    <button mat-flat-button color="primary" (click)="onSave()">Save</button>
-    <button mat-flat-button (click)="onCancel()">Cancel</button>
+  <div *ngIf="workPackageIsEditable">
+    <div *ngIf="!isEditable">
+      <button type="button" mat-flat-button color="primary" (click)="onEdit()">Edit</button>
+      <button type="button" mat-raised-button color="primary">Open</button>
+      <button type="button" mat-raised-button color="primary">Copy</button>
+      <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
+    </div>
+    <div *ngIf="isEditable">
+      <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+      <button mat-flat-button (click)="onCancel()">Cancel</button>
+    </div>
   </div>
 </div>
