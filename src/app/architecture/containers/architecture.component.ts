@@ -775,7 +775,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.part) {
       this.part.isSelected = false;
     }
-    this.updateWorkpackageFilter(this.workpackageId, true);
+    this.updateWorkpackageFilter(this.workpackageId, !workpackage.edit);
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
