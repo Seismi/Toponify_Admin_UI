@@ -331,7 +331,7 @@ export class DiagramTemplatesService {
   //   tags
   //   owner
   // Returns an array of node sections
-  getStandardNodeSections(): go.TextBlock[] {
+  getStandardNodeSections(isHorizontal = false): go.TextBlock[] {
     const sections = [
       {
         sectionName: 'name',
@@ -355,6 +355,8 @@ export class DiagramTemplatesService {
       }
     ];
 
+    const sectionMargin =  isHorizontal ? new go.Margin(0, 5, 0, 0) : new go.Margin(0, 0, 5, 0);
+
     return sections.map(function(section) {
       return $(
         go.TextBlock,
@@ -363,7 +365,7 @@ export class DiagramTemplatesService {
           stroke: 'black',
           font: section.font,
           maxSize: new go.Size(100, Infinity),
-          margin: new go.Margin(0, 0, 5, 0)
+          margin: sectionMargin
         },
         new go.Binding('text', section.sectionName, function(input) {
           return input ? section.initialText + input : '';
@@ -806,21 +808,21 @@ export class DiagramTemplatesService {
         go.Panel,
         'Table',
         {
-          minSize: new go.Size(100, 100)
+          minSize: new go.Size(200, 50),
+          margin: new go.Margin(5, 4, 0, 4)
         },
         $(
           go.Panel,
-          'Vertical',
+          'Horizontal',
           {
             alignment: go.Spot.TopCenter,
-            minSize: new go.Size(90, NaN)
+            minSize: new go.Size(190, NaN)
           },
-          this.getDependencyExpandButton(),
           $(
             go.Shape,
             {
-              alignment: go.Spot.TopRight,
-              geometry: customIcons.flag
+              alignment: go.Spot.TopLeft,
+              margin: new go.Margin(0, 5, 0, 0)
             },
             new go.Binding('geometry', 'category', function(category) {
               if (category === nodeCategories.key) {
@@ -832,8 +834,9 @@ export class DiagramTemplatesService {
               }
             })
           ),
-          ...this.getStandardNodeSections()
+          ...this.getStandardNodeSections(true)
         ),
+        this.getDependencyExpandButton(),
         this.getRadioAlertIndicators()
       )
     );
