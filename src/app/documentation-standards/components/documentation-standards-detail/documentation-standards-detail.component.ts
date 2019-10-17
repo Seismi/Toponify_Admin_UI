@@ -16,8 +16,10 @@ export class DocumentationStandardsDetailComponent {
   @Input() isEditMode: boolean;
   @Input() dateType: boolean;
   @Input() propertyType: string;
+  @Input() booleanType: boolean;
 
   types = Constants.PROPERTY_TYPES;
+  booleanTypes = Constants.BOOLEAN_TYPES;
 
   @Output()
   saveDocument = new EventEmitter();

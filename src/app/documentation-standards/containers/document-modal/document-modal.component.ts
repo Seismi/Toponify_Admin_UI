@@ -24,6 +24,7 @@ export class DocumentModalComponent implements OnInit {
   public mode: string;
   private reg;
   dateType: boolean = false;
+  booleanType: boolean = false;
   propertyType: string;
 
   constructor(
@@ -50,6 +51,7 @@ export class DocumentModalComponent implements OnInit {
       this.propertyType = this.customProperties.type;
       
       (this.customProperties.type === 'Date') ? this.dateType = true : this.dateType = false;
+      (this.customProperties.type === 'Boolean') ? this.booleanType = true : this.booleanType = false;
   
       this.documentStandardsService.documentStandardsForm.patchValue({
         ...this.customProperties

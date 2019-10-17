@@ -21,8 +21,6 @@ export class DocumentStandardsService {
       reg = '[a-zA-Z ]*';
     } else if (type === 'Number') {
       reg = '^[0-9]{0,50}$';
-    } else if (type === 'Boolean') {
-      reg = '(true|false)*';
     } else if (type === 'Hyperlink') {
       reg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
     }

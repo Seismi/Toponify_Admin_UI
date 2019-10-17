@@ -33,7 +33,7 @@
   </div>
 
     <!-- Value -->
-    <mat-form-field *ngIf="isEditMode && !dateType">
+    <mat-form-field *ngIf="isEditMode && !dateType && !booleanType">
         <input matInput placeholder="Value ({{propertyType}})" formControlName="value" data-hook="documentation-standards-details-value">
         <mat-error>Not Valid! Please make sure that your value matches property type</mat-error>
     </mat-form-field>
@@ -43,6 +43,15 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         <mat-error>Not Valid! Please make sure that your value matches property type</mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="isEditMode && booleanType">
+        <mat-label>Value ({{propertyType}})</mat-label>
+        <mat-select formControlName="value">
+            <mat-option *ngFor="let boolean of booleanTypes" [value]="boolean">
+                {{boolean}}
+            </mat-option>
+        </mat-select>
     </mat-form-field>
 
     <div class="form-actions" *ngIf="!modalMode">
