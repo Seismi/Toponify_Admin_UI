@@ -20,7 +20,7 @@ export class WorkPackageNodesService extends WorkPackageService {
       return this.http.post<any>(
         `/workpackages/${workPackageId}/nodes`,
         { data },
-        { ...this.httpOptions, params: { scope } }
+        { ...this.httpOptions, params: { scopeQuery: scope } }
       );
     } else {
       return this.http.post<any>(`/workpackages/${workPackageId}/nodes`, { data }, this.httpOptions);
