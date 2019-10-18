@@ -26,6 +26,8 @@ import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
+  getNodeEntitiesBy,
+  getNodeEntityById,
   getNodeLinks,
   getSelectedNode,
   getSelectedNodeLink
@@ -102,7 +104,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
-import {LayoutActionTypes} from '@app/layout/store/actions/layout.actions';
+import { LayoutActionTypes } from '@app/layout/store/actions/layout.actions';
 
 enum Events {
   NodesLinksReload = 0
@@ -181,6 +183,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
   editTabIndex: number;
+  public parentName: string | null;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -264,10 +267,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
       this.selectedWorkpackages = workpackages;
       if (fil) {
-        const { filterLevel, id, scope } = fil;
+        const { filterLevel, id, scope, parentName } = fil;
         if (filterLevel) {
           this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
         }
+        this.parentName = parentName ? parentName : null;
       }
     });
 
@@ -803,9 +807,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onTabClick(index: number) {
-    (this.workPackageIsEditable === true && index === 1)
-      ? this.editTabIndex = 1
-      : this.editTabIndex = null;
+    this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
     this.diagramComponent.updateDiagramArea();
   }
 
@@ -815,9 +817,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.showOrHideLeftPane = true;
     }
 
-    (this.selectedLeftTab === 0 || this.selectedLeftTab === 2)
-      ?  this.editTabIndex = null
-      : this.editTabIndex = 1;
+    this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
 
     this.diagramComponent.updateDiagramArea();
   }
