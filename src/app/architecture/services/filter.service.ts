@@ -4,16 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class FilterService implements OnDestroy {
-  public filter: BehaviorSubject<{[key: string]: any} >;
+  public filter: BehaviorSubject<{ [key: string]: any }>;
   private filterKey = 'filter';
   private queryParamSubscription: Subscription;
 
   constructor(public router: Router, private route: ActivatedRoute) {
     const filterString = this.route.snapshot.queryParams[this.filterKey];
 
-    this.filter = new BehaviorSubject(
-      filterString ? this.transformToObject(filterString) : {}
-    );
+    this.filter = new BehaviorSubject(filterString ? this.transformToObject(filterString) : {});
 
     this.queryParamSubscription = route.queryParams.subscribe(params => {
       const filters = params[this.filterKey];
@@ -29,7 +27,7 @@ export class FilterService implements OnDestroy {
     this.queryParamSubscription.unsubscribe();
   }
 
-  getFilter(): {[key: string]: any}  {
+  getFilter(): { [key: string]: any } {
     return this.filter.getValue();
   }
 
@@ -42,10 +40,12 @@ export class FilterService implements OnDestroy {
       queryParams: queryParams
     });
   }
-  addFilter(filter: {[key: string]: any}, removeKeyFromFilter?: string): void {
-    const newFilter = {...this.getFilter(), ...filter};
-    if (removeKeyFromFilter) {
-      delete newFilter[removeKeyFromFilter];
+  addFilter(filter: { [key: string]: any }, removeKeysFromFilter?: string[]): void {
+    const newFilter = { ...this.getFilter(), ...filter };
+    if (removeKeysFromFilter) {
+      removeKeysFromFilter.forEach(key => {
+        delete newFilter[key];
+      });
     }
     this.setFilter(newFilter);
   }
@@ -54,11 +54,11 @@ export class FilterService implements OnDestroy {
     return this.filtersAsUrlQuery(filter);
   }
 
-  transformToObject(filter: string): {[key: string]: string}  {
+  transformToObject(filter: string): { [key: string]: string } {
     return this.filtersStringToObject(filter);
   }
 
-  private filtersStringToObject(filtersString: string): {[key: string]: string} {
+  private filtersStringToObject(filtersString: string): { [key: string]: string } {
     const filters = {};
 
     if (filtersString !== null) {
