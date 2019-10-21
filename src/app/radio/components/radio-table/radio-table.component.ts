@@ -21,7 +21,7 @@ export class RadioTableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  displayedColumns: string[] = ['title','category','status','last_update_date','last_update_by'];
+  displayedColumns: string[] = ['refNo', 'category','status', 'title', 'last_update_date','last_update_by'];
   public dataSource: MatTableDataSource<RadioEntity>;
 
   ngOnInit() {}
