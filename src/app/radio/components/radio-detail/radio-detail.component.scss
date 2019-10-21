@@ -13,3 +13,31 @@ button{
 .disabled {
     pointer-events: none;
 }
+
+.editable {
+    background-color: #fff;
+}
+
+.ref-number-input {
+    margin: 0 35px;
+}
+
+.assigned-to-input {
+    margin-right: 35px;
+}
+
+.align-in-row {
+    display: flex;
+}
+
+button {
+    border-radius: 15px;
+    font-weight: lighter;
+}
+
+.mat-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    margin-top: 4px;
+    padding: 0;
+}

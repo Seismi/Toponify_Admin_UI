@@ -24,6 +24,7 @@ export class RadioDetailComponent {
 
   categories = Constants.RADIO_CATEGORIES;
   status = Constants.RADIO_STATUS;
+  refNumber = ['R-0001', 'R-0002', 'R-0003', 'R-0004'];
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;
