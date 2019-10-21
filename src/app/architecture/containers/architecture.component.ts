@@ -23,7 +23,7 @@ import {
   UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { NodeDetail, CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
   getNodeEntitiesBy,
@@ -1011,37 +1011,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedOwner = true;
   }
 
-  onEditProperties(propertyId: string) {
-    this.nodeStore.pipe(select(getSelectedNode)).subscribe(data => {
-      this.customProperties = data;
-    });
+  onEditProperties(customProperty: CustomPropertyValuesEntity) {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         mode: 'edit',
-        customProperties: { ...this.customProperties }
+        customProperties: customProperty
       }
     });
 
-    const workpackages =
-      this.selectedPart.impactedByWorkPackages.length < 1
-        ? this.selectedWorkpackages
-        : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
-
     dialogRef.afterClosed().subscribe(data => {
-      workpackages.forEach(workpackage => {
-        if (data && data.customProperties) {
-          this.nodeStore.dispatch(
-            new UpdateCustomProperty({
-              workPackageId: workpackage.id,
-              nodeId: this.selectedPart.id,
-              customPropertyId: propertyId,
-              data: { data: { value: data.customProperties.value } }
-            })
-          );
-        }
-      });
+      if (data && data.customProperties) {
+        this.nodeStore.dispatch(
+          new UpdateCustomProperty({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            customPropertyId: customProperty.propertyId,
+            data: { data: { value: data.customProperties.value }}
+          })
+        );
+      }
     });
   }
 }

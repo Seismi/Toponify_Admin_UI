@@ -163,6 +163,7 @@ export interface CustomPropertyValuesEntity {
   propertyId?: string;
   name?: string;
   description?: string;
+  type?: string;
   value: string;
 }
 

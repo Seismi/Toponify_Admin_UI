@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DocumentStandardsValidatorService } from './document-standards-validator.service';
+import { DocumentStandardsValidatorService } from './document-standards-validator.service';;
 
 @Injectable()
 export class DocumentStandardsService {
@@ -8,14 +8,23 @@ export class DocumentStandardsService {
   public documentStandardsForm: FormGroup;
 
   constructor(private fb: FormBuilder, private documentStandardsValidatorService: DocumentStandardsValidatorService) {
-    const reg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
     this.documentStandardsForm = this.fb.group({
       name: [null, Validators.required],
       description: [null],
       type: [null, Validators.required],
-      levels: [null],
-      value: [null, [Validators.pattern(reg)]],
+      levels: [null]
     });
+  }
+
+  getPropertyValueValidator(type: string, reg: any) {
+    if (type === 'Text') {
+      reg = null;
+    } else if (type === 'Number') {
+      reg = '^[0-9]{0,50}$';
+    } else if (type === 'Hyperlink') {
+      reg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
+    }
+    return reg;
   }
 
   get isValid(): boolean {
