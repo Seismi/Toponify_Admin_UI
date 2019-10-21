@@ -1,6 +1,6 @@
 // Responses
 export interface GetLayoutEntitiesApiResponse {
-  data: LayoutEntity[];
+  data: LayoutDetails[];
   links: Links;
   page: Page;
 }
