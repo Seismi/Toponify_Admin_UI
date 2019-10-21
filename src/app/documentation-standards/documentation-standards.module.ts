@@ -66,6 +66,6 @@ import { DocumentModalComponent } from './containers/document-modal/document-mod
     DocumentModalComponent
   ],
   providers: [DocumentationStandardsService],
-  entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent]
+  entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent, DocumentModalComponent]
 })
 export class DocumentationStandardsModule { }

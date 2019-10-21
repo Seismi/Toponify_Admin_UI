@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
 import { Subscription, Observable } from 'rxjs';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
-import { LoadRadio, AddReply } from '@app/radio/store/actions/radio.actions';
+import { LoadRadio, AddReply, DeleteRadioProperty } from '@app/radio/store/actions/radio.actions';
 import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
@@ -14,6 +14,9 @@ import { ReplyModalComponent } from '../reply-modal/reply-modal.component';
 import { User } from '@app/settings/store/models/user.model';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
+import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
+import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
+import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/delete-property-modal.component';
 
 @Component({
   selector: 'app-radio-details',
@@ -37,7 +40,8 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -60,6 +64,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
           description: radio.description
         });
       }
+      this.ref.detectChanges();
     }));
   }
 
@@ -135,6 +140,41 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
       },
     }))
     this.radioDetailsForm.patchValue({ replyText: '' });
+  }
+
+  onEditProperty(property: CustomPropertiesEntity) {
+    const dialogRef = this.dialog.open(DocumentModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        mode: 'edit',
+        customProperties: property,
+        name: property.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.customProperties) {
+        
+      }
+    });
+  }
+
+  onDeleteProperty(property: CustomPropertiesEntity) {
+    const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete',
+        name: property.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(new DeleteRadioProperty({radioId: this.radioId, customPropertyId: property.propertyId}));
+      }
+    });
   }
 
 }

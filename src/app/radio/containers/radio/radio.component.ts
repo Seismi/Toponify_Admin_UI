@@ -9,9 +9,10 @@ import { State as RadioState } from '../../store/reducers/radio.reducer';
 import { LoadRadios, AddRadioEntity } from '../../store/actions/radio.actions';
 import { getRadioEntities } from '../../store/selectors/radio.selector';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
+import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 
 @Component({
   selector: 'smi-radio',
@@ -23,13 +24,20 @@ export class RadioComponent implements OnInit {
 
   radio$: Observable<RadioEntity[]>;
   loading$: Observable<boolean>;
+  radioSelected: boolean;
 
   constructor(
     private userStore: Store<UserState>,
     private store: Store<RadioState>,
     public dialog: MatDialog,
     private router: Router
-  ) { }
+  ) {
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        (event.url.length > 7) ? this.radioSelected = true : this.radioSelected = false;
+      }
+    });
+  }
 
   ngOnInit() {
     this.userStore.dispatch(new LoadUsers({}));
@@ -44,8 +52,7 @@ export class RadioComponent implements OnInit {
 
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false,
-      width: '500px'
+      disableClose: false
     });
 
     dialogRef.afterClosed().subscribe((data) => {
@@ -53,6 +60,15 @@ export class RadioComponent implements OnInit {
         this.store.dispatch(new AddRadioEntity({ data: data.radio }));
       }
     });
+  }
+
+  onFilter() {
+    const dialogRef = this.dialog.open(FilterModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {});
   }
 
 }

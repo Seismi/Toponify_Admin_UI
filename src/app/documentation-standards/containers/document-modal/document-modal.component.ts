@@ -22,6 +22,7 @@ export class DocumentModalComponent implements OnInit {
   isDisabled = false;
   public isEditMode: boolean;
   public mode: string;
+  public name: string;
 
   constructor(
     private documentStandardsService: DocumentStandardsService,
@@ -29,6 +30,7 @@ export class DocumentModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.documentStandard = data.documentStandard;
       this.customProperties = data.customProperties;
+      this.name = data.name;
       this.mode = data.mode;
       (this.mode === 'edit')
         ? this.isEditMode = true
