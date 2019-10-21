@@ -1,14 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { HomePageActionsUnion, HomePageActionTypes } from '../actions/home.actions';
-import { Page, Links, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Links, Page, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
-import { LayoutEntity } from '@app/layout/store/models/layout.model';
+import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { UserDetails } from '@app/settings/store/models/user.model';
 
 export interface State {
   workpackages: WorkPackageEntity[];
   radios: RadioEntity[];
-  layouts: LayoutEntity[];
+  layouts: LayoutDetails[];
   profile: UserDetails;
   loading: boolean;
   page: Page;
@@ -75,13 +75,6 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
         ...state,
         error: action.payload,
         loading: false
-      };
-    }
-
-
-    case HomePageActionTypes.LoadMyLayouts: {
-      return {
-        ...state
       };
     }
 
