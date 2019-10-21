@@ -128,6 +128,30 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
+
+    case RadioActionTypes.DeleteRadioProperty: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case RadioActionTypes.DeleteRadioPropertySuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedRadio: action.payload
+      };
+    }
+
+    case RadioActionTypes.DeleteRadioPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
     default: {
       return state;
     }

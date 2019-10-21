@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 
 export enum RadioActionTypes {
   LoadRadios = '[Radio] Load Radio entities',
@@ -17,7 +18,15 @@ export enum RadioActionTypes {
 
   AddReply = '[Radio] Add Reply',
   AddReplySuccess = '[Radio] Add Reply Success',
-  AddReplyFailure = '[Radio] Add Reply Failure'
+  AddReplyFailure = '[Radio] Add Reply Failure',
+
+  UpdateRadioProperty = '[Radio] Update Radio Property',
+  UpdateRadioPropertySuccess = '[Radio] Update Radio Property Success',
+  UpdateRadioPropertyFailure = 'Update Radio Property Failure',
+
+  DeleteRadioProperty = '[Radio] Delete Radio Property',
+  DeleteRadioPropertySuccess = '[Radio] Delete Radio Property Success',
+  DeleteRadioPropertyFailure = 'Delete Radio Property Failure',
 }
 
 export class LoadRadios implements Action {
@@ -83,6 +92,39 @@ export class AddReplyFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+
+export class UpdateRadioProperty implements Action {
+  readonly type = RadioActionTypes.UpdateRadioProperty;
+  constructor(public payload: { radioId: string, customPropertyId: string, data: any }) {}
+}
+
+export class UpdateRadioPropertySuccess implements Action {
+  readonly type = RadioActionTypes.UpdateRadioPropertySuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateRadioPropertyFailure implements Action {
+  readonly type = RadioActionTypes.UpdateRadioPropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+
+export class DeleteRadioProperty implements Action {
+  readonly type = RadioActionTypes.DeleteRadioProperty;
+  constructor(public payload: { radioId: string, customPropertyId: string }) {}
+}
+
+export class DeleteRadioPropertySuccess implements Action {
+  readonly type = RadioActionTypes.DeleteRadioPropertySuccess;
+  constructor(public payload: RadioDetail) {}
+}
+
+export class DeleteRadioPropertyFailure implements Action {
+  readonly type = RadioActionTypes.DeleteRadioPropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+
 export type RadioActionsUnion = 
   | LoadRadios
   | LoadRadiosSuccess
@@ -95,6 +137,12 @@ export type RadioActionsUnion =
   | AddRadioEntityFailure
   | AddReply
   | AddReplySuccess
-  | AddReplyFailure;
+  | AddReplyFailure
+  | UpdateRadioProperty
+  | UpdateRadioPropertySuccess
+  | UpdateRadioPropertyFailure
+  | DeleteRadioProperty
+  | DeleteRadioPropertySuccess
+  | DeleteRadioPropertyFailure;
 
 

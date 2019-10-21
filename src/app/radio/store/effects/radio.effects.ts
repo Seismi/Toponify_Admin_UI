@@ -1,11 +1,12 @@
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetailApiResponse, RadioApiRequest, RadioApiResponse, ReplyApiRequest, ReplyApiResponse } from '../models/radio.model';
 import { catchError, map, switchMap, mergeMap, first, tap } from 'rxjs/operators';
-import { RadioActionTypes, LoadRadios, LoadRadiosSuccess, LoadRadiosFailure, LoadRadio, LoadRadioSuccess, LoadRadioFailure, AddRadioEntity, AddRadioEntitySuccess, AddRadioEntityFailure, AddReply, AddReplySuccess } from '../actions/radio.actions';
+import { RadioActionTypes, LoadRadios, LoadRadiosSuccess, LoadRadiosFailure, LoadRadio, LoadRadioSuccess, LoadRadioFailure, AddRadioEntity, AddRadioEntitySuccess, AddRadioEntityFailure, AddReply, AddReplySuccess, UpdateRadioProperty, UpdateRadioPropertySuccess, UpdateRadioPropertyFailure, DeleteRadioProperty, DeleteRadioPropertySuccess, DeleteRadioPropertyFailure } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
+import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 
 
 @Injectable()
@@ -66,4 +67,29 @@ export class RadioEffects {
       );
     })
   );
+
+  @Effect()
+  updateRadioProperty$ = this.actions$.pipe(
+    ofType<UpdateRadioProperty>(RadioActionTypes.UpdateRadioProperty),
+    map(action => action.payload),
+    switchMap((payload: { radioId: string, customPropertyId: string, data: any }) => {
+      return this.radioService.updateRadioProperty(payload.radioId, payload.customPropertyId, payload.data).pipe(
+        switchMap((response: any) => [new UpdateRadioPropertySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new UpdateRadioPropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteRadioProperty$ = this.actions$.pipe(
+    ofType<DeleteRadioProperty>(RadioActionTypes.DeleteRadioProperty),
+    map(action => action.payload),
+    switchMap((payload: { radioId: string, customPropertyId: string }) => {
+      return this.radioService.deleteRadioProperty(payload.radioId, payload.customPropertyId).pipe(
+        switchMap((response: RadioDetailApiResponse) => [new DeleteRadioPropertySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteRadioPropertyFailure(error)))
+      );
+    })
+  );
+
 }
