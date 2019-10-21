@@ -1,6 +1,12 @@
 <form [formGroup]="group">
-  <div class="textarea-container">
-    <textarea [rows]="rows" class="form-control" (ngModelChange)="onType($event)" formControlName="replyText"></textarea>
-    <button *ngIf="!replyMode" [disabled]="disabled" class="btn btn-primary" (click)="onSend()">Send</button>
+  <div class="container">
+    <div class="input-block">
+      <mat-form-field>
+        <textarea matInput [rows]="rows" placeholder="Your Message" class="input" (ngModelChange)="onType($event)" formControlName="replyText"></textarea>
+      </mat-form-field>
+    </div>
+    <div *ngIf="!replyMode">
+      <button mat-raised-button color="primary" (click)="onSend()" [disabled]="disabled"><mat-icon>send</mat-icon>Send</button>
+    </div>
   </div>
 </form>
