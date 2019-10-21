@@ -129,6 +129,30 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
     }
 
 
+    case RadioActionTypes.UpdateRadioProperty: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case RadioActionTypes.UpdateRadioPropertySuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedRadio: action.payload
+      };
+    }
+
+    case RadioActionTypes.UpdateRadioPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+
     case RadioActionTypes.DeleteRadioProperty: {
       return {
         ...state,

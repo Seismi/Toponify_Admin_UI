@@ -1,7 +1,6 @@
 import { Action } from '@ngrx/store';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 
 export enum RadioActionTypes {
   LoadRadios = '[Radio] Load Radio entities',
@@ -26,7 +25,7 @@ export enum RadioActionTypes {
 
   DeleteRadioProperty = '[Radio] Delete Radio Property',
   DeleteRadioPropertySuccess = '[Radio] Delete Radio Property Success',
-  DeleteRadioPropertyFailure = 'Delete Radio Property Failure',
+  DeleteRadioPropertyFailure = '[Radio] Delete Radio Property Failure',
 }
 
 export class LoadRadios implements Action {
@@ -100,7 +99,7 @@ export class UpdateRadioProperty implements Action {
 
 export class UpdateRadioPropertySuccess implements Action {
   readonly type = RadioActionTypes.UpdateRadioPropertySuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: RadioDetail) {}
 }
 
 export class UpdateRadioPropertyFailure implements Action {

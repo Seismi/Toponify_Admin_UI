@@ -74,7 +74,7 @@ export class RadioEffects {
     map(action => action.payload),
     switchMap((payload: { radioId: string, customPropertyId: string, data: any }) => {
       return this.radioService.updateRadioProperty(payload.radioId, payload.customPropertyId, payload.data).pipe(
-        switchMap((response: any) => [new UpdateRadioPropertySuccess(response.data)]),
+        switchMap((response: RadioDetailApiResponse) => [new UpdateRadioPropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateRadioPropertyFailure(error)))
       );
     })

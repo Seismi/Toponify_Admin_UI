@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
 import { Subscription, Observable } from 'rxjs';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
-import { LoadRadio, AddReply, DeleteRadioProperty } from '@app/radio/store/actions/radio.actions';
+import { LoadRadio, AddReply, DeleteRadioProperty, UpdateRadioProperty } from '@app/radio/store/actions/radio.actions';
 import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
@@ -155,7 +155,11 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.customProperties) {
-        
+        this.store.dispatch(new UpdateRadioProperty({
+          radioId: this.radioId,
+          customPropertyId: property.propertyId,
+          data: { data: { value: data.customProperties.value }}
+        }))
       }
     });
   }

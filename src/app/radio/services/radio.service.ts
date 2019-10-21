@@ -29,8 +29,8 @@ export class RadioService {
     return this.http.post<any>(`/radios/${id}/reply`, entity, httpOptions);
   }
 
-  updateRadioProperty(radioId: string, customPropertyId: string, data: any): Observable<any> {
-    return this.http.put<any>(`/radios/${radioId}/customPropertyvalues/${customPropertyId}`, data, httpOptions);
+  updateRadioProperty(radioId: string, customPropertyId: string, data: any): Observable<RadioDetailApiResponse> {
+    return this.http.put<RadioDetailApiResponse>(`/radios/${radioId}/customPropertyvalues/${customPropertyId}`, data, httpOptions);
   }
 
   deleteRadioProperty(radioId: string, customPropertyId: string): Observable<RadioDetailApiResponse> {
