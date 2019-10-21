@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { NodeDetail, CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-properties-tab',
@@ -25,9 +25,9 @@ export class PropertiesTabComponent {
   public displayedColumns: string[] = ['name', 'value', 'edit'];
 
   @Output()
-  editProperties = new EventEmitter<string>();
+  editProperties = new EventEmitter<CustomPropertyValuesEntity>();
 
-  onEdit(id: string) {
-    this.editProperties.emit(id);
+  onEdit(customProperty: CustomPropertyValuesEntity) {
+    this.editProperties.emit(customProperty);
   }
 }

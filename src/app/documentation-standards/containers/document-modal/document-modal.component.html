@@ -1,14 +1,17 @@
-<h1 mat-dialog-title>{{(isEditMode) ? 'Edit' : 'Add'}}</h1>
+<h1 mat-dialog-title>{{(isEditMode) ? 'Edit ' + '"' + this.customProperties.name + '"' : 'Add'}}</h1>
 <div mat-dialog-content>
     <smi-documentation-standards-detail 
       [group]="documentStandardsForm"
       [isEditable]="isEditable"
       [modalMode]="modalMode"
       [isDisabled]="isDisabled"
-      [isEditMode]="isEditMode">
+      [isEditMode]="isEditMode"
+      [dateType]="dateType"
+      [propertyType]="propertyType"
+      [booleanType]="booleanType">
     </smi-documentation-standards-detail>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
 </div>
