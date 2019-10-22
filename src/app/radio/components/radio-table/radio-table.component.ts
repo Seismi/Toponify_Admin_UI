@@ -9,7 +9,7 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 })
 export class RadioTableComponent implements OnInit {
 
-  selectedRowIndex: number = -1;
+  public selectedRowIndex: number = -1;
 
   @Input()
   set data(data: RadioEntity[]) {
@@ -21,7 +21,7 @@ export class RadioTableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  displayedColumns: string[] = ['title','category','status','last_update_date','last_update_by'];
+  public displayedColumns: string[] = ['refNo', 'category','status', 'title', 'last_update_date','last_update_by'];
   public dataSource: MatTableDataSource<RadioEntity>;
 
   ngOnInit() {}
@@ -30,7 +30,7 @@ export class RadioTableComponent implements OnInit {
   selectRadio = new EventEmitter<string>();
 
   @Output()
-  addRadio = new EventEmitter();
+  addRadio = new EventEmitter<void>();
 
   onSelectRow(row) {
     this.selectedRowIndex = row.id;

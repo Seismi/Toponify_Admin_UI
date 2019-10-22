@@ -1,23 +1,22 @@
-<div class="container">
+<div *ngFor="let data of radio">
   <div class="wrapper">
-    <table mat-table [dataSource]="dataSource">
-      <ng-container matColumnDef="title">
-        <td mat-cell *matCellDef="let element">
-          <span>
-            {{ element.author.firstName }} {{element.author.lastName}}
-            <small>
-              {{ element.postedOn | date}}
-            </small>
-          </span><br>
-          {{ element.replyText }}
-        </td>
-      </ng-container>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+    <div class="bubble mat-elevation-z8">
+      {{data.replyText}}
+      <div class="changes" *ngIf="data.changes.hasChanges === true">
+        <hr>
+        Changes:
+        <ul *ngFor="let changes of data.changes.listChanges">
+          <li>
+            "{{changes.changedProperty}}" 
+            set to 
+            "{{(changes.changedProperty === 'actionBy') ? (changes.changedTo | date) : changes.changedTo}}" 
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p class="username">
+      {{ data.author.firstName }} {{data.author.lastName}}
+      <small>{{data.postedOn | date}}</small>
+    </p>
   </div>
-  <smi-reply-text 
-    [rows]="1" 
-    [group]="group"  
-    (sendReply)="onSend($event)">
-  </smi-reply-text>
 </div>

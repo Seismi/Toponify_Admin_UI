@@ -1,20 +1,43 @@
+.wrapper {
+  border-top: solid 1px #ddd;
+  border-bottom: solid 1px #ddd;
+}
+
 table {
   width: 100%;
 }
 
 tr.mat-header-row {
-  height: 35px;
+  height: 45px;
 }
 
 tr.mat-row{
   cursor: pointer;
+  height: 45px;
+  &:hover {
+    background-color: #f9f9f9;
+  }
+}
+
+td.mat-cell {
+  font-size: 13px;
 }
 
 .highlight {
   background: #efefef;
 }
 
-.title {
-  font-size: 25px;
-  margin-top: 20px;
+button {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
 }

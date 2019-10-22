@@ -1,38 +1,54 @@
-<smi-right-sidebar
-  *ngIf="showOrHideRightPane"
-  [radioPage]="true"
-  (rightTab)="openRightTab($event)">
-</smi-right-sidebar>
-
-<app-model-container *ngIf="!showOrHideRightPane">
-  <app-model-sidebar [minWidth]="800" [maxWidth]="1000" [isLast]="true">
-      <p class="rightPane">
-          <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
-              <mat-tab label="Details">
-                  <p class="detailsTab">
-                    <smi-radio-detail
-                      data-hook="radio-details"
-                      [data]="users$ | async"
-                      [group]="radioDetailsForm"
-                      [isEditable]="isEditable"
-                      [modalMode]="modalMode"
-                      [statusClosed]="statusClosed"
-                      (archiveRadio)="onArchiveRadio($event)"
-                      (saveRadio)="onSaveRadio()">
-                    </smi-radio-detail>
-                    <smi-chatbox
-                      [group]="radioDetailsForm"
-                      [data]="radio?.replies"
-                      (sendReply)="onSendReply($event)">
-                    </smi-chatbox>
-                  </p>
-              </mat-tab>
-              <mat-tab label="Properties">
-                <smi-radio-properties-tab [data]="radio?.customPropertyValues"></smi-radio-properties-tab>
-              </mat-tab>
-          </mat-tab-group>
-          <br><br>
-          <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
-      </p>
-  </app-model-sidebar>
+<app-model-container>
+  <p class="rightPane">
+    <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">info</mat-icon>
+          Details
+        </ng-template>
+        <p class="detailsTab">
+          <smi-radio-detail 
+            data-hook="radio-details" 
+            [data]="users$ | async" 
+            [group]="radioDetailsForm"
+            [isEditable]="isEditable" 
+            [modalMode]="modalMode" 
+            [statusClosed]="statusClosed"
+            (archiveRadio)="onArchiveRadio($event)" 
+            (saveRadio)="onSaveRadio()">
+          </smi-radio-detail>
+        </p>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>comment</mat-icon>
+          Discussions
+        </ng-template>
+        <p class="discussion-tab">
+          <smi-chatbox
+            [group]="radioDetailsForm"
+            [data]="radio?.replies">
+          </smi-chatbox>
+        </p>
+        <p class="reply-input">
+          <smi-reply-text 
+            [rows]="4"
+            [group]="radioDetailsForm"
+            (sendReply)="onSendReply($event)">
+          </smi-reply-text>
+        </p>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>insert_drive_file</mat-icon>
+          Properties
+        </ng-template>
+          <smi-radio-properties-tab
+            (editProperty)="onEditProperty($event)"
+            (deleteProperty)="onDeleteProperty($event)"
+            [data]="radio?.customPropertyValues">
+          </smi-radio-properties-tab>
+      </mat-tab>
+    </mat-tab-group>
+  </p>
 </app-model-container>
