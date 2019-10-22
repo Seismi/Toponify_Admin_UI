@@ -83,6 +83,10 @@ export class DiagramChangesService {
             }
           });
         });
+      } else {
+        if ('displayId' in part.data) {
+          part.data.id = part.data.displayId;
+        }
       }
     });
   }
@@ -163,7 +167,7 @@ export class DiagramChangesService {
     const currentLevel = this.filterService.filter.getValue().filterLevel;
 
     // Do not update positions for map view
-    if (currentLevel === Level.map) {
+    if (currentLevel.endsWith('map')) {
       return;
     }
 
@@ -260,31 +264,36 @@ export class DiagramChangesService {
 
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
+
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
 
-      // Add currently editing workpackage to array of workpackages impacted by if not there already
-      if (
-        link.data.impactedByWorkPackages.every(
-          function(workpackage) {
-            return workpackage.id !== this.workpackages[0].id;
-          }.bind(this)
-        )
-      ) {
-        link.diagram.model.setDataProperty(
-          link.data,
-          'impactedByWorkPackages',
-          link.data.impactedByWorkPackages.concat([this.workpackages[0]])
-        );
+      // TEMPORARY - condition to prevent error while impactedByWorkPackages missing from nodeLink components response
+      if (!currentLevel.endsWith('map')) {
+        // Add currently editing workpackage to array of workpackages impacted by if not there already
+        if (
+          link.data.impactedByWorkPackages.every(
+            function (workpackage) {
+              return workpackage.id !== this.workpackages[0].id;
+            }.bind(this)
+          )
+        ) {
+          link.diagram.model.setDataProperty(
+            link.data,
+            'impactedByWorkPackages',
+            link.data.impactedByWorkPackages.concat([this.workpackages[0]])
+          );
+        }
       }
 
       // Create link if not already in database
       if (link.data.isTemporary) {
-        // Create copy of link data with route in format required for back end
+        // Create copy of link data
         const newLink = Object.assign({}, link.data);
 
-        newLink.route = [{ view: 'Default', points: link.data.route }];
+        newLink.sourceId = link.fromNode.data.id;
+        newLink.targetId = link.toNode.data.id;
 
         this.workpackages.forEach(workpackage => {
           this.workpackageStore.dispatch(
@@ -308,22 +317,18 @@ export class DiagramChangesService {
         if (!draggingTool.isActive && !relinkingTool.isActive) {
           return;
         }
-        // FIXME: temp solution, needs to be fixed
-        const sourceProp = (event.diagram.model as any).linkFromKeyProperty;
-        const targetProp = (event.diagram.model as any).linkToKeyProperty;
 
         const updatedLink = {
-          id: link.key,
-          [sourceProp]: link.fromNode.key,
-          [targetProp]: link.toNode.key,
-          route: [{ view: 'Default', points: link.data.route }]
+          id: link.data.id,
+          sourceId: link.fromNode.data.id,
+          targetId: link.toNode.data.id
         };
 
         this.workpackages.forEach(workpackage => {
           this.workpackageStore.dispatch(
             new UpdateWorkPackageLink({
               workpackageId: workpackage.id,
-              linkId: link.key,
+              linkId: link.data.id,
               link: updatedLink
             })
           );

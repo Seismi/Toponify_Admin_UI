@@ -301,7 +301,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const currentLevel = this.filterService.getFilter().filterLevel;
 
         // Reload nodes and links for new layout if not in map view
-        if (currentLevel !== Level.map) {
+        if (!currentLevel.endsWith('map')) {
           this.subscribeForNodesLinksData();
         }
       }
@@ -425,7 +425,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       queryParams.scopeQuery = scope;
     }
 
-    if (layer === Level.map) {
+    if (layer.endsWith('map')) {
       this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
@@ -512,9 +512,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.part instanceof Node
-      ? this.nodeStore.dispatch(new LoadNode({ id: this.nodeId, queryParams: queryParams }))
-      : this.nodeStore.dispatch(new LoadNodeLink({ id: this.nodeId, queryParams: queryParams }));
+
+    // Do not attempt to load data for disconnected node links that have not been added to the database yet
+    if (!this.part.data.isTemporary) {
+      this.part instanceof Node
+        ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
+        : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
+    }
   }
 
   // FIXME: should be removed as createObject/node/link handled inside change service
@@ -660,7 +664,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (nodes === null) {
             return null;
           }
-          if (currentFilter && currentFilter.filterLevel === Level.map) {
+          if (currentFilter && currentFilter.filterLevel.endsWith('map')) {
             return nodes;
           }
 
@@ -703,7 +707,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (links === null) {
             return null;
           }
-          if (currentFilter && [Level.map, Level.usage].includes(currentFilter.filterLevel)) {
+          if (currentFilter && [Level.systemMap, Level.dataSetMap, Level.usage].includes(currentFilter.filterLevel)) {
             return links;
           }
 

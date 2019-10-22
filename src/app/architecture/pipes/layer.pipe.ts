@@ -20,7 +20,7 @@ export class LayerPipe implements PipeTransform {
     const { filterLevel, id } = filter;
 
     // If current layer map or usage, do not filter
-    if ([Level.map, Level.usage].includes(filterLevel)) {
+    if ([Level.dataSetMap, Level.systemMap, Level.usage].includes(filterLevel)) {
       return items;
     } else {
       const filteredItems = items.filter(
