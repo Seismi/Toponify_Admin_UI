@@ -26,22 +26,21 @@ import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/dele
 })
 export class RadioDetailsComponent implements OnInit, OnDestroy {
 
-  users$: Observable<User[]>;
-  radio: RadioDetail;
-  radioId: string;
-  subscriptions: Subscription[] = [];
-  isEditable = false;
-  modalMode = false;
-  showOrHideRightPane = false;
-  selectedRightTab: number;
+  public users$: Observable<User[]>;
+  public radio: RadioDetail;
+  public radioId: string;
+  public subscriptions: Subscription[] = [];
+  public isEditable = false;
+  public modalMode = false;
+  public showOrHideRightPane = false;
+  public selectedRightTab: number;
 
   constructor(
     private userStore: Store<UserState>,
     private route: ActivatedRoute,
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
-    private dialog: MatDialog,
-    private ref: ChangeDetectorRef
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -64,7 +63,6 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
           description: radio.description
         });
       }
-      this.ref.detectChanges();
     }));
   }
 

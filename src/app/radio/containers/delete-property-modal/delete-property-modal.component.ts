@@ -8,8 +8,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class DeleteRadioPropertyModalComponent {
 
-  mode: string;
-  name: string;
+  public mode: string;
+  public name: string;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteRadioPropertyModalComponent>,

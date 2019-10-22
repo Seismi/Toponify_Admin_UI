@@ -13,16 +13,13 @@ export class ChatBoxComponent {
   @Input() group: FormGroup;
   public radio: RadioDetail;
 
-  constructor() {}
-
   @Input()
-  set data(data: any) { this.radio = data };
+  set data(data: RadioDetail) { this.radio = data };
 
-  displayedColumns: string[] = ['title'];
+  public displayedColumns: string[] = ['title'];
   public dataSource: MatTableDataSource<RadioDetail>;
 
-  @Output()
-  sendReply = new EventEmitter();
+  @Output() sendReply = new EventEmitter<void>();
 
   onSend() {
     this.sendReply.emit();

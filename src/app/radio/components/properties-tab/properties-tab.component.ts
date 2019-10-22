@@ -10,9 +10,9 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 })
 export class RadioPropertiesTabComponent {
   @Input()
-  set data(data: any[]) {
+  set data(data: NodeDetail[]) {
     if(data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<NodeDetail>(data);
       this.dataSource.paginator = this.paginator;
     }
   }
@@ -20,7 +20,7 @@ export class RadioPropertiesTabComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  displayedColumns: string[] = ['name', 'value', 'edit', 'delete'];
+  public displayedColumns: string[] = ['name', 'value', 'edit', 'delete'];
 
   @Output() editProperty = new EventEmitter<CustomPropertiesEntity>();
   @Output() deleteProperty = new EventEmitter<CustomPropertiesEntity>();

@@ -7,7 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class RadioHeaderComponent { 
 
-  status = ["new", "open"]
+  public status = ["new", "open"]
 
   @Output() filter = new EventEmitter<void>();
 

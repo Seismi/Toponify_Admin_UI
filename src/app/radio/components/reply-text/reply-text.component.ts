@@ -18,7 +18,7 @@ export class ReplyTextComponent {
   }
 
   @Output()
-  sendReply = new EventEmitter();
+  sendReply = new EventEmitter<void>();
 
   onSend() {
     this.sendReply.emit();

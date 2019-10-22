@@ -17,16 +17,16 @@ export class RadioService {
     return this.http.get<any>(`/radios`, {params: params});
   }
 
-  getRadio(id: string): Observable<any> {
-    return this.http.get<any>(`/radios/${id}`);
+  getRadio(id: string): Observable<RadioDetailApiResponse> {
+    return this.http.get<RadioDetailApiResponse>(`/radios/${id}`);
   }
 
-  addRadioEntity(entity: RadioApiRequest): Observable<any> {
-    return this.http.post<any>(`/radios`, entity, httpOptions);
+  addRadioEntity(entity: RadioApiRequest): Observable<RadioDetailApiResponse> {
+    return this.http.post<RadioDetailApiResponse>(`/radios`, entity, httpOptions);
   }
 
-  addRadioReply(entity: ReplyApiRequest, id: string): Observable<any> {
-    return this.http.post<any>(`/radios/${id}/reply`, entity, httpOptions);
+  addRadioReply(entity: ReplyApiRequest, id: string): Observable<RadioEntitiesResponse> {
+    return this.http.post<RadioEntitiesResponse>(`/radios/${id}/reply`, entity, httpOptions);
   }
 
   updateRadioProperty(radioId: string, customPropertyId: string, data: any): Observable<RadioDetailApiResponse> {

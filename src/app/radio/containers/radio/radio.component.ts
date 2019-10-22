@@ -22,9 +22,9 @@ import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 })
 export class RadioComponent implements OnInit {
 
-  radio$: Observable<RadioEntity[]>;
-  loading$: Observable<boolean>;
-  radioSelected: boolean;
+  public radio$: Observable<RadioEntity[]>;
+  public loading$: Observable<boolean>;
+  public radioSelected: boolean;
 
   constructor(
     private userStore: Store<UserState>,
