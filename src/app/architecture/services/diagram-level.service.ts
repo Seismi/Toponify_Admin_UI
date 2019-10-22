@@ -123,7 +123,7 @@ export class DiagramLevelService implements OnDestroy {
     } else {
       return;
     }
-    this.filterService.addFilter({ filterLevel: newLevel, id: object.data.id });
+    this.filterService.addFilter({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name });
   }
 
   displayMapView(event: any, object: go.Link): void {

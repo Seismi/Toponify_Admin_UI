@@ -37,7 +37,7 @@ export enum WorkPackageNodeActionTypes {
 
 export class AddWorkPackageNode implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNode;
-  constructor(public payload: {workpackageId: string, node: any}) {}
+  constructor(public payload: {workpackageId: string, node: any, scope?: string}) {}
 }
 
 export class AddWorkPackageNodeSuccess implements Action {

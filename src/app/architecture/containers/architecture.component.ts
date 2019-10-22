@@ -23,9 +23,11 @@ import {
   UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { NodeDetail, CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
+  getNodeEntitiesBy,
+  getNodeEntityById,
   getNodeLinks,
   getSelectedNode,
   getSelectedNodeLink
@@ -102,7 +104,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
-import {LayoutActionTypes} from '@app/layout/store/actions/layout.actions';
+import { LayoutActionTypes } from '@app/layout/store/actions/layout.actions';
 
 enum Events {
   NodesLinksReload = 0
@@ -181,6 +183,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
   editTabIndex: number;
+  public parentName: string | null;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -264,10 +267,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
       this.selectedWorkpackages = workpackages;
       if (fil) {
-        const { filterLevel, id, scope } = fil;
+        const { filterLevel, id, scope, parentName } = fil;
         if (filterLevel) {
           this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
         }
+        this.parentName = parentName ? parentName : null;
       }
     });
 
@@ -807,9 +811,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onTabClick(index: number) {
-    (this.workPackageIsEditable === true && index === 1)
-      ? this.editTabIndex = 1
-      : this.editTabIndex = null;
+    this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
     this.diagramComponent.updateDiagramArea();
   }
 
@@ -819,9 +821,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.showOrHideLeftPane = true;
     }
 
-    (this.selectedLeftTab === 0 || this.selectedLeftTab === 2)
-      ?  this.editTabIndex = null
-      : this.editTabIndex = 1;
+    this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
 
     this.diagramComponent.updateDiagramArea();
   }
@@ -1015,37 +1015,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedOwner = true;
   }
 
-  onEditProperties(propertyId: string) {
-    this.nodeStore.pipe(select(getSelectedNode)).subscribe(data => {
-      this.customProperties = data;
-    });
+  onEditProperties(customProperty: CustomPropertyValuesEntity) {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         mode: 'edit',
-        customProperties: { ...this.customProperties }
+        customProperties: customProperty
       }
     });
 
-    const workpackages =
-      this.selectedPart.impactedByWorkPackages.length < 1
-        ? this.selectedWorkpackages
-        : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
-
     dialogRef.afterClosed().subscribe(data => {
-      workpackages.forEach(workpackage => {
-        if (data && data.customProperties) {
-          this.nodeStore.dispatch(
-            new UpdateCustomProperty({
-              workPackageId: workpackage.id,
-              nodeId: this.selectedPart.id,
-              customPropertyId: propertyId,
-              data: { data: { value: data.customProperties.value } }
-            })
-          );
-        }
-      });
+      if (data && data.customProperties) {
+        this.nodeStore.dispatch(
+          new UpdateCustomProperty({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            customPropertyId: customProperty.propertyId,
+            data: { data: { value: data.customProperties.value }}
+          })
+        );
+      }
     });
   }
 }

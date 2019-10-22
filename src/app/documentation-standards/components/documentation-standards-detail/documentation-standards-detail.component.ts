@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Constants } from '@app/core/constants';
 
 @Component({
   selector: 'smi-documentation-standards-detail',
@@ -13,8 +14,12 @@ export class DocumentationStandardsDetailComponent {
   @Input() isDisabled = true;
   @Input() modalMode = false;
   @Input() isEditMode: boolean;
+  @Input() dateType: boolean;
+  @Input() propertyType: string;
+  @Input() booleanType: boolean;
 
-  types = ['Boolean', 'Text', 'Hyperlink', 'Number', 'Date'];
+  types = Constants.PROPERTY_TYPES;
+  booleanTypes = Constants.BOOLEAN_TYPES;
 
   @Output()
   saveDocument = new EventEmitter();

@@ -8,7 +8,8 @@ import { Injectable } from '@angular/core';
 import {
   CustomLink,
   GojsCustomObjectsService,
-  updateShapeShadows
+  updateShapeShadows,
+  customIcons
 } from './gojs-custom-objects.service';
 import { FilterService } from './filter.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
@@ -353,7 +354,7 @@ export class DiagramTemplatesService {
   //   tags
   //   owner
   // Returns an array of node sections
-  getStandardNodeSections(): go.TextBlock[] {
+  getStandardNodeSections(isHorizontal = false): go.TextBlock[] {
     const sections = [
       {
         sectionName: 'name',
@@ -377,6 +378,8 @@ export class DiagramTemplatesService {
       }
     ];
 
+    const sectionMargin =  isHorizontal ? new go.Margin(0, 5, 0, 0) : new go.Margin(0, 0, 5, 0);
+
     return sections.map(function(section) {
       return $(
         go.TextBlock,
@@ -385,7 +388,7 @@ export class DiagramTemplatesService {
           stroke: 'black',
           font: section.font,
           maxSize: new go.Size(100, Infinity),
-          margin: new go.Margin(0, 0, 5, 0)
+          margin: sectionMargin
         },
         new go.Binding('text', section.sectionName, function(input) {
           return input ? section.initialText + input : '';
@@ -803,15 +806,7 @@ export class DiagramTemplatesService {
       // Make the shape the port for links to connect to
       $(
         go.Shape,
-        new go.Binding('figure', 'category', function(category) {
-          if (category === 'key') {
-            return 'SquareArrow';
-          } else if (category === 'list') {
-            return 'Process';
-          } else {
-            return 'InternalStorage';
-          }
-        }),
+        'rectangle',
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -836,29 +831,35 @@ export class DiagramTemplatesService {
         go.Panel,
         'Table',
         {
-          minSize: new go.Size(100, 100)
+          minSize: new go.Size(200, 50),
+          margin: new go.Margin(5, 4, 0, 4)
         },
-        // Ensure that the panel does not overlap the border lines
-        // on the shapes for list and structure reporting elements
-        new go.Binding('margin', 'category', function(category) {
-          if (
-            [nodeCategories.list, nodeCategories.structure].includes(category)
-          ) {
-            return new go.Margin(15, 4, 0, 14);
-          } else {
-            return new go.Margin(5, 4, 0, 4);
-          }
-        }),
         $(
           go.Panel,
-          'Vertical',
+          'Horizontal',
           {
             alignment: go.Spot.TopCenter,
-            minSize: new go.Size(90, NaN)
+            minSize: new go.Size(190, NaN)
           },
-          this.getDependencyExpandButton(),
-          ...this.getStandardNodeSections()
+          $(
+            go.Shape,
+            {
+              alignment: go.Spot.TopLeft,
+              margin: new go.Margin(0, 5, 0, 0)
+            },
+            new go.Binding('geometry', 'category', function(category) {
+              if (category === nodeCategories.key) {
+                return customIcons.flag;
+              } else if (category === nodeCategories.list) {
+                return customIcons.list;
+              } else { // Structure reporting concept
+                return customIcons.tree;
+              }
+            })
+          ),
+          ...this.getStandardNodeSections(true)
         ),
+        this.getDependencyExpandButton(),
         this.getRadioAlertIndicators()
       )
     );

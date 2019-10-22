@@ -65,6 +65,7 @@ export class DiagramChangesService {
           if (data && data.name) {
             node.name = data.name;
           }
+          const { scope } = this.filterService.getFilter();
           this.workpackages.forEach(workpackage => {
             if (nodeId) {
               this.workpackageStore.dispatch(
@@ -73,11 +74,12 @@ export class DiagramChangesService {
                   node: {
                     ...node,
                     parentId: nodeId
-                  }
+                  },
+                  scope
                 })
               );
             } else {
-              this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node }));
+              this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node, scope }));
             }
           });
         });
@@ -146,7 +148,6 @@ export class DiagramChangesService {
 
   // Update radio count after new radio is created
   updateRadioCount(part: go.Part, category: string) {
-
     // Get the plural of the RADIO category
     const categoryPlural = category.replace('y', 'ie') + 's';
 

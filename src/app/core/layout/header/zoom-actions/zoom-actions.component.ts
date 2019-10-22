@@ -37,11 +37,11 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   ]
 
   constructor(
-    private store: Store<ViewState>, 
+    private store: Store<ViewState>,
     public filterService: FilterService
   ) {}
 
-  ngOnInit() { 
+  ngOnInit() {
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
     this.viewLevelSubscription = this.viewLevel$.subscribe(level => {
       this.viewLevel = level;
@@ -58,7 +58,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   onViewLevelSelected(level: any) {
     if (viewLevelMapping[level]) {
       if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, 'id');
+        this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, ['id', 'parentName']);
       }
     }
     this.store.dispatch(new SetViewLevel(level));
@@ -77,5 +77,5 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   onZoomOut() {
     this.zoomOut.emit();
   }
-  
+
 }

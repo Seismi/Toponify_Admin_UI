@@ -2,9 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State } from '../reducers/architecture.reducer';
 import { Level } from '@app/architecture/services/diagram-level.service';
 
-export const getNodeFeatureState = createFeatureSelector<State>(
-  'architectureFeature'
-);
+export const getNodeFeatureState = createFeatureSelector<State>('architectureFeature');
 
 export const getSelectedNode = createSelector(
   getNodeFeatureState,
@@ -74,5 +72,15 @@ export const getNodeEntitiesBy = createSelector(
       return filteredNodes.filter(item => childNodeIds.includes(item.id));
     }
     return filteredNodes;
+  }
+);
+
+export const getNodeEntityById = createSelector(
+  getNodeFeatureState,
+  (state: State, props: { id: string }) => {
+    if (!state.entities) {
+      return null;
+    }
+    return state.entities.find(item => item.id === props.id);
   }
 );
