@@ -7,10 +7,10 @@ table {
         width: 40%;
     }
     th.mat-column-edit {
-        width: 10%;
+        width: 5%;
     }
     th.mat-column-delete {
-        width: 10%;
+        width: 5%;
     }
 }
 
@@ -28,4 +28,8 @@ p {
 
 .description {
     font-size: 15px;
+}
+
+.mat-icon {
+    cursor: pointer;
 }
