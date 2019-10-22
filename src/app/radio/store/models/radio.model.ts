@@ -36,9 +36,12 @@ export interface RadioEntity {
   id: string;
   title: string;
   description: string;
+  mitigation: string;
   category: string;
   author: AuthorOrLastUpdatedBy;
   owners?: (TeamsOrOwners)[] | null;
+  assignedTo: AuthorOrLastUpdatedBy;
+  actionBy: string;
   status: string;
   createdOn?: string;
   lastUpdatedOn?: string;

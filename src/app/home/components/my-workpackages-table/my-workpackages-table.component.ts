@@ -7,7 +7,7 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
   templateUrl: './my-workpackages-table.component.html',
   styleUrls: ['./my-workpackages-table.component.scss']
 })
-export class MyWorkpackagesTableComponent implements OnInit {
+export class MyWorkpackagesTableComponent {
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
@@ -16,13 +16,10 @@ export class MyWorkpackagesTableComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  ngOnInit() { }
-
-  displayedColumns: string[] = ['name', 'status', 'hasErrors', 'star'];
+  public displayedColumns: string[] = ['name', 'status', 'hasErrors', 'star'];
   public dataSource: MatTableDataSource<WorkPackageEntity>;
 
-  @Output()
-  openWorkPackage = new EventEmitter();
+  @Output() openWorkPackage = new EventEmitter();
 
   onOpen(id) {
     this.openWorkPackage.emit(id);
