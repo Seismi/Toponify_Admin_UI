@@ -79,7 +79,7 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, fromEvent, Observable, Subscription } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -102,7 +102,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
-import {LayoutActionTypes} from '@app/layout/store/actions/layout.actions';
+import { LayoutActionTypes } from '@app/layout/store/actions/layout.actions';
 
 enum Events {
   NodesLinksReload = 0
@@ -270,6 +270,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.subscriptions.push(
+      fromEvent(window, 'popstate').subscribe(() => {
+        // setTimeout for filterService to update filters
+        setTimeout(() => {
+          const currentFilter = this.filterService.getFilter();
+          const filterWorkpackages = currentFilter && currentFilter.workpackages ? currentFilter.workpackages : [];
+          const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
+          const diff = filterWorkpackages
+            .filter(x => !selectedWorkpackagesIds.includes(x))
+            .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
+          diff.forEach(id => {
+            this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+          });
+        });
+      })
+    );
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
@@ -1035,7 +1052,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (reset) {
       return this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
     }
-    if (existingFilter.workpackages && existingFilter.workpackages.length > 0 ) {
+    if (existingFilter.workpackages && existingFilter.workpackages.length > 0) {
       const workpackageAlreadySelected = existingFilter.workpackages.find(workpackageId => workpackageId === id);
       if (workpackageAlreadySelected) {
         const filteredWorkpackageIds = existingFilter.workpackages.filter(workpackageId => workpackageId !== id);
