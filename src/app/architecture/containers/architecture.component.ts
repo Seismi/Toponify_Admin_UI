@@ -81,7 +81,7 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, fromEvent, Observable, Subscription } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -275,25 +275,42 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.subscriptions.push(
+      fromEvent(window, 'popstate').subscribe(() => {
+        // setTimeout for filterService to update filters
+        setTimeout(() => {
+          const currentFilter = this.filterService.getFilter();
+          const filterWorkpackages = currentFilter && currentFilter.workpackages ? currentFilter.workpackages : [];
+          const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
+          const diff = filterWorkpackages
+            .filter(x => !selectedWorkpackagesIds.includes(x))
+            .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
+          diff.forEach(id => {
+            this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+          });
+        });
+      })
+    );
+
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
         this.filterService.addFilter({ scope: scope.id });
       }
     });
 
-    const currentFilter = this.filterService.getFilter();
-    if (currentFilter.scope) {
-      this.scopeStore.dispatch(new LoadScope(currentFilter.scope));
+    const { scope, workpackages } = this.filterService.getFilter();
+    if (scope) {
+      this.scopeStore.dispatch(new LoadScope(scope));
     } else {
       this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
     }
-
-    // FIXME: fixing
-    // this.filterService.filter.subscribe(({workpackages}) => {
-    //   console.info("###: ", workpackages);
-    //   workpackages.forEach(workpackage => this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: workpackage})));
-    //   // this.workpackageStore.dispatch(new SetWorkpackageSelected({workpackageId: workpackage}));
-    // })
+    if (workpackages && Array.isArray(workpackages)) {
+      workpackages.forEach(id => {
+        if (id && typeof id === 'string') {
+          this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+        }
+      });
+    }
 
     this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
       this.layout = layout;
@@ -770,25 +787,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.decreaseZoom();
   }
 
-  onSelectWorkPackage(id) {
+  onSelectWorkPackage(id: string) {
     this.objectSelected = false;
-    // const filter = this.filterService.getFilter();
-    // if (filter.workpackages && filter.workpackages.length > 0) {
-    //   const workpackageAlreadySelected = filter.workpackages.find(workpackageId => workpackageId === id);
-    //   if (workpackageAlreadySelected) {
-    //     const filteredWorkpackageIds = filter.workpackages.filter(workpackageId => workpackageId !== id);
-    //     if (filteredWorkpackageIds.length > 0) {
-    //       this.filterService.setFilter({ ...filter, workpackages: filteredWorkpackageIds});
-    //     } else {
-    //       delete filter.workpackages;
-    //       this.filterService.setFilter({ ...filter})
-    //     }
-    //   } else {
-    //     this.filterService.setFilter({ ...filter, workpackages: [...filter.workpackages, id] })
-    //   }
-    // } else {
-    //   this.filterService.setFilter({ ...filter, workpackages: [id] })
-    // }
+    this.updateWorkpackageFilter(id);
     this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
   }
 
@@ -799,6 +800,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.part) {
       this.part.isSelected = false;
     }
+    this.updateWorkpackageFilter(this.workpackageId, !workpackage.edit);
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
@@ -1036,5 +1038,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
     });
+  }
+
+  updateWorkpackageFilter(id: string, reset?: boolean) {
+    const existingFilter = this.filterService.getFilter();
+    if (reset) {
+      return this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
+    }
+    if (existingFilter.workpackages && existingFilter.workpackages.length > 0) {
+      const workpackageAlreadySelected = existingFilter.workpackages.find(workpackageId => workpackageId === id);
+      if (workpackageAlreadySelected) {
+        const filteredWorkpackageIds = existingFilter.workpackages.filter(workpackageId => workpackageId !== id);
+        if (filteredWorkpackageIds.length > 0) {
+          this.filterService.setFilter({ ...existingFilter, workpackages: filteredWorkpackageIds });
+        } else {
+          delete existingFilter.workpackages;
+          this.filterService.setFilter({ ...existingFilter });
+        }
+      } else {
+        this.filterService.setFilter({ ...existingFilter, workpackages: [...existingFilter.workpackages, id] });
+      }
+    } else {
+      this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
+    }
   }
 }
