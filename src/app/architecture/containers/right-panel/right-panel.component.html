@@ -54,7 +54,8 @@
         <smi-radio-table-in-architecture
             *ngIf="!objectSelected"
             [data]="radio"
-            (addRadio)="onAddRadio()">
+            (addRadio)="onAddRadio()"
+            (openRadio)="onOpenRadio($event)">
         </smi-radio-table-in-architecture>
     </mat-tab>
     <mat-tab label="Work Packages" *ngIf="objectSelected">

@@ -1,0 +1,58 @@
+<div mat-dialog-content>
+  <p>
+    <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">info</mat-icon>
+          Details
+        </ng-template>
+        <p class="detailsTab">
+          <smi-radio-detail 
+            [data]="users$ | async" 
+            [group]="radioDetailsForm"
+            [isEditable]="false" 
+            [modalMode]="false" 
+            (archiveRadio)="onArchiveRadio($event)" 
+            (saveRadio)="onSaveRadio()" 
+            [rows]="5">
+          </smi-radio-detail>
+        </p>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>comment</mat-icon>
+          Discussions
+        </ng-template>
+        <p class="discussion-tab">
+          <smi-chatbox 
+            [group]="radioDetailsForm" 
+            [data]="radio?.replies">
+          </smi-chatbox>
+        </p>
+        <p>
+          <smi-reply-text 
+            [rows]="4" 
+            [group]="radioDetailsForm" 
+            (sendReply)="onSendReply($event)">
+          </smi-reply-text>
+        </p>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>insert_drive_file</mat-icon>
+          Properties
+        </ng-template>
+        <p class="properties-tab">
+          <smi-radio-properties-tab 
+            (editProperty)="onEditProperty($event)" 
+            (deleteProperty)="onDeleteProperty($event)"
+            [data]="radio?.customPropertyValues">
+          </smi-radio-properties-tab>
+        </p>
+      </mat-tab>
+    </mat-tab-group>
+  </p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onClose()">close</button>
+</div>

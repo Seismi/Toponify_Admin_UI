@@ -16,6 +16,7 @@ export class RadioDetailComponent {
   @Input() isEditable = false;
   @Input() modalMode = false;
   @Input() statusClosed = false;
+  @Input() rows: number = 8;
 
   @Input()
   set data(data: any[]) {

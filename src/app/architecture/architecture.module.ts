@@ -67,6 +67,8 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
+import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
+import { SettingsModule } from '@app/settings/settings.module';
 
 @NgModule({
   imports: [
@@ -78,6 +80,7 @@ import { EditNameModalComponent } from '@app/architecture/components/edit-name-m
     CommonModule,
     WorkPackageModule,
     RadioModule,
+    SettingsModule,
     DocumentationStandardsModule,
     MatCardModule,
     MatDividerModule,
@@ -129,7 +132,8 @@ import { EditNameModalComponent } from '@app/architecture/components/edit-name-m
     OwnersTableComponent,
     DescendantsTableComponent,
     DescendantsModalComponent,
-    EditNameModalComponent
+    EditNameModalComponent,
+    RadioDetailModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -137,7 +141,8 @@ import { EditNameModalComponent } from '@app/architecture/components/edit-name-m
     DeleteLinkModalComponent,
     AttributeModalComponent,
     DescendantsModalComponent,
-    EditNameModalComponent
+    EditNameModalComponent,
+    RadioDetailModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
