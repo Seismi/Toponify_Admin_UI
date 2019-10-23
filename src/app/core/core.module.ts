@@ -41,6 +41,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducer } from '../core/store/reducers/search.reducer';
 import { SearchEffects } from './store/effects/search.effects';
 import { EffectsModule } from '@ngrx/effects';
+import { LogOutComponent } from './layout/header/log-out/log-out.component';
 
 @NgModule({
   imports: [
@@ -102,7 +103,8 @@ import { EffectsModule } from '@ngrx/effects';
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
     LeftSideBarComponent,
-    RightSideBarComponent
+    RightSideBarComponent,
+    LogOutComponent
   ],
   providers: [
     SearchService
