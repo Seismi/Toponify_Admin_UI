@@ -19,10 +19,10 @@ import { getUsers } from '@app/settings/store/selectors/user.selector';
 
 export class RadioModalComponent implements OnInit {
 
-  users$: Observable<User[]>;
-  isEditable = true;
-  modalMode = true;
-  radio: RadioDetail;
+  public users$: Observable<User[]>;
+  public isEditable = true;
+  public modalMode = true;
+  public radio: RadioDetail;
 
   constructor(
     private store: Store<UserState>,

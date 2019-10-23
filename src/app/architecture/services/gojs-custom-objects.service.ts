@@ -37,6 +37,12 @@ export function updateShapeShadows(): void {
   });
 }
 
+export const customIcons = {
+  tree: go.Geometry.parse('M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z', true),
+  flag: go.Geometry.parse('M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z', true),
+  list: go.Geometry.parse('M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z', true),
+};
+
 // Customised link shifting tool that calls process to update the link route in the back end when finished
 export class CustomLinkShift extends LinkShiftingTool {
   constructor() {

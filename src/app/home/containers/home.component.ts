@@ -1,30 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { State as HomePageState } from '../store/reducers/home.reducers';
-import { LoadMyWorkPackages, LoadMyRadios, LoadMyLayouts, LoadMyProfile } from '../store/actions/home.actions';
+import { LoadMyLayouts, LoadMyRadios, LoadMyWorkPackages } from '../store/actions/home.actions';
 import { Observable } from 'rxjs';
-import { getMyWorkPackages, getMyRadios, getMyLayouts } from '../store/selectors/home.selectors';
+import { getMyLayouts, getMyRadios, getMyWorkPackages } from '../store/selectors/home.selectors';
 import { Router } from '@angular/router';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
-import { LayoutEntity } from '@app/layout/store/models/layout.model';
+import { LayoutDetails } from '@app/layout/store/models/layout.model';
 
 @Component({
   selector: 'smi-home-component',
   templateUrl: 'home.component.html',
   styleUrls: ['home.component.scss']
 })
-
 export class HomeComponent implements OnInit {
+  public myWorkPackages$: Observable<WorkPackageEntity[]>;
+  public myRadios$: Observable<RadioEntity[]>;
+  public myLayouts$: Observable<LayoutDetails[]>;
 
-  myWorkPackages$: Observable<WorkPackageEntity[]>;
-  myRadios$: Observable<RadioEntity[]>;
-  myLayouts$: Observable<LayoutEntity[]>;
-
-  constructor(
-    private router: Router,
-    private store: Store<HomePageState>
-  ) { }
+  constructor(private router: Router, private store: Store<HomePageState>) {}
 
   ngOnInit() {
     this.store.dispatch(new LoadMyWorkPackages({}));
@@ -44,5 +39,4 @@ export class HomeComponent implements OnInit {
   onOpenLayout() {
     this.router.navigate(['/architecture']);
   }
-  
 }

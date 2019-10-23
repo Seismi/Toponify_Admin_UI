@@ -11,6 +11,7 @@ import { FormGroup } from '@angular/forms';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { AttributesEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -73,7 +74,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   deleteOwner = new EventEmitter();
 
   @Output()
-  editProperties = new EventEmitter();
+  editProperties = new EventEmitter<CustomPropertyValuesEntity>();
 
   @Output() addDescendant = new EventEmitter<void>();
 
@@ -148,8 +149,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.deleteOwner.emit();
   }
 
-  onEditProperties(id: string) {
-    this.editProperties.emit(id);
+  onEditProperties(customProperty: CustomPropertyValuesEntity) {
+    this.editProperties.emit(customProperty);
   }
 
   onAddDescendant() {

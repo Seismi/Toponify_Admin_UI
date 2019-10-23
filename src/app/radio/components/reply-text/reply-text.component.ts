@@ -11,14 +11,14 @@ export class ReplyTextComponent {
   @Input() group: FormGroup;
   @Input() replyMode: boolean = false;
   @Input() rows: number = 4;
-  disabled: boolean = true;
+  public disabled: boolean = true;
 
   onType(event) {
     (event.length) ? this.disabled = false : this.disabled = true;
   }
 
   @Output()
-  sendReply = new EventEmitter();
+  sendReply = new EventEmitter<void>();
 
   onSend() {
     this.sendReply.emit();

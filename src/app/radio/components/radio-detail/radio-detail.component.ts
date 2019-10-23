@@ -11,7 +11,7 @@ import { User } from '@app/settings/store/models/user.model';
 
 export class RadioDetailComponent {
   
-  users: User[];
+  public users: User[];
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() modalMode = false;
@@ -22,20 +22,19 @@ export class RadioDetailComponent {
     this.users = data;
   }
 
-  categories = Constants.RADIO_CATEGORIES;
-  status = Constants.RADIO_STATUS;
+  public categories = Constants.RADIO_CATEGORIES;
+  public status = Constants.RADIO_STATUS;
+  public refNumber = ['R-0001', 'R-0002', 'R-0003', 'R-0004'];
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;
   }
 
-  constructor() {}
+  @Output()
+  archiveRadio = new EventEmitter<void>();
 
   @Output()
-  archiveRadio = new EventEmitter();
-
-  @Output()
-  saveRadio = new EventEmitter();
+  saveRadio = new EventEmitter<void>();
 
   onArchive() {
     this.archiveRadio.emit();

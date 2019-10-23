@@ -111,7 +111,8 @@ export interface RolesEntityOrLayout {
   name: string;
 }
 export interface CustomPropertiesEntity {
-  propertyId: string;
+  propertyId?: string;
+  name?: string;
   value: string;
 }
 export interface Baseline {

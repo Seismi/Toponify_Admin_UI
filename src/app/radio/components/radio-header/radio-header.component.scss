@@ -1,0 +1,27 @@
+.container {
+  display: flex; 
+  padding: 15px 15px;
+}
+
+.filter {
+  flex-grow: 1;
+}
+
+span {
+  padding-top: 5px;
+  margin-left: 20px;
+  font-size: 12px;
+}
+
+button {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 25px;
+}
+
+.mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
+}

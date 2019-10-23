@@ -3,17 +3,28 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import { WorkPackageService } from './workpackage.service';
-import { WorkpackageNode, WorkpackageNodeDescendant, WorkpackageNodeCustomProperty } from '../store/models/workpackage.models';
+import {
+  WorkpackageNode,
+  WorkpackageNodeDescendant,
+  WorkpackageNodeCustomProperty
+} from '../store/models/workpackage.models';
 
 @Injectable()
 export class WorkPackageNodesService extends WorkPackageService {
-
   /**
    * Create new architecture node (system, data set, dimensions, reporting concept)
    * FIXME: missing types
    */
-  addNode(workPackageId: string, data: WorkpackageNode): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes`, {data}, this.httpOptions);
+  addNode(workPackageId: string, data: WorkpackageNode, scope?: string): Observable<any> {
+    if (scope) {
+      return this.http.post<any>(
+        `/workpackages/${workPackageId}/nodes`,
+        { data },
+        { ...this.httpOptions, params: { scopeQuery: scope } }
+      );
+    } else {
+      return this.http.post<any>(`/workpackages/${workPackageId}/nodes`, { data }, this.httpOptions);
+    }
   }
 
   /**
@@ -21,7 +32,7 @@ export class WorkPackageNodesService extends WorkPackageService {
    * FIXME: missing types
    */
   updateNode(workPackageId: string, nodeId: string, data: WorkpackageNode): Observable<any> {
-    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}`, {data}, this.httpOptions);
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}`, { data }, this.httpOptions);
   }
 
   /**
@@ -44,8 +55,17 @@ export class WorkPackageNodesService extends WorkPackageService {
    * Add a dependency to a node
    * FIXME: missing types
    */
-  addNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string, data: WorkpackageNodeDescendant): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}`, {data}, this.httpOptions);
+  addNodeDescendant(
+    workPackageId: string,
+    nodeId: string,
+    descendantNodeId: string,
+    data: WorkpackageNodeDescendant
+  ): Observable<any> {
+    return this.http.post<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}`,
+      { data },
+      this.httpOptions
+    );
   }
 
   /**
@@ -53,8 +73,10 @@ export class WorkPackageNodesService extends WorkPackageService {
    * FIXME: missing types
    */
   deleteNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}/deleteRequest`,
-    {});
+    return this.http.post<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}/deleteRequest`,
+      {}
+    );
   }
 
   /**
@@ -62,7 +84,11 @@ export class WorkPackageNodesService extends WorkPackageService {
    * FIXME: missing types
    */
   addNodeOwner(workPackageId: string, nodeId: string, ownerId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/owners/${ownerId}`, data, this.httpOptions);
+    return this.http.post<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/owners/${ownerId}`,
+      data,
+      this.httpOptions
+    );
   }
 
   /**
@@ -78,7 +104,11 @@ export class WorkPackageNodesService extends WorkPackageService {
    * FIXME: missing types
    */
   addNodeAttribute(workPackageId: string, nodeId: string, attributeId: string, data: any): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}`, data, this.httpOptions);
+    return this.http.post<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}`,
+      data,
+      this.httpOptions
+    );
   }
 
   /**
@@ -86,16 +116,27 @@ export class WorkPackageNodesService extends WorkPackageService {
    * FIXME: missing types
    */
   deleteNodeAttribute(workPackageId: string, nodeId: string, attributeId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}/deleteRequest`, {});
+    return this.http.post<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}/deleteRequest`,
+      {}
+    );
   }
 
   /**
    * Add custom property to a node
    * FIXME: missing types
    */
-  addNodeCustomProperty(workPackageId: string, nodeId: string, customPropertyId: string, data: WorkpackageNodeCustomProperty): Observable<any> {
-    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`,
-    data, this.httpOptions);
+  addNodeCustomProperty(
+    workPackageId: string,
+    nodeId: string,
+    customPropertyId: string,
+    data: WorkpackageNodeCustomProperty
+  ): Observable<any> {
+    return this.http.put<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`,
+      data,
+      this.httpOptions
+    );
   }
 
   /**
@@ -103,8 +144,9 @@ export class WorkPackageNodesService extends WorkPackageService {
    * FIXME: missing types
    */
   deleteNodeCustomProperty(workPackageId: string, nodeId: string, customPropertyId: string): Observable<any> {
-    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}/deleteRequest`, {});
+    return this.http.post<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}/deleteRequest`,
+      {}
+    );
   }
-
 }
-

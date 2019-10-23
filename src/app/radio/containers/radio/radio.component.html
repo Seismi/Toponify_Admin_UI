@@ -1,24 +1,30 @@
 <app-base-header>
-    <app-toolbar-column [fillFreeSpace]="true">
-    </app-toolbar-column>
-    <app-search></app-search>
-    <app-toolbar-column>
-        <smi-quicklinks-actions></smi-quicklinks-actions>
-    </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true">
+  </app-toolbar-column>
+  <app-search></app-search>
+  <app-toolbar-column>
+    <smi-quicklinks-actions></smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>
 
 <app-model-container [topPadding]="64">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <smi-radio-table 
-                    data-hook="radio-table" 
-                    [data]="radio$ | async" 
-                    (selectRadio)="onSelectRadio($event)"
-                    (addRadio)="onAddRadio($event)">
-                </smi-radio-table>
-            </div>
-            <router-outlet></router-outlet>
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col mat-elevation-z8">
+          <smi-radio-header
+            (filter)="onFilter()">
+          </smi-radio-header>
+          <smi-radio-table 
+            data-hook="radio-table" 
+            [data]="radio$ | async" 
+            (selectRadio)="onSelectRadio($event)"
+            (addRadio)="onAddRadio($event)">
+          </smi-radio-table>
+      </div>
+      <div class="col">
+        <smi-radio-right-side (addRadio)="onAddRadio()" *ngIf="!radioSelected"></smi-radio-right-side>
+        <router-outlet></router-outlet>
+      </div>
     </div>
+  </div>
 </app-model-container>

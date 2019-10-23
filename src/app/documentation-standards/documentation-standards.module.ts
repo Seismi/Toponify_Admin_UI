@@ -16,7 +16,8 @@ import {
   MatDialogModule,
   MatSelectModule,
   MatExpansionModule,
-  MatInputModule
+  MatInputModule,
+  MatDatepickerModule
 } from '@angular/material';
 import { DocumentationStandardsTableComponent } from './components/documentation-standards-table/documentation-standards-table.component';
 import { DocumentationStandardsDetailComponent } from './components/documentation-standards-detail/documentation-standards-detail.component';
@@ -51,6 +52,7 @@ import { DocumentModalComponent } from './containers/document-modal/document-mod
     MatSelectModule,
     MatExpansionModule,
     MatInputModule,
+    MatDatepickerModule,
     StoreModule.forFeature('documentationStandardFeature', reducer),
     EffectsModule.forFeature([ DocumentationStandardEffects ])
   ],
@@ -66,6 +68,6 @@ import { DocumentModalComponent } from './containers/document-modal/document-mod
     DocumentModalComponent
   ],
   providers: [DocumentationStandardsService],
-  entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent]
+  entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent, DocumentModalComponent]
 })
 export class DocumentationStandardsModule { }

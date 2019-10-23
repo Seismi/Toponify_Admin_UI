@@ -1,9 +1,14 @@
+app-model-container {
+    background-color: #eee;
+    border-left: solid 2px #ddd;
+}
+
 .rightPane {
-    padding-left: 7px;
+    width: 100%;
 }
 
 .detailsTab {
-    padding: 10px;
+    padding: 15px 30px;
 }
 
 button {
@@ -11,4 +16,21 @@ button {
     bottom: 12px;
     left: 16px;
     z-index: 1;
+}
+
+.mat-icon {
+    margin-right: 15px;
+    font-size: 18px;
+    margin-top: 7px;
+}
+
+.discussion-tab {
+    padding: 20px 20px 0px 20px;
+    background-color: #fff;
+    height: 70vh;
+    overflow-y: auto;
+}
+
+.reply-input {
+    padding: 0px 25px;
 }

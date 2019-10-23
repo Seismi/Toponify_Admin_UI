@@ -33,7 +33,8 @@ export const viewLevelMapping = {
   [2]: Level.dataSet,
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
-  [9]: Level.map,
+  [8]: Level.systemMap,
+  [9]: Level.dataSetMap,
   [10]: Level.usage
 };
 
@@ -212,7 +213,14 @@ export class ArchitectureDiagramComponent
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
+
+      // TEMP - no deletes for multiple parts for now
+      if (this.diagram.selection.count !== 1) {return; }
+
       const deletedPart = this.diagram.selection.first();
+
+      // Disallow delete of dummy links in map view
+      if (deletedPart.data.id === '00000000-0000-0000-0000-000000000000') {return; }
 
       // Delete links that have not yet been connected to a node at both ends
       if (deletedPart.data.isTemporary) {
@@ -402,7 +410,7 @@ export class ArchitectureDiagramComponent
         this.diagram.model.nodeDataArray.length > 0 &&
         (this.diagram.model as go.GraphLinksModel).linkDataArray.length > 0
       ) {
-        if (this.level === Level.map) {
+        if (this.level.endsWith('map')) {
           this.diagram.layoutDiagram(true);
         }
       }

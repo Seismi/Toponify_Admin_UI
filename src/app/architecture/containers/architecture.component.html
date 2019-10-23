@@ -64,6 +64,7 @@
     </p>
   </app-model-sidebar>
   <app-model-content>
+    <div class="selected-node-title" *ngIf="parentName">{{parentName}}</div>
     <div style="padding: 5px">
       <app-architecture-diagram
         [mapView]="mapView"

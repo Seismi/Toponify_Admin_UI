@@ -23,9 +23,11 @@ import {
   UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { NodeDetail, CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
+  getNodeEntitiesBy,
+  getNodeEntityById,
   getNodeLinks,
   getSelectedNode,
   getSelectedNodeLink
@@ -181,6 +183,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
   editTabIndex: number;
+  public parentName: string | null;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -264,10 +267,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
       this.selectedWorkpackages = workpackages;
       if (fil) {
-        const { filterLevel, id, scope } = fil;
+        const { filterLevel, id, scope, parentName } = fil;
         if (filterLevel) {
           this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
         }
+        this.parentName = parentName ? parentName : null;
       }
     });
 
@@ -314,7 +318,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const currentLevel = this.filterService.getFilter().filterLevel;
 
         // Reload nodes and links for new layout if not in map view
-        if (currentLevel !== Level.map) {
+        if (!currentLevel.endsWith('map')) {
           this.subscribeForNodesLinksData();
         }
       }
@@ -438,7 +442,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       queryParams.scopeQuery = scope;
     }
 
-    if (layer === Level.map) {
+    if (layer.endsWith('map')) {
       this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
@@ -525,9 +529,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.part instanceof Node
-      ? this.nodeStore.dispatch(new LoadNode({ id: this.nodeId, queryParams: queryParams }))
-      : this.nodeStore.dispatch(new LoadNodeLink({ id: this.nodeId, queryParams: queryParams }));
+
+    // Do not attempt to load data for disconnected node links that have not been added to the database yet
+    if (!this.part.data.isTemporary) {
+      this.part instanceof Node
+        ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
+        : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
+    }
   }
 
   // FIXME: should be removed as createObject/node/link handled inside change service
@@ -673,7 +681,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (nodes === null) {
             return null;
           }
-          if (currentFilter && currentFilter.filterLevel === Level.map) {
+          if (currentFilter && currentFilter.filterLevel.endsWith('map')) {
             return nodes;
           }
 
@@ -716,7 +724,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (links === null) {
             return null;
           }
-          if (currentFilter && [Level.map, Level.usage].includes(currentFilter.filterLevel)) {
+          if (currentFilter && [Level.systemMap, Level.dataSetMap, Level.usage].includes(currentFilter.filterLevel)) {
             return links;
           }
 
@@ -805,9 +813,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onTabClick(index: number) {
-    (this.workPackageIsEditable === true && index === 1)
-      ? this.editTabIndex = 1
-      : this.editTabIndex = null;
+    this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
     this.diagramComponent.updateDiagramArea();
   }
 
@@ -817,9 +823,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.showOrHideLeftPane = true;
     }
 
-    (this.selectedLeftTab === 0 || this.selectedLeftTab === 2)
-      ?  this.editTabIndex = null
-      : this.editTabIndex = 1;
+    this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
 
     this.diagramComponent.updateDiagramArea();
   }
@@ -875,8 +879,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false,
-      width: '500px'
+      disableClose: false
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1013,37 +1016,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedOwner = true;
   }
 
-  onEditProperties(propertyId: string) {
-    this.nodeStore.pipe(select(getSelectedNode)).subscribe(data => {
-      this.customProperties = data;
-    });
+  onEditProperties(customProperty: CustomPropertyValuesEntity) {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         mode: 'edit',
-        customProperties: { ...this.customProperties }
+        customProperties: customProperty
       }
     });
 
-    const workpackages =
-      this.selectedPart.impactedByWorkPackages.length < 1
-        ? this.selectedWorkpackages
-        : this.selectedPart.impactedByWorkPackages.filter(w => this.selectedWorkpackages.find(i => i.id === w.id));
-
     dialogRef.afterClosed().subscribe(data => {
-      workpackages.forEach(workpackage => {
-        if (data && data.customProperties) {
-          this.nodeStore.dispatch(
-            new UpdateCustomProperty({
-              workPackageId: workpackage.id,
-              nodeId: this.selectedPart.id,
-              customPropertyId: propertyId,
-              data: { data: { value: data.customProperties.value } }
-            })
-          );
-        }
-      });
+      if (data && data.customProperties) {
+        this.nodeStore.dispatch(
+          new UpdateCustomProperty({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            customPropertyId: customProperty.propertyId,
+            data: { data: { value: data.customProperties.value }}
+          })
+        );
+      }
     });
   }
 
