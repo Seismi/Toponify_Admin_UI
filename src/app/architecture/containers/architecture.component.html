@@ -38,13 +38,7 @@
     [workPackageIsEditable]="workPackageIsEditable"
   >
   </smi-left-sidebar>
-  <app-model-sidebar
-    [minWidth]="auto"
-    [maxWidth]="auto"
-    [isLast]="true"
-    *ngIf="showOrHideLeftPane"
-  >
-    <p class="leftPane">
+    <p class="leftPane" *ngIf="showOrHideLeftPane">
       <smi-left-panel
         [tabIndex]="editTabIndex"
         (tabClick)="onTabClick($event)"
@@ -55,14 +49,13 @@
         (selectWorkPackage)="onSelectWorkPackage($event)"
         (selectColour)="selectColourForWorkPackage($event)"
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-        (hideLeftPane)="onHideLeftPane()"
         [selectedLeftTab]="selectedLeftTab"
         [checked]="radioAlertChecked"
-        [canSelectWorkpackages]="canSelectWorkpackages"
-      >
+        [canSelectWorkpackages]="canSelectWorkpackages">
       </smi-left-panel>
+      <!-- Hide left pane button -->
+      <button mat-raised-button color="primary" class="hide-btn" (click)="onHideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
     </p>
-  </app-model-sidebar>
   <app-model-content>
     <div class="selected-node-title" *ngIf="parentName">{{parentName}}</div>
     <div style="padding: 5px">
