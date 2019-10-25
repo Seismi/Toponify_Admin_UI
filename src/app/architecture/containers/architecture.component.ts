@@ -20,7 +20,8 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNodes
+  UpdateNodes,
+  DeleteCustomProperty
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { NodeDetail, CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
@@ -105,6 +106,7 @@ import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/o
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 import { LayoutActionTypes } from '@app/layout/store/actions/layout.actions';
+import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -1036,6 +1038,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             data: { data: { value: data.customProperties.value }}
           })
         );
+      }
+    });
+  }
+
+  onDeleteProperties(customProperty: CustomPropertyValuesEntity) {
+    const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete',
+        name: customProperty.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(new DeleteCustomProperty({
+          workPackageId: this.workpackageId, 
+          nodeId: this.nodeId,
+          customPropertyId: customProperty.propertyId
+        }))
       }
     });
   }

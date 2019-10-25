@@ -76,6 +76,9 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output()
   editProperties = new EventEmitter<CustomPropertyValuesEntity>();
 
+  @Output()
+  deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
+
   @Output() addDescendant = new EventEmitter<void>();
 
   @Output() deleteDescendant = new EventEmitter<string>();
@@ -151,6 +154,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onEditProperties(customProperty: CustomPropertyValuesEntity) {
     this.editProperties.emit(customProperty);
+  }
+
+  onDeleteProperties(customProperty: CustomPropertyValuesEntity) {
+    this.deleteProperties.emit(customProperty);
   }
 
   onAddDescendant() {
