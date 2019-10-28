@@ -217,7 +217,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     // Create new radio
     dialogRef.componentInstance.addNewRadio.subscribe(_ => {
       const dialogRef2 = this.dialog.open(RadioModalComponent, {
-        disableClose: false, width: '500px' });
+        disableClose: false });
 
       dialogRef2.afterClosed().subscribe((data) => {
         if (data && data.radio) {
