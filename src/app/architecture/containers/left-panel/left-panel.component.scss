@@ -11,9 +11,23 @@
 .editTab {
   width: 205px;
   transition: all .2s ease-in-out;
+  &::ng-deep .mat-tab-header-pagination {
+    display: none !important;
+  }
+  &::ng-deep .mat-tab-list {
+    transform: unset !important;
+  }
 }
 
-.tab {
-  font-size: 18px;
+.mat-icon {
   margin-right: 5px;
+  font-size: 18px;
+  margin-top: 5px;
+}
+
+.onlyIcon {
+  width: 0px !important;
+  font-size: 18px;
+  margin-top: 7px;
+  margin-right: 15px;
 }

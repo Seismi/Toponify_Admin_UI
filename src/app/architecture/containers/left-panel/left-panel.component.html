@@ -1,4 +1,4 @@
-<div class="content" [ngClass]="{ editTab: tabIndex === 1}">
+<div class="content" [ngClass]="{ editTab: tabIndex === 1 }">
   <mat-tab-group [style.width.px]="tabIndex === 1 ? 205 : 420"
     mat-stretch-tabs
     [@.disabled]="true"
@@ -6,9 +6,7 @@
     (selectedTabChange)="onTabClick($event)">
   <mat-tab>
     <ng-template mat-tab-label>
-      <div>
-        <mat-icon class="tab">business_center</mat-icon><span>Work Packages</span>
-      </div>
+      <mat-icon [ngClass]="{ onlyIcon: tabIndex === 1}">business_center</mat-icon><span *ngIf="tabIndex !== 1">Work Packages</span>
     </ng-template>
     <smi-workpackage-tab-table
       [canSelectWorkpackage]="canSelectWorkpackages"
@@ -20,9 +18,7 @@
   </mat-tab>
   <mat-tab *ngIf="workPackageIsEditable">
     <ng-template mat-tab-label>
-      <div>
-        <mat-icon class="tab">edit</mat-icon><span >Edit</span>
-      </div>
+      <mat-icon [ngClass]="{ onlyIcon: tabIndex === 1}">edit</mat-icon><span *ngIf="tabIndex !== 1">Edit</span>
     </ng-template>
     <ng-template matTabContent>
       <p class="palette">
@@ -32,9 +28,7 @@
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>
-      <div>
-        <mat-icon class="tab">settings_applications</mat-icon><span>Layout Settings</span>
-      </div>
+      <mat-icon [ngClass]="{ onlyIcon: tabIndex === 1}">settings_applications</mat-icon><span *ngIf="tabIndex !== 1">Layout Settings</span>
     </ng-template>
     <smi-analysis-tab
       (displayOptionsChanged)="displayOptionsChanged($event)"
