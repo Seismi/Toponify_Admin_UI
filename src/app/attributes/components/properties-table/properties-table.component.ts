@@ -10,8 +10,10 @@ import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
 export class PropertiesTableInAttributesPageComponent {
   @Input()
   set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
-    this.dataSource.paginator = this.paginator;
+    if(data) {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

@@ -9,14 +9,16 @@
         <p class="rightPane">
             <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
                 <mat-tab label="Details">
-                    <smi-object-details-form 
-                        [group]="objectDetailsForm" 
-                        [isEditable]="isEditable"
-                        (editDetails)="onEditDetails($event)" 
-                        (cancel)="onCancelEdit($event)"
-                        (saveAttribute)="onSaveAttribute($event)" 
-                        [workPackageIsEditable]="true">
-                    </smi-object-details-form>
+                    <p class="detailsTab">
+                        <smi-object-details-form 
+                            [group]="objectDetailsForm" 
+                            [isEditable]="isEditable"
+                            (editDetails)="onEditDetails($event)" 
+                            (cancel)="onCancelEdit($event)"
+                            (saveAttribute)="onSaveAttribute($event)" 
+                            [workPackageIsEditable]="true">
+                        </smi-object-details-form>
+                    </p>
                 </mat-tab>
                 <mat-tab label="Properties">
                     <smi-properties-table-in-attributes-page 
