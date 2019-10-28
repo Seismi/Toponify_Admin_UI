@@ -64,8 +64,9 @@
     </p>
   </app-model-sidebar>
   <app-model-content>
+    <smi-switch-view-tabs (viewChange)="onViewChange($event)" [selectedView]="selectedView"></smi-switch-view-tabs>
     <div class="selected-node-title" *ngIf="parentName">{{parentName}}</div>
-    <div style="padding: 5px">
+    <div style="padding: 5px" [hidden]="selectedView!==ArchitectureView.Diagram">
       <app-architecture-diagram
         [mapView]="mapView"
         [showGrid]="showGrid"
@@ -85,6 +86,12 @@
         (updateNodeLocation)="handleUpdateNodeLocation($event)"
       >
       </app-architecture-diagram>
+    </div>
+    <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.System">
+      <smi-architecture-table-view [data]="nodes | layer: { byId: true }"></smi-architecture-table-view>
+    </div>
+    <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.Links">
+      <smi-architecture-table-view [data]="links | layer: { byId: false }"></smi-architecture-table-view>
     </div>
   </app-model-content>
   <smi-right-sidebar
