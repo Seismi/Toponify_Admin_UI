@@ -70,12 +70,12 @@ import { ObjectDetailsService } from '../components/object-details-form/services
 import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
 import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.component';
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
-import { Level } from '../services/diagram-level.service';
+import { DiagramLevelService, Level } from '../services/diagram-level.service';
 import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { Link, Node } from 'gojs';
+import { Link, Node as goNode } from 'gojs';
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
@@ -85,6 +85,8 @@ import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/o
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
+import { NodeLink } from '@app/nodes/store/models/node-link.model';
+import { Node } from '@app/nodes/store/models/node.model';
 
 enum Events {
   NodesLinksReload = 0
@@ -166,6 +168,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public parentName: string | null;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
+  public selectedId: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -187,7 +190,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public filterService: FilterService,
     private ref: ChangeDetectorRef,
     public gojsCustomObjectsService: GojsCustomObjectsService,
-    public actions: Actions
+    public actions: Actions,
+    private diagramLevelService: DiagramLevelService
   ) {
     // If filterLevel not set, ensure to set it.
     const currentFilter = this.filterService.getFilter();
@@ -514,7 +518,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Do not attempt to load data for disconnected node links that have not been added to the database yet
     if (!this.part.data.isTemporary) {
-      this.part instanceof Node
+      this.part instanceof goNode
         ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
         : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
     }
@@ -1047,5 +1051,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onViewChange(view: ArchitectureView) {
     this.selectedView = view;
+  }
+
+  onSelectNode(node: Node | NodeLink) {
+    this.selectedId = node.id;
+  }
+
+  onChangeLevel(node: Node | NodeLink) {
+    this.diagramLevelService.changeLevelWithFilter(null, {data: node} as any);
   }
 }
