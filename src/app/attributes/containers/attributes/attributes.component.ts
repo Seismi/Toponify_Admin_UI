@@ -29,7 +29,7 @@ export class AttributesComponent implements OnInit {
 	public subscriptions: Subscription[] = [];
 	public workpackageId: string;
 	public canSelectWorkpackage: boolean = true;
-	public workPackageIsEditable: boolean = false;
+	public workPackageIsEditable: boolean;
 
 	constructor(
 		private store: Store<AttributeState>,
@@ -44,7 +44,7 @@ export class AttributesComponent implements OnInit {
 			const workPackageIds = workpackages.map(item => item.id);
 			const selected = workpackages.map(item => item.selected);
 			const edit = workpackages.map(item => item.edit);
-			(edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
+			(edit[0] === true) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
 			if (!selected.length) {
 				this.router.navigate(['/attributes-and-rules']);
 			}

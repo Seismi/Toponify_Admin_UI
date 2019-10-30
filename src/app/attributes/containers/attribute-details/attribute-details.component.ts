@@ -37,7 +37,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public workpackageId: string;
   public selectedOwnerIndex: string | null;
   public selectedOwner: boolean = false;
-  public workPackageIsEditable: boolean = false;
+  public workPackageIsEditable: boolean;
   public selectedRelatedIndex: string | null;
   public selectAttribute: boolean = false;
   public relatedAttributeId: string;
@@ -57,7 +57,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       this.attributeId = id;
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
         const edit = workpackages.map(item => item.edit);
-        (edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
+        (edit[0] === true) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
         const workPackageIds = workpackages.map(item => item.id);
         this.workpackageId = workPackageIds[0];
         this.setWorkPackage(workPackageIds);
@@ -73,6 +73,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
           description: attribute.description,
           tags: attribute.tags
         });
+        this.isEditable = false;
       }
     }));
   }
