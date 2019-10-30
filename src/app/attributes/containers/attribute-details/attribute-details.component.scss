@@ -11,4 +11,6 @@ button {
 
 .detailsTab {
     padding: 10px 15px;
+    overflow-y: auto;
+    max-height: 77vh;
 }
