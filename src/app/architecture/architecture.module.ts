@@ -67,6 +67,7 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
+import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
 
 @NgModule({
   imports: [
@@ -129,7 +130,8 @@ import { EditNameModalComponent } from '@app/architecture/components/edit-name-m
     OwnersTableComponent,
     DescendantsTableComponent,
     DescendantsModalComponent,
-    EditNameModalComponent
+    EditNameModalComponent,
+    RelatedAttributeTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

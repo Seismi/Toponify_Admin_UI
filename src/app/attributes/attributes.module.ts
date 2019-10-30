@@ -23,6 +23,8 @@ import { AttributeDetailsComponent } from './containers/attribute-details/attrib
 import { PropertiesTableInAttributesPageComponent } from './components/properties-table/properties-table.component';
 import { RadioTableInAttributesPageComponent } from './components/radio-table/radio-table.component';
 import { WorkPackageTableInAttributesPageComponent } from './components/workpackage-table/workpackage-table.component';
+import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
+import { RelatedAttributesModalComponent } from './containers/related-attributes-modal/related-attributes-modal.component';
 
 @NgModule({
   imports: [
@@ -47,9 +49,11 @@ import { WorkPackageTableInAttributesPageComponent } from './components/workpack
     AttributesRoutingComponent,
     PropertiesTableInAttributesPageComponent,
     RadioTableInAttributesPageComponent,
-    WorkPackageTableInAttributesPageComponent
+    WorkPackageTableInAttributesPageComponent,
+    AttributesListComponent,
+    RelatedAttributesModalComponent
   ],
-  entryComponents: [AttributeModalComponent],
+  entryComponents: [AttributeModalComponent, RelatedAttributesModalComponent],
   providers: [
     AttributeService
   ],
