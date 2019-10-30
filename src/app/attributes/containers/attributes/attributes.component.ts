@@ -3,83 +3,112 @@ import { Subscription, Observable } from 'rxjs';
 import { AttributeEntity } from '../../store/models/attributes.model';
 import { State as AttributeState } from '../../store/reducers/attributes.reducer';
 import { Store, select } from '@ngrx/store';
-import { LoadAttributes } from '../../store/actions/attributes.actions';
+import { LoadAttributes, AddAttribute } from '../../store/actions/attributes.actions';
 import * as fromAttributeEntities from '../../store/selectors/attributes.selector';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages, SetWorkpackageSelected, SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { AttributeModalComponent } from '../attribute-modal/attribute-modal.component';
 
 @Component({
-    selector: 'smi-attributes',
-    templateUrl: 'attributes.component.html',
-    styleUrls: ['attributes.component.scss']
+	selector: 'smi-attributes',
+	templateUrl: 'attributes.component.html',
+	styleUrls: ['attributes.component.scss']
 })
 export class AttributesComponent implements OnInit {
 
-    attributes: Subscription;
-    attribute: AttributeEntity[];
-    workpackage$: Observable<WorkPackageEntity[]>;
-    hideTab = true;
-    selectedLeftTab: number;
-    showOrHidePane: boolean;
-    subscriptions: Subscription[] = [];
+	public attributes: Subscription;
+	public attribute: AttributeEntity[];
+	public workpackage$: Observable<WorkPackageEntity[]>;
+	public hideTab = true;
+	public selectedLeftTab: number;
+	public showOrHidePane: boolean;
+	public subscriptions: Subscription[] = [];
+	public workpackageId: string;
+	public canSelectWorkpackage: boolean = true;
+	public workPackageIsEditable: boolean = false;
 
-    constructor(
-        private store: Store<AttributeState>,
-        private workPackageStore: Store<WorkPackageState>,
-        private router: Router) { }
+	constructor(
+		private store: Store<AttributeState>,
+		private workPackageStore: Store<WorkPackageState>,
+		private router: Router,
+		private dialog: MatDialog) { }
 
-    ngOnInit() {
-        this.workPackageStore.dispatch(new LoadWorkPackages({}));
-        this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
-        this.subscriptions.push(this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-            const workPackageIds = workpackages.map(item => item.id);
-            const selected = workpackages.map(item => item.selected);
-            if(!selected.length) {
-              this.router.navigate(['/attributes-and-rules']);
-            }
-            this.setWorkPackage(workPackageIds);
-        }));
+	ngOnInit() {
+		this.workPackageStore.dispatch(new LoadWorkPackages({}));
+		this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
+		this.subscriptions.push(this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+			const workPackageIds = workpackages.map(item => item.id);
+			const selected = workpackages.map(item => item.selected);
+			const edit = workpackages.map(item => item.edit);
+			(edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
+			if (!selected.length) {
+				this.router.navigate(['/attributes-and-rules']);
+			}
+			this.setWorkPackage(workPackageIds);
+		}));
 
-        this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe((data) => {
-            this.attribute = data;
-        });
-    }
+		this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe((data) => {
+			this.attribute = data;
+		});
+	}
 
-    ngOnDestroy(): void {
-        this.subscriptions.forEach(sub => sub.unsubscribe());
-    }
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(sub => sub.unsubscribe());
+	}
 
-    setWorkPackage(workpackageIds: string[] = []) {
-        const queryParams = {
-          workPackageQuery: workpackageIds
-        };
-        this.store.dispatch(new LoadAttributes(queryParams));
-    }
+	setWorkPackage(workpackageIds: string[] = []) {
+		const queryParams = {
+			workPackageQuery: workpackageIds
+		};
+		this.store.dispatch(new LoadAttributes(queryParams));
+	}
 
-    get categoryTableData() {
-        return this.attribute;
-    }
+	get categoryTableData() {
+		return this.attribute;
+	}
 
-    onSelectAttribute(entry: AttributeEntity) {
-        this.router.navigate(['/attributes-and-rules', entry.id]);
-    }
+	onSelectAttribute(entry: AttributeEntity) {
+		this.router.navigate(['/attributes-and-rules', entry.id]);
+	}
 
-    onSelectWorkPackage(id: string) {
-        this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
-    }
+	onSelectWorkPackage(id: string) {
+		this.workPackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+	}
 
-    openLeftTab(index: number) {
-      this.selectedLeftTab = index;
-      if (this.selectedLeftTab === index) {
-          this.showOrHidePane = true;
-        }
-    }
+	openLeftTab(index: number) {
+		this.selectedLeftTab = index;
+		if (this.selectedLeftTab === index) {
+			this.showOrHidePane = true;
+		}
+	}
 
-    hideLeftPane() {
-        this.showOrHidePane = false;
-    }
+	hideLeftPane() {
+		this.showOrHidePane = false;
+	}
+
+	onSelectEditWorkpackage(workpackage: any) {
+    this.workpackageId = workpackage.id;
+    this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
+	}
+	
+	onAdd() {
+    const dialogRef = this.dialog.open(AttributeModalComponent, {
+      disableClose: false, 
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if(data && data.attribute) {
+				this.store.dispatch(new AddAttribute({
+					workPackageId: this.workpackageId,
+					entity: { data: {...data.attribute }}
+				}))
+			}
+    });
+	}
 
 }
