@@ -24,7 +24,7 @@ a {
 }
 
 .mat-tab-label, .mat-tab-label-active{
-  min-width: 140px !important;
+  min-width: 0px !important;
 }
 
 .mat-select-placeholder {
