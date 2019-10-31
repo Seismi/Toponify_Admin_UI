@@ -73,6 +73,11 @@ export class ArchitectureDiagramComponent
   }
 
   @Input() workpackageDetail;
+  @Input('selectedId') set selectedId(id: string) {
+    if (id) {
+      this.selectById(id);
+    }
+  }
 
   @Input() workpackages;
 
@@ -415,5 +420,9 @@ export class ArchitectureDiagramComponent
         }
       }
     }
+  }
+  selectById(id: string) {
+    const part = this.diagram.findPartForKey(id);
+    this.diagram.select(part);
   }
 }
