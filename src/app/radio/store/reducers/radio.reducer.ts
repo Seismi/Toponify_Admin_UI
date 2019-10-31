@@ -176,6 +176,29 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
+    case RadioActionTypes.SearchRadio: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case RadioActionTypes.SearchRadioSuccess: {
+      return {
+        ...state,
+        entities: action.payload.data,
+        loading: false
+      };
+    }
+
+    case RadioActionTypes.SearchRadioFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
     default: {
       return state;
     }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioApiRequest, ReplyApiRequest, RadioDetailApiResponse } from '../store/models/radio.model';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioApiRequest, ReplyApiRequest, RadioDetailApiResponse, AdvancedSearchApiRequest } from '../store/models/radio.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -35,6 +35,10 @@ export class RadioService {
 
   deleteRadioProperty(radioId: string, customPropertyId: string): Observable<RadioDetailApiResponse> {
     return this.http.delete<RadioDetailApiResponse>(`/radios/${radioId}/customPropertyValues/${customPropertyId}`)
+  }
+
+  searchRadio(data: AdvancedSearchApiRequest): Observable<RadioEntitiesResponse> {
+    return this.http.post<RadioEntitiesResponse>(`/radios/advanced/search`, data, httpOptions);
   }
 
   // TODO: move into sharable service
