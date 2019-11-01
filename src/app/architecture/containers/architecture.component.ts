@@ -801,6 +801,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
     this.diagramComponent.updateDiagramArea();
+    this.diagramComponent.zoomToFit();
   }
 
   openLeftTab(index: number) {

@@ -23,8 +23,6 @@ export class LeftPanelComponent {
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
-  @Output() hideLeftPane = new EventEmitter<void>();
-
   @Output()
   setWorkpackageEditMode = new EventEmitter<object>();
 
@@ -46,10 +44,6 @@ export class LeftPanelComponent {
 
   onSelectColour(event: { colour: string; id: string }) {
     this.selectColour.emit(event);
-  }
-
-  onHidePane() {
-    this.hideLeftPane.emit();
   }
 
   onTabClick(event) {
