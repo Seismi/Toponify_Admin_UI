@@ -3,11 +3,22 @@ export interface ReportLibraryApiResponse {
   links: Links;
   page: Page;
 }
+
+// Report Entity
+export interface ReportEntityApiRequest {
+  data: ReportLibrary;
+}
+
+export interface ReportEntityApiResponse {
+  data: ReportLibrary;
+}
+
 export interface ReportLibrary {
   id: string;
   name: string;
   description: string;
   dataSets?: (DataSetsEntity)[] | null;
+  impactedByWorkPackages?: (ImpactedWorkPackageEntity)[] | null;
 }
 export interface DataSetsEntity {
   id: string;
@@ -18,6 +29,14 @@ export interface DataSetsEntity {
   tags: string;
   locations?: ((LocationsEntityEntity)[] | null)[] | null;
   owners?: (OwnersEntity)[] | null;
+}
+
+export interface ImpactedWorkPackageEntity {
+  id: string;
+  name: string;
+  description: string;
+  hasErrors: boolean;
+  status: string;
 }
 export interface LocationsEntityEntity {
   layout: Layout;
@@ -46,9 +65,14 @@ export interface Page {
 }
 
 // Report Detail
+export interface ReportDetailApiRequest {
+  data: Report;
+}
+
 export interface ReportDetailApiRespoonse {
   data: Report;
 }
+
 export interface Report {
   id: string;
   name: string;
