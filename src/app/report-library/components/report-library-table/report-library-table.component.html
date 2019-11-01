@@ -22,5 +22,5 @@
 
         <mat-paginator [pageSizeOptions]="[50, 100]"></mat-paginator>
     </div><br>
-    <button mat-raised-button color="primary">New</button>
+    <button mat-raised-button color="primary" (click)="onAdd()" [disabled]="workPackageIsEditable">New</button>
 </div>

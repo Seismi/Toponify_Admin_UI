@@ -1,3 +1,7 @@
+.wrapper {
+  border-bottom: solid 1px #ddd;
+}
+
 table {
   width: 100%;
   tr.mat-header-row {
@@ -16,8 +20,45 @@ table {
 
 .mat-icon {
   cursor: pointer;
+  font-size: 25px;
+  color: #555;
+  &:hover {
+    color: #222;
+  }
 }
 
 .mat-checkbox {
   margin-top: 10px;
+}
+
+th.mat-column-show {
+  width: 15%;
+}
+
+th.mat-column-e {
+  width: 8%;
+}
+
+th.mat-header-cell {
+  text-align: center;
+}
+
+th.mat-header-cell.mat-column-name {
+  text-align: left;
+}
+
+td.mat-cell {
+  text-align: center;
+}
+
+td.mat-cell.mat-column-name {
+  text-align: left;
+}
+
+td.mat-cell.mat-column-show {
+  text-align: left;
+}
+
+th.mat-header-cell.mat-column-show {
+  text-align: left;
 }

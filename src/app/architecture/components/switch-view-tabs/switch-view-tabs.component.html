@@ -1,0 +1,13 @@
+<mat-tab-group
+  mat-stretch-tabs
+  [@.disabled]="true"
+  [selectedIndex]="selectedView"
+  (selectedTabChange)="onTabClick($event)"
+>
+  <mat-tab label="Architecture" [style.width.px]="100">
+  </mat-tab>
+  <mat-tab [label]="getLabel()" [style.width.px]="100">
+  </mat-tab>
+  <mat-tab label="Links" [style.width.px]="100">
+  </mat-tab>
+</mat-tab-group>
