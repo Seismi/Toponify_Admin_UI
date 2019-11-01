@@ -65,7 +65,7 @@
     </p>
   </app-model-sidebar>
   <app-model-content>
-    <smi-switch-view-tabs (viewChange)="onViewChange($event)" [selectedView]="selectedView"></smi-switch-view-tabs>
+    <smi-switch-view-tabs (viewChange)="onViewChange($event)" [selectedView]="selectedView" [viewLevel]="viewLevel$ | async"></smi-switch-view-tabs>
     <div style="padding: 5px" [hidden]="selectedView!==ArchitectureView.Diagram">
       <app-architecture-diagram
         [mapView]="mapView"
