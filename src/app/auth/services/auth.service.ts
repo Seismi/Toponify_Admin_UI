@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '@env/environment';
 import { User, AuthenticateApiResponse } from '../store/models/user.model';
+import { Router } from '@angular/router';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -14,7 +15,8 @@ const httpOptions = {
 export class AuthService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) {}
 
   login(username: string, password: string): Observable<boolean> {
@@ -33,6 +35,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('access_token');
+    this.router.navigate(['auth/login']);
   }
 
   // TODO: Move to Store

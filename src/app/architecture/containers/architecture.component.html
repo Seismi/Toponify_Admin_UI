@@ -1,4 +1,5 @@
 <app-base-header>
+  <smi-node-name *ngIf="parentName" [parentName]="parentName"></smi-node-name>
   <app-toolbar-column [fillFreeSpace]="true">
   </app-toolbar-column>
   <app-search></app-search>
@@ -57,8 +58,8 @@
       <button mat-raised-button color="primary" class="hide-btn" (click)="onHideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
     </p>
   <app-model-content>
-    <div class="selected-node-title" *ngIf="parentName">{{parentName}}</div>
-    <div style="padding: 5px">
+    <smi-switch-view-tabs (viewChange)="onViewChange($event)" [selectedView]="selectedView" [viewLevel]="viewLevel$ | async"></smi-switch-view-tabs>
+    <div style="padding: 5px" [hidden]="selectedView!==ArchitectureView.Diagram">
       <app-architecture-diagram
         [mapView]="mapView"
         [showGrid]="showGrid"
@@ -68,6 +69,7 @@
         [nodes]="nodes | layer: { byId: true }"
         [links]="links | layer: { byId: false }"
         [workpackageDetail]="workpackageDetail"
+        [selectedId]="selectedId"
         [selectedWorkPackages]="selectedWorkPackages$ | async"
         [workpackages]="workpackage$ | async"
         [viewLevel]="viewLevel$ | async"
@@ -78,6 +80,20 @@
         (updateNodeLocation)="handleUpdateNodeLocation($event)"
       >
       </app-architecture-diagram>
+    </div>
+    <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.System">
+      <smi-architecture-table-view [data]="nodes | layer: { byId: true }"
+                                   [selectedItem]="selectedNode"
+                                   (selectNode)="onSelectNode($event)"
+                                   (changeLevel)="onChangeLevel($event)"
+                                   [view]="'system'"></smi-architecture-table-view>
+    </div>
+    <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.Links">
+      <smi-architecture-table-view [data]="links | layer: { byId: false }"
+                                   [selectedItem]="selectedNode"
+                                   (selectNode)="onSelectNode($event)"
+                                   (changeLevel)="onChangeLevel($event)"
+                                   [view]="'link'"></smi-architecture-table-view>
     </div>
   </app-model-content>
   <smi-right-sidebar

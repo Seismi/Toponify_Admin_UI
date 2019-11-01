@@ -17,6 +17,13 @@ export interface NodeLinksApiResponse {
     targetObject: SourceObjectOrTargetObject;
     route: number[];
     routes?: RoutesEntityEntity[];
+    relatedRadioCounts: {
+      risks: number,
+      issues: number,
+      assumptions: number,
+      dependencies: number,
+      opportunities: number
+    };
   }
   export interface SourceObjectOrTargetObject {
     id: string;
