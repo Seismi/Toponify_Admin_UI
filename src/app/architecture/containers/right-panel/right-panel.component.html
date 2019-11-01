@@ -1,7 +1,7 @@
 <mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
     <mat-tab *ngIf="objectSelected || multipleSelected">
         <ng-template mat-tab-label>
-            <mat-icon class="tab">info</mat-icon>
+            <mat-icon matTooltip="Details" class="tab">info</mat-icon>
         </ng-template>
       <p class="detailsTab">
         <smi-object-details-form
@@ -36,7 +36,7 @@
     </mat-tab>
     <mat-tab *ngIf="objectSelected">
         <ng-template mat-tab-label>
-            <mat-icon class="tab">ballot</mat-icon>
+            <mat-icon matTooltip="Attributes & Rules" class="tab">ballot</mat-icon>
         </ng-template>
         <smi-attributes-tab
             [data]="attributes"
@@ -46,7 +46,7 @@
     </mat-tab>
     <mat-tab *ngIf="objectSelected">
         <ng-template mat-tab-label>
-            <mat-icon class="tab">insert_drive_file</mat-icon>
+            <mat-icon matTooltip="Properties" class="tab">insert_drive_file</mat-icon>
         </ng-template>
         <smi-properties-tab
             [data]="properties"
@@ -56,7 +56,7 @@
     </mat-tab>
     <mat-tab *ngIf="!multipleSelected">
         <ng-template mat-tab-label>
-            <mat-icon class="tab">track_changes</mat-icon>
+            <mat-icon matTooltip="RADIO" class="tab">track_changes</mat-icon>
         </ng-template>
         <smi-radio-tab *ngIf="objectSelected"
             [data]="relatedRadios"
@@ -71,12 +71,12 @@
     </mat-tab>
     <mat-tab *ngIf="objectSelected">
         <ng-template mat-tab-label>
-            <mat-icon class="tab">pages</mat-icon>
+            <mat-icon matTooltip="Scopes" class="tab">pages</mat-icon>
         </ng-template>
     </mat-tab>
     <mat-tab *ngIf="objectSelected">
         <ng-template mat-tab-label>
-            <mat-icon class="tab">business_center</mat-icon>
+            <mat-icon matTooltip="Work Packages" class="tab">business_center</mat-icon>
         </ng-template>
         <smi-workpackage-tab [data]="workpackages"></smi-workpackage-tab>
     </mat-tab>
