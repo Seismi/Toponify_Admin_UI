@@ -67,6 +67,8 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
+import { SwitchViewTabsComponent } from '@app/architecture/components/switch-view-tabs/switch-view-tabs.component';
+import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
 
 @NgModule({
   imports: [
@@ -129,7 +131,9 @@ import { EditNameModalComponent } from '@app/architecture/components/edit-name-m
     OwnersTableComponent,
     DescendantsTableComponent,
     DescendantsModalComponent,
-    EditNameModalComponent
+    EditNameModalComponent,
+    SwitchViewTabsComponent,
+    ArchitectureTableViewComponent
   ],
   entryComponents: [
     DeleteModalComponent,

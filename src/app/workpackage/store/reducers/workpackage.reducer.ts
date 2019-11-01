@@ -9,6 +9,7 @@ export interface State {
   links: Links;
   loading: boolean;
   selectedWorkPackage: WorkPackageDetail;
+  preselectedWorkPackageIds: string[];
   error?: HttpErrorResponse | { message: string };
 }
 
@@ -19,15 +20,12 @@ export const initialState: State = {
   links: null,
   loading: false,
   selectedWorkPackage: null,
+  preselectedWorkPackageIds: [],
   error: null
 };
 
-export function reducer(
-  state = initialState,
-  action: WorkPackageActionsUnion
-): State {
+export function reducer(state = initialState, action: WorkPackageActionsUnion): State {
   switch (action.type) {
-
     case WorkPackageActionTypes.SetWorkpackageEditMode: {
       const { id } = action.payload;
       return {
@@ -58,7 +56,7 @@ export function reducer(
           if (item.id === workpackageId) {
             return {
               ...item,
-              displayColour: colour,
+              displayColour: colour
             };
           }
           return item;
@@ -68,21 +66,28 @@ export function reducer(
 
     case WorkPackageActionTypes.SetWorkpackageSelected: {
       const { workpackageId } = action.payload;
-      return {
-        ...state,
-        loading: true,
-        entities: state.entities.map(item => {
-          if (item.id === workpackageId) {
-            return {
-              ...item,
-              edit: item.selected ? false : item.edit,
-              selected: !item.selected
-            };
-          } else {
-            return { ...item, edit: false };
-          }
-        })
-      };
+      if (state.entities.length > 0) {
+        return {
+          ...state,
+          loading: true,
+          entities: state.entities.map(item => {
+            if (item.id === workpackageId) {
+              return {
+                ...item,
+                edit: item.selected ? false : item.edit,
+                selected: !item.selected
+              };
+            } else {
+              return { ...item, edit: false };
+            }
+          })
+        };
+      } else {
+        return {
+          ...state,
+          preselectedWorkPackageIds: [...state.preselectedWorkPackageIds, workpackageId]
+        };
+      }
     }
 
     case WorkPackageActionTypes.GetWorkpackageAvailability: {
@@ -116,13 +121,27 @@ export function reducer(
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesSuccess: {
-      return {
-        ...state,
-        entities: action.payload.data,
-        links: action.payload.links,
-        page: action.payload.page,
-        loading: false
-      };
+      if (state.preselectedWorkPackageIds.length) {
+        const entities = action.payload.data;
+        return {
+          ...state,
+          entities: entities.map(entity => ({
+            ...entity,
+            selected: state.preselectedWorkPackageIds.some(id => id === entity.id)
+          })),
+          links: action.payload.links,
+          page: action.payload.page,
+          loading: false
+        };
+      } else {
+        return {
+          ...state,
+          entities: action.payload.data,
+          links: action.payload.links,
+          page: action.payload.page,
+          loading: false
+        };
+      }
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesFailure: {
@@ -232,7 +251,6 @@ export function reducer(
       };
     }
 
-
     case WorkPackageActionTypes.AddOwner: {
       return {
         ...state,
@@ -302,7 +320,7 @@ export function reducer(
       return {
         ...state,
         selectedWorkPackage: action.payload
-      }
+      };
     }
 
     case WorkPackageActionTypes.AddObjectiveFailure: {
@@ -347,7 +365,7 @@ export function reducer(
       return {
         ...state,
         selectedWorkPackage: action.payload
-      }
+      };
     }
 
     case WorkPackageActionTypes.AddRadioFailure: {
