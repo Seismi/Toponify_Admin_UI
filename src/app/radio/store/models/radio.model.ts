@@ -36,9 +36,12 @@ export interface RadioEntity {
   id: string;
   title: string;
   description: string;
+  mitigation: string;
   category: string;
   author: AuthorOrLastUpdatedBy;
   owners?: (TeamsOrOwners)[] | null;
+  assignedTo: AuthorOrLastUpdatedBy;
+  actionBy: string;
   status: string;
   createdOn?: string;
   lastUpdatedOn?: string;
@@ -110,13 +113,13 @@ export interface Replies {
   author?: (AuthorOrLastUpdatedBy)[] | null;
   postedOn: string;
   replyText: string;
-  changes?: (Changes) | null;
+  changes?: Changes;
   replies?: (string)[] | null;
 }
 
 export interface Changes {
-  hasChanges: boolean;
-  listChanges: (ListChanges)[] | null;
+  hasChanges?: boolean;
+  listChanges?: (ListChanges)[] | null;
 }
 
 export interface ListChanges {

@@ -33,6 +33,13 @@ import { reducer } from './store/reducers/radio.reducer';
 import { RadioDetailsComponent } from './containers/radio-details/radio-details.component';
 import { RadioPropertiesTabComponent } from './components/properties-tab/properties-tab.component';
 import { SettingsModule } from '@app/settings/settings.module';
+import { RadioHeaderComponent } from './components/radio-header/radio-header.component';
+import { RadioRightSideComponent } from './components/right-side/right-side.component';
+import { FilterModalComponent } from './containers/filter-modal/filter-modal.component';
+import { FilterRadioFormComponent } from './components/filter-radio-form/filter-radio-form.component';
+import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
+import { DeleteRadioPropertyModalComponent } from './containers/delete-property-modal/delete-property-modal.component';
 
 
 @NgModule({
@@ -55,6 +62,8 @@ import { SettingsModule } from '@app/settings/settings.module';
         MatDatepickerModule,
         MatNativeDateModule,
         MatIconModule,
+        MatMomentDateModule,
+        DocumentationStandardsModule,
         StoreModule.forFeature('radioFeature', reducer),
         EffectsModule.forFeature([ RadioEffects ])
     ],
@@ -69,9 +78,14 @@ import { SettingsModule } from '@app/settings/settings.module';
         ReplyTextComponent,
         ChatBoxComponent,
         RadioDetailsComponent,
-        RadioPropertiesTabComponent
+        RadioPropertiesTabComponent,
+        RadioHeaderComponent,
+        RadioRightSideComponent,
+        FilterModalComponent,
+        FilterRadioFormComponent,
+        DeleteRadioPropertyModalComponent
     ],
-    entryComponents: [ RadioModalComponent, ReplyModalComponent ],
-    providers: [ RadioService ]
+    entryComponents: [ RadioModalComponent, ReplyModalComponent, FilterModalComponent, DeleteRadioPropertyModalComponent ],
+    providers: [ RadioService, { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } } ]
 })
 export class RadioModule { }

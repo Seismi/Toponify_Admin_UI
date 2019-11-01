@@ -8,7 +8,8 @@ import { Injectable } from '@angular/core';
 import {
   CustomLink,
   GojsCustomObjectsService,
-  updateShapeShadows
+  updateShapeShadows,
+  customIcons
 } from './gojs-custom-objects.service';
 import { FilterService } from './filter.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
@@ -105,12 +106,12 @@ export class DiagramTemplatesService {
               })
             ),
             toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
                   width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
           }
@@ -320,6 +321,8 @@ export class DiagramTemplatesService {
             return false;
           } else {
 
+            if (!link.data.relatedRadioCounts) {return false; }
+
             const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
               return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
             }, false);
@@ -351,7 +354,7 @@ export class DiagramTemplatesService {
   //   tags
   //   owner
   // Returns an array of node sections
-  getStandardNodeSections(): go.TextBlock[] {
+  getStandardNodeSections(isHorizontal = false): go.TextBlock[] {
     const sections = [
       {
         sectionName: 'name',
@@ -375,6 +378,8 @@ export class DiagramTemplatesService {
       }
     ];
 
+    const sectionMargin =  isHorizontal ? new go.Margin(0, 5, 0, 0) : new go.Margin(0, 0, 5, 0);
+
     return sections.map(function(section) {
       return $(
         go.TextBlock,
@@ -383,7 +388,7 @@ export class DiagramTemplatesService {
           stroke: 'black',
           font: section.font,
           maxSize: new go.Size(100, Infinity),
-          margin: new go.Margin(0, 0, 5, 0)
+          margin: sectionMargin
         },
         new go.Binding('text', section.sectionName, function(input) {
           return input ? section.initialText + input : '';
@@ -462,12 +467,12 @@ export class DiagramTemplatesService {
           }
         : {
         toolTip:
-          $("ToolTip",
-            $(go.TextBlock, 
-              { 
+          $('ToolTip',
+            $(go.TextBlock,
+              {
                 width: 150
               },
-              new go.Binding("text", "tooltip")
+              new go.Binding('text', 'tooltip')
             )
           )
         },
@@ -568,12 +573,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -675,17 +680,17 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
       // Have the diagram position the node if no location set
-      this.filterService.getFilter().filterLevel === Level.map
+      this.filterService.getFilter().filterLevel.endsWith('map')
         ? {}
         : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -787,12 +792,12 @@ export class DiagramTemplatesService {
           }
         : {
           toolTip:
-            $("ToolTip",
-              $(go.TextBlock, 
-                { 
-                  width: 150 
+            $('ToolTip',
+              $(go.TextBlock,
+                {
+                  width: 150
                 },
-                new go.Binding("text", "tooltip")
+                new go.Binding('text', 'tooltip')
               )
             )
         },
@@ -801,15 +806,7 @@ export class DiagramTemplatesService {
       // Make the shape the port for links to connect to
       $(
         go.Shape,
-        new go.Binding('figure', 'category', function(category) {
-          if (category === 'key') {
-            return 'SquareArrow';
-          } else if (category === 'list') {
-            return 'Process';
-          } else {
-            return 'InternalStorage';
-          }
-        }),
+        'rectangle',
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -834,29 +831,35 @@ export class DiagramTemplatesService {
         go.Panel,
         'Table',
         {
-          minSize: new go.Size(100, 100)
+          minSize: new go.Size(200, 50),
+          margin: new go.Margin(5, 4, 0, 4)
         },
-        // Ensure that the panel does not overlap the border lines
-        // on the shapes for list and structure reporting elements
-        new go.Binding('margin', 'category', function(category) {
-          if (
-            [nodeCategories.list, nodeCategories.structure].includes(category)
-          ) {
-            return new go.Margin(15, 4, 0, 14);
-          } else {
-            return new go.Margin(5, 4, 0, 4);
-          }
-        }),
         $(
           go.Panel,
-          'Vertical',
+          'Horizontal',
           {
             alignment: go.Spot.TopCenter,
-            minSize: new go.Size(90, NaN)
+            minSize: new go.Size(190, NaN)
           },
-          this.getDependencyExpandButton(),
-          ...this.getStandardNodeSections()
+          $(
+            go.Shape,
+            {
+              alignment: go.Spot.TopLeft,
+              margin: new go.Margin(0, 5, 0, 0)
+            },
+            new go.Binding('geometry', 'category', function(category) {
+              if (category === nodeCategories.key) {
+                return customIcons.flag;
+              } else if (category === nodeCategories.list) {
+                return customIcons.list;
+              } else { // Structure reporting concept
+                return customIcons.tree;
+              }
+            })
+          ),
+          ...this.getStandardNodeSections(true)
         ),
+        this.getDependencyExpandButton(),
         this.getRadioAlertIndicators()
       )
     );
@@ -876,6 +879,12 @@ export class DiagramTemplatesService {
         }
 
         return Path;
+      }),
+      new go.Binding('relinkableFrom', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
+      }),
+      new go.Binding('relinkableTo', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
       }),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
@@ -944,11 +953,25 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      // Do not allow relinking map view dummy links
+      new go.Binding('relinkableFrom', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
+      }),
+      new go.Binding('relinkableTo', 'id', function(id) {
+        return id !== '00000000-0000-0000-0000-000000000000';
+      }),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
+      {
+        doubleClick: function(event, object) {
+          if ([layers.system, layers.dataSet].includes(object.data.layer)) {
+            this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, object);
+          }
+        }.bind(this)
+      },
       $(
         go.Shape,
         {
@@ -958,6 +981,14 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        // Show dotted line for map view dummy links
+        new go.Binding('strokeDashArray', 'id', function(id) {
+          if (id === '00000000-0000-0000-0000-000000000000') {
+            return [2.5, 1.5];
+          } else {
+            return [5, 5];
+          }
+        }),
         // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
         new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
           return dataLinks ? 2.5 : 0;
@@ -1076,6 +1107,7 @@ export class DiagramTemplatesService {
         }),
         computesBoundsAfterDrag: true,
         computesBoundsIncludingLocation: true,
+        computesBoundsIncludingLinks: false,
         locationSpot: go.Spot.TopCenter,
         locationObjectName: 'shape',
         isLayoutPositioned: true,

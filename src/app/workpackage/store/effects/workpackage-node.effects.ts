@@ -43,8 +43,8 @@ export class WorkPackageNodeEffects {
   addWorkpackageNode$ = this.actions$.pipe(
     ofType<AddWorkPackageNode>(WorkPackageNodeActionTypes.AddWorkPackageNode),
     map(action => action.payload),
-    mergeMap((payload: {workpackageId: string, node: any}) => {
-      return this.workpackageNodeService.addNode(payload.workpackageId, payload.node).pipe(
+    mergeMap((payload: {workpackageId: string, node: any, scope?: string}) => {
+      return this.workpackageNodeService.addNode(payload.workpackageId, payload.node, payload.scope).pipe(
         switchMap((data: any) => [new AddWorkPackageNodeSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeFailure(error)))
       );

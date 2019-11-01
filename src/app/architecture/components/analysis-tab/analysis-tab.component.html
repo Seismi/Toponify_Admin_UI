@@ -1,19 +1,17 @@
 <div class="container">
-    <h1 class="title">Systems</h1>
-
-    <p>Object Display:</p>
+    <p>Object display:</p>
     <mat-list role="list">
         <mat-list-item role="listitem">
             <mat-checkbox checked="true" (change)="checkboxClicked($event, 'name')">Name</mat-checkbox>
         </mat-list-item>
         <mat-list-item role="listitem">
-            <mat-checkbox (change)="checkboxClicked($event, 'description')">Description</mat-checkbox>
+            <mat-checkbox (change)="checkboxClicked($event, 'description')" #Description>Description</mat-checkbox>
         </mat-list-item>
         <mat-list-item role="listitem">
-            <mat-checkbox checked="true" (change)="checkboxClicked($event, 'tags')">Tags</mat-checkbox>
+            <mat-checkbox checked="true" (change)="checkboxClicked($event, 'tags')" #Tags>Tags</mat-checkbox>
         </mat-list-item>
         <mat-list-item role="listitem">
-            <mat-checkbox (change)="checkboxClicked($event, 'owner')">Owners</mat-checkbox>
+            <mat-checkbox (change)="checkboxClicked($event, 'owner')" #Owners>Owners</mat-checkbox>
         </mat-list-item>
         <mat-list-item role="listitem">
             <mat-checkbox checked="true" (change)="checkboxClicked($event, 'nextLevel')">Next level</mat-checkbox>
@@ -29,7 +27,7 @@
         </mat-list-item>
     </mat-list><br>
     <div *ngIf="!(viewLevel===10)">
-      <p>Link Display:</p>
+      <p>Link display:</p>
       <mat-list role="list">
           <mat-list-item role="listitem">
               <mat-checkbox checked="true" (change)="checkboxClicked($event, 'dataLinks')">Show Data Links</mat-checkbox>

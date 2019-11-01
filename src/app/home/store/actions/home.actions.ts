@@ -1,8 +1,11 @@
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '@app/workpackage/store/models/workpackage.models';
+import {
+  WorkPackageEntitiesHttpParams,
+  WorkPackageEntitiesResponse
+} from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
-import { LayoutEntitiesHttpParams, GetLayoutEntitiesApiResponse } from '@app/layout/store/models/layout.model';
+import { GetLayoutEntitiesApiResponse, LayoutEntitiesHttpParams } from '@app/layout/store/models/layout.model';
 import { UserApiResponse } from '@app/settings/store/models/user.model';
 
 export enum HomePageActionTypes {
