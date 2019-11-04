@@ -1,32 +1,43 @@
-<div>
+<div class="sidebar">
     <!-- Architecture Page -->
     <div *ngIf="architecturePage">
-        <span *ngFor="let tabs of architectureTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+        <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
+        <span (click)="openRightTab(1)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
+        <span (click)="openRightTab(2)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+        <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
+        <span (click)="openRightTab(4)" matTooltip="Scopes"><mat-icon>pages</mat-icon></span>
+        <span (click)="openRightTab(5)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
     </div>
 
     <!-- Show this tab when 0 objects selected in diagram (architecture page) -->
-    <span (click)="openRightTab(0)" *ngIf="architectureRadioTab">RADIO</span>
+    <span (click)="openRightTab(0)" matTooltip="RADIO" *ngIf="architectureRadioTab"><mat-icon>track_changes</mat-icon></span>
 
     <!-- Show this tab when multiple objects selected in diagram (architecture page) -->
-    <span (click)="openRightTab(0)" *ngIf="architectureDetailsTab">Details</span>
+    <span (click)="openRightTab(0)" matTooltip="Details" *ngIf="architectureDetailsTab"><mat-icon>info</mat-icon></span>
 
     <!-- Report Library Page -->
     <div *ngIf="reportLibraryPage">
-        <span *ngFor="let tabs of reportLibraryTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+        <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
+        <span (click)="openRightTab(1)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
+        <span (click)="openRightTab(2)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+        <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
+        <span (click)="openRightTab(4)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
     </div>
 
     <!-- Attributes Page -->
     <div *ngIf="attributesPage">
-        <span *ngFor="let tabs of attributesTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+        <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
+        <span (click)="openRightTab(1)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+        <span (click)="openRightTab(2)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
+        <span (click)="openRightTab(3)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
     </div>
 
     <!-- Workpackage Page -->
     <div *ngIf="workPackagePage">
-        <span *ngFor="let tabs of workPackageTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
-    </div>
-
-    <!-- RADIO Page -->
-    <div *ngIf="radioPage">
-        <span *ngFor="let tabs of radioTabs; let i = index" (click)="openRightTab(i)">{{tabs}}</span>
+        <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
+        <span (click)="openRightTab(1)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+        <span (click)="openRightTab(2)" matTooltip="Objectives"><mat-icon>assignment_turned_in</mat-icon></span>
+        <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
+        <span (click)="openRightTab(4)" matTooltip="Change Summary"><mat-icon>change_history</mat-icon></span>
     </div>
 </div>

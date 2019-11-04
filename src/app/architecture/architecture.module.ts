@@ -18,7 +18,8 @@ import {
   MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule,
+  MatTooltipModule
 } from '@angular/material';
 import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
@@ -99,6 +100,7 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     LayoutModule,
     MatGridListModule,
     MatSelectModule,
+    MatTooltipModule,
     ScopesAndLayoutsModule,
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
