@@ -18,7 +18,8 @@ import {
   MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule,
+  MatTooltipModule
 } from '@angular/material';
 import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
@@ -67,6 +68,8 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
+import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
+import { SettingsModule } from '@app/settings/settings.module';
 import { SwitchViewTabsComponent } from '@app/architecture/components/switch-view-tabs/switch-view-tabs.component';
 import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
 
@@ -80,6 +83,7 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     CommonModule,
     WorkPackageModule,
     RadioModule,
+    SettingsModule,
     DocumentationStandardsModule,
     MatCardModule,
     MatDividerModule,
@@ -99,6 +103,7 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     LayoutModule,
     MatGridListModule,
     MatSelectModule,
+    MatTooltipModule,
     ScopesAndLayoutsModule,
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
@@ -132,6 +137,7 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     DescendantsTableComponent,
     DescendantsModalComponent,
     EditNameModalComponent,
+    RadioDetailModalComponent,
     SwitchViewTabsComponent,
     ArchitectureTableViewComponent
   ],
@@ -141,7 +147,8 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     DeleteLinkModalComponent,
     AttributeModalComponent,
     DescendantsModalComponent,
-    EditNameModalComponent
+    EditNameModalComponent,
+    RadioDetailModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

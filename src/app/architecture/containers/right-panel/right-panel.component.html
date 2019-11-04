@@ -1,5 +1,8 @@
 <mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
-    <mat-tab label="Details" *ngIf="objectSelected || multipleSelected">
+    <mat-tab *ngIf="objectSelected || multipleSelected">
+        <ng-template mat-tab-label>
+            <mat-icon matTooltip="Details" class="tab">info</mat-icon>
+        </ng-template>
       <p class="detailsTab">
         <smi-object-details-form
             *ngIf="objectSelected"
@@ -31,36 +34,55 @@
         </button>
       </p>
     </mat-tab>
-    <mat-tab label="Attributes" *ngIf="objectSelected">
+    <mat-tab *ngIf="objectSelected">
+        <ng-template mat-tab-label>
+            <mat-icon matTooltip="Attributes & Rules" class="tab">ballot</mat-icon>
+        </ng-template>
         <smi-attributes-tab
             [data]="attributes"
             [workPackageIsEditable]="workPackageIsEditable"
             (addAttribute)="onAddAttribute()">
         </smi-attributes-tab>
     </mat-tab>
-    <mat-tab label="Properties" *ngIf="objectSelected">
+    <mat-tab *ngIf="objectSelected">
+        <ng-template mat-tab-label>
+            <mat-icon matTooltip="Properties" class="tab">insert_drive_file</mat-icon>
+        </ng-template>
         <smi-properties-tab
             [data]="properties"
             (editProperties)="onEditProperties($event)"
             [workPackageIsEditable]="workPackageIsEditable">
         </smi-properties-tab>
     </mat-tab>
-    <mat-tab label="RADIO" *ngIf="!multipleSelected">
+    <mat-tab *ngIf="!multipleSelected">
+        <ng-template mat-tab-label>
+            <mat-icon matTooltip="RADIO" class="tab">track_changes</mat-icon>
+        </ng-template>
         <smi-radio-tab *ngIf="objectSelected"
             [data]="relatedRadios"
             [workPackageIsEditable]="workPackageIsEditable"
-            (addRadio)="onAddRelatedRadio()">
+            (addRadio)="onAddRelatedRadio()"
+            (openRadio)="onOpenRadio($event)">
         </smi-radio-tab>
         <smi-radio-table-in-architecture
             *ngIf="!objectSelected"
             [data]="radio"
-            (addRadio)="onAddRadio()">
+            (addRadio)="onAddRadio()"
+            (openRadio)="onOpenRadio($event)">
         </smi-radio-table-in-architecture>
     </mat-tab>
-    <mat-tab label="Work Packages" *ngIf="objectSelected">
+    <mat-tab *ngIf="objectSelected">
+        <ng-template mat-tab-label>
+            <mat-icon matTooltip="Scopes" class="tab">pages</mat-icon>
+        </ng-template>
+    </mat-tab>
+    <mat-tab *ngIf="objectSelected">
+        <ng-template mat-tab-label>
+            <mat-icon matTooltip="Work Packages" class="tab">business_center</mat-icon>
+        </ng-template>
         <smi-workpackage-tab [data]="workpackages"></smi-workpackage-tab>
     </mat-tab>
 </mat-tab-group>
 
 <!-- Hide right pane -->
-<button class="hide-pane-button" mat-button (click)="onHidePane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
+<button mat-raised-button color="primary" class="hide-pane-button" (click)="onHidePane()"><mat-icon>keyboard_arrow_right</mat-icon></button>

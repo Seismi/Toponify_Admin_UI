@@ -24,7 +24,7 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
-import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
@@ -84,6 +84,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
+import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
@@ -822,8 +823,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false,
-      width: '500px'
+      disableClose: false
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1027,6 +1027,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  onOpenRadio(radio: RadioDetail) {
+    this.dialog.open(RadioDetailModalComponent, {
+      disableClose: false,
+      width: '850px',
+      data: {
+        radio: radio
+      }
+    });
+  }
+
   updateWorkpackageFilter(id: string, reset?: boolean) {
     const existingFilter = this.filterService.getFilter();
     if (reset) {
@@ -1061,4 +1072,5 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onChangeLevel(node: Node | NodeLink) {
     this.diagramLevelService.changeLevelWithFilter(null, {data: node} as any);
   }
+
 }
