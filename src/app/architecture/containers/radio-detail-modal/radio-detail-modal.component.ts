@@ -1,55 +1,51 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Store, select } from '@ngrx/store';
-import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { Subscription, Observable } from 'rxjs';
-import { RadioDetail } from '@app/radio/store/models/radio.model';
-import { LoadRadio, AddReply, DeleteRadioProperty, UpdateRadioProperty } from '@app/radio/store/actions/radio.actions';
-import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
-import { MatDialog } from '@angular/material';
-import { ReplyModalComponent } from '../reply-modal/reply-modal.component';
+import { RadioDetail } from '@app/radio/store/models/radio.model';
+import { Subscription, Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
+import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
+import { LoadRadio, AddReply, UpdateRadioProperty, DeleteRadioProperty } from '@app/radio/store/actions/radio.actions';
+import { ReplyModalComponent } from '@app/radio/containers/reply-modal/reply-modal.component';
+import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
+import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
+import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { User } from '@app/settings/store/models/user.model';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
-import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
-import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/delete-property-modal.component';
+import { LoadUsers } from '@app/settings/store/actions/user.actions';
 
 @Component({
-  selector: 'app-radio-details',
-  templateUrl: './radio-details.component.html',
-  styleUrls: ['./radio-details.component.scss'],
+  selector: 'smi-radio-detail-modal',
+  templateUrl: './radio-detail-modal.component.html',
+  styleUrls: ['./radio-detail-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-export class RadioDetailsComponent implements OnInit, OnDestroy {
+
+export class RadioDetailModalComponent implements OnInit, OnDestroy {
 
   public users$: Observable<User[]>;
   public radio: RadioDetail;
-  public radioId: string;
   public subscriptions: Subscription[] = [];
-  public isEditable = false;
-  public modalMode = false;
-  public showOrHideRightPane = false;
-  public selectedRightTab: number;
 
   constructor(
+    private dialog: MatDialog,
     private userStore: Store<UserState>,
-    private route: ActivatedRoute,
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
-    private dialog: MatDialog
-  ) {}
+    public dialogRef: MatDialogRef<RadioDetailModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { 
+      this.radio = data.radio;
+    }
 
   ngOnInit() {
-    this.subscriptions.push(this.route.params.subscribe( params => {
-      const radioId = params['radioId'];
-      this.radioId = radioId;
-      this.store.dispatch(new LoadRadio(radioId));
-      this.users$ = this.userStore.pipe(select(getUsers));
-    }));
+    this.userStore.dispatch(new LoadUsers({}));
+    this.users$ = this.userStore.pipe(select(getUsers));
+    this.store.dispatch(new LoadRadio(this.radio.id));
+    
     this.subscriptions.push(this.store.pipe(select(getSelectedRadio)).subscribe(radio => {
       this.radio = radio;
       if(radio) {
@@ -74,6 +70,10 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     return this.radioDetailService.radioDetailsForm;
   }
 
+  onClose() {
+    this.dialogRef.close();
+  }
+
   onSaveRadio() {
     const dialogRef = this.dialog.open(ReplyModalComponent, {
       disableClose: false,
@@ -83,7 +83,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data) {
         this.store.dispatch(new AddReply({
-          id: this.radioId,
+          id: this.radio.id,
           entity: {
             data: {
               replyText: data.radio.replyText,
@@ -104,7 +104,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data) {
         this.store.dispatch(new AddReply({
-          id: this.radioId,
+          id: this.radio.id,
           entity: {
             data: {
               replyText: data.radio.replyText,
@@ -118,7 +118,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
   onSendReply() {
     this.store.dispatch(new AddReply({
-      id: this.radioId,
+      id: this.radio.id,
       entity: {
         data: {
           replyText: this.radioDetailsForm.value.replyText,
@@ -143,7 +143,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.customProperties) {
         this.store.dispatch(new UpdateRadioProperty({
-          radioId: this.radioId,
+          radioId: this.radio.id,
           customPropertyId: property.propertyId,
           data: { data: { value: data.customProperties.value }}
         }))
@@ -163,7 +163,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteRadioProperty({radioId: this.radioId, customPropertyId: property.propertyId}));
+        this.store.dispatch(new DeleteRadioProperty({radioId: this.radio.id, customPropertyId: property.propertyId}));
       }
     });
   }
