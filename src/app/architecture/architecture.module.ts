@@ -18,7 +18,8 @@ import {
   MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule,
+  MatTooltipModule
 } from '@angular/material';
 import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
@@ -69,6 +70,8 @@ import { DescendantsModalComponent } from './containers/descendants-modal/descen
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
 import { SettingsModule } from '@app/settings/settings.module';
+import { SwitchViewTabsComponent } from '@app/architecture/components/switch-view-tabs/switch-view-tabs.component';
+import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
 
 @NgModule({
   imports: [
@@ -100,6 +103,7 @@ import { SettingsModule } from '@app/settings/settings.module';
     LayoutModule,
     MatGridListModule,
     MatSelectModule,
+    MatTooltipModule,
     ScopesAndLayoutsModule,
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
@@ -133,7 +137,9 @@ import { SettingsModule } from '@app/settings/settings.module';
     DescendantsTableComponent,
     DescendantsModalComponent,
     EditNameModalComponent,
-    RadioDetailModalComponent
+    RadioDetailModalComponent,
+    SwitchViewTabsComponent,
+    ArchitectureTableViewComponent
   ],
   entryComponents: [
     DeleteModalComponent,
