@@ -67,7 +67,14 @@ import { DeleteRadioPropertyModalComponent } from './containers/delete-property-
         StoreModule.forFeature('radioFeature', reducer),
         EffectsModule.forFeature([ RadioEffects ])
     ],
-    exports: [RadioTableComponent],
+    exports: [
+        RadioTableComponent, 
+        RadioDetailsComponent, 
+        RadioPropertiesTabComponent, 
+        ReplyTextComponent, 
+        ChatBoxComponent,
+        RadioDetailComponent
+    ],
     declarations: [
         RadioComponent, 
         RadioRoutingComponent,

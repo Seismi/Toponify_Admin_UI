@@ -15,7 +15,9 @@
                 <mat-tab label="Work Packages">
                     <smi-workpackage-tab-table
                         [data]="workpackage$ | async"
-                        (selectWorkPackage)="onSelectWorkPackage($event)">
+                        (selectWorkPackage)="onSelectWorkPackage($event)"
+                        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+                        [canSelectWorkpackage]="canSelectWorkpackage">
                     </smi-workpackage-tab-table>
                 </mat-tab>
             </mat-tab-group>
@@ -28,10 +30,12 @@
             <div class="col">
                 <smi-report-library-table
                     [reports]="(reportEntities$  | async)"
-                    (reportSelected)="onSelectReport($event)">
+                    (reportSelected)="onSelectReport($event)"
+                    (addReport)="onAddReport()"
+                    [workPackageIsEditable]="workPackageIsEditable">
                 </smi-report-library-table>
             </div>
-            <router-outlet></router-outlet>
         </div>
     </div>
+    <router-outlet></router-outlet>
 </app-model-container>

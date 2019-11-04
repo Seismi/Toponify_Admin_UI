@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { validateAllFormFields } from '@app/services/utils';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class ReportLibraryDetailService {
 
   constructor(private fb: FormBuilder) {
     this.reportDetailForm = this.fb.group({
-      name: [null],
+      name: [null, Validators.required],
       description: [null]
     });
   }

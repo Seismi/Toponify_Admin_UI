@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
@@ -72,17 +72,6 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
   get radioDetailsForm(): FormGroup {
     return this.radioDetailService.radioDetailsForm;
-  }
-
-  openRightTab(index: number) {
-    this.selectedRightTab = index;
-    if(this.selectedRightTab === index) {
-      this.showOrHideRightPane = false;
-    }
-  }
-
-  onHideRightPane() {
-    this.showOrHideRightPane = true;
   }
 
   onSaveRadio() {
