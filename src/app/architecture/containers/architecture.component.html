@@ -107,6 +107,7 @@
   </smi-right-sidebar>
   <app-model-sidebar
     [isLast]="true"
+    [minWidth]="400"
     [maxWidth]="600"
     *ngIf="showOrHideRightPane"
   >
@@ -144,6 +145,7 @@
         (deleteProperties)="onDeleteProperties($event)"
         (addDescendant)="onAddDescendant()"
         (deleteDescendant)="onDeleteDescendant($event)"
+        (openRadio)="onOpenRadio($event)"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

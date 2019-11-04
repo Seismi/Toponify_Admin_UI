@@ -12,6 +12,7 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 import { AttributesEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
+import { RadioDetail } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -82,6 +83,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() addDescendant = new EventEmitter<void>();
 
   @Output() deleteDescendant = new EventEmitter<string>();
+
+  @Output() openRadio = new EventEmitter<RadioDetail>();
 
 
   constructor(
@@ -166,6 +169,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onDeleteDescendant(id: string) {
     this.deleteDescendant.emit(id);
+  }
+
+  onOpenRadio(radio: RadioDetail) {
+    this.openRadio.emit(radio);
   }
 
 }

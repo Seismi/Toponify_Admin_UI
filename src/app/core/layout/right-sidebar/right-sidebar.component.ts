@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Constants } from '../../constants';
 
 @Component({
   selector: 'smi-right-sidebar',
@@ -7,23 +6,19 @@ import { Constants } from '../../constants';
   styleUrls: ['./right-sidebar.component.scss']
 })
 export class RightSideBarComponent {
-  @Input() workPackagePage = false;
-  @Input() attributesPage = false;
-  @Input() reportLibraryPage = false;
-  @Input() architecturePage = false;
-  @Input() architectureRadioTab = false;
-  @Input() architectureDetailsTab = false;
-  @Input() radioPage = false;
+  @Input() workPackagePage: boolean = false;
+  @Input() attributesPage: boolean = false;
+  @Input() reportLibraryPage: boolean = false;
+  @Input() architecturePage: boolean = false;
+  @Input() architectureRadioTab: boolean = false;
+  @Input() architectureDetailsTab: boolean = false;
+  @Input() radioPage: boolean = false;
 
-  architectureTabs = Constants.ARCHITECTURE_TABS;
-  reportLibraryTabs = Constants.REPORT_LIBRARY_TABS;
-  attributesTabs = Constants.ATTRIBUTE_TABS;
-  workPackageTabs = Constants.WORKPACKAGE_TABS;
-  radioTabs = Constants.RADIO_TABS;
 
   @Output() rightTab = new EventEmitter<number>();
 
   openRightTab(index: number) {
     this.rightTab.emit(index);
   }
+  
 }

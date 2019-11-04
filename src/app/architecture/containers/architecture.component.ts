@@ -25,7 +25,7 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
-import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
@@ -86,6 +86,7 @@ import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/o
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
+import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
@@ -1046,6 +1047,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           customPropertyId: customProperty.propertyId
         }))
       }
+    })
+  }
+
+  onOpenRadio(radio: RadioDetail) {
+    this.dialog.open(RadioDetailModalComponent, {
+      disableClose: false,
+      width: '850px',
+      data: {
+        radio: radio
+      }
     });
   }
 
@@ -1083,4 +1094,5 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onChangeLevel(node: Node | NodeLink) {
     this.diagramLevelService.changeLevelWithFilter(null, {data: node} as any);
   }
+
 }
