@@ -16,6 +16,7 @@ export interface State {
   zoomLevel: number;
   viewLevel: number;
   entities: Node[];
+  descendants: DescendantsEntity[];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
@@ -27,6 +28,7 @@ export const initialState: State = {
   zoomLevel: 3,
   viewLevel: 1,
   entities: null,
+  descendants: [],
   selectedNode: null,
   selectedNodeLink: null,
   links: null,
@@ -244,6 +246,26 @@ export function reducer(
           ...state
         };
       }
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes: {
+      return {
+        ...state,
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesSuccess: {
+      return {
+        ...state,
+        descendants: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
     }
 
     default: {
