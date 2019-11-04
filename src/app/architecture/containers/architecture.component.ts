@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
@@ -23,17 +15,10 @@ import {
   UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { NodeDetail, CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
-import {
-  getNodeEntities,
-  getNodeEntitiesBy,
-  getNodeEntityById,
-  getNodeLinks,
-  getSelectedNode,
-  getSelectedNodeLink
-} from '@app/architecture/store/selectors/node.selector';
+import { CustomPropertyValuesEntity, NodeDetail } from '@app/architecture/store/models/node.model';
+import { getNodeEntities, getNodeLinks, getSelectedNode, getSelectedNodeLink } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
+import { LayoutActionTypes, LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
@@ -48,19 +33,14 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
+import { DeleteWorkpackageLinkSuccess } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
-  DeleteWorkpackageLinkSuccess,
-  UpdateWorkPackageLink,
-  WorkPackageLinkActionTypes
-} from '@app/workpackage/store/actions/workpackage-link.actions';
-import {
+  AddWorkPackageNodeDescendant,
   AddWorkpackageNodeOwner,
+  DeleteWorkPackageNodeDescendant,
   DeleteWorkpackageNodeOwner,
   DeleteWorkpackageNodeSuccess,
-  UpdateWorkPackageNode,
-  WorkPackageNodeActionTypes,
-  AddWorkPackageNodeDescendant,
-  DeleteWorkPackageNodeDescendant
+  WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -90,12 +70,12 @@ import { ObjectDetailsService } from '../components/object-details-form/services
 import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
 import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.component';
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
-import { Level } from '../services/diagram-level.service';
+import { DiagramLevelService, Level } from '../services/diagram-level.service';
 import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { Link, Node } from 'gojs';
+import { Link, Node as goNode } from 'gojs';
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
@@ -104,7 +84,9 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
-import { LayoutActionTypes } from '@app/layout/store/actions/layout.actions';
+import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
+import { NodeLink } from '@app/nodes/store/models/node-link.model';
+import { Node } from '@app/nodes/store/models/node.model';
 
 enum Events {
   NodesLinksReload = 0
@@ -184,6 +166,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedScope$: Observable<ScopeEntity>;
   editTabIndex: number;
   public parentName: string | null;
+  public selectedView: ArchitectureView = ArchitectureView.Diagram;
+  public ArchitectureView = ArchitectureView;
+  public selectedId: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -205,7 +190,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public filterService: FilterService,
     private ref: ChangeDetectorRef,
     public gojsCustomObjectsService: GojsCustomObjectsService,
-    public actions: Actions
+    public actions: Actions,
+    private diagramLevelService: DiagramLevelService
   ) {
     // If filterLevel not set, ensure to set it.
     const currentFilter = this.filterService.getFilter();
@@ -532,7 +518,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Do not attempt to load data for disconnected node links that have not been added to the database yet
     if (!this.part.data.isTemporary) {
-      this.part instanceof Node
+      this.part instanceof goNode
         ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
         : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
     }
@@ -815,6 +801,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
     this.diagramComponent.updateDiagramArea();
+    this.diagramComponent.zoomToFit();
   }
 
   openLeftTab(index: number) {
@@ -1061,5 +1048,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     } else {
       this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
     }
+  }
+
+  onViewChange(view: ArchitectureView) {
+    this.selectedView = view;
+  }
+
+  onSelectNode(node: Node | NodeLink) {
+    this.selectedId = node.id;
+  }
+
+  onChangeLevel(node: Node | NodeLink) {
+    this.diagramLevelService.changeLevelWithFilter(null, {data: node} as any);
   }
 }

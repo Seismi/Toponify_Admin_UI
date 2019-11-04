@@ -42,6 +42,13 @@ export class Node {
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
+  relatedRadioCounts: {
+    risks: number,
+    issues: number,
+    assumptions: number,
+    dependencies: number,
+    opportunities: number
+  };
   impactedByWorkPackages = [];
   tooltip?: string;
 

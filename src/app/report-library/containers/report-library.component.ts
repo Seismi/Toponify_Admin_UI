@@ -1,15 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State as ReportState } from '../store/reducers/report.reducer';
-import { LoadReports } from '../store/actions/report.actions';
+import { LoadReports, AddReport } from '../store/actions/report.actions';
 import { Observable, Subscription } from 'rxjs';
 import { ReportLibrary } from '../store/models/report.model';
 import { getReportEntities } from '../store/selecrtors/report.selectors';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages, SetWorkpackageSelected } from '@app/workpackage/store/actions/workpackage.actions';
-import { getWorkPackageEntities, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackages, SetWorkpackageSelected, SetWorkpackageEditMode, SetWorkpackageDisplayColour } from '@app/workpackage/store/actions/workpackage.actions';
+import { getWorkPackageEntities, getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { ReportModalComponent } from './report-modal/report-modal.component';
+import { SharedService } from '@app/services/shared-service';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -22,13 +25,18 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public selectedLeftTab: number;
   public showOrHidePane = false;
   public hideTab = true;
+  public canSelectWorkpackage: boolean = true;
+  public workpackageId: string;
+  public workPackageIsEditable: boolean;
 
   private subscriptions: Subscription[] = [];
 
   constructor(
+    private sharedService: SharedService,
     private store: Store<ReportState>,
     private workPackageStore: Store<WorkPackageState>,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -37,13 +45,15 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
         const workPackageIds = workpackages.map(item => item.id);
-        const selected = workpackages.map(item => item.selected);
-        if (!selected.length) {
-          this.router.navigate(['report-library']);
-        }
         this.setWorkPackage(workPackageIds);
       })
     );
+
+    this.subscriptions.push(this.workPackageStore.pipe(select(getEditWorkpackages))
+      .subscribe(workpackages => {
+        const edit = workpackages.map(item => item.edit);
+        (!edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
+    }));
   }
 
   ngOnDestroy(): void {
@@ -76,4 +86,28 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onSelectWorkPackage(id: string) {
     this.workPackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
   }
+
+  onSelectEditWorkpackage(workpackage: any) {
+    this.workpackageId = workpackage.id;
+    this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
+  }
+
+  onAddReport() {
+    const dialogRef = this.dialog.open(ReportModalComponent, {
+      disableClose: false, 
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if(data && data.report) {
+        this.store.dispatch(new AddReport({
+          workPackageId: this.workpackageId, 
+          request: { 
+            data: { ...data.report }
+          }
+        }))
+      }
+    });
+  }
+
 }

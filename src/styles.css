@@ -20,7 +20,7 @@ a {
 }
 
 .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
-  background-color: #28a745 !important;
+  background-color: #3F51B5 !important;
 }
 
 .mat-tab-label, .mat-tab-label-active{
