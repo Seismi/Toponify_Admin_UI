@@ -23,7 +23,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
-  @Input() descendants: DescendantsEntity;
+  @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() isEditable = false;
@@ -79,7 +79,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output() addDescendant = new EventEmitter<void>();
 
-  @Output() deleteDescendant = new EventEmitter<string>();
+  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
   @Output() openRadio = new EventEmitter<RadioDetail>();
 
@@ -160,8 +160,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(id: string) {
-    this.deleteDescendant.emit(id);
+  onDeleteDescendant(descendant: DescendantsEntity) {
+    this.deleteDescendant.emit(descendant);
   }
 
   onOpenRadio(radio: RadioDetail) {
