@@ -391,6 +391,38 @@ export class DiagramChangesService {
 
     (diagram.model as go.GraphLinksModel).linkDataArray = JSON.parse(JSON.stringify(linkArray));
 
+    /* Check for any links that do not have a valid route between source and target nodes.
+       This can happen if the source or target nodes are moved in a work package where
+       the link no longer exists.
+    */
+    diagram.links.each(function(link) {
+
+      // Ignore links with no route set yet
+      if (link.points.count === 0) {return; }
+
+      // Only proceed if link is connected at both ends
+      if (link.fromNode && link.toNode) {
+
+        // Get bounding rectangles of the link's source and target node
+        const fromArea = link.fromNode.actualBounds.copy();
+        const toArea = link.toNode.actualBounds.copy();
+
+        // Inflate the rectangles slightly. This is necessary because the rectangle co-ordinates
+        //  and link point co-ordinates are stored to a differing number of decimal places.
+        fromArea.inflate(0.0000000001, 0.0000000001);
+        toArea.inflate(0.0000000001, 0.0000000001);
+
+        // Check if either end of the link lies outside of the corresponding node bound
+        if (!fromArea.containsPoint(link.points.first())
+          || !toArea.containsPoint(link.points.last())
+        ) {
+          // Set link route to be recalculated
+          diagram.model.setDataProperty(link.data, 'updateRoute', true);
+          link.invalidateRoute();
+        }
+      }
+    });
+
     this.diagramLevelService.groupLayoutInitial = true;
 
     if (diagram.layout.isValidLayout) {
