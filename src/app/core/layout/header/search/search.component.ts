@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { SearchEntity } from '@app/core/store/models/search.models';
 import { Observable } from 'rxjs';
 import { State as SearchState } from '@app/core/store/reducers/search.reducer';
@@ -16,6 +16,12 @@ export class SearchComponent implements OnInit {
   results$: Observable<SearchEntity[]>;
   
   toggleSearch: boolean = false;
+
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    if(this.toggleSearch === true && event.key === 'Escape') {
+      this.toggleSearch = false;
+    }
+  }
 
   constructor(private searchStore: Store<SearchState>) {}
 
