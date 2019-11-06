@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { MatCheckboxChange, MatTabGroup } from '@angular/material';
 
 @Component({
   selector: 'smi-left-panel',
@@ -14,6 +14,12 @@ export class LeftPanelComponent {
   @Input() viewLevel: number;
   @Input() canSelectWorkpackages: boolean;
   @Input() tabIndex: number;
+
+  @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup; 
+
+  realignTabUnderline() { 
+    this.mainTabGroup.realignInkBar(); 
+  }
 
   constructor() {}
 
@@ -48,6 +54,7 @@ export class LeftPanelComponent {
 
   onTabClick(event) {
     this.tabClick.emit(event.index);
+    this.realignTabUnderline();
   }
 
 }
