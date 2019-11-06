@@ -412,10 +412,36 @@ export class DiagramChangesService {
         fromArea.inflate(0.0000000001, 0.0000000001);
         toArea.inflate(0.0000000001, 0.0000000001);
 
-        // Check if either end of the link lies outside of the corresponding node bound
-        if (!fromArea.containsPoint(link.points.first())
-          || !toArea.containsPoint(link.points.last())
-        ) {
+        // Start and end points of the link
+        const linkStart = link.points.first();
+        const linkEnd = link.points.last();
+
+        // Determines how far the link's ends can be from the side of the connecting node's bounding rectangle
+        // before it is considered visually disconnected.
+        const error_tolerance = 3.5;
+
+        // Check link connects from a side of the source node
+        const fromSideConnected = fromArea.containsPoint(linkStart) &&
+          ['left', 'right', 'top', 'bottom']
+            .some(function(side) {
+              // Get appropriate co-ordinate for the current side
+              const coOrdinateVal = (side === 'left' || side === 'right') ? linkStart.x : linkStart.y;
+              // Check vertical or horizontal distance between the node side and link end point
+              return Math.abs(fromArea[side] - coOrdinateVal) <= error_tolerance;
+            });
+
+        // Check link connects to a side of the target node
+        const toSideConnected = toArea.containsPoint(linkEnd) &&
+          ['left', 'right', 'top', 'bottom']
+            .some(function(side) {
+              // Get appropriate co-ordinate for the current side
+              const coOrdinateVal = (side === 'left' || side === 'right') ? linkEnd.x : linkEnd.y;
+              // Check vertical or horizontal distance between the node side and link end point
+              return Math.abs(toArea[side] - coOrdinateVal) <= error_tolerance;
+            });
+
+        // Check if either end of the link not connected to a side of the corresponding node
+        if (!fromSideConnected || !toSideConnected) {
           // Set link route to be recalculated
           diagram.model.setDataProperty(link.data, 'updateRoute', true);
           link.invalidateRoute();
