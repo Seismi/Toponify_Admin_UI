@@ -837,8 +837,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               description: data.radio.description,
               status: data.radio.status,
               category: data.radio.category,
-              author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' },
-              target: { id: this.nodeId }
+              author: data.radio.author,
+              assignedTo: data.radio.assignedTo,
+              actionBy: data.radio.actionBy,
+              mitigation: data.radio.mitigation,
+              relatesTo: [
+                { 
+                  workPackage: { id: this.workpackageId },
+                  item: { 
+                    id: this.nodeId,
+                    itemType: this.filterService.getFilter().filterLevel.toLowerCase()
+                  }
+                }
+              ]
             }
           })
         );
@@ -880,7 +891,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               description: data.radio.description,
               status: data.radio.status,
               category: data.radio.category,
-              author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' }
+              assignedTo: data.radio.assignedTo,
+              author: data.radio.author,
+              relatesTo: [{workPackage: { id: '00000000-0000-0000-0000-000000000000'}}],
+              actionBy: data.radio.actionBy,
+              mitigation: data.radio.mitigation
             }
           })
         );
