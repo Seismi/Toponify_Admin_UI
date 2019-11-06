@@ -61,6 +61,10 @@ export class WorkPackageDiagramService {
   getNodeTemplate() {
     return $(go.Node,
       'Auto',
+      new go.Binding('visible', '', function(node) {
+        return !(node.data.status === 'superseded' || node.data.status === 'merged')
+          || node.findNodesOutOf().any(function(linkedNode) {return linkedNode.visible; });
+      }).ofObject(),
       $(go.Shape,
         {
           figure: 'Rectangle',

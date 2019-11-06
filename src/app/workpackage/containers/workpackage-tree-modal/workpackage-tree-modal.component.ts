@@ -39,6 +39,23 @@ export class WorkPackageTreeModalComponent implements OnInit {
     this.diagram.nodeTemplate = this.workPackageDiagramService.getNodeTemplate();
     this.diagram.linkTemplate = this.workPackageDiagramService.getLinkTemplate();
     this.diagram.layout = this.workPackageDiagramService.getLayout();
+
+    /*
+    let treePackages = [];
+
+    treePackages = treePackages.filter(
+      function(workPackage) {
+        return (workPackage.status === 'merged' || workPackage.status === 'superseded')
+          && workPackage.baseline.every(
+            function(baseline) {
+              return treePackages.some(
+                function(workPackage2) {
+                  return workPackage2.id !== baseline.id;
+                });
+            });
+      }
+    );*/
+
     this.diagram.model = this.workPackageDiagramService.getModel(this.data.workpackages);
   }
 
