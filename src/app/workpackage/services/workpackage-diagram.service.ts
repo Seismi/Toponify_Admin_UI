@@ -35,6 +35,20 @@ export class WorkPackageDiagramService {
     });
   }
 
+  // Check if a node is in a branch containing only merged/superseded workpackages
+  isInMergedSupersededBranch(workpackage) {
+    if (['superseded', 'merged'].includes(workpackage.data.status)) {
+      // If node is merged/superseded then check whether all subsequent nodes are merged/superseded
+      return workpackage.findNodesOutOf().all(
+        function(successor) {
+          return this.isInMergedSupersededBranch(successor);
+        }.bind(this)
+      );
+    } else {
+      return false;
+    }
+  }
+
   // Create links connecting work packages and their baselines
   getLinksForPackages(workPackages) {
 
@@ -61,10 +75,10 @@ export class WorkPackageDiagramService {
   getNodeTemplate() {
     return $(go.Node,
       'Auto',
+      // Node should be hidden if all nodes in the current branch have status "merged" or "superseded"
       new go.Binding('visible', '', function(node) {
-        return !(node.data.status === 'superseded' || node.data.status === 'merged')
-          || node.findNodesOutOf().any(function(linkedNode) {return linkedNode.visible; });
-      }).ofObject(),
+        return !this.isInMergedSupersededBranch(node);
+      }.bind(this)).ofObject(),
       $(go.Shape,
         {
           figure: 'Rectangle',
