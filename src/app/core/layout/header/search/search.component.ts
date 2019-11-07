@@ -13,13 +13,16 @@ import { Store, select } from '@ngrx/store';
 })
 export class SearchComponent implements OnInit {
 
-  results$: Observable<SearchEntity[]>;
+  public results$: Observable<SearchEntity[]>;
   
-  toggleSearch: boolean = false;
+  public toggleSearch: boolean = false;
+
+  public input: string;
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     if(this.toggleSearch === true && event.key === 'Escape') {
       this.toggleSearch = false;
+      this.input = null;
     }
   }
 
