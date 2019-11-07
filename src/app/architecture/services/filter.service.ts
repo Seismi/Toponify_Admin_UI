@@ -40,15 +40,15 @@ export class FilterService implements OnDestroy {
       queryParams: queryParams
     });
   }
-  addFilter(filter: { [key: string]: any }, removeKeysFromFilter?: string[]): void {
-    const newFilter = { ...this.getFilter(), ...filter };
-    if (removeKeysFromFilter) {
-      removeKeysFromFilter.forEach(key => {
-        delete newFilter[key];
-      });
-    }
-    this.setFilter(newFilter);
-  }
+  // addFilter(filter: { [key: string]: any }, removeKeysFromFilter?: string[]): void {
+  //   const newFilter = { ...this.getFilter(), ...filter };
+  //   if (removeKeysFromFilter) {
+  //     removeKeysFromFilter.forEach(key => {
+  //       delete newFilter[key];
+  //     });
+  //   }
+  //   this.setFilter(newFilter);
+  // }
 
   transformToString(filter: any): string {
     return this.filtersAsUrlQuery(filter);

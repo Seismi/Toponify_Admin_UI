@@ -10,6 +10,7 @@ import { FilterService } from './filter.service';
 import { Location } from '@angular/common';
 import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
 import { NodeToolTips } from '@app/core/node-tooltips';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 
 const $ = go.GraphObject.make;
 
@@ -96,7 +97,8 @@ export class DiagramLevelService implements OnDestroy {
     if (filterFromQuery && filterFromQuery.filterLevel) {
       this.filter.next({ filterLevel: filterFromQuery.filterLevel });
     } else {
-      this.filterService.addFilter({ filterLevel: Level.system });
+      this.store.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
+      // this.filterService.addFilter({ filterLevel: Level.system });
     }
 
     this.filterServiceSubscription = this.filterService.filter.subscribe(filter => {
@@ -123,18 +125,26 @@ export class DiagramLevelService implements OnDestroy {
     } else {
       return;
     }
-    this.filterService.addFilter({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name });
+    this.store.dispatch(
+      new UpdateQueryParams({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name })
+    );
+    // this.filterService.addFilter({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name });
   }
 
   displayMapView(event: any, object: go.Link): void {
-
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
-    this.filterService.addFilter({
-      filterLevel: object.data.layer + ' map',
-      id: object.data.id
-    });
+    this.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: object.data.layer + ' map',
+        id: object.data.id
+      })
+    );
+    // this.filterService.addFilter({
+    //   filterLevel: object.data.layer + ' map',
+    //   id: object.data.id
+    // });
 
     const fromNode = JSON.parse(JSON.stringify(object.fromNode.data));
     const toNode = JSON.parse(JSON.stringify(object.toNode.data));
@@ -153,10 +163,16 @@ export class DiagramLevelService implements OnDestroy {
   }
 
   displayUsageView(event, object) {
-    this.filterService.addFilter({
-      filterLevel: Level.usage,
-      id: object.data.id
-    });
+    this.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.usage,
+        id: object.data.id
+      })
+    );
+    // this.filterService.addFilter({
+    //   filterLevel: Level.usage,
+    //   id: object.data.id
+    // });
   }
 
   ngOnDestroy() {
@@ -209,9 +225,8 @@ export class DiagramLevelService implements OnDestroy {
 
     const paletteViewLinks = [];
 
-    const linkLayer = level === Level.systemMap ? layers.dataSet :
-      level === Level.dataSetMap ? layers.dimension :
-        level.toLowerCase();
+    const linkLayer =
+      level === Level.systemMap ? layers.dataSet : level === Level.dataSetMap ? layers.dimension : level.toLowerCase();
 
     if (level !== Level.usage) {
       paletteViewLinks.push({

@@ -6,6 +6,7 @@ import { State as ViewState } from '../../../../architecture/store/reducers/arch
 import { FilterService } from '@app/architecture/services/filter.service';
 import { Observable, Subscription } from 'rxjs';
 import { getViewLevel } from '@app/architecture/store/selectors/view.selector';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 
 export const viewLevelMapping = {
   [1]: Level.system,
@@ -58,7 +59,8 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   onViewLevelSelected(level: any) {
     if (viewLevelMapping[level]) {
       if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, ['id', 'parentName']);
+        this.store.dispatch(new UpdateQueryParams({filterLevel: viewLevelMapping[level], id: null, parentName: null}));
+        // this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, ['id', 'parentName']);
       }
     }
     this.store.dispatch(new SetViewLevel(level));

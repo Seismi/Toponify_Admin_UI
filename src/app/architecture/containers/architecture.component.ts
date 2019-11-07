@@ -88,6 +88,7 @@ import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-mod
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 
 enum Events {
   NodesLinksReload = 0
@@ -197,7 +198,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // If filterLevel not set, ensure to set it.
     const currentFilter = this.filterService.getFilter();
     if (!currentFilter || !currentFilter.filterLevel) {
-      this.filterService.setFilter({ filterLevel: Level.system });
+      this.store.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
+      // this.filterService.setFilter({ filterLevel: Level.system });
     }
   }
 
@@ -281,7 +283,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
-        this.filterService.addFilter({ scope: scope.id });
+        this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
+        // this.filterService.addFilter({ scope: scope.id });
       }
     });
 
@@ -840,9 +843,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
               relatesTo: [
-                { 
+                {
                   workPackage: { id: this.workpackageId },
-                  item: { 
+                  item: {
                     id: this.nodeId,
                     itemType: this.filterService.getFilter().filterLevel.toLowerCase()
                   }
@@ -1056,23 +1059,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   updateWorkpackageFilter(id: string, reset?: boolean) {
     const existingFilter = this.filterService.getFilter();
     if (reset) {
-      return this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
+      return this.store.dispatch(new UpdateQueryParams({workpackages: [id]}));
+      // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
     }
     if (existingFilter.workpackages && existingFilter.workpackages.length > 0) {
       const workpackageAlreadySelected = existingFilter.workpackages.find(workpackageId => workpackageId === id);
       if (workpackageAlreadySelected) {
         const filteredWorkpackageIds = existingFilter.workpackages.filter(workpackageId => workpackageId !== id);
         if (filteredWorkpackageIds.length > 0) {
-          this.filterService.setFilter({ ...existingFilter, workpackages: filteredWorkpackageIds });
+          this.store.dispatch(new UpdateQueryParams({workpackages: filteredWorkpackageIds}));
+          // this.filterService.setFilter({ ...existingFilter, workpackages: filteredWorkpackageIds });
         } else {
-          delete existingFilter.workpackages;
-          this.filterService.setFilter({ ...existingFilter });
+          // delete existingFilter.workpackages;
+          // this.filterService.setFilter({ ...existingFilter });
+          this.store.dispatch(new UpdateQueryParams({workpackages: null}));
         }
       } else {
-        this.filterService.setFilter({ ...existingFilter, workpackages: [...existingFilter.workpackages, id] });
+        this.store.dispatch(new UpdateQueryParams({workpackages: [...existingFilter.workpackages, id]}));
+        // this.filterService.setFilter({ ...existingFilter, workpackages: [...existingFilter.workpackages, id] });
       }
     } else {
-      this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
+      this.store.dispatch(new UpdateQueryParams({workpackages: [id]}));
+      // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
     }
   }
 
