@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatTabChangeEvent } from '@angular/material';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 
 @Component({
@@ -12,6 +12,8 @@ export class SwitchViewTabsComponent {
   @Input() viewLevel: number;
 
   constructor() {}
+
+  @ViewChild('architectureTableTabs') architectureTableTabs: MatTabGroup;
 
   @Output() viewChange = new EventEmitter<ArchitectureView>();
 
