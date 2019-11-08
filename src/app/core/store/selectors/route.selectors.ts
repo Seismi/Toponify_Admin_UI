@@ -1,10 +1,41 @@
-import { createSelector } from '@ngrx/store';
-import { State } from '../index';
+import { createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
+import { RouterStateUrl, State } from '../index';
+import { Params } from '@angular/router';
+import { RouterReducerState } from '@ngrx/router-store';
 
-export const getQueryParams = createSelector((state: State, props: { key: string }) => {
-  const routerState = state.router.state  || null;
-  if (!routerState) {
-    return null;
+const getRouterState = createFeatureSelector<RouterReducerState<RouterStateUrl>>('router');
+
+export const getQueryParams: MemoizedSelector<RouterReducerState<RouterStateUrl>, Params> = createSelector(
+  getRouterState,
+  state => state.state.queryParams
+);
+
+export const getFilterLevelQueryParams: MemoizedSelector<Params, any> = createSelector(
+  getQueryParams,
+  state => {
+    if (!state) {
+      return null;
+    }
+    return state['filterLevel'];
   }
-  return routerState.queryParams[props.key];
-});
+);
+
+export const getScopeQueryParams: MemoizedSelector<Params, any> = createSelector(
+  getQueryParams,
+  state => {
+    if (!state) {
+      return null;
+    }
+    return state['scope'];
+  }
+);
+
+export const getWorkPackagesQueryParams: MemoizedSelector<Params, any> = createSelector(
+  getQueryParams,
+  state => {
+    if (!state) {
+      return null;
+    }
+    return state['workpackages'];
+  }
+);

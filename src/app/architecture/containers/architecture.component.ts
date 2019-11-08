@@ -62,7 +62,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, fromEvent, Observable, Subscription } from 'rxjs';
-import { filter, map, shareReplay } from 'rxjs/operators';
+import { filter, map, shareReplay, take } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -89,6 +89,14 @@ import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import {
+  getFilterLevelQueryParams,
+  getQueryParams,
+  getScopeQueryParams,
+  getWorkPackagesQueryParams
+} from '@app/core/store/selectors/route.selectors';
+import { RouterReducerState } from '@ngrx/router-store';
+import { RouterStateUrl } from '@app/core/store';
 
 enum Events {
   NodesLinksReload = 0
@@ -171,6 +179,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
+  private currentFilterLevel: string;
+  private filterLevelSubscription: Subscription;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -184,26 +194,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private scopeStore: Store<ScopeState>,
     private layoutStore: Store<LayoutState>,
     private store: Store<ViewState>,
+    private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     private radioStore: Store<RadioState>,
     private workpackageStore: Store<WorkPackageState>,
     private objectDetailsService: ObjectDetailsService,
     private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog,
-    public filterService: FilterService,
     private ref: ChangeDetectorRef,
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public actions: Actions,
     private diagramLevelService: DiagramLevelService
-  ) {
-    // If filterLevel not set, ensure to set it.
-    const currentFilter = this.filterService.getFilter();
-    if (!currentFilter || !currentFilter.filterLevel) {
-      this.store.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
-      // this.filterService.setFilter({ filterLevel: Level.system });
-    }
-  }
+  ) {}
 
   ngOnInit() {
+    this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      if (!this.currentFilterLevel && !filterLevel) {
+        this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
+      }
+      this.currentFilterLevel = filterLevel;
+    });
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
@@ -248,7 +257,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
 
     this.nodesLinks$ = combineLatest(
-      this.filterService.filter,
+      this.routerStore.select(getQueryParams),
       this.workpackageStore.pipe(select(getSelectedWorkpackages)),
       this.eventEmitter.pipe(filter(event => event === Events.NodesLinksReload || event === null))
     );
@@ -264,22 +273,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subscriptions.push(
-      fromEvent(window, 'popstate').subscribe(() => {
-        // setTimeout for filterService to update filters
-        setTimeout(() => {
-          const currentFilter = this.filterService.getFilter();
-          const filterWorkpackages = currentFilter && currentFilter.workpackages ? currentFilter.workpackages : [];
-          const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
-          const diff = filterWorkpackages
-            .filter(x => !selectedWorkpackagesIds.includes(x))
-            .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
-          diff.forEach(id => {
-            this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
-          });
-        });
-      })
-    );
+    // this.subscriptions.push(
+    //   // fromEvent(window, 'popstate').subscribe(() => {
+    //   //   // setTimeout for filterService to update filters
+    //   //   setTimeout(() => {
+    //   //     const currentFilter = this.filterService.getFilter();
+    //   //     const filterWorkpackages = currentFilter && currentFilter.workpackages ? currentFilter.workpackages : [];
+    //   //     const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
+    //   //     const diff = filterWorkpackages
+    //   //       .filter(x => !selectedWorkpackagesIds.includes(x))
+    //   //       .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
+    //   //     diff.forEach(id => {
+    //   //       this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+    //   //     });
+    //   //   });
+    //   // })
+    // );
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
@@ -288,27 +297,35 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    const { scope, workpackages } = this.filterService.getFilter();
-    if (scope) {
-      this.scopeStore.dispatch(new LoadScope(scope));
-    } else {
-      this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
-    }
-    if (workpackages && Array.isArray(workpackages)) {
-      workpackages.forEach(id => {
-        if (id && typeof id === 'string') {
-          this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+    // const { scope, workpackages } = this.filterService.getFilter();
+    this.routerStore.select(getScopeQueryParams).pipe(take(1)).subscribe(
+      scope => {
+        if (scope) {
+          this.scopeStore.dispatch(new LoadScope(scope));
+        } else {
+          this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
         }
-      });
-    }
+      }
+    );
+
+    this.routerStore.select(getWorkPackagesQueryParams).pipe(take(1)).subscribe(
+      workPackages => {
+        if (workPackages && Array.isArray(workPackages)) {
+          workPackages.forEach(id => {
+            if (id && typeof id === 'string') {
+              this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+            }
+          });
+        }
+      }
+    );
 
     this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
       this.layout = layout;
       if (layout) {
-        const currentLevel = this.filterService.getFilter().filterLevel;
 
         // Reload nodes and links for new layout if not in map view
-        if (!currentLevel.endsWith('map')) {
+        if (!this.currentFilterLevel.endsWith('map')) {
           this.subscribeForNodesLinksData();
         }
       }
@@ -406,6 +423,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.filterLevelSubscription.unsubscribe();
     this.filterServiceSubscription.unsubscribe();
     if (this.nodesSubscription) {
       this.nodesSubscription.unsubscribe();
@@ -667,11 +685,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         select(getNodeEntities),
         // Get correct location for nodes, based on selected layout
         map(nodes => {
-          const currentFilter = this.filterService.getFilter();
           if (nodes === null) {
             return null;
           }
-          if (currentFilter && currentFilter.filterLevel.endsWith('map')) {
+          if (this.currentFilterLevel.endsWith('map')) {
             return nodes;
           }
 
@@ -710,11 +727,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         select(getNodeLinks),
         // Get correct route for links, based on selected layout
         map(links => {
-          const currentFilter = this.filterService.getFilter();
           if (links === null) {
             return null;
           }
-          if (currentFilter && [Level.systemMap, Level.dataSetMap, Level.usage].includes(currentFilter.filterLevel)) {
+          if (this.currentFilterLevel && [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel as Level)) {
             return links;
           }
 
@@ -847,7 +863,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                   workPackage: { id: this.workpackageId },
                   item: {
                     id: this.nodeId,
-                    itemType: this.filterService.getFilter().filterLevel.toLowerCase()
+                    itemType: this.currentFilterLevel.toLowerCase()
                   }
                 }
               ]
@@ -918,7 +934,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             name: data.scope.name,
             owners: this.sharedService.selectedOwners,
             viewers: this.sharedService.selectedViewers,
-            layerFilter: this.filterService.getFilter().filterLevel.toLowerCase(),
+            layerFilter: this.currentFilterLevel.toLowerCase(),
             include: this.selectedMultipleNodes
           })
         );
@@ -1057,31 +1073,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   updateWorkpackageFilter(id: string, reset?: boolean) {
-    const existingFilter = this.filterService.getFilter();
     if (reset) {
       return this.store.dispatch(new UpdateQueryParams({workpackages: [id]}));
       // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
     }
-    if (existingFilter.workpackages && existingFilter.workpackages.length > 0) {
-      const workpackageAlreadySelected = existingFilter.workpackages.find(workpackageId => workpackageId === id);
-      if (workpackageAlreadySelected) {
-        const filteredWorkpackageIds = existingFilter.workpackages.filter(workpackageId => workpackageId !== id);
-        if (filteredWorkpackageIds.length > 0) {
-          this.store.dispatch(new UpdateQueryParams({workpackages: filteredWorkpackageIds}));
-          // this.filterService.setFilter({ ...existingFilter, workpackages: filteredWorkpackageIds });
+    this.routerStore.select(getWorkPackagesQueryParams).pipe(take(1)).subscribe(workPackages => {
+      if (workPackages && workPackages.length > 0) {
+        const workpackageAlreadySelected = workPackages.find(workpackageId => workpackageId === id);
+        if (workpackageAlreadySelected) {
+          const filteredWorkpackageIds = workPackages.filter(workpackageId => workpackageId !== id);
+          if (filteredWorkpackageIds.length > 0) {
+            this.store.dispatch(new UpdateQueryParams({workpackages: filteredWorkpackageIds}));
+            // this.filterService.setFilter({ ...existingFilter, workpackages: filteredWorkpackageIds });
+          } else {
+            // delete existingFilter.workpackages;
+            // this.filterService.setFilter({ ...existingFilter });
+            this.store.dispatch(new UpdateQueryParams({workpackages: null}));
+          }
         } else {
-          // delete existingFilter.workpackages;
-          // this.filterService.setFilter({ ...existingFilter });
-          this.store.dispatch(new UpdateQueryParams({workpackages: null}));
+          this.store.dispatch(new UpdateQueryParams({workpackages: [...workPackages, id]}));
+          // this.filterService.setFilter({ ...existingFilter, workpackages: [...existingFilter.workpackages, id] });
         }
       } else {
-        this.store.dispatch(new UpdateQueryParams({workpackages: [...existingFilter.workpackages, id]}));
-        // this.filterService.setFilter({ ...existingFilter, workpackages: [...existingFilter.workpackages, id] });
+        this.store.dispatch(new UpdateQueryParams({workpackages: [id]}));
+        // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
       }
-    } else {
-      this.store.dispatch(new UpdateQueryParams({workpackages: [id]}));
-      // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
-    }
+    });
   }
 
   onViewChange(view: ArchitectureView) {
