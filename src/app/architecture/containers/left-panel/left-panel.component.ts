@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatCheckboxChange, MatTabGroup } from '@angular/material';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-left-panel',
@@ -8,7 +9,7 @@ import { MatCheckboxChange, MatTabGroup } from '@angular/material';
 })
 export class LeftPanelComponent {
   @Input() workPackageIsEditable = false;
-  @Input() workpackages: any;
+  @Input() workpackages: WorkPackageEntity[];
   @Input() selectedLeftTab: number;
   @Input() checked: boolean;
   @Input() viewLevel: number;
@@ -17,7 +18,7 @@ export class LeftPanelComponent {
 
   @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup; 
 
-  realignTabUnderline() { 
+  realignTabUnderline(): void { 
     this.mainTabGroup.realignInkBar(); 
   }
 
@@ -40,7 +41,7 @@ export class LeftPanelComponent {
   }
 
   // FIXME: set proper type of workpackage
-  onSetWorkPackageEditMode(workpackage: any) {
+  onSetWorkPackageEditMode(workpackage: WorkPackageEntity) {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
