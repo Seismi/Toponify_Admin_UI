@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { WorkPackageNodesService } from '@app/workpackage/services/workpackage-nodes.service';
+import { WorkPackageNodesService, GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, mergeMap } from 'rxjs/operators';
@@ -28,9 +28,11 @@ import {
   AddWorkPackageNodeDescendantSuccess,
   AddWorkPackageNodeDescendantFailure,
   DeleteWorkPackageNodeDescendant,
-  DeleteWorkPackageNodeDescendantSuccess, DeleteWorkPackageNodeDescendantFailure
+  DeleteWorkPackageNodeDescendantSuccess, DeleteWorkPackageNodeDescendantFailure, LoadWorkPackageNodeScopes, LoadWorkPackageNodeScopesSuccess, LoadWorkPackageNodeScopesFailure, LoadWorkPackageNodeScopesAvailability, LoadWorkPackageNodeScopesAvailabilitySuccess, LoadWorkPackageNodeScopesAvailabilityFailure, AddWorkPackageNodeScope, AddWorkPackageNodeScopeSuccess, AddWorkPackageNodeScopeFailure, DeleteWorkPackageNodeScope, DeleteWorkPackageNodeScopeSuccess, DeleteWorkPackageNodeScopeFailure
 } from '../actions/workpackage-node.actions';
 import { UpdateNodeDescendants } from '@app/architecture/store/actions/node.actions';
+import { WorkPackageNodeScopesApiResponse, WorkPackageNodeScopeApiResponse } from '../models/workpackage.models';
+import { AddScopeApiResponse } from '@app/scope/store/models/scope.model';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -146,4 +148,51 @@ export class WorkPackageNodeEffects {
     })
   );
 
+  @Effect()
+  loadNodeScopes$ = this.actions$.pipe(
+    ofType<LoadWorkPackageNodeScopes>(WorkPackageNodeActionTypes.LoadWorkPackageNodeScopes),
+    map(action => action.payload),
+    switchMap((payload: { nodeId: string, queryParams: GetWorkPackageNodeScopesQueryParams }) => {
+      return this.workpackageNodeService.getWorkPackageNodeScopes(payload.nodeId, payload.queryParams).pipe(
+        switchMap((response: WorkPackageNodeScopesApiResponse) => [new LoadWorkPackageNodeScopesSuccess(response.data)]),
+        catchError((error: Error) => of(new LoadWorkPackageNodeScopesFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadNodeScopesAvailability$ = this.actions$.pipe(
+    ofType<LoadWorkPackageNodeScopesAvailability>(WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailability),
+    map(action => action.payload),
+    switchMap((payload: { nodeId: string, queryParams: GetWorkPackageNodeScopesQueryParams }) => {
+      return this.workpackageNodeService.getWorkPackageNodeScopes(payload.nodeId, payload.queryParams).pipe(
+        switchMap((response: WorkPackageNodeScopesApiResponse) => [new LoadWorkPackageNodeScopesAvailabilitySuccess(response.data)]),
+        catchError((error: Error) => of(new LoadWorkPackageNodeScopesAvailabilityFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkPackageNodeScope$ = this.actions$.pipe(
+    ofType<AddWorkPackageNodeScope>(WorkPackageNodeActionTypes.AddWorkPackageNodeScope),
+    map(action => action.payload),
+    switchMap((payload: { scopeId: string, data: string[] }) => {
+      return this.workpackageNodeService.addWorkPackageNodeScope(payload.scopeId, payload.data).pipe(
+        switchMap((response: WorkPackageNodeScopeApiResponse) => [new AddWorkPackageNodeScopeSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeScopeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteWorkPackageNodeScope$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageNodeScope>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeScope),
+    map(action => action.payload),
+    switchMap((payload: { scopeId: string, nodeId: string }) => {
+      return this.workpackageNodeService.deleteWorkPackageNodeScope(payload.scopeId, payload.nodeId).pipe(
+        switchMap((response) => [new DeleteWorkPackageNodeScopeSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodeScopeFailure(error)))
+      );
+    })
+  );
 }

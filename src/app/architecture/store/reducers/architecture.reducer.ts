@@ -11,6 +11,7 @@ import {
   WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { DescendantsEntity } from '@app/nodes/store/models/node.model';
+import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 
 export interface State {
   zoomLevel: number;
@@ -19,6 +20,8 @@ export interface State {
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
+  nodeScopes: WorkPackageNodeScopes[];
+  availableScopes: WorkPackageNodeScopes[];
   error: Error;
   selectedWorkpackages: string[];
 }
@@ -30,6 +33,8 @@ export const initialState: State = {
   selectedNode: null,
   selectedNodeLink: null,
   links: null,
+  nodeScopes: [],
+  availableScopes: [],
   error: null,
   selectedWorkpackages: []
 };
@@ -81,6 +86,60 @@ export function reducer(
         error: action.payload
       };
     }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopes: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesSuccess: {
+      return {
+        ...state,
+        nodeScopes: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesFailure: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScope: {
+      return {
+        ...state,
+      };
+    }
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeSuccess: {
+      return {
+        ...state,
+        nodeScopes: state.nodeScopes.filter(scope => scope.id !== action.payload.id)
+      };
+    }
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilitySuccess: {
+      return {
+        ...state,
+        availableScopes: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilityFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
 
     case ViewActionTypes.ViewModel: {
       return {
