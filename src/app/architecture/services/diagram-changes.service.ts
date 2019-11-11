@@ -391,6 +391,64 @@ export class DiagramChangesService {
 
     (diagram.model as go.GraphLinksModel).linkDataArray = JSON.parse(JSON.stringify(linkArray));
 
+    /* Check for any links that do not have a valid route between source and target nodes.
+       This can happen if the source or target nodes are moved in a work package where
+       the link no longer exists.
+    */
+    diagram.links.each(function(link) {
+
+      // Ignore links with no route set yet
+      if (link.points.count === 0) {return; }
+
+      // Only proceed if link is connected at both ends
+      if (link.fromNode && link.toNode) {
+
+        // Get bounding rectangles of the link's source and target node
+        const fromArea = link.fromNode.actualBounds.copy();
+        const toArea = link.toNode.actualBounds.copy();
+
+        // Inflate the rectangles slightly. This is necessary because the rectangle co-ordinates
+        //  and link point co-ordinates are stored to a differing number of decimal places.
+        fromArea.inflate(0.0000000001, 0.0000000001);
+        toArea.inflate(0.0000000001, 0.0000000001);
+
+        // Start and end points of the link
+        const linkStart = link.points.first();
+        const linkEnd = link.points.last();
+
+        // Determines how far the link's ends can be from the side of the connecting node's bounding rectangle
+        // before it is considered visually disconnected.
+        const error_tolerance = 3.5;
+
+        // Check link connects from a side of the source node
+        const fromSideConnected = fromArea.containsPoint(linkStart) &&
+          ['left', 'right', 'top', 'bottom']
+            .some(function(side) {
+              // Get appropriate co-ordinate for the current side
+              const coOrdinateVal = (side === 'left' || side === 'right') ? linkStart.x : linkStart.y;
+              // Check vertical or horizontal distance between the node side and link end point
+              return Math.abs(fromArea[side] - coOrdinateVal) <= error_tolerance;
+            });
+
+        // Check link connects to a side of the target node
+        const toSideConnected = toArea.containsPoint(linkEnd) &&
+          ['left', 'right', 'top', 'bottom']
+            .some(function(side) {
+              // Get appropriate co-ordinate for the current side
+              const coOrdinateVal = (side === 'left' || side === 'right') ? linkEnd.x : linkEnd.y;
+              // Check vertical or horizontal distance between the node side and link end point
+              return Math.abs(toArea[side] - coOrdinateVal) <= error_tolerance;
+            });
+
+        // Check if either end of the link not connected to a side of the corresponding node
+        if (!fromSideConnected || !toSideConnected) {
+          // Set link route to be recalculated
+          diagram.model.setDataProperty(link.data, 'updateRoute', true);
+          link.invalidateRoute();
+        }
+      }
+    });
+
     this.diagramLevelService.groupLayoutInitial = true;
 
     if (diagram.layout.isValidLayout) {
