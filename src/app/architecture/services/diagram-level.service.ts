@@ -6,11 +6,11 @@ import * as uuid from 'uuid/v4';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
-import { FilterService } from './filter.service';
 import { Location } from '@angular/common';
 import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
 import { NodeToolTips } from '@app/core/node-tooltips';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 
 const $ = go.GraphObject.make;
 
@@ -53,7 +53,7 @@ export const moreDetailOrderMapping = {
 };
 
 @Injectable()
-export class DiagramLevelService implements OnDestroy {
+export class DiagramLevelService {
   historyOfFilters: any = {};
 
   groupLayoutInitial = true;
@@ -76,11 +76,7 @@ export class DiagramLevelService implements OnDestroy {
   private paletteLinksSource = new BehaviorSubject([]);
   paletteLinks = this.paletteLinksSource.asObservable();
 
-  constructor(
-    private store: Store<ArchitectureState>,
-    public filterService: FilterService,
-    public location: Location
-  ) {}
+  constructor(private store: Store<ArchitectureState>, public location: Location) {}
 
   public initializeUrlFiltering(): void {
     this.filterSubscription = this.filter.subscribe(filter => {
@@ -93,22 +89,11 @@ export class DiagramLevelService implements OnDestroy {
       };
     });
 
-    const filterFromQuery = this.filterService.getFilter();
-    if (filterFromQuery && filterFromQuery.filterLevel) {
-      this.filter.next({ filterLevel: filterFromQuery.filterLevel });
-    } else {
-      this.store.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
-      // this.filterService.addFilter({ filterLevel: Level.system });
-    }
-
-    this.filterServiceSubscription = this.filterService.filter.subscribe(filter => {
-      if (filter && JSON.stringify(filter) !== JSON.stringify(this.filter.getValue())) {
-        if (filter.filterLevel) {
-          return this.filter.next({ filterLevel: filter.filterLevel });
-        }
+    this.filterServiceSubscription = this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      if (filterLevel) {
+        return this.filter.next({ filterLevel: filterLevel });
       }
-
-      this.filter.next({ filterLevel: Level.system });
+      return this.filter.next({ filterLevel: Level.system });
     });
   }
 
@@ -128,7 +113,6 @@ export class DiagramLevelService implements OnDestroy {
     this.store.dispatch(
       new UpdateQueryParams({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name })
     );
-    // this.filterService.addFilter({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name });
   }
 
   displayMapView(event: any, object: go.Link): void {
@@ -141,10 +125,6 @@ export class DiagramLevelService implements OnDestroy {
         id: object.data.id
       })
     );
-    // this.filterService.addFilter({
-    //   filterLevel: object.data.layer + ' map',
-    //   id: object.data.id
-    // });
 
     const fromNode = JSON.parse(JSON.stringify(object.fromNode.data));
     const toNode = JSON.parse(JSON.stringify(object.toNode.data));
@@ -169,14 +149,6 @@ export class DiagramLevelService implements OnDestroy {
         id: object.data.id
       })
     );
-    // this.filterService.addFilter({
-    //   filterLevel: Level.usage,
-    //   id: object.data.id
-    // });
-  }
-
-  ngOnDestroy() {
-    this.destroyUrlFiltering();
   }
 
   public destroyUrlFiltering() {

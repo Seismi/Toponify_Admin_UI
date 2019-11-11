@@ -39,3 +39,13 @@ export const getWorkPackagesQueryParams: MemoizedSelector<Params, any> = createS
     return state['workpackages'];
   }
 );
+
+export const getNodeIdQueryParams: MemoizedSelector<Params, any> = createSelector(
+  getQueryParams,
+  state => {
+    if (!state) {
+      return null;
+    }
+    return state['id'];
+  }
+);

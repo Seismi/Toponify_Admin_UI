@@ -71,7 +71,6 @@ import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete
 import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.component';
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { DiagramLevelService, Level } from '../services/diagram-level.service';
-import { FilterService } from '../services/filter.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
@@ -97,6 +96,7 @@ import {
 } from '@app/core/store/selectors/route.selectors';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
+import { Params } from '@angular/router';
 
 enum Events {
   NodesLinksReload = 0
@@ -181,6 +181,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedId: string;
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
+  public params: Params;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -207,6 +208,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => this.params = params));
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));

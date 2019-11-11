@@ -3,7 +3,6 @@ import { select, Store } from '@ngrx/store';
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
 import { State as ViewState } from '@app/architecture/store/reducers/architecture.reducer';
-import { FilterService } from '@app/architecture/services/filter.service';
 import { Observable, Subscription } from 'rxjs';
 import { getViewLevel } from '@app/architecture/store/selectors/view.selector';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
@@ -19,8 +18,7 @@ export const viewLevelMapping = {
 @Component({
   selector: 'app-zoom-actions',
   templateUrl: './zoom-actions.component.html',
-  styleUrls: ['./zoom-actions.component.scss'],
-  providers: [FilterService]
+  styleUrls: ['./zoom-actions.component.scss']
 })
 export class ZoomActionsComponent implements OnInit, OnDestroy {
 
