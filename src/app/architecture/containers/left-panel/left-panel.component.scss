@@ -31,3 +31,18 @@
   margin-top: 7px;
   margin-right: 15px;
 }
+
+.hide-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  z-index: 2;
+  border-radius: 50px;
+}
+
+.layout-btn {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  z-index: 2;
+}

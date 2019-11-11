@@ -90,6 +90,7 @@ import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-mod
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
+import { LayoutModalComponent } from '@app/scopes-and-layouts/containers/layout-modal/layout-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -172,6 +173,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
+  public layoutSettingsTab: boolean;
+  public scopeId: string = '00000000-0000-0000-0000-000000000000';
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -794,6 +797,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectScope(id) {
+    this.scopeId = id;
     this.scopeStore.dispatch(new LoadScope(id));
   }
 
@@ -803,6 +807,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
+    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true : this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
     this.diagramComponent.updateDiagramArea();
     this.diagramComponent.zoomToFit();
   }
@@ -812,6 +817,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
+
+    (index === 2) ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
 
     this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
 
@@ -1108,6 +1115,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onChangeLevel(node: Node | NodeLink) {
     this.diagramLevelService.changeLevelWithFilter(null, {data: node} as any);
+  }
+
+  onAddLayout() {
+    this.dialog.open(LayoutModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        scope: {
+          id: this.scopeId
+        }
+      }
+    });
   }
 
 }

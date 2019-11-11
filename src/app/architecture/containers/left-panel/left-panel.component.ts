@@ -14,6 +14,7 @@ export class LeftPanelComponent {
   @Input() viewLevel: number;
   @Input() canSelectWorkpackages: boolean;
   @Input() tabIndex: number;
+  @Input() layoutSettingsTab: boolean;
 
   constructor() {}
 
@@ -26,8 +27,12 @@ export class LeftPanelComponent {
   @Output()
   setWorkpackageEditMode = new EventEmitter<object>();
 
+  @Output() hideLeftPane = new EventEmitter<void>();
+
   @Output()
   tabClick = new EventEmitter<number>();
+
+  @Output() addLayout = new EventEmitter<void>();
 
   displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }) {
     this.displayOptionsChangedEvent.emit({ event, option });
@@ -48,6 +53,14 @@ export class LeftPanelComponent {
 
   onTabClick(event) {
     this.tabClick.emit(event.index);
+  }
+
+  onHideLeftPane() {
+    this.hideLeftPane.emit();
+  }
+
+  onAddLayout() {
+    this.addLayout.emit();
   }
 
 }
