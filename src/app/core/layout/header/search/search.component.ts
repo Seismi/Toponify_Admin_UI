@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChildren } from '@angular/core';
 import { SearchEntity } from '@app/core/store/models/search.models';
 import { Observable } from 'rxjs';
 import { State as SearchState } from '@app/core/store/reducers/search.reducer';
@@ -18,6 +18,8 @@ export class SearchComponent implements OnInit {
   public toggleSearch: boolean = false;
 
   public input: string;
+
+  @ViewChildren('inp') inp;
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     if(this.toggleSearch === true && event.key === 'Escape') {
@@ -42,6 +44,7 @@ export class SearchComponent implements OnInit {
 
   openSearch() {
     this.toggleSearch = true;
+    this.inp.first.nativeElement.focus();
   }
 
   searchClose() {
