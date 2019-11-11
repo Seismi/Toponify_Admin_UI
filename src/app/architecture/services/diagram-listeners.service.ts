@@ -71,7 +71,7 @@ export class DiagramListenersService {
         this.store.select(getFilterLevelQueryParams).pipe(take(1)).subscribe(currentLevel => {
 
           // Ensure links are updated in map view after group layout is performed
-          if (currentLevel.endsWith('map')) {
+          if (currentLevel && currentLevel.endsWith('map')) {
             event.diagram.links.each(function(link) {
               link.data = Object.assign({}, link.data, {updateRoute: true});
               link.invalidateRoute();
@@ -79,7 +79,7 @@ export class DiagramListenersService {
           }
 
           if (
-            currentLevel.endsWith('map') &&
+            currentLevel && currentLevel.endsWith('map') &&
             this.diagramLevelService.groupLayoutInitial
           ) {
             diagram.findTopLevelGroups().each(function(group) {
