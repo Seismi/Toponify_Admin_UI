@@ -13,6 +13,7 @@ import { AttributesEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@ap
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
+import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-right-panel',
@@ -38,6 +39,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() multipleSelected = false;
   @Input() selectedOwner: boolean;
   @Input() selectedOwnerIndex: string | null;
+  @Input() nodeScopes: WorkPackageNodeScopes[];
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -85,6 +87,12 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() deleteDescendant = new EventEmitter<string>();
 
   @Output() openRadio = new EventEmitter<RadioDetail>();
+
+  @Output() deleteScope = new EventEmitter<WorkPackageNodeScopes>();
+
+  @Output() addExistingScope = new EventEmitter<void>();
+
+  @Output() addNewScope = new EventEmitter<void>();
 
 
   constructor(
@@ -173,6 +181,18 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onOpenRadio(radio: RadioDetail) {
     this.openRadio.emit(radio);
+  }
+
+  onDeleteScope(scope: WorkPackageNodeScopes) {
+    this.deleteScope.emit(scope);
+  }
+
+  onAddExistingScope() {
+    this.addExistingScope.emit();
+  }
+
+  onAddNewScope() {
+    this.addNewScope.emit();
   }
 
 }
