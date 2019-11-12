@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
@@ -16,7 +24,12 @@ import {
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { CustomPropertyValuesEntity, NodeDetail } from '@app/architecture/store/models/node.model';
-import { getNodeEntities, getNodeLinks, getSelectedNode, getSelectedNodeLink } from '@app/architecture/store/selectors/node.selector';
+import {
+  getNodeEntities,
+  getNodeLinks,
+  getSelectedNode,
+  getSelectedNodeLink
+} from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LayoutActionTypes, LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
@@ -208,7 +221,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => this.params = params));
+    this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
@@ -300,34 +313,39 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
 
     // const { scope, workpackages } = this.filterService.getFilter();
-    this.routerStore.select(getScopeQueryParams).pipe(take(1)).subscribe(
-      scope => {
+    this.routerStore
+      .select(getScopeQueryParams)
+      .pipe(take(1))
+      .subscribe(scope => {
         if (scope) {
           this.scopeStore.dispatch(new LoadScope(scope));
         } else {
           this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
         }
-      }
-    );
+      });
 
-    this.routerStore.select(getWorkPackagesQueryParams).pipe(take(1)).subscribe(
-      workPackages => {
+    this.routerStore
+      .select(getWorkPackagesQueryParams)
+      .pipe(take(1))
+      .subscribe(workPackages => {
         if (workPackages && Array.isArray(workPackages)) {
           workPackages.forEach(id => {
             if (id && typeof id === 'string') {
               this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
             }
           });
+        } else {
+          if (typeof workPackages === 'string') {
+            this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: workPackages }));
+          }
         }
-      }
-    );
+      });
 
     this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
       this.layout = layout;
       if (layout) {
-
         // Reload nodes and links for new layout if not in map view
-        if (!this.currentFilterLevel.endsWith('map')) {
+        if (this.currentFilterLevel && !this.currentFilterLevel.endsWith('map')) {
           this.subscribeForNodesLinksData();
         }
       }
@@ -543,8 +561,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Do not attempt to load data for disconnected node links that have not been added to the database yet
     if (!this.part.data.isTemporary) {
       this.part instanceof goNode
-        ? this.nodeStore.dispatch(new LoadNode({id: this.nodeId, queryParams: queryParams}))
-        : this.nodeStore.dispatch(new LoadNodeLink({id: this.nodeId, queryParams: queryParams}));
+        ? this.nodeStore.dispatch(new LoadNode({ id: this.nodeId, queryParams: queryParams }))
+        : this.nodeStore.dispatch(new LoadNodeLink({ id: this.nodeId, queryParams: queryParams }));
     }
   }
 
@@ -690,7 +708,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (nodes === null) {
             return null;
           }
-          if (this.currentFilterLevel.endsWith('map')) {
+          if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
             return nodes;
           }
 
@@ -732,7 +750,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (links === null) {
             return null;
           }
-          if (this.currentFilterLevel && [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel as Level)) {
+          if (
+            this.currentFilterLevel &&
+            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel as Level)
+          ) {
             return links;
           }
 
@@ -912,7 +933,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               category: data.radio.category,
               assignedTo: data.radio.assignedTo,
               author: data.radio.author,
-              relatesTo: [{workPackage: { id: '00000000-0000-0000-0000-000000000000'}}],
+              relatesTo: [{ workPackage: { id: '00000000-0000-0000-0000-000000000000' } }],
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation
             }
@@ -1056,13 +1077,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             workPackageId: this.workpackageId,
             nodeId: this.nodeId,
             customPropertyId: customProperty.propertyId,
-            data: { data: { value: data.customProperties.value }}
+            data: { data: { value: data.customProperties.value } }
           })
         );
       }
     });
   }
-
 
   onOpenRadio(radio: RadioDetail) {
     this.dialog.open(RadioDetailModalComponent, {
@@ -1076,31 +1096,38 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   updateWorkpackageFilter(id: string, reset?: boolean) {
     if (reset) {
-      return this.store.dispatch(new UpdateQueryParams({workpackages: [id]}));
+      return this.store.dispatch(new UpdateQueryParams({ workpackages: [id] }));
       // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
     }
-    this.routerStore.select(getWorkPackagesQueryParams).pipe(take(1)).subscribe(workPackages => {
-      if (workPackages && workPackages.length > 0) {
-        const workpackageAlreadySelected = workPackages.find(workpackageId => workpackageId === id);
-        if (workpackageAlreadySelected) {
-          const filteredWorkpackageIds = workPackages.filter(workpackageId => workpackageId !== id);
-          if (filteredWorkpackageIds.length > 0) {
-            this.store.dispatch(new UpdateQueryParams({workpackages: filteredWorkpackageIds}));
-            // this.filterService.setFilter({ ...existingFilter, workpackages: filteredWorkpackageIds });
-          } else {
-            // delete existingFilter.workpackages;
-            // this.filterService.setFilter({ ...existingFilter });
-            this.store.dispatch(new UpdateQueryParams({workpackages: null}));
+    this.routerStore
+      .select(getWorkPackagesQueryParams)
+      .pipe(take(1))
+      .subscribe(workPackages => {
+        if (!workPackages) {
+          return  this.store.dispatch(new UpdateQueryParams({ workpackages: [id] }));
+        }
+        if (Array.isArray(workPackages)) {
+          if (workPackages.length > 0) {
+            const workpackageAlreadySelected = workPackages.find(workpackageId => workpackageId === id);
+            if (workpackageAlreadySelected) {
+              const filteredWorkpackageIds = workPackages.filter(workpackageId => workpackageId !== id);
+              if (filteredWorkpackageIds.length > 0) {
+                this.store.dispatch(new UpdateQueryParams({ workpackages: filteredWorkpackageIds }));
+              } else {
+                this.store.dispatch(new UpdateQueryParams({ workpackages: null }));
+              }
+            } else {
+              this.store.dispatch(new UpdateQueryParams({ workpackages: [...workPackages, id] }));
+            }
           }
         } else {
-          this.store.dispatch(new UpdateQueryParams({workpackages: [...workPackages, id]}));
-          // this.filterService.setFilter({ ...existingFilter, workpackages: [...existingFilter.workpackages, id] });
+          if (workPackages === id) {
+            this.store.dispatch(new UpdateQueryParams({ workpackages: null }));
+          } else {
+            this.store.dispatch(new UpdateQueryParams({ workpackages: [workPackages, id] }));
+          }
         }
-      } else {
-        this.store.dispatch(new UpdateQueryParams({workpackages: [id]}));
-        // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
-      }
-    });
+      });
   }
 
   onViewChange(view: ArchitectureView) {
@@ -1112,7 +1139,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onChangeLevel(node: Node | NodeLink) {
-    this.diagramLevelService.changeLevelWithFilter(null, {data: node} as any);
+    this.diagramLevelService.changeLevelWithFilter(null, { data: node } as any);
   }
-
 }
