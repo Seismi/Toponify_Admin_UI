@@ -78,7 +78,7 @@ export class DeleteWorkPackageNodeDescendant implements Action {
 
 export class DeleteWorkPackageNodeDescendantSuccess implements Action {
   readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendantSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: DescendantsEntity) {}
 }
 
 export class DeleteWorkPackageNodeDescendantFailure implements Action {
