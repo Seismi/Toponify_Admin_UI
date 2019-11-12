@@ -541,8 +541,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       const linkData = {
         id: this.selectedPart.id,
         category: this.selectedPart.category,
+        layer: this.selectedPart.layer,
         name: this.objectDetailsForm.value.name,
-        description: this.objectDetailsForm.value.description
+        description: this.objectDetailsForm.value.description,
+        sourceId: this.selectedPart.sourceId,
+        targetId: this.selectedPart.targetId
       };
 
       this.diagramChangesService.updatePartData(this.part, linkData);
@@ -842,9 +845,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
               relatesTo: [
-                { 
+                {
                   workPackage: { id: this.workpackageId },
-                  item: { 
+                  item: {
                     id: this.nodeId,
                     itemType: this.filterService.getFilter().filterLevel.toLowerCase()
                   }
@@ -1057,7 +1060,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteCustomProperty({
-          workPackageId: this.workpackageId, 
+          workPackageId: this.workpackageId,
           nodeId: this.nodeId,
           customPropertyId: customProperty.propertyId
         }))
