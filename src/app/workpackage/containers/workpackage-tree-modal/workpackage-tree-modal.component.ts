@@ -44,7 +44,7 @@ export class WorkPackageTreeModalComponent implements OnInit {
     // Listener ensures that binding of "visible" property is evaluated after all nodes have been added to the diagram
     this.diagram.addDiagramListener(
       'InitialLayoutCompleted',
-      function(event) {
+      function(event): void {
         event.diagram.updateAllTargetBindings('');
       }
     );

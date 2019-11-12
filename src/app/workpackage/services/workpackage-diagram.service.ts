@@ -36,11 +36,11 @@ export class WorkPackageDiagramService {
   }
 
   // Check if a node is in a branch containing only merged/superseded workpackages
-  isInMergedSupersededBranch(workpackage) {
+  isInMergedSupersededBranch(workpackage): boolean {
     if (['superseded', 'merged'].includes(workpackage.data.status)) {
       // If node is merged/superseded then check whether all subsequent nodes are merged/superseded
       return workpackage.findNodesOutOf().all(
-        function(successor) {
+        function(successor): boolean {
           return this.isInMergedSupersededBranch(successor);
         }.bind(this)
       );
@@ -76,7 +76,7 @@ export class WorkPackageDiagramService {
     return $(go.Node,
       'Auto',
       // Node should be hidden if all nodes in the current branch have status "merged" or "superseded"
-      new go.Binding('visible', '', function(node) {
+      new go.Binding('visible', '', function(node): boolean {
         return !this.isInMergedSupersededBranch(node);
       }.bind(this)).ofObject(),
       $(go.Shape,
