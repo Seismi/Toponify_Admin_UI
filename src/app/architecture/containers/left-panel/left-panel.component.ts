@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatCheckboxChange, MatTabGroup } from '@angular/material';
+import { MatCheckboxChange, MatTabGroup, MatTabChangeEvent } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
@@ -8,7 +8,7 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./left-panel.component.scss']
 })
 export class LeftPanelComponent {
-  @Input() workPackageIsEditable = false;
+  @Input() workPackageIsEditable: boolean = false;
   @Input() workpackages: WorkPackageEntity[];
   @Input() selectedLeftTab: number;
   @Input() checked: boolean;
@@ -53,7 +53,7 @@ export class LeftPanelComponent {
     this.selectColour.emit(event);
   }
 
-  onTabClick(event) {
+  onTabClick(event: MatTabChangeEvent) {
     this.tabClick.emit(event.index);
     this.realignTabUnderline();
   }
