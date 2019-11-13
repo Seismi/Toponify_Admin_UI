@@ -67,8 +67,8 @@ export class AttributesComponent implements OnInit {
         this.router.navigate(['/attributes-and-rules', entry.id]);
     }
 
-    onSelectWorkPackage(id: string) {
-        this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: id}));
+    onSelectWorkPackage(selection: {id: string, newState: boolean}) {
+        this.workPackageStore.dispatch(new SetWorkpackageSelected({workpackageId: selection.id}));
     }
 
     openLeftTab(index: number) {

@@ -7,7 +7,7 @@
         <mat-checkbox
           [disabled]="!canSelect(element)"
           [checked]="element.selected"
-          (change)="onSelect(element.id)"
+          (click)="onSelect(element.id, !element.selected, $event)"
         >
         </mat-checkbox>
       </td>

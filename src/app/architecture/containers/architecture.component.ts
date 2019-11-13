@@ -58,6 +58,7 @@ import {
 import {
   GetWorkpackageAvailability,
   LoadWorkPackages,
+  SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode,
   SetWorkpackageSelected
@@ -222,6 +223,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
+    this.subscriptions.push(
+      this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
+        if (typeof workpackages === 'string') {
+          return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [workpackages] }));
+        }
+        if (workpackages) {
+          return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: workpackages }));
+        }
+        return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [] }));
+      })
+    );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
@@ -292,21 +304,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       fromEvent(window, 'popstate').subscribe(() => {
         // setTimeout for filterService to update filters
         setTimeout(() => {
-          this.routerStore.select(getQueryParams).pipe(take(1)).subscribe(params => {
-            let filterWorkpackages: string[];
-            if (typeof params.workpackages === 'string') {
-              filterWorkpackages = [params.workpackages];
-            } else {
-              filterWorkpackages = params.workpackages ? params.workpackages : [];
-            }
-            const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
-            const diff = filterWorkpackages
-              .filter(x => !selectedWorkpackagesIds.includes(x))
-              .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
-            diff.forEach(id => {
-              this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+          this.routerStore
+            .select(getQueryParams)
+            .pipe(take(1))
+            .subscribe(params => {
+              let filterWorkpackages: string[];
+              if (typeof params.workpackages === 'string') {
+                filterWorkpackages = [params.workpackages];
+              } else {
+                filterWorkpackages = params.workpackages ? params.workpackages : [];
+              }
+              const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
+              const diff = filterWorkpackages
+                .filter(x => !selectedWorkpackagesIds.includes(x))
+                .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
+              diff.forEach(id => {
+                this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+              });
             });
-          });
         });
       })
     );
@@ -822,10 +837,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.decreaseZoom();
   }
 
-  onSelectWorkPackage(id: string) {
+  onSelectWorkPackage(selection: { id: string; newState: boolean }) {
     this.objectSelected = false;
-    this.updateWorkpackageFilter(id);
-    this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+    this.routerStore
+      .select(getWorkPackagesQueryParams)
+      .pipe(take(1))
+      .subscribe(workpackages => {
+        let urlWorkpackages: string[];
+        let params: Params;
+        if (typeof workpackages === 'string') {
+          urlWorkpackages = [workpackages];
+        } else {
+          urlWorkpackages = workpackages ? [...workpackages] : [];
+        }
+        const index = urlWorkpackages.findIndex(id => id === selection.id);
+        if (selection.newState) {
+          if (index === -1) {
+            params = { workpackages: [...urlWorkpackages, selection.id] };
+          } else {
+            params = { workpackages: [...urlWorkpackages] };
+          }
+        } else {
+          if (index !== -1) {
+            urlWorkpackages.splice(index, 1);
+          }
+          params = { workpackages: [...urlWorkpackages] };
+        }
+        this.routerStore.dispatch(new UpdateQueryParams(params));
+      });
   }
 
   // FIXME: set proper type of workpackage
@@ -836,6 +875,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.part.isSelected = false;
     }
     this.updateWorkpackageFilter(this.workpackageId, !workpackage.edit);
+    if (!workpackage.edit) {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
+    } else {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
+    }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
   }
 
@@ -1110,7 +1154,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(workPackages => {
         if (!workPackages) {
-          return  this.store.dispatch(new UpdateQueryParams({ workpackages: [id] }));
+          return this.store.dispatch(new UpdateQueryParams({ workpackages: [id] }));
         }
         if (Array.isArray(workPackages)) {
           if (workPackages.length > 0) {

@@ -90,6 +90,31 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       }
     }
 
+    case WorkPackageActionTypes.SetSelectedWorkPackages: {
+      const { workPackages } = action.payload;
+      if (state.entities.length > 0) {
+        return {
+          ...state,
+          loading: true,
+          entities: state.entities.map(item => {
+            if (workPackages.some(id => item.id === id)) {
+              return {
+                ...item,
+                selected: true
+              };
+            } else {
+              return { ...item, selected: false };
+            }
+          })
+        };
+      } else {
+        return {
+          ...state,
+          preselectedWorkPackageIds: [...workPackages]
+        };
+      }
+    }
+
     case WorkPackageActionTypes.GetWorkpackageAvailability: {
       return {
         ...state,

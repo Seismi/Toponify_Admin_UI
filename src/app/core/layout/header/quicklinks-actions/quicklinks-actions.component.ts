@@ -9,20 +9,12 @@ import { ScopeEntity } from '@app/scope/store/models/scope.model';
 export class QuicklinksActionsComponent implements OnInit {
   @Input() gojsView = false;
   @Input() allowEditLayouts: string;
-  @Input() allowEditWorkPackages: string;
-  @Input() workpackages: any;
   @Input() scopes: any;
   @Input() layouts: any;
   @Input() selectedScope: ScopeEntity;
 
   @Output()
-  editWorkPackage = new EventEmitter();
-
-  @Output()
   editLayout = new EventEmitter();
-
-  @Output()
-  selectWorkPackage = new EventEmitter();
 
   @Output() selectScope = new EventEmitter<string>();
 
@@ -31,19 +23,10 @@ export class QuicklinksActionsComponent implements OnInit {
 
   ngOnInit() {
     this.allowEditLayouts = 'edit';
-    this.allowEditWorkPackages = 'edit';
-  }
-
-  allowEditWorkPackage() {
-    this.editWorkPackage.emit();
   }
 
   allowEditLayout() {
     this.editLayout.emit();
-  }
-
-  onSelectWorkPackage(id) {
-    this.selectWorkPackage.emit(id);
   }
 
   onSelectScope(id) {

@@ -19,7 +19,7 @@ export class LeftPanelComponent {
 
   @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
 
-  @Output() selectWorkPackage = new EventEmitter<string>();
+  @Output() selectWorkPackage = new EventEmitter<{id: string, newState: boolean}>();
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
@@ -38,8 +38,8 @@ export class LeftPanelComponent {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectWorkPackage(id: string) {
-    this.selectWorkPackage.emit(id);
+  onSelectWorkPackage(selection: {id: string, newState: boolean}) {
+    this.selectWorkPackage.emit(selection);
   }
 
   onSelectColour(event: { colour: string; id: string }) {

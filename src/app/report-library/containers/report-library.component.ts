@@ -7,8 +7,17 @@ import { ReportLibrary } from '../store/models/report.model';
 import { getReportEntities } from '../store/selecrtors/report.selectors';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages, SetWorkpackageSelected, SetWorkpackageEditMode, SetWorkpackageDisplayColour } from '@app/workpackage/store/actions/workpackage.actions';
-import { getWorkPackageEntities, getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {
+  LoadWorkPackages,
+  SetWorkpackageSelected,
+  SetWorkpackageEditMode,
+  SetWorkpackageDisplayColour
+} from '@app/workpackage/store/actions/workpackage.actions';
+import {
+  getWorkPackageEntities,
+  getSelectedWorkpackages,
+  getEditWorkpackages
+} from '@app/workpackage/store/selectors/workpackage.selector';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ReportModalComponent } from './report-modal/report-modal.component';
@@ -49,11 +58,12 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.push(this.workPackageStore.pipe(select(getEditWorkpackages))
-      .subscribe(workpackages => {
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
         const edit = workpackages.map(item => item.edit);
-        (!edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
-    }));
+        !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -83,8 +93,8 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.showOrHidePane = false;
   }
 
-  onSelectWorkPackage(id: string) {
-    this.workPackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+  onSelectWorkPackage(selection: { id: string; newState: boolean }) {
+    this.workPackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: selection.id }));
   }
 
   onSelectEditWorkpackage(workpackage: any) {
@@ -94,20 +104,21 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   onAddReport() {
     const dialogRef = this.dialog.open(ReportModalComponent, {
-      disableClose: false, 
+      disableClose: false,
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
-      if(data && data.report) {
-        this.store.dispatch(new AddReport({
-          workPackageId: this.workpackageId, 
-          request: { 
-            data: { ...data.report }
-          }
-        }))
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.report) {
+        this.store.dispatch(
+          new AddReport({
+            workPackageId: this.workpackageId,
+            request: {
+              data: { ...data.report }
+            }
+          })
+        );
       }
     });
   }
-
 }
