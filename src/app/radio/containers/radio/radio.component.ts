@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { RadioEntity } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { LoadRadios, AddRadioEntity } from '../../store/actions/radio.actions';
+import { LoadRadios, AddRadioEntity, SearchRadio } from '../../store/actions/radio.actions';
 import { getRadioEntities } from '../../store/selectors/radio.selector';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { Router, NavigationEnd } from '@angular/router';
@@ -32,25 +32,25 @@ export class RadioComponent implements OnInit {
     public dialog: MatDialog,
     private router: Router
   ) {
-    router.events.subscribe((event) => {
+    router.events.subscribe((event: NavigationEnd) => {
       if (event instanceof NavigationEnd) {
         (event.url.length > 7) ? this.radioSelected = true : this.radioSelected = false;
       }
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.userStore.dispatch(new LoadUsers({}));
     
     this.store.dispatch(new LoadRadios({}));
     this.radio$ = this.store.pipe(select(getRadioEntities));
   }
 
-  onSelectRadio(row: RadioEntity) {
+  onSelectRadio(row: RadioEntity): void {
     this.router.navigate(['radio', row.id]);
   }
 
-  onAddRadio() {
+  onAddRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false
     });
@@ -58,17 +58,55 @@ export class RadioComponent implements OnInit {
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.radio) {
         this.store.dispatch(new AddRadioEntity({ data: data.radio }));
+        this.store.dispatch(new LoadRadios({}));
       }
     });
   }
 
-  onFilter() {
+  onFilter(): void {
     const dialogRef = this.dialog.open(FilterModalComponent, {
-      disableClose: false,
-      width: '500px'
+      disableClose: false
     });
 
-    dialogRef.afterClosed().subscribe((data) => {});
+    dialogRef.afterClosed().subscribe((data) => {
+      if(data && data.radio) {
+        this.store.dispatch(new SearchRadio({
+          data: {
+            status: {
+              enabled: (data.radio.status) ? true : false,
+              values: data.radio.status
+            },
+            type: {
+              enabled: (data.radio.type) ? true : false,
+              values: data.radio.type
+            },
+            assignedTo: {
+              enabled: (data.radio.assignedTo) ? true : false,
+              values: data.radio.assignedTo
+            },
+            relatesTo: {
+              enabled: (data.radio.relatesTo) ? true : false,
+              includeDescendants: (data.radio.relatesTo) ? true : false,
+              includeLinks: (data.radio.relatesTo) ? true : false,
+              values: data.radio.relatesTo
+            },
+            dueDate: {
+              enabled: (data.radio.from || data.radio.to) ? true : false,
+              from: data.radio.from,
+              to: data.radio.to
+            },
+            text: {
+              enabled: (data.radio.text) ? true : false,
+              value: data.radio.text
+            }
+          }
+        }));
+      }
+    });
+  }
+
+  onResetFilter(): void {
+    this.store.dispatch(new LoadRadios({}));
   }
 
 }
