@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
+import { TeamEntityOrOwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-owners-table',
@@ -9,39 +10,27 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
 })
 export class OwnersTableComponent {
 
-  selectedRowIndex = -1;
-  @Input() isEditable = false;
-  @Input() selectedOwner = false;
+  @Input() isEditable: boolean = false;
 
   @Input()
-  set data(data: any[]) {
+  set data(data: WorkPackageDetail[]) {
     if(data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
     }
   }
 
-  displayedColumns: string[] = ['name'];
+  public displayedColumns: string[] = ['name', 'delete'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 
-  @Output()
-  addOwner = new EventEmitter();
+  @Output() addOwner = new EventEmitter<void>();
+  @Output() deleteOwner = new EventEmitter<TeamEntityOrOwnersEntityOrApproversEntity>();
 
-  @Output()
-  deleteOwner = new EventEmitter();
-
-  @Output()
-  selectOwner = new EventEmitter();
-
-  onSelect(row) {
-    this.selectedRowIndex = row.id;
-    this.selectOwner.emit(row);
-  }
-
-  onAdd() {
+  onAdd(): void {
     this.addOwner.emit();
   }
 
-  onDelete() {
-    this.deleteOwner.emit();
+  onDelete(owner: TeamEntityOrOwnersEntityOrApproversEntity): void {
+    this.deleteOwner.emit(owner);
   }
+
 }
