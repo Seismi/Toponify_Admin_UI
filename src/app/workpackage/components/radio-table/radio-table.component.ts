@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
+import { RadioEntity } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-radios-table',
@@ -8,26 +9,33 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./radio-table.component.scss']
 })
 export class RadiosTableComponent  {
+
+  //Temporary till delete API will be fixed
+  public hide: boolean = false;
   
   @Input() statusDraft: boolean = false;
 
   @Input()
-  set data(data: any[]) {
+  set data(data: WorkPackageDetail[]) {
     if(data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
       this.dataSource.paginator = this.paginator;
     }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ['type', 'name', 'delete'];
+  public displayedColumns: string[] = ['name', 'delete'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 
-  @Output()
-  deleteRadio = new EventEmitter();
+  @Output() addRadio = new EventEmitter<void>();
+  @Output() deleteRadio = new EventEmitter<RadioEntity>();
 
-  onDelete(radio) {
+  onAdd(): void {
+    this.addRadio.emit();
+  }
+
+  onDelete(radio: RadioEntity) {
     this.deleteRadio.emit(radio);
   }
 }
