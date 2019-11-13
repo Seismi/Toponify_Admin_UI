@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
@@ -29,12 +29,19 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   public selectedOwners = [];
   public selectedBaseline = [];
   public workpackages: WorkPackageEntity[];
+  public workPackageSelected: boolean;
 
   constructor(
     private store: Store<WorkPackageState>,
     private router: Router,
     public dialog: MatDialog
-  ) { }
+  ) { 
+    router.events.subscribe((event: NavigationEnd) => {
+      if (event instanceof NavigationEnd) {
+        (event.url.length > 16) ? this.workPackageSelected = true : this.workPackageSelected = false;
+      }
+    });
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadWorkPackages({}));

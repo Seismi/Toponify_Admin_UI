@@ -47,6 +47,7 @@ import { RadioListComponent } from './components/radio-list/radio-list.component
 import { RadioListModalComponent } from './containers/radio-list-modal/radio-list-modal.component';
 import { RadioModule } from '@app/radio/radio.module';
 import { WorkPackageTreeComponent } from './components/workpackage-tree/workpackage-tree.component';
+import { WorkPackageRightSideComponent } from './components/right-side/right-side.component';
 
 
 @NgModule({
@@ -93,7 +94,8 @@ import { WorkPackageTreeComponent } from './components/workpackage-tree/workpack
     PropertiesTableComponent,
     RadioListComponent,
     RadioListModalComponent,
-    WorkPackageTreeComponent
+    WorkPackageTreeComponent,
+    WorkPackageRightSideComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,

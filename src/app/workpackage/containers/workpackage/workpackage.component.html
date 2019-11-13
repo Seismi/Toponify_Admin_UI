@@ -10,7 +10,7 @@
 <app-model-container [topPadding]="64">
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col mat-elevation-z8">
                 <mat-tab-group [@.disabled]="true">
                     <mat-tab>
                         <ng-template mat-tab-label>
@@ -20,7 +20,7 @@
                             data-hook="workpackage-table" 
                             [data]="workpackageEntities$ | async"
                             (workpackageSelected)="onSelectWorkpackage($event)" 
-                            (addWorkpackage)="onAddWorkPackage($event)">
+                            (addWorkpackage)="onAddWorkPackage()">
                         </smi-workpackages-table>
                     </mat-tab>
                     <mat-tab label="Diagram">
@@ -33,7 +33,10 @@
                     </mat-tab>
                 </mat-tab-group>
             </div>
-            <router-outlet></router-outlet>
+            <div class="col">
+                <smi-workpackage-right-side (addWorkPackage)="onAddWorkPackage()" *ngIf="!workPackageSelected"></smi-workpackage-right-side>
+                <router-outlet></router-outlet>
+            </div>
         </div>
     </div>
 </app-model-container>
