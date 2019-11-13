@@ -2,6 +2,10 @@
     width: 100%;
 }
 
+input, textarea, .mat-select {
+    background-color: #eee;
+}
+
 .archive-btn {
     float: right;
 }

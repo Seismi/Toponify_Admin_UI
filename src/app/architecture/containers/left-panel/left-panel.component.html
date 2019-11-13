@@ -1,38 +1,40 @@
-<mat-tab-group
-  mat-stretch-tabs
-  [@.disabled]="true"
-  [selectedIndex]="selectedLeftTab"
-  (selectedTabChange)="onTabClick($event)"
-  [style.width.px]="1 == tabIndex ? 200 : 420"
->
-  <mat-tab label="Work Packages">
+<div class="content" [ngClass]="{ editTab: tabIndex === 1 }">
+  <mat-tab-group [style.width.px]="tabIndex === 1 ? 205 : 420"
+    mat-stretch-tabs
+    [@.disabled]="true"
+    [selectedIndex]="selectedLeftTab"
+    (selectedTabChange)="onTabClick($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon [ngClass]="{ onlyIcon: tabIndex === 1}">business_center</mat-icon><span *ngIf="tabIndex !== 1">Work Packages</span>
+    </ng-template>
     <smi-workpackage-tab-table
       [canSelectWorkpackage]="canSelectWorkpackages"
       [data]="workpackages"
       (selectWorkPackage)="onSelectWorkPackage($event)"
       (selectColour)="onSelectColour($event)"
-      (setWorkpackageEditMode)="onSetWorkPackageEditMode($event)"
-    >
+      (setWorkpackageEditMode)="onSetWorkPackageEditMode($event)">
     </smi-workpackage-tab-table>
   </mat-tab>
-  <mat-tab label="Edit" *ngIf="workPackageIsEditable">
+  <mat-tab *ngIf="workPackageIsEditable">
+    <ng-template mat-tab-label>
+      <mat-icon [ngClass]="{ onlyIcon: tabIndex === 1}">edit</mat-icon><span *ngIf="tabIndex !== 1">Edit</span>
+    </ng-template>
     <ng-template matTabContent>
       <p class="palette">
         <app-architecture-palette></app-architecture-palette>
       </p>
     </ng-template>
   </mat-tab>
-  <mat-tab label="Analysis">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon [ngClass]="{ onlyIcon: tabIndex === 1}">settings_applications</mat-icon><span *ngIf="tabIndex !== 1">Layout Settings</span>
+    </ng-template>
     <smi-analysis-tab
       (displayOptionsChanged)="displayOptionsChanged($event)"
       [viewLevel]="viewLevel"
-      [checked]="checked"
-    >
+      [checked]="checked">
     </smi-analysis-tab>
   </mat-tab>
-</mat-tab-group>
-
-<!-- Hide left pane -->
-<button mat-button (click)="onHidePane()">
-  <mat-icon>keyboard_arrow_left</mat-icon>Hide
-</button>
+  </mat-tab-group>
+</div>

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { RadioDetail } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-radio-table-in-architecture',
@@ -26,12 +27,14 @@ export class RadioTableInArchitectureComponent {
   public displayedColumns: string[] = ['name', 'navigate'];
 
   @Output() addRadio = new EventEmitter<void>();
+  @Output() openRadio = new EventEmitter<RadioDetail>();
 
   onAdd() {
     this.addRadio.emit();
   }
 
-  onSelect(id: string) {
-    this.router.navigate(['/radio/' + id]);
+  onOpen(radio: RadioDetail) {
+    this.openRadio.emit(radio);
   }
+
 }

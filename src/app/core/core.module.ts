@@ -41,6 +41,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducer } from '../core/store/reducers/search.reducer';
 import { SearchEffects } from './store/effects/search.effects';
 import { EffectsModule } from '@ngrx/effects';
+import { NodeNameComponent } from './layout/header/node-name/node-name.component';
 
 @NgModule({
   imports: [
@@ -80,7 +81,8 @@ import { EffectsModule } from '@ngrx/effects';
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
     RightSideBarComponent,
-    LeftSideBarComponent
+    LeftSideBarComponent,
+    NodeNameComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -102,7 +104,8 @@ import { EffectsModule } from '@ngrx/effects';
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
     LeftSideBarComponent,
-    RightSideBarComponent
+    RightSideBarComponent,
+    NodeNameComponent
   ],
   providers: [
     SearchService
