@@ -35,11 +35,11 @@ export class ScopeTableComponent {
     this.delete.emit(scope);
   }
 
-  onAdd() {
+  onAdd(): void {
     this.addExistingScope.emit();
   }
 
-  onNew() {
+  onNew(): void {
     this.newScope.emit();
   }
 
