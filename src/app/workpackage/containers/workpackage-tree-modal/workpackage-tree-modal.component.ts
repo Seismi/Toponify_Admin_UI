@@ -39,6 +39,16 @@ export class WorkPackageTreeModalComponent implements OnInit {
     this.diagram.nodeTemplate = this.workPackageDiagramService.getNodeTemplate();
     this.diagram.linkTemplate = this.workPackageDiagramService.getLinkTemplate();
     this.diagram.layout = this.workPackageDiagramService.getLayout();
+
+
+    // Listener ensures that binding of "visible" property is evaluated after all nodes have been added to the diagram
+    this.diagram.addDiagramListener(
+      'InitialLayoutCompleted',
+      function(event): void {
+        event.diagram.updateAllTargetBindings('');
+      }
+    );
+
     this.diagram.model = this.workPackageDiagramService.getModel(this.data.workpackages);
   }
 
