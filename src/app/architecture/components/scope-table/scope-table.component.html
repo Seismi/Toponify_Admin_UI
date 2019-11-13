@@ -17,7 +17,7 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
 <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
-<div class="actions" *ngIf="workPackageIsEditable">
+<div class="actions">
   <button mat-raised-button color="primary" (click)="onNew()">New Scope</button>
   <button mat-raised-button color="primary" (click)="onAdd()">Add to Existing</button>
 </div>
