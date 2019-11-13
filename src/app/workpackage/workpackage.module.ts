@@ -38,7 +38,6 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
 import { ApproversTableComponent } from './components/approvers-table/approvers-table.component';
 import { OwnersModalComponent } from './containers/owners-modal/owners-modal.component';
 import { OwnersListComponent } from './components/owners-list/owners-list.component';
-import { WorkPackageTreeModalComponent } from './containers/workpackage-tree-modal/workpackage-tree-modal.component';
 import { PropertiesTableComponent } from './components/properties-table/properties-table.component';
 import { WorkPackageNodeEffects } from './store/effects/workpackage-node.effects';
 import { WorkPackageNodesService } from './services/workpackage-nodes.service';
@@ -47,6 +46,7 @@ import { WorkPackageLinksService } from './services/workpackage-links.service';
 import { RadioListComponent } from './components/radio-list/radio-list.component';
 import { RadioListModalComponent } from './containers/radio-list-modal/radio-list-modal.component';
 import { RadioModule } from '@app/radio/radio.module';
+import { WorkPackageTreeComponent } from './components/workpackage-tree/workpackage-tree.component';
 
 
 @NgModule({
@@ -90,16 +90,15 @@ import { RadioModule } from '@app/radio/radio.module';
     ApproversTableComponent,
     OwnersModalComponent,
     OwnersListComponent,
-    WorkPackageTreeModalComponent,
     PropertiesTableComponent,
     RadioListComponent,
-    RadioListModalComponent
+    RadioListModalComponent,
+    WorkPackageTreeComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,
     DeleteWorkPackageModalComponent,
     OwnersModalComponent,
-    WorkPackageTreeModalComponent,
     RadioListModalComponent
   ],
   providers: [

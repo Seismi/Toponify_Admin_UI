@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { TeamEntityOrOwnersEntityOrApproversEntity, WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { TeamEntity } from '@app/settings/store/models/user.model';
 
 @Component({
   selector: 'smi-workpackage-detail',
@@ -8,20 +10,18 @@ import { FormGroup } from '@angular/forms';
 })
 export class WorkPackageDetailComponent  {
 
-  disableStatusInput = true;
+  public disableStatusInput: boolean = true;
 
   @Input() group: FormGroup;
-  @Input() isEditable = false;
-  @Input() modalMode = false;
-  @Input() owners: any;
-  @Input() baseline: any;
-  @Input() baselineTableData: any;
-  @Input() ownersTableData: any;
-  @Input() approversTableData: any;
+  @Input() isEditable: boolean = false;
+  @Input() modalMode: boolean = false;
+  @Input() owners: TeamEntity[];
+  @Input() baseline: WorkPackageEntity[];
+  @Input() baselineTableData: WorkPackageDetail;
+  @Input() ownersTableData: WorkPackageDetail;
+  @Input() approversTableData: WorkPackageDetail;
   @Input() selectedBaselines = [];
   @Input() selectedOwners = [];
-  @Input() selectedOwner: boolean;
-  @Input() selectedBaseline: boolean;
   @Input() statusDraft: boolean;
   @Input() workpackageActionSubmit: boolean;
   @Input() workpackageActionApprove: boolean;
@@ -31,115 +31,87 @@ export class WorkPackageDetailComponent  {
   @Input() workpackageActionSupersede: boolean;
 
   @Output()
-  deleteWorkpackage = new EventEmitter();
+  deleteWorkpackage = new EventEmitter<void>();
 
   @Output()
-  saveWorkpackage = new EventEmitter();
+  saveWorkpackage = new EventEmitter<void>();
 
   @Output()
-  deleteOwner = new EventEmitter();
+  deleteOwner = new EventEmitter<TeamEntityOrOwnersEntityOrApproversEntity>();
 
   @Output()
-  selectOwner = new EventEmitter();
+  addOwner = new EventEmitter<void>();
 
   @Output()
-  addOwner = new EventEmitter();
+  cancel = new EventEmitter<void>();
 
   @Output()
-  cancel = new EventEmitter();
+  editWorkPackage = new EventEmitter<void>();
 
   @Output()
-  editWorkPackage = new EventEmitter();
+  submit = new EventEmitter<void>();
 
   @Output()
-  addBaseline = new EventEmitter();
+  approve = new EventEmitter<void>();
 
   @Output()
-  deleteBaseline = new EventEmitter();
+  reject = new EventEmitter<void>();
 
   @Output()
-  selectBaseline = new EventEmitter();
+  merge = new EventEmitter<void>();
 
   @Output()
-  submit = new EventEmitter<string>();
+  reset = new EventEmitter<void>();
 
   @Output()
-  approve = new EventEmitter<string>();
-
-  @Output()
-  reject = new EventEmitter<string>();
-
-  @Output()
-  merge = new EventEmitter<string>();
-
-  @Output()
-  reset = new EventEmitter<string>();
-
-  @Output()
-  supersede = new EventEmitter<string>();
+  supersede = new EventEmitter<void>();
 
 
-  onSave() {
+  onSave(): void {
     this.saveWorkpackage.emit();
   }
 
-  onEdit() {
+  onEdit(): void {
     this.editWorkPackage.emit();
   }
   
-  onCancel() {
+  onCancel(): void {
     this.cancel.emit();
   }
 
-  onDelete() {
+  onDelete(): void {
     this.deleteWorkpackage.emit();
   }
 
-  onDeleteOwner() {
-    this.deleteOwner.emit();
+  onDeleteOwner(owner: TeamEntityOrOwnersEntityOrApproversEntity): void {
+    this.deleteOwner.emit(owner);
   }
 
-  onSelectOwner(row) {
-    this.selectOwner.emit(row);
-  }
-
-  onAddOwner() {
+  onAddOwner(): void {
     this.addOwner.emit();
   }
 
-  onAddBaseline() {
-    this.addBaseline.emit();
-  }
-
-  onDeleteBaseline() {
-    this.deleteBaseline.emit();
-  }
-
-  onSelectBaseline(row) {
-    this.selectBaseline.emit(row);
-  }
-
-  submitWorkpackage() {
+  submitWorkpackage(): void {
     this.submit.emit();
   }
 
-  approveWorkpackage() {
+  approveWorkpackage(): void {
     this.approve.emit();
   }
 
-  rejectWorkpackage() {
+  rejectWorkpackage(): void {
     this.reject.emit();
   }
 
-  mergeWorkpackage() {
+  mergeWorkpackage(): void {
     this.merge.emit();
   }
 
-  resetWorkpackage() {
+  resetWorkpackage(): void {
     this.reset.emit();
   }
 
-  supersedeWorkpackage() {
+  supersedeWorkpackage(): void {
     this.supersede.emit();
   }
 }

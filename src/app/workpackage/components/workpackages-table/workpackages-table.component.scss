@@ -1,52 +1,75 @@
-table {
-    width: 100%;
+.wrapper {
+  border-bottom: solid 1px #ddd;
 }
 
-.title {
-    font-size: 25px;
-    margin-top: 15px;
+table {
+  width: 100%;
 }
 
 tr.mat-header-row {
-    height: 35px;
+  height: 45px;
+}
+
+tr.mat-row{
+  cursor: pointer;
+  height: 45px;
+  &:hover {
+    background-color: #f9f9f9;
+  }
+}
+
+td.mat-cell {
+  font-size: 13px;
+}
+
+th.mat-header-cell, td.mat-cell {
+  padding-left: 10px;
 }
 
 th.mat-column-name {
-    width: 50%;
+  width: 45%;
+  margin-left: 15px;
 }
 
 th.mat-column-status {
-    width: 12%;
-    padding-right: 20px;
-}
-
-tr.mat-row {
-    cursor: pointer;
+  width: 12%;
+  padding-right: 20px;
 }
 
 .highlight {
-    background-color: #efefef;
+  background-color: #efefef;
 }
 
 .ownersList {
-    padding: 0;
-    margin: 0;
-    display: inline;
-    list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline;
+  list-style: none;
 }
   
 .ownersList li {
-    display: inline;
+  display: inline;
 }
 
 .ownersList::before {
-    content: '; ';
+  content: '; ';
 }
 
 .ownersList:first-child::before {
-    content: '';
+  content: '';
 }
 
 button {
-    margin-right: 7px;
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+  
+.mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
 }

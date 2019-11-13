@@ -35,7 +35,7 @@ export class RadiosTableComponent  {
     this.addRadio.emit();
   }
 
-  onDelete(radio: RadioEntity) {
+  onDelete(radio: RadioEntity): void {
     this.deleteRadio.emit(radio);
   }
 }
