@@ -25,11 +25,11 @@ export class DescendantsTableComponent {
 
   @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
-  onAdd() {
+  onAdd(): void {
     this.addDescendant.emit();
   }
 
-  onDelete(descendant: DescendantsEntity) {
+  onDelete(descendant: DescendantsEntity): void {
     this.deleteDescendant.emit(descendant);
   }
 }

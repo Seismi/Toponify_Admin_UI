@@ -982,7 +982,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteDescendant(descendant: DescendantsEntity) {
+  onDeleteDescendant(descendant: DescendantsEntity): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',

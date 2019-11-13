@@ -71,7 +71,7 @@ export class ObjectDetailsFormComponent {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(descendant: DescendantsEntity) {
+  onDeleteDescendant(descendant: DescendantsEntity): void {
     this.deleteDescendant.emit(descendant);
   }
 

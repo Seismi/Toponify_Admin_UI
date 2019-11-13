@@ -160,7 +160,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(descendant: DescendantsEntity) {
+  onDeleteDescendant(descendant: DescendantsEntity): void {
     this.deleteDescendant.emit(descendant);
   }
 

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange } from '@angular/material';
 import { Store, select } from '@ngrx/store';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
@@ -41,15 +41,15 @@ export class DescendantsModalComponent implements OnInit {
     this.descendants$ = this.architectureStore.pipe(select(getPotentialWorkPackageNodes));
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.dialogRef.close({descendant: this.selectedDescendants});
   }
 
-  onCancelClick() {
+  onCancelClick(): void {
     this.dialogRef.close();
   }
 
-  onSelect($event, children: DescendantsEntity) {
+  onSelect($event: MatSelectChange, children: DescendantsEntity): void {
     if($event.source.selected) {
       this.selectedDescendants.push(children)
     }
