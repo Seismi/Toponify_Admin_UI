@@ -1,0 +1,25 @@
+.mat-form-field {
+  width: 100%;
+}
+
+.and-title {
+  margin: 0px 10px;
+  color: #555;
+  margin-top: 20px;
+}
+
+.due-date-title {
+  color: #555;
+  width: 200px;
+  margin-top: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: none;
+  border-bottom: solid 1px #ddd;
+  &:focus {
+    outline: none;
+  }
+}
