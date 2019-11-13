@@ -288,22 +288,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    // this.subscriptions.push(
-    //   // fromEvent(window, 'popstate').subscribe(() => {
-    //   //   // setTimeout for filterService to update filters
-    //   //   setTimeout(() => {
-    //   //     const currentFilter = this.filterService.getFilter();
-    //   //     const filterWorkpackages = currentFilter && currentFilter.workpackages ? currentFilter.workpackages : [];
-    //   //     const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
-    //   //     const diff = filterWorkpackages
-    //   //       .filter(x => !selectedWorkpackagesIds.includes(x))
-    //   //       .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
-    //   //     diff.forEach(id => {
-    //   //       this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
-    //   //     });
-    //   //   });
-    //   // })
-    // );
+    this.subscriptions.push(
+      fromEvent(window, 'popstate').subscribe(() => {
+        // setTimeout for filterService to update filters
+        setTimeout(() => {
+          this.routerStore.select(getQueryParams).pipe(take(1)).subscribe(params => {
+            let filterWorkpackages: string[];
+            if (typeof params.workpackages === 'string') {
+              filterWorkpackages = [params.workpackages];
+            } else {
+              filterWorkpackages = params.workpackages ? params.workpackages : [];
+            }
+            const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
+            const diff = filterWorkpackages
+              .filter(x => !selectedWorkpackagesIds.includes(x))
+              .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
+            diff.forEach(id => {
+              this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+            });
+          });
+        });
+      })
+    );
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
