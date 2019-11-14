@@ -92,6 +92,42 @@ export class DiagramListenersService {
     );
 
     diagram.addDiagramListener(
+      'LayoutCompleted',
+      initialFitToScreen
+    );
+
+    // Prevent fit to screen after user adds parts to an initially empty diagram
+    diagram.addDiagramListener(
+      'ExternalObjectsDropped',
+      function(): void {
+        diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
+      }
+    );
+
+    // If diagram non-empty, fit diagram to screen
+    function initialFitToScreen(event: go.DiagramEvent): void {
+
+      // Fit to screen when diagram contains both nodes and links
+      if (event.diagram.nodes.count > 0 && event.diagram.links.count > 0) {
+        setTimeout(function(): void {event.diagram.zoomToFit(); }, 1);
+        // Remove current listener to prevent function running more than once
+        event.diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
+      } else
+      // If diagram contains only nodes, wait for links to load.
+      // If there are still no links after waiting then assume diagram has no links to load and perform the zoom to fit.
+      if (event.diagram.nodes.count > 0 && event.diagram.links.count === 0) {
+        setTimeout(function(): void {
+            if (event.diagram.links.count === 0) {
+              event.diagram.zoomToFit();
+              event.diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
+            }
+          },
+          300
+        );
+      }
+    }
+
+    diagram.addDiagramListener(
       'LinkRelinked',
       this.diagramChangesService.updateLinkConnections.bind(
         this.diagramChangesService
