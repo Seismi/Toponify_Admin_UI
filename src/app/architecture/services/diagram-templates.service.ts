@@ -362,9 +362,9 @@ export class DiagramTemplatesService {
         initialText: 'Tags - '
       },
       {
-        sectionName: 'owner',
+        sectionName: 'owners',
         font: '15px calibri',
-        initialText: 'Owner - '
+        initialText: 'Owners - '
       }
     ];
 
@@ -381,7 +381,13 @@ export class DiagramTemplatesService {
           margin: sectionMargin
         },
         new go.Binding('text', section.sectionName, function(input) {
-          return input ? section.initialText + input : '';
+          if (Array.isArray(input)) {
+            return input.length > 0 ? section.initialText + input.map(
+              function(obj) {return obj.name; }
+            ).join(', ') : '';
+          } else {
+            return input ? section.initialText + input : '';
+          }
         }),
         new go.Binding('visible', section.sectionName).ofModel()
       );

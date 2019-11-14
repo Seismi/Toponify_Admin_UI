@@ -52,7 +52,7 @@ export class WorkPackageNodeEffects {
   );
 
   @Effect()
-  addWorkpackageNodeDescenadant$ = this.actions$.pipe(
+  addWorkpackageNodeDescendant$ = this.actions$.pipe(
     ofType<AddWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant),
     map(action => action.payload),
     mergeMap((payload: {workpackageId: string, nodeId: string, node: any}) => {
@@ -67,7 +67,7 @@ export class WorkPackageNodeEffects {
   );
 
   @Effect()
-  deleteWorkpackageNodeDescenadant$ = this.actions$.pipe(
+  deleteWorkpackageNodeDescendant$ = this.actions$.pipe(
     ofType<DeleteWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendant),
     map(action => action.payload),
     mergeMap((payload: {workpackageId: string, nodeId: string, descendantId: string}) => {
@@ -128,7 +128,10 @@ export class WorkPackageNodeEffects {
         payload.ownerId,
         payload.data
       ).pipe(
-        mergeMap((response: any) => [new AddWorkpackageNodeOwnerSuccess(response.data)]),
+        mergeMap((response: any) => [
+          new AddWorkpackageNodeOwnerSuccess(response.data),
+          new UpdateNodeOwners()
+        ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkpackageNodeOwnerFailure(error)))
       );
     })
@@ -140,7 +143,10 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     mergeMap((payload: { workpackageId: string, nodeId: string, ownerId: string }) => {
       return this.workpackageNodeService.deleteNodeOwner(payload.workpackageId, payload.nodeId, payload.ownerId).pipe(
-        map(data => new DeleteWorkpackageNodeOwnerSuccess(data.data)),
+        map(data => [
+          new DeleteWorkpackageNodeOwnerSuccess(data.data),
+          new UpdateNodeOwners()
+        ]),
         catchError(error => of(new DeleteWorkpackageNodeOwnerFailure(error)))
       );
     })
