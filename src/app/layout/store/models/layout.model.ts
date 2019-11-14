@@ -34,7 +34,7 @@ export interface LayoutDetails {
   name: string;
   owners?: (OwnersEntityOrViewersEntity)[] | null;
   viewers?: (OwnersEntityOrViewersEntity)[] | null;
-  scope: (Scope)[] | null;
+  scope: Scope;
 }
 
 export interface OwnersEntityOrViewersEntity {
