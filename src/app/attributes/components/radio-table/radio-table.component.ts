@@ -23,6 +23,6 @@ export class RadioTableInAttributesPageComponent {
   displayedColumns: string[] = ['name', 'navigate'];
 
   onSelect(id){
-    this.router.navigate(['/radio/' + id]);
+    this.router.navigate(['/radio/' + id], {queryParamsHandling: 'preserve' });
   }
 }

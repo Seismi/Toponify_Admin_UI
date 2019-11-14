@@ -879,7 +879,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.part) {
       this.part.isSelected = false;
     }
-    this.updateWorkpackageFilter(this.workpackageId, !workpackage.edit);
     if (!workpackage.edit) {
       this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
     } else {
@@ -1170,41 +1169,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateWorkpackageFilter(id: string, reset?: boolean) {
-    if (reset) {
-      return this.store.dispatch(new UpdateQueryParams({ workpackages: [id] }));
-      // this.filterService.setFilter({ ...existingFilter, workpackages: [id] });
-    }
-    this.routerStore
-      .select(getWorkPackagesQueryParams)
-      .pipe(take(1))
-      .subscribe(workPackages => {
-        if (!workPackages) {
-          return this.store.dispatch(new UpdateQueryParams({ workpackages: [id] }));
-        }
-        if (Array.isArray(workPackages)) {
-          if (workPackages.length > 0) {
-            const workpackageAlreadySelected = workPackages.find(workpackageId => workpackageId === id);
-            if (workpackageAlreadySelected) {
-              const filteredWorkpackageIds = workPackages.filter(workpackageId => workpackageId !== id);
-              if (filteredWorkpackageIds.length > 0) {
-                this.store.dispatch(new UpdateQueryParams({ workpackages: filteredWorkpackageIds }));
-              } else {
-                this.store.dispatch(new UpdateQueryParams({ workpackages: null }));
-              }
-            } else {
-              this.store.dispatch(new UpdateQueryParams({ workpackages: [...workPackages, id] }));
-            }
-          }
-        } else {
-          if (workPackages === id) {
-            this.store.dispatch(new UpdateQueryParams({ workpackages: null }));
-          } else {
-            this.store.dispatch(new UpdateQueryParams({ workpackages: [workPackages, id] }));
-          }
-        }
-      });
-  }
 
   onViewChange(view: ArchitectureView) {
     this.selectedView = view;

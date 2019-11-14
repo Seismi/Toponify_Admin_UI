@@ -3,6 +3,7 @@ import { WorkPackageActionsUnion, WorkPackageActionTypes } from '../actions/work
 import { WorkPackageEntity, Page, Links, WorkPackageDetail } from '../models/workpackage.models';
 
 export interface State {
+  editId: string;
   entities: WorkPackageEntity[];
   avaialabilities: any[];
   page: Page;
@@ -14,6 +15,7 @@ export interface State {
 }
 
 export const initialState: State = {
+  editId: null,
   entities: [],
   avaialabilities: [],
   page: null,
@@ -30,18 +32,17 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       const { id } = action.payload;
       return {
         ...state,
+        editId: id,
         entities: state.entities.map(item => {
           if (item.id === id) {
             return {
               ...item,
-              selected: !item.edit,
               edit: !item.edit
             };
           } else {
             return {
               ...item,
               edit: false,
-              selected: false
             };
           }
         })
@@ -93,6 +94,10 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.SetSelectedWorkPackages: {
       const { workPackages } = action.payload;
       if (state.entities.length > 0) {
+        let resetEdit = true;
+        if (state.editId && workPackages.length === 1 && workPackages[0] === state.editId) {
+          resetEdit = false;
+        }
         return {
           ...state,
           loading: true,
@@ -100,10 +105,11 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
             if (workPackages.some(id => item.id === id)) {
               return {
                 ...item,
-                selected: true
+                selected: true,
+                edit: resetEdit ? false : item.edit
               };
             } else {
-              return { ...item, selected: false };
+              return { ...item, selected: false, edit: false };
             }
           })
         };

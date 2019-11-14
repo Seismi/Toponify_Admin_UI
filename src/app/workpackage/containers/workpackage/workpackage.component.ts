@@ -55,7 +55,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkpackage(row: any) {
-    this.router.navigate(['work-packages', row.id]);
+    this.router.navigate(['work-packages', row.id], {queryParamsHandling: 'preserve' });
   }
 
 

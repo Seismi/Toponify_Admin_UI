@@ -33,10 +33,10 @@ export class HomeComponent implements OnInit {
   }
 
   onOpenWorkPackage(id) {
-    this.router.navigate(['/architecture']);
+    this.router.navigate(['/architecture'], {queryParamsHandling: 'preserve' });
   }
 
   onOpenLayout() {
-    this.router.navigate(['/architecture']);
+    this.router.navigate(['/architecture'], {queryParamsHandling: 'preserve' });
   }
 }

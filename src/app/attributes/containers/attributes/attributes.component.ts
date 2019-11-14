@@ -38,7 +38,7 @@ export class AttributesComponent implements OnInit {
             const workPackageIds = workpackages.map(item => item.id);
             const selected = workpackages.map(item => item.selected);
             if(!selected.length) {
-              this.router.navigate(['/attributes-and-rules']);
+              this.router.navigate(['/attributes-and-rules'], {queryParamsHandling: 'preserve' });
             }
             this.setWorkPackage(workPackageIds);
         }));
@@ -64,7 +64,7 @@ export class AttributesComponent implements OnInit {
     }
 
     onSelectAttribute(entry: AttributeEntity) {
-        this.router.navigate(['/attributes-and-rules', entry.id]);
+        this.router.navigate(['/attributes-and-rules', entry.id], {queryParamsHandling: 'preserve' });
     }
 
     onSelectWorkPackage(selection: {id: string, newState: boolean}) {

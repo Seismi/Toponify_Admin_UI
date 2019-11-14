@@ -67,7 +67,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onLayoutSelect(row: any) {
-    this.router.navigate(['scopes-and-layouts', this.scope.id, row.id]);
+    this.router.navigate(['scopes-and-layouts', this.scope.id, row.id], {queryParamsHandling: 'preserve' });
   }
 
   onSaveScope() {

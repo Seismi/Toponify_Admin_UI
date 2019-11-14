@@ -26,6 +26,6 @@ export class RadioTableInReportsPageComponent {
   displayedColumns: string[] = ['name', 'navigate'];
 
   onSelect(id: string) {
-    this.router.navigate(['/radio/' + id]);
+    this.router.navigate(['/radio/' + id], {queryParamsHandling: 'preserve' });
   }
 }

@@ -36,7 +36,6 @@ export class WorkPackageTabTableComponent {
 
   onSelect(id: string, newState: boolean, ev): void {
     ev.preventDefault();
-    console.warn(newState);
     this.selectWorkPackage.emit({id, newState});
   }
 
