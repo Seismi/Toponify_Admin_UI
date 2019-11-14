@@ -1,9 +1,7 @@
 <i class="material-icons" data-hook="hamburger-manu" [matMenuTriggerFor]="navigationMenu">menu</i>
 <mat-menu #navigationMenu="matMenu">
     <button data-hook="home-link" mat-menu-item routerLink="/home">Home</button>
-    <button data-hook="architecture-link" mat-menu-item routerLink="/architecture" 
-    [queryParams]="{filter: 'filterLevel:system'}"
-    >Architecture</button>
+    <button data-hook="architecture-link" mat-menu-item routerLink="/architecture" queryParamsHandling="preserve">Architecture</button>
     <!-- <button data-hook="report-library-link" mat-menu-item routerLink="/report-library">Report Library</button>
     <button data-hook="attributes-rules-link" mat-menu-item routerLink="/attributes-and-rules">Attributes and Rules Library</button> -->
     <button data-hook="radio-link" mat-menu-item routerLink="/radio">RADIO</button>
