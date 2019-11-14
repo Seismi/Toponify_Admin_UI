@@ -36,7 +36,7 @@
     "@types/stampit": "^3.0.3",
     "bootstrap": "^4.3.1",
     "core-js": "^2.6.5",
-    "gojs": "^2.0.6",
+    "gojs": "~2.1.0",
     "hammerjs": "^2.0.8",
     "json-server": "^0.14.2",
     "ngx-bootstrap": "^5.1.2",
