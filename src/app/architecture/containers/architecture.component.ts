@@ -24,7 +24,7 @@ import {
   DeleteCustomProperty
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, NodeDetail } from '@app/architecture/store/models/node.model';
+import { CustomPropertyValuesEntity, NodeDetail, DescendantsEntity } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
   getNodeLinks,
@@ -54,7 +54,8 @@ import {
   DeleteWorkPackageNodeDescendant,
   DeleteWorkpackageNodeOwner,
   DeleteWorkpackageNodeSuccess,
-  WorkPackageNodeActionTypes
+  WorkPackageNodeActionTypes,
+  FindPotentialWorkpackageNodes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -102,6 +103,7 @@ import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-mod
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
+import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import {
@@ -1034,7 +1036,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        currentLevel: this.selectedNode.layer
+        workpackageId: this.workpackageId,
+        nodeId: this.nodeId,
+        childrenOf: {
+          id: null // Add node from the same level *not required*
+        }
       }
     });
 
@@ -1042,21 +1048,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (data && data.descendant) {
         this.workpackageStore.dispatch(
           new AddWorkPackageNodeDescendant({
-            workpackageId: this.workpackageId,
+            workPackageId: this.workpackageId,
             nodeId: this.nodeId,
-            node: data.descendant
+            data: data.descendant
           })
         );
       }
     });
   }
 
-  onDeleteDescendant(id: string) {
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
+  onDeleteDescendant(descendant: DescendantsEntity): void {
+    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        mode: 'delete',
+        name: descendant.name
       }
     });
 
@@ -1066,7 +1073,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           new DeleteWorkPackageNodeDescendant({
             workpackageId: this.workpackageId,
             nodeId: this.nodeId,
-            descendantId: id
+            descendantId: descendant.id
           })
         );
       }

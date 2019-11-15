@@ -223,3 +223,11 @@ export interface WorkpackageLinkSliceCondition {
   conditionTypeId: string;
   value: string;
 }
+
+export interface WorkPackageNodeFindPotential {
+  childrenOf: ChildrenOf;
+}
+
+interface ChildrenOf {
+  id: string;
+}
