@@ -11,6 +11,7 @@ import {
   WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { DescendantsEntity } from '@app/nodes/store/models/node.model';
+import { WorkPackageLinkActionTypes, WorkPackageLinkActionsUnion } from '@app/workpackage/store/actions/workpackage-link.actions';
 
 export interface State {
   zoomLevel: number;
@@ -26,10 +27,10 @@ export interface State {
 export const initialState: State = {
   zoomLevel: 3,
   viewLevel: 1,
-  entities: null,
+  entities: [],
   selectedNode: null,
   selectedNodeLink: null,
-  links: null,
+  links: [],
   error: null,
   selectedWorkpackages: []
 };
@@ -41,6 +42,7 @@ export function reducer(
     | NodeActionsUnion
     | WorkpackageActionsUnion
     | WorkPackageNodeActionsUnion
+    | WorkPackageLinkActionsUnion
 ): State {
   switch (action.type) {
     case WorkpackageActionTypes.SelectWorkpackage: {
@@ -79,6 +81,42 @@ export function reducer(
       return {
         ...state,
         error: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess: {
+      return {
+        ...state,
+        entities: state.entities.map(entity =>
+          entity.id === action.payload.data.id
+            ? { ...entity, ...action.payload.data }
+            : entity
+        )
+      };
+    }
+
+    case WorkPackageNodeActionTypes.UpdateWorkPackageNodeFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+    case WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess: {
+      return {
+        ...state,
+        links: state.links.map(link =>
+          link.id === action.payload.data.id
+            ? { ...link, ...action.payload.data }
+            : link
+        )
+      };
+    }
+
+    case WorkPackageLinkActionTypes.UpdateWorkPackageLinkFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
       };
     }
 

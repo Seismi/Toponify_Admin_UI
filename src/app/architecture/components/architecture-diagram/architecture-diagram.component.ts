@@ -310,6 +310,11 @@ export class ArchitectureDiagramComponent
     this.diagramLevelService.changeLevel(this.diagram, this.level);
   }
 
+  // Call when you want to select a node
+  selectNode(id: string): void {
+    this.diagram.select(this.diagram.findPartForKey(id));
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes.showGrid) {
       this.diagram.grid.visible = this.showGrid;
