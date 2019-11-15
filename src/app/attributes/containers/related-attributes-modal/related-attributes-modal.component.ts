@@ -26,20 +26,20 @@ export class RelatedAttributesModalComponent implements OnInit {
       this.attribute = data.attribute;
     }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.store.dispatch(new LoadAttributes());
     this.attributes$ = this.store.pipe(select(getAttributeEntities));
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.dialogRef.close({ attribute: this.attribute });
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 
-  onSelectAttribute(attribute: AttributeEntity) {
+  onSelectAttribute(attribute: AttributeEntity): void {
     this.attribute = attribute;
   }
 

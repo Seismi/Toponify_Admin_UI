@@ -30,15 +30,15 @@ export class RelatedAttributeTableComponent {
 
   @Output() selectRelatedAttribute = new EventEmitter<string>();
 
-  onAdd() {
+  onAdd(): void {
     this.addRelatedAttribute.emit();
   }
 
-  onDelete() {
+  onDelete(): void {
     this.deleteRelatedAttribute.emit();
   }
 
-  onSelect(relatedAttributeId: string) {
+  onSelect(relatedAttributeId: string): void {
     this.selectRelatedAttribute.emit(relatedAttributeId);
   }
 

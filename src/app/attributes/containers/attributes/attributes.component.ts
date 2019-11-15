@@ -23,7 +23,7 @@ export class AttributesComponent implements OnInit {
 	public attributes: Subscription;
 	public attribute: AttributeEntity[];
 	public workpackage$: Observable<WorkPackageEntity[]>;
-	public hideTab = true;
+	public hideTab: boolean = true;
 	public selectedLeftTab: number;
 	public showOrHidePane: boolean;
 	public subscriptions: Subscription[] = [];
@@ -60,42 +60,42 @@ export class AttributesComponent implements OnInit {
 		this.subscriptions.forEach(sub => sub.unsubscribe());
 	}
 
-	setWorkPackage(workpackageIds: string[] = []) {
+	setWorkPackage(workpackageIds: string[] = []): void {
 		const queryParams = {
 			workPackageQuery: workpackageIds
 		};
 		this.store.dispatch(new LoadAttributes(queryParams));
 	}
 
-	get categoryTableData() {
+	get categoryTableData(): AttributeEntity[] {
 		return this.attribute;
 	}
 
-	onSelectAttribute(entry: AttributeEntity) {
+	onSelectAttribute(entry: AttributeEntity): void {
 		this.router.navigate(['/attributes-and-rules', entry.id]);
 	}
 
-	onSelectWorkPackage(id: string) {
+	onSelectWorkPackage(id: string): void {
 		this.workPackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
 	}
 
-	openLeftTab(index: number) {
+	openLeftTab(index: number): void {
 		this.selectedLeftTab = index;
 		if (this.selectedLeftTab === index) {
 			this.showOrHidePane = true;
 		}
 	}
 
-	hideLeftPane() {
+	hideLeftPane(): void {
 		this.showOrHidePane = false;
 	}
 
-	onSelectEditWorkpackage(workpackage: any) {
+	onSelectEditWorkpackage(workpackage: any): void {
     this.workpackageId = workpackage.id;
     this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
 	}
 	
-	onAdd() {
+	onAdd(): void {
     const dialogRef = this.dialog.open(AttributeModalComponent, {
       disableClose: false, 
       width: '500px'

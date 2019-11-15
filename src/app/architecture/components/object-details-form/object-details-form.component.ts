@@ -70,7 +70,7 @@ export class ObjectDetailsFormComponent {
     this.addOwner.emit();
   }
 
-  onSelectOwner(ownerId: string) {
+  onSelectOwner(ownerId: string): void {
     this.selectOwner.emit(ownerId);
   }
 
@@ -78,15 +78,15 @@ export class ObjectDetailsFormComponent {
     this.deleteOwner.emit();
   }
 
-  onAddDescendant() {
+  onAddDescendant(): void {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(id: string) {
+  onDeleteDescendant(id: string): void {
     this.deleteDescendant.emit(id);
   }
 
-  onSelectRelatedAttribute(relatedAttributeId: string) {
+  onSelectRelatedAttribute(relatedAttributeId: string): void {
     this.selectRelatedAttribute.emit(relatedAttributeId);
   }
 

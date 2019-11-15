@@ -28,11 +28,11 @@ export class PropertiesTableInAttributesPageComponent {
   @Output() editProperty = new EventEmitter<CustomPropertiesEntity>();
   @Output() deleteProperty = new EventEmitter<CustomPropertiesEntity>();
 
-  onEdit(property: CustomPropertiesEntity) {
+  onEdit(property: CustomPropertiesEntity): void {
     this.editProperty.emit(property);
   }
 
-  onDelete(property: CustomPropertiesEntity) {
+  onDelete(property: CustomPropertiesEntity): void {
     this.deleteProperty.emit(property);
   }
   

@@ -21,7 +21,7 @@ export class AttributesListComponent {
 
   @Output() selectAttribute = new EventEmitter<AttributeEntity>();
 
-  onSelect(attribute: AttributeEntity) {
+  onSelect(attribute: AttributeEntity): void {
     this.selectedRowIndex = attribute.id;
     this.selectAttribute.emit(attribute);
   }

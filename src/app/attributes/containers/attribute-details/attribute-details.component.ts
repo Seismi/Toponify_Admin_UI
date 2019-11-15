@@ -78,7 +78,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     }));
   }
 
-  setWorkPackage(workpackageIds: string[] = []) {
+  setWorkPackage(workpackageIds: string[] = []): void {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
@@ -93,22 +93,22 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  openRightTab(index: number) {
+  openRightTab(index: number): void {
     this.selectedRightTab = index;
     if(this.selectedRightTab === index) {
       this.showOrHideRightPane = false;
     }
   }
 
-  onHideRightPane() {
+  onHideRightPane(): void {
     this.showOrHideRightPane = true;
   }
 
-  onEditDetails() {
+  onEditDetails(): void {
     this.isEditable = true;
   }
 
-  onCancelEdit() {
+  onCancelEdit(): void {
     this.isEditable = false;
     this.selectedOwner = false;
     this.selectedOwnerIndex = null;
@@ -116,7 +116,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     this.selectedRelatedIndex = null;
   }
 
-  onSaveAttribute() {
+  onSaveAttribute(): void {
     this.isEditable = false;
     this.selectedOwner = false;
     this.selectedOwnerIndex = null;
@@ -138,7 +138,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     }))
   }
 
-  onDeleteAttribute() {
+  onDeleteAttribute(): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -156,12 +156,12 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectOwner(ownerId: string) {
+  onSelectOwner(ownerId: string): void {
     this.selectedOwnerIndex = ownerId;
     this.selectedOwner = true;
   }
 
-  onAddOwner() {
+  onAddOwner(): void {
     const dialogRef = this.dialog.open(OwnersModalComponent, {
       disableClose: false,
       width: '500px'
@@ -179,7 +179,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner() {
+  onDeleteOwner(): void {
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -200,7 +200,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEditProperty(property: CustomPropertiesEntity) {
+  onEditProperty(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
@@ -223,7 +223,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteProperty(property: CustomPropertiesEntity) {
+  onDeleteProperty(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -245,13 +245,13 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectRelatedAttribute(relatedAttributeId: string) {
+  onSelectRelatedAttribute(relatedAttributeId: string): void {
     this.relatedAttributeId = relatedAttributeId;
     this.selectedRelatedIndex = relatedAttributeId;
     this.selectAttribute = true;
   }
 
-  onAddRelatedAttribute() {
+  onAddRelatedAttribute(): void {
     const dialogRef = this.dialog.open(RelatedAttributesModalComponent, {
       disableClose: false,
       width: '500px'
@@ -268,7 +268,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteRelatedAttribute() {
+  onDeleteRelatedAttribute(): void {
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
