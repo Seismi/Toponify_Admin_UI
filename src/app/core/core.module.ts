@@ -42,6 +42,7 @@ import { reducer } from '../core/store/reducers/search.reducer';
 import { SearchEffects } from './store/effects/search.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeNameComponent } from './layout/header/node-name/node-name.component';
+import { RouteEffects } from '@app/core/store/effects/route.effects';
 
 @NgModule({
   imports: [
@@ -62,7 +63,7 @@ import { NodeNameComponent } from './layout/header/node-name/node-name.component
     MdePopoverModule,
     MatSelectModule,
     StoreModule.forFeature('searchFeature', reducer),
-    EffectsModule.forFeature([SearchEffects])
+    EffectsModule.forFeature([SearchEffects, RouteEffects])
   ],
   exports: [
     MainLayoutComponent,
