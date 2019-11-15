@@ -1181,7 +1181,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramLevelService.changeLevelWithFilter(null, { data: node } as any);
   }
 
-  realignTabUnderline() { 
+  realignTabUnderline(): void {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
   }
 

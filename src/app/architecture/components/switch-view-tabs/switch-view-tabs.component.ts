@@ -17,7 +17,7 @@ export class SwitchViewTabsComponent {
 
   @Output() viewChange = new EventEmitter<ArchitectureView>();
 
-  onTabClick(event: MatTabChangeEvent) {
+  onTabClick(event: MatTabChangeEvent): void {
     this.viewChange.emit(event.index);
   }
 
