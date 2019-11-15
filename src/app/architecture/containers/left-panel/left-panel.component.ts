@@ -41,16 +41,16 @@ export class LeftPanelComponent {
 
   @Output() addLayout = new EventEmitter<void>();
 
-  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }) {
+  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }): void {
     this.displayOptionsChangedEvent.emit({ event, option });
   }
 
   // FIXME: set proper type of workpackage
-  onSetWorkPackageEditMode(workpackage: WorkPackageEntity) {
+  onSetWorkPackageEditMode(workpackage: WorkPackageEntity): void {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectWorkPackage(id: string) {
+  onSelectWorkPackage(id: string): void {
     this.selectWorkPackage.emit(id);
   }
 
@@ -58,16 +58,16 @@ export class LeftPanelComponent {
     this.selectColour.emit(event);
   }
 
-  onTabClick(event: MatTabChangeEvent) {
+  onTabClick(event: MatTabChangeEvent): void {
     this.tabClick.emit(event.index);
     this.realignTabUnderline();
   }
 
-  onHideLeftPane() {
+  onHideLeftPane(): void {
     this.hideLeftPane.emit();
   }
 
-  onAddLayout() {
+  onAddLayout(): void {
     this.addLayout.emit();
   }
 

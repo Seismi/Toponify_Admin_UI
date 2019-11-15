@@ -1199,7 +1199,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
   }
 
-  onAddLayout() {
+  onAddLayout(): void {
     this.dialog.open(LayoutModalComponent, {
       disableClose: false,
       width: '500px',
