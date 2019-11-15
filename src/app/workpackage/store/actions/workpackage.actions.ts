@@ -196,12 +196,7 @@ export class SetWorkpackageDisplayColour implements Action {
 
 export class SetWorkpackageEditMode implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageEditMode;
-  constructor(public payload: { id: string }) { }
-}
-
-export class SetWorkpackageSelected implements Action {
-  readonly type = WorkPackageActionTypes.SetWorkpackageSelected;
-  constructor(public payload: { workpackageId: string }) { }
+  constructor(public payload: { id: string, newState: boolean}) { }
 }
 
 export class SetSelectedWorkPackages implements Action {
@@ -398,7 +393,6 @@ export type WorkPackageActionsUnion =
   | AddOwnerFailure
   | SetWorkpackageDisplayColour
   | SetWorkpackageEditMode
-  | SetWorkpackageSelected
   | AddObjective
   | AddObjectiveSuccess
   | AddObjectiveFailure

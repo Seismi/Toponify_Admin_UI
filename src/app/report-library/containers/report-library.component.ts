@@ -10,8 +10,7 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
-  SetWorkpackageEditMode,
-  SetWorkpackageSelected
+  SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   getEditWorkpackages,
@@ -97,7 +96,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   }
 
   onSelectReport(row: ReportLibrary) {
-    this.router.navigate(['report-library', row.id], {queryParamsHandling: 'preserve' });
+    this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
   }
 
   openLeftTab(index: number) {
@@ -138,7 +137,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
         }
         this.routerStore.dispatch(new UpdateQueryParams(params));
       });
-    this.workPackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: selection.id }));
   }
 
   onSelectEditWorkpackage(workpackage: any) {
@@ -148,7 +146,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     } else {
       this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
     }
-    this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
+    this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
   onAddReport() {

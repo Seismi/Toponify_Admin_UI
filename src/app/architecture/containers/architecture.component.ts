@@ -61,8 +61,7 @@ import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode,
-  SetWorkpackageSelected
+  SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
@@ -302,31 +301,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subscriptions.push(
-      fromEvent(window, 'popstate').subscribe(() => {
-        // setTimeout for filterService to update filters
-        setTimeout(() => {
-          this.routerStore
-            .select(getQueryParams)
-            .pipe(take(1))
-            .subscribe(params => {
-              let filterWorkpackages: string[];
-              if (typeof params.workpackages === 'string') {
-                filterWorkpackages = [params.workpackages];
-              } else {
-                filterWorkpackages = params.workpackages ? params.workpackages : [];
-              }
-              const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
-              const diff = filterWorkpackages
-                .filter(x => !selectedWorkpackagesIds.includes(x))
-                .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
-              diff.forEach(id => {
-                this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
-              });
-            });
-        });
-      })
-    );
+    // this.subscriptions.push(
+    //   fromEvent(window, 'popstate').subscribe(() => {
+    //     // setTimeout for filterService to update filters
+    //     setTimeout(() => {
+    //       this.routerStore
+    //         .select(getQueryParams)
+    //         .pipe(take(1))
+    //         .subscribe(params => {
+    //           let filterWorkpackages: string[];
+    //           if (typeof params.workpackages === 'string') {
+    //             filterWorkpackages = [params.workpackages];
+    //           } else {
+    //             filterWorkpackages = params.workpackages ? params.workpackages : [];
+    //           }
+    //           const selectedWorkpackagesIds = this.selectedWorkpackages.map(wp => wp.id);
+    //           const diff = filterWorkpackages
+    //             .filter(x => !selectedWorkpackagesIds.includes(x))
+    //             .concat(selectedWorkpackagesIds.filter(x => !filterWorkpackages.includes(x)));
+    //           diff.forEach(id => {
+    //              this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+    //           });
+    //         });
+    //     });
+    //   })
+    // );
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
@@ -344,23 +343,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.scopeStore.dispatch(new LoadScope(scope));
         } else {
           this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
-        }
-      });
-
-    this.routerStore
-      .select(getWorkPackagesQueryParams)
-      .pipe(take(1))
-      .subscribe(workPackages => {
-        if (workPackages && Array.isArray(workPackages)) {
-          workPackages.forEach(id => {
-            if (id && typeof id === 'string') {
-              this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
-            }
-          });
-        } else {
-          if (typeof workPackages === 'string') {
-            this.workpackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: workPackages }));
-          }
         }
       });
 
@@ -884,7 +866,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     } else {
       this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
     }
-    this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
+    this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
   onSelectScope(id) {

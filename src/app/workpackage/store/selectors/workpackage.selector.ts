@@ -9,7 +9,9 @@ export const getWorkPackageEntities = createSelector(
     const wa = state.avaialabilities.find(availability => availability.id === entity.id);
     const newEntity = {
       ...entity,
-      ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable  })
+      ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable  }),
+      selected: state.selectedWorkPackageIds.some(id => id === entity.id),
+      edit: entity.id === state.editId
     };
     return newEntity;
   })

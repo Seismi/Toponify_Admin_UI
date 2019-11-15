@@ -10,7 +10,7 @@ export interface State {
   links: Links;
   loading: boolean;
   selectedWorkPackage: WorkPackageDetail;
-  preselectedWorkPackageIds: string[];
+  selectedWorkPackageIds: string[];
   error?: HttpErrorResponse | { message: string };
 }
 
@@ -22,30 +22,17 @@ export const initialState: State = {
   links: null,
   loading: false,
   selectedWorkPackage: null,
-  preselectedWorkPackageIds: [],
+  selectedWorkPackageIds: [],
   error: null
 };
 
 export function reducer(state = initialState, action: WorkPackageActionsUnion): State {
   switch (action.type) {
     case WorkPackageActionTypes.SetWorkpackageEditMode: {
-      const { id } = action.payload;
+      const { id, newState } = action.payload;
       return {
         ...state,
-        editId: id,
-        entities: state.entities.map(item => {
-          if (item.id === id) {
-            return {
-              ...item,
-              edit: !item.edit
-            };
-          } else {
-            return {
-              ...item,
-              edit: false,
-            };
-          }
-        })
+        editId: newState ? id : null
       };
     }
 
@@ -86,39 +73,22 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       } else {
         return {
           ...state,
-          preselectedWorkPackageIds: [...state.preselectedWorkPackageIds, workpackageId]
+          selectedWorkPackageIds: [...state.selectedWorkPackageIds, workpackageId]
         };
       }
     }
 
     case WorkPackageActionTypes.SetSelectedWorkPackages: {
       const { workPackages } = action.payload;
-      if (state.entities.length > 0) {
-        let resetEdit = true;
-        if (state.editId && workPackages.length === 1 && workPackages[0] === state.editId) {
-          resetEdit = false;
-        }
-        return {
-          ...state,
-          loading: true,
-          entities: state.entities.map(item => {
-            if (workPackages.some(id => item.id === id)) {
-              return {
-                ...item,
-                selected: true,
-                edit: resetEdit ? false : item.edit
-              };
-            } else {
-              return { ...item, selected: false, edit: false };
-            }
-          })
-        };
-      } else {
-        return {
-          ...state,
-          preselectedWorkPackageIds: [...workPackages]
-        };
+      let resetEdit = true;
+      if (state.editId && workPackages.length === 1 && workPackages[0] === state.editId) {
+        resetEdit = false;
       }
+      return {
+        ...state,
+        selectedWorkPackageIds: [...workPackages],
+        editId: resetEdit ? null : state.editId
+      };
     }
 
     case WorkPackageActionTypes.GetWorkpackageAvailability: {
@@ -152,27 +122,13 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesSuccess: {
-      if (state.preselectedWorkPackageIds.length) {
-        const entities = action.payload.data;
-        return {
-          ...state,
-          entities: entities.map(entity => ({
-            ...entity,
-            selected: state.preselectedWorkPackageIds.some(id => id === entity.id)
-          })),
-          links: action.payload.links,
-          page: action.payload.page,
-          loading: false
-        };
-      } else {
-        return {
-          ...state,
-          entities: action.payload.data,
-          links: action.payload.links,
-          page: action.payload.page,
-          loading: false
-        };
-      }
+      return {
+        ...state,
+        entities: action.payload.data,
+        links: action.payload.links,
+        page: action.payload.page,
+        loading: false
+      };
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesFailure: {
