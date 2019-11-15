@@ -213,4 +213,20 @@ export class NodeEffects {
       }
     )
   );
+
+  @Effect()
+  deleteCustomProperty$ = this.actions$.pipe(
+    ofType<NodeActions.DeleteCustomProperty>(NodeActionTypes.DeleteCustomProperty),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeId: string, customPropertyId: string }) => {
+      return this.nodeService.deleteCustomPropertyValues(
+        payload.workPackageId, 
+        payload.nodeId, 
+        payload.customPropertyId
+        ).pipe(
+          map(response => new NodeActions.DeleteCustomPropertySuccess(response.data)),
+          catchError((error: Error) => of(new NodeActions.DeleteCustomPropertyFailure(error)))
+        )
+    })
+  )
 }

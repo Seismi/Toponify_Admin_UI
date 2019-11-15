@@ -7,7 +7,6 @@ import { getNodeEntitiesBy } from '@app/architecture/store/selectors/node.select
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { FilterService } from '@app/architecture/services/filter.service';
 
 @Component({
   selector: 'smi-descendants-modal',
@@ -24,7 +23,6 @@ export class DescendantsModalComponent implements OnInit {
 
   constructor(
     private store: Store<ArchitectureState>,
-    private filterService: FilterService,
     public dialogRef: MatDialogRef<DescendantsModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {currentLevel: Level}) {
   }
