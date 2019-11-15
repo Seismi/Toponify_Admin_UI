@@ -5,12 +5,15 @@ import 'rxjs/add/observable/of';
 import { WorkPackageService } from './workpackage.service';
 import {
   WorkpackageNode,
-  WorkpackageNodeDescendant,
   WorkpackageNodeCustomProperty,
   WorkPackageNodeScopesApiResponse,
-  WorkPackageNodeScopeApiResponse
+  WorkPackageNodeScopeApiResponse,
+  WorkPackageNodeFindPotential
 } from '../store/models/workpackage.models';
 import { HttpParams } from '@angular/common/http';
+import { WorkPackageNodeDescendantsApiResponse, DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { NodesApiResponse } from '@app/nodes/store/models/node.model';
+
 
 export interface GetWorkPackageNodeScopesQueryParams {
   workPackageQuery?: string[];
@@ -55,25 +58,18 @@ export class WorkPackageNodesService extends WorkPackageService {
    * Get the descendants of an architecture node
    * FIXME: missing types
    */
+  findPotentialWorkPackageNodes(workPackageId: string, nodeId: string, data: WorkPackageNodeFindPotential): Observable<WorkPackageNodeDescendantsApiResponse> {
+    return this.http.post<WorkPackageNodeDescendantsApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/children/find/potential/`, {data: data}, this.httpOptions);
+  }
+
+
   getNodeDescendants(workPackageId: string, nodeId: string): Observable<any> {
     return this.http.get<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants`);
   }
 
-  /**
-   * Add a dependency to a node
-   * FIXME: missing types
-   */
-  addNodeDescendant(
-    workPackageId: string,
-    nodeId: string,
-    descendantNodeId: string,
-    data: WorkpackageNodeDescendant
-  ): Observable<any> {
-    return this.http.post<any>(
-      `/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}`,
-      { data },
-      this.httpOptions
-    );
+
+  addNodeDescendant(workPackageId: string, nodeId: string, data: DescendantsEntity): Observable<NodesApiResponse> {
+    return this.http.post<NodesApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/children`, {data: data}, this.httpOptions);
   }
 
   /**

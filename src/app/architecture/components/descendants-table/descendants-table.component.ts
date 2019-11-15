@@ -18,23 +18,18 @@ export class DescendantsTableComponent {
     this.dataSource = new MatTableDataSource<DescendantsEntity>(data);
   }
 
-  public selectDescendantId: string;
   public displayedColumns: string[] = ['name'];
   public dataSource: MatTableDataSource<DescendantsEntity>;
 
   @Output() addDescendant = new EventEmitter<void>();
 
-  @Output() deleteDescendant = new EventEmitter<string>();
+  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
-  onAdd() {
+  onAdd(): void {
     this.addDescendant.emit();
   }
 
-  onSelect(descendantId: string) {
-    this.selectDescendantId = descendantId;
-  }
-
-  onDelete() {
-    this.deleteDescendant.emit(this.selectDescendantId);
+  onDelete(descendant: DescendantsEntity): void {
+    this.deleteDescendant.emit(descendant);
   }
 }

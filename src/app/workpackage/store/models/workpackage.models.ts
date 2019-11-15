@@ -239,3 +239,12 @@ export interface WorkPackageNodeScopes {
   removeFromButton: boolean;
   availableForAddition: boolean;
 }
+
+export interface WorkPackageNodeFindPotential {
+  childrenOf: ChildrenOf;
+}
+
+interface ChildrenOf {
+  id: string;
+}
+

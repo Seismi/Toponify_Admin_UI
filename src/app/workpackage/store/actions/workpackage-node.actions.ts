@@ -3,6 +3,8 @@ import { Action } from '@ngrx/store';
 import { WorkPackageNodeScopes, WorkPackageNodeScopesApiResponse, WorkPackageNodeScopeApiResponse } from '../models/workpackage.models';
 import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
 import { AddScopeApiResponse, ScopeDetails } from '@app/scope/store/models/scope.model';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { WorkPackageNodeFindPotential } from '../models/workpackage.models';
 
 export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
@@ -51,7 +53,12 @@ export enum WorkPackageNodeActionTypes {
 
   DeleteWorkPackageNodeScope = '[Scope] Delete Node Scope',
   DeleteWorkPackageNodeScopeSuccess = '[Scope] Delete Node Scope Success',
-  DeleteWorkPackageNodeScopeFailure = '[Scope] Delete Node Scope Failure'
+  DeleteWorkPackageNodeScopeFailure = '[Scope] Delete Node Scope Failure',
+
+  FindPotentialWorkpackageNodes = '[WorkPackage] Find Potential Workpackage Nodes',
+  FindPotentialWorkpackageNodesSuccess = '[WorkPackage] Find Potential Workpackage Nodes Success',
+  FindPotentialWorkpackageNodesFailure = '[WorkPackage] Find Potential Workpackage Nodes Failure'
+
 }
 
 export class AddWorkPackageNode implements Action {
@@ -71,12 +78,12 @@ export class AddWorkPackageNodeFailure implements Action {
 
 export class AddWorkPackageNodeDescendant implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant;
-  constructor(public payload: {workpackageId: string, nodeId: string, node: any}) {}
+  constructor(public payload: { workPackageId: string, nodeId: string, data: DescendantsEntity }) {}
 }
 
 export class AddWorkPackageNodeDescendantSuccess implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: DescendantsEntity) {}
 }
 
 export class AddWorkPackageNodeDescendantFailure implements Action {
@@ -91,7 +98,7 @@ export class DeleteWorkPackageNodeDescendant implements Action {
 
 export class DeleteWorkPackageNodeDescendantSuccess implements Action {
   readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendantSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: DescendantsEntity) {}
 }
 
 export class DeleteWorkPackageNodeDescendantFailure implements Action {
@@ -234,6 +241,21 @@ export class DeleteWorkPackageNodeScopeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class FindPotentialWorkpackageNodes implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes;
+  constructor(public payload: { workPackageId: string, nodeId: string, data: WorkPackageNodeFindPotential }) { }
+}
+
+export class FindPotentialWorkpackageNodesSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesSuccess;
+  constructor(public payload: DescendantsEntity[]) { }
+}
+
+export class FindPotentialWorkpackageNodesFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
@@ -270,5 +292,8 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNodeScopeFailure
   | DeleteWorkPackageNodeScope
   | DeleteWorkPackageNodeScopeSuccess
-  | DeleteWorkPackageNodeScopeFailure;
+  | DeleteWorkPackageNodeScopeFailure
+  | FindPotentialWorkpackageNodes
+  | FindPotentialWorkpackageNodesSuccess
+  | FindPotentialWorkpackageNodesFailure;
 

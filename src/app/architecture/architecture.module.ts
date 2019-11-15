@@ -21,7 +21,6 @@ import {
   MatTabsModule,
   MatTooltipModule
 } from '@angular/material';
-import { FilterService } from './services/filter.service';
 import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeService } from '@app/architecture/services/node.service';
@@ -162,7 +161,6 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
     DiagramTemplatesService,
     DiagramLevelService,
     DiagramListenersService,
-    FilterService,
     NodeService,
     WorkPackageService
   ]

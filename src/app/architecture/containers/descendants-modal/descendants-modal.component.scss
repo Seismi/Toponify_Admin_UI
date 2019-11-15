@@ -12,21 +12,6 @@ button:nth-child(1){
   background-color: #ddd;
 }
 
-table {
+.mat-form-field {
   width: 100%;
-  border: solid 1px #ddd;
-  margin-bottom: 15px;
-}
-
-tr.mat-row {
-  cursor: pointer;
-}
-
-.highlight {
-  background-color: #efefef;
-}
-
-.table-container {
-  max-height: calc(100vh - 200px);
-  overflow: auto;
 }

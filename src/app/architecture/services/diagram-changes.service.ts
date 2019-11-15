@@ -8,87 +8,98 @@ import * as go from 'gojs';
 import { BehaviorSubject } from 'rxjs';
 import { State as WorkPackageState } from '../../workpackage/store/reducers/workpackage.reducer';
 import { DiagramLevelService, Level } from './diagram-level.service';
-import { FilterService } from './filter.service';
 import { MatDialog } from '@angular/material';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
+import { RouterReducerState } from '@ngrx/router-store';
+import { RouterStateUrl } from '@app/core/store';
+import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
+import { take } from 'rxjs/operators';
 
 const $ = go.GraphObject.make;
 
 @Injectable()
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
+  private currentLevel: Level;
 
   workpackages = [];
 
   constructor(
     public diagramLevelService: DiagramLevelService,
-    public filterService: FilterService,
+    private store: Store<RouterReducerState<RouterStateUrl>>,
     public dialog: MatDialog,
     private workpackageStore: Store<WorkPackageState>
   ) {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
+    this.store.select(getFilterLevelQueryParams).subscribe(level => this.currentLevel = level);
   }
 
   // Add newly created nodes to the back end
   //  -event
   //    -subject: set of nodes to add to the database
   createObjects(event: go.DiagramEvent): void {
-    const { id: nodeId } = this.filterService.getFilter();
+    this.store
+      .select(getQueryParams)
+      .pipe(take(1))
+      .subscribe(params => {
+        const { id: nodeId, scope } = params;
 
-    const shortEditWorkpackage = {
-      id: this.workpackages[0].id,
-      name: this.workpackages[0].name,
-      description: this.workpackages[0].description,
-      hasErrors: this.workpackages[0].hasErrors,
-      status: this.workpackages[0].status
-    };
+        const shortEditWorkpackage = {
+          id: this.workpackages[0].id,
+          name: this.workpackages[0].name,
+          description: this.workpackages[0].description,
+          hasErrors: this.workpackages[0].hasErrors,
+          status: this.workpackages[0].status
+        };
 
-    event.subject.each((part: go.Part) => {
-      // Set workpackage currently being edited as "impacted by" workpackage for the part
-      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
+        event.subject.each((part: go.Part) => {
+          // Set workpackage currently being edited as "impacted by" workpackage for the part
+          event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
-      // Only add nodes here as new links are temporary until connected
-      if (part instanceof go.Node) {
-        const node = Object.assign({}, part.data);
-        node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
-        const dialogRef = this.dialog.open(EditNameModalComponent, {
-          disableClose: false,
-          width: 'auto',
-          data: {
-            name: node.name
-          }
-        });
+          // Only add nodes here as new links are temporary until connected
+          if (part instanceof go.Node) {
+            const node = Object.assign({}, part.data);
+            node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
+            const dialogRef = this.dialog.open(EditNameModalComponent, {
+              disableClose: false,
+              width: 'auto',
+              data: {
+                name: node.name
+              }
+            });
 
-        dialogRef.afterClosed().subscribe((data: { name: string }) => {
-          if (data && data.name) {
-            node.name = data.name;
-          }
-          const { scope } = this.filterService.getFilter();
-          this.workpackages.forEach(workpackage => {
-            if (nodeId) {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageNode({
-                  workpackageId: workpackage.id,
-                  node: {
-                    ...node,
-                    parentId: nodeId
-                  },
-                  scope
-                })
-              );
-            } else {
-              this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node, scope }));
+            dialogRef.afterClosed().subscribe((data: { name: string }) => {
+              if (data && data.name) {
+                node.name = data.name;
+              }
+              this.workpackages.forEach(workpackage => {
+                if (nodeId) {
+                  this.workpackageStore.dispatch(
+                    new AddWorkPackageNode({
+                      workpackageId: workpackage.id,
+                      node: {
+                        ...node,
+                        parentId: nodeId
+                      },
+                      scope
+                    })
+                  );
+                } else {
+                  this.workpackageStore.dispatch(
+                    new AddWorkPackageNode({ workpackageId: workpackage.id, node, scope })
+                  );
+                }
+              });
+            });
+          } else {
+            if ('displayId' in part.data) {
+              part.data.id = part.data.displayId;
             }
-          });
+          }
         });
-      } else {
-        if ('displayId' in part.data) {
-          part.data.id = part.data.displayId;
-        }
-      }
-    });
+      });
   }
 
   // Updates the properties associated with a node or link
@@ -164,10 +175,9 @@ export class DiagramChangesService {
   //  -event
   //    -subject: set of parts to update the positions of
   updatePosition(event: any): void {
-    const currentLevel = this.filterService.filter.getValue().filterLevel;
 
     // Do not update positions for map view
-    if (currentLevel.endsWith('map')) {
+    if (this.currentLevel.endsWith('map')) {
       return;
     }
 
@@ -238,7 +248,7 @@ export class DiagramChangesService {
     }
 
     // Redo layout for node usage view after updating display options
-    if (this.filterService.getFilter().filterLevel === Level.usage) {
+    if (this.currentLevel === Level.usage) {
       diagram.layout.isValidLayout = false;
     } else {
       // Update the route of links after display change
@@ -260,21 +270,19 @@ export class DiagramChangesService {
     const relinkingTool = event.diagram.toolManager.relinkingTool;
 
     const link = event.subject;
-    const currentLevel = this.filterService.filter.getValue().filterLevel;
 
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
-
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
 
       // TEMPORARY - condition to prevent error while impactedByWorkPackages missing from nodeLink components response
-      if (!currentLevel.endsWith('map')) {
+      if (!this.currentLevel.endsWith('map')) {
         // Add currently editing workpackage to array of workpackages impacted by if not there already
         if (
           link.data.impactedByWorkPackages.every(
-            function (workpackage) {
+            function(workpackage) {
               return workpackage.id !== this.workpackages[0].id;
             }.bind(this)
           )
@@ -390,6 +398,64 @@ export class DiagramChangesService {
     const linkArray = links.filter(link => nodesIds.includes(link[sourceProp]) && nodesIds.includes(link[targetProp]));
 
     (diagram.model as go.GraphLinksModel).linkDataArray = JSON.parse(JSON.stringify(linkArray));
+
+    /* Check for any links that do not have a valid route between source and target nodes.
+       This can happen if the source or target nodes are moved in a work package where
+       the link no longer exists.
+    */
+    diagram.links.each(function(link) {
+
+      // Ignore links with no route set yet
+      if (link.points.count === 0) {return; }
+
+      // Only proceed if link is connected at both ends
+      if (link.fromNode && link.toNode) {
+
+        // Get bounding rectangles of the link's source and target node
+        const fromArea = link.fromNode.actualBounds.copy();
+        const toArea = link.toNode.actualBounds.copy();
+
+        // Inflate the rectangles slightly. This is necessary because the rectangle co-ordinates
+        //  and link point co-ordinates are stored to a differing number of decimal places.
+        fromArea.inflate(0.0000000001, 0.0000000001);
+        toArea.inflate(0.0000000001, 0.0000000001);
+
+        // Start and end points of the link
+        const linkStart = link.points.first();
+        const linkEnd = link.points.last();
+
+        // Determines how far the link's ends can be from the side of the connecting node's bounding rectangle
+        // before it is considered visually disconnected.
+        const error_tolerance = 3.5;
+
+        // Check link connects from a side of the source node
+        const fromSideConnected = fromArea.containsPoint(linkStart) &&
+          ['left', 'right', 'top', 'bottom']
+            .some(function(side) {
+              // Get appropriate co-ordinate for the current side
+              const coOrdinateVal = (side === 'left' || side === 'right') ? linkStart.x : linkStart.y;
+              // Check vertical or horizontal distance between the node side and link end point
+              return Math.abs(fromArea[side] - coOrdinateVal) <= error_tolerance;
+            });
+
+        // Check link connects to a side of the target node
+        const toSideConnected = toArea.containsPoint(linkEnd) &&
+          ['left', 'right', 'top', 'bottom']
+            .some(function(side) {
+              // Get appropriate co-ordinate for the current side
+              const coOrdinateVal = (side === 'left' || side === 'right') ? linkEnd.x : linkEnd.y;
+              // Check vertical or horizontal distance between the node side and link end point
+              return Math.abs(toArea[side] - coOrdinateVal) <= error_tolerance;
+            });
+
+        // Check if either end of the link not connected to a side of the corresponding node
+        if (!fromSideConnected || !toSideConnected) {
+          // Set link route to be recalculated
+          diagram.model.setDataProperty(link.data, 'updateRoute', true);
+          link.invalidateRoute();
+        }
+      }
+    });
 
     this.diagramLevelService.groupLayoutInitial = true;
 

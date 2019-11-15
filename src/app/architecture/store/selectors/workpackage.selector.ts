@@ -19,3 +19,9 @@ export const getNodeScopesAvailability = createSelector(
   getWorkpackageFeatureState,
   state => state.availableScopes
 );
+
+export const getPotentialWorkPackageNodes = createSelector(
+  getWorkpackageFeatureState,
+  state => state.descendants
+)
+
