@@ -19,9 +19,9 @@ export class SearchComponent implements OnInit {
 
   public input: string;
 
-  @ViewChildren('inp') inp;
+  @ViewChildren('inp') inp: any;
 
-  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent): void {
     if(this.toggleSearch === true && event.key === 'Escape') {
       this.toggleSearch = false;
       this.input = null;
@@ -30,24 +30,24 @@ export class SearchComponent implements OnInit {
 
   constructor(private searchStore: Store<SearchState>) {}
 
-  ngOnInit() {}
+  ngOnInit(): void {}
 
-  onSearch(text: string) {
+  onSearch(text: string): void {
     this.search(text);
   }
 
-  search(text: string) {
+  search(text: string): void {
     const queryParams = { text: text };
     this.searchStore.dispatch(new Search(queryParams));
     this.results$ = this.searchStore.pipe(select(getSearchResults));
   }
 
-  openSearch() {
+  openSearch(): void {
     this.toggleSearch = true;
     this.inp.first.nativeElement.focus();
   }
 
-  searchClose() {
+  searchClose(): void {
     this.toggleSearch = false;
   }
 
