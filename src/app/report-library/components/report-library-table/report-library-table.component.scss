@@ -1,5 +1,5 @@
 table {
-  width: 100%;
+  min-width: 100%;
 }
 
 .title {
@@ -21,4 +21,8 @@ tr.mat-row {
 
 .highlight {
   background-color: #efefef;
+}
+
+button {
+  margin-bottom: 25px;
 }

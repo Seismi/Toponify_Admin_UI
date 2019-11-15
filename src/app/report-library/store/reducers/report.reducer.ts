@@ -133,12 +133,64 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
     case ReportActionTypes.DeleteReportSuccess: {
       return {
         ...state,
-        entities: state.entities.filter(entity => entity.id !== action.payload),
+        selected: action.payload,
+        entities: state.entities.filter(entity => {
+          if (entity.id === state.selected.id) {
+            return action.payload
+          }
+          return entity
+        }),
         loading: false
       };
     }
 
     case ReportActionTypes.DeleteReportFail: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case ReportActionTypes.AddOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case ReportActionTypes.AddOwnerSuccess: {
+      return {
+        ...state,
+        selected: action.payload,
+        loading: false
+      };
+    }
+
+    case ReportActionTypes.AddOwnerFail: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case ReportActionTypes.DeleteOwner: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
+
+    case ReportActionTypes.DeleteOwnerSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selected: action.payload
+      };
+    }
+
+    case ReportActionTypes.DeleteOwnerFail: {
       return {
         ...state,
         error: action.payload,

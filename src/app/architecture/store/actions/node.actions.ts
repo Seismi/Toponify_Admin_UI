@@ -32,7 +32,10 @@ export enum NodeActionTypes {
   UpdateCustomProperty = '[Node] Update Custom Property',
   UpdateCustomPropertySuccess = '[Node] Update Custom Property Success',
   UpdateCustomPropertyFailure = '[Node] Update Custom Property Failure',
-  UpdateNodeDescendants = '[Node] Update Node Descendants'
+  UpdateNodeDescendants = '[Node] Update Node Descendants',
+  DeleteCustomProperty = '[Node] Delete Custom Property',
+  DeleteCustomPropertySuccess = '[Node] Delete Custom Property Success',
+  DeleteCustomPropertyFailure = '[Node] Delete Custom Property Failure',
 }
 
 export class LoadNodes implements Action {
@@ -182,6 +185,21 @@ export class UpdateNodeDescendants implements Action {
   constructor(public payload: { descendants: DescendantsEntity[]; nodeId: string }) {}
 }
 
+export class DeleteCustomProperty implements Action {
+  readonly type = NodeActionTypes.DeleteCustomProperty;
+  constructor(public payload: { workPackageId: string; nodeId: string; customPropertyId: string; }) {}
+}
+
+export class DeleteCustomPropertySuccess implements Action {
+  readonly type = NodeActionTypes.DeleteCustomPropertySuccess;
+  constructor(public payload: Node) {}
+}
+
+export class DeleteCustomPropertyFailure implements Action {
+  readonly type = NodeActionTypes.DeleteCustomPropertyFailure;
+  constructor(public payload: Error) {}
+}
+
 export type NodeActionsUnion =
   | LoadNodes
   | LoadNodesSuccess
@@ -210,4 +228,7 @@ export type NodeActionsUnion =
   | UpdateCustomProperty
   | UpdateCustomPropertySuccess
   | UpdateCustomPropertyFailure
-  | UpdateNodeDescendants;
+  | UpdateNodeDescendants
+  | DeleteCustomProperty
+  | DeleteCustomPropertySuccess
+  | DeleteCustomPropertyFailure;

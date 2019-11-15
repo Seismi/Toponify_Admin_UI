@@ -89,6 +89,23 @@ export interface RadioDetail {
   link?: (Link)[] | null;
   replyCount: number;
   replies?: (Replies)[] | null;
+  relatesTo: (RelatesTo)[] | null;
+}
+
+export interface RelatesTo {
+  workPackage: WorkPackage;
+  item?: Item;
+}
+
+interface WorkPackage {
+  id: string;
+  name?: string;
+}
+
+interface Item {
+  id: string;
+  itemType?: string;
+  name?: string;
 }
 
 export interface AssignedTo {
@@ -151,7 +168,9 @@ interface AddRadioOrReplyChanges {
   description?: string;
   assignedTo?: AssignedTo;
   author?: AuthorOrLastUpdatedBy;
-  target?: Target;
+  relatesTo?: (RelatesTo)[] | null;
+  actionBy?: string;
+  mitigation?: string;
 }
 
 // RADIO advanced search

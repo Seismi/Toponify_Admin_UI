@@ -14,6 +14,8 @@ import { ActionReducer, ActionReducerMap, MetaReducer, createFeatureSelector, cr
  */
 import { storeFreeze } from 'ngrx-store-freeze';
 import { environment } from 'src/environments/environment';
+import { routerReducer, RouterReducerState } from '@ngrx/router-store';
+import { Params } from '@angular/router';
 
 /**
  * As mentioned, we treat each reducer like a table in a database. This means
@@ -21,6 +23,13 @@ import { environment } from 'src/environments/environment';
  */
 export interface State {
   layout: fromLayout.LayoutState;
+  router:  RouterReducerState<RouterStateUrl>;
+}
+
+export interface RouterStateUrl {
+  url: string;
+  params: Params;
+  queryParams: Params;
 }
 
 /**
@@ -29,7 +38,8 @@ export interface State {
  * and the current or initial state and return a new immutable state.
  */
 export const reducers: ActionReducerMap<State> = {
-  layout: fromLayout.reducer
+  layout: fromLayout.reducer,
+  router: routerReducer
 };
 
 // console.log all actions

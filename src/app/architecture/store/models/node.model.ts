@@ -10,6 +10,10 @@ export interface CustomPropertyApiRequest {
   data: CustomPropertyValuesEntity;
 }
 
+export interface WorkPackageNodeDescendantsApiResponse {
+  data: (DescendantsEntity)[] | null;
+}
+
 export enum layers {
   system = 'system',
   dataSet = 'data set',
@@ -42,6 +46,13 @@ export class Node {
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
+  relatedRadioCounts: {
+    risks: number,
+    issues: number,
+    assumptions: number,
+    dependencies: number,
+    opportunities: number
+  };
   impactedByWorkPackages = [];
   tooltip?: string;
 

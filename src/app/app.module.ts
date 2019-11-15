@@ -13,6 +13,8 @@ import { AppRoutingModule } from './app.routing';
 import { AuthModule } from './auth/auth.module';
 import { HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/shared-service';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { CustomSerializer } from '@app/core/custom-serializer';
 
 @NgModule({
   imports: [
@@ -30,6 +32,9 @@ import { SharedService } from './services/shared-service';
       maxAge: 20 // Retains last 20 states
     }),
     EffectsModule.forRoot([]),
+    StoreRouterConnectingModule.forRoot({
+      serializer: CustomSerializer,
+    }),
   ],
   declarations: [
     AppComponent,

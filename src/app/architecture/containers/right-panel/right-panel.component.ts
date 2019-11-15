@@ -12,6 +12,7 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 import { AttributesEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
+import { RadioDetail } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -22,7 +23,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
-  @Input() descendants: DescendantsEntity;
+  @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
   @Input() isEditable = false;
@@ -76,9 +77,14 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output()
   editProperties = new EventEmitter<CustomPropertyValuesEntity>();
 
+  @Output()
+  deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
+
   @Output() addDescendant = new EventEmitter<void>();
 
-  @Output() deleteDescendant = new EventEmitter<string>();
+  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
+
+  @Output() openRadio = new EventEmitter<RadioDetail>();
 
 
   constructor(
@@ -153,12 +159,20 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.editProperties.emit(customProperty);
   }
 
+  onDeleteProperties(customProperty: CustomPropertyValuesEntity) {
+    this.deleteProperties.emit(customProperty);
+  }
+
   onAddDescendant() {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(id: string) {
-    this.deleteDescendant.emit(id);
+  onDeleteDescendant(descendant: DescendantsEntity): void {
+    this.deleteDescendant.emit(descendant);
+  }
+
+  onOpenRadio(radio: RadioDetail) {
+    this.openRadio.emit(radio);
   }
 
 }

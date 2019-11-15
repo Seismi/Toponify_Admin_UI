@@ -57,8 +57,19 @@ export class RadioComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.radio) {
-        this.store.dispatch(new AddRadioEntity({ data: data.radio }));
-        this.store.dispatch(new LoadRadios({}));
+        this.store.dispatch(new AddRadioEntity({ 
+          data: {
+            title: data.radio.title,
+            status: data.radio.status,
+            category: data.radio.category,
+            description: data.radio.description,
+            assignedTo: data.radio.assignedTo,
+            author: data.radio.author,
+            relatesTo: [{workPackage: {id: '00000000-0000-0000-0000-000000000000'}}],
+            actionBy: data.radio.actionBy,
+            mitigation: data.radio.mitigation
+          } 
+        }));
       }
     });
   }

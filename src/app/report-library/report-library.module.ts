@@ -11,7 +11,9 @@ import {
   MatPaginatorModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule,
+  MatSelectModule,
+  MatDialogModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -31,6 +33,8 @@ import { ReportReportingConceptsTableComponent } from './components/reporting-co
 import { RadioTableInReportsPageComponent } from './components/radio-table/radio-table.component';
 import { PropertiesTableInReportsPageComponent } from './components/properties-table/properties-table.component';
 import { WorkPackageTableInReportsPageComponent } from './components/workpackage-table/workpackage-table.component';
+import { ReportModalComponent } from './containers/report-modal/report-modal.component';
+import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
 
 @NgModule({
   imports: [
@@ -48,6 +52,8 @@ import { WorkPackageTableInReportsPageComponent } from './components/workpackage
     MatTabsModule,
     MatInputModule,
     MatIconModule,
+    MatSelectModule,
+    MatDialogModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
@@ -64,7 +70,13 @@ import { WorkPackageTableInReportsPageComponent } from './components/workpackage
     ReportReportingConceptsTableComponent,
     RadioTableInReportsPageComponent,
     PropertiesTableInReportsPageComponent,
-    WorkPackageTableInReportsPageComponent
+    WorkPackageTableInReportsPageComponent,
+    ReportModalComponent,
+    ReportDeleteModalComponent
+  ],
+  entryComponents: [
+    ReportModalComponent, 
+    ReportDeleteModalComponent
   ],
   providers: [ReportService]
 })

@@ -1,17 +1,3 @@
-.wrapper {
-  padding: 15px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-
-button {
-  margin-right: 8px;
-}
-
 .title {
   font-size: 13px;
   color: rgba(0, 0, 0, 0.54);
@@ -19,6 +5,18 @@ button {
   margin-top: 10px;
 }
 
+.mat-form-field {
+  width: 100%;
+}
+
+button {
+  margin-right: 8px;
+}
+
 .disabled {
   pointer-events: none;
+}
+
+.editable {
+  background-color: #fff;
 }

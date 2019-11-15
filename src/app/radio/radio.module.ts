@@ -69,7 +69,14 @@ import { NodeModule } from '@app/nodes/node.module';
         StoreModule.forFeature('radioFeature', reducer),
         EffectsModule.forFeature([ RadioEffects ])
     ],
-    exports: [RadioTableComponent],
+    exports: [
+        RadioTableComponent, 
+        RadioDetailsComponent, 
+        RadioPropertiesTabComponent, 
+        ReplyTextComponent, 
+        ChatBoxComponent,
+        RadioDetailComponent
+    ],
     declarations: [
         RadioComponent, 
         RadioRoutingComponent,
