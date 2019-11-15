@@ -51,6 +51,7 @@
         <smi-properties-tab
             [data]="properties"
             (editProperties)="onEditProperties($event)"
+            (deleteProperties)="onDeleteProperties($event)"
             [workPackageIsEditable]="workPackageIsEditable">
         </smi-properties-tab>
     </mat-tab>

@@ -75,6 +75,10 @@ export class NodeService {
     );
   }
 
+  deleteCustomPropertyValues(workPackageId: string, nodeId: string, customPropertyId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}/deleteRequest`, {});
+  }
+
   // FIXME: define missing types
   updateLayoutNodesLocation(layoutId: string, data: { id: string; locationCoordinates: string }): Observable<any> {
     return this.http.put<any>(`/layouts/${layoutId}/nodes/location`, { data: data }, httpOptions);

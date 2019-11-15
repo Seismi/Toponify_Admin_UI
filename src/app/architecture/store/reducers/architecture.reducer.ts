@@ -223,6 +223,26 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.DeleteCustomProperty: {
+      return {
+        ...state,
+      };
+    }
+
+    case NodeActionTypes.DeleteCustomPropertySuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case NodeActionTypes.DeleteCustomPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
     case NodeActionTypes.UpdateNodeDescendants: {
       const {nodeId, descendants} = <{descendants: DescendantsEntity[], nodeId: string}>action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
