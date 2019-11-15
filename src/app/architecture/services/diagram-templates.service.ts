@@ -1,19 +1,14 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {
-  layers,
-  nodeCategories
-} from '@app/architecture/store/models/node.model';
+import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import { Injectable } from '@angular/core';
-import {
-  CustomLink,
-  GojsCustomObjectsService,
-  updateShapeShadows,
-  customIcons
-} from './gojs-custom-objects.service';
-import { FilterService } from './filter.service';
+import { CustomLink, GojsCustomObjectsService, updateShapeShadows, customIcons } from './gojs-custom-objects.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
+import { Store } from '@ngrx/store';
+import { RouterReducerState } from '@ngrx/router-store';
+import { RouterStateUrl } from '@app/core/store';
+import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 
 const $ = go.GraphObject.make;
 
@@ -22,12 +17,15 @@ updateShapeShadows();
 
 @Injectable()
 export class DiagramTemplatesService {
+  private currentFilterLevel: Level;
   constructor(
-    public filterService: FilterService,
+    private store: Store<RouterReducerState<RouterStateUrl>>,
     public diagramLevelService: DiagramLevelService,
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public diagramChangesService: DiagramChangesService
-  ) {}
+  ) {
+    this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => (this.currentFilterLevel = filterLevel));
+  }
 
   // Get standard options used for nodes
   getStandardNodeOptions(forPalette: boolean): object {
@@ -105,9 +103,10 @@ export class DiagramTemplatesService {
                 strokeWidth: 3
               })
             ),
-            toolTip:
-            $('ToolTip',
-              $(go.TextBlock,
+            toolTip: $(
+              'ToolTip',
+              $(
+                go.TextBlock,
                 {
                   width: 150
                 },
@@ -181,10 +180,7 @@ export class DiagramTemplatesService {
   }
 
   // Calculate stroke for parts, based on impacted work packages
-  getStrokeForImpactedWorkPackages(
-    impactedPackages,
-    part: go.Part
-  ): go.BrushLike {
+  getStrokeForImpactedWorkPackages(impactedPackages, part: go.Part): go.BrushLike {
     const allWorkpackages = part.diagram.model.modelData.workpackages;
 
     // return black by default if part not impacted by any work packages
@@ -209,12 +205,8 @@ export class DiagramTemplatesService {
     // if part is a link then calculate start and end points of the
     // brush based on the relative locations of the connected nodes
     if (part instanceof go.Link) {
-      const fromLocation = part.fromNode
-        ? part.fromNode.location
-        : part.points.first();
-      const toLocation = part.toNode
-        ? part.toNode.location
-        : part.points.last();
+      const fromLocation = part.fromNode ? part.fromNode.location : part.points.first();
+      const toLocation = part.toNode ? part.toNode.location : part.points.last();
       let startAlign: string;
       let endAlign: string;
 
@@ -245,7 +237,6 @@ export class DiagramTemplatesService {
 
   // Get alert indicator for RADIOs of the given type against nodes
   getRadioAlertIndicator(type: string): go.Panel {
-
     const radioColours = {
       risks: 'orange',
       assumptions: 'yellow',
@@ -293,12 +284,11 @@ export class DiagramTemplatesService {
         visible: false
       },
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
-      ...['risks',
-        'assumptions',
-        'dependencies',
-        'issues',
-        'opportunities'
-      ].map(function(type) {return this.getRadioAlertIndicator(type); }.bind(this))
+      ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
+        function(type) {
+          return this.getRadioAlertIndicator(type);
+        }.bind(this)
+      )
     );
   }
 
@@ -307,30 +297,30 @@ export class DiagramTemplatesService {
     return $(
       go.Panel,
       'Auto',
-      $(go.Shape,
-        {
-          figure: 'RoundedRectangle',
-          fill: 'white',
-          opacity: 0.85
-        }
-       ),
-        // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
-        new go.Binding('visible', '', function(link) {
-
-          if (link.findObject('shape').strokeWidth === 0) {
+      $(go.Shape, {
+        figure: 'RoundedRectangle',
+        fill: 'white',
+        opacity: 0.85
+      }),
+      // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
+      new go.Binding('visible', '', function(link) {
+        if (link.findObject('shape').strokeWidth === 0) {
+          return false;
+        } else {
+          if (!link.data.relatedRadioCounts) {
             return false;
-          } else {
-
-            if (!link.data.relatedRadioCounts) {return false; }
-
-            const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
-              return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
-            }, false);
-
-            return (link.diagram.model.modelData.linkName && link.data.name !== '')
-              || (link.diagram.model.modelData.showRadioAlerts && anyRadios);
           }
-        }).ofObject(),
+
+          const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
+            return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
+          }, false);
+
+          return (
+            (link.diagram.model.modelData.linkName && link.data.name !== '') ||
+            (link.diagram.model.modelData.showRadioAlerts && anyRadios)
+          );
+        }
+      }).ofObject(),
       $(
         go.Panel,
         'Vertical',
@@ -378,7 +368,7 @@ export class DiagramTemplatesService {
       }
     ];
 
-    const sectionMargin =  isHorizontal ? new go.Margin(0, 5, 0, 0) : new go.Margin(0, 0, 5, 0);
+    const sectionMargin = isHorizontal ? new go.Margin(0, 5, 0, 0) : new go.Margin(0, 0, 5, 0);
 
     return sections.map(function(section) {
       return $(
@@ -446,9 +436,7 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
-        go.Point.stringify
-      ),
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
@@ -457,7 +445,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.filterService.getFilter().filterLevel !== Level.usage;
+          return this.currentFilterLevel !== Level.usage;
         }.bind(this)
       ),
       !forPalette
@@ -466,16 +454,17 @@ export class DiagramTemplatesService {
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
         : {
-        toolTip:
-          $('ToolTip',
-            $(go.TextBlock,
-              {
-                width: 150
-              },
-              new go.Binding('text', 'tooltip')
+            toolTip: $(
+              'ToolTip',
+              $(
+                go.TextBlock,
+                {
+                  width: 150
+                },
+                new go.Binding('text', 'tooltip')
+              )
             )
-          )
-        },
+          },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
@@ -499,10 +488,7 @@ export class DiagramTemplatesService {
           'stroke',
           'impactedByWorkPackages',
           function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(
-              impactedPackages,
-              shape.part
-            );
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         ),
         this.getStandardNodeShapeOptions()
@@ -552,9 +538,7 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
-        go.Point.stringify
-      ),
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
@@ -563,7 +547,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.filterService.getFilter().filterLevel !== Level.usage;
+          return this.currentFilterLevel !== Level.usage;
         }.bind(this)
       ),
       !forPalette
@@ -572,16 +556,17 @@ export class DiagramTemplatesService {
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
         : {
-          toolTip:
-            $('ToolTip',
-              $(go.TextBlock,
+            toolTip: $(
+              'ToolTip',
+              $(
+                go.TextBlock,
                 {
                   width: 150
                 },
                 new go.Binding('text', 'tooltip')
               )
             )
-        },
+          },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -594,10 +579,7 @@ export class DiagramTemplatesService {
           'stroke',
           'impactedByWorkPackages',
           function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(
-              impactedPackages,
-              shape.part
-            );
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         )
       ),
@@ -659,9 +641,7 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
-        go.Point.stringify
-      ),
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
         doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
@@ -670,7 +650,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.filterService.getFilter().filterLevel !== Level.usage;
+          return this.currentFilterLevel !== Level.usage;
         }.bind(this)
       ),
       !forPalette
@@ -679,18 +659,19 @@ export class DiagramTemplatesService {
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
         : {
-          toolTip:
-            $('ToolTip',
-              $(go.TextBlock,
+            toolTip: $(
+              'ToolTip',
+              $(
+                go.TextBlock,
                 {
                   width: 150
                 },
                 new go.Binding('text', 'tooltip')
               )
             )
-        },
+          },
       // Have the diagram position the node if no location set
-      this.filterService.getFilter().filterLevel.endsWith('map')
+      this.currentFilterLevel && this.currentFilterLevel.endsWith('map')
         ? {}
         : new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -703,10 +684,7 @@ export class DiagramTemplatesService {
           'stroke',
           'impactedByWorkPackages',
           function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(
-              impactedPackages,
-              shape.part
-            );
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         ),
         new go.Binding(
@@ -774,14 +752,12 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(
-        go.Point.stringify
-      ),
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       new go.Binding(
         'movable',
         '',
         function() {
-          return this.filterService.getFilter().filterLevel !== Level.usage;
+          return this.currentFilterLevel !== Level.usage;
         }.bind(this)
       ),
       this.getStandardNodeOptions(forPalette),
@@ -791,16 +767,17 @@ export class DiagramTemplatesService {
             contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
           }
         : {
-          toolTip:
-            $('ToolTip',
-              $(go.TextBlock,
+            toolTip: $(
+              'ToolTip',
+              $(
+                go.TextBlock,
                 {
                   width: 150
                 },
                 new go.Binding('text', 'tooltip')
               )
             )
-        },
+          },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       // Make the shape the port for links to connect to
@@ -812,10 +789,7 @@ export class DiagramTemplatesService {
           'stroke',
           'impactedByWorkPackages',
           function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(
-              impactedPackages,
-              shape.part
-            );
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         ),
         this.getStandardNodeShapeOptions()
@@ -852,7 +826,8 @@ export class DiagramTemplatesService {
                 return customIcons.flag;
               } else if (category === nodeCategories.list) {
                 return customIcons.list;
-              } else { // Structure reporting concept
+              } else {
+                // Structure reporting concept
                 return customIcons.tree;
               }
             })
@@ -892,9 +867,7 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       {
-        doubleClick: this.diagramLevelService.displayMapView.bind(
-          this.diagramLevelService
-        )
+        doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
       },
       $(
         go.Shape,
@@ -913,10 +886,7 @@ export class DiagramTemplatesService {
           'stroke',
           'impactedByWorkPackages',
           function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(
-              impactedPackages,
-              shape.part
-            );
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         ),
         // If link is in palette then give it a transparent background for easier selection
@@ -998,10 +968,7 @@ export class DiagramTemplatesService {
           'stroke',
           'impactedByWorkPackages',
           function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(
-              impactedPackages,
-              shape.part
-            );
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         ),
         // If link is in palette then give it a transparent background for easier selection
@@ -1059,11 +1026,7 @@ export class DiagramTemplatesService {
 
                 // Total y values of co-ordinates of centre of each node connected to node a
                 while (aLinkedNodes.next()) {
-                  aHeights =
-                    aHeights +
-                    aLinkedNodes.value
-                      .findObject('shape')
-                      .getDocumentPoint(go.Spot.Center).y;
+                  aHeights = aHeights + aLinkedNodes.value.findObject('shape').getDocumentPoint(go.Spot.Center).y;
                 }
 
                 // Calculate average height by dividing by the number of linked nodes
@@ -1071,11 +1034,7 @@ export class DiagramTemplatesService {
 
                 // Total y values of co-ordinates of centre of each node connected to node b
                 while (bLinkedNodes.next()) {
-                  bHeights =
-                    bHeights +
-                    bLinkedNodes.value
-                      .findObject('shape')
-                      .getDocumentPoint(go.Spot.Center).y;
+                  bHeights = bHeights + bLinkedNodes.value.findObject('shape').getDocumentPoint(go.Spot.Center).y;
                 }
 
                 // Calculate average height by dividing by the number of linked nodes
