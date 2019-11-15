@@ -9,3 +9,8 @@ export const getSelectedWorkpackages = createSelector(
   getWorkpackageFeatureState,
   state => state.selectedWorkpackages
 );
+
+export const getPotentialWorkPackageNodes = createSelector(
+  getWorkpackageFeatureState,
+  state => state.descendants
+)
