@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTabGroup } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
@@ -102,6 +102,7 @@ import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-mod
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
+import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import {
   getFilterLevelQueryParams,
@@ -202,6 +203,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private diagramComponent: ArchitectureDiagramComponent;
   @ViewChild(LeftPanelComponent)
   private leftPanelComponent: LeftPanelComponent;
+  @ViewChild(SwitchViewTabsComponent)
+  private switchViewTabsComponent: SwitchViewTabsComponent;
 
   constructor(
     private sharedService: SharedService,
@@ -867,11 +870,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
 
     this.diagramComponent.updateDiagramArea();
+    this.realignTabUnderline();
   }
 
   onHideLeftPane() {
     this.showOrHideLeftPane = false;
     this.diagramComponent.updateDiagramArea();
+    this.realignTabUnderline();
   }
 
   onAddRelatedRadio() {
@@ -921,11 +926,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.showOrHideRightPane = true;
     }
     this.diagramComponent.updateDiagramArea();
+    this.realignTabUnderline();
   }
 
   onHideRightPane() {
     this.showOrHideRightPane = false;
     this.diagramComponent.updateDiagramArea();
+    this.realignTabUnderline();
   }
 
   onAddRadio() {
@@ -1173,4 +1180,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onChangeLevel(node: Node | NodeLink) {
     this.diagramLevelService.changeLevelWithFilter(null, { data: node } as any);
   }
+
+  realignTabUnderline(): void {
+    this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
+  }
+
 }
