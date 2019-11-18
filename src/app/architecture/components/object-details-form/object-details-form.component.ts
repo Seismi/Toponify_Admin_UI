@@ -12,9 +12,9 @@ export class ObjectDetailsFormComponent {
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
-  @Input() clickedOnLink = false;
-  @Input() isEditable = false;
-  @Input() workPackageIsEditable = false;
+  @Input() clickedOnLink: boolean = false;
+  @Input() isEditable: boolean = false;
+  @Input() workPackageIsEditable: boolean = false;
   @Input() selectedOwner: boolean;
   @Input() selectedOwnerIndex: string | null;
 
@@ -36,7 +36,7 @@ export class ObjectDetailsFormComponent {
 
   @Output() addDescendant = new EventEmitter<void>();
 
-  @Output() deleteDescendant = new EventEmitter<string>();
+  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
   onEdit(): void {
     this.editDetails.emit();
@@ -67,12 +67,12 @@ export class ObjectDetailsFormComponent {
     this.deleteOwner.emit();
   }
 
-  onAddDescendant() {
+  onAddDescendant(): void {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(id: string) {
-    this.deleteDescendant.emit(id);
+  onDeleteDescendant(descendant: DescendantsEntity): void {
+    this.deleteDescendant.emit(descendant);
   }
 
 }

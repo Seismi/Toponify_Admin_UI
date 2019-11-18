@@ -28,9 +28,15 @@ import {
   AddWorkPackageNodeDescendantSuccess,
   AddWorkPackageNodeDescendantFailure,
   DeleteWorkPackageNodeDescendant,
-  DeleteWorkPackageNodeDescendantSuccess, DeleteWorkPackageNodeDescendantFailure
+  DeleteWorkPackageNodeDescendantSuccess,
+  DeleteWorkPackageNodeDescendantFailure,
+  FindPotentialWorkpackageNodes,
+  FindPotentialWorkpackageNodesSuccess,
+  FindPotentialWorkpackageNodesFailure
 } from '../actions/workpackage-node.actions';
 import {UpdateNodeDescendants, UpdateNodeOwners} from '@app/architecture/store/actions/node.actions';
+import { WorkPackageNodeFindPotential } from '../models/workpackage.models';
+import { WorkPackageNodeDescendantsApiResponse, DescendantsEntity } from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -55,11 +61,11 @@ export class WorkPackageNodeEffects {
   addWorkpackageNodeDescendant$ = this.actions$.pipe(
     ofType<AddWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant),
     map(action => action.payload),
-    mergeMap((payload: {workpackageId: string, nodeId: string, node: any}) => {
-      return this.workpackageNodeService.addNodeDescendant(payload.workpackageId, payload.nodeId, payload.node.id, payload.node).pipe(
-        switchMap((data: any) => [
-          new AddWorkPackageNodeDescendantSuccess(data),
-          new UpdateNodeDescendants({descendants: data.data, nodeId: payload.nodeId})
+    mergeMap((payload: { workPackageId: string, nodeId: string, data: DescendantsEntity }) => {
+      return this.workpackageNodeService.addNodeDescendant(payload.workPackageId, payload.nodeId, payload.data).pipe(
+        switchMap((response: any) => [
+          new AddWorkPackageNodeDescendantSuccess(response),
+          new UpdateNodeDescendants({descendants: response.data, nodeId: payload.nodeId})
         ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeDescendantFailure(error)))
       );
@@ -148,6 +154,18 @@ export class WorkPackageNodeEffects {
           new UpdateNodeOwners({owners: data.data.owners, nodeId: payload.nodeId})
         ]),
         catchError(error => of(new DeleteWorkpackageNodeOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  findPotentialWorkPackageNodes$ = this.actions$.pipe(
+    ofType<FindPotentialWorkpackageNodes>(WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeId: string, data: WorkPackageNodeFindPotential }) => {
+      return this.workpackageNodeService.findPotentialWorkPackageNodes(payload.workPackageId, payload.nodeId, payload.data).pipe(
+        switchMap((response: WorkPackageNodeDescendantsApiResponse) => [new FindPotentialWorkpackageNodesSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new FindPotentialWorkpackageNodesFailure(error)))
       );
     })
   );

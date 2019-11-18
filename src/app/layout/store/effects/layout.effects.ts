@@ -8,11 +8,14 @@ import * as LayoutActions from '../actions/layout.actions';
 import { LayoutActionTypes } from '../actions/layout.actions';
 import { AddLayoutApiResponse, GetLayoutApiResponse, GetLayoutEntitiesApiResponse,
   LayoutDetails, LayoutEntitiesHttpParams, UpdateLayoutApiResponse } from '../models/layout.model';
+import * as ScopeActions from '@app/scope/store/actions/scope.actions';
+import { SharedService } from '@app/services/shared-service';
 
 
 @Injectable()
 export class LayoutEffects {
   constructor(
+    private sharedService: SharedService,
     private actions$: Actions,
     private layoutService: LayoutService
   ) {}
@@ -47,7 +50,13 @@ export class LayoutEffects {
     map(action => action.payload),
     switchMap((payload: LayoutDetails) => {
       return this.layoutService.addLayout(payload).pipe(
-        switchMap((resp: AddLayoutApiResponse) => [new LayoutActions.AddLayoutSuccess(resp)]),
+        switchMap((resp: AddLayoutApiResponse) => [
+          new LayoutActions.AddLayoutSuccess(resp),
+          new ScopeActions.UpdateScope({
+            id: payload.scope.id,
+            data: { id: payload.scope.id, name: payload.scope.name }
+          })
+        ]),
         catchError((error: HttpErrorResponse) => of(new LayoutActions.AddLayoutFailure(error)))
       );
     })
@@ -71,7 +80,13 @@ export class LayoutEffects {
     map(action => action.payload),
     switchMap((id: string) => {
       return this.layoutService.deleteLayout(id).pipe(
-        switchMap(_ => [new LayoutActions.DeleteLayoutSuccess(id)]),
+        switchMap(_ => [
+          new LayoutActions.DeleteLayoutSuccess(id),
+          new ScopeActions.UpdateScope({
+            id: this.sharedService.scope.id,
+            data: { id: this.sharedService.scope.id, name: this.sharedService.scope.name }
+          })
+        ]),
         catchError((error: HttpErrorResponse) => of(new LayoutActions.DeleteLayoutFailure(error)))
       );
     })
