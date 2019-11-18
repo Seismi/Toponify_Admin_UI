@@ -30,7 +30,7 @@ import {
   DeleteWorkPackageNodeDescendant,
   DeleteWorkPackageNodeDescendantSuccess, DeleteWorkPackageNodeDescendantFailure
 } from '../actions/workpackage-node.actions';
-import { UpdateNodeDescendants } from '@app/architecture/store/actions/node.actions';
+import {UpdateNodeDescendants, UpdateNodeOwners} from '@app/architecture/store/actions/node.actions';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -130,7 +130,7 @@ export class WorkPackageNodeEffects {
       ).pipe(
         mergeMap((response: any) => [
           new AddWorkpackageNodeOwnerSuccess(response.data),
-          new UpdateNodeOwners()
+          new UpdateNodeOwners({owners: response.data.owners, nodeId: payload.nodeId})
         ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkpackageNodeOwnerFailure(error)))
       );
@@ -143,9 +143,9 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     mergeMap((payload: { workpackageId: string, nodeId: string, ownerId: string }) => {
       return this.workpackageNodeService.deleteNodeOwner(payload.workpackageId, payload.nodeId, payload.ownerId).pipe(
-        map(data => [
-          new DeleteWorkpackageNodeOwnerSuccess(data.data),
-          new UpdateNodeOwners()
+        switchMap(data => [
+          new DeleteWorkpackageNodeOwnerSuccess(data),
+          new UpdateNodeOwners({owners: data.data.owners, nodeId: payload.nodeId})
         ]),
         catchError(error => of(new DeleteWorkpackageNodeOwnerFailure(error)))
       );

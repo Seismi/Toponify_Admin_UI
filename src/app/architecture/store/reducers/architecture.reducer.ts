@@ -1,7 +1,7 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import { Error, Node, NodeDetail } from '../models/node.model';
+import {Error, Node, NodeDetail, OwnersEntity} from '../models/node.model';
 import {
   WorkpackageActionsUnion,
   WorkpackageActionTypes
@@ -246,6 +246,31 @@ export function reducer(
       const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
       if (nodeIndex > -1) {
         const updatedNode = {...state.entities[nodeIndex], descendants: descendants};
+        const entities = [...state.entities];
+        entities[nodeIndex] = updatedNode;
+        if (state.selectedNode.id ===  nodeId) {
+          return  {
+            ...state,
+            entities,
+            selectedNode: updatedNode
+          };
+        }
+        return {
+          ...state,
+          entities,
+        };
+      } else {
+        return {
+          ...state
+        };
+      }
+    }
+
+    case NodeActionTypes.UpdateNodeOwners: {
+      const {nodeId, owners} = <{owners: OwnersEntity[], nodeId: string}>action.payload;
+      const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
+      if (nodeIndex > -1) {
+        const updatedNode = {...state.entities[nodeIndex], owners: owners};
         const entities = [...state.entities];
         entities[nodeIndex] = updatedNode;
         if (state.selectedNode.id ===  nodeId) {

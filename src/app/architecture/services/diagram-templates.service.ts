@@ -364,7 +364,8 @@ export class DiagramTemplatesService {
       {
         sectionName: 'owners',
         font: '15px calibri',
-        initialText: 'Owners - '
+        initialText: 'Owners - ',
+        isArray: true
       }
     ];
 
@@ -380,15 +381,15 @@ export class DiagramTemplatesService {
           maxSize: new go.Size(100, Infinity),
           margin: sectionMargin
         },
-        new go.Binding('text', section.sectionName, function(input) {
-          if (Array.isArray(input)) {
-            return input.length > 0 ? section.initialText + input.map(
-              function(obj) {return obj.name; }
-            ).join(', ') : '';
-          } else {
-            return input ? section.initialText + input : '';
-          }
-        }),
+        section.isArray ?
+          new go.Binding('text', section.sectionName, function(input) {
+            return input.length > 0 ?
+              section.initialText + input.map(function(obj) {return obj.name; }).join(', ') :
+              '';
+          }) :
+          new go.Binding('text', section.sectionName, function(input) {
+              return input ? section.initialText + input : '';
+          }),
         new go.Binding('visible', section.sectionName).ofModel()
       );
     });
