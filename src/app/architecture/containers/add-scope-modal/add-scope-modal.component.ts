@@ -3,8 +3,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { Store, select } from '@ngrx/store';
-import { LoadWorkPackageNodeScopes, LoadWorkPackageNodeScopesAvailability } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { getNodeScopes, getNodeScopesAvailability } from '@app/architecture/store/selectors/workpackage.selector';
+import { LoadWorkPackageNodeScopesAvailability } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { getNodeScopesAvailability } from '@app/architecture/store/selectors/workpackage.selector';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
