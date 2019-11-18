@@ -146,6 +146,10 @@
         (addDescendant)="onAddDescendant()"
         (deleteDescendant)="onDeleteDescendant($event)"
         (openRadio)="onOpenRadio($event)"
+        [nodeScopes]="nodeScopes$ | async"
+        (deleteScope)="onDeleteScope($event)"
+        (addExistingScope)="onAddExistingScope()"
+        (addNewScope)="onAddNewScope()"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

@@ -71,6 +71,8 @@ import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio
 import { SettingsModule } from '@app/settings/settings.module';
 import { SwitchViewTabsComponent } from '@app/architecture/components/switch-view-tabs/switch-view-tabs.component';
 import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
+import { ScopeTableComponent } from './components/scope-table/scope-table.component';
+import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-modal.component';
 
 @NgModule({
   imports: [
@@ -138,7 +140,9 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     EditNameModalComponent,
     RadioDetailModalComponent,
     SwitchViewTabsComponent,
-    ArchitectureTableViewComponent
+    ArchitectureTableViewComponent,
+    ScopeTableComponent,
+    NodeScopeModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -147,7 +151,8 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     AttributeModalComponent,
     DescendantsModalComponent,
     EditNameModalComponent,
-    RadioDetailModalComponent
+    RadioDetailModalComponent,
+    NodeScopeModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
