@@ -52,32 +52,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
-    case WorkPackageActionTypes.SetWorkpackageSelected: {
-      const { workpackageId } = action.payload;
-      if (state.entities.length > 0) {
-        return {
-          ...state,
-          loading: true,
-          entities: state.entities.map(item => {
-            if (item.id === workpackageId) {
-              return {
-                ...item,
-                edit: item.selected ? false : item.edit,
-                selected: !item.selected
-              };
-            } else {
-              return { ...item, edit: false };
-            }
-          })
-        };
-      } else {
-        return {
-          ...state,
-          selectedWorkPackageIds: [...state.selectedWorkPackageIds, workpackageId]
-        };
-      }
-    }
-
     case WorkPackageActionTypes.SetSelectedWorkPackages: {
       const { workPackages } = action.payload;
       let resetEdit = true;
