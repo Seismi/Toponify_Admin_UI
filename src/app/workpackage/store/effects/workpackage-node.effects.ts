@@ -150,7 +150,7 @@ export class WorkPackageNodeEffects {
     mergeMap((payload: { workpackageId: string, nodeId: string, ownerId: string }) => {
       return this.workpackageNodeService.deleteNodeOwner(payload.workpackageId, payload.nodeId, payload.ownerId).pipe(
         switchMap(data => [
-          new DeleteWorkpackageNodeOwnerSuccess(data),
+          new DeleteWorkpackageNodeOwnerSuccess(data.data),
           new UpdateNodeOwners({owners: data.data.owners, nodeId: payload.nodeId})
         ]),
         catchError(error => of(new DeleteWorkpackageNodeOwnerFailure(error)))
