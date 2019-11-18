@@ -26,7 +26,7 @@ export class NodeScopeModalComponent implements OnInit {
       this.nodeId = data.nodeId;
     }
 
-  ngOnInit() { 
+  ngOnInit(): void { 
     this.setScopeQueryParams();
     this.scopes$ = this.store.pipe(select(getNodeScopesAvailability));
   }
@@ -36,15 +36,15 @@ export class NodeScopeModalComponent implements OnInit {
     this.store.dispatch(new LoadWorkPackageNodeScopesAvailability({nodeId: this.nodeId, queryParams: queryParams}));
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.dialogRef.close({scope: this.scope});
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 
-  onSelect(scope: WorkPackageNodeScopes) {
+  onSelect(scope: WorkPackageNodeScopes): void {
     this.scope = scope.id;
   }
 

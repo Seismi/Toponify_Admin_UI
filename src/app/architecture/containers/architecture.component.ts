@@ -1201,7 +1201,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
   }
 
-  onDeleteScope(scope: WorkPackageNodeScopes) {
+  onDeleteScope(scope: WorkPackageNodeScopes): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -1218,7 +1218,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     })
   }
 
-  onAddExistingScope() {
+  onAddExistingScope(): void {
     const dialogRef = this.dialog.open(NodeScopeModalComponent, {
       disableClose: false,
       width: '500px',
@@ -1237,7 +1237,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     })
   }
 
-  onAddNewScope() {
+  onAddNewScope(): void {
     const dialogRef = this.dialog.open(ScopeModalComponent, {
       disableClose: false,
       width: '500px'
