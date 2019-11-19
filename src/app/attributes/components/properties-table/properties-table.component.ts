@@ -1,6 +1,7 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
+import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-properties-table-in-attributes-page',
@@ -8,14 +9,31 @@ import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
   styleUrls: ['properties-table.component.scss']
 })
 export class PropertiesTableInAttributesPageComponent {
+
+  @Input() workPackageIsEditable: boolean;
+
   @Input()
   set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
-    this.dataSource.paginator = this.paginator;
+    if(data) {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<AttributeDetail>;
-  public displayedColumns: string[] = ['name', 'value'];
+  public displayedColumns: string[] = ['name', 'value', 'edit', 'delete'];
+
+  @Output() editProperty = new EventEmitter<CustomPropertiesEntity>();
+  @Output() deleteProperty = new EventEmitter<CustomPropertiesEntity>();
+
+  onEdit(property: CustomPropertiesEntity): void {
+    this.editProperty.emit(property);
+  }
+
+  onDelete(property: CustomPropertiesEntity): void {
+    this.deleteProperty.emit(property);
+  }
+  
 }
