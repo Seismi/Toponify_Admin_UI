@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest, AdvancedSearchApiRequest } from '../models/radio.model';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest, AdvancedSearchApiRequest, RadiosAdvancedSearch } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export enum RadioActionTypes {
@@ -29,7 +29,9 @@ export enum RadioActionTypes {
 
   SearchRadio = '[Radio] Search Radio',
   SearchRadioSuccess = '[Radio] Search Radio Success',
-  SearchRadioFailure = '[Radio] Search Radio Failure'
+  SearchRadioFailure = '[Radio] Search Radio Failure',
+
+  RadioFilter= '[Radio] Load Radio Filter Data'
 }
 
 export class LoadRadios implements Action {
@@ -143,6 +145,11 @@ export class SearchRadioFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class RadioFilter implements Action {
+  readonly type = RadioActionTypes.RadioFilter;
+  constructor(public payload: RadiosAdvancedSearch) {}
+}
+
 
 export type RadioActionsUnion = 
   | LoadRadios
@@ -165,6 +172,7 @@ export type RadioActionsUnion =
   | DeleteRadioPropertyFailure
   | SearchRadio
   | SearchRadioSuccess
-  | SearchRadioFailure;
+  | SearchRadioFailure
+  | RadioFilter;
 
 

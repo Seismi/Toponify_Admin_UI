@@ -1,6 +1,6 @@
 import { RadioActionsUnion, RadioActionTypes } from '../actions/radio.actions';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RadioEntity, Page, Links, RadioDetail, Reply } from '../models/radio.model';
+import { RadioEntity, Page, Links, RadioDetail, Reply, RadiosAdvancedSearch } from '../models/radio.model';
 
 export interface State {
   entities: RadioEntity[];
@@ -9,6 +9,7 @@ export interface State {
   loading: boolean;
   selectedRadio: RadioDetail;
   reply: Reply[];
+  radioFilter: RadiosAdvancedSearch;
   error?: HttpErrorResponse | { message: string };
 }
 
@@ -19,6 +20,7 @@ export const initialState: State = {
   loading: false,
   selectedRadio: null,
   reply: [],
+  radioFilter: null,
   error: null
 };
 
@@ -196,6 +198,13 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         ...state,
         error: action.payload,
         loading: false
+      };
+    }
+
+    case RadioActionTypes.RadioFilter: {
+      return {
+        ...state,
+        radioFilter: action.payload
       };
     }
 
