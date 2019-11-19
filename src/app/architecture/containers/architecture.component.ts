@@ -55,7 +55,9 @@ import {
   DeleteWorkpackageNodeOwner,
   DeleteWorkpackageNodeSuccess,
   WorkPackageNodeActionTypes,
-  FindPotentialWorkpackageNodes
+  LoadWorkPackageNodeScopes,
+  AddWorkPackageNodeScope,
+  DeleteWorkPackageNodeScope
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -64,7 +66,7 @@ import {
   SetWorkpackageEditMode,
   SetWorkpackageSelected
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackageEntity, WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackages,
@@ -104,7 +106,9 @@ import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
 import { LayoutModalComponent } from '@app/scopes-and-layouts/containers/layout-modal/layout-modal.component';
+import { getNodeScopes } from '../store/selectors/workpackage.selector';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
+import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import {
@@ -150,6 +154,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  nodeScopes$: Observable<WorkPackageNodeScopes[]>;
   customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
   owners$: Observable<TeamEntity[]>;
@@ -242,7 +247,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
-
     this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
 
     // Layouts
@@ -530,6 +534,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.detailsTab = false;
 
       if (part) {
+
+        // Load node scopes
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({nodeId: this.nodeId}));
+        this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
+
         this.selectedOwnerIndex = null;
         this.selectedOwner = false;
         // By clicking on link show only name, category and description in the right panel
@@ -1211,4 +1220,64 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+  onDeleteScope(scope: WorkPackageNodeScopes): void {
+    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete',
+        name: scope.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.mode === 'delete') {
+        this.scopeStore.dispatch(new DeleteWorkPackageNodeScope({scopeId: scope.id, nodeId: this.nodeId}));
+      }
+    })
+  }
+
+  onAddExistingScope(): void {
+    const dialogRef = this.dialog.open(NodeScopeModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        nodeId: this.nodeId
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data && data.scope) {
+        this.scopeStore.dispatch(new AddWorkPackageNodeScope({scopeId: data.scope, data: [this.nodeId]}));
+      }
+      setTimeout(() => {
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({nodeId: this.nodeId}));
+      }, 150);
+    })
+  }
+
+  onAddNewScope(): void {
+    const dialogRef = this.dialog.open(ScopeModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.store.dispatch(
+          new AddScope({
+            id: null,
+            name: data.scope.name,
+            owners: this.sharedService.selectedOwners,
+            viewers: this.sharedService.selectedViewers,
+            layerFilter: this.currentFilterLevel.toLowerCase(),
+            include: [{ id: this.nodeId }]
+          })
+        );
+      }
+      setTimeout(() => {
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({nodeId: this.nodeId}));
+      }, 150);
+    });
+  }
 }

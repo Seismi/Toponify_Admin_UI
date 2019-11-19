@@ -76,6 +76,13 @@
         <ng-template mat-tab-label>
             <mat-icon matTooltip="Scopes" class="tab">pages</mat-icon>
         </ng-template>
+        <smi-scope-table 
+            [data]="nodeScopes" 
+            (delete)="onDeleteScope($event)"
+            [workPackageIsEditable]="workPackageIsEditable"
+            (addExistingScope)="onAddExistingScope()"
+            (newScope)="onAddNewScope()">
+        </smi-scope-table>
     </mat-tab>
     <mat-tab *ngIf="objectSelected">
         <ng-template mat-tab-label>

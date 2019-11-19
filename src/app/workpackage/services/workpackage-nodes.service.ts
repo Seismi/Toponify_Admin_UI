@@ -6,10 +6,19 @@ import { WorkPackageService } from './workpackage.service';
 import {
   WorkpackageNode,
   WorkpackageNodeCustomProperty,
-  WorkPackageNodeFindPotential,
+  WorkPackageNodeScopesApiResponse,
+  WorkPackageNodeScopeApiResponse,
+  WorkPackageNodeFindPotential
 } from '../store/models/workpackage.models';
+import { HttpParams } from '@angular/common/http';
 import { WorkPackageNodeDescendantsApiResponse, DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { NodesApiResponse } from '@app/nodes/store/models/node.model';
+
+
+export interface GetWorkPackageNodeScopesQueryParams {
+  workPackageQuery?: string[];
+  availableForAddition?: boolean;
+}
 
 @Injectable()
 export class WorkPackageNodesService extends WorkPackageService {
@@ -144,4 +153,34 @@ export class WorkPackageNodesService extends WorkPackageService {
       {}
     );
   }
+
+  getWorkPackageNodeScopes(nodeId: string, queryParams?: GetWorkPackageNodeScopesQueryParams): Observable<WorkPackageNodeScopesApiResponse> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<WorkPackageNodeScopesApiResponse>(`/nodes/${nodeId}/scopes`, {params: params});
+  }
+
+  addWorkPackageNodeScope(scopeId: string, data: string[]): Observable<WorkPackageNodeScopeApiResponse> {
+    return this.http.post<WorkPackageNodeScopeApiResponse>(`/scopes/${scopeId}/nodes`, {data: data}, this.httpOptions);
+  }
+
+  deleteWorkPackageNodeScope(scopeId: string, nodeId: string): Observable<WorkPackageNodeScopeApiResponse> {
+    return this.http.delete<WorkPackageNodeScopeApiResponse>(`/scopes/${scopeId}/nodes/${nodeId}`, this.httpOptions);
+  }
+
+  // TODO: move into sharable service
+  toHttpParams(obj: Object): HttpParams {
+    let httpParams = new HttpParams();
+    Object.getOwnPropertyNames(obj).forEach(key => {
+      if (Array.isArray(obj[key])) {
+        obj[key].forEach(item => {
+          httpParams = httpParams.append(`${key}[]`, item);
+        });
+      } else {
+        
+        httpParams = httpParams.set(key, obj[key]);
+      }
+    });
+    return httpParams;
+  }
+
 }
