@@ -105,6 +105,7 @@ import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-mod
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/nodes/store/models/node-link.model';
 import { Node } from '@app/nodes/store/models/node.model';
+import { LayoutModalComponent } from '@app/scopes-and-layouts/containers/layout-modal/layout-modal.component';
 import { getNodeScopes } from '../store/selectors/workpackage.selector';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
@@ -202,6 +203,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
+  public layoutSettingsTab: boolean;
+  public scopeId: string;
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
   public params: Params;
@@ -324,6 +327,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
+        this.scopeId = scope.id;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
         // this.filterService.addFilter({ scope: scope.id });
       }
@@ -868,6 +872,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
+    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true : this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
     this.diagramComponent.updateDiagramArea();
     this.diagramComponent.zoomToFit();
   }
@@ -877,6 +882,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.selectedLeftTab === index) {
       this.showOrHideLeftPane = true;
     }
+
+    (index === 2) ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
 
     this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
 
@@ -1201,6 +1208,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
   }
 
+  onAddLayout(): void {
+    this.dialog.open(LayoutModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        scope: {
+          id: this.scopeId
+        }
+      }
+    });
+  }
+
   onDeleteScope(scope: WorkPackageNodeScopes): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
@@ -1261,5 +1280,4 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }, 150);
     });
   }
-  
 }
