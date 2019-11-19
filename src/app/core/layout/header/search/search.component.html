@@ -7,7 +7,7 @@
       <button mat-button mat-icon-button (click)="searchClose()">
         <mat-icon>close</mat-icon>
       </button>
-      <input class="search-control" placeholder="Search" (keyup)="onSearch($event.target.value)">
+      <input #inp class="search-control" placeholder="Search" (keyup)="onSearch($event.target.value)">
   </mat-toolbar-row>
   </mat-toolbar>
 </div>

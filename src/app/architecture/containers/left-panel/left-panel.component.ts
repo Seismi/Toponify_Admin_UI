@@ -15,11 +15,12 @@ export class LeftPanelComponent {
   @Input() viewLevel: number;
   @Input() canSelectWorkpackages: boolean;
   @Input() tabIndex: number;
+  @Input() layoutSettingsTab: boolean;
 
-  @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup; 
+  @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
-  realignTabUnderline(): void { 
-    this.mainTabGroup.realignInkBar(); 
+  realignTabUnderline(): void {
+    this.mainTabGroup.realignInkBar();
   }
 
   constructor() {}
@@ -33,19 +34,23 @@ export class LeftPanelComponent {
   @Output()
   setWorkpackageEditMode = new EventEmitter<object>();
 
+  @Output() hideLeftPane = new EventEmitter<void>();
+
   @Output()
   tabClick = new EventEmitter<number>();
 
-  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }) {
+  @Output() addLayout = new EventEmitter<void>();
+
+  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }): void {
     this.displayOptionsChangedEvent.emit({ event, option });
   }
 
   // FIXME: set proper type of workpackage
-  onSetWorkPackageEditMode(workpackage: WorkPackageEntity) {
+  onSetWorkPackageEditMode(workpackage: WorkPackageEntity): void {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectWorkPackage(selection: {id: string, newState: boolean}) {
+  onSelectWorkPackage(selection: {id: string, newState: boolean}): void {
     this.selectWorkPackage.emit(selection);
   }
 
@@ -53,9 +58,17 @@ export class LeftPanelComponent {
     this.selectColour.emit(event);
   }
 
-  onTabClick(event: MatTabChangeEvent) {
+  onTabClick(event: MatTabChangeEvent): void {
     this.tabClick.emit(event.index);
     this.realignTabUnderline();
+  }
+
+  onHideLeftPane(): void {
+    this.hideLeftPane.emit();
+  }
+
+  onAddLayout(): void {
+    this.addLayout.emit();
   }
 
 }

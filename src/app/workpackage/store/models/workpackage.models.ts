@@ -223,3 +223,28 @@ export interface WorkpackageLinkSliceCondition {
   conditionTypeId: string;
   value: string;
 }
+
+export interface WorkPackageNodeScopesApiResponse {
+  data?: (WorkPackageNodeScopes)[] | null;
+}
+
+export interface WorkPackageNodeScopeApiResponse {
+  data?: WorkPackageNodeScopes;
+}
+
+export interface WorkPackageNodeScopes {
+  id: string;
+  name: string;
+  explicitlyIncluded: boolean;
+  removeFromButton: boolean;
+  availableForAddition: boolean;
+}
+
+export interface WorkPackageNodeFindPotential {
+  childrenOf: ChildrenOf;
+}
+
+interface ChildrenOf {
+  id: string;
+}
+

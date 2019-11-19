@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AttributeEntity } from '../../store/models/attributes.model';
 import { State as AttributeState } from '../../store/reducers/attributes.reducer';
 import { select, Store } from '@ngrx/store';
-import { LoadAttributes } from '../../store/actions/attributes.actions';
+import { LoadAttributes, AddAttribute } from '../../store/actions/attributes.actions';
 import * as fromAttributeEntities from '../../store/selectors/attributes.selector';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
@@ -22,20 +22,24 @@ import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
   styleUrls: ['attributes.component.scss']
 })
 export class AttributesComponent implements OnInit, OnDestroy {
-  attributes: Subscription;
-  attribute: AttributeEntity[];
-  workpackage$: Observable<WorkPackageEntity[]>;
-  hideTab = true;
-  selectedLeftTab: number;
-  showOrHidePane: boolean;
-  subscriptions: Subscription[] = [];
+ public attributes: Subscription;
+ public attribute: AttributeEntity[];
+ public workpackage$: Observable<WorkPackageEntity[]>;
+ public hideTab: boolean = true;
+ public selectedLeftTab: number;
+ public showOrHidePane: boolean;
+ public subscriptions: Subscription[] = [];
+	public workpackageId: string;
+	public canSelectWorkpackage: boolean = true;
+	public workPackageIsEditable: boolean;
 
   constructor(
     private store: Store<AttributeState>,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     private workPackageStore: Store<WorkPackageState>,
     private router: Router
-  ) {}
+  ,
+		private dialog: MatDialog) {}
 
   ngOnInit() {
     this.subscriptions.push(
@@ -55,7 +59,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
         const workPackageIds = workpackages.map(item => item.id);
         const selected = workpackages.map(item => item.selected);
-        if (!selected.length) {
+        const edit = workpackages.map(item => item.edit);
+			(edit[0] === true) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;if (!selected.length) {
           this.router.navigate(['/attributes-and-rules'], { queryParamsHandling: 'preserve' });
         }
         this.setWorkPackage(workPackageIds);
@@ -71,22 +76,22 @@ export class AttributesComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  setWorkPackage(workpackageIds: string[] = []) {
+  setWorkPackage(workpackageIds: string[] = []): void {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
     this.store.dispatch(new LoadAttributes(queryParams));
   }
 
-  get categoryTableData() {
+  get categoryTableData(): AttributeEntity[] {
     return this.attribute;
   }
 
-  onSelectAttribute(entry: AttributeEntity) {
+  onSelectAttribute(entry: AttributeEntity): void {
     this.router.navigate(['/attributes-and-rules', entry.id], { queryParamsHandling: 'preserve' });
   }
 
-  onSelectWorkPackage(selection: { id: string; newState: boolean }) {
+  onSelectWorkPackage(selection: { id: string; newState: boolean }): void {
     this.routerStore
       .select(getWorkPackagesQueryParams)
       .pipe(take(1))
@@ -115,14 +120,33 @@ export class AttributesComponent implements OnInit, OnDestroy {
       });
   }
 
-  openLeftTab(index: number) {
+  openLeftTab(index: number): void {
     this.selectedLeftTab = index;
     if (this.selectedLeftTab === index) {
       this.showOrHidePane = true;
     }
   }
 
-  hideLeftPane() {
+  hideLeftPane(): void {
     this.showOrHidePane = false;
-  }
+  }onSelectEditWorkpackage(workpackage: any): void {
+    this.workpackageId = workpackage.id;
+    this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
+	}
+
+	onAdd(): void {
+    const dialogRef = this.dialog.open(AttributeModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if(data && data.attribute) {
+				this.store.dispatch(new AddAttribute({
+					workPackageId: this.workpackageId,
+					entity: { data: {...data.attribute }}
+				}))
+			}
+    });
+	}
 }

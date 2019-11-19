@@ -16,11 +16,13 @@
                 <mat-tab label="Work Packages">
                     <smi-workpackage-tab-table 
                         [data]="workpackage$ | async"
-                        (selectWorkPackage)="onSelectWorkPackage($event)">
+                        (selectWorkPackage)="onSelectWorkPackage($event)"
+                        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+                        [canSelectWorkpackage]="canSelectWorkpackage">
                     </smi-workpackage-tab-table>
                 </mat-tab>
             </mat-tab-group>
-            <button mat-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>
+            <button class="hide-btn" mat-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>
         </p>
     </app-model-sidebar>
 
@@ -32,6 +34,8 @@
                     [categories]="['attribute', 'rule']"
                     (selectRow)="onSelectAttribute($event)">
                 </app-category-table>
+                <!-- Add new attribute button -->
+                <button class="add-btn" mat-raised-button color="primary" [disabled]="!workPackageIsEditable" (click)="onAdd()">New</button>
             </div>
         </div>
     </div>

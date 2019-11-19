@@ -67,10 +67,13 @@ import { OwnersTableComponent } from './components/owners-table/owners-table.com
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
+import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
 import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
 import { SettingsModule } from '@app/settings/settings.module';
 import { SwitchViewTabsComponent } from '@app/architecture/components/switch-view-tabs/switch-view-tabs.component';
 import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
+import { ScopeTableComponent } from './components/scope-table/scope-table.component';
+import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-modal.component';
 
 @NgModule({
   imports: [
@@ -136,9 +139,12 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     DescendantsTableComponent,
     DescendantsModalComponent,
     EditNameModalComponent,
+    RelatedAttributeTableComponent,
     RadioDetailModalComponent,
     SwitchViewTabsComponent,
-    ArchitectureTableViewComponent
+    ArchitectureTableViewComponent,
+    ScopeTableComponent,
+    NodeScopeModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -147,7 +153,8 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
     AttributeModalComponent,
     DescendantsModalComponent,
     EditNameModalComponent,
-    RadioDetailModalComponent
+    RadioDetailModalComponent,
+    NodeScopeModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
