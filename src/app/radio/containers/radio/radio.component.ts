@@ -41,13 +41,13 @@ export class RadioComponent implements OnInit {
 
   ngOnInit() {
     this.userStore.dispatch(new LoadUsers({}));
-    
+
     this.store.dispatch(new LoadRadios({}));
     this.radio$ = this.store.pipe(select(getRadioEntities));
   }
 
   onSelectRadio(row: RadioEntity) {
-    this.router.navigate(['radio', row.id]);
+    this.router.navigate(['radio', row.id], {queryParamsHandling: 'preserve' });
   }
 
   onAddRadio() {
@@ -57,7 +57,7 @@ export class RadioComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.radio) {
-        this.store.dispatch(new AddRadioEntity({ 
+        this.store.dispatch(new AddRadioEntity({
           data: {
             title: data.radio.title,
             status: data.radio.status,
@@ -68,7 +68,7 @@ export class RadioComponent implements OnInit {
             relatesTo: [{workPackage: {id: '00000000-0000-0000-0000-000000000000'}}],
             actionBy: data.radio.actionBy,
             mitigation: data.radio.mitigation
-          } 
+          }
         }));
       }
     });

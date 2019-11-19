@@ -34,7 +34,7 @@ export class DocumentationStandardsComponent implements OnInit {
   }
 
   onSelectDocument(row) {
-    this.router.navigate(['documentation-standards', row.id]);
+    this.router.navigate(['documentation-standards', row.id], {queryParamsHandling: 'preserve' });
   }
 
   onAddDocument() {

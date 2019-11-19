@@ -28,14 +28,15 @@ export class WorkPackageTabTableComponent {
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 
-  @Output() selectWorkPackage = new EventEmitter<string>();
+  @Output() selectWorkPackage = new EventEmitter<{id: string, newState: boolean}>();
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
   @Output() setWorkpackageEditMode = new EventEmitter();
 
-  onSelect(id: string): void {
-    this.selectWorkPackage.emit(id);
+  onSelect(id: string, newState: boolean, ev): void {
+    ev.preventDefault();
+    this.selectWorkPackage.emit({id, newState});
   }
 
   canSelect(workpackage: any): boolean {
