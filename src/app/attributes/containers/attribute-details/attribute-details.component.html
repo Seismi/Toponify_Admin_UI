@@ -9,18 +9,37 @@
         <p class="rightPane">
             <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
                 <mat-tab label="Details">
-                    <smi-object-details-form 
-                        [group]="objectDetailsForm" 
-                        [isEditable]="isEditable"
-                        (editDetails)="onEditDetails($event)" 
-                        (cancel)="onCancelEdit($event)"
-                        (saveAttribute)="onSaveAttribute($event)" 
-                        [workPackageIsEditable]="true">
-                    </smi-object-details-form>
+                    <p class="detailsTab">
+                        <smi-object-details-form
+                            [owners]="attribute?.owners"
+                            [group]="objectDetailsForm" 
+                            [isEditable]="isEditable"
+                            (editDetails)="onEditDetails($event)" 
+                            (cancel)="onCancelEdit($event)"
+                            (saveAttribute)="onSaveAttribute($event)"
+                            (deleteAttribute)="onDeleteAttribute($event)" 
+                            [workPackageIsEditable]="workPackageIsEditable"
+                            [selectedOwnerIndex]="selectedOwnerIndex"
+                            (addOwner)="onAddOwner($event)"
+                            (deleteOwner)="onDeleteOwner($event)"
+                            [selectedOwner]="selectedOwner"
+                            (selectOwner)="onSelectOwner($event)"
+                            [attributesPage]="true"
+                            [relatedAttributes]="attribute?.related"
+                            [selectedRelatedIndex]="selectedRelatedIndex"
+                            (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
+                            [selectAttribute]="selectAttribute"
+                            (addRelatedAttribute)="onAddRelatedAttribute()"
+                            (deleteRelatedAttribute)="onDeleteRelatedAttribute()">
+                        </smi-object-details-form>
+                    </p>
                 </mat-tab>
                 <mat-tab label="Properties">
                     <smi-properties-table-in-attributes-page 
-                        [data]="attribute?.customProperties">
+                        [data]="attribute?.customProperties"
+                        [workPackageIsEditable]="workPackageIsEditable"
+                        (editProperty)="onEditProperty($event)"
+                        (deleteProperty)="onDeleteProperty($event)">
                     </smi-properties-table-in-attributes-page>
                 </mat-tab>
                 <mat-tab label="RADIO">
