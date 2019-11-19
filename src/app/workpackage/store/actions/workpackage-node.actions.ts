@@ -1,5 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
+import { WorkPackageNodeScopes, WorkPackageNodeScopesApiResponse, WorkPackageNodeScopeApiResponse } from '../models/workpackage.models';
+import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
+import { AddScopeApiResponse, ScopeDetails } from '@app/scope/store/models/scope.model';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { WorkPackageNodeFindPotential } from '../models/workpackage.models';
 
 export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
@@ -32,7 +37,28 @@ export enum WorkPackageNodeActionTypes {
 
   DeleteWorkpackageNodeOwner = '[WorkPackage] Delete Node Owner',
   DeleteWorkpackageNodeOwnerSuccess = '[WorkPackage] Delete Node Owner Success',
-  DeleteWorkpackageNodeOwnerFailure = '[WorkPackage] Delete Node Owner Failure'
+  DeleteWorkpackageNodeOwnerFailure = '[WorkPackage] Delete Node Owner Failure',
+
+  LoadWorkPackageNodeScopes = '[WorkPackage] Load Node Scopes',
+  LoadWorkPackageNodeScopesSuccess = '[WorkPackage] Load Node Scopes Success',
+  LoadWorkPackageNodeScopesFailure = '[WorkPackage] Load Node Scopes Failure',
+  
+  LoadWorkPackageNodeScopesAvailability = '[WorkPackage] Load Node Scopes Availability',
+  LoadWorkPackageNodeScopesAvailabilitySuccess = '[WorkPackage] Load Node Scopes Availability Success',
+  LoadWorkPackageNodeScopesAvailabilityFailure = '[WorkPackage] Load Node Scopes Availability Failure',
+
+  AddWorkPackageNodeScope = '[Scope] Add Node Scope',
+  AddWorkPackageNodeScopeSuccess = '[Scope] Add Node Scope Success',
+  AddWorkPackageNodeScopeFailure = '[Scope] Add Node Scope Failure',
+
+  DeleteWorkPackageNodeScope = '[Scope] Delete Node Scope',
+  DeleteWorkPackageNodeScopeSuccess = '[Scope] Delete Node Scope Success',
+  DeleteWorkPackageNodeScopeFailure = '[Scope] Delete Node Scope Failure',
+
+  FindPotentialWorkpackageNodes = '[WorkPackage] Find Potential Workpackage Nodes',
+  FindPotentialWorkpackageNodesSuccess = '[WorkPackage] Find Potential Workpackage Nodes Success',
+  FindPotentialWorkpackageNodesFailure = '[WorkPackage] Find Potential Workpackage Nodes Failure'
+
 }
 
 export class AddWorkPackageNode implements Action {
@@ -52,12 +78,12 @@ export class AddWorkPackageNodeFailure implements Action {
 
 export class AddWorkPackageNodeDescendant implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant;
-  constructor(public payload: {workpackageId: string, nodeId: string, node: any}) {}
+  constructor(public payload: { workPackageId: string, nodeId: string, data: DescendantsEntity }) {}
 }
 
 export class AddWorkPackageNodeDescendantSuccess implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: DescendantsEntity) {}
 }
 
 export class AddWorkPackageNodeDescendantFailure implements Action {
@@ -72,7 +98,7 @@ export class DeleteWorkPackageNodeDescendant implements Action {
 
 export class DeleteWorkPackageNodeDescendantSuccess implements Action {
   readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendantSuccess;
-  constructor(public payload: any) {}
+  constructor(public payload: DescendantsEntity) {}
 }
 
 export class DeleteWorkPackageNodeDescendantFailure implements Action {
@@ -155,6 +181,81 @@ export class DeleteWorkpackageNodeOwnerFailure implements Action {
   constructor(public payload: any) { }
 }
 
+export class LoadWorkPackageNodeScopes implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeScopes;
+  constructor(public payload: { nodeId: string, queryParams?: GetWorkPackageNodeScopesQueryParams }) {}
+}
+
+export class LoadWorkPackageNodeScopesSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesSuccess;
+  constructor(public payload: WorkPackageNodeScopes[]) {}
+}
+
+export class LoadWorkPackageNodeScopesFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesFailure;
+  constructor(public payload: Error) {}
+}
+
+export class LoadWorkPackageNodeScopesAvailability implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailability;
+  constructor(public payload: { nodeId: string, queryParams?: GetWorkPackageNodeScopesQueryParams }) {}
+}
+
+export class LoadWorkPackageNodeScopesAvailabilitySuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilitySuccess;
+  constructor(public payload: WorkPackageNodeScopes[]) {}
+}
+
+export class LoadWorkPackageNodeScopesAvailabilityFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilityFailure;
+  constructor(public payload: Error) {}
+}
+
+export class AddWorkPackageNodeScope implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeScope;
+  constructor(public payload: { scopeId: string, data: string[] }) {}
+}
+
+export class AddWorkPackageNodeScopeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess;
+  constructor(public payload: WorkPackageNodeScopes) {}
+}
+
+export class AddWorkPackageNodeScopeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeScopeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkPackageNodeScope implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeScope;
+  constructor(public payload: { scopeId: string, nodeId: string }) {}
+}
+
+export class DeleteWorkPackageNodeScopeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeSuccess;
+  constructor(public payload: WorkPackageNodeScopes) {}
+}
+
+export class DeleteWorkPackageNodeScopeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class FindPotentialWorkpackageNodes implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes;
+  constructor(public payload: { workPackageId: string, nodeId: string, data: WorkPackageNodeFindPotential }) { }
+}
+
+export class FindPotentialWorkpackageNodesSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesSuccess;
+  constructor(public payload: DescendantsEntity[]) { }
+}
+
+export class FindPotentialWorkpackageNodesFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
@@ -179,4 +280,20 @@ export type WorkPackageNodeActionsUnion =
   | DeleteWorkpackageNodeOwnerFailure
   | DeleteWorkPackageNodeDescendant
   | DeleteWorkPackageNodeDescendantSuccess
-  | DeleteWorkPackageNodeDescendantFailure;
+  | DeleteWorkPackageNodeDescendantFailure
+  | LoadWorkPackageNodeScopes
+  | LoadWorkPackageNodeScopesSuccess
+  | LoadWorkPackageNodeScopesFailure
+  | LoadWorkPackageNodeScopesAvailability
+  | LoadWorkPackageNodeScopesAvailabilitySuccess
+  | LoadWorkPackageNodeScopesAvailabilityFailure
+  | AddWorkPackageNodeScope
+  | AddWorkPackageNodeScopeSuccess
+  | AddWorkPackageNodeScopeFailure
+  | DeleteWorkPackageNodeScope
+  | DeleteWorkPackageNodeScopeSuccess
+  | DeleteWorkPackageNodeScopeFailure
+  | FindPotentialWorkpackageNodes
+  | FindPotentialWorkpackageNodesSuccess
+  | FindPotentialWorkpackageNodesFailure;
+

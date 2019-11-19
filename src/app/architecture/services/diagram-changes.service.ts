@@ -8,87 +8,98 @@ import * as go from 'gojs';
 import { BehaviorSubject } from 'rxjs';
 import { State as WorkPackageState } from '../../workpackage/store/reducers/workpackage.reducer';
 import { DiagramLevelService, Level } from './diagram-level.service';
-import { FilterService } from './filter.service';
 import { MatDialog } from '@angular/material';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
+import { RouterReducerState } from '@ngrx/router-store';
+import { RouterStateUrl } from '@app/core/store';
+import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
+import { take } from 'rxjs/operators';
 
 const $ = go.GraphObject.make;
 
 @Injectable()
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
+  private currentLevel: Level;
 
   workpackages = [];
 
   constructor(
     public diagramLevelService: DiagramLevelService,
-    public filterService: FilterService,
+    private store: Store<RouterReducerState<RouterStateUrl>>,
     public dialog: MatDialog,
     private workpackageStore: Store<WorkPackageState>
   ) {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
+    this.store.select(getFilterLevelQueryParams).subscribe(level => this.currentLevel = level);
   }
 
   // Add newly created nodes to the back end
   //  -event
   //    -subject: set of nodes to add to the database
   createObjects(event: go.DiagramEvent): void {
-    const { id: nodeId } = this.filterService.getFilter();
+    this.store
+      .select(getQueryParams)
+      .pipe(take(1))
+      .subscribe(params => {
+        const { id: nodeId, scope } = params;
 
-    const shortEditWorkpackage = {
-      id: this.workpackages[0].id,
-      name: this.workpackages[0].name,
-      description: this.workpackages[0].description,
-      hasErrors: this.workpackages[0].hasErrors,
-      status: this.workpackages[0].status
-    };
+        const shortEditWorkpackage = {
+          id: this.workpackages[0].id,
+          name: this.workpackages[0].name,
+          description: this.workpackages[0].description,
+          hasErrors: this.workpackages[0].hasErrors,
+          status: this.workpackages[0].status
+        };
 
-    event.subject.each((part: go.Part) => {
-      // Set workpackage currently being edited as "impacted by" workpackage for the part
-      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
+        event.subject.each((part: go.Part) => {
+          // Set workpackage currently being edited as "impacted by" workpackage for the part
+          event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
-      // Only add nodes here as new links are temporary until connected
-      if (part instanceof go.Node) {
-        const node = Object.assign({}, part.data);
-        node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
-        const dialogRef = this.dialog.open(EditNameModalComponent, {
-          disableClose: false,
-          width: 'auto',
-          data: {
-            name: node.name
-          }
-        });
+          // Only add nodes here as new links are temporary until connected
+          if (part instanceof go.Node) {
+            const node = Object.assign({}, part.data);
+            node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
+            const dialogRef = this.dialog.open(EditNameModalComponent, {
+              disableClose: false,
+              width: 'auto',
+              data: {
+                name: node.name
+              }
+            });
 
-        dialogRef.afterClosed().subscribe((data: { name: string }) => {
-          if (data && data.name) {
-            node.name = data.name;
-          }
-          const { scope } = this.filterService.getFilter();
-          this.workpackages.forEach(workpackage => {
-            if (nodeId) {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageNode({
-                  workpackageId: workpackage.id,
-                  node: {
-                    ...node,
-                    parentId: nodeId
-                  },
-                  scope
-                })
-              );
-            } else {
-              this.workpackageStore.dispatch(new AddWorkPackageNode({ workpackageId: workpackage.id, node, scope }));
+            dialogRef.afterClosed().subscribe((data: { name: string }) => {
+              if (data && data.name) {
+                node.name = data.name;
+              }
+              this.workpackages.forEach(workpackage => {
+                if (nodeId) {
+                  this.workpackageStore.dispatch(
+                    new AddWorkPackageNode({
+                      workpackageId: workpackage.id,
+                      node: {
+                        ...node,
+                        parentId: nodeId
+                      },
+                      scope
+                    })
+                  );
+                } else {
+                  this.workpackageStore.dispatch(
+                    new AddWorkPackageNode({ workpackageId: workpackage.id, node, scope })
+                  );
+                }
+              });
+            });
+          } else {
+            if ('displayId' in part.data) {
+              part.data.id = part.data.displayId;
             }
-          });
+          }
         });
-      } else {
-        if ('displayId' in part.data) {
-          part.data.id = part.data.displayId;
-        }
-      }
-    });
+      });
   }
 
   // Updates the properties associated with a node or link
@@ -164,10 +175,9 @@ export class DiagramChangesService {
   //  -event
   //    -subject: set of parts to update the positions of
   updatePosition(event: any): void {
-    const currentLevel = this.filterService.filter.getValue().filterLevel;
 
     // Do not update positions for map view
-    if (currentLevel.endsWith('map')) {
+    if (this.currentLevel.endsWith('map')) {
       return;
     }
 
@@ -238,7 +248,7 @@ export class DiagramChangesService {
     }
 
     // Redo layout for node usage view after updating display options
-    if (this.filterService.getFilter().filterLevel === Level.usage) {
+    if (this.currentLevel === Level.usage) {
       diagram.layout.isValidLayout = false;
     } else {
       // Update the route of links after display change
@@ -260,21 +270,19 @@ export class DiagramChangesService {
     const relinkingTool = event.diagram.toolManager.relinkingTool;
 
     const link = event.subject;
-    const currentLevel = this.filterService.filter.getValue().filterLevel;
 
     // Ignore disconnected links
     if (link.fromNode && link.toNode) {
-
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
 
       // TEMPORARY - condition to prevent error while impactedByWorkPackages missing from nodeLink components response
-      if (!currentLevel.endsWith('map')) {
+      if (!this.currentLevel.endsWith('map')) {
         // Add currently editing workpackage to array of workpackages impacted by if not there already
         if (
           link.data.impactedByWorkPackages.every(
-            function (workpackage) {
+            function(workpackage) {
               return workpackage.id !== this.workpackages[0].id;
             }.bind(this)
           )

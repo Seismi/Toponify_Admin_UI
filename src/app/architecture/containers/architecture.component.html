@@ -52,10 +52,11 @@
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
         [selectedLeftTab]="selectedLeftTab"
         [checked]="radioAlertChecked"
-        [canSelectWorkpackages]="canSelectWorkpackages">
+        [canSelectWorkpackages]="canSelectWorkpackages"
+        (hideLeftPane)="onHideLeftPane()"
+        [layoutSettingsTab]="layoutSettingsTab"
+        (addLayout)="onAddLayout()">
       </smi-left-panel>
-      <!-- Hide left pane button -->
-      <button mat-raised-button color="primary" class="hide-btn" (click)="onHideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
     </p>
   <app-model-content>
     <smi-switch-view-tabs (viewChange)="onViewChange($event)" [selectedView]="selectedView" [viewLevel]="viewLevel$ | async"></smi-switch-view-tabs>
@@ -66,8 +67,8 @@
         [allowMove]="allowMove"
         [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
-        [nodes]="nodes | layer: { byId: true }"
-        [links]="links | layer: { byId: false }"
+        [nodes]="nodes | layer: { byId: true, params: params}"
+        [links]="links | layer: { byId: false, params: params}"
         [workpackageDetail]="workpackageDetail"
         [selectedId]="selectedId"
         [selectedWorkPackages]="selectedWorkPackages$ | async"
@@ -82,14 +83,14 @@
       </app-architecture-diagram>
     </div>
     <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.System">
-      <smi-architecture-table-view [data]="nodes | layer: { byId: true }"
+      <smi-architecture-table-view [data]="nodes | layer: { byId: true, params: params }"
                                    [selectedItem]="selectedNode"
                                    (selectNode)="onSelectNode($event)"
                                    (changeLevel)="onChangeLevel($event)"
                                    [view]="'system'"></smi-architecture-table-view>
     </div>
     <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.Links">
-      <smi-architecture-table-view [data]="links | layer: { byId: false }"
+      <smi-architecture-table-view [data]="links | layer: { byId: false, params: params }"
                                    [selectedItem]="selectedNode"
                                    (selectNode)="onSelectNode($event)"
                                    (changeLevel)="onChangeLevel($event)"
@@ -146,6 +147,10 @@
         (addDescendant)="onAddDescendant()"
         (deleteDescendant)="onDeleteDescendant($event)"
         (openRadio)="onOpenRadio($event)"
+        [nodeScopes]="nodeScopes$ | async"
+        (deleteScope)="onDeleteScope($event)"
+        (addExistingScope)="onAddExistingScope()"
+        (addNewScope)="onAddNewScope()"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

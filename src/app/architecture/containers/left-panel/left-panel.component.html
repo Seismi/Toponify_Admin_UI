@@ -40,3 +40,9 @@
   </mat-tab>
   </mat-tab-group>
 </div>
+
+<!-- Hide left pane button -->
+<button mat-raised-button color="primary" class="hide-btn" (click)="onHideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
+
+<!-- Add Layout button -->
+<button mat-raised-button color="primary" class="layout-btn" (click)="onAddLayout()" *ngIf="layoutSettingsTab">Add Layout</button>

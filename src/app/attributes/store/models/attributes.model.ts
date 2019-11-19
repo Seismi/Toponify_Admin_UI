@@ -57,6 +57,9 @@ export interface RelatedEntity {
 export interface AttributeDetailApiResponse {
     data: AttributeDetail;
 }
+export interface AttributeDetailApiRequest {
+    data: AttributeDetail;
+}
 export interface AttributeDetail {
     id: string;
     name: string;
@@ -85,10 +88,14 @@ export interface RelatedRadios {
     description: string;
 }
 
+export interface CustomPropertiesApiRequest {
+    data: CustomPropertyValues;
+}
+
 export interface CustomPropertyValues {
-    propertyId: string;
-    name: string;
-    type: boolean;
+    propertyId?: string;
+    name?: string;
+    type?: boolean;
     value: string;
 }
 

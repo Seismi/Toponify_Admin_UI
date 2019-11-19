@@ -28,11 +28,21 @@
     </mat-form-field>
 
     <smi-descendants-table-in-architecture
-      *ngIf="!clickedOnLink" [data]="descendants"
+      *ngIf="!clickedOnLink && !attributesPage" [data]="descendants"
       [isEditable]="isEditable"
       (addDescendant)="onAddDescendant()"
       (deleteDescendant)="onDeleteDescendant($event)">
     </smi-descendants-table-in-architecture>
+
+    <smi-related-attribute-table 
+      *ngIf="attributesPage" [data]="relatedAttributes"
+      [isEditable]="isEditable"
+      [selectedRelatedIndex]="selectedRelatedIndex"
+      (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
+      [selectAttribute]="selectAttribute"
+      (addRelatedAttribute)="onAddRelatedAttribute()"
+      (deleteRelatedAttribute)="onDeleteRelatedAttribute()">
+    </smi-related-attribute-table>
   </div>
 
   <div class="form-group" *ngIf="workPackageIsEditable">

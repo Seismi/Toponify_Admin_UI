@@ -46,11 +46,11 @@ export interface OwnersEntityOrViewersEntity {
 
 export interface Include {
     id: string;
-    category: string;
-    name: string;
-    layer: string;
-    description: string;
-    tags: string;
+    category?: string;
+    name?: string;
+    layer?: string;
+    description?: string;
+    tags?: string;
     locations?: ((LocationsEntityEntity)[] | null)[] | null;
     owners?: (OwnersEntityOrViewersEntity)[] | null;
     descendants?: (Descendants)[] | null;

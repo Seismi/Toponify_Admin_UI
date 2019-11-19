@@ -1,11 +1,12 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { Level } from '../../../../architecture/services/diagram-level.service';
-import { SetViewLevel } from '../../../../architecture/store/actions/view.actions';
-import { State as ViewState } from '../../../../architecture/store/reducers/architecture.reducer';
-import { FilterService } from '@app/architecture/services/filter.service';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Level } from '@app/architecture/services/diagram-level.service';
+import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
+import { State as ViewState } from '@app/architecture/store/reducers/architecture.reducer';
 import { Observable, Subscription } from 'rxjs';
 import { getViewLevel } from '@app/architecture/store/selectors/view.selector';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 
 export const viewLevelMapping = {
   [1]: Level.system,
@@ -17,12 +18,12 @@ export const viewLevelMapping = {
 @Component({
   selector: 'app-zoom-actions',
   templateUrl: './zoom-actions.component.html',
-  styleUrls: ['./zoom-actions.component.scss'],
-  providers: [FilterService]
+  styleUrls: ['./zoom-actions.component.scss']
 })
 export class ZoomActionsComponent implements OnInit, OnDestroy {
 
   selected: string;
+  filterLevel: number;
 
   public viewLevel: number;
   public viewLevel$: Observable<number>;
@@ -38,10 +39,10 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<ViewState>,
-    public filterService: FilterService
   ) {}
 
   ngOnInit() {
+    this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => this.filterLevel = filterLevel);
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
     this.viewLevelSubscription = this.viewLevel$.subscribe(level => {
       this.viewLevel = level;
@@ -57,8 +58,9 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
 
   onViewLevelSelected(level: any) {
     if (viewLevelMapping[level]) {
-      if (this.filterService.getFilter().filterLevel !== viewLevelMapping[level]) {
-        this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, ['id', 'parentName']);
+      if (this.filterLevel !== viewLevelMapping[level]) {
+        this.store.dispatch(new UpdateQueryParams({filterLevel: viewLevelMapping[level], id: null, parentName: null}));
+        // this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, ['id', 'parentName']);
       }
     }
     this.store.dispatch(new SetViewLevel(level));

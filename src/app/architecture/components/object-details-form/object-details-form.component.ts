@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 
 @Component({
   selector: 'smi-object-details-form',
@@ -12,11 +13,15 @@ export class ObjectDetailsFormComponent {
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
-  @Input() clickedOnLink = false;
-  @Input() isEditable = false;
-  @Input() workPackageIsEditable = false;
+  @Input() clickedOnLink: boolean = false;
+  @Input() isEditable: boolean = false;
+  @Input() workPackageIsEditable: boolean = false;
   @Input() selectedOwner: boolean;
   @Input() selectedOwnerIndex: string | null;
+  @Input() attributesPage: boolean = false;
+  @Input() relatedAttributes: AttributeEntity[];
+  @Input() selectedRelatedIndex: string | null;
+  @Input() selectAttribute: boolean;
 
   constructor() {}
 
@@ -36,7 +41,13 @@ export class ObjectDetailsFormComponent {
 
   @Output() addDescendant = new EventEmitter<void>();
 
-  @Output() deleteDescendant = new EventEmitter<string>();
+  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
+
+  @Output() selectRelatedAttribute = new EventEmitter<string>();
+
+  @Output() addRelatedAttribute = new EventEmitter<void>();
+
+  @Output() deleteRelatedAttribute = new EventEmitter<void>();
 
   onEdit(): void {
     this.editDetails.emit();
@@ -59,7 +70,7 @@ export class ObjectDetailsFormComponent {
     this.addOwner.emit();
   }
 
-  onSelectOwner(ownerId: string) {
+  onSelectOwner(ownerId: string): void {
     this.selectOwner.emit(ownerId);
   }
 
@@ -67,12 +78,24 @@ export class ObjectDetailsFormComponent {
     this.deleteOwner.emit();
   }
 
-  onAddDescendant() {
+  onAddDescendant(): void {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(id: string) {
-    this.deleteDescendant.emit(id);
+  onDeleteDescendant(descendant: DescendantsEntity): void {
+    this.deleteDescendant.emit(descendant);
+  }
+
+  onSelectRelatedAttribute(relatedAttributeId: string): void {
+    this.selectRelatedAttribute.emit(relatedAttributeId);
+  }
+
+  onAddRelatedAttribute(): void {
+    this.addRelatedAttribute.emit();
+  }
+
+  onDeleteRelatedAttribute(): void {
+    this.deleteRelatedAttribute.emit();
   }
 
 }
