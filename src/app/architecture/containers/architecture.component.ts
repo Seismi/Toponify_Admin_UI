@@ -199,7 +199,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
   public layoutSettingsTab: boolean;
-  public scopeId: string = '00000000-0000-0000-0000-000000000000';
+  public scopeId: string;
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
   public params: Params;
@@ -323,6 +323,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
+        this.scopeId = scope.id;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
         // this.filterService.addFilter({ scope: scope.id });
       }
@@ -853,7 +854,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectScope(id) {
-    this.scopeId = id;
     this.scopeStore.dispatch(new LoadScope(id));
   }
 
