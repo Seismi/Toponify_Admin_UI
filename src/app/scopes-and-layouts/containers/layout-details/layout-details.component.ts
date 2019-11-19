@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { LoadLayout, DeleteLayout, UpdateLayout } from '@app/layout/store/actions/layout.actions';
@@ -25,6 +25,7 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
   layoutId: string;
 
   constructor(
+    private router: Router,
     private dialog: MatDialog,
     private layoutsDetailService: LayoutsDetailService,
     private route: ActivatedRoute,
@@ -65,10 +66,10 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
       data: {
         id: this.layoutId,
         name: this.layoutsDetailForm.value.name,
-        scope: [{
+        scope: {
           id: this.layoutsDetailService.scopeId,
           name: this.layoutsDetailService.scopeName
-        }]
+        }
       }
     }))
   }
@@ -85,6 +86,7 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteLayout(this.layoutId));
+        this.router.navigate(['/scopes-and-layouts/' + this.layout.scope.id]);
       }
     });
   }

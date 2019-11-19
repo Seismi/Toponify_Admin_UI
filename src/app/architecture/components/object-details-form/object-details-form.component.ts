@@ -41,7 +41,7 @@ export class ObjectDetailsFormComponent {
 
   @Output() addDescendant = new EventEmitter<void>();
 
-  @Output() deleteDescendant = new EventEmitter<string>();
+  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
   @Output() selectRelatedAttribute = new EventEmitter<string>();
 
@@ -82,8 +82,8 @@ export class ObjectDetailsFormComponent {
     this.addDescendant.emit();
   }
 
-  onDeleteDescendant(id: string): void {
-    this.deleteDescendant.emit(id);
+  onDeleteDescendant(descendant: DescendantsEntity): void {
+    this.deleteDescendant.emit(descendant);
   }
 
   onSelectRelatedAttribute(relatedAttributeId: string): void {
