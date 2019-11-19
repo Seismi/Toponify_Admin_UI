@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
 
 @Component({
   selector: 'smi-radio-header',
@@ -7,7 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class RadioHeaderComponent { 
 
-  public status:string = "new, open, closed";
+  @Input() status: string;
 
   @Output() filter = new EventEmitter<void>();
   @Output() resetFilter = new EventEmitter<void>();

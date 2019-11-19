@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { RadioEntity, RadiosAdvancedSearch } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { LoadRadios, AddRadioEntity, SearchRadio } from '../../store/actions/radio.actions';
-import { getRadioEntities } from '../../store/selectors/radio.selector';
+import { LoadRadios, AddRadioEntity, SearchRadio, RadioFilter } from '../../store/actions/radio.actions';
+import { getRadioEntities, getRadioFilter } from '../../store/selectors/radio.selector';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
@@ -15,8 +15,6 @@ import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { State as NodeState } from '@app/nodes/store/reducers/node.reducer';
 import { LoadNodes } from '@app/nodes/store/actions/node.actions';
-
-let filterData: RadiosAdvancedSearch | any;
 
 @Component({
   selector: 'smi-radio',
@@ -29,6 +27,8 @@ export class RadioComponent implements OnInit, OnDestroy {
   public radio$: Observable<RadioEntity[]>;
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
+  public filterData: RadiosAdvancedSearch;
+  public status: string | any;
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -49,10 +49,15 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.store.dispatch(new LoadRadios({}));
     this.nodeStore.dispatch(new LoadNodes());
     this.radio$ = this.store.pipe(select(getRadioEntities));
+
+    this.store.pipe(select(getRadioFilter)).subscribe(data => {
+      (data && data.status) ? this.status = data.status : this.status = 'new,open,closed';
+      this.filterData = data;
+    });
   }
 
   ngOnDestroy(): void {
-    filterData = null;
+    this.store.dispatch(new RadioFilter(null));
   }
 
   onSelectRadio(row: RadioEntity): void {
@@ -87,16 +92,14 @@ export class RadioComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(FilterModalComponent, {
       disableClose: false,
       data: {
-        filterData: filterData,
-        mode: (filterData) ? 'filter' : null
+        filterData: this.filterData,
+        mode: (this.filterData) ? 'filter' : null
       }
     });
 
     dialogRef.afterClosed().subscribe((data) => {
       if(data && data.radio) {
-
-        filterData = data.radio;
-
+        this.store.dispatch(new RadioFilter(data.radio));
         this.store.dispatch(new SearchRadio({
           data: {
             status: {
@@ -133,8 +136,8 @@ export class RadioComponent implements OnInit, OnDestroy {
   }
 
   onResetFilter(): void {
-    this.store.dispatch(new LoadRadios({})); 
-    filterData = null;
+    this.store.dispatch(new LoadRadios({}));
+    this.store.dispatch(new RadioFilter(null));
   }
 
 }

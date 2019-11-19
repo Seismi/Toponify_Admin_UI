@@ -13,7 +13,8 @@
       <div class="col mat-elevation-z8">
           <smi-radio-header
             (filter)="onFilter()"
-            (resetFilter)="onResetFilter()">
+            (resetFilter)="onResetFilter()"
+            [status]="status">
           </smi-radio-header>
           <smi-radio-table 
             data-hook="radio-table" 
