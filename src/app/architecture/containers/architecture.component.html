@@ -121,7 +121,7 @@
         [selectedOwnerIndex]="selectedOwnerIndex"
         (editDetails)="onEditDetails($event)"
         (saveAttribute)="onSaveObjectDetails()"
-        (deleteAttribute)="onDeleteAttribute()"
+        (deleteNode)="onDeleteNode()"
         [attributes]="selectedNode?.attributes"
         [relatedRadios]="selectedNode?.relatedRadios"
         [radio]="radio$ | async"

@@ -45,7 +45,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   saveAttribute = new EventEmitter();
 
   @Output()
-  deleteAttribute = new EventEmitter();
+  deleteNode = new EventEmitter();
 
   @Output()
   editDetails = new EventEmitter();
@@ -123,8 +123,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.editDetails.emit();
   }
 
-  onDeleteAttribute() {
-    this.deleteAttribute.emit();
+  onDeleteNode() {
+    this.deleteNode.emit();
   }
 
   onCancel() {
