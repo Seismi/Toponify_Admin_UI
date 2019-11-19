@@ -1,13 +1,8 @@
 table {
     width: 100%;
-    border: solid 1px #ddd;
     margin-bottom: 20px;
 }
 
-tr.mat-header-row {
-    height: 35px;
-}
-
-tr.mat-row {
+tr.mat-header-row, tr.mat-row {
     height: 35px;
 }

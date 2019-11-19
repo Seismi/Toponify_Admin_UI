@@ -54,6 +54,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
           viewers: scope.viewers,
           layerFilter: scope.layerFilter
         });
+        this.sharedService.scope = scope;
       }
     }));
   }

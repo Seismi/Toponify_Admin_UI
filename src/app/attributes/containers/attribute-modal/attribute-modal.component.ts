@@ -18,8 +18,8 @@ import { getSelectedNode } from '@app/architecture/store/selectors/node.selector
 
 export class AttributeModalComponent implements OnInit {
 
-  attribute: AttributeEntity;
-  node: NodeDetail;
+  public attribute: AttributeEntity;
+  public node: NodeDetail;
 
   constructor(
     private store: Store<NodeState>,

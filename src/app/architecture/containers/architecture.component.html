@@ -52,10 +52,11 @@
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
         [selectedLeftTab]="selectedLeftTab"
         [checked]="radioAlertChecked"
-        [canSelectWorkpackages]="canSelectWorkpackages">
+        [canSelectWorkpackages]="canSelectWorkpackages"
+        (hideLeftPane)="onHideLeftPane()"
+        [layoutSettingsTab]="layoutSettingsTab"
+        (addLayout)="onAddLayout()">
       </smi-left-panel>
-      <!-- Hide left pane button -->
-      <button mat-raised-button color="primary" class="hide-btn" (click)="onHideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
     </p>
   <app-model-content>
     <smi-switch-view-tabs (viewChange)="onViewChange($event)" [selectedView]="selectedView" [viewLevel]="viewLevel$ | async"></smi-switch-view-tabs>
@@ -146,6 +147,10 @@
         (addDescendant)="onAddDescendant()"
         (deleteDescendant)="onDeleteDescendant($event)"
         (openRadio)="onOpenRadio($event)"
+        [nodeScopes]="nodeScopes$ | async"
+        (deleteScope)="onDeleteScope($event)"
+        (addExistingScope)="onAddExistingScope()"
+        (addNewScope)="onAddNewScope()"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

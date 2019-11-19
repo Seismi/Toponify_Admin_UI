@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ScopeDetails } from '@app/scope/store/models/scope.model';
 
 @Injectable()
 export class SharedService {
@@ -6,4 +7,6 @@ export class SharedService {
   and i'm pushing multiple selected values in here */
   selectedOwners = [];
   selectedViewers = [];
+
+  public scope: ScopeDetails;
 }

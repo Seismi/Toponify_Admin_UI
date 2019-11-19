@@ -9,15 +9,14 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
 })
 export class ApproversTableComponent {
 
-  selectedRowIndex = -1;
-  
   @Input()
-  set data(data: any[]) {
+  set data(data: WorkPackageDetail[]) {
     if(data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
     }
   }
 
-  displayedColumns: string[] = ['name', 'status'];
+  public displayedColumns: string[] = ['name', 'status'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
+
 }
