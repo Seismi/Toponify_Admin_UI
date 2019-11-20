@@ -12,7 +12,7 @@ import {
   SetSelectedWorkPackages,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { getSelectedWorkpackages, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkpackages, getWorkPackageEntities, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Params, Router } from '@angular/router';
 import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
 import { RouterStateUrl } from '@app/core/store';
@@ -59,24 +59,22 @@ export class AttributesComponent implements OnInit, OnDestroy {
         return this.workPackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [] }));
       })
     );
+
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
         const workPackageIds = workpackages.map(item => item.id);
-        const selected = workpackages.map(item => item.selected);
-        const edit = workpackages.map(item => item.edit);
-        edit[0] === true ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
-        if (!selected.length) {
-          this.router.navigate(['/attributes-and-rules'], { queryParamsHandling: 'preserve' });
-        }
         this.setWorkPackage(workPackageIds);
       })
     );
 
-    this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
-      this.attribute = data;
-    });
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
+        const edit = workpackages.map(item => item.edit);
+        !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -88,6 +86,9 @@ export class AttributesComponent implements OnInit, OnDestroy {
       workPackageQuery: workpackageIds
     };
     this.store.dispatch(new LoadAttributes(queryParams));
+    this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
+      this.attribute = data;
+    });
   }
 
   get categoryTableData(): AttributeEntity[] {
@@ -137,8 +138,14 @@ export class AttributesComponent implements OnInit, OnDestroy {
   hideLeftPane(): void {
     this.showOrHidePane = false;
   }
+
   onSelectEditWorkpackage(workpackage: any): void {
     this.workpackageId = workpackage.id;
+    if (!workpackage.edit) {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
+    } else {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
+    }
     this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
