@@ -148,6 +148,11 @@
         (deleteScope)="onDeleteScope($event)"
         (addExistingScope)="onAddExistingScope()"
         (addNewScope)="onAddNewScope()"
+        [selectedView]="selectedView"
+        [nodes]="nodes | layer: { byId: true, params: params }"
+        [selectedNode]="selectedNode"
+        (selectNode)="onSelectNode($event)"
+        [links]="links | layer: { byId: false, params: params }"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

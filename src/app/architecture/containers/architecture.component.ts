@@ -1195,7 +1195,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   realignTabUnderline(): void {
-    this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
+    this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
   }
 
   onAddLayout(): void {
