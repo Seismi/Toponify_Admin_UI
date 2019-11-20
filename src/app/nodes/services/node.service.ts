@@ -29,9 +29,9 @@ export class NodeService {
     return this.http.get<NodesApiResponse>(`/nodes`);
   }
 
-  getNode(id: string): Observable<NodeDetailApiResponse> {
-    return this.http.get<NodeDetailApiResponse>(`/nodes/${id}`);
-  }
+  // getNode(id: string): Observable<NodeDetailApiResponse> {
+  //   return this.http.get<NodeDetailApiResponse>(`/nodes/${id}`);
+  // }
 
   getNodeLinks(): Observable<NodeLinksApiResponse> {
     return this.http.get<NodeLinksApiResponse>(`/nodelinks`);

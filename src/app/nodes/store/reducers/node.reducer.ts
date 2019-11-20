@@ -30,12 +30,12 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
       };
     }
 
-    case NodeActionTypes.LoadNodeFailure: {
-      return {
-        ...state,
-        error: action.payload
-      };
-    }
+    // case NodeActionTypes.LoadNodeFailure: {
+    //   return {
+    //     ...state,
+    //     error: action.payload
+    //   };
+    // }
 
     case NodeActionTypes.LoadMapViewSuccess: {
       return {
@@ -67,19 +67,19 @@ export function reducer(state = initialState, action: NodeActionsUnion): State {
       };
     }
 
-    case NodeActionTypes.LoadNodeSuccess: {
-      return {
-        ...state,
-        selectedNode: action.payload
-      };
-    }
+    // case NodeActionTypes.LoadNodeSuccess: {
+    //   return {
+    //     ...state,
+    //     selectedNode: action.payload
+    //   };
+    // }
 
-    case NodeActionTypes.LoadNodeFailure: {
-      return {
-        ...state,
-        error: action.payload
-      };
-    }
+    // case NodeActionTypes.LoadNodeFailure: {
+    //   return {
+    //     ...state,
+    //     error: action.payload
+    //   };
+    // }
 
     case NodeActionTypes.LoadNodeLinksSuccess: {
       return {
