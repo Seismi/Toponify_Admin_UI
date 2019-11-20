@@ -17,17 +17,17 @@ export class LeftPanelComponent {
   @Input() tabIndex: number;
   @Input() layoutSettingsTab: boolean;
 
-  @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup; 
+  @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
-  realignTabUnderline(): void { 
-    this.mainTabGroup.realignInkBar(); 
+  realignTabUnderline(): void {
+    this.mainTabGroup.realignInkBar();
   }
 
   constructor() {}
 
   @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
 
-  @Output() selectWorkPackage = new EventEmitter<string>();
+  @Output() selectWorkPackage = new EventEmitter<{id: string, newState: boolean}>();
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
@@ -50,8 +50,8 @@ export class LeftPanelComponent {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectWorkPackage(id: string): void {
-    this.selectWorkPackage.emit(id);
+  onSelectWorkPackage(selection: {id: string, newState: boolean}): void {
+    this.selectWorkPackage.emit(selection);
   }
 
   onSelectColour(event: { colour: string; id: string }) {

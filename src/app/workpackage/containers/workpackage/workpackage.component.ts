@@ -35,7 +35,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
     private store: Store<WorkPackageState>,
     private router: Router,
     public dialog: MatDialog
-  ) { 
+  ) {
     router.events.subscribe((event: NavigationEnd) => {
       if (event instanceof NavigationEnd) {
         (event.url.length > 16) ? this.workPackageSelected = true : this.workPackageSelected = false;
@@ -54,7 +54,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkpackage(row: WorkPackageDetail): void {
-    this.router.navigate(['work-packages', row.id]);
+    this.router.navigate(['work-packages', row.id], {queryParamsHandling: 'preserve' });
   }
 
   onAddWorkPackage(): void {

@@ -20,12 +20,9 @@
       [gojsView]="true"
       [allowEditLayouts]="allowEditLayouts"
       (editLayout)="allowEditLayout()"
-      [allowEditWorkPackages]="allowEditWorkPackages"
-      [workpackages]="workpackage$ | async"
       [scopes]="scopes$ | async"
       [selectedScope]="selectedScope$ | async"
       [layouts]="scopeDetails$ | async"
-      (selectWorkPackage)="onSelectWorkPackage($event)"
       (selectScope)="onSelectScope($event)"
       (selectLayout)="onSelectLayout($event)"
     >

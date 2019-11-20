@@ -41,7 +41,7 @@ export class ScopesAndLayoutsComponent implements OnInit {
   onScopeSelect(row: any) {
     this.layoutsDetailService.scopeId = row.id;
     this.layoutsDetailService.scopeName = row.name;
-    this.router.navigate(['scopes-and-layouts', row.id]);
+    this.router.navigate(['scopes-and-layouts', row.id], {queryParamsHandling: 'preserve' });
   }
 
   onSearchVersion(evt: any) {}

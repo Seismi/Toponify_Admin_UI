@@ -67,7 +67,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         // Show edit button if work package status is draft
         (workpackage.status === 'draft') ? this.statusDraft = true : this.statusDraft = false;
         this.isEditable = false;
-        
+
         (workpackage.availableActions.merge) ? this.workpackageActionMerge = true : this.workpackageActionMerge = false;
         (workpackage.availableActions.reset) ? this.workpackageActionReset = true : this.workpackageActionReset = false;
         (workpackage.availableActions.reject) ? this.workpackageActionReject = true : this.workpackageActionReject = false;
@@ -120,14 +120,14 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteWorkPackageEntity(this.workpackageId));
-        this.router.navigate(['work-packages']);
+        this.router.navigate(['work-packages'], {queryParamsHandling: 'preserve' });
       }
     });
   }
 
   onAddOwner(): void {
     const dialogRef = this.dialog.open(OwnersModalComponent, {
-      disableClose: false, 
+      disableClose: false,
       width: '500px'
     });
 

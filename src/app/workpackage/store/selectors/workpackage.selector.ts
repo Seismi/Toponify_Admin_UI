@@ -5,14 +5,17 @@ const getWorkPackageState = createFeatureSelector<State>('workpackageFeature');
 
 export const getWorkPackageEntities = createSelector(
   getWorkPackageState,
-  state => state.entities.map(entity => {
-    const wa = state.avaialabilities.find(availability => availability.id === entity.id);
-    const newEntity = {
-      ...entity,
-      ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable  })
-    };
-    return newEntity;
-  })
+  state =>
+    state.entities.map(entity => {
+      const wa = state.avaialabilities.find(availability => availability.id === entity.id);
+      const newEntity = {
+        ...entity,
+        ...(wa && { isEditable: wa.isEditable, isSelectable: wa.isSelectable }),
+        selected: state.selectedWorkPackageIds.some(id => id === entity.id),
+        edit: entity.id === state.editId
+      };
+      return newEntity;
+    })
 );
 
 export const workpackageSelectAllowed = createSelector(
@@ -27,18 +30,17 @@ export const getSelectedWorkPackage = createSelector(
 
 export const getSelectedWorkpackages = createSelector(
   getWorkPackageState,
-  state => state.entities.filter(item => item.selected)
+  state => state.entities.filter(item => state.selectedWorkPackageIds.some(id => id === item.id))
 );
 
 export const getSelectedWorkpackageIds = createSelector(
   getWorkPackageState,
-  state => state.entities.filter(item => item.selected).map(item => item.id)
+  state => state.selectedWorkPackageIds
 );
-
 
 export const getEditWorkpackages = createSelector(
   getWorkPackageState,
-  state => state.entities.filter(item => item.edit)
+  state => state.entities.filter(item => item.id === state.editId)
 );
 
 export const getWorkPackageById = (id: string) => {

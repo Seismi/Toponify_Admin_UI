@@ -60,8 +60,8 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.store.dispatch(new RadioFilter(null));
   }
 
-  onSelectRadio(row: RadioEntity): void {
-    this.router.navigate(['radio', row.id]);
+  onSelectRadio(row: RadioEntity) {
+    this.router.navigate(['radio', row.id], {queryParamsHandling: 'preserve' });
   }
 
   onAddRadio(): void {
@@ -71,7 +71,7 @@ export class RadioComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.radio) {
-        this.store.dispatch(new AddRadioEntity({ 
+        this.store.dispatch(new AddRadioEntity({
           data: {
             title: data.radio.title,
             status: data.radio.status,
@@ -82,7 +82,7 @@ export class RadioComponent implements OnInit, OnDestroy {
             relatesTo: [{workPackage: {id: '00000000-0000-0000-0000-000000000000'}}],
             actionBy: data.radio.actionBy,
             mitigation: data.radio.mitigation
-          } 
+          }
         }));
       }
     });

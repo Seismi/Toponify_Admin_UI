@@ -37,6 +37,7 @@ export enum WorkPackageActionTypes {
   SetWorkpackageDisplayColour = '[WorkPackage] Set Display Colour',
   SetWorkpackageEditMode = '[WorkPackage] Set edit mode',
   SetWorkpackageSelected = '[WorkPackage] Set Selected',
+  SetSelectedWorkPackages = '[WorkPackage] Set Selected Work Packages',
 
   AddObjective = '[WorkPackage] Add Objective',
   AddObjectiveSuccess = '[WorkPackage] Add Objective Success',
@@ -195,12 +196,12 @@ export class SetWorkpackageDisplayColour implements Action {
 
 export class SetWorkpackageEditMode implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageEditMode;
-  constructor(public payload: { id: string }) { }
+  constructor(public payload: { id: string, newState: boolean}) { }
 }
 
-export class SetWorkpackageSelected implements Action {
-  readonly type = WorkPackageActionTypes.SetWorkpackageSelected;
-  constructor(public payload: { workpackageId: string }) { }
+export class SetSelectedWorkPackages implements Action {
+  readonly type = WorkPackageActionTypes.SetSelectedWorkPackages;
+  constructor(public payload: { workPackages: string[] }) { }
 }
 
 export class AddObjective implements Action {
@@ -392,7 +393,6 @@ export type WorkPackageActionsUnion =
   | AddOwnerFailure
   | SetWorkpackageDisplayColour
   | SetWorkpackageEditMode
-  | SetWorkpackageSelected
   | AddObjective
   | AddObjectiveSuccess
   | AddObjectiveFailure
@@ -426,4 +426,4 @@ export type WorkPackageActionsUnion =
   | SupersedeWorkpackage
   | SupersedeWorkpackageSuccess
   | SupersedeWorkpackageFailure
-  ;
+  | SetSelectedWorkPackages;

@@ -1,18 +1,31 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { State as ReportState } from '../store/reducers/report.reducer';
-import { LoadReports, AddReport } from '../store/actions/report.actions';
+import { AddReport, LoadReports } from '../store/actions/report.actions';
 import { Observable, Subscription } from 'rxjs';
 import { ReportLibrary } from '../store/models/report.model';
 import { getReportEntities } from '../store/selecrtors/report.selectors';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages, SetWorkpackageSelected, SetWorkpackageEditMode, SetWorkpackageDisplayColour } from '@app/workpackage/store/actions/workpackage.actions';
-import { getWorkPackageEntities, getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
-import { Router } from '@angular/router';
+import {
+  LoadWorkPackages,
+  SetSelectedWorkPackages,
+  SetWorkpackageEditMode
+} from '@app/workpackage/store/actions/workpackage.actions';
+import {
+  getEditWorkpackages,
+  getSelectedWorkpackages,
+  getWorkPackageEntities
+} from '@app/workpackage/store/selectors/workpackage.selector';
+import { Params, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ReportModalComponent } from './report-modal/report-modal.component';
 import { SharedService } from '@app/services/shared-service';
+import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
+import { take } from 'rxjs/operators';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import { RouterStateUrl } from '@app/core/store';
+import { RouterReducerState } from '@ngrx/router-store';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -34,6 +47,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   constructor(
     private sharedService: SharedService,
     private store: Store<ReportState>,
+    private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     private workPackageStore: Store<WorkPackageState>,
     private router: Router,
     private dialog: MatDialog
@@ -49,11 +63,24 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.push(this.workPackageStore.pipe(select(getEditWorkpackages))
-      .subscribe(workpackages => {
+    this.subscriptions.push(
+      this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
+        if (typeof workpackages === 'string') {
+          return this.workPackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [workpackages] }));
+        }
+        if (workpackages) {
+          return this.workPackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: workpackages }));
+        }
+        return this.workPackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [] }));
+      })
+    );
+
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
         const edit = workpackages.map(item => item.edit);
-        (!edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
-    }));
+        !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -69,7 +96,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   }
 
   onSelectReport(row: ReportLibrary) {
-    this.router.navigate(['report-library', row.id]);
+    this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
   }
 
   openLeftTab(index: number) {
@@ -83,31 +110,62 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.showOrHidePane = false;
   }
 
-  onSelectWorkPackage(id: string) {
-    this.workPackageStore.dispatch(new SetWorkpackageSelected({ workpackageId: id }));
+  onSelectWorkPackage(selection: { id: string; newState: boolean }) {
+    this.routerStore
+      .select(getWorkPackagesQueryParams)
+      .pipe(take(1))
+      .subscribe(workpackages => {
+        let urlWorkpackages: string[];
+        let params: Params;
+        if (typeof workpackages === 'string') {
+          urlWorkpackages = [workpackages];
+        } else {
+          urlWorkpackages = workpackages ? [...workpackages] : [];
+        }
+        const index = urlWorkpackages.findIndex(id => id === selection.id);
+        if (selection.newState) {
+          if (index === -1) {
+            params = { workpackages: [...urlWorkpackages, selection.id] };
+          } else {
+            params = { workpackages: [...urlWorkpackages] };
+          }
+        } else {
+          if (index !== -1) {
+            urlWorkpackages.splice(index, 1);
+          }
+          params = { workpackages: [...urlWorkpackages] };
+        }
+        this.routerStore.dispatch(new UpdateQueryParams(params));
+      });
   }
 
   onSelectEditWorkpackage(workpackage: any) {
     this.workpackageId = workpackage.id;
-    this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id }));
+    if (!workpackage.edit) {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
+    } else {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
+    }
+    this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
   onAddReport() {
     const dialogRef = this.dialog.open(ReportModalComponent, {
-      disableClose: false, 
+      disableClose: false,
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
-      if(data && data.report) {
-        this.store.dispatch(new AddReport({
-          workPackageId: this.workpackageId, 
-          request: { 
-            data: { ...data.report }
-          }
-        }))
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.report) {
+        this.store.dispatch(
+          new AddReport({
+            workPackageId: this.workpackageId,
+            request: {
+              data: { ...data.report }
+            }
+          })
+        );
       }
     });
   }
-
 }
