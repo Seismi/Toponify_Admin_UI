@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
@@ -30,10 +30,8 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   public radio: RadioDetail;
   public radioId: string;
   public subscriptions: Subscription[] = [];
-  public isEditable = false;
-  public modalMode = false;
-  public showOrHideRightPane = false;
-  public selectedRightTab: number;
+  public isEditable: boolean = false;
+  public modalMode: boolean = false;
 
   constructor(
     private userStore: Store<UserState>,
@@ -58,6 +56,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
           actionBy: radio.actionBy,
           assignedTo: radio.assignedTo,
           category: radio.category,
+          reference: radio.reference,
           status: radio.status,
           mitigation: radio.mitigation,
           description: radio.description
@@ -74,7 +73,8 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     return this.radioDetailService.radioDetailsForm;
   }
 
-  onSaveRadio() {
+
+  onSaveRadio(): void {
     const dialogRef = this.dialog.open(ReplyModalComponent, {
       disableClose: false,
       width: '400px'
@@ -95,7 +95,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     })
   }
 
-  onArchiveRadio() {
+  onArchiveRadio(): void {
     const dialogRef = this.dialog.open(ReplyModalComponent, {
       disableClose: false,
       width: '400px'
@@ -116,7 +116,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     })
   }
 
-  onSendReply() {
+  onSendReply(): void {
     this.store.dispatch(new AddReply({
       id: this.radioId,
       entity: {
@@ -129,7 +129,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     this.radioDetailsForm.patchValue({ replyText: '' });
   }
 
-  onEditProperty(property: CustomPropertiesEntity) {
+  onEditProperty(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
@@ -151,7 +151,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteProperty(property: CustomPropertiesEntity) {
+  onDeleteProperty(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',

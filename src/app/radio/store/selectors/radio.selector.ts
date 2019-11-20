@@ -13,6 +13,11 @@ export const getSelectedRadio = createSelector(
   state => state.selectedRadio
 );
 
+export const getRadioFilter = createSelector(
+  getRadioFeatureState,
+  state => state.radioFilter
+);
+
 export const getRadioById = (id: string) => {
   return createSelector(
     getRadioFeatureState,

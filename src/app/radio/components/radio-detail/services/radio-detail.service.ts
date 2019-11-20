@@ -12,6 +12,7 @@ export class RadioDetailService {
       title: [null, Validators.required],
       category: ['risk'],
       status: ['open'],
+      reference: [null],
       mitigation: [null],
       assignedTo: {},
       actionBy: [null],
