@@ -6,7 +6,7 @@ import { State as WorkPackageState } from '../../../workpackage/store/reducers/w
 import { getSelectedWorkPackage } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
-import { WorkPackageDetail, OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, OwnersEntityOrApproversEntity, TeamEntityOrOwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
 import { DeleteWorkPackageModalComponent } from '../delete-workpackage-modal/delete-workpackage.component';
@@ -28,23 +28,18 @@ import { WorkPackageActionTypes } from '@app/workpackage/store/actions/workpacka
 })
 export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
 
-  workpackage: WorkPackageDetail;
-  subscriptions: Subscription[] = [];
-  workpackageId: string;
-  ownerId: string;
-  owner: OwnersEntityOrApproversEntity;
-  selectedOwner: boolean;
-  selectedBaseline: boolean;
-  showOrHideRightPane = false;
-  selectedRightTab: number;
-  statusDraft: boolean;
-  isEditable = false;
-  workpackageActionSubmit: boolean;
-  workpackageActionApprove: boolean;
-  workpackageActionReject: boolean;
-  workpackageActionMerge: boolean;
-  workpackageActionReset: boolean;
-  workpackageActionSupersede: boolean;
+  public workpackage: WorkPackageDetail;
+  public subscriptions: Subscription[] = [];
+  public workpackageId: string;
+  public owner: OwnersEntityOrApproversEntity;
+  public statusDraft: boolean;
+  public isEditable: boolean = false;
+  public workpackageActionSubmit: boolean;
+  public workpackageActionApprove: boolean;
+  public workpackageActionReject: boolean;
+  public workpackageActionMerge: boolean;
+  public workpackageActionReset: boolean;
+  public workpackageActionSupersede: boolean;
 
   constructor(
     private router: Router,
@@ -72,7 +67,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         // Show edit button if work package status is draft
         (workpackage.status === 'draft') ? this.statusDraft = true : this.statusDraft = false;
         this.isEditable = false;
-        
+
         (workpackage.availableActions.merge) ? this.workpackageActionMerge = true : this.workpackageActionMerge = false;
         (workpackage.availableActions.reset) ? this.workpackageActionReset = true : this.workpackageActionReset = false;
         (workpackage.availableActions.reject) ? this.workpackageActionReject = true : this.workpackageActionReject = false;
@@ -91,23 +86,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     return this.workPackageDetailService.workPackageDetailForm;
   }
 
-  openRightTab(index: number) {
-    this.selectedRightTab = index;
-    if(this.selectedRightTab === index) {
-      this.showOrHideRightPane = false;
-    }
-  }
 
-  onHideRightPane() {
-    this.showOrHideRightPane = true;
-  }
-
-  onSelectOwner(row) {
-    this.ownerId = row.id;
-    this.selectedOwner = true;
-  }
-
-  onSaveWorkpackage() {
+  onSaveWorkpackage(): void {
     this.store.dispatch(new UpdateWorkPackageEntity({
       entityId: this.workpackageId,
       workPackage: { data: {
@@ -116,22 +96,18 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         description: this.workPackageDetailForm.value.description
       }}
     }))
-    this.selectedOwner = false;
-    this.selectedBaseline = false;
     this.isEditable = false;
   }
 
-  onEditWorkPackage() {
+  onEditWorkPackage(): void {
     this.isEditable = true;
   }
 
-  onCancel() {
-    this.selectedOwner = false;
-    this.selectedBaseline = false;
+  onCancel(): void {
     this.isEditable = false;
   }
 
-  onDeleteWorkpackage() {
+  onDeleteWorkpackage(): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -144,14 +120,14 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteWorkPackageEntity(this.workpackageId));
-        this.router.navigate(['work-packages']);
+        this.router.navigate(['work-packages'], {queryParamsHandling: 'preserve' });
       }
     });
   }
 
-  onAddOwner() {
+  onAddOwner(): void {
     const dialogRef = this.dialog.open(OwnersModalComponent, {
-      disableClose: false, 
+      disableClose: false,
       width: '500px'
     });
 
@@ -159,40 +135,32 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       if(data && data.owner) {
         this.store.dispatch(new AddOwner({
           workPackageId: this.workpackageId,
-          ownerId: data.owner.id, 
+          ownerId: data.owner.id,
           owners: data.owner
         }))
       }
     });
   }
 
-  onDeleteOwner() {
+  onDeleteOwner(owner: TeamEntityOrOwnersEntityOrApproversEntity): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        mode: 'delete',
+        name: owner.name
       }
     });
 
     dialogRef.afterClosed().subscribe((data) => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteOwner({workPackageId: this.workpackageId, ownerId: this.ownerId}))
-        this.selectedOwner = false;
+        this.store.dispatch(new DeleteOwner({workPackageId: this.workpackageId, ownerId: owner.id}));
       }
     });
   }
 
-  onAddBaseline() { }
 
-  onDeleteBaseline() { }
-
-  onSelectBaseline(row) {
-    this.selectedBaseline = true;
-  }
-
-
-  onAddObjectiveOrRadio(value) {
+  onAddObjectiveOrRadio(value): void {
     const dialogRef = this.dialog.open(RadioListModalComponent, {
       disableClose: false, width: '650px' });
 
@@ -227,7 +195,11 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
               description: data.radio.description,
               status: data.radio.status,
               category: data.radio.category,
-              author: { id: '7efe6e4d-0fcf-4fc8-a2f3-1fb430b049b0' }
+              author: data.radio.author,
+              assignedTo: data.radio.assignedTo,
+              actionBy: data.radio.actionBy,
+              mitigation: data.radio.mitigation,
+              relatesTo: [{ workPackage: { id: this.workpackageId }}]
             }
           }));
 
@@ -253,7 +225,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  onDeleteObjectiveOrRadio(radio: RadioEntity, value) {
+  onDeleteObjectiveOrRadio(radio: RadioEntity, value): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -272,7 +244,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  submitWorkpackage() {
+  submitWorkpackage(): void {
     this.actions.pipe(ofType(WorkPackageActionTypes.SubmitWorkpackageFailure)).subscribe((error: any) => {
       alert('ERROR: ' + error.payload);
     })
@@ -280,7 +252,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  approveWorkpackage() {
+  approveWorkpackage(): void {
     this.actions.pipe(ofType(WorkPackageActionTypes.ApproveWorkpackageFailure)).subscribe((error: any) => {
       alert('ERROR: ' + error.payload);
     })
@@ -288,7 +260,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  rejectWorkpackage() {
+  rejectWorkpackage(): void {
     this.actions.pipe(ofType(WorkPackageActionTypes.RejectWorkpackageFailure)).subscribe((error: any) => {
       alert('ERROR: ' + error.payload);
     })
@@ -296,7 +268,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  mergeWorkpackage() {
+  mergeWorkpackage(): void {
     this.actions.pipe(ofType(WorkPackageActionTypes.MergeWorkpackageFailure)).subscribe((error: any) => {
       alert('ERROR: ' + error.payload);
     })
@@ -304,7 +276,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  resetWorkpackage() {
+  resetWorkpackage(): void {
     this.actions.pipe(ofType(WorkPackageActionTypes.ResetWorkpackageFailure)).subscribe((error: any) => {
       alert('ERROR: ' + error.payload);
     })
@@ -312,7 +284,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-  supersedeWorkpackage() {
+  supersedeWorkpackage(): void {
     this.actions.pipe(ofType(WorkPackageActionTypes.SupersedeWorkpackageFailure)).subscribe((error: any) => {
       alert('ERROR: ' + error.payload);
     })

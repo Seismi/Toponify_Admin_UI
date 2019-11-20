@@ -1,32 +1,8 @@
 table {
     width: 100%;
-    border: solid 1px #ddd;
     margin-bottom: 20px;
 }
 
-tr.mat-header-row {
+tr.mat-header-row, tr.mat-row {
     height: 35px;
-}
-
-tr.mat-row {
-    height: 35px;
-}
-
-.mat-icon {
-    float: right;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-span {
-    line-height: 2;
-}
-
-.disabled {
-    pointer-events: none;
-    opacity: 0.2;
-}
-
-.highlight {
-    background-color: #efefef;
 }

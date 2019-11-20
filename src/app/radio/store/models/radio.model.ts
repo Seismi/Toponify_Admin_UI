@@ -77,6 +77,7 @@ export interface RadioDetail {
   mitigation: string;
   status: string;
   category: string;
+  reference: string;
   assignedTo: AssignedTo;
   actionBy: string;
   author: AuthorOrLastUpdatedBy;
@@ -170,4 +171,80 @@ interface AddRadioOrReplyChanges {
   relatesTo?: (RelatesTo)[] | null;
   actionBy?: string;
   mitigation?: string;
+}
+
+// RADIO advanced search
+export interface AdvancedSearchApiRequest {
+  data: RadiosAdvancedSearch;
+}
+
+export interface RadiosAdvancedSearch {
+  raisedByMe?: RaisedByMe;
+  assignedToMe?: AssignedToMe;
+  status?: Status;
+  type?: Type;
+  raisedBy?: RaisedBy;
+  assignedTo?: assignedTo;
+  workpackages?: WorkPackages;
+  relatesTo?: relatesTo;
+  dueDate?: DueDate;
+  text?: Text;
+}
+
+interface Text {
+  enabled: boolean;
+  value: string;
+}
+
+interface DueDate {
+  enabled?: boolean;
+  from?: string;
+  to?: string;
+}
+
+interface relatesTo {
+  enabled: boolean;
+  includeDescendants: boolean;
+  includeLinks: boolean;
+  values: (Values)[] | null;
+}
+
+interface WorkPackages {
+  enabled: boolean;
+  includeBaseline: boolean;
+  values: (Values)[] | null;
+}
+
+interface assignedTo {
+  enabled: boolean;
+  values: (Values)[] | null;
+}
+
+interface RaisedBy {
+  enabled: boolean;
+  values: (Values)[] | null;
+}
+
+interface Values {
+  id: string;
+  objectType?: string;
+  name?: string;
+}
+
+interface Type {
+  enabled?: boolean;
+  values: (string)[] | null;
+}
+
+interface Status {
+  enabled?: boolean;
+  values: (string)[] | null;
+}
+
+interface AssignedToMe {
+  enabled: boolean;
+}
+
+interface RaisedByMe {
+  enabled: boolean;
 }

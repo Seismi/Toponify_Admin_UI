@@ -15,47 +15,60 @@ export class LeftPanelComponent {
   @Input() viewLevel: number;
   @Input() canSelectWorkpackages: boolean;
   @Input() tabIndex: number;
+  @Input() layoutSettingsTab: boolean;
 
-  @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup; 
+  @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
-  realignTabUnderline(): void { 
-    this.mainTabGroup.realignInkBar(); 
+  realignTabUnderline(): void {
+    this.mainTabGroup.realignInkBar();
   }
 
   constructor() {}
 
   @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
 
-  @Output() selectWorkPackage = new EventEmitter<string>();
+  @Output() selectWorkPackage = new EventEmitter<{id: string, newState: boolean}>();
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
   @Output()
   setWorkpackageEditMode = new EventEmitter<object>();
 
+  @Output() hideLeftPane = new EventEmitter<void>();
+
   @Output()
   tabClick = new EventEmitter<number>();
 
-  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }) {
+  @Output() addLayout = new EventEmitter<void>();
+
+  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }): void {
     this.displayOptionsChangedEvent.emit({ event, option });
   }
 
   // FIXME: set proper type of workpackage
-  onSetWorkPackageEditMode(workpackage: WorkPackageEntity) {
+  onSetWorkPackageEditMode(workpackage: WorkPackageEntity): void {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectWorkPackage(id: string) {
-    this.selectWorkPackage.emit(id);
+  onSelectWorkPackage(selection: {id: string, newState: boolean}): void {
+    this.selectWorkPackage.emit(selection);
   }
 
   onSelectColour(event: { colour: string; id: string }) {
     this.selectColour.emit(event);
   }
 
-  onTabClick(event: MatTabChangeEvent) {
+  onTabClick(event: MatTabChangeEvent): void {
     this.tabClick.emit(event.index);
     this.realignTabUnderline();
+  }
+
+  onHideLeftPane(): void {
+    this.hideLeftPane.emit();
+  }
+
+  onAddLayout(): void {
+    this.addLayout.emit();
   }
 
 }

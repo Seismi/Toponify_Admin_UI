@@ -23,13 +23,13 @@ import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpac
 
 export class WorkPackageModalComponent implements OnInit {
 
-  owners$: Observable<TeamEntity[]>;
-  baseline$: Observable<WorkPackageEntity[]>;
+  public owners$: Observable<TeamEntity[]>;
+  public baseline$: Observable<WorkPackageEntity[]>;
   public workpackage: WorkPackageEntity;
-  modalMode = true;
-  isEditable = true;
-  selectedOwners = [];
-  selectedBaseline = [];
+  public modalMode: boolean = true;
+  public isEditable: boolean = true;
+  public selectedOwners = [];
+  public selectedBaseline = [];
 
   constructor(
     private teamStore: Store<TeamState>,
@@ -50,7 +50,7 @@ export class WorkPackageModalComponent implements OnInit {
     return this.WorkPackageDetailService.workPackageDetailForm;
   }
 
-  onSubmit(data: any) {
+  onSubmit(): void {
     if (!this.WorkPackageDetailService.isValid) {
       return;
     }
@@ -68,7 +68,7 @@ export class WorkPackageModalComponent implements OnInit {
     })));
   }
 
-  onCancelClick() {
+  onCancelClick(): void {
     this.dialogRef.close();
   }
 }
