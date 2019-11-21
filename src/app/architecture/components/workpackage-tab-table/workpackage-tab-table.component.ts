@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
@@ -17,7 +11,9 @@ export class WorkPackageTabTableComponent {
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
-      this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
+      this.dataSource = new MatTableDataSource<WorkPackageEntity>(
+        data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded')
+      );
       this.dataSource.paginator = this.paginator;
     }
   }
@@ -44,11 +40,7 @@ export class WorkPackageTabTableComponent {
   }
 
   canEdit(workpackage: any): boolean {
-    return (
-      this.canSelectWorkpackage &&
-      !!workpackage.isSelectable &&
-      !!workpackage.isEditable
-    );
+    return this.canSelectWorkpackage && !!workpackage.isSelectable && !!workpackage.isEditable;
   }
 
   // FIXME: set proper type of workpackage
