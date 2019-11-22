@@ -24,7 +24,7 @@ export class RadioTableInArchitectureComponent {
   constructor(private router: Router) {}
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  public displayedColumns: string[] = ['name', 'navigate'];
+  public displayedColumns: string[] = ['refNo', 'name', 'status', 'navigate'];
 
   @Output() addRadio = new EventEmitter<void>();
   @Output() openRadio = new EventEmitter<RadioDetail>();
