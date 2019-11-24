@@ -1,19 +1,15 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { AttributesEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity } from '@app/architecture/store/models/node.model';
-import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
+import {
+  AttributesEntity,
+  NodeLink,
+  OwnersEntityOrTeamEntityOrApproversEntity
+} from '@app/architecture/store/models/node-link.model';
+import { CustomPropertyValuesEntity, DescendantsEntity, Node } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
+import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -24,6 +20,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
+  @Input() selectedView: ArchitectureView;
+  @Input() nodes: Node[];
+  @Input() links: NodeLink[];
+  @Input() selectedNode: Node;
   @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
@@ -94,6 +94,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output() addNewScope = new EventEmitter<void>();
 
+  @Output() selectNode = new EventEmitter<Node | NodeLink>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -195,4 +196,53 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.addNewScope.emit();
   }
 
+  isFirst(): boolean {
+    if (!this.selectedNode) {
+      return true;
+    }
+    if (this.selectedView === ArchitectureView.System) {
+      return this.nodes[0].id === this.selectedNode.id;
+    } else {
+      return this.links[0].id === this.selectedNode.id;
+    }
+  }
+
+  isLast(): boolean {
+    if (!this.selectedNode) {
+      return false;
+    }
+    if (this.selectedView === ArchitectureView.System) {
+      return this.nodes[this.nodes.length - 1].id === this.selectedNode.id;
+    } else {
+      return this.links[this.links.length - 1].id === this.selectedNode.id;
+    }
+  }
+
+  next() {
+    const list = this.selectedView === ArchitectureView.System ? this.nodes : this.links;
+    if (!this.selectedNode) {
+      this.selectNode.emit(list[0]);
+    } else {
+      const currentIndex = (list as any).findIndex(item => item.id === this.selectedNode.id);
+      if (currentIndex < list.length) {
+        this.selectNode.emit(list[currentIndex + 1]);
+      } else {
+        this.selectNode.emit(list[list.length - 1]);
+      }
+    }
+  }
+
+  previous() {
+    const list = this.selectedView === ArchitectureView.System ? this.nodes : this.links;
+    const currentIndex = (list as any).findIndex(item => item.id === this.selectedNode.id);
+    if (currentIndex > 0) {
+      this.selectNode.emit(list[currentIndex - 1]);
+    } else {
+      this.selectNode.emit(list[0]);
+    }
+  }
+
+  showSkipButtons(): boolean {
+    return this.selectedView !== ArchitectureView.Diagram;
+  }
 }
