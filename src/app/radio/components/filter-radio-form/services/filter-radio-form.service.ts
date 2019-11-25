@@ -8,7 +8,15 @@ export class FilterRadioFormService {
   public filterRadioForm: FormGroup;
 
   constructor(private fb: FormBuilder, private filterRadioFormValidatorService: FilterRadioFormValidatorService) {
-    this.filterRadioForm = this.fb.group({});
+    this.filterRadioForm = this.fb.group({
+      status: [null],
+      type: [null],
+      assignedTo: [null],
+      relatesTo: [null],
+      from: [null],
+      to: [null],
+      text: [null]
+    });
   }
 
   get isValid(): boolean {

@@ -814,20 +814,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDeleteAttribute() {
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
-      disableClose: false,
-      width: 'auto',
-      data: {
-        mode: 'delete'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data.mode === 'delete') {
-        // this.store.dispatch(new AttributeActions.DeleteAttribute({attributeId: this.selectedNode.id}));
-      }
-    });
+  onDeleteNode(): void {
+    if(this.part instanceof goNode) {
+      this.handleNodeDeleteRequested(this.part.data);
+    } else {
+      this.handleLinkDeleteRequested(this.part.data);
+    }
   }
 
   displayOptionsChanged({ event, option }: { event: any; option: string }) {
@@ -1195,7 +1187,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   realignTabUnderline(): void {
-    this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
+    this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
   }
 
   onAddLayout(): void {

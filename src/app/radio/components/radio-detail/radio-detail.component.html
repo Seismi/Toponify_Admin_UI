@@ -17,11 +17,7 @@
 
       <mat-form-field class="ref-number-input">
         <mat-label>Ref. Number</mat-label>
-        <mat-select [ngClass]="{ editable: isEditable }">
-          <mat-option *ngFor="let number of refNumber" [value]="number">
-            {{number}}
-          </mat-option>
-        </mat-select>
+        <input matInput placeholder="Ref. Number" data-hook="radio-details-reference" formControlName="reference" readonly>
       </mat-form-field>
 
       <mat-form-field>

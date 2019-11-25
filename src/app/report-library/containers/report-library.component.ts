@@ -20,12 +20,15 @@ import {
 import { Params, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ReportModalComponent } from './report-modal/report-modal.component';
-import { SharedService } from '@app/services/shared-service';
-import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
+import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { RouterStateUrl } from '@app/core/store';
 import { RouterReducerState } from '@ngrx/router-store';
+import { ScopeEntity } from '@app/scope/store/models/scope.model';
+import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
+import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
+import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -33,6 +36,8 @@ import { RouterReducerState } from '@ngrx/router-store';
   styleUrls: ['report-library.component.scss']
 })
 export class ReportLibraryComponent implements OnInit, OnDestroy {
+  public scopes$: Observable<ScopeEntity[]>;
+  public selectedScope$: Observable<ScopeEntity>;
   public reportEntities$: Observable<ReportLibrary[]>;
   public workpackage$: Observable<WorkPackageEntity[]>;
   public selectedLeftTab: number;
@@ -45,7 +50,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private sharedService: SharedService,
+    private scopeStore: Store<ScopeState>,
     private store: Store<ReportState>,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     private workPackageStore: Store<WorkPackageState>,
@@ -54,6 +59,25 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.scopeStore.dispatch(new LoadScopes({}));
+    this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
+    this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
+    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
+      if (scope) {
+        this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
+      }
+    });
+    this.routerStore
+      .select(getScopeQueryParams)
+      .pipe(take(1))
+      .subscribe(scope => {
+        if (scope) {
+          this.scopeStore.dispatch(new LoadScope(scope));
+        } else {
+          this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
+        }
+      });
+
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
@@ -168,4 +192,9 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  onSelectScope(scopeId: string): void {
+    this.scopeStore.dispatch(new LoadScope(scopeId));
+  }
+  
 }

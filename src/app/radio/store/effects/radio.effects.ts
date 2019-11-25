@@ -1,7 +1,7 @@
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetailApiResponse, RadioApiRequest, RadioApiResponse, ReplyApiRequest, ReplyApiResponse } from '../models/radio.model';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetailApiResponse, RadioApiRequest, RadioApiResponse, ReplyApiRequest, AdvancedSearchApiRequest } from '../models/radio.model';
 import { catchError, map, switchMap, mergeMap, tap } from 'rxjs/operators';
-import { RadioActionTypes, LoadRadios, LoadRadiosSuccess, LoadRadiosFailure, LoadRadio, LoadRadioSuccess, LoadRadioFailure, AddRadioEntity, AddRadioEntitySuccess, AddRadioEntityFailure, AddReply, AddReplySuccess, UpdateRadioProperty, UpdateRadioPropertySuccess, UpdateRadioPropertyFailure, DeleteRadioProperty, DeleteRadioPropertySuccess, DeleteRadioPropertyFailure } from '../actions/radio.actions';
+import { RadioActionTypes, LoadRadios, LoadRadiosSuccess, LoadRadiosFailure, LoadRadio, LoadRadioSuccess, LoadRadioFailure, AddRadioEntity, AddRadioEntitySuccess, AddRadioEntityFailure, AddReply, AddReplySuccess, UpdateRadioProperty, UpdateRadioPropertySuccess, UpdateRadioPropertyFailure, DeleteRadioProperty, DeleteRadioPropertySuccess, DeleteRadioPropertyFailure, SearchRadio, SearchRadioSuccess, SearchRadioFailure } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -87,6 +87,18 @@ export class RadioEffects {
       return this.radioService.deleteRadioProperty(payload.radioId, payload.customPropertyId).pipe(
         switchMap((response: RadioDetailApiResponse) => [new DeleteRadioPropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteRadioPropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  searchRadio$ = this.actions$.pipe(
+    ofType<SearchRadio>(RadioActionTypes.SearchRadio),
+    map(action => action.payload),
+    mergeMap((payload: AdvancedSearchApiRequest) => {
+      return this.radioService.searchRadio(payload).pipe(
+        mergeMap((response: RadioEntitiesResponse) => [new SearchRadioSuccess(response)]),
+        catchError((error: HttpErrorResponse) => of(new SearchRadioFailure(error)))
       );
     })
   );
