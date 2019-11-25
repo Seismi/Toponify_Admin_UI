@@ -184,6 +184,7 @@ export class WorkPackageNodeEffects {
     })
   );
 
+  @Effect()
   findPotentialWorkPackageNodes$ = this.actions$.pipe(
     ofType<FindPotentialWorkpackageNodes>(WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes),
     map(action => action.payload),
