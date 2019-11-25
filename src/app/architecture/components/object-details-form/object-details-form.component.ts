@@ -27,7 +27,7 @@ export class ObjectDetailsFormComponent {
 
   @Output() saveAttribute = new EventEmitter<void>();
 
-  @Output() deleteAttribute = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<void>();
 
   @Output() editDetails = new EventEmitter<void>();
 
@@ -63,7 +63,7 @@ export class ObjectDetailsFormComponent {
   }
 
   onDelete(): void {
-    this.deleteAttribute.emit();
+    this.delete.emit();
   }
 
   onAddOwner(): void {
