@@ -331,20 +331,7 @@ export function reducer(
       const {nodeId, owners} = <{owners: OwnersEntity[], nodeId: string}>action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
       if (nodeIndex > -1) {
-        const updatedNode = {...state.entities[nodeIndex], owners: owners};
-        const entities = [...state.entities];
-        entities[nodeIndex] = updatedNode;
-        if (state.selectedNode.id ===  nodeId) {
-          return  {
-            ...state,
-            entities,
-            selectedNode: updatedNode
-          };
-        }
-        return {
-          ...state,
-          entities,
-        };
+        return replaceNodeOwners(state, nodeIndex, nodeId, owners);
       } else {
         return {
           ...state
@@ -376,4 +363,21 @@ export function reducer(
       return state;
     }
   }
+}
+
+function replaceNodeOwners (state: State, nodeIndex: number, nodeId: string, owners: OwnersEntity[]): State {
+  const updatedNode = {...state.entities[nodeIndex], owners: owners};
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+  if (state.selectedNode.id ===  nodeId) {
+    return  {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities,
+  };
 }
