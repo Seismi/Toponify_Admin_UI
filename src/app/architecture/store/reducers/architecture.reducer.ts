@@ -1,7 +1,7 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import { Error, Node, NodeDetail } from '../models/node.model';
+import {Error, Node, NodeDetail, OwnersEntity} from '../models/node.model';
 import {
   WorkpackageActionsUnion,
   WorkpackageActionTypes
@@ -327,6 +327,18 @@ export function reducer(
       }
     }
 
+    case NodeActionTypes.UpdateNodeOwners: {
+      const {nodeId, owners} = <{owners: OwnersEntity[], nodeId: string}>action.payload;
+      const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
+      if (nodeIndex > -1) {
+        return replaceNodeOwners(state, nodeIndex, nodeId, owners);
+      } else {
+        return {
+          ...state
+        };
+      }
+    }
+
     case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes: {
       return {
         ...state,
@@ -351,4 +363,21 @@ export function reducer(
       return state;
     }
   }
+}
+
+function replaceNodeOwners (state: State, nodeIndex: number, nodeId: string, owners: OwnersEntity[]): State {
+  const updatedNode = {...state.entities[nodeIndex], owners: owners};
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+  if (state.selectedNode.id ===  nodeId) {
+    return  {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities,
+  };
 }

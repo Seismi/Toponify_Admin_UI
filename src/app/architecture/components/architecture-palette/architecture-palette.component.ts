@@ -33,7 +33,7 @@ export class ArchitecturePaletteComponent implements OnInit {
       name: true,
       description: false,
       tags: false,
-      owner: false,
+      owners: false,
       nextLevel: false,
       responsibilities: false,
       dataLinks: true,

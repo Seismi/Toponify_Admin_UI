@@ -43,7 +43,7 @@ const standardDisplayOptions = {
   name: true,
   description: false,
   tags: true,
-  owner: false,
+  owners: false,
   nextLevel: true,
   responsibilities: false,
   dataLinks: true,
