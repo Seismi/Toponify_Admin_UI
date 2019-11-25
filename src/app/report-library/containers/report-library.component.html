@@ -1,6 +1,12 @@
 <app-base-header>
     <app-toolbar-column [fillFreeSpace]="true">
     </app-toolbar-column>
+    <smi-scopes-dropdown
+        class="scope-dropdown"
+        [data]="scopes$ | async"
+        [selectedScope]="selectedScope$ | async"
+        (selectScope)="onSelectScope($event)">
+    </smi-scopes-dropdown>
     <app-search></app-search>
     <app-toolbar-column>
         <smi-quicklinks-actions></smi-quicklinks-actions>
