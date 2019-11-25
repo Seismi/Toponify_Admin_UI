@@ -7,11 +7,14 @@ import { DocumentStandardsService } from '@app/documentation-standards/component
 import { FormGroup } from '@angular/forms';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 import { DocumentStandardsValidatorService } from '@app/documentation-standards/components/documentation-standards-detail/services/document-standards-validator.service';
-import { LoadDocumentationStandard, UpdateDocumentationStandard, DeleteDocumentationStandard } from '@app/documentation-standards/store/actions/documentation-standards.actions';
+import {
+  LoadDocumentationStandard,
+  UpdateDocumentationStandard,
+  DeleteDocumentationStandard
+} from '@app/documentation-standards/store/actions/documentation-standards.actions';
 import { getDocumentStandard } from '@app/documentation-standards/store/selectors/documentation-standards.selector';
 import { DeleteDocumentModalComponent } from '../delete-document-modal/delete-document.component';
 import { MatDialog } from '@angular/material';
-import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
 
 @Component({
   selector: 'app-documentation-standards-details',
@@ -20,8 +23,6 @@ import { DocumentationStandardsService } from '@app/documentation-standards/serv
   providers: [DocumentStandardsService, DocumentStandardsValidatorService]
 })
 export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy {
-
-  documentStandard: DocumentStandard;
   subscriptions: Subscription[] = [];
   documentStandardId: string;
 
@@ -29,25 +30,24 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private store: Store<DocumentStandardsState>,
-    private documentStandardsService: DocumentStandardsService,
-    private documentationStandardsService: DocumentationStandardsService
+    private documentStandardsService: DocumentStandardsService
   ) {}
 
   ngOnInit() {
-    this.subscriptions.push(this.route.params.subscribe( params => {
-      const id = params['documentStandardId'];
-      this.documentStandardId = id;
-      this.store.dispatch(new LoadDocumentationStandard(id));
-    }));
-    this.subscriptions.push(this.store.pipe(select(getDocumentStandard)).subscribe(documentStandard => {
-      if(documentStandard) {
-        this.documentStandardsService.documentStandardsForm.patchValue({
-          name: documentStandard.name,
-          description: documentStandard.description,
-          type: documentStandard.type
-        });
-      }
-    }));
+    this.subscriptions.push(
+      this.route.params.subscribe(params => {
+        const id = params['documentStandardId'];
+        this.documentStandardId = id;
+        this.store.dispatch(new LoadDocumentationStandard(id));
+      })
+    );
+    this.subscriptions.push(
+      this.store.pipe(select(getDocumentStandard)).subscribe(documentStandard => {
+        if (documentStandard) {
+          this.documentStandardsService.updateForm(documentStandard);
+        }
+      })
+    );
   }
 
   get documentStandardsForm(): FormGroup {
@@ -59,18 +59,20 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
   }
 
   onSaveDocument() {
-    this.store.dispatch(new UpdateDocumentationStandard({
-      id: this.documentStandardId,
-      data: {
+    this.store.dispatch(
+      new UpdateDocumentationStandard({
+        id: this.documentStandardId,
         data: {
-          id: this.documentStandardId,
-          type: this.documentStandardsForm.value.type,
-          name: this.documentStandardsForm.value.name,
-          description: this.documentStandardsForm.value.description,
-          levels: this.documentationStandardsService.selectedLevels
+          data: {
+            id: this.documentStandardId,
+            type: this.documentStandardsForm.value.type,
+            name: this.documentStandardsForm.value.name,
+            description: this.documentStandardsForm.value.description,
+            levels: this.documentStandardsForm.value.levels
+          }
         }
-      }
-    }));
+      })
+    );
   }
 
   onDeleteDocument() {
@@ -82,9 +84,9 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data.mode === 'delete') {
-        this.store.dispatch(new DeleteDocumentationStandard(this.documentStandardId))
+        this.store.dispatch(new DeleteDocumentationStandard(this.documentStandardId));
       }
     });
   }

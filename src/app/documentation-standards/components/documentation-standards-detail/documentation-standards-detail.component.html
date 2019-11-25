@@ -25,9 +25,10 @@
     <!-- Levels -->
     <div class="form-group">
         <label class="levels-label">Levels</label>
-        <smi-document-standards-levels 
-            [isDisabled]="isDisabled" 
-            [modalMode]="modalMode">
+        <smi-document-standards-levels
+          [control]="group.controls.levels"
+          [isDisabled]="isDisabled"
+          [modalMode]="modalMode">
         </smi-document-standards-levels>
     </div>
   </div>
