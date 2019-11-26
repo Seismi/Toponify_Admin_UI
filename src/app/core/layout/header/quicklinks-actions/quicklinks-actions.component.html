@@ -24,6 +24,7 @@
     data-hook="quicklinks-layouts-dropdown"
     *ngIf="gojsView"
     [data]="layouts"
+    [selectedLayout]="selectedLayout"
     (selectLayout)="onSelectLayout($event)">
 </smi-layouts-dropdown>
 
