@@ -44,6 +44,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public workpackageId: string;
   public canSelectWorkpackage: boolean = true;
   public workPackageIsEditable: boolean;
+  public scopeId: string;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -60,6 +61,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
+        this.scopeId = scope.id;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
       }
     });
@@ -111,7 +113,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   setWorkPackage(workpackageIds: string[] = []): void {
     const queryParams = {
-      workPackageQuery: workpackageIds
+      workPackageQuery: workpackageIds,
+      scopeQuery: this.scopeId
     };
     this.store.dispatch(new LoadAttributes(queryParams));
   }
@@ -188,10 +191,14 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   onSelectScope(scopeId: string): void {
     this.scopeStore.dispatch(new LoadScope(scopeId));
+    this.getAttributesWithScopeQuery(scopeId);
   }
 
   getAttributesWithScopeQuery(scopeId: string): void {
-    
+    const queryParams = {
+      scopeQuery: scopeId
+    }
+    this.store.dispatch(new LoadAttributes(queryParams));
   }
 
 }
