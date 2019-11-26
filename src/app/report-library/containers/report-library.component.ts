@@ -201,7 +201,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.getReportWithScopeQuery(scopeId);
   }
 
-  getReportWithScopeQuery(scopeId: string) {
+  getReportWithScopeQuery(scopeId: string): void {
     const queryParams = {
       scopeQuery: scopeId
     };
