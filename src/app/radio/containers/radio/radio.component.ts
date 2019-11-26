@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { MatDialog } from '@angular/material';
@@ -22,7 +22,7 @@ import { LoadNodes } from '@app/nodes/store/actions/node.actions';
   styleUrls: ['radio.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-export class RadioComponent implements OnInit, OnDestroy {
+export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public radio$: Observable<RadioEntity[]>;
   public loading$: Observable<boolean>;
@@ -36,8 +36,10 @@ export class RadioComponent implements OnInit, OnDestroy {
     private store: Store<RadioState>,
     public dialog: MatDialog,
     private router: Router
-  ) {
-    router.events.subscribe((event: NavigationEnd) => {
+  ) { }
+
+  ngAfterViewInit() {
+    this.router.events.subscribe((event: NavigationEnd) => {
       if (event instanceof NavigationEnd) {
         (event.url.length > 7) ? this.radioSelected = true : this.radioSelected = false;
       }

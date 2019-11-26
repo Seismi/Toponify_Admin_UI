@@ -1,8 +1,8 @@
 <!-- Splitter -->
 <app-toolbar-splitter *ngIf="gojsView"></app-toolbar-splitter>
 
-<!-- Architecture -->
-<a class="architecture-icon" *ngIf="!gojsView"><mat-icon routerLink="/architecture" queryParamsHandling="preserve" matTooltip="Architecture">device_hub</mat-icon></a>
+<!-- Topology -->
+<a class="architecture-icon" *ngIf="!gojsView"><mat-icon routerLink="/topology" queryParamsHandling="preserve" matTooltip="Topology">device_hub</mat-icon></a>
 
 <!-- WorkPackage -->
 <a><mat-icon routerLink="/work-packages" queryParamsHandling="preserve" matTooltip="Work Packages">business_center</mat-icon></a>
@@ -28,10 +28,10 @@
 </smi-layouts-dropdown>
 
 <!-- Edit diagram button -->
-<a (click)="allowEditLayout()" *ngIf="gojsView"><mat-icon matTooltip="Edit Layout">{{allowEditLayouts}}</mat-icon></a>
+<a (click)="allowEditLayout()" *ngIf="gojsView"><mat-icon matTooltip="Edit layout of objects in the canvas">{{allowEditLayouts}}</mat-icon></a>
 
 <!-- RADIO Log -->
 <a><mat-icon routerLink="/radio" queryParamsHandling="preserve" matTooltip="RADIO Log">track_changes</mat-icon></a>
 
 <!-- Help -->
-<a href="https://toponify.freshdesk.com/support/home" target="_blank"><mat-icon matTooltip="Help">help_outline</mat-icon></a>
+<a href="https://support.toponify.com" target="_blank"><mat-icon matTooltip="Help">help_outline</mat-icon></a>
