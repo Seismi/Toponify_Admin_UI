@@ -85,5 +85,8 @@ export type WorkPackageLinkActionsUnion =
   | LoadWorkpackageLinkDescendantsFailure
   | DeleteWorkpackageLink
   | DeleteWorkpackageLinkSuccess
-  | DeleteWorkpackageLinkFailure;
+  | DeleteWorkpackageLinkFailure
+  | UpdateWorkPackageLink
+  | UpdateWorkPackageLinkSuccess
+  | UpdateWorkPackageLinkFailure;
 

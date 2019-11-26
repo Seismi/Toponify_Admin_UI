@@ -9,7 +9,8 @@
         <p class="detailsTab">
           <smi-radio-detail 
             data-hook="radio-details" 
-            [data]="users$ | async" 
+            [data]="users$ | async"
+            [relatesTo]="radio?.relatesTo"
             [group]="radioDetailsForm"
             [isEditable]="isEditable" 
             [modalMode]="modalMode" 

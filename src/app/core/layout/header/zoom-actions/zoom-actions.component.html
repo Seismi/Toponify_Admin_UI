@@ -3,7 +3,8 @@
     <mat-option
         *ngFor="let layer of layers"
         (click)="onViewLevelSelected(layer.level)"
-        [value]="layer.name">
+        [value]="layer.name"
+        [hidden]="getMapLevel(layer.level)">
         {{layer.name | titlecase}} View
     </mat-option>
   </mat-select>

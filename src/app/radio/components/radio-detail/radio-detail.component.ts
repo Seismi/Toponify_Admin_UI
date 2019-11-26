@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
+import { RadioDetail } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-radio-detail',
@@ -17,6 +18,7 @@ export class RadioDetailComponent {
   @Input() modalMode = false;
   @Input() statusClosed = false;
   @Input() rows: number = 8;
+  @Input() relatesTo: RadioDetail;
 
   @Input()
   set data(data: any[]) {
