@@ -1,0 +1,23 @@
+<table mat-table [dataSource]="dataSource">
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="icons">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon *ngIf="!element.explicitlyIncluded" matTooltip="Implicitly included - This either is a component of or has a component that is in the scope">functions</mat-icon>
+      <mat-icon *ngIf="element.removeFromButton && workPackageIsEditable" (click)="onDelete(element)">delete</mat-icon>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+<mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
+<div class="actions">
+  <button mat-raised-button color="primary" (click)="onNew()">New Scope</button>
+  <button mat-raised-button color="primary" (click)="onAdd()">Add to Existing</button>
+</div>

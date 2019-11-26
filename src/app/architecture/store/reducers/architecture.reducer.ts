@@ -1,7 +1,7 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import { Error, Node, NodeDetail } from '../models/node.model';
+import {Error, Node, NodeDetail, OwnersEntity} from '../models/node.model';
 import {
   WorkpackageActionsUnion,
   WorkpackageActionTypes
@@ -12,14 +12,18 @@ import {
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { DescendantsEntity } from '@app/nodes/store/models/node.model';
 import { WorkPackageLinkActionTypes, WorkPackageLinkActionsUnion } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 
 export interface State {
   zoomLevel: number;
   viewLevel: number;
   entities: Node[];
+  descendants: DescendantsEntity[];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
+  nodeScopes: WorkPackageNodeScopes[];
+  availableScopes: WorkPackageNodeScopes[];
   error: Error;
   selectedWorkpackages: string[];
 }
@@ -31,6 +35,9 @@ export const initialState: State = {
   selectedNode: null,
   selectedNodeLink: null,
   links: [],
+  descendants: [],
+  nodeScopes: [],
+  availableScopes: [],
   error: null,
   selectedWorkpackages: []
 };
@@ -102,6 +109,46 @@ export function reducer(
       };
     }
 
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopes: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesSuccess: {
+      return {
+        ...state,
+        nodeScopes: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesFailure: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScope: {
+      return {
+        ...state,
+      };
+    }
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeSuccess: {
+      return {
+        ...state,
+        nodeScopes: state.nodeScopes.filter(scope => scope.id !== action.payload.id)
+      };
+    }
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+
     case WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess: {
       return {
         ...state,
@@ -113,7 +160,23 @@ export function reducer(
       };
     }
 
+    
     case WorkPackageLinkActionTypes.UpdateWorkPackageLinkFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilitySuccess: {
+      return {
+        ...state,
+        availableScopes: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilityFailure: {
       return {
         ...state,
         error: <Error>action.payload
@@ -304,8 +367,57 @@ export function reducer(
       }
     }
 
+    case NodeActionTypes.UpdateNodeOwners: {
+      const {nodeId, owners} = <{owners: OwnersEntity[], nodeId: string}>action.payload;
+      const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
+      if (nodeIndex > -1) {
+        return replaceNodeOwners(state, nodeIndex, nodeId, owners);
+      } else {
+        return {
+          ...state
+        };
+      }
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes: {
+      return {
+        ...state,
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesSuccess: {
+      return {
+        ...state,
+        descendants: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
     default: {
       return state;
     }
   }
+}
+
+function replaceNodeOwners (state: State, nodeIndex: number, nodeId: string, owners: OwnersEntity[]): State {
+  const updatedNode = {...state.entities[nodeIndex], owners: owners};
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+  if (state.selectedNode.id ===  nodeId) {
+    return  {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities,
+  };
 }

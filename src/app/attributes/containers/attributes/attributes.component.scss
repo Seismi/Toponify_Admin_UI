@@ -8,9 +8,17 @@
     margin: 0;
 }
 
-button {
+.hide-btn {
     position: absolute;
     bottom: 12px;
     right: 16px;
     z-index: 99999;
+}
+
+.add-btn {
+    margin: 15px;
+}
+
+.scope-dropdown {
+    margin-right: 15px;
 }

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest } from '../models/radio.model';
+import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest, AdvancedSearchApiRequest, RadiosAdvancedSearch } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export enum RadioActionTypes {
@@ -26,6 +26,12 @@ export enum RadioActionTypes {
   DeleteRadioProperty = '[Radio] Delete Radio Property',
   DeleteRadioPropertySuccess = '[Radio] Delete Radio Property Success',
   DeleteRadioPropertyFailure = '[Radio] Delete Radio Property Failure',
+
+  SearchRadio = '[Radio] Search Radio',
+  SearchRadioSuccess = '[Radio] Search Radio Success',
+  SearchRadioFailure = '[Radio] Search Radio Failure',
+
+  RadioFilter= '[Radio] Load Radio Filter Data'
 }
 
 export class LoadRadios implements Action {
@@ -124,6 +130,27 @@ export class DeleteRadioPropertyFailure implements Action {
 }
 
 
+export class SearchRadio implements Action {
+  readonly type = RadioActionTypes.SearchRadio;
+  constructor(public payload: AdvancedSearchApiRequest) {}
+}
+
+export class SearchRadioSuccess implements Action {
+  readonly type = RadioActionTypes.SearchRadioSuccess;
+  constructor(public payload: RadioEntitiesResponse) {}
+}
+
+export class SearchRadioFailure implements Action {
+  readonly type = RadioActionTypes.SearchRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class RadioFilter implements Action {
+  readonly type = RadioActionTypes.RadioFilter;
+  constructor(public payload: RadiosAdvancedSearch) {}
+}
+
+
 export type RadioActionsUnion = 
   | LoadRadios
   | LoadRadiosSuccess
@@ -142,6 +169,10 @@ export type RadioActionsUnion =
   | UpdateRadioPropertyFailure
   | DeleteRadioProperty
   | DeleteRadioPropertySuccess
-  | DeleteRadioPropertyFailure;
+  | DeleteRadioPropertyFailure
+  | SearchRadio
+  | SearchRadioSuccess
+  | SearchRadioFailure
+  | RadioFilter;
 
 

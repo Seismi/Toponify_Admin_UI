@@ -1,17 +1,15 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
 import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
-import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpackage-tree-modal.component';
-
 
 @Component({
   selector: 'app-workpackage',
@@ -22,59 +20,48 @@ import { WorkPackageTreeModalComponent } from '../workpackage-tree-modal/workpac
 })
 export class WorkPackageComponent implements OnInit, OnDestroy {
 
-  subscriptions: Subscription[] = [];
-  workpackageEntities$: Observable<WorkPackageEntity[]>;
-  workpackagesSubscription: Subscription;
-  selectedWorkPackage$: Subscription;
-  selectedWorkPackage: WorkPackageEntity;
-  workpackageSelected: boolean;
-  workpackageId: string;
-  selectedOwners = [];
-  selectedBaseline = [];
-  workpackages: WorkPackageEntity[];
+  public subscriptions: Subscription[] = [];
+  public workpackageEntities$: Observable<WorkPackageEntity[]>;
+  public selectedWorkPackage$: Subscription;
+  public selectedWorkPackage: WorkPackageEntity;
+  public workpackageSelected: boolean;
+  public workpackageId: string;
+  public selectedOwners = [];
+  public selectedBaseline = [];
+  public workpackages: WorkPackageEntity[];
+  public workPackageSelected: boolean;
 
   constructor(
     private store: Store<WorkPackageState>,
     private router: Router,
-    public dialog: MatDialog) {}
-
+    public dialog: MatDialog
+  ) {
+    router.events.subscribe((event: NavigationEnd) => {
+      if (event instanceof NavigationEnd) {
+        (event.url.length > 16) ? this.workPackageSelected = true : this.workPackageSelected = false;
+      }
+    });
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadWorkPackages({}));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getWorkPackageEntities));
-    this.workpackagesSubscription = this.workpackageEntities$.subscribe(workpackages => (this.workpackages = workpackages));
-    this.subscriptions.push(this.store.pipe(select(fromWorkPackagesEntities.getSelectedWorkPackage))
-      .subscribe(workpackage => {
-        // TODO: enable when api fixed. Currently returns list instead of details
-        // this.workpackageId = workpackage.id;
-      }));
+    this.subscriptions.push(this.workpackageEntities$.subscribe(workpackages => (this.workpackages = workpackages)));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  onSelectWorkpackage(row: any) {
-    this.router.navigate(['work-packages', row.id]);
+  onSelectWorkpackage(row: WorkPackageDetail): void {
+    this.router.navigate(['work-packages', row.id], {queryParamsHandling: 'preserve' });
   }
 
-
-  onAddWorkPackage() {
+  onAddWorkPackage(): void {
     this.dialog.open(WorkPackageModalComponent, {
       disableClose: false,
       width: '500px'
     })
   }
 
-  onOpenWorkPackageTree() {
-    this.dialog.open(WorkPackageTreeModalComponent, {
-      maxWidth: '100vw',
-      maxHeight: '100vh',
-      height: '100%',
-      width: '100%',
-      data: {
-        workpackages: this.workpackages
-      }
-    });
-  }
 }

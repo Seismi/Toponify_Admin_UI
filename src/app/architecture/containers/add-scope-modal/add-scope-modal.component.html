@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Add Existing Scope</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Scopes</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let scope of scopes$ | async" [value]="scope.name" (click)="onSelect(scope)">
+        {{scope.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()" data-hook="add-scope-modal-save">Save</button>
+  <button mat-button (click)="onCancel()" data-hook="add-scope-modal-cancel">Cancel</button>
+</div>

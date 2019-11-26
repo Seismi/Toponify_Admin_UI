@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { switchMap, catchError, map } from 'rxjs/operators';
+import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { AttributeService, GetAttributeRequestQueryParams } from '@app/attributes/services/attributes.service';
-import { AttributeActionTypes, LoadAttributes, LoadAttributesSuccess, LoadAttributesFailure, LoadAttribute, LoadAttributeSuccess, LoadAttributeFailure } from '../actions/attributes.actions';
-import { AttributeEntitiesHttpParams, AttributeEntitiesResponse, AttributeDetailApiResponse } from '../models/attributes.model';
+import { AttributeActionTypes, LoadAttributes, LoadAttributesSuccess, LoadAttributesFailure, LoadAttribute, LoadAttributeSuccess, LoadAttributeFailure, AddAttribute, AddAttributeSuccess, AddAttributeFailure, UpdateAttribute, UpdateAttributeSuccess, UpdateAttributeFailure, DeleteAttribute, DeleteAttributeSuccess, DeleteAttributeFailure, AddOwner, AddOwnerSuccess, AddOwnerFailure, DeleteOwner, DeleteOwnerSuccess, DeleteOwnerFailure, UpdateProperty, UpdatePropertySuccess, DeleteProperty, DeletePropertySuccess, DeletePropertyFailure, AddRelated, AddRelatedSuccess, AddRelatedFailure, DeleteRelated, DeleteRelatedSuccess, DeleteRelatedFailure } from '../actions/attributes.actions';
+import { AttributeEntitiesHttpParams, AttributeEntitiesResponse, AttributeDetailApiResponse, AttributeApiResponse, AttributeEntity, AttributeDetail, AttributeApiRequest, AttributeDetailApiRequest, CustomPropertyValues, CustomPropertiesApiRequest } from '../models/attributes.model';
+import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
+import { UpdateRadioPropertyFailure } from '@app/radio/store/actions/radio.actions';
 
 
 @Injectable()
@@ -39,39 +41,111 @@ export class AttributeEffects {
     })
   );
 
-  // @Effect()
-  // addAttribute$ = this.actions$.pipe(
-  //   ofType<AttributeActions.AddAttribute>(AttributeActionTypes.AddAttribute),
-  //   map(action => action.payload),
-  //   mergeMap((payload: {attribute: AddAttributeApiRequest}) => {
-  //     return this.attributeService.addAttribute(payload.attribute).pipe(
-  //       switchMap((attribute: AttributeSingleApiResponse) => [new AttributeActions.AddAttributeSuccess(attribute.data)]),
-  //       catchError((error: HttpErrorResponse) => of(new AttributeActions.AddAttributeFailure(error)))
-  //     );
-  //   })
-  // );
+  @Effect()
+  addAttribute$ = this.actions$.pipe(
+    ofType<AddAttribute>(AttributeActionTypes.AddAttribute),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, entity: AttributeApiRequest }) => {
+      return this.attributeService.addAttribute(payload.workPackageId, payload.entity).pipe(
+        switchMap((response: AttributeApiResponse) => [new AddAttributeSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddAttributeFailure(error)))
+      );
+    })
+  );
 
-  // @Effect()
-  // updateAttribute$ = this.actions$.pipe(
-  //   ofType<AttributeActions.UpdateAttribute>(AttributeActionTypes.UpdateAttribute),
-  //   map(action => action.payload),
-  //   mergeMap((payload: {attribute: AttributeApiRequest}) => {
-  //     return this.attributeService.updateAttribute(payload.attribute).pipe(
-  //       switchMap((attribute: AttributeSingleApiResponse) => [new AttributeActions.UpdateAttributeSuccess(attribute.data)]),
-  //       catchError((error: HttpErrorResponse) => of(new AttributeActions.UpdateAttributeFailure(error)))
-  //     );
-  //   })
-  // );
+  @Effect()
+  updateAttribute$ = this.actions$.pipe(
+    ofType<UpdateAttribute>(AttributeActionTypes.UpdateAttribute),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, attributeId: string, entity: AttributeDetailApiRequest }) => {
+      return this.attributeService.updateAttribute(payload.workPackageId, payload.attributeId, payload.entity).pipe(
+        switchMap((attribute: AttributeDetailApiResponse) => [new UpdateAttributeSuccess(attribute.data)]),
+        catchError((error: HttpErrorResponse) => of(new UpdateAttributeFailure(error)))
+      );
+    })
+  );
 
-  // @Effect()
-  // deleteAttribute$ = this.actions$.pipe(
-  //   ofType<AttributeActions.DeleteAttribute>(AttributeActionTypes.DeleteAttribute),
-  //   map(action => action.payload),
-  //   mergeMap((attribute: {versionId: string, attributeId: string}) => {
-  //     return this.attributeService.deleteAttribute(attribute.attributeId).pipe(
-  //       map(_ => new AttributeActions.DeleteAttributeSuccess(attribute.attributeId)),
-  //       catchError(error => of(new AttributeActions.DeleteAttributeFailure(error)))
-  //     );
-  //   })
-  // );
+  @Effect()
+  deleteAttribute$ = this.actions$.pipe(
+    ofType<DeleteAttribute>(AttributeActionTypes.DeleteAttribute),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, attributeId: string }) => {
+      return this.attributeService.deleteAttribute(payload.workPackageId, payload.attributeId).pipe(
+        map(response => new DeleteAttributeSuccess(response.data)),
+        catchError(error => of(new DeleteAttributeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addOwner$ = this.actions$.pipe(
+    ofType<AddOwner>(AttributeActionTypes.AddOwner),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, attributeId: string, ownerId: string, entity: OwnersEntityOrApproversEntity }) => {
+      return this.attributeService.addOwner(payload.workPackageId, payload.attributeId, payload.ownerId, payload.entity).pipe(
+        mergeMap((response: AttributeDetailApiResponse) => [new AddOwnerSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteOwner$ = this.actions$.pipe(
+    ofType<DeleteOwner>(AttributeActionTypes.DeleteOwner),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string, attributeId: string, ownerId: string }) => {
+      return this.attributeService.deleteOwner(payload.workPackageId, payload.attributeId, payload.ownerId).pipe(
+        switchMap((response: AttributeDetailApiResponse) => [new DeleteOwnerSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  updateProperty$ = this.actions$.pipe(
+    ofType<UpdateProperty>(AttributeActionTypes.UpdateProperty),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string, attributeId: string, customPropertyId: string, entity: CustomPropertiesApiRequest }) => {
+      return this.attributeService.updateProperty(payload.workPackageId, payload.attributeId, payload.customPropertyId, payload.entity).pipe(
+        switchMap((response: AttributeDetailApiResponse) => [new UpdatePropertySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new UpdateRadioPropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteProperty$ = this.actions$.pipe(
+    ofType<DeleteProperty>(AttributeActionTypes.DeleteProperty),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string, attributeId: string, customPropertyId: string }) => {
+      return this.attributeService.deleteProperty(payload.workPackageId, payload.attributeId, payload.customPropertyId).pipe(
+        switchMap((response: AttributeDetailApiResponse) => [new DeletePropertySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeletePropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addRelated$ = this.actions$.pipe(
+    ofType<AddRelated>(AttributeActionTypes.AddRelated),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string, attributeId: string, relatedAttributeId: string }) => {
+      return this.attributeService.addRelated(payload.workPackageId, payload.attributeId, payload.relatedAttributeId).pipe(
+        switchMap((response: AttributeDetailApiResponse) => [new AddRelatedSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddRelatedFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteRelated$ = this.actions$.pipe(
+    ofType<DeleteRelated>(AttributeActionTypes.DeleteRelated),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string, attributeId: string, relatedAttributeId: string }) => {
+      return this.attributeService.deleteRelated(payload.workPackageId, payload.attributeId, payload.relatedAttributeId).pipe(
+        switchMap((response: AttributeDetailApiResponse) => [new DeleteRelatedSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteRelatedFailure(error)))
+      );
+    })
+  );
 }

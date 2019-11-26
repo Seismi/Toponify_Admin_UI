@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-workpackages-table',
@@ -18,37 +18,30 @@ export class WorkPackagesTableComponent implements OnInit {
     }
   }
 
-  selectedRowIndex = -1;
+  public selectedRowIndex: string | number = -1;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  ngOnInit() {}
+  ngOnInit(): void {}
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
-  displayedColumns: string[] = ['name', 'status', 'owners'];
+  public displayedColumns: string[] = ['name', 'status', 'owners', 'approvers'];
 
 
   @Output()
-  workpackageSelected = new EventEmitter();
+  workpackageSelected = new EventEmitter<WorkPackageDetail>();
 
   @Output()
-  addWorkpackage = new EventEmitter();
+  addWorkpackage = new EventEmitter<void>();
 
-  @Output()
-  openWorkPackageTree = new EventEmitter();
-
-  onSelectRow(row) {
+  onSelectRow(row: WorkPackageDetail): void {
     this.selectedRowIndex = row.id;
     this.workpackageSelected.emit(row);
   }
 
-  onAdd() {
+  onAdd(): void {
     this.addWorkpackage.emit();
-  }
-
-  onOpenWorkPackageTree() {
-    this.openWorkPackageTree.emit();
   }
 
 }

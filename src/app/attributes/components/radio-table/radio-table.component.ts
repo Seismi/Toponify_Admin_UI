@@ -11,8 +11,10 @@ import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
 export class RadioTableInAttributesPageComponent {
   @Input()
   set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
-    this.dataSource.paginator = this.paginator;
+    if(data) {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -23,6 +25,6 @@ export class RadioTableInAttributesPageComponent {
   displayedColumns: string[] = ['name', 'navigate'];
 
   onSelect(id){
-    this.router.navigate(['/radio/' + id]);
+    this.router.navigate(['/radio/' + id], {queryParamsHandling: 'preserve' });
   }
 }

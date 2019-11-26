@@ -40,6 +40,7 @@ import { FilterRadioFormComponent } from './components/filter-radio-form/filter-
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
 import { DeleteRadioPropertyModalComponent } from './containers/delete-property-modal/delete-property-modal.component';
+import { NodeModule } from '@app/nodes/node.module';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { DeleteRadioPropertyModalComponent } from './containers/delete-property-
         CoreModule,
         CommonModule,
         SettingsModule,
+        NodeModule,
         MatTableModule,
         MatFormFieldModule,
         MatInputModule,

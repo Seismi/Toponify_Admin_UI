@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
@@ -17,7 +11,9 @@ export class WorkPackageTabTableComponent {
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
-      this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
+      this.dataSource = new MatTableDataSource<WorkPackageEntity>(
+        data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded')
+      );
       this.dataSource.paginator = this.paginator;
     }
   }
@@ -28,14 +24,15 @@ export class WorkPackageTabTableComponent {
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 
-  @Output() selectWorkPackage = new EventEmitter<string>();
+  @Output() selectWorkPackage = new EventEmitter<{id: string, newState: boolean}>();
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
   @Output() setWorkpackageEditMode = new EventEmitter();
 
-  onSelect(id: string): void {
-    this.selectWorkPackage.emit(id);
+  onSelect(id: string, newState: boolean, ev): void {
+    ev.preventDefault();
+    this.selectWorkPackage.emit({id, newState});
   }
 
   canSelect(workpackage: any): boolean {
@@ -43,11 +40,7 @@ export class WorkPackageTabTableComponent {
   }
 
   canEdit(workpackage: any): boolean {
-    return (
-      this.canSelectWorkpackage &&
-      !!workpackage.isSelectable &&
-      !!workpackage.isEditable
-    );
+    return this.canSelectWorkpackage && !!workpackage.isSelectable && !!workpackage.isEditable;
   }
 
   // FIXME: set proper type of workpackage

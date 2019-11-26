@@ -10,6 +10,10 @@ export interface CustomPropertyApiRequest {
   data: CustomPropertyValuesEntity;
 }
 
+export interface WorkPackageNodeDescendantsApiResponse {
+  data: (DescendantsEntity)[] | null;
+}
+
 export enum layers {
   system = 'system',
   dataSet = 'data set',

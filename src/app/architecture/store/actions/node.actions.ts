@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { CustomPropertyApiRequest, Error, Node, NodeDetail } from '../models/node.model';
+import {CustomPropertyApiRequest, Error, Node, NodeDetail, OwnersEntity} from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/nodes/store/models/node.model';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
@@ -33,6 +33,7 @@ export enum NodeActionTypes {
   UpdateCustomPropertySuccess = '[Node] Update Custom Property Success',
   UpdateCustomPropertyFailure = '[Node] Update Custom Property Failure',
   UpdateNodeDescendants = '[Node] Update Node Descendants',
+  UpdateNodeOwners = '[Node] Update Node Owners',
   DeleteCustomProperty = '[Node] Delete Custom Property',
   DeleteCustomPropertySuccess = '[Node] Delete Custom Property Success',
   DeleteCustomPropertyFailure = '[Node] Delete Custom Property Failure',
@@ -185,6 +186,11 @@ export class UpdateNodeDescendants implements Action {
   constructor(public payload: { descendants: DescendantsEntity[]; nodeId: string }) {}
 }
 
+export class UpdateNodeOwners implements Action {
+  readonly type = NodeActionTypes.UpdateNodeOwners;
+  constructor(public payload: { owners: OwnersEntity[]; nodeId: string }) {}
+}
+
 export class DeleteCustomProperty implements Action {
   readonly type = NodeActionTypes.DeleteCustomProperty;
   constructor(public payload: { workPackageId: string; nodeId: string; customPropertyId: string; }) {}
@@ -229,6 +235,7 @@ export type NodeActionsUnion =
   | UpdateCustomPropertySuccess
   | UpdateCustomPropertyFailure
   | UpdateNodeDescendants
+  | UpdateNodeOwners
   | DeleteCustomProperty
   | DeleteCustomPropertySuccess
   | DeleteCustomPropertyFailure;
