@@ -28,28 +28,29 @@ import {
   AddWorkPackageNodeDescendantSuccess,
   AddWorkPackageNodeDescendantFailure,
   DeleteWorkPackageNodeDescendant,
-  DeleteWorkPackageNodeDescendantSuccess, 
-  DeleteWorkPackageNodeDescendantFailure, 
-  LoadWorkPackageNodeScopes, 
-  LoadWorkPackageNodeScopesSuccess, 
-  LoadWorkPackageNodeScopesFailure, 
-  LoadWorkPackageNodeScopesAvailability, 
-  LoadWorkPackageNodeScopesAvailabilitySuccess, 
-  LoadWorkPackageNodeScopesAvailabilityFailure, 
-  AddWorkPackageNodeScope, 
-  AddWorkPackageNodeScopeSuccess, 
-  AddWorkPackageNodeScopeFailure, 
-  DeleteWorkPackageNodeScope, 
-  DeleteWorkPackageNodeScopeSuccess, 
+  DeleteWorkPackageNodeDescendantSuccess,
+  DeleteWorkPackageNodeDescendantFailure,
+  LoadWorkPackageNodeScopes,
+  LoadWorkPackageNodeScopesSuccess,
+  LoadWorkPackageNodeScopesFailure,
+  LoadWorkPackageNodeScopesAvailability,
+  LoadWorkPackageNodeScopesAvailabilitySuccess,
+  LoadWorkPackageNodeScopesAvailabilityFailure,
+  AddWorkPackageNodeScope,
+  AddWorkPackageNodeScopeSuccess,
+  AddWorkPackageNodeScopeFailure,
+  DeleteWorkPackageNodeScope,
+  DeleteWorkPackageNodeScopeSuccess,
   DeleteWorkPackageNodeScopeFailure,
   FindPotentialWorkpackageNodes,
   FindPotentialWorkpackageNodesSuccess,
   FindPotentialWorkpackageNodesFailure
 } from '../actions/workpackage-node.actions';
-import { UpdateNodeDescendants } from '@app/architecture/store/actions/node.actions';
-import { WorkPackageNodeScopesApiResponse, WorkPackageNodeScopeApiResponse, WorkPackageNodeFindPotential } from '../models/workpackage.models';
+import {UpdateNodeDescendants, UpdateNodeOwners} from '@app/architecture/store/actions/node.actions';
+import { WorkPackageNodeScopesApiResponse,
+  WorkPackageNodeScopeApiResponse,
+  WorkPackageNodeFindPotential } from '../models/workpackage.models';
 import { DescendantsEntity, WorkPackageNodeDescendantsApiResponse } from '@app/architecture/store/models/node.model';
-
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -71,7 +72,7 @@ export class WorkPackageNodeEffects {
   );
 
   @Effect()
-  addWorkpackageNodeDescenadant$ = this.actions$.pipe(
+  addWorkpackageNodeDescendant$ = this.actions$.pipe(
     ofType<AddWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.AddWorkPackageNodeDescendant),
     map(action => action.payload),
     mergeMap((payload: { workPackageId: string, nodeId: string, data: DescendantsEntity }) => {
@@ -86,7 +87,7 @@ export class WorkPackageNodeEffects {
   );
 
   @Effect()
-  deleteWorkpackageNodeDescenadant$ = this.actions$.pipe(
+  deleteWorkpackageNodeDescendant$ = this.actions$.pipe(
     ofType<DeleteWorkPackageNodeDescendant>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeDescendant),
     map(action => action.payload),
     mergeMap((payload: {workpackageId: string, nodeId: string, descendantId: string}) => {
@@ -147,7 +148,10 @@ export class WorkPackageNodeEffects {
         payload.ownerId,
         payload.data
       ).pipe(
-        mergeMap((response: any) => [new AddWorkpackageNodeOwnerSuccess(response.data)]),
+        mergeMap((response: any) => [
+          new AddWorkpackageNodeOwnerSuccess(response.data),
+          new UpdateNodeOwners({owners: response.data.owners, nodeId: payload.nodeId})
+        ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkpackageNodeOwnerFailure(error)))
       );
     })
@@ -159,7 +163,10 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     mergeMap((payload: { workpackageId: string, nodeId: string, ownerId: string }) => {
       return this.workpackageNodeService.deleteNodeOwner(payload.workpackageId, payload.nodeId, payload.ownerId).pipe(
-        map(data => new DeleteWorkpackageNodeOwnerSuccess(data.data)),
+        switchMap(data => [
+          new DeleteWorkpackageNodeOwnerSuccess(data.data),
+          new UpdateNodeOwners({owners: data.data.owners, nodeId: payload.nodeId})
+        ]),
         catchError(error => of(new DeleteWorkpackageNodeOwnerFailure(error)))
       );
     })

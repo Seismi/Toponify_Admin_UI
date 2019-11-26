@@ -24,7 +24,7 @@ const routes: Routes = [
         loadChildren: './report-library/report-library.module#ReportLibraryModule'
       },
       {
-        path: 'architecture',
+        path: 'topology',
         loadChildren: './architecture/architecture.module#ArchitectureModule'
       },
       {

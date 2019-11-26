@@ -43,7 +43,7 @@ const standardDisplayOptions = {
   name: true,
   description: false,
   tags: true,
-  owner: false,
+  owners: false,
   nextLevel: true,
   responsibilities: false,
   dataLinks: true,
@@ -308,6 +308,11 @@ export class ArchitectureDiagramComponent
 
   setLevel() {
     this.diagramLevelService.changeLevel(this.diagram, this.level);
+  }
+
+  // Call when you want to select a node
+  selectNode(id: string): void {
+    this.diagram.select(this.diagram.findPartForKey(id));
   }
 
   ngOnChanges(changes: SimpleChanges) {
