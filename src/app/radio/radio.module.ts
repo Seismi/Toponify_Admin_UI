@@ -41,6 +41,7 @@ import { DocumentationStandardsModule } from '@app/documentation-standards/docum
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MatMomentDateModule } from '@angular/material-moment-adapter';
 import { DeleteRadioPropertyModalComponent } from './containers/delete-property-modal/delete-property-modal.component';
 import { NodeModule } from '@app/nodes/node.module';
+import { RelatesToTableComponent } from './components/relates-to-table/relates-to-table.component';
 
 
 @NgModule({
@@ -92,7 +93,8 @@ import { NodeModule } from '@app/nodes/node.module';
         RadioRightSideComponent,
         FilterModalComponent,
         FilterRadioFormComponent,
-        DeleteRadioPropertyModalComponent
+        DeleteRadioPropertyModalComponent,
+        RelatesToTableComponent
     ],
     entryComponents: [ RadioModalComponent, ReplyModalComponent, FilterModalComponent, DeleteRadioPropertyModalComponent ],
     providers: [ RadioService, { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } } ]

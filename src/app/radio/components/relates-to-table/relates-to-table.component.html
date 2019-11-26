@@ -1,0 +1,21 @@
+<h6 style="color: #555">Relates to</h6>
+<table mat-table [dataSource]="dataSource">
+  <ng-container matColumnDef="workPackage">
+    <th mat-header-cell *matHeaderCellDef> Work Package </th>
+    <td mat-cell *matCellDef="let element">{{element.workPackage.name}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="itemType">
+    <th mat-header-cell *matHeaderCellDef> Item Type </th>
+    <td mat-cell *matCellDef="let element">{{element.item.itemType}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let element">{{element.item.name}}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+<mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
