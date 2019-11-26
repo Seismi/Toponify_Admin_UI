@@ -190,4 +190,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
     this.scopeStore.dispatch(new LoadScope(scopeId));
   }
 
+  getAttributesWithScopeQuery(scopeId: string): void {
+    
+  }
+
 }
