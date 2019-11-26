@@ -47,7 +47,7 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
-import { DeleteWorkpackageLinkSuccess } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { DeleteWorkpackageLinkSuccess, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
   AddWorkpackageNodeOwner,
@@ -407,7 +407,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => {
         this.allowMove = workpackages.length > 0;
-        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'edit');
+        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
 
         this.workPackageIsEditable = this.allowMove;
         this.workPackageIsEditable === true
@@ -419,6 +419,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
         this.selectedNode = nodeDetail;
         this.ref.detectChanges();
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
+        // Keep node selected
+        this.diagramComponent.selectNode(this.nodeId);
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess)).subscribe(_ => {
+        // Keep link selected
+        this.diagramComponent.selectNode(this.nodeId);
       })
     );
 
@@ -651,7 +665,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   allowEditLayout() {
     this.allowMove = !this.allowMove;
-    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'edit');
+    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
   }
 
   onZoomMap() {
@@ -814,20 +828,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
   }
 
-  onDeleteAttribute() {
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
-      disableClose: false,
-      width: 'auto',
-      data: {
-        mode: 'delete'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data.mode === 'delete') {
-        // this.store.dispatch(new AttributeActions.DeleteAttribute({attributeId: this.selectedNode.id}));
-      }
-    });
+  onDeleteNode(): void {
+    if(this.part instanceof goNode) {
+      this.handleNodeDeleteRequested(this.part.data);
+    } else {
+      this.handleLinkDeleteRequested(this.part.data);
+    }
   }
 
   displayOptionsChanged({ event, option }: { event: any; option: string }) {
@@ -897,9 +903,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
-    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true : this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
+    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true :
+      this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
     this.diagramComponent.updateDiagramArea();
-    this.diagramComponent.zoomToFit();
   }
 
   openLeftTab(index: number) {
@@ -1195,7 +1201,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   realignTabUnderline(): void {
-    this.switchViewTabsComponent.architectureTableTabs.realignInkBar(); 
+    this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
   }
 
   onAddLayout(): void {

@@ -122,7 +122,8 @@ export class DiagramLevelService {
     this.store.dispatch(
       new UpdateQueryParams({
         filterLevel: object.data.layer + ' map',
-        id: object.data.id
+        id: object.data.id,
+        parentName: object.data.name
       })
     );
 
