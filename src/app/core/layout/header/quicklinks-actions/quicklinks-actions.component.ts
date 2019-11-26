@@ -22,7 +22,7 @@ export class QuicklinksActionsComponent implements OnInit {
   selectLayout = new EventEmitter();
 
   ngOnInit() {
-    this.allowEditLayouts = 'edit';
+    this.allowEditLayouts = 'brush';
   }
 
   allowEditLayout() {
