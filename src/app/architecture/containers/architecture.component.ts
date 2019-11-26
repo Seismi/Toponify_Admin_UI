@@ -829,7 +829,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteNode(): void {
-    if(this.part instanceof goNode) {
+    if (this.part instanceof goNode) {
       this.handleNodeDeleteRequested(this.part.data);
     } else {
       this.handleLinkDeleteRequested(this.part.data);
@@ -903,9 +903,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
-    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true : this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
+    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true :
+      this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
     this.diagramComponent.updateDiagramArea();
-    this.diagramComponent.zoomToFit();
   }
 
   openLeftTab(index: number) {
@@ -1172,9 +1172,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           workPackageId: this.workpackageId,
           nodeId: this.nodeId,
           customPropertyId: customProperty.propertyId
-        }))
+        }));
       }
-    })
+    });
   }
 
   onOpenRadio(radio: RadioDetail) {
@@ -1230,7 +1230,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (data && data.mode === 'delete') {
         this.scopeStore.dispatch(new DeleteWorkPackageNodeScope({scopeId: scope.id, nodeId: this.nodeId}));
       }
-    })
+    });
   }
 
   onAddExistingScope(): void {
@@ -1249,7 +1249,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({nodeId: this.nodeId}));
       }, 150);
-    })
+    });
   }
 
   onAddNewScope(): void {

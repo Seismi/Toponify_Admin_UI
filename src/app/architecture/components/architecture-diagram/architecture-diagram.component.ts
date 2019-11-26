@@ -179,22 +179,22 @@ export class ArchitectureDiagramComponent
     // Set node templates
     this.diagram.nodeTemplateMap.add(
       layers.system,
-      diagramTemplatesService.getSystemNodeTemplate()
+      diagramTemplatesService.getNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       layers.dataSet,
-      diagramTemplatesService.getDataSetNodeTemplate()
+      diagramTemplatesService.getNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       layers.dimension,
-      diagramTemplatesService.getDimensionNodeTemplate()
+      diagramTemplatesService.getNodeTemplate()
     );
 
     this.diagram.nodeTemplateMap.add(
       layers.reportingConcept,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
+      diagramTemplatesService.getNodeTemplate()
     );
 
     // Set links templates

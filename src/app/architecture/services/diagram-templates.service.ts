@@ -52,6 +52,7 @@ export class DiagramTemplatesService {
   // Get standard options used for node shapes
   getStandardNodeShapeOptions(): object {
     return {
+      figure: 'RoundedRectangle',
       fill: 'white',
       stroke: 'black',
       strokeWidth: 1,
@@ -143,8 +144,7 @@ export class DiagramTemplatesService {
             stroke: 'black',
             font: '14px calibri'
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
+          new go.Binding('text', 'name')
         )
       )
     );
@@ -346,9 +346,9 @@ export class DiagramTemplatesService {
   // Returns an array of node sections
   getStandardNodeSections(isHorizontal = false): go.TextBlock[] {
     const sections = [
-      {
+      /*{
         sectionName: 'name',
-        font: 'bold 16px calibri',
+        font: 'bold italic 16px calibri',
         initialText: ''
       },
       {
@@ -357,15 +357,16 @@ export class DiagramTemplatesService {
         initialText: ''
       },
       {
-        sectionName: 'tags',
-        font: '15px calibri',
-        initialText: 'Tags - '
-      },
-      {
         sectionName: 'owners',
         font: '15px calibri',
         initialText: 'Owners - ',
         isArray: true
+      },*/
+      {
+        sectionName: 'tags',
+        font: '15px calibri',
+        initialText: 'Tags - ',
+        isArray: false
       }
     ];
 
@@ -378,7 +379,7 @@ export class DiagramTemplatesService {
           textAlign: 'center',
           stroke: 'black',
           font: section.font,
-          maxSize: new go.Size(100, Infinity),
+          maxSize: new go.Size(200, Infinity),
           margin: sectionMargin
         },
         section.isArray ?
@@ -395,36 +396,93 @@ export class DiagramTemplatesService {
     });
   }
 
+  getNameSection() {
+    return $(
+      go.Panel,
+      'Horizontal',
+      {
+        //stretch: go.GraphObject.Vertical,
+        alignment: go.Spot.TopCenter,
+        row: 0
+      },
+      // $(go.Picture, {desiredSize: new go.Size(25, 25)}),
+      $(go.Shape, {figure: 'Rectangle', desiredSize: new go.Size(25, 25)}),
+      $(
+        go.TextBlock,
+        {
+          textAlign: 'left',
+          font: 'bold italic 20px calibri',
+          margin: new go.Margin(0, 5, 0, 5),
+          desiredSize: new go.Size(125, NaN)
+        },
+        new go.Binding('text', 'name'),
+        new go.Binding('visible', 'name').ofModel()
+       ),
+      // $(go.Button, {desiredSize: new go.Size(25, 25)})
+      $(
+        go.Shape,
+        {
+          figure: 'Rectangle',
+          desiredSize: new go.Size(25, 25)
+        }
+      )
+    );
+  }
+
+  getDescriptionSection() {
+    return $(
+      go.TextBlock,
+      {
+        textAlign: 'center',
+        stroke: 'black',
+        font: '16px Calibri',
+        maxSize: new go.Size(190, Infinity),
+        margin: new go.Margin(5, 5, 0, 5),
+        row: 1
+      },
+      new go.Binding('text', 'description'),
+      new go.Binding('visible', 'description').ofModel()
+    );
+  }
+
+  getOwnerSection() {
+    return $(
+      go.TextBlock,
+      {
+        textAlign: 'center',
+        stroke: 'black',
+        font: 'italic 16px Calibri',
+        maxSize: new go.Size(190, Infinity),
+        margin: new go.Margin(5, 5, 0, 5),
+        row: 2
+      },
+      new go.Binding('text', 'owners',
+        function (owners) {
+          return owners.length > 0 ?
+            'Owners - ' + owners.map(
+              function(owner) {return owner.name; }
+            ).join(', ') : '';
+        }
+      ),
+      new go.Binding('visible', 'owners').ofModel()
+    );
+  }
+
   // Get list of descendants for nodes.
-  //   Input: header (title to be displayed above list)
-  getDescendantsNodeSection(header: string): go.Panel {
+  getDescendantsNodeSection(): go.Panel {
     return $(
       go.Panel,
       'Vertical',
       {
-        stretch: go.GraphObject.Horizontal
+        stretch: go.GraphObject.Horizontal,
+        row: 3
       },
-      // Descendants list header
-      $(
-        go.TextBlock,
-        {
-          text: header,
-          alignment: go.Spot.Center,
-          stroke: 'black',
-          font: 'bold 15.25px calibri',
-          margin: new go.Margin(5, 0, 0, 0)
-        },
-        // Hide descendants header if node has no descendants
-        new go.Binding('visible', 'descendants', function(descendants) {
-          return descendants.length > 0;
-        })
-      ),
       // Descendants list
       $(
         go.Panel,
         'Vertical',
         {
-          name: header + '_List',
+          name: 'Descendants List',
           padding: 3,
           alignment: go.Spot.TopLeft,
           defaultAlignment: go.Spot.Left,
@@ -435,6 +493,77 @@ export class DiagramTemplatesService {
         new go.Binding('itemArray', 'descendants')
       ),
       new go.Binding('visible', 'nextLevel').ofModel()
+    );
+  }
+
+  getNodeTemplate(forPalette: boolean = false): go.Node {
+    return $(
+      go.Node,
+      'Auto',
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
+      this.getStandardNodeOptions(forPalette),
+      new go.Binding(
+        'movable',
+        '',
+        function() {
+          return this.currentFilterLevel !== Level.usage;
+        }.bind(this)
+      ),
+      !forPalette
+        ? {
+            // Enable context menu for nodes not in the palette
+            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+          }
+        : {
+            toolTip: $(
+              'ToolTip',
+              $(
+                go.TextBlock,
+                {
+                  width: 150
+                },
+                new go.Binding('text', 'tooltip')
+              )
+            )
+          },
+      // Have the diagram position the node if no location set
+      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      $(
+        go.Shape,
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding(
+          'stroke',
+          'impactedByWorkPackages',
+          function(impactedPackages, shape) {
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+          }.bind(this)
+        ),
+        this.getStandardNodeShapeOptions()
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel, {
+        alignment: go.Spot.TopCenter,
+        desiredSize: new go.Size(0, 0),
+        name: 'location panel'
+      }),
+      $(
+        go.Panel,
+        'Table',
+        {
+          margin: new go.Margin(5, 4, 0, 4),
+          minSize: new go.Size(200, 150),
+          defaultRowSeparatorStroke: 'black',
+        },
+          // this.getDependencyExpandButton(),
+          this.getNameSection(),
+          this.getDescriptionSection(),
+          this.getOwnerSection(),
+          this.getDescendantsNodeSection()// ,
+          // ...this.getStandardNodeSections()
+        /*)*/,
+        // this.getRadioAlertIndicators()
+      )
     );
   }
 
@@ -531,8 +660,8 @@ export class DiagramTemplatesService {
             minSize: new go.Size(90, NaN)
           },
           this.getDependencyExpandButton(),
-          ...this.getStandardNodeSections(),
-          this.getDescendantsNodeSection('Data Sets')
+          this.getDescendantsNodeSection(),
+          ...this.getStandardNodeSections()
         ),
         this.getRadioAlertIndicators()
       )
@@ -635,7 +764,7 @@ export class DiagramTemplatesService {
             })
           ),
           ...this.getStandardNodeSections(),
-          this.getDescendantsNodeSection('Dimensions')
+          this.getDescendantsNodeSection()
         ),
         this.getRadioAlertIndicators()
       )
@@ -746,7 +875,7 @@ export class DiagramTemplatesService {
             text: 'D'
           }),
           ...this.getStandardNodeSections(),
-          this.getDescendantsNodeSection('Reporting Concepts')
+          this.getDescendantsNodeSection()
         ),
         this.getRadioAlertIndicators()
       )
