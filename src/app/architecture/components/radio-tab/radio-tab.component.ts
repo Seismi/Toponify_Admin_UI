@@ -26,7 +26,7 @@ export class RadioTabComponent {
   constructor(private router: Router) {}
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  public displayedColumns: string[] = ['name', 'navigate'];
+  public displayedColumns: string[] = ['refNo', 'name', 'status', 'navigate'];
 
   @Output()
   addRadio = new EventEmitter<void>();
