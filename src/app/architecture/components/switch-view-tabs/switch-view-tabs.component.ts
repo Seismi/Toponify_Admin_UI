@@ -35,4 +35,12 @@ export class SwitchViewTabsComponent {
         return 'Systems';
     }
   }
+
+  getLinkLabel(): string {
+    if(this.viewLevel === 1 || this.viewLevel === 2) {
+      return 'Interfaces'
+    } else {
+      return 'Links'
+    }
+  }
 }
