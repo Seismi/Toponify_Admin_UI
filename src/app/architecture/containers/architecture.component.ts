@@ -407,7 +407,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => {
         this.allowMove = workpackages.length > 0;
-        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'edit');
+        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
 
         this.workPackageIsEditable = this.allowMove;
         this.workPackageIsEditable === true
@@ -665,7 +665,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   allowEditLayout() {
     this.allowMove = !this.allowMove;
-    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'edit');
+    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
   }
 
   onZoomMap() {
