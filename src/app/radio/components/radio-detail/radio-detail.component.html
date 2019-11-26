@@ -60,6 +60,8 @@
     </mat-form-field>
   </div>
 
+  <smi-relates-to-table [data]="relatesTo" *ngIf="!modalMode"></smi-relates-to-table>
+
   <div class="buttons-group" *ngIf="!modalMode">
     <div *ngIf="!isEditable">
       <button mat-raised-button color="primary" (click)="onEdit()">Edit</button>
