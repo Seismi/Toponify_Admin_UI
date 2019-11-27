@@ -47,25 +47,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     (this.palette.layout as go.GridLayout).wrappingColumn = 1;
 
     // Set node templates
-    this.palette.nodeTemplateMap.add(
-      layers.system,
-      diagramTemplatesService.getSystemNodeTemplate(true)
-    );
-
-    this.palette.nodeTemplateMap.add(
-      layers.dataSet,
-      diagramTemplatesService.getDataSetNodeTemplate(true)
-    );
-
-    this.palette.nodeTemplateMap.add(
-      layers.dimension,
-      diagramTemplatesService.getDimensionNodeTemplate(true)
-    );
-
-    this.palette.nodeTemplateMap.add(
-      layers.reportingConcept,
-      diagramTemplatesService.getReportingConceptNodeTemplate(true)
-    );
+    this.palette.nodeTemplate = diagramTemplatesService.getNodeTemplate(true);
 
     // Set links templates
     this.palette.linkTemplateMap.add(

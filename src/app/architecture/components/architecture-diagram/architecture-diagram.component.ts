@@ -176,26 +176,8 @@ export class ArchitectureDiagramComponent
     // Set context menu
     this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
 
-    // Set node templates
-    this.diagram.nodeTemplateMap.add(
-      layers.system,
-      diagramTemplatesService.getNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      layers.dataSet,
-      diagramTemplatesService.getNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      layers.dimension,
-      diagramTemplatesService.getNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      layers.reportingConcept,
-      diagramTemplatesService.getNodeTemplate()
-    );
+    // Set node template
+    this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
 
     // Set links templates
     this.diagram.linkTemplateMap.add(
