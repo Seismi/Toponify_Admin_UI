@@ -8,6 +8,21 @@
       <input matInput placeholder="Category" formControlName="category" [readonly]="true">
     </mat-form-field>
 
+    <mat-form-field>
+      <textarea matInput placeholder="Description" rows="4" formControlName="description" [ngClass]="{ editable: workPackageIsEditable }"></textarea>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="!clickedOnLink">
+      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: workPackageIsEditable }">
+    </mat-form-field>
+  </div>
+
+  <div class="form-group" *ngIf="workPackageIsEditable">
+    <button mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
+    <button mat-flat-button (click)="onCancel()">Cancel</button>
+  </div>
+
+  <div>
     <smi-owners-table-in-architecture
       *ngIf="!clickedOnLink"
       [data]="owners"
@@ -18,22 +33,12 @@
       (addOwner)="onAddOwner()"
       (deleteOwner)="onDeleteOwner()">
     </smi-owners-table-in-architecture>
-
-    <mat-form-field>
-      <textarea matInput placeholder="Description" rows="4" formControlName="description" [ngClass]="{ editable: workPackageIsEditable }"></textarea>
-    </mat-form-field>
-
-    <mat-form-field *ngIf="!clickedOnLink">
-      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: workPackageIsEditable }">
-    </mat-form-field>
-
     <smi-descendants-table-in-architecture
       *ngIf="!clickedOnLink && !attributesPage" [data]="descendants"
       [isEditable]="workPackageIsEditable"
       (addDescendant)="onAddDescendant()"
       (deleteDescendant)="onDeleteDescendant($event)">
     </smi-descendants-table-in-architecture>
-
     <smi-related-attribute-table
       *ngIf="attributesPage" [data]="relatedAttributes"
       [isEditable]="workPackageIsEditable"
@@ -43,10 +48,5 @@
       (addRelatedAttribute)="onAddRelatedAttribute()"
       (deleteRelatedAttribute)="onDeleteRelatedAttribute()">
     </smi-related-attribute-table>
-  </div>
-
-  <div class="form-group" *ngIf="workPackageIsEditable">
-    <button mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
-    <button mat-flat-button (click)="onCancel()">Cancel</button>
   </div>
 </form>
