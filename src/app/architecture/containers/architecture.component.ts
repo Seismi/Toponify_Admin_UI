@@ -946,23 +946,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               assignedTo: data.radio.assignedTo,
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
-              relatesTo: [
-                {
-                  workPackage: { id: this.workpackageId },
-                  item: {
-                    id: this.nodeId,
-                    itemType: this.currentFilterLevel.toLowerCase()
-                  }
+              relatesTo: [{
+                workPackage: { id: this.workpackageId },
+                item: {
+                  id: this.nodeId,
+                  itemType: this.currentFilterLevel.toLowerCase()
                 }
-              ]
+              }]
             }
           })
         );
+
         if (data.radio.status === 'open') {
           this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
+
+        setTimeout(() => {
+          this.setWorkPackage(this.getWorkPackageId());
+        }, 150)
       }
     });
+  }
+
+  getWorkPackageId(): string[] {
+    if(this.workpackageId) {
+      return [this.workpackageId];
+    } else {
+      return ['00000000-0000-0000-0000-000000000000'];
+    }
   }
 
   onAddAttribute() {
