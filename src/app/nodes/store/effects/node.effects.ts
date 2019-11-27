@@ -51,30 +51,6 @@ export class NodeEffects {
   );
 
   @Effect()
-  loadNodeLink$ = this.actions$.pipe(
-    ofType<NodeActions.LoadNodeLink>(NodeActionTypes.LoadNodeLink),
-    map(action => action.payload),
-    switchMap((id: string) => {
-      return this.nodeService.getNodeLink(id).pipe(
-        switchMap((nodeLink: NodeLinkDetailApiResponse) => [new NodeActions.LoadNodeLinkSuccess(nodeLink.data)]),
-        catchError((error: Error) => of(new NodeActions.LoadNodeLinkFailure(error)))
-      );
-    })
-  );
-
-  @Effect()
-  loadMapView$ = this.actions$.pipe(
-    ofType<NodeActions.LoadNodeLink>(NodeActionTypes.LoadMapView),
-    map(action => action.payload),
-    switchMap((id: string) => {
-      return this.nodeService.getMapView(id).pipe(
-        switchMap((data: any) => [new NodeActions.LoadMapViewSuccess(data.data)]),
-        catchError((error: Error) => of(new NodeActions.LoadMapViewFailure(error)))
-      );
-    })
-  );
-
-  @Effect()
   loadNodeUsageView$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodeUsageView>(NodeActionTypes.LoadNodeUsageView),
     map(action => action.payload),

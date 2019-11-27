@@ -37,14 +37,6 @@ export class NodeService {
     return this.http.get<NodeLinksApiResponse>(`/nodelinks`);
   }
 
-  getNodeLink(id: string): Observable<NodeLinkDetailApiResponse> {
-    return this.http.get<NodeLinkDetailApiResponse>(`/nodelinks/${id}`);
-  }
-
-  getMapView(id: string): Observable<any> {
-    return this.http.get<any>(`/nodelinks/${id}/components`);
-  }
-
   getNodeUsageView(id: string): Observable<any> {
     return this.http.get<any>(`/nodes/${id}/usage`);
   }
