@@ -38,18 +38,6 @@ export class NodeEffects {
     })
   );
 
-  // @Effect()
-  // loadNode$ = this.actions$.pipe(
-  //   ofType<NodeActions.LoadNode>(NodeActionTypes.LoadNode),
-  //   map(action => action.payload),
-  //   switchMap((id: string) => {
-  //     return this.nodeService.getNode(id).pipe(
-  //       switchMap((node: NodeDetailApiResponse) => [new NodeActions.LoadNodeSuccess(node.data)]),
-  //       catchError((error: Error) => of(new NodeActions.LoadNodeFailure(error)))
-  //     );
-  //   })
-  // );
-
   @Effect()
   loadNodeLink$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodeLink>(NodeActionTypes.LoadNodeLink),

@@ -3,11 +3,6 @@ import { State } from '../reducers/node.reducer';
 
 export const getNodeFeatureState = createFeatureSelector<State>('nodeFeature');
 
-// export const getSelectedNode = createSelector(
-//   getNodeFeatureState,
-//   state => state.selectedNode
-// );
-
 export const getNodeLinks = createSelector(
   getNodeFeatureState,
   (state: State) => {
