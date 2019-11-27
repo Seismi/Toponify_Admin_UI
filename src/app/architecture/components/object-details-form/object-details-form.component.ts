@@ -10,9 +10,14 @@ import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
   styleUrls: ['./object-details-form.component.scss']
 })
 export class ObjectDetailsFormComponent {
+  public group: FormGroup;
+  private values;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
-  @Input() group: FormGroup;
+  @Input('group') set setGroup(group) {
+    this.group = group;
+    this.values = group.value;
+  }
   @Input() clickedOnLink: boolean = false;
   @Input() isEditable: boolean = false;
   @Input() workPackageIsEditable: boolean = false;
@@ -59,7 +64,7 @@ export class ObjectDetailsFormComponent {
   }
 
   onCancel(): void {
-    this.cancel.emit();
+    this.group.reset(this.values);
   }
 
   onDelete(): void {
