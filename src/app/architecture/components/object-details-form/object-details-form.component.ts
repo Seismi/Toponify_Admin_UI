@@ -15,6 +15,7 @@ export class ObjectDetailsFormComponent {
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input('group') set setGroup(group) {
+    console.log('set group');
     this.group = group;
     this.values = group.value;
   }
