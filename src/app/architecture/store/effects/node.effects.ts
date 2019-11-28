@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, distinctUntilChanged, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import * as NodeActions from '../actions/node.actions';
 import { NodeActionTypes } from '../actions/node.actions';
 import { forkJoin, of } from 'rxjs';
