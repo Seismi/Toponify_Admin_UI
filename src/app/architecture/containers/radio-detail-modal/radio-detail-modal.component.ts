@@ -55,6 +55,7 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
           assignedTo: radio.assignedTo,
           category: radio.category,
           status: radio.status,
+          reference: radio.reference,
           mitigation: radio.mitigation,
           description: radio.description
         });

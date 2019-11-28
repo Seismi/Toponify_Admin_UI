@@ -198,6 +198,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwner = false;
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
+  public selectedLayout$: Observable<ScopeDetails>;
   editTabIndex: number;
   public parentName: string | null;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
@@ -262,6 +263,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
+    this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
     // Load Work Packages
@@ -407,7 +409,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => {
         this.allowMove = workpackages.length > 0;
-        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'edit');
+        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
 
         this.workPackageIsEditable = this.allowMove;
         this.workPackageIsEditable === true
@@ -536,7 +538,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.objectSelected = false;
       this.isEditable = false;
 
-      this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
+      this.objectDetailsService.updateForm(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
@@ -665,7 +667,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   allowEditLayout() {
     this.allowMove = !this.allowMove;
-    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'edit');
+    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
   }
 
   onZoomMap() {
@@ -903,9 +905,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
-    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true : this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
+    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true :
+      this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
     this.diagramComponent.updateDiagramArea();
-    this.diagramComponent.zoomToFit();
   }
 
   openLeftTab(index: number) {
@@ -930,7 +932,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false
+      disableClose: false,
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -986,7 +989,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false
+      disableClose: false,
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

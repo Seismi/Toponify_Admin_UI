@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ScopeEntity } from '@app/scope/store/models/scope.model';
+import { ScopeEntity, ScopeDetails } from '@app/scope/store/models/scope.model';
 
 @Component({
   selector: 'smi-quicklinks-actions',
@@ -12,6 +12,7 @@ export class QuicklinksActionsComponent implements OnInit {
   @Input() scopes: any;
   @Input() layouts: any;
   @Input() selectedScope: ScopeEntity;
+  @Input() selectedLayout: ScopeDetails;
 
   @Output()
   editLayout = new EventEmitter();
@@ -22,7 +23,7 @@ export class QuicklinksActionsComponent implements OnInit {
   selectLayout = new EventEmitter();
 
   ngOnInit() {
-    this.allowEditLayouts = 'edit';
+    this.allowEditLayouts = 'brush';
   }
 
   allowEditLayout() {

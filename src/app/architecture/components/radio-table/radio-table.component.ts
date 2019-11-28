@@ -3,6 +3,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
+import { Constants } from '@app/core/constants';
 
 @Component({
   selector: 'smi-radio-table-in-architecture',
@@ -24,7 +25,7 @@ export class RadioTableInArchitectureComponent {
   constructor(private router: Router) {}
 
   public dataSource: MatTableDataSource<NodeDetail>;
-  public displayedColumns: string[] = ['name', 'navigate'];
+  public displayedColumns: string[] = Constants.RADIO_TABLE_COLUMNS;
 
   @Output() addRadio = new EventEmitter<void>();
   @Output() openRadio = new EventEmitter<RadioDetail>();

@@ -9,9 +9,15 @@ table {
   }
   td {
     font-size: 12px;
+    &:nth-child(1) {
+      padding-top: 10px;
+    }
   }
-  td:nth-child(1) {
-    padding-top: 10px;
+  th {
+    font-size: 11px;
+  }
+  th.mat-column-show {
+    width: 16%;
   }
   tr.mat-row {
     cursor: pointer;
@@ -25,40 +31,4 @@ table {
   &:hover {
     color: #222;
   }
-}
-
-.mat-checkbox {
-  margin-top: 10px;
-}
-
-th.mat-column-show {
-  width: 15%;
-}
-
-th.mat-column-e {
-  width: 8%;
-}
-
-th.mat-header-cell {
-  text-align: center;
-}
-
-th.mat-header-cell.mat-column-name {
-  text-align: left;
-}
-
-td.mat-cell {
-  text-align: center;
-}
-
-td.mat-cell.mat-column-name {
-  text-align: left;
-}
-
-td.mat-cell.mat-column-show {
-  text-align: left;
-}
-
-th.mat-header-cell.mat-column-show {
-  text-align: left;
 }

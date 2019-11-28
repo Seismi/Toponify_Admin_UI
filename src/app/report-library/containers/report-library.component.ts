@@ -46,6 +46,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public canSelectWorkpackage: boolean = true;
   public workpackageId: string;
   public workPackageIsEditable: boolean;
+  public scopeId: string;
 
   private subscriptions: Subscription[] = [];
 
@@ -64,6 +65,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
+        this.scopeId = scope.id;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
       }
     });
@@ -113,7 +115,8 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   setWorkPackage(workpackageIds: string[] = []) {
     const queryParams = {
-      workPackageQuery: workpackageIds
+      workPackageQuery: workpackageIds,
+      scopeQuery: this.scopeId
     };
     this.store.dispatch(new LoadReports(queryParams));
     this.reportEntities$ = this.store.pipe(select(getReportEntities));
@@ -195,6 +198,14 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   onSelectScope(scopeId: string): void {
     this.scopeStore.dispatch(new LoadScope(scopeId));
+    this.getReportWithScopeQuery(scopeId);
+  }
+
+  getReportWithScopeQuery(scopeId: string): void {
+    const queryParams = {
+      scopeQuery: scopeId
+    };
+    this.store.dispatch(new LoadReports(queryParams));
   }
   
 }
