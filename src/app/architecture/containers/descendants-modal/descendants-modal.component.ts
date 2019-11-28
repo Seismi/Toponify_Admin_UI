@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange } from '@angular/material';
 import { Store, select } from '@ngrx/store';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
@@ -24,6 +24,8 @@ export class DescendantsModalComponent implements OnInit {
   public nodeId: string;
   public childrenOf: WorkPackageNodeFindPotential;
   public components = new FormControl();
+
+  @ViewChild('searchInput') searchInput: ElementRef;
 
   constructor(
     private store: Store<WorkPackageState>,
@@ -57,6 +59,14 @@ export class DescendantsModalComponent implements OnInit {
         this.selectedDescendants.splice(index, 1);
       }
     }
+  }
+
+  onOpenDropdown(): void {
+    this.searchInput.nativeElement.focus();
+  }
+
+  clearInputValue(): void {
+    this.searchInput.nativeElement.value = "";
   }
 
 }
