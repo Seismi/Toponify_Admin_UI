@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ScopeDetails } from '@app/scope/store/models/scope.model';
+import { MatSelectChange } from '@angular/material';
 
 @Component({
   selector: 'smi-layouts-dropdown',
@@ -7,8 +8,8 @@ import { ScopeDetails } from '@app/scope/store/models/scope.model';
   styleUrls: ['./layouts-dropdown.component.scss']
 })
 export class LayoutsDropdownComponent {
-  selected: string = 'Default Layout';
-  layouts: ScopeDetails[];
+  public layouts: ScopeDetails[];
+  @Input() selectedLayout: ScopeDetails;
 
   @Input()
   set data(data: ScopeDetails[]) {
@@ -17,8 +18,8 @@ export class LayoutsDropdownComponent {
 
   @Output() selectLayout = new EventEmitter<string>();
 
-  onSelect(id) {
-    this.selectLayout.emit(id);
+  onSelect(selectChange: MatSelectChange): void {
+    this.selectLayout.emit(selectChange.value);
   }
 
 }

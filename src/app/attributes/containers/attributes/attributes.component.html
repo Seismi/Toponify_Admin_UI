@@ -1,6 +1,12 @@
 <app-base-header>
     <app-toolbar-column [fillFreeSpace]="true">
     </app-toolbar-column>
+    <smi-scopes-dropdown
+        class="scope-dropdown"
+        [data]="scopes$ | async"
+        [selectedScope]="selectedScope$ | async"
+        (selectScope)="onSelectScope($event)">
+    </smi-scopes-dropdown>
     <app-search></app-search>
     <app-toolbar-column>
         <smi-quicklinks-actions></smi-quicklinks-actions>
@@ -35,7 +41,7 @@
                     (selectRow)="onSelectAttribute($event)">
                 </app-category-table>
                 <!-- Add new attribute button -->
-                <button class="add-btn" mat-raised-button color="primary" [disabled]="!workPackageIsEditable" (click)="onAdd()">New</button>
+                <button class="add-btn" mat-raised-button color="primary" [disabled]="workPackageIsEditable" (click)="onAdd()">Create New</button>
             </div>
         </div>
     </div>
