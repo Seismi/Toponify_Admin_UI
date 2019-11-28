@@ -158,6 +158,33 @@ export class DiagramTemplatesService {
     );
   }
 
+  getTagTemplate(): go.Panel {
+    return $(
+      go.Panel,
+      'Auto',
+      {
+        margin: new go.Margin(0, 5, 0, 0)
+      },
+      $(
+        go.Shape,
+        'RoundedRectangle',
+        {
+          fill: 'white',
+          height: 27
+        }
+      ),
+      $(
+        go.TextBlock,
+        {
+          font: 'bold italic 20px calibri',
+          wrap: go.TextBlock.None,
+          margin: new go.Margin(2, 2, 0, 2)
+        },
+        new go.Binding('text', '')
+      )
+    );
+  }
+
   // Get button for revealing the next level of dependencies
   getDependencyExpandButton(): go.Panel {
     return $(
@@ -595,16 +622,21 @@ export class DiagramTemplatesService {
         margin: new go.Margin(2)
       },
       $(
-        go.TextBlock,
+        go.Panel,
+        'Horizontal',
         {
-          textAlign: 'left',
-          stroke: 'black',
-          font: 'bold italic 18px Calibri',
-          maxSize: new go.Size(nodeWidth - 10, Infinity),
-          margin: new go.Margin(5, 0, 0, 0),
-          stretch: go.GraphObject.Horizontal
+          maxSize: new go.Size(296, NaN),
+          itemTemplate: this.getTagTemplate(),
+          alignment: go.Spot.LeftCenter,
+          margin: new go.Margin(3, 0, 3, 0)
         },
-        new go.Binding('text', 'tags'),
+        new go.Binding('itemArray', 'tags', function(tags): string[] {
+          if (tags.trim() === '') {return []; }
+          return tags.split(',')
+            .map(function(tag): string {
+              return tag.trim();
+            });
+        }),
         new go.Binding('visible', 'tags').ofModel()
       ),
       $(
@@ -615,25 +647,14 @@ export class DiagramTemplatesService {
           alignmentFocus: go.Spot.BottomCenter
         },
         $(
-          go.Shape,
-          'rectangle',
+          go.Panel,
+          '',
           {
-            desiredSize: new go.Size(nodeWidth - 10, 30),
-            fill: null,
-            stroke: null
+            desiredSize: new go.Size(nodeWidth - 10, 30)
           }
         ),
         this.getRadioAlertIndicators(),
         this.getBottomExpandButton()
-        /*$(
-          go.Shape,
-          {
-            alignment: go.Spot.RightCenter,
-            alignmentFocus: go.Spot.RightCenter,
-            figure: 'Rectangle',
-            desiredSize: new go.Size(25, 25)
-          }
-        )*/
       )
     );
   }
