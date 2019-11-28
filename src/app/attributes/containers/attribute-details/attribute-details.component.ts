@@ -6,11 +6,21 @@ import { ObjectDetailsService } from '@app/architecture/components/object-detail
 import { ObjectDetailsValidatorService } from '@app/architecture/components/object-details-form/services/object-details-form-validator.service';
 import { Store, select } from '@ngrx/store';
 import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
-import { LoadAttribute, UpdateAttribute, DeleteAttribute, AddOwner, DeleteOwner, UpdateProperty, DeleteProperty, AddRelated, DeleteRelated } from '@app/attributes/store/actions/attributes.actions';
+import {
+  LoadAttribute,
+  UpdateAttribute,
+  DeleteAttribute,
+  AddOwner,
+  DeleteOwner,
+  UpdateProperty,
+  DeleteProperty,
+  AddRelated,
+  DeleteRelated
+} from '@app/attributes/store/actions/attributes.actions';
 import { getSelectedAttribute } from '@app/attributes/store/selectors/attributes.selector';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
-import { State as WorkPackageState} from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { MatDialog } from '@angular/material';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DeleteModalComponent } from '@app/architecture/containers/delete-modal/delete-modal.component';
@@ -27,7 +37,6 @@ import { RelatedAttributesModalComponent } from '../related-attributes-modal/rel
   providers: [ObjectDetailsService, ObjectDetailsValidatorService]
 })
 export class AttributeDetailsComponent implements OnInit, OnDestroy {
-
   public subscriptions: Subscription[] = [];
   public attribute: AttributeDetail;
   public isEditable: boolean = false;
@@ -52,37 +61,46 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscriptions.push(this.route.params.subscribe(params => {
-      const id = params['attributeId'];
-      this.attributeId = id;
-      this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-        const edit = workpackages.map(item => item.edit);
-        (edit[0] === true) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
-        const workPackageIds = workpackages.map(item => item.id);
-        this.workpackageId = workPackageIds[0];
-        this.setWorkPackage(workPackageIds);
-      })
-    }));
-
-    this.subscriptions.push(this.store.pipe(select(getSelectedAttribute)).subscribe(attribute => {
-      this.attribute = attribute;
-      if(attribute) {
-        this.objectDetailsService.objectDetailsForm.patchValue({
-          name: attribute.name,
-          category: attribute.category,
-          description: attribute.description,
-          tags: attribute.tags
+    this.subscriptions.push(
+      this.route.params.subscribe(params => {
+        const id = params['attributeId'];
+        this.attributeId = id;
+        this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+          const workPackageIds = workpackages.map(item => item.id);
+          this.workpackageId = workPackageIds[0];
+          this.setWorkPackage(workPackageIds);
         });
-        this.isEditable = false;
-      }
-    }));
+      })
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getSelectedAttribute)).subscribe(attribute => {
+        this.attribute = attribute;
+        if (attribute) {
+          this.objectDetailsService.updateForm({
+            name: attribute.name,
+            category: attribute.category,
+            description: attribute.description,
+            tags: attribute.tags
+          });
+          this.isEditable = false;
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
+        const edit = workpackages.map(item => item.edit);
+        edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+      })
+    );
   }
 
   setWorkPackage(workpackageIds: string[] = []): void {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.store.dispatch(new LoadAttribute({id: this.attributeId, queryParams: queryParams}));
+    this.store.dispatch(new LoadAttribute({ id: this.attributeId, queryParams: queryParams }));
   }
 
   ngOnDestroy(): void {
@@ -95,7 +113,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
 
   openRightTab(index: number): void {
     this.selectedRightTab = index;
-    if(this.selectedRightTab === index) {
+    if (this.selectedRightTab === index) {
       this.showOrHideRightPane = false;
     }
   }
@@ -123,19 +141,21 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     this.selectAttribute = false;
     this.selectedRelatedIndex = null;
 
-    this.store.dispatch(new UpdateAttribute({
-      workPackageId: this.workpackageId,
-      attributeId: this.attributeId,
-      entity: {
-        data: {
-          id: this.attributeId,
-          name: this.objectDetailsForm.value.name,
-          description: this.objectDetailsForm.value.description,
-          tags: this.objectDetailsForm.value.tags,
-          category: this.attribute.category
+    this.store.dispatch(
+      new UpdateAttribute({
+        workPackageId: this.workpackageId,
+        attributeId: this.attributeId,
+        entity: {
+          data: {
+            id: this.attributeId,
+            name: this.objectDetailsForm.value.name,
+            description: this.objectDetailsForm.value.description,
+            tags: this.objectDetailsForm.value.tags,
+            category: this.attribute.category
+          }
         }
-      }
-    }))
+      })
+    );
   }
 
   onDeleteAttribute(): void {
@@ -148,9 +168,9 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteAttribute({workPackageId: this.workpackageId, attributeId: this.attributeId}));
+        this.store.dispatch(new DeleteAttribute({ workPackageId: this.workpackageId, attributeId: this.attributeId }));
         this.router.navigate(['attributes-and-rules']);
       }
     });
@@ -169,12 +189,14 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.owner) {
-        this.store.dispatch(new AddOwner({
-          workPackageId: this.workpackageId,
-          attributeId: this.attributeId,
-          ownerId: data.owner.id,
-          entity: data.owner
-        }))
+        this.store.dispatch(
+          new AddOwner({
+            workPackageId: this.workpackageId,
+            attributeId: this.attributeId,
+            ownerId: data.owner.id,
+            entity: data.owner
+          })
+        );
       }
     });
   }
@@ -190,11 +212,13 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteOwner({
-          workPackageId: this.workpackageId,
-          attributeId: this.attributeId,
-          ownerId: this.selectedOwnerIndex
-        }))
+        this.store.dispatch(
+          new DeleteOwner({
+            workPackageId: this.workpackageId,
+            attributeId: this.attributeId,
+            ownerId: this.selectedOwnerIndex
+          })
+        );
         this.selectedOwner = false;
       }
     });
@@ -213,12 +237,14 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.customProperties) {
-        this.store.dispatch(new UpdateProperty({
-          workPackageId: this.workpackageId,
-          attributeId: this.attributeId,
-          customPropertyId: property.propertyId,
-          entity: { data: { value: data.customProperties.value }}
-        }))
+        this.store.dispatch(
+          new UpdateProperty({
+            workPackageId: this.workpackageId,
+            attributeId: this.attributeId,
+            customPropertyId: property.propertyId,
+            entity: { data: { value: data.customProperties.value } }
+          })
+        );
       }
     });
   }
@@ -233,13 +259,15 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteProperty({
-          workPackageId: this.workpackageId,
-          attributeId: this.attributeId,
-          customPropertyId: property.propertyId
-        }));
+        this.store.dispatch(
+          new DeleteProperty({
+            workPackageId: this.workpackageId,
+            attributeId: this.attributeId,
+            customPropertyId: property.propertyId
+          })
+        );
         this.selectAttribute = false;
       }
     });
@@ -257,13 +285,15 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
-      if(data && data.attribute) { 
-        this.store.dispatch(new AddRelated({
-          workPackageId: this.workpackageId,
-          attributeId: this.attributeId,
-          relatedAttributeId: data.attribute.id
-        }))
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        this.store.dispatch(
+          new AddRelated({
+            workPackageId: this.workpackageId,
+            attributeId: this.attributeId,
+            relatedAttributeId: data.attribute.id
+          })
+        );
       }
     });
   }
@@ -277,16 +307,17 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteRelated({
-          workPackageId: this.workpackageId,
-          attributeId: this.attributeId,
-          relatedAttributeId: this.relatedAttributeId
-        }))
+        this.store.dispatch(
+          new DeleteRelated({
+            workPackageId: this.workpackageId,
+            attributeId: this.attributeId,
+            relatedAttributeId: this.relatedAttributeId
+          })
+        );
       }
       this.selectAttribute = false;
     });
   }
-  
 }

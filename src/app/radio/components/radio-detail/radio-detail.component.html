@@ -6,7 +6,7 @@
     </mat-form-field>
 
     <div class="align-in-row">
-      <mat-form-field>
+      <mat-form-field [ngClass]="{ categoryInput: modalMode }">
         <mat-label>Category</mat-label>
         <mat-select data-hook="radio-details-category" formControlName="category" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let category of categories" [value]="category">
@@ -15,7 +15,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="ref-number-input">
+      <mat-form-field class="ref-number-input" *ngIf="!modalMode">
         <mat-label>Ref. Number</mat-label>
         <input matInput placeholder="Ref. Number" data-hook="radio-details-reference" formControlName="reference" readonly>
       </mat-form-field>
@@ -59,6 +59,8 @@
       <textarea matInput [rows]="rows" placeholder="Mitigation / Resolution" data-hook="radio-details-mitigation" formControlName="mitigation" [ngClass]="{ editable: isEditable }"></textarea>
     </mat-form-field>
   </div>
+
+  <smi-relates-to-table [data]="relatesTo" *ngIf="!modalMode"></smi-relates-to-table>
 
   <div class="buttons-group" *ngIf="!modalMode">
     <div *ngIf="!isEditable">
