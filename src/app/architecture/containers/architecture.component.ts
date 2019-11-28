@@ -538,7 +538,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.objectSelected = false;
       this.isEditable = false;
 
-      this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
+      this.objectDetailsService.updateForm(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
