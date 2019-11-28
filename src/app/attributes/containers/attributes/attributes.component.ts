@@ -12,15 +12,19 @@ import {
   SetSelectedWorkPackages,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { getSelectedWorkpackages, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkpackages, getWorkPackageEntities, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Params, Router } from '@angular/router';
-import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
+import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
 import { RouterStateUrl } from '@app/core/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { MatDialog } from '@angular/material';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
+import { ScopeEntity } from '@app/scope/store/models/scope.model';
+import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
+import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
+import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 
 @Component({
   selector: 'smi-attributes',
@@ -28,6 +32,8 @@ import { AttributeModalComponent } from '@app/attributes/containers/attribute-mo
   styleUrls: ['attributes.component.scss']
 })
 export class AttributesComponent implements OnInit, OnDestroy {
+  public scopes$: Observable<ScopeEntity[]>;
+  public selectedScope$: Observable<ScopeEntity>;
   public attributes: Subscription;
   public attribute: AttributeEntity[];
   public workpackage$: Observable<WorkPackageEntity[]>;
@@ -40,6 +46,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public workPackageIsEditable: boolean;
 
   constructor(
+    private scopeStore: Store<ScopeState>,
     private store: Store<AttributeState>,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     private workPackageStore: Store<WorkPackageState>,
@@ -48,6 +55,25 @@ export class AttributesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.scopeStore.dispatch(new LoadScopes({}));
+    this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
+    this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
+    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
+      if (scope) {
+        this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
+      }
+    });
+    this.routerStore
+      .select(getScopeQueryParams)
+      .pipe(take(1))
+      .subscribe(scope => {
+        if (scope) {
+          this.scopeStore.dispatch(new LoadScope(scope));
+        } else {
+          this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
+        }
+      });
+
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
         if (typeof workpackages === 'string') {
@@ -59,24 +85,22 @@ export class AttributesComponent implements OnInit, OnDestroy {
         return this.workPackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [] }));
       })
     );
+
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
         const workPackageIds = workpackages.map(item => item.id);
-        const selected = workpackages.map(item => item.selected);
-        const edit = workpackages.map(item => item.edit);
-        edit[0] === true ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
-        if (!selected.length) {
-          this.router.navigate(['/attributes-and-rules'], { queryParamsHandling: 'preserve' });
-        }
         this.setWorkPackage(workPackageIds);
       })
     );
 
-    this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
-      this.attribute = data;
-    });
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
+        const edit = workpackages.map(item => item.edit);
+        !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -88,6 +112,9 @@ export class AttributesComponent implements OnInit, OnDestroy {
       workPackageQuery: workpackageIds
     };
     this.store.dispatch(new LoadAttributes(queryParams));
+    this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
+      this.attribute = data;
+    });
   }
 
   get categoryTableData(): AttributeEntity[] {
@@ -137,8 +164,14 @@ export class AttributesComponent implements OnInit, OnDestroy {
   hideLeftPane(): void {
     this.showOrHidePane = false;
   }
+
   onSelectEditWorkpackage(workpackage: any): void {
     this.workpackageId = workpackage.id;
+    if (!workpackage.edit) {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
+    } else {
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
+    }
     this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
@@ -159,4 +192,9 @@ export class AttributesComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  onSelectScope(scopeId: string): void {
+    this.scopeStore.dispatch(new LoadScope(scopeId));
+  }
+
 }

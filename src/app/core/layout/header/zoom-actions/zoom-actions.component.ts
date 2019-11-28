@@ -12,7 +12,9 @@ export const viewLevelMapping = {
   [1]: Level.system,
   [2]: Level.dataSet,
   [3]: Level.dimension,
-  [4]: Level.reportingConcept
+  [4]: Level.reportingConcept,
+  [8]: Level.systemMap,
+  [9]: Level.dataSetMap
 };
 
 @Component({
@@ -32,9 +34,11 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
 
   layers = [
     { level: 1, name: 'system' },
+    { level: 8, name: 'system map' },
     { level: 2, name: 'data set' },
+    { level: 9, name: 'data set map' },
     { level: 3, name: 'dimension' },
-    { level: 4, name: 'reporting concept' }
+    { level: 4, name: 'reporting concept' },
   ]
 
   constructor(
@@ -64,6 +68,12 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
       }
     }
     this.store.dispatch(new SetViewLevel(level));
+  }
+
+  getMapLevel(level: number): boolean {
+    if(level === 8 || level === 9) {
+      return true;
+    }
   }
 
   @Output()

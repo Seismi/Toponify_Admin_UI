@@ -10,7 +10,7 @@ import { LoadAttribute, UpdateAttribute, DeleteAttribute, AddOwner, DeleteOwner,
 import { getSelectedAttribute } from '@app/attributes/store/selectors/attributes.selector';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
 import { State as WorkPackageState} from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { MatDialog } from '@angular/material';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DeleteModalComponent } from '@app/architecture/containers/delete-modal/delete-modal.component';
@@ -56,8 +56,6 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       const id = params['attributeId'];
       this.attributeId = id;
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-        const edit = workpackages.map(item => item.edit);
-        (edit[0] === true) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
         const workPackageIds = workpackages.map(item => item.id);
         this.workpackageId = workPackageIds[0];
         this.setWorkPackage(workPackageIds);
@@ -76,6 +74,13 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         this.isEditable = false;
       }
     }));
+
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
+        const edit = workpackages.map(item => item.edit);
+        (edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
+      })
+    );
   }
 
   setWorkPackage(workpackageIds: string[] = []): void {

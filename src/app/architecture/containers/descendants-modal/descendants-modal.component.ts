@@ -5,10 +5,9 @@ import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { FindPotentialWorkpackageNodes } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getPotentialWorkPackageNodes } from '@app/architecture/store/selectors/workpackage.selector';
 import { FormControl } from '@angular/forms';
 import { WorkPackageNodeFindPotential } from '@app/workpackage/store/models/workpackage.models';
+import { getPotentialWorkPackageNodes } from '@app/architecture/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-descendants-modal',
@@ -28,7 +27,6 @@ export class DescendantsModalComponent implements OnInit {
 
   constructor(
     private store: Store<WorkPackageState>,
-    private architectureStore: Store<ArchitectureState>,
     public dialogRef: MatDialogRef<DescendantsModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.workpackageId = data.workpackageId;
@@ -38,7 +36,7 @@ export class DescendantsModalComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(new FindPotentialWorkpackageNodes({workPackageId: this.workpackageId, nodeId: this.nodeId, data: this.childrenOf}));
-    this.descendants$ = this.architectureStore.pipe(select(getPotentialWorkPackageNodes));
+    this.descendants$ = this.store.pipe(select(getPotentialWorkPackageNodes));
   }
 
   onSubmit(): void {
