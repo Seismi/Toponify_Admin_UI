@@ -356,8 +356,49 @@ export class DiagramTemplatesService {
         minSize: new go.Size(NaN, 30),
         margin: new go.Margin(5),
       },
-      // $(go.Picture, {desiredSize: new go.Size(25, 25)}),
-      $(go.Shape, {figure: 'Rectangle', desiredSize: new go.Size(25, 25)}),
+      // Node icon, to appear at the top left of the node
+      $(go.Picture,
+        {
+          desiredSize: new go.Size(25, 25),
+          source: '/assets/node-icons/data_set-master-data.svg'
+        },
+        new go.Binding('source', '', function(data): string {
+          const imageFolderPath = '/assets/node-icons/';
+
+          // Section of the image name determined by layer
+          const layerImagePrefix = {
+            [layers.system]: 'sys',
+            [layers.dataSet]: 'data_set',
+            [layers.dimension]: 'dim',
+            [layers.reportingConcept]: 'rc'
+          };
+
+          // Section of the image name determined by category
+          const categoryImageSuffix = {
+            [nodeCategories.transactional]: 'transactional',
+            [nodeCategories.analytical]: 'analytical',
+            [nodeCategories.reporting]: 'reporting',
+            [nodeCategories.masterData]: 'master-data',
+            [nodeCategories.file]: 'files',
+            [nodeCategories.physical]: 'physical',
+            [nodeCategories.virtual]: 'virtual',
+            [nodeCategories.masterData]: 'master-data',
+            [nodeCategories.dimension]: '',
+            [nodeCategories.list]: 'list',
+            [nodeCategories.structure]: 'structure',
+            [nodeCategories.key]: 'keyrc'
+          };
+
+          const separator = data.layer !== layers.dimension ? '-' : '';
+
+          return [imageFolderPath,
+            layerImagePrefix[data.layer],
+            separator,
+            categoryImageSuffix[data.category],
+            '.svg'].join('');
+        })
+      ),
+      // $(go.Shape, {figure: 'Rectangle', desiredSize: new go.Size(25, 25)}),
       $(
         go.TextBlock,
         {
