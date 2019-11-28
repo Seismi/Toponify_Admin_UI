@@ -10,6 +10,7 @@ const httpOptions = {
 
 export interface GetAttributeRequestQueryParams {
   workPackageQuery?: string[];
+  scopeQuery?: string;
 }
 
 @Injectable()

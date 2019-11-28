@@ -25,6 +25,7 @@
       [layouts]="scopeDetails$ | async"
       (selectScope)="onSelectScope($event)"
       (selectLayout)="onSelectLayout($event)"
+      [selectedLayout]="selectedLayout$ | async"
     >
     </smi-quicklinks-actions>
   </app-toolbar-column>
