@@ -15,28 +15,28 @@ export class NodeEffects {
     private actions$: Actions,
     private nodeService: NodeService
   ) {}
+  //
+  // @Effect()
+  // loadNodes$ = this.actions$.pipe(
+  //   ofType<NodeActions.LoadNodes>(NodeActionTypes.LoadNodes),
+  //   switchMap(_ => {
+  //     return this.nodeService.getNodes().pipe(
+  //       switchMap((nodes: NodesApiResponse) => [new NodeActions.LoadNodesSuccess(nodes.data)]),
+  //       catchError((error: Error) => of(new NodeActions.LoadNodesFailure(error)))
+  //     );
+  //   })
+  // );
 
-  @Effect()
-  loadNodes$ = this.actions$.pipe(
-    ofType<NodeActions.LoadNodes>(NodeActionTypes.LoadNodes),
-    switchMap(_ => {
-      return this.nodeService.getNodes().pipe(
-        switchMap((nodes: NodesApiResponse) => [new NodeActions.LoadNodesSuccess(nodes.data)]),
-        catchError((error: Error) => of(new NodeActions.LoadNodesFailure(error)))
-      );
-    })
-  );
-
-  @Effect()
-  loadNodeLinks$ = this.actions$.pipe(
-    ofType<NodeActions.LoadNodeLinks>(NodeActionTypes.LoadNodeLinks),
-    switchMap(_ => {
-      return this.nodeService.getNodeLinks().pipe(
-        switchMap((nodeLinks: NodeLinksApiResponse) => [new NodeActions.LoadNodeLinksSuccess(nodeLinks.data)]),
-        catchError((error: Error) => of(new NodeActions.LoadNodeLinksFailure(error)))
-      );
-    })
-  );
+  // @Effect()
+  // loadNodeLinks$ = this.actions$.pipe(
+  //   ofType<NodeActions.LoadNodeLinks>(NodeActionTypes.LoadNodeLinks),
+  //   switchMap(_ => {
+  //     return this.nodeService.getNodeLinks().pipe(
+  //       switchMap((nodeLinks: NodeLinksApiResponse) => [new NodeActions.LoadNodeLinksSuccess(nodeLinks.data)]),
+  //       catchError((error: Error) => of(new NodeActions.LoadNodeLinksFailure(error)))
+  //     );
+  //   })
+  // );
 
   @Effect()
   loadNodeLink$ = this.actions$.pipe(
