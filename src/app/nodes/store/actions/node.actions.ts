@@ -10,12 +10,6 @@ export enum NodeActionTypes {
   LoadNodeLinks = '[Node] Load Node Links',
   LoadNodeLinksSuccess = '[Node] Load Node Links Success',
   LoadNodeLinksFailure = '[Node] Load Node Links Fail',
-  LoadNodeLink= '[Node] Load Node Link',
-  LoadNodeLinkSuccess = '[Node] Load Node Link Success',
-  LoadNodeLinkFailure = '[Node] Load Node Link Fail',
-  LoadMapView = '[Node] Load Map View',
-  LoadMapViewSuccess = '[Node] Load Map View Success',
-  LoadMapViewFailure = '[Node] Load Map View Fail',
   LoadNodeUsageView = '[Node] Load Node Usage View',
   LoadNodeUsageViewSuccess = '[Node] Load Node Usage View Success',
   LoadNodeUsageViewFailure = '[Node] Load Node Usage View Fail',
@@ -38,21 +32,6 @@ export class LoadNodesSuccess implements Action {
 
 export class LoadNodesFailure implements Action {
   readonly type = NodeActionTypes.LoadNodesFailure;
-  constructor(public payload: Error) { }
-}
-
-export class LoadMapView implements Action {
-  readonly type = NodeActionTypes.LoadMapView;
-  constructor(public payload: string) { }
-}
-
-export class LoadMapViewSuccess implements Action {
-  readonly type = NodeActionTypes.LoadMapViewSuccess;
-  constructor(public payload: any) { }
-}
-
-export class LoadMapViewFailure implements Action {
-  readonly type = NodeActionTypes.LoadMapViewFailure;
   constructor(public payload: Error) { }
 }
 
@@ -82,21 +61,6 @@ export class LoadNodeLinksSuccess implements Action {
 
 export class LoadNodeLinksFailure implements Action {
   readonly type = NodeActionTypes.LoadNodeLinksFailure;
-  constructor(public payload: Error) { }
-}
-
-export class LoadNodeLink implements Action {
-  readonly type = NodeActionTypes.LoadNodeLink;
-  constructor(public payload: string) { }
-}
-
-export class LoadNodeLinkSuccess implements Action {
-  readonly type = NodeActionTypes.LoadNodeLinkSuccess;
-  constructor(public payload: NodeLinkDetail) { }
-}
-
-export class LoadNodeLinkFailure implements Action {
-  readonly type = NodeActionTypes.LoadNodeLinkFailure;
   constructor(public payload: Error) { }
 }
 
@@ -139,12 +103,6 @@ export type NodeActionsUnion =
   | LoadNodeLinks
   | LoadNodeLinksSuccess
   | LoadNodeLinksFailure
-  | LoadNodeLink
-  | LoadNodeLinkSuccess
-  | LoadNodeLinkFailure
-  | LoadMapView
-  | LoadMapViewSuccess
-  | LoadMapViewFailure
   | LoadNodeUsageView
   | LoadNodeUsageViewSuccess
   | LoadNodeUsageViewFailure
