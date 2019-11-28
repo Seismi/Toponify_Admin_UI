@@ -198,6 +198,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwner = false;
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
+  public selectedLayout$: Observable<ScopeDetails>;
   editTabIndex: number;
   public parentName: string | null;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
@@ -262,6 +263,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
+    this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
     // Load Work Packages
@@ -536,7 +538,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.objectSelected = false;
       this.isEditable = false;
 
-      this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
+      this.objectDetailsService.updateForm(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
@@ -930,7 +932,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false
+      disableClose: false,
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -986,7 +989,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false
+      disableClose: false,
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

@@ -220,8 +220,8 @@ export class NodeEffects {
     map(action => action.payload),
     mergeMap((payload: { workPackageId: string, nodeId: string, customPropertyId: string }) => {
       return this.nodeService.deleteCustomPropertyValues(
-        payload.workPackageId, 
-        payload.nodeId, 
+        payload.workPackageId,
+        payload.nodeId,
         payload.customPropertyId
         ).pipe(
           map(response => new NodeActions.DeleteCustomPropertySuccess(response.data)),

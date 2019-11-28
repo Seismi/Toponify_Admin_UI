@@ -39,18 +39,6 @@ export class NodeEffects {
   );
 
   @Effect()
-  loadNode$ = this.actions$.pipe(
-    ofType<NodeActions.LoadNode>(NodeActionTypes.LoadNode),
-    map(action => action.payload),
-    switchMap((id: string) => {
-      return this.nodeService.getNode(id).pipe(
-        switchMap((node: NodeDetailApiResponse) => [new NodeActions.LoadNodeSuccess(node.data)]),
-        catchError((error: Error) => of(new NodeActions.LoadNodeFailure(error)))
-      );
-    })
-  );
-
-  @Effect()
   loadNodeUsageView$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodeUsageView>(NodeActionTypes.LoadNodeUsageView),
     map(action => action.payload),

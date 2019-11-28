@@ -9,10 +9,9 @@
     <mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
             <button mat-icon-button disabled></button>
-            <mat-checkbox class="checklist-leaf-node" 
+            <mat-checkbox class="checklist-leaf-node"
                 [checked]="checklistSelection.isSelected(node)"
-                (change)="levelSelectionToggle(node)" 
-                (change)="onSelectLevelEntity($event, node)"
+                (change)="levelSelectionToggle(node)"
                 [disabled]="isDisabled">
                 {{node.item}}
             </mat-checkbox>
@@ -24,11 +23,10 @@
                     {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
             </button>
-            <mat-checkbox 
-                [checked]="descendantsAllSelected(node)" 
+            <mat-checkbox
+                [checked]="descendantsAllSelected(node)"
                 [indeterminate]="descendantsPartiallySelected(node)"
-                (change)="levelItemSelectionToggle($event, node)" 
-                (change)="onSelectLevelEntity($event, node)"
+                (change)="levelItemSelectionToggle($event, node)"
                 [disabled]="isDisabled">
                 {{node.item}}
             </mat-checkbox>

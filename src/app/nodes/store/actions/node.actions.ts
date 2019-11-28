@@ -7,9 +7,6 @@ export enum NodeActionTypes {
   LoadNodes = '[Node] Load Nodes',
   LoadNodesSuccess = '[Node] Load Nodes Success',
   LoadNodesFailure = '[Node] Load Nodes Fail',
-  LoadNode = '[Node] Load Node',
-  LoadNodeSuccess = '[Node] Load Node Success',
-  LoadNodeFailure = '[Node] Load Node Fail',
   LoadNodeLinks = '[Node] Load Node Links',
   LoadNodeLinksSuccess = '[Node] Load Node Links Success',
   LoadNodeLinksFailure = '[Node] Load Node Links Fail',
@@ -38,11 +35,6 @@ export class LoadNodesFailure implements Action {
   constructor(public payload: Error) { }
 }
 
-export class LoadNode implements Action {
-  readonly type = NodeActionTypes.LoadNode;
-  constructor(public payload: string) { }
-}
-
 export class LoadNodeUsageView implements Action {
   readonly type = NodeActionTypes.LoadNodeUsageView;
   constructor(public payload: string) { }
@@ -55,16 +47,6 @@ export class LoadNodeUsageViewSuccess implements Action {
 
 export class LoadNodeUsageViewFailure implements Action {
   readonly type = NodeActionTypes.LoadNodeUsageViewFailure;
-  constructor(public payload: Error) { }
-}
-
-export class LoadNodeSuccess implements Action {
-  readonly type = NodeActionTypes.LoadNodeSuccess;
-  constructor(public payload: NodeDetail) { }
-}
-
-export class LoadNodeFailure implements Action {
-  readonly type = NodeActionTypes.LoadNodeFailure;
   constructor(public payload: Error) { }
 }
 
@@ -118,9 +100,6 @@ export type NodeActionsUnion =
   | LoadNodes
   | LoadNodesSuccess
   | LoadNodesFailure
-  | LoadNode
-  | LoadNodeSuccess
-  | LoadNodeFailure
   | LoadNodeLinks
   | LoadNodeLinksSuccess
   | LoadNodeLinksFailure
