@@ -109,6 +109,14 @@ export class CustomLink extends go.Link {
   }
 }
 
+export function defineRoundButton() {
+  return go.GraphObject.defineBuilder('RoundButton', function (args) {
+    const button = $('Button');
+    (button.findObject('ButtonBorder') as go.Shape).figure = 'Circle';
+    return button;
+  });
+}
+
 @Injectable()
 export class GojsCustomObjectsService {
   // Observable to indicate that the detail tab should be displayed

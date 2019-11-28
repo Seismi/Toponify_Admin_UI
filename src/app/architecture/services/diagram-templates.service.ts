@@ -2,7 +2,7 @@ import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import { Injectable } from '@angular/core';
-import { CustomLink, GojsCustomObjectsService, updateShapeShadows, customIcons } from './gojs-custom-objects.service';
+import {CustomLink, GojsCustomObjectsService, updateShapeShadows, customIcons, defineRoundButton} from './gojs-custom-objects.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ const $ = go.GraphObject.make;
 
 // Fix shadow display issue on some shapes
 // updateShapeShadows();
+defineRoundButton();
 
 const nodeWidth = 300;
 
@@ -186,6 +187,91 @@ export class DiagramTemplatesService {
     );
   }
 
+  // Get top button for expanding and collapsing node sections.
+  //  Expands bottom node section if not already expanded.
+  //  Otherwise, collapses middle section if expanded.
+  //  Otherwise, collapses bottom section.
+  getTopExpandButton(): go.Panel {
+    return $(
+      'RoundButton',
+      {
+        alignment: go.Spot.RightCenter,
+        alignmentFocus: go.Spot.RightCenter,
+        desiredSize: new go.Size(25, 25),
+        click: function(event, button) {
+          const node = button.part;
+
+          const middleSection = node.findObject('middle');
+          const bottomSection = node.findObject('bottom');
+          const buttonTextBox = button.findObject('TopButtonText');
+
+          if (middleSection.visible && bottomSection.visible) {
+            middleSection.visible = false;
+            buttonTextBox.text = '-';
+          } else if (!middleSection.visible && bottomSection.visible) {
+            bottomSection.visible = false;
+            buttonTextBox.text = '+';
+          } else {
+            bottomSection.visible = true;
+            buttonTextBox.text = '-';
+          }
+
+          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
+          node.findLinksConnected().each(function(link) {
+          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+            link.invalidateRoute();
+          });
+
+        }.bind(this)
+      },
+      $(go.TextBlock, '-', {
+        name: 'TopButtonText',
+        alignment: go.Spot.Center,
+        font: 'bold 18px calibri',
+        desiredSize: new go.Size(25, 25),
+        textAlign: 'center',
+        verticalAlignment: go.Spot.Center
+      })
+    );
+  }
+
+  // Get bottom button for expanding and collapsing node sections.
+  // Expands the middle section of nodes when clicked.
+  getBottomExpandButton(): go.Panel {
+    return $(
+      'RoundButton',
+      {
+        alignment: go.Spot.RightCenter,
+        alignmentFocus: go.Spot.RightCenter,
+        desiredSize: new go.Size(25, 25),
+        click: function(event, button): void {
+          const node = button.part;
+          const middleSection = node.findObject('middle');
+
+          middleSection.visible = true;
+
+          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
+          node.findLinksConnected().each(function(link) {
+          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+            link.invalidateRoute();
+          });
+
+        }.bind(this)
+      },
+      $(go.TextBlock, '+', {
+        alignment: go.Spot.Center,
+        font: 'bold 18px calibri',
+        desiredSize: new go.Size(25, 25),
+        textAlign: 'center',
+        verticalAlignment: go.Spot.Center
+      }),
+      // Button not visible when middle node section is collapsed
+      new go.Binding('visible', 'visible', function (middleVisible) {
+        return !middleVisible;
+      }).ofObject('middle')
+    );
+  }
+
   // Calculate stroke for parts, based on impacted work packages
   getStrokeForImpactedWorkPackages(impactedPackages, part: go.Part): go.BrushLike {
     const allWorkpackages = part.diagram.model.modelData.workpackages;
@@ -350,6 +436,7 @@ export class DiagramTemplatesService {
       go.Panel,
       'Horizontal',
       {
+        name: 'top',
         row: 0,
         alignment: go.Spot.TopCenter,
         stretch: go.GraphObject.Horizontal,
@@ -414,8 +501,8 @@ export class DiagramTemplatesService {
           function(name) {return name ? 1 : 0; }
         ).ofModel()
        ),
-      // $(go.Button, {desiredSize: new go.Size(25, 25)})
-      $(
+      this.getTopExpandButton()
+      /*$(
         go.Shape,
         {
           alignment: go.Spot.RightCenter,
@@ -423,7 +510,7 @@ export class DiagramTemplatesService {
           figure: 'Rectangle',
           desiredSize: new go.Size(25, 25)
         }
-      )
+      )*/
     );
   }
 
@@ -433,6 +520,7 @@ export class DiagramTemplatesService {
       go.Panel,
       'Vertical',
       {
+        name: 'middle',
         row: 1,
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(5)
@@ -501,6 +589,7 @@ export class DiagramTemplatesService {
       go.Panel,
       'Vertical',
       {
+        name: 'bottom',
         row: 2,
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(2)
@@ -535,8 +624,8 @@ export class DiagramTemplatesService {
           }
         ),
         this.getRadioAlertIndicators(),
-        // $(go.Button, {desiredSize: new go.Size(25, 25)})
-        $(
+        this.getBottomExpandButton()
+        /*$(
           go.Shape,
           {
             alignment: go.Spot.RightCenter,
@@ -544,7 +633,7 @@ export class DiagramTemplatesService {
             figure: 'Rectangle',
             desiredSize: new go.Size(25, 25)
           }
-        )
+        )*/
       )
     );
   }
