@@ -37,7 +37,7 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
@@ -419,6 +419,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
         this.selectedNode = nodeDetail;
         this.ref.detectChanges();
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
+        this.setWorkPackage(this.getWorkPackageId());
       })
     );
 
@@ -956,14 +962,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             }
           })
         );
-
         if (data.radio.status === 'open') {
           this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
-
-        setTimeout(() => {
-          this.setWorkPackage(this.getWorkPackageId());
-        }, 150)
       }
     });
   }
