@@ -300,16 +300,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.nodesLinks$ = combineLatest(
       this.routerStore.select(getQueryParams),
-      this.workpackageStore.pipe(select(getSelectedWorkpackages)),
       this.eventEmitter.pipe(filter(event => event === Events.NodesLinksReload || event === null))
     );
 
-    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
-      this.selectedWorkpackages = workpackages;
+    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName } = fil;
+        const { filterLevel, id, scope, parentName, workpackages  } = fil;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
+          this.selectedWorkpackages = workpackages;
+          this.setNodesLinks(filterLevel, id, workpackages, scope);
         }
         this.parentName = parentName ? parentName : null;
       }
