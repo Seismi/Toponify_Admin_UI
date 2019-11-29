@@ -1,6 +1,6 @@
-import { Component, ViewChild, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-workpackages-table',
@@ -8,7 +8,6 @@ import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/mod
   styleUrls: ['./workpackages-table.component.scss']
 })
 export class WorkPackagesTableComponent implements OnInit {
-
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
@@ -23,17 +22,16 @@ export class WorkPackagesTableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  ngOnInit(): void {}
-
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['name', 'status', 'owners', 'approvers'];
-
 
   @Output()
   workpackageSelected = new EventEmitter<WorkPackageDetail>();
 
   @Output()
   addWorkpackage = new EventEmitter<void>();
+
+  ngOnInit(): void {}
 
   onSelectRow(row: WorkPackageDetail): void {
     this.selectedRowIndex = row.id;
@@ -43,5 +41,4 @@ export class WorkPackagesTableComponent implements OnInit {
   onAdd(): void {
     this.addWorkpackage.emit();
   }
-
 }

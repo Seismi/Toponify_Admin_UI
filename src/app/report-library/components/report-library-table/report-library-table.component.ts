@@ -39,5 +39,4 @@ export class ReportLibraryTableComponent implements OnInit {
   onAdd() {
     this.addReport.emit();
   }
-  
 }

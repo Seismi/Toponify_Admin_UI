@@ -1,22 +1,22 @@
 <app-base-header>
-    <app-toolbar-column [fillFreeSpace]="true">
-    </app-toolbar-column>
-    <app-search></app-search>
-    <app-toolbar-column>
-        <smi-quicklinks-actions></smi-quicklinks-actions>
-    </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+  <app-search></app-search>
+  <app-toolbar-column>
+    <smi-quicklinks-actions></smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>
 
 <div class="container">
-    <div class="row">
-        <div class="col" [ngClass]="{'active': scopeSelected}">
-            <!-- Scopes Table -->
-            <smi-scopes-table
-                [data]="scopes$ | async"
-                (scopeSelected)="onScopeSelect($event)"
-                (addScope)="onAddScope($event)">
-            </smi-scopes-table>
-        </div>
-        <router-outlet></router-outlet>
+  <div class="row">
+    <div class="col" [ngClass]="{ active: scopeSelected }">
+      <!-- Scopes Table -->
+      <smi-scopes-table
+        [data]="scopes$ | async"
+        (scopeSelected)="onScopeSelect($event)"
+        (addScope)="onAddScope($event)"
+      >
+      </smi-scopes-table>
     </div>
+    <router-outlet></router-outlet>
+  </div>
 </div>

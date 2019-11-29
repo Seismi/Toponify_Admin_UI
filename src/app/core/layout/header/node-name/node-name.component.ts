@@ -6,11 +6,9 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./node-name.component.scss']
 })
 export class NodeNameComponent implements OnInit {
-
   @Input() parentName: string;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() { }
-
+  ngOnInit() {}
 }

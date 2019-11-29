@@ -6,19 +6,18 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './reply-text.component.html',
   styleUrls: ['./reply-text.component.scss']
 })
-
 export class ReplyTextComponent {
   @Input() group: FormGroup;
-  @Input() replyMode: boolean = false;
-  @Input() rows: number = 4;
-  public disabled: boolean = true;
-
-  onType(event) {
-    (event.length) ? this.disabled = false : this.disabled = true;
-  }
+  @Input() replyMode = false;
+  @Input() rows = 4;
+  public disabled = true;
 
   @Output()
   sendReply = new EventEmitter<void>();
+
+  onType(event) {
+    event.length ? (this.disabled = false) : (this.disabled = true);
+  }
 
   onSend() {
     this.sendReply.emit();

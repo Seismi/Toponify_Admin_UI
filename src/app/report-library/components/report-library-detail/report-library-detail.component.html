@@ -1,26 +1,31 @@
 <div class="wrapper">
   <form [formGroup]="group">
-    <div [ngClass]="{disabled: !isEditable}">
+    <div [ngClass]="{ disabled: !isEditable }">
       <mat-form-field>
-        <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: isEditable}">
+        <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: isEditable }" />
         <mat-error>This field is required</mat-error>
       </mat-form-field>
-    
+
       <mat-form-field>
-        <textarea matInput placeholder="Description" formControlName="description"
-          [ngClass]="{ editable: isEditable}"></textarea>
+        <textarea
+          matInput
+          placeholder="Description"
+          formControlName="description"
+          [ngClass]="{ editable: isEditable }"
+        ></textarea>
       </mat-form-field>
 
       <!-- Owners -->
       <smi-report-owners-table
         *ngIf="!modalMode"
-        [data]="owners" 
+        [data]="owners"
         [isEditable]="isEditable"
         [selectedOwner]="selectedOwner"
         [selectedOwnerIndex]="selectedOwnerIndex"
         (addOwner)="onAddOwner()"
         (selectOwner)="onSelectOwner($event)"
-        (deleteOwner)="onDeleteOwner()">
+        (deleteOwner)="onDeleteOwner()"
+      >
       </smi-report-owners-table>
 
       <!-- Source Data Sets -->

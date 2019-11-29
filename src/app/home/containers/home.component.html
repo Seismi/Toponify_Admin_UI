@@ -1,25 +1,19 @@
 <app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true">
-  </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
   <app-search></app-search>
   <app-toolbar-column>
     <smi-quicklinks-actions></smi-quicklinks-actions>
   </app-toolbar-column>
 </app-base-header>
 
-<smi-my-radio-table
-  data-hook="radio-table"
-  [data]="myRadios$ | async">
-</smi-my-radio-table>
+<smi-my-radio-table data-hook="radio-table" [data]="myRadios$ | async"> </smi-my-radio-table>
 
-<smi-my-layouts-table
-  data-hook="layouts-table"
-  [data]="myLayouts$ | async"
-  (openLayout)="onOpenLayout()">
+<smi-my-layouts-table data-hook="layouts-table" [data]="myLayouts$ | async" (openLayout)="onOpenLayout()">
 </smi-my-layouts-table>
 
 <smi-my-workpackages-table
   data-hook="package-table"
   [data]="myWorkPackages$ | async"
-  (openWorkPackage)="onOpenWorkPackage($event)">
+  (openWorkPackage)="onOpenWorkPackage($event)"
+>
 </smi-my-workpackages-table>

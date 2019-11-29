@@ -6,7 +6,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./category-table.component.scss']
 })
 export class CategoryTableComponent implements OnInit {
-
   @Input() attributesPage: boolean;
   selectedRowIndex = -1;
   _data: any[] = [];
@@ -36,18 +35,12 @@ export class CategoryTableComponent implements OnInit {
   ngOnInit() {}
 
   getTransformedData(category?: string): any[] {
-    const data = category
-      ? this.filterByCategory(this._data, category)
-      : this._data;
+    const data = category ? this.filterByCategory(this._data, category) : this._data;
     return this.setCollapsed(data);
   }
 
   // TODO: Question. Do we need filter only top level, or should be deep filtering. ???
-  filterByCategory(
-    data: any[],
-    category: string,
-    nested: boolean = false
-  ): any[] {
+  filterByCategory(data: any[], category: string, nested: boolean = false): any[] {
     return data
       .filter(item => {
         return item.category === category;
@@ -86,5 +79,4 @@ export class CategoryTableComponent implements OnInit {
   onRule() {
     this.addRule.emit();
   }
-
 }

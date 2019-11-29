@@ -4,7 +4,6 @@ import { validateAllFormFields } from '@app/services/utils';
 
 @Injectable()
 export class ReportLibraryDetailService {
-
   public reportDetailForm: FormGroup;
 
   constructor(private fb: FormBuilder) {

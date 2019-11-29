@@ -3,16 +3,17 @@
   <mat-form-field>
     <mat-select placeholder="Components" [formControl]="components" multiple>
       <mat-select-trigger>
-        {{components.value ? components.value[0] : ''}}
+        {{ components.value ? components.value[0] : '' }}
         <span *ngIf="components.value?.length > 1" class="additional-selection">
-          (+{{components.value.length - 1}} {{components.value?.length === 2 ? 'other' : 'others'}})
+          (+{{ components.value.length - 1 }} {{ components.value?.length === 2 ? 'other' : 'others' }})
         </span>
       </mat-select-trigger>
       <mat-option
         *ngFor="let children of descendants$ | async"
         (onSelectionChange)="onSelect($event, children)"
-        [value]="children.name">
-        {{children.name}}
+        [value]="children.name"
+      >
+        {{ children.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>

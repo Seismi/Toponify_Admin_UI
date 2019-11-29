@@ -1,68 +1,101 @@
 <form [formGroup]="group" data-hook="documentation-standards-details">
   <div *ngIf="!isEditMode">
     <!-- Name -->
-    <mat-form-field [ngClass]="{disabled: !isEditable}">
-        <input matInput placeholder="Name" formControlName="name" data-hook="documentation-standards-details-name">
-        <mat-error>This field is required!</mat-error>
+    <mat-form-field [ngClass]="{ disabled: !isEditable }">
+      <input matInput placeholder="Name" formControlName="name" data-hook="documentation-standards-details-name" />
+      <mat-error>This field is required!</mat-error>
     </mat-form-field>
 
     <!-- Description -->
-    <mat-form-field [ngClass]="{disabled: !isEditable}">
-        <textarea matInput placeholder="Description" formControlName="description" data-hook="documentation-standards-details-description"></textarea>
+    <mat-form-field [ngClass]="{ disabled: !isEditable }">
+      <textarea
+        matInput
+        placeholder="Description"
+        formControlName="description"
+        data-hook="documentation-standards-details-description"
+      ></textarea>
     </mat-form-field>
 
     <!-- Type -->
     <mat-form-field>
-        <mat-label>Type</mat-label>
-        <mat-select formControlName="type" [ngClass]="{disabled: !isEditable}">
-          <mat-option *ngFor="let type of types" [value]="type" data-hook="documentation-standards-details-type">
-              {{type}}
-          </mat-option>
-        </mat-select>
-        <mat-error>This field is required!</mat-error>
+      <mat-label>Type</mat-label>
+      <mat-select formControlName="type" [ngClass]="{ disabled: !isEditable }">
+        <mat-option *ngFor="let type of types" [value]="type" data-hook="documentation-standards-details-type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+      <mat-error>This field is required!</mat-error>
     </mat-form-field>
 
     <!-- Levels -->
     <div class="form-group">
-        <label class="levels-label">Component Types</label>
-        <smi-document-standards-levels 
-            [isDisabled]="isDisabled" 
-            [modalMode]="modalMode">
-        </smi-document-standards-levels>
+      <label class="levels-label">Component Types</label>
+      <smi-document-standards-levels [isDisabled]="isDisabled" [modalMode]="modalMode"> </smi-document-standards-levels>
     </div>
   </div>
 
-    <!-- Value -->
-    <mat-form-field *ngIf="isEditMode && !dateType && !booleanType">
-        <input matInput placeholder="Value ({{propertyType}})" formControlName="value" data-hook="documentation-standards-details-value">
-        <mat-error>Not Valid! Please make sure that your value matches property type</mat-error>
-    </mat-form-field>
+  <!-- Value -->
+  <mat-form-field *ngIf="isEditMode && !dateType && !booleanType">
+    <input
+      matInput
+      placeholder="Value ({{ propertyType }})"
+      formControlName="value"
+      data-hook="documentation-standards-details-value"
+    />
+    <mat-error>Not Valid! Please make sure that your value matches property type</mat-error>
+  </mat-form-field>
 
-    <mat-form-field *ngIf="isEditMode && dateType">
-        <input matInput [matDatepicker]="picker" placeholder="Value ({{propertyType}})" formControlName="value">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-error>Not Valid! Please make sure that your value matches property type</mat-error>
-    </mat-form-field>
+  <mat-form-field *ngIf="isEditMode && dateType">
+    <input matInput [matDatepicker]="picker" placeholder="Value ({{ propertyType }})" formControlName="value" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error>Not Valid! Please make sure that your value matches property type</mat-error>
+  </mat-form-field>
 
-    <mat-form-field *ngIf="isEditMode && booleanType">
-        <mat-label>Value ({{propertyType}})</mat-label>
-        <mat-select formControlName="value">
-            <mat-option *ngFor="let boolean of booleanTypes" [value]="boolean">
-                {{boolean}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+  <mat-form-field *ngIf="isEditMode && booleanType">
+    <mat-label>Value ({{ propertyType }})</mat-label>
+    <mat-select formControlName="value">
+      <mat-option *ngFor="let boolean of booleanTypes" [value]="boolean">
+        {{ boolean }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
-    <div class="form-actions" *ngIf="!modalMode">
-        <div *ngIf="!isEditable">
-            <button type="button" data-hook="document-standarts-details-edit" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
-            <button type="button" data-hook="document-standarts-details-copy" mat-raised-button color="primary">Copy</button>
-            <button type="button" data-hook="document-standarts-details-delete" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
-        </div>
-        <div *ngIf="isEditable">
-            <button type="button" data-hook="document-standarts-details-save" mat-raised-button color="primary" (click)="onSave()">Save</button>
-            <button type="button" data-hook="document-standarts-details-cancel" mat-raised-button (click)="onCancel()">Cancel</button>
-        </div>
+  <div class="form-actions" *ngIf="!modalMode">
+    <div *ngIf="!isEditable">
+      <button
+        type="button"
+        data-hook="document-standarts-details-edit"
+        mat-raised-button
+        color="primary"
+        (click)="onEdit()"
+      >
+        Edit
+      </button>
+      <button type="button" data-hook="document-standarts-details-copy" mat-raised-button color="primary">Copy</button>
+      <button
+        type="button"
+        data-hook="document-standarts-details-delete"
+        mat-raised-button
+        color="warn"
+        (click)="onDelete()"
+      >
+        Delete
+      </button>
     </div>
+    <div *ngIf="isEditable">
+      <button
+        type="button"
+        data-hook="document-standarts-details-save"
+        mat-raised-button
+        color="primary"
+        (click)="onSave()"
+      >
+        Save
+      </button>
+      <button type="button" data-hook="document-standarts-details-cancel" mat-raised-button (click)="onCancel()">
+        Cancel
+      </button>
+    </div>
+  </div>
 </form>

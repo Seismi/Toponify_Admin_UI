@@ -9,10 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export class DeleteModalComponent {
   mode: string;
 
-  constructor(
-    public dialogRef: MatDialogRef<DeleteModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
+  constructor(public dialogRef: MatDialogRef<DeleteModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.mode = data.mode;
   }
 

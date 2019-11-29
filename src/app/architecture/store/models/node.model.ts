@@ -47,22 +47,16 @@ export class Node {
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
   relatedRadioCounts: {
-    risks: number,
-    issues: number,
-    assumptions: number,
-    dependencies: number,
-    opportunities: number
+    risks: number;
+    issues: number;
+    assumptions: number;
+    dependencies: number;
+    opportunities: number;
   };
   impactedByWorkPackages = [];
   tooltip?: string;
 
-  constructor(options: {
-    id: string;
-    name: string;
-    layer: layers;
-    category: nodeCategories;
-    tooltip: string;
-  }) {
+  constructor(options: { id: string; name: string; layer: layers; category: nodeCategories; tooltip: string }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;

@@ -9,9 +9,9 @@ import { Store, select } from '@ngrx/store';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
-import { Node } from '@app/nodes/store/models/node.model';
-import { State as NodeState } from '@app/nodes/store/reducers/node.reducer';
-import { getNodeEntities } from '@app/nodes/store/selectors/node.selector';
+import { Node } from '@app/architecture/store/models/node.model';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 
 @Component({
   selector: 'smi-filter-modal',
@@ -19,9 +19,7 @@ import { getNodeEntities } from '@app/nodes/store/selectors/node.selector';
   styleUrls: ['./filter-modal.component.scss'],
   providers: [FilterRadioFormService, FilterRadioFormValidatorService]
 })
-
 export class FilterModalComponent implements OnInit {
-
   public users$: Observable<User[]>;
   public nodes$: Observable<Node[]>;
   public radio: RadiosAdvancedSearch;
@@ -34,12 +32,13 @@ export class FilterModalComponent implements OnInit {
     private userStore: Store<UserState>,
     private filterRadioService: FilterRadioFormService,
     public dialogRef: MatDialogRef<FilterModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.radio = data.radio;
-      this.filterData = data.filterData;
-      this.mode = data.mode;
-      (this.mode === 'filter') ? this.filterApplied = true : this.filterApplied = false;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.radio = data.radio;
+    this.filterData = data.filterData;
+    this.mode = data.mode;
+    this.mode === 'filter' ? (this.filterApplied = true) : (this.filterApplied = false);
+  }
 
   ngOnInit(): void {
     this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
@@ -54,7 +53,7 @@ export class FilterModalComponent implements OnInit {
         from: this.filterData.from,
         to: this.filterData.to,
         text: this.filterData.text
-      })
+      });
     }
   }
 
@@ -69,5 +68,4 @@ export class FilterModalComponent implements OnInit {
   onCancel(): void {
     this.dialogRef.close();
   }
-
 }

@@ -1,7 +1,7 @@
-import { Component, Injectable, ViewChild, AfterViewInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Injectable, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
 import { FormControl } from '@angular/forms';
@@ -144,6 +144,7 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit, OnChange
     this.flatNodeMap.set(node.item, flatNode);
     this.nestedNodeMap.set(node, flatNode);
     return flatNode;
+    // tslint:disable-next-line
   }
 
   /** Whether all the descendants of the node are selected. */

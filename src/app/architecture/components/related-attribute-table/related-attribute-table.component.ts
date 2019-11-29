@@ -8,7 +8,6 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
   styleUrls: ['./related-attribute-table.component.scss']
 })
 export class RelatedAttributeTableComponent {
-
   @Input() isEditable: boolean;
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
@@ -41,5 +40,4 @@ export class RelatedAttributeTableComponent {
   onSelect(relatedAttributeId: string): void {
     this.selectRelatedAttribute.emit(relatedAttributeId);
   }
-
 }

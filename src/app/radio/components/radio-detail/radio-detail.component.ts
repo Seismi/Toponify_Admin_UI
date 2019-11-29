@@ -9,15 +9,13 @@ import { RadioDetail } from '@app/radio/store/models/radio.model';
   templateUrl: './radio-detail.component.html',
   styleUrls: ['./radio-detail.component.scss']
 })
-
 export class RadioDetailComponent {
-  
   public users: User[];
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() modalMode = false;
   @Input() statusClosed = false;
-  @Input() rows: number = 8;
+  @Input() rows = 8;
   @Input() relatesTo: RadioDetail;
 
   @Input()
@@ -29,15 +27,15 @@ export class RadioDetailComponent {
   public status = Constants.RADIO_STATUS;
   public refNumber = ['R-0001', 'R-0002', 'R-0003', 'R-0004'];
 
-  compareUsers(u1: any, u2: any): boolean {
-    return u1.name === u2.name && u1.id === u2.id;
-  }
-
   @Output()
   archiveRadio = new EventEmitter<void>();
 
   @Output()
   saveRadio = new EventEmitter<void>();
+
+  compareUsers(u1: any, u2: any): boolean {
+    return u1.name === u2.name && u1.id === u2.id;
+  }
 
   onArchive() {
     this.archiveRadio.emit();
@@ -55,5 +53,4 @@ export class RadioDetailComponent {
   onCancel() {
     this.isEditable = false;
   }
-
 }
