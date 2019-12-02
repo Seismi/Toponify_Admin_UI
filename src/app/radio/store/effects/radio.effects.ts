@@ -75,7 +75,7 @@ export class RadioEffects {
     mergeMap((payload: RadioApiRequest) => {
       return this.radioService.addRadioEntity(payload).pipe(
         mergeMap((radio: RadioApiResponse) => [new AddRadioEntitySuccess(radio.data)]),
-        tap((data) => {
+        tap(data => {
           this.radioId = data.payload.id;
         }),
         catchError((error: HttpErrorResponse) => of(new AddRadioEntityFailure(error)))

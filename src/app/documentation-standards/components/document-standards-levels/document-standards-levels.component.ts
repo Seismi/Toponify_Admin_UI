@@ -145,7 +145,7 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit, OnChange
     this.nestedNodeMap.set(node, flatNode);
     return flatNode;
     // tslint:disable-next-line
-  }
+  };
 
   /** Whether all the descendants of the node are selected. */
   descendantsAllSelected(node: FlatNode): boolean {
