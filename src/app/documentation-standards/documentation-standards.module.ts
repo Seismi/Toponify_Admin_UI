@@ -1,23 +1,22 @@
 import { DocumentationStandardsComponent } from './containers/documentation-standards/documentation-standards.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DocumentationStandardsRoutingComponent } from './containers/documentation-standards-routing.component';
 import { DocumentationStandardsRoutingModule } from './documentation-standards-routing.module';
 import { CoreModule } from '@app/core/core.module';
-import { 
-  MatTableModule,
-  MatPaginatorModule,
+import {
   MatButtonModule,
-  MatSortModule ,
-  MatListModule,
-  MatTreeModule,
   MatCheckboxModule,
-  MatIconModule,
+  MatDatepickerModule,
   MatDialogModule,
-  MatSelectModule,
   MatExpansionModule,
+  MatIconModule,
   MatInputModule,
-  MatDatepickerModule
+  MatListModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule,
+  MatTreeModule
 } from '@angular/material';
 import { DocumentationStandardsTableComponent } from './components/documentation-standards-table/documentation-standards-table.component';
 import { DocumentationStandardsDetailComponent } from './components/documentation-standards-detail/documentation-standards-detail.component';
@@ -31,7 +30,6 @@ import { DocumentationStandardsDetailsComponent } from './containers/documentati
 import { DocumentStandardsLevelsComponent } from './components/document-standards-levels/document-standards-levels.component';
 import { DeleteDocumentModalComponent } from './containers/delete-document-modal/delete-document.component';
 import { DocumentModalComponent } from './containers/document-modal/document-modal.component';
-
 
 @NgModule({
   imports: [
@@ -54,12 +52,11 @@ import { DocumentModalComponent } from './containers/document-modal/document-mod
     MatInputModule,
     MatDatepickerModule,
     StoreModule.forFeature('documentationStandardFeature', reducer),
-    EffectsModule.forFeature([ DocumentationStandardEffects ])
+    EffectsModule.forFeature([DocumentationStandardEffects])
   ],
   exports: [DocumentationStandardsTableComponent],
   declarations: [
     DocumentationStandardsComponent,
-    DocumentationStandardsRoutingComponent,
     DocumentationStandardsTableComponent,
     DocumentationStandardsDetailComponent,
     DocumentationStandardsDetailsComponent,
@@ -70,4 +67,4 @@ import { DocumentModalComponent } from './containers/document-modal/document-mod
   providers: [DocumentationStandardsService],
   entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent, DocumentModalComponent]
 })
-export class DocumentationStandardsModule { }
+export class DocumentationStandardsModule {}

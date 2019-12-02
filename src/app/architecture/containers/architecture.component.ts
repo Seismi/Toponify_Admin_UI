@@ -47,7 +47,10 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
-import { DeleteWorkpackageLinkSuccess, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
+import {
+  DeleteWorkpackageLinkSuccess,
+  WorkPackageLinkActionTypes
+} from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
   AddWorkpackageNodeOwner,
@@ -66,7 +69,11 @@ import {
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetail, WorkPackageEntity, WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
+import {
+  WorkPackageDetail,
+  WorkPackageEntity,
+  WorkPackageNodeScopes
+} from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackages,
@@ -198,6 +205,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedOwner = false;
   selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
+  public selectedLayout$: Observable<ScopeDetails>;
   editTabIndex: number;
   public parentName: string | null;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
@@ -262,6 +270,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
+    this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
     // Load Work Packages
@@ -298,16 +307,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.nodesLinks$ = combineLatest(
       this.routerStore.select(getQueryParams),
-      this.workpackageStore.pipe(select(getSelectedWorkpackages)),
       this.eventEmitter.pipe(filter(event => event === Events.NodesLinksReload || event === null))
     );
 
-    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, workpackages, _]) => {
-      this.selectedWorkpackages = workpackages;
+    this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName } = fil;
+        const { filterLevel, id, scope, parentName, workpackages } = fil;
+        const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
         if (filterLevel) {
-          this.setNodesLinks(filterLevel, id, workpackages.map(item => item.id), scope);
+          this.selectedWorkpackages = workpackagesArray;
+          this.setNodesLinks(filterLevel, id, workpackagesArray, scope);
         }
         this.parentName = parentName ? parentName : null;
       }
@@ -536,7 +545,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.objectSelected = false;
       this.isEditable = false;
 
-      this.objectDetailsService.objectDetailsForm.patchValue(this.selectedPart);
+      this.objectDetailsService.updateForm(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
@@ -545,9 +554,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.detailsTab = false;
 
       if (part) {
-
         // Load node scopes
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({nodeId: this.nodeId}));
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
         this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
 
         this.selectedOwnerIndex = null;
@@ -829,7 +837,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteNode(): void {
-    if(this.part instanceof goNode) {
+    if (this.part instanceof goNode) {
       this.handleNodeDeleteRequested(this.part.data);
     } else {
       this.handleLinkDeleteRequested(this.part.data);
@@ -903,8 +911,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onTabClick(index: number) {
     this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
-    !this.workPackageIsEditable && index === 1 ? this.layoutSettingsTab = true :
-      this.workPackageIsEditable && index === 2 ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
+    !this.workPackageIsEditable && index === 1
+      ? (this.layoutSettingsTab = true)
+      : this.workPackageIsEditable && index === 2
+      ? (this.layoutSettingsTab = true)
+      : (this.layoutSettingsTab = false);
     this.diagramComponent.updateDiagramArea();
   }
 
@@ -914,7 +925,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.showOrHideLeftPane = true;
     }
 
-    (index === 2) ? this.layoutSettingsTab = true : this.layoutSettingsTab = false;
+    index === 2 ? (this.layoutSettingsTab = true) : (this.layoutSettingsTab = false);
 
     this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
 
@@ -930,7 +941,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false
+      disableClose: false,
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -986,7 +998,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false
+      disableClose: false,
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1166,15 +1179,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteCustomProperty({
-          workPackageId: this.workpackageId,
-          nodeId: this.nodeId,
-          customPropertyId: customProperty.propertyId
-        }))
+        this.store.dispatch(
+          new DeleteCustomProperty({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            customPropertyId: customProperty.propertyId
+          })
+        );
       }
-    })
+    });
   }
 
   onOpenRadio(radio: RadioDetail) {
@@ -1186,7 +1201,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
   onViewChange(view: ArchitectureView) {
     this.selectedView = view;
@@ -1226,11 +1240,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.scopeStore.dispatch(new DeleteWorkPackageNodeScope({scopeId: scope.id, nodeId: this.nodeId}));
+        this.scopeStore.dispatch(new DeleteWorkPackageNodeScope({ scopeId: scope.id, nodeId: this.nodeId }));
       }
-    })
+    });
   }
 
   onAddExistingScope(): void {
@@ -1242,14 +1256,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.scope) {
-        this.scopeStore.dispatch(new AddWorkPackageNodeScope({scopeId: data.scope, data: [this.nodeId]}));
+        this.scopeStore.dispatch(new AddWorkPackageNodeScope({ scopeId: data.scope, data: [this.nodeId] }));
       }
       setTimeout(() => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({nodeId: this.nodeId}));
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
       }, 150);
-    })
+    });
   }
 
   onAddNewScope(): void {
@@ -1272,7 +1286,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
       setTimeout(() => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({nodeId: this.nodeId}));
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
       }, 150);
     });
   }

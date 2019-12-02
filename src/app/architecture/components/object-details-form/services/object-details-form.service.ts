@@ -29,4 +29,15 @@ export class ObjectDetailsService {
     }
     return true;
   }
+
+  updateForm(object) {
+    this.objectDetailsForm = this.fb.group({
+      name: [object && object.name ? object.name : null, Validators.required],
+      category: [object && object.category ? object.category : null],
+      owner: [null],
+      description: [object && object.description ? object.description : null],
+      tags: [object && object.tags ? object.tags : null],
+      directDependencies: [null]
+    });
+  }
 }

@@ -10,6 +10,7 @@ const httpOptions = {
 
 export interface GetReportLibraryRequestQueryParams {
   workPackageQuery?: string[];
+  scopeQuery?: string;
 }
 
 @Injectable()

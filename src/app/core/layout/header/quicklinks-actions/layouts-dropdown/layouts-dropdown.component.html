@@ -1,8 +1,7 @@
 <mat-form-field floatLabel=never appearance="none">
-  <mat-select [(value)]="selected">
+  <mat-select [value]="selectedLayout?.id" (selectionChange)="onSelect($event)">
     <mat-option *ngFor="let layout of layouts?.layouts"
-      [value]="layout.name"
-      (click)="onSelect(layout.id)">
+      [value]="layout.id">
       {{layout.name}}
     </mat-option>
   </mat-select>
