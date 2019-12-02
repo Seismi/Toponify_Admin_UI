@@ -2,7 +2,7 @@ import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import { Injectable } from '@angular/core';
-import {CustomLink, GojsCustomObjectsService, updateShapeShadows, customIcons, defineRoundButton} from './gojs-custom-objects.service';
+import {CustomLink, GojsCustomObjectsService, customIcons, defineRoundButton} from './gojs-custom-objects.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { Store } from '@ngrx/store';
@@ -12,8 +12,7 @@ import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selec
 
 const $ = go.GraphObject.make;
 
-// Fix shadow display issue on some shapes
-// updateShapeShadows();
+// Create definition for button with round shape
 defineRoundButton();
 
 const nodeWidth = 300;
@@ -190,8 +189,10 @@ export class DiagramTemplatesService {
     return $(
       'Button',
       {
-        alignment: go.Spot.TopRight,
+        name: 'DependencyExpandButton',
+        alignment: go.Spot.LeftCenter,
         desiredSize: new go.Size(20, 20),
+        margin: new go.Margin(0, 5, 0, 0),
         click: function(event, button) {
           const node = button.part;
           this.diagramChangesService.showDependencies(node);
@@ -470,6 +471,7 @@ export class DiagramTemplatesService {
         minSize: new go.Size(NaN, 30),
         margin: new go.Margin(5),
       },
+      this.getDependencyExpandButton(),
       // Node icon, to appear at the top left of the node
       $(go.Picture,
         {
@@ -512,32 +514,25 @@ export class DiagramTemplatesService {
             '.svg'].join('');
         })
       ),
-      // $(go.Shape, {figure: 'Rectangle', desiredSize: new go.Size(25, 25)}),
       $(
         go.TextBlock,
         {
           textAlign: 'left',
           font: 'bold italic 20px calibri',
           margin: new go.Margin(0, 5, 0, 5),
-          desiredSize: new go.Size(nodeWidth - 70, NaN),
           wrap: go.TextBlock.None,
           overflow: go.TextBlock.OverflowEllipsis
         },
         new go.Binding('text', 'name'),
+        // Size name textblock to account for presence/absence of dependency expand button
+        new go.Binding('width', 'visible', function(expandButtonVisible: boolean): number {
+          return expandButtonVisible ? nodeWidth - 95 : nodeWidth - 70;
+        }).ofObject('DependencyExpandButton'),
         new go.Binding('opacity', 'name',
-          function(name) {return name ? 1 : 0; }
+          function(name: boolean): number {return name ? 1 : 0; }
         ).ofModel()
        ),
       this.getTopExpandButton()
-      /*$(
-        go.Shape,
-        {
-          alignment: go.Spot.RightCenter,
-          alignmentFocus: go.Spot.RightCenter,
-          figure: 'Rectangle',
-          desiredSize: new go.Size(25, 25)
-        }
-      )*/
     );
   }
 
@@ -574,10 +569,10 @@ export class DiagramTemplatesService {
           margin: new go.Margin(5, 0, 0, 0)
         },
         new go.Binding('text', 'owners',
-          function (owners) {
+          function (owners: any[]): string {
             return owners.length > 0 ?
               'Owners - ' + owners.map(
-                function(owner) {return owner.name; }
+                function(owner): string {return owner.name; }
               ).join(', ') : '';
           }
         ),
@@ -630,13 +625,11 @@ export class DiagramTemplatesService {
           alignment: go.Spot.LeftCenter,
           margin: new go.Margin(3, 0, 3, 0)
         },
-        new go.Binding('itemArray', 'tags', function(tags): string[] {
+        new go.Binding('itemArray', 'tags', function(tags: string): string[] {
           if (tags.trim() === '') {return []; }
-          return tags.split(',')
-            .map(function(tag): string {
-              return tag.trim();
-            });
-        }),
+
+          return this.getTruncatedTags(tags);
+        }.bind(this)),
         new go.Binding('visible', 'tags').ofModel()
       ),
       $(
@@ -657,6 +650,49 @@ export class DiagramTemplatesService {
         this.getBottomExpandButton()
       )
     );
+  }
+
+  // Gets an array of tags, truncated to fit in the node if necessary
+  getTruncatedTags(tags: string): string[] {
+    let tagGroup;
+
+    // Tags separated by commas. Also, trim any excess whitespace.
+    const tagArray = tags.split(',')
+      .map(function(tag) {
+        return tag.trim();
+      });
+
+    // Temporary part to measure size from
+    tagGroup = createTempPanel.call(this, tagArray);
+
+    // If size of tag section too big then...
+    if (tagGroup.naturalBounds.right > nodeWidth - 4) {
+      // ...add an ellipsis to the end of the tag list to show that some tags are not shown...
+      tagArray.push('...');
+
+      // ...and remove each tag before the ellipsis until the section fits
+      do {
+        tagArray.splice(-2, 1);
+        tagGroup = createTempPanel.call(this, tagArray);
+      }
+      while (tagGroup.naturalBounds.right > nodeWidth - 4);
+    }
+
+    return tagArray;
+
+    // Create a temporary part with the given tags
+    function createTempPanel (array: string[]): go.Panel {
+      const panel = $(
+        go.Part,
+        'Horizontal',
+        {
+          itemTemplate: this.getTagTemplate(),
+          itemArray: array
+        }
+      );
+      panel.ensureBounds();
+      return panel;
+    }
   }
 
   getNodeTemplate(forPalette: boolean = false): go.Node {
@@ -719,7 +755,6 @@ export class DiagramTemplatesService {
         {
           defaultRowSeparatorStroke: 'black'
         },
-        // this.getDependencyExpandButton(),
         this.getTopSection(),
         this.getMiddleSection(),
         this.getBottomSection()
