@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import { WorkPackageService } from './workpackage.service';
 import { WorkpackageLink, WorkpackageLinkCustomProperty, WorkpackageLinkSliceAdd, WorkpackageLinkSliceUpdate, WorkpackageLinkSliceCondition, WorkpackageLinkSliceConditionType } from '../store/models/workpackage.models';
+import { NodeLink } from '@app/architecture/store/models/node-link.model';
 
 @Injectable()
 export class WorkPackageLinksService extends WorkPackageService {
@@ -137,4 +138,14 @@ export class WorkPackageLinksService extends WorkPackageService {
   deleteLinkSliceCondition(workPackageId: string, nodeLinkId: string): Observable<any> {
     return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/sliceConditions/deleteRequest`, {});
   }
+
+  
+  addLinkOwner(workPackageId: string, nodeLinkId: string, ownerId: string): Observable<NodeLink> {
+    return this.http.post<NodeLink>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/owners/${ownerId}`, this.httpOptions);
+  }
+
+  deleteLinkOwner(workPackageId: string, nodeLinkId: string, ownerId: string): Observable<NodeLink> {
+    return this.http.post<NodeLink>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/owners/${ownerId}/deleteRequest`, {});
+  }
+
 }

@@ -12,7 +12,7 @@
       <textarea matInput placeholder="Description" rows="4" formControlName="description" [ngClass]="{ editable: workPackageIsEditable }"></textarea>
     </mat-form-field>
 
-    <mat-form-field *ngIf="!clickedOnLink">
+    <mat-form-field>
       <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: workPackageIsEditable }">
     </mat-form-field>
   </div>
@@ -24,7 +24,6 @@
 
   <div>
     <smi-owners-table-in-architecture
-      *ngIf="!clickedOnLink"
       [data]="owners"
       [isEditable]="workPackageIsEditable"
       [selectedRowIndex]="selectedOwnerIndex"

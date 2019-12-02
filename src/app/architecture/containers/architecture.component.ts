@@ -49,7 +49,9 @@ import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-mo
 import { SharedService } from '@app/services/shared-service';
 import {
   DeleteWorkpackageLinkSuccess,
-  WorkPackageLinkActionTypes
+  WorkPackageLinkActionTypes,
+  AddWorkPackageLinkOwner,
+  DeleteWorkpackageLinkOwner
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -1056,14 +1058,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.owner) {
-        this.nodeStore.dispatch(
-          new AddWorkpackageNodeOwner({
-            workpackageId: this.workpackageId,
-            nodeId: this.nodeId,
-            ownerId: data.owner.id,
-            data: data.owner
-          })
-        );
+        if (!this.clickedOnLink) {
+          this.nodeStore.dispatch(
+            new AddWorkpackageNodeOwner({
+              workpackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              ownerId: data.owner.id,
+              data: data.owner
+            })
+          );
+        } else {
+          this.nodeStore.dispatch(new AddWorkPackageLinkOwner({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
+            ownerId: data.owner.id
+          }))
+        }
       }
     });
   }
@@ -1079,13 +1089,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.nodeStore.dispatch(
-          new DeleteWorkpackageNodeOwner({
-            workpackageId: this.workpackageId,
-            nodeId: this.nodeId,
+        if (!this.clickedOnLink) {
+          this.nodeStore.dispatch(
+            new DeleteWorkpackageNodeOwner({
+              workpackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              ownerId: this.selectedOwnerIndex
+            })
+          );
+        } else {
+          this.nodeStore.dispatch(new DeleteWorkpackageLinkOwner({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
             ownerId: this.selectedOwnerIndex
-          })
-        );
+          }))
+        }
         this.selectedOwner = false;
       }
     });

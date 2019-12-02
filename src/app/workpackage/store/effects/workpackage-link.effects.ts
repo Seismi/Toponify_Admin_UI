@@ -8,7 +8,8 @@ import { AddWorkPackageLink, WorkPackageLinkActionTypes,
   AddWorkPackageLinkSuccess, AddWorkPackageLinkFailure, UpdateWorkPackageLink,
   UpdateWorkPackageLinkSuccess, UpdateWorkPackageLinkFailure, LoadWorkpackageLinkDescendants,
   LoadWorkpackageLinkDescendantsSuccess, LoadWorkpackageLinkDescendantsFailure, DeleteWorkpackageLink,
-  DeleteWorkpackageLinkSuccess, DeleteWorkpackageLinkFailure } from '../actions/workpackage-link.actions';
+  DeleteWorkpackageLinkSuccess, DeleteWorkpackageLinkFailure, AddWorkPackageLinkOwner, AddWorkPackageLinkOwnerSuccess, AddWorkPackageLinkOwnerFailure, DeleteWorkpackageLinkOwner, DeleteWorkpackageLinkOwnerSuccess, DeleteWorkpackageLinkOwnerFailure } from '../actions/workpackage-link.actions';
+import { NodeLink } from '@app/architecture/store/models/node-link.model';
 
 @Injectable()
 export class WorkPackageLinkEffects {
@@ -63,5 +64,35 @@ export class WorkPackageLinkEffects {
           catchError(error => of(new DeleteWorkpackageLinkFailure(error)))
         );
       })
+  );
+
+  @Effect()
+  addWorkpackageLinkOwner$ = this.actions$.pipe(
+    ofType<AddWorkPackageLinkOwner>(WorkPackageLinkActionTypes.AddWorkPackageLinkOwner),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) => {
+      return this.workpackageLinkService.addLinkOwner(payload.workPackageId, payload.nodeLinkId, payload.ownerId).pipe(
+        switchMap((response: NodeLink) => [
+          new AddWorkPackageLinkOwnerSuccess(response),
+          new UpdateWorkPackageLinkSuccess(response)
+        ]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteLinkOwner$ = this.actions$.pipe(
+    ofType<DeleteWorkpackageLinkOwner>(WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwner),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) => {
+      return this.workpackageLinkService.deleteLinkOwner(payload.workPackageId, payload.nodeLinkId, payload.ownerId).pipe(
+        switchMap(data => [
+          new DeleteWorkpackageLinkOwnerSuccess(data),
+          new UpdateWorkPackageLinkSuccess(data)
+        ]),
+        catchError(error => of(new DeleteWorkpackageLinkOwnerFailure(error)))
+      );
+    })
   );
 }

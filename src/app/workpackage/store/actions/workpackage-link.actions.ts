@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
+import { NodeLink } from '@app/architecture/store/models/node-link.model';
 
 export enum WorkPackageLinkActionTypes {
   AddWorkPackageLink = '[WorkPackage] Add link',
@@ -13,7 +14,13 @@ export enum WorkPackageLinkActionTypes {
   DeleteWorkpackageLinkFailure = '[WorkPackage] Delete Link Fail',
   LoadWorkpackageLinkDescendants = '[WorkPackage] Load Link descendants',
   LoadWorkpackageLinkDescendantsSuccess = '[WorkPackage] Load Link descendants success',
-  LoadWorkpackageLinkDescendantsFailure = '[WorkPackage] Load Link descendants failure'
+  LoadWorkpackageLinkDescendantsFailure = '[WorkPackage] Load Link descendants failure',
+  AddWorkPackageLinkOwner = '[WorkPackage] Add link owner',
+  AddWorkPackageLinkOwnerSuccess = '[WorkPackage] Add link owner success',
+  AddWorkPackageLinkOwnerFailure = '[WorkPackage] Add link owner failure',
+  DeleteWorkpackageLinkOwner = '[WorkPackage] Delete Link Owner',
+  DeleteWorkpackageLinkOwnerSuccess = '[WorkPackage] Delete Link Owner Success',
+  DeleteWorkpackageLinkOwnerFailure = '[WorkPackage] Delete Link Owner Fail'
 }
 
 export class AddWorkPackageLink implements Action {
@@ -76,6 +83,36 @@ export class DeleteWorkpackageLinkFailure implements Action {
   constructor(public payload: any) { }
 }
 
+export class AddWorkPackageLinkOwner implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkOwner;
+  constructor(public payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) {}
+}
+
+export class AddWorkPackageLinkOwnerSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkOwnerSuccess;
+  constructor(public payload: NodeLink) {}
+}
+
+export class AddWorkPackageLinkOwnerFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkOwnerFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkpackageLinkOwner implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwner;
+  constructor(public payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) { }
+}
+
+export class DeleteWorkpackageLinkOwnerSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwnerSuccess;
+  constructor(public payload: NodeLink) { }
+}
+
+export class DeleteWorkpackageLinkOwnerFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwnerFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
 export type WorkPackageLinkActionsUnion =
   | AddWorkPackageLink
   | AddWorkPackageLinkSuccess
@@ -88,5 +125,11 @@ export type WorkPackageLinkActionsUnion =
   | DeleteWorkpackageLinkFailure
   | UpdateWorkPackageLink
   | UpdateWorkPackageLinkSuccess
-  | UpdateWorkPackageLinkFailure;
+  | UpdateWorkPackageLinkFailure
+  | AddWorkPackageLinkOwner
+  | AddWorkPackageLinkOwnerSuccess
+  | AddWorkPackageLinkOwnerFailure
+  | DeleteWorkpackageLinkOwner
+  | DeleteWorkpackageLinkOwnerSuccess
+  | DeleteWorkpackageLinkOwnerFailure;
 
