@@ -34,7 +34,10 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
-import { DeleteWorkpackageLinkSuccess, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
+import {
+  DeleteWorkpackageLinkSuccess,
+  WorkPackageLinkActionTypes
+} from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
   AddWorkpackageNodeOwner,
@@ -53,7 +56,11 @@ import {
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetail, WorkPackageEntity, WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
+import {
+  WorkPackageDetail,
+  WorkPackageEntity,
+  WorkPackageNodeScopes
+} from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackages,
@@ -292,10 +299,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, workpackages  } = fil;
+        const { filterLevel, id, scope, parentName, workpackages } = fil;
+        const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
         if (filterLevel) {
-          this.selectedWorkpackages = workpackages;
-          this.setNodesLinks(filterLevel, id, workpackages, scope);
+          this.selectedWorkpackages = workpackagesArray;
+          this.setNodesLinks(filterLevel, id, workpackagesArray, scope);
         }
         this.parentName = parentName ? parentName : null;
       }
