@@ -1,8 +1,15 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AddTeamApiResponse, GetTeamApiResponse, GetTeamEntitiesApiResponse,
-  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse, MembersEntity } from '../store/models/team.model';
+import {
+  AddTeamApiResponse,
+  GetTeamApiResponse,
+  GetTeamEntitiesApiResponse,
+  TeamDetails,
+  TeamEntitiesHttpParams,
+  UpdateTeamApiResponse,
+  MembersEntity
+} from '../store/models/team.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -10,12 +17,11 @@ const httpOptions = {
 
 @Injectable()
 export class TeamService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getTeams(queryParams: TeamEntitiesHttpParams): Observable<GetTeamEntitiesApiResponse> {
     const params = this.toHttpParams(queryParams);
-    return this.http.get<GetTeamEntitiesApiResponse>(`/teams`, {params: params});
+    return this.http.get<GetTeamEntitiesApiResponse>(`/teams`, { params: params });
   }
 
   getTeam(id: string): Observable<GetTeamApiResponse> {
@@ -23,11 +29,11 @@ export class TeamService {
   }
 
   addTeam(data: TeamDetails): Observable<AddTeamApiResponse> {
-    return this.http.post<AddTeamApiResponse>(`/teams`, {data: data}, httpOptions);
+    return this.http.post<AddTeamApiResponse>(`/teams`, { data: data }, httpOptions);
   }
 
   updateTeam(id: string, data: TeamDetails): Observable<UpdateTeamApiResponse> {
-    return this.http.put<UpdateTeamApiResponse>(`/teams/${id}`, {data: data}, httpOptions);
+    return this.http.put<UpdateTeamApiResponse>(`/teams/${id}`, { data: data }, httpOptions);
   }
 
   deleteTeam(id: string): Observable<any> {
@@ -35,7 +41,7 @@ export class TeamService {
   }
 
   addMembers(data: MembersEntity, teamId: string, userId: string): Observable<any> {
-    return this.http.post<any>(`/teams/${teamId}/members/${userId}`, {data: data}, httpOptions);
+    return this.http.post<any>(`/teams/${teamId}/members/${userId}`, { data: data }, httpOptions);
   }
 
   deleteMembers(teamId: string, userId): Observable<any> {
@@ -44,7 +50,6 @@ export class TeamService {
 
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
-    return Object.getOwnPropertyNames(obj)
-        .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
+    return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());
   }
 }

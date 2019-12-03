@@ -18,9 +18,7 @@ import { ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
   styleUrls: ['./scope-modal.component.scss'],
   providers: [ScopesDetailService, ScopesValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class ScopeModalComponent implements OnInit {
-
   isEditable = true;
   modalMode = true;
   teams$: Observable<TeamEntity[]>;
@@ -31,7 +29,8 @@ export class ScopeModalComponent implements OnInit {
     private store: Store<TeamState>,
     private scopesDetailService: ScopesDetailService,
     public dialogRef: MatDialogRef<ScopeModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   ngOnInit() {
     this.store.dispatch(new LoadTeams({}));
@@ -45,8 +44,8 @@ export class ScopeModalComponent implements OnInit {
   onSave() {
     this.actions.pipe(ofType(ScopeActionTypes.AddScopeFailure)).subscribe((error: any) => {
       alert('ERROR: ' + error.payload);
-    })
-    
+    });
+
     this.dialogRef.close({ scope: this.scopesDetailForm.value });
   }
 

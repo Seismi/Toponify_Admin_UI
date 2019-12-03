@@ -7,12 +7,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { NodeEffects } from './store/effects/node.effects';
 
 @NgModule({
-    imports: [
-        StoreModule.forFeature('nodeFeature', reducer),
-        EffectsModule.forFeature([NodeEffects])
-    ],
-    exports: [],
-    declarations: [],
-    providers: [NodeService],
+  imports: [StoreModule.forFeature('nodeFeature', reducer), EffectsModule.forFeature([NodeEffects])],
+  exports: [],
+  declarations: [],
+  providers: [NodeService]
 })
-export class NodeModule { }
+export class NodeModule {}

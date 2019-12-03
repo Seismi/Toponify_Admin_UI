@@ -3,7 +3,13 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { State as ReportState } from '../../store/reducers/report.reducer';
 import { select, Store } from '@ngrx/store';
-import { LoadReport, DeleteReport, UpdateReport, AddOwner, DeleteOwner } from '@app/report-library/store/actions/report.actions';
+import {
+  LoadReport,
+  DeleteReport,
+  UpdateReport,
+  AddOwner,
+  DeleteOwner
+} from '@app/report-library/store/actions/report.actions';
 import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
 import { FormGroup } from '@angular/forms';
@@ -74,7 +80,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         const edit = workpackages.map(item => item.edit);
         const workPackageId = workpackages.map(item => item.id);
         this.workpackageId = workPackageId[0];
-        (edit.length) ? this.workPackageIsEditable = true : this.workPackageIsEditable = false;
+        edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
       })
     );
   }
@@ -109,17 +115,19 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     this.isEditable = false;
     this.selectedOwnerIndex = null;
     this.selectedOwner = false;
-    this.store.dispatch(new UpdateReport({
-      workPackageId: this.workpackageId, 
-      reportId: this.reportId, 
-      request: {
-        data: {
-          id: this.reportId,
-          name: this.reportDetailForm.value.name,
-          description: this.reportDetailForm.value.description
+    this.store.dispatch(
+      new UpdateReport({
+        workPackageId: this.workpackageId,
+        reportId: this.reportId,
+        request: {
+          data: {
+            id: this.reportId,
+            name: this.reportDetailForm.value.name,
+            description: this.reportDetailForm.value.description
+          }
         }
-      }
-    }))
+      })
+    );
   }
 
   onEditReport() {
@@ -141,12 +149,14 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
-      if(data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteReport({
-          workPackageId: this.workpackageId, 
-          reportId: this.reportId
-        }))
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(
+          new DeleteReport({
+            workPackageId: this.workpackageId,
+            reportId: this.reportId
+          })
+        );
       }
     });
   }
@@ -159,11 +169,13 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.owner) {
-        this.store.dispatch(new AddOwner({
-          workPackageId: this.workpackageId,
-          reportId: this.reportId,
-          ownerId: data.owner.id
-        }))
+        this.store.dispatch(
+          new AddOwner({
+            workPackageId: this.workpackageId,
+            reportId: this.reportId,
+            ownerId: data.owner.id
+          })
+        );
       }
       this.isEditable = true;
     });
@@ -186,17 +198,18 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteOwner({
-          workPackageId: this.workpackageId, 
-          reportId: this.reportId, 
-          ownerId: this.ownerId
-        }))
+        this.store.dispatch(
+          new DeleteOwner({
+            workPackageId: this.workpackageId,
+            reportId: this.reportId,
+            ownerId: this.ownerId
+          })
+        );
         this.selectedOwner = false;
         this.isEditable = true;
       }
     });
   }
-
 }

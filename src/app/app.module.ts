@@ -15,10 +15,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/shared-service';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CustomSerializer } from '@app/core/custom-serializer';
+import { MatSnackBarModule } from '@angular/material';
 
 @NgModule({
   imports: [
     BrowserModule,
+    MatSnackBarModule,
     AppRoutingModule,
     AuthModule,
     BrowserAnimationsModule,
