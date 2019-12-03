@@ -6,19 +6,20 @@ import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as LayoutActions from '../actions/layout.actions';
 import { LayoutActionTypes } from '../actions/layout.actions';
-import { AddLayoutApiResponse, GetLayoutApiResponse, GetLayoutEntitiesApiResponse,
-  LayoutDetails, LayoutEntitiesHttpParams, UpdateLayoutApiResponse } from '../models/layout.model';
+import {
+  AddLayoutApiResponse,
+  GetLayoutApiResponse,
+  GetLayoutEntitiesApiResponse,
+  LayoutDetails,
+  LayoutEntitiesHttpParams,
+  UpdateLayoutApiResponse
+} from '../models/layout.model';
 import * as ScopeActions from '@app/scope/store/actions/scope.actions';
 import { SharedService } from '@app/services/shared-service';
 
-
 @Injectable()
 export class LayoutEffects {
-  constructor(
-    private sharedService: SharedService,
-    private actions$: Actions,
-    private layoutService: LayoutService
-  ) {}
+  constructor(private sharedService: SharedService, private actions$: Actions, private layoutService: LayoutService) {}
 
   @Effect()
   loadLayouts$ = this.actions$.pipe(
@@ -66,7 +67,7 @@ export class LayoutEffects {
   updateLayout$ = this.actions$.pipe(
     ofType<LayoutActions.UpdateLayout>(LayoutActionTypes.UpdateLayout),
     map(action => action.payload),
-    switchMap((payload: {id: string, data: LayoutDetails}) => {
+    switchMap((payload: { id: string; data: LayoutDetails }) => {
       return this.layoutService.updateLayout(payload.id, payload.data).pipe(
         switchMap((resp: UpdateLayoutApiResponse) => [new LayoutActions.UpdateLayoutSuccess(resp)]),
         catchError((error: HttpErrorResponse) => of(new LayoutActions.UpdateLayoutFailure(error)))

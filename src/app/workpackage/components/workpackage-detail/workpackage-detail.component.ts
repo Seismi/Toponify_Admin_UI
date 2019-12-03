@@ -1,6 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TeamEntityOrOwnersEntityOrApproversEntity, WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import {
+  TeamEntityOrOwnersEntityOrApproversEntity,
+  WorkPackageDetail,
+  WorkPackageEntity
+} from '@app/workpackage/store/models/workpackage.models';
 import { TeamEntity } from '@app/settings/store/models/user.model';
 
 @Component({
@@ -8,13 +12,12 @@ import { TeamEntity } from '@app/settings/store/models/user.model';
   templateUrl: './workpackage-detail.component.html',
   styleUrls: ['./workpackage-detail.component.scss']
 })
-export class WorkPackageDetailComponent  {
-
-  public disableStatusInput: boolean = true;
+export class WorkPackageDetailComponent {
+  public disableStatusInput = true;
 
   @Input() group: FormGroup;
-  @Input() isEditable: boolean = false;
-  @Input() modalMode: boolean = false;
+  @Input() isEditable = false;
+  @Input() modalMode = false;
   @Input() owners: TeamEntity[];
   @Input() baseline: WorkPackageEntity[];
   @Input() baselineTableData: WorkPackageDetail;
@@ -66,7 +69,6 @@ export class WorkPackageDetailComponent  {
   @Output()
   supersede = new EventEmitter<void>();
 
-
   onSave(): void {
     this.saveWorkpackage.emit();
   }
@@ -74,7 +76,7 @@ export class WorkPackageDetailComponent  {
   onEdit(): void {
     this.editWorkPackage.emit();
   }
-  
+
   onCancel(): void {
     this.cancel.emit();
   }

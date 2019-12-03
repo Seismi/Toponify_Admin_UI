@@ -9,7 +9,6 @@ import { SharedService } from '@app/services/shared-service';
   styleUrls: ['./viewers-dropdown.component.scss']
 })
 export class ViewersDropdownComponent {
-
   teams: TeamEntity[];
   viewers = new FormControl();
 
@@ -21,12 +20,12 @@ export class ViewersDropdownComponent {
   constructor(private sharedService: SharedService) {}
 
   onSelect(event, viewer) {
-    if(event.source.selected) {
-      this.sharedService.selectedViewers.push(viewer)
+    if (event.source.selected) {
+      this.sharedService.selectedViewers.push(viewer);
     }
-    if(!event.source.selected) {
-      let index = this.sharedService.selectedViewers.indexOf(viewer);
-      if(index > -1) {
+    if (!event.source.selected) {
+      const index = this.sharedService.selectedViewers.indexOf(viewer);
+      if (index > -1) {
         this.sharedService.selectedViewers.splice(index, 1);
       }
     }

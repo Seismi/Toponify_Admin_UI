@@ -6,23 +6,19 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { UserService } from '../../services/user.service';
 import * as UserActions from '../actions/user.actions';
 import { UserActionTypes } from '../actions/user.actions';
-import { 
-  UserDetails, 
-  UserEntitiesHttpParams, 
-  UsersApiResponse, 
+import {
+  UserDetails,
+  UserEntitiesHttpParams,
+  UsersApiResponse,
   UserDetailResponse,
   UserRolesApiResponse,
   UpdateUserApiResponse,
   UserPassword
 } from '../models/user.model';
 
-
 @Injectable()
 export class UserEffects {
-  constructor(
-    private actions$: Actions,
-    private userService: UserService
-  ) {}
+  constructor(private actions$: Actions, private userService: UserService) {}
 
   @Effect()
   loadUsers$ = this.actions$.pipe(
@@ -75,7 +71,7 @@ export class UserEffects {
   updateUser$ = this.actions$.pipe(
     ofType<UserActions.UpdateUser>(UserActionTypes.UpdateUser),
     map(action => action.payload),
-    switchMap((payload: {id: string, data: UserDetails}) => {
+    switchMap((payload: { id: string; data: UserDetails }) => {
       return this.userService.updateUser(payload.id, payload.data).pipe(
         switchMap((response: UpdateUserApiResponse) => [new UserActions.UpdateUserSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UserActions.UpdateUserFailure(error)))

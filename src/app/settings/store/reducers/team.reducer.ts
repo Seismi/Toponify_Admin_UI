@@ -22,7 +22,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: TeamActionsUnion): State {
   switch (action.type) {
-
     case TeamActionTypes.LoadTeams: {
       return {
         ...initialState,
@@ -36,7 +35,7 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
         loading: false,
         entities: action.payload.data,
         links: action.payload.links,
-        page: action.payload.page,
+        page: action.payload.page
       };
     }
 
@@ -111,7 +110,6 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
         loading: false
       };
     }
-
 
     case TeamActionTypes.DeleteTeamSuccess: {
       return {

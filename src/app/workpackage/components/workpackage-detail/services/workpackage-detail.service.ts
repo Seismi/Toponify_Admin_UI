@@ -4,7 +4,6 @@ import { WorkPackageValidatorService } from './workpackage-detail-validator.serv
 
 @Injectable()
 export class WorkPackageDetailService {
-
   public workPackageDetailForm: FormGroup;
 
   constructor(private fb: FormBuilder, private workPackageValidatorService: WorkPackageValidatorService) {

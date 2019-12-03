@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, Renderer, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { DraggerPosition } from './dragger/dragger.component';
 
 @Component({
@@ -7,8 +7,8 @@ import { DraggerPosition } from './dragger/dragger.component';
   styleUrls: ['./model-sidebar.component.scss']
 })
 export class ModelSidebarComponent implements OnInit, OnDestroy {
-  @Input() minWidth  = 300;
-  @Input() maxWidth  = 400;
+  @Input() minWidth = 300;
+  @Input() maxWidth = 400;
   @Input() isLast: boolean;
 
   resizing = false;
@@ -17,7 +17,7 @@ export class ModelSidebarComponent implements OnInit, OnDestroy {
     return this.isLast ? DraggerPosition.right : DraggerPosition.left;
   }
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer) {}
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
     this.setElementWidth(this.minWidth);
@@ -41,7 +41,6 @@ export class ModelSidebarComponent implements OnInit, OnDestroy {
     const newWidth = this.scaleDependOnPosition(event.clientX);
     // tslint:disable-next-line:no-unused-expression
     this.isResizable(newWidth) && this.setElementWidth(newWidth);
-
   }
 
   handleMouseUp() {
@@ -62,10 +61,6 @@ export class ModelSidebarComponent implements OnInit, OnDestroy {
   }
 
   private setElementWidth(width: number) {
-    this.renderer.setElementStyle(
-      this.elementRef.nativeElement,
-      'width',
-      `${width}px`
-    );
+    this.renderer.setStyle(this.elementRef.nativeElement, 'width', `${width}px`);
   }
 }

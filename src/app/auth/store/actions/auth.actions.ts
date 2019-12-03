@@ -7,7 +7,7 @@ export enum AuthActionTypes {
   LoginSuccess = '[Auth] Login Success',
   LoginFailure = '[Auth] Login Failure',
   LoginRedirect = '[Auth] Login Redirect',
-  Logout = '[Auth] Logout',
+  Logout = '[Auth] Logout'
 }
 
 export class Login implements Action {
@@ -17,14 +17,13 @@ export class Login implements Action {
 
 export class LoginSuccess implements Action {
   readonly type = AuthActionTypes.LoginSuccess;
-  constructor(public payload: string ) {}
+  constructor(public payload: string) {}
 }
 
 export class LoginFailure implements Action {
   readonly type = AuthActionTypes.LoginFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class LoginRedirect implements Action {
   readonly type = AuthActionTypes.LoginRedirect;
@@ -35,10 +34,4 @@ export class Logout implements Action {
   readonly type = AuthActionTypes.Logout;
 }
 
-export type AuthActionsUnion =
-  | Login
-  | LoginSuccess
-  | LoginFailure
-  | LoginRedirect
-  | Logout;
-
+export type AuthActionsUnion = Login | LoginSuccess | LoginFailure | LoginRedirect | Logout;

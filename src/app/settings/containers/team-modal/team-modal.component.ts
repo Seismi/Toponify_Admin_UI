@@ -12,7 +12,6 @@ import { TeamDetails } from '@app/settings/store/models/team.model';
   providers: [TeamDetailService, TeamValidatorService]
 })
 export class TeamModalComponent implements OnInit {
-
   teamModal = true;
   isEditable = true;
   team: TeamDetails;
@@ -20,10 +19,10 @@ export class TeamModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<TeamModalComponent>,
     private teamDetailService: TeamDetailService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.team = data;
-    }
-  
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.team = data;
+  }
 
   get teamDetailForm(): FormGroup {
     return this.teamDetailService.teamDetailForm;
@@ -32,7 +31,7 @@ export class TeamModalComponent implements OnInit {
   ngOnInit() {
     this.teamDetailService.teamDetailForm.patchValue({
       type: 'team'
-    })
+    });
   }
 
   onSave(data: any) {
@@ -42,9 +41,7 @@ export class TeamModalComponent implements OnInit {
     this.dialogRef.close({ team: this.teamDetailForm.value });
   }
 
-
   onCancel() {
     this.dialogRef.close();
   }
-
 }

@@ -5,16 +5,16 @@ import { EffectsModule } from '@ngrx/effects';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule,
-  MatPaginatorModule,
-  MatSortModule,
-  MatTableModule,
   MatDialogModule,
   MatFormFieldModule,
-  MatSelectModule,
-  MatInputModule,
   MatIconModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule,
   MatTabsModule
-  } from '@angular/material';
+} from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
 import { RadiosTableComponent } from './components/radio-table/radio-table.component';
@@ -48,7 +48,6 @@ import { RadioListModalComponent } from './containers/radio-list-modal/radio-lis
 import { RadioModule } from '@app/radio/radio.module';
 import { WorkPackageTreeComponent } from './components/workpackage-tree/workpackage-tree.component';
 import { WorkPackageRightSideComponent } from './components/right-side/right-side.component';
-
 
 @NgModule({
   imports: [
@@ -103,10 +102,6 @@ import { WorkPackageRightSideComponent } from './components/right-side/right-sid
     OwnersModalComponent,
     RadioListModalComponent
   ],
-  providers: [
-    WorkPackageService,
-    WorkPackageNodesService,
-    WorkPackageLinksService
-  ],
+  providers: [WorkPackageService, WorkPackageNodesService, WorkPackageLinksService]
 })
-export class WorkPackageModule { }
+export class WorkPackageModule {}

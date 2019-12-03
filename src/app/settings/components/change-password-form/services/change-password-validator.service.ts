@@ -3,18 +3,17 @@ import { FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angu
 
 @Injectable()
 export class ChangeUserPasswordValidatorService {
+  constructor() {}
 
-  constructor() { }
-
-   // Password match validator
+  // Password match validator
   static MatchPassword(AC: AbstractControl) {
     const newPassword = AC.get('newPassword').value;
     const confirmNewPassword = AC.get('confirmNewPassword').value;
-     if(newPassword != confirmNewPassword) {
-        AC.get('confirmNewPassword').setErrors( {MatchPassword: true} );
-     } else {
-        return null;
-     }
+    if (newPassword !== confirmNewPassword) {
+      AC.get('confirmNewPassword').setErrors({ MatchPassword: true });
+    } else {
+      return null;
+    }
   }
 
   // Validate all form fields
@@ -29,18 +28,17 @@ export class ChangeUserPasswordValidatorService {
       }
     });
   }
-
 }
 
 // Password strength validator
-export const PasswordStrengthValidator = function (control: AbstractControl): ValidationErrors | null {
+export const PasswordStrengthValidator = function(control: AbstractControl): ValidationErrors | null {
   const value: string = control.value || '';
 
   if (!value) {
     return null;
   }
 
-  const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/
+  const specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
   if (specialCharacters.test(value) === false) {
     return { passwordStrength: `Password should have a special character` };
   }
@@ -56,4 +54,4 @@ export const PasswordStrengthValidator = function (control: AbstractControl): Va
   }
 
   return null;
-}
+};

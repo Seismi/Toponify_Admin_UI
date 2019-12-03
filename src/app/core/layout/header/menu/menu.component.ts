@@ -7,7 +7,6 @@ import { AuthService } from '@app/auth/services/auth.service';
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
-
   constructor(private authService: AuthService) {}
 
   ngOnInit() {}
@@ -15,5 +14,4 @@ export class MenuComponent implements OnInit {
   onLogOut() {
     this.authService.logout();
   }
-
 }

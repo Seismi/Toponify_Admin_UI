@@ -1,40 +1,48 @@
 <form [formGroup]="group">
-    <!-- Name -->
-    <div class="form-group">
-        <label>Name</label>
-        <input type="text" class="form-control" formControlName="name"
-            [ngClass]="{ disabled: !isEditable, 'is-invalid': (!group.controls['name'].valid && group.controls['name'].touched)}">
-        <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
-            <div>This field is required!</div>
-        </div>
+  <!-- Name -->
+  <div class="form-group">
+    <label>Name</label>
+    <input
+      type="text"
+      class="form-control"
+      formControlName="name"
+      [ngClass]="{
+        disabled: !isEditable,
+        'is-invalid': !group.controls['name'].valid && group.controls['name'].touched
+      }"
+    />
+    <div *ngIf="group.controls['name'].errors" class="invalid-feedback">
+      <div>This field is required!</div>
     </div>
+  </div>
 
-    <!-- Owners Dropdown -->
-    <smi-owners-dropdown *ngIf="modalMode" [data]="data"></smi-owners-dropdown>
+  <!-- Owners Dropdown -->
+  <smi-owners-dropdown *ngIf="modalMode" [data]="data"></smi-owners-dropdown>
 
-    <!-- Viewers Dropdown-->
-    <smi-viewers-dropdown *ngIf="modalMode" [data]="data"></smi-viewers-dropdown>
+  <!-- Viewers Dropdown-->
+  <smi-viewers-dropdown *ngIf="modalMode" [data]="data"></smi-viewers-dropdown>
 
-    <div class="row" *ngIf="!modalMode">
-        <div class="col">
-            <smi-owners-list [data]="ownersList"></smi-owners-list>
-        </div>
-        <div class="col">
-            <smi-viewers-list [data]="viewersList"></smi-viewers-list>
-        </div>
-    </div><br>
-
-    <!-- Form actions -->
-    <div class="form-actions" *ngIf="!modalMode">
-        <div *ngIf="!isEditable">
-            <button type="button" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
-            <button type="button" mat-raised-button color="primary">Open</button>
-            <button type="button" mat-raised-button color="primary">Copy</button>
-            <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
-        </div>
-        <div *ngIf="isEditable">
-            <button mat-flat-button color="primary" (click)="onSave()">Save</button>
-            <button mat-flat-button (click)="onCancel()">Cancel</button>
-        </div>
+  <div class="row" *ngIf="!modalMode">
+    <div class="col">
+      <smi-owners-list [data]="ownersList"></smi-owners-list>
     </div>
+    <div class="col">
+      <smi-viewers-list [data]="viewersList"></smi-viewers-list>
+    </div>
+  </div>
+  <br />
+
+  <!-- Form actions -->
+  <div class="form-actions" *ngIf="!modalMode">
+    <div *ngIf="!isEditable">
+      <button type="button" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+      <button type="button" mat-raised-button color="primary">Open</button>
+      <button type="button" mat-raised-button color="primary">Copy</button>
+      <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+    </div>
+    <div *ngIf="isEditable">
+      <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+      <button mat-flat-button (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
 </form>

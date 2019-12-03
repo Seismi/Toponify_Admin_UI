@@ -7,7 +7,5 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./change-password-form.component.scss']
 })
 export class ChangePasswordFormComponent {
-
   @Input() group: FormGroup;
-
 }

@@ -39,16 +39,16 @@ import { RelatedAttributesModalComponent } from '../related-attributes-modal/rel
 export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription[] = [];
   public attribute: AttributeDetail;
-  public isEditable: boolean = false;
+  public isEditable = false;
   public showOrHideRightPane = false;
   public selectedRightTab: number;
   public attributeId: string;
   public workpackageId: string;
   public selectedOwnerIndex: string | null;
-  public selectedOwner: boolean = false;
+  public selectedOwner = false;
   public workPackageIsEditable: boolean;
   public selectedRelatedIndex: string | null;
-  public selectAttribute: boolean = false;
+  public selectAttribute = false;
   public relatedAttributeId: string;
 
   constructor(
@@ -63,8 +63,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions.push(
       this.route.params.subscribe(params => {
-        const id = params['attributeId'];
-        this.attributeId = id;
+        this.attributeId = params['attributeId'];
         this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
           this.workpackageId = workPackageIds[0];

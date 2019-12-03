@@ -1,15 +1,15 @@
 table {
-    width: 100%;
-    border: solid 1px #ddd;
+  width: 100%;
+  border: solid 1px #ddd;
 }
 
 .mat-row {
-    cursor: pointer;
-    &:hover {
-        background-color: #efefef;
-    }
+  cursor: pointer;
+  &:hover {
+    background-color: #efefef;
+  }
 }
 
 .highlight {
-    background-color: #efefef;
+  background-color: #efefef;
 }

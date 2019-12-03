@@ -1,14 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { 
-  UsersApiResponse, 
-  UserDetails, 
-  UserEntitiesHttpParams, 
-  User, 
+import {
+  UsersApiResponse,
+  UserDetails,
+  UserEntitiesHttpParams,
+  User,
   RolesEntity,
   UserPassword
 } from '../models/user.model';
-
 
 export enum UserActionTypes {
   LoadUsers = '[User] Load Users',
@@ -42,67 +41,63 @@ export enum UserActionTypes {
 
 export class LoadUsers implements Action {
   readonly type = UserActionTypes.LoadUsers;
-  constructor(public payload: UserEntitiesHttpParams) { }
+  constructor(public payload: UserEntitiesHttpParams) {}
 }
 
 export class LoadUsersSuccess implements Action {
   readonly type = UserActionTypes.LoadUsersSuccess;
-  constructor(public payload: UsersApiResponse) { }
+  constructor(public payload: UsersApiResponse) {}
 }
 
 export class LoadUsersFailure implements Action {
   readonly type = UserActionTypes.LoadUsersFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class LoadUser implements Action {
   readonly type = UserActionTypes.LoadUser;
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export class LoadUserSuccess implements Action {
   readonly type = UserActionTypes.LoadUserSuccess;
-  constructor(public payload: User) { }
+  constructor(public payload: User) {}
 }
 
 export class LoadUserFailure implements Action {
   readonly type = UserActionTypes.LoadUserFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class AddUser implements Action {
   readonly type = UserActionTypes.AddUser;
-  constructor(public payload: UserDetails) { }
+  constructor(public payload: UserDetails) {}
 }
 
 export class AddUserSuccess implements Action {
   readonly type = UserActionTypes.AddUserSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class AddUserFailure implements Action {
   readonly type = UserActionTypes.AddUserFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class UpdateUser implements Action {
   readonly type = UserActionTypes.UpdateUser;
-  constructor(public payload: {id: string, data: UserDetails}) { }
+  constructor(public payload: { id: string; data: UserDetails }) {}
 }
 
 export class UpdateUserSuccess implements Action {
   readonly type = UserActionTypes.UpdateUserSuccess;
-  constructor(public payload: User) { }
+  constructor(public payload: User) {}
 }
 
 export class UpdateUserFailure implements Action {
   readonly type = UserActionTypes.UpdateUserFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class DeleteUser implements Action {
   readonly type = UserActionTypes.DeleteUser;
@@ -119,36 +114,34 @@ export class DeleteUserFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class LoadUserRoles implements Action {
   readonly type = UserActionTypes.LoadUserRoles;
-  constructor() { }
+  constructor() {}
 }
 
 export class LoadUserRolesSuccess implements Action {
   readonly type = UserActionTypes.LoadUserRolesSuccess;
-  constructor(public payload: RolesEntity[]) { }
+  constructor(public payload: RolesEntity[]) {}
 }
 
 export class LoadUserRolesFailure implements Action {
   readonly type = UserActionTypes.LoadUserRolesFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class UpdateUserPassword implements Action {
   readonly type = UserActionTypes.UpdateUserPassword;
-  constructor(public payload: UserPassword) { }
+  constructor(public payload: UserPassword) {}
 }
 
 export class UpdateUserPasswordSuccess implements Action {
   readonly type = UserActionTypes.UpdateUserPasswordSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class UpdateUserPasswordFailure implements Action {
   readonly type = UserActionTypes.UpdateUserPasswordFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
 export type UserActionsUnion =

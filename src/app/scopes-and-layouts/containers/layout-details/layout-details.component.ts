@@ -19,7 +19,6 @@ import { MatDialog } from '@angular/material';
   providers: [LayoutsDetailService, LayoutsValidatorService]
 })
 export class LayoutDetailsComponent implements OnInit, OnDestroy {
-
   subscriptions: Subscription[] = [];
   layout: LayoutDetails;
   layoutId: string;
@@ -30,26 +29,30 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
     private layoutsDetailService: LayoutsDetailService,
     private route: ActivatedRoute,
     private store: Store<LayoutState>
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.subscriptions.push(this.route.params.subscribe( params => {
-      const id = params['layoutId'];
-      this.layoutId = id;
-      if (!this.layout || this.layout.id !== id) {
-        this.store.dispatch(new LoadLayout(id));
-      }
-    }));
-    this.subscriptions.push(this.store.pipe(select(getLayoutSelected)).subscribe(layout => {
-      if(layout) {
-        this.layout = layout;
-        this.layoutsDetailService.layoutsDetailForm.patchValue({
-          name: layout.name,
-          owners: layout.owners,
-          viewers: layout.viewers
-        });
-      }
-    }))
+    this.subscriptions.push(
+      this.route.params.subscribe(params => {
+        const id = params['layoutId'];
+        this.layoutId = id;
+        if (!this.layout || this.layout.id !== id) {
+          this.store.dispatch(new LoadLayout(id));
+        }
+      })
+    );
+    this.subscriptions.push(
+      this.store.pipe(select(getLayoutSelected)).subscribe(layout => {
+        if (layout) {
+          this.layout = layout;
+          this.layoutsDetailService.layoutsDetailForm.patchValue({
+            name: layout.name,
+            owners: layout.owners,
+            viewers: layout.viewers
+          });
+        }
+      })
+    );
   }
 
   get layoutsDetailForm(): FormGroup {
@@ -61,17 +64,19 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSaveLayout() {
-    this.store.dispatch(new UpdateLayout({
-      id: this.layoutId,
-      data: {
+    this.store.dispatch(
+      new UpdateLayout({
         id: this.layoutId,
-        name: this.layoutsDetailForm.value.name,
-        scope: {
-          id: this.layoutsDetailService.scopeId,
-          name: this.layoutsDetailService.scopeName
+        data: {
+          id: this.layoutId,
+          name: this.layoutsDetailForm.value.name,
+          scope: {
+            id: this.layoutsDetailService.scopeId,
+            name: this.layoutsDetailService.scopeName
+          }
         }
-      }
-    }))
+      })
+    );
   }
 
   onDeleteLayout() {
@@ -83,7 +88,7 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteLayout(this.layoutId));
         this.router.navigate(['/scopes-and-layouts/' + this.layout.scope.id]);

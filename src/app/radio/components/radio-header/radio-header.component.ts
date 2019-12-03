@@ -5,13 +5,11 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
   templateUrl: './radio-header.component.html',
   styleUrls: ['./radio-header.component.scss']
 })
-export class RadioHeaderComponent { 
-
+export class RadioHeaderComponent {
   @Input() status: string;
 
   @Output() filter = new EventEmitter<void>();
   @Output() resetFilter = new EventEmitter<void>();
-
 
   onFilter(): void {
     this.filter.emit();
@@ -20,5 +18,4 @@ export class RadioHeaderComponent {
   onReset(): void {
     this.resetFilter.emit();
   }
-
 }

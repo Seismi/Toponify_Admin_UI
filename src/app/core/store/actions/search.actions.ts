@@ -10,18 +10,17 @@ export enum SearchActionTypes {
 
 export class Search implements Action {
   readonly type = SearchActionTypes.Search;
-  constructor(public payload?: any) { }
+  constructor(public payload?: any) {}
 }
 
 export class SearchSuccess implements Action {
   readonly type = SearchActionTypes.SearchSuccess;
-  constructor(public payload: SearchApiResponse) { }
+  constructor(public payload: SearchApiResponse) {}
 }
 
 export class SearchFailure implements Action {
   readonly type = SearchActionTypes.SearchFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export type SearchActionsUnion = Search | SearchSuccess | SearchFailure;

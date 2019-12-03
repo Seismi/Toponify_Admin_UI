@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { Observable, Subscription } from 'rxjs';
@@ -6,11 +6,19 @@ import { FormGroup } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { MatDialog } from '@angular/material';
 import { UserModalComponent } from '../user-modal/user-modal.component';
-import { State as UserState } from '../../store/reducers/user.reducer'
+import { State as UserState } from '../../store/reducers/user.reducer';
 import { User, UserDetails } from '@app/settings/store/models/user.model';
 import { LoadUsers, UpdateUser, AddUser, UpdateUserPassword } from '@app/settings/store/actions/user.actions';
 import { getUsers, getLoading, getUserById } from '@app/settings/store/selectors/user.selector';
-import { LoadTeams, LoadTeam, AddTeam, UpdateTeam, DeleteTeam, DeleteMember, AddMember } from '@app/settings/store/actions/team.actions';
+import {
+  LoadTeams,
+  LoadTeam,
+  AddTeam,
+  UpdateTeam,
+  DeleteTeam,
+  DeleteMember,
+  AddMember
+} from '@app/settings/store/actions/team.actions';
 import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '../../store/reducers/team.reducer';
 import { getTeamEntities, getTeamSelected } from '@app/settings/store/selectors/team.selector';
@@ -30,9 +38,7 @@ import { getMyProfile } from '@app/home/store/selectors/home.selectors';
   styleUrls: ['settings.component.scss'],
   providers: [MyUserFormService, MyUserFormValidatorService, TeamDetailService, TeamValidatorService]
 })
-
-export class SettingsComponent implements OnInit {
-
+export class SettingsComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean>;
   users$: Observable<User[]>;
   teams$: Observable<TeamEntity[]>;
@@ -58,7 +64,7 @@ export class SettingsComponent implements OnInit {
     private teamDetailService: TeamDetailService,
     private myUserFormService: MyUserFormService,
     public dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loading$ = this.userStore.pipe(select(getLoading));
@@ -70,12 +76,14 @@ export class SettingsComponent implements OnInit {
     this.teams$ = this.teamStore.pipe(select(getTeamEntities));
 
     this.homeStore.dispatch(new LoadMyProfile());
-    this.subscriptions.push(this.homeStore.pipe(select(getMyProfile)).subscribe(data => {
-      this.user = data;
-      if(data) {
-        this.myUserFormService.myUserForm.patchValue({...data})
-      }
-    }))
+    this.subscriptions.push(
+      this.homeStore.pipe(select(getMyProfile)).subscribe(data => {
+        this.user = data;
+        if (data) {
+          this.myUserFormService.myUserForm.patchValue({ ...data });
+        }
+      })
+    );
   }
 
   get myUserForm(): FormGroup {
@@ -93,7 +101,7 @@ export class SettingsComponent implements OnInit {
   onSaveMyUser() {
     this.isActive = false;
     this.editMode = false;
-    this.userStore.dispatch(new UpdateUser({id: this.user.id, data: this.myUserForm.value}));
+    this.userStore.dispatch(new UpdateUser({ id: this.user.id, data: this.myUserForm.value }));
   }
 
   onEditMyUser() {
@@ -107,13 +115,15 @@ export class SettingsComponent implements OnInit {
       width: '400px'
     });
 
-    dialogRef.beforeClosed().subscribe((data) => {
-      if(data && data) {
-        this.userStore.dispatch(new UpdateUserPassword({
-          userId: this.user.id,
-          oldPassword: data.user.oldPassword,
-          newPassword: data.user.newPassword
-        }))
+    dialogRef.beforeClosed().subscribe(data => {
+      if (data && data) {
+        this.userStore.dispatch(
+          new UpdateUserPassword({
+            userId: this.user.id,
+            oldPassword: data.user.oldPassword,
+            newPassword: data.user.newPassword
+          })
+        );
       }
     });
   }
@@ -123,9 +133,11 @@ export class SettingsComponent implements OnInit {
   }
 
   onEditUser(userId: string) {
-    this.subscriptions.push(this.userStore.pipe(select(getUserById(userId))).subscribe(users => {
-      this.users = users;
-    }));
+    this.subscriptions.push(
+      this.userStore.pipe(select(getUserById(userId))).subscribe(users => {
+        this.users = users;
+      })
+    );
 
     const dialogRef = this.dialog.open(UserModalComponent, {
       disableClose: false,
@@ -136,9 +148,9 @@ export class SettingsComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.user) {
-        this.userStore.dispatch(new UpdateUser({id: userId, data: data.user}));
+        this.userStore.dispatch(new UpdateUser({ id: userId, data: data.user }));
       }
     });
   }
@@ -154,18 +166,20 @@ export class SettingsComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.user) {
-        this.userStore.dispatch(new AddUser({
-          firstName: data.user.firstName,
-          lastName: data.user.lastName,
-          email: data.user.email,
-          phone: data.user.phone,
-          team: this.selectedTeams,
-          roles: this.selectedRoles,
-          password: 'P!ssw4rd',
-          userStatus: 'active'
-        }));
+        this.userStore.dispatch(
+          new AddUser({
+            firstName: data.user.firstName,
+            lastName: data.user.lastName,
+            email: data.user.email,
+            phone: data.user.phone,
+            team: this.selectedTeams,
+            roles: this.selectedRoles,
+            password: 'P!ssw4rd',
+            userStatus: 'active'
+          })
+        );
       }
       this.selectedTeams = [];
       this.selectedRoles = [];
@@ -183,7 +197,7 @@ export class SettingsComponent implements OnInit {
         this.teamDetailService.teamDetailForm.patchValue({
           name: this.selectedTeam.name,
           description: this.selectedTeam.description
-        })
+        });
       }
     });
   }
@@ -198,9 +212,9 @@ export class SettingsComponent implements OnInit {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data) {
-        this.teamStore.dispatch(new AddTeam(data.team))
+        this.teamStore.dispatch(new AddTeam(data.team));
       }
     });
   }
@@ -218,7 +232,7 @@ export class SettingsComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
         this.teamStore.dispatch(new DeleteTeam(this.teamId));
       }
@@ -235,24 +249,26 @@ export class SettingsComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.teamStore.dispatch(new DeleteMember({teamId: this.teamId, userId: memberId}));
+        this.teamStore.dispatch(new DeleteMember({ teamId: this.teamId, userId: memberId }));
       }
     });
   }
 
   onSaveTeam() {
     this.isTeamEditable = false;
-    this.teamStore.dispatch(new UpdateTeam({
-      id: this.teamId,
-      data: {
+    this.teamStore.dispatch(
+      new UpdateTeam({
         id: this.teamId,
-        name: this.teamDetailForm.value.name,
-        description: this.teamDetailForm.value.description,
-        type: 'team'
-      }
-    }))
+        data: {
+          id: this.teamId,
+          name: this.teamDetailForm.value.name,
+          description: this.teamDetailForm.value.description,
+          type: 'team'
+        }
+      })
+    );
   }
 
   onCancelEdit() {
@@ -260,20 +276,21 @@ export class SettingsComponent implements OnInit {
   }
 
   onAddMember() {
-    const dialogRef = this.dialog.open(MemberModalComponent, { 
+    const dialogRef = this.dialog.open(MemberModalComponent, {
       disableClose: false,
-      width: '600px' 
+      width: '600px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.member) {
-        this.teamStore.dispatch(new AddMember({
-          data: data.member,
-          teamId: this.teamId,
-          userId: data.member.id
-        }))
+        this.teamStore.dispatch(
+          new AddMember({
+            data: data.member,
+            teamId: this.teamId,
+            userId: data.member.id
+          })
+        );
       }
     });
   }
-
 }
