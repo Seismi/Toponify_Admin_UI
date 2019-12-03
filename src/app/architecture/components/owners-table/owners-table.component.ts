@@ -8,9 +8,7 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
   styleUrls: ['./owners-table.component.scss']
 })
 export class OwnersTableComponent {
-  @Input() selectedRowIndex: string | null = null;
-  @Input() isEditable = false;
-  @Input() selectedOwner = false;
+  @Input() isEditable: boolean = false;
 
   @Input()
   set data(data: OwnersEntityOrTeamEntityOrApproversEntity[]) {
@@ -20,24 +18,18 @@ export class OwnersTableComponent {
     this.dataSource = new MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>(data);
   }
 
-  displayedColumns: string[] = ['name'];
+  public displayedColumns: string[] = ['name'];
   public dataSource: MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>;
-
-  @Output() selectOwner = new EventEmitter<string>();
 
   @Output() addOwner = new EventEmitter<void>();
 
-  @Output() deleteOwner = new EventEmitter<void>();
+  @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
 
   onAdd(): void {
     this.addOwner.emit();
   }
 
-  onSelect(ownerId: string): void {
-    this.selectOwner.emit(ownerId);
-  }
-
-  onDelete(): void {
-    this.deleteOwner.emit();
+  onDelete(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
+    this.deleteOwner.emit(owner);
   }
 }

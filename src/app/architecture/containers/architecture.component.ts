@@ -24,7 +24,7 @@ import {
   DeleteCustomProperty
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, NodeDetail, DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { CustomPropertyValuesEntity, NodeDetail, DescendantsEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
   getNodeLinks,
@@ -202,8 +202,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   sw: string[] = [];
   canSelectWorkpackages = false;
   workpackageId: string;
-  selectedOwner = false;
-  selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
   editTabIndex: number;
@@ -558,8 +556,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
         this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
 
-        this.selectedOwnerIndex = null;
-        this.selectedOwner = false;
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part instanceof Link;
 
@@ -619,8 +615,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveObjectDetails() {
-    this.selectedOwner = false;
-    this.selectedOwnerIndex = null;
     if (this.clickedOnLink) {
       const linkData = {
         id: this.selectedPart.id,
@@ -655,8 +649,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onCancelEdit() {
     this.isEditable = false;
-    this.selectedOwner = false;
-    this.selectedOwnerIndex = null;
   }
 
   onShowGrid() {
@@ -1068,12 +1060,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner() {
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
+  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity) {
+    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        mode: 'delete',
+        name: owner.name
       }
     });
 
@@ -1083,10 +1076,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           new DeleteWorkpackageNodeOwner({
             workpackageId: this.workpackageId,
             nodeId: this.nodeId,
-            ownerId: this.selectedOwnerIndex
+            ownerId: owner.id
           })
         );
-        this.selectedOwner = false;
       }
     });
   }
@@ -1138,11 +1130,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
     });
-  }
-
-  onSelectOwner(ownerId) {
-    this.selectedOwnerIndex = ownerId;
-    this.selectedOwner = true;
   }
 
   onEditProperties(customProperty: CustomPropertyValuesEntity) {
