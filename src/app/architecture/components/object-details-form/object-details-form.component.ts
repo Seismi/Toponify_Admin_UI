@@ -19,10 +19,11 @@ export class ObjectDetailsFormComponent {
     this.group = group;
     this.values = group.value;
   }
-  @Input() clickedOnLink: boolean = false;
-  @Input() isEditable: boolean = false;
-  @Input() workPackageIsEditable: boolean = false;
-  @Input() attributesPage: boolean = false;
+
+  @Input() clickedOnLink = false;
+  @Input() isEditable = false;
+  @Input() workPackageIsEditable = false;
+  @Input() attributesPage = false;
   @Input() relatedAttributes: AttributeEntity[];
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
@@ -95,5 +96,4 @@ export class ObjectDetailsFormComponent {
   onDeleteRelatedAttribute(): void {
     this.deleteRelatedAttribute.emit();
   }
-
 }

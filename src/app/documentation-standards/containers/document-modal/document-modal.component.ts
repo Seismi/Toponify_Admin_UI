@@ -22,8 +22,8 @@ export class DocumentModalComponent implements OnInit {
   public mode: string;
   public name: string;
   private reg;
-  dateType: boolean = false;
-  booleanType: boolean = false;
+  dateType = false;
+  booleanType = false;
   propertyType: string;
 
   constructor(

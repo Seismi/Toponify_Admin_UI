@@ -1,12 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageDetailService } from '../../components/workpackage-detail/services/workpackage-detail.service';
 import { WorkPackageValidatorService } from '../../components/workpackage-detail/services/workpackage-detail-validator.service';
 import { Observable } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
@@ -20,25 +20,24 @@ import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpac
   styleUrls: ['./workpackage.component.scss'],
   providers: [WorkPackageDetailService, WorkPackageValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class WorkPackageModalComponent implements OnInit {
-
   public owners$: Observable<TeamEntity[]>;
   public baseline$: Observable<WorkPackageEntity[]>;
   public workpackage: WorkPackageEntity;
-  public modalMode: boolean = true;
-  public isEditable: boolean = true;
+  public modalMode = true;
+  public isEditable = true;
   public selectedOwners = [];
   public selectedBaseline = [];
 
   constructor(
     private teamStore: Store<TeamState>,
     private workPackageStore: Store<WorkPackageState>,
-    private WorkPackageDetailService: WorkPackageDetailService,
+    private workPackageDetailService: WorkPackageDetailService,
     public dialogRef: MatDialogRef<WorkPackageModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.workpackage = data.workpackage;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.workpackage = data.workpackage;
+  }
 
   ngOnInit() {
     this.teamStore.dispatch(new LoadTeams({}));
@@ -47,25 +46,28 @@ export class WorkPackageModalComponent implements OnInit {
   }
 
   get workPackageDetailForm(): FormGroup {
-    return this.WorkPackageDetailService.workPackageDetailForm;
+    return this.workPackageDetailService.workPackageDetailForm;
   }
 
   onSubmit(): void {
-    if (!this.WorkPackageDetailService.isValid) {
+    if (!this.workPackageDetailService.isValid) {
       return;
     }
-    
-    this.dialogRef.close(        
-    this.workPackageStore.dispatch(new AddWorkPackageEntity({
-      data: {
-        id: null,
-        name: this.workPackageDetailForm.value.name,
-        description: this.workPackageDetailForm.value.description,
-        status: this.workPackageDetailForm.value.status,
-        owners: this.selectedOwners,
-        baseline: this.selectedBaseline
-      }
-    })));
+
+    this.dialogRef.close(
+      this.workPackageStore.dispatch(
+        new AddWorkPackageEntity({
+          data: {
+            id: null,
+            name: this.workPackageDetailForm.value.name,
+            description: this.workPackageDetailForm.value.description,
+            status: this.workPackageDetailForm.value.status,
+            owners: this.selectedOwners,
+            baseline: this.selectedBaseline
+          }
+        })
+      )
+    );
   }
 
   onCancelClick(): void {

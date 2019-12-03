@@ -7,7 +7,6 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['team-detail.component.scss']
 })
 export class TeamDetailComponent {
-
   @Input() group: FormGroup;
   @Input() teamModal = false;
   @Input() isEditable = false;
@@ -39,5 +38,4 @@ export class TeamDetailComponent {
   onCancel() {
     this.cancelEdit.emit();
   }
-
 }

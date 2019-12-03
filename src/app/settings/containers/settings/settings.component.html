@@ -1,74 +1,74 @@
 <app-base-header>
-    <app-toolbar-column [fillFreeSpace]="true">
-    </app-toolbar-column>
-    <app-search></app-search>
-    <app-toolbar-column>
-        <smi-quicklinks-actions></smi-quicklinks-actions>
-    </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+  <app-search></app-search>
+  <app-toolbar-column>
+    <smi-quicklinks-actions></smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>
 
-
 <mat-tab-group [@.disabled]="true" (selectedTabChange)="onSelectTab($event)">
-    <!-- My User Tab-->
-    <mat-tab label="My User">
-        <p class="mat-elevation-z8">
-            <smi-my-user-form
-                [teamTableData]="user?.team"
-                [roleTableData]="user?.roles"
-                [group]="myUserForm"
-                [showButtons]="showButtons"
-                [isActive]="isActive"
-                [editMode]="editMode"
-                (saveMyUser)="onSaveMyUser($event)"
-                (editMyUser)="onEditMyUser($event)"
-                (changePassword)="onChangePassword($event)">
-            </smi-my-user-form>
-        </p>
-    </mat-tab>
+  <!-- My User Tab-->
+  <mat-tab label="My User">
+    <p class="mat-elevation-z8">
+      <smi-my-user-form
+        [teamTableData]="user?.team"
+        [roleTableData]="user?.roles"
+        [group]="myUserForm"
+        [showButtons]="showButtons"
+        [isActive]="isActive"
+        [editMode]="editMode"
+        (saveMyUser)="onSaveMyUser($event)"
+        (editMyUser)="onEditMyUser($event)"
+        (changePassword)="onChangePassword($event)"
+      >
+      </smi-my-user-form>
+    </p>
+  </mat-tab>
 
-    <!-- Teams-->
-    <mat-tab label="Teams">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <smi-teams-table 
-                        [data]="teams$ | async"
-                        (selectTeam)="onSelectTeam($event)"
-                        (newTeam)="onNewTeam($event)">
-                    </smi-teams-table>
-                </div>
-                <div class="col" *ngIf="teamSelected">
-                    <smi-team-detail
-                        [group]="teamDetailForm"
-                        [teamModal]="teamModal"
-                        [isEditable]="isTeamEditable"
-                        (editTeam)="onEditTeam($event)"
-                        (deleteTeam)="onDeleteTeam($event)"
-                        (saveTeam)="onSaveTeam($event)"
-                        (cancelEdit)="onCancelEdit($event)">
-                    </smi-team-detail>
-                    <smi-members-table
-                        [members]="selectedTeam?.members"
-                        (deleteMember)="onDeleteMember($event)"
-                        (addMember)="onAddMember($event)">
-                    </smi-members-table>
-                </div>
-            </div>
+  <!-- Teams-->
+  <mat-tab label="Teams">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <smi-teams-table [data]="teams$ | async" (selectTeam)="onSelectTeam($event)" (newTeam)="onNewTeam($event)">
+          </smi-teams-table>
         </div>
-    </mat-tab>
+        <div class="col" *ngIf="teamSelected">
+          <smi-team-detail
+            [group]="teamDetailForm"
+            [teamModal]="teamModal"
+            [isEditable]="isTeamEditable"
+            (editTeam)="onEditTeam($event)"
+            (deleteTeam)="onDeleteTeam($event)"
+            (saveTeam)="onSaveTeam($event)"
+            (cancelEdit)="onCancelEdit($event)"
+          >
+          </smi-team-detail>
+          <smi-members-table
+            [members]="selectedTeam?.members"
+            (deleteMember)="onDeleteMember($event)"
+            (addMember)="onAddMember($event)"
+          >
+          </smi-members-table>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
 
-    <!-- All Users Tab -->
-    <mat-tab label="All Users">
-        <smi-users-table *ngIf="(users$ | async)?.length > 0"
-            [data]="users$ | async" 
-            (editUser)="onEditUser($event)"
-            (addUser)="onAddUser($event)"
-            data-hook="all-users-table">
-        </smi-users-table>
-    </mat-tab>
+  <!-- All Users Tab -->
+  <mat-tab label="All Users">
+    <smi-users-table
+      *ngIf="(users$ | async)?.length > 0"
+      [data]="users$ | async"
+      (editUser)="onEditUser($event)"
+      (addUser)="onAddUser($event)"
+      data-hook="all-users-table"
+    >
+    </smi-users-table>
+  </mat-tab>
 
-    <!-- Organisation -->
-    <mat-tab label="Organisation">
-        <smi-organisation></smi-organisation>
-    </mat-tab>
+  <!-- Organisation -->
+  <mat-tab label="Organisation">
+    <smi-organisation></smi-organisation>
+  </mat-tab>
 </mat-tab-group>

@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Renderer,
-  ElementRef,
-  Input,
-  SimpleChanges,
-  OnChanges
-} from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, Renderer2, SimpleChanges } from '@angular/core';
 
 export enum DraggerPosition {
   left,
@@ -22,29 +14,21 @@ export class DraggerComponent implements OnInit, OnChanges {
   @Input() position: DraggerPosition = DraggerPosition.left;
   @Input() active: boolean;
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer) {}
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
     if (this.position === DraggerPosition.left) {
-      this.renderer.setElementClass(
-        this.elementRef.nativeElement,
-        'left',
-        true
-      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'left');
     }
 
     if (this.position === DraggerPosition.right) {
-      this.renderer.setElementClass(
-        this.elementRef.nativeElement,
-        'right',
-        true
-      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'right');
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.renderer.setElementClass(this.elementRef.nativeElement, 'active', changes.active.currentValue);
-    // tslint:disable-next-line:no-unused-expression
-    changes.active.currentValue;
+    if (changes.active.currentValue) {
+      this.renderer.addClass(this.elementRef.nativeElement, 'active');
+    }
   }
 }

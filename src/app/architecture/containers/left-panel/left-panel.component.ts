@@ -8,7 +8,7 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./left-panel.component.scss']
 })
 export class LeftPanelComponent {
-  @Input() workPackageIsEditable: boolean = false;
+  @Input() workPackageIsEditable = false;
   @Input() workpackages: WorkPackageEntity[];
   @Input() selectedLeftTab: number;
   @Input() checked: boolean;
@@ -19,15 +19,11 @@ export class LeftPanelComponent {
 
   @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
-  realignTabUnderline(): void {
-    this.mainTabGroup.realignInkBar();
-  }
-
   constructor() {}
 
   @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
 
-  @Output() selectWorkPackage = new EventEmitter<{id: string, newState: boolean}>();
+  @Output() selectWorkPackage = new EventEmitter<{ id: string; newState: boolean }>();
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
@@ -41,6 +37,10 @@ export class LeftPanelComponent {
 
   @Output() addLayout = new EventEmitter<void>();
 
+  realignTabUnderline(): void {
+    this.mainTabGroup.realignInkBar();
+  }
+
   displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }): void {
     this.displayOptionsChangedEvent.emit({ event, option });
   }
@@ -50,7 +50,7 @@ export class LeftPanelComponent {
     this.setWorkpackageEditMode.emit(workpackage);
   }
 
-  onSelectWorkPackage(selection: {id: string, newState: boolean}): void {
+  onSelectWorkPackage(selection: { id: string; newState: boolean }): void {
     this.selectWorkPackage.emit(selection);
   }
 
@@ -70,5 +70,4 @@ export class LeftPanelComponent {
   onAddLayout(): void {
     this.addLayout.emit();
   }
-
 }

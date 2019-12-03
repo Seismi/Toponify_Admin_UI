@@ -1,8 +1,7 @@
-<mat-form-field floatLabel=never appearance="none">
+<mat-form-field floatLabel="never" appearance="none">
   <mat-select [value]="selectedScope?.id" (selectionChange)="onSelect($event)">
-    <mat-option *ngFor="let scope of scopes"
-      [value]="scope.id">
-      {{scope.name}}
+    <mat-option *ngFor="let scope of scopes" [value]="scope.id">
+      {{ scope.name }}
     </mat-option>
   </mat-select>
 </mat-form-field>

@@ -43,7 +43,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public selectedLeftTab: number;
   public showOrHidePane = false;
   public hideTab = true;
-  public canSelectWorkpackage: boolean = true;
+  public canSelectWorkpackage = true;
   public workpackageId: string;
   public workPackageIsEditable: boolean;
   public scopeId: string;
@@ -207,5 +207,4 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     };
     this.store.dispatch(new LoadReports(queryParams));
   }
-  
 }

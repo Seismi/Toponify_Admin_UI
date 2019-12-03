@@ -9,12 +9,11 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
   styleUrls: ['properties-table.component.scss']
 })
 export class PropertiesTableInAttributesPageComponent {
-
   @Input() workPackageIsEditable: boolean;
 
   @Input()
   set data(data: any[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
     }
@@ -35,5 +34,4 @@ export class PropertiesTableInAttributesPageComponent {
   onDelete(property: CustomPropertiesEntity): void {
     this.deleteProperty.emit(property);
   }
-  
 }

@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
@@ -16,22 +16,21 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./report-modal.component.scss'],
   providers: [ReportLibraryDetailService, ReportLibraryDetailValidatorService]
 })
-
 export class ReportModalComponent implements OnInit {
-
   owners$: Observable<TeamEntity[]>;
 
   constructor(
     private reportLibraryDetailService: ReportLibraryDetailService,
     public dialogRef: MatDialogRef<ReportModalComponent>,
     private teamStore: Store<TeamState>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   get reportDetailForm(): FormGroup {
     return this.reportLibraryDetailService.reportDetailForm;
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
   }
@@ -40,12 +39,11 @@ export class ReportModalComponent implements OnInit {
     if (!this.reportLibraryDetailService.isValid) {
       return;
     }
-    
-    this.dialogRef.close({ report: this.reportDetailForm.value })
+
+    this.dialogRef.close({ report: this.reportDetailForm.value });
   }
 
   onCancel() {
     this.dialogRef.close();
   }
-
 }

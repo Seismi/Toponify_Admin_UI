@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { LoadRadios } from '@app/radio/store/actions/radio.actions';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
@@ -13,18 +13,20 @@ import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
   styleUrls: ['./radio-list-modal.component.scss'],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class RadioListModalComponent implements OnInit {
-
   radio$: Observable<RadioEntity[]>;
   radio: RadioEntity;
 
   constructor(
     private store: Store<RadioState>,
     public dialogRef: MatDialogRef<RadioListModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.radio = data.radio;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.radio = data.radio;
+  }
+
+  @Output()
+  addNewRadio = new EventEmitter();
 
   ngOnInit() {
     this.store.dispatch(new LoadRadios({}));
@@ -43,12 +45,8 @@ export class RadioListModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  @Output()
-  addNewRadio = new EventEmitter();
-
   onAddNew() {
     this.dialogRef.close();
     this.addNewRadio.emit();
   }
-
 }
