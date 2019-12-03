@@ -8,7 +8,6 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   styleUrls: ['./radio-list.component.scss']
 })
 export class RadioListComponent {
-
   selectedRowIndex = -1;
 
   @Input()

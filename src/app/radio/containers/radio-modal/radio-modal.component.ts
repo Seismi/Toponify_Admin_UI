@@ -17,9 +17,7 @@ import { LoadUsers } from '@app/settings/store/actions/user.actions';
   styleUrls: ['./radio-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class RadioModalComponent implements OnInit {
-
   public users$: Observable<User[]>;
   public isEditable = true;
   public modalMode = true;
@@ -29,15 +27,16 @@ export class RadioModalComponent implements OnInit {
     private store: Store<UserState>,
     private radioDetailService: RadioDetailService,
     public dialogRef: MatDialogRef<RadioModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.radio = data.radio;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.radio = data.radio;
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadUsers({}));
     this.users$ = this.store.pipe(select(getUsers));
   }
-    
+
   get radioDetailsForm(): FormGroup {
     return this.radioDetailService.radioDetailsForm;
   }
@@ -52,5 +51,4 @@ export class RadioModalComponent implements OnInit {
   onCancelClick() {
     this.dialogRef.close();
   }
-
 }

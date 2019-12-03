@@ -3,8 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 @Injectable()
 export class ReportLibraryDetailValidatorService {
-
-  constructor() { }
+  constructor() {}
 
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {

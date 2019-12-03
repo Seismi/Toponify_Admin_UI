@@ -1,6 +1,13 @@
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Report, ReportLibraryApiResponse, ReportDetailApiRequest, ReportEntityApiRequest, ReportEntityApiResponse, ReportDetailApiRespoonse } from '../models/report.model';
+import {
+  Report,
+  ReportLibraryApiResponse,
+  ReportDetailApiRequest,
+  ReportEntityApiRequest,
+  ReportEntityApiResponse,
+  ReportDetailApiRespoonse
+} from '../models/report.model';
 
 export enum ReportActionTypes {
   LoadReports = '[Report] Load Reports',
@@ -64,12 +71,12 @@ export class LoadReportFail implements Action {
 
 export class AddReport implements Action {
   readonly type = ReportActionTypes.AddReport;
-  constructor(public payload: { workPackageId: string, request: ReportDetailApiRequest }) {}
+  constructor(public payload: { workPackageId: string; request: ReportDetailApiRequest }) {}
 }
 
 export class AddReportSuccess implements Action {
   readonly type = ReportActionTypes.AddReportSuccess;
-  constructor(public payload: ReportDetailApiRespoonse ) {}
+  constructor(public payload: ReportDetailApiRespoonse) {}
 }
 
 export class AddReportFail implements Action {
@@ -79,7 +86,7 @@ export class AddReportFail implements Action {
 
 export class UpdateReport implements Action {
   readonly type = ReportActionTypes.UpdateReport;
-  constructor(public payload: { workPackageId: string, reportId: string, request: ReportEntityApiRequest }) {}
+  constructor(public payload: { workPackageId: string; reportId: string; request: ReportEntityApiRequest }) {}
 }
 
 export class UpdateReportSuccess implements Action {
@@ -94,7 +101,7 @@ export class UpdateReportFail implements Action {
 
 export class DeleteReport implements Action {
   readonly type = ReportActionTypes.DeleteReport;
-  constructor(public payload: { workPackageId: string, reportId: string }) {}
+  constructor(public payload: { workPackageId: string; reportId: string }) {}
 }
 
 export class DeleteReportSuccess implements Action {
@@ -109,7 +116,7 @@ export class DeleteReportFail implements Action {
 
 export class AddOwner implements Action {
   readonly type = ReportActionTypes.AddOwner;
-  constructor(public payload: { workPackageId: string, reportId: string, ownerId: string }) {}
+  constructor(public payload: { workPackageId: string; reportId: string; ownerId: string }) {}
 }
 
 export class AddOwnerSuccess implements Action {
@@ -124,7 +131,7 @@ export class AddOwnerFail implements Action {
 
 export class DeleteOwner implements Action {
   readonly type = ReportActionTypes.DeleteOwner;
-  constructor(public payload: { workPackageId: string, reportId: string, ownerId: string }) {}
+  constructor(public payload: { workPackageId: string; reportId: string; ownerId: string }) {}
 }
 
 export class DeleteOwnerSuccess implements Action {

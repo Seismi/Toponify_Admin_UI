@@ -9,7 +9,6 @@ import { SharedService } from '@app/services/shared-service';
   styleUrls: ['./owners-dropdown.component.scss']
 })
 export class OwnersDropdownComponent {
-
   teams: TeamEntity[];
   owners = new FormControl();
 
@@ -21,12 +20,12 @@ export class OwnersDropdownComponent {
   constructor(private sharedService: SharedService) {}
 
   onSelect(event, owner) {
-    if(event.source.selected) {
-      this.sharedService.selectedOwners.push(owner)
+    if (event.source.selected) {
+      this.sharedService.selectedOwners.push(owner);
     }
-    if(!event.source.selected) {
-      let index = this.sharedService.selectedOwners.indexOf(owner);
-      if(index > -1) {
+    if (!event.source.selected) {
+      const index = this.sharedService.selectedOwners.indexOf(owner);
+      if (index > -1) {
         this.sharedService.selectedOwners.splice(index, 1);
       }
     }

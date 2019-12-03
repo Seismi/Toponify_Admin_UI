@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
 import { WorkPackageDiagramService } from '@app/workpackage/services/workpackage-diagram.service';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';

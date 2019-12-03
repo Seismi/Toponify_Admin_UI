@@ -7,7 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
-import { reducers, metaReducers } from './core/store';
+import { metaReducers, reducers } from './core/store';
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app.routing';
 import { AuthModule } from './auth/auth.module';
@@ -35,13 +35,11 @@ import { MatSnackBarModule } from '@angular/material';
     }),
     EffectsModule.forRoot([]),
     StoreRouterConnectingModule.forRoot({
-      serializer: CustomSerializer,
-    }),
+      serializer: CustomSerializer
+    })
   ],
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   providers: [SharedService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

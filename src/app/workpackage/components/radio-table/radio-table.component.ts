@@ -8,16 +8,15 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   templateUrl: './radio-table.component.html',
   styleUrls: ['./radio-table.component.scss']
 })
-export class RadiosTableComponent  {
+export class RadiosTableComponent {
+  // Temporary till delete API will be fixed
+  public hide = false;
 
-  //Temporary till delete API will be fixed
-  public hide: boolean = false;
-  
-  @Input() statusDraft: boolean = false;
+  @Input() statusDraft = false;
 
   @Input()
   set data(data: WorkPackageDetail[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
       this.dataSource.paginator = this.paginator;
     }

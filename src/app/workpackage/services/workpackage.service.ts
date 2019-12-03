@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  WorkPackageEntitiesHttpParams,
-  WorkPackageApiRequest,
-  WorkPackageEntitiesResponse,
   OwnersEntityOrApproversEntity,
-  WorkPackageDetail
+  WorkPackageApiRequest,
+  WorkPackageEntitiesHttpParams,
+  WorkPackageEntitiesResponse
 } from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
 

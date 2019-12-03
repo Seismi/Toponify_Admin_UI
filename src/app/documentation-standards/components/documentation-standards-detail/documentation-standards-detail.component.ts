@@ -8,7 +8,6 @@ import { Constants } from '@app/core/constants';
   styleUrls: ['documentation-standards-detail.component.scss']
 })
 export class DocumentationStandardsDetailComponent {
-
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() isDisabled = true;

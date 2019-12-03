@@ -9,14 +9,13 @@ const httpOptions = {
 
 @Injectable()
 export class DocumentationStandardsService {
-
   selectedLevels = [];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getCustomProperties(queryParams: any): Observable<any> {
     const params = this.toHttpParams(queryParams);
-    return this.http.get<any>(`/customProperties`, {params: params});
+    return this.http.get<any>(`/customProperties`, { params: params });
   }
 
   getCustomProperty(id: string): Observable<any> {
@@ -30,7 +29,6 @@ export class DocumentationStandardsService {
   updateCustomeProperty(id: string, entity: DocumentStandardApiRequest): Observable<any> {
     return this.http.put<any>(`/customProperties/${id}`, entity, httpOptions);
   }
-  
 
   deleteCustomPorperty(id: string): Observable<any> {
     return this.http.delete<any>(`/customProperties/${id}`);
@@ -38,7 +36,6 @@ export class DocumentationStandardsService {
 
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
-    return Object.getOwnPropertyNames(obj)
-        .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
+    return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());
   }
 }

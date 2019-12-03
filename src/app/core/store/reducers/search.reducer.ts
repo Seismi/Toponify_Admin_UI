@@ -3,7 +3,7 @@ import { SearchEntity } from '../models/search.models';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export interface State {
-  entities: SearchEntity[],
+  entities: SearchEntity[];
   error?: HttpErrorResponse | { message: string };
 }
 
@@ -14,7 +14,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: SearchActionsUnion): State {
   switch (action.type) {
-
     case SearchActionTypes.Search: {
       return {
         ...state

@@ -1,7 +1,9 @@
-
 import { HttpErrorResponse } from '@angular/common/http';
 import { DocumentStandard, Page, Links } from '../models/documentation-standards.model';
-import { DocumentationStandardActionsUnion, DocumentationStandardActionTypes } from '../actions/documentation-standards.actions';
+import {
+  DocumentationStandardActionsUnion,
+  DocumentationStandardActionTypes
+} from '../actions/documentation-standards.actions';
 
 export interface State {
   loading: boolean;
@@ -23,7 +25,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: DocumentationStandardActionsUnion): State {
   switch (action.type) {
-
     case DocumentationStandardActionTypes.LoadDocumentationStandards: {
       return {
         ...initialState,
@@ -37,7 +38,7 @@ export function reducer(state = initialState, action: DocumentationStandardActio
         loading: false,
         entities: action.payload.data,
         links: action.payload.links,
-        page: action.payload.page,
+        page: action.payload.page
       };
     }
 
@@ -94,7 +95,7 @@ export function reducer(state = initialState, action: DocumentationStandardActio
     case DocumentationStandardActionTypes.DeleteDocumentationStandardFailure:
     case DocumentationStandardActionTypes.AddDocumentationStandardFailure:
     case DocumentationStandardActionTypes.LoadDocumentationStandardFailure:
-    case DocumentationStandardActionTypes.LoadDocumentationStandardsFailure:  {
+    case DocumentationStandardActionTypes.LoadDocumentationStandardsFailure: {
       return {
         ...state,
         error: action.payload,

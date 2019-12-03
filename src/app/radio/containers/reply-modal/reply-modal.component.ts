@@ -10,18 +10,18 @@ import { RadioValidatorService } from '@app/radio/components/radio-detail/servic
   styleUrls: ['./reply-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class ReplyModalComponent implements OnInit {
-
   replyMode = true;
   radio: any;
 
-  constructor(private radioDetailService: RadioDetailService,
-              public dialogRef: MatDialogRef<ReplyModalComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
-                this.radio = data.radio;
-              }
-  
+  constructor(
+    private radioDetailService: RadioDetailService,
+    public dialogRef: MatDialogRef<ReplyModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.radio = data.radio;
+  }
+
   ngOnInit() {}
 
   get radioDetailsForm(): FormGroup {
@@ -35,5 +35,4 @@ export class ReplyModalComponent implements OnInit {
   onCancelClick() {
     this.dialogRef.close();
   }
-
 }

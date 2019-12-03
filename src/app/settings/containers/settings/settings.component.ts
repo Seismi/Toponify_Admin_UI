@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { Observable, Subscription } from 'rxjs';
@@ -38,7 +38,7 @@ import { getMyProfile } from '@app/home/store/selectors/home.selectors';
   styleUrls: ['settings.component.scss'],
   providers: [MyUserFormService, MyUserFormValidatorService, TeamDetailService, TeamValidatorService]
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit , OnDestroy {
   loading$: Observable<boolean>;
   users$: Observable<User[]>;
   teams$: Observable<TeamEntity[]>;

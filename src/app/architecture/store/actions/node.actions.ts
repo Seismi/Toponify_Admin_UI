@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { CustomPropertyApiRequest, Error, Node, NodeDetail, OwnersEntity } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
-import { DescendantsEntity } from '@app/nodes/store/models/node.model';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 
 export enum NodeActionTypes {

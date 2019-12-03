@@ -33,7 +33,7 @@ export class DiagramChangesService {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
-    this.store.select(getFilterLevelQueryParams).subscribe(level => this.currentLevel = level);
+    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
   }
 
   // Add newly created nodes to the back end
@@ -175,7 +175,6 @@ export class DiagramChangesService {
   //  -event
   //    -subject: set of parts to update the positions of
   updatePosition(event: any): void {
-
     // Do not update positions for map view
     if (this.currentLevel.endsWith('map')) {
       return;
@@ -404,13 +403,13 @@ export class DiagramChangesService {
        the link no longer exists.
     */
     diagram.links.each(function(link) {
-
       // Ignore links with no route set yet
-      if (link.points.count === 0) {return; }
+      if (link.points.count === 0) {
+        return;
+      }
 
       // Only proceed if link is connected at both ends
       if (link.fromNode && link.toNode) {
-
         // Get bounding rectangles of the link's source and target node
         const fromArea = link.fromNode.actualBounds.copy();
         const toArea = link.toNode.actualBounds.copy();
@@ -429,24 +428,24 @@ export class DiagramChangesService {
         const error_tolerance = 3.5;
 
         // Check link connects from a side of the source node
-        const fromSideConnected = fromArea.containsPoint(linkStart) &&
-          ['left', 'right', 'top', 'bottom']
-            .some(function(side) {
-              // Get appropriate co-ordinate for the current side
-              const coOrdinateVal = (side === 'left' || side === 'right') ? linkStart.x : linkStart.y;
-              // Check vertical or horizontal distance between the node side and link end point
-              return Math.abs(fromArea[side] - coOrdinateVal) <= error_tolerance;
-            });
+        const fromSideConnected =
+          fromArea.containsPoint(linkStart) &&
+          ['left', 'right', 'top', 'bottom'].some(function(side) {
+            // Get appropriate co-ordinate for the current side
+            const coOrdinateVal = side === 'left' || side === 'right' ? linkStart.x : linkStart.y;
+            // Check vertical or horizontal distance between the node side and link end point
+            return Math.abs(fromArea[side] - coOrdinateVal) <= error_tolerance;
+          });
 
         // Check link connects to a side of the target node
-        const toSideConnected = toArea.containsPoint(linkEnd) &&
-          ['left', 'right', 'top', 'bottom']
-            .some(function(side) {
-              // Get appropriate co-ordinate for the current side
-              const coOrdinateVal = (side === 'left' || side === 'right') ? linkEnd.x : linkEnd.y;
-              // Check vertical or horizontal distance between the node side and link end point
-              return Math.abs(toArea[side] - coOrdinateVal) <= error_tolerance;
-            });
+        const toSideConnected =
+          toArea.containsPoint(linkEnd) &&
+          ['left', 'right', 'top', 'bottom'].some(function(side) {
+            // Get appropriate co-ordinate for the current side
+            const coOrdinateVal = side === 'left' || side === 'right' ? linkEnd.x : linkEnd.y;
+            // Check vertical or horizontal distance between the node side and link end point
+            return Math.abs(toArea[side] - coOrdinateVal) <= error_tolerance;
+          });
 
         // Check if either end of the link not connected to a side of the corresponding node
         if (!fromSideConnected || !toSideConnected) {

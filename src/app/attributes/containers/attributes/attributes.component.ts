@@ -12,7 +12,11 @@ import {
   SetSelectedWorkPackages,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { getSelectedWorkpackages, getWorkPackageEntities, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {
+  getSelectedWorkpackages,
+  getWorkPackageEntities,
+  getEditWorkpackages
+} from '@app/workpackage/store/selectors/workpackage.selector';
 import { Params, Router } from '@angular/router';
 import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
 import { RouterStateUrl } from '@app/core/store';
@@ -37,12 +41,12 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public attributes: Subscription;
   public attribute: AttributeEntity[];
   public workpackage$: Observable<WorkPackageEntity[]>;
-  public hideTab: boolean = true;
+  public hideTab = true;
   public selectedLeftTab: number;
   public showOrHidePane: boolean;
   public subscriptions: Subscription[] = [];
   public workpackageId: string;
-  public canSelectWorkpackage: boolean = true;
+  public canSelectWorkpackage = true;
   public workPackageIsEditable: boolean;
   public scopeId: string;
 
@@ -204,8 +208,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   getAttributesWithScopeQuery(scopeId: string): void {
     const queryParams = {
       scopeQuery: scopeId
-    }
+    };
     this.store.dispatch(new LoadAttributes(queryParams));
   }
-
 }

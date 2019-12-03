@@ -8,10 +8,11 @@ import {
   ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialog, MatTabGroup } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
+  DeleteCustomProperty,
   LoadMapView,
   LoadNode,
   LoadNodeLink,
@@ -20,11 +21,10 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNodes,
-  DeleteCustomProperty
+  UpdateNodes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, NodeDetail, DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { CustomPropertyValuesEntity, DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
   getNodeLinks,
@@ -38,7 +38,7 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
-import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
+import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
@@ -54,13 +54,13 @@ import {
 import {
   AddWorkPackageNodeDescendant,
   AddWorkpackageNodeOwner,
+  AddWorkPackageNodeScope,
   DeleteWorkPackageNodeDescendant,
   DeleteWorkpackageNodeOwner,
+  DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
-  WorkPackageNodeActionTypes,
   LoadWorkPackageNodeScopes,
-  AddWorkPackageNodeScope,
-  DeleteWorkPackageNodeScope
+  WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -85,7 +85,7 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, fromEvent, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map, shareReplay, take } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -110,8 +110,8 @@ import { GetNodesRequestQueryParams } from '@app/architecture/services/node.serv
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
-import { NodeLink } from '@app/nodes/store/models/node-link.model';
-import { Node } from '@app/nodes/store/models/node.model';
+import { NodeLink } from '@app/architecture/store/models/node-link.model';
+import { Node } from '@app/architecture/store/models/node.model';
 import { LayoutModalComponent } from '@app/scopes-and-layouts/containers/layout-modal/layout-modal.component';
 import { getNodeScopes } from '../store/selectors/workpackage.selector';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
@@ -903,6 +903,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
+    this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
   }
 
   onSelectLayout(id) {

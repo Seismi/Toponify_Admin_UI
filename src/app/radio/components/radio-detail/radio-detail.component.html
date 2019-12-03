@@ -1,7 +1,13 @@
 <form [formGroup]="group">
-  <div [ngClass]="{disabled: !isEditable}">
+  <div [ngClass]="{ disabled: !isEditable }">
     <mat-form-field>
-      <input matInput placeholder="Title" data-hook="radio-details-title" formControlName="title" [ngClass]="{ editable: isEditable }">
+      <input
+        matInput
+        placeholder="Title"
+        data-hook="radio-details-title"
+        formControlName="title"
+        [ngClass]="{ editable: isEditable }"
+      />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
@@ -10,53 +16,79 @@
         <mat-label>Category</mat-label>
         <mat-select data-hook="radio-details-category" formControlName="category" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let category of categories" [value]="category">
-            {{category}}
+            {{ category }}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field class="ref-number-input" *ngIf="!modalMode">
         <mat-label>Ref. Number</mat-label>
-        <input matInput placeholder="Ref. Number" data-hook="radio-details-reference" formControlName="reference" readonly>
+        <input
+          matInput
+          placeholder="Ref. Number"
+          data-hook="radio-details-reference"
+          formControlName="reference"
+          readonly
+        />
       </mat-form-field>
 
       <mat-form-field>
         <mat-label>Status</mat-label>
         <mat-select data-hook="radio-details-status" formControlName="status" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let status of status" [value]="status">
-            {{status}}
+            {{ status }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
     <mat-form-field>
-      <textarea matInput placeholder="Description" [rows]="rows" data-hook="radio-details-description" [ngClass]="{ editable: isEditable }"
-        formControlName="description"></textarea>
+      <textarea
+        matInput
+        placeholder="Description"
+        [rows]="rows"
+        data-hook="radio-details-description"
+        [ngClass]="{ editable: isEditable }"
+        formControlName="description"
+      ></textarea>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <div class="align-in-row">
       <mat-form-field class="assigned-to-input">
         <mat-label>Assigned To</mat-label>
-        <mat-select data-hook="radio-details-assignedTo" formControlName="assignedTo" [compareWith]="compareUsers"
-          [ngClass]="{ editable: isEditable }">
-          <mat-option *ngFor="let user of users" [value]="user">
-            {{user.firstName}} {{user.lastName}}
-          </mat-option>
+        <mat-select
+          data-hook="radio-details-assignedTo"
+          formControlName="assignedTo"
+          [compareWith]="compareUsers"
+          [ngClass]="{ editable: isEditable }"
+        >
+          <mat-option *ngFor="let user of users" [value]="user"> {{ user.firstName }} {{ user.lastName }} </mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [matDatepicker]="picker" placeholder="Action By" formControlName="actionBy" [ngClass]="{ editable: isEditable }">
+        <input
+          matInput
+          [matDatepicker]="picker"
+          placeholder="Action By"
+          formControlName="actionBy"
+          [ngClass]="{ editable: isEditable }"
+        />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
 
-
     <mat-form-field>
-      <textarea matInput [rows]="rows" placeholder="Mitigation / Resolution" data-hook="radio-details-mitigation" formControlName="mitigation" [ngClass]="{ editable: isEditable }"></textarea>
+      <textarea
+        matInput
+        [rows]="rows"
+        placeholder="Mitigation / Resolution"
+        data-hook="radio-details-mitigation"
+        formControlName="mitigation"
+        [ngClass]="{ editable: isEditable }"
+      ></textarea>
     </mat-form-field>
   </div>
 
@@ -65,7 +97,9 @@
   <div class="buttons-group" *ngIf="!modalMode">
     <div *ngIf="!isEditable">
       <button mat-raised-button color="primary" (click)="onEdit()">Edit</button>
-      <button mat-raised-button class="archive-btn" [disabled]="statusClosed" (click)="onArchive()"><mat-icon>archive</mat-icon>Archive</button>
+      <button mat-raised-button class="archive-btn" [disabled]="statusClosed" (click)="onArchive()">
+        <mat-icon>archive</mat-icon>Archive
+      </button>
     </div>
     <div *ngIf="isEditable">
       <button mat-raised-button color="primary" (click)="onSave()">Save</button>

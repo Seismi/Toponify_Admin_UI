@@ -4,7 +4,6 @@ import { LayoutsValidatorService } from './layouts-detail-validator.service';
 
 @Injectable()
 export class LayoutsDetailService {
-
   public layoutsDetailForm: FormGroup;
   scopeId: string;
   scopeName: string;
@@ -13,7 +12,7 @@ export class LayoutsDetailService {
     this.layoutsDetailForm = this.fb.group({
       name: [null, Validators.required],
       owners: this.fb.array([this.OwnersOrViewers()]),
-      viewers: this.fb.array([this.OwnersOrViewers()]),
+      viewers: this.fb.array([this.OwnersOrViewers()])
     });
   }
 

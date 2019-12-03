@@ -1,11 +1,12 @@
-<mat-form-field floatLabel=never appearance="none">
+<mat-form-field floatLabel="never" appearance="none">
   <mat-select [(value)]="selected">
     <mat-option
-        *ngFor="let layer of layers"
-        (click)="onViewLevelSelected(layer.level)"
-        [value]="layer.name"
-        [hidden]="getMapLevel(layer.level)">
-        {{layer.name | titlecase}} View
+      *ngFor="let layer of layers"
+      (click)="onViewLevelSelected(layer.level)"
+      [value]="layer.name"
+      [hidden]="getMapLevel(layer.level)"
+    >
+      {{ layer.name | titlecase }} View
     </mat-option>
   </mat-select>
 </mat-form-field>

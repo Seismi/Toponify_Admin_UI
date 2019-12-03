@@ -11,8 +11,7 @@ export const auditRoutes: Routes = [
       {
         path: '',
         component: AuditManagerComponent
-      },
-
+      }
     ]
   }
 ];

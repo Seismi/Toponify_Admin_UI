@@ -1,8 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import * as go from 'gojs';
-import { MAT_DIALOG_DATA } from '@angular/material';
-import { Inject } from '@angular/core';
 import { WorkPackageDiagramService } from '@app/workpackage/services/workpackage-diagram.service';
 
 const $ = go.GraphObject.make;

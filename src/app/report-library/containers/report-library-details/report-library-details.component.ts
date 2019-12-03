@@ -37,8 +37,8 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   workPackageIsEditable: boolean;
   workpackageId: string;
-  isEditable: boolean = false;
-  selectedOwner: boolean = false;
+  isEditable = false;
+  selectedOwner = false;
   ownerId: string;
   ownerName: string;
   selectedOwnerIndex: any = -1;

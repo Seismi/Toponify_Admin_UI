@@ -4,17 +4,14 @@
   <table class="mat-table">
     <thead>
       <tr class="mat-header-row">
-        <th class="mat-header-cell"> Name </th>
-        <th class="mat-header-cell"> Description </th>
-        <th class="mat-header-cell"> Tags </th>
+        <th class="mat-header-cell">Name</th>
+        <th class="mat-header-cell">Description</th>
+        <th class="mat-header-cell">Tags</th>
       </tr>
     </thead>
     <ng-container *ngIf="categories.length < 1; else multiCategory">
       <tbody>
-        <ng-container
-          [ngTemplateOutlet]="trTemplate"
-          [ngTemplateOutletContext]="{ data: getTransformedData() }"
-        >
+        <ng-container [ngTemplateOutlet]="trTemplate" [ngTemplateOutletContext]="{ data: getTransformedData() }">
         </ng-container>
       </tbody>
     </ng-container>
@@ -24,7 +21,7 @@
 <!-- Templates -->
 <ng-template #trTemplate let-data="data" let-category="category">
   <ng-container *ngFor="let entry of data">
-    <tr class="mat-row" [ngClass]="{'highlight': selectedRowIndex == entry.id}" (click)="onSelectRow(entry)">
+    <tr class="mat-row" [ngClass]="{ highlight: selectedRowIndex == entry.id }" (click)="onSelectRow(entry)">
       <td class="mat-cell" (click)="entry.collapsed = !entry.collapsed">
         <app-table-collapse [entry]="entry"></app-table-collapse>
       </td>
@@ -47,10 +44,7 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container
-        [ngTemplateOutlet]="trTemplate"
-        [ngTemplateOutletContext]="{ data: getTransformedData(category) }"
-      >
+      <ng-container [ngTemplateOutlet]="trTemplate" [ngTemplateOutletContext]="{ data: getTransformedData(category) }">
       </ng-container>
     </tbody>
   </ng-container>

@@ -24,7 +24,7 @@ import { Params } from '@angular/router';
  */
 export interface State {
   layout: fromLayout.LayoutState;
-  router:  RouterReducerState<RouterStateUrl>;
+  router: RouterReducerState<RouterStateUrl>;
   error: fromError.ErrorState;
 }
 
@@ -77,5 +77,3 @@ export const getRightDrawer = createSelector(
   getLayoutState,
   fromLayout.getRightDrawerOpen
 );
-
-

@@ -184,9 +184,9 @@ export interface RadiosAdvancedSearch {
   status?: Status;
   type?: Type;
   raisedBy?: RaisedBy;
-  assignedTo?: assignedTo;
+  assignedTo?: AssignedToValues;
   workpackages?: WorkPackages;
-  relatesTo?: relatesTo;
+  relatesTo?: RelatesToValues;
   dueDate?: DueDate;
   text?: Text;
 }
@@ -202,7 +202,7 @@ interface DueDate {
   to?: string;
 }
 
-interface relatesTo {
+interface RelatesToValues {
   enabled: boolean;
   includeDescendants: boolean;
   includeLinks: boolean;
@@ -215,7 +215,7 @@ interface WorkPackages {
   values: (Values)[] | null;
 }
 
-interface assignedTo {
+interface AssignedToValues {
   enabled: boolean;
   values: (Values)[] | null;
 }
