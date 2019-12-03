@@ -8,15 +8,13 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./baseline-table.component.scss']
 })
 export class BaselineTableComponent {
-
   @Input()
   set data(data: WorkPackageDetail[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
     }
   }
 
   public displayedColumns: string[] = ['name'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
-
 }

@@ -1,8 +1,9 @@
 <h1 mat-dialog-title>Add Owner</h1>
 <smi-owners-list
   data-hook="workpackage-page-owners-list-modal"
-  [data]="owners$ | async" 
-  (selectOwner)="onSelectOwner($event)">
+  [data]="owners$ | async"
+  (selectOwner)="onSelectOwner($event)"
+>
 </smi-owners-list>
 <div mat-dialog-actions>
   <button mat-button (click)="onSubmit()" data-hook="workpackage-page-owners-modal-save">Save</button>

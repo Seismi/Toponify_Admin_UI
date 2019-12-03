@@ -37,10 +37,10 @@ export class SwitchViewTabsComponent {
   }
 
   getLinkLabel(): string {
-    if(this.viewLevel === 1 || this.viewLevel === 2) {
-      return 'Interfaces'
+    if (this.viewLevel === 1 || this.viewLevel === 2) {
+      return 'Interfaces';
     } else {
-      return 'Links'
+      return 'Links';
     }
   }
 }

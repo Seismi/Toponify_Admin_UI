@@ -8,7 +8,6 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
   styleUrls: ['./scope-table.component.scss']
 })
 export class ScopeTableComponent {
-
   @Input() workPackageIsEditable: boolean;
 
   @Input()
@@ -22,7 +21,7 @@ export class ScopeTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor() { }
+  constructor() {}
 
   public dataSource: MatTableDataSource<WorkPackageNodeScopes>;
   public displayedColumns: string[] = ['name', 'icons'];
@@ -42,5 +41,4 @@ export class ScopeTableComponent {
   onNew(): void {
     this.newScope.emit();
   }
-
 }

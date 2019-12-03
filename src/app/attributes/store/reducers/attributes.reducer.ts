@@ -22,7 +22,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: AttributeActionsUnion): State {
   switch (action.type) {
-
     case AttributeActionTypes.LoadAttributes: {
       return {
         ...state,
@@ -47,7 +46,6 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
         error: action.payload
       };
     }
-
 
     case AttributeActionTypes.LoadAttribute: {
       return {
@@ -124,14 +122,13 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
       };
     }
 
-
-   case AttributeActionTypes.DeleteAttribute: {
-        return {
+    case AttributeActionTypes.DeleteAttribute: {
+      return {
         ...state,
         loading: true
-        }
-    };
-      
+      };
+    }
+
     case AttributeActionTypes.DeleteAttributeSuccess: {
       return {
         ...state,
@@ -139,10 +136,10 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
         selectedAttribute: action.payload,
         entities: state.entities.filter(entity => {
           if (entity.id === state.selectedAttribute.id) {
-            return action.payload
+            return action.payload;
           }
-          return entity
-        }),
+          return entity;
+        })
       };
     }
 

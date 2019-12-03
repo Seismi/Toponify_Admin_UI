@@ -1,7 +1,7 @@
 import * as go from 'gojs';
 import { Injectable } from '@angular/core';
 import { DiagramChangesService } from './diagram-changes.service';
-import { DiagramLevelService, Level } from './diagram-level.service';
+import { DiagramLevelService } from './diagram-level.service';
 import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
@@ -27,10 +27,7 @@ export class DiagramListenersService {
 
   // Add all needed listeners to the diagram
   enableListeners(diagram: go.Diagram): void {
-    diagram.addDiagramListener(
-      'ChangedSelection',
-      this.handleChangedSelection.bind(this)
-    );
+    diagram.addDiagramListener('ChangedSelection', this.handleChangedSelection.bind(this));
 
     diagram.addDiagramListener(
       'ExternalObjectsDropped',
@@ -59,84 +56,68 @@ export class DiagramListenersService {
       event.diagram.commitTransaction('Recalculate link colours');
     });
 
-    diagram.addDiagramListener(
-      'SelectionMoved',
-      this.diagramLevelService.relayoutGroups
-    );
+    diagram.addDiagramListener('SelectionMoved', this.diagramLevelService.relayoutGroups);
 
     // After diagram layout, redo group layouts in map view to correct link paths
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
-        this.store.select(getFilterLevelQueryParams).pipe(take(1)).subscribe(currentLevel => {
-
-          // Ensure links are updated in map view after group layout is performed
-          if (currentLevel && currentLevel.endsWith('map')) {
-            event.diagram.links.each(function(link) {
-              link.data = Object.assign({}, link.data, {updateRoute: true});
-              link.invalidateRoute();
-            });
-          }
-
-          if (
-            currentLevel && currentLevel.endsWith('map') &&
-            this.diagramLevelService.groupLayoutInitial
-          ) {
-            diagram.findTopLevelGroups().each(function(group) {
-              group.invalidateLayout();
-            });
-            if (diagram.model.nodeDataArray.length !== 0) {
-              // Indicate that the initial layout for the groups has been performed
-              this.diagramLevelService.groupLayoutInitial = false;
-              // Reset content alignment to the default after layout has been completed so that diagram can be scrolled
-              diagram.contentAlignment = go.Spot.Default;
+        this.store
+          .select(getFilterLevelQueryParams)
+          .pipe(take(1))
+          .subscribe(currentLevel => {
+            // Ensure links are updated in map view after group layout is performed
+            if (currentLevel && currentLevel.endsWith('map')) {
+              event.diagram.links.each(function(link) {
+                link.data = Object.assign({}, link.data, { updateRoute: true });
+                link.invalidateRoute();
+              });
             }
-          }
-        });
+
+            if (currentLevel && currentLevel.endsWith('map') && this.diagramLevelService.groupLayoutInitial) {
+              diagram.findTopLevelGroups().each(function(group) {
+                group.invalidateLayout();
+              });
+              if (diagram.model.nodeDataArray.length !== 0) {
+                // Indicate that the initial layout for the groups has been performed
+                this.diagramLevelService.groupLayoutInitial = false;
+                // Reset content alignment to the default after layout has been completed so that diagram can be scrolled
+                diagram.contentAlignment = go.Spot.Default;
+              }
+            }
+          });
       }.bind(this)
     );
 
-    diagram.addDiagramListener(
-      'LayoutCompleted',
-      initialFitToScreen
-    );
+    diagram.addDiagramListener('LayoutCompleted', initialFitToScreen);
 
     // Prevent fit to screen after user adds parts to an initially empty diagram
-    diagram.addDiagramListener(
-      'ExternalObjectsDropped',
-      function(): void {
-        diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
-      }
-    );
+    diagram.addDiagramListener('ExternalObjectsDropped', function(): void {
+      diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
+    });
 
     // If diagram non-empty, fit diagram to screen
     function initialFitToScreen(event: go.DiagramEvent): void {
-
       // Fit to screen when diagram contains both nodes and links
       if (event.diagram.nodes.count > 0 && event.diagram.links.count > 0) {
-        setTimeout(function(): void {event.diagram.zoomToFit(); }, 1);
+        setTimeout(function(): void {
+          event.diagram.zoomToFit();
+        }, 1);
         // Remove current listener to prevent function running more than once
         event.diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
-      } else
-      // If diagram contains only nodes, wait for links to load.
-      // If there are still no links after waiting then assume diagram has no links to load and perform the zoom to fit.
-      if (event.diagram.nodes.count > 0 && event.diagram.links.count === 0) {
+      } else if (event.diagram.nodes.count > 0 && event.diagram.links.count === 0) {
         setTimeout(function(): void {
-            if (event.diagram.links.count === 0) {
-              event.diagram.zoomToFit();
-              event.diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
-            }
-          },
-          300
-        );
+          if (event.diagram.links.count === 0) {
+            event.diagram.zoomToFit();
+            event.diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
+          }
+        }, 300);
       }
     }
 
     diagram.addDiagramListener(
       'LinkRelinked',
-      this.diagramChangesService.updateLinkConnections.bind(
-        this.diagramChangesService
-      )
+      this.diagramChangesService.updateLinkConnections.bind(this.diagramChangesService)
     );
 
     diagram.addDiagramListener(

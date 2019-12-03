@@ -4,7 +4,6 @@ import { MyUserFormValidatorService, phoneNumberValidator, emailValidator } from
 
 @Injectable()
 export class MyUserFormService {
-
   public myUserForm: FormGroup;
 
   constructor(private fb: FormBuilder, private myUserFormValidatorService: MyUserFormValidatorService) {

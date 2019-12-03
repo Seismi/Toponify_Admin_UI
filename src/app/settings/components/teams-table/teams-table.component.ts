@@ -8,7 +8,6 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
   styleUrls: ['teams-table.component.scss']
 })
 export class TeamsTableComponent {
-
   @Input()
   set data(data: any[]) {
     if (data) {
@@ -19,12 +18,10 @@ export class TeamsTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  ngOnInit() { }
-
   public dataSource: MatTableDataSource<TeamEntity>;
-  displayedColumns: string[] = ['name'];
 
-  selectedRowIndex: number = -1;
+  displayedColumns: string[] = ['name'];
+  selectedRowIndex = -1;
 
   @Output()
   selectTeam = new EventEmitter();

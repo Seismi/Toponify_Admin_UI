@@ -12,9 +12,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
   templateUrl: './add-scope-modal.component.html',
   styleUrls: ['./add-scope-modal.component.scss']
 })
-
 export class NodeScopeModalComponent implements OnInit {
-
   public scopes$: Observable<WorkPackageNodeScopes[]>;
   public nodeId: string;
   public scope: string;
@@ -22,22 +20,23 @@ export class NodeScopeModalComponent implements OnInit {
   constructor(
     private store: Store<WorkPackageState>,
     public dialogRef: MatDialogRef<NodeScopeModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-      this.nodeId = data.nodeId;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.nodeId = data.nodeId;
+  }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.setScopeQueryParams();
     this.scopes$ = this.store.pipe(select(getNodeScopesAvailability));
   }
 
   setScopeQueryParams(): void {
     const queryParams = { availableForAddition: true };
-    this.store.dispatch(new LoadWorkPackageNodeScopesAvailability({nodeId: this.nodeId, queryParams: queryParams}));
+    this.store.dispatch(new LoadWorkPackageNodeScopesAvailability({ nodeId: this.nodeId, queryParams: queryParams }));
   }
 
   onSubmit(): void {
-    this.dialogRef.close({scope: this.scope});
+    this.dialogRef.close({ scope: this.scope });
   }
 
   onCancel(): void {
@@ -47,5 +46,4 @@ export class NodeScopeModalComponent implements OnInit {
   onSelect(scope: WorkPackageNodeScopes): void {
     this.scope = scope.id;
   }
-
 }

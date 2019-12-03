@@ -6,13 +6,12 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./left-sidebar.component.scss']
 })
 export class LeftSideBarComponent {
+  tabs = ['Work Packages'];
 
-    tabs = ['Work Packages'];
+  @Output()
+  openTab = new EventEmitter();
 
-    @Output()
-    openTab = new EventEmitter();
-    
-    onOpen(i) {
-      this.openTab.emit(i);
-    }
+  onOpen(i) {
+    this.openTab.emit(i);
+  }
 }
