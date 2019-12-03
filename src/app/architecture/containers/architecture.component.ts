@@ -21,7 +21,8 @@ import {
   UpdateCustomProperty,
   UpdateLinks,
   UpdateNodes,
-  DeleteCustomProperty
+  DeleteCustomProperty,
+  NodeActionTypes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { CustomPropertyValuesEntity, NodeDetail, DescendantsEntity, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
@@ -426,6 +427,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
         this.selectedNode = nodeDetail;
         this.ref.detectChanges();
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(NodeActionTypes.UpdateNodeOwners)).subscribe(_ => {
+        // Keep node selected after adding a owner
+        this.diagramComponent.selectNode(this.nodeId);
       })
     );
 
