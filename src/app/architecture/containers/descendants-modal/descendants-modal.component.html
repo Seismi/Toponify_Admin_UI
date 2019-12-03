@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Add Children</h1>
 <div mat-dialog-content>
-  <mat-form-field>
+  <mat-form-field (click)="onOpenDropdown()">
     <mat-select placeholder="Components" [formControl]="components" multiple>
       <mat-select-trigger>
         {{ components.value ? components.value[0] : '' }}
@@ -8,8 +8,18 @@
           (+{{ components.value.length - 1 }} {{ components.value?.length === 2 ? 'other' : 'others' }})
         </span>
       </mat-select-trigger>
+
+      <!-- Search components -->
+      <mat-toolbar-row style="padding: 0 5px;">
+        <input class="search" #searchInput placeholder="Search">
+        <button mat-button mat-icon-button (click)="clearInputValue()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-toolbar-row>
+
       <mat-option
         *ngFor="let children of descendants$ | async"
+        [class.hide]="searchInput.value !== '' && children.name.toLowerCase().indexOf(searchInput.value.toLowerCase()) === -1"
         (onSelectionChange)="onSelect($event, children)"
         [value]="children.name"
       >
