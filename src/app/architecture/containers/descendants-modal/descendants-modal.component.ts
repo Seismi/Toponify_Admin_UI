@@ -71,7 +71,6 @@ export class DescendantsModalComponent implements OnInit {
   }
 
   clearInputValue(): void {
-    this.searchInput.nativeElement.value = "";
+    this.searchInput.nativeElement.value = '';
   }
-
 }
