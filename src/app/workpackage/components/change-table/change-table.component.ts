@@ -20,6 +20,6 @@ export class ChangeTableComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  displayedColumns: string[] = ['change', 'layer', 'object'];
+  displayedColumns: string[] = ['action', 'itemType', 'name'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 }
