@@ -13,18 +13,17 @@ import { getAttributeEntities } from '@app/attributes/store/selectors/attributes
   styleUrls: ['./related-attributes-modal.component.scss'],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class RelatedAttributesModalComponent implements OnInit {
-
   public attributes$: Observable<AttributeEntity[]>;
   public attribute: AttributeEntity;
 
   constructor(
     private store: Store<AttributesState>,
     public dialogRef: MatDialogRef<RelatedAttributesModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.attribute = data.attribute;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.attribute = data.attribute;
+  }
 
   ngOnInit(): void {
     this.store.dispatch(new LoadAttributes());
@@ -42,5 +41,4 @@ export class RelatedAttributesModalComponent implements OnInit {
   onSelectAttribute(attribute: AttributeEntity): void {
     this.attribute = attribute;
   }
-
 }

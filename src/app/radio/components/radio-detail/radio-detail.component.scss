@@ -1,51 +1,57 @@
 .mat-form-field {
-    width: 100%;
+  width: 100%;
 }
 
-input, textarea, .mat-select {
-    background-color: #eee;
+input,
+textarea,
+.mat-select {
+  background-color: #eee;
 }
 
 .archive-btn {
-    float: right;
-}
-
-button{
-    margin-right: 5px;
-}
-
-.disabled {
-    pointer-events: none;
-}
-
-.editable {
-    background-color: #fff;
-}
-
-.ref-number-input {
-    margin: 0 35px;
-}
-
-.assigned-to-input {
-    margin-right: 35px;
-}
-
-.align-in-row {
-    display: flex;
+  float: right;
 }
 
 button {
-    border-radius: 15px;
-    font-weight: lighter;
+  margin-right: 5px;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.editable {
+  background-color: #fff;
+}
+
+.ref-number-input {
+  margin: 0 35px;
+}
+
+.assigned-to-input {
+  margin-right: 35px;
+}
+
+.align-in-row {
+  display: flex;
+}
+
+button {
+  border-radius: 15px;
+  font-weight: lighter;
 }
 
 .mat-icon {
-    font-size: 18px;
-    margin-right: 5px;
-    margin-top: 4px;
-    padding: 0;
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
+}
+
+.categoryInput {
+  margin-right: 35px;
 }
 
 .buttons-group {
-    margin-top: 15px;
+  margin-top: 15px;
 }

@@ -11,7 +11,7 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 export class RadioPropertiesTabComponent {
   @Input()
   set data(data: NodeDetail[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<NodeDetail>(data);
       this.dataSource.paginator = this.paginator;
     }
@@ -32,5 +32,4 @@ export class RadioPropertiesTabComponent {
   onDelete(property: CustomPropertiesEntity) {
     this.deleteProperty.emit(property);
   }
-  
 }

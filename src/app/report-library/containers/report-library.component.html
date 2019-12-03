@@ -1,47 +1,49 @@
 <app-base-header>
-    <app-toolbar-column [fillFreeSpace]="true">
-    </app-toolbar-column>
-    <smi-scopes-dropdown
-        class="scope-dropdown"
-        [data]="scopes$ | async"
-        [selectedScope]="selectedScope$ | async"
-        (selectScope)="onSelectScope($event)">
-    </smi-scopes-dropdown>
-    <app-search></app-search>
-    <app-toolbar-column>
-        <smi-quicklinks-actions></smi-quicklinks-actions>
-    </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+  <smi-scopes-dropdown
+    class="scope-dropdown"
+    [data]="scopes$ | async"
+    [selectedScope]="selectedScope$ | async"
+    (selectScope)="onSelectScope($event)"
+  >
+  </smi-scopes-dropdown>
+  <app-search></app-search>
+  <app-toolbar-column>
+    <smi-quicklinks-actions></smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>
 
 <app-model-container [topPadding]="64">
-    <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="hideTab" *ngIf="!showOrHidePane"></smi-left-sidebar>
-    <app-model-sidebar [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
-        <p class="leftPane">
-            <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
-                <mat-tab label="Work Packages">
-                    <smi-workpackage-tab-table
-                        [data]="workpackage$ | async"
-                        (selectWorkPackage)="onSelectWorkPackage($event)"
-                        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-                        [canSelectWorkpackage]="canSelectWorkpackage">
-                    </smi-workpackage-tab-table>
-                </mat-tab>
-            </mat-tab-group>
-            <button mat-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button> 
-        </p>
-    </app-model-sidebar>
+  <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="hideTab" *ngIf="!showOrHidePane"></smi-left-sidebar>
+  <app-model-sidebar [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
+    <p class="leftPane">
+      <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
+        <mat-tab label="Work Packages">
+          <smi-workpackage-tab-table
+            [data]="workpackage$ | async"
+            (selectWorkPackage)="onSelectWorkPackage($event)"
+            (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+            [canSelectWorkpackage]="canSelectWorkpackage"
+          >
+          </smi-workpackage-tab-table>
+        </mat-tab>
+      </mat-tab-group>
+      <button mat-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>
+    </p>
+  </app-model-sidebar>
 
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <smi-report-library-table
-                    [reports]="(reportEntities$  | async)"
-                    (reportSelected)="onSelectReport($event)"
-                    (addReport)="onAddReport()"
-                    [workPackageIsEditable]="workPackageIsEditable">
-                </smi-report-library-table>
-            </div>
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <smi-report-library-table
+          [reports]="reportEntities$ | async"
+          (reportSelected)="onSelectReport($event)"
+          (addReport)="onAddReport()"
+          [workPackageIsEditable]="workPackageIsEditable"
+        >
+        </smi-report-library-table>
+      </div>
     </div>
-    <router-outlet></router-outlet>
+  </div>
+  <router-outlet></router-outlet>
 </app-model-container>

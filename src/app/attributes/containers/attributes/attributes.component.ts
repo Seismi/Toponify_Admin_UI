@@ -12,7 +12,11 @@ import {
   SetSelectedWorkPackages,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { getSelectedWorkpackages, getWorkPackageEntities, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {
+  getSelectedWorkpackages,
+  getWorkPackageEntities,
+  getEditWorkpackages
+} from '@app/workpackage/store/selectors/workpackage.selector';
 import { Params, Router } from '@angular/router';
 import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
 import { RouterStateUrl } from '@app/core/store';
@@ -37,13 +41,14 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public attributes: Subscription;
   public attribute: AttributeEntity[];
   public workpackage$: Observable<WorkPackageEntity[]>;
-  public hideTab: boolean = true;
+  public hideTab = true;
   public selectedLeftTab: number;
   public showOrHidePane: boolean;
   public subscriptions: Subscription[] = [];
   public workpackageId: string;
-  public canSelectWorkpackage: boolean = true;
+  public canSelectWorkpackage = true;
   public workPackageIsEditable: boolean;
+  public scopeId: string;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -60,6 +65,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
+        this.scopeId = scope.id;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
       }
     });
@@ -109,7 +115,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   setWorkPackage(workpackageIds: string[] = []): void {
     const queryParams = {
-      workPackageQuery: workpackageIds
+      workPackageQuery: workpackageIds,
+      scopeQuery: this.scopeId
     };
     this.store.dispatch(new LoadAttributes(queryParams));
     this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
@@ -195,6 +202,13 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   onSelectScope(scopeId: string): void {
     this.scopeStore.dispatch(new LoadScope(scopeId));
+    this.getAttributesWithScopeQuery(scopeId);
   }
 
+  getAttributesWithScopeQuery(scopeId: string): void {
+    const queryParams = {
+      scopeQuery: scopeId
+    };
+    this.store.dispatch(new LoadAttributes(queryParams));
+  }
 }

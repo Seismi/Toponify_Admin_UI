@@ -1,9 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse,
-  WorkPackageDetail, WorkPackageApiRequest, WorkPackageEntity, OwnersEntityOrApproversEntity } from '../models/workpackage.models';
+import {
+  OwnersEntityOrApproversEntity,
+  WorkPackageApiRequest,
+  WorkPackageDetail,
+  WorkPackageEntitiesHttpParams,
+  WorkPackageEntitiesResponse,
+  WorkPackageEntity
+} from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
-
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -81,7 +86,7 @@ export enum WorkPackageActionTypes {
 
   SupersedeWorkpackage = '[Workpackage] Supersede Workpackage',
   SupersedeWorkpackageSuccess = '[Workpackage] Supersede Workpackage Success',
-  SupersedeWorkpackageFailure = '[Workpackage] Supersede Workpackage Failure',
+  SupersedeWorkpackageFailure = '[Workpackage] Supersede Workpackage Failure'
 }
 
 export class LoadWorkPackages implements Action {
@@ -131,7 +136,7 @@ export class AddWorkPackageEntityFailure implements Action {
 
 export class UpdateWorkPackageEntity implements Action {
   readonly type = WorkPackageActionTypes.UpdateWorkPackage;
-  constructor(public payload: {workPackage: WorkPackageApiRequest, entityId: string}) {}
+  constructor(public payload: { workPackage: WorkPackageApiRequest; entityId: string }) {}
 }
 
 export class UpdateWorkPackageEntitySuccess implements Action {
@@ -161,7 +166,7 @@ export class DeleteWorkPackageEntityFailure implements Action {
 
 export class AddOwner implements Action {
   readonly type = WorkPackageActionTypes.AddOwner;
-  constructor(public payload: { owners: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string }) {}
+  constructor(public payload: { owners: OwnersEntityOrApproversEntity; workPackageId: string; ownerId: string }) {}
 }
 
 export class AddOwnerSuccess implements Action {
@@ -176,7 +181,7 @@ export class AddOwnerFailure implements Action {
 
 export class DeleteOwner implements Action {
   readonly type = WorkPackageActionTypes.DeleteOwner;
-  constructor(public payload: { workPackageId: string, ownerId: string }) {}
+  constructor(public payload: { workPackageId: string; ownerId: string }) {}
 }
 
 export class DeleteOwnerSuccess implements Action {
@@ -191,22 +196,22 @@ export class DeleteOwnerFailure implements Action {
 
 export class SetWorkpackageDisplayColour implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageDisplayColour;
-  constructor(public payload: {colour: string, workpackageId: string}) { }
+  constructor(public payload: { colour: string; workpackageId: string }) {}
 }
 
 export class SetWorkpackageEditMode implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageEditMode;
-  constructor(public payload: { id: string, newState: boolean}) { }
+  constructor(public payload: { id: string; newState: boolean }) {}
 }
 
 export class SetSelectedWorkPackages implements Action {
   readonly type = WorkPackageActionTypes.SetSelectedWorkPackages;
-  constructor(public payload: { workPackages: string[] }) { }
+  constructor(public payload: { workPackages: string[] }) {}
 }
 
 export class AddObjective implements Action {
   readonly type = WorkPackageActionTypes.AddObjective;
-  constructor(public payload: { data: RadioEntity, workPackageId: string, radioId: string }) {}
+  constructor(public payload: { data: RadioEntity; workPackageId: string; radioId: string }) {}
 }
 
 export class AddObjectiveSuccess implements Action {
@@ -221,7 +226,7 @@ export class AddObjectiveFailure implements Action {
 
 export class DeleteObjective implements Action {
   readonly type = WorkPackageActionTypes.DeleteObjective;
-  constructor(public payload: { workPackageId: string, radioId: string }) {}
+  constructor(public payload: { workPackageId: string; radioId: string }) {}
 }
 
 export class DeleteObjectiveSuccess implements Action {
@@ -236,7 +241,7 @@ export class DeleteObjectiveFailure implements Action {
 
 export class AddRadio implements Action {
   readonly type = WorkPackageActionTypes.AddRadio;
-  constructor(public payload: { data: RadioEntity, workPackageId: string, radioId: string }) {}
+  constructor(public payload: { data: RadioEntity; workPackageId: string; radioId: string }) {}
 }
 
 export class AddRadioSuccess implements Action {
@@ -251,7 +256,7 @@ export class AddRadioFailure implements Action {
 
 export class DeleteRadio implements Action {
   readonly type = WorkPackageActionTypes.DeleteRadio;
-  constructor(public payload: { workPackageId: string, radioId: string }) {}
+  constructor(public payload: { workPackageId: string; radioId: string }) {}
 }
 
 export class DeleteRadioSuccess implements Action {
@@ -266,17 +271,17 @@ export class DeleteRadioFailure implements Action {
 
 export class GetWorkpackageAvailability implements Action {
   readonly type = WorkPackageActionTypes.GetWorkpackageAvailability;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class GetWorkpackageAvailabilitySuccess implements Action {
   readonly type = WorkPackageActionTypes.GetWorkpackageAvailabilitySuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class GetWorkpackageAvailabilityFailure implements Action {
   readonly type = WorkPackageActionTypes.GetWorkpackageAvailabilityFailure;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class SubmitWorkpackage implements Action {

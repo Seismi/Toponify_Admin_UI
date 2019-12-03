@@ -8,34 +8,33 @@ import { ScopeEntity } from '@app/scope/store/models/scope.model';
   styleUrls: ['./scopes-table.component.scss']
 })
 export class ScopesTableComponent {
+  selectedRowIndex = -1;
 
-    selectedRowIndex: number = -1;
+  @Input()
+  set data(data: ScopeEntity[]) {
+    this.dataSource = new MatTableDataSource<ScopeEntity>(data);
+    // this.dataSource.paginator = this.paginator;
+    // this.dataSource.sort = this.sort;
+  }
 
-    @Input()
-    set data(data: ScopeEntity[]) {
-      this.dataSource = new MatTableDataSource<ScopeEntity>(data);
-      //this.dataSource.paginator = this.paginator;
-      //this.dataSource.sort = this.sort;
-    }
-    
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
-    displayedColumns: string[] = ['name'];
-    public dataSource: MatTableDataSource<ScopeEntity>;
+  displayedColumns: string[] = ['name'];
+  public dataSource: MatTableDataSource<ScopeEntity>;
 
-    @Output()
-    scopeSelected = new EventEmitter();
+  @Output()
+  scopeSelected = new EventEmitter();
 
-    @Output()
-    addScope = new EventEmitter();
+  @Output()
+  addScope = new EventEmitter();
 
-    onSelectRow(row) {
-      this.selectedRowIndex = row.id;
-      this.scopeSelected.emit(row);
-    }
+  onSelectRow(row) {
+    this.selectedRowIndex = row.id;
+    this.scopeSelected.emit(row);
+  }
 
-    onAdd() {
-      this.addScope.emit();
-    }
+  onAdd() {
+    this.addScope.emit();
+  }
 }

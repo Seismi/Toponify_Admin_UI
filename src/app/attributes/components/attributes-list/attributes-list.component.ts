@@ -8,7 +8,6 @@ import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
   styleUrls: ['./attributes-list.component.scss']
 })
 export class AttributesListComponent {
-
   public selectedRowIndex: string | number = -1;
 
   @Input()
@@ -25,5 +24,4 @@ export class AttributesListComponent {
     this.selectedRowIndex = attribute.id;
     this.selectAttribute.emit(attribute);
   }
-
 }

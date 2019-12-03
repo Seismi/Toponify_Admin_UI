@@ -17,15 +17,12 @@ import {
   NodesApiResponse,
   NodeUpdatePayload
 } from '../models/node.model';
-import {
-  LinkUpdatePayload,
-  NodeLinkDetailApiResponse,
-  NodeLinksApiResponse
-} from '../models/node-link.model';
+import { LinkUpdatePayload, NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../models/node-link.model';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class NodeEffects {
-  constructor(private actions$: Actions, private nodeService: NodeService) {}
+  constructor(private actions$: Actions, private nodeService: NodeService, private snackBar: MatSnackBar) {}
 
   @Effect()
   loadNodes$ = this.actions$.pipe(
@@ -33,12 +30,11 @@ export class NodeEffects {
     map(action => action.payload),
     switchMap((queryParams: GetNodesRequestQueryParams) => {
       return this.nodeService.getNodes(queryParams).pipe(
-        switchMap((nodes: NodesApiResponse) => [
-          new NodeActions.LoadNodesSuccess(nodes.data)
-        ]),
-        catchError((error: Error) =>
-          of(new NodeActions.LoadNodesFailure(error))
-        )
+        switchMap((nodes: NodesApiResponse) => [new NodeActions.LoadNodesSuccess(nodes.data)]),
+        catchError((error: Error) => {
+          this.snackBar.open('There was error loading links!');
+          return of(new NodeActions.LoadNodesFailure(error));
+        })
       );
     })
   );
@@ -49,12 +45,11 @@ export class NodeEffects {
     map(action => action.payload),
     switchMap((queryParams: GetNodesRequestQueryParams) => {
       return this.nodeService.getNodeLinks(queryParams).pipe(
-        switchMap((nodeLinks: NodeLinksApiResponse) => [
-          new NodeActions.LoadNodeLinksSuccess(nodeLinks.data)
-        ]),
-        catchError((error: Error) =>
-          of(new NodeActions.LoadNodeLinksFailure(error))
-        )
+        switchMap((nodeLinks: NodeLinksApiResponse) => [new NodeActions.LoadNodeLinksSuccess(nodeLinks.data)]),
+        catchError((error: Error) => {
+          this.snackBar.open('There was error loading links!');
+          return of(new NodeActions.LoadNodeLinksFailure(error));
+        })
       );
     })
   );
@@ -63,52 +58,34 @@ export class NodeEffects {
   loadNode$ = this.actions$.pipe(
     ofType<NodeActions.LoadNode>(NodeActionTypes.LoadNode),
     map(action => action.payload),
-    switchMap(
-      (payload: { id: string; queryParams?: GetNodesRequestQueryParams }) => {
-        return this.nodeService.getNode(payload.id, payload.queryParams).pipe(
-          switchMap((node: NodeDetailApiResponse) => [
-            new NodeActions.LoadNodeSuccess(node.data)
-          ]),
-          catchError((error: Error) =>
-            of(new NodeActions.LoadNodeFailure(error))
-          )
-        );
-      }
-    )
+    switchMap((payload: { id: string; queryParams?: GetNodesRequestQueryParams }) => {
+      return this.nodeService.getNode(payload.id, payload.queryParams).pipe(
+        switchMap((node: NodeDetailApiResponse) => [new NodeActions.LoadNodeSuccess(node.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadNodeFailure(error)))
+      );
+    })
   );
 
   @Effect()
   loadNodeLink$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodeLink>(NodeActionTypes.LoadNodeLink),
     map(action => action.payload),
-    switchMap(
-      (payload: { id: string; queryParams?: GetLinksRequestQueryParams }) => {
-        return this.nodeService
-          .getNodeLink(payload.id, payload.queryParams)
-          .pipe(
-            switchMap((nodeLink: NodeLinkDetailApiResponse) => [
-              new NodeActions.LoadNodeLinkSuccess(nodeLink.data)
-            ]),
-            catchError((error: Error) =>
-              of(new NodeActions.LoadNodeLinkFailure(error))
-            )
-          );
-      }
-    )
+    switchMap((payload: { id: string; queryParams?: GetLinksRequestQueryParams }) => {
+      return this.nodeService.getNodeLink(payload.id, payload.queryParams).pipe(
+        switchMap((nodeLink: NodeLinkDetailApiResponse) => [new NodeActions.LoadNodeLinkSuccess(nodeLink.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadNodeLinkFailure(error)))
+      );
+    })
   );
 
   @Effect()
   loadMapView$ = this.actions$.pipe(
     ofType<NodeActions.LoadMapView>(NodeActionTypes.LoadMapView),
     map(action => action.payload),
-    switchMap((payload) => {
+    switchMap(payload => {
       return this.nodeService.getMapView(payload.id, payload.queryParams).pipe(
-        switchMap((data: any) => [
-          new NodeActions.LoadMapViewSuccess(data.data)
-        ]),
-        catchError((error: Error) =>
-          of(new NodeActions.LoadMapViewFailure(error))
-        )
+        switchMap((data: any) => [new NodeActions.LoadMapViewSuccess(data.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadMapViewFailure(error)))
       );
     })
   );
@@ -117,20 +94,12 @@ export class NodeEffects {
   loadNodeUsageView$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodeUsageView>(NodeActionTypes.LoadNodeUsageView),
     map(action => action.payload),
-    switchMap(
-      (payload: { node: string; query: { workPackageQuery: string[] } }) => {
-        return this.nodeService
-          .getNodeUsageView(payload.node, payload.query)
-          .pipe(
-            switchMap((data: any) => [
-              new NodeActions.LoadNodeUsageViewSuccess(data.data)
-            ]),
-            catchError((error: Error) =>
-              of(new NodeActions.LoadNodeUsageViewFailure(error))
-            )
-          );
-      }
-    )
+    switchMap((payload: { node: string; query: { workPackageQuery: string[] } }) => {
+      return this.nodeService.getNodeUsageView(payload.node, payload.query).pipe(
+        switchMap((data: any) => [new NodeActions.LoadNodeUsageViewSuccess(data.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadNodeUsageViewFailure(error)))
+      );
+    })
   );
 
   @Effect()
@@ -139,10 +108,7 @@ export class NodeEffects {
     map(action => action.payload),
     switchMap((payload: LinkUpdatePayload) => {
       const observables = payload.links.map((item: any) => {
-        return this.nodeService.updateLayoutNodeLinksRoute(
-          payload.layoutId,
-          item
-        );
+        return this.nodeService.updateLayoutNodeLinksRoute(payload.layoutId, item);
       });
 
       return forkJoin(observables).pipe(
@@ -162,11 +128,7 @@ export class NodeEffects {
     map(action => action.payload),
     switchMap((payload: NodeUpdatePayload) => {
       const observables = payload.nodes.map((item: any) => {
-        return this.nodeService
-          .updateLayoutNodesLocation(
-            payload.layoutId,
-            item
-          );
+        return this.nodeService.updateLayoutNodesLocation(payload.layoutId, item);
       });
 
       return forkJoin(observables).pipe(
@@ -175,18 +137,14 @@ export class NodeEffects {
           data.forEach(item => (mappedNodes[item.data.id] = item.data));
           return new NodeActions.UpdateNodesSuccess(mappedNodes);
         }),
-        catchError((error: Error) =>
-          of(new NodeActions.UpdateNodesFailure(error))
-        )
+        catchError((error: Error) => of(new NodeActions.UpdateNodesFailure(error)))
       );
     })
   );
 
   @Effect()
   updateCustomProperty$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateCustomProperty>(
-      NodeActionTypes.UpdateCustomProperty
-    ),
+    ofType<NodeActions.UpdateCustomProperty>(NodeActionTypes.UpdateCustomProperty),
     map(action => action.payload),
     switchMap(
       (payload: {
@@ -196,19 +154,10 @@ export class NodeEffects {
         data: CustomPropertyApiRequest;
       }) => {
         return this.nodeService
-          .updateCustomPropertyValues(
-            payload.workPackageId,
-            payload.nodeId,
-            payload.customPropertyId,
-            payload.data
-          )
+          .updateCustomPropertyValues(payload.workPackageId, payload.nodeId, payload.customPropertyId, payload.data)
           .pipe(
-            switchMap((response: NodeApiResponse) => [
-              new NodeActions.UpdateCustomPropertySuccess(response.data)
-            ]),
-            catchError((error: Error) =>
-              of(new NodeActions.UpdateCustomPropertyFailure(error))
-            )
+            switchMap((response: NodeApiResponse) => [new NodeActions.UpdateCustomPropertySuccess(response.data)]),
+            catchError((error: Error) => of(new NodeActions.UpdateCustomPropertyFailure(error)))
           );
       }
     )
@@ -218,15 +167,13 @@ export class NodeEffects {
   deleteCustomProperty$ = this.actions$.pipe(
     ofType<NodeActions.DeleteCustomProperty>(NodeActionTypes.DeleteCustomProperty),
     map(action => action.payload),
-    mergeMap((payload: { workPackageId: string, nodeId: string, customPropertyId: string }) => {
-      return this.nodeService.deleteCustomPropertyValues(
-        payload.workPackageId, 
-        payload.nodeId, 
-        payload.customPropertyId
-        ).pipe(
+    mergeMap((payload: { workPackageId: string; nodeId: string; customPropertyId: string }) => {
+      return this.nodeService
+        .deleteCustomPropertyValues(payload.workPackageId, payload.nodeId, payload.customPropertyId)
+        .pipe(
           map(response => new NodeActions.DeleteCustomPropertySuccess(response.data)),
           catchError((error: Error) => of(new NodeActions.DeleteCustomPropertyFailure(error)))
-        )
+        );
     })
-  )
+  );
 }

@@ -18,9 +18,7 @@ import { SharedService } from '@app/services/shared-service';
   styleUrls: ['scopes-and-layouts.component.scss'],
   providers: [LayoutsDetailService, LayoutsValidatorService]
 })
-
 export class ScopesAndLayoutsComponent implements OnInit {
-
   scopeSelected: boolean;
   layoutSelected: boolean;
   scopes$: Observable<ScopeEntity[]>;
@@ -31,7 +29,7 @@ export class ScopesAndLayoutsComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private sharedService: SharedService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.store.dispatch(new LoadScopes({}));
@@ -41,7 +39,7 @@ export class ScopesAndLayoutsComponent implements OnInit {
   onScopeSelect(row: any) {
     this.layoutsDetailService.scopeId = row.id;
     this.layoutsDetailService.scopeName = row.name;
-    this.router.navigate(['scopes-and-layouts', row.id], {queryParamsHandling: 'preserve' });
+    this.router.navigate(['scopes-and-layouts', row.id], { queryParamsHandling: 'preserve' });
   }
 
   onSearchVersion(evt: any) {}
@@ -52,19 +50,20 @@ export class ScopesAndLayoutsComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data) {
-        this.store.dispatch(new AddScope({
-          id: null,
-          name: data.scope.name,
-          owners: this.sharedService.selectedOwners,
-          viewers: this.sharedService.selectedViewers,
-          layerFilter: 'system'
-        }))
+        this.store.dispatch(
+          new AddScope({
+            id: null,
+            name: data.scope.name,
+            owners: this.sharedService.selectedOwners,
+            viewers: this.sharedService.selectedViewers,
+            layerFilter: 'system'
+          })
+        );
       }
       this.sharedService.selectedOwners = [];
       this.sharedService.selectedViewers = [];
     });
   }
-
 }

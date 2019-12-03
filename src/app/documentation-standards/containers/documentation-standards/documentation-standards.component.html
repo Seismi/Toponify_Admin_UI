@@ -1,21 +1,21 @@
 <app-base-header>
-    <app-toolbar-column [fillFreeSpace]="true">
-    </app-toolbar-column>
-    <app-search></app-search>
-    <app-toolbar-column>
-        <smi-quicklinks-actions></smi-quicklinks-actions>
-    </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+  <app-search></app-search>
+  <app-toolbar-column>
+    <smi-quicklinks-actions></smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>
 
 <div class="container">
-    <div class="row">
-        <div class="col">
-            <smi-documentation-standards-table
-                [data]="documentStandards$ | async"
-                (documentSelected)="onSelectDocument($event)"
-                (addDocument)="onAddDocument($event)">
-            </smi-documentation-standards-table>
-        </div>
-        <router-outlet></router-outlet>
+  <div class="row">
+    <div class="col">
+      <smi-documentation-standards-table
+        [data]="documentStandards$ | async"
+        (documentSelected)="onSelectDocument($event)"
+        (addDocument)="onAddDocument($event)"
+      >
+      </smi-documentation-standards-table>
     </div>
+    <router-outlet></router-outlet>
+  </div>
 </div>

@@ -5,19 +5,19 @@ export interface Authenticate {
 }
 
 interface AuthenticatePrivate {
-    token: string;
+  token: string;
 }
 
 interface AuthenticatePublic {
-    id: string;
-    roles: [];
-    changePasswordRequired: boolean;
+  id: string;
+  roles: [];
+  changePasswordRequired: boolean;
 }
 
 export interface AuthenticateApiResponse {
   data: {
-    private: AuthenticatePrivate
-    public: AuthenticatePublic
+    private: AuthenticatePrivate;
+    public: AuthenticatePublic;
   };
 }
 

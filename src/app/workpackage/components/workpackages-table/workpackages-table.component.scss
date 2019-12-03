@@ -10,7 +10,7 @@ tr.mat-header-row {
   height: 45px;
 }
 
-tr.mat-row{
+tr.mat-row {
   cursor: pointer;
   height: 45px;
   &:hover {
@@ -22,7 +22,8 @@ td.mat-cell {
   font-size: 13px;
 }
 
-th.mat-header-cell, td.mat-cell {
+th.mat-header-cell,
+td.mat-cell {
   padding-left: 10px;
 }
 
@@ -45,7 +46,7 @@ th.mat-column-status {
   display: inline;
   list-style: none;
 }
-  
+
 .ownersList li {
   display: inline;
 }
@@ -65,7 +66,7 @@ button {
   margin-top: 10px;
   margin-left: 15px;
 }
-  
+
 .mat-icon {
   font-size: 18px;
   margin-right: 5px;

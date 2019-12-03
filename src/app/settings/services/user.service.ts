@@ -1,7 +1,16 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserEntitiesHttpParams, UserDetails, UserLoginData, UsersApiResponse, UserRolesApiResponse, UpdateUserApiRequest, UpdateUserApiResponse, UserPassword } from '../store/models/user.model';
+import {
+  UserEntitiesHttpParams,
+  UserDetails,
+  UserLoginData,
+  UsersApiResponse,
+  UserRolesApiResponse,
+  UpdateUserApiRequest,
+  UpdateUserApiResponse,
+  UserPassword
+} from '../store/models/user.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -9,12 +18,11 @@ const httpOptions = {
 
 @Injectable()
 export class UserService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getUsers(queryParams: UserEntitiesHttpParams): Observable<UsersApiResponse> {
     const params = this.toHttpParams(queryParams);
-    return this.http.get<UsersApiResponse>(`/users`, {params: params});
+    return this.http.get<UsersApiResponse>(`/users`, { params: params });
   }
 
   getUserRoles(): Observable<UserRolesApiResponse> {
@@ -26,11 +34,11 @@ export class UserService {
   }
 
   addUser(data: UserDetails): Observable<any> {
-    return this.http.post<any>(`/users`, {data: data}, httpOptions);
+    return this.http.post<any>(`/users`, { data: data }, httpOptions);
   }
 
   updateUser(id: string, data: UserDetails): Observable<any> {
-    return this.http.put<any>(`/users/${id}`, {data: data}, httpOptions);
+    return this.http.put<any>(`/users/${id}`, { data: data }, httpOptions);
   }
 
   deleteUser(id: string): Observable<any> {
@@ -38,11 +46,11 @@ export class UserService {
   }
 
   updateUserPassword(user: UserPassword): Observable<any> {
-    return this.http.put<any>(`/users/password/change`, {data: user}, httpOptions);
+    return this.http.put<any>(`/users/password/change`, { data: user }, httpOptions);
   }
 
   loginUser(data: UserLoginData): Observable<any> {
-    return this.http.post<any>(`/users/login`, {data: data}, httpOptions);
+    return this.http.post<any>(`/users/login`, { data: data }, httpOptions);
   }
 
   logoutUser(): Observable<any> {
@@ -51,7 +59,6 @@ export class UserService {
 
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
-    return Object.getOwnPropertyNames(obj)
-        .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
+    return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());
   }
 }

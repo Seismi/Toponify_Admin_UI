@@ -21,72 +21,68 @@ export enum DocumentationStandardActionTypes {
 
   DeleteDocumentationStandard = '[DocumentationStandard] Delete DocumentationStandard entity',
   DeleteDocumentationStandardSuccess = '[DocumentationStandard] Delete DocumentationStandard entity Success',
-  DeleteDocumentationStandardFailure = '[DocumentationStandard] Delete DocumentationStandard entity Failure',
+  DeleteDocumentationStandardFailure = '[DocumentationStandard] Delete DocumentationStandard entity Failure'
 }
 
 export class LoadDocumentationStandards implements Action {
   readonly type = DocumentationStandardActionTypes.LoadDocumentationStandards;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class LoadDocumentationStandardsSuccess implements Action {
   readonly type = DocumentationStandardActionTypes.LoadDocumentationStandardsSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class LoadDocumentationStandardsFailure implements Action {
   readonly type = DocumentationStandardActionTypes.LoadDocumentationStandardsFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class LoadDocumentationStandard implements Action {
   readonly type = DocumentationStandardActionTypes.LoadDocumentationStandard;
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export class LoadDocumentationStandardSuccess implements Action {
   readonly type = DocumentationStandardActionTypes.LoadDocumentationStandardSuccess;
-  constructor(public payload: DocumentStandard) { }
+  constructor(public payload: DocumentStandard) {}
 }
 
 export class LoadDocumentationStandardFailure implements Action {
   readonly type = DocumentationStandardActionTypes.LoadDocumentationStandardFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class AddDocumentationStandard implements Action {
   readonly type = DocumentationStandardActionTypes.AddDocumentationStandard;
-  constructor(public payload: DocumentStandardApiRequest) { }
+  constructor(public payload: DocumentStandardApiRequest) {}
 }
 
 export class AddDocumentationStandardSuccess implements Action {
   readonly type = DocumentationStandardActionTypes.AddDocumentationStandardSuccess;
-  constructor(public payload: DocumentStandard) { }
+  constructor(public payload: DocumentStandard) {}
 }
 
 export class AddDocumentationStandardFailure implements Action {
   readonly type = DocumentationStandardActionTypes.AddDocumentationStandardFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class UpdateDocumentationStandard implements Action {
   readonly type = DocumentationStandardActionTypes.UpdateDocumentationStandard;
-  constructor(public payload: {id: string, data: DocumentStandardApiRequest}) { }
+  constructor(public payload: { id: string; data: DocumentStandardApiRequest }) {}
 }
 
 export class UpdateDocumentationStandardSuccess implements Action {
   readonly type = DocumentationStandardActionTypes.UpdateDocumentationStandardSuccess;
-  constructor(public payload: DocumentStandard) { }
+  constructor(public payload: DocumentStandard) {}
 }
 
 export class UpdateDocumentationStandardFailure implements Action {
   readonly type = DocumentationStandardActionTypes.UpdateDocumentationStandardFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class DeleteDocumentationStandard implements Action {
   readonly type = DocumentationStandardActionTypes.DeleteDocumentationStandard;
@@ -102,10 +98,6 @@ export class DeleteDocumentationStandardFailure implements Action {
   readonly type = DocumentationStandardActionTypes.DeleteDocumentationStandardFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
-
-
-
 
 export type DocumentationStandardActionsUnion =
   | LoadDocumentationStandards
@@ -123,4 +115,3 @@ export type DocumentationStandardActionsUnion =
   | DeleteDocumentationStandard
   | DeleteDocumentationStandardSuccess
   | DeleteDocumentationStandardFailure;
-

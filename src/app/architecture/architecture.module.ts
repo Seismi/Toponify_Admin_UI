@@ -16,10 +16,12 @@ import {
   MatPaginatorModule,
   MatProgressSpinnerModule,
   MatSelectModule,
+  MatSnackBarModule,
   MatSortModule,
   MatTableModule,
   MatTabsModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatToolbarModule
 } from '@angular/material';
 import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
@@ -100,12 +102,14 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
     MatCheckboxModule,
     MatDialogModule,
     MatSortModule,
+    MatSnackBarModule,
     MatListModule,
     ScopeModule,
     LayoutModule,
     MatGridListModule,
     MatSelectModule,
     MatTooltipModule,
+    MatToolbarModule,
     ScopesAndLayoutsModule,
     StoreModule.forFeature('architectureFeature', reducer),
     EffectsModule.forFeature([NodeEffects])
