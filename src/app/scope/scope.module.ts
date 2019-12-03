@@ -6,12 +6,9 @@ import { ScopeEffects } from './store/effects/scope.effects';
 import { reducer } from './store/reducers/scope.reducer';
 
 @NgModule({
-    imports: [
-        StoreModule.forFeature('scopeFeature', reducer),
-        EffectsModule.forFeature([ScopeEffects])
-    ],
-    exports: [],
-    declarations: [],
-    providers: [ScopeService]
+  imports: [StoreModule.forFeature('scopeFeature', reducer), EffectsModule.forFeature([ScopeEffects])],
+  exports: [],
+  declarations: [],
+  providers: [ScopeService]
 })
-export class ScopeModule { }
+export class ScopeModule {}

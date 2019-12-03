@@ -10,7 +10,7 @@ import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.mod
 export class PropertiesTableComponent {
   @Input()
   set data(data: any[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
     }

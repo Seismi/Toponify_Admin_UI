@@ -1,5 +1,14 @@
 import { Action } from '@ngrx/store';
-import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioDetail, RadioApiRequest, RadioEntity, ReplyApiRequest, AdvancedSearchApiRequest, RadiosAdvancedSearch } from '../models/radio.model';
+import {
+  RadioEntitiesHttpParams,
+  RadioEntitiesResponse,
+  RadioDetail,
+  RadioApiRequest,
+  RadioEntity,
+  ReplyApiRequest,
+  AdvancedSearchApiRequest,
+  RadiosAdvancedSearch
+} from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export enum RadioActionTypes {
@@ -31,7 +40,7 @@ export enum RadioActionTypes {
   SearchRadioSuccess = '[Radio] Search Radio Success',
   SearchRadioFailure = '[Radio] Search Radio Failure',
 
-  RadioFilter= '[Radio] Load Radio Filter Data'
+  RadioFilter = '[Radio] Load Radio Filter Data'
 }
 
 export class LoadRadios implements Action {
@@ -49,7 +58,6 @@ export class LoadRadiosFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class LoadRadio implements Action {
   readonly type = RadioActionTypes.LoadRadio;
   constructor(public payload: string) {}
@@ -64,7 +72,6 @@ export class LoadRadioFailure implements Action {
   readonly type = RadioActionTypes.LoadRadioFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class AddRadioEntity implements Action {
   readonly type = RadioActionTypes.AddRadio;
@@ -81,10 +88,9 @@ export class AddRadioEntityFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class AddReply implements Action {
   readonly type = RadioActionTypes.AddReply;
-  constructor(public payload: {entity: ReplyApiRequest, id: string}) {}
+  constructor(public payload: { entity: ReplyApiRequest; id: string }) {}
 }
 
 export class AddReplySuccess implements Action {
@@ -97,10 +103,9 @@ export class AddReplyFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class UpdateRadioProperty implements Action {
   readonly type = RadioActionTypes.UpdateRadioProperty;
-  constructor(public payload: { radioId: string, customPropertyId: string, data: any }) {}
+  constructor(public payload: { radioId: string; customPropertyId: string; data: any }) {}
 }
 
 export class UpdateRadioPropertySuccess implements Action {
@@ -113,10 +118,9 @@ export class UpdateRadioPropertyFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class DeleteRadioProperty implements Action {
   readonly type = RadioActionTypes.DeleteRadioProperty;
-  constructor(public payload: { radioId: string, customPropertyId: string }) {}
+  constructor(public payload: { radioId: string; customPropertyId: string }) {}
 }
 
 export class DeleteRadioPropertySuccess implements Action {
@@ -128,7 +132,6 @@ export class DeleteRadioPropertyFailure implements Action {
   readonly type = RadioActionTypes.DeleteRadioPropertyFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export class SearchRadio implements Action {
   readonly type = RadioActionTypes.SearchRadio;
@@ -150,8 +153,7 @@ export class RadioFilter implements Action {
   constructor(public payload: RadiosAdvancedSearch) {}
 }
 
-
-export type RadioActionsUnion = 
+export type RadioActionsUnion =
   | LoadRadios
   | LoadRadiosSuccess
   | LoadRadiosFailure
@@ -174,5 +176,3 @@ export type RadioActionsUnion =
   | SearchRadioSuccess
   | SearchRadioFailure
   | RadioFilter;
-
-

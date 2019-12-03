@@ -1,60 +1,56 @@
-<smi-right-sidebar
-    *ngIf="showOrHideRightPane"
-    [attributesPage]="true"
-    (rightTab)="openRightTab($event)">
+<smi-right-sidebar *ngIf="showOrHideRightPane" [attributesPage]="true" (rightTab)="openRightTab($event)">
 </smi-right-sidebar>
 
 <app-model-container *ngIf="!showOrHideRightPane">
-    <app-model-sidebar [maxWidth]="600" [isLast]="true">
-        <p class="rightPane">
-            <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
-                <mat-tab label="Details">
-                    <p class="detailsTab">
-                        <smi-object-details-form
-                            [owners]="attribute?.owners"
-                            [group]="objectDetailsForm" 
-                            [isEditable]="isEditable"
-                            (editDetails)="onEditDetails($event)" 
-                            (cancel)="onCancelEdit($event)"
-                            (saveAttribute)="onSaveAttribute($event)"
-                            (deleteAttribute)="onDeleteAttribute($event)" 
-                            [workPackageIsEditable]="workPackageIsEditable"
-                            [selectedOwnerIndex]="selectedOwnerIndex"
-                            (addOwner)="onAddOwner($event)"
-                            (deleteOwner)="onDeleteOwner($event)"
-                            [selectedOwner]="selectedOwner"
-                            (selectOwner)="onSelectOwner($event)"
-                            [attributesPage]="true"
-                            [relatedAttributes]="attribute?.related"
-                            [selectedRelatedIndex]="selectedRelatedIndex"
-                            (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
-                            [selectAttribute]="selectAttribute"
-                            (addRelatedAttribute)="onAddRelatedAttribute()"
-                            (deleteRelatedAttribute)="onDeleteRelatedAttribute()">
-                        </smi-object-details-form>
-                    </p>
-                </mat-tab>
-                <mat-tab label="Properties">
-                    <smi-properties-table-in-attributes-page 
-                        [data]="attribute?.customProperties"
-                        [workPackageIsEditable]="workPackageIsEditable"
-                        (editProperty)="onEditProperty($event)"
-                        (deleteProperty)="onDeleteProperty($event)">
-                    </smi-properties-table-in-attributes-page>
-                </mat-tab>
-                <mat-tab label="RADIO">
-                    <smi-radio-table-in-attributes-page 
-                        [data]="attribute?.relatedRadios">
-                    </smi-radio-table-in-attributes-page>
-                </mat-tab>
-                <mat-tab label="Work Packages">
-                    <smi-workpackage-table-in-attributes-page
-                        [data]="attribute?.relatedWorkPackages">
-                    </smi-workpackage-table-in-attributes-page>
-                </mat-tab>
-            </mat-tab-group>
-            <br>
-            <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
-        </p>
-    </app-model-sidebar>
+  <app-model-sidebar [maxWidth]="600" [isLast]="true">
+    <p class="rightPane">
+      <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
+        <mat-tab label="Details">
+          <p class="detailsTab">
+            <smi-object-details-form
+              [owners]="attribute?.owners"
+              [group]="objectDetailsForm"
+              [isEditable]="isEditable"
+              (editDetails)="onEditDetails($event)"
+              (cancel)="onCancelEdit($event)"
+              (saveAttribute)="onSaveAttribute($event)"
+              (deleteAttribute)="onDeleteAttribute($event)"
+              [workPackageIsEditable]="workPackageIsEditable"
+              [selectedOwnerIndex]="selectedOwnerIndex"
+              (addOwner)="onAddOwner($event)"
+              (deleteOwner)="onDeleteOwner($event)"
+              [selectedOwner]="selectedOwner"
+              (selectOwner)="onSelectOwner($event)"
+              [attributesPage]="true"
+              [relatedAttributes]="attribute?.related"
+              [selectedRelatedIndex]="selectedRelatedIndex"
+              (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
+              [selectAttribute]="selectAttribute"
+              (addRelatedAttribute)="onAddRelatedAttribute()"
+              (deleteRelatedAttribute)="onDeleteRelatedAttribute()"
+            >
+            </smi-object-details-form>
+          </p>
+        </mat-tab>
+        <mat-tab label="Properties">
+          <smi-properties-table-in-attributes-page
+            [data]="attribute?.customProperties"
+            [workPackageIsEditable]="workPackageIsEditable"
+            (editProperty)="onEditProperty($event)"
+            (deleteProperty)="onDeleteProperty($event)"
+          >
+          </smi-properties-table-in-attributes-page>
+        </mat-tab>
+        <mat-tab label="RADIO">
+          <smi-radio-table-in-attributes-page [data]="attribute?.relatedRadios"> </smi-radio-table-in-attributes-page>
+        </mat-tab>
+        <mat-tab label="Work Packages">
+          <smi-workpackage-table-in-attributes-page [data]="attribute?.relatedWorkPackages">
+          </smi-workpackage-table-in-attributes-page>
+        </mat-tab>
+      </mat-tab-group>
+      <br />
+      <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
+    </p>
+  </app-model-sidebar>
 </app-model-container>

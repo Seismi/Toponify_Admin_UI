@@ -8,7 +8,6 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./owners-list.component.scss']
 })
 export class OwnersListComponent {
-
   selectedRowIndex = -1;
 
   @Input()

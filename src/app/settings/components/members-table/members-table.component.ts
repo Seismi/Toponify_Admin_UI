@@ -8,10 +8,9 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
   styleUrls: ['members-table.component.scss']
 })
 export class MembersTableComponent {
-
   @Input()
   set members(data: any[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
     }

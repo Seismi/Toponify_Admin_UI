@@ -3,71 +3,70 @@ import { Injectable } from '@angular/core';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import {
+  AddObjective,
+  AddObjectiveFailure,
+  AddObjectiveSuccess,
+  AddOwner,
+  AddOwnerFailure,
+  AddOwnerSuccess,
+  AddRadio,
+  AddRadioFailure,
+  AddRadioSuccess,
+  AddWorkPackageEntity,
+  AddWorkPackageEntityFailure,
+  AddWorkPackageEntitySuccess,
+  ApproveWorkpackage,
+  ApproveWorkpackageFailure,
+  ApproveWorkpackageSuccess,
+  DeleteObjective,
+  DeleteObjectiveFailure,
+  DeleteObjectiveSuccess,
+  DeleteOwner,
+  DeleteOwnerFailure,
+  DeleteOwnerSuccess,
+  DeleteRadio,
+  DeleteRadioFailure,
+  DeleteRadioSuccess,
+  DeleteWorkPackageEntity,
+  DeleteWorkPackageEntityFailure,
+  DeleteWorkPackageEntitySuccess,
+  GetWorkpackageAvailability,
+  GetWorkpackageAvailabilityFailure,
+  GetWorkpackageAvailabilitySuccess,
+  LoadWorkPackage,
   LoadWorkPackages,
   LoadWorkPackagesFailure,
   LoadWorkPackagesSuccess,
-  WorkPackageActionTypes,
-  AddWorkPackageEntity, 
-  UpdateWorkPackageEntity, 
-  AddWorkPackageEntitySuccess, 
-  AddWorkPackageEntityFailure,
-  UpdateWorkPackageEntitySuccess, 
-  UpdateWorkPackageEntityFailure, 
-  DeleteWorkPackageEntity,
-  DeleteWorkPackageEntitySuccess, 
-  DeleteWorkPackageEntityFailure,
-  LoadWorkPackage, 
-  LoadWorkPackageSuccess, 
-  DeleteOwner, 
-  AddOwner, 
-  AddOwnerSuccess, 
-  AddOwnerFailure, 
-  DeleteOwnerSuccess, 
-  DeleteOwnerFailure, 
-  AddObjective, 
-  AddObjectiveSuccess, 
-  AddObjectiveFailure, 
-  DeleteObjective, 
-  DeleteObjectiveSuccess, 
-  DeleteObjectiveFailure, 
-  AddRadio, 
-  AddRadioSuccess, 
-  AddRadioFailure, 
-  DeleteRadio, 
-  DeleteRadioSuccess, 
-  DeleteRadioFailure, 
-  GetWorkpackageAvailability,
-  GetWorkpackageAvailabilitySuccess,
-  GetWorkpackageAvailabilityFailure,
-  SubmitWorkpackage,
-  SubmitWorkpackageSuccess,
-  SubmitWorkpackageFailure,
-  ApproveWorkpackage,
-  ApproveWorkpackageSuccess,
-  ApproveWorkpackageFailure,
-  RejectWorkpackage,
-  RejectWorkpackageSuccess,
-  RejectWorkpackageFailure,
+  LoadWorkPackageSuccess,
   MergeWorkpackage,
-  MergeWorkpackageSuccess,
   MergeWorkpackageFailure,
+  MergeWorkpackageSuccess,
+  RejectWorkpackage,
+  RejectWorkpackageFailure,
+  RejectWorkpackageSuccess,
   ResetWorkpackage,
-  ResetWorkpackageSuccess,
   ResetWorkpackageFailure,
+  ResetWorkpackageSuccess,
+  SubmitWorkpackage,
+  SubmitWorkpackageFailure,
+  SubmitWorkpackageSuccess,
   SupersedeWorkpackage,
+  SupersedeWorkpackageFailure,
   SupersedeWorkpackageSuccess,
-  SupersedeWorkpackageFailure
+  UpdateWorkPackageEntity,
+  UpdateWorkPackageEntityFailure,
+  UpdateWorkPackageEntitySuccess,
+  WorkPackageActionTypes
 } from '../actions/workpackage.actions';
-import { 
-  WorkPackageEntitiesHttpParams, 
-  WorkPackageEntitiesResponse,
-  WorkPackageDetailApiResponse, 
-  WorkPackageApiRequest, 
-  WorkPackageApiResponse, 
+import {
   OwnersEntityOrApproversEntity,
-  WorkPackageDetail
+  WorkPackageApiRequest,
+  WorkPackageApiResponse,
+  WorkPackageDetailApiResponse,
+  WorkPackageEntitiesHttpParams,
+  WorkPackageEntitiesResponse
 } from '../models/workpackage.models';
 import { State as WorkpackageState } from '../reducers/workpackage.reducer';
 import { Store } from '@ngrx/store';
@@ -88,7 +87,8 @@ export class WorkPackageEffects {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
         switchMap((data: WorkPackageEntitiesResponse) => [
           new LoadWorkPackagesSuccess(data),
-          new GetWorkpackageAvailability({workPackageQuery: []})]),
+          new GetWorkpackageAvailability({ workPackageQuery: [] })
+        ]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
       );
     })
@@ -122,7 +122,7 @@ export class WorkPackageEffects {
   updateWorkPackageEntity$ = this.actions$.pipe(
     ofType<UpdateWorkPackageEntity>(WorkPackageActionTypes.UpdateWorkPackage),
     map(action => action.payload),
-    switchMap((payload: {workPackage: WorkPackageApiRequest, entityId: string}) => {
+    switchMap((payload: { workPackage: WorkPackageApiRequest; entityId: string }) => {
       return this.workpackageService.updateWorkPackageEntity(payload.entityId, payload.workPackage).pipe(
         switchMap((response: WorkPackageApiResponse) => [new UpdateWorkPackageEntitySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageEntityFailure(error)))
@@ -136,7 +136,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((entityId: string) => {
       return this.workpackageService.deleteWorkPackageEntity(entityId).pipe(
-        switchMap((_) => [new DeleteWorkPackageEntitySuccess(entityId)]),
+        switchMap(_ => [new DeleteWorkPackageEntitySuccess(entityId)]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageEntityFailure(error)))
       );
     })
@@ -146,7 +146,7 @@ export class WorkPackageEffects {
   addOwner$ = this.actions$.pipe(
     ofType<AddOwner>(WorkPackageActionTypes.AddOwner),
     map(action => action.payload),
-    mergeMap((payload: { owners: OwnersEntityOrApproversEntity, workPackageId: string, ownerId: string }) => {
+    mergeMap((payload: { owners: OwnersEntityOrApproversEntity; workPackageId: string; ownerId: string }) => {
       return this.workpackageService.addOwner(payload.owners, payload.workPackageId, payload.ownerId).pipe(
         mergeMap((response: any) => [new AddOwnerSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddOwnerFailure(error)))
@@ -158,7 +158,7 @@ export class WorkPackageEffects {
   deleteOwner$ = this.actions$.pipe(
     ofType<DeleteOwner>(WorkPackageActionTypes.DeleteOwner),
     map(action => action.payload),
-    switchMap((payload: {workPackageId: string, ownerId: string}) => {
+    switchMap((payload: { workPackageId: string; ownerId: string }) => {
       return this.workpackageService.deleteOwner(payload.workPackageId, payload.ownerId).pipe(
         switchMap((response: any) => [new DeleteOwnerSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteOwnerFailure(error)))
@@ -170,19 +170,19 @@ export class WorkPackageEffects {
   addObjective$ = this.actions$.pipe(
     ofType<AddObjective>(WorkPackageActionTypes.AddObjective),
     map(action => action.payload),
-    mergeMap((payload: {data: any, workPackageId: string, radioId: string}) => {
+    mergeMap((payload: { data: any; workPackageId: string; radioId: string }) => {
       return this.workpackageService.addObjective(payload.data, payload.workPackageId, payload.radioId).pipe(
         mergeMap((response: any) => [new AddObjectiveSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddObjectiveFailure(error)))
-      )
+      );
     })
-  )
+  );
 
   @Effect()
   deleteObjective$ = this.actions$.pipe(
     ofType<DeleteObjective>(WorkPackageActionTypes.DeleteObjective),
     map(action => action.payload),
-    switchMap((payload: {workPackageId: string, radioId: string}) => {
+    switchMap((payload: { workPackageId: string; radioId: string }) => {
       return this.workpackageService.deleteObjective(payload.workPackageId, payload.radioId).pipe(
         switchMap((response: any) => [new DeleteObjectiveSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteObjectiveFailure(error)))
@@ -206,7 +206,7 @@ export class WorkPackageEffects {
   addRadio$ = this.actions$.pipe(
     ofType<AddRadio>(WorkPackageActionTypes.AddRadio),
     map(action => action.payload),
-    mergeMap((payload: {data: any, workPackageId: string, radioId: string}) => {
+    mergeMap((payload: { data: any; workPackageId: string; radioId: string }) => {
       return this.workpackageService.addRadio(payload.data, payload.workPackageId, payload.radioId).pipe(
         mergeMap((response: any) => [new AddRadioSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddRadioFailure(error)))
@@ -218,7 +218,7 @@ export class WorkPackageEffects {
   deleteRadio$ = this.actions$.pipe(
     ofType<DeleteRadio>(WorkPackageActionTypes.DeleteRadio),
     map(action => action.payload),
-    switchMap((payload: {workPackageId: string, radioId: string}) => {
+    switchMap((payload: { workPackageId: string; radioId: string }) => {
       return this.workpackageService.deleteRadio(payload.workPackageId, payload.radioId).pipe(
         switchMap((response: any) => [new DeleteRadioSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteRadioFailure(error)))

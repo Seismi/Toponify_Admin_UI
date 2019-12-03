@@ -20,7 +20,7 @@ export const scopesAndLayoutsRoutes: Routes = [
             children: [
               {
                 path: ':layoutId',
-                component: LayoutDetailsComponent,
+                component: LayoutDetailsComponent
               }
             ]
           }

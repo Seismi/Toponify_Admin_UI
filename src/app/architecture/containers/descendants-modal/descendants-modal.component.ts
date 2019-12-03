@@ -14,9 +14,7 @@ import { getPotentialWorkPackageNodes } from '@app/architecture/store/selectors/
   templateUrl: './descendants-modal.component.html',
   styleUrls: ['./descendants-modal.component.scss']
 })
-
 export class DescendantsModalComponent implements OnInit {
-
   public descendants$: Observable<DescendantsEntity[]>;
   public displayedColumns: string[] = ['name'];
   public selectedDescendants: DescendantsEntity[] = [];
@@ -30,19 +28,26 @@ export class DescendantsModalComponent implements OnInit {
   constructor(
     private store: Store<WorkPackageState>,
     public dialogRef: MatDialogRef<DescendantsModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.workpackageId = data.workpackageId;
-      this.nodeId = data.nodeId;
-      this.childrenOf = data.childrenOf;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.workpackageId = data.workpackageId;
+    this.nodeId = data.nodeId;
+    this.childrenOf = data.childrenOf;
+  }
 
   ngOnInit() {
-    this.store.dispatch(new FindPotentialWorkpackageNodes({workPackageId: this.workpackageId, nodeId: this.nodeId, data: this.childrenOf}));
+    this.store.dispatch(
+      new FindPotentialWorkpackageNodes({
+        workPackageId: this.workpackageId,
+        nodeId: this.nodeId,
+        data: this.childrenOf
+      })
+    );
     this.descendants$ = this.store.pipe(select(getPotentialWorkPackageNodes));
   }
 
   onSubmit(): void {
-    this.dialogRef.close({descendant: this.selectedDescendants});
+    this.dialogRef.close({ descendant: this.selectedDescendants });
   }
 
   onCancelClick(): void {
@@ -50,12 +55,12 @@ export class DescendantsModalComponent implements OnInit {
   }
 
   onSelect($event: MatSelectChange, children: DescendantsEntity): void {
-    if($event.source.selected) {
-      this.selectedDescendants.push(children)
+    if ($event.source.selected) {
+      this.selectedDescendants.push(children);
     }
-    if(!$event.source.selected) {
-      let index = this.selectedDescendants.indexOf(children);
-      if(index > -1) {
+    if (!$event.source.selected) {
+      const index = this.selectedDescendants.indexOf(children);
+      if (index > -1) {
         this.selectedDescendants.splice(index, 1);
       }
     }
@@ -66,7 +71,6 @@ export class DescendantsModalComponent implements OnInit {
   }
 
   clearInputValue(): void {
-    this.searchInput.nativeElement.value = "";
+    this.searchInput.nativeElement.value = '';
   }
-
 }

@@ -74,10 +74,7 @@ import { ReportDeleteModalComponent } from './containers/report-delete-modal/rep
     ReportModalComponent,
     ReportDeleteModalComponent
   ],
-  entryComponents: [
-    ReportModalComponent, 
-    ReportDeleteModalComponent
-  ],
+  entryComponents: [ReportModalComponent, ReportDeleteModalComponent],
   providers: [ReportService]
 })
 export class ReportLibraryModule {}

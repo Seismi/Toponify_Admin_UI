@@ -6,18 +6,17 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-
-  constructor(
-    private authService: AuthService
-  ) { }
+  constructor(private authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(catchError(err => {
-      if (err.status === 401 || err.status === 403) {
-        this.authService.logout();
-      }
-      const error = err.error.errors.map(message => message.source.detail);
-      return throwError(error);
-    }));
+    return next.handle(request).pipe(
+      catchError(err => {
+        if (err.status === 401 || err.status === 403) {
+          this.authService.logout();
+        }
+        const error = err.error.errors.map(message => message.source.detail);
+        return throwError(error);
+      })
+    );
   }
 }

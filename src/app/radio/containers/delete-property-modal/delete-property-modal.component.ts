@@ -7,16 +7,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./delete-property-modal.component.scss']
 })
 export class DeleteRadioPropertyModalComponent {
-
   public mode: string;
   public name: string;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteRadioPropertyModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.mode = data.mode;
     this.name = data.name;
-    this.mode === 'delete';
   }
 
   onYes() {
@@ -26,5 +25,4 @@ export class DeleteRadioPropertyModalComponent {
   onNo(): void {
     this.dialogRef.close({ mode: 'cancel' });
   }
-
 }

@@ -8,8 +8,7 @@ import { DocumentStandard } from '@app/documentation-standards/store/models/docu
   styleUrls: ['documentation-standards-table.component.scss']
 })
 export class DocumentationStandardsTableComponent {
-
-  selectedRowIndex: number = -1;
+  selectedRowIndex = -1;
 
   @Input()
   set data(data: DocumentStandard[]) {
@@ -33,7 +32,7 @@ export class DocumentationStandardsTableComponent {
   addDocument = new EventEmitter();
 
   onSelectRow(row) {
-    this.selectedRowIndex = row.id
+    this.selectedRowIndex = row.id;
     this.documentSelected.emit(row);
   }
 

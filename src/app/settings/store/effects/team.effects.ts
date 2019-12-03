@@ -6,16 +6,19 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { TeamService } from '../../services/team.service';
 import * as TeamActions from '../actions/team.actions';
 import { TeamActionTypes } from '../actions/team.actions';
-import { AddTeamApiResponse, GetTeamApiResponse, GetTeamEntitiesApiResponse,
-  TeamDetails, TeamEntitiesHttpParams, UpdateTeamApiResponse, MembersEntity } from '../models/team.model';
-
+import {
+  AddTeamApiResponse,
+  GetTeamApiResponse,
+  GetTeamEntitiesApiResponse,
+  TeamDetails,
+  TeamEntitiesHttpParams,
+  UpdateTeamApiResponse,
+  MembersEntity
+} from '../models/team.model';
 
 @Injectable()
 export class TeamEffects {
-  constructor(
-    private actions$: Actions,
-    private teamService: TeamService
-  ) {}
+  constructor(private actions$: Actions, private teamService: TeamService) {}
 
   @Effect()
   loadTeams$ = this.actions$.pipe(
@@ -57,7 +60,7 @@ export class TeamEffects {
   updateTeam$ = this.actions$.pipe(
     ofType<TeamActions.UpdateTeam>(TeamActionTypes.UpdateTeam),
     map(action => action.payload),
-    switchMap((payload: {id: string, data: TeamDetails}) => {
+    switchMap((payload: { id: string; data: TeamDetails }) => {
       return this.teamService.updateTeam(payload.id, payload.data).pipe(
         switchMap((resp: UpdateTeamApiResponse) => [new TeamActions.UpdateTeamSuccess(resp)]),
         catchError((error: HttpErrorResponse) => of(new TeamActions.UpdateTeamFailure(error)))
@@ -81,7 +84,7 @@ export class TeamEffects {
   addMember$ = this.actions$.pipe(
     ofType<TeamActions.AddMember>(TeamActionTypes.AddMember),
     map(action => action.payload),
-    switchMap((payload: {data: MembersEntity, teamId: string, userId: string}) => {
+    switchMap((payload: { data: MembersEntity; teamId: string; userId: string }) => {
       return this.teamService.addMembers(payload.data, payload.teamId, payload.userId).pipe(
         switchMap((response: any) => [new TeamActions.AddMemberSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new TeamActions.AddMemberFailure(error)))
@@ -93,7 +96,7 @@ export class TeamEffects {
   deleteMember$ = this.actions$.pipe(
     ofType<TeamActions.DeleteMember>(TeamActionTypes.DeleteMember),
     map(action => action.payload),
-    switchMap((payload: {teamId: string, userId: string}) => {
+    switchMap((payload: { teamId: string; userId: string }) => {
       return this.teamService.deleteMembers(payload.teamId, payload.userId).pipe(
         switchMap((response: any) => [new TeamActions.DeleteMemberSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new TeamActions.DeleteMemberFailure(error)))

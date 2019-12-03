@@ -8,20 +8,19 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   templateUrl: './objectives-table.component.html',
   styleUrls: ['./objectives-table.component.scss']
 })
-export class ObjectivesTableComponent  {
-
-  @Input() statusDraft: boolean = false;
+export class ObjectivesTableComponent {
+  @Input() statusDraft = false;
 
   @Input()
   set data(data: WorkPackageDetail[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
       this.dataSource.paginator = this.paginator;
     }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  
+
   public displayedColumns: string[] = ['name', 'delete'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 
@@ -33,6 +32,6 @@ export class ObjectivesTableComponent  {
   }
 
   onDelete(radio: RadioEntity): void {
-    this.deleteObjective.emit(radio)
+    this.deleteObjective.emit(radio);
   }
 }

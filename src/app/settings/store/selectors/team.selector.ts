@@ -4,21 +4,21 @@ import { State } from '../reducers/team.reducer';
 export const getTeamFeatureState = createFeatureSelector<State>('teamFeature');
 
 export const getTeamEntities = createSelector(
-    getTeamFeatureState,
-    state => state.entities
+  getTeamFeatureState,
+  state => state.entities
 );
 
 export const getTeamSelected = createSelector(
-    getTeamFeatureState,
-    state => state.selected
+  getTeamFeatureState,
+  state => state.selected
 );
 
 export const getTeamLoading = createSelector(
-    getTeamFeatureState,
-    state => state.loading
+  getTeamFeatureState,
+  state => state.loading
 );
 
 export const getTeamError = createSelector(
-    getTeamFeatureState,
-    state => state.error
+  getTeamFeatureState,
+  state => state.error
 );

@@ -1,19 +1,25 @@
 <form [formGroup]="group">
-  <div [ngClass]="{disabled: !workPackageIsEditable}">
+  <div [ngClass]="{ disabled: !workPackageIsEditable }">
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: workPackageIsEditable }">
+      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: workPackageIsEditable }" />
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Category" formControlName="category" [readonly]="true">
+      <input matInput placeholder="Category" formControlName="category" [readonly]="true" />
     </mat-form-field>
 
     <mat-form-field>
-      <textarea matInput placeholder="Description" rows="4" formControlName="description" [ngClass]="{ editable: workPackageIsEditable }"></textarea>
+      <textarea
+        matInput
+        placeholder="Description"
+        rows="4"
+        formControlName="description"
+        [ngClass]="{ editable: workPackageIsEditable }"
+      ></textarea>
     </mat-form-field>
 
     <mat-form-field *ngIf="!clickedOnLink">
-      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: workPackageIsEditable }">
+      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: workPackageIsEditable }" />
     </mat-form-field>
   </div>
 
@@ -31,22 +37,27 @@
       [selectedOwner]="selectedOwner"
       (selectOwner)="onSelectOwner($event)"
       (addOwner)="onAddOwner()"
-      (deleteOwner)="onDeleteOwner()">
+      (deleteOwner)="onDeleteOwner()"
+    >
     </smi-owners-table-in-architecture>
     <smi-descendants-table-in-architecture
-      *ngIf="!clickedOnLink && !attributesPage" [data]="descendants"
+      *ngIf="!clickedOnLink && !attributesPage"
+      [data]="descendants"
       [isEditable]="workPackageIsEditable"
       (addDescendant)="onAddDescendant()"
-      (deleteDescendant)="onDeleteDescendant($event)">
+      (deleteDescendant)="onDeleteDescendant($event)"
+    >
     </smi-descendants-table-in-architecture>
     <smi-related-attribute-table
-      *ngIf="attributesPage" [data]="relatedAttributes"
+      *ngIf="attributesPage"
+      [data]="relatedAttributes"
       [isEditable]="workPackageIsEditable"
       [selectedRelatedIndex]="selectedRelatedIndex"
       (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
       [selectAttribute]="selectAttribute"
       (addRelatedAttribute)="onAddRelatedAttribute()"
-      (deleteRelatedAttribute)="onDeleteRelatedAttribute()">
+      (deleteRelatedAttribute)="onDeleteRelatedAttribute()"
+    >
     </smi-related-attribute-table>
   </div>
 </form>

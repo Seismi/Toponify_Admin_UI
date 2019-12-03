@@ -4,7 +4,7 @@
     <mat-label>Scopes</mat-label>
     <mat-select>
       <mat-option *ngFor="let scope of scopes$ | async" [value]="scope.name" (click)="onSelect(scope)">
-        {{scope.name}}
+        {{ scope.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>

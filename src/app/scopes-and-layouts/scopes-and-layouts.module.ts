@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ScopesAndLayoutsRoutingComponent } from './containers/scopes-and-layouts-routing.component';
 import { ScopesAndLayoutsRoutingModule } from './scopes-and-layouts-routing.module';
 import { CoreModule } from '@app/core/core.module';
-import { 
+import {
   MatTableModule,
   MatPaginatorModule,
   MatButtonModule,
@@ -59,23 +59,23 @@ import { LayoutModalComponent } from './containers/layout-modal/layout-modal.com
   ],
   exports: [],
   declarations: [
-      ScopesAndLayoutsComponent,
-      ScopesAndLayoutsRoutingComponent,
-      ScopesTableComponent,
-      LayoutsTableComponent,
-      LayoutsDetailComponent,
-      ScopesDetailComponent,
-      ScopeDetailsComponent,
-      LayoutDetailsComponent,
-      ScopeModalComponent,
-      OwnersDropdownComponent,
-      ViewersDropdownComponent,
-      DeleteScopesAndLayoutsModalComponent,
-      OwnersListComponent,
-      ViewersListComponent,
-      LayoutModalComponent
-    ],
+    ScopesAndLayoutsComponent,
+    ScopesAndLayoutsRoutingComponent,
+    ScopesTableComponent,
+    LayoutsTableComponent,
+    LayoutsDetailComponent,
+    ScopesDetailComponent,
+    ScopeDetailsComponent,
+    LayoutDetailsComponent,
+    ScopeModalComponent,
+    OwnersDropdownComponent,
+    ViewersDropdownComponent,
+    DeleteScopesAndLayoutsModalComponent,
+    OwnersListComponent,
+    ViewersListComponent,
+    LayoutModalComponent
+  ],
   providers: [],
-  entryComponents: [ ScopeModalComponent, DeleteScopesAndLayoutsModalComponent, LayoutModalComponent ]
+  entryComponents: [ScopeModalComponent, DeleteScopesAndLayoutsModalComponent, LayoutModalComponent]
 })
-export class ScopesAndLayoutsModule { }
+export class ScopesAndLayoutsModule {}

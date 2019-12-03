@@ -7,7 +7,6 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./layouts-detail.component.scss']
 })
 export class LayoutsDetailComponent {
-
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() modalMode = false;
@@ -29,7 +28,7 @@ export class LayoutsDetailComponent {
     this.isEditable = false;
     this.saveLayout.emit();
   }
-  
+
   onCancel() {
     this.isEditable = false;
   }
@@ -37,5 +36,4 @@ export class LayoutsDetailComponent {
   onDelete() {
     this.deleteLayout.emit();
   }
-
 }

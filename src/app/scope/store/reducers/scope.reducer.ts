@@ -22,7 +22,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: ScopeActionsUnion): State {
   switch (action.type) {
-
     case ScopeActionTypes.LoadScopes: {
       return {
         ...initialState,
@@ -36,7 +35,7 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
         loading: false,
         entities: action.payload.data,
         links: action.payload.links,
-        page: action.payload.page,
+        page: action.payload.page
       };
     }
 
