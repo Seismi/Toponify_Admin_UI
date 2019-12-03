@@ -10,15 +10,21 @@ import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
   styleUrls: ['./object-details-form.component.scss']
 })
 export class ObjectDetailsFormComponent {
+  public group: FormGroup;
+  private values;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
-  @Input() group: FormGroup;
-  @Input() clickedOnLink: boolean = false;
-  @Input() isEditable: boolean = false;
-  @Input() workPackageIsEditable: boolean = false;
+  @Input('group') set setGroup(group) {
+    console.log('set group');
+    this.group = group;
+    this.values = group.value;
+  }
+  @Input() clickedOnLink = false;
+  @Input() isEditable = false;
+  @Input() workPackageIsEditable = false;
   @Input() selectedOwner: boolean;
   @Input() selectedOwnerIndex: string | null;
-  @Input() attributesPage: boolean = false;
+  @Input() attributesPage = false;
   @Input() relatedAttributes: AttributeEntity[];
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
@@ -59,7 +65,7 @@ export class ObjectDetailsFormComponent {
   }
 
   onCancel(): void {
-    this.cancel.emit();
+    this.group.reset(this.values);
   }
 
   onDelete(): void {
@@ -97,5 +103,4 @@ export class ObjectDetailsFormComponent {
   onDeleteRelatedAttribute(): void {
     this.deleteRelatedAttribute.emit();
   }
-
 }

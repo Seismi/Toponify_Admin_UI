@@ -6,14 +6,16 @@ import { WorkPackageService } from './workpackage.service';
 import {
   WorkpackageNode,
   WorkpackageNodeCustomProperty,
-  WorkPackageNodeScopesApiResponse,
+  WorkPackageNodeFindPotential,
   WorkPackageNodeScopeApiResponse,
-  WorkPackageNodeFindPotential
+  WorkPackageNodeScopesApiResponse
 } from '../store/models/workpackage.models';
 import { HttpParams } from '@angular/common/http';
-import { WorkPackageNodeDescendantsApiResponse, DescendantsEntity } from '@app/architecture/store/models/node.model';
-import { NodesApiResponse } from '@app/nodes/store/models/node.model';
-
+import {
+  DescendantsEntity,
+  NodesApiResponse,
+  WorkPackageNodeDescendantsApiResponse
+} from '@app/architecture/store/models/node.model';
 
 export interface GetWorkPackageNodeScopesQueryParams {
   workPackageQuery?: string[];
@@ -58,18 +60,28 @@ export class WorkPackageNodesService extends WorkPackageService {
    * Get the descendants of an architecture node
    * FIXME: missing types
    */
-  findPotentialWorkPackageNodes(workPackageId: string, nodeId: string, data: WorkPackageNodeFindPotential): Observable<WorkPackageNodeDescendantsApiResponse> {
-    return this.http.post<WorkPackageNodeDescendantsApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/children/find/potential/`, {data: data}, this.httpOptions);
+  findPotentialWorkPackageNodes(
+    workPackageId: string,
+    nodeId: string,
+    data: WorkPackageNodeFindPotential
+  ): Observable<WorkPackageNodeDescendantsApiResponse> {
+    return this.http.post<WorkPackageNodeDescendantsApiResponse>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/children/find/potential/`,
+      { data: data },
+      this.httpOptions
+    );
   }
-
 
   getNodeDescendants(workPackageId: string, nodeId: string): Observable<any> {
     return this.http.get<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants`);
   }
 
-
   addNodeDescendant(workPackageId: string, nodeId: string, data: DescendantsEntity): Observable<NodesApiResponse> {
-    return this.http.post<NodesApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/children`, {data: data}, this.httpOptions);
+    return this.http.post<NodesApiResponse>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/children`,
+      { data: data },
+      this.httpOptions
+    );
   }
 
   /**
@@ -154,13 +166,20 @@ export class WorkPackageNodesService extends WorkPackageService {
     );
   }
 
-  getWorkPackageNodeScopes(nodeId: string, queryParams?: GetWorkPackageNodeScopesQueryParams): Observable<WorkPackageNodeScopesApiResponse> {
+  getWorkPackageNodeScopes(
+    nodeId: string,
+    queryParams?: GetWorkPackageNodeScopesQueryParams
+  ): Observable<WorkPackageNodeScopesApiResponse> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
-    return this.http.get<WorkPackageNodeScopesApiResponse>(`/nodes/${nodeId}/scopes`, {params: params});
+    return this.http.get<WorkPackageNodeScopesApiResponse>(`/nodes/${nodeId}/scopes`, { params: params });
   }
 
   addWorkPackageNodeScope(scopeId: string, data: string[]): Observable<WorkPackageNodeScopeApiResponse> {
-    return this.http.post<WorkPackageNodeScopeApiResponse>(`/scopes/${scopeId}/nodes`, {data: data}, this.httpOptions);
+    return this.http.post<WorkPackageNodeScopeApiResponse>(
+      `/scopes/${scopeId}/nodes`,
+      { data: data },
+      this.httpOptions
+    );
   }
 
   deleteWorkPackageNodeScope(scopeId: string, nodeId: string): Observable<WorkPackageNodeScopeApiResponse> {
@@ -176,11 +195,9 @@ export class WorkPackageNodesService extends WorkPackageService {
           httpParams = httpParams.append(`${key}[]`, item);
         });
       } else {
-        
         httpParams = httpParams.set(key, obj[key]);
       }
     });
     return httpParams;
   }
-
 }

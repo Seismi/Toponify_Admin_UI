@@ -1,13 +1,9 @@
 <app-base-header>
   <smi-node-name *ngIf="parentName" [parentName]="parentName"></smi-node-name>
-  <app-toolbar-column [fillFreeSpace]="true">
-  </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
   <app-search></app-search>
   <app-toolbar-column>
-    <app-zoom-actions
-      (zoomIn)="onZoomIn()"
-      (zoomOut)="onZoomOut()"
-    ></app-zoom-actions>
+    <app-zoom-actions (zoomIn)="onZoomIn()" (zoomOut)="onZoomOut()"></app-zoom-actions>
     <app-layout-actions
       *ngIf="!attributesView"
       (showGrid)="onShowGrid()"
@@ -25,6 +21,7 @@
       [layouts]="scopeDetails$ | async"
       (selectScope)="onSelectScope($event)"
       (selectLayout)="onSelectLayout($event)"
+      [selectedLayout]="selectedLayout$ | async"
     >
     </smi-quicklinks-actions>
   </app-toolbar-column>
@@ -36,36 +33,41 @@
     [workPackageIsEditable]="workPackageIsEditable"
   >
   </smi-left-sidebar>
-    <p class="leftPane" *ngIf="showOrHideLeftPane">
-      <smi-left-panel
-        [tabIndex]="editTabIndex"
-        (tabClick)="onTabClick($event)"
-        [viewLevel]="viewLevel$ | async"
-        [workpackages]="workpackage$ | async"
-        [workPackageIsEditable]="workPackageIsEditable"
-        (displayOptionsChangedEvent)="displayOptionsChanged($event)"
-        (selectWorkPackage)="onSelectWorkPackage($event)"
-        (selectColour)="selectColourForWorkPackage($event)"
-        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-        [selectedLeftTab]="selectedLeftTab"
-        [checked]="radioAlertChecked"
-        [canSelectWorkpackages]="canSelectWorkpackages"
-        (hideLeftPane)="onHideLeftPane()"
-        [layoutSettingsTab]="layoutSettingsTab"
-        (addLayout)="onAddLayout()">
-      </smi-left-panel>
-    </p>
+  <p class="leftPane" *ngIf="showOrHideLeftPane">
+    <smi-left-panel
+      [tabIndex]="editTabIndex"
+      (tabClick)="onTabClick($event)"
+      [viewLevel]="viewLevel$ | async"
+      [workpackages]="workpackage$ | async"
+      [workPackageIsEditable]="workPackageIsEditable"
+      (displayOptionsChangedEvent)="displayOptionsChanged($event)"
+      (selectWorkPackage)="onSelectWorkPackage($event)"
+      (selectColour)="selectColourForWorkPackage($event)"
+      (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+      [selectedLeftTab]="selectedLeftTab"
+      [checked]="radioAlertChecked"
+      [canSelectWorkpackages]="canSelectWorkpackages"
+      (hideLeftPane)="onHideLeftPane()"
+      [layoutSettingsTab]="layoutSettingsTab"
+      (addLayout)="onAddLayout()"
+    >
+    </smi-left-panel>
+  </p>
   <app-model-content>
-    <smi-switch-view-tabs (viewChange)="onViewChange($event)" [selectedView]="selectedView" [viewLevel]="viewLevel$ | async"></smi-switch-view-tabs>
-    <div style="padding: 5px" [hidden]="selectedView!==ArchitectureView.Diagram">
+    <smi-switch-view-tabs
+      (viewChange)="onViewChange($event)"
+      [selectedView]="selectedView"
+      [viewLevel]="viewLevel$ | async"
+    ></smi-switch-view-tabs>
+    <div style="padding: 5px" [hidden]="selectedView !== ArchitectureView.Diagram">
       <app-architecture-diagram
         [mapView]="mapView"
         [showGrid]="showGrid"
         [allowMove]="allowMove"
         [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
-        [nodes]="nodes | layer: { byId: true, params: params}"
-        [links]="links | layer: { byId: false, params: params}"
+        [nodes]="nodes | layer: { byId: true, params: params }"
+        [links]="links | layer: { byId: false, params: params }"
         [workpackageDetail]="workpackageDetail"
         [selectedId]="selectedId"
         [selectedWorkPackages]="selectedWorkPackages$ | async"
@@ -80,18 +82,22 @@
       </app-architecture-diagram>
     </div>
     <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.System">
-      <smi-architecture-table-view [data]="nodes | layer: { byId: true, params: params }"
-                                   [selectedItem]="selectedNode"
-                                   (selectNode)="onSelectNode($event)"
-                                   (changeLevel)="onChangeLevel($event)"
-                                   [view]="'system'"></smi-architecture-table-view>
+      <smi-architecture-table-view
+        [data]="nodes | layer: { byId: true, params: params }"
+        [selectedItem]="selectedNode"
+        (selectNode)="onSelectNode($event)"
+        (changeLevel)="onChangeLevel($event)"
+        [view]="'system'"
+      ></smi-architecture-table-view>
     </div>
     <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.Links">
-      <smi-architecture-table-view [data]="links | layer: { byId: false, params: params }"
-                                   [selectedItem]="selectedNode"
-                                   (selectNode)="onSelectNode($event)"
-                                   (changeLevel)="onChangeLevel($event)"
-                                   [view]="'link'"></smi-architecture-table-view>
+      <smi-architecture-table-view
+        [data]="links | layer: { byId: false, params: params }"
+        [selectedItem]="selectedNode"
+        (selectNode)="onSelectNode($event)"
+        (changeLevel)="onChangeLevel($event)"
+        [view]="'link'"
+      ></smi-architecture-table-view>
     </div>
   </app-model-content>
   <smi-right-sidebar
@@ -103,12 +109,7 @@
     [architectureDetailsTab]="detailsTab"
   >
   </smi-right-sidebar>
-  <app-model-sidebar
-    [isLast]="true"
-    [minWidth]="400"
-    [maxWidth]="600"
-    *ngIf="showOrHideRightPane"
-  >
+  <app-model-sidebar [isLast]="true" [minWidth]="400" [maxWidth]="600" *ngIf="showOrHideRightPane">
     <p class="rightPane">
       <smi-right-panel
         [owners]="selectedNode?.owners"

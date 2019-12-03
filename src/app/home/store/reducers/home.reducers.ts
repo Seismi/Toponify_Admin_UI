@@ -29,7 +29,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: HomePageActionsUnion): State {
   switch (action.type) {
-
     case HomePageActionTypes.LoadMyWorkPackages: {
       return {
         ...state
@@ -53,7 +52,6 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
         loading: false
       };
     }
-
 
     case HomePageActionTypes.LoadMyRadios: {
       return {
@@ -95,7 +93,6 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
         loading: false
       };
     }
-
 
     case HomePageActionTypes.LoadMyProfile: {
       return {

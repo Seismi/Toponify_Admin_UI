@@ -1,26 +1,26 @@
-header{
+header {
   position: fixed;
   top: 0;
   z-index: 11;
   transition: all 50ms ease-in-out;
 }
 
-.main-header{
+.main-header {
   @extend header;
-  &.hidden{
+  &.hidden {
     opacity: 0;
   }
 }
 
-.search-block{
+.search-block {
   width: 0%;
   right: 0;
   @extend header;
   background: #fff;
-  &.active{
+  &.active {
     width: 100%;
   }
-  .search-control{
+  .search-control {
     flex: 1;
     font-size: 1rem;
     border: 0;

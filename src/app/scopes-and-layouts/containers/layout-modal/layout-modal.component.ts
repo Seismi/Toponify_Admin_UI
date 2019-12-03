@@ -19,15 +19,12 @@ import { Actions, ofType } from '@ngrx/effects';
   styleUrls: ['./layout-modal.component.scss'],
   providers: [LayoutsDetailService, LayoutsValidatorService]
 })
-
 export class LayoutModalComponent implements OnInit {
-
   isEditable = true;
   modalMode = true;
   teams$: Observable<TeamEntity[]>;
   error: string;
   scope: any;
-
 
   constructor(
     private sharedService: SharedService,
@@ -35,9 +32,10 @@ export class LayoutModalComponent implements OnInit {
     private layoutsDetailService: LayoutsDetailService,
     private store: Store<TeamState>,
     public dialogRef: MatDialogRef<LayoutModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.scope = data.scope;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.scope = data.scope;
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadTeams({}));
@@ -49,13 +47,15 @@ export class LayoutModalComponent implements OnInit {
   }
 
   onSave() {
-    this.store.dispatch(new AddLayout({
-      id: null,
-      name: this.layoutsDetailForm.value.name,
-      owners: this.sharedService.selectedOwners,
-      viewers: this.sharedService.selectedViewers,
-      scope: this.scope
-    }))
+    this.store.dispatch(
+      new AddLayout({
+        id: null,
+        name: this.layoutsDetailForm.value.name,
+        owners: this.sharedService.selectedOwners,
+        viewers: this.sharedService.selectedViewers,
+        scope: this.scope
+      })
+    );
 
     // Error
     this.actions.pipe(ofType(LayoutActionTypes.AddLayoutFailure)).subscribe((error: any) => {
@@ -76,5 +76,4 @@ export class LayoutModalComponent implements OnInit {
     this.sharedService.selectedOwners = [];
     this.sharedService.selectedViewers = [];
   }
-
 }

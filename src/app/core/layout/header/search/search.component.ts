@@ -12,17 +12,16 @@ import { Store, select } from '@ngrx/store';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-
   public results$: Observable<SearchEntity[]>;
-  
-  public toggleSearch: boolean = false;
+
+  public toggleSearch = false;
 
   @ViewChildren('inp') inp: any;
 
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent): void {
-    if(this.toggleSearch === true && event.key === 'Escape') {
+    if (this.toggleSearch === true && event.key === 'Escape') {
       this.toggleSearch = false;
-      this.inp.first.nativeElement.value = "";
+      this.inp.first.nativeElement.value = '';
     }
   }
 
@@ -48,5 +47,4 @@ export class SearchComponent implements OnInit {
   searchClose(): void {
     this.toggleSearch = false;
   }
-
 }

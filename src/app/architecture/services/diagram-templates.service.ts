@@ -381,15 +381,20 @@ export class DiagramTemplatesService {
           maxSize: new go.Size(100, Infinity),
           margin: sectionMargin
         },
-        section.isArray ?
-          new go.Binding('text', section.sectionName, function(input) {
-            return input.length > 0 ?
-              section.initialText + input.map(function(obj) {return obj.name; }).join(', ') :
-              '';
-          }) :
-          new go.Binding('text', section.sectionName, function(input) {
+        section.isArray
+          ? new go.Binding('text', section.sectionName, function(input) {
+              return input.length > 0
+                ? section.initialText +
+                    input
+                      .map(function(obj) {
+                        return obj.name;
+                      })
+                      .join(', ')
+                : '';
+            })
+          : new go.Binding('text', section.sectionName, function(input) {
               return input ? section.initialText + input : '';
-          }),
+            }),
         new go.Binding('visible', section.sectionName).ofModel()
       );
     });

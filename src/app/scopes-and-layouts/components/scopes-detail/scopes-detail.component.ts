@@ -7,7 +7,6 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./scopes-detail.component.scss']
 })
 export class ScopesDetailComponent {
-
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() modalMode = false;
@@ -32,7 +31,7 @@ export class ScopesDetailComponent {
     this.isEditable = false;
     this.saveScope.emit();
   }
-  
+
   onCancel() {
     this.isEditable = false;
   }
@@ -40,5 +39,4 @@ export class ScopesDetailComponent {
   onDelete() {
     this.deleteScope.emit();
   }
-  
 }

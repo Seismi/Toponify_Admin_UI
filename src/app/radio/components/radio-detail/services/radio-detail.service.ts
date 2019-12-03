@@ -4,7 +4,6 @@ import { RadioValidatorService } from './radio-detail-validator.service';
 
 @Injectable()
 export class RadioDetailService {
-
   public radioDetailsForm: FormGroup;
 
   constructor(private fb: FormBuilder, private radioValidatorService: RadioValidatorService) {

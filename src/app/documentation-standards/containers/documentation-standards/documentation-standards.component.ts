@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { State as DocumentationStandardState } from '../../store/reducers/documentation-standards.reducer'
-import { LoadDocumentationStandards, AddDocumentationStandard } from '../../store/actions/documentation-standards.actions';
+import { State as DocumentationStandardState } from '../../store/reducers/documentation-standards.reducer';
+import {
+  LoadDocumentationStandards,
+  AddDocumentationStandard
+} from '../../store/actions/documentation-standards.actions';
 import { getDocumentStandards } from '../../store/selectors/documentation-standards.selector';
 import { Observable } from 'rxjs';
 import { DocumentStandard } from '../../store/models/documentation-standards.model';
@@ -10,14 +13,12 @@ import { MatDialog } from '@angular/material';
 import { DocumentModalComponent } from '../document-modal/document-modal.component';
 import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
 
-
 @Component({
   selector: 'smi-documentation-standards-component',
   templateUrl: 'documentation-standards.component.html',
   styleUrls: ['documentation-standards.component.scss']
 })
 export class DocumentationStandardsComponent implements OnInit {
-
   documentStandards$: Observable<DocumentStandard[]>;
   documentStandard: DocumentStandard;
 
@@ -26,7 +27,7 @@ export class DocumentationStandardsComponent implements OnInit {
     private store: Store<DocumentationStandardState>,
     private router: Router,
     public dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.store.dispatch(new LoadDocumentationStandards({}));
@@ -34,7 +35,7 @@ export class DocumentationStandardsComponent implements OnInit {
   }
 
   onSelectDocument(row) {
-    this.router.navigate(['documentation-standards', row.id], {queryParamsHandling: 'preserve' });
+    this.router.navigate(['documentation-standards', row.id], { queryParamsHandling: 'preserve' });
   }
 
   onAddDocument() {
@@ -46,18 +47,19 @@ export class DocumentationStandardsComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.documentStandard) {
-        this.store.dispatch(new AddDocumentationStandard({
-          data: {
-            name: data.documentStandard.name,
-            description: data.documentStandard.description,
-            type: data.documentStandard.type,
-            levels: this.documentationStandardsService.selectedLevels
-          }
-        }))
+        this.store.dispatch(
+          new AddDocumentationStandard({
+            data: {
+              name: data.documentStandard.name,
+              description: data.documentStandard.description,
+              type: data.documentStandard.type,
+              levels: this.documentationStandardsService.selectedLevels
+            }
+          })
+        );
       }
     });
   }
-
 }

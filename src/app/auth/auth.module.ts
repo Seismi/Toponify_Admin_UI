@@ -14,7 +14,6 @@ import { JWTInterceptor } from './services/jwt-interceptor.service';
 import { ErrorInterceptor } from './services/error-Interceptor.service';
 import { AuthGuard } from './guards/auth.guard';
 
-
 @NgModule({
   imports: [
     HttpClientModule,
@@ -37,11 +36,12 @@ import { AuthGuard } from './guards/auth.guard';
       provide: HTTP_INTERCEPTORS,
       useClass: JWTInterceptor,
       multi: true
-    }, {
+    },
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
       multi: true
-    },
-  ],
+    }
+  ]
 })
-export class AuthModule { }
+export class AuthModule {}

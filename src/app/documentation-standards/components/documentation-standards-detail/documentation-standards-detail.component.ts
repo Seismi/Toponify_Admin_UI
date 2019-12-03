@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 
@@ -8,7 +8,6 @@ import { Constants } from '@app/core/constants';
   styleUrls: ['documentation-standards-detail.component.scss']
 })
 export class DocumentationStandardsDetailComponent {
-
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() isDisabled = true;

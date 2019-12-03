@@ -1,6 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { AttributeEntitiesResponse, AttributeDetail, AttributeEntity, AttributeApiRequest, AttributeDetailApiRequest, CustomPropertyValues, CustomPropertiesApiRequest } from '../models/attributes.model';
+import {
+  AttributeEntitiesResponse,
+  AttributeDetail,
+  AttributeEntity,
+  AttributeApiRequest,
+  AttributeDetailApiRequest,
+  CustomPropertyValues,
+  CustomPropertiesApiRequest
+} from '../models/attributes.model';
 import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
 
 export enum AttributeActionTypes {
@@ -19,7 +27,7 @@ export enum AttributeActionTypes {
   AddAttribute = '[Attribute] Add Attribute',
   AddAttributeSuccess = '[Attribute] Add Attribute Success',
   AddAttributeFailure = '[Attribute] Add Attribute Fail',
-  
+
   DeleteAttribute = '[Attribute] Delete Attribute',
   DeleteAttributeSuccess = '[Attribute] Delete Attribute Success',
   DeleteAttributeFailure = '[Attribute] Delete Attribute Fail',
@@ -64,10 +72,9 @@ export class LoadAttributesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class LoadAttribute implements Action {
   readonly type = AttributeActionTypes.LoadAttribute;
-  constructor(public payload: { id: string, queryParams?: any }) {}
+  constructor(public payload: { id: string; queryParams?: any }) {}
 }
 
 export class LoadAttributeSuccess implements Action {
@@ -80,10 +87,9 @@ export class LoadAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class UpdateAttribute implements Action {
   readonly type = AttributeActionTypes.UpdateAttribute;
-  constructor(public payload: { workPackageId: string, attributeId: string, entity: AttributeDetailApiRequest }) {}
+  constructor(public payload: { workPackageId: string; attributeId: string; entity: AttributeDetailApiRequest }) {}
 }
 
 export class UpdateAttributeSuccess implements Action {
@@ -96,10 +102,9 @@ export class UpdateAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class AddAttribute implements Action {
   readonly type = AttributeActionTypes.AddAttribute;
-  constructor(public payload: { workPackageId: string, entity: AttributeApiRequest }) {}
+  constructor(public payload: { workPackageId: string; entity: AttributeApiRequest }) {}
 }
 
 export class AddAttributeSuccess implements Action {
@@ -112,10 +117,9 @@ export class AddAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class DeleteAttribute implements Action {
   readonly type = AttributeActionTypes.DeleteAttribute;
-  constructor(public payload: { workPackageId: string, attributeId: string }) {}
+  constructor(public payload: { workPackageId: string; attributeId: string }) {}
 }
 
 export class DeleteAttributeSuccess implements Action {
@@ -130,7 +134,14 @@ export class DeleteAttributeFailure implements Action {
 
 export class AddOwner implements Action {
   readonly type = AttributeActionTypes.AddOwner;
-  constructor(public payload: { workPackageId: string, attributeId: string, ownerId: string, entity: OwnersEntityOrApproversEntity }) {}
+  constructor(
+    public payload: {
+      workPackageId: string;
+      attributeId: string;
+      ownerId: string;
+      entity: OwnersEntityOrApproversEntity;
+    }
+  ) {}
 }
 
 export class AddOwnerSuccess implements Action {
@@ -145,7 +156,7 @@ export class AddOwnerFailure implements Action {
 
 export class DeleteOwner implements Action {
   readonly type = AttributeActionTypes.DeleteOwner;
-  constructor(public payload: { workPackageId: string, attributeId: string, ownerId: string }) {}
+  constructor(public payload: { workPackageId: string; attributeId: string; ownerId: string }) {}
 }
 
 export class DeleteOwnerSuccess implements Action {
@@ -158,10 +169,16 @@ export class DeleteOwnerFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class UpdateProperty implements Action {
   readonly type = AttributeActionTypes.UpdateProperty;
-  constructor(public payload: { workPackageId: string, attributeId: string, customPropertyId: string, entity: CustomPropertiesApiRequest }) {}
+  constructor(
+    public payload: {
+      workPackageId: string;
+      attributeId: string;
+      customPropertyId: string;
+      entity: CustomPropertiesApiRequest;
+    }
+  ) {}
 }
 
 export class UpdatePropertySuccess implements Action {
@@ -174,10 +191,9 @@ export class UpdatePropertyFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class DeleteProperty implements Action {
   readonly type = AttributeActionTypes.DeleteProperty;
-  constructor(public payload: { workPackageId: string, attributeId: string, customPropertyId: string }) {}
+  constructor(public payload: { workPackageId: string; attributeId: string; customPropertyId: string }) {}
 }
 
 export class DeletePropertySuccess implements Action {
@@ -190,10 +206,9 @@ export class DeletePropertyFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class AddRelated implements Action {
   readonly type = AttributeActionTypes.AddRelated;
-  constructor(public payload: { workPackageId: string, attributeId: string, relatedAttributeId: string }) {}
+  constructor(public payload: { workPackageId: string; attributeId: string; relatedAttributeId: string }) {}
 }
 
 export class AddRelatedSuccess implements Action {
@@ -206,10 +221,9 @@ export class AddRelatedFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-
 export class DeleteRelated implements Action {
   readonly type = AttributeActionTypes.DeleteRelated;
-  constructor(public payload: { workPackageId: string, attributeId: string, relatedAttributeId: string }) {}
+  constructor(public payload: { workPackageId: string; attributeId: string; relatedAttributeId: string }) {}
 }
 
 export class DeleteRelatedSuccess implements Action {
@@ -221,7 +235,6 @@ export class DeleteRelatedFailure implements Action {
   readonly type = AttributeActionTypes.DeleteRelatedFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
-
 
 export type AttributeActionsUnion =
   | LoadAttributes

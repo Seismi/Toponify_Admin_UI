@@ -1,64 +1,66 @@
-import { Component, Injectable, ViewChild, AfterViewInit, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Injectable, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
+import { FormControl } from '@angular/forms';
 
 export class Node {
-    children: Node[];
-    item: string;
+  children: Node[];
+  item: string;
 }
 
 export class FlatNode {
-    item: string;
-    level: number;
-    expandable: boolean;
+  item: string;
+  level: number;
+  expandable: boolean;
 }
 
 const Levels = {
-    'Work Packages': null,
-    'Systems - All': {
-        'System - Transactional': null,
-        'System - Analytical': null,
-        'System - Reporting': null,
-        'System - MasterData': null,
-        'System - Files': null
+  'Work Packages': null,
+  'Systems - All': {
+    'System - Transactional': null,
+    'System - Analytical': null,
+    'System - Reporting': null,
+    'System - MasterData': null,
+    'System - Files': null
+  },
+  'Data Sets - All': {
+    'Data Sets - Physical': null,
+    'Data Sets - Virtual': null,
+    'Data Sets - MasterData': null
+  },
+  'Dimensions - All': null,
+  'Reporting Concepts - All': {
+    'Reporting Concepts - Structures': null,
+    'Reporting Concepts - Lists': null,
+    'Reporting Concepts - Key': null
+  },
+  'Links - All': {
+    'System Links - All': {
+      'System Links - MasterData': null,
+      'System Links - Data': null
     },
-    'Data Sets - All': {
-        'Data Sets - Physical': null,
-        'Data Sets - Virtual': null,
-        'Data Sets - MasterData': null,
+    'Data Set Links - All': {
+      'Data Set Links - Master Data': null,
+      'Data Set Links - Data': null
     },
-    'Dimensions - All': null,
-    'Reporting Concepts - All': {
-        'Reporting Concepts - Structures': null,
-        'Reporting Concepts - Lists': null,
-        'Reporting Concepts - Key': null,
-    },
-    'Links - All': {
-        'System Links - All': {
-            'System Links - MasterData': null,
-            'System Links - Data': null,
-        },
-        'Data Set Links - All': {
-            'Data Set Links - Master Data': null,
-            'Data Set Links - Data': null,
-        },
-        'Dimension Links': null,
-        'Reporting Concept Links': null,
-    },
-    'Reports - All': null,
-    'Attributes': null,
-    'Rules': null,
-    'RADIO': null,
+    'Dimension Links': null,
+    'Reporting Concept Links': null
+  },
+  'Reports - All': null,
+  Attributes: null,
+  Rules: null,
+  RADIO: null
 };
 
 @Injectable()
 export class ChecklistDatabase {
-
   dataChange = new BehaviorSubject<Node[]>([]);
-  get data(): Node[] { return this.dataChange.value; }
+  get data(): Node[] {
+    return this.dataChange.value;
+  }
 
   constructor() {
     this.initialize();
@@ -69,8 +71,7 @@ export class ChecklistDatabase {
     this.dataChange.next(data);
   }
 
-
-  buildFileTree(obj: {[key: string]: any}, level: number): Node[] {
+  buildFileTree(obj: { [key: string]: any }, level: number): Node[] {
     return Object.keys(obj).reduce<Node[]>((accumulator, key) => {
       const value = obj[key];
       const node = new Node();
@@ -95,12 +96,12 @@ export class ChecklistDatabase {
   styleUrls: ['document-standards-levels.component.scss'],
   providers: [ChecklistDatabase]
 })
-export class DocumentStandardsLevelsComponent implements AfterViewInit {
-
+export class DocumentStandardsLevelsComponent implements AfterViewInit, OnChanges {
   @ViewChild('tree') tree;
+  @Input() control: FormControl;
   @Input() isDisabled = true;
   @Input() modalMode = false;
-  flatNodeMap = new Map<FlatNode, Node>();
+  private flatNodeMap = new Map<string, FlatNode>();
   nestedNodeMap = new Map<Node, FlatNode>();
   treeControl: FlatTreeControl<FlatNode>;
   treeFlattener: MatTreeFlattener<Node, FlatNode>;
@@ -120,6 +121,14 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
     this.tree.treeControl.collapseAll();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.control) {
+      this._database.initialize();
+      const selectedFlatNodes = this.control.value ? this.control.value.map(item => this.flatNodeMap.get(item)) : [];
+      this.checklistSelection = new SelectionModel<FlatNode>(true, selectedFlatNodes);
+    }
+  }
+
   getLevel = (node: FlatNode) => node.level;
   isExpandable = (node: FlatNode) => node.expandable;
   getChildren = (node: Node): Node[] => node.children;
@@ -128,27 +137,22 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
 
   transformer = (node: Node, level: number) => {
     const existingNode = this.nestedNodeMap.get(node);
-    const flatNode = existingNode && existingNode.item === node.item
-      ? existingNode
-      : new FlatNode();
+    const flatNode = existingNode && existingNode.item === node.item ? existingNode : new FlatNode();
     flatNode.item = node.item;
     flatNode.level = level;
     flatNode.expandable = !!node.children;
-    this.flatNodeMap.set(flatNode, node);
+    this.flatNodeMap.set(node.item, flatNode);
     this.nestedNodeMap.set(node, flatNode);
     return flatNode;
-  }
-
+    // tslint:disable-next-line
+  };
 
   /** Whether all the descendants of the node are selected. */
   descendantsAllSelected(node: FlatNode): boolean {
     const descendants = this.treeControl.getDescendants(node);
-    const descAllSelected = descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
+    const descAllSelected = descendants.every(child => this.checklistSelection.isSelected(child));
     return descAllSelected;
   }
-
 
   /** Whether part of the descendants are selected */
   descendantsPartiallySelected(node: FlatNode): boolean {
@@ -156,7 +160,6 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
     const result = descendants.some(child => this.checklistSelection.isSelected(child));
     return result && !this.descendantsAllSelected(node);
   }
-
 
   /* Select/deselect all the descendants node */
   levelItemSelectionToggle($event, node: FlatNode): void {
@@ -166,32 +169,14 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
       ? this.checklistSelection.select(...descendants)
       : this.checklistSelection.deselect(...descendants);
 
-    descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
-
-    for (const item of descendants) {
-      if ($event.checked) {
-        this.documentStandardsService.selectedLevels.push(item.item);
-      }
-      if (!$event.checked) {
-        const index = this.documentStandardsService.selectedLevels.indexOf(item.item);
-        if (index > -1) {
-          this.documentStandardsService.selectedLevels.splice(index, 1);
-        }
-      }
-    }
-
-    this.checkAllParentsSelection(node);
+    descendants.every(child => this.checklistSelection.isSelected(child));
+    this.control.setValue(this.checklistSelection.selected.map(selectedNode => selectedNode.item));
   }
 
-
-  /* Check all the parents to see if they changed */
   levelSelectionToggle(node: FlatNode): void {
     this.checklistSelection.toggle(node);
-    this.checkAllParentsSelection(node);
+    this.control.setValue(this.checklistSelection.selected.map(selectedNode => selectedNode.item));
   }
-
 
   /* Checks all the parents when a leaf node is selected/unselected */
   checkAllParentsSelection(node: FlatNode): void {
@@ -202,21 +187,17 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
     }
   }
 
-
   /** Check root node checked state and change it accordingly */
   checkRootNodeSelection(node: FlatNode): void {
     const nodeSelected = this.checklistSelection.isSelected(node);
     const descendants = this.treeControl.getDescendants(node);
-    const descAllSelected = descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
+    const descAllSelected = descendants.every(child => this.checklistSelection.isSelected(child));
     if (nodeSelected && !descAllSelected) {
       this.checklistSelection.deselect(node);
     } else if (!nodeSelected && descAllSelected) {
       this.checklistSelection.select(node);
     }
   }
-
 
   /* Get the parent node of a node */
   getParentNode(node: FlatNode): FlatNode | null {
@@ -235,36 +216,17 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit {
     return null;
   }
 
-
   /* Select all levels */
   checkAll(event) {
-    this.documentStandardsService.selectedLevels = [];
-
-    for (let i = 0; i < this.treeControl.dataNodes.length; i++) {
-      this.checklistSelection.toggle(this.treeControl.dataNodes[i]);
-      this.treeControl.expand(this.treeControl.dataNodes[i]);
-      if (event.checked) {
-        this.documentStandardsService.selectedLevels.push(this.treeControl.dataNodes[i].item);
-      }
-      if (!event.checked) {
-        const index = this.documentStandardsService.selectedLevels.indexOf(this.treeControl.dataNodes[i].item);
-        if (index > -1) {
-          this.documentStandardsService.selectedLevels.splice(index, 1);
-        }
-      }
-    }
-  }
-
-  /* Select level */
-  onSelectLevelEntity(event, node) {
     if (event.checked) {
-      this.documentStandardsService.selectedLevels.push(node.item);
+      this.flatNodeMap.forEach(node => {
+        this.checklistSelection.select(node);
+      });
+    } else {
+      this.flatNodeMap.forEach(node => {
+        this.checklistSelection.deselect(node);
+      });
     }
-    if (!event.checked) {
-      const index = this.documentStandardsService.selectedLevels.indexOf(node.item);
-      if (index > -1) {
-        this.documentStandardsService.selectedLevels.splice(index, 1);
-      }
-    }
+    this.control.setValue(this.checklistSelection.selected.map(node => node.item));
   }
 }

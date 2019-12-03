@@ -3,8 +3,7 @@ import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 
 @Injectable()
 export class MyUserFormValidatorService {
-
-  constructor() { }
+  constructor() {}
 
   // Validate all form fields
   validateAllFormFields(formGroup: FormGroup) {
@@ -24,7 +23,7 @@ export class MyUserFormValidatorService {
 export function phoneNumberValidator(control: AbstractControl): { [key: string]: any } | null {
   if (control.value) {
     const valid = control.value.match(/^\+?[1-9]{1}[0-9]{3,15}$/);
-    return valid ? null : { 'invalidNumber': true };
+    return valid ? null : { invalidNumber: true };
   } else {
     return null;
   }
@@ -33,7 +32,8 @@ export function phoneNumberValidator(control: AbstractControl): { [key: string]:
 // Email validator
 export function emailValidator(control) {
   // tslint:disable-next-line:max-line-length
-  const valid = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(control.value);
-  return valid ? null : { invalidEmail: { valid: false, value: control.valid }
-  };
+  const valid = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(
+    control.value
+  );
+  return valid ? null : { invalidEmail: { valid: false, value: control.valid } };
 }

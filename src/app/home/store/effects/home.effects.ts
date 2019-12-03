@@ -19,7 +19,10 @@ import {
 } from '../actions/home.actions';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { WorkPackageEntitiesHttpParams, WorkPackageEntitiesResponse } from '@app/workpackage/store/models/workpackage.models';
+import {
+  WorkPackageEntitiesHttpParams,
+  WorkPackageEntitiesResponse
+} from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
 import { GetLayoutEntitiesApiResponse, LayoutEntitiesHttpParams } from '@app/layout/store/models/layout.model';
 import { UserApiResponse } from '@app/settings/store/models/user.model';

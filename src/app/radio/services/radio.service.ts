@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { RadioEntitiesHttpParams, RadioEntitiesResponse, RadioApiRequest, ReplyApiRequest, RadioDetailApiResponse, AdvancedSearchApiRequest } from '../store/models/radio.model';
+import { Observable, timer } from 'rxjs';
+import {
+  RadioEntitiesHttpParams,
+  RadioEntitiesResponse,
+  RadioApiRequest,
+  ReplyApiRequest,
+  RadioDetailApiResponse,
+  AdvancedSearchApiRequest
+} from '../store/models/radio.model';
+import { delay } from 'rxjs/operators';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -9,12 +17,11 @@ const httpOptions = {
 
 @Injectable()
 export class RadioService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getRadioEntities(queryParams: RadioEntitiesHttpParams): Observable<RadioEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
-    return this.http.get<any>(`/radios`, {params: params});
+    return this.http.get<any>(`/radios`, { params: params });
   }
 
   getRadio(id: string): Observable<RadioDetailApiResponse> {
@@ -22,7 +29,7 @@ export class RadioService {
   }
 
   addRadioEntity(entity: RadioApiRequest): Observable<RadioDetailApiResponse> {
-    return this.http.post<RadioDetailApiResponse>(`/radios`, entity, httpOptions);
+    return this.http.post<RadioDetailApiResponse>(`/radios`, entity, httpOptions).pipe(delay(500));
   }
 
   addRadioReply(entity: ReplyApiRequest, id: string): Observable<RadioEntitiesResponse> {
@@ -30,11 +37,15 @@ export class RadioService {
   }
 
   updateRadioProperty(radioId: string, customPropertyId: string, data: any): Observable<RadioDetailApiResponse> {
-    return this.http.put<RadioDetailApiResponse>(`/radios/${radioId}/customPropertyvalues/${customPropertyId}`, data, httpOptions);
+    return this.http.put<RadioDetailApiResponse>(
+      `/radios/${radioId}/customPropertyvalues/${customPropertyId}`,
+      data,
+      httpOptions
+    );
   }
 
   deleteRadioProperty(radioId: string, customPropertyId: string): Observable<RadioDetailApiResponse> {
-    return this.http.delete<RadioDetailApiResponse>(`/radios/${radioId}/customPropertyValues/${customPropertyId}`)
+    return this.http.delete<RadioDetailApiResponse>(`/radios/${radioId}/customPropertyValues/${customPropertyId}`);
   }
 
   searchRadio(data: AdvancedSearchApiRequest): Observable<RadioEntitiesResponse> {
@@ -43,7 +54,6 @@ export class RadioService {
 
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
-    return Object.getOwnPropertyNames(obj)
-      .reduce((p, key) => p.set(key, obj[key]), new HttpParams());
+    return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());
   }
 }

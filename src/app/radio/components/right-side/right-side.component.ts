@@ -5,7 +5,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
   templateUrl: './right-side.component.html',
   styleUrls: ['./right-side.component.scss']
 })
-export class RadioRightSideComponent { 
+export class RadioRightSideComponent {
   @Output() addRadio = new EventEmitter<void>();
 
   onAdd() {

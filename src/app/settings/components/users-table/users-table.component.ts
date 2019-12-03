@@ -8,7 +8,6 @@ import { User } from '@app/auth/store/models/user.model';
   styleUrls: ['users-table.component.scss']
 })
 export class UsersTableComponent implements OnInit {
-
   @Input()
   set data(data: any[]) {
     if (data) {
@@ -24,18 +23,17 @@ export class UsersTableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(public dialog: MatDialog) { }
-
-  ngOnInit() {
-    this.paginator._intl.itemsPerPageLabel = 'Users per page';
-  }
-
   @Output()
   editUser = new EventEmitter<string>();
 
   @Output()
   addUser = new EventEmitter();
 
+  constructor(public dialog: MatDialog) {}
+
+  ngOnInit() {
+    this.paginator._intl.itemsPerPageLabel = 'Users per page';
+  }
 
   onEdit(id: string) {
     this.editUser.emit(id);

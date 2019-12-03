@@ -7,12 +7,11 @@ import { Router } from '@angular/router';
 export class RouteService {
   constructor(private router: Router) {}
 
-  updateQueryParams(params: {[key: string]: any}): void {
-    this.router.navigate([], {queryParams: params, queryParamsHandling: 'merge'});
+  updateQueryParams(params: { [key: string]: any }): void {
+    this.router.navigate([], { queryParams: params, queryParamsHandling: 'merge' });
   }
 
-  resetQueryParams(params?: {[key: string]: any}): void {
-    this.router.navigate([], {queryParams: params});
+  resetQueryParams(params?: { [key: string]: any }): void {
+    this.router.navigate([], { queryParams: params });
   }
-
 }

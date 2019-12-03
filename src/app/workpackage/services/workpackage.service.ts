@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
-  WorkPackageEntitiesHttpParams,
-  WorkPackageApiRequest,
-  WorkPackageEntitiesResponse,
   OwnersEntityOrApproversEntity,
-  WorkPackageDetail
+  WorkPackageApiRequest,
+  WorkPackageEntitiesHttpParams,
+  WorkPackageEntitiesResponse
 } from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
 
 @Injectable()
 export class WorkPackageService {
-
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  constructor(public http: HttpClient) { }
+  constructor(public http: HttpClient) {}
 
   // FIXME: set type
   getWorkPackageAvailability(queryParams: any): Observable<any> {
@@ -27,7 +25,7 @@ export class WorkPackageService {
 
   getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntitiesResponse> {
     const params = this.toHttpParams(queryParams);
-    return this.http.get<any>(`/workpackages`, {params: params});
+    return this.http.get<any>(`/workpackages`, { params: params });
   }
 
   getWorkPackage(id: string): Observable<any> {

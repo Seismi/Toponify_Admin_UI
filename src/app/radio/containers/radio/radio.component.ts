@@ -13,8 +13,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
-import { State as NodeState } from '@app/nodes/store/reducers/node.reducer';
-import { LoadNodes } from '@app/nodes/store/actions/node.actions';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 
 @Component({
   selector: 'smi-radio',
@@ -23,7 +23,6 @@ import { LoadNodes } from '@app/nodes/store/actions/node.actions';
   providers: [RadioDetailService, RadioValidatorService]
 })
 export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
-
   public radio$: Observable<RadioEntity[]>;
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
@@ -36,12 +35,12 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
     private store: Store<RadioState>,
     public dialog: MatDialog,
     private router: Router
-  ) { }
+  ) {}
 
   ngAfterViewInit() {
     this.router.events.subscribe((event: NavigationEnd) => {
       if (event instanceof NavigationEnd) {
-        (event.url.length > 7) ? this.radioSelected = true : this.radioSelected = false;
+        event.url.length > 7 ? (this.radioSelected = true) : (this.radioSelected = false);
       }
     });
   }
@@ -53,7 +52,7 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
     this.radio$ = this.store.pipe(select(getRadioEntities));
 
     this.store.pipe(select(getRadioFilter)).subscribe(data => {
-      (data && data.status) ? this.status = data.status : this.status = 'new,open,closed';
+      data && data.status ? (this.status = data.status) : (this.status = 'new,open,closed');
       this.filterData = data;
     });
   }
@@ -63,29 +62,32 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSelectRadio(row: RadioEntity) {
-    this.router.navigate(['radio', row.id], {queryParamsHandling: 'preserve' });
+    this.router.navigate(['radio', row.id], { queryParamsHandling: 'preserve' });
   }
 
   onAddRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false
+      disableClose: false,
+      width: '650px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.store.dispatch(new AddRadioEntity({
-          data: {
-            title: data.radio.title,
-            status: data.radio.status,
-            category: data.radio.category,
-            description: data.radio.description,
-            assignedTo: data.radio.assignedTo,
-            author: data.radio.author,
-            relatesTo: [{workPackage: {id: '00000000-0000-0000-0000-000000000000'}}],
-            actionBy: data.radio.actionBy,
-            mitigation: data.radio.mitigation
-          }
-        }));
+        this.store.dispatch(
+          new AddRadioEntity({
+            data: {
+              title: data.radio.title,
+              status: data.radio.status,
+              category: data.radio.category,
+              description: data.radio.description,
+              assignedTo: data.radio.assignedTo,
+              author: data.radio.author,
+              relatesTo: [{ workPackage: { id: '00000000-0000-0000-0000-000000000000' } }],
+              actionBy: data.radio.actionBy,
+              mitigation: data.radio.mitigation
+            }
+          })
+        );
       }
     });
   }
@@ -95,44 +97,46 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
       disableClose: false,
       data: {
         filterData: this.filterData,
-        mode: (this.filterData) ? 'filter' : null
+        mode: this.filterData ? 'filter' : null
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
-      if(data && data.radio) {
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
         this.store.dispatch(new RadioFilter(data.radio));
-        this.store.dispatch(new SearchRadio({
-          data: {
-            status: {
-              enabled: (data.radio.status) ? true : false,
-              values: data.radio.status
-            },
-            type: {
-              enabled: (data.radio.type) ? true : false,
-              values: data.radio.type
-            },
-            assignedTo: {
-              enabled: (data.radio.assignedTo) ? true : false,
-              values: data.radio.assignedTo
-            },
-            relatesTo: {
-              enabled: (data.radio.relatesTo) ? true : false,
-              includeDescendants: (data.radio.relatesTo) ? true : false,
-              includeLinks: (data.radio.relatesTo) ? true : false,
-              values: data.radio.relatesTo
-            },
-            dueDate: {
-              enabled: (data.radio.from || data.radio.to) ? true : false,
-              from: data.radio.from,
-              to: data.radio.to
-            },
-            text: {
-              enabled: (data.radio.text) ? true : false,
-              value: data.radio.text
+        this.store.dispatch(
+          new SearchRadio({
+            data: {
+              status: {
+                enabled: data.radio.status ? true : false,
+                values: data.radio.status
+              },
+              type: {
+                enabled: data.radio.type ? true : false,
+                values: data.radio.type
+              },
+              assignedTo: {
+                enabled: data.radio.assignedTo ? true : false,
+                values: data.radio.assignedTo
+              },
+              relatesTo: {
+                enabled: data.radio.relatesTo ? true : false,
+                includeDescendants: data.radio.relatesTo ? true : false,
+                includeLinks: data.radio.relatesTo ? true : false,
+                values: data.radio.relatesTo
+              },
+              dueDate: {
+                enabled: data.radio.from || data.radio.to ? true : false,
+                from: data.radio.from,
+                to: data.radio.to
+              },
+              text: {
+                enabled: data.radio.text ? true : false,
+                value: data.radio.text
+              }
             }
-          }
-        }));
+          })
+        );
       }
     });
   }
@@ -141,5 +145,4 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch(new LoadRadios({}));
     this.store.dispatch(new RadioFilter(null));
   }
-
 }

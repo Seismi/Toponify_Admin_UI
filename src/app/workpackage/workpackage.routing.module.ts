@@ -10,7 +10,7 @@ export const workPackageRoutes: Routes = [
     children: [
       {
         path: ':workpackageId',
-        component: WorkpackageDetailsComponent,
+        component: WorkpackageDetailsComponent
       }
     ]
   }
