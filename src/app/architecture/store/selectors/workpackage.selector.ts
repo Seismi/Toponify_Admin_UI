@@ -1,9 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State } from '../reducers/architecture.reducer';
 
-export const getWorkpackageFeatureState = createFeatureSelector<State>(
-  'architectureFeature'
-);
+export const getWorkpackageFeatureState = createFeatureSelector<State>('architectureFeature');
 
 export const getSelectedWorkpackages = createSelector(
   getWorkpackageFeatureState,
@@ -23,5 +21,4 @@ export const getNodeScopesAvailability = createSelector(
 export const getPotentialWorkPackageNodes = createSelector(
   getWorkpackageFeatureState,
   state => state.descendants
-)
-
+);

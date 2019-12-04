@@ -1,17 +1,17 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import {Error, Node, NodeDetail, OwnersEntity} from '../models/node.model';
-import {
-  WorkpackageActionsUnion,
-  WorkpackageActionTypes
-} from '../actions/workpackage.actions';
+import { Error, Node, NodeDetail, OwnersEntity } from '../models/node.model';
+import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import {
   WorkPackageNodeActionsUnion,
   WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { DescendantsEntity } from '@app/nodes/store/models/node.model';
-import { WorkPackageLinkActionTypes, WorkPackageLinkActionsUnion } from '@app/workpackage/store/actions/workpackage-link.actions';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import {
+  WorkPackageLinkActionTypes,
+  WorkPackageLinkActionsUnion
+} from '@app/workpackage/store/actions/workpackage-link.actions';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 
 export interface State {
@@ -55,9 +55,7 @@ export function reducer(
     case WorkpackageActionTypes.SelectWorkpackage: {
       return {
         ...state,
-        selectedWorkpackages: state.selectedWorkpackages.includes(
-          action.payload
-        )
+        selectedWorkpackages: state.selectedWorkpackages.includes(action.payload)
           ? state.selectedWorkpackages.filter(id => id !== action.payload)
           : [...state.selectedWorkpackages, action.payload]
       };
@@ -95,9 +93,7 @@ export function reducer(
       return {
         ...state,
         entities: state.entities.map(entity =>
-          entity.id === action.payload.data.id
-            ? { ...entity, ...action.payload.data }
-            : entity
+          entity.id === action.payload.data.id ? { ...entity, ...action.payload.data } : entity
         )
       };
     }
@@ -130,7 +126,7 @@ export function reducer(
 
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScope: {
       return {
-        ...state,
+        ...state
       };
     }
 
@@ -148,26 +144,21 @@ export function reducer(
       };
     }
 
-
     case WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess: {
       return {
         ...state,
         links: state.links.map(link =>
-          link.id === action.payload.data.id
-            ? { ...link, ...action.payload.data }
-            : link
+          link.id === action.payload.data.id ? { ...link, ...action.payload.data } : link
         )
       };
     }
 
-    
     case WorkPackageLinkActionTypes.UpdateWorkPackageLinkFailure: {
       return {
         ...state,
         error: <Error>action.payload
       };
     }
-
 
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilitySuccess: {
       return {
@@ -324,7 +315,7 @@ export function reducer(
 
     case NodeActionTypes.DeleteCustomProperty: {
       return {
-        ...state,
+        ...state
       };
     }
 
@@ -343,14 +334,14 @@ export function reducer(
     }
 
     case NodeActionTypes.UpdateNodeDescendants: {
-      const {nodeId, descendants} = <{descendants: DescendantsEntity[], nodeId: string}>action.payload;
+      const { nodeId, descendants } = <{ descendants: DescendantsEntity[]; nodeId: string }>action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
       if (nodeIndex > -1) {
-        const updatedNode = {...state.entities[nodeIndex], descendants: descendants};
+        const updatedNode = { ...state.entities[nodeIndex], descendants: descendants };
         const entities = [...state.entities];
         entities[nodeIndex] = updatedNode;
-        if (state.selectedNode.id ===  nodeId) {
-          return  {
+        if (state.selectedNode.id === nodeId) {
+          return {
             ...state,
             entities,
             selectedNode: updatedNode
@@ -358,7 +349,7 @@ export function reducer(
         }
         return {
           ...state,
-          entities,
+          entities
         };
       } else {
         return {
@@ -368,7 +359,7 @@ export function reducer(
     }
 
     case NodeActionTypes.UpdateNodeOwners: {
-      const {nodeId, owners} = <{owners: OwnersEntity[], nodeId: string}>action.payload;
+      const { nodeId, owners } = <{ owners: OwnersEntity[]; nodeId: string }>action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
       if (nodeIndex > -1) {
         return replaceNodeOwners(state, nodeIndex, nodeId, owners);
@@ -381,7 +372,7 @@ export function reducer(
 
     case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodes: {
       return {
-        ...state,
+        ...state
       };
     }
 
@@ -405,12 +396,12 @@ export function reducer(
   }
 }
 
-function replaceNodeOwners (state: State, nodeIndex: number, nodeId: string, owners: OwnersEntity[]): State {
-  const updatedNode = {...state.entities[nodeIndex], owners: owners};
+function replaceNodeOwners(state: State, nodeIndex: number, nodeId: string, owners: OwnersEntity[]): State {
+  const updatedNode = { ...state.entities[nodeIndex], owners: owners };
   const entities = [...state.entities];
   entities[nodeIndex] = updatedNode;
-  if (state.selectedNode.id ===  nodeId) {
-    return  {
+  if (state.selectedNode.id === nodeId) {
+    return {
       ...state,
       entities,
       selectedNode: updatedNode
@@ -418,6 +409,6 @@ function replaceNodeOwners (state: State, nodeIndex: number, nodeId: string, own
   }
   return {
     ...state,
-    entities,
+    entities
   };
 }

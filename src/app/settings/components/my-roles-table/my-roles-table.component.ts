@@ -8,14 +8,13 @@ import { UserDetails } from '@app/settings/store/models/user.model';
   styleUrls: ['./my-roles-table.component.scss']
 })
 export class MyRolesTableComponent {
-
   selectedRowIndex = -1;
   @Input() isEditable = false;
   @Input() selectedRole = false;
 
   @Input()
   set data(data: any[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<any>(data);
     }
   }

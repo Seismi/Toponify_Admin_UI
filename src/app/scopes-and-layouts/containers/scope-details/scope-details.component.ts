@@ -22,7 +22,6 @@ import { SharedService } from '@app/services/shared-service';
   providers: [ScopesDetailService, ScopesValidatorService]
 })
 export class ScopeDetailsComponent implements OnInit, OnDestroy {
-
   subscriptions: Subscription[] = [];
   scope: ScopeDetails;
   scopeId: string;
@@ -35,28 +34,32 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
     private store: Store<ScopeState>,
     private scopesDetailService: ScopesDetailService,
     private sharedService: SharedService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.subscriptions.push(this.route.params.subscribe( params => {
-      const id = params['scopeId'];
-      this.scopeId = id;
-      if (!this.scope || id !== this.scope.id) {
-        this.store.dispatch(new LoadScope(id));
-      }
-    }));
-    this.subscriptions.push(this.store.pipe(select(getScopeSelected)).subscribe(scope => {
-      if(scope) {
-        this.scope = scope;
-        this.scopesDetailService.scopesDetailForm.patchValue({
-          name: scope.name,
-          owners: scope.owners,
-          viewers: scope.viewers,
-          layerFilter: scope.layerFilter
-        });
-        this.sharedService.scope = scope;
-      }
-    }));
+    this.subscriptions.push(
+      this.route.params.subscribe(params => {
+        const id = params['scopeId'];
+        this.scopeId = id;
+        if (!this.scope || id !== this.scope.id) {
+          this.store.dispatch(new LoadScope(id));
+        }
+      })
+    );
+    this.subscriptions.push(
+      this.store.pipe(select(getScopeSelected)).subscribe(scope => {
+        if (scope) {
+          this.scope = scope;
+          this.scopesDetailService.scopesDetailForm.patchValue({
+            name: scope.name,
+            owners: scope.owners,
+            viewers: scope.viewers,
+            layerFilter: scope.layerFilter
+          });
+          this.sharedService.scope = scope;
+        }
+      })
+    );
   }
 
   get scopesDetailForm(): FormGroup {
@@ -68,19 +71,21 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onLayoutSelect(row: any) {
-    this.router.navigate(['scopes-and-layouts', this.scope.id, row.id], {queryParamsHandling: 'preserve' });
+    this.router.navigate(['scopes-and-layouts', this.scope.id, row.id], { queryParamsHandling: 'preserve' });
   }
 
   onSaveScope() {
-    this.store.dispatch(new UpdateScope({
-      id: this.scopeId,
-      data: {
+    this.store.dispatch(
+      new UpdateScope({
         id: this.scopeId,
-        name: this.scopesDetailForm.value.name,
-        layerFilter: this.scopesDetailForm.value.layerFilter,
-        owners: this.scope.owners
-      }
-    }))
+        data: {
+          id: this.scopeId,
+          name: this.scopesDetailForm.value.name,
+          layerFilter: this.scopesDetailForm.value.layerFilter,
+          owners: this.scope.owners
+        }
+      })
+    );
   }
 
   onDeleteScope() {
@@ -92,7 +97,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteScope(this.scopeId));
       }

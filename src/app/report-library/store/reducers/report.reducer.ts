@@ -136,9 +136,9 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
         selected: action.payload,
         entities: state.entities.filter(entity => {
           if (entity.id === state.selected.id) {
-            return action.payload
+            return action.payload;
           }
-          return entity
+          return entity;
         }),
         loading: false
       };

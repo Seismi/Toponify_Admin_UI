@@ -9,12 +9,11 @@ import { TeamEntityOrOwnersEntityOrApproversEntity } from '@app/workpackage/stor
   styleUrls: ['./owners-table.component.scss']
 })
 export class OwnersTableComponent {
-
-  @Input() isEditable: boolean = false;
+  @Input() isEditable = false;
 
   @Input()
   set data(data: WorkPackageDetail[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
     }
   }
@@ -32,5 +31,4 @@ export class OwnersTableComponent {
   onDelete(owner: TeamEntityOrOwnersEntityOrApproversEntity): void {
     this.deleteOwner.emit(owner);
   }
-
 }

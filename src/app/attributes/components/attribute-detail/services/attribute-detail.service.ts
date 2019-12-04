@@ -4,7 +4,6 @@ import { AttributeValidatorService } from './attribute-detail-validator.service'
 
 @Injectable()
 export class AttributeDetailService {
-
   public attributeDetailForm: FormGroup;
 
   constructor(private fb: FormBuilder, private attributeValidatorService: AttributeValidatorService) {

@@ -37,8 +37,6 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() objectSelected = false;
   @Input() radio: any;
   @Input() multipleSelected = false;
-  @Input() selectedOwner: boolean;
-  @Input() selectedOwnerIndex: string | null;
   @Input() nodeScopes: WorkPackageNodeScopes[];
 
   @Output()
@@ -71,10 +69,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output()
   addOwner = new EventEmitter();
 
-  @Output() selectOwner = new EventEmitter<string>();
-
   @Output()
-  deleteOwner = new EventEmitter();
+  deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
 
   @Output()
   editProperties = new EventEmitter<CustomPropertyValuesEntity>();
@@ -156,12 +152,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.addOwner.emit();
   }
 
-  onSelectOwner(ownerId: string) {
-    this.selectOwner.emit(ownerId);
-  }
-
-  onDeleteOwner() {
-    this.deleteOwner.emit();
+  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
+    this.deleteOwner.emit(owner);
   }
 
   onEditProperties(customProperty: CustomPropertyValuesEntity) {

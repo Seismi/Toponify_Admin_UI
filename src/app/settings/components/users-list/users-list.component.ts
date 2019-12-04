@@ -8,8 +8,7 @@ import { MatTableDataSource } from '@angular/material';
   styleUrls: ['users-list.component.scss']
 })
 export class UsersListComponent {
-
-  selectedRowIndex: number = -1;
+  selectedRowIndex = -1;
 
   @Input()
   set data(data: TeamDetails[]) {
@@ -26,5 +25,4 @@ export class UsersListComponent {
     this.selectedRowIndex = row.id;
     this.memberSelect.emit(row);
   }
-
 }

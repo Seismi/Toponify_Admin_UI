@@ -10,12 +10,11 @@ export interface SearchQueryParams {
 
 @Injectable()
 export class SearchService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getSearchResults(queryParams?: SearchQueryParams): Observable<SearchApiResponse> {
     const params = this.toHttpParams(queryParams);
-    return this.http.get<SearchApiResponse>(`/find`, {params: params});
+    return this.http.get<SearchApiResponse>(`/find`, { params: params });
   }
 
   // TODO: move into sharable service

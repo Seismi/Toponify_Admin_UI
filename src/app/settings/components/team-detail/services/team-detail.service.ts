@@ -4,7 +4,6 @@ import { TeamValidatorService } from './team-detail-validator.service';
 
 @Injectable()
 export class TeamDetailService {
-
   public teamDetailForm: FormGroup;
 
   constructor(private fb: FormBuilder, private teamValidatorService: TeamValidatorService) {
@@ -22,5 +21,4 @@ export class TeamDetailService {
     }
     return true;
   }
-  
 }

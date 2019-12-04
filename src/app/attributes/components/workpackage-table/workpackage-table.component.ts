@@ -10,7 +10,7 @@ import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
 export class WorkPackageTableInAttributesPageComponent {
   @Input()
   set data(data: any[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
     }

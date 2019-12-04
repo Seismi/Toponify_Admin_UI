@@ -1,21 +1,21 @@
-.mat-dialog-actions{
-    display: flex;
-    justify-content: flex-end;
-    padding-bottom: 17px;
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 17px;
 }
 
 button:focus {
-    outline: none;
+  outline: none;
 }
 
-button:nth-child(1){
-    background-color: #ddd;
+button:nth-child(1) {
+  background-color: #ddd;
 }
 
 .type {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 span {
-    float: right;
+  float: right;
 }

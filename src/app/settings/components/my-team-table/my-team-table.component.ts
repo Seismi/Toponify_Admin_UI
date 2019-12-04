@@ -8,14 +8,13 @@ import { UserDetails } from '@app/settings/store/models/user.model';
   styleUrls: ['./my-team-table.component.scss']
 })
 export class MyTeamTableComponent {
-
   selectedRowIndex = -1;
   @Input() isEditable = false;
   @Input() selectedTeam = false;
 
   @Input()
   set data(data: any[]) {
-    if(data) {
+    if (data) {
       this.dataSource = new MatTableDataSource<any>(data);
     }
   }

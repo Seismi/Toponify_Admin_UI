@@ -7,16 +7,17 @@
           Details
         </ng-template>
         <p class="detailsTab">
-          <smi-radio-detail 
-            data-hook="radio-details" 
+          <smi-radio-detail
+            data-hook="radio-details"
             [data]="users$ | async"
             [relatesTo]="radio?.relatesTo"
             [group]="radioDetailsForm"
-            [isEditable]="isEditable" 
-            [modalMode]="modalMode" 
+            [isEditable]="isEditable"
+            [modalMode]="modalMode"
             [statusClosed]="statusClosed"
-            (archiveRadio)="onArchiveRadio($event)" 
-            (saveRadio)="onSaveRadio()">
+            (archiveRadio)="onArchiveRadio($event)"
+            (saveRadio)="onSaveRadio()"
+          >
           </smi-radio-detail>
         </p>
       </mat-tab>
@@ -26,17 +27,10 @@
           Discussions
         </ng-template>
         <p class="discussion-tab">
-          <smi-chatbox
-            [group]="radioDetailsForm"
-            [data]="radio?.replies">
-          </smi-chatbox>
+          <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies"> </smi-chatbox>
         </p>
         <p class="reply-input">
-          <smi-reply-text 
-            [rows]="4"
-            [group]="radioDetailsForm"
-            (sendReply)="onSendReply($event)">
-          </smi-reply-text>
+          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply($event)"> </smi-reply-text>
         </p>
       </mat-tab>
       <mat-tab>
@@ -44,11 +38,12 @@
           <mat-icon>insert_drive_file</mat-icon>
           Properties
         </ng-template>
-          <smi-radio-properties-tab
-            (editProperty)="onEditProperty($event)"
-            (deleteProperty)="onDeleteProperty($event)"
-            [data]="radio?.customPropertyValues">
-          </smi-radio-properties-tab>
+        <smi-radio-properties-tab
+          (editProperty)="onEditProperty($event)"
+          (deleteProperty)="onDeleteProperty($event)"
+          [data]="radio?.customPropertyValues"
+        >
+        </smi-radio-properties-tab>
       </mat-tab>
     </mat-tab-group>
   </p>

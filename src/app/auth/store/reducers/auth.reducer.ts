@@ -40,8 +40,7 @@ export function reducer(state = initialState, action: AuthActionsUnion): State {
       };
     }
 
-    case AuthActionTypes.Logout:
-     {
+    case AuthActionTypes.Logout: {
       return initialState;
     }
 

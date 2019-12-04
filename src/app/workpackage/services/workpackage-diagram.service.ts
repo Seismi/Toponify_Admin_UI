@@ -1,5 +1,5 @@
 import * as go from 'gojs';
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 const $ = go.GraphObject.make;
 
@@ -14,8 +14,7 @@ const statusColours = {
 
 @Injectable()
 export class WorkPackageDiagramService {
-  constructor() {
-  }
+  constructor() {}
 
   // Get layout for workpackage tree diagram
   getLayout() {
@@ -51,11 +50,9 @@ export class WorkPackageDiagramService {
 
   // Create links connecting work packages and their baselines
   getLinksForPackages(workPackages) {
-
     const links = [];
 
     workPackages.forEach(function(workPackage) {
-
       if (workPackage.id === '00000000-0000-0000-0000-000000000000') {
         return;
       }
@@ -73,13 +70,19 @@ export class WorkPackageDiagramService {
 
   // Get node template for nodes in workpackage tree diagram
   getNodeTemplate() {
-    return $(go.Node,
+    return $(
+      go.Node,
       'Auto',
       // Node should be hidden if all nodes in the current branch have status "merged" or "superseded"
-      new go.Binding('visible', '', function(node): boolean {
-        return !this.isInMergedSupersededBranch(node);
-      }.bind(this)).ofObject(),
-      $(go.Shape,
+      new go.Binding(
+        'visible',
+        '',
+        function(node): boolean {
+          return !this.isInMergedSupersededBranch(node);
+        }.bind(this)
+      ).ofObject(),
+      $(
+        go.Shape,
         {
           figure: 'Rectangle',
           stroke: 'black',
@@ -97,7 +100,8 @@ export class WorkPackageDiagramService {
           }
         })
       ),
-      $(go.Panel,
+      $(
+        go.Panel,
         'Vertical',
         {
           alignment: go.Spot.TopCenter,
@@ -105,7 +109,8 @@ export class WorkPackageDiagramService {
           margin: 5
         },
         // Text showing workpackage name
-        $(go.TextBlock,
+        $(
+          go.TextBlock,
           {
             textAlign: 'center',
             stroke: 'white',
@@ -116,7 +121,8 @@ export class WorkPackageDiagramService {
           new go.Binding('text', 'name')
         ),
         // Text showing workpackage status
-        $(go.TextBlock,
+        $(
+          go.TextBlock,
           {
             textAlign: 'center',
             stroke: 'white',
@@ -132,18 +138,17 @@ export class WorkPackageDiagramService {
 
   // Get link template for links in workpackage tree diagram
   getLinkTemplate() {
-    return $(go.Link,
+    return $(
+      go.Link,
       {
         routing: go.Link.AvoidsNodes,
         isLayoutPositioned: true
       },
-      $(go.Shape,
-        {
-          isPanelMain: true,
-          stroke: 'black',
-          strokeWidth: 1.5
-        }
-      )
+      $(go.Shape, {
+        isPanelMain: true,
+        stroke: 'black',
+        strokeWidth: 1.5
+      })
     );
   }
 }

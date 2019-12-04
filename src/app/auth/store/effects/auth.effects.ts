@@ -11,11 +11,7 @@ import { Authenticate } from '../models/user.model';
 
 @Injectable()
 export class AuthEffects {
-  constructor(
-    private actions$: Actions,
-    private authService: AuthService,
-    private router: Router,
-  ) {}
+  constructor(private actions$: Actions, private authService: AuthService, private router: Router) {}
 
   @Effect()
   login$ = this.actions$.pipe(
@@ -36,7 +32,7 @@ export class AuthEffects {
     ofType<AuthActions.LoginSuccess>(AuthActionTypes.LoginSuccess),
     map(action => action.payload),
     tap(payload => {
-        this.router.navigateByUrl(decodeURI(payload));
+      this.router.navigateByUrl(decodeURI(payload));
     })
   );
 

@@ -1,42 +1,41 @@
 <app-base-header>
-    <app-toolbar-column [fillFreeSpace]="true">
-    </app-toolbar-column>
-    <app-search></app-search>
-    <app-toolbar-column>
-        <smi-quicklinks-actions></smi-quicklinks-actions>
-    </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+  <app-search></app-search>
+  <app-toolbar-column>
+    <smi-quicklinks-actions></smi-quicklinks-actions>
+  </app-toolbar-column>
 </app-base-header>
 
 <app-model-container [topPadding]="64">
-    <div class="container">
-        <div class="row">
-            <div class="col mat-elevation-z8">
-                <mat-tab-group [@.disabled]="true">
-                    <mat-tab>
-                        <ng-template mat-tab-label>
-                            <mat-icon>list</mat-icon> List
-                        </ng-template>
-                        <smi-workpackages-table 
-                            data-hook="workpackage-table" 
-                            [data]="workpackageEntities$ | async"
-                            (workpackageSelected)="onSelectWorkpackage($event)" 
-                            (addWorkpackage)="onAddWorkPackage()">
-                        </smi-workpackages-table>
-                    </mat-tab>
-                    <mat-tab label="Diagram">
-                        <ng-template mat-tab-label>
-                            <mat-icon>device_hub</mat-icon> Diagram
-                        </ng-template>
-                        <ng-template matTabContent>
-                            <smi-workpackage-tree [workpackages]="workpackages"></smi-workpackage-tree>
-                        </ng-template>
-                    </mat-tab>
-                </mat-tab-group>
-            </div>
-            <div class="col">
-                <smi-workpackage-right-side (addWorkPackage)="onAddWorkPackage()" *ngIf="!workPackageSelected"></smi-workpackage-right-side>
-                <router-outlet></router-outlet>
-            </div>
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col mat-elevation-z8">
+        <mat-tab-group [@.disabled]="true">
+          <mat-tab>
+            <ng-template mat-tab-label> <mat-icon>list</mat-icon> List </ng-template>
+            <smi-workpackages-table
+              data-hook="workpackage-table"
+              [data]="workpackageEntities$ | async"
+              (workpackageSelected)="onSelectWorkpackage($event)"
+              (addWorkpackage)="onAddWorkPackage()"
+            >
+            </smi-workpackages-table>
+          </mat-tab>
+          <mat-tab label="Diagram">
+            <ng-template mat-tab-label> <mat-icon>device_hub</mat-icon> Diagram </ng-template>
+            <ng-template matTabContent>
+              <smi-workpackage-tree [workpackages]="workpackages"></smi-workpackage-tree>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <div class="col">
+        <smi-workpackage-right-side
+          (addWorkPackage)="onAddWorkPackage()"
+          *ngIf="!workPackageSelected"
+        ></smi-workpackage-right-side>
+        <router-outlet></router-outlet>
+      </div>
     </div>
+  </div>
 </app-model-container>

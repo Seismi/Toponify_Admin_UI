@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material';
 
 @Component({
@@ -22,21 +22,17 @@ export class AnalysisTabComponent implements OnChanges {
 
   // When changed to reporting concepts level, hide description, tags and owners by default
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.viewLevel &&
-      changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
-       if (this.viewLevel === 4) {
+    if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
+      if (this.viewLevel === 4) {
+        const checkboxes = [this.Description, this.Tags, this.Owners];
 
-         const checkboxes = [
-           this.Description,
-           this.Tags,
-           this.Owners
-         ];
-
-         checkboxes.forEach(function(checkbox) {
-           checkbox.checked = false;
-           checkbox.change.emit({checked: false, source: checkbox});
-         }.bind(this));
-       }
+        checkboxes.forEach(
+          function(checkbox) {
+            checkbox.checked = false;
+            checkbox.change.emit({ checked: false, source: checkbox });
+          }.bind(this)
+        );
+      }
     }
   }
 
