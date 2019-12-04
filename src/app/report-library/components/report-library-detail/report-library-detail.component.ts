@@ -18,7 +18,7 @@ export class ReportLibraryDetailComponent {
   @Input() owners: OwnersEntity[];
   @Input() dimensions: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
   @Input() reportingConcepts: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
-  @Input() modalMode: boolean = false;
+  @Input() modalMode = false;
   @Input() workPackageIsEditable: boolean;
   @Input() selectedOwner: boolean;
   @Input() selectedOwnerIndex: any;
@@ -52,11 +52,10 @@ export class ReportLibraryDetailComponent {
   }
 
   onSelectOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity) {
-    this.selectOwner.emit(owner)
+    this.selectOwner.emit(owner);
   }
 
   onDeleteOwner() {
     this.deleteOwner.emit();
   }
-
 }

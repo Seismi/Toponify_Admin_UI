@@ -1,19 +1,19 @@
 export interface GetTeamEntitiesApiResponse {
-    data?: (TeamEntity)[] | null;
-    links?: Links;
-    page?: Page;
+  data?: (TeamEntity)[] | null;
+  links?: Links;
+  page?: Page;
 }
 
 export interface GetTeamApiResponse {
-    data: TeamDetails;
+  data: TeamDetails;
 }
 
 export interface AddTeamApiResponse {
-    data: TeamDetails;
+  data: TeamDetails;
 }
 
 export interface UpdateTeamApiResponse {
-    data: TeamDetails;
+  data: TeamDetails;
 }
 
 export interface TeamEntity {
@@ -23,10 +23,10 @@ export interface TeamEntity {
 }
 
 export interface TeamEntitiesHttpParams {
-    ownerQuery?: string;
-    TeamQuery?: string;
-    page?: number;
-    size?: number;
+  ownerQuery?: string;
+  TeamQuery?: string;
+  page?: number;
+  size?: number;
 }
 
 export interface TeamDetails {
@@ -59,62 +59,61 @@ export interface Team {
 }
 
 export interface OwnersEntityOrViewersEntity {
-    id: string;
-    name: string;
-    type: string;
+  id: string;
+  name: string;
+  type: string;
 }
 
 export interface Include {
-    id: string;
-    category: string;
-    name: string;
-    layer: string;
-    description: string;
-    tags: string;
-    locations: ((LocationsEntityEntity)[] | null)[] | null;
-    owners: (OwnersEntityOrViewersEntity)[] | null;
-    descendants: (Descendants)[] | null;
+  id: string;
+  category: string;
+  name: string;
+  layer: string;
+  description: string;
+  tags: string;
+  locations: ((LocationsEntityEntity)[] | null)[] | null;
+  owners: (OwnersEntityOrViewersEntity)[] | null;
+  descendants: (Descendants)[] | null;
 }
 
 export interface LocationsEntityEntity {
-    layout: Layout;
-    locationCoordinates: string;
+  layout: Layout;
+  locationCoordinates: string;
 }
 
 export interface Layout {
-    id: string;
-    name: string;
+  id: string;
+  name: string;
 }
 
 export interface Descendants {
-    test?: any;
+  test?: any;
 }
-
 
 // TODO: This may be shared at some point
 export interface Error {
-    errors?: (ErrorsEntity)[] | null;
+  errors?: (ErrorsEntity)[] | null;
 }
 export interface ErrorsEntity {
-    status: number;
-    source: Source;
+  status: number;
+  source: Source;
 }
 export interface Source {
-    pointer: string;
-    title: string;
-    detail: string;
+  pointer: string;
+  title: string;
+  detail: string;
 }
 
 export interface Links {
-    first: string;
-    previous: string;
-    next: string;
-    last: string;
+  first: string;
+  previous: string;
+  next: string;
+  last: string;
 }
 
 export interface Page {
-    size: number;
-    totalElements: number;
-    totalPages: number;
-    number: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  number: number;
 }

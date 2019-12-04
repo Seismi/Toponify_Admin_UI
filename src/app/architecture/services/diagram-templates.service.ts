@@ -2,7 +2,7 @@ import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import { Injectable } from '@angular/core';
-import { CustomLink, GojsCustomObjectsService, updateShapeShadows, customIcons } from './gojs-custom-objects.service';
+import {CustomLink, GojsCustomObjectsService, customIcons, defineRoundButton} from './gojs-custom-objects.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { Store } from '@ngrx/store';
@@ -12,8 +12,10 @@ import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selec
 
 const $ = go.GraphObject.make;
 
-// Fix shadow display issue on some shapes
-updateShapeShadows();
+// Create definition for button with round shape
+defineRoundButton();
+
+const nodeWidth = 300;
 
 @Injectable()
 export class DiagramTemplatesService {
@@ -52,6 +54,7 @@ export class DiagramTemplatesService {
   // Get standard options used for node shapes
   getStandardNodeShapeOptions(): object {
     return {
+      figure: 'RoundedRectangle',
       fill: 'white',
       stroke: 'black',
       strokeWidth: 1,
@@ -127,25 +130,56 @@ export class DiagramTemplatesService {
       go.Panel,
       'Auto',
       {
-        background: 'black',
-        stretch: go.GraphObject.Horizontal
+        background: 'black'
       },
       $(
         go.Panel,
-        'Horizontal',
+        '',
         {
           background: 'white',
-          margin: new go.Margin(1)
+          margin: new go.Margin(1),
+          padding: new go.Margin(7, 2, 1, 2),
+          width: nodeWidth - 10
         },
         $(
           go.TextBlock,
           {
             stroke: 'black',
-            font: '14px calibri'
+            font: '18px calibri',
+            textAlign: 'center',
+            wrap: go.TextBlock.None,
+            overflow: go.TextBlock.OverflowEllipsis,
+            stretch: go.GraphObject.Horizontal
           },
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'name').ofModel()
+          new go.Binding('text', 'name')
         )
+      )
+    );
+  }
+
+  getTagTemplate(): go.Panel {
+    return $(
+      go.Panel,
+      'Auto',
+      {
+        margin: new go.Margin(0, 5, 0, 0)
+      },
+      $(
+        go.Shape,
+        'RoundedRectangle',
+        {
+          fill: 'white',
+          height: 27
+        }
+      ),
+      $(
+        go.TextBlock,
+        {
+          font: 'bold italic 20px calibri',
+          wrap: go.TextBlock.None,
+          margin: new go.Margin(2, 2, 0, 2)
+        },
+        new go.Binding('text', '')
       )
     );
   }
@@ -155,8 +189,10 @@ export class DiagramTemplatesService {
     return $(
       'Button',
       {
-        alignment: go.Spot.TopRight,
+        name: 'DependencyExpandButton',
+        alignment: go.Spot.LeftCenter,
         desiredSize: new go.Size(20, 20),
+        margin: new go.Margin(0, 5, 0, 0),
         click: function(event, button) {
           const node = button.part;
           this.diagramChangesService.showDependencies(node);
@@ -176,6 +212,91 @@ export class DiagramTemplatesService {
           return !connectedNode.visible;
         });
       }).ofObject()
+    );
+  }
+
+  // Get top button for expanding and collapsing node sections.
+  //  Expands bottom node section if not already expanded.
+  //  Otherwise, collapses middle section if expanded.
+  //  Otherwise, collapses bottom section.
+  getTopExpandButton(): go.Panel {
+    return $(
+      'RoundButton',
+      {
+        alignment: go.Spot.RightCenter,
+        alignmentFocus: go.Spot.RightCenter,
+        desiredSize: new go.Size(25, 25),
+        click: function(event, button) {
+          const node = button.part;
+
+          const middleSection = node.findObject('middle');
+          const bottomSection = node.findObject('bottom');
+          const buttonTextBox = button.findObject('TopButtonText');
+
+          if (middleSection.visible && bottomSection.visible) {
+            middleSection.visible = false;
+            buttonTextBox.text = '-';
+          } else if (!middleSection.visible && bottomSection.visible) {
+            bottomSection.visible = false;
+            buttonTextBox.text = '+';
+          } else {
+            bottomSection.visible = true;
+            buttonTextBox.text = '-';
+          }
+
+          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
+          node.findLinksConnected().each(function(link) {
+          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+            link.invalidateRoute();
+          });
+
+        }.bind(this)
+      },
+      $(go.TextBlock, '-', {
+        name: 'TopButtonText',
+        alignment: go.Spot.Center,
+        font: 'bold 18px calibri',
+        desiredSize: new go.Size(25, 25),
+        textAlign: 'center',
+        verticalAlignment: go.Spot.Center
+      })
+    );
+  }
+
+  // Get bottom button for expanding and collapsing node sections.
+  // Expands the middle section of nodes when clicked.
+  getBottomExpandButton(): go.Panel {
+    return $(
+      'RoundButton',
+      {
+        alignment: go.Spot.RightCenter,
+        alignmentFocus: go.Spot.RightCenter,
+        desiredSize: new go.Size(25, 25),
+        click: function(event, button): void {
+          const node = button.part;
+          const middleSection = node.findObject('middle');
+
+          middleSection.visible = true;
+
+          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
+          node.findLinksConnected().each(function(link) {
+          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+            link.invalidateRoute();
+          });
+
+        }.bind(this)
+      },
+      $(go.TextBlock, '+', {
+        alignment: go.Spot.Center,
+        font: 'bold 18px calibri',
+        desiredSize: new go.Size(25, 25),
+        textAlign: 'center',
+        verticalAlignment: go.Spot.Center
+      }),
+      // Button not visible when middle node section is collapsed
+      new go.Binding('visible', 'visible', function (middleVisible) {
+        return !middleVisible;
+      }).ofObject('middle')
     );
   }
 
@@ -257,7 +378,7 @@ export class DiagramTemplatesService {
       $(go.Shape, 'circle', {
         fill: radioColours[type],
         desiredSize: new go.Size(25, 25),
-        margin: new go.Margin(5, 1, 5, 1)
+        margin: new go.Margin(0, 1, 0, 1)
       }),
       $(
         go.TextBlock,
@@ -279,8 +400,8 @@ export class DiagramTemplatesService {
       go.Panel,
       'Horizontal',
       {
-        row: 1,
-        alignment: go.Spot.BottomRight,
+        alignment: go.Spot.Center,
+        alignmentFocus: go.Spot.Center,
         visible: false
       },
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
@@ -337,109 +458,244 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get standard sections for nodes
-  // Sections included:
-  //   name
-  //   description
-  //   tags
-  //   owner
-  // Returns an array of node sections
-  getStandardNodeSections(isHorizontal = false): go.TextBlock[] {
-    const sections = [
+  // Get top section of nodes, containing icon and name
+  getTopSection() {
+    return $(
+      go.Panel,
+      'Horizontal',
       {
-        sectionName: 'name',
-        font: 'bold 16px calibri',
-        initialText: ''
+        name: 'top',
+        row: 0,
+        alignment: go.Spot.TopCenter,
+        stretch: go.GraphObject.Horizontal,
+        minSize: new go.Size(NaN, 30),
+        margin: new go.Margin(5),
       },
-      {
-        sectionName: 'description',
-        font: 'italic 15px calibri',
-        initialText: ''
-      },
-      {
-        sectionName: 'tags',
-        font: '15px calibri',
-        initialText: 'Tags - '
-      },
-      {
-        sectionName: 'owners',
-        font: '15px calibri',
-        initialText: 'Owners - ',
-        isArray: true
-      }
-    ];
+      this.getDependencyExpandButton(),
+      // Node icon, to appear at the top left of the node
+      $(go.Picture,
+        {
+          desiredSize: new go.Size(25, 25),
+          source: '/assets/node-icons/data_set-master-data.svg'
+        },
+        new go.Binding('source', '', function(data): string {
+          const imageFolderPath = '/assets/node-icons/';
 
-    const sectionMargin = isHorizontal ? new go.Margin(0, 5, 0, 0) : new go.Margin(0, 0, 5, 0);
+          // Section of the image name determined by layer
+          const layerImagePrefix = {
+            [layers.system]: 'sys',
+            [layers.dataSet]: 'data_set',
+            [layers.dimension]: 'dim',
+            [layers.reportingConcept]: 'rc'
+          };
 
-    return sections.map(function(section) {
-      return $(
+          // Section of the image name determined by category
+          const categoryImageSuffix = {
+            [nodeCategories.transactional]: 'transactional',
+            [nodeCategories.analytical]: 'analytical',
+            [nodeCategories.reporting]: 'reporting',
+            [nodeCategories.masterData]: 'master-data',
+            [nodeCategories.file]: 'files',
+            [nodeCategories.physical]: 'physical',
+            [nodeCategories.virtual]: 'virtual',
+            [nodeCategories.masterData]: 'master-data',
+            [nodeCategories.dimension]: '',
+            [nodeCategories.list]: 'list',
+            [nodeCategories.structure]: 'structure',
+            [nodeCategories.key]: 'keyrc'
+          };
+
+          const separator = data.layer !== layers.dimension ? '-' : '';
+
+          return [imageFolderPath,
+            layerImagePrefix[data.layer],
+            separator,
+            categoryImageSuffix[data.category],
+            '.svg'].join('');
+        })
+      ),
+      $(
         go.TextBlock,
         {
-          textAlign: 'center',
-          stroke: 'black',
-          font: section.font,
-          maxSize: new go.Size(100, Infinity),
-          margin: sectionMargin
+          textAlign: 'left',
+          font: 'bold italic 20px calibri',
+          margin: new go.Margin(0, 5, 0, 5),
+          wrap: go.TextBlock.None,
+          overflow: go.TextBlock.OverflowEllipsis
         },
-        section.isArray ?
-          new go.Binding('text', section.sectionName, function(input) {
-            return input.length > 0 ?
-              section.initialText + input.map(function(obj) {return obj.name; }).join(', ') :
-              '';
-          }) :
-          new go.Binding('text', section.sectionName, function(input) {
-              return input ? section.initialText + input : '';
-          }),
-        new go.Binding('visible', section.sectionName).ofModel()
-      );
-    });
+        new go.Binding('text', 'name'),
+        // Size name textblock to account for presence/absence of dependency expand button
+        new go.Binding('width', 'visible', function(expandButtonVisible: boolean): number {
+          return expandButtonVisible ? nodeWidth - 95 : nodeWidth - 70;
+        }).ofObject('DependencyExpandButton'),
+        new go.Binding('opacity', 'name',
+          function(name: boolean): number {return name ? 1 : 0; }
+        ).ofModel()
+       ),
+      this.getTopExpandButton()
+    );
   }
 
-  // Get list of descendants for nodes.
-  //   Input: header (title to be displayed above list)
-  getDescendantsNodeSection(header: string): go.Panel {
+  // Get middle section of nodes, containing description, owners and descendants
+  getMiddleSection(): go.Panel {
     return $(
       go.Panel,
       'Vertical',
       {
-        stretch: go.GraphObject.Horizontal
+        name: 'middle',
+        row: 1,
+        stretch: go.GraphObject.Horizontal,
+        margin: new go.Margin(5)
       },
-      // Descendants list header
       $(
         go.TextBlock,
         {
-          text: header,
-          alignment: go.Spot.Center,
+          textAlign: 'center',
           stroke: 'black',
-          font: 'bold 15.25px calibri',
+          font: '16px Calibri',
+          maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
         },
-        // Hide descendants header if node has no descendants
-        new go.Binding('visible', 'descendants', function(descendants) {
-          return descendants.length > 0;
-        })
+        new go.Binding('text', 'description'),
+        new go.Binding('visible', 'description').ofModel()
       ),
-      // Descendants list
+      $(
+        go.TextBlock,
+        {
+          textAlign: 'center',
+          stroke: 'black',
+          font: 'italic 16px Calibri',
+          maxSize: new go.Size(nodeWidth - 10, Infinity),
+          margin: new go.Margin(5, 0, 0, 0)
+        },
+        new go.Binding('text', 'owners',
+          function (owners: any[]): string {
+            return owners.length > 0 ?
+              'Owners - ' + owners.map(
+                function(owner): string {return owner.name; }
+              ).join(', ') : '';
+          }
+        ),
+        new go.Binding('visible', 'owners').ofModel()
+      ),
       $(
         go.Panel,
         'Vertical',
         {
-          name: header + '_List',
-          padding: 3,
-          alignment: go.Spot.TopLeft,
-          defaultAlignment: go.Spot.Left,
           stretch: go.GraphObject.Horizontal,
-          itemCategoryProperty: '',
-          itemTemplate: this.getItemTemplate()
+          row: 3
         },
-        new go.Binding('itemArray', 'descendants')
-      ),
-      new go.Binding('visible', 'nextLevel').ofModel()
+        // Descendants list
+        $(
+          go.Panel,
+          'Vertical',
+          {
+            name: 'Descendants List',
+            // padding: 3,
+            alignment: go.Spot.TopLeft,
+            defaultAlignment: go.Spot.Left,
+            stretch: go.GraphObject.Horizontal,
+            itemCategoryProperty: '',
+            itemTemplate: this.getItemTemplate()
+          },
+          new go.Binding('itemArray', 'descendants')
+        ),
+        new go.Binding('visible', 'nextLevel').ofModel()
+      )
     );
   }
 
-  // Get template for system nodes
-  getSystemNodeTemplate(forPalette: boolean = false): go.Node {
+  // Get bottom section of nodes, containing tags and RADIO Alert indicators
+  getBottomSection(): go.Panel {
+    return $(
+      go.Panel,
+      'Vertical',
+      {
+        name: 'bottom',
+        row: 2,
+        stretch: go.GraphObject.Horizontal,
+        margin: new go.Margin(2)
+      },
+      $(
+        go.Panel,
+        'Horizontal',
+        {
+          maxSize: new go.Size(296, NaN),
+          itemTemplate: this.getTagTemplate(),
+          alignment: go.Spot.LeftCenter,
+          margin: new go.Margin(3, 0, 3, 0)
+        },
+        new go.Binding('itemArray', 'tags', function(tags: string): string[] {
+          if (tags.trim() === '') {return []; }
+
+          return this.getTruncatedTags(tags);
+        }.bind(this)),
+        new go.Binding('visible', 'tags').ofModel()
+      ),
+      $(
+        go.Panel,
+        'Spot',
+        {
+          alignment: go.Spot.BottomCenter,
+          alignmentFocus: go.Spot.BottomCenter
+        },
+        $(
+          go.Panel,
+          '',
+          {
+            desiredSize: new go.Size(nodeWidth - 10, 30)
+          }
+        ),
+        this.getRadioAlertIndicators(),
+        this.getBottomExpandButton()
+      )
+    );
+  }
+
+  // Gets an array of tags, truncated to fit in the node if necessary
+  getTruncatedTags(tags: string): string[] {
+    let tagGroup;
+
+    // Tags separated by commas. Also, trim any excess whitespace.
+    const tagArray = tags.split(',')
+      .map(function(tag) {
+        return tag.trim();
+      });
+
+    // Temporary part to measure size from
+    tagGroup = createTempPanel.call(this, tagArray);
+
+    // If size of tag section too big then...
+    if (tagGroup.naturalBounds.right > nodeWidth - 4) {
+      // ...add an ellipsis to the end of the tag list to show that some tags are not shown...
+      tagArray.push('...');
+
+      // ...and remove each tag before the ellipsis until the section fits
+      do {
+        tagArray.splice(-2, 1);
+        tagGroup = createTempPanel.call(this, tagArray);
+      }
+      while (tagGroup.naturalBounds.right > nodeWidth - 4);
+    }
+
+    return tagArray;
+
+    // Create a temporary part with the given tags
+    function createTempPanel (array: string[]): go.Panel {
+      const panel = $(
+        go.Part,
+        'Horizontal',
+        {
+          itemTemplate: this.getTagTemplate(),
+          itemArray: array
+        }
+      );
+      panel.ensureBounds();
+      return panel;
+    }
+  }
+
+  getNodeTemplate(forPalette: boolean = false): go.Node {
     return $(
       go.Node,
       'Auto',
@@ -476,20 +732,6 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(
         go.Shape,
-        new go.Binding('figure', 'category', function(category) {
-          if (category === nodeCategories.transactional) {
-            return 'Cylinder1';
-          } else if (category === nodeCategories.analytical) {
-            return 'Cube2';
-          } else if (category === nodeCategories.file) {
-            return 'Document';
-          } else if (category === nodeCategories.masterData) {
-            return 'ManualInput';
-          } else {
-            // Reporting
-            return 'RoundedRectangle';
-          }
-        }),
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -511,338 +753,11 @@ export class DiagramTemplatesService {
         go.Panel,
         'Table',
         {
-          margin: new go.Margin(5, 4, 0, 4)
+          defaultRowSeparatorStroke: 'black'
         },
-        // Bind height for transactional system to make consistent
-        //  with previously used GoJs 1.8 shape
-        new go.Binding('minSize', 'category', function(category) {
-          if (category === 'transactional') {
-            return new go.Size(100, 140);
-          } else {
-            return new go.Size(100, 100);
-          }
-        }),
-        $(
-          go.Panel,
-          'Vertical',
-          {
-            row: 0,
-            alignment: go.Spot.TopCenter,
-            minSize: new go.Size(90, NaN)
-          },
-          this.getDependencyExpandButton(),
-          ...this.getStandardNodeSections(),
-          this.getDescendantsNodeSection('Data Sets')
-        ),
-        this.getRadioAlertIndicators()
-      )
-    );
-  }
-
-  // Get template for data set nodes
-  getDataSetNodeTemplate(forPalette: boolean = false): go.Node {
-    // Template for Data Set
-    return $(
-      go.Node,
-      'Auto',
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      this.getStandardNodeOptions(forPalette),
-      {
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
-      },
-      new go.Binding(
-        'movable',
-        '',
-        function() {
-          return this.currentFilterLevel !== Level.usage;
-        }.bind(this)
-      ),
-      !forPalette
-        ? {
-            // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
-          }
-        : {
-            toolTip: $(
-              'ToolTip',
-              $(
-                go.TextBlock,
-                {
-                  width: 150
-                },
-                new go.Binding('text', 'tooltip')
-              )
-            )
-          },
-      // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
-      // Make the shape the port for links to connect to
-      $(
-        go.Shape,
-        'Rectangle',
-        this.getStandardNodeShapeOptions(),
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        )
-      ),
-      // Dummy panel with no size and no contents.
-      // Used to ensure node usage view lays out nodes vertically aligned.
-      $(go.Panel, {
-        alignment: go.Spot.TopCenter,
-        desiredSize: new go.Size(0, 0),
-        name: 'location panel'
-      }),
-      $(
-        go.Panel,
-        'Table',
-        {
-          minSize: new go.Size(100, 100),
-          margin: new go.Margin(5, 4, 0, 4)
-        },
-        $(
-          go.Panel,
-          'Vertical',
-          {
-            alignment: go.Spot.TopCenter,
-            row: 0,
-            minSize: new go.Size(90, NaN)
-          },
-          this.getDependencyExpandButton(),
-          $(
-            go.TextBlock,
-            {
-              alignment: go.Spot.TopRight,
-              background: null,
-              font: 'bold 20px calibri'
-            },
-            new go.Binding('text', 'category', function(category) {
-              if (category === nodeCategories.virtual) {
-                return 'V';
-              } else if (category === nodeCategories.masterData) {
-                return 'MD';
-              } else {
-                // Physical data set
-                return '';
-              }
-            }),
-            new go.Binding('visible', 'category', function(category) {
-              return category !== nodeCategories.physical;
-            })
-          ),
-          ...this.getStandardNodeSections(),
-          this.getDescendantsNodeSection('Dimensions')
-        ),
-        this.getRadioAlertIndicators()
-      )
-    );
-  }
-
-  // Get template for dimension nodes
-  getDimensionNodeTemplate(forPalette: boolean = false): go.Node {
-    // Template for dimension
-    return $(
-      go.Node,
-      'Auto',
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      this.getStandardNodeOptions(forPalette),
-      {
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
-      },
-      new go.Binding(
-        'movable',
-        '',
-        function() {
-          return this.currentFilterLevel !== Level.usage;
-        }.bind(this)
-      ),
-      !forPalette
-        ? {
-            // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
-          }
-        : {
-            toolTip: $(
-              'ToolTip',
-              $(
-                go.TextBlock,
-                {
-                  width: 150
-                },
-                new go.Binding('text', 'tooltip')
-              )
-            )
-          },
-      // Have the diagram position the node if no location set
-      this.currentFilterLevel && this.currentFilterLevel.endsWith('map')
-        ? {}
-        : new go.Binding('isLayoutPositioned', 'locationMissing'),
-      // Make the shape the port for links to connect to
-      $(
-        go.Shape,
-        'Rectangle',
-        this.getStandardNodeShapeOptions(),
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        ),
-        new go.Binding(
-          'fromSpot',
-          'group',
-          function(group) {
-            if (group) {
-              return go.Spot.LeftRightSides;
-            } else {
-              return go.Spot.AllSides;
-            }
-          }.bind(this)
-        ),
-        new go.Binding(
-          'toSpot',
-          'group',
-          function(group) {
-            if (group) {
-              return go.Spot.LeftRightSides;
-            } else {
-              return go.Spot.AllSides;
-            }
-          }.bind(this)
-        )
-      ),
-      // Dummy panel with no size and no contents.
-      // Used to ensure node usage view lays out nodes vertically aligned.
-      $(go.Panel, {
-        alignment: go.Spot.TopCenter,
-        desiredSize: new go.Size(0, 0),
-        name: 'location panel'
-      }),
-      $(
-        go.Panel,
-        'Table',
-        {
-          minSize: new go.Size(100, 100),
-          margin: new go.Margin(5, 4, 0, 4)
-        },
-        $(
-          go.Panel,
-          'Vertical',
-          {
-            alignment: go.Spot.TopCenter,
-            minSize: new go.Size(90, NaN)
-          },
-          this.getDependencyExpandButton(),
-          $(go.TextBlock, {
-            alignment: go.Spot.TopRight,
-            background: null,
-            font: 'bold 20px calibri',
-            text: 'D'
-          }),
-          ...this.getStandardNodeSections(),
-          this.getDescendantsNodeSection('Reporting Concepts')
-        ),
-        this.getRadioAlertIndicators()
-      )
-    );
-  }
-
-  // Get template for reporting concept nodes
-  getReportingConceptNodeTemplate(forPalette: boolean = false): go.Node {
-    // Template for reporting concept nodes
-    return $(
-      go.Node,
-      'Auto',
-      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      new go.Binding(
-        'movable',
-        '',
-        function() {
-          return this.currentFilterLevel !== Level.usage;
-        }.bind(this)
-      ),
-      this.getStandardNodeOptions(forPalette),
-      !forPalette
-        ? {
-            // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
-          }
-        : {
-            toolTip: $(
-              'ToolTip',
-              $(
-                go.TextBlock,
-                {
-                  width: 150
-                },
-                new go.Binding('text', 'tooltip')
-              )
-            )
-          },
-      // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
-      // Make the shape the port for links to connect to
-      $(
-        go.Shape,
-        'rectangle',
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        ),
-        this.getStandardNodeShapeOptions()
-      ),
-      // Dummy panel with no size and no contents.
-      // Used to ensure node usage view lays out nodes vertically aligned.
-      $(go.Panel, {
-        alignment: go.Spot.TopCenter,
-        desiredSize: new go.Size(0, 0),
-        name: 'location panel'
-      }),
-      $(
-        go.Panel,
-        'Table',
-        {
-          minSize: new go.Size(200, 50),
-          margin: new go.Margin(5, 4, 0, 4)
-        },
-        $(
-          go.Panel,
-          'Horizontal',
-          {
-            alignment: go.Spot.TopCenter,
-            minSize: new go.Size(190, NaN)
-          },
-          $(
-            go.Shape,
-            {
-              alignment: go.Spot.TopLeft,
-              margin: new go.Margin(0, 5, 0, 0)
-            },
-            new go.Binding('geometry', 'category', function(category) {
-              if (category === nodeCategories.key) {
-                return customIcons.flag;
-              } else if (category === nodeCategories.list) {
-                return customIcons.list;
-              } else {
-                // Structure reporting concept
-                return customIcons.tree;
-              }
-            })
-          ),
-          ...this.getStandardNodeSections(true)
-        ),
-        this.getDependencyExpandButton(),
-        this.getRadioAlertIndicators()
+        this.getTopSection(),
+        this.getMiddleSection(),
+        this.getBottomSection()
       )
     );
   }

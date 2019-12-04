@@ -1,6 +1,5 @@
 <app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true">
-  </app-toolbar-column>
+  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
   <app-search></app-search>
   <app-toolbar-column>
     <smi-quicklinks-actions></smi-quicklinks-actions>
@@ -11,17 +10,14 @@
   <div class="container">
     <div class="row">
       <div class="col mat-elevation-z8">
-          <smi-radio-header
-            (filter)="onFilter()"
-            (resetFilter)="onResetFilter()"
-            [status]="status">
-          </smi-radio-header>
-          <smi-radio-table 
-            data-hook="radio-table" 
-            [data]="radio$ | async" 
-            (selectRadio)="onSelectRadio($event)"
-            (addRadio)="onAddRadio($event)">
-          </smi-radio-table>
+        <smi-radio-header (filter)="onFilter()" (resetFilter)="onResetFilter()" [status]="status"> </smi-radio-header>
+        <smi-radio-table
+          data-hook="radio-table"
+          [data]="radio$ | async"
+          (selectRadio)="onSelectRadio($event)"
+          (addRadio)="onAddRadio($event)"
+        >
+        </smi-radio-table>
       </div>
       <div class="col">
         <smi-radio-right-side (addRadio)="onAddRadio()" *ngIf="!radioSelected"></smi-radio-right-side>

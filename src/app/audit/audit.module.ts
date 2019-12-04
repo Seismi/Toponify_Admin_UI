@@ -9,15 +9,9 @@ import { AuditRoutingComponent } from './containers/audit-routing.component';
 import { AuditManagerComponent } from './containers/audit/audit-manager.component';
 
 @NgModule({
-  imports: [
-    AuditRoutingModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule,
-    CoreModule],
+  imports: [AuditRoutingModule, RouterModule, FormsModule, ReactiveFormsModule, CommonModule, CoreModule],
   exports: [],
   declarations: [AuditRoutingComponent, AuditManagerComponent],
-  providers: [],
+  providers: []
 })
-export class AuditModule { }
+export class AuditModule {}

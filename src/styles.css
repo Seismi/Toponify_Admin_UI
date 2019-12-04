@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/cdk/overlay-prebuilt.css";
+@import '~@angular/cdk/overlay-prebuilt.css';
 
 html,
 body {
@@ -8,7 +8,7 @@ body {
 body {
   padding: 0;
   margin: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 a {
   cursor: pointer;
@@ -19,11 +19,13 @@ a {
   left: 2px !important;
 }
 
-.mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
-  background-color: #3F51B5 !important;
+.mat-checkbox-checked.mat-accent .mat-checkbox-background,
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+  background-color: #3f51b5 !important;
 }
 
-.mat-tab-label, .mat-tab-label-active{
+.mat-tab-label,
+.mat-tab-label-active {
   min-width: 0px !important;
 }
 

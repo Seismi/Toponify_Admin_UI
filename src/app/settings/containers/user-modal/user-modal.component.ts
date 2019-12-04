@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '../../components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '../../components/my-user-form/services/my-user-form-validator.service';
-import { User, RolesEntity } from '@app/settings/store/models/user.model'
+import { User, RolesEntity } from '@app/settings/store/models/user.model';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '../../store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
@@ -20,9 +20,7 @@ import { getUserRolesEntities } from '@app/settings/store/selectors/user.selecto
   styleUrls: ['./user-modal.component.scss'],
   providers: [MyUserFormService, MyUserFormValidatorService]
 })
-
 export class UserModalComponent implements OnInit, OnDestroy {
-
   teams$: Observable<TeamEntity[]>;
   roles$: Observable<RolesEntity[]>;
   showButtons = false;
@@ -45,30 +43,29 @@ export class UserModalComponent implements OnInit, OnDestroy {
     private userStore: Store<UserState>,
     private myUserFormService: MyUserFormService,
     public dialogRef: MatDialogRef<UserModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data : any) {
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.mode = data.mode;
     this.user = data.user;
     this.selectedTeams = data.selectedTeams;
     this.selectedRoles = data.selectedRoles;
-    (this.mode === 'edit')
-      ? this.isEditMode = true
-      : this.isEditMode = false;
+    this.mode === 'edit' ? (this.isEditMode = true) : (this.isEditMode = false);
   }
-  
+
   ngOnInit() {
-    if(!this.isEditMode) {
+    if (!this.isEditMode) {
       this.addMode = true;
       this.store.dispatch(new LoadTeams({}));
       this.teams$ = this.store.pipe(select(getTeamEntities));
       this.userStore.dispatch(new LoadUserRoles());
-      this.roles$ = this.userStore.pipe(select(getUserRolesEntities))
+      this.roles$ = this.userStore.pipe(select(getUserRolesEntities));
     }
 
-    if(this.isEditMode) {
+    if (this.isEditMode) {
       this.disableEmailInput = true;
     }
 
-    this.myUserFormService.myUserForm.patchValue({...this.user});
+    this.myUserFormService.myUserForm.patchValue({ ...this.user });
   }
 
   ngOnDestroy() {
@@ -79,16 +76,15 @@ export class UserModalComponent implements OnInit, OnDestroy {
     if (!this.myUserFormService.isValid) {
       return;
     }
-    this.dialogRef.close({ 
-      user: this.myUserForm.value, 
-      mode: this.mode, 
-      selectedRoles: this.selectedRoles, 
-      selectedTeams: this.selectedTeams 
+    this.dialogRef.close({
+      user: this.myUserForm.value,
+      mode: this.mode,
+      selectedRoles: this.selectedRoles,
+      selectedTeams: this.selectedTeams
     });
   }
 
   onCancelClick() {
     this.dialogRef.close();
   }
-
 }

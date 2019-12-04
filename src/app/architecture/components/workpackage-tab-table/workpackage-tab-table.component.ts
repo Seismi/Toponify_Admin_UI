@@ -24,7 +24,7 @@ export class WorkPackageTabTableComponent {
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
 
-  @Output() selectWorkPackage = new EventEmitter<{id: string, newState: boolean}>();
+  @Output() selectWorkPackage = new EventEmitter<{ id: string; newState: boolean }>();
 
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
@@ -32,7 +32,7 @@ export class WorkPackageTabTableComponent {
 
   onSelect(id: string, newState: boolean, ev): void {
     ev.preventDefault();
-    this.selectWorkPackage.emit({id, newState});
+    this.selectWorkPackage.emit({ id, newState });
   }
 
   canSelect(workpackage: any): boolean {

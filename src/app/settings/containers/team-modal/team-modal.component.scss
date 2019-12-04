@@ -1,13 +1,13 @@
-.mat-dialog-actions{
-    display: flex;
-    justify-content: flex-end;
-    padding-bottom: 20px;
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 20px;
 }
 
 button:focus {
-    outline: none;
+  outline: none;
 }
 
-button:nth-child(1){
-    background-color: #ddd;
+button:nth-child(1) {
+  background-color: #ddd;
 }

@@ -72,7 +72,7 @@ import { HomeModule } from '@app/home/home.module';
   ],
   exports: [],
   declarations: [
-    SettingsRoutingComponent, 
+    SettingsRoutingComponent,
     SettingsComponent,
     UsersTableComponent,
     MyUserFormComponent,
@@ -91,15 +91,12 @@ import { HomeModule } from '@app/home/home.module';
     MyRolesTableComponent
   ],
   entryComponents: [
-    ChangePasswordModalComponent, 
-    UserModalComponent, 
-    TeamModalComponent, 
+    ChangePasswordModalComponent,
+    UserModalComponent,
+    TeamModalComponent,
     DeleteTeamAndMemberModalComponent,
     MemberModalComponent
   ],
-  providers: [
-    UserService,
-    TeamService
-  ]
+  providers: [UserService, TeamService]
 })
-export class SettingsModule { }
+export class SettingsModule {}

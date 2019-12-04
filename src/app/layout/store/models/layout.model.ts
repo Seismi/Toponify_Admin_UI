@@ -75,4 +75,3 @@ export interface Page {
   totalPages: number;
   number: number;
 }
-

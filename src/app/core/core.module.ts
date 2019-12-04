@@ -108,8 +108,6 @@ import { RouteEffects } from '@app/core/store/effects/route.effects';
     RightSideBarComponent,
     NodeNameComponent
   ],
-  providers: [
-    SearchService
-  ]
+  providers: [SearchService]
 })
 export class CoreModule {}

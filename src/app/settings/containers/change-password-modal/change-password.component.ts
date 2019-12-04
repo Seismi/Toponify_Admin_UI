@@ -14,7 +14,6 @@ import { UserActionTypes } from '../../store/actions/user.actions';
   providers: [ChangeUserPasswordService, ChangeUserPasswordValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
 export class ChangePasswordModalComponent {
-
   user: UserPassword;
   error: string = null;
 
@@ -22,9 +21,10 @@ export class ChangePasswordModalComponent {
     private actions: Actions,
     public dialogRef: MatDialogRef<ChangePasswordModalComponent>,
     private changeUserPasswordService: ChangeUserPasswordService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.user = data.user;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.user = data.user;
+  }
 
   get changeUserPasswordForm(): FormGroup {
     return this.changeUserPasswordService.changeUserPasswordForm;
@@ -36,7 +36,7 @@ export class ChangePasswordModalComponent {
     }
 
     this.actions.pipe(ofType(UserActionTypes.UpdateUserPasswordFailure)).subscribe((error: any) => {
-      alert(error.payload)
+      alert(error.payload);
     });
 
     this.dialogRef.close({ user: this.changeUserPasswordForm.value });

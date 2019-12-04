@@ -1,24 +1,24 @@
 .container {
-    max-width: 100%;
-    overflow-y: scroll;
+  max-width: 100%;
+  overflow-y: scroll;
 }
 
 .col {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .hide-btn {
-    position: absolute;
-    bottom: 12px;
-    right: 16px;
-    z-index: 99999;
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  z-index: 99999;
 }
 
 .add-btn {
-    margin: 15px;
+  margin: 15px;
 }
 
 .scope-dropdown {
-    margin-right: 15px;
+  margin-right: 15px;
 }

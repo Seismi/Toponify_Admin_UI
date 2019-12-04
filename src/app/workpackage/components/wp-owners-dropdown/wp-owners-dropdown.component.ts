@@ -8,25 +8,26 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
   styleUrls: ['./wp-owners-dropdown.component.scss']
 })
 export class WpOwnersDropdownComponent {
-
   teams: TeamEntity[];
   owners = new FormControl();
   @Input() selectedOwners = [];
 
   @Input()
-  set data(data: any[]) { this.teams = data; }
+  set data(data: any[]) {
+    this.teams = data;
+  }
 
   constructor() {}
 
   onSelect(event, owner) {
-    if(event.source.selected) {
-      this.selectedOwners.push(owner)
+    if (event.source.selected) {
+      this.selectedOwners.push(owner);
     }
-    if(!event.source.selected) {
-      let index = this.selectedOwners.indexOf(owner);
-      if(index > -1) {
+    if (!event.source.selected) {
+      const index = this.selectedOwners.indexOf(owner);
+      if (index > -1) {
         this.selectedOwners.splice(index, 1);
       }
     }
   }
-} 
+}

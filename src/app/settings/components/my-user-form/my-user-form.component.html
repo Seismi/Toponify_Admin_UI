@@ -1,42 +1,44 @@
 <form [formGroup]="group">
   <div class="table-container">
     <!-- Email -->
-    <mat-form-field [ngClass]="{disabled: !isActive}">
-      <input matInput placeholder="Email" [readonly]="disableEmailInput" formControlName="email">
+    <mat-form-field [ngClass]="{ disabled: !isActive }">
+      <input matInput placeholder="Email" [readonly]="disableEmailInput" formControlName="email" />
       <mat-error>Invalid email address</mat-error>
     </mat-form-field>
 
     <!-- First Name -->
-    <mat-form-field [ngClass]="{disabled: !isActive}">
-      <input matInput placeholder="First Name" formControlName="firstName">
+    <mat-form-field [ngClass]="{ disabled: !isActive }">
+      <input matInput placeholder="First Name" formControlName="firstName" />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <!-- Last Name -->
-    <mat-form-field [ngClass]="{disabled: !isActive}">
-      <input matInput placeholder="Last Name" formControlName="lastName">
+    <mat-form-field [ngClass]="{ disabled: !isActive }">
+      <input matInput placeholder="Last Name" formControlName="lastName" />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <!-- Phone Number -->
-    <mat-form-field [ngClass]="{disabled: !isActive}">
-      <input matInput placeholder="Phone Number" formControlName="phone">
+    <mat-form-field [ngClass]="{ disabled: !isActive }">
+      <input matInput placeholder="Phone Number" formControlName="phone" />
       <mat-error>Invalid phone number</mat-error>
     </mat-form-field>
 
     <!-- My Teams -->
-    <mat-form-field [ngClass]="{disabled: !isActive}" *ngIf="addMode">
+    <mat-form-field [ngClass]="{ disabled: !isActive }" *ngIf="addMode">
       <mat-select placeholder="My Teams" multiple formControlName="team">
         <mat-option *ngFor="let team of teams" [value]="team.name" (onSelectionChange)="onSelectTeam($event, team)">
-          {{team.name}}</mat-option>
+          {{ team.name }}</mat-option
+        >
       </mat-select>
     </mat-form-field>
-    
+
     <!-- My Roles -->
-    <mat-form-field [ngClass]="{disabled: !isActive}" *ngIf="addMode">
+    <mat-form-field [ngClass]="{ disabled: !isActive }" *ngIf="addMode">
       <mat-select placeholder="My Roles" multiple formControlName="roles">
         <mat-option *ngFor="let role of roles" [value]="role.name" (onSelectionChange)="onSelectRoles($event, role)">
-          {{role.name}}</mat-option>
+          {{ role.name }}</mat-option
+        >
       </mat-select>
       <mat-error>Role is required</mat-error>
     </mat-form-field>
@@ -49,7 +51,9 @@
 
     <!-- Buttons -->
     <div *ngIf="showButtons">
-      <button mat-raised-button *ngIf="editMode" (click)="onSave()" class="save-btn" [disabled]="!group.valid">Save Personal Settings</button>
+      <button mat-raised-button *ngIf="editMode" (click)="onSave()" class="save-btn" [disabled]="!group.valid">
+        Save Personal Settings
+      </button>
       <button mat-raised-button *ngIf="!editMode" (click)="onEdit()">Edit Personal Settings</button>
       <button mat-raised-button (click)="onChangePassword()">Change my password</button>
     </div>

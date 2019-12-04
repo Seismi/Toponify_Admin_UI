@@ -24,9 +24,7 @@ import { LoadUsers } from '@app/settings/store/actions/user.actions';
   styleUrls: ['./radio-detail-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-
 export class RadioDetailModalComponent implements OnInit, OnDestroy {
-
   public users$: Observable<User[]>;
   public radio: RadioDetail;
   public subscriptions: Subscription[] = [];
@@ -37,30 +35,33 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
     public dialogRef: MatDialogRef<RadioDetailModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-      this.radio = data.radio;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.radio = data.radio;
+  }
 
   ngOnInit() {
     this.userStore.dispatch(new LoadUsers({}));
     this.users$ = this.userStore.pipe(select(getUsers));
     this.store.dispatch(new LoadRadio(this.radio.id));
-    
-    this.subscriptions.push(this.store.pipe(select(getSelectedRadio)).subscribe(radio => {
-      this.radio = radio;
-      if(radio) {
-        this.radioDetailService.radioDetailsForm.patchValue({
-          title: radio.title,
-          actionBy: radio.actionBy,
-          assignedTo: radio.assignedTo,
-          category: radio.category,
-          status: radio.status,
-          reference: radio.reference,
-          mitigation: radio.mitigation,
-          description: radio.description
-        });
-      }
-    }));
+
+    this.subscriptions.push(
+      this.store.pipe(select(getSelectedRadio)).subscribe(radio => {
+        this.radio = radio;
+        if (radio) {
+          this.radioDetailService.radioDetailsForm.patchValue({
+            title: radio.title,
+            actionBy: radio.actionBy,
+            assignedTo: radio.assignedTo,
+            category: radio.category,
+            status: radio.status,
+            reference: radio.reference,
+            mitigation: radio.mitigation,
+            description: radio.description
+          });
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -81,19 +82,21 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data) {
-        this.store.dispatch(new AddReply({
-          id: this.radio.id,
-          entity: {
-            data: {
-              replyText: data.radio.replyText,
-              changes: this.radioDetailsForm.value
+        this.store.dispatch(
+          new AddReply({
+            id: this.radio.id,
+            entity: {
+              data: {
+                replyText: data.radio.replyText,
+                changes: this.radioDetailsForm.value
+              }
             }
-          }
-        }))
+          })
+        );
       }
-    })
+    });
   }
 
   onArchiveRadio() {
@@ -102,31 +105,35 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data) {
-        this.store.dispatch(new AddReply({
-          id: this.radio.id,
-          entity: {
-            data: {
-              replyText: data.radio.replyText,
-              changes: { status: 'closed' }
+        this.store.dispatch(
+          new AddReply({
+            id: this.radio.id,
+            entity: {
+              data: {
+                replyText: data.radio.replyText,
+                changes: { status: 'closed' }
+              }
             }
-          }
-        }))
+          })
+        );
       }
-    })
+    });
   }
 
   onSendReply() {
-    this.store.dispatch(new AddReply({
-      id: this.radio.id,
-      entity: {
-        data: {
-          replyText: this.radioDetailsForm.value.replyText,
-          changes: this.radioDetailsForm.value
+    this.store.dispatch(
+      new AddReply({
+        id: this.radio.id,
+        entity: {
+          data: {
+            replyText: this.radioDetailsForm.value.replyText,
+            changes: this.radioDetailsForm.value
+          }
         }
-      },
-    }))
+      })
+    );
     this.radioDetailsForm.patchValue({ replyText: '' });
   }
 
@@ -143,11 +150,13 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.customProperties) {
-        this.store.dispatch(new UpdateRadioProperty({
-          radioId: this.radio.id,
-          customPropertyId: property.propertyId,
-          data: { data: { value: data.customProperties.value }}
-        }))
+        this.store.dispatch(
+          new UpdateRadioProperty({
+            radioId: this.radio.id,
+            customPropertyId: property.propertyId,
+            data: { data: { value: data.customProperties.value } }
+          })
+        );
       }
     });
   }
@@ -162,11 +171,10 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(new DeleteRadioProperty({radioId: this.radio.id, customPropertyId: property.propertyId}));
+        this.store.dispatch(new DeleteRadioProperty({ radioId: this.radio.id, customPropertyId: property.propertyId }));
       }
     });
   }
-
 }

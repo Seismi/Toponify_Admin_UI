@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 
@@ -7,9 +7,8 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   templateUrl: './radio-table.component.html',
   styleUrls: ['./radio-table.component.scss']
 })
-export class RadioTableComponent implements OnInit {
-
-  public selectedRowIndex: number = -1;
+export class RadioTableComponent {
+  public selectedRowIndex = -1;
 
   @Input()
   set data(data: RadioEntity[]) {
@@ -21,10 +20,8 @@ export class RadioTableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  public displayedColumns: string[] = ['refNo', 'category','status', 'title', 'last_update_date','last_update_by'];
+  public displayedColumns: string[] = ['refNo', 'category', 'status', 'title', 'last_update_date', 'last_update_by'];
   public dataSource: MatTableDataSource<RadioEntity>;
-
-  ngOnInit() {}
 
   @Output()
   selectRadio = new EventEmitter<string>();
@@ -40,5 +37,4 @@ export class RadioTableComponent implements OnInit {
   onAdd() {
     this.addRadio.emit();
   }
-  
 }

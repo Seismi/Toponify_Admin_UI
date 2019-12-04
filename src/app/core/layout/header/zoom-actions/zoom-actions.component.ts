@@ -23,7 +23,6 @@ export const viewLevelMapping = {
   styleUrls: ['./zoom-actions.component.scss']
 })
 export class ZoomActionsComponent implements OnInit, OnDestroy {
-
   selected: string;
   filterLevel: number;
 
@@ -38,15 +37,19 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     { level: 2, name: 'data set' },
     { level: 9, name: 'data set map' },
     { level: 3, name: 'dimension' },
-    { level: 4, name: 'reporting concept' },
-  ]
+    { level: 4, name: 'reporting concept' }
+  ];
 
-  constructor(
-    private store: Store<ViewState>,
-  ) {}
+  @Output()
+  zoomIn = new EventEmitter();
+
+  @Output()
+  zoomOut = new EventEmitter();
+
+  constructor(private store: Store<ViewState>) {}
 
   ngOnInit() {
-    this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => this.filterLevel = filterLevel);
+    this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => (this.filterLevel = filterLevel));
     this.viewLevel$ = this.store.pipe(select(getViewLevel));
     this.viewLevelSubscription = this.viewLevel$.subscribe(level => {
       this.viewLevel = level;
@@ -63,7 +66,9 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   onViewLevelSelected(level: any) {
     if (viewLevelMapping[level]) {
       if (this.filterLevel !== viewLevelMapping[level]) {
-        this.store.dispatch(new UpdateQueryParams({filterLevel: viewLevelMapping[level], id: null, parentName: null}));
+        this.store.dispatch(
+          new UpdateQueryParams({ filterLevel: viewLevelMapping[level], id: null, parentName: null })
+        );
         // this.filterService.addFilter({filterLevel: viewLevelMapping[level]}, ['id', 'parentName']);
       }
     }
@@ -71,16 +76,10 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   }
 
   getMapLevel(level: number): boolean {
-    if(level === 8 || level === 9) {
+    if (level === 8 || level === 9) {
       return true;
     }
   }
-
-  @Output()
-  zoomIn = new EventEmitter();
-
-  @Output()
-  zoomOut = new EventEmitter();
 
   onZoomIn() {
     this.zoomIn.emit();
@@ -89,5 +88,4 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   onZoomOut() {
     this.zoomOut.emit();
   }
-
 }

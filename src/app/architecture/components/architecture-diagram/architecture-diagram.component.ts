@@ -16,15 +16,9 @@ import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { layers } from '@app/architecture/store/models/node.model';
 import { DiagramTemplatesService } from '../../services/diagram-templates.service';
-import {
-  DiagramLevelService,
-  Level
-} from '../..//services/diagram-level.service';
+import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
 import { DiagramChangesService } from '../../services/diagram-changes.service';
-import {
-  CustomLinkShift,
-  GojsCustomObjectsService
-} from '../../services/gojs-custom-objects.service';
+import { CustomLinkShift, GojsCustomObjectsService } from '../../services/gojs-custom-objects.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
 
 // FIXME: this solution is temp, while not clear how it should work
@@ -58,8 +52,7 @@ const standardDisplayOptions = {
   templateUrl: './architecture-diagram.component.html',
   styleUrls: ['./architecture-diagram.component.scss']
 })
-export class ArchitectureDiagramComponent
-  implements OnInit, OnChanges, OnDestroy {
+export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestroy {
   diagram: go.Diagram;
 
   private partsSelectedRef: Subscription = null;
@@ -113,9 +106,7 @@ export class ArchitectureDiagramComponent
   updateNodeLocation = new EventEmitter();
 
   get level() {
-    return viewLevelMapping[this.viewLevel]
-      ? viewLevelMapping[this.viewLevel]
-      : viewLevelMapping[1];
+    return viewLevelMapping[this.viewLevel] ? viewLevelMapping[this.viewLevel] : viewLevelMapping[1];
   }
 
   constructor(
@@ -127,7 +118,8 @@ export class ArchitectureDiagramComponent
   ) {
     // Lets init url filtering
     this.diagramLevelService.initializeUrlFiltering();
-    (go as any).licenseKey = '2bf843eab76358c511d35a25403e7efb0ef72d35cf834da2590517a3ed5d604123cce17155d28d94c0e848fd4a28c1dc8e973d7d9' +
+    (go as any).licenseKey =
+      '2bf843eab76358c511d35a25403e7efb0ef72d35cf834da2590517a3ed5d604123cce17155d28d94c0e848fd4a28c1dc8e973d7d9' +
       '54e013fee39d6df4bea82abb53471b712584587f7012390cead29a5ff2a79f297b473f1c8688aa7bbaec3ce0ce9e1c44bcb0eb33678062e567e';
     this.diagram = new go.Diagram();
     this.diagram.initialContentAlignment = go.Spot.Center;
@@ -137,18 +129,14 @@ export class ArchitectureDiagramComponent
     this.diagram.allowCopy = false;
     this.diagram.animationManager.isEnabled = false;
     this.diagram.toolManager.draggingTool = new GuidedDraggingTool();
-    (this.diagram.toolManager
-      .draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
-    (this.diagram.toolManager
-      .draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
-    (this.diagram.toolManager
-      .draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
+    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
+    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
+    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
-    this.diagram.toolManager.relinkingTool.linkValidation =
-      diagramChangesService.linkingValidation;
+    this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation;
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
@@ -156,8 +144,7 @@ export class ArchitectureDiagramComponent
       go.DraggingTool.prototype.doActivate.call(this);
 
       // Only use drag guidelines for nodes and not for links
-      this.isGuidelineEnabled =
-        this.draggedParts.toKeySet().first() instanceof go.Node;
+      this.isGuidelineEnabled = this.draggedParts.toKeySet().first() instanceof go.Node;
     };
 
     // Override standard hideContextMenu method on context menu tool to also hide any opened sub-menus
@@ -176,62 +163,36 @@ export class ArchitectureDiagramComponent
     // Set context menu
     this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
 
-    // Set node templates
-    this.diagram.nodeTemplateMap.add(
-      layers.system,
-      diagramTemplatesService.getSystemNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      layers.dataSet,
-      diagramTemplatesService.getDataSetNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      layers.dimension,
-      diagramTemplatesService.getDimensionNodeTemplate()
-    );
-
-    this.diagram.nodeTemplateMap.add(
-      layers.reportingConcept,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
-    );
+    // Set node template
+    this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
 
     // Set links templates
-    this.diagram.linkTemplateMap.add(
-      linkCategories.data,
-      diagramTemplatesService.getLinkDataTemplate()
-    );
+    this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());
 
-    this.diagram.linkTemplateMap.add(
-      linkCategories.masterData,
-      diagramTemplatesService.getLinkMasterDataTemplate()
-    );
+    this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramTemplatesService.getLinkMasterDataTemplate());
 
-    this.diagram.linkTemplateMap.add(
-      '',
-      diagramTemplatesService.getLinkParentChildTemplate()
-    );
+    this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
     // Set group template
     this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
-
       // TEMP - no deletes for multiple parts for now
-      if (this.diagram.selection.count !== 1) {return; }
+      if (this.diagram.selection.count !== 1) {
+        return;
+      }
 
       const deletedPart = this.diagram.selection.first();
 
       // Disallow delete of dummy links in map view
-      if (deletedPart.data.id === '00000000-0000-0000-0000-000000000000') {return; }
+      if (deletedPart.data.id === '00000000-0000-0000-0000-000000000000') {
+        return;
+      }
 
       // Delete links that have not yet been connected to a node at both ends
       if (deletedPart.data.isTemporary) {
-        go.CommandHandler.prototype.deleteSelection.call(
-          this.diagram.commandHandler
-        );
+        go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
         return;
       }
 
@@ -245,11 +206,9 @@ export class ArchitectureDiagramComponent
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
-    diagramChangesService.onUpdatePosition.subscribe(
-      (data: { nodes: any[]; links: any[] }) => {
-        this.updateNodeLocation.emit(data);
-      }
-    );
+    diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
+      this.updateNodeLocation.emit(data);
+    });
   }
 
   // Zoom out diagram
@@ -269,9 +228,7 @@ export class ArchitectureDiagramComponent
 
   // Method to perform delete after user has confirmed
   deleteConfirmed(): void {
-    go.CommandHandler.prototype.deleteSelection.call(
-      this.diagram.commandHandler
-    );
+    go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
   }
 
   // Recalculate the area that the diagram takes up.
@@ -324,11 +281,9 @@ export class ArchitectureDiagramComponent
       this.diagram.allowMove = this.allowMove;
       this.diagram.allowDelete = this.allowMove;
       this.diagram.toolManager.linkReshapingTool.isEnabled = this.allowMove;
-      const linkShiftingTool = this.diagram.toolManager.mouseDownTools
-        .toArray()
-        .find(function(tool) {
-          return tool.name === 'LinkShifting';
-        });
+      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(function(tool) {
+        return tool.name === 'LinkShifting';
+      });
       linkShiftingTool.isEnabled = this.allowMove;
 
       // Handle changes tool-related adornments if a link is selected
@@ -363,10 +318,7 @@ export class ArchitectureDiagramComponent
       });
     }
 
-    if (
-      changes.viewLevel &&
-      changes.viewLevel.currentValue !== changes.viewLevel.previousValue
-    ) {
+    if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
       this.setLevel();
     }
 
@@ -386,12 +338,11 @@ export class ArchitectureDiagramComponent
     }
 
     if (changes.links || changes.nodes) {
-      const nodesHasBeenChanged =  changes.nodes &&
-        JSON.stringify(changes.nodes.currentValue) !==
-        JSON.stringify(changes.nodes.previousValue);
+      const nodesHasBeenChanged =
+        changes.nodes && JSON.stringify(changes.nodes.currentValue) !== JSON.stringify(changes.nodes.previousValue);
 
-      const linksHasBeenChanged = changes.links &&
-        JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue);
+      const linksHasBeenChanged =
+        changes.links && JSON.stringify(changes.links.currentValue) !== JSON.stringify(changes.links.previousValue);
 
       const nodeKeyProp = this.diagram.model.nodeKeyProperty as string;
 

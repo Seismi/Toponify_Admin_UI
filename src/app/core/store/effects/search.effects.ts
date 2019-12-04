@@ -9,10 +9,7 @@ import { SearchApiResponse } from '../models/search.models';
 
 @Injectable()
 export class SearchEffects {
-  constructor(
-    private actions$: Actions,
-    private searchService: SearchService
-  ) { }
+  constructor(private actions$: Actions, private searchService: SearchService) {}
 
   @Effect()
   search$ = this.actions$.pipe(

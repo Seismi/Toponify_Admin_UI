@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { WorkPackageActionsUnion, WorkPackageActionTypes } from '../actions/workpackage.actions';
-import { WorkPackageEntity, Page, Links, WorkPackageDetail } from '../models/workpackage.models';
+import { Links, Page, WorkPackageDetail, WorkPackageEntity } from '../models/workpackage.models';
 
 export interface State {
   editId: string;

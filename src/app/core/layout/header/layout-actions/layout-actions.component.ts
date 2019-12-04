@@ -6,14 +6,9 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
   styleUrls: ['./layout-actions.component.scss']
 })
 export class LayoutActionsComponent implements OnInit {
-
   @Input() showOrHideGrid: string;
 
   constructor() {}
-
-  ngOnInit() {
-    this.showOrHideGrid = 'border_inner';
-  }
 
   @Output()
   showGrid = new EventEmitter();
@@ -21,11 +16,15 @@ export class LayoutActionsComponent implements OnInit {
   @Output()
   zoomMap = new EventEmitter();
 
-  onShow(){
+  ngOnInit() {
+    this.showOrHideGrid = 'border_inner';
+  }
+
+  onShow() {
     this.showGrid.emit();
   }
 
-  onZoom(){
+  onZoom() {
     this.zoomMap.emit();
   }
 }
