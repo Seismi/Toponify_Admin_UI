@@ -19,12 +19,14 @@ export class JWTInterceptor implements HttpInterceptor {
     if (isExpired) {
       this.router.navigate(['auth/login']);
     } else if (token) {
-      request = request.clone({
-        url: environment.api + request.url,
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      if (!request.url.includes('assets/node-icons')) {
+        request = request.clone({
+          url: environment.api + request.url,
+          setHeaders: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
     }
     return next.handle(request);
   }

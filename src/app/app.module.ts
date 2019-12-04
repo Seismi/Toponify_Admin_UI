@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/shared-service';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CustomSerializer } from '@app/core/custom-serializer';
+import { MatIconModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { CustomSerializer } from '@app/core/custom-serializer';
     EffectsModule.forRoot([]),
     StoreRouterConnectingModule.forRoot({
       serializer: CustomSerializer
-    })
+    }),
+    MatIconModule
   ],
   declarations: [AppComponent],
   providers: [SharedService],
