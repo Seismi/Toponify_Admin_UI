@@ -14,7 +14,8 @@ th.mat-header-cell {
 
 td.mat-cell {
   border: none;
-  padding: 0 16px;
+  padding: 0;
+  padding-left: 16px;
   cursor: pointer;
 }
 
@@ -40,8 +41,4 @@ span {
 .disabled {
   pointer-events: none;
   opacity: 0.2;
-}
-
-.highlight {
-  background-color: #ddd;
 }
