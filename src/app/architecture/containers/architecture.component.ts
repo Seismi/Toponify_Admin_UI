@@ -948,7 +948,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      height: '95%'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1005,7 +1006,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      height: '95%'
     });
 
     dialogRef.afterClosed().subscribe(data => {
