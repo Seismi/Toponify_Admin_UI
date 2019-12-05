@@ -9,16 +9,15 @@ import { ShowError } from '@app/core/store/actions/error.actions';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor( private router: Router, private store: Store<State>) {}
+  constructor(private router: Router, private store: Store<State>) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     if (request.method === 'GET') {
       return next.handle(request).pipe(
         retry(3),
-        catchError((err) => {
+        catchError(err => {
           if (err.status === 403) {
-            this.store.dispatch( new ShowError('Insufficient privileges'));
+            this.store.dispatch(new ShowError('Insufficient privileges'));
             return throwError(err);
           }
           if (err.status !== 401) {
@@ -31,11 +30,16 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError(err => {
         if (err.status === 403) {
-          this.store.dispatch( new ShowError('Insufficient privileges'));
-          return throwError(err);
+          if (request.url.includes('users/login')) {
+            const error = err.error.errors.map(message => message.source.detail);
+            return throwError(error);
+          } else {
+            this.store.dispatch(new ShowError('Insufficient privileges'));
+            return throwError(err);
+          }
         }
         if (err.status !== 401) {
-          this.store.dispatch( new ShowError(`Error -  ${err.message}`));
+          this.store.dispatch(new ShowError(`Error -  ${err.message}`));
         }
         return throwError(err);
       })
