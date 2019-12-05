@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { CustomPropertyApiRequest, Error, Node, NodeDetail, OwnersEntity } from '../models/node.model';
+import { CustomPropertyApiRequest, NodeExpandedStateApiRequest, Error, Node, NodeDetail, OwnersEntity } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
@@ -23,9 +23,12 @@ export enum NodeActionTypes {
   LoadNodeUsageView = '[Node] Load Node Usage View',
   LoadNodeUsageViewSuccess = '[Node] Load Node Usage View Success',
   LoadNodeUsageViewFailure = '[Node] Load Node Usage View Fail',
-  UpdateNodes = '[Node] Update nodes',
-  UpdateNodesSuccess = '[Node] Update nodes Success',
-  UpdateNodesFailure = '[Node] Update nodes Fail',
+  UpdateNodeLocations = '[Node] Update node locations',
+  UpdateNodeLocationsSuccess = '[Node] Update node locations Success',
+  UpdateNodeLocationsFailure = '[Node] Update node locations Fail',
+  UpdateNodeExpandedState = '[Node] Update node expanded state',
+  UpdateNodeExpandedStateSuccess = '[Node] Update node expanded state Success',
+  UpdateNodeExpandedStateFailure = '[Node] Update node expanded state Fail',
   UpdateLinks = '[Node] Update links',
   UpdateLinksSuccess = '[Node] Update links Success',
   UpdateLinksFailure = '[Node] Update links Fail',
@@ -129,18 +132,33 @@ export class LoadNodeLinkFailure implements Action {
   constructor(public payload: Error) {}
 }
 
-export class UpdateNodes implements Action {
-  readonly type = NodeActionTypes.UpdateNodes;
+export class UpdateNodeLocations implements Action {
+  readonly type = NodeActionTypes.UpdateNodeLocations;
   constructor(public payload: { layoutId: string; nodes: any[] }) {}
 }
 
-export class UpdateNodesSuccess implements Action {
-  readonly type = NodeActionTypes.UpdateNodesSuccess;
+export class UpdateNodeLocationsSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodeLocationsSuccess;
   constructor(public payload: any) {}
 }
 
-export class UpdateNodesFailure implements Action {
-  readonly type = NodeActionTypes.UpdateNodesFailure;
+export class UpdateNodeLocationsFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodeLocationsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class UpdateNodeExpandedState implements Action {
+  readonly type = NodeActionTypes.UpdateNodeExpandedState;
+  constructor(public payload: { layoutId: string; data: NodeExpandedStateApiRequest }) {}
+}
+
+export class UpdateNodeExpandedStateSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodeExpandedStateSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateNodeExpandedStateFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodeExpandedStateFailure;
   constructor(public payload: Error) {}
 }
 
@@ -225,9 +243,12 @@ export type NodeActionsUnion =
   | LoadNodeUsageView
   | LoadNodeUsageViewSuccess
   | LoadNodeUsageViewFailure
-  | UpdateNodes
-  | UpdateNodesSuccess
-  | UpdateNodesFailure
+  | UpdateNodeLocations
+  | UpdateNodeLocationsSuccess
+  | UpdateNodeLocationsFailure
+  | UpdateNodeExpandedState
+  | UpdateNodeExpandedStateSuccess
+  | UpdateNodeExpandedStateFailure
   | UpdateLinks
   | UpdateLinksSuccess
   | UpdateLinksFailure
