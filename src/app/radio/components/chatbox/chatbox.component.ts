@@ -9,12 +9,13 @@ import { MatTableDataSource } from '@angular/material';
   styleUrls: ['./chatbox.component.scss']
 })
 export class ChatBoxComponent {
-
   @Input() group: FormGroup;
   public radio: RadioDetail;
 
   @Input()
-  set data(data: RadioDetail) { this.radio = data };
+  set data(data: RadioDetail) {
+    this.radio = data;
+  }
 
   public displayedColumns: string[] = ['title'];
   public dataSource: MatTableDataSource<RadioDetail>;
@@ -24,5 +25,4 @@ export class ChatBoxComponent {
   onSend() {
     this.sendReply.emit();
   }
-  
 }

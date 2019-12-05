@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Node } from '@app/architecture/store/models/node.model';
-import { NodeLink, NodeLinkDetail } from '@app/nodes/store/models/node-link.model';
-import { NodeDetail } from '@app/nodes/store/models/node.model';
+import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
@@ -17,7 +17,6 @@ const LinkColumns = ['category', 'name', 'description', 'tags', 'r', 'a', 'd', '
   templateUrl: 'architecture-table-view.component.html',
   styleUrls: ['architecture-table-view.component.scss']
 })
-
 export class ArchitectureTableViewComponent implements OnInit {
   @Input() workPackageIsEditable: boolean;
   @Input() selectedItem: NodeDetail | NodeLinkDetail;
@@ -45,7 +44,6 @@ export class ArchitectureTableViewComponent implements OnInit {
 
   constructor(private nodeStore: Store<NodeState>) {}
 
-
   ngOnInit(): void {
     if (this.view === 'system') {
       this.displayedColumns = SystemColumns;
@@ -69,7 +67,6 @@ export class ArchitectureTableViewComponent implements OnInit {
   }
 
   getNodeName(id: string): Observable<string> {
-    return this.nodeStore.select(getNodeEntityById, {id}).pipe(map(node => node.name));
+    return this.nodeStore.select(getNodeEntityById, { id }).pipe(map(node => node.name));
   }
 }
-

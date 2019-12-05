@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, Renderer } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 
 @Component({
   selector: 'app-toolbar-column',
@@ -8,23 +8,15 @@ import { Component, OnInit, Input, ElementRef, Renderer } from '@angular/core';
 export class ToolbarColumnComponent implements OnInit {
   @Input() isLast: boolean;
   @Input() fillFreeSpace: boolean;
-  constructor(public elementRef: ElementRef, private renderer: Renderer) {}
+  constructor(public elementRef: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
     if (this.isLast) {
-      this.renderer.setElementClass(
-        this.elementRef.nativeElement,
-        'isLast',
-        true
-      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'isLast');
     }
 
     if (this.fillFreeSpace) {
-      this.renderer.setElementClass(
-        this.elementRef.nativeElement,
-        'fillFreeSpace',
-        true
-      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'fillFreeSpace');
     }
   }
 }

@@ -3,8 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 @Injectable()
 export class LayoutsValidatorService {
-
-  constructor() { }
+  constructor() {}
 
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {

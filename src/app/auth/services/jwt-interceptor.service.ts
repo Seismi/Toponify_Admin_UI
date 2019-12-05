@@ -8,10 +8,7 @@ import { routerNgProbeToken } from '@angular/router/src/router_module';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
-
-  constructor(private router: Router) {
-
-  }
+  constructor(private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const helper = new JwtHelperService();

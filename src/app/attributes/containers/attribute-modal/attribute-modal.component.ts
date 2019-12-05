@@ -15,9 +15,7 @@ import { getSelectedNode } from '@app/architecture/store/selectors/node.selector
   styleUrls: ['./attribute-modal.component.scss'],
   providers: [AttributeDetailService, AttributeValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class AttributeModalComponent implements OnInit {
-
   public attribute: AttributeEntity;
   public node: NodeDetail;
 
@@ -25,16 +23,17 @@ export class AttributeModalComponent implements OnInit {
     private store: Store<NodeState>,
     private attributeDetailService: AttributeDetailService,
     public dialogRef: MatDialogRef<AttributeModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.attribute = data.attribute;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.attribute = data.attribute;
+  }
 
   ngOnInit() {
     this.store.pipe(select(getSelectedNode)).subscribe(node => {
       this.node = node;
     });
   }
-    
+
   get attributeDetailForm(): FormGroup {
     return this.attributeDetailService.attributeDetailForm;
   }
@@ -49,5 +48,4 @@ export class AttributeModalComponent implements OnInit {
   onCancel() {
     this.dialogRef.close();
   }
-
 }

@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
@@ -14,18 +14,17 @@ import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/wor
   styleUrls: ['./owners-modal.component.scss'],
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-
 export class OwnersModalComponent implements OnInit {
-
   owners$: Observable<TeamEntity[]>;
   owner: OwnersEntityOrApproversEntity;
 
   constructor(
     private store: Store<TeamState>,
     public dialogRef: MatDialogRef<OwnersModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.owner = data.owner;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.owner = data.owner;
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadTeams({}));

@@ -1,76 +1,157 @@
 <form [formGroup]="group">
-    <!-- Name -->
-    <mat-form-field [ngClass]="{disabled: !isEditable}">
-        <input matInput placeholder="Name" formControlName="name" data-hook="workpackage-detail-name" [ngClass]="{ editable: isEditable }">
-        <mat-error>This field is required!</mat-error>
-    </mat-form-field>
+  <!-- Name -->
+  <mat-form-field [ngClass]="{ disabled: !isEditable }">
+    <input
+      matInput
+      placeholder="Name"
+      formControlName="name"
+      data-hook="workpackage-detail-name"
+      [ngClass]="{ editable: isEditable }"
+    />
+    <mat-error>This field is required!</mat-error>
+  </mat-form-field>
 
-    <!-- Description -->
-    <mat-form-field [ngClass]="{disabled: !isEditable}">
-        <textarea matInput rows="5" placeholder="Description" formControlName="description" data-hook="workpackage-detail-description" [ngClass]="{ editable: isEditable }"></textarea>
-    </mat-form-field>
+  <!-- Description -->
+  <mat-form-field [ngClass]="{ disabled: !isEditable }">
+    <textarea
+      matInput
+      rows="5"
+      placeholder="Description"
+      formControlName="description"
+      data-hook="workpackage-detail-description"
+      [ngClass]="{ editable: isEditable }"
+    ></textarea>
+  </mat-form-field>
 
-    <!-- Baseline Table -->
-    <smi-baseline-table
-        data-hook="workpackage-detail-baseline-table"
-        *ngIf="!modalMode"
-        [data]="baselineTableData">
-    </smi-baseline-table>
+  <!-- Baseline Table -->
+  <smi-baseline-table data-hook="workpackage-detail-baseline-table" *ngIf="!modalMode" [data]="baselineTableData">
+  </smi-baseline-table>
 
-    <!-- Owners Table -->
-    <smi-owners-table
-        [ngClass]="{disabled: !isEditable}"
-        data-hook="workpackage-detail-owners-table"
-        *ngIf="!modalMode" 
-        [data]="ownersTableData"
-        (addOwner)="onAddOwner($event)"
-        (deleteOwner)="onDeleteOwner($event)"
-        [isEditable]="isEditable">
-    </smi-owners-table>
+  <!-- Owners Table -->
+  <smi-owners-table
+    [ngClass]="{ disabled: !isEditable }"
+    data-hook="workpackage-detail-owners-table"
+    *ngIf="!modalMode"
+    [data]="ownersTableData"
+    (addOwner)="onAddOwner($event)"
+    (deleteOwner)="onDeleteOwner($event)"
+    [isEditable]="isEditable"
+  >
+  </smi-owners-table>
 
-    <!-- Approvers Table -->
-    <smi-approvers-table
-        data-hook="workpackage-detail-approvers-table"
-        *ngIf="!modalMode" 
-        [data]="approversTableData">
-    </smi-approvers-table>
+  <!-- Approvers Table -->
+  <smi-approvers-table data-hook="workpackage-detail-approvers-table" *ngIf="!modalMode" [data]="approversTableData">
+  </smi-approvers-table>
 
-    <!-- Select Baseline -->
-    <smi-wp-baseline-dropdown
-        data-hook="workpackage-detail-baseline-selection"
-        *ngIf="modalMode"
-        [data]="baseline"
-        [selectedBaseline]="selectedBaselines">
-    </smi-wp-baseline-dropdown>
+  <!-- Select Baseline -->
+  <smi-wp-baseline-dropdown
+    data-hook="workpackage-detail-baseline-selection"
+    *ngIf="modalMode"
+    [data]="baseline"
+    [selectedBaseline]="selectedBaselines"
+  >
+  </smi-wp-baseline-dropdown>
 
-    <!-- Select Owners -->
-    <smi-wp-owners-dropdown
-        data-hook="workpackage-detail-owners-selection"
-        *ngIf="modalMode"
-        [data]="owners"
-        [selectedOwners]="selectedOwners">
-    </smi-wp-owners-dropdown>
+  <!-- Select Owners -->
+  <smi-wp-owners-dropdown
+    data-hook="workpackage-detail-owners-selection"
+    *ngIf="modalMode"
+    [data]="owners"
+    [selectedOwners]="selectedOwners"
+  >
+  </smi-wp-owners-dropdown>
 
-    <!-- Select Status -->
-    <mat-form-field [ngClass]="{disabled: disableStatusInput}" *ngIf="modalMode">
-        <input matInput placeholder="Status" formControlName="status" data-hook="workpackage-detail-status">
-    </mat-form-field>
+  <!-- Select Status -->
+  <mat-form-field [ngClass]="{ disabled: disableStatusInput }" *ngIf="modalMode">
+    <input matInput placeholder="Status" formControlName="status" data-hook="workpackage-detail-status" />
+  </mat-form-field>
 
-
-    <div class="form-group" *ngIf="!modalMode">
-        <div *ngIf="!isEditable">
-            <button type="button" mat-flat-button color="primary" *ngIf="statusDraft" (click)="onEdit()" data-hook="workpackage-detail-edit">Edit</button>
-            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionSubmit" (click)="submitWorkpackage()" data-hook="workpackage-detail-submit">Submit</button>
-            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionApprove" (click)="approveWorkpackage()" data-hook="workpackage-detail-approve">Approve</button>
-            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionReject" (click)="rejectWorkpackage()" data-hook="workpackage-detail-reject">Reject</button>
-            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionMerge" (click)="mergeWorkpackage()" data-hook="workpackage-detail-merge">Merge</button>
-            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionReset" (click)="resetWorkpackage()" data-hook="workpackage-detail-reset">Reset</button>
-            <button type="button" mat-raised-button color="primary" *ngIf="workpackageActionSupersede" (click)="supersedeWorkpackage()" data-hook="workpackage-detail-supersede">Supersede</button>
-            <button type="button" mat-flat-button color="warn" *ngIf="statusDraft" (click)="onDelete()" data-hook="workpackage-detail-delete">Delete</button>
-        </div>
-        <div *ngIf="isEditable">
-            <button mat-flat-button color="primary" (click)="onSave()" data-hook="workpackage-detail-save">Save</button>
-            <button mat-flat-button (click)="onCancel()" data-hook="workpackage-detail-cancel">Cancel</button>
-        </div>
+  <div class="form-group" *ngIf="!modalMode">
+    <div *ngIf="!isEditable">
+      <button
+        type="button"
+        mat-flat-button
+        color="primary"
+        *ngIf="statusDraft"
+        (click)="onEdit()"
+        data-hook="workpackage-detail-edit"
+      >
+        Edit
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        *ngIf="workpackageActionSubmit"
+        (click)="submitWorkpackage()"
+        data-hook="workpackage-detail-submit"
+      >
+        Submit
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        *ngIf="workpackageActionApprove"
+        (click)="approveWorkpackage()"
+        data-hook="workpackage-detail-approve"
+      >
+        Approve
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        *ngIf="workpackageActionReject"
+        (click)="rejectWorkpackage()"
+        data-hook="workpackage-detail-reject"
+      >
+        Reject
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        *ngIf="workpackageActionMerge"
+        (click)="mergeWorkpackage()"
+        data-hook="workpackage-detail-merge"
+      >
+        Merge
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        *ngIf="workpackageActionReset"
+        (click)="resetWorkpackage()"
+        data-hook="workpackage-detail-reset"
+      >
+        Reset
+      </button>
+      <button
+        type="button"
+        mat-raised-button
+        color="primary"
+        *ngIf="workpackageActionSupersede"
+        (click)="supersedeWorkpackage()"
+        data-hook="workpackage-detail-supersede"
+      >
+        Supersede
+      </button>
+      <button
+        type="button"
+        mat-flat-button
+        color="warn"
+        *ngIf="statusDraft"
+        (click)="onDelete()"
+        data-hook="workpackage-detail-delete"
+      >
+        Delete
+      </button>
     </div>
+    <div *ngIf="isEditable">
+      <button mat-flat-button color="primary" (click)="onSave()" data-hook="workpackage-detail-save">Save</button>
+      <button mat-flat-button (click)="onCancel()" data-hook="workpackage-detail-cancel">Cancel</button>
+    </div>
+  </div>
 </form>

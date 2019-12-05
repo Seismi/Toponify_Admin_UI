@@ -8,9 +8,25 @@ import { AttributesComponent } from './containers/attributes/attributes.componen
 import { AttributesRoutingComponent } from './containers/attributes-router.component';
 import { CategoryTableComponent } from './components/category-table/category-table.component';
 import { TableCollapseComponent } from './components/category-table/table-collapse/table-collapse.component';
-import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
-  MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-  MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatSnackBarModule, MatSelectModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatDialogModule,
+  MatDividerModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatPaginatorModule,
+  MatProgressSpinnerModule,
+  MatSortModule,
+  MatTableModule,
+  MatTabsModule,
+  MatSnackBarModule,
+  MatSelectModule
+} from '@angular/material';
 import { AttributeService } from './services/attributes.service';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -35,11 +51,25 @@ import { RelatedAttributesModalComponent } from './containers/related-attributes
     CommonModule,
     CoreModule,
     ArchitectureModule,
-    MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule,
-    MatProgressSpinnerModule, MatSortModule, MatTableModule, MatTabsModule, MatSnackBarModule, MatSelectModule,
+    MatButtonModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatSortModule,
+    MatTableModule,
+    MatTabsModule,
+    MatSnackBarModule,
+    MatSelectModule,
     StoreModule.forFeature('attributesFeature', reducer),
-    EffectsModule.forFeature([ AttributeEffects ])
+    EffectsModule.forFeature([AttributeEffects])
   ],
   exports: [],
   declarations: [
@@ -54,8 +84,6 @@ import { RelatedAttributesModalComponent } from './containers/related-attributes
     RelatedAttributesModalComponent
   ],
   entryComponents: [AttributeModalComponent, RelatedAttributesModalComponent],
-  providers: [
-    AttributeService
-  ],
+  providers: [AttributeService]
 })
-export class AttributesModule { }
+export class AttributesModule {}

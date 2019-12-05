@@ -6,22 +6,18 @@ import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as ScopeActions from '../actions/scope.actions';
 import { ScopeActionTypes } from '../actions/scope.actions';
-import { 
-  ScopeEntitiesHttpParams, 
-  GetScopeEntitiesApiResponse, 
-  GetScopeApiResponse, 
-  ScopeDetails, 
-  AddScopeApiResponse, 
-  UpdateScopeApiResponse 
+import {
+  ScopeEntitiesHttpParams,
+  GetScopeEntitiesApiResponse,
+  GetScopeApiResponse,
+  ScopeDetails,
+  AddScopeApiResponse,
+  UpdateScopeApiResponse
 } from '../models/scope.model';
-
 
 @Injectable()
 export class ScopeEffects {
-  constructor(
-    private actions$: Actions,
-    private scopeService: ScopeService
-  ) {}
+  constructor(private actions$: Actions, private scopeService: ScopeService) {}
 
   @Effect()
   loadScopes$ = this.actions$.pipe(
@@ -63,7 +59,7 @@ export class ScopeEffects {
   updateScope$ = this.actions$.pipe(
     ofType<ScopeActions.UpdateScope>(ScopeActionTypes.UpdateScope),
     map(action => action.payload),
-    switchMap((payload: {id: string, data: ScopeDetails}) => {
+    switchMap((payload: { id: string; data: ScopeDetails }) => {
       return this.scopeService.updateScope(payload.id, payload.data).pipe(
         switchMap((resp: UpdateScopeApiResponse) => [new ScopeActions.UpdateScopeSuccess(resp)]),
         catchError((error: HttpErrorResponse) => of(new ScopeActions.UpdateScopeFailure(error)))

@@ -37,5 +37,4 @@ export class RadioTableInArchitectureComponent {
   onOpen(radio: RadioDetail) {
     this.openRadio.emit(radio);
   }
-
 }

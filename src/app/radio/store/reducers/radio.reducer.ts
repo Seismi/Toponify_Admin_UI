@@ -26,7 +26,6 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: RadioActionsUnion): State {
   switch (action.type) {
-
     case RadioActionTypes.LoadRadios: {
       return {
         ...state,
@@ -40,7 +39,7 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         entities: action.payload.data,
         links: action.payload.links,
         page: action.payload.page,
-        loading: false,
+        loading: false
       };
     }
 
@@ -52,7 +51,6 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
-
     case RadioActionTypes.LoadRadio: {
       return {
         ...state,
@@ -60,7 +58,7 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
-     case RadioActionTypes.LoadRadioSuccess: {
+    case RadioActionTypes.LoadRadioSuccess: {
       return {
         ...state,
         loading: false,
@@ -75,7 +73,6 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         error: action.payload
       };
     }
-
 
     case RadioActionTypes.AddRadio: {
       return {
@@ -101,7 +98,6 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
-
     case RadioActionTypes.AddReply: {
       return {
         ...state,
@@ -115,9 +111,7 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         loading: false,
         selectedRadio: action.payload,
         entities: state.entities.map(entity =>
-          entity.id === action.payload.id
-            ? { ...entity, ...action.payload }
-            : entity
+          entity.id === action.payload.id ? { ...entity, ...action.payload } : entity
         )
       };
     }
@@ -129,7 +123,6 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         loading: false
       };
     }
-
 
     case RadioActionTypes.UpdateRadioProperty: {
       return {
@@ -153,7 +146,6 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         loading: false
       };
     }
-
 
     case RadioActionTypes.DeleteRadioProperty: {
       return {

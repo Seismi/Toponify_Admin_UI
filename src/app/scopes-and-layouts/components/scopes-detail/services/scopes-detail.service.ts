@@ -4,7 +4,6 @@ import { ScopesValidatorService } from './scopes-detail-validator.service';
 
 @Injectable()
 export class ScopesDetailService {
-
   public scopesDetailForm: FormGroup;
 
   constructor(private fb: FormBuilder, private scopesValidatorService: ScopesValidatorService) {
@@ -12,10 +11,9 @@ export class ScopesDetailService {
       name: [null, Validators.required],
       owners: this.fb.array([this.OwnersOrViewers()]),
       viewers: this.fb.array([this.OwnersOrViewers()]),
-      layerFilter: [null],
+      layerFilter: [null]
     });
   }
-
 
   OwnersOrViewers(): FormGroup {
     return this.fb.group({
@@ -24,7 +22,6 @@ export class ScopesDetailService {
     });
   }
 
-
   get isValid(): boolean {
     if (!this.scopesDetailForm.valid) {
       this.scopesValidatorService.validateAllFormFields(this.scopesDetailForm);
@@ -32,5 +29,4 @@ export class ScopesDetailService {
     }
     return true;
   }
-  
 }

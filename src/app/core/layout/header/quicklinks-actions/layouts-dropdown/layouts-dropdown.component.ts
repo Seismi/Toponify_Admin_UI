@@ -21,5 +21,4 @@ export class LayoutsDropdownComponent {
   onSelect(selectChange: MatSelectChange): void {
     this.selectLayout.emit(selectChange.value);
   }
-
 }

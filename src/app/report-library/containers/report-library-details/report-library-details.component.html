@@ -1,58 +1,50 @@
-<smi-right-sidebar
-    *ngIf="showOrHideRightPane"
-    [reportLibraryPage]="true"
-    (rightTab)="openRightTab($event)">
+<smi-right-sidebar *ngIf="showOrHideRightPane" [reportLibraryPage]="true" (rightTab)="openRightTab($event)">
 </smi-right-sidebar>
 
 <app-model-container *ngIf="!showOrHideRightPane">
-    <app-model-sidebar [minWidth]="400" [maxWidth]="600" [isLast]="true">
-        <p class="rightPane">
-            <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
-                <mat-tab label="Details">
-                  <p class="detailsTabContainer">
-                    <smi-report-library-detail
-                        [group]="reportDetailForm"
-                        [workPackageIsEditable]="workPackageIsEditable"
-                        [isEditable]="isEditable"
-                        [selectedOwnerIndex]="selectedOwnerIndex"
-                        [dataSets]="report?.dataSets"
-                        [owners]="report?.owners"
-                        [dimensions]="report?.dimensions"
-                        [reportingConcepts]="report?.reportingConcepts"
-                        (saveReport)="onSaveReport()"
-                        (editReport)="onEditReport()"
-                        (cancel)="onCancel()"
-                        (deleteReport)="onDeleteReport()"
-                        [selectedOwner]="selectedOwner"
-                        (addOwner)="onAddOwner()"
-                        (selectOwner)="onSelectOwner($event)"
-                        (deleteOwner)="onDeleteOwner()">
-                    </smi-report-library-detail>
-                  </p>
-                </mat-tab>
-                <mat-tab label="Attributes">
-                    <smi-attributes-table-in-reports-page
-                        [data]="report?.attributes">
-                    </smi-attributes-table-in-reports-page>
-                </mat-tab>
-                <mat-tab label="Properties">
-                    <smi-properties-table-in-reports-page
-                        [data]="report?.customPropertyValues">
-                    </smi-properties-table-in-reports-page>
-                </mat-tab>
-                <mat-tab label="RADIO">
-                    <smi-radio-table-in-reports-page
-                        [data]="report?.relatedRadios">
-                    </smi-radio-table-in-reports-page>
-                </mat-tab>
-                <mat-tab label="Work Packages">
-                    <smi-workpackage-table-in-reports-page 
-                        [data]="report?.relatedWorkPackages">
-                    </smi-workpackage-table-in-reports-page>
-                </mat-tab>
-            </mat-tab-group>
-            <br>
-            <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
-        </p>
-    </app-model-sidebar>
+  <app-model-sidebar [minWidth]="400" [maxWidth]="600" [isLast]="true">
+    <p class="rightPane">
+      <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true" [selectedIndex]="selectedRightTab">
+        <mat-tab label="Details">
+          <p class="detailsTabContainer">
+            <smi-report-library-detail
+              [group]="reportDetailForm"
+              [workPackageIsEditable]="workPackageIsEditable"
+              [isEditable]="isEditable"
+              [selectedOwnerIndex]="selectedOwnerIndex"
+              [dataSets]="report?.dataSets"
+              [owners]="report?.owners"
+              [dimensions]="report?.dimensions"
+              [reportingConcepts]="report?.reportingConcepts"
+              (saveReport)="onSaveReport()"
+              (editReport)="onEditReport()"
+              (cancel)="onCancel()"
+              (deleteReport)="onDeleteReport()"
+              [selectedOwner]="selectedOwner"
+              (addOwner)="onAddOwner()"
+              (selectOwner)="onSelectOwner($event)"
+              (deleteOwner)="onDeleteOwner()"
+            >
+            </smi-report-library-detail>
+          </p>
+        </mat-tab>
+        <mat-tab label="Attributes">
+          <smi-attributes-table-in-reports-page [data]="report?.attributes"> </smi-attributes-table-in-reports-page>
+        </mat-tab>
+        <mat-tab label="Properties">
+          <smi-properties-table-in-reports-page [data]="report?.customPropertyValues">
+          </smi-properties-table-in-reports-page>
+        </mat-tab>
+        <mat-tab label="RADIO">
+          <smi-radio-table-in-reports-page [data]="report?.relatedRadios"> </smi-radio-table-in-reports-page>
+        </mat-tab>
+        <mat-tab label="Work Packages">
+          <smi-workpackage-table-in-reports-page [data]="report?.relatedWorkPackages">
+          </smi-workpackage-table-in-reports-page>
+        </mat-tab>
+      </mat-tab-group>
+      <br />
+      <button mat-button (click)="onHideRightPane()">Hide<mat-icon>keyboard_arrow_right</mat-icon></button>
+    </p>
+  </app-model-sidebar>
 </app-model-container>

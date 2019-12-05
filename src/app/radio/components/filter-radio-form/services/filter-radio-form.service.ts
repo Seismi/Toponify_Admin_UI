@@ -4,7 +4,6 @@ import { FilterRadioFormValidatorService } from './filter-radio-form-validator.s
 
 @Injectable()
 export class FilterRadioFormService {
-
   public filterRadioForm: FormGroup;
 
   constructor(private fb: FormBuilder, private filterRadioFormValidatorService: FilterRadioFormValidatorService) {
