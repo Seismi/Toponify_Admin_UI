@@ -21,15 +21,15 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNodes,
+  UpdateNodeLocations,
   NodeActionTypes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { 
-  CustomPropertyValuesEntity, 
-  NodeDetail, 
-  DescendantsEntity, 
-  OwnersEntityOrTeamEntityOrApproversEntity 
+import {
+  CustomPropertyValuesEntity,
+  NodeDetail,
+  DescendantsEntity,
+  OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -693,7 +693,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
 
     if (this.layout && data.nodes && data.nodes.length > 0) {
-      this.store.dispatch(new UpdateNodes({ layoutId: this.layout.id, nodes: data.nodes }));
+      this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.nodes }));
     }
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
@@ -756,16 +756,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesSubscription = this.nodeStore
       .pipe(
         select(getNodeEntities),
-        // Get correct location for nodes, based on selected layout
+        // Get correct location and expanded state for nodes, based on selected layout
         map(nodes => {
           if (nodes === null) {
             return null;
           }
           if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
-            return nodes;
+            return nodes.map(function(node) {
+              return {...node,
+                middleExpanded: false,
+                bottomExpanded: false
+              };
+            });
           }
 
           let layoutLoc;
+          let layoutExpandState;
 
           return nodes.map(
             function(node) {
@@ -775,12 +781,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                     return loc.layout && loc.layout.id === this.layout.id;
                   }.bind(this)
                 );
+
+                layoutExpandState = node.expandedStates.find(
+                  function(exp) {
+                    return exp.layout && exp.layout.id === this.layout.id;
+                  }.bind(this)
+                );
               }
 
               return {
                 ...node,
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
-                locationMissing: !layoutLoc
+                locationMissing: !layoutLoc,
+                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : false,
+                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false
               };
             }.bind(this)
           );

@@ -593,4 +593,18 @@ export class DiagramChangesService {
     // Placeholder - update all node and link positions in back end for current layout
     // Needs store update before implementation
   }
+
+  nodeExpandChanged(node) {
+
+    // Expanding/collapsing node sections changes node size, therefore link routes may need updating
+    node.findLinksConnected().each(function(link) {
+    node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+      link.invalidateRoute();
+    });
+
+    if (this.currentLevel.endsWith('map')) {
+      node.invalidateLayout();
+    }
+
+  }
 }
