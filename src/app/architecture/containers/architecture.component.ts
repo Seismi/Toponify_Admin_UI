@@ -114,7 +114,7 @@ import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/o
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
-import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-modal.component';
+import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/architecture/store/models/node-link.model';
 import { Node } from '@app/architecture/store/models/node.model';
