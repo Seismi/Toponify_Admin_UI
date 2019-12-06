@@ -38,6 +38,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() radio: any;
   @Input() multipleSelected = false;
   @Input() nodeScopes: WorkPackageNodeScopes[];
+  @Input() viewLevel: number;
 
   @Output()
   saveAttribute = new EventEmitter();
