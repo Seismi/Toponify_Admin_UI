@@ -475,12 +475,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
-        this.eventEmitter.next(Events.NodesLinksReload);
-      })
-    );
-
-    this.subscriptions.push(
       this.nodeStore.pipe(select(getSelectedNodeLink)).subscribe(nodeLinkDetail => {
         this.selectedNode = nodeLinkDetail;
         this.ref.detectChanges();
@@ -1118,6 +1112,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       data: {
         workpackageId: this.workpackageId,
         nodeId: this.nodeId,
+        scopeId: this.scopeId,
         childrenOf: {
           id: null // Add node from the same level *not required*
         }

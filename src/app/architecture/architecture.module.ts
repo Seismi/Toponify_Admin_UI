@@ -76,6 +76,7 @@ import { SwitchViewTabsComponent } from '@app/architecture/components/switch-vie
 import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
 import { ScopeTableComponent } from './components/scope-table/scope-table.component';
 import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-modal.component';
+import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
 
 @NgModule({
   imports: [
@@ -148,7 +149,8 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
     SwitchViewTabsComponent,
     ArchitectureTableViewComponent,
     ScopeTableComponent,
-    NodeScopeModalComponent
+    NodeScopeModalComponent,
+    NewChildrenModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -158,7 +160,8 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
     DescendantsModalComponent,
     EditNameModalComponent,
     RadioDetailModalComponent,
-    NodeScopeModalComponent
+    NodeScopeModalComponent,
+    NewChildrenModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
