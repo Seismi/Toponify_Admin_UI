@@ -92,6 +92,11 @@
   object-fit: cover;
 }
 
+a {
+    font-size: 12px;
+    margin-left: 75px;
+}
+
 @media only screen and (max-width: 768px) {
   .col {
     display: none;

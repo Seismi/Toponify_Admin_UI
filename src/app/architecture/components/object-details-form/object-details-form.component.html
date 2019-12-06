@@ -33,15 +33,12 @@
       *ngIf="!clickedOnLink"
       [data]="owners"
       [isEditable]="workPackageIsEditable"
-      [selectedRowIndex]="selectedOwnerIndex"
-      [selectedOwner]="selectedOwner"
-      (selectOwner)="onSelectOwner($event)"
       (addOwner)="onAddOwner()"
-      (deleteOwner)="onDeleteOwner()"
+      (deleteOwner)="onDeleteOwner($event)"
     >
     </smi-owners-table-in-architecture>
     <smi-descendants-table-in-architecture
-      *ngIf="!clickedOnLink && !attributesPage"
+      *ngIf="!clickedOnLink && !attributesPage && viewLevel !== 4"
       [data]="descendants"
       [isEditable]="workPackageIsEditable"
       (addDescendant)="onAddDescendant()"

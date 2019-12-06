@@ -11,18 +11,16 @@
         [group]="group"
         [clickedOnLink]="clickedOnLink"
         [isEditable]="isEditable"
-        [selectedOwner]="selectedOwner"
-        [selectedOwnerIndex]="selectedOwnerIndex"
         (editDetails)="onEditDetails()"
         (saveAttribute)="onSaveAttribute()"
         (delete)="onDeleteNode()"
         (cancel)="onCancel()"
         [workPackageIsEditable]="workPackageIsEditable"
         (addOwner)="onAddOwner()"
-        (selectOwner)="onSelectOwner($event)"
-        (deleteOwner)="onDeleteOwner()"
+        (deleteOwner)="onDeleteOwner($event)"
         (addDescendant)="onAddDescendant()"
         (deleteDescendant)="onDeleteDescendant($event)"
+        [viewLevel]="viewLevel"
       >
       </smi-object-details-form>
       <!-- Add Scope Button -->

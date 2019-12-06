@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { NavigationEnd, Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
@@ -18,7 +18,7 @@ import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.comp
   providers: [WorkPackageDetailService, WorkPackageValidatorService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkPackageComponent implements OnInit, OnDestroy {
+export class WorkPackageComponent implements OnInit, OnDestroy, AfterViewInit {
   public subscriptions: Subscription[] = [];
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
   public selectedWorkPackage$: Subscription;
@@ -30,8 +30,10 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   public workpackages: WorkPackageEntity[];
   public workPackageSelected: boolean;
 
-  constructor(private store: Store<WorkPackageState>, private router: Router, public dialog: MatDialog) {
-    router.events.subscribe((event: NavigationEnd) => {
+  constructor(private store: Store<WorkPackageState>, private router: Router, public dialog: MatDialog) {}
+
+  ngAfterViewInit() {
+    this.router.events.subscribe((event: NavigationEnd) => {
       if (event instanceof NavigationEnd) {
         event.url.length > 16 ? (this.workPackageSelected = true) : (this.workPackageSelected = false);
       }

@@ -163,17 +163,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     // Set context menu
     this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
 
-    // Set node templates
-    this.diagram.nodeTemplateMap.add(layers.system, diagramTemplatesService.getSystemNodeTemplate());
-
-    this.diagram.nodeTemplateMap.add(layers.dataSet, diagramTemplatesService.getDataSetNodeTemplate());
-
-    this.diagram.nodeTemplateMap.add(layers.dimension, diagramTemplatesService.getDimensionNodeTemplate());
-
-    this.diagram.nodeTemplateMap.add(
-      layers.reportingConcept,
-      diagramTemplatesService.getReportingConceptNodeTemplate()
-    );
+    // Set node template
+    this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
 
     // Set links templates
     this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());

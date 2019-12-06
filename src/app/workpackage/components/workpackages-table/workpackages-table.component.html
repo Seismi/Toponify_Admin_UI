@@ -14,7 +14,7 @@
 
     <!-- Owners Column -->
     <ng-container matColumnDef="owners">
-      <th mat-header-cell *matHeaderCellDef>Owners</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Owners</th>
       <td mat-cell *matCellDef="let element">
         <ng-container *ngFor="let owner of element.owners">
           <ul class="ownersList">
@@ -26,7 +26,7 @@
 
     <!-- Approvers Column -->
     <ng-container matColumnDef="approvers">
-      <th mat-header-cell *matHeaderCellDef>Approvers</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Approvers</th>
       <td mat-cell *matCellDef="let element">
         <ng-container *ngFor="let approver of element.approvers">
           <ul class="ownersList">

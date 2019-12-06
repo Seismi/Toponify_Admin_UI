@@ -68,7 +68,8 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
   onAddRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      height: '730px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
