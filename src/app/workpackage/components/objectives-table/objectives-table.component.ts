@@ -9,8 +9,6 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   styleUrls: ['./objectives-table.component.scss']
 })
 export class ObjectivesTableComponent {
-  @Input() statusDraft = false;
-
   @Input()
   set data(data: WorkPackageDetail[]) {
     if (data) {

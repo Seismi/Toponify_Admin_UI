@@ -21,10 +21,16 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNodes
+  UpdateNodes,
+  NodeActionTypes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
+import { 
+  CustomPropertyValuesEntity, 
+  NodeDetail, 
+  DescendantsEntity, 
+  OwnersEntityOrTeamEntityOrApproversEntity 
+} from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
   getNodeLinks,
@@ -37,8 +43,8 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
-import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
+import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
@@ -202,8 +208,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   sw: string[] = [];
   canSelectWorkpackages = false;
   workpackageId: string;
-  selectedOwner = false;
-  selectedOwnerIndex: string | null;
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
   editTabIndex: number;
@@ -432,6 +436,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
+      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
+        this.setWorkPackage(this.getWorkPackageId());
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(NodeActionTypes.UpdateNodeOwners)).subscribe(_ => {
+        // Keep node selected after adding a owner
+        this.diagramComponent.selectNode(this.nodeId);
+      })
+    )
+
+    this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
         // Keep node selected
         this.diagramComponent.selectNode(this.nodeId);
@@ -558,8 +575,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
         this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
 
-        this.selectedOwnerIndex = null;
-        this.selectedOwner = false;
         // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part instanceof Link;
 
@@ -619,8 +634,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveObjectDetails() {
-    this.selectedOwner = false;
-    this.selectedOwnerIndex = null;
     if (this.clickedOnLink) {
       const linkData = {
         id: this.selectedPart.id,
@@ -655,8 +668,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onCancelEdit() {
     this.isEditable = false;
-    this.selectedOwner = false;
-    this.selectedOwnerIndex = null;
   }
 
   onShowGrid() {
@@ -943,7 +954,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddRelatedRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      height: '730px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -959,15 +971,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               assignedTo: data.radio.assignedTo,
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
-              relatesTo: [
-                {
-                  workPackage: { id: this.workpackageId },
-                  item: {
-                    id: this.nodeId,
-                    itemType: this.currentFilterLevel.toLowerCase()
-                  }
+              relatesTo: [{
+                workPackage: { id: this.workpackageId },
+                item: {
+                  id: this.nodeId,
+                  itemType: this.currentFilterLevel.toLowerCase()
                 }
-              ]
+              }]
             }
           })
         );
@@ -976,6 +986,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  getWorkPackageId(): string[] {
+    if(this.workpackageId) {
+      return [this.workpackageId];
+    } else {
+      return ['00000000-0000-0000-0000-000000000000'];
+    }
   }
 
   onAddAttribute() {
@@ -1000,7 +1018,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      height: '730px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1069,12 +1088,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner() {
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
+  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
+    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        mode: 'delete',
+        name: owner.name
       }
     });
 
@@ -1084,10 +1104,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           new DeleteWorkpackageNodeOwner({
             workpackageId: this.workpackageId,
             nodeId: this.nodeId,
-            ownerId: this.selectedOwnerIndex
+            ownerId: owner.id
           })
         );
-        this.selectedOwner = false;
       }
     });
   }
@@ -1139,11 +1158,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
     });
-  }
-
-  onSelectOwner(ownerId) {
-    this.selectedOwnerIndex = ownerId;
-    this.selectedOwner = true;
   }
 
   onEditProperties(customProperty: CustomPropertyValuesEntity) {

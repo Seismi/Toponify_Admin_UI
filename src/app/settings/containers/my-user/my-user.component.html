@@ -1,0 +1,11 @@
+<smi-my-user-form 
+  [teamTableData]="user?.team" 
+  [roleTableData]="user?.roles" 
+  [group]="myUserForm"
+  [showButtons]="showButtons" 
+  [isActive]="isActive" 
+  [editMode]="editMode" 
+  (saveMyUser)="onSaveMyUser($event)"
+  (editMyUser)="onEditMyUser($event)" 
+  (changePassword)="onChangePassword($event)">
+</smi-my-user-form>

@@ -118,8 +118,6 @@
         [group]="objectDetailsForm"
         [clickedOnLink]="clickedOnLink"
         [isEditable]="isEditable"
-        [selectedOwner]="selectedOwner"
-        [selectedOwnerIndex]="selectedOwnerIndex"
         (editDetails)="onEditDetails($event)"
         (saveAttribute)="onSaveObjectDetails()"
         (deleteNode)="onDeleteNode()"
@@ -138,8 +136,7 @@
         [multipleSelected]="multipleSelected"
         (addScope)="onAddScope()"
         (addOwner)="onAddOwner()"
-        (selectOwner)="onSelectOwner($event)"
-        (deleteOwner)="onDeleteOwner()"
+        (deleteOwner)="onDeleteOwner($event)"
         (editProperties)="onEditProperties($event)"
         (deleteProperties)="onDeleteProperties($event)"
         (addDescendant)="onAddDescendant()"
@@ -154,6 +151,7 @@
         [selectedNode]="selectedNode"
         (selectNode)="onSelectNode($event)"
         [links]="links | layer: { byId: false, params: params }"
+        [viewLevel]="viewLevel$ | async"
       >
       </smi-right-panel></p
   ></app-model-sidebar>
