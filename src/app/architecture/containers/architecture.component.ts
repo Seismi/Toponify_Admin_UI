@@ -442,29 +442,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(NodeActionTypes.UpdateNodeOwners)).subscribe(_ => {
-        // Keep node selected after adding a owner
-        this.diagramComponent.selectNode(this.nodeId);
-      })
+      this.actions.pipe(ofType(
+        NodeActionTypes.UpdateNodeOwners,
+        NodeActionTypes.UpdateNodeDescendants,
+        WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess,
+        WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess)).subscribe(_ => {
+          this.diagramComponent.selectNode(this.nodeId);
+        })
     )
-
-    this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
-        // Keep node selected
-        this.diagramComponent.selectNode(this.nodeId);
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess)).subscribe(_ => {
-        // Keep link selected
-        this.diagramComponent.selectNode(this.nodeId);
-      })
-    );
 
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
+        setTimeout(() => {
+          this.diagramChangesService.updatePartData(this.part, this.part.data);
+        }, 800)
       })
     );
 
