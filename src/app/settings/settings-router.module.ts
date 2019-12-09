@@ -1,16 +1,31 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SettingsComponent } from './containers/settings/settings.component';
-import { SettingsRoutingComponent } from './settings-router.component';
+import { MyUserComponent } from './containers/my-user/my-user.component';
+import { TeamsComponent } from './containers/teams/teams.component';
+import { AllUsersComponent } from './containers/all-users/all-users.component';
+import { OrganisationsComponent } from './containers/organisations/organisations.component';
 
 export const settingsRoutes: Routes = [
   {
     path: '',
-    component: SettingsRoutingComponent,
+    component: SettingsComponent,
     children: [
       {
-        path: '',
-        component: SettingsComponent
+        path: 'my-user',
+        component: MyUserComponent,
+      },
+      {
+        path: 'teams',
+        component: TeamsComponent,
+      },
+      {
+        path: 'all-users',
+        component: AllUsersComponent
+      },
+      {
+        path: 'organisation',
+        component: OrganisationsComponent
       }
     ]
   }
