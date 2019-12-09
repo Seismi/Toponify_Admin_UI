@@ -22,6 +22,7 @@ import {
   UpdateCustomProperty,
   UpdateLinks,
   UpdateNodeLocations,
+  UpdateNodeExpandedState,
   NodeActionTypes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
@@ -446,7 +447,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // Keep node selected after adding a owner
         this.diagramComponent.selectNode(this.nodeId);
       })
-    )
+    );
 
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
@@ -701,6 +702,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.layout && data.nodes && data.nodes.length > 0) {
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.nodes }));
     }
+    if (this.layout && data.links && data.links.length > 0) {
+      this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
+    }
+  }
+
+  handleUpdateNodeExpandState(data: {node: go.Node; links: go.Link[]}): void {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    if (this.layout) {
+      this.store.dispatch(new UpdateNodeExpandedState({ layoutId: this.layout.id, data: data.node }));
+    }
+
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
     }
@@ -1003,7 +1019,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   getWorkPackageId(): string[] {
-    if(this.workpackageId) {
+    if (this.workpackageId) {
       return [this.workpackageId];
     } else {
       return ['00000000-0000-0000-0000-000000000000'];

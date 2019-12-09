@@ -105,6 +105,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Output()
   updateNodeLocation = new EventEmitter();
 
+  @Output()
+  updateNodeExpandState = new EventEmitter();
+
   get level() {
     return viewLevelMapping[this.viewLevel] ? viewLevelMapping[this.viewLevel] : viewLevelMapping[1];
   }
@@ -208,6 +211,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramListenersService.enableListeners(this.diagram);
     diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeLocation.emit(data);
+    });
+    diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
+      this.updateNodeExpandState.emit(data);
     });
   }
 

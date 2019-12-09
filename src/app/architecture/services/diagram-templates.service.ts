@@ -229,14 +229,8 @@ export class DiagramTemplatesService {
         click: function(event, button) {
           const node = button.part;
 
-          event.diagram.model.setDataProperty(node.data, 'middleExpanded', false);
           event.diagram.model.setDataProperty(node.data, 'bottomExpanded', node.data.middleExpanded || !node.data.bottomExpanded);
-
-          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-          node.findLinksConnected().each(function(link) {
-          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-            link.invalidateRoute();
-          });
+          event.diagram.model.setDataProperty(node.data, 'middleExpanded', false);
 
           this.diagramChangesService.nodeExpandChanged(node);
 
@@ -271,12 +265,6 @@ export class DiagramTemplatesService {
           const node = button.part;
 
           event.diagram.model.setDataProperty(node.data, 'middleExpanded', true);
-
-          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-          node.findLinksConnected().each(function(link) {
-          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-            link.invalidateRoute();
-          });
 
           this.diagramChangesService.nodeExpandChanged(node);
 
