@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <smi-teams-table
+        [data]="teams$ | async"
+        (selectTeam)="onSelectTeam($event)"
+        (newTeam)="onNewTeam($event)">
+      </smi-teams-table>
+    </div>
+    <div class="col" *ngIf="teamSelected">
+      <smi-team-detail
+        [group]="teamDetailForm"
+        [teamModal]="teamModal"
+        [isEditable]="isTeamEditable"
+        (editTeam)="onEditTeam($event)"
+        (deleteTeam)="onDeleteTeam($event)"
+        (saveTeam)="onSaveTeam($event)"
+        (cancelEdit)="onCancelEdit($event)"
+      >
+      </smi-team-detail>
+      <smi-members-table
+        [members]="selectedTeam?.members"
+        (deleteMember)="onDeleteMember($event)"
+        (addMember)="onAddMember($event)"
+      >
+      </smi-members-table>
+    </div>
+  </div>
+</div>
