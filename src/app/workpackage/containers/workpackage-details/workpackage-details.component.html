@@ -55,6 +55,7 @@
           [data]="workpackage?.objectives"
           (addObjective)="onAddObjectiveOrRadio({ objective: true })"
           (deleteObjective)="onDeleteObjectiveOrRadio($event, { objective: true })"
+          (editRadio)="onEditRadio($event)"
         >
         </smi-objectives-table>
       </mat-tab>
