@@ -11,7 +11,7 @@ import { reducers } from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './store/effects/auth.effects';
 import { JWTInterceptor } from './services/jwt-interceptor.service';
-import { ErrorInterceptor } from './services/error-Interceptor.service';
+import { AuthenticationInterceptor } from './services/authentication-interceptor.service';
 import { AuthGuard } from './guards/auth.guard';
 
 @NgModule({
@@ -39,7 +39,7 @@ import { AuthGuard } from './guards/auth.guard';
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
+      useClass: AuthenticationInterceptor,
       multi: true
     }
   ]
