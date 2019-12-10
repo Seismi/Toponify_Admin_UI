@@ -7,17 +7,33 @@
           Details
         </ng-template>
         <p class="detailsTab">
-          <smi-workpackage-detail data-hook="workpackage-detail" [group]="workPackageDetailForm"
-            (deleteWorkpackage)="onDeleteWorkpackage($event)" (saveWorkpackage)="onSaveWorkpackage($event)"
-            (editWorkPackage)="onEditWorkPackage($event)" (cancel)="onCancel($event)" [baselineTableData]="workpackage?.baseline"
-            [ownersTableData]="workpackage?.owners" [approversTableData]="workpackage?.approvers"
-            (deleteOwner)="onDeleteOwner($event)" (addOwner)="onAddOwner($event)" [statusDraft]="statusDraft"
-            [isEditable]="isEditable" [workpackageActionSubmit]="workpackageActionSubmit"
-            [workpackageActionApprove]="workpackageActionApprove" [workpackageActionReject]="workpackageActionReject"
-            [workpackageActionMerge]="workpackageActionMerge" [workpackageActionReset]="workpackageActionReset"
-            [workpackageActionSupersede]="workpackageActionSupersede" (submit)="submitWorkpackage()"
-            (approve)="approveWorkpackage()" (reject)="rejectWorkpackage()" (merge)="mergeWorkpackage()"
-            (reset)="resetWorkpackage()" (supersede)="supersedeWorkpackage()">
+          <smi-workpackage-detail
+            data-hook="workpackage-detail"
+            [group]="workPackageDetailForm"
+            (deleteWorkpackage)="onDeleteWorkpackage($event)"
+            (saveWorkpackage)="onSaveWorkpackage($event)"
+            (editWorkPackage)="onEditWorkPackage($event)"
+            (cancel)="onCancel($event)"
+            [baselineTableData]="workpackage?.baseline"
+            [ownersTableData]="workpackage?.owners"
+            [approversTableData]="workpackage?.approvers"
+            (deleteOwner)="onDeleteOwner($event)"
+            (addOwner)="onAddOwner($event)"
+            [statusDraft]="statusDraft"
+            [isEditable]="isEditable"
+            [workpackageActionSubmit]="workpackageActionSubmit"
+            [workpackageActionApprove]="workpackageActionApprove"
+            [workpackageActionReject]="workpackageActionReject"
+            [workpackageActionMerge]="workpackageActionMerge"
+            [workpackageActionReset]="workpackageActionReset"
+            [workpackageActionSupersede]="workpackageActionSupersede"
+            (submit)="submitWorkpackage()"
+            (approve)="approveWorkpackage()"
+            (reject)="rejectWorkpackage()"
+            (merge)="mergeWorkpackage()"
+            (reset)="resetWorkpackage()"
+            (supersede)="supersedeWorkpackage()"
+          >
           </smi-workpackage-detail>
         </p>
       </mat-tab>
@@ -26,9 +42,7 @@
           <mat-icon>insert_drive_file</mat-icon>
           Properties
         </ng-template>
-        <smi-properties-table
-          data-hook="workpackage-page-properties-table"
-          [data]="workpackage?.customPropertyValues">
+        <smi-properties-table data-hook="workpackage-page-properties-table" [data]="workpackage?.customPropertyValues">
         </smi-properties-table>
       </mat-tab>
       <mat-tab>
@@ -36,12 +50,12 @@
           <mat-icon>assignment_turned_in</mat-icon>
           Objectives
         </ng-template>
-        <smi-objectives-table 
-          data-hook="workpackage-page-objective-table" 
+        <smi-objectives-table
+          data-hook="workpackage-page-objective-table"
           [data]="workpackage?.objectives"
-          [statusDraft]="statusDraft"
-          (addObjective)="onAddObjectiveOrRadio({objective: true})"
-          (deleteObjective)="onDeleteObjectiveOrRadio($event, {objective: true})">
+          (addObjective)="onAddObjectiveOrRadio({ objective: true })"
+          (deleteObjective)="onDeleteObjectiveOrRadio($event, { objective: true })"
+        >
         </smi-objectives-table>
       </mat-tab>
       <mat-tab>
@@ -53,8 +67,9 @@
           data-hook="workpackage-page-radio-table"
           [data]="workpackage?.radios"
           [statusDraft]="statusDraft"
-          (addRadio)="onAddObjectiveOrRadio({objective: false})"
-          (deleteRadio)="onDeleteObjectiveOrRadio($event, {objective: false})">
+          (addRadio)="onAddObjectiveOrRadio({ objective: false })"
+          (deleteRadio)="onDeleteObjectiveOrRadio($event, { objective: false })"
+        >
         </smi-radios-table>
       </mat-tab>
       <mat-tab>
@@ -62,10 +77,7 @@
           <mat-icon>list</mat-icon>
           Changes
         </ng-template>
-        <smi-change-table 
-          data-hook="workpackage-page-change-table" 
-          [data]="workpackage?.changes">
-        </smi-change-table>
+        <smi-change-table data-hook="workpackage-page-change-table" [data]="workpackage?.changes"> </smi-change-table>
       </mat-tab>
     </mat-tab-group>
   </p>

@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
+export class AuthenticationInterceptor implements HttpInterceptor {
 
   constructor(
     private authService: AuthService
@@ -13,11 +13,10 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(err => {
-      if (err.status === 401 || err.status === 403) {
+      if (err.status === 401) {
         this.authService.logout();
       }
-      const error = err.error.errors.map(message => message.source.detail);
-      return throwError(error);
+      return throwError(err);
     }));
   }
 }

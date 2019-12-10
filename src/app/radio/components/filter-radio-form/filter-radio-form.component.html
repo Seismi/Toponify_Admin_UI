@@ -4,17 +4,17 @@
     <mat-form-field>
       <mat-label>Status</mat-label>
       <mat-select formControlName="status" multiple>
-        <mat-option *ngFor="let status of status" [value]="status">{{status}}</mat-option>
+        <mat-option *ngFor="let status of status" [value]="status">{{ status }}</mat-option>
       </mat-select>
     </mat-form-field>
-  
+
     <span style="margin: 0px 20px;"></span>
-  
+
     <!-- Type -->
     <mat-form-field>
       <mat-label>Type</mat-label>
       <mat-select formControlName="type" multiple>
-        <mat-option *ngFor="let type of types" [value]="type">{{type}}</mat-option>
+        <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -22,11 +22,9 @@
   <!-- Assigned To -->
   <mat-form-field>
     <mat-label>Assigned To</mat-label>
-      <mat-select formControlName="assignedTo" multiple>
-        <mat-option *ngFor="let user of users" [value]="user">
-          {{user.firstName}} {{user.lastName}}
-        </mat-option>
-      </mat-select>
+    <mat-select formControlName="assignedTo" multiple>
+      <mat-option *ngFor="let user of users" [value]="user"> {{ user.firstName }} {{ user.lastName }} </mat-option>
+    </mat-select>
   </mat-form-field>
 
   <!-- Relates To -->
@@ -34,7 +32,7 @@
     <mat-label>Relates To</mat-label>
     <mat-select formControlName="relatesTo" multiple>
       <mat-option *ngFor="let node of nodes" [value]="node">
-        {{node.name}}
+        {{ node.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -43,15 +41,15 @@
     <div class="due-date-title">Due Date</div>
     <!-- Due Date -->
     <mat-form-field>
-      <input matInput [matDatepicker]="picker" placeholder="From" formControlName="from">
+      <input matInput [matDatepicker]="picker" placeholder="From" formControlName="from" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-  
+
     <span class="and-title">and</span>
-  
+
     <mat-form-field>
-      <input matInput [matDatepicker]="picker2" placeholder="To" formControlName="to">
+      <input matInput [matDatepicker]="picker2" placeholder="To" formControlName="to" />
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>

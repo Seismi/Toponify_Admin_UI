@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageEntity, WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
@@ -19,29 +19,14 @@ import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.comp
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkPackageComponent implements OnInit, OnDestroy {
-
   public subscriptions: Subscription[] = [];
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
-  public selectedWorkPackage$: Subscription;
-  public selectedWorkPackage: WorkPackageEntity;
-  public workpackageSelected: boolean;
   public workpackageId: string;
   public selectedOwners = [];
-  public selectedBaseline = [];
   public workpackages: WorkPackageEntity[];
   public workPackageSelected: boolean;
 
-  constructor(
-    private store: Store<WorkPackageState>,
-    private router: Router,
-    public dialog: MatDialog
-  ) {
-    router.events.subscribe((event: NavigationEnd) => {
-      if (event instanceof NavigationEnd) {
-        (event.url.length > 16) ? this.workPackageSelected = true : this.workPackageSelected = false;
-      }
-    });
-  }
+  constructor(private store: Store<WorkPackageState>, private router: Router, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.store.dispatch(new LoadWorkPackages({}));
@@ -54,14 +39,19 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkpackage(row: WorkPackageDetail): void {
-    this.router.navigate(['work-packages', row.id], {queryParamsHandling: 'preserve' });
+    if (!row) {
+      this.router.navigate(['work-packages'], { queryParamsHandling: 'preserve' });
+      this.workPackageSelected = false;
+    } else {
+      this.router.navigate(['work-packages', row.id], { queryParamsHandling: 'preserve' });
+      this.workPackageSelected = true;
+    }
   }
 
   onAddWorkPackage(): void {
     this.dialog.open(WorkPackageModalComponent, {
       disableClose: false,
       width: '500px'
-    })
+    });
   }
-
 }

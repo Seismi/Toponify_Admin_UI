@@ -25,7 +25,7 @@ export enum WorkPackageLinkActionTypes {
 
 export class AddWorkPackageLink implements Action {
   readonly type = WorkPackageLinkActionTypes.AddWorkPackageLink;
-  constructor(public payload: {workpackageId: string, link: any}) {}
+  constructor(public payload: { workpackageId: string; link: any }) {}
 }
 
 export class AddWorkPackageLinkSuccess implements Action {
@@ -40,47 +40,47 @@ export class AddWorkPackageLinkFailure implements Action {
 
 export class UpdateWorkPackageLink implements Action {
   readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLink;
-  constructor(public payload: { workpackageId: string, linkId: string, link: any }) { }
+  constructor(public payload: { workpackageId: string; linkId: string; link: any }) {}
 }
 
 export class UpdateWorkPackageLinkSuccess implements Action {
   readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class UpdateWorkPackageLinkFailure implements Action {
   readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLinkFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
 export class LoadWorkpackageLinkDescendants implements Action {
   readonly type = WorkPackageLinkActionTypes.LoadWorkpackageLinkDescendants;
-  constructor(public payload: { workpackageId: string, linkId: string }) { }
+  constructor(public payload: { workpackageId: string; linkId: string }) {}
 }
 
 export class LoadWorkpackageLinkDescendantsSuccess implements Action {
   readonly type = WorkPackageLinkActionTypes.LoadWorkpackageLinkDescendantsSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class LoadWorkpackageLinkDescendantsFailure implements Action {
   readonly type = WorkPackageLinkActionTypes.LoadWorkpackageLinkDescendantsFailure;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class DeleteWorkpackageLink implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLink;
-  constructor(public payload: { workpackageId: string, linkId: string }) { }
+  constructor(public payload: { workpackageId: string; linkId: string }) {}
 }
 
 export class DeleteWorkpackageLinkSuccess implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkSuccess;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class DeleteWorkpackageLinkFailure implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkFailure;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class AddWorkPackageLinkOwner implements Action {
@@ -132,4 +132,3 @@ export type WorkPackageLinkActionsUnion =
   | DeleteWorkpackageLinkOwner
   | DeleteWorkpackageLinkOwnerSuccess
   | DeleteWorkpackageLinkOwnerFailure;
-

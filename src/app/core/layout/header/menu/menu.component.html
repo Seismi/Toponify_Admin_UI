@@ -1,14 +1,38 @@
 <i class="material-icons" data-hook="hamburger-manu" [matMenuTriggerFor]="navigationMenu">menu</i>
 <mat-menu #navigationMenu="matMenu">
-    <button data-hook="home-link" mat-menu-item routerLink="/home" queryParamsHandling="preserve">Home</button>
-    <button data-hook="topology-link" mat-menu-item routerLink="/topology" queryParamsHandling="preserve">Topology</button>
-    <button data-hook="report-library-link" mat-menu-item routerLink="/report-library" queryParamsHandling="preserve">Report Library</button>
-    <button data-hook="attributes-rules-link" mat-menu-item routerLink="/attributes-and-rules" queryParamsHandling="preserve">Attributes and Rules Library</button>
-    <button data-hook="radio-link" mat-menu-item routerLink="/radio" queryParamsHandling="preserve">RADIO</button>
-    <button data-hook="package-link" mat-menu-item routerLink="/work-packages" queryParamsHandling="preserve">Work Packages</button>
-    <button data-hook="scopes-layouts-link" mat-menu-item routerLink="/scopes-and-layouts" queryParamsHandling="preserve">Scopes and Layouts</button>
-    <button data-hook="documentation-standards-link" mat-menu-item routerLink="/documentation-standards" queryParamsHandling="preserve">Documentation Standards</button>
-    <button data-hook="settings-link" mat-menu-item routerLink="/settings" queryParamsHandling="preserve">Settings</button>
-    <a href="https://support.toponify.com" target="_blank"><button data-hook="help-link" mat-menu-item>Help</button></a>
-    <button mat-menu-item (click)="onLogOut()">Log Out</button>
+  <button data-hook="home-link" mat-menu-item routerLink="/home" queryParamsHandling="preserve">Home</button>
+  <button data-hook="topology-link" mat-menu-item routerLink="/topology" queryParamsHandling="preserve">
+    Topology
+  </button>
+  <button data-hook="report-library-link" mat-menu-item routerLink="/report-library" queryParamsHandling="preserve">
+    Report Library
+  </button>
+  <button
+    data-hook="attributes-rules-link"
+    mat-menu-item
+    routerLink="/attributes-and-rules"
+    queryParamsHandling="preserve"
+  >
+    Attributes and Rules Library
+  </button>
+  <button data-hook="radio-link" mat-menu-item routerLink="/radio" queryParamsHandling="preserve">RADIO</button>
+  <button data-hook="package-link" mat-menu-item routerLink="/work-packages" queryParamsHandling="preserve">
+    Work Packages
+  </button>
+  <button data-hook="scopes-layouts-link" mat-menu-item routerLink="/scopes-and-layouts" queryParamsHandling="preserve">
+    Scopes and Layouts
+  </button>
+  <button
+    data-hook="documentation-standards-link"
+    mat-menu-item
+    routerLink="/documentation-standards"
+    queryParamsHandling="preserve"
+  >
+    Documentation Standards
+  </button>
+  <button data-hook="settings-link" mat-menu-item routerLink="/settings">
+    Settings
+  </button>
+  <a href="https://support.toponify.com" target="_blank"><button data-hook="help-link" mat-menu-item>Help</button></a>
+  <button mat-menu-item (click)="onLogOut()">Log Out</button>
 </mat-menu>

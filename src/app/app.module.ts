@@ -7,7 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
-import { reducers, metaReducers } from './core/store';
+import { metaReducers, reducers } from './core/store';
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app.routing';
 import { AuthModule } from './auth/auth.module';
@@ -15,10 +15,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/shared-service';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CustomSerializer } from '@app/core/custom-serializer';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material';
 
 @NgModule({
   imports: [
     BrowserModule,
+    MatSnackBarModule,
     AppRoutingModule,
     AuthModule,
     BrowserAnimationsModule,
@@ -33,13 +35,11 @@ import { CustomSerializer } from '@app/core/custom-serializer';
     }),
     EffectsModule.forRoot([]),
     StoreRouterConnectingModule.forRoot({
-      serializer: CustomSerializer,
-    }),
+      serializer: CustomSerializer
+    })
   ],
-  declarations: [
-    AppComponent,
-  ],
-  providers: [SharedService],
+  declarations: [AppComponent],
+  providers: [SharedService, { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } }],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

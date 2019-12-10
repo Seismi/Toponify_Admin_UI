@@ -7,17 +7,17 @@ import { Router, NavigationEnd } from '@angular/router';
   styleUrls: ['./breadcrumb.component.scss']
 })
 export class BreadcrumbComponent {
-
   breadcrumb: string;
 
-  constructor(router: Router) { 
-    router.events.subscribe((event) => {
+  constructor(router: Router) {
+    router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const urlDelimitators = new RegExp(/[?//,;&:#$+=]/);
-        let currentUrlPath = event.url.slice(1).split(urlDelimitators)[0].replace(/[^\w\s]/gi, ' ');
-        this.breadcrumb = currentUrlPath;
+        const urlDelimitators = new RegExp(/[?/,;&:#$+=]/);
+        this.breadcrumb = event.url
+          .slice(1)
+          .split(urlDelimitators)[0]
+          .replace(/[^\w\s]/gi, ' ');
       }
     });
   }
-
 }

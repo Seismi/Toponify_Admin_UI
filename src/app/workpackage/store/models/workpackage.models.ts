@@ -72,12 +72,12 @@ export interface WorkPackageDetail {
   changes?: Changes;
 }
 export interface AvailableActions {
-  merge: boolean,
-  reset: boolean,
-  reject: boolean,
-  submit: boolean,
-  approve: boolean,
-  supersede: boolean
+  merge: boolean;
+  reset: boolean;
+  reject: boolean;
+  submit: boolean;
+  approve: boolean;
+  supersede: boolean;
 }
 export interface ObjectivesEntityOrRadiosEntity {
   id: string;
@@ -247,4 +247,3 @@ export interface WorkPackageNodeFindPotential {
 interface ChildrenOf {
   id: string;
 }
-

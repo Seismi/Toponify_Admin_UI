@@ -4,14 +4,11 @@ import { Observable } from 'rxjs/Observable';
 import { environment } from '@env/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
-import { routerNgProbeToken } from '@angular/router/src/router_module';
+import { EMPTY } from 'rxjs';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
-
-  constructor(private router: Router) {
-
-  }
+  constructor(private router: Router) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const helper = new JwtHelperService();
@@ -20,7 +17,12 @@ export class JWTInterceptor implements HttpInterceptor {
     console.log(isExpired);
 
     if (isExpired) {
-      this.router.navigate(['auth/login']);
+      if (request.url.includes('users/login')) {
+        return next.handle(request);
+      } else {
+        this.router.navigate(['auth/login']);
+        return EMPTY;
+      }
     } else if (token) {
       request = request.clone({
         url: environment.api + request.url,

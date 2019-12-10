@@ -13,18 +13,15 @@ const httpOptions = {
 
 @Injectable()
 export class AuthService {
-
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   login(username: string, password: string): Observable<boolean> {
-    return this.http.post<AuthenticateApiResponse>(`${environment.api}/users/login`,
-      { data:
-        { username: username, password: password
-        }
-      }, httpOptions)
+    return this.http
+      .post<AuthenticateApiResponse>(
+        `${environment.api}/users/login`,
+        { data: { username: username, password: password } },
+        httpOptions
+      )
       .pipe(
         map(result => {
           localStorage.setItem('access_token', result.data.private.token);
@@ -40,7 +37,6 @@ export class AuthService {
 
   // TODO: Move to Store
   public get loggedIn(): boolean {
-    return (localStorage.getItem('access_token') !== null);
+    return localStorage.getItem('access_token') !== null;
   }
-
 }

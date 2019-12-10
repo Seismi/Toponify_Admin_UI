@@ -1,4 +1,5 @@
 import * as fromLayout from '../store/reducers/layout.reducer';
+import * as fromError from '../store/reducers/error.reducer';
 
 /**
  * Every reducer module's default export is the reducer function itself. In
@@ -23,7 +24,8 @@ import { Params } from '@angular/router';
  */
 export interface State {
   layout: fromLayout.LayoutState;
-  router:  RouterReducerState<RouterStateUrl>;
+  router: RouterReducerState<RouterStateUrl>;
+  error: fromError.ErrorState;
 }
 
 export interface RouterStateUrl {
@@ -39,7 +41,8 @@ export interface RouterStateUrl {
  */
 export const reducers: ActionReducerMap<State> = {
   layout: fromLayout.reducer,
-  router: routerReducer
+  router: routerReducer,
+  error: fromError.reducer
 };
 
 // console.log all actions
@@ -74,5 +77,3 @@ export const getRightDrawer = createSelector(
   getLayoutState,
   fromLayout.getRightDrawerOpen
 );
-
-
