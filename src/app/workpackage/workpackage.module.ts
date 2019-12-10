@@ -48,6 +48,7 @@ import { RadioListModalComponent } from './containers/radio-list-modal/radio-lis
 import { RadioModule } from '@app/radio/radio.module';
 import { WorkPackageTreeComponent } from './components/workpackage-tree/workpackage-tree.component';
 import { WorkPackageRightSideComponent } from './components/right-side/right-side.component';
+import { RadioDetailModalComponent } from '@app/workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 
 @NgModule({
   imports: [
@@ -71,7 +72,7 @@ import { WorkPackageRightSideComponent } from './components/right-side/right-sid
     StoreModule.forFeature('workpackageFeature', reducer),
     EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects])
   ],
-  exports: [WorkPackagesTableComponent],
+  exports: [WorkPackagesTableComponent, RadioDetailModalComponent],
   declarations: [
     WorkPackageComponent,
     WorkPackageRoutingComponent,
@@ -94,13 +95,15 @@ import { WorkPackageRightSideComponent } from './components/right-side/right-sid
     RadioListComponent,
     RadioListModalComponent,
     WorkPackageTreeComponent,
-    WorkPackageRightSideComponent
+    WorkPackageRightSideComponent,
+    RadioDetailModalComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,
     DeleteWorkPackageModalComponent,
     OwnersModalComponent,
-    RadioListModalComponent
+    RadioListModalComponent,
+    RadioDetailModalComponent
   ],
   providers: [WorkPackageService, WorkPackageNodesService, WorkPackageLinksService]
 })
