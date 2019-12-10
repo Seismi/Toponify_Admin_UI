@@ -642,11 +642,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         category: this.selectedPart.category,
         layer: this.selectedPart.layer,
         name: this.objectDetailsForm.value.name,
+        tags: this.objectDetailsForm.value.tags,
         description: this.objectDetailsForm.value.description,
         sourceId: this.selectedPart.sourceId,
         targetId: this.selectedPart.targetId
       };
-
       this.diagramChangesService.updatePartData(this.part, linkData);
     } else {
       const nodeData = {
@@ -657,10 +657,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
       };
-
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-
     this.isEditable = false;
   }
 
