@@ -9,9 +9,6 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   styleUrls: ['./radio-table.component.scss']
 })
 export class RadiosTableComponent {
-  // Temporary till delete API will be fixed
-  public hide = false;
-
   @Input() statusDraft = false;
 
   @Input()
@@ -24,11 +21,12 @@ export class RadiosTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public displayedColumns: string[] = ['name', 'delete'];
+  public displayedColumns: string[] = ['refNo', 'name', 'status', 'edit', 'delete'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 
   @Output() addRadio = new EventEmitter<void>();
   @Output() deleteRadio = new EventEmitter<RadioEntity>();
+  @Output() editRadio = new EventEmitter<WorkPackageDetail>();
 
   onAdd(): void {
     this.addRadio.emit();
@@ -36,5 +34,9 @@ export class RadiosTableComponent {
 
   onDelete(radio: RadioEntity): void {
     this.deleteRadio.emit(radio);
+  }
+
+  onEdit(radio: WorkPackageDetail): void {
+    this.editRadio.emit(radio);
   }
 }

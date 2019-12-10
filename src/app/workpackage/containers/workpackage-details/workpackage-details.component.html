@@ -69,6 +69,7 @@
           [statusDraft]="statusDraft"
           (addRadio)="onAddObjectiveOrRadio({ objective: false })"
           (deleteRadio)="onDeleteObjectiveOrRadio($event, { objective: false })"
+          (editRadio)="onEditRadio($event)"
         >
         </smi-radios-table>
       </mat-tab>

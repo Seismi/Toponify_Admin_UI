@@ -24,7 +24,6 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   public workpackageId: string;
   public selectedOwners = [];
   public workpackages: WorkPackageEntity[];
-  public workPackageSelected: boolean;
 
   constructor(private store: Store<WorkPackageState>, private router: Router, public dialog: MatDialog) {}
 
@@ -41,10 +40,8 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   onSelectWorkpackage(row: WorkPackageDetail): void {
     if (!row) {
       this.router.navigate(['work-packages'], { queryParamsHandling: 'preserve' });
-      this.workPackageSelected = false;
     } else {
       this.router.navigate(['work-packages', row.id], { queryParamsHandling: 'preserve' });
-      this.workPackageSelected = true;
     }
   }
 
