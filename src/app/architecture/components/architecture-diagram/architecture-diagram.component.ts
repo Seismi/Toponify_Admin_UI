@@ -292,6 +292,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       });
       linkShiftingTool.isEnabled = this.allowMove;
 
+      this.diagram.updateAllTargetBindings('');
+
       // Handle changes tool-related adornments if a link is selected
       this.diagram.selection.each(function(part) {
         // Remove tool-related adornments from selected link (if any) for disabled tools

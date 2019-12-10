@@ -246,10 +246,18 @@ export class DiagramTemplatesService {
             textAlign: 'center',
             verticalAlignment: go.Spot.Center
           },
+        // Grey out text when button disabled
         new go.Binding('text', '', function(data) {
           return (data.middleExpanded || data.bottomExpanded) ? '-' : '+';
-        })
-      )
+        }),
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : '#AAAFB4';
+        }).ofObject('TopExpandButton')
+      ),
+      // Disable button if moves not allowed in diagram
+      new go.Binding('isEnabled', '', function(node) {
+        return node.diagram.allowMove;
+      }).ofObject()
     );
   }
 
@@ -272,13 +280,23 @@ export class DiagramTemplatesService {
 
         }.bind(this)
       },
-      $(go.TextBlock, '+', {
-        alignment: go.Spot.Center,
-        font: 'bold 18px calibri',
-        desiredSize: new go.Size(25, 25),
-        textAlign: 'center',
-        verticalAlignment: go.Spot.Center
-      }),
+      $(go.TextBlock, '+',
+        {
+          alignment: go.Spot.Center,
+          font: 'bold 18px calibri',
+          desiredSize: new go.Size(25, 25),
+          textAlign: 'center',
+          verticalAlignment: go.Spot.Center
+        },
+        // Grey out text when button disabled
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : '#AAAFB4';
+        }).ofObject('TopExpandButton')
+      ),
+      // Disable button if moves not allowed in diagram
+      new go.Binding('isEnabled', '', function(node) {
+        return node.diagram.allowMove;
+      }).ofObject(),
       // Button not visible when middle node section is collapsed
       new go.Binding('visible', 'middleExpanded', function (middleExpanded) {
         return !middleExpanded;
