@@ -1,7 +1,7 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import * as go from 'gojs';
 import { WorkPackageDiagramService } from '@app/workpackage/services/workpackage-diagram.service';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 const $ = go.GraphObject.make;
 
@@ -15,6 +15,7 @@ export class WorkPackageTreeComponent implements OnInit {
   public diagram: go.Diagram;
 
   @Input() workpackages: WorkPackageEntity[];
+  @Output() selectWorkpackage = new EventEmitter<WorkPackageDetail>();
 
   @ViewChild('workPackageTreeDiv') private diagramRef: ElementRef;
 
@@ -24,7 +25,7 @@ export class WorkPackageTreeComponent implements OnInit {
       '54e013fee39d6df4bea82abb53471b712584587f7012390cead29a5ff2a79f297b473f1c8688aa7bbaec3ce0ce9e1c44bcb0eb33678062e567e';
     this.diagram = new go.Diagram();
     this.diagram.initialContentAlignment = go.Spot.Center;
-    this.diagram.allowSelect = false;
+    this.diagram.allowSelect = true;
   }
 
   ngOnInit() {
@@ -33,5 +34,10 @@ export class WorkPackageTreeComponent implements OnInit {
     this.diagram.linkTemplate = this.workPackageDiagramService.getLinkTemplate();
     this.diagram.layout = this.workPackageDiagramService.getLayout();
     this.diagram.model = this.workPackageDiagramService.getModel(this.workpackages);
+
+    this.diagram.addDiagramListener('ChangedSelection', (ev ) => {
+      const parts = ev.diagram.selection.toArray();
+      this.selectWorkpackage.emit(parts.length === 1 ? parts[0].data : null);
+    });
   }
 }
