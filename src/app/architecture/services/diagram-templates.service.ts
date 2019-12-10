@@ -223,6 +223,7 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        name: 'TopExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
@@ -258,6 +259,7 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        name: 'BottomExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
@@ -688,7 +690,15 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        doubleClick: function(event, node) {
+
+          // Do not proceed for double clicks on buttons on the node
+          if (event.targetObject.name.includes('Button')) {
+            return;
+          }
+
+         this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+        }.bind(this)
       },
       new go.Binding(
         'movable',
