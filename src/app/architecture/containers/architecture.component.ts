@@ -25,11 +25,11 @@ import {
   NodeActionTypes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { 
-  CustomPropertyValuesEntity, 
-  NodeDetail, 
-  DescendantsEntity, 
-  OwnersEntityOrTeamEntityOrApproversEntity 
+import {
+  CustomPropertyValuesEntity,
+  NodeDetail,
+  DescendantsEntity,
+  OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -446,7 +446,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // Keep node selected after adding a owner
         this.diagramComponent.selectNode(this.nodeId);
       })
-    )
+    );
 
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
@@ -579,10 +579,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = part instanceof Link;
 
         // Load node details
-        this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-          const workPackageIds = workpackages.map(item => item.id);
-          this.setWorkPackage(workPackageIds);
-        });
+        this.workpackageStore
+          .pipe(
+            select(getSelectedWorkpackages),
+            take(1)
+          )
+          .subscribe(workpackages => {
+            const workPackageIds = workpackages.map(item => item.id);
+            this.setWorkPackage(workPackageIds);
+          });
 
         this.objectSelected = true;
         this.radioTab = false;
@@ -971,13 +976,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               assignedTo: data.radio.assignedTo,
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
-              relatesTo: [{
-                workPackage: { id: this.workpackageId },
-                item: {
-                  id: this.nodeId,
-                  itemType: this.currentFilterLevel.toLowerCase()
+              relatesTo: [
+                {
+                  workPackage: { id: this.workpackageId },
+                  item: {
+                    id: this.nodeId,
+                    itemType: this.currentFilterLevel.toLowerCase()
+                  }
                 }
-              }]
+              ]
             }
           })
         );
@@ -989,7 +996,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   getWorkPackageId(): string[] {
-    if(this.workpackageId) {
+    if (this.workpackageId) {
       return [this.workpackageId];
     } else {
       return ['00000000-0000-0000-0000-000000000000'];
