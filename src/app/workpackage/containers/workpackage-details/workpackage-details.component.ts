@@ -39,6 +39,7 @@ import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-mod
 import { RadioEffects } from '@app/radio/store/effects/radio.effects';
 import { Actions, ofType } from '@ngrx/effects';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { RadioDetailModalComponent } from '@app/workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -78,6 +79,13 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(new LoadWorkPackage(workpackageId));
       })
     );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(RadioActionTypes.AddReplySuccess)).subscribe(_ => {
+        this.store.dispatch(new LoadWorkPackage(this.workpackageId));
+      })
+    )
+
     this.subscriptions.push(
       this.store.pipe(select(getSelectedWorkPackage)).subscribe(workpackage => {
         this.workpackage = workpackage;
@@ -293,6 +301,17 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         value.objective
           ? this.store.dispatch(new DeleteObjective({ workPackageId: this.workpackageId, radioId: radio.id }))
           : this.store.dispatch(new DeleteRadio({ workPackageId: this.workpackageId, radioId: radio.id }));
+      }
+    });
+  }
+
+
+  onEditRadio(radio: WorkPackageDetail): void {
+    this.dialog.open(RadioDetailModalComponent, {
+      disableClose: false,
+      width: '850px',
+      data: {
+        radio: radio
       }
     });
   }
