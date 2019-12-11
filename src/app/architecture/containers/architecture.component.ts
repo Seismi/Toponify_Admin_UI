@@ -56,7 +56,9 @@ import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-mo
 import { SharedService } from '@app/services/shared-service';
 import {
   DeleteWorkpackageLinkSuccess,
-  WorkPackageLinkActionTypes
+  WorkPackageLinkActionTypes,
+  AddWorkPackageLinkOwner,
+  DeleteWorkpackageLinkOwner
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -115,7 +117,7 @@ import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/o
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
-import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-modal.component';
+import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/architecture/store/models/node-link.model';
 import { Node } from '@app/architecture/store/models/node.model';
@@ -641,11 +643,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         category: this.selectedPart.category,
         layer: this.selectedPart.layer,
         name: this.objectDetailsForm.value.name,
+        tags: this.objectDetailsForm.value.tags,
         description: this.objectDetailsForm.value.description,
         sourceId: this.selectedPart.sourceId,
         targetId: this.selectedPart.targetId
       };
-
       this.diagramChangesService.updatePartData(this.part, linkData);
     } else {
       const nodeData = {
@@ -656,10 +658,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
       };
-
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-
     this.isEditable = false;
   }
 
@@ -1106,14 +1106,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.owner) {
-        this.nodeStore.dispatch(
-          new AddWorkpackageNodeOwner({
-            workpackageId: this.workpackageId,
-            nodeId: this.nodeId,
-            ownerId: data.owner.id,
-            data: data.owner
-          })
-        );
+        if (!this.clickedOnLink) {
+          this.nodeStore.dispatch(
+            new AddWorkpackageNodeOwner({
+              workpackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              ownerId: data.owner.id,
+              data: data.owner
+            })
+          );
+        } else {
+          this.nodeStore.dispatch(new AddWorkPackageLinkOwner({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
+            ownerId: data.owner.id
+          }))
+        }
       }
     });
   }
@@ -1130,13 +1138,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.nodeStore.dispatch(
-          new DeleteWorkpackageNodeOwner({
-            workpackageId: this.workpackageId,
-            nodeId: this.nodeId,
+        if (!this.clickedOnLink) {
+          this.nodeStore.dispatch(
+            new DeleteWorkpackageNodeOwner({
+              workpackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              ownerId: owner.id
+            })
+          );
+        } else {
+          this.nodeStore.dispatch(new DeleteWorkpackageLinkOwner({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
             ownerId: owner.id
-          })
-        );
+          }))
+        }
       }
     });
   }

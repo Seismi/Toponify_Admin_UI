@@ -1,13 +1,24 @@
 table {
   width: 100%;
-  border: solid 1px #ddd;
-  margin-bottom: 15px;
 }
 
 tr.mat-row {
   cursor: pointer;
+  height: 35px;
+  &:nth-child(even){
+    background-color: #f9f9f9;
+  }
+}
+
+td.mat-cell {
+  font-size: 13px;
+  border: none;
 }
 
 .highlight {
-  background-color: #efefef;
+  border: solid 2px #555;
+}
+
+.mat-form-field {
+  width: 100%;
 }
