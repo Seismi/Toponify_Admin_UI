@@ -149,10 +149,17 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       // Only use drag guidelines for nodes and not for links
       this.isGuidelineEnabled = draggedParts.first() instanceof go.Node;
 
+      // If the only part being dragged is a link that is already connected, cancel the drag
       if (draggedParts.count === 1 && draggedParts.first() instanceof go.Link) {
-        if (!draggedParts.first().data.isTemporary) {
+
+        const draggedLink = draggedParts.first();
+
+        if (!draggedLink.data.isTemporary) {
           go.DraggingTool.prototype.doCancel.call(this);
-          draggedParts.first().isSelected = false;
+
+          // Cancelling the drag loses the link's selection adornment. Therefore, reselect the link to get it back.
+          draggedLink.isSelected = false;
+          this.diagram.select(draggedLink);
         }
       }
     };
