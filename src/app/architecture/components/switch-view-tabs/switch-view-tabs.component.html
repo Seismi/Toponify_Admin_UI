@@ -1,11 +1,17 @@
-<mat-tab-group
-  #architectureTableTabs
-  mat-stretch-tabs
-  [@.disabled]="true"
-  [selectedIndex]="selectedView"
-  (selectedTabChange)="onTabClick($event)"
->
-  <mat-tab label="Canvas" [style.width.px]="100"> </mat-tab>
-  <mat-tab [label]="getLabel()" [style.width.px]="100"> </mat-tab>
-  <mat-tab [label]="getLinkLabel()" [style.width.px]="100"> </mat-tab>
-</mat-tab-group>
+<div style="display: flex;">
+  <div style="flex-grow: 1;">
+    <mat-tab-group 
+      #architectureTableTabs
+      mat-stretch-tabs
+      [@.disabled]="true" 
+      [selectedIndex]="selectedView"
+      (selectedTabChange)="onTabClick($event)">
+      <mat-tab label="Canvas" [style.width.px]="100"> </mat-tab>
+      <mat-tab [label]="getLabel()" [style.width.px]="100"> </mat-tab>
+      <mat-tab [label]="getLinkLabel()" [style.width.px]="100"> </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="input-container">
+    <input (keyup)="onSearch($event.target.value)" placeholder="Search" *ngIf="selectedView !== 0">
+  </div>
+</div>

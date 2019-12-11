@@ -55,6 +55,7 @@
   </p>
   <app-model-content>
     <smi-switch-view-tabs
+      (search)="onSearchTableView($event)"
       (viewChange)="onViewChange($event)"
       [selectedView]="selectedView"
       [viewLevel]="viewLevel$ | async"
@@ -81,7 +82,7 @@
       >
       </app-architecture-diagram>
     </div>
-    <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.System">
+    <div *ngIf="selectedView === ArchitectureView.System">
       <smi-architecture-table-view
         [data]="nodes | layer: { byId: true, params: params }"
         [selectedItem]="selectedNode"
@@ -90,7 +91,7 @@
         [view]="'system'"
       ></smi-architecture-table-view>
     </div>
-    <div style="padding: 5px" *ngIf="selectedView === ArchitectureView.Links">
+    <div *ngIf="selectedView === ArchitectureView.Links">
       <smi-architecture-table-view
         [data]="links | layer: { byId: false, params: params }"
         [selectedItem]="selectedNode"

@@ -133,6 +133,7 @@ import {
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { Params } from '@angular/router';
+import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -227,6 +228,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
+  @ViewChild(ArchitectureTableViewComponent) 
+  private tableView: ArchitectureTableViewComponent;
 
   constructor(
     private sharedService: SharedService,
@@ -1305,4 +1308,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }, 150);
     });
   }
+
+  onSearchTableView(filterValue: string): void {
+    const dataSource = this.tableView.dataSource;
+    dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
 }
