@@ -10,6 +10,14 @@ export interface CustomPropertyApiRequest {
   data: CustomPropertyValuesEntity;
 }
 
+export interface NodeExpandedStateApiRequest {
+  data: {
+    id: string,
+    middleExpanded?: boolean,
+    bottomExpanded?: boolean
+  };
+}
+
 export interface WorkPackageNodeDescendantsApiResponse {
   data: (DescendantsEntity)[] | null;
 }
@@ -43,6 +51,7 @@ export class Node {
   category: nodeCategories;
   tags = '';
   locations?: ((LocationsEntity)[] | null)[] | null;
+  expandedStates?: ((ExpandedStatesEntity)[] | null) | null;
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
@@ -72,6 +81,11 @@ export interface LocationsEntity {
   layout: Layout;
   locationCoordinates: string;
 }
+export interface ExpandedStatesEntity {
+  layout: Layout;
+  middleExpanded: boolean;
+  bottomExpanded: boolean;
+}
 export interface Layout {
   id: string;
   name: string;
@@ -97,6 +111,7 @@ export interface NodeDetail {
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
   locations?: ((LocationsEntityEntity)[] | null)[] | null;
+  expandedStates?: ((ExpandedStatesEntity)[] | null) | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
@@ -172,7 +187,7 @@ export interface CustomPropertyValuesEntity {
   value: string;
 }
 
-export interface NodeUpdatePayload {
+export interface NodeLocationsUpdatePayload {
   layoutId: string;
   nodes: {
     id: string;

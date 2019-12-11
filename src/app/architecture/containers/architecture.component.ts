@@ -21,15 +21,16 @@ import {
   LoadNodeUsageView,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNodes,
+  UpdateNodeLocations,
+  UpdateNodeExpandedState,
   NodeActionTypes
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { 
-  CustomPropertyValuesEntity, 
-  NodeDetail, 
-  DescendantsEntity, 
-  OwnersEntityOrTeamEntityOrApproversEntity 
+import {
+  CustomPropertyValuesEntity,
+  NodeDetail,
+  DescendantsEntity,
+  OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -448,7 +449,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // Keep node selected after adding a owner
         this.diagramComponent.selectNode(this.nodeId);
       })
-    )
+    );
 
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
@@ -699,8 +700,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
 
     if (this.layout && data.nodes && data.nodes.length > 0) {
-      this.store.dispatch(new UpdateNodes({ layoutId: this.layout.id, nodes: data.nodes }));
+      this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.nodes }));
     }
+    if (this.layout && data.links && data.links.length > 0) {
+      this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
+    }
+  }
+
+  handleUpdateNodeExpandState(data: {node: go.Node; links: go.Link[]}): void {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    if (this.layout) {
+      this.store.dispatch(new UpdateNodeExpandedState({ layoutId: this.layout.id, data: data.node }));
+    }
+
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
     }
@@ -762,16 +778,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesSubscription = this.nodeStore
       .pipe(
         select(getNodeEntities),
-        // Get correct location for nodes, based on selected layout
+        // Get correct location and expanded state for nodes, based on selected layout
         map(nodes => {
           if (nodes === null) {
             return null;
           }
           if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
-            return nodes;
+            return nodes.map(function(node) {
+              return {...node,
+                middleExpanded: false,
+                bottomExpanded: false
+              };
+            });
           }
 
           let layoutLoc;
+          let layoutExpandState;
 
           return nodes.map(
             function(node) {
@@ -781,12 +803,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                     return loc.layout && loc.layout.id === this.layout.id;
                   }.bind(this)
                 );
+
+                layoutExpandState = node.expandedStates.find(
+                  function(exp) {
+                    return exp.layout && exp.layout.id === this.layout.id;
+                  }.bind(this)
+                );
               }
 
               return {
                 ...node,
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
-                locationMissing: !layoutLoc
+                locationMissing: !layoutLoc,
+                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : false,
+                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false
               };
             }.bind(this)
           );
@@ -989,7 +1019,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   getWorkPackageId(): string[] {
-    if(this.workpackageId) {
+    if (this.workpackageId) {
       return [this.workpackageId];
     } else {
       return ['00000000-0000-0000-0000-000000000000'];

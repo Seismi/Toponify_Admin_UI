@@ -223,43 +223,41 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        name: 'TopExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
         click: function(event, button) {
           const node = button.part;
 
-          const middleSection = node.findObject('middle');
-          const bottomSection = node.findObject('bottom');
-          const buttonTextBox = button.findObject('TopButtonText');
+          event.diagram.model.setDataProperty(node.data, 'bottomExpanded', node.data.middleExpanded || !node.data.bottomExpanded);
+          event.diagram.model.setDataProperty(node.data, 'middleExpanded', false);
 
-          if (middleSection.visible && bottomSection.visible) {
-            middleSection.visible = false;
-            buttonTextBox.text = '-';
-          } else if (!middleSection.visible && bottomSection.visible) {
-            bottomSection.visible = false;
-            buttonTextBox.text = '+';
-          } else {
-            bottomSection.visible = true;
-            buttonTextBox.text = '-';
-          }
-
-          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-          node.findLinksConnected().each(function(link) {
-          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-            link.invalidateRoute();
-          });
+          this.diagramChangesService.nodeExpandChanged(node);
 
         }.bind(this)
       },
-      $(go.TextBlock, '-', {
-        name: 'TopButtonText',
-        alignment: go.Spot.Center,
-        font: 'bold 18px calibri',
-        desiredSize: new go.Size(25, 25),
-        textAlign: 'center',
-        verticalAlignment: go.Spot.Center
-      })
+      $(
+        go.TextBlock,
+          {
+            alignment: go.Spot.Center,
+            font: 'bold 18px calibri',
+            desiredSize: new go.Size(25, 25),
+            textAlign: 'center',
+            verticalAlignment: go.Spot.Center
+          },
+        // Grey out text when button disabled
+        new go.Binding('text', '', function(data) {
+          return (data.middleExpanded || data.bottomExpanded) ? '-' : '+';
+        }),
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : '#AAAFB4';
+        }).ofObject('TopExpandButton')
+      ),
+      // Disable button if moves not allowed in diagram
+      new go.Binding('isEnabled', '', function(node) {
+        return node.diagram.allowMove;
+      }).ofObject()
     );
   }
 
@@ -269,34 +267,40 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        name: 'BottomExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
         click: function(event, button): void {
           const node = button.part;
-          const middleSection = node.findObject('middle');
 
-          middleSection.visible = true;
+          event.diagram.model.setDataProperty(node.data, 'middleExpanded', true);
 
-          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-          node.findLinksConnected().each(function(link) {
-          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-            link.invalidateRoute();
-          });
+          this.diagramChangesService.nodeExpandChanged(node);
 
         }.bind(this)
       },
-      $(go.TextBlock, '+', {
-        alignment: go.Spot.Center,
-        font: 'bold 18px calibri',
-        desiredSize: new go.Size(25, 25),
-        textAlign: 'center',
-        verticalAlignment: go.Spot.Center
-      }),
+      $(go.TextBlock, '+',
+        {
+          alignment: go.Spot.Center,
+          font: 'bold 18px calibri',
+          desiredSize: new go.Size(25, 25),
+          textAlign: 'center',
+          verticalAlignment: go.Spot.Center
+        },
+        // Grey out text when button disabled
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : '#AAAFB4';
+        }).ofObject('TopExpandButton')
+      ),
+      // Disable button if moves not allowed in diagram
+      new go.Binding('isEnabled', '', function(node) {
+        return node.diagram.allowMove;
+      }).ofObject(),
       // Button not visible when middle node section is collapsed
-      new go.Binding('visible', 'visible', function (middleVisible) {
-        return !middleVisible;
-      }).ofObject('middle')
+      new go.Binding('visible', 'middleExpanded', function (middleExpanded) {
+        return !middleExpanded;
+      })
     );
   }
 
@@ -547,6 +551,7 @@ export class DiagramTemplatesService {
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(5)
       },
+      new go.Binding('visible', 'middleExpanded').makeTwoWay(),
       $(
         go.TextBlock,
         {
@@ -616,6 +621,7 @@ export class DiagramTemplatesService {
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(2)
       },
+      new go.Binding('visible', 'bottomExpanded').makeTwoWay(),
       $(
         go.Panel,
         'Horizontal',
@@ -702,7 +708,15 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        doubleClick: function(event, node) {
+
+          // Do not proceed for double clicks on buttons on the node
+          if (event.targetObject.name.includes('Button')) {
+            return;
+          }
+
+         this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+        }.bind(this)
       },
       new go.Binding(
         'movable',
@@ -740,6 +754,19 @@ export class DiagramTemplatesService {
             return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         ),
+        new go.Binding('fromSpot', 'group', function(group) {
+          if (group) {
+            return go.Spot.LeftRightSides;
+          } else {
+            return go.Spot.AllSides;
+          }
+        }),
+        new go.Binding('toSpot', 'group', function(group) {
+          if (group) {return go.Spot.LeftRightSides;
+          } else {
+            return go.Spot.AllSides;
+          }
+        }),
         this.getStandardNodeShapeOptions()
       ),
       // Dummy panel with no size and no contents.
