@@ -6,6 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { State as UserState } from '../../store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { MembersEntity } from '@app/settings/store/models/team.model';
+import { LoadUsers } from '@app/settings/store/actions/user.actions';
 
 @Component({
   selector: 'smi-member-modal',
@@ -14,30 +15,31 @@ import { MembersEntity } from '@app/settings/store/models/team.model';
   providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }]
 })
 export class MemberModalComponent implements OnInit {
-  users$: Observable<User[]>;
-  member: MembersEntity;
+  public users$: Observable<User[]>;
+  public member: MembersEntity;
 
   constructor(
     public dialogRef: MatDialogRef<MemberModalComponent>,
-    private userStore: Store<UserState>,
+    private store: Store<UserState>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.member = data.member;
   }
 
-  ngOnInit() {
-    this.users$ = this.userStore.pipe(select(getUsers));
+  ngOnInit(): void {
+    this.store.dispatch(new LoadUsers({}));
+    this.users$ = this.store.pipe(select(getUsers));
   }
 
-  onSelectMember(row: MembersEntity) {
-    this.member = row;
+  onSelectMember(user: User): void {
+    this.member = user;
   }
 
-  onAdd() {
+  onSave(): void {
     this.dialogRef.close({ member: this.member });
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }

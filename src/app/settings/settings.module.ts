@@ -48,6 +48,8 @@ import { TeamsComponent } from './containers/teams/teams.component';
 import { AllUsersComponent } from './containers/all-users/all-users.component';
 import { OrganisationsComponent } from './containers/organisations/organisations.component';
 import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
+import { SettingsRightSideComponent } from './components/right-side/right-side.component';
+import { TeamsDetailsComponent } from './containers/teams-details/teams-details.component';
 
 @NgModule({
   imports: [
@@ -96,7 +98,9 @@ import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.
     TeamsComponent,
     AllUsersComponent,
     OrganisationsComponent,
-    SettingsTabsComponent
+    SettingsTabsComponent,
+    SettingsRightSideComponent,
+    TeamsDetailsComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,

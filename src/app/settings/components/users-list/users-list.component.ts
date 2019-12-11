@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TeamDetails } from '@app/settings/store/models/team.model';
 import { MatTableDataSource } from '@angular/material';
+import { User } from '@app/settings/store/models/user.model';
 
 @Component({
   selector: 'smi-users-list',
@@ -8,7 +9,7 @@ import { MatTableDataSource } from '@angular/material';
   styleUrls: ['users-list.component.scss']
 })
 export class UsersListComponent {
-  selectedRowIndex = -1;
+  public selectedRowIndex: string | number = -1;
 
   @Input()
   set data(data: TeamDetails[]) {
@@ -16,13 +17,16 @@ export class UsersListComponent {
   }
 
   public dataSource: MatTableDataSource<TeamDetails>;
-  displayedColumns: string[] = ['firstName', 'email'];
+  public displayedColumns: string[] = ['firstName', 'email'];
 
-  @Output()
-  memberSelect = new EventEmitter();
+  @Output() memberSelect = new EventEmitter<User>();
 
-  onSelectRow(row) {
-    this.selectedRowIndex = row.id;
-    this.memberSelect.emit(row);
+  onSelectRow(user: User): void {
+    this.selectedRowIndex = user.id;
+    this.memberSelect.emit(user);
+  }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
