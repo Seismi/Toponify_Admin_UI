@@ -54,6 +54,10 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'error',
+    loadChildren: './core/error/error.module#ErrorModule'
+  },
+  {
     path: 'auth',
     loadChildren: './auth/auth.module#AuthModule'
   },

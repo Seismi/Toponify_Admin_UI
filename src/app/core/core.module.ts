@@ -1,35 +1,17 @@
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MainLayoutComponent } from './layout/app-layouts/main-layout.component';
 import { RouterModule } from '@angular/router';
 import { AuthLayoutComponent } from './layout/app-layouts/auth-layout.component';
 import { BaseHeaderComponent } from './layout/header/base-header.component';
-import {
-  MatToolbarModule,
-  MatIconModule,
-  MatButtonModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatMenuModule,
-  MatSliderModule,
-  MatListModule,
-  MatCardModule,
-  MatTooltipModule,
-  MatSelectModule
-} from '@angular/material';
 import { ZoomActionsComponent } from './layout/header/zoom-actions/zoom-actions.component';
 import { LayoutActionsComponent } from './layout/header/layout-actions/layout-actions.component';
 import { SearchComponent } from './layout/header/search/search.component';
-import { LogoComponent } from './layout/header/logo/logo.component';
-import { MenuComponent } from './layout/header/menu/menu.component';
 import { ToolbarColumnComponent } from './layout/header/toolbar-column/toolbar-column.component';
 import { CommonModule } from '@angular/common';
 import { ToolbarSplitterComponent } from './layout/header/toolbar-splitter/toolbar-splitter.component';
 import { ModelContainerComponent } from './layout/model-container/model-container.component';
 import { ModelSidebarComponent } from './layout/model-sidebar/model-sidebar.component';
 import { ModelContentComponent } from './layout/model-content/model-content.component';
-import { DraggerComponent } from './layout/model-sidebar/dragger/dragger.component';
-import { MdePopoverModule } from '@material-extended/mde';
 import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
@@ -43,25 +25,15 @@ import { SearchEffects } from './store/effects/search.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { NodeNameComponent } from './layout/header/node-name/node-name.component';
 import { RouteEffects } from '@app/core/store/effects/route.effects';
+import { CoreLayoutModule } from '@app/core/layout/core-layout.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
 
 @NgModule({
   imports: [
     RouterModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatMenuModule,
-    MatSliderModule,
-    MatListModule,
-    MatCardModule,
-    MatTooltipModule,
+    CoreLayoutModule,
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MdePopoverModule,
-    MatSelectModule,
     StoreModule.forFeature('searchFeature', reducer),
     EffectsModule.forFeature([SearchEffects, RouteEffects])
   ],
@@ -85,29 +57,11 @@ import { RouteEffects } from '@app/core/store/effects/route.effects';
     LeftSideBarComponent,
     NodeNameComponent
   ],
-  declarations: [
-    MainLayoutComponent,
-    AuthLayoutComponent,
-    BaseHeaderComponent,
-    ZoomActionsComponent,
-    LayoutActionsComponent,
-    MenuComponent,
-    SearchComponent,
-    LogoComponent,
-    ToolbarColumnComponent,
-    ToolbarSplitterComponent,
-    ModelContainerComponent,
-    ModelSidebarComponent,
-    ModelContentComponent,
-    DraggerComponent,
-    QuicklinksActionsComponent,
-    BreadcrumbComponent,
-    ScopesDropdownComponent,
-    LayoutsDropdownComponent,
-    LeftSideBarComponent,
-    RightSideBarComponent,
-    NodeNameComponent
-  ],
-  providers: [SearchService]
+  providers: [SearchService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ErrorInterceptor,
+    multi: true
+  }
+  ]
 })
 export class CoreModule {}

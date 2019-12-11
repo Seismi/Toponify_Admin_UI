@@ -3,7 +3,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CoreModule } from '@app/core/core.module';
 import { RouterModule } from '@angular/router';
-import { SettingsRoutingComponent } from './settings-router.component';
 import { SettingsRoutingModule } from './settings-router.module';
 import { SettingsComponent } from './containers/settings/settings.component';
 import {
@@ -44,6 +43,11 @@ import { UsersListComponent } from './components/users-list/users-list.component
 import { MyTeamTableComponent } from './components/my-team-table/my-team-table.component';
 import { MyRolesTableComponent } from './components/my-roles-table/my-roles-table.component';
 import { HomeModule } from '@app/home/home.module';
+import { MyUserComponent } from './containers/my-user/my-user.component';
+import { TeamsComponent } from './containers/teams/teams.component';
+import { AllUsersComponent } from './containers/all-users/all-users.component';
+import { OrganisationsComponent } from './containers/organisations/organisations.component';
+import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
 
 @NgModule({
   imports: [
@@ -72,7 +76,6 @@ import { HomeModule } from '@app/home/home.module';
   ],
   exports: [],
   declarations: [
-    SettingsRoutingComponent,
     SettingsComponent,
     UsersTableComponent,
     MyUserFormComponent,
@@ -88,7 +91,12 @@ import { HomeModule } from '@app/home/home.module';
     MemberModalComponent,
     UsersListComponent,
     MyTeamTableComponent,
-    MyRolesTableComponent
+    MyRolesTableComponent,
+    MyUserComponent,
+    TeamsComponent,
+    AllUsersComponent,
+    OrganisationsComponent,
+    SettingsTabsComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,

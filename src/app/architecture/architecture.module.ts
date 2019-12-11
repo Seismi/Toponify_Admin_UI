@@ -70,7 +70,6 @@ import { DescendantsTableComponent } from '@app/architecture/components/descenda
 import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
-import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
 import { SettingsModule } from '@app/settings/settings.module';
 import { SwitchViewTabsComponent } from '@app/architecture/components/switch-view-tabs/switch-view-tabs.component';
 import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
@@ -145,7 +144,6 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
     DescendantsModalComponent,
     EditNameModalComponent,
     RelatedAttributeTableComponent,
-    RadioDetailModalComponent,
     SwitchViewTabsComponent,
     ArchitectureTableViewComponent,
     ScopeTableComponent,
@@ -159,9 +157,9 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
     AttributeModalComponent,
     DescendantsModalComponent,
     EditNameModalComponent,
-    RadioDetailModalComponent,
     NodeScopeModalComponent,
-    NewChildrenModalComponent
+    NewChildrenModalComponent,
+    NodeScopeModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

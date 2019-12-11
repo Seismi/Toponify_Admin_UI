@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CustomPropertyApiRequest, NodeDetailApiResponse, NodesApiResponse } from '../store/models/node.model';
+import {CustomPropertyApiRequest, NodeDetailApiResponse, NodeExpandedStateApiRequest, NodesApiResponse} from '../store/models/node.model';
 import { NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../store/models/node-link.model';
 
 export interface GetNodesRequestQueryParams {
@@ -85,6 +85,10 @@ export class NodeService {
   // FIXME: define missing types
   updateLayoutNodesLocation(layoutId: string, data: { id: string; locationCoordinates: string }): Observable<any> {
     return this.http.put<any>(`/layouts/${layoutId}/nodes/location`, { data: data }, httpOptions);
+  }
+  // FIXME: define missing types
+  updateNodeExpandedState(layoutId: string, data: NodeExpandedStateApiRequest): Observable<any> {
+    return this.http.put<any>(`/layouts/${layoutId}/nodes/expandState`, { data: data }, httpOptions);
   }
   // FIXME: define missing types
   updateLayoutNodeLinksRoute(layoutId: string, data: { id: string; points: any[] }): Observable<any> {
