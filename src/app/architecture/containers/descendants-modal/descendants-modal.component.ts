@@ -76,7 +76,7 @@ export class DescendantsModalComponent implements OnInit {
     this.searchInput.nativeElement.value = '';
   }
 
-  onNew(): void {
+  onAddComponent(): void {
     this.dialogRef.close();
     const dialogRef = this.dialog.open(NewChildrenModalComponent, {
       disableClose: false,
