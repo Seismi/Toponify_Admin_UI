@@ -525,7 +525,12 @@ export class DiagramTemplatesService {
           font: 'bold italic 20px calibri',
           margin: new go.Margin(0, 5, 0, 5),
           wrap: go.TextBlock.None,
-          overflow: go.TextBlock.OverflowEllipsis
+          overflow: go.TextBlock.OverflowEllipsis,
+          toolTip: $('ToolTip',
+            $(go.TextBlock,
+              new go.Binding('text', 'name')
+            )
+          )
         },
         new go.Binding('text', 'name'),
         // Size name textblock to account for presence/absence of dependency expand button
