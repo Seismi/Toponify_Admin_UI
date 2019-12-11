@@ -1,13 +1,14 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange, MatDialog } from '@angular/material';
 import { Store, select } from '@ngrx/store';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { FindPotentialWorkpackageNodes } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { FindPotentialWorkpackageNodes, AddWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { FormControl } from '@angular/forms';
 import { WorkPackageNodeFindPotential } from '@app/workpackage/store/models/workpackage.models';
 import { getPotentialWorkPackageNodes } from '@app/architecture/store/selectors/workpackage.selector';
+import { NewChildrenModalComponent } from '../new-children-modal/new-children-modal.component';
 
 @Component({
   selector: 'smi-descendants-modal',
@@ -26,6 +27,7 @@ export class DescendantsModalComponent implements OnInit {
   @ViewChild('searchInput') searchInput: ElementRef;
 
   constructor(
+    private dialog: MatDialog,
     private store: Store<WorkPackageState>,
     public dialogRef: MatDialogRef<DescendantsModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -72,5 +74,26 @@ export class DescendantsModalComponent implements OnInit {
 
   clearInputValue(): void {
     this.searchInput.nativeElement.value = '';
+  }
+
+  onAddComponent(): void {
+    this.dialogRef.close();
+    const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+      disableClose: false,
+      width: '450px',
+      data: {
+        parentId: this.nodeId
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.data) {
+        this.store.dispatch(new AddWorkPackageNode({
+          workpackageId: this.workpackageId,
+          node: data.data,
+          scope: this.data.scopeId
+        }))
+      }
+    });
   }
 }
