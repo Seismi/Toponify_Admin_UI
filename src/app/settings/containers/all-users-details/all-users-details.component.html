@@ -1,0 +1,12 @@
+<app-model-container>
+  <smi-my-user-form
+    [team]="team"
+    [role]="role"
+    [style.width.%]="100"
+    [group]="myUserForm"
+    [isEditable]="isEditable"
+    (editUser)="onEditUser()"
+    (saveUser)="onSaveUser()"
+    (cancelEdit)="onCancelEdit()">
+  </smi-my-user-form>
+</app-model-container>

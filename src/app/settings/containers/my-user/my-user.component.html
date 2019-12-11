@@ -1,11 +1,14 @@
-<smi-my-user-form 
-  [teamTableData]="user?.team" 
-  [roleTableData]="user?.roles" 
-  [group]="myUserForm"
-  [showButtons]="showButtons" 
-  [isActive]="isActive" 
-  [editMode]="editMode" 
-  (saveMyUser)="onSaveMyUser($event)"
-  (editMyUser)="onEditMyUser($event)" 
-  (changePassword)="onChangePassword($event)">
-</smi-my-user-form>
+<div class="container">
+  <smi-my-user-form 
+    [group]="myUserForm"
+    [team]="team"
+    [role]="role"
+    [isEditable]="isEditable" 
+    [modalMode]="modalMode"
+    [myUserPage]="true" 
+    (saveUser)="onSaveUser($event)"
+    (editUser)="onEditUser($event)"
+    (cancelEdit)="onCancelEdit($event)" 
+    (changePassword)="onChangePassword($event)">
+  </smi-my-user-form>
+</div>

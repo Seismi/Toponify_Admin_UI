@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { RolesEntity, User } from '@app/settings/store/models/user.model';
+import { RolesEntity } from '@app/settings/store/models/user.model';
 
 @Component({
   selector: 'smi-my-user-form',
@@ -10,70 +10,47 @@ import { RolesEntity, User } from '@app/settings/store/models/user.model';
   styleUrls: ['my-user-form.component.scss']
 })
 export class MyUserFormComponent {
-  teams: TeamEntity[];
-  roles: RolesEntity[];
+  @Input() teams: TeamEntity[];
+  @Input() roles: RolesEntity[];
 
-  @Input() teamTableData: User;
-  @Input() roleTableData: User;
   @Input() set team(team: any) {
     this.teams = team;
   }
   @Input() set role(role: any) {
     this.roles = role;
   }
+
   @Input() group: FormGroup;
-  @Input() showButtons: boolean;
-  @Input() isActive: boolean;
-  @Input() editMode: boolean;
-  @Input() addMode: boolean;
-  @Input() disableEmailInput = true;
-  @Input() selectedTeams = [];
-  @Input() selectedRoles = [];
-
-  @Output()
-  saveMyUser = new EventEmitter();
-
-  @Output()
-  editMyUser = new EventEmitter();
-
-  @Output()
-  changePassword = new EventEmitter();
+  @Input() disableEmailInput: boolean = true;
+  @Input() modalMode: boolean = false;
+  @Input() isEditable: boolean = false;
+  @Input() myUserPage: boolean = false;
 
   constructor(public dialog: MatDialog) {}
 
-  onSelectTeam(event, team) {
-    if (event.source.selected) {
-      this.selectedTeams.push(team);
-    }
-    if (!event.source.selected) {
-      const index = this.selectedTeams.indexOf(team);
-      if (index > -1) {
-        this.selectedTeams.splice(index, 1);
-      }
-    }
+  @Output() saveUser = new EventEmitter<void>();
+  @Output() editUser = new EventEmitter<void>();
+  @Output() cancelEdit = new EventEmitter<void>();
+  @Output() changePassword = new EventEmitter<void>();
+
+  onSave(): void {
+    this.saveUser.emit();
   }
 
-  onSelectRoles(event, role) {
-    if (event.source.selected) {
-      this.selectedRoles.push(role);
-    }
-    if (!event.source.selected) {
-      const index = this.selectedRoles.indexOf(role);
-      if (index > -1) {
-        this.selectedRoles.splice(index, 1);
-      }
-    }
+  onEdit(): void {
+    this.editUser.emit();
   }
 
-  onSave() {
-    this.saveMyUser.emit();
+  onCancel(): void {
+    this.cancelEdit.emit();
   }
 
-  onEdit() {
-    this.editMyUser.emit();
-  }
-
-  onChangePassword() {
+  onChangePassword(): void {
     this.changePassword.emit();
   }
+
+  compareFn(option: TeamEntity | RolesEntity, option2: TeamEntity | RolesEntity): boolean {
+    return option && option2 ? option.id === option2.id : option === option2;
+  }
+
 }
