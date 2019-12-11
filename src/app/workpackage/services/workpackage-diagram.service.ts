@@ -73,6 +73,9 @@ export class WorkPackageDiagramService {
     return $(
       go.Node,
       'Auto',
+      {
+        movable: false
+      },
       // Node should be hidden if all nodes in the current branch have status "merged" or "superseded"
       new go.Binding(
         'visible',
@@ -142,7 +145,8 @@ export class WorkPackageDiagramService {
       go.Link,
       {
         routing: go.Link.AvoidsNodes,
-        isLayoutPositioned: true
+        isLayoutPositioned: true,
+        selectable: false
       },
       $(go.Shape, {
         isPanelMain: true,

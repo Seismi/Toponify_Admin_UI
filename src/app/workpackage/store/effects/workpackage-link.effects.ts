@@ -4,6 +4,7 @@ import { WorkPackageLinksService } from '@app/workpackage/services/workpackage-l
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { NodeLink } from '@app/architecture/store/models/node-link.model';
 import {
   AddWorkPackageLink,
   AddWorkPackageLinkFailure,
@@ -17,7 +18,13 @@ import {
   UpdateWorkPackageLink,
   UpdateWorkPackageLinkFailure,
   UpdateWorkPackageLinkSuccess,
-  WorkPackageLinkActionTypes
+  WorkPackageLinkActionTypes,
+  AddWorkPackageLinkOwner, 
+  AddWorkPackageLinkOwnerSuccess,
+  AddWorkPackageLinkOwnerFailure,
+  DeleteWorkpackageLinkOwner,
+  DeleteWorkpackageLinkOwnerSuccess,
+  DeleteWorkpackageLinkOwnerFailure
 } from '../actions/workpackage-link.actions';
 
 @Injectable()
@@ -68,6 +75,36 @@ export class WorkPackageLinkEffects {
       return this.workpackageLinkService.deleteLink(payload.workpackageId, payload.linkId).pipe(
         map(data => new DeleteWorkpackageLinkSuccess(data.data)),
         catchError(error => of(new DeleteWorkpackageLinkFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkpackageLinkOwner$ = this.actions$.pipe(
+    ofType<AddWorkPackageLinkOwner>(WorkPackageLinkActionTypes.AddWorkPackageLinkOwner),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) => {
+      return this.workpackageLinkService.addLinkOwner(payload.workPackageId, payload.nodeLinkId, payload.ownerId).pipe(
+        switchMap((response: NodeLink) => [
+          new AddWorkPackageLinkOwnerSuccess(response),
+          new UpdateWorkPackageLinkSuccess(response)
+        ]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteLinkOwner$ = this.actions$.pipe(
+    ofType<DeleteWorkpackageLinkOwner>(WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwner),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) => {
+      return this.workpackageLinkService.deleteLinkOwner(payload.workPackageId, payload.nodeLinkId, payload.ownerId).pipe(
+        switchMap(data => [
+          new DeleteWorkpackageLinkOwnerSuccess(data),
+          new UpdateWorkPackageLinkSuccess(data)
+        ]),
+        catchError(error => of(new DeleteWorkpackageLinkOwnerFailure(error)))
       );
     })
   );

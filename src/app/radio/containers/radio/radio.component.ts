@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { MatDialog } from '@angular/material';
@@ -22,7 +22,7 @@ import { LoadNodes } from '@app/architecture/store/actions/node.actions';
   styleUrls: ['radio.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
+export class RadioComponent implements OnInit, OnDestroy {
   public radio$: Observable<RadioEntity[]>;
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
@@ -36,14 +36,6 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
     public dialog: MatDialog,
     private router: Router
   ) {}
-
-  ngAfterViewInit() {
-    this.router.events.subscribe((event: NavigationEnd) => {
-      if (event instanceof NavigationEnd) {
-        event.url.length > 7 ? (this.radioSelected = true) : (this.radioSelected = false);
-      }
-    });
-  }
 
   ngOnInit(): void {
     this.userStore.dispatch(new LoadUsers({}));
@@ -69,7 +61,7 @@ export class RadioComponent implements OnInit, OnDestroy, AfterViewInit {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '650px',
-      height: '95%'
+      height: '730px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

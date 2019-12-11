@@ -18,7 +18,7 @@
       ></textarea>
     </mat-form-field>
 
-    <mat-form-field *ngIf="!clickedOnLink">
+    <mat-form-field>
       <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: workPackageIsEditable }" />
     </mat-form-field>
   </div>
@@ -30,7 +30,6 @@
 
   <div>
     <smi-owners-table-in-architecture
-      *ngIf="!clickedOnLink"
       [data]="owners"
       [isEditable]="workPackageIsEditable"
       (addOwner)="onAddOwner()"
@@ -38,7 +37,7 @@
     >
     </smi-owners-table-in-architecture>
     <smi-descendants-table-in-architecture
-      *ngIf="!clickedOnLink && !attributesPage"
+      *ngIf="!clickedOnLink && !attributesPage && viewLevel !== 4"
       [data]="descendants"
       [isEditable]="workPackageIsEditable"
       (addDescendant)="onAddDescendant()"

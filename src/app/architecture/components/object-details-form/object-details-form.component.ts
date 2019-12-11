@@ -27,6 +27,7 @@ export class ObjectDetailsFormComponent {
   @Input() relatedAttributes: AttributeEntity[];
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
+  @Input() viewLevel: number;
 
   constructor() {}
 

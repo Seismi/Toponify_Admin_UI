@@ -15,10 +15,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/shared-service';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CustomSerializer } from '@app/core/custom-serializer';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material';
 
 @NgModule({
   imports: [
     BrowserModule,
+    MatSnackBarModule,
     AppRoutingModule,
     AuthModule,
     BrowserAnimationsModule,
@@ -37,7 +39,7 @@ import { CustomSerializer } from '@app/core/custom-serializer';
     })
   ],
   declarations: [AppComponent],
-  providers: [SharedService],
+  providers: [SharedService, { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

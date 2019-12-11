@@ -43,8 +43,8 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios } from '@app/radio/store/actions/radio.actions';
-import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
+import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
@@ -55,7 +55,9 @@ import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-mo
 import { SharedService } from '@app/services/shared-service';
 import {
   DeleteWorkpackageLinkSuccess,
-  WorkPackageLinkActionTypes
+  WorkPackageLinkActionTypes,
+  AddWorkPackageLinkOwner,
+  DeleteWorkpackageLinkOwner
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -114,7 +116,7 @@ import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/o
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
-import { RadioDetailModalComponent } from './radio-detail-modal/radio-detail-modal.component';
+import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/architecture/store/models/node-link.model';
 import { Node } from '@app/architecture/store/models/node.model';
@@ -436,11 +438,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
+      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
+        this.setWorkPackage(this.getWorkPackageId());
+      })
+    );
+
+    this.subscriptions.push(
       this.actions.pipe(ofType(NodeActionTypes.UpdateNodeOwners)).subscribe(_ => {
         // Keep node selected after adding a owner
         this.diagramComponent.selectNode(this.nodeId);
       })
-    );
+    )
 
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
@@ -634,11 +642,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         category: this.selectedPart.category,
         layer: this.selectedPart.layer,
         name: this.objectDetailsForm.value.name,
+        tags: this.objectDetailsForm.value.tags,
         description: this.objectDetailsForm.value.description,
         sourceId: this.selectedPart.sourceId,
         targetId: this.selectedPart.targetId
       };
-
       this.diagramChangesService.updatePartData(this.part, linkData);
     } else {
       const nodeData = {
@@ -649,10 +657,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
       };
-
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-
     this.isEditable = false;
   }
 
@@ -949,7 +955,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '650px',
-      height: '95%'
+      height: '730px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -965,15 +971,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               assignedTo: data.radio.assignedTo,
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
-              relatesTo: [
-                {
-                  workPackage: { id: this.workpackageId },
-                  item: {
-                    id: this.nodeId,
-                    itemType: this.currentFilterLevel.toLowerCase()
-                  }
+              relatesTo: [{
+                workPackage: { id: this.workpackageId },
+                item: {
+                  id: this.nodeId,
+                  itemType: this.currentFilterLevel.toLowerCase()
                 }
-              ]
+              }]
             }
           })
         );
@@ -982,6 +986,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  getWorkPackageId(): string[] {
+    if(this.workpackageId) {
+      return [this.workpackageId];
+    } else {
+      return ['00000000-0000-0000-0000-000000000000'];
+    }
   }
 
   onAddAttribute() {
@@ -1007,7 +1019,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '650px',
-      height: '95%'
+      height: '730px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1064,14 +1076,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.owner) {
-        this.nodeStore.dispatch(
-          new AddWorkpackageNodeOwner({
-            workpackageId: this.workpackageId,
-            nodeId: this.nodeId,
-            ownerId: data.owner.id,
-            data: data.owner
-          })
-        );
+        if (!this.clickedOnLink) {
+          this.nodeStore.dispatch(
+            new AddWorkpackageNodeOwner({
+              workpackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              ownerId: data.owner.id,
+              data: data.owner
+            })
+          );
+        } else {
+          this.nodeStore.dispatch(new AddWorkPackageLinkOwner({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
+            ownerId: data.owner.id
+          }))
+        }
       }
     });
   }
@@ -1088,13 +1108,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.nodeStore.dispatch(
-          new DeleteWorkpackageNodeOwner({
-            workpackageId: this.workpackageId,
-            nodeId: this.nodeId,
+        if (!this.clickedOnLink) {
+          this.nodeStore.dispatch(
+            new DeleteWorkpackageNodeOwner({
+              workpackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              ownerId: owner.id
+            })
+          );
+        } else {
+          this.nodeStore.dispatch(new DeleteWorkpackageLinkOwner({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
             ownerId: owner.id
-          })
-        );
+          }))
+        }
       }
     });
   }
