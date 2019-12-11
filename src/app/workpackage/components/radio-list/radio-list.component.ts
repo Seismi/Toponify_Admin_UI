@@ -15,7 +15,7 @@ export class RadioListComponent {
     this.dataSource = new MatTableDataSource<any>(data);
   }
 
-  displayedColumns: string[] = ['title', 'category', 'status'];
+  displayedColumns: string[] = ['refNo', 'title', 'category', 'status'];
   public dataSource: MatTableDataSource<RadioEntity>;
 
   @Output()
@@ -24,5 +24,9 @@ export class RadioListComponent {
   onSelect(row) {
     this.selectedRowIndex = row.id;
     this.selectRadio.emit(row);
+  }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

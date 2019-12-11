@@ -105,6 +105,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Output()
   updateNodeLocation = new EventEmitter();
 
+  @Output()
+  updateNodeExpandState = new EventEmitter();
+
   get level() {
     return viewLevelMapping[this.viewLevel] ? viewLevelMapping[this.viewLevel] : viewLevelMapping[1];
   }
@@ -209,6 +212,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeLocation.emit(data);
     });
+    diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
+      this.updateNodeExpandState.emit(data);
+    });
   }
 
   // Zoom out diagram
@@ -285,6 +291,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         return tool.name === 'LinkShifting';
       });
       linkShiftingTool.isEnabled = this.allowMove;
+
+      this.diagram.updateAllTargetBindings('');
 
       // Handle changes tool-related adornments if a link is selected
       this.diagram.selection.each(function(part) {
