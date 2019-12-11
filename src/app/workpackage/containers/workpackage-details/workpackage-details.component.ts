@@ -210,7 +210,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onAddObjectiveOrRadio(value): void {
     const dialogRef = this.dialog.open(RadioListModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      height: '600px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -238,7 +239,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     // Create new radio
     dialogRef.componentInstance.addNewRadio.subscribe(() => {
       const dialogRef2 = this.dialog.open(RadioModalComponent, {
-        disableClose: false
+        disableClose: false,
+        width: '650px'
       });
 
       dialogRef2.afterClosed().subscribe(data => {
