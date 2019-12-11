@@ -40,14 +40,14 @@ import { TeamModalComponent } from './containers/team-modal/team-modal.component
 import { DeleteTeamAndMemberModalComponent } from './containers/delete-modal/delete-modal.component';
 import { MemberModalComponent } from './containers/member-modal/member-modal.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
-import { MyTeamTableComponent } from './components/my-team-table/my-team-table.component';
-import { MyRolesTableComponent } from './components/my-roles-table/my-roles-table.component';
 import { HomeModule } from '@app/home/home.module';
 import { MyUserComponent } from './containers/my-user/my-user.component';
 import { TeamsComponent } from './containers/teams/teams.component';
 import { AllUsersComponent } from './containers/all-users/all-users.component';
 import { OrganisationsComponent } from './containers/organisations/organisations.component';
 import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
+import { SettingsRightSideComponent } from './components/right-side/right-side.component';
+import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
 
 @NgModule({
   imports: [
@@ -90,13 +90,13 @@ import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.
     DeleteTeamAndMemberModalComponent,
     MemberModalComponent,
     UsersListComponent,
-    MyTeamTableComponent,
-    MyRolesTableComponent,
     MyUserComponent,
     TeamsComponent,
     AllUsersComponent,
     OrganisationsComponent,
-    SettingsTabsComponent
+    SettingsTabsComponent,
+    SettingsRightSideComponent,
+    AllUsersDetailsComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,
