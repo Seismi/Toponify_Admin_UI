@@ -1,7 +1,20 @@
-<smi-users-table 
-  *ngIf="(users$ | async)?.length > 0" 
-  [data]="users$ | async" 
-  (editUser)="onEditUser($event)"
-  (addUser)="onAddUser($event)" 
-  data-hook="all-users-table">
-</smi-users-table>
+<app-model-container>
+  <div class="container">
+    <div class="row">
+      <div class="col mat-elevation-z8">
+        <smi-users-table
+          *ngIf="(users$ | async)?.length > 0"
+          [data]="users$ | async"
+          (editUser)="onEditUser($event)"
+          (addUser)="onAddUser($event)"
+          (selectUser)="onSelectUser($event)"
+          data-hook="all-users-table">
+        </smi-users-table>
+      </div>
+      <div class="col">
+        <smi-settings-right-side (add)="onAddUser()" [title]="'User'"></smi-settings-right-side>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</app-model-container>

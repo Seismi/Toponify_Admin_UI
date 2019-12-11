@@ -1,61 +1,55 @@
 <form [formGroup]="group">
-  <div class="table-container">
+  <div [ngClass]="{ disabled: !isEditable }">
     <!-- Email -->
-    <mat-form-field [ngClass]="{ disabled: !isActive }">
+    <mat-form-field>
       <input matInput placeholder="Email" [readonly]="disableEmailInput" formControlName="email" />
       <mat-error>Invalid email address</mat-error>
     </mat-form-field>
-
+  
     <!-- First Name -->
-    <mat-form-field [ngClass]="{ disabled: !isActive }">
-      <input matInput placeholder="First Name" formControlName="firstName" />
+    <mat-form-field>
+      <input matInput placeholder="First Name" formControlName="firstName" [ngClass]="{ editable: isEditable }"/>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
-
+  
     <!-- Last Name -->
-    <mat-form-field [ngClass]="{ disabled: !isActive }">
-      <input matInput placeholder="Last Name" formControlName="lastName" />
+    <mat-form-field>
+      <input matInput placeholder="Last Name" formControlName="lastName" [ngClass]="{ editable: isEditable }"/>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
-
+  
     <!-- Phone Number -->
-    <mat-form-field [ngClass]="{ disabled: !isActive }">
-      <input matInput placeholder="Phone Number" formControlName="phone" />
+    <mat-form-field>
+      <input matInput placeholder="Phone Number" formControlName="phone" [ngClass]="{ editable: isEditable }"/>
       <mat-error>Invalid phone number</mat-error>
     </mat-form-field>
-
+  
     <!-- My Teams -->
-    <mat-form-field [ngClass]="{ disabled: !isActive }" *ngIf="addMode">
-      <mat-select placeholder="My Teams" multiple formControlName="team">
-        <mat-option *ngFor="let team of teams" [value]="team.name" (onSelectionChange)="onSelectTeam($event, team)">
-          {{ team.name }}</mat-option
-        >
+    <mat-form-field>
+      <mat-select placeholder="My Teams" multiple formControlName="team" [compareWith]="compareFn" [ngClass]="{ editable: isEditable }">
+        <mat-option *ngFor="let team of teams" [value]="team">
+          {{ team.name }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
-
+  
     <!-- My Roles -->
-    <mat-form-field [ngClass]="{ disabled: !isActive }" *ngIf="addMode">
-      <mat-select placeholder="My Roles" multiple formControlName="roles">
-        <mat-option *ngFor="let role of roles" [value]="role.name" (onSelectionChange)="onSelectRoles($event, role)">
-          {{ role.name }}</mat-option
-        >
+    <mat-form-field>
+      <mat-select placeholder="My Roles" multiple formControlName="roles" [compareWith]="compareFn" [ngClass]="{ editable: isEditable }">
+        <mat-option *ngFor="let role of roles" [value]="role">
+          {{ role.name }}
+        </mat-option>
       </mat-select>
       <mat-error>Role is required</mat-error>
     </mat-form-field>
+  </div>
 
-    <!-- Team Table -->
-    <smi-my-team-table [data]="teamTableData" *ngIf="!addMode"></smi-my-team-table>
-
-    <!-- Roles Table -->
-    <smi-my-roles-table [data]="roleTableData" *ngIf="!addMode"></smi-my-roles-table>
-
-    <!-- Buttons -->
-    <div *ngIf="showButtons">
-      <button mat-raised-button *ngIf="editMode" (click)="onSave()" class="save-btn" [disabled]="!group.valid">
-        Save Personal Settings
-      </button>
-      <button mat-raised-button *ngIf="!editMode" (click)="onEdit()">Edit Personal Settings</button>
-      <button mat-raised-button (click)="onChangePassword()">Change my password</button>
-    </div>
+  <div class="form-actions" *ngIf="!modalMode">
+    <button mat-raised-button color="primary" *ngIf="!isEditable; else elseBlock" (click)="onEdit()">Edit</button>
+    <button mat-button color="primary" *ngIf="myUserPage" (click)="onChangePassword()">Change Password</button>
+    <ng-template #elseBlock>
+      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+      <button mat-raised-button (click)="onCancel()">Cancel</button>
+    </ng-template>
   </div>
 </form>

@@ -280,13 +280,26 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.UpdateNodesSuccess: {
+    case NodeActionTypes.UpdateNodeLocationsSuccess: {
       return {
         ...state
       };
     }
 
-    case NodeActionTypes.UpdateNodesFailure: {
+    case NodeActionTypes.UpdateNodeLocationsFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
+    case NodeActionTypes.UpdateNodeExpandedStateSuccess: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.UpdateNodeExpandedStateFailure: {
       return {
         ...state,
         error: action.payload
