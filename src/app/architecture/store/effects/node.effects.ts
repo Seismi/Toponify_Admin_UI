@@ -11,11 +11,12 @@ import {
 } from '@app/architecture/services/node.service';
 import {
   CustomPropertyApiRequest,
+  NodeExpandedStateApiRequest,
   Error,
   NodeApiResponse,
   NodeDetailApiResponse,
   NodesApiResponse,
-  NodeUpdatePayload
+  NodeLocationsUpdatePayload
 } from '../models/node.model';
 import { LinkUpdatePayload, NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../models/node-link.model';
 import { MatSnackBar } from '@angular/material';
@@ -123,10 +124,10 @@ export class NodeEffects {
   );
 
   @Effect()
-  updateNodes$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateNodes>(NodeActionTypes.UpdateNodes),
+  updateNodeLocations$ = this.actions$.pipe(
+    ofType<NodeActions.UpdateNodeLocations>(NodeActionTypes.UpdateNodeLocations),
     map(action => action.payload),
-    switchMap((payload: NodeUpdatePayload) => {
+    switchMap((payload: NodeLocationsUpdatePayload) => {
       const observables = payload.nodes.map((item: any) => {
         return this.nodeService.updateLayoutNodesLocation(payload.layoutId, item);
       });
@@ -135,11 +136,29 @@ export class NodeEffects {
         map((data: any) => {
           const mappedNodes = {};
           data.forEach(item => (mappedNodes[item.data.id] = item.data));
-          return new NodeActions.UpdateNodesSuccess(mappedNodes);
+          return new NodeActions.UpdateNodeLocationsSuccess(mappedNodes);
         }),
-        catchError((error: Error) => of(new NodeActions.UpdateNodesFailure(error)))
+        catchError((error: Error) => of(new NodeActions.UpdateNodeLocationsFailure(error)))
       );
     })
+  );
+
+  @Effect()
+  updateNodeExpandedState$ = this.actions$.pipe(
+    ofType<NodeActions.UpdateNodeExpandedState>(NodeActionTypes.UpdateNodeExpandedState),
+    map(action => action.payload),
+    switchMap(
+      (payload: {
+        layoutId: string;
+        data: NodeExpandedStateApiRequest
+      }) => {
+        return this.nodeService
+          .updateNodeExpandedState(payload.layoutId, payload.data)
+          .pipe(
+            switchMap((response: any) => [new NodeActions.UpdateNodeExpandedStateSuccess(response.data)]),
+            catchError((error: Error) => of(new NodeActions.UpdateNodeExpandedStateFailure(error)))
+          );
+      })
   );
 
   @Effect()

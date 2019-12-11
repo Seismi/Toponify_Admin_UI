@@ -24,16 +24,16 @@
           <mat-tab label="Diagram">
             <ng-template mat-tab-label> <mat-icon>device_hub</mat-icon> Diagram </ng-template>
             <ng-template matTabContent>
-              <smi-workpackage-tree [workpackages]="workpackages"></smi-workpackage-tree>
+              <smi-workpackage-tree
+                (selectWorkpackage)="onSelectWorkpackage($event)"
+                [workpackages]="workpackages"
+              ></smi-workpackage-tree>
             </ng-template>
           </mat-tab>
         </mat-tab-group>
       </div>
       <div class="col">
-        <smi-workpackage-right-side
-          (addWorkPackage)="onAddWorkPackage()"
-          *ngIf="!workPackageSelected"
-        ></smi-workpackage-right-side>
+        <smi-workpackage-right-side (addWorkPackage)="onAddWorkPackage()"></smi-workpackage-right-side>
         <router-outlet></router-outlet>
       </div>
     </div>
