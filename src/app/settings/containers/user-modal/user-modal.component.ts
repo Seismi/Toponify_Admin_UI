@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '../../components/my-user-form/services/my-user-form.service';
@@ -6,85 +6,53 @@ import { MyUserFormValidatorService } from '../../components/my-user-form/servic
 import { User, RolesEntity } from '@app/settings/store/models/user.model';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '../../store/reducers/team.reducer';
-import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as UserState } from '../../store/reducers/user.reducer';
-import { LoadUserRoles, LoadUser } from '@app/settings/store/actions/user.actions';
 import { getUserRolesEntities } from '@app/settings/store/selectors/user.selector';
 
 @Component({
   selector: 'smi-user-modal',
   templateUrl: './user-modal.component.html',
   styleUrls: ['./user-modal.component.scss'],
-  providers: [MyUserFormService, MyUserFormValidatorService]
+  providers: [MyUserFormService, MyUserFormValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
-export class UserModalComponent implements OnInit, OnDestroy {
-  teams$: Observable<TeamEntity[]>;
-  roles$: Observable<RolesEntity[]>;
-  showButtons = false;
-  isActive = true;
-  disableEmailInput = false;
-  public mode: string;
-  public isEditMode: boolean;
-  user: User;
-  selectedTeams = [];
-  selectedRoles = [];
-  subscriptions: Subscription[] = [];
-  addMode = false;
+export class UserModalComponent implements OnInit {
 
-  get myUserForm(): FormGroup {
-    return this.myUserFormService.myUserForm;
-  }
+  public teams$: Observable<TeamEntity[]>;
+  public roles$: Observable<RolesEntity[]>;
+  public user: User;
+  public disableEmailInput: boolean = false;
+  public modalMode: boolean = true;
+  public isEditable: boolean = true;
 
   constructor(
     private store: Store<TeamState>,
     private userStore: Store<UserState>,
     private myUserFormService: MyUserFormService,
     public dialogRef: MatDialogRef<UserModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.mode = data.mode;
-    this.user = data.user;
-    this.selectedTeams = data.selectedTeams;
-    this.selectedRoles = data.selectedRoles;
-    this.mode === 'edit' ? (this.isEditMode = true) : (this.isEditMode = false);
-  }
-
-  ngOnInit() {
-    if (!this.isEditMode) {
-      this.addMode = true;
-      this.store.dispatch(new LoadTeams({}));
-      this.teams$ = this.store.pipe(select(getTeamEntities));
-      this.userStore.dispatch(new LoadUserRoles());
-      this.roles$ = this.userStore.pipe(select(getUserRolesEntities));
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.user = data.user;
     }
 
-    if (this.isEditMode) {
-      this.disableEmailInput = true;
-    }
-
-    this.myUserFormService.myUserForm.patchValue({ ...this.user });
+  ngOnInit(): void {
+    this.teams$ = this.store.pipe(select(getTeamEntities));
+    this.roles$ = this.userStore.pipe(select(getUserRolesEntities));
   }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+  get myUserForm(): FormGroup {
+    return this.myUserFormService.myUserForm;
   }
 
-  onSubmit(data: any) {
+  onSubmit(): void {
     if (!this.myUserFormService.isValid) {
       return;
     }
-    this.dialogRef.close({
-      user: this.myUserForm.value,
-      mode: this.mode,
-      selectedRoles: this.selectedRoles,
-      selectedTeams: this.selectedTeams
-    });
+    this.dialogRef.close({user: this.myUserForm.value});
   }
 
-  onCancelClick() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }
