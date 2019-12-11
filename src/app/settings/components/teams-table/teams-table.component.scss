@@ -8,8 +8,9 @@ table {
   width: 100%;
 }
 
-tr.mat-header-row {
-  height: 35px;
+.table-actions {
+  display: flex;
+  border-bottom: solid 1px #ddd;
 }
 
 tr.mat-row {

@@ -8,6 +8,11 @@ table {
   width: 100%;
 }
 
+.table-actions {
+  display: flex;
+  border-bottom: solid 1px #ddd;
+}
+
 tr.mat-row {
   cursor: pointer;
 }
