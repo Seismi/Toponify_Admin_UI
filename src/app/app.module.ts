@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedService } from './services/shared-service';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CustomSerializer } from '@app/core/custom-serializer';
+import { MatIconModule } from '@angular/material';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material';
 
 @NgModule({
@@ -36,7 +37,8 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/mater
     EffectsModule.forRoot([]),
     StoreRouterConnectingModule.forRoot({
       serializer: CustomSerializer
-    })
+    }),
+    MatIconModule
   ],
   declarations: [AppComponent],
   providers: [SharedService, { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } }],
