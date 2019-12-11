@@ -1,34 +1,20 @@
-.wrapper {
-  width: 460px;
-  margin: auto;
-  margin-top: 25px;
-  margin-bottom: 25px;
-  padding: 30px;
-}
-
-form {
-  width: 400px;
-  margin: auto;
-}
-
-.table-container > * {
+.mat-form-field {
   width: 100%;
 }
 
 button {
-  font-weight: 400;
-  width: 100%;
-  &:first-child {
-    margin-bottom: 15px;
-  }
-}
-
-.save-btn {
-  background-color: #3f51b5;
-  color: #fff;
+  margin-right: 5px;
 }
 
 .disabled {
   pointer-events: none;
-  opacity: 0.85;
+}
+
+.editable {
+  background-color: #fff;
+}
+
+.team-and-roles-table-container {
+  display: flex;
+  margin-top: 35px;
 }

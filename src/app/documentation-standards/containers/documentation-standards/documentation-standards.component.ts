@@ -55,7 +55,7 @@ export class DocumentationStandardsComponent implements OnInit {
               name: data.documentStandard.name,
               description: data.documentStandard.description,
               type: data.documentStandard.type,
-              levels: this.documentationStandardsService.selectedLevels
+              levels: data.documentStandard.levels
             }
           })
         );

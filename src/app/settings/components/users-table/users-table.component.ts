@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
-import { User } from '@app/auth/store/models/user.model';
+import { User } from '@app/settings/store/models/user.model';
 
 @Component({
   selector: 'smi-users-table',
@@ -8,38 +8,37 @@ import { User } from '@app/auth/store/models/user.model';
   styleUrls: ['users-table.component.scss']
 })
 export class UsersTableComponent implements OnInit {
+  public selectedUserIndex: string | number = -1;
+
   @Input()
-  set data(data: any[]) {
+  set data(data: User[]) {
     if (data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<User>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     }
   }
 
-  displayedColumns: string[] = ['firstName', 'lastName', 'roles', 'team'];
+  public displayedColumns: string[] = ['firstName', 'lastName', 'roles', 'team'];
   public dataSource: MatTableDataSource<User>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  @Output()
-  editUser = new EventEmitter<string>();
-
-  @Output()
-  addUser = new EventEmitter();
+  @Output() addUser = new EventEmitter<void>();
+  @Output() selectUser = new EventEmitter<User>();
 
   constructor(public dialog: MatDialog) {}
 
-  ngOnInit() {
-    this.paginator._intl.itemsPerPageLabel = 'Users per page';
-  }
+  ngOnInit(): void { }
 
-  onEdit(id: string) {
-    this.editUser.emit(id);
-  }
-
-  onAddNewUser() {
+  onAdd(): void {
     this.addUser.emit();
   }
+
+  onSelect(user: User): void {
+    this.selectedUserIndex = user.id;
+    this.selectUser.emit(user);
+  }
+
 }
