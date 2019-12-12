@@ -1,0 +1,32 @@
+.container {
+  text-align: center;
+  position: absolute;
+  top: 30%;
+}
+
+h4 {
+  color: #555;
+}
+
+.help-block {
+  margin-top: 100px;
+  margin-left: 20px;
+  a {
+    font-size: 11px;
+  }
+}
+
+button {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
+}

@@ -20,6 +20,7 @@ const $ = go.GraphObject.make;
 @Injectable()
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
 
   workpackages = [];
@@ -592,5 +593,40 @@ export class DiagramChangesService {
 
     // Placeholder - update all node and link positions in back end for current layout
     // Needs store update before implementation
+  }
+
+  nodeExpandChanged(node) {
+    const linkData: {id: string, points: number[]}[] = [];
+
+    // Make sure node bounds are up to date so links can route correctly
+    node.ensureBounds();
+
+    // Expanding/collapsing node sections changes node size, therefore link routes may need updating
+    node.linksConnected.each(function(link: go.Link): void {
+
+      // ignore disconnected links
+      if (link.toNode && link.fromNode) {
+        node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.invalidateRoute();
+        link.updateRoute();
+
+        linkData.push({id: link.data.id, points: link.data.route});
+      }
+    });
+
+    if (this.currentLevel.endsWith('map')) {
+      // Update node's group layout in map view
+      node.invalidateLayout();
+    } else {
+      // Update expanded status of node in the back end
+      this.onUpdateExpandState.next({
+        node: {
+          id: node.data.id,
+          middleExpanded: node.data.middleExpanded,
+          bottomExpanded: node.data.bottomExpanded
+        },
+        links: linkData
+      });
+    }
   }
 }

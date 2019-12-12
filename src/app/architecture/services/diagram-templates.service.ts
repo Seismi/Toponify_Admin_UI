@@ -223,43 +223,41 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        name: 'TopExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
         click: function(event, button) {
           const node = button.part;
 
-          const middleSection = node.findObject('middle');
-          const bottomSection = node.findObject('bottom');
-          const buttonTextBox = button.findObject('TopButtonText');
+          event.diagram.model.setDataProperty(node.data, 'bottomExpanded', node.data.middleExpanded || !node.data.bottomExpanded);
+          event.diagram.model.setDataProperty(node.data, 'middleExpanded', false);
 
-          if (middleSection.visible && bottomSection.visible) {
-            middleSection.visible = false;
-            buttonTextBox.text = '-';
-          } else if (!middleSection.visible && bottomSection.visible) {
-            bottomSection.visible = false;
-            buttonTextBox.text = '+';
-          } else {
-            bottomSection.visible = true;
-            buttonTextBox.text = '-';
-          }
-
-          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-          node.findLinksConnected().each(function(link) {
-          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-            link.invalidateRoute();
-          });
+          this.diagramChangesService.nodeExpandChanged(node);
 
         }.bind(this)
       },
-      $(go.TextBlock, '-', {
-        name: 'TopButtonText',
-        alignment: go.Spot.Center,
-        font: 'bold 18px calibri',
-        desiredSize: new go.Size(25, 25),
-        textAlign: 'center',
-        verticalAlignment: go.Spot.Center
-      })
+      $(
+        go.TextBlock,
+          {
+            alignment: go.Spot.Center,
+            font: 'bold 18px calibri',
+            desiredSize: new go.Size(25, 25),
+            textAlign: 'center',
+            verticalAlignment: go.Spot.Center
+          },
+        // Grey out text when button disabled
+        new go.Binding('text', '', function(data) {
+          return (data.middleExpanded || data.bottomExpanded) ? '-' : '+';
+        }),
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : '#AAAFB4';
+        }).ofObject('TopExpandButton')
+      ),
+      // Disable button if moves not allowed in diagram
+      new go.Binding('isEnabled', '', function(node) {
+        return node.diagram.allowMove;
+      }).ofObject()
     );
   }
 
@@ -269,34 +267,40 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        name: 'BottomExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
         click: function(event, button): void {
           const node = button.part;
-          const middleSection = node.findObject('middle');
 
-          middleSection.visible = true;
+          event.diagram.model.setDataProperty(node.data, 'middleExpanded', true);
 
-          // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-          node.findLinksConnected().each(function(link) {
-          event.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-            link.invalidateRoute();
-          });
+          this.diagramChangesService.nodeExpandChanged(node);
 
         }.bind(this)
       },
-      $(go.TextBlock, '+', {
-        alignment: go.Spot.Center,
-        font: 'bold 18px calibri',
-        desiredSize: new go.Size(25, 25),
-        textAlign: 'center',
-        verticalAlignment: go.Spot.Center
-      }),
+      $(go.TextBlock, '+',
+        {
+          alignment: go.Spot.Center,
+          font: 'bold 18px calibri',
+          desiredSize: new go.Size(25, 25),
+          textAlign: 'center',
+          verticalAlignment: go.Spot.Center
+        },
+        // Grey out text when button disabled
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : '#AAAFB4';
+        }).ofObject('TopExpandButton')
+      ),
+      // Disable button if moves not allowed in diagram
+      new go.Binding('isEnabled', '', function(node) {
+        return node.diagram.allowMove;
+      }).ofObject(),
       // Button not visible when middle node section is collapsed
-      new go.Binding('visible', 'visible', function (middleVisible) {
-        return !middleVisible;
-      }).ofObject('middle')
+      new go.Binding('visible', 'middleExpanded', function (middleExpanded) {
+        return !middleExpanded;
+      })
     );
   }
 
@@ -521,7 +525,12 @@ export class DiagramTemplatesService {
           font: 'bold italic 20px calibri',
           margin: new go.Margin(0, 5, 0, 5),
           wrap: go.TextBlock.None,
-          overflow: go.TextBlock.OverflowEllipsis
+          overflow: go.TextBlock.OverflowEllipsis,
+          toolTip: $('ToolTip',
+            $(go.TextBlock,
+              new go.Binding('text', 'name')
+            )
+          )
         },
         new go.Binding('text', 'name'),
         // Size name textblock to account for presence/absence of dependency expand button
@@ -547,6 +556,7 @@ export class DiagramTemplatesService {
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(5)
       },
+      new go.Binding('visible', 'middleExpanded').makeTwoWay(),
       $(
         go.TextBlock,
         {
@@ -616,6 +626,7 @@ export class DiagramTemplatesService {
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(2)
       },
+      new go.Binding('visible', 'bottomExpanded').makeTwoWay(),
       $(
         go.Panel,
         'Horizontal',
@@ -702,7 +713,15 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        doubleClick: this.diagramLevelService.changeLevelWithFilter.bind(this)
+        doubleClick: function(event, node) {
+
+          // Do not proceed for double clicks on buttons on the node
+          if (event.targetObject.name.includes('Button')) {
+            return;
+          }
+
+         this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+        }.bind(this)
       },
       new go.Binding(
         'movable',
@@ -740,6 +759,19 @@ export class DiagramTemplatesService {
             return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
           }.bind(this)
         ),
+        new go.Binding('fromSpot', 'group', function(group) {
+          if (group) {
+            return go.Spot.LeftRightSides;
+          } else {
+            return go.Spot.AllSides;
+          }
+        }),
+        new go.Binding('toSpot', 'group', function(group) {
+          if (group) {return go.Spot.LeftRightSides;
+          } else {
+            return go.Spot.AllSides;
+          }
+        }),
         this.getStandardNodeShapeOptions()
       ),
       // Dummy panel with no size and no contents.
@@ -845,13 +877,6 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      // Do not allow relinking map view dummy links
-      new go.Binding('relinkableFrom', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
-      new go.Binding('relinkableTo', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
@@ -873,14 +898,6 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
-        // Show dotted line for map view dummy links
-        new go.Binding('strokeDashArray', 'id', function(id) {
-          if (id === '00000000-0000-0000-0000-000000000000') {
-            return [2.5, 1.5];
-          } else {
-            return [5, 5];
-          }
-        }),
         // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
         new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
           return dataLinks ? 2.5 : 0;
@@ -897,6 +914,41 @@ export class DiagramTemplatesService {
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
       !forPalette ? this.getLinkLabel() : {}
+    );
+  }
+
+  // Get template for master data links
+  getLinkCopyTemplate(): CustomLink {
+    return $(
+      CustomLink,
+      new go.Binding('points', 'route').makeTwoWay(function(points) {
+        const PointArray = points.toArray();
+        const Path = [];
+
+        for (let i = 0; i < PointArray.length; i++) {
+          Path.push(PointArray[i].x);
+          Path.push(PointArray[i].y);
+        }
+
+        return Path;
+      }),
+      this.getStandardLinkOptions(false),
+      {
+        relinkableFrom: false,
+        relinkableTo: false,
+        isLayoutPositioned: true
+      },
+      $(
+        go.Shape,
+        {
+          name: 'shape',
+          isPanelMain: true,
+          stroke: 'Black',
+          strokeWidth: 2.5,
+          strokeDashArray: [2.5, 1.5]
+        }
+      ),
+      this.getLinkLabel()
     );
   }
 

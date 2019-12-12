@@ -19,11 +19,12 @@ export class ObjectivesTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public displayedColumns: string[] = ['name', 'delete'];
+  public displayedColumns: string[] = ['refNo', 'name', 'status', 'edit', 'delete'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 
   @Output() addObjective = new EventEmitter<void>();
   @Output() deleteObjective = new EventEmitter<RadioEntity>();
+  @Output() editRadio = new EventEmitter<WorkPackageDetail>();
 
   onAdd(): void {
     this.addObjective.emit();
@@ -31,5 +32,9 @@ export class ObjectivesTableComponent {
 
   onDelete(radio: RadioEntity): void {
     this.deleteObjective.emit(radio);
+  }
+
+  onEdit(radio: WorkPackageDetail): void {
+    this.editRadio.emit(radio);
   }
 }

@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material';
 import { LayoutModalComponent } from '../layout-modal/layout-modal.component';
 import { AddLayout } from '@app/layout/store/actions/layout.actions';
 import { SharedService } from '@app/services/shared-service';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 
 @Component({
   selector: 'app-scope-details',
@@ -100,6 +101,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteScope(this.scopeId));
+        this.store.dispatch(new UpdateQueryParams({scope: null}));
       }
     });
   }

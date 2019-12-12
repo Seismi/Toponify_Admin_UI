@@ -5,6 +5,7 @@ import { MyUserComponent } from './containers/my-user/my-user.component';
 import { TeamsComponent } from './containers/teams/teams.component';
 import { AllUsersComponent } from './containers/all-users/all-users.component';
 import { OrganisationsComponent } from './containers/organisations/organisations.component';
+import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
 
 export const settingsRoutes: Routes = [
   {
@@ -21,7 +22,13 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'all-users',
-        component: AllUsersComponent
+        component: AllUsersComponent,
+        children: [
+          {
+            path: ':userId',
+            component: AllUsersDetailsComponent
+          }
+        ]
       },
       {
         path: 'organisation',

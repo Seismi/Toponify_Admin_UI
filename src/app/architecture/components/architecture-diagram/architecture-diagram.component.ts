@@ -105,6 +105,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Output()
   updateNodeLocation = new EventEmitter();
 
+  @Output()
+  updateNodeExpandState = new EventEmitter();
+
   get level() {
     return viewLevelMapping[this.viewLevel] ? viewLevelMapping[this.viewLevel] : viewLevelMapping[1];
   }
@@ -141,10 +144,27 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
     this.diagram.toolManager.draggingTool.doActivate = function(): void {
+
       go.DraggingTool.prototype.doActivate.call(this);
 
+      const draggedParts = this.draggedParts.toKeySet();
+
       // Only use drag guidelines for nodes and not for links
-      this.isGuidelineEnabled = this.draggedParts.toKeySet().first() instanceof go.Node;
+      this.isGuidelineEnabled = draggedParts.first() instanceof go.Node;
+
+      // If the only part being dragged is a link that is already connected, cancel the drag
+      if (draggedParts.count === 1 && draggedParts.first() instanceof go.Link) {
+
+        const draggedLink = draggedParts.first();
+
+        if (!draggedLink.data.isTemporary) {
+          go.DraggingTool.prototype.doCancel.call(this);
+
+          // Cancelling the drag loses the link's selection adornment. Therefore, reselect the link to get it back.
+          draggedLink.isSelected = false;
+          this.diagram.select(draggedLink);
+        }
+      }
     };
 
     // Override standard hideContextMenu method on context menu tool to also hide any opened sub-menus
@@ -170,6 +190,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());
 
     this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramTemplatesService.getLinkMasterDataTemplate());
+
+    this.diagram.linkTemplateMap.add(linkCategories.copy, diagramTemplatesService.getLinkCopyTemplate());
 
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
@@ -208,6 +230,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramListenersService.enableListeners(this.diagram);
     diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeLocation.emit(data);
+    });
+    diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
+      this.updateNodeExpandState.emit(data);
     });
   }
 
@@ -285,6 +310,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         return tool.name === 'LinkShifting';
       });
       linkShiftingTool.isEnabled = this.allowMove;
+
+      this.diagram.updateAllTargetBindings('');
 
       // Handle changes tool-related adornments if a link is selected
       this.diagram.selection.each(function(part) {
