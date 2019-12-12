@@ -877,13 +877,6 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      // Do not allow relinking map view dummy links
-      new go.Binding('relinkableFrom', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
-      new go.Binding('relinkableTo', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
@@ -905,14 +898,6 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
-        // Show dotted line for map view dummy links
-        new go.Binding('strokeDashArray', 'id', function(id) {
-          if (id === '00000000-0000-0000-0000-000000000000') {
-            return [2.5, 1.5];
-          } else {
-            return [5, 5];
-          }
-        }),
         // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
         new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
           return dataLinks ? 2.5 : 0;
@@ -929,6 +914,41 @@ export class DiagramTemplatesService {
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
       !forPalette ? this.getLinkLabel() : {}
+    );
+  }
+
+  // Get template for master data links
+  getLinkCopyTemplate(): CustomLink {
+    return $(
+      CustomLink,
+      new go.Binding('points', 'route').makeTwoWay(function(points) {
+        const PointArray = points.toArray();
+        const Path = [];
+
+        for (let i = 0; i < PointArray.length; i++) {
+          Path.push(PointArray[i].x);
+          Path.push(PointArray[i].y);
+        }
+
+        return Path;
+      }),
+      this.getStandardLinkOptions(false),
+      {
+        relinkableFrom: false,
+        relinkableTo: false,
+        isLayoutPositioned: true
+      },
+      $(
+        go.Shape,
+        {
+          name: 'shape',
+          isPanelMain: true,
+          stroke: 'Black',
+          strokeWidth: 2.5,
+          strokeDashArray: [2.5, 1.5]
+        }
+      ),
+      this.getLinkLabel()
     );
   }
 
