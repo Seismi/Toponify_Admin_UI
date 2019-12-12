@@ -55,11 +55,14 @@
   </p>
   <app-model-content>
     <smi-switch-view-tabs
-      (search)="onSearchTableView($event)"
       (viewChange)="onViewChange($event)"
       [selectedView]="selectedView"
       [viewLevel]="viewLevel$ | async"
     ></smi-switch-view-tabs>
+    <smi-search-table-view
+      *ngIf="selectedView !== ArchitectureView.Diagram" 
+      (search)="onSearchTableView($event)">
+    </smi-search-table-view>
     <div style="padding: 5px" [hidden]="selectedView !== ArchitectureView.Diagram">
       <app-architecture-diagram
         [mapView]="mapView"
@@ -90,6 +93,7 @@
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
         [view]="'system'"
+        [filterValue]="tableViewFilterValue"
       ></smi-architecture-table-view>
     </div>
     <div *ngIf="selectedView === ArchitectureView.Links">
@@ -99,6 +103,7 @@
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
         [view]="'link'"
+        [filterValue]="tableViewFilterValue"
       ></smi-architecture-table-view>
     </div>
   </app-model-content>

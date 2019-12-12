@@ -224,6 +224,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
   public params: Params;
+  public tableViewFilterValue: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -1255,6 +1256,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onViewChange(view: ArchitectureView) {
     this.selectedView = view;
+    if (view === ArchitectureView.Diagram) {
+      this.tableViewFilterValue = null;
+    }
   }
 
   onSelectNode(node: Node | NodeLink) {
@@ -1344,7 +1348,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onSearchTableView(filterValue: string): void {
     const dataSource = this.tableView.dataSource;
-    dataSource.filter = filterValue.trim().toLowerCase();
+    dataSource.filter = filterValue.toLowerCase().toUpperCase();
+    this.tableViewFilterValue = filterValue;
   }
 
 }
