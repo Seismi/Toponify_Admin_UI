@@ -16,7 +16,6 @@ export class SwitchViewTabsComponent {
   @ViewChild('architectureTableTabs') architectureTableTabs: MatTabGroup;
 
   @Output() viewChange = new EventEmitter<ArchitectureView>();
-  @Output() search = new EventEmitter<string>();
 
   onTabClick(event: MatTabChangeEvent): void {
     this.viewChange.emit(event.index);
@@ -43,9 +42,5 @@ export class SwitchViewTabsComponent {
     } else {
       return 'Links';
     }
-  }
-
-  onSearch(filterValue: string): void {
-    this.search.emit(filterValue);
   }
 }
