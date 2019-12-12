@@ -6,16 +6,20 @@
   </app-toolbar-column>
 </app-base-header>
 
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <smi-documentation-standards-table
-        [data]="documentStandards$ | async"
-        (documentSelected)="onSelectDocument($event)"
-        (addDocument)="onAddDocument($event)"
-      >
-      </smi-documentation-standards-table>
+<app-model-container [topPadding]="64">
+  <div class="container">
+    <div class="row">
+      <div class="col mat-elevation-z8">
+        <smi-documentation-standards-table 
+          [data]="documentStandards$ | async"
+          (documentSelected)="onSelectDocument($event)" 
+          (addDocument)="onAddDocument($event)">
+        </smi-documentation-standards-table>
+      </div>
+      <div class="col">
+        <smi-document-standards-right-side (add)="onAddDocument()" [title]="'Document Standard'"></smi-document-standards-right-side>
+        <router-outlet></router-outlet>
+      </div>
     </div>
-    <router-outlet></router-outlet>
   </div>
-</div>
+</app-model-container>
