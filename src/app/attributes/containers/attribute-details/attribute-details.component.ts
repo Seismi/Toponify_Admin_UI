@@ -29,6 +29,7 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RelatedAttributesModalComponent } from '../related-attributes-modal/related-attributes-modal.component';
+import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'app-attribute-details',
@@ -44,7 +45,6 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public selectedRightTab: number;
   public attributeId: string;
   public workpackageId: string;
-  public selectedOwnerIndex: string | null;
   public selectedOwner = false;
   public workPackageIsEditable: boolean;
   public selectedRelatedIndex: string | null;
@@ -127,16 +127,12 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
 
   onCancelEdit(): void {
     this.isEditable = false;
-    this.selectedOwner = false;
-    this.selectedOwnerIndex = null;
     this.selectAttribute = false;
     this.selectedRelatedIndex = null;
   }
 
   onSaveAttribute(): void {
     this.isEditable = false;
-    this.selectedOwner = false;
-    this.selectedOwnerIndex = null;
     this.selectAttribute = false;
     this.selectedRelatedIndex = null;
 
@@ -175,11 +171,6 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectOwner(ownerId: string): void {
-    this.selectedOwnerIndex = ownerId;
-    this.selectedOwner = true;
-  }
-
   onAddOwner(): void {
     const dialogRef = this.dialog.open(OwnersModalComponent, {
       disableClose: false,
@@ -200,7 +191,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner(): void {
+  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -215,10 +206,9 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
           new DeleteOwner({
             workPackageId: this.workpackageId,
             attributeId: this.attributeId,
-            ownerId: this.selectedOwnerIndex
+            ownerId: owner.id
           })
         );
-        this.selectedOwner = false;
       }
     });
   }
