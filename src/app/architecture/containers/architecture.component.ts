@@ -452,33 +452,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess)).subscribe(_ => {
-        // Keep node selected
-        this.diagramComponent.selectNode(this.nodeId);
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess)).subscribe(_ => {
-        // Keep link selected
-        this.diagramComponent.selectNode(this.nodeId);
-      })
-    );
-
-    this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
+        setTimeout(() => {
+          this.diagramChangesService.updatePartData(this.part, this.part.data);
+        }, 800)
       })
     );
 
     this.subscriptions.push(
       this.actions.pipe(ofType(LayoutActionTypes.LoadLayoutSuccess)).subscribe(_ => {
-        this.eventEmitter.next(Events.NodesLinksReload);
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
@@ -582,10 +565,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = part instanceof Link;
 
         // Load node details
-        this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-          const workPackageIds = workpackages.map(item => item.id);
-          this.setWorkPackage(workPackageIds);
-        });
+        this.workpackageStore
+          .pipe(
+            select(getSelectedWorkpackages),
+            take(1)
+          )
+          .subscribe(workpackages => {
+            const workPackageIds = workpackages.map(item => item.id);
+            this.setWorkPackage(workPackageIds);
+          });
 
         this.objectSelected = true;
         this.radioTab = false;
@@ -1001,13 +989,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               assignedTo: data.radio.assignedTo,
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
-              relatesTo: [{
-                workPackage: { id: this.workpackageId },
-                item: {
-                  id: this.nodeId,
-                  itemType: this.currentFilterLevel.toLowerCase()
+              relatesTo: [
+                {
+                  workPackage: { id: this.workpackageId },
+                  item: {
+                    id: this.nodeId,
+                    itemType: this.currentFilterLevel.toLowerCase()
+                  }
                 }
-              }]
+              ]
             }
           })
         );
@@ -1164,6 +1154,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       data: {
         workpackageId: this.workpackageId,
         nodeId: this.nodeId,
+        scopeId: this.scopeId,
         childrenOf: {
           id: null // Add node from the same level *not required*
         }

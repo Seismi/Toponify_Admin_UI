@@ -3,7 +3,7 @@
     <div class="col">
       <!-- Scopes Detail Form -->
       <div class="scope-form-wrapper">
-        <smi-scopes-detail
+        <smi-scopes-detail *ngIf="scope"
           [group]="scopesDetailForm"
           [ownersList]="scope.owners"
           [viewersList]="scope.viewers"
