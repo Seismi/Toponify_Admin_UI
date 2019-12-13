@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 
@@ -9,40 +9,37 @@ import { Constants } from '@app/core/constants';
 })
 export class DocumentationStandardsDetailComponent {
   @Input() group: FormGroup;
-  @Input() isEditable = false;
-  @Input() isDisabled = true;
-  @Input() modalMode = false;
+  @Input() isEditable: boolean = false;
+  @Input() isDisabled: boolean = true;
+  @Input() modalMode: boolean = false;
   @Input() isEditMode: boolean;
   @Input() dateType: boolean;
   @Input() propertyType: string;
   @Input() booleanType: boolean;
 
-  types = Constants.PROPERTY_TYPES;
-  booleanTypes = Constants.BOOLEAN_TYPES;
+  public types = Constants.PROPERTY_TYPES;
+  public booleanTypes = Constants.BOOLEAN_TYPES;
 
-  @Output()
-  saveDocument = new EventEmitter();
+  @Output() saveDocument = new EventEmitter<void>();
+  @Output() deleteDocument = new EventEmitter<void>();
 
-  @Output()
-  deleteDocument = new EventEmitter();
-
-  onEdit() {
+  onEdit(): void {
     this.isEditable = true;
     this.isDisabled = false;
   }
 
-  onSave() {
+  onSave(): void {
     this.isEditable = false;
     this.isDisabled = true;
     this.saveDocument.emit();
   }
 
-  onCancel() {
+  onCancel(): void {
     this.isDisabled = true;
     this.isEditable = false;
   }
 
-  onDelete() {
+  onDelete(): void {
     this.deleteDocument.emit();
   }
 }

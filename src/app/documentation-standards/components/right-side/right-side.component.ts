@@ -10,7 +10,7 @@ export class DocumentStandardsRightSideComponent {
 
   @Output() add = new EventEmitter<void>();
 
-  onAdd() {
+  onAdd(): void {
     this.add.emit();
   }
 }

@@ -3,7 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
 import { FormControl } from '@angular/forms';
 
 export class Node {
@@ -57,7 +56,7 @@ const Levels = {
 
 @Injectable()
 export class ChecklistDatabase {
-  dataChange = new BehaviorSubject<Node[]>([]);
+  public dataChange = new BehaviorSubject<Node[]>([]);
   get data(): Node[] {
     return this.dataChange.value;
   }
@@ -99,16 +98,16 @@ export class ChecklistDatabase {
 export class DocumentStandardsLevelsComponent implements AfterViewInit, OnChanges {
   @ViewChild('tree') tree;
   @Input() control: FormControl;
-  @Input() isDisabled = true;
-  @Input() modalMode = false;
+  @Input() isDisabled: boolean = true;
+  @Input() modalMode: boolean = false;
   private flatNodeMap = new Map<string, FlatNode>();
-  nestedNodeMap = new Map<Node, FlatNode>();
-  treeControl: FlatTreeControl<FlatNode>;
-  treeFlattener: MatTreeFlattener<Node, FlatNode>;
-  dataSource: MatTreeFlatDataSource<Node, FlatNode>;
-  checklistSelection = new SelectionModel<FlatNode>(true /* multiple */);
+  private nestedNodeMap = new Map<Node, FlatNode>();
+  private treeControl: FlatTreeControl<FlatNode>;
+  private treeFlattener: MatTreeFlattener<Node, FlatNode>;
+  private dataSource: MatTreeFlatDataSource<Node, FlatNode>;
+  private checklistSelection = new SelectionModel<FlatNode>(true /* multiple */);
 
-  constructor(private _database: ChecklistDatabase, private documentStandardsService: DocumentationStandardsService) {
+  constructor(private _database: ChecklistDatabase) {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
     this.treeControl = new FlatTreeControl<FlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);

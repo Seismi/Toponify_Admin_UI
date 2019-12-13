@@ -11,7 +11,6 @@ import { DocumentStandard } from '../../store/models/documentation-standards.mod
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { DocumentModalComponent } from '../document-modal/document-modal.component';
-import { DocumentationStandardsService } from '@app/documentation-standards/services/dcoumentation-standards.service';
 
 @Component({
   selector: 'smi-documentation-standards-component',
@@ -19,26 +18,25 @@ import { DocumentationStandardsService } from '@app/documentation-standards/serv
   styleUrls: ['documentation-standards.component.scss']
 })
 export class DocumentationStandardsComponent implements OnInit {
-  documentStandards$: Observable<DocumentStandard[]>;
-  documentStandard: DocumentStandard;
+  public documentStandards$: Observable<DocumentStandard[]>;
+  public documentStandard: DocumentStandard;
 
   constructor(
-    private documentationStandardsService: DocumentationStandardsService,
     private store: Store<DocumentationStandardState>,
     private router: Router,
     public dialog: MatDialog
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.store.dispatch(new LoadDocumentationStandards({}));
     this.documentStandards$ = this.store.pipe(select(getDocumentStandards));
   }
 
-  onSelectDocument(row) {
-    this.router.navigate(['documentation-standards', row.id], { queryParamsHandling: 'preserve' });
+  onSelectDocument(documentStandard: DocumentStandard): void {
+    this.router.navigate(['documentation-standards', documentStandard.id], { queryParamsHandling: 'preserve' });
   }
 
-  onAddDocument() {
+  onAddDocument(): void {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '600px',
@@ -49,16 +47,7 @@ export class DocumentationStandardsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.documentStandard) {
-        this.store.dispatch(
-          new AddDocumentationStandard({
-            data: {
-              name: data.documentStandard.name,
-              description: data.documentStandard.description,
-              type: data.documentStandard.type,
-              levels: data.documentStandard.levels
-            }
-          })
-        );
+        this.store.dispatch(new AddDocumentationStandard({ data: data.documentStandard }));
       }
     });
   }
