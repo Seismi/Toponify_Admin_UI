@@ -55,7 +55,6 @@ import { AttributesTabComponent } from './components/attributes-tab/attributes-t
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
-import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
@@ -132,7 +131,6 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
     AttributesTabComponent,
     DeleteLinkModalComponent,
     WorkPackageTabTableComponent,
-    WorkPackageColorComponent,
     LayerPipe,
     AttributeModalComponent,
     AttributeDetailComponent,
