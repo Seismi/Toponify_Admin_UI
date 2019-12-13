@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as DocumentStandardsState } from '../../store/reducers/documentation-standards.reducer';
 import { Subscription } from 'rxjs';
@@ -10,11 +10,13 @@ import { DocumentStandardsValidatorService } from '@app/documentation-standards/
 import {
   LoadDocumentationStandard,
   UpdateDocumentationStandard,
-  DeleteDocumentationStandard
+  DeleteDocumentationStandard,
+  DocumentationStandardActionTypes
 } from '@app/documentation-standards/store/actions/documentation-standards.actions';
 import { getDocumentStandard } from '@app/documentation-standards/store/selectors/documentation-standards.selector';
 import { DeleteDocumentModalComponent } from '../delete-document-modal/delete-document.component';
 import { MatDialog } from '@angular/material';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-documentation-standards-details',
@@ -27,6 +29,8 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
   public documentStandard: DocumentStandard;
 
   constructor(
+    private actions: Actions,
+    private router: Router,
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private store: Store<DocumentStandardsState>,
@@ -88,6 +92,9 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
     dialogRef.afterClosed().subscribe(data => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteDocumentationStandard(this.documentStandard.id));
+        this.actions.pipe(ofType(DocumentationStandardActionTypes.DeleteDocumentationStandardSuccess)).subscribe(_ => {
+          this.router.navigate(['/documentation-standards']);
+        })
       }
     });
   }
