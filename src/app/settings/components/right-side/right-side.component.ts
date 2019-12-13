@@ -10,7 +10,7 @@ export class SettingsRightSideComponent {
 
   @Output() add = new EventEmitter<void>();
 
-  onAdd() {
+  onAdd(): void {
     this.add.emit();
   }
 }

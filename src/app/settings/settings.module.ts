@@ -47,6 +47,7 @@ import { AllUsersComponent } from './containers/all-users/all-users.component';
 import { OrganisationsComponent } from './containers/organisations/organisations.component';
 import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
 import { SettingsRightSideComponent } from './components/right-side/right-side.component';
+import { TeamsDetailsComponent } from './containers/teams-details/teams-details.component';
 import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
 
 @NgModule({
@@ -96,6 +97,7 @@ import { AllUsersDetailsComponent } from './containers/all-users-details/all-use
     OrganisationsComponent,
     SettingsTabsComponent,
     SettingsRightSideComponent,
+    TeamsDetailsComponent,
     AllUsersDetailsComponent
   ],
   entryComponents: [
