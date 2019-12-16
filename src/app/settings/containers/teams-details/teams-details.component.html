@@ -1,0 +1,15 @@
+<app-model-container>
+  <smi-team-detail
+    [group]="teamDetailForm"
+    [isEditable]="isEditable"
+    (editTeam)="onEditTeam()"
+    (deleteTeam)="onDeleteTeam()"
+    (saveTeam)="onSaveTeam()"
+    (cancelEdit)="onCancelEdit()">
+  </smi-team-detail>
+  <smi-members-table
+    [members]="team?.members"
+    (deleteMember)="onDeleteMember($event)"
+    (addMember)="onAddMember()">
+  </smi-members-table>
+</app-model-container>

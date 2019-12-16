@@ -54,6 +54,7 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
         this.user = data;
         if (data) {
           this.myUserFormService.myUserForm.patchValue({...data});
+          this.isEditable = false;
         }
       })
     )
