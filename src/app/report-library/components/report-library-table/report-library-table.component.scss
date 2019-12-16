@@ -1,28 +1,49 @@
-table {
-  min-width: 100%;
+.wrapper {
+  border-top: solid 1px #ddd;
+  border-bottom: solid 1px #ddd;
 }
 
-.title {
-  font-size: 25px;
-  margin-top: 10px;
+table {
+  width: 100%;
 }
 
 tr.mat-header-row {
-  height: 35px;
-}
-
-tr.mat-column-name {
-  width: 95%;
+  height: 45px;
 }
 
 tr.mat-row {
   cursor: pointer;
+  height: 45px;
+  &:hover {
+    background-color: #f9f9f9;
+  }
+}
+
+td.mat-cell {
+  font-size: 13px;
 }
 
 .highlight {
-  background-color: #efefef;
+  background: #efefef;
 }
 
 button {
-  margin-bottom: 25px;
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
+}
+
+.no-data-found {
+  border-bottom: solid 1px #ddd;
+  text-align: center;
+  padding: 15px 0;
 }
