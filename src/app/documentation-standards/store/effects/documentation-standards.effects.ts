@@ -93,9 +93,9 @@ export class DocumentationStandardEffects {
       DocumentationStandardActionTypes.DeleteDocumentationStandard
     ),
     map(action => action.payload),
-    mergeMap((payload: any) => {
+    mergeMap((payload: string) => {
       return this.documentationStandardsService.deleteCustomPorperty(payload).pipe(
-        mergeMap((response: any) => [new DocumentationStandardActions.DeleteDocumentationStandardSuccess(response)]),
+        mergeMap(_ => [new DocumentationStandardActions.DeleteDocumentationStandardSuccess(payload)]),
         catchError((error: HttpErrorResponse) =>
           of(new DocumentationStandardActions.DeleteDocumentationStandardFailure(error))
         )

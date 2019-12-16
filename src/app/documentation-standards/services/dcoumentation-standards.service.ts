@@ -9,7 +9,6 @@ const httpOptions = {
 
 @Injectable()
 export class DocumentationStandardsService {
-  selectedLevels = [];
 
   constructor(private http: HttpClient) {}
 

@@ -13,18 +13,18 @@ import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.
   providers: [DocumentStandardsService, DocumentStandardsValidatorService]
 })
 export class DocumentModalComponent implements OnInit {
-  documentStandard: DocumentStandard;
-  customProperties: CustomPropertyValuesEntity;
-  modalMode = true;
-  isEditable = true;
-  isDisabled = false;
+  public documentStandard: DocumentStandard;
+  public customProperties: CustomPropertyValuesEntity;
+  public modalMode: boolean = true;
+  public isEditable: boolean = true;
+  public isDisabled: boolean = false;
   public isEditMode: boolean;
   public mode: string;
   public name: string;
-  private reg;
-  dateType = false;
-  booleanType = false;
-  propertyType: string;
+  private reg: string;
+  public dateType: boolean = false;
+  public booleanType: boolean = false;
+  public propertyType: string;
 
   constructor(
     private documentStandardsService: DocumentStandardsService,
@@ -65,7 +65,7 @@ export class DocumentModalComponent implements OnInit {
     return this.documentStandardsService.documentStandardsForm;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (!this.documentStandardsService.isValid) {
       return;
     }
@@ -76,7 +76,7 @@ export class DocumentModalComponent implements OnInit {
     });
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }

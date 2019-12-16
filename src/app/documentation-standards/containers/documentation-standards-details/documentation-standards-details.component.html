@@ -1,8 +1,8 @@
-<div class="col">
+<app-model-container>
   <smi-documentation-standards-detail
+    [style.width.%]="100"
     [group]="documentStandardsForm"
     (saveDocument)="onSaveDocument($event)"
-    (deleteDocument)="onDeleteDocument($event)"
-  >
+    (deleteDocument)="onDeleteDocument($event)">
   </smi-documentation-standards-detail>
-</div>
+</app-model-container>
