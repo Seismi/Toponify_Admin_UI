@@ -1,47 +1,108 @@
-<div class="container">
-  <p>Object display:</p>
-  <mat-list role="list">
-    <mat-list-item role="listitem">
-      <mat-checkbox checked="true" (change)="checkboxClicked($event, 'name')">Name</mat-checkbox>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <mat-checkbox (change)="checkboxClicked($event, 'description')" #Description>Description</mat-checkbox>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <mat-checkbox checked="true" (change)="checkboxClicked($event, 'tags')" #Tags>Tags</mat-checkbox>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <mat-checkbox (change)="checkboxClicked($event, 'owners')" #Owners>Owners</mat-checkbox>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <mat-checkbox checked="true" (change)="checkboxClicked($event, 'nextLevel')">Next level</mat-checkbox>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <mat-checkbox [checked]="checked" (change)="checkboxClicked($event, 'showRadioAlerts')"
-        >Show RADIO Alert</mat-checkbox
-      >
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <mat-checkbox (change)="checkboxClicked($event, 'attributes')">Attributes</mat-checkbox>
-    </mat-list-item>
-    <mat-list-item role="listitem">
-      <mat-checkbox (change)="checkboxClicked($event, 'rules')">Rules</mat-checkbox>
-    </mat-list-item> </mat-list
-  ><br />
-  <div *ngIf="!(viewLevel === 10)">
-    <p>Link display:</p>
-    <mat-list role="list">
+<form [formGroup]="group">
+  <div class="alert alert-warning" *ngIf="layout.id === defaultLayout" role="alert">
+    Layout settings cannot be saved for Auto Postion layout
+  </div>
+
+  <p>Components 
+    <a (click)="onEditLayout()">
+      <mat-icon matTooltip="Edit layout of objects in the canvas">{{ allowEditLayouts }}</mat-icon>
+    </a>
+  </p>
+  <div class="content">
+    <ul>
+      <li>Name Only <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onCollapseAll()">Collapse All</button></li>
+      <li>Short Summary <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onSummariseAll()">Summarise All</button></li>
+    </ul>
+  
+    <div formGroupName="components">
       <mat-list-item role="listitem">
-        <mat-checkbox checked="true" (change)="checkboxClicked($event, 'dataLinks')">Show Data Links</mat-checkbox>
-      </mat-list-item>
-      <mat-list-item role="listitem">
-        <mat-checkbox checked="true" (change)="checkboxClicked($event, 'masterDataLinks')"
-          >Show Master Data Links
+        <mat-checkbox (change)="checkboxClicked($event, 'tags')" #Tags formControlName="showTags">
+          Show Tags
         </mat-checkbox>
       </mat-list-item>
+    
       <mat-list-item role="listitem">
-        <mat-checkbox (change)="checkboxClicked($event, 'linkName')">Name</mat-checkbox>
+        <mat-checkbox (change)="checkboxClicked($event, 'showRadioAlerts')" formControlName="showRADIO">
+          Show RADIO Alert
+        </mat-checkbox>
       </mat-list-item>
-    </mat-list>
+    
+      <mat-form-field>
+        <mat-select (selectionChange)="onFilterRadioSeverity($event, 'componentsFilter')" formControlName="filterRADIOSeverity"
+          placeholder="Severity filter">
+          <mat-option *ngFor="let filter of severityFilter" [value]="filter.level">
+            {{ filter.level }} - {{ filter.text }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    
+      <h4>Detail</h4>
+    
+      <mat-list-item role="listitem">
+        <mat-checkbox (change)="checkboxClicked($event, 'description')" #Description formControlName="showDescription">
+          Description</mat-checkbox>
+      </mat-list-item>
+    
+      <mat-list-item role="listitem">
+        <mat-checkbox (change)="checkboxClicked($event, 'owners')" #Owners formControlName="showOwners">Owners
+        </mat-checkbox>
+      </mat-list-item>
+    
+      <mat-list-item role="listitem">
+        <mat-checkbox (change)="checkboxClicked($event, 'nextLevel')" formControlName="showNextLevel">Next level
+        </mat-checkbox>
+      </mat-list-item>
+    
+      <mat-list-item role="listitem">
+        <mat-checkbox (change)="checkboxClicked($event, 'attributes')" formControlName="showAttributes">Attributes
+        </mat-checkbox>
+      </mat-list-item>
+    
+      <mat-list-item role="listitem">
+        <mat-checkbox (change)="checkboxClicked($event, 'rules')" formControlName="showRules">Rules</mat-checkbox>
+      </mat-list-item>
+    </div>
   </div>
-</div>
+
+
+  <p>Interfaces and Links</p>
+  <div class="content" formGroupName="links">
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'dataLinks')" formControlName="showDataLinks">
+        Show Data Links
+      </mat-checkbox>
+    </mat-list-item>
+  
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'masterDataLinks')" formControlName="showMasterDataLinks">
+        Show Master Data Links
+      </mat-checkbox>
+    </mat-list-item>
+  
+    <h4>Display</h4>
+
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'linkName')" formControlName="showName">Name</mat-checkbox>
+    </mat-list-item>
+  
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'linkRadio')" formControlName="showRADIO">Show RADIO Alert</mat-checkbox>
+    </mat-list-item>
+  
+    <mat-form-field>
+      <mat-select (selectionChange)="onFilterRadioSeverity($event, 'linkFilter')" placeholder="Severity filter" formControlName="filterRADIOSeverity">
+        <mat-option *ngFor="let filter of severityFilter" [value]="filter.level">
+          {{ filter.level }} - {{ filter.text }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'linkAttributes')" formControlName="showAttributes">Attributes</mat-checkbox>
+    </mat-list-item>
+  
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'linkRules')" formControlName="showRules">Rules</mat-checkbox>
+    </mat-list-item>
+  </div>
+</form>

@@ -38,6 +38,13 @@
         (displayOptionsChanged)="displayOptionsChanged($event)"
         [viewLevel]="viewLevel"
         [checked]="checked"
+        [layout]="layout"
+        [group]="group"
+        (filterRadioSeverity)="onFilterRadioSeverity()"
+        (collapseAllNodes)="onCollapseAllNodes()"
+        (summariseAllNodes)="onSummariseAllNodes()"
+        [allowEditLayouts]="allowEditLayouts"
+        (editLayout)="onEditLayout()"
       >
       </smi-analysis-tab>
     </mat-tab>
