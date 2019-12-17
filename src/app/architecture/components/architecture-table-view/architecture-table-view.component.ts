@@ -22,6 +22,7 @@ export class ArchitectureTableViewComponent implements OnInit {
   @Input() selectedItem: NodeDetail | NodeLinkDetail;
   @Input() view: 'system' | 'link';
   @Input() find: (id: string) => Observable<string>;
+  @Input() filterValue: string;
 
   @Input()
   set data(data: Node[] | NodeLink[]) {
@@ -29,6 +30,7 @@ export class ArchitectureTableViewComponent implements OnInit {
       data = [];
     }
     this.dataSource = new MatTableDataSource<Node | NodeLink>(data);
+    this.dataSource.filter = this.filterValue;
     this.dataSource.paginator = this.paginator;
   }
 

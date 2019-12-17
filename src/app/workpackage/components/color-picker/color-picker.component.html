@@ -1,4 +1,5 @@
-<input [matMenuTriggerFor]="colorMenu" [ngStyle]="{ 'background-color': workpackageColour }" readonly="readonly" />
+<input [matMenuTriggerFor]="colorMenu" [ngStyle]="{ 'background-color': workpackageColour }" [disabled]="!isEditable"
+  readonly="readonly" />
 <mat-menu #colorMenu="matMenu">
   <mat-grid-list cols="4" rowHeight="1:1">
     <mat-grid-tile *ngFor="let colour of colours" [ngStyle]="{ 'background-color': colour }" (click)="onSelect(colour)">

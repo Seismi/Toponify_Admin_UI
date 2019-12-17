@@ -76,7 +76,8 @@ import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
+  UpdateWorkPackageEntity
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
@@ -136,6 +137,7 @@ import {
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { Params } from '@angular/router';
+import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -223,6 +225,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
   public params: Params;
+  public tableViewFilterValue: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -230,6 +233,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
+  @ViewChild(ArchitectureTableViewComponent) 
+  private tableView: ArchitectureTableViewComponent;
 
   constructor(
     private sharedService: SharedService,
@@ -1256,6 +1261,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onViewChange(view: ArchitectureView) {
     this.selectedView = view;
+    if (view === ArchitectureView.Diagram) {
+      this.tableViewFilterValue = null;
+    }
   }
 
   onSelectNode(node: Node | NodeLink) {
@@ -1342,4 +1350,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }, 150);
     });
   }
+
+  onSearchTableView(filterValue: string): void {
+    const dataSource = this.tableView.dataSource;
+    dataSource.filter = filterValue.toLowerCase().toUpperCase();
+    this.tableViewFilterValue = filterValue;
+  }
+
 }

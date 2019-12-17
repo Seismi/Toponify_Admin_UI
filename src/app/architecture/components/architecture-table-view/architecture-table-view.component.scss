@@ -17,3 +17,13 @@ tr.mat-row {
   margin-right: 5px;
   padding: 7px 10px;
 }
+
+tr.mat-header-row {
+  height: 40px;
+}
+
+.no-data-found {
+  border-bottom: solid 1px #ddd;
+  text-align: center;
+  padding: 20px 0px;
+}

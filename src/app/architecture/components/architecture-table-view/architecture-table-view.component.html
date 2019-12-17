@@ -97,13 +97,10 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    [ngClass]="{ highlight: selectedItem?.id == row.id }"
-    (dblclick)="dblClick(row)"
-    (click)="onSelect(row)"
-  ></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{ highlight: selectedItem?.id == row.id }"
+    (dblclick)="dblClick(row)" (click)="onSelect(row)"></tr>
 </table>
 
-<mat-paginator [pageSizeOptions]="[10, 25]"></mat-paginator>
+<div *ngIf="!dataSource.filteredData.length" class="no-data-found">No data found</div>
+
+<mat-paginator [pageSizeOptions]="[10, 25, 50]" style="border-bottom: solid 1px #ddd"></mat-paginator>

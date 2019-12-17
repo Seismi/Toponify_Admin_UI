@@ -1,8 +1,3 @@
-.form-actions {
-  float: right;
-  padding-bottom: 30px;
-}
-
 .mat-form-field {
   width: 100%;
 }
@@ -17,5 +12,9 @@ button {
 
 .levels-label {
   margin-bottom: 5px;
-  font-weight: 400;
+  margin-top: 10px;
+}
+
+.editable {
+  background-color: #fff;
 }
