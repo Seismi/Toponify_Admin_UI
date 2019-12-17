@@ -5,3 +5,13 @@ tr.mat-row {
 .highlight {
   background-color: #efefef;
 }
+
+tr.mat-header-row {
+  height: 40px;
+}
+
+.no-data-found {
+  border-bottom: solid 1px #ddd;
+  text-align: center;
+  padding: 20px 0px;
+}

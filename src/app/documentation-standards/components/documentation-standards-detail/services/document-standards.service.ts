@@ -16,7 +16,7 @@ export class DocumentStandardsService {
     });
   }
 
-  getPropertyValueValidator(type: string, reg: any) {
+  getPropertyValueValidator(type: string, reg: string): string {
     if (type === 'Text') {
       reg = null;
     } else if (type === 'Number') {

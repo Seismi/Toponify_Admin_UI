@@ -8,7 +8,7 @@ import { DocumentStandard } from '@app/documentation-standards/store/models/docu
   styleUrls: ['documentation-standards-table.component.scss']
 })
 export class DocumentationStandardsTableComponent {
-  selectedRowIndex = -1;
+  public selectedRowIndex: string | number = -1;
 
   @Input()
   set data(data: DocumentStandard[]) {
@@ -25,18 +25,15 @@ export class DocumentationStandardsTableComponent {
   public dataSource: MatTableDataSource<DocumentStandard>;
   @Input() displayedColumns: string[] = ['name', 'levels'];
 
-  @Output()
-  documentSelected = new EventEmitter();
+  @Output() documentSelected = new EventEmitter<DocumentStandard>();
+  @Output() addDocument = new EventEmitter<void>();
 
-  @Output()
-  addDocument = new EventEmitter();
-
-  onSelectRow(row) {
-    this.selectedRowIndex = row.id;
-    this.documentSelected.emit(row);
+  onSelectRow(documentStandard: DocumentStandard): void {
+    this.selectedRowIndex = documentStandard.id;
+    this.documentSelected.emit(documentStandard);
   }
 
-  onAdd() {
+  onAdd(): void {
     this.addDocument.emit();
   }
 }

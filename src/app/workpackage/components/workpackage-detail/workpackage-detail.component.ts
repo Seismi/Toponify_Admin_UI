@@ -32,6 +32,7 @@ export class WorkPackageDetailComponent {
   @Input() workpackageActionMerge: boolean;
   @Input() workpackageActionReset: boolean;
   @Input() workpackageActionSupersede: boolean;
+  @Input() workpackageColour: string;
 
   @Output()
   deleteWorkpackage = new EventEmitter<void>();
@@ -68,6 +69,9 @@ export class WorkPackageDetailComponent {
 
   @Output()
   supersede = new EventEmitter<void>();
+
+  @Output() 
+  selectColour = new EventEmitter<string>();
 
   onSave(): void {
     this.saveWorkpackage.emit();
@@ -115,5 +119,9 @@ export class WorkPackageDetailComponent {
 
   supersedeWorkpackage(): void {
     this.supersede.emit();
+  }
+
+  onSelectColour(colour: string): void {
+    this.selectColour.emit(colour);
   }
 }

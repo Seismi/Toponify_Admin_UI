@@ -7,13 +7,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./delete-document.component.scss']
 })
 export class DeleteDocumentModalComponent {
-  mode: string;
+  public mode: string;
+  public name: string;
 
-  constructor(public dialogRef: MatDialogRef<DeleteDocumentModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(
+    public dialogRef: MatDialogRef<DeleteDocumentModalComponent>, 
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.mode = data.mode;
+    this.name = data.name;
   }
 
-  onYes() {
+  onYes(): void {
     this.dialogRef.close({ mode: this.mode });
   }
 
