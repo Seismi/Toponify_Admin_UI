@@ -76,7 +76,8 @@ import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
+  UpdateWorkPackageEntity
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
