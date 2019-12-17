@@ -4,7 +4,8 @@ export interface NodeLinksApiResponse {
 
 export enum linkCategories {
   data = 'data',
-  masterData = 'master data'
+  masterData = 'master data',
+  copy = 'copy'
 }
 
 export interface NodeLink {

@@ -6,7 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { State as HomeState } from '@app/home/store/reducers/home.reducers';
 import { getMyProfile } from '@app/home/store/selectors/home.selectors';
 import { UserDetails, TeamEntity, RolesEntity } from '@app/settings/store/models/user.model';
-import { UpdateUser, UpdateUserPassword } from '@app/settings/store/actions/user.actions';
+import { UpdateUser, UpdateUserPassword, LoadUserRoles } from '@app/settings/store/actions/user.actions';
 import { ChangePasswordModalComponent } from '../change-password-modal/change-password.component';
 import { MatDialog } from '@angular/material';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
@@ -40,6 +40,7 @@ export class MyUserComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(new LoadMyProfile());
+    this.store.dispatch(new LoadUserRoles());
     this.store.pipe(select(getMyProfile)).subscribe(data => {
       this.user = data;
       if (data) {

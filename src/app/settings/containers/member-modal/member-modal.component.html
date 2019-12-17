@@ -1,5 +1,10 @@
-<smi-users-list [data]="users$ | async" (memberSelect)="onSelectMember($event)"> </smi-users-list><br />
+<div mat-dialog-content>
+  <smi-users-list 
+    [data]="users$ | async" 
+    (memberSelect)="onSelectMember($event)">
+  </smi-users-list>
+</div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onAdd()">Add</button>
+  <button mat-button (click)="onSave()">Save</button>
   <button mat-button (click)="onCancel()">Cancel</button>
 </div>

@@ -1,6 +1,7 @@
 app-model-container {
   position: relative;
+  border-left: solid 1px #ddd;
   background-color: #eee;
-  border-left: solid 2px #ddd;
-  padding: 30px;
+  padding: 25px;
+  display: block;
 }

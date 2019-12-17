@@ -13,7 +13,8 @@ import {
   MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule,
+  MatTooltipModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -63,6 +64,7 @@ import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio
     MatInputModule,
     MatIconModule,
     MatTabsModule,
+    MatTooltipModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,

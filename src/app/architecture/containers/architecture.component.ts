@@ -449,14 +449,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(
-        NodeActionTypes.UpdateNodeOwners,
-        NodeActionTypes.UpdateNodeDescendants,
-        WorkPackageNodeActionTypes.UpdateWorkPackageNodeSuccess,
-        WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess)).subscribe(_ => {
-          this.diagramComponent.selectNode(this.nodeId);
-        })
-    )
+      this.actions.pipe(ofType(NodeActionTypes.UpdateNodeOwners)).subscribe(_ => {
+        // Keep node selected after adding a owner
+        this.diagramComponent.selectNode(this.nodeId);
+      })
+    );
 
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
@@ -572,10 +569,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = part instanceof Link;
 
         // Load node details
-        this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-          const workPackageIds = workpackages.map(item => item.id);
-          this.setWorkPackage(workPackageIds);
-        });
+        this.workpackageStore
+          .pipe(
+            select(getSelectedWorkpackages),
+            take(1)
+          )
+          .subscribe(workpackages => {
+            const workPackageIds = workpackages.map(item => item.id);
+            this.setWorkPackage(workPackageIds);
+          });
 
         this.objectSelected = true;
         this.radioTab = false;
@@ -991,13 +993,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               assignedTo: data.radio.assignedTo,
               actionBy: data.radio.actionBy,
               mitigation: data.radio.mitigation,
-              relatesTo: [{
-                workPackage: { id: this.workpackageId },
-                item: {
-                  id: this.nodeId,
-                  itemType: this.currentFilterLevel.toLowerCase()
+              relatesTo: [
+                {
+                  workPackage: { id: this.workpackageId },
+                  item: {
+                    id: this.nodeId,
+                    itemType: this.currentFilterLevel.toLowerCase()
+                  }
                 }
-              }]
+              ]
             }
           })
         );
