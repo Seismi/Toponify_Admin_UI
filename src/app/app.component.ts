@@ -29,7 +29,8 @@ export class AppComponent implements AfterViewInit {
       'sys-files',
       'sys-master-data',
       'sys-reporting',
-      'sys-transactional'
+      'sys-transactional',
+      'data-interface'
     ];
 
     customIcons.forEach(icon => {
