@@ -43,6 +43,11 @@ export const getEditWorkpackages = createSelector(
   state => state.entities.filter(item => item.id === state.editId)
 );
 
+export const getEditWorkpackage = createSelector(
+  getWorkPackageState,
+  state => state.editId
+);
+
 export const getWorkPackageById = (id: string) => {
   return createSelector(
     getWorkPackageState,
