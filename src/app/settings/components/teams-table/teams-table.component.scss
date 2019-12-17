@@ -1,13 +1,16 @@
+.wrapper {
+  border-bottom: solid 1px #ddd;
+  height: calc( 100vh - 115px);
+  overflow: auto;
+}
+
 table {
   width: 100%;
 }
 
-.title {
-  font-size: 25px;
-}
-
-tr.mat-header-row {
-  height: 35px;
+.table-actions {
+  display: flex;
+  border-bottom: solid 1px #ddd;
 }
 
 tr.mat-row {
@@ -16,4 +19,19 @@ tr.mat-row {
 
 .highlight {
   background-color: #efefef;
+}
+
+button {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
 }

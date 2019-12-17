@@ -1,38 +1,24 @@
-<div class="wrapper">
-  <div class="tree-actions" *ngIf="!modalMode">
-    <button mat-raised-button (click)="tree.treeControl.expandAll()">Expand All</button>
-    <button mat-raised-button (click)="tree.treeControl.collapseAll()">Collapse All</button>
-  </div>
-
+<div>
   <mat-checkbox class="select-all" (change)="checkAll($event)" [disabled]="isDisabled">Everywhere</mat-checkbox>
-
-  <mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-      <button mat-icon-button disabled></button>
-      <mat-checkbox
-        class="checklist-leaf-node"
-        [checked]="checklistSelection.isSelected(node)"
-        (change)="levelSelectionToggle(node)"
-        [disabled]="isDisabled"
-      >
-        {{ node.item }}
-      </mat-checkbox>
-    </mat-tree-node>
-
-    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-      <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
-        <mat-icon class="mat-icon-rtl-mirror">
-          {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-        </mat-icon>
-      </button>
-      <mat-checkbox
-        [checked]="descendantsAllSelected(node)"
-        [indeterminate]="descendantsPartiallySelected(node)"
-        (change)="levelItemSelectionToggle($event, node)"
-        [disabled]="isDisabled"
-      >
-        {{ node.item }}
-      </mat-checkbox>
-    </mat-tree-node>
-  </mat-tree>
 </div>
+<mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl" [ngClass]="{editable: modalMode}">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+    <button mat-icon-button disabled></button>
+    <mat-checkbox class="checklist-leaf-node" [checked]="checklistSelection.isSelected(node)"
+      (change)="levelSelectionToggle(node)" [disabled]="isDisabled">
+      {{ node.item }}
+    </mat-checkbox>
+  </mat-tree-node>
+
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
+    </button>
+    <mat-checkbox [checked]="descendantsAllSelected(node)" [indeterminate]="descendantsPartiallySelected(node)"
+      (change)="levelItemSelectionToggle($event, node)" [disabled]="isDisabled">
+      {{ node.item }}
+    </mat-checkbox>
+  </mat-tree-node>
+</mat-tree>

@@ -67,6 +67,7 @@ import { WorkPackageColorComponent } from './components/color-picker/color-picke
     MatInputModule,
     MatIconModule,
     MatTabsModule,
+    MatTooltipModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,

@@ -75,6 +75,7 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
 import { ScopeTableComponent } from './components/scope-table/scope-table.component';
 import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-modal.component';
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
+import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 
 @NgModule({
   imports: [
@@ -146,7 +147,8 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
     ArchitectureTableViewComponent,
     ScopeTableComponent,
     NodeScopeModalComponent,
-    NewChildrenModalComponent
+    NewChildrenModalComponent,
+    SearchTableViewComponent
   ],
   entryComponents: [
     DeleteModalComponent,

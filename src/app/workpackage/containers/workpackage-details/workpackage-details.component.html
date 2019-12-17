@@ -3,8 +3,7 @@
     <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">info</mat-icon>
-          Details
+          <mat-icon class="example-tab-icon" matTooltip="Details">info</mat-icon>
         </ng-template>
         <p class="detailsTab">
           <smi-workpackage-detail
@@ -41,16 +40,14 @@
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>insert_drive_file</mat-icon>
-          Properties
+          <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
         <smi-properties-table data-hook="workpackage-page-properties-table" [data]="workpackage?.customPropertyValues">
         </smi-properties-table>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>assignment_turned_in</mat-icon>
-          Objectives
+          <mat-icon matTooltip="Objectives">assignment_turned_in</mat-icon>
         </ng-template>
         <smi-objectives-table
           data-hook="workpackage-page-objective-table"
@@ -63,8 +60,7 @@
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>track_changes</mat-icon>
-          RADIO
+          <mat-icon matTooltip="RADIO">track_changes</mat-icon>
         </ng-template>
         <smi-radios-table
           data-hook="workpackage-page-radio-table"
@@ -78,8 +74,7 @@
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>list</mat-icon>
-          Changes
+          <mat-icon matTooltip="Changes">list</mat-icon>
         </ng-template>
         <smi-change-table data-hook="workpackage-page-change-table" [data]="workpackage?.changes"> </smi-change-table>
       </mat-tab>

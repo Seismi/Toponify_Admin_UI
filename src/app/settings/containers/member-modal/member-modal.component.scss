@@ -1,7 +1,7 @@
 .mat-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  padding-bottom: 17px;
+  padding: 20px 0px;
 }
 
 button:nth-child(1) {
@@ -10,4 +10,14 @@ button:nth-child(1) {
 
 button:focus {
   outline: none;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mat-dialog-content {
+  flex-grow: 1;
 }

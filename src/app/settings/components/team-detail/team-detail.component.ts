@@ -8,34 +8,27 @@ import { FormGroup } from '@angular/forms';
 })
 export class TeamDetailComponent {
   @Input() group: FormGroup;
-  @Input() teamModal = false;
-  @Input() isEditable = false;
+  @Input() modalMode: boolean = false;
+  @Input() isEditable: boolean = false;
 
-  @Output()
-  editTeam = new EventEmitter();
+  @Output() editTeam = new EventEmitter<void>();
+  @Output() deleteTeam = new EventEmitter<void>();
+  @Output() saveTeam = new EventEmitter<void>();
+  @Output() cancelEdit = new EventEmitter<void>();
 
-  @Output()
-  deleteTeam = new EventEmitter();
-
-  @Output()
-  saveTeam = new EventEmitter();
-
-  @Output()
-  cancelEdit = new EventEmitter();
-
-  onEdit() {
+  onEdit(): void {
     this.editTeam.emit();
   }
 
-  onDelete() {
+  onDelete(): void {
     this.deleteTeam.emit();
   }
 
-  onSave() {
+  onSave(): void {
     this.saveTeam.emit();
   }
 
-  onCancel() {
+  onCancel(): void {
     this.cancelEdit.emit();
   }
 }

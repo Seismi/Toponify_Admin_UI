@@ -9,9 +9,9 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 })
 export class MembersTableComponent {
   @Input()
-  set members(data: any[]) {
+  set members(data: TeamDetails[]) {
     if (data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<TeamDetails>(data);
       this.dataSource.paginator = this.paginator;
     }
   }
@@ -19,19 +19,16 @@ export class MembersTableComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<TeamDetails>;
-  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'delete'];
+  public displayedColumns: string[] = ['firstName', 'lastName', 'email', 'delete'];
 
-  @Output()
-  deleteMember = new EventEmitter();
+  @Output() deleteMember = new EventEmitter<TeamDetails>();
+  @Output() addMember = new EventEmitter<void>();
 
-  @Output()
-  addMember = new EventEmitter();
-
-  onDelete(id) {
-    this.deleteMember.emit(id);
+  onDelete(member: TeamDetails): void {
+    this.deleteMember.emit(member);
   }
 
-  onAdd() {
+  onAdd(): void {
     this.addMember.emit();
   }
 }
