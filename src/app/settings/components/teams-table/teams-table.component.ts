@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 
 @Component({
@@ -8,33 +8,32 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
   styleUrls: ['teams-table.component.scss']
 })
 export class TeamsTableComponent {
+  public selectedRowIndex: string | number = -1;
+
   @Input()
-  set data(data: any[]) {
+  set data(data: TeamEntity[]) {
     if (data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<TeamEntity>(data);
       this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   public dataSource: MatTableDataSource<TeamEntity>;
+  public displayedColumns: string[] = ['name'];
 
-  displayedColumns: string[] = ['name'];
-  selectedRowIndex = -1;
+  @Output() selectTeam = new EventEmitter<TeamEntity>();
+  @Output() addTeam = new EventEmitter<void>();
 
-  @Output()
-  selectTeam = new EventEmitter();
-
-  @Output()
-  newTeam = new EventEmitter();
-
-  onSelectRow(row) {
-    this.selectedRowIndex = row.id;
-    this.selectTeam.emit(row);
+  onSelectRow(team: TeamEntity): void {
+    this.selectedRowIndex = team.id;
+    this.selectTeam.emit(team);
   }
 
-  onAdd() {
-    this.newTeam.emit();
+  onAdd(): void {
+    this.addTeam.emit();
   }
 }

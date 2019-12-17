@@ -3,7 +3,6 @@
     <div class="row">
       <div class="col mat-elevation-z8">
         <smi-users-table
-          *ngIf="(users$ | async)?.length > 0"
           [data]="users$ | async"
           (editUser)="onEditUser($event)"
           (addUser)="onAddUser($event)"
