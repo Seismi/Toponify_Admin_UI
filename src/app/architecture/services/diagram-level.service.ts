@@ -23,7 +23,7 @@ export enum Level {
   systemMap = 'system map',
   dataSetMap = 'data set map',
   attribute = 'attribute',
-  usage = 'usage'
+  usage = 'usage analysis'
 }
 
 // Numbers associated to each level in the data store
