@@ -280,6 +280,38 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.UpdateNodeLocations: {
+      const { layoutId, nodes } = action.payload;
+      return nodes.reduce(
+        function(updatedState, node) {
+          const nodeIndex = updatedState.entities.findIndex(n => n.id === node.id);
+          if (nodeIndex > -1) {
+             return replaceNodeLocation(updatedState, nodeIndex, node.id, layoutId, node.locationCoordinates);
+          }
+        },
+        {
+          ...state
+        }
+      );
+    }
+
+    case NodeActionTypes.UpdateNodeExpandedState: {
+      const { layoutId, data } = action.payload;
+      const nodeIndex = state.entities.findIndex(n => n.id === data.data.id);
+      if (nodeIndex > -1) {
+         return replaceNodeExpandedState(state, nodeIndex, data.data.id, layoutId,
+           {
+             middleExpanded: data.data.middleExpanded,
+             bottomExpanded: data.data.bottomExpanded
+           }
+         );
+      } else {
+        return {
+          ...state
+        };
+      }
+    }
+
     case NodeActionTypes.UpdateNodeLocationsSuccess: {
       return {
         ...state
@@ -413,6 +445,63 @@ function replaceNodeOwners(state: State, nodeIndex: number, nodeId: string, owne
   const updatedNode = { ...state.entities[nodeIndex], owners: owners };
   const entities = [...state.entities];
   entities[nodeIndex] = updatedNode;
+  if (state.selectedNode.id === nodeId) {
+    return {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities
+  };
+}
+
+function replaceNodeLocation(state: State, nodeIndex: number, nodeId: string, layoutId, location): State {
+  const updatedLocations = state.entities[nodeIndex].locations.concat();
+  const locationIndex = updatedLocations.findIndex( function(loc) {return loc.layout.id === layoutId; });
+
+  if (locationIndex > -1) {
+    const updatedLocation = updatedLocations[locationIndex];
+    updatedLocations.splice(locationIndex, 1, {...updatedLocation, locationCoordinates: location});
+  }
+
+  const updatedNode = { ...state.entities[nodeIndex], locations: updatedLocations};
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+
+  if (state.selectedNode.id === nodeId) {
+    return {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities
+  };
+}
+
+function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: string, layoutId, expandedState): State {
+  const updatedExpandedStates = state.entities[nodeIndex].expandedStates.concat();
+  const expandedStateIndex = updatedExpandedStates.findIndex( function(exp) {return exp.layout.id === layoutId; });
+
+  if (expandedStateIndex > -1) {
+    const updatedExpandedState = updatedExpandedStates[expandedStateIndex];
+    updatedExpandedStates.splice(expandedStateIndex, 1,
+      {...updatedExpandedState,
+        middleExpanded: expandedState.middleExpanded,
+        bottomExpanded: expandedState.bottomExpanded
+      }
+    );
+  }
+
+  const updatedNode = { ...state.entities[nodeIndex], expandedStates: updatedExpandedStates};
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+
   if (state.selectedNode.id === nodeId) {
     return {
       ...state,

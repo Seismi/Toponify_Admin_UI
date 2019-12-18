@@ -233,7 +233,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
-  @ViewChild(ArchitectureTableViewComponent) 
+  @ViewChild(ArchitectureTableViewComponent)
   private tableView: ArchitectureTableViewComponent;
 
   constructor(
@@ -691,6 +691,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
+
+    // ---
+
+    // ---
 
     if (this.layout && data.nodes && data.nodes.length > 0) {
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.nodes }));
