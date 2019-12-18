@@ -447,6 +447,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
         this.setWorkPackage(this.getWorkPackageId());
+        this.eventEmitter.next(Events.NodesLinksReload);
+        setTimeout(() => {
+          this.diagramComponent.selectNode(this.nodeId);
+        }, 800)
       })
     );
 
