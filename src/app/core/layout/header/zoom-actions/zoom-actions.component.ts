@@ -78,7 +78,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   }
 
   getMapLevel(level: number): boolean {
-    if (level === 8 || level === 9 || level === 10) {
+    if ([8, 9, 10].indexOf(level) != -1) {
       return true;
     }
   }
