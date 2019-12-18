@@ -1386,6 +1386,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     console.log('summarise all');
   }
 
+  onExpandAll(): void {
+    const components = this.layout.settings.components;
+
+    this.store.dispatch(new UpdateLayout({
+      id: this.layout.id,
+      data: {
+        id: this.layout.id,
+        name: this.layout.name,
+        scope: {
+          id: this.scopeId
+        },
+        settings: {
+          components: {
+            showTags: components.showTags,
+            showRADIO: components.showRADIO,
+            filterRADIOSeverity: components.filterRADIOSeverity,
+            showDescription: true,
+            showOwners: true,
+            showNextLevel: true,
+            showAttributes: true,
+            showRules: true
+          },
+          links: { ...this.layoutSettingsForm.get('links').value }
+        }
+      }
+    }))
+  }
+
 }
 
 

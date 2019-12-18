@@ -49,12 +49,16 @@ export class AnalysisTabComponent implements OnChanges {
   @Output() collapseAllNodes = new EventEmitter<void>();
   @Output() summariseAllNodes = new EventEmitter<void>();
   @Output() editLayout = new EventEmitter<void>();
+  @Output() expandAll = new EventEmitter<void>();
 
   @Input() viewLevel: number;
 
   @ViewChild('Description') Description;
   @ViewChild('Tags') Tags;
   @ViewChild('Owners') Owners;
+  @ViewChild('nextLevel') nextLevel;
+  @ViewChild('Attributes') Attributes;
+  @ViewChild('Rules') Rules;
 
   // When changed to reporting concepts level, hide description, tags and owners by default
   ngOnChanges(changes: SimpleChanges) {
@@ -96,5 +100,16 @@ export class AnalysisTabComponent implements OnChanges {
 
   onEditLayout(): void {
     this.editLayout.emit();
+  }
+
+  onExpandAll(): void {
+    const checkboxes = [this.Description, this.Owners, this.nextLevel, this.Attributes, this.Rules];
+    checkboxes.forEach(checkbox => { 
+      checkbox.checked = true;
+        if (checkbox.checked) {
+          this.expandAll.emit();
+        }
+      }
+    );
   }
 }

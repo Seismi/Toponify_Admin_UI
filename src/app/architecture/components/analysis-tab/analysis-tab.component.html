@@ -36,7 +36,7 @@
         </mat-select>
       </mat-form-field>
     
-      <h4>Detail</h4>
+      <h4>Detail <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onExpandAll()">Expand All</button></h4>
     
       <mat-list-item role="listitem">
         <mat-checkbox (change)="checkboxClicked($event, 'description')" #Description formControlName="showDescription">
@@ -49,17 +49,17 @@
       </mat-list-item>
     
       <mat-list-item role="listitem">
-        <mat-checkbox (change)="checkboxClicked($event, 'nextLevel')" formControlName="showNextLevel">Next level
+        <mat-checkbox (change)="checkboxClicked($event, 'nextLevel')" #nextLevel formControlName="showNextLevel">Next level
         </mat-checkbox>
       </mat-list-item>
     
       <mat-list-item role="listitem">
-        <mat-checkbox (change)="checkboxClicked($event, 'attributes')" formControlName="showAttributes">Attributes
+        <mat-checkbox (change)="checkboxClicked($event, 'attributes')" #Attributes formControlName="showAttributes">Attributes
         </mat-checkbox>
       </mat-list-item>
     
       <mat-list-item role="listitem">
-        <mat-checkbox (change)="checkboxClicked($event, 'rules')" formControlName="showRules">Rules</mat-checkbox>
+        <mat-checkbox (change)="checkboxClicked($event, 'rules')" #Rules formControlName="showRules">Rules</mat-checkbox>
       </mat-list-item>
     </div>
   </div>

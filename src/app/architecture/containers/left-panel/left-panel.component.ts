@@ -50,6 +50,8 @@ export class LeftPanelComponent {
 
   @Output() editLayout = new EventEmitter<void>();
 
+  @Output() expandAll = new EventEmitter<void>();
+
   realignTabUnderline(): void {
     this.mainTabGroup.realignInkBar();
   }
@@ -98,5 +100,9 @@ export class LeftPanelComponent {
 
   onEditLayout(): void {
     this.editLayout.emit();
+  }
+
+  onExpandAll(): void {
+    this.expandAll.emit();
   }
 }
