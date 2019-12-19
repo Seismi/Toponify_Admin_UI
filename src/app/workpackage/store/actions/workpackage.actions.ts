@@ -6,9 +6,11 @@ import {
   WorkPackageDetail,
   WorkPackageEntitiesHttpParams,
   WorkPackageEntitiesResponse,
-  WorkPackageEntity
+  WorkPackageEntity,
+  CustomPropertiesEntity
 } from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -59,6 +61,14 @@ export enum WorkPackageActionTypes {
   DeleteRadio = '[WorkPackage] Delete Radio',
   DeleteRadioSuccess = '[WorkPackage] Delete Radio Success',
   DeleteRadioFailure = '[WorkPackage] Delete Radio Failure',
+
+  UpdateCustomProperty = '[WorkPackage] Update Custom Property',
+  UpdateCustomPropertySuccess = '[WorkPackage] Update Custom Property Success',
+  UpdateCustomPropertyFailure = '[WorkPackage] Update Custom Property Failure',
+
+  DeleteCustomProperty = '[WorkPackage] Delete Custom Property',
+  DeleteCustomPropertySuccess = '[WorkPackage] Delete Custom Property Success',
+  DeleteCustomPropertyFailure = '[WorkPackage] Delete Custom Property Failure',
 
   GetWorkpackageAvailability = '[Workpackage] Get workpackage availability',
   GetWorkpackageAvailabilitySuccess = '[Workpackage] Get workpackage availability success',
@@ -269,6 +279,36 @@ export class DeleteRadioFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class UpdateCustomProperty implements Action {
+  readonly type = WorkPackageActionTypes.UpdateCustomProperty;
+  constructor(public payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertiesEntity }}) {}
+}
+
+export class UpdateCustomPropertySuccess implements Action {
+  readonly type = WorkPackageActionTypes.UpdateCustomPropertySuccess;
+  constructor(public payload: WorkPackageDetail) {}
+}
+
+export class UpdateCustomPropertyFailure implements Action {
+  readonly type = WorkPackageActionTypes.UpdateCustomPropertyFailure;
+  constructor(public payload: Error) {}
+}
+
+export class DeleteCustomProperty implements Action {
+  readonly type = WorkPackageActionTypes.DeleteCustomProperty;
+  constructor(public payload: { workPackageId: string; customPropertyId: string }) {}
+}
+
+export class DeleteCustomPropertySuccess implements Action {
+  readonly type = WorkPackageActionTypes.DeleteCustomPropertySuccess;
+  constructor(public payload: WorkPackageDetail) {}
+}
+
+export class DeleteCustomPropertyFailure implements Action {
+  readonly type = WorkPackageActionTypes.DeleteCustomPropertyFailure;
+  constructor(public payload: Error) {}
+}
+
 export class GetWorkpackageAvailability implements Action {
   readonly type = WorkPackageActionTypes.GetWorkpackageAvailability;
   constructor(public payload: any) {}
@@ -431,4 +471,10 @@ export type WorkPackageActionsUnion =
   | SupersedeWorkpackage
   | SupersedeWorkpackageSuccess
   | SupersedeWorkpackageFailure
-  | SetSelectedWorkPackages;
+  | SetSelectedWorkPackages
+  | UpdateCustomProperty
+  | UpdateCustomPropertySuccess
+  | UpdateCustomPropertyFailure
+  | DeleteCustomProperty
+  | DeleteCustomPropertySuccess
+  | DeleteCustomPropertyFailure;
