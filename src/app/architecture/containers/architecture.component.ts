@@ -23,20 +23,23 @@ import {
   UpdateLinks,
   UpdateNodeLocations,
   UpdateNodeExpandedState,
-  NodeActionTypes
+  NodeActionTypes,
+  LoadNodeReports
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
   CustomPropertyValuesEntity,
   NodeDetail,
   DescendantsEntity,
-  OwnersEntityOrTeamEntityOrApproversEntity
+  OwnersEntityOrTeamEntityOrApproversEntity,
+  NodeReports
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
   getNodeLinks,
   getSelectedNode,
-  getSelectedNodeLink
+  getSelectedNodeLink,
+  getNodeReports
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LayoutActionTypes, LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
@@ -180,6 +183,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   scopes$: Observable<ScopeEntity[]>;
   radio$: Observable<RadioEntity[]>;
   scopeDetails$: Observable<ScopeDetails>;
+  nodeReports$: Observable<NodeReports[]>;
   mapView: boolean;
   viewLevel$: Observable<number>;
   // mapViewId$: Observable<string>;
@@ -578,6 +582,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           .subscribe(workpackages => {
             const workPackageIds = workpackages.map(item => item.id);
             this.setWorkPackage(workPackageIds);
+            this.getNodeReports(workPackageIds);
           });
 
         this.objectSelected = true;
@@ -607,6 +612,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  getNodeReports(workpackageIds: string[] = []): void {
+    const queryParams = {
+      workPackageQuery: workpackageIds
+    };
+    this.nodeStore.dispatch(new LoadNodeReports({nodeId: this.nodeId, queryParams: queryParams}));
+    this.nodeReports$ = this.store.pipe(select(getNodeReports));
   }
 
   setWorkPackage(workpackageIds: string[] = []) {
