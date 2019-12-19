@@ -114,9 +114,10 @@
     [architecturePage]="objectSelected"
     [architectureRadioTab]="radioTab"
     [architectureDetailsTab]="detailsTab"
+    [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
   >
   </smi-right-sidebar>
-  <app-model-sidebar [isLast]="true" [minWidth]="400" [maxWidth]="600" *ngIf="showOrHideRightPane">
+  <app-model-sidebar [isLast]="true" [minWidth]="450" [maxWidth]="650" *ngIf="showOrHideRightPane">
     <p class="rightPane">
       <smi-right-panel
         [owners]="selectedNode?.owners"
@@ -159,6 +160,8 @@
         (selectNode)="onSelectNode($event)"
         [links]="links | layer: { byId: false, params: params }"
         [viewLevel]="viewLevel$ | async"
+        [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
+        [nodeReports]="nodeReports$ | async"
       >
       </smi-right-panel></p
   ></app-model-sidebar>
