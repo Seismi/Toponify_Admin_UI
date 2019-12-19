@@ -454,9 +454,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
-        setTimeout(() => {
-          this.diagramChangesService.updatePartData(this.part, this.part.data);
-        }, 800)
       })
     );
 
