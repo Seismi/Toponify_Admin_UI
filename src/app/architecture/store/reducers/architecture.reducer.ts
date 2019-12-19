@@ -144,6 +144,21 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.UpdateLinks: {
+      const { layoutId, links } = action.payload;
+      return links.reduce(
+        function(updatedState, link) {
+          const linkIndex = updatedState.links.findIndex(l => l.id === link.id);
+          if (linkIndex > -1) {
+             return replaceLinkRoute(updatedState, linkIndex, link.id, layoutId, link.points);
+          }
+        },
+        {
+          ...state
+        }
+      );
+    }
+
     case WorkPackageLinkActionTypes.UpdateWorkPackageLinkSuccess: {
       return {
         ...state,
@@ -296,13 +311,13 @@ export function reducer(
     }
 
     case NodeActionTypes.UpdateNodeExpandedState: {
-      const { layoutId, data } = action.payload;
-      const nodeIndex = state.entities.findIndex(n => n.id === data.data.id);
+      const { layoutId, data  } = action.payload;
+      const nodeIndex = state.entities.findIndex(n => n.id === data.id);
       if (nodeIndex > -1) {
-         return replaceNodeExpandedState(state, nodeIndex, data.data.id, layoutId,
+         return replaceNodeExpandedState(state, nodeIndex, data.id, layoutId,
            {
-             middleExpanded: data.data.middleExpanded,
-             bottomExpanded: data.data.bottomExpanded
+             middleExpanded: data.middleExpanded,
+             bottomExpanded: data.bottomExpanded
            }
          );
       } else {
@@ -502,7 +517,7 @@ function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: strin
   const entities = [...state.entities];
   entities[nodeIndex] = updatedNode;
 
-  if (state.selectedNode.id === nodeId) {
+  if (state.selectedNode && state.selectedNode.id === nodeId) {
     return {
       ...state,
       entities,
@@ -512,5 +527,31 @@ function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: strin
   return {
     ...state,
     entities
+  };
+}
+
+function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layoutId, route): State {
+  const updatedLinkRoutes = state.links[linkIndex].routes.concat();
+  const LinkRouteIndex = updatedLinkRoutes.findIndex( function(path) {return path.layout.id === layoutId; });
+
+  if (LinkRouteIndex > -1) {
+    const updatedLinkRoute = updatedLinkRoutes[LinkRouteIndex];
+    updatedLinkRoutes.splice(LinkRouteIndex, 1, {...updatedLinkRoute, points: route});
+  }
+
+  const updatedLink = { ...state.links[linkIndex], routes: updatedLinkRoutes};
+  const links = [...state.links];
+  links[linkIndex] = updatedLink;
+
+  if (state.selectedNodeLink && state.selectedNodeLink.id === linkId) {
+    return {
+      ...state,
+      links,
+      selectedNodeLink: {...state.selectedNodeLink, routes: updatedLinkRoutes}
+    };
+  }
+  return {
+    ...state,
+    links
   };
 }

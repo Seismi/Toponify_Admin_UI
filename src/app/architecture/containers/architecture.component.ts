@@ -30,7 +30,7 @@ import {
   CustomPropertyValuesEntity,
   NodeDetail,
   DescendantsEntity,
-  OwnersEntityOrTeamEntityOrApproversEntity
+  OwnersEntityOrTeamEntityOrApproversEntity, NodeExpandedStateApiRequest
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -461,7 +461,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.eventEmitter.next(Events.NodesLinksReload);
         setTimeout(() => {
           this.diagramChangesService.updatePartData(this.part, this.part.data);
-        }, 800)
+        }, 800);
       })
     );
 
@@ -692,10 +692,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // ---
-
-    // ---
-
     if (this.layout && data.nodes && data.nodes.length > 0) {
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.nodes }));
     }
@@ -704,7 +700,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: {node: go.Node; links: go.Link[]}): void {
+  handleUpdateNodeExpandState(data: {node: NodeExpandedStateApiRequest['data']; links: go.Link[]}): void {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
@@ -1119,7 +1115,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             workPackageId: this.workpackageId,
             nodeLinkId: this.nodeId,
             ownerId: data.owner.id
-          }))
+          }));
         }
       }
     });
@@ -1150,7 +1146,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             workPackageId: this.workpackageId,
             nodeLinkId: this.nodeId,
             ownerId: owner.id
-          }))
+          }));
         }
       }
     });

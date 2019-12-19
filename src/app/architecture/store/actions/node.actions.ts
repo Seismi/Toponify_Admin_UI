@@ -149,7 +149,7 @@ export class UpdateNodeLocationsFailure implements Action {
 
 export class UpdateNodeExpandedState implements Action {
   readonly type = NodeActionTypes.UpdateNodeExpandedState;
-  constructor(public payload: { layoutId: string; data: NodeExpandedStateApiRequest }) {}
+  constructor(public payload: { layoutId: string; data: NodeExpandedStateApiRequest['data'] }) {}
 }
 
 export class UpdateNodeExpandedStateSuccess implements Action {

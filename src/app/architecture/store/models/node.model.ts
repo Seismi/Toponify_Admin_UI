@@ -12,9 +12,9 @@ export interface CustomPropertyApiRequest {
 
 export interface NodeExpandedStateApiRequest {
   data: {
-    id: string,
-    middleExpanded?: boolean,
-    bottomExpanded?: boolean
+    id: string
+    middleExpanded?: boolean;
+    bottomExpanded?: boolean;
   };
 }
 
@@ -50,7 +50,7 @@ export class Node {
   description = '';
   category: nodeCategories;
   tags = '';
-  locations?: ((LocationsEntity)[] | null)[] | null;
+  locations?: (LocationsEntity)[] | null;
   expandedStates?: ((ExpandedStatesEntity)[] | null) | null;
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
@@ -110,7 +110,7 @@ export interface NodeDetail {
   tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
-  locations?: ((LocationsEntityEntity)[] | null)[] | null;
+  locations?: (LocationsEntityEntity)[] | null;
   expandedStates?: ((ExpandedStatesEntity)[] | null) | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;

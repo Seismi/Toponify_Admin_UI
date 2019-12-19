@@ -415,6 +415,10 @@ export class DiagramChangesService {
         const fromArea = link.fromNode.actualBounds.copy();
         const toArea = link.toNode.actualBounds.copy();
 
+        if ([fromArea.x, fromArea.y, toArea.x, toArea.y].some(isNaN)) {
+          return;
+        }
+
         // Inflate the rectangles slightly. This is necessary because the rectangle co-ordinates
         //  and link point co-ordinates are stored to a differing number of decimal places.
         fromArea.inflate(0.0000000001, 0.0000000001);
