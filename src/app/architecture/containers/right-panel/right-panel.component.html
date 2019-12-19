@@ -91,6 +91,12 @@
     </ng-template>
     <smi-workpackage-tab [data]="workpackages"></smi-workpackage-tab>
   </mat-tab>
+  <mat-tab *ngIf="filterLevel">
+    <ng-template mat-tab-label>
+      <mat-icon matTooltip="Reports" class="tab">device_hub</mat-icon>
+    </ng-template>
+    <smi-reports-tab [data]="nodeReports"></smi-reports-tab>
+  </mat-tab>
 </mat-tab-group>
 
 <!-- Hide right pane -->
