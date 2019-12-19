@@ -86,6 +86,7 @@ import {
 } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
+  getEditWorkpackage,
   getEditWorkpackages,
   getSelectedWorkpackageIds,
   getSelectedWorkpackages,
@@ -256,6 +257,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
+    );
     this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
@@ -461,7 +465,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.eventEmitter.next(Events.NodesLinksReload);
         setTimeout(() => {
           this.diagramChangesService.updatePartData(this.part, this.part.data);
-        }, 800)
+        }, 800);
       })
     );
 
@@ -700,7 +704,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: {node: go.Node; links: go.Link[]}): void {
+  handleUpdateNodeExpandState(data: { node: go.Node; links: go.Link[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
@@ -778,10 +782,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
             return nodes.map(function(node) {
-              return {...node,
-                middleExpanded: false,
-                bottomExpanded: false
-              };
+              return { ...node, middleExpanded: false, bottomExpanded: false };
             });
           }
 
@@ -1111,11 +1112,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          this.nodeStore.dispatch(new AddWorkPackageLinkOwner({
-            workPackageId: this.workpackageId,
-            nodeLinkId: this.nodeId,
-            ownerId: data.owner.id
-          }))
+          this.nodeStore.dispatch(
+            new AddWorkPackageLinkOwner({
+              workPackageId: this.workpackageId,
+              nodeLinkId: this.nodeId,
+              ownerId: data.owner.id
+            })
+          );
         }
       }
     });
@@ -1142,11 +1145,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          this.nodeStore.dispatch(new DeleteWorkpackageLinkOwner({
-            workPackageId: this.workpackageId,
-            nodeLinkId: this.nodeId,
-            ownerId: owner.id
-          }))
+          this.nodeStore.dispatch(
+            new DeleteWorkpackageLinkOwner({
+              workPackageId: this.workpackageId,
+              nodeLinkId: this.nodeId,
+              ownerId: owner.id
+            })
+          );
         }
       }
     });
