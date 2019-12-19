@@ -1,8 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
+
+const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
+const dataSetCategories = ['physical', 'virtual', 'master data'];
+const dimensionCategories = ['dimension'];
+const reportingCategories = ['list', 'structure', 'key'];
 
 @Component({
   selector: 'smi-object-details-form',
@@ -28,6 +33,7 @@ export class ObjectDetailsFormComponent {
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
   @Input() viewLevel: number;
+  @Input() selectedNode: NodeDetail;
 
   constructor() {}
 
@@ -96,5 +102,18 @@ export class ObjectDetailsFormComponent {
 
   onDeleteRelatedAttribute(): void {
     this.deleteRelatedAttribute.emit();
+  }
+
+  getCategories(): string[] {
+    switch (this.selectedNode.layer) {
+      case 'system':
+        return systemCategories;
+      case 'data set':
+        return dataSetCategories;
+      case 'dimension':
+        return dimensionCategories;
+      case 'reporting concept':
+        return reportingCategories;
+    }
   }
 }

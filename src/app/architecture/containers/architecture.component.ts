@@ -637,7 +637,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.clickedOnLink) {
       const linkData = {
         id: this.selectedPart.id,
-        category: this.selectedPart.category,
+        category: this.objectDetailsForm.value.category,
         layer: this.selectedPart.layer,
         name: this.objectDetailsForm.value.name,
         tags: this.objectDetailsForm.value.tags,
@@ -650,7 +650,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       const nodeData = {
         id: this.selectedPart.id,
         layer: this.selectedPart.layer,
-        category: this.selectedPart.category,
+        category: this.objectDetailsForm.value.category,
         name: this.objectDetailsForm.value.name,
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
