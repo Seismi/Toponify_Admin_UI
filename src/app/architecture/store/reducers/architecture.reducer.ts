@@ -93,7 +93,7 @@ export function reducer(
       return {
         ...state,
         entities: state.entities.map(entity =>
-          entity.id === action.payload.data.id ? { ...entity, ...action.payload.data } : entity
+          entity.id === action.payload.data.id ? updatePart(entity, action.payload.data) as Node : entity
         )
       };
     }
@@ -148,7 +148,7 @@ export function reducer(
       return {
         ...state,
         links: state.links.map(link =>
-          link.id === action.payload.data.id ? { ...link, ...action.payload.data } : link
+          link.id === action.payload.data.id ? updatePart(link, action.payload.data) as NodeLink : link
         )
       };
     }
@@ -424,4 +424,28 @@ function replaceNodeOwners(state: State, nodeIndex: number, nodeId: string, owne
     ...state,
     entities
   };
+}
+
+function updatePart(oldPartData: NodeLink | Node, newPartData: NodeDetail | NodeLinkDetail): Node | NodeLink {
+
+  const updatedPart: Node | NodeLink = {...oldPartData};
+
+  // Ensure no extraneous properties added to part data by only updating
+  //  properties that exist in the previous state data for the part
+  Object.keys(newPartData).forEach(function(field: string): void {
+    if (field in oldPartData) {
+      updatedPart[field] = newPartData[field];
+    }
+  });
+
+  // Update source and target details for links - cannot copy these details directly as
+  //  the format for these is different for NodeLink and NodeLinkDetail objects
+  if ('sourceObject' in newPartData && 'sourceId' in updatedPart) {
+    updatedPart.sourceId = newPartData.sourceObject.id;
+    updatedPart.sourceName = newPartData.sourceObject.name;
+    updatedPart.targetId = newPartData.targetObject.id;
+    updatedPart.targetName = newPartData.targetObject.name;
+  }
+
+  return updatedPart;
 }
