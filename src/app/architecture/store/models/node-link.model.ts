@@ -14,8 +14,10 @@ export interface NodeLink {
   name: string;
   description: string;
   category: string;
-  sourceObject: SourceObjectOrTargetObject;
-  targetObject: SourceObjectOrTargetObject;
+  sourceId: string;
+  sourceName: string;
+  targetId: string;
+  targetName: string;
   routes?: (RoutesEntityEntity)[] | null;
   impactedByWorkPackages;
 }
