@@ -3,5 +3,6 @@
     <mat-option *ngFor="let layout of layouts?.layouts" [value]="layout.id">
       {{ layout.name }}
     </mat-option>
+    <button mat-flat-button color="primary" (click)="onAdd()">Create New</button>
   </mat-select>
 </mat-form-field>

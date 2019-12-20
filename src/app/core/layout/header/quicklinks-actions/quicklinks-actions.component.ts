@@ -22,6 +22,9 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   selectLayout = new EventEmitter();
 
+  @Output()
+  addLayout = new EventEmitter<void>();
+
   ngOnInit() {
     this.allowEditLayouts = 'brush';
   }
@@ -36,5 +39,9 @@ export class QuicklinksActionsComponent implements OnInit {
 
   onSelectLayout(id) {
     this.selectLayout.emit(id);
+  }
+
+  onAddLayout(): void {
+    this.addLayout.emit();
   }
 }
