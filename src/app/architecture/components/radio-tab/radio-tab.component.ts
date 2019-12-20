@@ -35,11 +35,18 @@ export class RadioTabComponent {
   @Output()
   openRadio = new EventEmitter<RadioDetail>();
 
+  @Output()
+  assignRadio = new EventEmitter<void>();
+
   onAdd(): void {
     this.addRadio.emit();
   }
 
   onOpen(radio: RadioDetail) {
     this.openRadio.emit(radio);
+  }
+
+  onAssignRadio(): void {
+    this.assignRadio.emit();
   }
 }

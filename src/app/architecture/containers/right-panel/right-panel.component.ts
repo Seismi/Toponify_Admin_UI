@@ -93,6 +93,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
 
+  @Output() assignRadio = new EventEmitter<void>();
+
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
     private changeDetectorRef: ChangeDetectorRef
@@ -187,6 +189,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAddNewScope() {
     this.addNewScope.emit();
+  }
+
+  onAssignRadio(): void {
+    this.assignRadio.emit();
   }
 
   isFirst(): boolean {

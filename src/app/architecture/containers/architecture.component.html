@@ -159,6 +159,7 @@
         (selectNode)="onSelectNode($event)"
         [links]="links | layer: { byId: false, params: params }"
         [viewLevel]="viewLevel$ | async"
+        (assignRadio)="onAssignRadio()"
       >
       </smi-right-panel></p
   ></app-model-sidebar>
