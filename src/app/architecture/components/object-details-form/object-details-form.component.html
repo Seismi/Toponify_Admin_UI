@@ -26,6 +26,7 @@
   <div class="form-group" *ngIf="workPackageIsEditable">
     <button mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
     <button mat-flat-button (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="warn" (click)="onDelete()">Delete</button>
   </div>
 
   <div>
