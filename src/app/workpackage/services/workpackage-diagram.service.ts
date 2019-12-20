@@ -1,5 +1,6 @@
 import * as go from 'gojs';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 const $ = go.GraphObject.make;
 
@@ -14,7 +15,7 @@ const statusColours = {
 
 @Injectable()
 export class WorkPackageDiagramService {
-  constructor() {}
+  constructor(private router: Router) {}
 
   // Get layout for workpackage tree diagram
   getLayout() {
@@ -74,7 +75,15 @@ export class WorkPackageDiagramService {
       go.Node,
       'Auto',
       {
-        movable: false
+        movable: false,
+        doubleClick: function (event, node) {
+          this.router.navigate(['/topology'],
+            {
+              queryParams: {workpackages: node.key},
+              queryParamsHandling: 'merge'
+            }
+          );
+        }.bind(this)
       },
       // Node should be hidden if all nodes in the current branch have status "merged" or "superseded"
       new go.Binding(
