@@ -1,7 +1,7 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
-import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
+import {NodeLink, NodeLinkDetail, RoutesEntityEntity} from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import { Error, Node, NodeDetail, OwnersEntity } from '../models/node.model';
+import {Error, ExpandedStatesEntity, LocationsEntityEntity, Node, NodeDetail, OwnersEntity} from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import {
   WorkPackageNodeActionsUnion,
@@ -473,9 +473,11 @@ function replaceNodeOwners(state: State, nodeIndex: number, nodeId: string, owne
   };
 }
 
-function replaceNodeLocation(state: State, nodeIndex: number, nodeId: string, layoutId, location): State {
-  const updatedLocations = state.entities[nodeIndex].locations.concat();
-  const locationIndex = updatedLocations.findIndex( function(loc) {return loc.layout.id === layoutId; });
+function replaceNodeLocation(state: State, nodeIndex: number, nodeId: string, layoutId: string, location: string): State {
+  const updatedLocations: LocationsEntityEntity[] = state.entities[nodeIndex].locations.concat();
+  const locationIndex: number = updatedLocations.findIndex( function(loc: LocationsEntityEntity) {
+    return loc.layout.id === layoutId;
+  });
 
   if (locationIndex > -1) {
     const updatedLocation = updatedLocations[locationIndex];
@@ -499,12 +501,15 @@ function replaceNodeLocation(state: State, nodeIndex: number, nodeId: string, la
   };
 }
 
-function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: string, layoutId, expandedState): State {
-  const updatedExpandedStates = state.entities[nodeIndex].expandedStates.concat();
-  const expandedStateIndex = updatedExpandedStates.findIndex( function(exp) {return exp.layout.id === layoutId; });
+function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: string, layoutId: string,
+                                  expandedState: { middleExpanded: boolean, bottomExpanded: boolean}): State {
+  const updatedExpandedStates: ExpandedStatesEntity[] = state.entities[nodeIndex].expandedStates.concat();
+  const expandedStateIndex: number = updatedExpandedStates.findIndex( function(exp: ExpandedStatesEntity) {
+    return exp.layout.id === layoutId;
+  });
 
   if (expandedStateIndex > -1) {
-    const updatedExpandedState = updatedExpandedStates[expandedStateIndex];
+    const updatedExpandedState: ExpandedStatesEntity = updatedExpandedStates[expandedStateIndex];
     updatedExpandedStates.splice(expandedStateIndex, 1,
       {...updatedExpandedState,
         middleExpanded: expandedState.middleExpanded,
@@ -513,8 +518,8 @@ function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: strin
     );
   }
 
-  const updatedNode = { ...state.entities[nodeIndex], expandedStates: updatedExpandedStates};
-  const entities = [...state.entities];
+  const updatedNode: Node = { ...state.entities[nodeIndex], expandedStates: updatedExpandedStates};
+  const entities: Node[] = [...state.entities];
   entities[nodeIndex] = updatedNode;
 
   if (state.selectedNode && state.selectedNode.id === nodeId) {
@@ -530,19 +535,19 @@ function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: strin
   };
 }
 
-function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layoutId, route): State {
-  const updatedLinkRoutes = state.links[linkIndex].routes.concat();
-  const LinkRouteIndex = updatedLinkRoutes.findIndex(function (path) {
+function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layoutId: string, route: number[]): State {
+  const updatedLinkRoutes: RoutesEntityEntity[] = state.links[linkIndex].routes.concat();
+  const LinkRouteIndex: number = updatedLinkRoutes.findIndex(function (path: RoutesEntityEntity) {
     return path.layout.id === layoutId;
   });
 
   if (LinkRouteIndex > -1) {
-    const updatedLinkRoute = updatedLinkRoutes[LinkRouteIndex];
+    const updatedLinkRoute: RoutesEntityEntity = updatedLinkRoutes[LinkRouteIndex];
     updatedLinkRoutes.splice(LinkRouteIndex, 1, {...updatedLinkRoute, points: route});
   }
 
-  const updatedLink = {...state.links[linkIndex], routes: updatedLinkRoutes};
-  const links = [...state.links];
+  const updatedLink: NodeLink = {...state.links[linkIndex], routes: updatedLinkRoutes};
+  const links: NodeLink[] = [...state.links];
   links[linkIndex] = updatedLink;
 
   if (state.selectedNodeLink && state.selectedNodeLink.id === linkId) {

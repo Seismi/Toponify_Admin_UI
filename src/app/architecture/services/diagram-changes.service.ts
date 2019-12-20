@@ -374,9 +374,15 @@ export class DiagramChangesService {
       throw new Error('Invalid nodes type');
     }
 
+    const selectedPartKey: string | null = diagram.selection.count === 1 ? diagram.selection.first().key : null;
+
     diagram.model.nodeDataArray = JSON.parse(JSON.stringify(nodes));
     if (diagram.layout.isValidLayout) {
       diagram.layout.isValidLayout = false;
+    }
+
+    if (selectedPartKey) {
+      diagram.select(diagram.findPartForKey(selectedPartKey));
     }
   }
 
@@ -392,12 +398,18 @@ export class DiagramChangesService {
       throw new Error('Invalid nodesIds type');
     }
 
+    const selectedPartKey: string | null = diagram.selection.count === 1 ? diagram.selection.first().key : null;
+
     const sourceProp = diagram.model.linkFromKeyProperty;
     const targetProp = diagram.model.linkToKeyProperty;
 
     const linkArray = links.filter(link => nodesIds.includes(link[sourceProp]) && nodesIds.includes(link[targetProp]));
 
     (diagram.model as go.GraphLinksModel).linkDataArray = JSON.parse(JSON.stringify(linkArray));
+
+    if (selectedPartKey) {
+      diagram.select(diagram.findPartForKey(selectedPartKey));
+    }
 
     /* Check for any links that do not have a valid route between source and target nodes.
        This can happen if the source or target nodes are moved in a work package where
