@@ -42,7 +42,7 @@ import {
   getNodeReports
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { LayoutActionTypes, LoadLayout, LoadLayouts } from '@app/layout/store/actions/layout.actions';
+import { LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
@@ -89,6 +89,7 @@ import {
 } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
+  getEditWorkpackage,
   getEditWorkpackages,
   getSelectedWorkpackageIds,
   getSelectedWorkpackages,
@@ -140,7 +141,9 @@ import {
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { Params } from '@angular/router';
+import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
+
 
 enum Events {
   NodesLinksReload = 0
@@ -150,7 +153,7 @@ enum Events {
   selector: 'smi-architecture',
   templateUrl: 'architecture.component.html',
   styleUrls: ['architecture.component.scss'],
-  providers: [ObjectDetailsValidatorService, ObjectDetailsService],
+  providers: [ObjectDetailsValidatorService, ObjectDetailsService, LayoutSettingsService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArchitectureComponent implements OnInit, OnDestroy {
@@ -241,6 +244,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private tableView: ArchitectureTableViewComponent;
 
   constructor(
+    private layoutSettingsService: LayoutSettingsService,
     private sharedService: SharedService,
     private teamStore: Store<TeamState>,
     private nodeStore: Store<NodeState>,
@@ -260,6 +264,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
+    );
     this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
@@ -387,6 +394,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStoreSubscription = this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => {
       this.layout = layout;
       if (layout) {
+        // Show layout data in settings tab
+        this.layoutSettingsService.layoutSettingsForm.patchValue({ ...layout.settings });
         // Reload nodes and links for new layout if not in map view
         if (this.currentFilterLevel && !this.currentFilterLevel.endsWith('map')) {
           this.subscribeForNodesLinksData();
@@ -433,7 +442,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .subscribe(workpackages => {
         this.allowMove = workpackages.length > 0;
         this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
-
         this.workPackageIsEditable = this.allowMove;
         this.workPackageIsEditable === true
           ? (this.allowEditWorkPackages = 'close')
@@ -465,7 +473,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.eventEmitter.next(Events.NodesLinksReload);
         setTimeout(() => {
           this.diagramChangesService.updatePartData(this.part, this.part.data);
-        }, 800)
+        }, 800);
       })
     );
 
@@ -507,6 +515,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
+  get layoutSettingsForm(): FormGroup {
+    return this.layoutSettingsService.layoutSettingsForm;
   }
 
   setNodesLinks(layer: string, id?: string, workpackageIds: string[] = [], scope?: string) {
@@ -689,9 +701,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       : (this.allowEditWorkPackages = 'edit');
   }
 
-  allowEditLayout() {
+  allowEditLayout(): void {
     this.allowMove = !this.allowMove;
     this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
+    (this.allowMove) ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
   onZoomMap() {
@@ -713,7 +726,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: {node: go.Node; links: go.Link[]}): void {
+  handleUpdateNodeExpandState(data: { node: go.Node; links: go.Link[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
@@ -791,10 +804,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
             return nodes.map(function(node) {
-              return {...node,
-                middleExpanded: false,
-                bottomExpanded: false
-              };
+              return { ...node, middleExpanded: false, bottomExpanded: false };
             });
           }
 
@@ -893,6 +903,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   displayOptionsChanged({ event, option }: { event: any; option: string }) {
     this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
+    this.updateLayoutSettings();
   }
 
   onZoomIn() {
@@ -1124,11 +1135,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          this.nodeStore.dispatch(new AddWorkPackageLinkOwner({
-            workPackageId: this.workpackageId,
-            nodeLinkId: this.nodeId,
-            ownerId: data.owner.id
-          }))
+          this.nodeStore.dispatch(
+            new AddWorkPackageLinkOwner({
+              workPackageId: this.workpackageId,
+              nodeLinkId: this.nodeId,
+              ownerId: data.owner.id
+            })
+          );
         }
       }
     });
@@ -1155,11 +1168,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          this.nodeStore.dispatch(new DeleteWorkpackageLinkOwner({
-            workPackageId: this.workpackageId,
-            nodeLinkId: this.nodeId,
-            ownerId: owner.id
-          }))
+          this.nodeStore.dispatch(
+            new DeleteWorkpackageLinkOwner({
+              workPackageId: this.workpackageId,
+              nodeLinkId: this.nodeId,
+              ownerId: owner.id
+            })
+          );
         }
       }
     });
@@ -1364,6 +1379,44 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+  updateLayoutSettings(): void {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    this.store.dispatch(new UpdateLayout({
+      id: this.layout.id,
+      data: {
+        id: this.layout.id,
+        name: this.layout.name,
+        scope: {
+          id: this.scopeId
+        },
+        settings: {
+          components: { ...this.layoutSettingsForm.get('components').value },
+          links: { ...this.layoutSettingsForm.get('links').value }
+        }
+      }
+    }))
+  }
+
+  onFilterRadioSeverity(): void {
+    this.updateLayoutSettings();
+  }
+
+  onCollapseAllNodes(): void {
+    console.log('collapse all');
+  }
+
+  onSummariseAllNodes(): void {
+    console.log('summarise all');
+  }
+
+  onExpandAll(): void {
+    console.log('expand all');
+  }
+
   onSearchTableView(filterValue: string): void {
     const dataSource = this.tableView.dataSource;
     dataSource.filter = filterValue.toLowerCase().toUpperCase();
@@ -1371,3 +1424,5 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
 }
+
+

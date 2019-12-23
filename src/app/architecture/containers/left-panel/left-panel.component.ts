@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatCheckboxChange, MatTabGroup, MatTabChangeEvent } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { LayoutDetails } from '@app/layout/store/models/layout.model';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'smi-left-panel',
@@ -16,7 +18,10 @@ export class LeftPanelComponent {
   @Input() canSelectWorkpackages: boolean;
   @Input() tabIndex: number;
   @Input() layoutSettingsTab: boolean;
-
+  @Input() layout: LayoutDetails;
+  @Input() group: FormGroup;
+  @Input() allowEditLayouts: string;
+  
   @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
   constructor() {}
@@ -36,6 +41,16 @@ export class LeftPanelComponent {
   tabClick = new EventEmitter<number>();
 
   @Output() addLayout = new EventEmitter<void>();
+
+  @Output() filterRadioSeverity = new EventEmitter<void>();
+
+  @Output() collapseAllNodes = new EventEmitter<void>();
+
+  @Output() summariseAllNodes = new EventEmitter<void>();
+
+  @Output() editLayout = new EventEmitter<void>();
+
+  @Output() expandAll = new EventEmitter<void>();
 
   realignTabUnderline(): void {
     this.mainTabGroup.realignInkBar();
@@ -69,5 +84,25 @@ export class LeftPanelComponent {
 
   onAddLayout(): void {
     this.addLayout.emit();
+  }
+
+  onFilterRadioSeverity(): void {
+    this.filterRadioSeverity.emit();
+  }
+
+  onCollapseAllNodes(): void {
+    this.collapseAllNodes.emit();
+  }
+
+  onSummariseAllNodes(): void {
+    this.summariseAllNodes.emit();
+  }
+
+  onEditLayout(): void {
+    this.editLayout.emit();
+  }
+
+  onExpandAll(): void {
+    this.expandAll.emit();
   }
 }
