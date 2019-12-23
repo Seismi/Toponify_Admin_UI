@@ -6,7 +6,7 @@ import {
   NodeLink,
   OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, DescendantsEntity, Node, NodeDetail } from '@app/architecture/store/models/node.model';
+import { CustomPropertyValuesEntity, DescendantsEntity, Node } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
@@ -23,7 +23,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() selectedView: ArchitectureView;
   @Input() nodes: Node[];
   @Input() links: NodeLink[];
-  @Input() selectedNode: NodeDetail;
+  @Input() selectedNode: Node;
   @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
@@ -39,6 +39,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() multipleSelected = false;
   @Input() nodeScopes: WorkPackageNodeScopes[];
   @Input() viewLevel: number;
+  @Input() part: go.Part;
 
   @Output()
   saveAttribute = new EventEmitter();

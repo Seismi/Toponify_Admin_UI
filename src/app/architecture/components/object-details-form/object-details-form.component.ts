@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
+import { Node } from 'gojs';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
@@ -33,7 +34,7 @@ export class ObjectDetailsFormComponent {
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
   @Input() viewLevel: number;
-  @Input() selectedNode: NodeDetail;
+  @Input() part: go.Part;
 
   constructor() {}
 
@@ -105,15 +106,16 @@ export class ObjectDetailsFormComponent {
   }
 
   getCategories(): string[] {
-    switch (this.selectedNode.layer) {
+    switch (this.part.data.layer) {
       case 'system':
-        return systemCategories;
+        return (this.part instanceof Node) ? systemCategories : ['master data', 'data'];
       case 'data set':
-        return dataSetCategories;
+        return (this.part instanceof Node) ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
-        return dimensionCategories;
+        return (this.part instanceof Node) ? dimensionCategories : ['master data'];
       case 'reporting concept':
-        return reportingCategories;
+        return (this.part instanceof Node) ? reportingCategories : ['master data'];
     }
   }
+
 }
