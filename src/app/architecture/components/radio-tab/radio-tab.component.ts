@@ -11,7 +11,7 @@ import { Constants } from '@app/core/constants';
   styleUrls: ['./radio-tab.component.scss']
 })
 export class RadioTabComponent {
-  @Input() workPackageIsEditable: boolean;
+  @Input() nodeCategory: string;
 
   @Input()
   set data(data: NodeDetail[]) {

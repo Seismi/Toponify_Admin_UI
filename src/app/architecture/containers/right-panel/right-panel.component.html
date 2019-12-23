@@ -22,6 +22,7 @@
         (addDescendant)="onAddDescendant()"
         (deleteDescendant)="onDeleteDescendant($event)"
         [viewLevel]="viewLevel"
+        [nodeCategory]="nodeCategory"
       >
       </smi-object-details-form>
       <!-- Add Scope Button -->
@@ -40,6 +41,7 @@
       [data]="attributes"
       [workPackageIsEditable]="workPackageIsEditable"
       (addAttribute)="onAddAttribute()"
+      [nodeCategory]="nodeCategory"
     >
     </smi-attributes-tab>
   </mat-tab>
@@ -54,6 +56,7 @@
       (editProperties)="onEditProperties($event)"
       (deleteProperties)="onDeleteProperties($event)"
       [workPackageIsEditable]="workPackageIsEditable"
+      [nodeCategory]="nodeCategory"
     >
     </smi-properties-tab>
   </mat-tab>
@@ -66,9 +69,9 @@
     <smi-radio-tab
       *ngIf="objectSelected"
       [data]="relatedRadios"
-      [workPackageIsEditable]="workPackageIsEditable"
       (addRadio)="onAddRelatedRadio()"
       (openRadio)="onOpenRadio($event)"
+      [nodeCategory]="nodeCategory"
     >
     </smi-radio-tab>
     <smi-radio-table-in-architecture
@@ -91,6 +94,7 @@
       [workPackageIsEditable]="workPackageIsEditable"
       (addExistingScope)="onAddExistingScope()"
       (newScope)="onAddNewScope()"
+      [nodeCategory]="nodeCategory"
     >
     </smi-scope-table>
   </mat-tab>
