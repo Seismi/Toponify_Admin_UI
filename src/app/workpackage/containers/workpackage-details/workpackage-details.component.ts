@@ -16,7 +16,8 @@ import {
   SubmitWorkpackage,
   SupersedeWorkpackage,
   UpdateWorkPackageEntity,
-  WorkPackageActionTypes
+  WorkPackageActionTypes,
+  SetWorkpackageDisplayColour
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
@@ -60,6 +61,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   public workpackageActionMerge: boolean;
   public workpackageActionReset: boolean;
   public workpackageActionSupersede: boolean;
+  public workPackageColour: string;
 
   constructor(
     private router: Router,
@@ -137,7 +139,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
           data: {
             id: this.workpackageId,
             name: this.workPackageDetailForm.value.name,
-            description: this.workPackageDetailForm.value.description
+            description: this.workPackageDetailForm.value.description,
+            displayColour: this.workPackageColour
           }
         }
       })
@@ -357,5 +360,9 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       alert('ERROR: ' + error.payload);
     });
     this.store.dispatch(new SupersedeWorkpackage(this.workpackageId));
+  }
+
+  onSelectWorkPackageColour(colour: string): void {
+    this.workPackageColour = colour;
   }
 }

@@ -32,6 +32,8 @@
             (merge)="mergeWorkpackage()"
             (reset)="resetWorkpackage()"
             (supersede)="supersedeWorkpackage()"
+            [workpackageColour]="workpackage?.displayColour"
+            (selectColour)="onSelectWorkPackageColour($event)"
           >
           </smi-workpackage-detail>
         </p>

@@ -76,7 +76,8 @@ import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
+  UpdateWorkPackageEntity
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
@@ -85,6 +86,7 @@ import {
 } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
+  getEditWorkpackage,
   getEditWorkpackages,
   getSelectedWorkpackageIds,
   getSelectedWorkpackages,
@@ -137,6 +139,8 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { Params } from '@angular/router';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
+import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
+
 
 enum Events {
   NodesLinksReload = 0
@@ -224,6 +228,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
   public params: Params;
+  public tableViewFilterValue: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -231,6 +236,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
+  @ViewChild(ArchitectureTableViewComponent) 
+  private tableView: ArchitectureTableViewComponent;
 
   constructor(
     private layoutSettingsService: LayoutSettingsService,
@@ -253,6 +260,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
+    );
     this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
@@ -459,7 +469,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.eventEmitter.next(Events.NodesLinksReload);
         setTimeout(() => {
           this.diagramChangesService.updatePartData(this.part, this.part.data);
-        }, 800)
+        }, 800);
       })
     );
 
@@ -703,7 +713,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: {node: go.Node; links: go.Link[]}): void {
+  handleUpdateNodeExpandState(data: { node: go.Node; links: go.Link[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
@@ -781,10 +791,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
             return nodes.map(function(node) {
-              return {...node,
-                middleExpanded: false,
-                bottomExpanded: false
-              };
+              return { ...node, middleExpanded: false, bottomExpanded: false };
             });
           }
 
@@ -1115,11 +1122,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          this.nodeStore.dispatch(new AddWorkPackageLinkOwner({
-            workPackageId: this.workpackageId,
-            nodeLinkId: this.nodeId,
-            ownerId: data.owner.id
-          }))
+          this.nodeStore.dispatch(
+            new AddWorkPackageLinkOwner({
+              workPackageId: this.workpackageId,
+              nodeLinkId: this.nodeId,
+              ownerId: data.owner.id
+            })
+          );
         }
       }
     });
@@ -1146,11 +1155,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          this.nodeStore.dispatch(new DeleteWorkpackageLinkOwner({
-            workPackageId: this.workpackageId,
-            nodeLinkId: this.nodeId,
-            ownerId: owner.id
-          }))
+          this.nodeStore.dispatch(
+            new DeleteWorkpackageLinkOwner({
+              workPackageId: this.workpackageId,
+              nodeLinkId: this.nodeId,
+              ownerId: owner.id
+            })
+          );
         }
       }
     });
@@ -1265,6 +1276,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onViewChange(view: ArchitectureView) {
     this.selectedView = view;
+    if (view === ArchitectureView.Diagram) {
+      this.tableViewFilterValue = null;
+    }
   }
 
   onSelectNode(node: Node | NodeLink) {
@@ -1388,6 +1402,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onExpandAll(): void {
     console.log('expand all');
+  }
+
+  onSearchTableView(filterValue: string): void {
+    const dataSource = this.tableView.dataSource;
+    dataSource.filter = filterValue.toLowerCase().toUpperCase();
+    this.tableViewFilterValue = filterValue;
   }
 
 }
