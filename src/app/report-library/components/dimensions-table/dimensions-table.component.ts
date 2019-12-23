@@ -17,7 +17,7 @@ export class ReportDimensionsTableComponent {
   }
 
   public dataSource: MatTableDataSource<DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity>;
-  public displayedColumns: string[] = ['name', 'reportingConcepts'];
+  public displayedColumns: string[] = ['name', 'filter', 'reportingConcepts'];
 
   getConcepts(data) {
     return data.reportingConcepts.map(concept => concept.name).join(', ');
