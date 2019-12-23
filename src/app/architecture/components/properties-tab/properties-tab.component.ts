@@ -10,6 +10,7 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 })
 export class PropertiesTabComponent {
   @Input() workPackageIsEditable: boolean;
+  @Input() nodeCategory: string
 
   @Input()
   set data(data: NodeDetail[]) {
@@ -37,5 +38,12 @@ export class PropertiesTabComponent {
 
   onDelete(customProperty: CustomPropertiesEntity) {
     this.deleteProperties.emit(customProperty);
+  }
+
+  nodeIsEditable(): boolean {
+    if (!this.workPackageIsEditable || this.nodeCategory === 'copy') {
+      return true;
+    }
+    return false;
   }
 }

@@ -9,6 +9,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
 })
 export class ScopeTableComponent {
   @Input() workPackageIsEditable: boolean;
+  @Input() nodeCategory: string;
 
   @Input()
   set data(data: WorkPackageNodeScopes[]) {
