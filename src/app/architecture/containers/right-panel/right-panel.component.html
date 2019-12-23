@@ -1,7 +1,8 @@
 <mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
+  <!-- Details TAB -->
   <mat-tab *ngIf="objectSelected || multipleSelected">
     <ng-template mat-tab-label>
-      <mat-icon matTooltip="Details" class="tab">info</mat-icon>
+      <mat-icon matTooltip="Details">info</mat-icon>
     </ng-template>
     <p class="detailsTab">
       <smi-object-details-form
@@ -29,9 +30,11 @@
       </button>
     </p>
   </mat-tab>
+
+  <!-- Attributes and Rules TAB -->
   <mat-tab *ngIf="objectSelected">
     <ng-template mat-tab-label>
-      <mat-icon matTooltip="Attributes & Rules" class="tab">ballot</mat-icon>
+      <mat-icon matTooltip="Attributes & Rules">ballot</mat-icon>
     </ng-template>
     <smi-attributes-tab
       [data]="attributes"
@@ -40,9 +43,11 @@
     >
     </smi-attributes-tab>
   </mat-tab>
+
+  <!-- Documentation Standards TAB -->
   <mat-tab *ngIf="objectSelected">
     <ng-template mat-tab-label>
-      <mat-icon matTooltip="Documentation Standards" class="tab">insert_drive_file</mat-icon>
+      <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
     </ng-template>
     <smi-properties-tab
       [data]="properties"
@@ -52,9 +57,11 @@
     >
     </smi-properties-tab>
   </mat-tab>
+
+  <!-- RADIO TAB -->
   <mat-tab *ngIf="!multipleSelected">
     <ng-template mat-tab-label>
-      <mat-icon matTooltip="RADIO" class="tab">track_changes</mat-icon>
+      <mat-icon matTooltip="RADIO">track_changes</mat-icon>
     </ng-template>
     <smi-radio-tab
       *ngIf="objectSelected"
@@ -73,9 +80,11 @@
     >
     </smi-radio-table-in-architecture>
   </mat-tab>
+
+  <!-- Scopes TAB -->
   <mat-tab *ngIf="objectSelected">
     <ng-template mat-tab-label>
-      <mat-icon matTooltip="Scopes" class="tab">pages</mat-icon>
+      <mat-icon matTooltip="Scopes">pages</mat-icon>
     </ng-template>
     <smi-scope-table
       [data]="nodeScopes"
@@ -86,11 +95,21 @@
     >
     </smi-scope-table>
   </mat-tab>
+
+  <!-- Work Package TAB -->
   <mat-tab *ngIf="objectSelected">
     <ng-template mat-tab-label>
-      <mat-icon matTooltip="Work Packages" class="tab">business_center</mat-icon>
+      <mat-icon matTooltip="Work Packages">business_center</mat-icon>
     </ng-template>
     <smi-workpackage-tab [data]="workpackages"></smi-workpackage-tab>
+  </mat-tab>
+
+  <!-- Reports TAB -->
+  <mat-tab *ngIf="filterLevel && objectSelected">
+    <ng-template mat-tab-label>
+      <mat-icon matTooltip="Reports">bookmarks</mat-icon>
+    </ng-template>
+    <smi-reports-tab [data]="nodeReports"></smi-reports-tab>
   </mat-tab>
 </mat-tab-group>
 
@@ -98,6 +117,8 @@
 <button mat-raised-button color="primary" class="hide-pane-button" (click)="onHidePane()">
   <mat-icon>keyboard_arrow_right</mat-icon>
 </button>
+
+<!-- Skip buttons -->
 <div class="skip-buttons" *ngIf="showSkipButtons()">
   <button mat-raised-button color="primary" [disabled]="isFirst()" (click)="previous()">
     <mat-icon>skip_previous</mat-icon>
