@@ -195,6 +195,24 @@ export interface NodeLocationsUpdatePayload {
   }[];
 }
 
+export interface NodeReportsApiResponse {
+  data?: (NodeReports)[] | null;
+}
+
+export interface NodeReports {
+  id: string;
+  name: string;
+  dataSet: DataSet;
+  owners: (OwnersEntity)[] | null;
+}
+
+export interface DataSet {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+}
+
 // TODO: This may be shared at some point
 
 export interface Error {

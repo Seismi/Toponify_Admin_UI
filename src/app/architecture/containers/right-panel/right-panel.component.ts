@@ -4,9 +4,10 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 import {
   AttributesEntity,
   NodeLink,
-  OwnersEntityOrTeamEntityOrApproversEntity
+  OwnersEntityOrTeamEntityOrApproversEntity,
+  NodeLinkDetail
 } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, DescendantsEntity, Node } from '@app/architecture/store/models/node.model';
+import { CustomPropertyValuesEntity, DescendantsEntity, Node, NodeReports } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
@@ -18,6 +19,7 @@ import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/
 })
 export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
+  @Input() nodeCategory: string;
 
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() selectedView: ArchitectureView;
@@ -40,6 +42,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() nodeScopes: WorkPackageNodeScopes[];
   @Input() viewLevel: number;
   @Input() part: go.Part;
+  @Input() filterLevel: string;
+  @Input() nodeReports: NodeReports[];
 
   @Output()
   saveAttribute = new EventEmitter();

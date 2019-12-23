@@ -76,6 +76,7 @@ import { ScopeTableComponent } from './components/scope-table/scope-table.compon
 import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-modal.component';
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
 import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
+import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
 
 @NgModule({
   imports: [
@@ -148,7 +149,8 @@ import { SearchTableViewComponent } from './components/search-table-view/search-
     ScopeTableComponent,
     NodeScopeModalComponent,
     NewChildrenModalComponent,
-    SearchTableViewComponent
+    SearchTableViewComponent,
+    ReportsTabComponent
   ],
   entryComponents: [
     DeleteModalComponent,

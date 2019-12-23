@@ -32,4 +32,4 @@
 
   <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
 </div>
-<button mat-raised-button color="primary" (click)="onAdd()">Raise New</button>
+<button mat-raised-button color="primary" *ngIf="nodeCategory !== 'copy'" (click)="onAdd()">Raise New</button>
