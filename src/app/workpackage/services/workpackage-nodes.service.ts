@@ -15,7 +15,8 @@ import { HttpParams } from '@angular/common/http';
 import {
   DescendantsEntity,
   NodesApiResponse,
-  WorkPackageNodeDescendantsApiResponse
+  WorkPackageNodeDescendantsApiResponse,
+  NodeDetailApiResponse
 } from '@app/architecture/store/models/node.model';
 
 export interface GetWorkPackageNodeScopesQueryParams {
@@ -183,8 +184,8 @@ export class WorkPackageNodesService extends WorkPackageService {
     );
   }
 
-  addWorkPackageNodeRadio(workPackageId: string, nodeId: string, radioId: string): Observable<WorkPackageDetailApiResponse> {
-    return this.http.post<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radioId}`, this.httpOptions);
+  addWorkPackageNodeRadio(workPackageId: string, nodeId: string, radioId: string): Observable<NodeDetailApiResponse> {
+    return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radioId}`, this.httpOptions);
   }
 
   deleteWorkPackageNodeScope(scopeId: string, nodeId: string): Observable<WorkPackageNodeScopeApiResponse> {

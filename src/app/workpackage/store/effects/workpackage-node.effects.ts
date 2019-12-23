@@ -56,10 +56,9 @@ import { UpdateNodeDescendants, UpdateNodeOwners } from '@app/architecture/store
 import {
   WorkPackageNodeFindPotential,
   WorkPackageNodeScopeApiResponse,
-  WorkPackageNodeScopesApiResponse,
-  WorkPackageDetailApiResponse
+  WorkPackageNodeScopesApiResponse
 } from '../models/workpackage.models';
-import { DescendantsEntity, WorkPackageNodeDescendantsApiResponse } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, WorkPackageNodeDescendantsApiResponse, NodeDetailApiResponse } from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -251,7 +250,7 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     switchMap((payload: { workPackageId: string; nodeId: string, radioId: string }) => {
       return this.workpackageNodeService.addWorkPackageNodeRadio(payload.workPackageId, payload.nodeId, payload.radioId).pipe(
-        switchMap((response: WorkPackageDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
+        switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeRadioFailure(error)))
       );
     })
