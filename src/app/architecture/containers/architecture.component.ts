@@ -480,7 +480,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(LayoutActionTypes.LoadLayoutSuccess)).subscribe(_ => {
+      this.actions.pipe(ofType(
+        LayoutActionTypes.LoadLayoutSuccess,
+        WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess
+        )).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
