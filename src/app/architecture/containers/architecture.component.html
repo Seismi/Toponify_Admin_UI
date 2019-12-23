@@ -14,8 +14,6 @@
   <app-toolbar-column>
     <smi-quicklinks-actions
       [gojsView]="true"
-      [allowEditLayouts]="allowEditLayouts"
-      (editLayout)="allowEditLayout()"
       [scopes]="scopes$ | async"
       [selectedScope]="selectedScope$ | async"
       [layouts]="scopeDetails$ | async"
@@ -51,6 +49,14 @@
       (hideLeftPane)="onHideLeftPane()"
       [layoutSettingsTab]="layoutSettingsTab"
       (addLayout)="onAddLayout()"
+      [group]="layoutSettingsForm"
+      [layout]="layout"
+      (filterRadioSeverity)="onFilterRadioSeverity()"
+      (collapseAllNodes)="onCollapseAllNodes()"
+      (summariseAllNodes)="onSummariseAllNodes()"
+      [allowEditLayouts]="allowEditLayouts"
+      (editLayout)="allowEditLayout()"
+      (expandAll)="onExpandAll()"
     >
     </smi-left-panel>
   </p>
@@ -115,9 +121,10 @@
     [architecturePage]="objectSelected"
     [architectureRadioTab]="radioTab"
     [architectureDetailsTab]="detailsTab"
+    [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
   >
   </smi-right-sidebar>
-  <app-model-sidebar [isLast]="true" [minWidth]="400" [maxWidth]="600" *ngIf="showOrHideRightPane">
+  <app-model-sidebar [isLast]="true" [minWidth]="450" [maxWidth]="650" *ngIf="showOrHideRightPane">
     <p class="rightPane">
       <smi-right-panel
         [owners]="selectedNode?.owners"
@@ -160,6 +167,9 @@
         (selectNode)="onSelectNode($event)"
         [links]="links | layer: { byId: false, params: params }"
         [viewLevel]="viewLevel$ | async"
+        [nodeCategory]="part?.data.category"
+        [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
+        [nodeReports]="nodeReports$ | async"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

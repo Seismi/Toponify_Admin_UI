@@ -16,7 +16,8 @@ import {
   NodeApiResponse,
   NodeDetailApiResponse,
   NodesApiResponse,
-  NodeLocationsUpdatePayload
+  NodeLocationsUpdatePayload,
+  NodeReportsApiResponse
 } from '../models/node.model';
 import { LinkUpdatePayload, NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../models/node-link.model';
 import { MatSnackBar } from '@angular/material';
@@ -193,6 +194,20 @@ export class NodeEffects {
           map(response => new NodeActions.DeleteCustomPropertySuccess(response.data)),
           catchError((error: Error) => of(new NodeActions.DeleteCustomPropertyFailure(error)))
         );
+    })
+  );
+
+  @Effect()
+  loadNodeReports$ = this.actions$.pipe(
+    ofType<NodeActions.LoadNodeReports>(NodeActionTypes.LoadNodeReports),
+    map(action => action.payload),
+    switchMap((payload: { nodeId: string, queryParams?: GetNodesRequestQueryParams}) => {
+      return this.nodeService.getReports(payload.nodeId, payload.queryParams).pipe(
+        switchMap((response: NodeReportsApiResponse) => [new NodeActions.LoadNodeReportsSuccess(response.data)]),
+        catchError((error: Error) => {
+          return of(new NodeActions.LoadNodeReportsFailure(error));
+        })
+      );
     })
   );
 }

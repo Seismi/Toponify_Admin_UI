@@ -23,6 +23,11 @@ export const getNodeEntities = createSelector(
   }
 );
 
+export const getNodeReports = createSelector(
+  getNodeFeatureState,
+  state => state.reports
+);
+
 export const getSelectedNodeLink = createSelector(
   getNodeFeatureState,
   state => state.selectedNodeLink

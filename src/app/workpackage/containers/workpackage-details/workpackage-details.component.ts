@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import {
   AddObjective,
   AddOwner,
@@ -17,7 +17,8 @@ import {
   SupersedeWorkpackage,
   UpdateWorkPackageEntity,
   WorkPackageActionTypes,
-  SetWorkpackageDisplayColour
+  SetWorkpackageDisplayColour,
+  SetSelectedWorkPackages
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
@@ -27,7 +28,8 @@ import { WorkPackageDetailService } from '@app/workpackage/components/workpackag
 import {
   OwnersEntityOrApproversEntity,
   TeamEntityOrOwnersEntityOrApproversEntity,
-  WorkPackageDetail
+  WorkPackageDetail,
+  WorkPackageEntity
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -41,6 +43,11 @@ import { RadioEffects } from '@app/radio/store/effects/radio.effects';
 import { Actions, ofType } from '@ngrx/effects';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { RadioDetailModalComponent } from '@app/workpackage/containers/radio-detail-modal/radio-detail-modal.component';
+import { RouterReducerState } from '@ngrx/router-store';
+import { RouterStateUrl } from '@app/core/store';
+import { getWorkPackagesQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
+import { take } from 'rxjs/operators';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -62,8 +69,10 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   public workpackageActionReset: boolean;
   public workpackageActionSupersede: boolean;
   public workPackageColour: string;
+  public workPackageStatus: string;
 
   constructor(
+    private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     private router: Router,
     private actions: Actions,
     private radioEffects: RadioEffects,
@@ -96,6 +105,9 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
             name: workpackage.name,
             description: workpackage.description
           });
+
+          this.workPackageStatus = workpackage.status;
+
           // Show edit button if work package status is draft
           workpackage.status === 'draft' ? (this.statusDraft = true) : (this.statusDraft = false);
           this.isEditable = false;
@@ -317,6 +329,37 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       data: {
         radio: radio
       }
+    });
+  }
+
+  onOpenWorkPackage(): void {
+    this.router.navigate(['/topology'], { queryParamsHandling: 'preserve' }).then(() => {
+      this.routerStore
+      .select(getWorkPackagesQueryParams)
+      .pipe(take(1))
+      .subscribe(workpackages => {
+        let urlWorkpackages: string[];
+        let params: Params;
+        if (typeof workpackages === 'string') {
+          urlWorkpackages = [workpackages];
+        } else {
+          urlWorkpackages = workpackages ? [...workpackages] : [];
+        }
+        const index = urlWorkpackages.findIndex(id => id === this.workpackage.id);
+        if (this.workpackage) {
+          if (index === -1) {
+            params = { workpackages: [...urlWorkpackages, this.workpackage.id] };
+          } else {
+            params = { workpackages: [...urlWorkpackages] };
+          }
+        } else {
+          if (index !== -1) {
+            urlWorkpackages.splice(index, 1);
+          }
+          params = { workpackages: [...urlWorkpackages] };
+        }
+        this.routerStore.dispatch(new UpdateQueryParams(params));
+      })
     });
   }
 
