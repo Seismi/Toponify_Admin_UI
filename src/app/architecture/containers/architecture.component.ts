@@ -91,7 +91,8 @@ import {
   getSelectedWorkpackageIds,
   getSelectedWorkpackages,
   getWorkPackageEntities,
-  workpackageSelectAllowed
+  workpackageSelectAllowed,
+  getWorkPackageEntityById
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
@@ -218,6 +219,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedLayout$: Observable<ScopeDetails>;
   editTabIndex: number;
   public parentName: string | null;
+  public workPackageName: string;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
@@ -227,6 +229,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private filterLevelSubscription: Subscription;
   public params: Params;
   public tableViewFilterValue: string;
+  public selectedWorkPackageEntities: WorkPackageEntity[];
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -257,6 +260,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.selectedWorkPackageEntities = workpackages;
+        if (workpackages.length <= 2) {
+          this.workPackageName = workpackages.map(workpackage => workpackage.name).join(' & ');
+        } else {
+          this.workPackageName = workpackages[0].name + ' & ' + workpackages[1].name + ' ...';
+        }
+      })
+    );
     this.subscriptions.push(
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
     );
@@ -433,7 +446,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .subscribe(workpackages => {
         this.allowMove = workpackages.length > 0;
         this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
-
         this.workPackageIsEditable = this.allowMove;
         this.workPackageIsEditable === true
           ? (this.allowEditWorkPackages = 'close')
@@ -532,6 +544,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
     }
   }
+
 
   selectColourForWorkPackage(data: { colour: string; id: string }) {
     this.workpackageStore.dispatch(
@@ -934,6 +947,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
     }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
+  }
+
+  onExitWorkPackageEditMode(): void {
+    this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
   }
 
   onSelectScope(id) {
