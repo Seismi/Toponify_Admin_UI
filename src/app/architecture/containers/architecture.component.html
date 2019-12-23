@@ -14,8 +14,6 @@
   <app-toolbar-column>
     <smi-quicklinks-actions
       [gojsView]="true"
-      [allowEditLayouts]="allowEditLayouts"
-      (editLayout)="allowEditLayout()"
       [scopes]="scopes$ | async"
       [selectedScope]="selectedScope$ | async"
       [layouts]="scopeDetails$ | async"
@@ -50,6 +48,14 @@
       (hideLeftPane)="onHideLeftPane()"
       [layoutSettingsTab]="layoutSettingsTab"
       (addLayout)="onAddLayout()"
+      [group]="layoutSettingsForm"
+      [layout]="layout"
+      (filterRadioSeverity)="onFilterRadioSeverity()"
+      (collapseAllNodes)="onCollapseAllNodes()"
+      (summariseAllNodes)="onSummariseAllNodes()"
+      [allowEditLayouts]="allowEditLayouts"
+      (editLayout)="allowEditLayout()"
+      (expandAll)="onExpandAll()"
     >
     </smi-left-panel>
   </p>
