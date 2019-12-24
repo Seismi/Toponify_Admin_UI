@@ -13,7 +13,10 @@ import {
   MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule,
+  MatMenuModule,
+  MatGridListModule,
+  MatTooltipModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -49,6 +52,7 @@ import { RadioModule } from '@app/radio/radio.module';
 import { WorkPackageTreeComponent } from './components/workpackage-tree/workpackage-tree.component';
 import { WorkPackageRightSideComponent } from './components/right-side/right-side.component';
 import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
+import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 
 @NgModule({
   imports: [
@@ -63,16 +67,20 @@ import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio
     MatInputModule,
     MatIconModule,
     MatTabsModule,
+    MatTooltipModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
     CoreModule,
     SettingsModule,
     RadioModule,
+    MatMenuModule,
+    MatGridListModule,
+    MatTooltipModule,
     StoreModule.forFeature('workpackageFeature', reducer),
     EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects])
   ],
-  exports: [WorkPackagesTableComponent, RadioDetailModalComponent],
+  exports: [WorkPackagesTableComponent, RadioDetailModalComponent, WorkPackageColorComponent],
   declarations: [
     WorkPackageComponent,
     WorkPackageRoutingComponent,
@@ -96,7 +104,8 @@ import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio
     RadioListModalComponent,
     WorkPackageTreeComponent,
     WorkPackageRightSideComponent,
-    RadioDetailModalComponent
+    RadioDetailModalComponent,
+    WorkPackageColorComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,

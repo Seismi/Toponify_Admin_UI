@@ -14,7 +14,8 @@ export const viewLevelMapping = {
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
   [8]: Level.systemMap,
-  [9]: Level.dataSetMap
+  [9]: Level.dataSetMap,
+  [10]: Level.usage
 };
 
 @Component({
@@ -37,7 +38,8 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     { level: 2, name: 'data set' },
     { level: 9, name: 'data set map' },
     { level: 3, name: 'dimension' },
-    { level: 4, name: 'reporting concept' }
+    { level: 4, name: 'reporting concept' },
+    { level: 10, name: 'usage analysis' }
   ];
 
   @Output()
@@ -76,7 +78,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   }
 
   getMapLevel(level: number): boolean {
-    if (level === 8 || level === 9) {
+    if ([8, 9, 10].indexOf(level) != -1) {
       return true;
     }
   }

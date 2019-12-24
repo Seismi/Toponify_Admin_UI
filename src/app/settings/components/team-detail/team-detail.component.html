@@ -1,23 +1,25 @@
 <form [formGroup]="group">
-  <!-- Name -->
-  <mat-form-field [ngClass]="{ disabled: !isEditable }">
-    <input matInput placeholder="Name" formControlName="name" />
-    <mat-error>This field is required</mat-error>
-  </mat-form-field>
+  <div [ngClass]="{ disabled: !isEditable }">
+    <!-- Name -->
+    <mat-form-field>
+      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: isEditable }" />
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
 
-  <!-- Description -->
-  <mat-form-field [ngClass]="{ disabled: !isEditable }">
-    <textarea matInput placeholder="Description" formControlName="description"></textarea>
-  </mat-form-field>
+    <!-- Description -->
+    <mat-form-field>
+      <textarea matInput placeholder="Description" rows="5" formControlName="description" [ngClass]="{ editable: isEditable }"></textarea>
+    </mat-form-field>
+  </div>
 
-  <div *ngIf="!teamModal">
-    <div class="actions" *ngIf="!isEditable">
+  <div *ngIf="!modalMode">
+    <div *ngIf="!isEditable; else elseBlock">
       <button mat-raised-button color="primary" (click)="onEdit()">Edit</button>
       <button mat-raised-button color="warn" (click)="onDelete()">Delete</button>
     </div>
-    <div class="actions" *ngIf="isEditable">
+    <ng-template #elseBlock>
       <button mat-raised-button color="primary" (click)="onSave()" [disabled]="group.invalid">Save</button>
       <button mat-raised-button (click)="onCancel()">Cancle</button>
-    </div>
+    </ng-template>
   </div>
 </form>

@@ -1,17 +1,9 @@
-.title {
-  font-size: 25px;
+.wrapper {
+  border-bottom: solid 1px #ddd;
 }
 
 table {
   width: 100%;
-}
-
-button {
-  margin-top: 20px;
-}
-
-tr.mat-header-row {
-  height: 35px;
 }
 
 tr.mat-row {
@@ -24,4 +16,19 @@ th.mat-column-name {
 
 .highlight {
   background-color: #efefef;
+}
+
+button {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.mat-icon {
+  font-size: 18px;
+  margin-right: 5px;
+  margin-top: 4px;
+  padding: 0;
 }

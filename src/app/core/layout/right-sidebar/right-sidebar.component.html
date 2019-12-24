@@ -3,10 +3,11 @@
   <div *ngIf="architecturePage">
     <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
     <span (click)="openRightTab(1)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
-    <span (click)="openRightTab(2)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+    <span (click)="openRightTab(2)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
     <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
     <span (click)="openRightTab(4)" matTooltip="Scopes"><mat-icon>pages</mat-icon></span>
     <span (click)="openRightTab(5)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
+    <span (click)="openRightTab(6)" matTooltip="Reports" *ngIf="filterLevel"><mat-icon>bookmarks</mat-icon></span>
   </div>
 
   <!-- Show this tab when 0 objects selected in diagram (architecture page) -->
@@ -21,7 +22,7 @@
   <div *ngIf="reportLibraryPage">
     <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
     <span (click)="openRightTab(1)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
-    <span (click)="openRightTab(2)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+    <span (click)="openRightTab(2)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
     <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
     <span (click)="openRightTab(4)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
   </div>
@@ -29,7 +30,7 @@
   <!-- Attributes Page -->
   <div *ngIf="attributesPage">
     <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span (click)="openRightTab(1)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+    <span (click)="openRightTab(1)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
     <span (click)="openRightTab(2)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
     <span (click)="openRightTab(3)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
   </div>
@@ -37,7 +38,7 @@
   <!-- Workpackage Page -->
   <div *ngIf="workPackagePage">
     <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span (click)="openRightTab(1)" matTooltip="Properties"><mat-icon>insert_drive_file</mat-icon></span>
+    <span (click)="openRightTab(1)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
     <span (click)="openRightTab(2)" matTooltip="Objectives"><mat-icon>assignment_turned_in</mat-icon></span>
     <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
     <span (click)="openRightTab(4)" matTooltip="Change Summary"><mat-icon>change_history</mat-icon></span>

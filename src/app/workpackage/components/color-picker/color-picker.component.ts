@@ -8,6 +8,7 @@ import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angu
 })
 export class WorkPackageColorComponent {
   @Input() workpackageColour: string;
+  @Input() isEditable: boolean;
   @Output() selectColour = new EventEmitter<string>();
 
   constructor() {}
@@ -35,7 +36,7 @@ export class WorkPackageColorComponent {
     ];
   }
 
-  onSelect(colour: string) {
+  onSelect(colour: string): void {
     this.workpackageColour = colour;
     this.selectColour.emit(colour);
   }

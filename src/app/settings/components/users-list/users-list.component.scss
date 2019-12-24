@@ -1,15 +1,25 @@
+.mat-form-field {
+  width: 100%;
+}
+
 table {
   width: 100%;
-  border: solid 1px #ddd;
 }
 
 .mat-row {
   cursor: pointer;
-  &:hover {
-    background-color: #efefef;
+  &:nth-child(even){
+    background-color: #f9f9f9;
+  }
+  &.highlight {
+    background-color: #d1d1d1;
   }
 }
 
-.highlight {
-  background-color: #efefef;
+.mat-cell {
+  border: none;
+}
+
+.no-data-found {
+  text-align: center;
 }

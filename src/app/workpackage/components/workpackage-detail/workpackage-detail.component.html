@@ -1,15 +1,27 @@
 <form [formGroup]="group">
   <!-- Name -->
-  <mat-form-field [ngClass]="{ disabled: !isEditable }">
-    <input
-      matInput
-      placeholder="Name"
-      formControlName="name"
-      data-hook="workpackage-detail-name"
-      [ngClass]="{ editable: isEditable }"
-    />
-    <mat-error>This field is required!</mat-error>
-  </mat-form-field>
+  <div style="display: flex">
+    <div style="flex-grow: 1">
+      <mat-form-field [ngClass]="{ disabled: !isEditable }">
+        <input
+          matInput
+          placeholder="Name"
+          formControlName="name"
+          data-hook="workpackage-detail-name"
+          [ngClass]="{ editable: isEditable }"
+        />
+        <mat-error>This field is required!</mat-error>
+      </mat-form-field>
+    </div>
+    <div style="padding: 5px 10px 5px 25px;">
+      <smi-color-picker 
+        matTooltip="Work package display colour" 
+        [workpackageColour]="workpackageColour" 
+        (selectColour)="onSelectColour($event)"
+        [isEditable]="isEditable">
+      </smi-color-picker>
+    </div>
+  </div>
 
   <!-- Description -->
   <mat-form-field [ngClass]="{ disabled: !isEditable }">
@@ -77,6 +89,14 @@
         data-hook="workpackage-detail-edit"
       >
         Edit
+      </button>
+      <button 
+        type="button" 
+        mat-raised-button 
+        (click)="onOpen()"
+        data-hook="workpackage-detail-edit"
+        *ngIf="getWorkPackageStatus()">
+        Open
       </button>
       <button
         type="button"

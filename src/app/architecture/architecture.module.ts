@@ -55,7 +55,6 @@ import { AttributesTabComponent } from './components/attributes-tab/attributes-t
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
 import { WorkPackageTabTableComponent } from './components/workpackage-tab-table/workpackage-tab-table.component';
-import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { LayerPipe } from './pipes/layer.pipe';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
@@ -76,6 +75,8 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
 import { ScopeTableComponent } from './components/scope-table/scope-table.component';
 import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-modal.component';
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
+import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
+import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
 
 @NgModule({
   imports: [
@@ -132,7 +133,6 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
     AttributesTabComponent,
     DeleteLinkModalComponent,
     WorkPackageTabTableComponent,
-    WorkPackageColorComponent,
     LayerPipe,
     AttributeModalComponent,
     AttributeDetailComponent,
@@ -148,7 +148,9 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
     ArchitectureTableViewComponent,
     ScopeTableComponent,
     NodeScopeModalComponent,
-    NewChildrenModalComponent
+    NewChildrenModalComponent,
+    SearchTableViewComponent,
+    ReportsTabComponent
   ],
   entryComponents: [
     DeleteModalComponent,
