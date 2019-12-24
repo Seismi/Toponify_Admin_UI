@@ -5,9 +5,12 @@ import {
   OwnersEntityOrApproversEntity,
   WorkPackageApiRequest,
   WorkPackageEntitiesHttpParams,
-  WorkPackageEntitiesResponse
+  WorkPackageEntitiesResponse,
+  WorkPackageDetailApiResponse,
+  CustomPropertiesEntity
 } from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
+import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class WorkPackageService {
@@ -66,6 +69,16 @@ export class WorkPackageService {
 
   deleteRadio(workPackageId: string, radioId: string): Observable<any> {
     return this.http.delete<any>(`/workpackages/${workPackageId}/radios/${radioId}`);
+  }
+
+  updateProperty(workPackageId: string, customPropertyId: string, data: CustomPropertiesEntity): Observable<WorkPackageDetailApiResponse> {
+    return this.http.put<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`, {data: data},
+      this.httpOptions
+    );
+  }
+
+  deleteProperty(workPackageId: string, customPropertyId: string): Observable<WorkPackageDetailApiResponse> {
+    return this.http.delete<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`);
   }
 
   // TODO: move into sharable service

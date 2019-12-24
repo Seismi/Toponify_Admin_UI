@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {CustomPropertyApiRequest, NodeDetailApiResponse, NodeExpandedStateApiRequest, NodesApiResponse} from '../store/models/node.model';
+import {CustomPropertyApiRequest, NodeDetailApiResponse, NodeExpandedStateApiRequest, NodesApiResponse, NodeReportsApiResponse} from '../store/models/node.model';
 import { NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../store/models/node-link.model';
 
 export interface GetNodesRequestQueryParams {
@@ -80,6 +80,11 @@ export class NodeService {
       `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}/deleteRequest`,
       {}
     );
+  }
+
+  getReports(nodeId: string, queryParams?: GetNodesRequestQueryParams): Observable<NodeReportsApiResponse> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<NodeReportsApiResponse>(`/nodes/${nodeId}/reports`, { params: params });
   }
 
   // FIXME: define missing types

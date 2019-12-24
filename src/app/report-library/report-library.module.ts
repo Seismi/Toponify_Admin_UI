@@ -35,6 +35,8 @@ import { PropertiesTableInReportsPageComponent } from './components/properties-t
 import { WorkPackageTableInReportsPageComponent } from './components/workpackage-table/workpackage-table.component';
 import { ReportModalComponent } from './containers/report-modal/report-modal.component';
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
+import { TableHeaderComponent } from '@app/report-library/components/table-header/table-header.component';
+import { ReportRightSideComponent } from './components/right-side/right-side.component';
 
 @NgModule({
   imports: [
@@ -72,7 +74,9 @@ import { ReportDeleteModalComponent } from './containers/report-delete-modal/rep
     PropertiesTableInReportsPageComponent,
     WorkPackageTableInReportsPageComponent,
     ReportModalComponent,
-    ReportDeleteModalComponent
+    ReportDeleteModalComponent,
+    TableHeaderComponent,
+    ReportRightSideComponent
   ],
   entryComponents: [ReportModalComponent, ReportDeleteModalComponent],
   providers: [ReportService]

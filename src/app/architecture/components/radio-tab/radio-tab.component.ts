@@ -11,7 +11,7 @@ import { Constants } from '@app/core/constants';
   styleUrls: ['./radio-tab.component.scss']
 })
 export class RadioTabComponent {
-  @Input() workPackageIsEditable: boolean;
+  @Input() nodeCategory: string;
 
   @Input()
   set data(data: NodeDetail[]) {
@@ -35,11 +35,18 @@ export class RadioTabComponent {
   @Output()
   openRadio = new EventEmitter<RadioDetail>();
 
+  @Output()
+  assignRadio = new EventEmitter<void>();
+
   onAdd(): void {
     this.addRadio.emit();
   }
 
   onOpen(radio: RadioDetail) {
     this.openRadio.emit(radio);
+  }
+
+  onAssignRadio(): void {
+    this.assignRadio.emit();
   }
 }

@@ -90,6 +90,14 @@
       >
         Edit
       </button>
+      <button 
+        type="button" 
+        mat-raised-button 
+        (click)="onOpen()"
+        data-hook="workpackage-detail-edit"
+        *ngIf="getWorkPackageStatus()">
+        Open
+      </button>
       <button
         type="button"
         mat-raised-button
