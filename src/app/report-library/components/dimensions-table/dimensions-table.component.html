@@ -5,6 +5,16 @@
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
 
+    <ng-container matColumnDef="filter">
+      <th mat-header-cell *matHeaderCellDef>Filter</th>
+      <td mat-cell *matCellDef="let element">{{ element.filter }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="reportingConcepts">
+      <th mat-header-cell *matHeaderCellDef>Reporting Concepts</th>
+      <td mat-cell *matCellDef="let element">{{ getConcepts(element) }}</td>
+    </ng-container>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
