@@ -20,6 +20,7 @@
       (selectScope)="onSelectScope($event)"
       (selectLayout)="onSelectLayout($event)"
       [selectedLayout]="selectedLayout$ | async"
+      (addLayout)="onAddLayout()"
     >
     </smi-quicklinks-actions>
   </app-toolbar-column>
