@@ -26,6 +26,7 @@
           matTooltip="Colour of the objects modified by this work package"
           [workpackageColour]="element.displayColour"
           (selectColour)="onSelectColour($event, element.id)"
+          [isEditable]="true"
         >
         </smi-color-picker>
       </td>
