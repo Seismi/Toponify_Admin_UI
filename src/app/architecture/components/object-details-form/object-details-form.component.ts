@@ -3,6 +3,12 @@ import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
+import { Node } from 'gojs';
+
+const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
+const dataSetCategories = ['physical', 'virtual', 'master data'];
+const dimensionCategories = ['dimension'];
+const reportingCategories = ['list', 'structure', 'key'];
 
 @Component({
   selector: 'smi-object-details-form',
@@ -29,6 +35,7 @@ export class ObjectDetailsFormComponent {
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
   @Input() viewLevel: number;
+  @Input() part: go.Part;
 
   constructor() {}
 
@@ -99,10 +106,24 @@ export class ObjectDetailsFormComponent {
     this.deleteRelatedAttribute.emit();
   }
 
+  getCategories(): string[] {
+    switch (this.part.data.layer) {
+      case 'system':
+        return (this.part instanceof Node) ? systemCategories : ['master data', 'data'];
+      case 'data set':
+        return (this.part instanceof Node) ? dataSetCategories : ['master data', 'data'];
+      case 'dimension':
+        return (this.part instanceof Node) ? dimensionCategories : ['master data'];
+      case 'reporting concept':
+        return (this.part instanceof Node) ? reportingCategories : ['master data'];
+    }
+  }
+
   nodeIsEditable(): boolean {
     if (!this.workPackageIsEditable || this.nodeCategory === 'copy') {
       return true;
     }
     return false;
   }
+
 }

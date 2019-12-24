@@ -167,6 +167,7 @@
         (selectNode)="onSelectNode($event)"
         [links]="links | layer: { byId: false, params: params }"
         [viewLevel]="viewLevel$ | async"
+        [part]="part"
         (assignRadio)="onAssignRadio()"
         [nodeCategory]="part?.data.category"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"

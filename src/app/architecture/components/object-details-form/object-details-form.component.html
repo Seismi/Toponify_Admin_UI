@@ -5,7 +5,11 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Category" formControlName="category" [readonly]="true" />
+      <mat-select formControlName="category" [ngClass]="{ editable: !nodeIsEditable() }">
+        <mat-option *ngFor="let category of getCategories()" [value]="category">
+          {{ category }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field>

@@ -41,6 +41,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() multipleSelected = false;
   @Input() nodeScopes: WorkPackageNodeScopes[];
   @Input() viewLevel: number;
+  @Input() part: go.Part;
   @Input() filterLevel: string;
   @Input() nodeReports: NodeReports[];
 
