@@ -13,6 +13,7 @@ export class RightSideBarComponent {
   @Input() architectureRadioTab = false;
   @Input() architectureDetailsTab = false;
   @Input() radioPage = false;
+  @Input() filterLevel: string;
 
   @Output() rightTab = new EventEmitter<number>();
 

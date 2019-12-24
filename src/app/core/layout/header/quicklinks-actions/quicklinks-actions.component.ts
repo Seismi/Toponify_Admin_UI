@@ -8,7 +8,6 @@ import { ScopeEntity, ScopeDetails } from '@app/scope/store/models/scope.model';
 })
 export class QuicklinksActionsComponent implements OnInit {
   @Input() gojsView = false;
-  @Input() allowEditLayouts: string;
   @Input() scopes: any;
   @Input() layouts: any;
   @Input() selectedScope: ScopeEntity;
@@ -22,13 +21,7 @@ export class QuicklinksActionsComponent implements OnInit {
   @Output()
   selectLayout = new EventEmitter();
 
-  ngOnInit() {
-    this.allowEditLayouts = 'brush';
-  }
-
-  allowEditLayout() {
-    this.editLayout.emit();
-  }
+  ngOnInit() { }
 
   onSelectScope(id) {
     this.selectScope.emit(id);

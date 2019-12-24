@@ -1,7 +1,7 @@
 <form [formGroup]="group">
-  <div [ngClass]="{ disabled: !workPackageIsEditable }">
+  <div [ngClass]="{ disabled: nodeIsEditable() }">
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: workPackageIsEditable }" />
+      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: !nodeIsEditable() }" />
     </mat-form-field>
 
     <mat-form-field>
@@ -14,16 +14,16 @@
         placeholder="Description"
         rows="4"
         formControlName="description"
-        [ngClass]="{ editable: workPackageIsEditable }"
+        [ngClass]="{ editable: !nodeIsEditable() }"
       ></textarea>
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: workPackageIsEditable }" />
+      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: !nodeIsEditable() }" />
     </mat-form-field>
   </div>
 
-  <div class="form-group" *ngIf="workPackageIsEditable">
+  <div class="form-group" *ngIf="!nodeIsEditable()">
     <button mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
     <button mat-flat-button (click)="onCancel()">Cancel</button>
     <button mat-flat-button color="warn" (click)="onDelete()">Delete</button>
@@ -32,7 +32,7 @@
   <div>
     <smi-owners-table-in-architecture
       [data]="owners"
-      [isEditable]="workPackageIsEditable"
+      [isEditable]="!nodeIsEditable()"
       (addOwner)="onAddOwner()"
       (deleteOwner)="onDeleteOwner($event)"
     >
@@ -40,7 +40,7 @@
     <smi-descendants-table-in-architecture
       *ngIf="!clickedOnLink && !attributesPage && viewLevel !== 4"
       [data]="descendants"
-      [isEditable]="workPackageIsEditable"
+      [isEditable]="!nodeIsEditable()"
       (addDescendant)="onAddDescendant()"
       (deleteDescendant)="onDeleteDescendant($event)"
     >
