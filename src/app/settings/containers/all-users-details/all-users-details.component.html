@@ -7,6 +7,8 @@
     [isEditable]="isEditable"
     (editUser)="onEditUser()"
     (saveUser)="onSaveUser()"
-    (cancelEdit)="onCancelEdit()">
+    (cancelEdit)="onCancelEdit()"
+    [userStatus]="userStatus"
+    (deleteUser)="onDeleteUser()">
   </smi-my-user-form>
 </app-model-container>
