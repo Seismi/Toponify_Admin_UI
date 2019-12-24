@@ -6,6 +6,18 @@ tr.mat-row {
   background-color: #efefef;
 }
 
+.mat-icon {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.badge {
+  color: #fff;
+  margin-right: 5px;
+  padding: 7px 10px;
+}
+
 tr.mat-header-row {
   height: 40px;
 }

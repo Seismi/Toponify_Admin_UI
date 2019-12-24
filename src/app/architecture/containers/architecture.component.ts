@@ -51,7 +51,7 @@ import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/a
 import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
-import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
+import { AddScope, LoadScope, LoadScopes, ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
@@ -72,7 +72,8 @@ import {
   DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
-  WorkPackageNodeActionTypes
+  WorkPackageNodeActionTypes,
+  AddWorkPackageNodeRadio
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -80,7 +81,8 @@ import {
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode,
-  UpdateWorkPackageEntity
+  UpdateWorkPackageEntity,
+  WorkPackageActionTypes
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
@@ -143,6 +145,7 @@ import { RouterStateUrl } from '@app/core/store';
 import { Params } from '@angular/router';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
+import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 
 
 enum Events {
@@ -240,7 +243,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
-  @ViewChild(ArchitectureTableViewComponent) 
+  @ViewChild(ArchitectureTableViewComponent)
   private tableView: ArchitectureTableViewComponent;
 
   constructor(
@@ -457,7 +460,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
-        this.setWorkPackage(this.getWorkPackageId());
+        this.setWorkPackage([this.getWorkPackageId()]);
+        this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
 
@@ -471,14 +475,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
-        setTimeout(() => {
-          this.diagramChangesService.updatePartData(this.part, this.part.data);
-        }, 800);
       })
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(LayoutActionTypes.LoadLayoutSuccess)).subscribe(_ => {
+      this.actions.pipe(ofType(
+        LayoutActionTypes.LoadLayoutSuccess,
+        WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess
+        )).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
@@ -489,6 +493,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.ref.detectChanges();
       })
     );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(
+        ScopeActionTypes.AddScopeSuccess,
+        WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess)).subscribe(_ => {
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
+      })
+    )
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -1037,11 +1049,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  getWorkPackageId(): string[] {
+  onAssignRadio(): void {
+    const dialogRef = this.dialog.open(RadioListModalComponent, {
+      disableClose: false,
+      width: '650px',
+      height: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.workpackageStore.dispatch(new AddWorkPackageNodeRadio({
+          workPackageId: this.getWorkPackageId(),
+          nodeId: this.nodeId,
+          radioId: data.radio.id
+        }))
+      }
+    });
+
+    // Create new radio
+    dialogRef.componentInstance.addNewRadio.subscribe(() => {
+      this.onAddRelatedRadio();
+    });
+  }
+
+  getWorkPackageId(): string {
     if (this.workpackageId) {
-      return [this.workpackageId];
+      return this.workpackageId;
     } else {
-      return ['00000000-0000-0000-0000-000000000000'];
+      return '00000000-0000-0000-0000-000000000000';
     }
   }
 
@@ -1348,9 +1383,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (data && data.scope) {
         this.scopeStore.dispatch(new AddWorkPackageNodeScope({ scopeId: data.scope, data: [this.nodeId] }));
       }
-      setTimeout(() => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-      }, 150);
     });
   }
 
@@ -1373,9 +1405,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           })
         );
       }
-      setTimeout(() => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-      }, 150);
     });
   }
 

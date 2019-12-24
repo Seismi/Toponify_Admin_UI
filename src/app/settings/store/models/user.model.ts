@@ -43,12 +43,12 @@ export interface User {
 
 export interface UserDetails {
   id?: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   team?: (OwnersEntityOrViewersEntity)[] | null;
-  email: string;
-  phone: string;
-  roles?: string[];
+  email?: string;
+  phone?: string;
+  roles?: (RolesEntity)[] | null;
   password?: string;
   userStatus?: string;
   layerFilter?: string;
