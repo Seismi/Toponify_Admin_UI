@@ -17,8 +17,8 @@ import {
   SupersedeWorkpackage,
   UpdateWorkPackageEntity,
   WorkPackageActionTypes,
-  SetWorkpackageDisplayColour,
-  SetSelectedWorkPackages
+  UpdateCustomProperty,
+  DeleteCustomProperty
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
@@ -28,8 +28,7 @@ import { WorkPackageDetailService } from '@app/workpackage/components/workpackag
 import {
   OwnersEntityOrApproversEntity,
   TeamEntityOrOwnersEntityOrApproversEntity,
-  WorkPackageDetail,
-  WorkPackageEntity
+  WorkPackageDetail
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -43,9 +42,12 @@ import { RadioEffects } from '@app/radio/store/effects/radio.effects';
 import { Actions, ofType } from '@ngrx/effects';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { RadioDetailModalComponent } from '@app/workpackage/containers/radio-detail-modal/radio-detail-modal.component';
+import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
+import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
+import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import { getWorkPackagesQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
+import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 
@@ -330,6 +332,51 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         radio: radio
       }
     });
+  }
+
+  onEditProperties(customProperty: CustomPropertyValuesEntity): void {
+    const dialogRef = this.dialog.open(DocumentModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        mode: 'edit',
+        customProperties: customProperty
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.customProperties) {
+        this.store.dispatch(
+          new UpdateCustomProperty({
+            workPackageId: this.workpackageId,
+            customPropertyId: customProperty.propertyId,
+            data: { data: { value: data.customProperties.value } }
+          })
+        );
+      }
+    });
+  }
+
+  onDeleteProperties(customProperty: CustomPropertyValuesEntity): void {
+    const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete',
+        name: customProperty.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(
+          new DeleteCustomProperty({
+            workPackageId: this.workpackageId,
+            customPropertyId: customProperty.propertyId
+          })
+        );
+      }
+    })
   }
 
   onOpenWorkPackage(): void {
