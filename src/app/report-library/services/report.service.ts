@@ -25,6 +25,7 @@ export class ReportService {
 
   getReports(queryParams?: GetReportLibraryRequestQueryParams): Observable<ReportLibraryApiResponse> {
     const params = toHttpParams(queryParams);
+    console.warn(queryParams);
     return this.http.get<ReportLibraryApiResponse>(`/reports`, { params: params });
   }
 
