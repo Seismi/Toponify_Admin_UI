@@ -360,6 +360,46 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.UpdateCustomProperty: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageActionTypes.UpdateCustomPropertySuccess: {
+      return {
+        ...state,
+        selectedWorkPackage: action.payload
+      };
+    }
+
+    case WorkPackageActionTypes.UpdateCustomPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteCustomProperty: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteCustomPropertySuccess: {
+      return {
+        ...state,
+        selectedWorkPackage: action.payload
+      };
+    }
+
+    case WorkPackageActionTypes.DeleteCustomPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
     case WorkPackageActionTypes.SubmitWorkpackage: {
       return {
         ...state,
