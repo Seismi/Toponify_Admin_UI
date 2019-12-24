@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { WorkPackageNodeFindPotential, WorkPackageNodeScopes } from '../models/workpackage.models';
 import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
-import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
 
 export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
@@ -55,7 +55,11 @@ export enum WorkPackageNodeActionTypes {
 
   FindPotentialWorkpackageNodes = '[WorkPackage] Find Potential Workpackage Nodes',
   FindPotentialWorkpackageNodesSuccess = '[WorkPackage] Find Potential Workpackage Nodes Success',
-  FindPotentialWorkpackageNodesFailure = '[WorkPackage] Find Potential Workpackage Nodes Failure'
+  FindPotentialWorkpackageNodesFailure = '[WorkPackage] Find Potential Workpackage Nodes Failure',
+
+  AddWorkPackageNodeRadio = '[WorkPackage] Add Node Radio',
+  AddWorkPackageNodeRadioSuccess = '[WorkPackage] Add Node Radio Success',
+  AddWorkPackageNodeRadioFailure = '[WorkPackage] Add Node Radio Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -253,6 +257,21 @@ export class FindPotentialWorkpackageNodesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddWorkPackageNodeRadio implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadio;
+  constructor(public payload: { workPackageId: string; nodeId: string, radioId: string }) {}
+}
+
+export class AddWorkPackageNodeRadioSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class AddWorkPackageNodeRadioFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
@@ -292,4 +311,7 @@ export type WorkPackageNodeActionsUnion =
   | DeleteWorkPackageNodeScopeFailure
   | FindPotentialWorkpackageNodes
   | FindPotentialWorkpackageNodesSuccess
-  | FindPotentialWorkpackageNodesFailure;
+  | FindPotentialWorkpackageNodesFailure
+  | AddWorkPackageNodeRadio
+  | AddWorkPackageNodeRadioSuccess
+  | AddWorkPackageNodeRadioFailure;

@@ -35,6 +35,33 @@ export interface LayoutDetails {
   owners?: (OwnersEntityOrViewersEntity)[] | null;
   viewers?: (OwnersEntityOrViewersEntity)[] | null;
   scope: Scope;
+  settings?: LayoutSettings;
+}
+
+export interface LayoutSettings {
+  components?: LayoutComponents;
+  links?: LayoutLinks;
+}
+
+export interface LayoutComponents {
+  showTags: boolean;
+  showRADIO: boolean;
+  filterRADIOSeverity: number;
+  showDescription: boolean;
+  showOwners: boolean;
+  showNextLevel: boolean;
+  showAttributes: boolean;
+  showRules: boolean;
+}
+
+export interface LayoutLinks {
+  showDataLinks: boolean;
+  showMasterDataLinks: boolean;
+  showName: boolean;
+  showRADIO: boolean;
+  filterRADIOSeverity: number;
+  showAttributes: boolean;
+  showRules: boolean;
 }
 
 export interface OwnersEntityOrViewersEntity {

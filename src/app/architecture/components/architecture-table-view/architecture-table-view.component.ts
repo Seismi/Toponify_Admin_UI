@@ -67,8 +67,4 @@ export class ArchitectureTableViewComponent implements OnInit {
     this.isSingleClick = false;
     this.changeLevel.emit(row);
   }
-
-  getNodeName(id: string): Observable<string> {
-    return this.nodeStore.select(getNodeEntityById, { id }).pipe(map(node => node.name));
-  }
 }

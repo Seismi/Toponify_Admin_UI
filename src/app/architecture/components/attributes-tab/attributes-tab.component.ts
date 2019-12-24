@@ -9,6 +9,7 @@ import { AttributesEntity } from '@app/architecture/store/models/node-link.model
 })
 export class AttributesTabComponent {
   @Input() workPackageIsEditable: boolean;
+  @Input() nodeCategory: string;
 
   @Input()
   set data(data: AttributesEntity[]) {
@@ -28,5 +29,12 @@ export class AttributesTabComponent {
 
   onAdd(): void {
     this.addAttribute.emit();
+  }
+
+  nodeIsEditable(): boolean {
+    if (!this.workPackageIsEditable || this.nodeCategory === 'copy') {
+      return true;
+    }
+    return false;
   }
 }
