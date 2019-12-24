@@ -51,7 +51,7 @@ import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/a
 import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
-import { AddScope, LoadScope, LoadScopes } from '@app/scope/store/actions/scope.actions';
+import { AddScope, LoadScope, LoadScopes, ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
@@ -81,7 +81,8 @@ import {
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode,
-  UpdateWorkPackageEntity
+  UpdateWorkPackageEntity,
+  WorkPackageActionTypes
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
@@ -460,6 +461,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
         this.setWorkPackage([this.getWorkPackageId()]);
+        this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
 
@@ -491,6 +493,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.ref.detectChanges();
       })
     );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(
+        ScopeActionTypes.AddScopeSuccess,
+        WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess)).subscribe(_ => {
+        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
+      })
+    )
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -1373,9 +1383,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (data && data.scope) {
         this.scopeStore.dispatch(new AddWorkPackageNodeScope({ scopeId: data.scope, data: [this.nodeId] }));
       }
-      setTimeout(() => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-      }, 150);
     });
   }
 
@@ -1398,9 +1405,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           })
         );
       }
-      setTimeout(() => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-      }, 150);
     });
   }
 

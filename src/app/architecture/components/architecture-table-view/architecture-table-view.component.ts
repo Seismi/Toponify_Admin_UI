@@ -9,8 +9,8 @@ import { State as NodeState } from '@app/architecture/store/reducers/architectur
 import { getNodeEntityById } from '@app/architecture/store/selectors/node.selector';
 import { map } from 'rxjs/operators';
 
-const SystemColumns = ['category', 'name', 'description', 'tags', 'r', 'a', 'd', 'i', 'o', 'owner'];
-const LinkColumns = ['category', 'name', 'description', 'tags', 'r', 'a', 'd', 'i', 'o', 'owner', 'source', 'target'];
+const SystemColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner'];
+const LinkColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target'];
 
 @Component({
   selector: 'smi-architecture-table-view',
