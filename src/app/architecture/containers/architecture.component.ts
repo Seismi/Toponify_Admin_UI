@@ -72,7 +72,8 @@ import {
   DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
-  WorkPackageNodeActionTypes
+  WorkPackageNodeActionTypes,
+  AddWorkPackageNodeRadio
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -143,6 +144,7 @@ import { RouterStateUrl } from '@app/core/store';
 import { Params } from '@angular/router';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
+import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 
 
 enum Events {
@@ -240,7 +242,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
-  @ViewChild(ArchitectureTableViewComponent) 
+  @ViewChild(ArchitectureTableViewComponent)
   private tableView: ArchitectureTableViewComponent;
 
   constructor(
@@ -457,7 +459,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
-        this.setWorkPackage(this.getWorkPackageId());
+        this.setWorkPackage([this.getWorkPackageId()]);
       })
     );
 
@@ -471,14 +473,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
-        setTimeout(() => {
-          this.diagramChangesService.updatePartData(this.part, this.part.data);
-        }, 800);
       })
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(LayoutActionTypes.LoadLayoutSuccess)).subscribe(_ => {
+      this.actions.pipe(ofType(
+        LayoutActionTypes.LoadLayoutSuccess,
+        WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess
+        )).subscribe(_ => {
         this.eventEmitter.next(Events.NodesLinksReload);
       })
     );
@@ -1037,11 +1039,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  getWorkPackageId(): string[] {
+  onAssignRadio(): void {
+    const dialogRef = this.dialog.open(RadioListModalComponent, {
+      disableClose: false,
+      width: '650px',
+      height: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.workpackageStore.dispatch(new AddWorkPackageNodeRadio({
+          workPackageId: this.getWorkPackageId(),
+          nodeId: this.nodeId,
+          radioId: data.radio.id
+        }))
+      }
+    });
+
+    // Create new radio
+    dialogRef.componentInstance.addNewRadio.subscribe(() => {
+      this.onAddRelatedRadio();
+    });
+  }
+
+  getWorkPackageId(): string {
     if (this.workpackageId) {
-      return [this.workpackageId];
+      return this.workpackageId;
     } else {
-      return ['00000000-0000-0000-0000-000000000000'];
+      return '00000000-0000-0000-0000-000000000000';
     }
   }
 

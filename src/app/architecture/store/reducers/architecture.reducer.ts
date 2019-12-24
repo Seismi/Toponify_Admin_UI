@@ -176,6 +176,20 @@ export function reducer(
       };
     }
 
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeRadioFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
     case ViewActionTypes.ViewModel: {
       return {
         ...state,
