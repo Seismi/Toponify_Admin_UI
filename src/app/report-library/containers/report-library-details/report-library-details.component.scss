@@ -7,8 +7,14 @@ button {
 
 .rightPane {
   padding-left: 7px;
+  background-color: #fff;
 }
 
 .detailsTabContainer {
   padding: 10px;
+}
+
+app-model-container {
+  position: relative;
+  background-color: #eee;
 }

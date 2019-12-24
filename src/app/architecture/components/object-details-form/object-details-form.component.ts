@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { OwnersEntityOrTeamEntityOrApproversEntity, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 
@@ -12,6 +12,7 @@ import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 export class ObjectDetailsFormComponent {
   public group: FormGroup;
   private values;
+  @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input('group') set setGroup(group) {
@@ -96,5 +97,12 @@ export class ObjectDetailsFormComponent {
 
   onDeleteRelatedAttribute(): void {
     this.deleteRelatedAttribute.emit();
+  }
+
+  nodeIsEditable(): boolean {
+    if (!this.workPackageIsEditable || this.nodeCategory === 'copy') {
+      return true;
+    }
+    return false;
   }
 }

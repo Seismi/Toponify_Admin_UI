@@ -17,8 +17,13 @@ export class LayoutsDropdownComponent {
   }
 
   @Output() selectLayout = new EventEmitter<string>();
+  @Output() addLayout = new EventEmitter<void>();
 
   onSelect(selectChange: MatSelectChange): void {
     this.selectLayout.emit(selectChange.value);
+  }
+
+  onAdd(): void {
+    this.addLayout.emit();
   }
 }
