@@ -8,7 +8,7 @@ import { ScopesAndLayoutsValidatorService } from '@app/scopes-and-layouts/compon
   selector: 'smi-scope-and-layout-modal',
   templateUrl: './scope-and-layout-modal.component.html',
   styleUrls: ['./scope-and-layout-modal.component.scss'],
-  providers: [ScopesAndLayoutsDetailService, ScopesAndLayoutsValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
+  providers: [ScopesAndLayoutsDetailService, ScopesAndLayoutsValidatorService]
 })
 export class ScopeAndLayoutModalComponent implements OnInit {
 
