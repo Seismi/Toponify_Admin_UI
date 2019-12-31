@@ -58,7 +58,13 @@ import {
   UpdateWorkPackageEntity,
   UpdateWorkPackageEntityFailure,
   UpdateWorkPackageEntitySuccess,
-  WorkPackageActionTypes
+  WorkPackageActionTypes,
+  UpdateCustomProperty,
+  UpdateCustomPropertySuccess,
+  UpdateCustomPropertyFailure,
+  DeleteCustomProperty,
+  DeleteCustomPropertySuccess,
+  DeleteCustomPropertyFailure
 } from '../actions/workpackage.actions';
 import {
   OwnersEntityOrApproversEntity,
@@ -70,6 +76,7 @@ import {
 } from '../models/workpackage.models';
 import { State as WorkpackageState } from '../reducers/workpackage.reducer';
 import { Store } from '@ngrx/store';
+import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class WorkPackageEffects {
@@ -223,6 +230,33 @@ export class WorkPackageEffects {
         switchMap((response: any) => [new DeleteRadioSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteRadioFailure(error)))
       );
+    })
+  );
+
+  @Effect()
+  updateCustomProperty$ = this.actions$.pipe(
+    ofType<UpdateCustomProperty>(WorkPackageActionTypes.UpdateCustomProperty),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertyValuesEntity }}) => {
+      return this.workpackageService.updateProperty(payload.workPackageId, payload.customPropertyId, payload.data.data)
+        .pipe(
+          switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
+          catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
+        );
+      }
+    )
+  );
+
+  @Effect()
+  deleteCustomProperty$ = this.actions$.pipe(
+    ofType<DeleteCustomProperty>(WorkPackageActionTypes.DeleteCustomProperty),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; customPropertyId: string }) => {
+      return this.workpackageService.deleteProperty(payload.workPackageId, payload.customPropertyId)
+        .pipe(
+          map(response => new DeleteCustomPropertySuccess(response.data)),
+          catchError((error: Error) => of(new DeleteCustomPropertyFailure(error)))
+        );
     })
   );
 

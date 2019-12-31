@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as UserState } from '../../store/reducers/user.reducer';
 import { getUserRolesEntities } from '@app/settings/store/selectors/user.selector';
+import { LoadUserRoles } from '@app/settings/store/actions/user.actions';
 
 @Component({
   selector: 'smi-user-modal',
@@ -37,6 +38,7 @@ export class UserModalComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.userStore.dispatch(new LoadUserRoles());
     this.teams$ = this.store.pipe(select(getTeamEntities));
     this.roles$ = this.userStore.pipe(select(getUserRolesEntities));
   }

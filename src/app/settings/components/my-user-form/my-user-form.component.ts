@@ -12,6 +12,7 @@ import { RolesEntity } from '@app/settings/store/models/user.model';
 export class MyUserFormComponent {
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
+  @Input() userStatus: string;
 
   @Input() set team(team: any) {
     this.teams = team;
@@ -32,6 +33,7 @@ export class MyUserFormComponent {
   @Output() editUser = new EventEmitter<void>();
   @Output() cancelEdit = new EventEmitter<void>();
   @Output() changePassword = new EventEmitter<void>();
+  @Output() deleteUser = new EventEmitter<void>();
 
   onSave(): void {
     this.saveUser.emit();
@@ -53,4 +55,7 @@ export class MyUserFormComponent {
     return option && option2 ? option.id === option2.id : option === option2;
   }
 
+  onDelete(): void {
+    this.deleteUser.emit();
+  }
 }

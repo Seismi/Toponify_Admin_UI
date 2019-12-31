@@ -34,6 +34,8 @@
             (supersede)="supersedeWorkpackage()"
             [workpackageColour]="workpackage?.displayColour"
             (selectColour)="onSelectWorkPackageColour($event)"
+            (openWorkPackage)="onOpenWorkPackage()"
+            [workPackageStatus]="workPackageStatus"
           >
           </smi-workpackage-detail>
         </p>
@@ -42,7 +44,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
-        <smi-properties-table data-hook="workpackage-page-properties-table" [data]="workpackage?.customPropertyValues">
+        <smi-properties-table
+          data-hook="workpackage-page-properties-table"
+          [statusDraft]="statusDraft"
+          [data]="workpackage?.customPropertyValues"
+          (editProperties)="onEditProperties($event)"
+          (deleteProperties)="onDeleteProperties($event)">
         </smi-properties-table>
       </mat-tab>
       <mat-tab>

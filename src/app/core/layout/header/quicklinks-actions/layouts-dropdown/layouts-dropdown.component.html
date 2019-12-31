@@ -1,7 +1,9 @@
-<mat-form-field floatLabel="never" appearance="none">
+<mat-form-field floatLabel="never" appearance="none" 
+  matTooltip="Layout - Each layout is a different way to organise the components">
   <mat-select [value]="selectedLayout?.id" (selectionChange)="onSelect($event)">
     <mat-option *ngFor="let layout of layouts?.layouts" [value]="layout.id">
       {{ layout.name }}
     </mat-option>
+    <button mat-flat-button color="primary" (click)="onAdd()">Create New</button>
   </mat-select>
 </mat-form-field>
