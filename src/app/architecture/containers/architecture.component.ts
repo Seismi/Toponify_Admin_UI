@@ -1465,7 +1465,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap(params => {
           const queryParams = {
-            workPackageQuery: params.workpackages,
+            workPackageQuery: params.workpackages || [],
             scopeQuery: params.scope,
             format: 'csv'
           };

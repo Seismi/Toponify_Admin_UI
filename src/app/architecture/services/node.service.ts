@@ -34,11 +34,11 @@ const httpOptions = {
 export class NodeService {
   constructor(private http: HttpClient) {}
 
-  getNodes(queryParams?: GetNodesRequestQueryParams): Observable<NodesApiResponse> {
+  getNodes(queryParams?: GetNodesRequestQueryParams): Observable<any> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
-    return this.http.get<NodesApiResponse>(`/nodes`, {
+    return this.http.get(`/nodes`, {
       params: params,
-      responseType: queryParams.format ? 'text' : 'json'
+      responseType: queryParams.format ? 'text' as 'json' : 'json'
     });
   }
 
@@ -49,11 +49,11 @@ export class NodeService {
     });
   }
 
-  getNodeLinks(queryParams?: GetLinksRequestQueryParams): Observable<NodeLinksApiResponse> {
+  getNodeLinks(queryParams?: GetLinksRequestQueryParams): Observable<any> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
-    return this.http.get<NodeLinksApiResponse>(`/nodelinks`, {
+    return this.http.get(`/nodelinks`, {
       params: params,
-      responseType: queryParams.format ? 'text' : 'json'
+      responseType: queryParams.format ? 'text' as 'json' : 'json'
     });
   }
 
