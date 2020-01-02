@@ -1223,6 +1223,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         workpackageId: this.workpackageId,
         nodeId: this.nodeId,
         scopeId: this.scopeId,
+        title: this.selectedNode.name,
         childrenOf: {
           id: null // Add node from the same level *not required*
         }
