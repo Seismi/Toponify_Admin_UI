@@ -46,38 +46,44 @@
         matTooltip="risks"
         [ngStyle]="{ 'background-color': 'orange' }"
         class="badge badge-pill"
-        *ngIf="element.relatedRadioCounts.risks > 0">
+        *ngIf="element.relatedRadioCounts.risks > 0"
+      >
         {{ element.relatedRadioCounts.risks }}
       </span>
       <span
         matTooltip="assumptions"
         [ngStyle]="{ 'background-color': 'yellow' }"
-        class="badge badge-pill" 
-        *ngIf="element.relatedRadioCounts.assumptions > 0">
+        class="badge badge-pill"
+        *ngIf="element.relatedRadioCounts.assumptions > 0"
+      >
         {{ element.relatedRadioCounts.assumptions }}
       </span>
       <span
         matTooltip="dependencies"
         [ngStyle]="{ 'background-color': 'blue' }"
-        class="badge badge-pill" 
-        *ngIf="element.relatedRadioCounts.dependencies > 0">
+        class="badge badge-pill"
+        *ngIf="element.relatedRadioCounts.dependencies > 0"
+      >
         {{ element.relatedRadioCounts.dependencies }}
       </span>
       <span
         matTooltip="issues"
         [ngStyle]="{ 'background-color': 'red' }"
         class="badge badge-pill"
-        *ngIf="element.relatedRadioCounts.issues > 0">
+        *ngIf="element.relatedRadioCounts.issues > 0"
+      >
         {{ element.relatedRadioCounts.issues }}
       </span>
       <span
         matTooltip="opportunities"
         [ngStyle]="{ 'background-color': 'green' }"
-        class="badge badge-pill" 
-        *ngIf="element.relatedRadioCounts.opportunities > 0">
+        class="badge badge-pill"
+        *ngIf="element.relatedRadioCounts.opportunities > 0"
+      >
         {{ element.relatedRadioCounts.opportunities }}
       </span>
-  </ng-container>
+    </td></ng-container
+  >
 
   <!-- Owner Column -->
   <ng-container matColumnDef="owner">
@@ -98,10 +104,18 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{ highlight: selectedItem?.id == row.id }"
-    (dblclick)="dblClick(row)" (click)="onSelect(row)"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    [ngClass]="{ highlight: selectedItem?.id == row.id }"
+    (dblclick)="dblClick(row)"
+    (click)="onSelect(row)"
+  ></tr>
 </table>
 
 <div *ngIf="!dataSource.filteredData.length" class="no-data-found">No data found</div>
 
-<mat-paginator [pageSizeOptions]="[10, 25, 50]" style="border-bottom: solid 1px #ddd"></mat-paginator>
+<div class="table-footer">
+  <button mat-icon-button (click)="downloadCSV()"><mat-icon title="Export as CSV">save_alt</mat-icon></button>
+  <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
+</div>

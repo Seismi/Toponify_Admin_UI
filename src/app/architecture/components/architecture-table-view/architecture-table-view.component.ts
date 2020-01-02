@@ -36,6 +36,7 @@ export class ArchitectureTableViewComponent implements OnInit {
 
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
   @Output() changeLevel = new EventEmitter<Node | NodeLink>();
+  @Output() download = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -66,5 +67,10 @@ export class ArchitectureTableViewComponent implements OnInit {
   dblClick(row: Node | NodeLink) {
     this.isSingleClick = false;
     this.changeLevel.emit(row);
+  }
+
+  downloadCSV() {
+    this.download.emit();
+    console.log('download csv');
   }
 }

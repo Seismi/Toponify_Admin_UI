@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {CustomPropertyApiRequest, NodeDetailApiResponse, NodeExpandedStateApiRequest, NodesApiResponse, NodeReportsApiResponse} from '../store/models/node.model';
+import {
+  CustomPropertyApiRequest,
+  NodeDetailApiResponse,
+  NodeExpandedStateApiRequest,
+  NodesApiResponse,
+  NodeReportsApiResponse
+} from '../store/models/node.model';
 import { NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../store/models/node-link.model';
 
 export interface GetNodesRequestQueryParams {
@@ -9,6 +15,7 @@ export interface GetNodesRequestQueryParams {
   scopeQuery?: string;
   layoutQuery?: string;
   workPackageQuery: string[];
+  format?: string;
 }
 
 export interface GetLinksRequestQueryParams {
@@ -16,6 +23,7 @@ export interface GetLinksRequestQueryParams {
   scopeQuery?: string;
   layoutQuery?: string;
   workPackageQuery?: string[];
+  format?: string;
 }
 
 const httpOptions = {
@@ -28,7 +36,10 @@ export class NodeService {
 
   getNodes(queryParams?: GetNodesRequestQueryParams): Observable<NodesApiResponse> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
-    return this.http.get<NodesApiResponse>(`/nodes`, { params: params });
+    return this.http.get<NodesApiResponse>(`/nodes`, {
+      params: params,
+      responseType: queryParams.format ? 'text' : 'json'
+    });
   }
 
   getNode(id: string, queryParams?: GetNodesRequestQueryParams): Observable<NodeDetailApiResponse> {
@@ -41,7 +52,8 @@ export class NodeService {
   getNodeLinks(queryParams?: GetLinksRequestQueryParams): Observable<NodeLinksApiResponse> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<NodeLinksApiResponse>(`/nodelinks`, {
-      params: params
+      params: params,
+      responseType: queryParams.format ? 'text' : 'json'
     });
   }
 

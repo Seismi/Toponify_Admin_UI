@@ -67,7 +67,7 @@
       [viewLevel]="viewLevel$ | async"
     ></smi-switch-view-tabs>
     <smi-search-table-view
-      *ngIf="selectedView !== ArchitectureView.Diagram" 
+      *ngIf="selectedView !== ArchitectureView.Diagram"
       (search)="onSearchTableView($event)">
     </smi-search-table-view>
     <div style="padding: 5px" [hidden]="selectedView !== ArchitectureView.Diagram">
@@ -99,6 +99,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
+        (download)="onDownload(downloadingTemplate, 'node')"
         [view]="'system'"
         [filterValue]="tableViewFilterValue"
       ></smi-architecture-table-view>
@@ -109,6 +110,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
+        (download)="onDownload(downloadingTemplate, 'links')"
         [view]="'link'"
         [filterValue]="tableViewFilterValue"
       ></smi-architecture-table-view>
@@ -176,3 +178,7 @@
       </smi-right-panel></p
   ></app-model-sidebar>
 </app-model-container>
+
+<ng-template #downloadingTemplate>
+  <h3>Preparing...</h3>
+</ng-template>

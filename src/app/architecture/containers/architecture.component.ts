@@ -5,6 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -102,7 +103,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map, shareReplay, take } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -122,7 +123,7 @@ import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
-import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
+import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
@@ -146,7 +147,6 @@ import { Params } from '@angular/router';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
-
 
 enum Events {
   NodesLinksReload = 0
@@ -263,7 +263,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public actions: Actions,
-    private diagramLevelService: DiagramLevelService
+    private diagramLevelService: DiagramLevelService,
+    private nodeService: NodeService
   ) {}
 
   ngOnInit() {
@@ -479,12 +480,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(
-        LayoutActionTypes.LoadLayoutSuccess,
-        WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess
-        )).subscribe(_ => {
-        this.eventEmitter.next(Events.NodesLinksReload);
-      })
+      this.actions
+        .pipe(ofType(LayoutActionTypes.LoadLayoutSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess))
+        .subscribe(_ => {
+          this.eventEmitter.next(Events.NodesLinksReload);
+        })
     );
 
     this.subscriptions.push(
@@ -495,12 +495,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(
-        ScopeActionTypes.AddScopeSuccess,
-        WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess)).subscribe(_ => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-      })
-    )
+      this.actions
+        .pipe(ofType(ScopeActionTypes.AddScopeSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess))
+        .subscribe(_ => {
+          this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
+        })
+    );
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -642,7 +642,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.nodeStore.dispatch(new LoadNodeReports({nodeId: this.nodeId, queryParams: queryParams}));
+    this.nodeStore.dispatch(new LoadNodeReports({ nodeId: this.nodeId, queryParams: queryParams }));
     this.nodeReports$ = this.store.pipe(select(getNodeReports));
   }
 
@@ -716,7 +716,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditLayout(): void {
     this.allowMove = !this.allowMove;
     this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
-    (this.allowMove) ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
+    this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
   onZoomMap() {
@@ -1058,11 +1058,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.workpackageStore.dispatch(new AddWorkPackageNodeRadio({
-          workPackageId: this.getWorkPackageId(),
-          nodeId: this.nodeId,
-          radioId: data.radio.id
-        }))
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeRadio({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            radioId: data.radio.id
+          })
+        );
       }
     });
 
@@ -1414,20 +1416,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.store.dispatch(new UpdateLayout({
-      id: this.layout.id,
-      data: {
+    this.store.dispatch(
+      new UpdateLayout({
         id: this.layout.id,
-        name: this.layout.name,
-        scope: {
-          id: this.scopeId
-        },
-        settings: {
-          components: { ...this.layoutSettingsForm.get('components').value },
-          links: { ...this.layoutSettingsForm.get('links').value }
+        data: {
+          id: this.layout.id,
+          name: this.layout.name,
+          scope: {
+            id: this.scopeId
+          },
+          settings: {
+            components: { ...this.layoutSettingsForm.get('components').value },
+            links: { ...this.layoutSettingsForm.get('links').value }
+          }
         }
-      }
-    }))
+      })
+    );
   }
 
   onFilterRadioSeverity(): void {
@@ -1452,6 +1456,26 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.tableViewFilterValue = filterValue;
   }
 
+  onDownload(templateRef, type: 'node' | 'links') {
+    const dialogRef = this.dialog.open(templateRef, {
+      width: '250px'
+    });
+    this.routerStore
+      .select(getQueryParams)
+      .pipe(
+        switchMap(params => {
+          const queryParams = {
+            workPackageQuery: params.workpackages,
+            scopeQuery: params.scope,
+            format: 'csv'
+          };
+          if (type === 'node') {
+            return this.nodeService.getNodes(queryParams);
+          } else {
+            return this.nodeService.getNodeLinks(queryParams);
+          }
+        })
+      )
+      .subscribe(() => dialogRef.close(), () => dialogRef.close());
+  }
 }
-
-
