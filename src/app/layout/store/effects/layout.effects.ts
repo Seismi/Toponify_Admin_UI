@@ -15,11 +15,10 @@ import {
   UpdateLayoutApiResponse
 } from '../models/layout.model';
 import * as ScopeActions from '@app/scope/store/actions/scope.actions';
-import { SharedService } from '@app/services/shared-service';
 
 @Injectable()
 export class LayoutEffects {
-  constructor(private sharedService: SharedService, private actions$: Actions, private layoutService: LayoutService) {}
+  constructor(private actions$: Actions, private layoutService: LayoutService) {}
 
   @Effect()
   loadLayouts$ = this.actions$.pipe(
@@ -69,7 +68,13 @@ export class LayoutEffects {
     map(action => action.payload),
     switchMap((payload: { id: string; data: LayoutDetails }) => {
       return this.layoutService.updateLayout(payload.id, payload.data).pipe(
-        switchMap((resp: UpdateLayoutApiResponse) => [new LayoutActions.UpdateLayoutSuccess(resp)]),
+        switchMap((resp: UpdateLayoutApiResponse) => [
+          new LayoutActions.UpdateLayoutSuccess(resp),
+          new ScopeActions.UpdateScope({
+            id: payload.data.scope.id,
+            data: { id: payload.data.scope.id, name: payload.data.scope.name }
+          })
+        ]),
         catchError((error: HttpErrorResponse) => of(new LayoutActions.UpdateLayoutFailure(error)))
       );
     })
@@ -81,13 +86,7 @@ export class LayoutEffects {
     map(action => action.payload),
     switchMap((id: string) => {
       return this.layoutService.deleteLayout(id).pipe(
-        switchMap(_ => [
-          new LayoutActions.DeleteLayoutSuccess(id),
-          new ScopeActions.UpdateScope({
-            id: this.sharedService.scope.id,
-            data: { id: this.sharedService.scope.id, name: this.sharedService.scope.name }
-          })
-        ]),
+        switchMap(_ => [new LayoutActions.DeleteLayoutSuccess(id)]),
         catchError((error: HttpErrorResponse) => of(new LayoutActions.DeleteLayoutFailure(error)))
       );
     })

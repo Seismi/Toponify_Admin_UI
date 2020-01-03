@@ -23,6 +23,7 @@ export class DescendantsModalComponent implements OnInit {
   public nodeId: string;
   public childrenOf: WorkPackageNodeFindPotential;
   public components = new FormControl();
+  public title: string;
 
   @ViewChild('searchInput') searchInput: ElementRef;
 
@@ -35,6 +36,7 @@ export class DescendantsModalComponent implements OnInit {
     this.workpackageId = data.workpackageId;
     this.nodeId = data.nodeId;
     this.childrenOf = data.childrenOf;
+    this.title = data.title;
   }
 
   ngOnInit() {

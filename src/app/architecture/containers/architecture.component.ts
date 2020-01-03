@@ -32,7 +32,8 @@ import {
   NodeDetail,
   DescendantsEntity,
   OwnersEntityOrTeamEntityOrApproversEntity,
-  NodeReports
+  NodeReports,
+  Node
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -42,7 +43,7 @@ import {
   getNodeReports
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout } from '@app/layout/store/actions/layout.actions';
+import { LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout, AddLayout } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
@@ -55,8 +56,7 @@ import { AddScope, LoadScope, LoadScopes, ScopeActionTypes } from '@app/scope/st
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
-import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
-import { SharedService } from '@app/services/shared-service';
+import { ScopeAndLayoutModalComponent } from '@app/scopes-and-layouts/containers/scope-and-layout-modal/scope-and-layout-modal.component';
 import {
   DeleteWorkpackageLinkSuccess,
   WorkPackageLinkActionTypes,
@@ -127,8 +127,6 @@ import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { NodeLink } from '@app/architecture/store/models/node-link.model';
-import { Node } from '@app/architecture/store/models/node.model';
-import { LayoutModalComponent } from '@app/scopes-and-layouts/containers/layout-modal/layout-modal.component';
 import { getNodeScopes } from '../store/selectors/workpackage.selector';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
@@ -227,15 +225,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedLayout$: Observable<ScopeDetails>;
   editTabIndex: number;
   public parentName: string | null;
+  public workPackageName: string;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
   public layoutSettingsTab: boolean;
-  public scopeId: string;
+  public scope: ScopeDetails;
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
   public params: Params;
   public tableViewFilterValue: string;
+  public selectedWorkPackageEntities: WorkPackageEntity[];
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -248,7 +248,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   constructor(
     private layoutSettingsService: LayoutSettingsService,
-    private sharedService: SharedService,
     private teamStore: Store<TeamState>,
     private nodeStore: Store<NodeState>,
     private scopeStore: Store<ScopeState>,
@@ -267,6 +266,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.selectedWorkPackageEntities = workpackages;
+        if (workpackages.length <= 2) {
+          this.workPackageName = workpackages.map(workpackage => workpackage.name).join(' & ');
+        } else {
+          this.workPackageName = workpackages[0].name + ' & ' + workpackages[1].name + ' ...';
+        }
+      })
+    );
     this.subscriptions.push(
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
     );
@@ -376,7 +385,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
       if (scope) {
-        this.scopeId = scope.id;
+        this.scope = scope;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
         // this.filterService.addFilter({ scope: scope.id });
       }
@@ -556,6 +565,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
     }
   }
+
 
   selectColourForWorkPackage(data: { colour: string; id: string }) {
     this.workpackageStore.dispatch(
@@ -971,6 +981,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
+  onExitWorkPackageEditMode(): void {
+    this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
+  }
+
   onSelectScope(id) {
     this.scopeStore.dispatch(new LoadScope(id));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
@@ -1127,28 +1141,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddScope() {
-    const dialogRef = this.dialog.open(ScopeModalComponent, {
+  onAddScope(): void {
+    const dialogRef = this.dialog.open(ScopeAndLayoutModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: 'Scope'
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data) {
+      if (data && data.scopeAndLayout) {
         this.store.dispatch(
           new AddScope({
-            id: null,
-            name: data.scope.name,
-            owners: this.sharedService.selectedOwners,
-            viewers: this.sharedService.selectedViewers,
+            id: data.scopeAndLayout.id,
+            name: data.scopeAndLayout.name,
             layerFilter: this.currentFilterLevel.toLowerCase(),
             include: this.selectedMultipleNodes
           })
         );
       }
       this.selectedMultipleNodes = [];
-      this.sharedService.selectedOwners = [];
-      this.sharedService.selectedViewers = [];
     });
   }
 
@@ -1222,7 +1235,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       data: {
         workpackageId: this.workpackageId,
         nodeId: this.nodeId,
-        scopeId: this.scopeId,
+        scopeId: this.scope.id,
+        title: this.selectedNode.name,
         childrenOf: {
           id: null // Add node from the same level *not required*
         }
@@ -1342,13 +1356,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddLayout(): void {
-    this.dialog.open(LayoutModalComponent, {
+    const dialogRef = this.dialog.open(ScopeAndLayoutModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        scope: {
-          id: this.scopeId
-        }
+        title: 'Layout'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.scopeAndLayout) {
+        this.store.dispatch(
+          new AddLayout({
+            id: data.scopeAndLayout.id,
+            name: data.scopeAndLayout.name,
+            scope: this.scope
+          })
+        );
       }
     });
   }
@@ -1387,19 +1411,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddNewScope(): void {
-    const dialogRef = this.dialog.open(ScopeModalComponent, {
+    const dialogRef = this.dialog.open(ScopeAndLayoutModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: 'Scope'
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data) {
+      if (data && data.scopeAndLayout) {
         this.store.dispatch(
           new AddScope({
-            id: null,
-            name: data.scope.name,
-            owners: this.sharedService.selectedOwners,
-            viewers: this.sharedService.selectedViewers,
+            id: data.scopeAndLayout.id,
+            name: data.scopeAndLayout.name,
             layerFilter: this.currentFilterLevel.toLowerCase(),
             include: [{ id: this.nodeId }]
           })
@@ -1420,7 +1445,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         id: this.layout.id,
         name: this.layout.name,
         scope: {
-          id: this.scopeId
+          id: this.scope.id
         },
         settings: {
           components: { ...this.layoutSettingsForm.get('components').value },
