@@ -17,29 +17,30 @@ import {
   LoadNode,
   LoadNodeLink,
   LoadNodeLinks,
+  LoadNodeReports,
   LoadNodes,
   LoadNodeUsageView,
+  NodeActionTypes,
   UpdateCustomProperty,
   UpdateLinks,
-  UpdateNodeLocations,
   UpdateNodeExpandedState,
-  NodeActionTypes,
-  LoadNodeReports
+  UpdateNodeLocations
 } from '@app/architecture/store/actions/node.actions';
-import { NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
+import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
   CustomPropertyValuesEntity,
-  NodeDetail,
   DescendantsEntity,
-  OwnersEntityOrTeamEntityOrApproversEntity,
-  NodeReports
+  Node,
+  NodeDetail,
+  NodeReports,
+  OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
   getNodeLinks,
+  getNodeReports,
   getSelectedNode,
-  getSelectedNodeLink,
-  getNodeReports
+  getSelectedNodeLink
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout } from '@app/layout/store/actions/layout.actions';
@@ -48,7 +49,7 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
-import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
+import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { AddScope, LoadScope, LoadScopes, ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
@@ -58,31 +59,28 @@ import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/s
 import { ScopeModalComponent } from '@app/scopes-and-layouts/containers/scope-modal/scope-modal.component';
 import { SharedService } from '@app/services/shared-service';
 import {
-  DeleteWorkpackageLinkSuccess,
-  WorkPackageLinkActionTypes,
   AddWorkPackageLinkOwner,
-  DeleteWorkpackageLinkOwner
+  DeleteWorkpackageLinkOwner,
+  DeleteWorkpackageLinkSuccess
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
   AddWorkpackageNodeOwner,
+  AddWorkPackageNodeRadio,
   AddWorkPackageNodeScope,
   DeleteWorkPackageNodeDescendant,
   DeleteWorkpackageNodeOwner,
   DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
-  WorkPackageNodeActionTypes,
-  AddWorkPackageNodeRadio
+  WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode,
-  UpdateWorkPackageEntity,
-  WorkPackageActionTypes
+  SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
@@ -102,13 +100,12 @@ import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map, shareReplay, take } from 'rxjs/operators';
+import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
-import { DeleteModalComponent } from '../containers/delete-modal/delete-modal.component';
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { DiagramLevelService, Level } from '../services/diagram-level.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
@@ -126,8 +123,6 @@ import { GetNodesRequestQueryParams } from '@app/architecture/services/node.serv
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
-import { NodeLink } from '@app/architecture/store/models/node-link.model';
-import { Node } from '@app/architecture/store/models/node.model';
 import { LayoutModalComponent } from '@app/scopes-and-layouts/containers/layout-modal/layout-modal.component';
 import { getNodeScopes } from '../store/selectors/workpackage.selector';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
@@ -146,7 +141,6 @@ import { Params } from '@angular/router';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
-
 
 enum Events {
   NodesLinksReload = 0
@@ -191,7 +185,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   scopeDetails$: Observable<ScopeDetails>;
   nodeReports$: Observable<NodeReports[]>;
   mapView: boolean;
-  viewLevel$: Observable<number>;
+  viewLevel$: Observable<Level>;
   // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
@@ -329,7 +323,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.radio$ = this.radioStore.pipe(select(getRadioEntities));
 
     // View Level
-    this.viewLevel$ = this.store.pipe(select(getViewLevel));
+    this.viewLevel$ = this.store.pipe(
+      select(getViewLevel),
+      tap(level => {
+        if (level === Level.dimension || level === Level.reportingConcept) {
+          this.onViewChange(ArchitectureView.System);
+        }
+      })
+    );
 
     this.nodesLinks$ = combineLatest(
       this.routerStore.select(getQueryParams),
@@ -479,12 +480,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(
-        LayoutActionTypes.LoadLayoutSuccess,
-        WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess
-        )).subscribe(_ => {
-        this.eventEmitter.next(Events.NodesLinksReload);
-      })
+      this.actions
+        .pipe(ofType(LayoutActionTypes.LoadLayoutSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess))
+        .subscribe(_ => {
+          this.eventEmitter.next(Events.NodesLinksReload);
+        })
     );
 
     this.subscriptions.push(
@@ -495,12 +495,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(
-        ScopeActionTypes.AddScopeSuccess,
-        WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess)).subscribe(_ => {
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-      })
-    )
+      this.actions
+        .pipe(ofType(ScopeActionTypes.AddScopeSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess))
+        .subscribe(_ => {
+          this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
+        })
+    );
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -642,7 +642,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
-    this.nodeStore.dispatch(new LoadNodeReports({nodeId: this.nodeId, queryParams: queryParams}));
+    this.nodeStore.dispatch(new LoadNodeReports({ nodeId: this.nodeId, queryParams: queryParams }));
     this.nodeReports$ = this.store.pipe(select(getNodeReports));
   }
 
@@ -716,7 +716,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditLayout(): void {
     this.allowMove = !this.allowMove;
     this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
-    (this.allowMove) ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
+    this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
   onZoomMap() {
@@ -1058,11 +1058,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.workpackageStore.dispatch(new AddWorkPackageNodeRadio({
-          workPackageId: this.getWorkPackageId(),
-          nodeId: this.nodeId,
-          radioId: data.radio.id
-        }))
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeRadio({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            radioId: data.radio.id
+          })
+        );
       }
     });
 
@@ -1415,20 +1417,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.store.dispatch(new UpdateLayout({
-      id: this.layout.id,
-      data: {
+    this.store.dispatch(
+      new UpdateLayout({
         id: this.layout.id,
-        name: this.layout.name,
-        scope: {
-          id: this.scopeId
-        },
-        settings: {
-          components: { ...this.layoutSettingsForm.get('components').value },
-          links: { ...this.layoutSettingsForm.get('links').value }
+        data: {
+          id: this.layout.id,
+          name: this.layout.name,
+          scope: {
+            id: this.scopeId
+          },
+          settings: {
+            components: { ...this.layoutSettingsForm.get('components').value },
+            links: { ...this.layoutSettingsForm.get('links').value }
+          }
         }
-      }
-    }))
+      })
+    );
   }
 
   onFilterRadioSeverity(): void {
@@ -1452,7 +1456,4 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     dataSource.filter = filterValue.toLowerCase().toUpperCase();
     this.tableViewFilterValue = filterValue;
   }
-
 }
-
-
