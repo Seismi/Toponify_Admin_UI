@@ -33,6 +33,7 @@ import { MenuComponent } from '@app/core/layout/header/menu/menu.component';
 import { LogoComponent } from '@app/core/layout/header/logo/logo.component';
 import { DraggerComponent } from '@app/core/layout/model-sidebar/dragger/dragger.component';
 import { RouterModule } from '@angular/router';
+import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-name.component';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import { RouterModule } from '@angular/router';
     LayoutsDropdownComponent,
     RightSideBarComponent,
     LeftSideBarComponent,
-    NodeNameComponent
+    NodeNameComponent,
+    WorkPackageNameComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -95,7 +97,8 @@ import { RouterModule } from '@angular/router';
     LayoutsDropdownComponent,
     LeftSideBarComponent,
     RightSideBarComponent,
-    NodeNameComponent
+    NodeNameComponent,
+    WorkPackageNameComponent
   ]
 })
 export class CoreLayoutModule {}
