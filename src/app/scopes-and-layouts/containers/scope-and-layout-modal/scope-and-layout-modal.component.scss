@@ -11,12 +11,3 @@ button:nth-child(1) {
 button:focus {
   outline: none;
 }
-
-.error {
-  margin-bottom: 15px;
-  color: darkRed;
-  span {
-    color: darkred;
-    font-weight: bold;
-  }
-}
