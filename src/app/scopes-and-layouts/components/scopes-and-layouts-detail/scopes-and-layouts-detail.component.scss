@@ -1,12 +1,15 @@
+.mat-form-field {
+  width: 100%;
+}
+
 button {
   margin-right: 8px;
 }
 
 .disabled {
   pointer-events: none;
-  background-color: #f9f9f9;
 }
 
-form {
-  min-width: 450px;
+.editable {
+  background-color: #fff;
 }
