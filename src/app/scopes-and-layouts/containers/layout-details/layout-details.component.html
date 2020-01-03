@@ -1,11 +1,8 @@
-<div class="layout-form-wrapper">
-  <smi-layouts-detail
-    *ngIf="layout"
-    [group]="layoutsDetailForm"
-    [ownersList]="layout.owners"
-    [viewersList]="layout.viewers"
-    (saveLayout)="onSaveLayout($event)"
-    (deleteLayout)="onDeleteLayout($event)"
-  >
-  </smi-layouts-detail>
+<div class="layout-details-form">
+  <smi-scopes-and-layouts-detail
+    [layoutDetails]="true"
+    [group]="scopesAndLayoutsDetailForm"
+    (save)="onSaveLayout($event)"
+    (delete)="onDeleteLayout($event)">
+  </smi-scopes-and-layouts-detail>
 </div>

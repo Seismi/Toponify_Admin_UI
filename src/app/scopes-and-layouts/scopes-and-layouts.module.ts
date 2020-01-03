@@ -17,23 +17,16 @@ import {
   MatInputModule,
   MatIconModule
 } from '@angular/material';
-import { ScopesTableComponent } from './components/scopes-table/scopes-table.component';
-import { LayoutsTableComponent } from './components/layouts-table/layouts-table.component';
-import { LayoutsDetailComponent } from './components/layouts-detail/layouts-detail.component';
-import { ScopesDetailComponent } from './components/scopes-detail/scopes-detail.component';
-import { ScopeDetailsComponent } from './containers/scope-details/scope-details.component';
-import { LayoutDetailsComponent } from './containers/layout-details/layout-details.component';
+import { ScopesAndLayoutsTableComponent } from './components/scopes-and-layouts-table/scopes-and-layouts-table.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ScopeModalComponent } from './containers/scope-modal/scope-modal.component';
-import { OwnersDropdownComponent } from './components/owners-dropdown/owners-dropdown.component';
+import { ScopeAndLayoutModalComponent } from './containers/scope-and-layout-modal/scope-and-layout-modal.component';
 import { SettingsModule } from '@app/settings/settings.module';
-import { ViewersDropdownComponent } from './components/viewers-dropdown/viewers-dropdown.component';
 import { DeleteScopesAndLayoutsModalComponent } from './containers/delete-modal/delete-scopes-and-layouts.component';
-import { OwnersListComponent } from './components/owners-list/owners-list.component';
-import { ViewersListComponent } from './components/viewers-list/viewers-list.component';
-import { LayoutModalComponent } from './containers/layout-modal/layout-modal.component';
+import { ScopesAndLayoutsDetailComponent } from './components/scopes-and-layouts-detail/scopes-and-layouts-detail.component';
+import { ScopeDetailsComponent } from './containers/scope-details/scope-details.component';
+import { LayoutDetailsComponent } from './containers/layout-details/layout-details.component';
 
 @NgModule({
   imports: [
@@ -61,21 +54,17 @@ import { LayoutModalComponent } from './containers/layout-modal/layout-modal.com
   declarations: [
     ScopesAndLayoutsComponent,
     ScopesAndLayoutsRoutingComponent,
-    ScopesTableComponent,
-    LayoutsTableComponent,
-    LayoutsDetailComponent,
-    ScopesDetailComponent,
-    ScopeDetailsComponent,
-    LayoutDetailsComponent,
-    ScopeModalComponent,
-    OwnersDropdownComponent,
-    ViewersDropdownComponent,
+    ScopesAndLayoutsTableComponent,
+    ScopesAndLayoutsDetailComponent,
+    ScopeAndLayoutModalComponent,
     DeleteScopesAndLayoutsModalComponent,
-    OwnersListComponent,
-    ViewersListComponent,
-    LayoutModalComponent
+    ScopeDetailsComponent,
+    LayoutDetailsComponent
   ],
   providers: [],
-  entryComponents: [ScopeModalComponent, DeleteScopesAndLayoutsModalComponent, LayoutModalComponent]
+  entryComponents: [
+    ScopeAndLayoutModalComponent, 
+    DeleteScopesAndLayoutsModalComponent
+  ]
 })
 export class ScopesAndLayoutsModule {}

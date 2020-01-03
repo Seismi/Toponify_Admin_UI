@@ -1,30 +1,24 @@
-<div class="col wrapper">
+<div class="col">
   <div class="row">
     <div class="col">
-      <!-- Scopes Detail Form -->
-      <div class="scope-form-wrapper">
-        <smi-scopes-detail *ngIf="scope"
-          [group]="scopesDetailForm"
-          [ownersList]="scope.owners"
-          [viewersList]="scope.viewers"
-          (saveScope)="onSaveScope($event)"
-          (deleteScope)="onDeleteScope($event)"
-        >
-        </smi-scopes-detail>
+      <div class="scope-details-form">
+        <smi-scopes-and-layouts-detail 
+          [group]="scopesAndLayoutsDetailForm"
+          (save)="onSaveScope($event)"
+          (delete)="onDeleteScope($event)">
+        </smi-scopes-and-layouts-detail>
       </div>
     </div>
 
     <div class="w-100"></div>
 
     <div class="col layouts-table">
-      <!-- Layouts Table -->
-      <smi-layouts-table
-        *ngIf="scope"
-        [data]="scope.layouts"
-        (layoutSelected)="onLayoutSelect($event)"
-        (addLayout)="onAddLayout($event)"
-      >
-      </smi-layouts-table>
+      <smi-scopes-and-layouts-table
+        [title]="'Layouts'"
+        [data]="scope?.layouts"
+        (select)="onLayoutSelect($event)"
+        (add)="onAddLayout($event)">
+      </smi-scopes-and-layouts-table>
     </div>
     <router-outlet></router-outlet>
   </div>
