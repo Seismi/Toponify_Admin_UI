@@ -90,6 +90,14 @@
       >
         Edit
       </button>
+      <button 
+        type="button" 
+        mat-raised-button 
+        (click)="onOpen()"
+        data-hook="workpackage-detail-edit"
+        *ngIf="getWorkPackageStatus()">
+        Open
+      </button>
       <button
         type="button"
         mat-raised-button
@@ -154,7 +162,7 @@
         type="button"
         mat-flat-button
         color="warn"
-        *ngIf="statusDraft"
+        *ngIf="statusDraft || workPackageStatus === 'superseded'"
         (click)="onDelete()"
         data-hook="workpackage-detail-delete"
       >

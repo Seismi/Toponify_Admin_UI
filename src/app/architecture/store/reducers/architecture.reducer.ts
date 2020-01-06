@@ -1,7 +1,7 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import {NodeLink, NodeLinkDetail, RoutesEntityEntity} from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import {Error, ExpandedStatesEntity, LocationsEntityEntity, Node, NodeDetail, OwnersEntity} from '../models/node.model';
+import {Error, ExpandedStatesEntity, LocationsEntityEntity, Node, NodeDetail, OwnersEntity, NodeReports} from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import {
   WorkPackageNodeActionsUnion,
@@ -15,6 +15,7 @@ import {
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 
 export interface State {
+  reports: NodeReports[];
   zoomLevel: number;
   viewLevel: number;
   entities: Node[];
@@ -29,6 +30,7 @@ export interface State {
 }
 
 export const initialState: State = {
+  reports: [],
   zoomLevel: 3,
   viewLevel: 1,
   entities: [],
@@ -183,6 +185,20 @@ export function reducer(
     }
 
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilityFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeRadioFailure: {
       return {
         ...state,
         error: <Error>action.payload
@@ -387,6 +403,26 @@ export function reducer(
     }
 
     case NodeActionTypes.DeleteCustomPropertyFailure: {
+      return {
+        ...state,
+        error: action.payload
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReports: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReportsSuccess: {
+      return {
+        ...state,
+        reports: action.payload
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReportsFailure: {
       return {
         ...state,
         error: action.payload

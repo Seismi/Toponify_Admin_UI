@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { CustomPropertyApiRequest, NodeExpandedStateApiRequest, Error, Node, NodeDetail, OwnersEntity } from '../models/node.model';
+import { CustomPropertyApiRequest, NodeExpandedStateApiRequest, Error, Node, NodeDetail, OwnersEntity, NodeReports } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
@@ -39,7 +39,10 @@ export enum NodeActionTypes {
   UpdateNodeOwners = '[Node] Update Node Owners',
   DeleteCustomProperty = '[Node] Delete Custom Property',
   DeleteCustomPropertySuccess = '[Node] Delete Custom Property Success',
-  DeleteCustomPropertyFailure = '[Node] Delete Custom Property Failure'
+  DeleteCustomPropertyFailure = '[Node] Delete Custom Property Failure',
+  LoadNodeReports = '[Node] Load Node Reports',
+  LoadNodeReportsSuccess = '[Node] Load Node Reports Success',
+  LoadNodeReportsFailure = '[Node] Load Node Reports Fail'
 }
 
 export class LoadNodes implements Action {
@@ -224,6 +227,21 @@ export class DeleteCustomPropertyFailure implements Action {
   constructor(public payload: Error) {}
 }
 
+export class LoadNodeReports implements Action {
+  readonly type = NodeActionTypes.LoadNodeReports;
+  constructor(public payload: { nodeId: string, queryParams?: GetNodesRequestQueryParams }) {}
+}
+
+export class LoadNodeReportsSuccess implements Action {
+  readonly type = NodeActionTypes.LoadNodeReportsSuccess;
+  constructor(public payload: NodeReports[]) {}
+}
+
+export class LoadNodeReportsFailure implements Action {
+  readonly type = NodeActionTypes.LoadNodeReportsFailure;
+  constructor(public payload: Error) {}
+}
+
 export type NodeActionsUnion =
   | LoadNodes
   | LoadNodesSuccess
@@ -259,4 +277,7 @@ export type NodeActionsUnion =
   | UpdateNodeOwners
   | DeleteCustomProperty
   | DeleteCustomPropertySuccess
-  | DeleteCustomPropertyFailure;
+  | DeleteCustomPropertyFailure
+  | LoadNodeReports
+  | LoadNodeReportsSuccess
+  | LoadNodeReportsFailure;

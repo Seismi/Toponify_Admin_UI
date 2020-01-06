@@ -7,6 +7,7 @@
     <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
     <span (click)="openRightTab(4)" matTooltip="Scopes"><mat-icon>pages</mat-icon></span>
     <span (click)="openRightTab(5)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
+    <span (click)="openRightTab(6)" matTooltip="Reports" *ngIf="filterLevel"><mat-icon>bookmarks</mat-icon></span>
   </div>
 
   <!-- Show this tab when 0 objects selected in diagram (architecture page) -->
@@ -15,7 +16,7 @@
   >
 
   <!-- Show this tab when multiple objects selected in diagram (architecture page) -->
-  <span (click)="openRightTab(0)" matTooltip="Details" *ngIf="architectureDetailsTab"><mat-icon>info</mat-icon></span>
+  <span (click)="openRightTab(0)" matTooltip="Scopes" *ngIf="architectureDetailsTab"><mat-icon>pages</mat-icon></span>
 
   <!-- Report Library Page -->
   <div *ngIf="reportLibraryPage">
