@@ -147,6 +147,8 @@ import { Params } from '@angular/router';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
+import { HttpParams } from '@angular/common/http';
+import { toHttpParams } from '@app/services/utils';
 
 enum Events {
   NodesLinksReload = 0
@@ -1463,6 +1465,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.routerStore
       .select(getQueryParams)
       .pipe(
+        take(1),
         switchMap(params => {
           const queryParams = {
             workPackageQuery: params.workpackages || [],
@@ -1476,6 +1479,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
         })
       )
-      .subscribe(() => dialogRef.close(), () => dialogRef.close());
+      .subscribe(
+        csv => {
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+          link.setAttribute('href', url);
+          link.setAttribute('download', 'components.csv');
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          dialogRef.close();
+        },
+        () => dialogRef.close()
+      );
   }
 }

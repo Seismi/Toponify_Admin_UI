@@ -6,8 +6,6 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getNodeEntityById } from '@app/architecture/store/selectors/node.selector';
-import { map } from 'rxjs/operators';
 
 const SystemColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner'];
 const LinkColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target'];
@@ -71,6 +69,5 @@ export class ArchitectureTableViewComponent implements OnInit {
 
   downloadCSV() {
     this.download.emit();
-    console.log('download csv');
   }
 }
