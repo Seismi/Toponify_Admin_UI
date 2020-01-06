@@ -36,6 +36,7 @@ export interface ScopeDetails {
   layerFilter?: string;
   include?: (Include)[] | null;
   layouts?: Layout;
+  defaultLayout?: string;
 }
 
 export interface OwnersEntityOrViewersEntity {
