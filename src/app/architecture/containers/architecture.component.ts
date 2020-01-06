@@ -32,6 +32,7 @@ import {
   NodeDetail,
   DescendantsEntity,
   OwnersEntityOrTeamEntityOrApproversEntity,
+  NodeExpandedStateApiRequest,
   NodeReports,
   Node
 } from '@app/architecture/store/models/node.model';
@@ -509,7 +510,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess)).subscribe(_ => {
         this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
       })
-    )
+    );
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -748,7 +749,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: { node: go.Node; links: go.Link[] }): void {
+
+  handleUpdateNodeExpandState(data: {node: NodeExpandedStateApiRequest['data']; links: go.Link[]}): void {
+
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
@@ -1076,7 +1079,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           workPackageId: this.getWorkPackageId(),
           nodeId: this.nodeId,
           radioId: data.radio.id
-        }))
+        }));
       }
     });
 
@@ -1452,7 +1455,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           links: { ...this.layoutSettingsForm.get('links').value }
         }
       }
-    }))
+    }));
   }
 
   onFilterRadioSeverity(): void {
