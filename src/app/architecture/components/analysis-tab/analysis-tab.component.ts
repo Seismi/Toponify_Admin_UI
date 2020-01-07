@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewC
 import { MatCheckboxChange } from '@angular/material';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { FormGroup } from '@angular/forms';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 const SeverityFilter = [
   {
@@ -24,7 +25,7 @@ const SeverityFilter = [
     level: 5,
     text: 'Only show highest severity RADIO'
   }
-]
+];
 
 @Component({
   selector: 'smi-analysis-tab',
@@ -33,7 +34,7 @@ const SeverityFilter = [
 })
 export class AnalysisTabComponent implements OnChanges {
   public defaultLayout: string = '00000000-0000-0000-0000-000000000000';
-  
+
   @Input() checked: boolean;
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
@@ -51,7 +52,7 @@ export class AnalysisTabComponent implements OnChanges {
   @Output() editLayout = new EventEmitter<void>();
   @Output() expandAll = new EventEmitter<void>();
 
-  @Input() viewLevel: number;
+  @Input() viewLevel: Level;
 
   @ViewChild('Description') Description;
   @ViewChild('Tags') Tags;
@@ -60,7 +61,7 @@ export class AnalysisTabComponent implements OnChanges {
   // When changed to reporting concepts level, hide description, tags and owners by default
   ngOnChanges(changes: SimpleChanges) {
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
-      if (this.viewLevel === 4) {
+      if (this.viewLevel === Level.reportingConcept) {
         const checkboxes = [this.Description, this.Tags, this.Owners];
 
         checkboxes.forEach(

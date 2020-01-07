@@ -11,6 +11,7 @@ import { CustomPropertyValuesEntity, DescendantsEntity, Node, NodeReports } from
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Component({
   selector: 'smi-right-panel',
@@ -40,7 +41,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() radio: any;
   @Input() multipleSelected = false;
   @Input() nodeScopes: WorkPackageNodeScopes[];
-  @Input() viewLevel: number;
+  @Input() viewLevel: Level;
   @Input() part: go.Part;
   @Input() filterLevel: string;
   @Input() nodeReports: NodeReports[];

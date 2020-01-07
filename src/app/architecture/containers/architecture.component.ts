@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
@@ -43,7 +35,7 @@ import {
   getSelectedNodeLink
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout, AddLayout } from '@app/layout/store/actions/layout.actions';
+import { AddLayout, LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout } from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
@@ -81,11 +73,7 @@ import {
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import {
-  WorkPackageDetail,
-  WorkPackageEntity,
-  WorkPackageNodeScopes
-} from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackageEntity, WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackage,
@@ -337,6 +325,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       tap(level => {
         if (level === Level.dimension || level === Level.reportingConcept) {
           this.onViewChange(ArchitectureView.System);
+        } else {
+          this.onViewChange(ArchitectureView.Diagram);
         }
       })
     );
