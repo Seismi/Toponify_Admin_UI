@@ -5,6 +5,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as ScopeActions from '../actions/scope.actions';
+import * as LayoutActions from '@app/layout/store/actions/layout.actions';
 import { ScopeActionTypes } from '../actions/scope.actions';
 import {
   ScopeEntitiesHttpParams,
@@ -37,7 +38,13 @@ export class ScopeEffects {
     map(action => action.payload),
     switchMap((payload: string) => {
       return this.scopeService.getScope(payload).pipe(
-        switchMap((resp: GetScopeApiResponse) => [new ScopeActions.LoadScopeSuccess(resp)]),
+        switchMap((resp: GetScopeApiResponse) => {
+          const actions: any[] = [new ScopeActions.LoadScopeSuccess(resp)];
+          if (resp.data && resp.data.defaultLayout) {
+            actions.push(new LayoutActions.LoadLayout(resp.data.defaultLayout));
+          }
+          return actions;
+        }),
         catchError((error: HttpErrorResponse) => of(new ScopeActions.LoadScopeFailure(error)))
       );
     })
