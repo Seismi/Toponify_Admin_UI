@@ -13,11 +13,12 @@ import {
   WorkPackageLinkActionsUnion
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 export interface State {
   reports: NodeReports[];
   zoomLevel: number;
-  viewLevel: number;
+  viewLevel: Level;
   entities: Node[];
   descendants: DescendantsEntity[];
   selectedNode: NodeDetail;
@@ -32,7 +33,7 @@ export interface State {
 export const initialState: State = {
   reports: [],
   zoomLevel: 3,
-  viewLevel: 1,
+  viewLevel: Level.system,
   entities: [],
   selectedNode: null,
   selectedNodeLink: null,

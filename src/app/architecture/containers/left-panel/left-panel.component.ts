@@ -3,6 +3,7 @@ import { MatCheckboxChange, MatTabGroup, MatTabChangeEvent } from '@angular/mate
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { FormGroup } from '@angular/forms';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Component({
   selector: 'smi-left-panel',
@@ -14,14 +15,14 @@ export class LeftPanelComponent {
   @Input() workpackages: WorkPackageEntity[];
   @Input() selectedLeftTab: number;
   @Input() checked: boolean;
-  @Input() viewLevel: number;
+  @Input() viewLevel: Level;
   @Input() canSelectWorkpackages: boolean;
   @Input() tabIndex: number;
   @Input() layoutSettingsTab: boolean;
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
   @Input() allowEditLayouts: string;
-  
+
   @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
   constructor() {}

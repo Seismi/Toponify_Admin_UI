@@ -80,7 +80,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   @Input() links;
 
-  @Input() viewLevel: number;
+  @Input() viewLevel: Level;
 
   @Input() mapView: boolean;
 
@@ -109,7 +109,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   updateNodeExpandState = new EventEmitter();
 
   get level() {
-    return viewLevelMapping[this.viewLevel] ? viewLevelMapping[this.viewLevel] : viewLevelMapping[1];
+    return this.viewLevel ? this.viewLevel : Level.system;
   }
 
   constructor(

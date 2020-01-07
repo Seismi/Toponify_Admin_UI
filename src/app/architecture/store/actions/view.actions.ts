@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 export enum ViewActionTypes {
   ZoomModel = '[View] Zoom Level',
@@ -7,7 +8,7 @@ export enum ViewActionTypes {
 
 export class SetViewLevel implements Action {
   readonly type = ViewActionTypes.ViewModel;
-  constructor(public payload: number) {}
+  constructor(public payload: Level) {}
 }
 
 export class SetZoomLevel implements Action {
