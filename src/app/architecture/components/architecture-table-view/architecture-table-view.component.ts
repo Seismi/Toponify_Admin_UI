@@ -6,8 +6,6 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getNodeEntityById } from '@app/architecture/store/selectors/node.selector';
-import { map } from 'rxjs/operators';
 
 const SystemColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner'];
 const LinkColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target'];
@@ -36,6 +34,7 @@ export class ArchitectureTableViewComponent implements OnInit {
 
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
   @Output() changeLevel = new EventEmitter<Node | NodeLink>();
+  @Output() download = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -66,5 +65,9 @@ export class ArchitectureTableViewComponent implements OnInit {
   dblClick(row: Node | NodeLink) {
     this.isSingleClick = false;
     this.changeLevel.emit(row);
+  }
+
+  downloadCSV() {
+    this.download.emit();
   }
 }

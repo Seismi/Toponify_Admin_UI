@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
@@ -88,7 +97,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
@@ -107,7 +116,7 @@ import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
-import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
+import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
@@ -128,7 +137,8 @@ import { Params } from '@angular/router';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
-
+import { HttpParams } from '@angular/common/http';
+import { toHttpParams } from '@app/services/utils';
 enum Events {
   NodesLinksReload = 0
 }
@@ -245,7 +255,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public actions: Actions,
-    private diagramLevelService: DiagramLevelService
+    private diagramLevelService: DiagramLevelService,
+    private nodeService: NodeService
   ) {}
 
   ngOnInit() {
@@ -556,7 +567,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
     }
   }
-
 
   selectColourForWorkPackage(data: { colour: string; id: string }) {
     this.workpackageStore.dispatch(
@@ -1471,5 +1481,49 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const dataSource = this.tableView.dataSource;
     dataSource.filter = filterValue.toLowerCase().toUpperCase();
     this.tableViewFilterValue = filterValue;
+  }
+
+  onDownload(templateRef, type: 'node' | 'links') {
+    const dialogRef = this.dialog.open(templateRef, {
+      width: '250px'
+    });
+    this.routerStore
+      .select(getQueryParams)
+      .pipe(
+        take(1),
+        switchMap(params => {
+          let workPackages = [];
+          if (params.workpackages && typeof params.workpackages === 'string') {
+            workPackages.push(params.workpackages);
+          } else if (params.workpackages) {
+            workPackages = params.workpackages;
+          }
+          const queryParams = {
+            workPackageQuery: workPackages,
+            scopeQuery: params.scope,
+            format: 'csv'
+          };
+          if (type === 'node') {
+            return this.nodeService.getNodes(queryParams);
+          } else {
+            return this.nodeService.getNodeLinks(queryParams);
+          }
+        })
+      )
+      .subscribe(
+        csv => {
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+          link.setAttribute('href', url);
+          link.setAttribute('download', 'components.csv');
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          dialogRef.close();
+        },
+        () => dialogRef.close()
+      );
   }
 }

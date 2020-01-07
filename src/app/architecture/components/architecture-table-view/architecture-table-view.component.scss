@@ -25,5 +25,14 @@ tr.mat-header-row {
 .no-data-found {
   border-bottom: solid 1px #ddd;
   text-align: center;
-  padding: 20px 0px;
+  padding: 20px 0;
+}
+
+.table-footer {
+  display: flex;
+  align-items: center;
+  border-bottom: solid 1px #ddd;
+  button {
+    margin-left: auto;
+  }
 }
