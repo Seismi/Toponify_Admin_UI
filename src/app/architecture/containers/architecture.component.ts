@@ -24,6 +24,7 @@ import {
   DescendantsEntity,
   Node,
   NodeDetail,
+  NodeExpandedStateApiRequest,
   NodeReports,
   OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node.model';
@@ -738,7 +739,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: { node: go.Node; links: go.Link[] }): void {
+  handleUpdateNodeExpandState(data: {node: NodeExpandedStateApiRequest['data']; links: go.Link[]}): void {
+
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
