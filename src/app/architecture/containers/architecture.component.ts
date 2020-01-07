@@ -1493,8 +1493,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(
         take(1),
         switchMap(params => {
+          let workPackages = [];
+          if (params.workpackages && typeof params.workpackages === 'string') {
+            workPackages.push(params.workpackages);
+          } else if (params.workpackages) {
+            workPackages = params.workpackages;
+          }
           const queryParams = {
-            workPackageQuery: params.workpackages || [],
+            workPackageQuery: workPackages,
             scopeQuery: params.scope,
             format: 'csv'
           };
