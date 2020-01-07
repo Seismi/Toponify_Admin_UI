@@ -30,9 +30,11 @@ export class WorkPackageTabTableComponent {
 
   @Output() setWorkpackageEditMode = new EventEmitter();
 
-  onSelect(id: string, newState: boolean, ev): void {
+  onSelect(id: string, newState: boolean, ev, workpackage: any): void {
     ev.preventDefault();
-    this.selectWorkPackage.emit({ id, newState });
+    if (workpackage.isSelectable) {
+      this.selectWorkPackage.emit({ id, newState });
+    }
   }
 
   canSelect(workpackage: any): boolean {

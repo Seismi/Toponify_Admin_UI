@@ -162,7 +162,7 @@
         type="button"
         mat-flat-button
         color="warn"
-        *ngIf="statusDraft"
+        *ngIf="statusDraft || workPackageStatus === 'superseded'"
         (click)="onDelete()"
         data-hook="workpackage-detail-delete"
       >

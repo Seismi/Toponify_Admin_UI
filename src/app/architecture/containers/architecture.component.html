@@ -1,6 +1,12 @@
 <app-base-header>
   <smi-node-name *ngIf="parentName" [parentName]="parentName"></smi-node-name>
   <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+  <smi-workpackage-name
+    [selectedWorkPackageEntities]="selectedWorkPackageEntities"
+    [workPackageIsEditable]="workPackageIsEditable"
+    [workPackageName]="workPackageName"
+    (exitWorkPackageEditMode)="onExitWorkPackageEditMode()">
+  </smi-workpackage-name>
   <app-search></app-search>
   <app-toolbar-column>
     <app-zoom-actions (zoomIn)="onZoomIn()" (zoomOut)="onZoomOut()"></app-zoom-actions>

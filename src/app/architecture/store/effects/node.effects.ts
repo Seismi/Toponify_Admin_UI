@@ -151,7 +151,7 @@ export class NodeEffects {
     switchMap(
       (payload: {
         layoutId: string;
-        data: NodeExpandedStateApiRequest
+        data: NodeExpandedStateApiRequest['data']
       }) => {
         return this.nodeService
           .updateNodeExpandedState(payload.layoutId, payload.data)

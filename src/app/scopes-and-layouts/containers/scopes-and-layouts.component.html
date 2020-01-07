@@ -8,14 +8,13 @@
 
 <div class="container">
   <div class="row">
-    <div class="col" [ngClass]="{ active: scopeSelected }">
-      <!-- Scopes Table -->
-      <smi-scopes-table
+    <div class="col">
+      <smi-scopes-and-layouts-table
+        [title]="'Scopes'"
         [data]="scopes$ | async"
-        (scopeSelected)="onScopeSelect($event)"
-        (addScope)="onAddScope($event)"
-      >
-      </smi-scopes-table>
+        (select)="onScopeSelect($event)"
+        (add)="onAddScope($event)">
+      </smi-scopes-and-layouts-table>
     </div>
     <router-outlet></router-outlet>
   </div>

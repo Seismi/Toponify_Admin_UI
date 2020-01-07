@@ -14,9 +14,11 @@ export interface NodeLink {
   name: string;
   description: string;
   category: string;
-  sourceObject: SourceObjectOrTargetObject;
-  targetObject: SourceObjectOrTargetObject;
-  routes?: ((RoutesEntityEntity)[] | null)[] | null;
+  sourceId: string;
+  sourceName: string;
+  targetId: string;
+  targetName: string;
+  routes?: (RoutesEntityEntity)[] | null;
   impactedByWorkPackages;
 }
 export interface LocationsEntityEntity {
@@ -53,7 +55,7 @@ export interface NodeLinkDetail {
   descendants: Descendants;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
-  routes?: ((RoutesEntityEntity)[] | null)[] | null;
+  routes?: (RoutesEntityEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
   sliceTable: SliceTable;
@@ -90,7 +92,7 @@ export interface Descendants {
   category: string;
   sourceObject: SourceObjectOrTargetObject;
   targetObject: SourceObjectOrTargetObject;
-  routes?: ((RoutesEntityEntity)[] | null)[] | null;
+  routes?: (RoutesEntityEntity)[] | null;
 }
 export interface RoutesEntityEntity {
   layout: LayoutOrRolesEntity;

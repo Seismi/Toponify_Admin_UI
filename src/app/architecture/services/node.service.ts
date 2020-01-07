@@ -104,7 +104,7 @@ export class NodeService {
     return this.http.put<any>(`/layouts/${layoutId}/nodes/location`, { data: data }, httpOptions);
   }
   // FIXME: define missing types
-  updateNodeExpandedState(layoutId: string, data: NodeExpandedStateApiRequest): Observable<any> {
+  updateNodeExpandedState(layoutId: string, data: any): Observable<any> {
     return this.http.put<any>(`/layouts/${layoutId}/nodes/expandState`, { data: data }, httpOptions);
   }
   // FIXME: define missing types

@@ -28,6 +28,7 @@ import { RouteEffects } from '@app/core/store/effects/route.effects';
 import { CoreLayoutModule } from '@app/core/layout/core-layout.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
+import { WorkPackageNameComponent } from './layout/header/workpackage-name/workpackage-name.component';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
     LayoutsDropdownComponent,
     RightSideBarComponent,
     LeftSideBarComponent,
-    NodeNameComponent
+    NodeNameComponent,
+    WorkPackageNameComponent
   ],
   providers: [SearchService, {
     provide: HTTP_INTERCEPTORS,
