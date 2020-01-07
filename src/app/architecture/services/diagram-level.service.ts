@@ -80,7 +80,7 @@ export class DiagramLevelService {
 
   public initializeUrlFiltering(): void {
     this.filterSubscription = this.filter.subscribe(filter => {
-      this.store.dispatch(new SetViewLevel(viewLevelNum[filter.filterLevel]));
+      this.store.dispatch(new SetViewLevel(filter.filterLevel));
       if (!filter.filterNodeIds && filter.filterLevel === Level.system) {
         this.historyOfFilters = {};
       }

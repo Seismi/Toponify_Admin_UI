@@ -42,7 +42,7 @@
     >
     </smi-owners-table-in-architecture>
     <smi-descendants-table-in-architecture
-      *ngIf="!clickedOnLink && !attributesPage && viewLevel !== 4"
+      *ngIf="!clickedOnLink && !attributesPage && viewLevel !== Level.reportingConcept"
       [data]="descendants"
       [isEditable]="!nodeIsEditable()"
       (addDescendant)="onAddDescendant()"

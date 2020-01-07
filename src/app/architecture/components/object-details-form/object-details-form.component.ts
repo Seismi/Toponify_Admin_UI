@@ -4,6 +4,7 @@ import { OwnersEntityOrTeamEntityOrApproversEntity, NodeLinkDetail } from '@app/
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
@@ -34,8 +35,10 @@ export class ObjectDetailsFormComponent {
   @Input() relatedAttributes: AttributeEntity[];
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
-  @Input() viewLevel: number;
+  @Input() viewLevel: Level;
   @Input() part: go.Part;
+
+  Level = Level;
 
   constructor() {}
 

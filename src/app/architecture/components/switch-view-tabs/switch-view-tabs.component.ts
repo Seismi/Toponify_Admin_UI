@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Component({
   selector: 'smi-switch-view-tabs',
@@ -9,7 +10,7 @@ import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/
 })
 export class SwitchViewTabsComponent {
   @Input() selectedView: ArchitectureView;
-  @Input() viewLevel: number;
+  @Input() viewLevel: Level;
 
   constructor() {}
 
@@ -23,13 +24,13 @@ export class SwitchViewTabsComponent {
 
   getLabel(): string {
     switch (this.viewLevel) {
-      case 1:
+      case Level.system:
         return 'Systems';
-      case 2:
+      case Level.dataSet:
         return 'Data sets';
-      case 3:
+      case Level.dimension:
         return 'Dimensions';
-      case 4:
+      case Level.reportingConcept:
         return 'Reporting Concepts';
       default:
         return 'Systems';
@@ -37,7 +38,7 @@ export class SwitchViewTabsComponent {
   }
 
   getLinkLabel(): string {
-    if (this.viewLevel === 1 || this.viewLevel === 2) {
+    if (this.viewLevel === Level.system || this.viewLevel === Level.dataSet) {
       return 'Interfaces';
     } else {
       return 'Links';
