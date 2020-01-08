@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col">
       <div class="scope-details-form">
-        <smi-scopes-and-layouts-detail 
+        <smi-scopes-and-layouts-detail
           [group]="scopesAndLayoutsDetailForm"
           (save)="onSaveScope($event)"
           (delete)="onDeleteScope($event)">
@@ -16,6 +16,8 @@
       <smi-scopes-and-layouts-table
         [title]="'Layouts'"
         [data]="scope?.layouts"
+        [defaultLayoutId]="scope?.defaultLayout"
+        (setFavoriteLayout)="onSetFavoriteLayout($event)"
         (select)="onLayoutSelect($event)"
         (add)="onAddLayout($event)">
       </smi-scopes-and-layouts-table>
