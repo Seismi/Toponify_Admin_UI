@@ -853,6 +853,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
               return {
                 ...node,
+                // TEMP
+                isGroup: node.layer === 'system',
+                // END TEMP
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
                 middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : false,
