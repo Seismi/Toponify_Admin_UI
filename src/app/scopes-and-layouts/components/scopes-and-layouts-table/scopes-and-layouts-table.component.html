@@ -1,18 +1,29 @@
-<h1 class="title">{{title}}</h1>
+<h1 class="title">{{ title }}</h1>
 <div class="mat-elevation-z8">
   <table mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      <td mat-cell *matCellDef="let element">
+        <span class="name-cell">
+          {{ element.name }}
+          <button mat-icon-button *ngIf="title === 'Layouts'" (click)="$event.stopPropagation(); setFavorite(element.id)">
+            <mat-icon *ngIf="element.id === defaultLayoutId">star</mat-icon>
+            <mat-icon *ngIf="element.id !== defaultLayoutId">star_border</mat-icon>
+          </button>
+        </span>
+      </td>
     </ng-container>
-  
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns" 
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
       [ngClass]="{ highlight: selectedRowIndex == row.id }"
-      (click)="onSelectRow(row)">
-    </tr>
+      (click)="onSelectRow(row)"
+    ></tr>
   </table>
+
   <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
 </div>
-<br/>
+<br />
 <button mat-raised-button color="primary" (click)="onAdd()">Create New</button>

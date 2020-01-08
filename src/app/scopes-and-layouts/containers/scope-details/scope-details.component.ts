@@ -70,14 +70,16 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSaveScope(): void {
-    this.store.dispatch(new UpdateScope({
-      id: this.scope.id,
-      data: {
+    this.store.dispatch(
+      new UpdateScope({
         id: this.scope.id,
-        name: this.scopesAndLayoutsDetailForm.value.name,
-        layerFilter: this.scopesAndLayoutsDetailForm.value.layerFilter
-      }
-    }));
+        data: {
+          id: this.scope.id,
+          name: this.scopesAndLayoutsDetailForm.value.name,
+          layerFilter: this.scopesAndLayoutsDetailForm.value.layerFilter
+        }
+      })
+    );
   }
 
   onDeleteScope(): void {
@@ -92,7 +94,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteScope(this.scope.id));
-        this.store.dispatch(new UpdateQueryParams({scope: null}));
+        this.store.dispatch(new UpdateQueryParams({ scope: null }));
         this.router.navigate(['/scopes-and-layouts']);
       }
     });
@@ -118,5 +120,9 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
         );
       }
     });
+  }
+
+  onSetFavoriteLayout(id: string) {
+    this.store.dispatch(new UpdateScope({ id: this.scope.id, data: { ...this.scope, defaultLayout: id } }));
   }
 }

@@ -412,7 +412,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // Show layout data in settings tab
         this.layoutSettingsService.layoutSettingsForm.patchValue({ ...layout.settings });
         // Reload nodes and links for new layout if not in map view
-        if (this.currentFilterLevel && !this.currentFilterLevel.endsWith('map')) {
+        if (this.currentFilterLevel && !this.currentFilterLevel.endsWith('map') && !this.nodesSubscription) {
           this.subscribeForNodesLinksData();
         }
       }

@@ -11,6 +11,7 @@ export class ScopesAndLayoutsTableComponent {
   public selectedRowIndex: string | number = -1;
 
   @Input() title: string;
+  @Input() defaultLayoutId: string;
 
   @Input()
   set data(data: ScopeEntity[]) {
@@ -29,6 +30,7 @@ export class ScopesAndLayoutsTableComponent {
 
   @Output() select = new EventEmitter<ScopeEntity>();
   @Output() add = new EventEmitter<void>();
+  @Output() setFavoriteLayout = new EventEmitter<string>();
 
   onSelectRow(row: ScopeEntity): void {
     this.selectedRowIndex = row.id;
@@ -37,5 +39,10 @@ export class ScopesAndLayoutsTableComponent {
 
   onAdd(): void {
     this.add.emit();
+  }
+
+  setFavorite(id: string) {
+    console.log('set favorite', id);
+    this.setFavoriteLayout.emit(id);
   }
 }

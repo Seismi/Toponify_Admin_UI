@@ -17,3 +17,9 @@ tr.mat-row {
 .highlight {
   background: #efefef;
 }
+
+.name-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
