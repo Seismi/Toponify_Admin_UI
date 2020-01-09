@@ -1,7 +1,6 @@
 import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
-import { RadioEntity } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-objectives-table',
@@ -19,22 +18,22 @@ export class ObjectivesTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public displayedColumns: string[] = ['refNo', 'name', 'status', 'edit', 'delete'];
+  public displayedColumns: string[] = ['name', 'description'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
 
   @Output() addObjective = new EventEmitter<void>();
-  @Output() deleteObjective = new EventEmitter<RadioEntity>();
+  @Output() deleteObjective = new EventEmitter<string>();
   @Output() editRadio = new EventEmitter<WorkPackageDetail>();
 
   onAdd(): void {
     this.addObjective.emit();
   }
 
-  onDelete(radio: RadioEntity): void {
-    this.deleteObjective.emit(radio);
+  onDelete(id: string): void {
+    this.deleteObjective.emit(id);
   }
 
-  onEdit(radio: WorkPackageDetail): void {
+  onMove(radio: WorkPackageDetail): void {
     this.editRadio.emit(radio);
   }
 }

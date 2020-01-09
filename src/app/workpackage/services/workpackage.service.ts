@@ -55,6 +55,10 @@ export class WorkPackageService {
     return this.http.delete<any>(`/workpackages/${workPackageId}/owners/${ownerId}`);
   }
 
+  createObjective(data: { title: string; description: string }) {
+    return this.http.post<any>(`/objectives`, { data: data }, this.httpOptions);
+  }
+
   addObjective(data: any, workPackageId: string, radioId: string): Observable<any> {
     return this.http.post<any>(`/workpackages/${workPackageId}/objectives/${radioId}`, data, this.httpOptions);
   }
@@ -71,14 +75,22 @@ export class WorkPackageService {
     return this.http.delete<any>(`/workpackages/${workPackageId}/radios/${radioId}`);
   }
 
-  updateProperty(workPackageId: string, customPropertyId: string, data: CustomPropertiesEntity): Observable<WorkPackageDetailApiResponse> {
-    return this.http.put<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`, {data: data},
+  updateProperty(
+    workPackageId: string,
+    customPropertyId: string,
+    data: CustomPropertiesEntity
+  ): Observable<WorkPackageDetailApiResponse> {
+    return this.http.put<WorkPackageDetailApiResponse>(
+      `/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`,
+      { data: data },
       this.httpOptions
     );
   }
 
   deleteProperty(workPackageId: string, customPropertyId: string): Observable<WorkPackageDetailApiResponse> {
-    return this.http.delete<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`);
+    return this.http.delete<WorkPackageDetailApiResponse>(
+      `/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`
+    );
   }
 
   // TODO: move into sharable service

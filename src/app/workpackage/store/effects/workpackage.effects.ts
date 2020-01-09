@@ -64,7 +64,10 @@ import {
   UpdateCustomPropertyFailure,
   DeleteCustomProperty,
   DeleteCustomPropertySuccess,
-  DeleteCustomPropertyFailure
+  DeleteCustomPropertyFailure,
+  CreateObjective,
+  CreateObjectiveSuccess,
+  CreateObjectiveFailure
 } from '../actions/workpackage.actions';
 import {
   OwnersEntityOrApproversEntity,
@@ -186,6 +189,21 @@ export class WorkPackageEffects {
   );
 
   @Effect()
+  createObjective$ = this.actions$.pipe(
+    ofType<CreateObjective>(WorkPackageActionTypes.CreateObjective),
+    map(action => action.payload),
+    mergeMap((payload: { data: { title: string; description: string }; workPackageId: string }) => {
+      return this.workpackageService.createObjective(payload.data).pipe(
+        mergeMap((response: any) => [
+          new CreateObjectiveSuccess(response.data),
+          new AddObjective({ data: response.data, workPackageId: payload.workPackageId, radioId: response.data.id })
+        ]),
+        catchError((error: HttpErrorResponse) => of(new CreateObjectiveFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   deleteObjective$ = this.actions$.pipe(
     ofType<DeleteObjective>(WorkPackageActionTypes.DeleteObjective),
     map(action => action.payload),
@@ -237,12 +255,14 @@ export class WorkPackageEffects {
   updateCustomProperty$ = this.actions$.pipe(
     ofType<UpdateCustomProperty>(WorkPackageActionTypes.UpdateCustomProperty),
     map(action => action.payload),
-    switchMap((payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertyValuesEntity }}) => {
-      return this.workpackageService.updateProperty(payload.workPackageId, payload.customPropertyId, payload.data.data)
-        .pipe(
-          switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
-          catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
-        );
+    switchMap(
+      (payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertyValuesEntity } }) => {
+        return this.workpackageService
+          .updateProperty(payload.workPackageId, payload.customPropertyId, payload.data.data)
+          .pipe(
+            switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
+            catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
+          );
       }
     )
   );
@@ -252,11 +272,10 @@ export class WorkPackageEffects {
     ofType<DeleteCustomProperty>(WorkPackageActionTypes.DeleteCustomProperty),
     map(action => action.payload),
     mergeMap((payload: { workPackageId: string; customPropertyId: string }) => {
-      return this.workpackageService.deleteProperty(payload.workPackageId, payload.customPropertyId)
-        .pipe(
-          map(response => new DeleteCustomPropertySuccess(response.data)),
-          catchError((error: Error) => of(new DeleteCustomPropertyFailure(error)))
-        );
+      return this.workpackageService.deleteProperty(payload.workPackageId, payload.customPropertyId).pipe(
+        map(response => new DeleteCustomPropertySuccess(response.data)),
+        catchError((error: Error) => of(new DeleteCustomPropertyFailure(error)))
+      );
     })
   );
 

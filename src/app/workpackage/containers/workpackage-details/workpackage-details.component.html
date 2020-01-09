@@ -59,7 +59,7 @@
         <smi-objectives-table
           data-hook="workpackage-page-objective-table"
           [data]="workpackage?.objectives"
-          (addObjective)="onAddObjectiveOrRadio({ objective: true })"
+          (addObjective)="onAddObjective()"
           (deleteObjective)="onDeleteObjectiveOrRadio($event, { objective: true })"
           (editRadio)="onEditRadio($event)"
         >

@@ -10,7 +10,6 @@ import {
   CustomPropertiesEntity
 } from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
-import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -49,6 +48,10 @@ export enum WorkPackageActionTypes {
   AddObjective = '[WorkPackage] Add Objective',
   AddObjectiveSuccess = '[WorkPackage] Add Objective Success',
   AddObjectiveFailure = '[WorkPackage] Add Objective Failure',
+
+  CreateObjective = '[WorkPackage] Create Objective',
+  CreateObjectiveSuccess = '[WorkPackage] Create Objective Success',
+  CreateObjectiveFailure = '[WorkPackage] Create Objective Failure',
 
   DeleteObjective = '[WorkPackage] Delete Objective',
   DeleteObjectiveSuccess = '[WorkPackage] Delete Objective Success',
@@ -234,6 +237,21 @@ export class AddObjectiveFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class CreateObjective implements Action {
+  readonly type = WorkPackageActionTypes.CreateObjective;
+  constructor(public payload: { data: { title: string; description: string }; workPackageId: string }) {}
+}
+
+export class CreateObjectiveSuccess implements Action {
+  readonly type = WorkPackageActionTypes.CreateObjectiveSuccess;
+  constructor(public payload: any) {}
+}
+
+export class CreateObjectiveFailure implements Action {
+  readonly type = WorkPackageActionTypes.CreateObjectiveFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class DeleteObjective implements Action {
   readonly type = WorkPackageActionTypes.DeleteObjective;
   constructor(public payload: { workPackageId: string; radioId: string }) {}
@@ -281,7 +299,9 @@ export class DeleteRadioFailure implements Action {
 
 export class UpdateCustomProperty implements Action {
   readonly type = WorkPackageActionTypes.UpdateCustomProperty;
-  constructor(public payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertiesEntity }}) {}
+  constructor(
+    public payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertiesEntity } }
+  ) {}
 }
 
 export class UpdateCustomPropertySuccess implements Action {
@@ -441,6 +461,9 @@ export type WorkPackageActionsUnion =
   | AddObjective
   | AddObjectiveSuccess
   | AddObjectiveFailure
+  | CreateObjective
+  | CreateObjectiveSuccess
+  | CreateObjectiveFailure
   | DeleteObjective
   | DeleteObjectiveSuccess
   | DeleteObjectiveFailure

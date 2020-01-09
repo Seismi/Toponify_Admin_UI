@@ -53,6 +53,7 @@ import { WorkPackageTreeComponent } from './components/workpackage-tree/workpack
 import { WorkPackageRightSideComponent } from './components/right-side/right-side.component';
 import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
+import { AddObjectiveModalComponent } from '@app/workpackage/containers/add-objective-modal/add-objective-modal.component';
 
 @NgModule({
   imports: [
@@ -105,14 +106,16 @@ import { WorkPackageColorComponent } from './components/color-picker/color-picke
     WorkPackageTreeComponent,
     WorkPackageRightSideComponent,
     RadioDetailModalComponent,
-    WorkPackageColorComponent
+    WorkPackageColorComponent,
+    AddObjectiveModalComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,
     DeleteWorkPackageModalComponent,
     OwnersModalComponent,
     RadioListModalComponent,
-    RadioDetailModalComponent
+    RadioDetailModalComponent,
+    AddObjectiveModalComponent
   ],
   providers: [WorkPackageService, WorkPackageNodesService, WorkPackageLinksService]
 })
