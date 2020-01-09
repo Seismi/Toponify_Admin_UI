@@ -261,6 +261,8 @@ export class DiagramTemplatesService {
     );
   }
 
+  // Get menu button for system nodes.
+  //  When clicked, provides a menu with actions to take, relating to the node.
   getTopMenuButton(): go.Panel {
     return $(
       'RoundButton',
@@ -290,7 +292,11 @@ export class DiagramTemplatesService {
         new go.Binding('stroke', 'isEnabled', function(enabled) {
           return enabled ? 'black' : '#AAAFB4';
         }).ofObject('TopMenuButton')
-      )
+      ),
+      // Disable menu for nodes in palette
+      new go.Binding('isEnabled', '', function(node: go.Node): boolean {
+         return !(node.diagram instanceof go.Palette);
+      }).ofObject()
     );
   }
 
@@ -322,12 +328,12 @@ export class DiagramTemplatesService {
           verticalAlignment: go.Spot.Center
         },
         // Grey out text when button disabled
-        new go.Binding('stroke', 'isEnabled', function(enabled) {
+        new go.Binding('stroke', 'isEnabled', function(enabled: boolean): string {
           return enabled ? 'black' : '#AAAFB4';
         }).ofObject('TopExpandButton')
       ),
       // Disable button if moves not allowed in diagram
-      new go.Binding('isEnabled', '', function(node) {
+      new go.Binding('isEnabled', '', function(node: go.Node): boolean {
         return node.diagram.allowMove;
       }).ofObject(),
       // Button not visible when middle node section is collapsed

@@ -300,7 +300,8 @@ export class GojsCustomObjectsService {
       row: number,
       text: string,
       action: (event: object, object?: go.Part) => void,
-      visible_predicate?: (object: go.Part, event: object) => boolean
+      visible_predicate?: (object: go.Part, event: object) => boolean,
+      enabled_predicate?: (object: go.Part, event: object) => boolean,
     ): go.Part {
       return $(
         'ContextMenuButton',
@@ -331,6 +332,9 @@ export class GojsCustomObjectsService {
                 return false;
               }
             }).ofObject()
+          : {},
+        enabled_predicate
+          ? new go.Binding('isEnabled', '', enabled_predicate)
           : {}
       );
     }
@@ -398,6 +402,8 @@ export class GojsCustomObjectsService {
           : {}
       );
     }
+    const diagramChangesService = this.diagramChangesService;
+    const diagramLevelService = this.diagramLevelService;
 
     return $(go.Adornment, 'Spot',
       {
@@ -415,9 +421,21 @@ export class GojsCustomObjectsService {
           alignment: new go.Spot(1, 0, -20, 0),
           alignmentFocus: go.Spot.TopLeft
         },
-        makeButton(0, 'Show Status', function(event: any): void {
-          /*Placeholder*/
-        }),
+        makeButton(
+          0,
+          'Show Status',
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
+
+            diagramChangesService.nodeExpandChanged(node);
+          },
+          null,
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            return event.diagram.allowMove;
+          }
+        ),
         makeButton(1, 'Show Details', function(event: object): void {
           /*Placeholder*/
         }),
@@ -472,17 +490,27 @@ export class GojsCustomObjectsService {
         makeSubMenuButton(
           3,
           'Show as List (data sets)',
-          function(event: object): void {
-            /*Placeholder*/
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'middleExpanded', true);
+            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
+
+            diagramChangesService.nodeExpandChanged(node);
           },
-          null,
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          },
           'Show as List'
         ),
         makeSubMenuButton(4,
           'Display (data sets)',
-          function(event: object): void {
-            /*Placeholder*/
-          },
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+
+            diagramLevelService.changeLevelWithFilter.call(this, event, node);
+          }.bind(this),
           null,
           'Display'
         ),
