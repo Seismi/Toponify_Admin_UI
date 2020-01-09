@@ -270,7 +270,9 @@ export class DiagramTemplatesService {
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
         click: function(event, button) {
-
+          const menu = this.gojsCustomObjectsService.getPartButtonMenu();
+          menu.adornedObject = button.part;
+          button.part.addAdornment('ButtonMenu', menu);
         }.bind(this)
       },
       $(
@@ -280,7 +282,7 @@ export class DiagramTemplatesService {
             font: 'bold 18px calibri',
             desiredSize: new go.Size(25, 25),
             textAlign: 'center',
-            verticalAlignment: new go.Spot(0.5, 0, 0, 5),
+            verticalAlignment: new go.Spot(0.5, 0, 0, -1.5),
             text: '...',
             angle: 90
           },

@@ -276,6 +276,227 @@ export class GojsCustomObjectsService {
     );
   }
 
+  // Context menu for when a system group button is clicked
+  getPartButtonMenu(): go.Adornment {
+
+    // Standard highlighting for buttons when mouse cursor enters them
+    function standardMouseEnter(e: object, btn: go.Part): void {
+      if (!btn.isEnabledObject()) {
+        return;
+      }
+      const shape: go.GraphObject = btn.findObject('ButtonBorder'); // the border Shape
+      if (shape instanceof go.Shape) {
+        let brush = btn['_buttonFillOver'];
+        btn['_buttonFillNormal'] = shape.fill;
+        shape.fill = brush;
+        brush = btn['_buttonStrokeOver'];
+        btn['_buttonStrokeNormal'] = shape.stroke;
+        shape.stroke = brush;
+      }
+    }
+
+    // Ordinary button for context menu
+    function makeButton(
+      row: number,
+      text: string,
+      action: (event: object, object?: go.Part) => void,
+      visible_predicate?: (object: go.Part, event: object) => boolean
+    ): go.Part {
+      return $(
+        'ContextMenuButton',
+        $(go.TextBlock, text),
+        {
+          click: action,
+          column: 0,
+          row: row,
+          mouseEnter: function(event: object, object: go.Part) {
+            standardMouseEnter(event, object);
+            // Hide any open submenu when user mouses over button
+            object.panel.elements.each(function(button: go.Part) {
+              if (button.column === 1) {
+                button.visible = false;
+              }
+            });
+          }
+        },
+        // Don't bother with binding GraphObject.visible if there's no predicate
+        visible_predicate
+          ? new go.Binding('visible', '', function(
+              object: go.Part,
+              event: object
+            ): boolean {
+              if (object.diagram) {
+                return visible_predicate(object, event);
+              } else {
+                return false;
+              }
+            }).ofObject()
+          : {}
+      );
+    }
+
+    // Button to appear when a menu button is moused over
+    function makeSubMenuButton(
+      row: number,
+      name: string,
+      action: (event: object, object?: go.Part) => void,
+      enabled_predicate?: (object: go.Part, event: object) => boolean,
+      text?: string
+    ): go.Part {
+      return $('ContextMenuButton', $(go.TextBlock, text || name), {
+        click: action,
+        name: name,
+        visible: false,
+        column: 1,
+        row: row
+      },
+        enabled_predicate
+          ? new go.Binding('isEnabled', '', enabled_predicate)
+          : {}
+      );
+    }
+
+    // Button to show a submenu when moused over
+    function makeMenuButton(
+      row: number,
+      text: string,
+      subMenuNames: string[],
+      visible_predicate?: (object: go.Part, event: object) => boolean
+    ): go.Part {
+      return $(
+        'ContextMenuButton',
+        $(go.TextBlock, text),
+        {
+          mouseEnter: function(event: object, object: go.Part): void {
+            standardMouseEnter(event, object);
+            // Hide any open submenu that is already open
+            object.panel.elements.each(function(button: go.Part): void {
+              if (button.column === 1) {
+                button.visible = false;
+              }
+            });
+            // Show any submenu buttons assigned to this menu button
+            subMenuNames.forEach(function(buttonName: string): void {
+              object.part.findObject(buttonName).visible = true;
+            });
+          },
+          column: 0,
+          row: row
+        },
+        // Don't bother with binding GraphObject.visible if there's no predicate
+        visible_predicate
+          ? new go.Binding('visible', '', function(
+              object: go.Part,
+              event: object
+            ): boolean {
+              if (object.diagram) {
+                return visible_predicate(object, event);
+              } else {
+                return false;
+              }
+            }).ofObject()
+          : {}
+      );
+    }
+
+    return $(go.Adornment, 'Spot',
+      {
+        name: 'ButtonMenu',
+        background: null
+      },
+      $(go.Placeholder,
+        {
+          background: null,
+          isActionable: true,
+        }),
+      $(go.Panel,
+        'Table',
+        {
+          alignment: new go.Spot(1, 0, -20, 0),
+          alignmentFocus: go.Spot.TopLeft
+        },
+        makeButton(0, 'Show Status', function(event: any): void {
+          /*Placeholder*/
+        }),
+        makeButton(1, 'Show Details', function(event: object): void {
+          /*Placeholder*/
+        }),
+        makeMenuButton(2, 'Grouped Components', [
+          'Expand',
+          'Show as List (groups)',
+          'Display (groups)',
+          'Add Sub-item',
+          'Add to Group'
+        ]),
+        // --Grouped components submenu buttons--
+        makeSubMenuButton(
+          2,
+          'Expand',
+          function(event: any, object: any): void {
+          }.bind(this)
+        ),
+        makeSubMenuButton(
+          3,
+          'Show as List (groups)',
+          function(event: any, object: any): void {
+          }.bind(this),
+          null,
+          'Show as List'
+        ),
+        makeSubMenuButton(
+          4,
+          'Display (groups)',
+          function(event: any, object: any): void {
+          }.bind(this),
+          null,
+          'Display'
+        ),
+        makeSubMenuButton(
+          5,
+          'Add Sub-item',
+          function(event: any, object: any): void {
+          }.bind(this)
+        ),
+        makeSubMenuButton(
+          6,
+          'Add to Group',
+          function(event: any, object: any): void {
+          }.bind(this)
+        ),
+        // --End of level submenu buttons--
+        makeMenuButton(3, 'Data Sets', [
+          'Show as List (data sets)',
+          'Display (data sets)',
+          'Add data set',
+        ]),
+        makeSubMenuButton(
+          3,
+          'Show as List (data sets)',
+          function(event: object): void {
+            /*Placeholder*/
+          },
+          null,
+          'Show as List'
+        ),
+        makeSubMenuButton(4,
+          'Display (data sets)',
+          function(event: object): void {
+            /*Placeholder*/
+          },
+          null,
+          'Display'
+        ),
+        makeSubMenuButton(
+          5,
+          'Add data set',
+          function(event: object): void {
+            /*Placeholder*/
+          }
+        )
+      )
+    );
+  }
+
   // Create a linear gradient brush through the provided colours
   // Inputs:
   //    colours - array of colours to go through
