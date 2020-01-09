@@ -7,7 +7,7 @@ import {
   WorkPackageEntitiesHttpParams,
   WorkPackageEntitiesResponse,
   WorkPackageEntity,
-  CustomPropertiesEntity
+  CustomPropertiesEntity, Objective
 } from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 
@@ -224,7 +224,7 @@ export class SetSelectedWorkPackages implements Action {
 
 export class AddObjective implements Action {
   readonly type = WorkPackageActionTypes.AddObjective;
-  constructor(public payload: { data: RadioEntity; workPackageId: string; radioId: string }) {}
+  constructor(public payload: { data: Objective; workPackageId: string; objectiveId: string }) {}
 }
 
 export class AddObjectiveSuccess implements Action {
@@ -254,7 +254,7 @@ export class CreateObjectiveFailure implements Action {
 
 export class DeleteObjective implements Action {
   readonly type = WorkPackageActionTypes.DeleteObjective;
-  constructor(public payload: { workPackageId: string; radioId: string }) {}
+  constructor(public payload: { workPackageId: string; objectiveId: string }) {}
 }
 
 export class DeleteObjectiveSuccess implements Action {
