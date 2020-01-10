@@ -302,10 +302,15 @@ export class GojsCustomObjectsService {
       action: (event: object, object?: go.Part) => void,
       visible_predicate?: (object: go.Part, event: object) => boolean,
       enabled_predicate?: (object: go.Part, event: object) => boolean,
+      text_predicate?: (object: go.Part, event: object) => string
     ): go.Part {
       return $(
         'ContextMenuButton',
-        $(go.TextBlock, text),
+        $(go.TextBlock,
+          text_predicate
+            ? new go.Binding('text', '', text_predicate).ofObject()
+            : { text: text }
+        ),
         {
           click: action,
           column: 0,
@@ -345,9 +350,15 @@ export class GojsCustomObjectsService {
       name: string,
       action: (event: object, object?: go.Part) => void,
       enabled_predicate?: (object: go.Part, event: object) => boolean,
-      text?: string
+      text_predicate?: (object: go.Part, event: object) => string
     ): go.Part {
-      return $('ContextMenuButton', $(go.TextBlock, text || name), {
+      return $('ContextMenuButton',
+        $(go.TextBlock,
+          text_predicate
+            ? new go.Binding('text', '', text_predicate).ofObject()
+            : { text: name }
+        ),
+        {
         click: action,
         name: name,
         visible: false,
@@ -427,13 +438,18 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
+            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', !node.data.bottomExpanded);
+            event.diagram.model.setDataProperty(node.data, 'middleExpanded', false);
 
             diagramChangesService.nodeExpandChanged(node);
           },
           null,
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
             return event.diagram.allowMove;
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent): string {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            return node.data.bottomExpanded ? 'Hide Status' : 'Show Status';
           }
         ),
         makeButton(1, 'Show Details', function(event: object): void {
@@ -459,7 +475,7 @@ export class GojsCustomObjectsService {
           function(event: any, object: any): void {
           }.bind(this),
           null,
-          'Show as List'
+          function() {return 'Show as List'; }
         ),
         makeSubMenuButton(
           4,
@@ -467,7 +483,7 @@ export class GojsCustomObjectsService {
           function(event: any, object: any): void {
           }.bind(this),
           null,
-          'Display'
+          function() {return 'Display'; }
         ),
         makeSubMenuButton(
           5,
@@ -493,7 +509,7 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', true);
+            event.diagram.model.setDataProperty(node.data, 'middleExpanded', !node.data.middleExpanded);
             event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
 
             diagramChangesService.nodeExpandChanged(node);
@@ -501,7 +517,11 @@ export class GojsCustomObjectsService {
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
-          'Show as List'
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return node.data.middleExpanded ? 'Hide List' : 'Show as List';
+          }
         ),
         makeSubMenuButton(4,
           'Display (data sets)',
@@ -512,7 +532,7 @@ export class GojsCustomObjectsService {
             diagramLevelService.changeLevelWithFilter.call(this, event, node);
           }.bind(this),
           null,
-          'Display'
+          function() {return 'Display'; }
         ),
         makeSubMenuButton(
           5,
