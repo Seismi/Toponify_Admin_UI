@@ -51,7 +51,7 @@ import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
 import { MoveObjectiveModalComponent } from '@app/workpackage/components/move-objective-modal/move-objective-modal.component';
@@ -478,7 +478,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     this.store
       .pipe(
         select(getWorkPackageEntities),
-        take(1)
+        take(1),
+        map(workpackages => workpackages.filter(wp => wp.status === 'draft'))
       )
       .subscribe((workPackages: WorkPackageEntity[]) => {
         const dialogRef = this.dialog.open(MoveObjectiveModalComponent, {
