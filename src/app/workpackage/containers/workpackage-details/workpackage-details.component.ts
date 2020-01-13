@@ -18,17 +18,20 @@ import {
   UpdateWorkPackageEntity,
   WorkPackageActionTypes,
   UpdateCustomProperty,
-  DeleteCustomProperty
+  DeleteCustomProperty,
+  CreateObjective
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkPackage } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkPackage, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import {
+  Objective,
   OwnersEntityOrApproversEntity,
   TeamEntityOrOwnersEntityOrApproversEntity,
-  WorkPackageDetail
+  WorkPackageDetail,
+  WorkPackageEntity
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -48,8 +51,10 @@ import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
+import { MoveObjectiveModalComponent } from '@app/workpackage/components/move-objective-modal/move-objective-modal.component';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -97,7 +102,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       this.actions.pipe(ofType(RadioActionTypes.AddReplySuccess)).subscribe(_ => {
         this.store.dispatch(new LoadWorkPackage(this.workpackageId));
       })
-    )
+    );
 
     this.subscriptions.push(
       this.store.pipe(select(getSelectedWorkPackage)).subscribe(workpackage => {
@@ -237,7 +242,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
           this.store.dispatch(
             new AddObjective({
               workPackageId: this.workpackageId,
-              radioId: data.radio.id,
+              objectiveId: data.radio.id,
               data: data.radio
             })
           );
@@ -285,7 +290,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
                 this.store.dispatch(
                   new AddObjective({
                     workPackageId: this.workpackageId,
-                    radioId: this.radioEffects.radioId,
+                    objectiveId: this.radioEffects.radioId,
                     data: data.radio
                   })
                 );
@@ -305,7 +310,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteObjectiveOrRadio(radio: RadioEntity, value): void {
+  onDeleteObjectiveOrRadio(radio: RadioEntity | Objective, value): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -318,7 +323,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
         value.objective
-          ? this.store.dispatch(new DeleteObjective({ workPackageId: this.workpackageId, radioId: radio.id }))
+          ? this.store.dispatch(new DeleteObjective({ workPackageId: this.workpackageId, objectiveId: radio.id }))
           : this.store.dispatch(new DeleteRadio({ workPackageId: this.workpackageId, radioId: radio.id }));
       }
     });
@@ -376,37 +381,37 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
           })
         );
       }
-    })
+    });
   }
 
   onOpenWorkPackage(): void {
     this.router.navigate(['/topology'], { queryParamsHandling: 'preserve' }).then(() => {
       this.routerStore
-      .select(getWorkPackagesQueryParams)
-      .pipe(take(1))
-      .subscribe(workpackages => {
-        let urlWorkpackages: string[];
-        let params: Params;
-        if (typeof workpackages === 'string') {
-          urlWorkpackages = [workpackages];
-        } else {
-          urlWorkpackages = workpackages ? [...workpackages] : [];
-        }
-        const index = urlWorkpackages.findIndex(id => id === this.workpackage.id);
-        if (this.workpackage) {
-          if (index === -1) {
-            params = { workpackages: [...urlWorkpackages, this.workpackage.id] };
+        .select(getWorkPackagesQueryParams)
+        .pipe(take(1))
+        .subscribe(workpackages => {
+          let urlWorkpackages: string[];
+          let params: Params;
+          if (typeof workpackages === 'string') {
+            urlWorkpackages = [workpackages];
           } else {
+            urlWorkpackages = workpackages ? [...workpackages] : [];
+          }
+          const index = urlWorkpackages.findIndex(id => id === this.workpackage.id);
+          if (this.workpackage) {
+            if (index === -1) {
+              params = { workpackages: [...urlWorkpackages, this.workpackage.id] };
+            } else {
+              params = { workpackages: [...urlWorkpackages] };
+            }
+          } else {
+            if (index !== -1) {
+              urlWorkpackages.splice(index, 1);
+            }
             params = { workpackages: [...urlWorkpackages] };
           }
-        } else {
-          if (index !== -1) {
-            urlWorkpackages.splice(index, 1);
-          }
-          params = { workpackages: [...urlWorkpackages] };
-        }
-        this.routerStore.dispatch(new UpdateQueryParams(params));
-      })
+          this.routerStore.dispatch(new UpdateQueryParams(params));
+        });
     });
   }
 
@@ -454,5 +459,43 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
 
   onSelectWorkPackageColour(colour: string): void {
     this.workPackageColour = colour;
+  }
+
+  onAddObjective() {
+    const dialogRef = this.dialog.open(AddObjectiveModalComponent, {
+      disableClose: false,
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.store.dispatch(new CreateObjective({ data: data, workPackageId: this.workpackageId }));
+      }
+    });
+  }
+
+  onMoveObjective(objective: Objective) {
+    this.store
+      .pipe(
+        select(getWorkPackageEntities),
+        take(1),
+        map(workpackages => workpackages.filter(wp => wp.status === 'draft'))
+      )
+      .subscribe((workPackages: WorkPackageEntity[]) => {
+        const dialogRef = this.dialog.open(MoveObjectiveModalComponent, {
+          disableClose: false,
+          width: '500px',
+          data: workPackages
+        });
+
+        dialogRef.afterClosed().subscribe((selectedWorkpackage: WorkPackageEntity) => {
+          if (selectedWorkpackage) {
+            this.store.dispatch(
+              new AddObjective({ data: objective, workPackageId: selectedWorkpackage.id, objectiveId: objective.id })
+            );
+            this.store.dispatch(new DeleteObjective({ workPackageId: this.workpackageId, objectiveId: objective.id }));
+          }
+        });
+      });
   }
 }

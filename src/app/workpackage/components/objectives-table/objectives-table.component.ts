@@ -1,7 +1,6 @@
 import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
-import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { Objective } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-objectives-table',
@@ -10,31 +9,31 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 })
 export class ObjectivesTableComponent {
   @Input()
-  set data(data: WorkPackageDetail[]) {
+  set data(data: Objective[]) {
     if (data) {
-      this.dataSource = new MatTableDataSource<WorkPackageDetail>(data);
+      this.dataSource = new MatTableDataSource<Objective>(data);
       this.dataSource.paginator = this.paginator;
     }
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public displayedColumns: string[] = ['refNo', 'name', 'status', 'edit', 'delete'];
-  public dataSource: MatTableDataSource<WorkPackageDetail>;
+  public displayedColumns: string[] = ['name', 'description'];
+  public dataSource: MatTableDataSource<Objective>;
 
   @Output() addObjective = new EventEmitter<void>();
-  @Output() deleteObjective = new EventEmitter<RadioEntity>();
-  @Output() editRadio = new EventEmitter<WorkPackageDetail>();
+  @Output() deleteObjective = new EventEmitter<Objective>();
+  @Output() moveObjective = new EventEmitter<Objective>();
 
   onAdd(): void {
     this.addObjective.emit();
   }
 
-  onDelete(radio: RadioEntity): void {
-    this.deleteObjective.emit(radio);
+  onDelete(objective: Objective): void {
+    this.deleteObjective.emit(objective);
   }
 
-  onEdit(radio: WorkPackageDetail): void {
-    this.editRadio.emit(radio);
+  onMove(objective: Objective): void {
+    this.moveObjective.emit(objective);
   }
 }
