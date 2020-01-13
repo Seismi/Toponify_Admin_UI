@@ -293,9 +293,9 @@ export class DiagramTemplatesService {
           return enabled ? 'black' : '#AAAFB4';
         }).ofObject('TopMenuButton')
       ),
-      // Disable menu for nodes in palette
+      // Disable menu when layout not editable
       new go.Binding('isEnabled', '', function(node: go.Node): boolean {
-         return !(node.diagram instanceof go.Palette);
+         return node.diagram.allowMove;
       }).ofObject()
     );
   }

@@ -148,6 +148,14 @@ export class DiagramListenersService {
         });
       }
     );
+    diagram.addDiagramListener(
+      'LostFocus',
+      function(event: go.DiagramEvent): void {
+        event.diagram.nodes.each(function(node: go.Part): void {
+          node.removeAdornment('ButtonMenu');
+        });
+      }
+    );
 
   }
 
