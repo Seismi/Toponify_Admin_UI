@@ -97,7 +97,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       this.actions.pipe(ofType(RadioActionTypes.AddReplySuccess)).subscribe(_ => {
         this.store.dispatch(new LoadWorkPackage(this.workpackageId));
       })
-    )
+    );
 
     this.subscriptions.push(
       this.store.pipe(select(getSelectedWorkPackage)).subscribe(workpackage => {
@@ -376,37 +376,37 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
           })
         );
       }
-    })
+    });
   }
 
   onOpenWorkPackage(): void {
     this.router.navigate(['/topology'], { queryParamsHandling: 'preserve' }).then(() => {
       this.routerStore
-      .select(getWorkPackagesQueryParams)
-      .pipe(take(1))
-      .subscribe(workpackages => {
-        let urlWorkpackages: string[];
-        let params: Params;
-        if (typeof workpackages === 'string') {
-          urlWorkpackages = [workpackages];
-        } else {
-          urlWorkpackages = workpackages ? [...workpackages] : [];
-        }
-        const index = urlWorkpackages.findIndex(id => id === this.workpackage.id);
-        if (this.workpackage) {
-          if (index === -1) {
-            params = { workpackages: [...urlWorkpackages, this.workpackage.id] };
+        .select(getWorkPackagesQueryParams)
+        .pipe(take(1))
+        .subscribe(workpackages => {
+          let urlWorkpackages: string[];
+          let params: Params;
+          if (typeof workpackages === 'string') {
+            urlWorkpackages = [workpackages];
           } else {
+            urlWorkpackages = workpackages ? [...workpackages] : [];
+          }
+          const index = urlWorkpackages.findIndex(id => id === this.workpackage.id);
+          if (this.workpackage) {
+            if (index === -1) {
+              params = { workpackages: [...urlWorkpackages, this.workpackage.id] };
+            } else {
+              params = { workpackages: [...urlWorkpackages] };
+            }
+          } else {
+            if (index !== -1) {
+              urlWorkpackages.splice(index, 1);
+            }
             params = { workpackages: [...urlWorkpackages] };
           }
-        } else {
-          if (index !== -1) {
-            urlWorkpackages.splice(index, 1);
-          }
-          params = { workpackages: [...urlWorkpackages] };
-        }
-        this.routerStore.dispatch(new UpdateQueryParams(params));
-      })
+          this.routerStore.dispatch(new UpdateQueryParams(params));
+        });
     });
   }
 

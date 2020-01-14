@@ -1,5 +1,4 @@
-<mat-form-field floatLabel="never" appearance="none"
-  matTooltip="Scope - Filter on the components in a specific scope">
+<mat-form-field floatLabel="never" appearance="none" matTooltip="Scope - Filter on the components in a specific scope">
   <mat-select [value]="selectedScope?.id" (selectionChange)="onSelect($event)">
     <mat-option *ngFor="let scope of scopes" [value]="scope.id">
       {{ scope.name }}

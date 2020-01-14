@@ -144,7 +144,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
     this.diagram.toolManager.draggingTool.doActivate = function(): void {
-
       go.DraggingTool.prototype.doActivate.call(this);
 
       const draggedParts = this.draggedParts.toKeySet();
@@ -154,7 +153,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       // If the only part being dragged is a link that is already connected, cancel the drag
       if (draggedParts.count === 1 && draggedParts.first() instanceof go.Link) {
-
         const draggedLink = draggedParts.first();
 
         if (!draggedLink.data.isTemporary) {

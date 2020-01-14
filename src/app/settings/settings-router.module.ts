@@ -15,7 +15,7 @@ export const settingsRoutes: Routes = [
     children: [
       {
         path: 'my-user',
-        component: MyUserComponent,
+        component: MyUserComponent
       },
       {
         path: 'teams',

@@ -259,7 +259,7 @@ export class FindPotentialWorkpackageNodesFailure implements Action {
 
 export class AddWorkPackageNodeRadio implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadio;
-  constructor(public payload: { workPackageId: string; nodeId: string, radioId: string }) {}
+  constructor(public payload: { workPackageId: string; nodeId: string; radioId: string }) {}
 }
 
 export class AddWorkPackageNodeRadioSuccess implements Action {

@@ -12,7 +12,9 @@ import {
 import 'rxjs/add/observable/of';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WorkPackageService {
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -71,14 +73,22 @@ export class WorkPackageService {
     return this.http.delete<any>(`/workpackages/${workPackageId}/radios/${radioId}`);
   }
 
-  updateProperty(workPackageId: string, customPropertyId: string, data: CustomPropertiesEntity): Observable<WorkPackageDetailApiResponse> {
-    return this.http.put<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`, {data: data},
+  updateProperty(
+    workPackageId: string,
+    customPropertyId: string,
+    data: CustomPropertiesEntity
+  ): Observable<WorkPackageDetailApiResponse> {
+    return this.http.put<WorkPackageDetailApiResponse>(
+      `/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`,
+      { data: data },
       this.httpOptions
     );
   }
 
   deleteProperty(workPackageId: string, customPropertyId: string): Observable<WorkPackageDetailApiResponse> {
-    return this.http.delete<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`);
+    return this.http.delete<WorkPackageDetailApiResponse>(
+      `/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`
+    );
   }
 
   // TODO: move into sharable service

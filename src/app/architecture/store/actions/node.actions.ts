@@ -1,5 +1,13 @@
 import { Action } from '@ngrx/store';
-import { CustomPropertyApiRequest, NodeExpandedStateApiRequest, Error, Node, NodeDetail, OwnersEntity, NodeReports } from '../models/node.model';
+import {
+  CustomPropertyApiRequest,
+  NodeExpandedStateApiRequest,
+  Error,
+  Node,
+  NodeDetail,
+  OwnersEntity,
+  NodeReports
+} from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
@@ -229,7 +237,7 @@ export class DeleteCustomPropertyFailure implements Action {
 
 export class LoadNodeReports implements Action {
   readonly type = NodeActionTypes.LoadNodeReports;
-  constructor(public payload: { nodeId: string, queryParams?: GetNodesRequestQueryParams }) {}
+  constructor(public payload: { nodeId: string; queryParams?: GetNodesRequestQueryParams }) {}
 }
 
 export class LoadNodeReportsSuccess implements Action {

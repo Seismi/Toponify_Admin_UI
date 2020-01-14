@@ -2,8 +2,8 @@ import * as go from 'gojs';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
-import {Store} from '@ngrx/store';
-import {State as WorkPackageState} from '@app/workpackage/store/reducers/workpackage.reducer';
+import { Store } from '@ngrx/store';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 
 const $ = go.GraphObject.make;
 
@@ -16,12 +16,11 @@ const statusColours = {
   draft: 'blue'
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WorkPackageDiagramService {
-  constructor(
-    private router: Router,
-    private workpackageStore: Store<WorkPackageState>
-  ) {}
+  constructor(private router: Router, private workpackageStore: Store<WorkPackageState>) {}
 
   // Get layout for workpackage tree diagram
   getLayout() {
@@ -82,14 +81,12 @@ export class WorkPackageDiagramService {
       'Auto',
       {
         movable: false,
-        doubleClick: function (event, node) {
-          this.router.navigate(['/topology'],
-            {
-              queryParams: {workpackages: node.key},
-              queryParamsHandling: 'merge'
-            }
-          );
-          this.workpackageStore.dispatch(new SetWorkpackageEditMode({id: node.key, newState: false}));
+        doubleClick: function(event, node) {
+          this.router.navigate(['/topology'], {
+            queryParams: { workpackages: node.key },
+            queryParamsHandling: 'merge'
+          });
+          this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: node.key, newState: false }));
         }.bind(this)
       },
       // Node should be hidden if all nodes in the current branch have status "merged" or "superseded"

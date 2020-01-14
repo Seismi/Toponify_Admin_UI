@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
 import {
-  MatButtonModule, MatCardModule,
+  MatButtonModule,
+  MatCardModule,
   MatFormFieldModule,
   MatIconModule,
-  MatInputModule, MatListModule,
-  MatMenuModule, MatSelectModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatSelectModule,
   MatSliderModule,
-  MatToolbarModule, MatTooltipModule
+  MatToolbarModule,
+  MatTooltipModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -35,7 +39,6 @@ import { DraggerComponent } from '@app/core/layout/model-sidebar/dragger/dragger
 import { RouterModule } from '@angular/router';
 import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-name.component';
 
-
 @NgModule({
   imports: [
     RouterModule,
@@ -53,7 +56,7 @@ import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-
     FormsModule,
     ReactiveFormsModule,
     MdePopoverModule,
-    MatSelectModule,
+    MatSelectModule
   ],
   exports: [
     MainLayoutComponent,

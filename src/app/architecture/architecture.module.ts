@@ -111,9 +111,7 @@ import { ReportsTabComponent } from './components/reports-tab/reports-tab.compon
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule,
-    StoreModule.forFeature('architectureFeature', reducer),
-    EffectsModule.forFeature([NodeEffects])
+    ScopesAndLayoutsModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [

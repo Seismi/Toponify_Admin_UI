@@ -237,12 +237,14 @@ export class WorkPackageEffects {
   updateCustomProperty$ = this.actions$.pipe(
     ofType<UpdateCustomProperty>(WorkPackageActionTypes.UpdateCustomProperty),
     map(action => action.payload),
-    switchMap((payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertyValuesEntity }}) => {
-      return this.workpackageService.updateProperty(payload.workPackageId, payload.customPropertyId, payload.data.data)
-        .pipe(
-          switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
-          catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
-        );
+    switchMap(
+      (payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertyValuesEntity } }) => {
+        return this.workpackageService
+          .updateProperty(payload.workPackageId, payload.customPropertyId, payload.data.data)
+          .pipe(
+            switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
+            catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
+          );
       }
     )
   );
@@ -252,11 +254,10 @@ export class WorkPackageEffects {
     ofType<DeleteCustomProperty>(WorkPackageActionTypes.DeleteCustomProperty),
     map(action => action.payload),
     mergeMap((payload: { workPackageId: string; customPropertyId: string }) => {
-      return this.workpackageService.deleteProperty(payload.workPackageId, payload.customPropertyId)
-        .pipe(
-          map(response => new DeleteCustomPropertySuccess(response.data)),
-          catchError((error: Error) => of(new DeleteCustomPropertyFailure(error)))
-        );
+      return this.workpackageService.deleteProperty(payload.workPackageId, payload.customPropertyId).pipe(
+        map(response => new DeleteCustomPropertySuccess(response.data)),
+        catchError((error: Error) => of(new DeleteCustomPropertyFailure(error)))
+      );
     })
   );
 

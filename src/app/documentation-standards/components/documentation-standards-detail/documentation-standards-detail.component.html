@@ -2,12 +2,13 @@
   <div [ngClass]="{ disabled: !isEditable }" *ngIf="!isEditMode">
     <!-- Name -->
     <mat-form-field>
-      <input 
-        matInput 
-        placeholder="Name" 
-        formControlName="name" 
-        data-hook="documentation-standards-details-name" 
-        [ngClass]="{ editable: isEditable }"/>
+      <input
+        matInput
+        placeholder="Name"
+        formControlName="name"
+        data-hook="documentation-standards-details-name"
+        [ngClass]="{ editable: isEditable }"
+      />
       <mat-error>This field is required!</mat-error>
     </mat-form-field>
 
@@ -38,10 +39,7 @@
   <!-- Levels -->
   <div class="form-group" *ngIf="!isEditMode">
     <label class="levels-label"><h6>Component Types</h6></label>
-    <smi-document-standards-levels
-      [control]="group.controls.levels"
-      [isDisabled]="isDisabled" 
-      [modalMode]="modalMode">
+    <smi-document-standards-levels [control]="group.controls.levels" [isDisabled]="isDisabled" [modalMode]="modalMode">
     </smi-document-standards-levels>
   </div>
 

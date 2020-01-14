@@ -76,9 +76,7 @@ import { WorkPackageColorComponent } from './components/color-picker/color-picke
     RadioModule,
     MatMenuModule,
     MatGridListModule,
-    MatTooltipModule,
-    StoreModule.forFeature('workpackageFeature', reducer),
-    EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects])
+    MatTooltipModule
   ],
   exports: [WorkPackagesTableComponent, RadioDetailModalComponent, WorkPackageColorComponent],
   declarations: [
