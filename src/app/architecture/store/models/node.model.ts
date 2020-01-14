@@ -46,6 +46,7 @@ export enum nodeCategories {
 export class Node {
   id: string;
   layer: string;
+  isGroup?: boolean;
   name: string;
   description = '';
   category: nodeCategories;
@@ -71,6 +72,7 @@ export class Node {
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
+      this.isGroup = options.layer === layers.system;
       this.tooltip = options.tooltip;
       this.owners = [];
       this.impactedByWorkPackages = [];
@@ -107,6 +109,7 @@ export interface NodeDetail {
   name: string;
   description: string;
   category: nodeCategories;
+  isGroup?: boolean;
   tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
