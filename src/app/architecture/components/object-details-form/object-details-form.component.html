@@ -1,15 +1,21 @@
 <form [formGroup]="group">
   <div [ngClass]="{ disabled: nodeIsEditable() }">
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: !nodeIsEditable() }" />
+      <div class="input-wrapper">
+        <label>Name</label>
+        <input matInput formControlName="name" [ngClass]="{ editable: !nodeIsEditable() }" />
+      </div>
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select formControlName="category" [ngClass]="{ editable: !nodeIsEditable() }">
-        <mat-option *ngFor="let category of getCategories()" [value]="category">
-          {{ category }}
-        </mat-option>
-      </mat-select>
+      <div class="input-wrapper">
+        <label>Category</label>
+        <mat-select formControlName="category" [ngClass]="{ editable: !nodeIsEditable() }">
+          <mat-option *ngFor="let category of getCategories()" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </div>
     </mat-form-field>
 
     <mat-form-field>

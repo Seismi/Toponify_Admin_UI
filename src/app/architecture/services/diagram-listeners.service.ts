@@ -133,6 +133,32 @@ export class DiagramListenersService {
 
     diagram.addModelChangedListener(this.handleModelChange.bind(this));
 
+    // Listeners to hide button menu on system nodes when user clicks outside menu
+    diagram.addDiagramListener(
+      'BackgroundSingleClicked',
+      function(event: go.DiagramEvent): void {
+        event.diagram.nodes.each(function(node: go.Part): void {
+          node.removeAdornment('ButtonMenu');
+        });
+      }
+    );
+    diagram.addDiagramListener(
+      'ObjectSingleClicked',
+      function(event: go.DiagramEvent): void {
+        event.diagram.nodes.each(function(node: go.Part): void {
+          node.removeAdornment('ButtonMenu');
+        });
+      }
+    );
+    diagram.addDiagramListener(
+      'LostFocus',
+      function(event: go.DiagramEvent): void {
+        event.diagram.nodes.each(function(node: go.Part): void {
+          node.removeAdornment('ButtonMenu');
+        });
+      }
+    );
+
     // Temporary - added in order to test diagram image download
     diagram.addDiagramListener(
       'BackgroundDoubleClicked',

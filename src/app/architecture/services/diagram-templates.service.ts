@@ -261,6 +261,45 @@ export class DiagramTemplatesService {
     );
   }
 
+  // Get menu button for system nodes.
+  //  When clicked, provides a menu with actions to take, relating to the node.
+  getTopMenuButton(): go.Panel {
+    return $(
+      'RoundButton',
+      {
+        name: 'TopMenuButton',
+        alignment: go.Spot.RightCenter,
+        alignmentFocus: go.Spot.RightCenter,
+        desiredSize: new go.Size(25, 25),
+        click: function(event, button) {
+          const menu = this.gojsCustomObjectsService.getPartButtonMenu();
+          menu.adornedObject = button.part;
+          button.part.addAdornment('ButtonMenu', menu);
+        }.bind(this)
+      },
+      $(
+        go.TextBlock,
+          {
+            alignment: go.Spot.Center,
+            font: 'bold 18px calibri',
+            desiredSize: new go.Size(25, 25),
+            textAlign: 'center',
+            verticalAlignment: new go.Spot(0.5, 0, 0, -1.5),
+            text: '...',
+            angle: 90
+          },
+        // Grey out text when button disabled
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : '#AAAFB4';
+        }).ofObject('TopMenuButton')
+      ),
+      // Disable menu when layout not editable
+      new go.Binding('isEnabled', '', function(node: go.Node): boolean {
+         return node.diagram.allowMove;
+      }).ofObject()
+    );
+  }
+
   // Get bottom button for expanding and collapsing node sections.
   // Expands the middle section of nodes when clicked.
   getBottomExpandButton(): go.Panel {
@@ -289,12 +328,12 @@ export class DiagramTemplatesService {
           verticalAlignment: go.Spot.Center
         },
         // Grey out text when button disabled
-        new go.Binding('stroke', 'isEnabled', function(enabled) {
+        new go.Binding('stroke', 'isEnabled', function(enabled: boolean): string {
           return enabled ? 'black' : '#AAAFB4';
         }).ofObject('TopExpandButton')
       ),
       // Disable button if moves not allowed in diagram
-      new go.Binding('isEnabled', '', function(node) {
+      new go.Binding('isEnabled', '', function(node: go.Node): boolean {
         return node.diagram.allowMove;
       }).ofObject(),
       // Button not visible when middle node section is collapsed
@@ -463,7 +502,7 @@ export class DiagramTemplatesService {
   }
 
   // Get top section of nodes, containing icon and name
-  getTopSection() {
+  getTopSection(isSystem = false): go.Panel {
     return $(
       go.Panel,
       'Horizontal',
@@ -541,7 +580,7 @@ export class DiagramTemplatesService {
           function(name: boolean): number {return name ? 1 : 0; }
         ).ofModel()
        ),
-      this.getTopExpandButton()
+      isSystem ? this.getTopMenuButton() : this.getTopExpandButton()
     );
   }
 
@@ -616,7 +655,7 @@ export class DiagramTemplatesService {
   }
 
   // Get bottom section of nodes, containing tags and RADIO Alert indicators
-  getBottomSection(): go.Panel {
+  getBottomSection(isSystem = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -658,7 +697,7 @@ export class DiagramTemplatesService {
           }
         ),
         this.getRadioAlertIndicators(),
-        this.getBottomExpandButton()
+        isSystem ? {} : this.getBottomExpandButton()
       )
     );
   }
@@ -790,6 +829,104 @@ export class DiagramTemplatesService {
         this.getTopSection(),
         this.getMiddleSection(),
         this.getBottomSection()
+      )
+    );
+  }
+
+  getSystemGroupTemplate(forPalette: boolean = false): go.Group {
+    return $(
+      go.Group,
+      'Auto',
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
+      this.getStandardNodeOptions(forPalette),
+      {
+        isSubGraphExpanded: false,
+        layout: $(go.GridLayout,
+          {
+            wrappingColumn: 1,
+            spacing: new go.Size(NaN, 15),
+            alignment: go.GridLayout.Location,
+            isOngoing: true,
+            isInitial: true
+          }
+        ),
+        doubleClick: function(event, node) {
+
+          // Do not proceed for double clicks on buttons on the node
+          if (event.targetObject.name.includes('Button')) {
+            return;
+          }
+
+         this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+        }.bind(this)
+      },
+      new go.Binding(
+        'movable',
+        '',
+        function() {
+          return this.currentFilterLevel !== Level.usage;
+        }.bind(this)
+      ),
+      !forPalette
+        ? {
+            // Enable context menu for nodes not in the palette
+            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+          }
+        : {
+            toolTip: $(
+              'ToolTip',
+              $(
+                go.TextBlock,
+                {
+                  width: 150
+                },
+                new go.Binding('text', 'tooltip')
+              )
+            )
+          },
+      // Have the diagram position the node if no location set
+      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      $(
+        go.Shape,
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding(
+          'stroke',
+          'impactedByWorkPackages',
+          function(impactedPackages, shape) {
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+          }.bind(this)
+        ),
+        new go.Binding('fromSpot', 'group', function(group) {
+          if (group) {
+            return go.Spot.LeftRightSides;
+          } else {
+            return go.Spot.AllSides;
+          }
+        }),
+        new go.Binding('toSpot', 'group', function(group) {
+          if (group) {return go.Spot.LeftRightSides;
+          } else {
+            return go.Spot.AllSides;
+          }
+        }),
+        this.getStandardNodeShapeOptions()
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel, {
+        alignment: go.Spot.TopCenter,
+        desiredSize: new go.Size(0, 0),
+        name: 'location panel'
+      }),
+      $(
+        go.Panel,
+        'Table',
+        {
+          defaultRowSeparatorStroke: 'black'
+        },
+        this.getTopSection(true),
+        this.getMiddleSection(),
+        this.getBottomSection(true)
       )
     );
   }
