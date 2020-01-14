@@ -59,7 +59,11 @@ export enum WorkPackageNodeActionTypes {
 
   AddWorkPackageNodeRadio = '[WorkPackage] Add Node Radio',
   AddWorkPackageNodeRadioSuccess = '[WorkPackage] Add Node Radio Success',
-  AddWorkPackageNodeRadioFailure = '[WorkPackage] Add Node Radio Failure'
+  AddWorkPackageNodeRadioFailure = '[WorkPackage] Add Node Radio Failure',
+
+  AddWorkPackageNodeAttribute = '[WorkPackage] Add Node Attribute',
+  AddWorkPackageNodeAttributeSuccess = '[WorkPackage] Add Node Attribute Success',
+  AddWorkPackageNodeAttributeFailure = '[WorkPackage] Add Node Attribute Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -272,6 +276,21 @@ export class AddWorkPackageNodeRadioFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddWorkPackageNodeAttribute implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttribute;
+  constructor(public payload: { workPackageId: string; nodeId: string, attributeId: string }) {}
+}
+
+export class AddWorkPackageNodeAttributeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class AddWorkPackageNodeAttributeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
@@ -314,4 +333,7 @@ export type WorkPackageNodeActionsUnion =
   | FindPotentialWorkpackageNodesFailure
   | AddWorkPackageNodeRadio
   | AddWorkPackageNodeRadioSuccess
-  | AddWorkPackageNodeRadioFailure;
+  | AddWorkPackageNodeRadioFailure
+  | AddWorkPackageNodeAttribute
+  | AddWorkPackageNodeAttributeSuccess
+  | AddWorkPackageNodeAttributeFailure;
