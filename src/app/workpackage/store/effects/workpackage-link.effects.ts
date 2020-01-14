@@ -24,7 +24,10 @@ import {
   AddWorkPackageLinkOwnerFailure,
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkOwnerSuccess,
-  DeleteWorkpackageLinkOwnerFailure
+  DeleteWorkpackageLinkOwnerFailure,
+  DeleteWorkPackageLinkAttribute,
+  DeleteWorkPackageLinkAttributeSuccess,
+  DeleteWorkPackageLinkAttributeFailure
 } from '../actions/workpackage-link.actions';
 
 @Injectable()
@@ -105,6 +108,18 @@ export class WorkPackageLinkEffects {
           new UpdateWorkPackageLinkSuccess(data)
         ]),
         catchError(error => of(new DeleteWorkpackageLinkOwnerFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteLinkAttribute$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageLinkAttribute>(WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttribute),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) => {
+      return this.workpackageLinkService.deleteLinkAttribute(payload.workPackageId, payload.nodeLinkId, payload.attributeId).pipe(
+        switchMap(response => [new DeleteWorkPackageLinkAttributeSuccess(response.data)]),
+        catchError(error => of(new DeleteWorkPackageLinkAttributeFailure(error)))
       );
     })
   );

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import { WorkPackageService } from './workpackage.service';
-import { NodeLink } from '@app/architecture/store/models/node-link.model';
+import { NodeLink, NodeLinkDetailApiResponse } from '@app/architecture/store/models/node-link.model';
 import {
   WorkpackageLink,
   WorkpackageLinkCustomProperty,
@@ -51,12 +51,8 @@ export class WorkPackageLinksService extends WorkPackageService {
     );
   }
 
-  /**
-   * Delete attribute from a link
-   * FIXME: missing types
-   */
-  deleteLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<any> {
-    return this.http.post<any>(
+  deleteLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.post<NodeLinkDetailApiResponse>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/attributes/${attributeId}/deleteRequest`,
       {}
     );

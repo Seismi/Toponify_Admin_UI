@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { NodeLink } from '@app/architecture/store/models/node-link.model';
+import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 
 export enum WorkPackageLinkActionTypes {
   AddWorkPackageLink = '[WorkPackage] Add link',
@@ -20,7 +20,10 @@ export enum WorkPackageLinkActionTypes {
   AddWorkPackageLinkOwnerFailure = '[WorkPackage] Add link owner failure',
   DeleteWorkpackageLinkOwner = '[WorkPackage] Delete Link Owner',
   DeleteWorkpackageLinkOwnerSuccess = '[WorkPackage] Delete Link Owner Success',
-  DeleteWorkpackageLinkOwnerFailure = '[WorkPackage] Delete Link Owner Fail'
+  DeleteWorkpackageLinkOwnerFailure = '[WorkPackage] Delete Link Owner Fail',
+  DeleteWorkPackageLinkAttribute = '[WorkPackage] Delete Link Attribute',
+  DeleteWorkPackageLinkAttributeSuccess = '[WorkPackage] Delete Link Attribute Success',
+  DeleteWorkPackageLinkAttributeFailure = '[WorkPackage] Delete Link Attribute Failure'
 }
 
 export class AddWorkPackageLink implements Action {
@@ -113,6 +116,21 @@ export class DeleteWorkpackageLinkOwnerFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) { }
 }
 
+export class DeleteWorkPackageLinkAttribute implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttribute;
+  constructor(public payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) { }
+}
+
+export class DeleteWorkPackageLinkAttributeSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess;
+  constructor(public payload: NodeLinkDetail) { }
+}
+
+export class DeleteWorkPackageLinkAttributeFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
 export type WorkPackageLinkActionsUnion =
   | AddWorkPackageLink
   | AddWorkPackageLinkSuccess
@@ -131,4 +149,7 @@ export type WorkPackageLinkActionsUnion =
   | AddWorkPackageLinkOwnerFailure
   | DeleteWorkpackageLinkOwner
   | DeleteWorkpackageLinkOwnerSuccess
-  | DeleteWorkpackageLinkOwnerFailure;
+  | DeleteWorkpackageLinkOwnerFailure
+  | DeleteWorkPackageLinkAttribute
+  | DeleteWorkPackageLinkAttributeSuccess
+  | DeleteWorkPackageLinkAttributeFailure;
