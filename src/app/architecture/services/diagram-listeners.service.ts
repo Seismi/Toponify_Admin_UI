@@ -133,10 +133,11 @@ export class DiagramListenersService {
 
     diagram.addModelChangedListener(this.handleModelChange.bind(this));
 
+    // Temporary - added in order to test diagram image download
     diagram.addDiagramListener(
       'BackgroundDoubleClicked',
-      function(event) {
-        return this.diagramImageService.downloadImage(diagram);
+      function(): void {
+        this.diagramImageService.downloadImage(diagram);
       }.bind(this)
     );
   }

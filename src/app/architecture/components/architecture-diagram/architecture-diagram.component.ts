@@ -20,6 +20,7 @@ import { DiagramLevelService, Level } from '../..//services/diagram-level.servic
 import { DiagramChangesService } from '../../services/diagram-changes.service';
 import { CustomLinkShift, GojsCustomObjectsService } from '../../services/gojs-custom-objects.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
+import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -117,7 +118,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     public diagramLevelService: DiagramLevelService,
     public diagramChangesService: DiagramChangesService,
     public gojsCustomObjectsService: GojsCustomObjectsService,
-    public diagramListenersService: DiagramListenersService
+    public diagramListenersService: DiagramListenersService,
+    public diagramImageService: DiagramImageService
   ) {
     // Lets init url filtering
     this.diagramLevelService.initializeUrlFiltering();
@@ -407,5 +409,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   selectById(id: string) {
     const part = this.diagram.findPartForKey(id);
     this.diagram.select(part);
+  }
+
+  getDiagramImage(): void {
+    this.diagramImageService.downloadImage(this.diagram);
   }
 }
