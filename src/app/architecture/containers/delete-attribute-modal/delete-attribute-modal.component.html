@@ -1,0 +1,13 @@
+<p style="font-weight: 500;">
+  Please confirm that the {{type}} "{{name}}" no longer applies to this object.
+</p>
+<p>
+  Note that the {{type}} will not be deleted and will still be available in the 
+  attributes and rules catalogue and against any other component.
+  Where {{type}} is the type of the attribute or rule
+  and "{{name}}" is the name of the attribute or rule.
+</p>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()">Confirm</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>
