@@ -139,6 +139,7 @@ import { ArchitectureTableViewComponent } from '../components/architecture-table
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
+import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 enum Events {
   NodesLinksReload = 0
 }
@@ -1261,9 +1262,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteDescendantsModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
         mode: 'delete',
         name: descendant.name

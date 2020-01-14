@@ -77,6 +77,7 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
 import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
+import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 
 @NgModule({
   imports: [
@@ -150,7 +151,8 @@ import { ReportsTabComponent } from './components/reports-tab/reports-tab.compon
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     SearchTableViewComponent,
-    ReportsTabComponent
+    ReportsTabComponent,
+    DeleteDescendantsModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -161,7 +163,8 @@ import { ReportsTabComponent } from './components/reports-tab/reports-tab.compon
     EditNameModalComponent,
     NodeScopeModalComponent,
     NewChildrenModalComponent,
-    NodeScopeModalComponent
+    NodeScopeModalComponent,
+    DeleteDescendantsModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
