@@ -247,3 +247,9 @@ export interface WorkPackageNodeFindPotential {
 interface ChildrenOf {
   id: string;
 }
+
+export interface Objective {
+  id: string;
+  title: string;
+  description: string;
+}
