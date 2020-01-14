@@ -65,6 +65,9 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   addAttribute = new EventEmitter();
 
   @Output()
+  deleteAttribute = new EventEmitter<AttributesEntity>();
+
+  @Output()
   hideRightPane = new EventEmitter();
 
   @Output()
@@ -147,6 +150,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAddAttribute() {
     this.addAttribute.emit();
+  }
+
+  onDeleteAttribute(attribute: AttributesEntity): void {
+    this.deleteAttribute.emit(attribute);
   }
 
   onAddRadio() {

@@ -35,7 +35,8 @@ import {
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
-  OwnersEntityOrTeamEntityOrApproversEntity
+  OwnersEntityOrTeamEntityOrApproversEntity,
+  AttributesEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -62,7 +63,8 @@ import { ScopeAndLayoutModalComponent } from '@app/scopes-and-layouts/containers
 import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
-  DeleteWorkpackageLinkSuccess
+  DeleteWorkpackageLinkSuccess,
+  DeleteWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -74,7 +76,8 @@ import {
   DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
-  WorkPackageNodeActionTypes
+  WorkPackageNodeActionTypes,
+  DeleteWorkPackageNodeAttribute
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -139,6 +142,9 @@ import { ArchitectureTableViewComponent } from '../components/architecture-table
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
+import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
+import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
+
 enum Events {
   NodesLinksReload = 0
 }
@@ -256,7 +262,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private attributeStore: Store<AttributeState>
   ) {}
 
   ngOnInit() {
@@ -1100,6 +1107,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddAttribute() {
     this.dialog.open(AttributeModalComponent, { width: '450px' });
+  }
+
+  onDeleteAttribute(attribute: AttributesEntity): void {
+    const dialogRef = this.dialog.open(DeleteAttributeModalComponent, { 
+      width: '500px',
+      data: {
+        type: attribute.category,
+        name: attribute.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.attributeStore.dispatch(new DeleteWorkPackageNodeAttribute({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            attributeId: attribute.id
+          }))
+        } else {
+          this.attributeStore.dispatch(new DeleteWorkPackageLinkAttribute({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
+            attributeId: attribute.id
+          }))
+        }
+      }
+    });
   }
 
   openRightTab(index: number) {
