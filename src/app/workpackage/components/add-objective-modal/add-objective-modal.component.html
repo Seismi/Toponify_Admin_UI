@@ -1,0 +1,22 @@
+<h6 mat-dialog-title>New Objective</h6>
+<div mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <div class="form-container">
+      <mat-form-field>
+        <input matInput placeholder="Name" formControlName="title"/>
+      </mat-form-field>
+      <mat-form-field>
+        <textarea
+          matInput
+          placeholder="Description"
+          rows="4"
+          formControlName="description"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button [disabled]="!formGroup.valid" color="primary" (click)="onConfirm()">Confirm</button>
+  <button mat-raised-button (click)="onCancel()">Cancel</button>
+</div>

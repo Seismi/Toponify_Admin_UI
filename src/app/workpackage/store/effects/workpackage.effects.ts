@@ -64,7 +64,10 @@ import {
   UpdateCustomPropertyFailure,
   DeleteCustomProperty,
   DeleteCustomPropertySuccess,
-  DeleteCustomPropertyFailure
+  DeleteCustomPropertyFailure,
+  CreateObjective,
+  CreateObjectiveSuccess,
+  CreateObjectiveFailure
 } from '../actions/workpackage.actions';
 import {
   OwnersEntityOrApproversEntity,
@@ -177,10 +180,25 @@ export class WorkPackageEffects {
   addObjective$ = this.actions$.pipe(
     ofType<AddObjective>(WorkPackageActionTypes.AddObjective),
     map(action => action.payload),
-    mergeMap((payload: { data: any; workPackageId: string; radioId: string }) => {
-      return this.workpackageService.addObjective(payload.data, payload.workPackageId, payload.radioId).pipe(
+    mergeMap((payload: { data: any; workPackageId: string; objectiveId: string }) => {
+      return this.workpackageService.addObjective(payload.data, payload.workPackageId, payload.objectiveId).pipe(
         mergeMap((response: any) => [new AddObjectiveSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddObjectiveFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  createObjective$ = this.actions$.pipe(
+    ofType<CreateObjective>(WorkPackageActionTypes.CreateObjective),
+    map(action => action.payload),
+    mergeMap((payload: { data: { title: string; description: string }; workPackageId: string }) => {
+      return this.workpackageService.createObjective(payload.data).pipe(
+        mergeMap((response: any) => [
+          new CreateObjectiveSuccess(response.data),
+          new AddObjective({ data: response.data, workPackageId: payload.workPackageId, objectiveId: response.data.id })
+        ]),
+        catchError((error: HttpErrorResponse) => of(new CreateObjectiveFailure(error)))
       );
     })
   );
@@ -189,8 +207,8 @@ export class WorkPackageEffects {
   deleteObjective$ = this.actions$.pipe(
     ofType<DeleteObjective>(WorkPackageActionTypes.DeleteObjective),
     map(action => action.payload),
-    switchMap((payload: { workPackageId: string; radioId: string }) => {
-      return this.workpackageService.deleteObjective(payload.workPackageId, payload.radioId).pipe(
+    switchMap((payload: { workPackageId: string; objectiveId: string }) => {
+      return this.workpackageService.deleteObjective(payload.workPackageId, payload.objectiveId).pipe(
         switchMap((response: any) => [new DeleteObjectiveSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteObjectiveFailure(error)))
       );

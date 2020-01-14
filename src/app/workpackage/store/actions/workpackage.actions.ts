@@ -7,10 +7,9 @@ import {
   WorkPackageEntitiesHttpParams,
   WorkPackageEntitiesResponse,
   WorkPackageEntity,
-  CustomPropertiesEntity
+  CustomPropertiesEntity, Objective
 } from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
-import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
 export enum WorkPackageActionTypes {
   LoadWorkPackages = '[WorkPackage] Load WorkPackage entities',
@@ -49,6 +48,10 @@ export enum WorkPackageActionTypes {
   AddObjective = '[WorkPackage] Add Objective',
   AddObjectiveSuccess = '[WorkPackage] Add Objective Success',
   AddObjectiveFailure = '[WorkPackage] Add Objective Failure',
+
+  CreateObjective = '[WorkPackage] Create Objective',
+  CreateObjectiveSuccess = '[WorkPackage] Create Objective Success',
+  CreateObjectiveFailure = '[WorkPackage] Create Objective Failure',
 
   DeleteObjective = '[WorkPackage] Delete Objective',
   DeleteObjectiveSuccess = '[WorkPackage] Delete Objective Success',
@@ -221,7 +224,7 @@ export class SetSelectedWorkPackages implements Action {
 
 export class AddObjective implements Action {
   readonly type = WorkPackageActionTypes.AddObjective;
-  constructor(public payload: { data: RadioEntity; workPackageId: string; radioId: string }) {}
+  constructor(public payload: { data: Objective; workPackageId: string; objectiveId: string }) {}
 }
 
 export class AddObjectiveSuccess implements Action {
@@ -234,9 +237,24 @@ export class AddObjectiveFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class CreateObjective implements Action {
+  readonly type = WorkPackageActionTypes.CreateObjective;
+  constructor(public payload: { data: { title: string; description: string }; workPackageId: string }) {}
+}
+
+export class CreateObjectiveSuccess implements Action {
+  readonly type = WorkPackageActionTypes.CreateObjectiveSuccess;
+  constructor(public payload: any) {}
+}
+
+export class CreateObjectiveFailure implements Action {
+  readonly type = WorkPackageActionTypes.CreateObjectiveFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class DeleteObjective implements Action {
   readonly type = WorkPackageActionTypes.DeleteObjective;
-  constructor(public payload: { workPackageId: string; radioId: string }) {}
+  constructor(public payload: { workPackageId: string; objectiveId: string }) {}
 }
 
 export class DeleteObjectiveSuccess implements Action {
@@ -443,6 +461,9 @@ export type WorkPackageActionsUnion =
   | AddObjective
   | AddObjectiveSuccess
   | AddObjectiveFailure
+  | CreateObjective
+  | CreateObjectiveSuccess
+  | CreateObjectiveFailure
   | DeleteObjective
   | DeleteObjectiveSuccess
   | DeleteObjectiveFailure
