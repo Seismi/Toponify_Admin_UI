@@ -81,7 +81,8 @@ import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
+  WorkPackageActionTypes
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity, WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
@@ -512,6 +513,26 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
         })
     );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(WorkPackageActionTypes.SetWorkpackageEditMode)).subscribe((action: any) => {
+        if (action.payload) {
+          const selectedNode = this.part.data.id;
+          this.nodes.filter(node => {
+            if (node.id.includes(selectedNode)) {
+              this.objectSelected = false;
+              this.radioTab = true;
+            }
+          });
+          this.links.filter(link => {
+            if (link.id.includes(selectedNode)) {
+              this.objectSelected = false;
+              this.radioTab = true;
+            }
+          });
+        }
+      })
+    )
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -977,10 +998,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
     }
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
-  }
-
-  onExitWorkPackageEditMode(): void {
-    this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
   }
 
   onSelectScope(id) {
