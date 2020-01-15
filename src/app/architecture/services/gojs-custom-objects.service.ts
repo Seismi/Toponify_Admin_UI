@@ -413,6 +413,7 @@ export class GojsCustomObjectsService {
           : {}
       );
     }
+    const thisService = this;
     const diagramChangesService = this.diagramChangesService;
     const diagramLevelService = this.diagramLevelService;
 
@@ -452,8 +453,11 @@ export class GojsCustomObjectsService {
             return node.data.bottomExpanded ? 'Hide Status' : 'Show Status';
           }
         ),
-        makeButton(1, 'Show Details', function(event: object): void {
-          /*Placeholder*/
+        makeButton(1, 'Show Details', function(event: go.DiagramEvent, object: go.Part): void {
+          const node = (object.part as go.Adornment).adornedPart as go.Node;
+          // Ensure node is selected so that detail tab shows correct information
+          event.diagram.select(node);
+          thisService.showDetailTabSource.next();
         }),
         makeMenuButton(2, 'Grouped Components', [
           'Expand',
