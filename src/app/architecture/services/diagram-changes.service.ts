@@ -635,14 +635,15 @@ export class DiagramChangesService {
       node.invalidateLayout();
     } else {
       // Update expanded status of node in the back end
-      this.onUpdateExpandState.next({
+      // -Temporarily removed pending API updates-
+      /* this.onUpdateExpandState.next({
         node: {
           id: node.data.id,
           middleExpanded: node.data.middleExpanded,
           bottomExpanded: node.data.bottomExpanded
         },
         links: linkData
-      });
+      }); */
     }
   }
 }

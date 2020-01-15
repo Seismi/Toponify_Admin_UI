@@ -524,16 +524,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             workPackageId: this.getWorkPackageId(),
             nodeId: this.nodeId,
             attributeId: action.payload.id
-          }))
+          }));
         } else {
           this.workpackageStore.dispatch(new AddWorkPackageLinkAttribute({
             workPackageId: this.getWorkPackageId(),
             nodeLinkId: this.nodeId,
             attributeId: action.payload.id
-          }))
+          }));
         }
       })
-    )
+    );
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -873,6 +873,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 );
               }
 
+              // TEMP - remove after API update
+              if (layoutExpandState) {
+                layoutExpandState = {
+                  ...layoutExpandState,
+                  middleExpanded: layoutExpandState.middleExpanded ? 'children' : 'none'
+                };
+              }
+              // END TEMP
+
               return {
                 ...node,
                 // TEMP
@@ -880,7 +889,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 // END TEMP
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
-                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : false,
+                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : 'none',
                 bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false
               };
             }.bind(this)

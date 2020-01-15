@@ -593,9 +593,14 @@ export class DiagramTemplatesService {
         name: 'middle',
         row: 1,
         stretch: go.GraphObject.Horizontal,
-        margin: new go.Margin(5)
+        margin: new go.Margin(5),
+        visible: false
       },
-      new go.Binding('visible', 'middleExpanded').makeTwoWay(),
+      new go.Binding('visible', 'middleExpanded',
+        function(middleExpanded) {
+          return middleExpanded !== 'none';
+        }
+      ),
       $(
         go.TextBlock,
         {
@@ -635,21 +640,66 @@ export class DiagramTemplatesService {
           row: 3
         },
         // Descendants list
-        $(
-          go.Panel,
-          'Vertical',
-          {
-            name: 'Descendants List',
-            // padding: 3,
-            alignment: go.Spot.TopLeft,
-            defaultAlignment: go.Spot.Left,
-            stretch: go.GraphObject.Horizontal,
-            itemCategoryProperty: '',
-            itemTemplate: this.getItemTemplate()
-          },
-          new go.Binding('itemArray', 'descendants')
+        $(go.Panel,
+          'Auto',
+          $(
+            go.Panel,
+            'Vertical',
+            {
+              name: 'Descendants List',
+              // padding: 3,
+              alignment: go.Spot.TopLeft,
+              defaultAlignment: go.Spot.Left,
+              stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
+              itemTemplate: this.getItemTemplate()
+            },
+            new go.Binding('itemArray', 'descendants'),
+            new go.Binding('visible', 'nextLevel').ofModel()
+          ),
+          new go.Binding('visible', 'middleExpanded',
+            function(middleExpanded) {
+              return middleExpanded === 'children';
+            }
+          )
         ),
-        new go.Binding('visible', 'nextLevel').ofModel()
+        // Grouped members list
+        $(go.Panel,
+          'Auto',
+          $(go.Panel,
+            'Vertical',
+            {
+              name: 'Groups List',
+              alignment: go.Spot.TopLeft,
+              defaultAlignment: go.Spot.Left,
+              stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
+              itemTemplate: this.getItemTemplate()
+            },
+            new go.Binding('itemArray', 'members')
+          ),
+          new go.Binding('visible', 'middleExpanded',
+            function (middleExpanded) {
+              return middleExpanded === 'group list';
+            }
+          )
+        ),
+        // Area for grouped systems to appear in
+        $(go.Shape,
+          {
+            name: 'Group member area',
+            figure: 'rectangle',
+            stroke: null,
+            fill: null,
+            stretch: go.GraphObject.Horizontal,
+            height: 200
+          },
+          new go.Binding('visible', 'middleExpanded',
+            function(middleExpanded) {
+              return middleExpanded === 'group';
+            }
+          )
+        )
       )
     );
   }

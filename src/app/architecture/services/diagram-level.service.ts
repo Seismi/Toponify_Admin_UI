@@ -115,6 +115,10 @@ export class DiagramLevelService {
     );
   }
 
+  displayGroupMembers() {
+
+  }
+
   displayMapView(event: any, object: go.Link): void {
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
