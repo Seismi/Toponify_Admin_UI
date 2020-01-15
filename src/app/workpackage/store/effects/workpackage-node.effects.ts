@@ -50,7 +50,10 @@ import {
   WorkPackageNodeActionTypes,
   AddWorkPackageNodeRadio,
   AddWorkPackageNodeRadioSuccess,
-  AddWorkPackageNodeRadioFailure
+  AddWorkPackageNodeRadioFailure,
+  AddWorkPackageNodeAttribute,
+  AddWorkPackageNodeAttributeSuccess,
+  AddWorkPackageNodeAttributeFailure
 } from '../actions/workpackage-node.actions';
 import { UpdateNodeDescendants, UpdateNodeOwners } from '@app/architecture/store/actions/node.actions';
 import {
@@ -259,6 +262,18 @@ export class WorkPackageNodeEffects {
           switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
           catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeRadioFailure(error)))
         );
+    })
+  );
+
+  @Effect()
+  addWorkPackageNodeAttribute$ = this.actions$.pipe(
+    ofType<AddWorkPackageNodeAttribute>(WorkPackageNodeActionTypes.AddWorkPackageNodeAttribute),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; nodeId: string, attributeId: string }) => {
+      return this.workpackageNodeService.addWorkPackageNodeAttribute(payload.workPackageId, payload.nodeId, payload.attributeId).pipe(
+        switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeAttributeSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeAttributeFailure(error)))
+      );
     })
   );
 }

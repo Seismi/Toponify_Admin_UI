@@ -16,6 +16,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CustomSerializer } from '@app/core/custom-serializer';
 import { MatIconModule } from '@angular/material';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material';
+import { AttributesModule } from './attributes/attributes.module';
 import { reducer as workpackageReducer } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { WorkPackageEffects } from '@app/workpackage/store/effects/workpackage.effects';
 import { WorkPackageNodeEffects } from '@app/workpackage/store/effects/workpackage-node.effects';
@@ -33,6 +34,7 @@ import { reducer as architectureReducer } from '@app/architecture/store/reducers
     HttpClientModule,
     CommonModule,
     CoreModule,
+    AttributesModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({
       name: 'NgRx Store DevTools',
