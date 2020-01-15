@@ -62,7 +62,8 @@ import { ScopeAndLayoutModalComponent } from '@app/scopes-and-layouts/containers
 import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
-  DeleteWorkpackageLinkSuccess
+  DeleteWorkpackageLinkSuccess,
+  AddWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -74,7 +75,8 @@ import {
   DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
-  WorkPackageNodeActionTypes
+  WorkPackageNodeActionTypes,
+  AddWorkPackageNodeAttribute
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -140,6 +142,8 @@ import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
+import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+
 enum Events {
   NodesLinksReload = 0
 }
@@ -514,6 +518,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
     );
 
+    this.subscriptions.push(
+      this.actions.pipe(ofType(AttributeActionTypes.AddAttributeSuccess)).subscribe((action: any) => {
+        if (!this.clickedOnLink) {
+          this.workpackageStore.dispatch(new AddWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: action.payload.id
+          }))
+        } else {
+          this.workpackageStore.dispatch(new AddWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: action.payload.id
+          }))
+        }
+      })
+    )
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -854,6 +876,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
               return {
                 ...node,
+                // TEMP
+                isGroup: node.layer === 'system',
+                // END TEMP
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
                 middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : false,
@@ -1099,8 +1124,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddAttribute() {
-    this.dialog.open(AttributeModalComponent, { width: '450px' });
+  onAddAttribute(): void {
+    const dialogRef = this.dialog.open(AttributeModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        this.store.dispatch(
+          new AddAttribute({
+            workPackageId: this.workpackageId,
+            entity: { data: { ...data.attribute } }
+          })
+        );
+      }
+    });
   }
 
   openRightTab(index: number) {
