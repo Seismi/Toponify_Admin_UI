@@ -515,23 +515,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageActionTypes.SetWorkpackageEditMode)).subscribe((action: any) => {
-        if (action.payload) {
-          const selectedNode = this.part.data.id;
-          this.nodes.filter(node => {
-            if (node.id.includes(selectedNode)) {
-              this.objectSelected = false;
-              this.radioTab = true;
-            }
-          });
-          this.links.filter(link => {
-            if (link.id.includes(selectedNode)) {
-              this.objectSelected = false;
-              this.radioTab = true;
-            }
-          });
-        }
-      })
+      this.actions
+        .pipe(ofType(NodeActionTypes.LoadNodesSuccess, NodeActionTypes.LoadNodeLinksSuccess))
+        .subscribe((action: any) => {
+          const nodes = action.payload;
+          if (this.part) {
+            nodes.filter(node => {
+              if (!node.id.includes(this.part.data.id) && !this.part.isSelected) {
+                this.objectSelected = false;
+                this.radioTab = true;
+              }
+            })
+          }
+        })
     )
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
@@ -960,7 +956,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {
-    this.objectSelected = false;
     this.routerStore
       .select(getWorkPackagesQueryParams)
       .pipe(take(1))
