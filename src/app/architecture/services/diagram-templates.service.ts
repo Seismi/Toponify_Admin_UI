@@ -585,7 +585,7 @@ export class DiagramTemplatesService {
   }
 
   // Get middle section of nodes, containing description, owners and descendants
-  getMiddleSection(): go.Panel {
+  getMiddleSection(isSystem = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -596,7 +596,8 @@ export class DiagramTemplatesService {
         margin: new go.Margin(5)
       },
       new go.Binding('visible', 'middleExpanded').makeTwoWay(),
-      $(
+      // Do not show description for systems
+      !isSystem ? $(
         go.TextBlock,
         {
           textAlign: 'center',
@@ -607,7 +608,7 @@ export class DiagramTemplatesService {
         },
         new go.Binding('text', 'description'),
         new go.Binding('visible', 'description').ofModel()
-      ),
+      ) : {},
       $(
         go.TextBlock,
         {
@@ -925,7 +926,7 @@ export class DiagramTemplatesService {
           defaultRowSeparatorStroke: 'black'
         },
         this.getTopSection(true),
-        this.getMiddleSection(),
+        this.getMiddleSection(true),
         this.getBottomSection(true)
       )
     );
