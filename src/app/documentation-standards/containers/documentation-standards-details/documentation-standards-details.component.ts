@@ -76,7 +76,7 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
           }
         }
       })
-    )
+    );
   }
 
   onDeleteDocument(): void {
@@ -94,7 +94,7 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
         this.store.dispatch(new DeleteDocumentationStandard(this.documentStandard.id));
         this.actions.pipe(ofType(DocumentationStandardActionTypes.DeleteDocumentationStandardSuccess)).subscribe(_ => {
           this.router.navigate(['/documentation-standards']);
-        })
+        });
       }
     });
   }

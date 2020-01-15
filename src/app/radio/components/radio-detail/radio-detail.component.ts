@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
-import { RadioDetail } from '@app/radio/store/models/radio.model';
+import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-radio-detail',
@@ -32,6 +32,12 @@ export class RadioDetailComponent {
 
   @Output()
   saveRadio = new EventEmitter<void>();
+
+  @Output()
+  unlinkRelatesTo = new EventEmitter<RelatesTo>();
+
+  @Output()
+  addRelatesTo = new EventEmitter<void>();
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;

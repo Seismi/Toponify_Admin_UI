@@ -10,10 +10,7 @@ export class DeleteDocumentModalComponent {
   public mode: string;
   public name: string;
 
-  constructor(
-    public dialogRef: MatDialogRef<DeleteDocumentModalComponent>, 
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
+  constructor(public dialogRef: MatDialogRef<DeleteDocumentModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.mode = data.mode;
     this.name = data.name;
   }

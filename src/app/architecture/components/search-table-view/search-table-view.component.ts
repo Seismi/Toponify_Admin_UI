@@ -7,7 +7,7 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 })
 export class SearchTableViewComponent implements OnInit {
   constructor() {}
- 
+
   ngOnInit() {}
 
   @Output() search = new EventEmitter<string>();

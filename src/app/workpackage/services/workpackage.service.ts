@@ -12,7 +12,9 @@ import {
 import 'rxjs/add/observable/of';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WorkPackageService {
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

@@ -59,14 +59,16 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSaveLayout(): void {
-    this.store.dispatch(new UpdateLayout({
-      id: this.layout.id,
-      data: {
+    this.store.dispatch(
+      new UpdateLayout({
         id: this.layout.id,
-        name: this.scopesAndLayoutsDetailForm.value.name,
-        scope: this.layout.scope,
-      }
-    }));
+        data: {
+          id: this.layout.id,
+          name: this.scopesAndLayoutsDetailForm.value.name,
+          scope: this.layout.scope
+        }
+      })
+    );
   }
 
   onDeleteLayout(): void {
@@ -81,13 +83,15 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data.mode === 'delete') {
         this.store.dispatch(new DeleteLayout(this.layout.id));
-        this.store.dispatch(new UpdateScope({
-          id: this.layout.scope.id,
-          data: {
+        this.store.dispatch(
+          new UpdateScope({
             id: this.layout.scope.id,
-            name: this.layout.scope.name
-          }
-        }))
+            data: {
+              id: this.layout.scope.id,
+              name: this.layout.scope.name
+            }
+          })
+        );
         this.router.navigate(['/scopes-and-layouts/' + this.layout.scope.id]);
       }
     });

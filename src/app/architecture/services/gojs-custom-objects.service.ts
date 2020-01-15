@@ -87,7 +87,7 @@ export class CustomLink extends go.Link {
 }
 
 export function defineRoundButton() {
-  return go.GraphObject.defineBuilder('RoundButton', function (args) {
+  return go.GraphObject.defineBuilder('RoundButton', function(args) {
     const button = $('Button');
     (button.findObject('ButtonBorder') as go.Shape).figure = 'Circle';
     return button;

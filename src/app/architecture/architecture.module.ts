@@ -112,9 +112,7 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule,
-    StoreModule.forFeature('architectureFeature', reducer),
-    EffectsModule.forFeature([NodeEffects])
+    ScopesAndLayoutsModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [

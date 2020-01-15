@@ -9,7 +9,6 @@ const httpOptions = {
 
 @Injectable()
 export class DocumentationStandardsService {
-
   constructor(private http: HttpClient) {}
 
   getCustomProperties(queryParams: any): Observable<any> {

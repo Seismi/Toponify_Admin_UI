@@ -21,11 +21,7 @@ export class DocumentationStandardsComponent implements OnInit {
   public documentStandards$: Observable<DocumentStandard[]>;
   public documentStandard: DocumentStandard;
 
-  constructor(
-    private store: Store<DocumentationStandardState>,
-    private router: Router,
-    public dialog: MatDialog
-  ) {}
+  constructor(private store: Store<DocumentationStandardState>, private router: Router, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadDocumentationStandards({}));
