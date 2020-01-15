@@ -77,6 +77,8 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
 import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
+import { AddExistingAttributeModalComponent } from './containers/add-existing-attribute-modal/add-existing-attribute-modal.component';
+import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
 
 @NgModule({
   imports: [
@@ -150,7 +152,9 @@ import { ReportsTabComponent } from './components/reports-tab/reports-tab.compon
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     SearchTableViewComponent,
-    ReportsTabComponent
+    ReportsTabComponent,
+    AddExistingAttributeModalComponent,
+    AttributesListComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -161,7 +165,8 @@ import { ReportsTabComponent } from './components/reports-tab/reports-tab.compon
     EditNameModalComponent,
     NodeScopeModalComponent,
     NewChildrenModalComponent,
-    NodeScopeModalComponent
+    NodeScopeModalComponent,
+    AddExistingAttributeModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

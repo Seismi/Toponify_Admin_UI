@@ -18,4 +18,8 @@
 
   <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
 </div>
-<button mat-raised-button color="primary" *ngIf="!nodeIsEditable()" (click)="onAdd()">Create New</button>
+
+<div class="actions">
+  <button mat-raised-button color="primary" *ngIf="!nodeIsEditable()" (click)="onAdd()">Create New</button>
+  <button mat-raised-button color="primary" *ngIf="!nodeIsEditable()" (click)="onAddExisting()">Add Existing</button>
+</div>

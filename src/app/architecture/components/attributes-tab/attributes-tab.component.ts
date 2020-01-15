@@ -26,9 +26,14 @@ export class AttributesTabComponent {
   public displayedColumns: string[] = ['category', 'name'];
 
   @Output() addAttribute = new EventEmitter<void>();
+  @Output() addExisting = new EventEmitter<void>();
 
   onAdd(): void {
     this.addAttribute.emit();
+  }
+
+  onAddExisting(): void {
+    this.addExisting.emit();
   }
 
   nodeIsEditable(): boolean {

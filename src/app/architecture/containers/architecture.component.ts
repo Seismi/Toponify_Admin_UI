@@ -142,6 +142,7 @@ import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -1137,6 +1138,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             entity: { data: { ...data.attribute } }
           })
         );
+      }
+    });
+  }
+
+  onAddExistingAttribute(): void {
+    const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
+      disableClose: false,
+      width: '600px',
+      height: '590px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.store.dispatch(new AddWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: data.attribute.id
+          }))
+        } else {
+          this.store.dispatch(new AddWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: data.attribute.id
+          }))
+        }
       }
     });
   }
