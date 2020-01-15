@@ -39,14 +39,9 @@ export class WorkPackageLinksService extends WorkPackageService {
     return this.http.post<any>(`/workpackages/${workPackageId}/nodelinks/${nodeLinkId}/deleteRequest`, {});
   }
 
-  /**
-   * Add attribute to a link
-   * FIXME: missing types
-   */
-  addLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string, data: any): Observable<any> {
-    return this.http.post<any>(
+  addLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.post<NodeLinkDetailApiResponse>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/attributes/${attributeId}`,
-      data,
       this.httpOptions
     );
   }

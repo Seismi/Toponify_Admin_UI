@@ -206,28 +206,29 @@ export function reducer(
       };
     }
 
-    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess: {
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess:
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeSuccess: {
       return {
         ...state,
         selectedNode: action.payload
       };
     }
 
-    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure: {
-      return {
-        ...state,
-        error: <Error>action.payload
-      };
-    }
 
-    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess: {
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess: 
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
       return {
         ...state,
         selectedNodeLink: action.payload
       };
     }
 
-    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure: {
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure: 
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure: 
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure: {
       return {
         ...state,
         error: <Error>action.payload

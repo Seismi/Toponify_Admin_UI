@@ -21,6 +21,9 @@ export enum WorkPackageLinkActionTypes {
   DeleteWorkpackageLinkOwner = '[WorkPackage] Delete Link Owner',
   DeleteWorkpackageLinkOwnerSuccess = '[WorkPackage] Delete Link Owner Success',
   DeleteWorkpackageLinkOwnerFailure = '[WorkPackage] Delete Link Owner Fail',
+  AddWorkPackageLinkAttribute = '[WorkPackage] Add Link Attribute',
+  AddWorkPackageLinkAttributeSuccess = '[WorkPackage] Add Link Attribute Success',
+  AddWorkPackageLinkAttributeFailure = '[WorkPackage] Add Link Attribute Failure',
   DeleteWorkPackageLinkAttribute = '[WorkPackage] Delete Link Attribute',
   DeleteWorkPackageLinkAttributeSuccess = '[WorkPackage] Delete Link Attribute Success',
   DeleteWorkPackageLinkAttributeFailure = '[WorkPackage] Delete Link Attribute Failure'
@@ -116,6 +119,21 @@ export class DeleteWorkpackageLinkOwnerFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) { }
 }
 
+export class AddWorkPackageLinkAttribute implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkAttribute;
+  constructor(public payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) {}
+}
+
+export class AddWorkPackageLinkAttributeSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess;
+  constructor(public payload: NodeLinkDetail) {}
+}
+
+export class AddWorkPackageLinkAttributeFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class DeleteWorkPackageLinkAttribute implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttribute;
   constructor(public payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) { }
@@ -150,6 +168,9 @@ export type WorkPackageLinkActionsUnion =
   | DeleteWorkpackageLinkOwner
   | DeleteWorkpackageLinkOwnerSuccess
   | DeleteWorkpackageLinkOwnerFailure
+  | AddWorkPackageLinkAttribute
+  | AddWorkPackageLinkAttributeSuccess
+  | AddWorkPackageLinkAttributeFailure
   | DeleteWorkPackageLinkAttribute
   | DeleteWorkPackageLinkAttributeSuccess
   | DeleteWorkPackageLinkAttributeFailure;

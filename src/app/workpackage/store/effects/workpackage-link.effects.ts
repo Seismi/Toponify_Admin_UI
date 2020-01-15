@@ -4,7 +4,7 @@ import { WorkPackageLinksService } from '@app/workpackage/services/workpackage-l
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
-import { NodeLink } from '@app/architecture/store/models/node-link.model';
+import { NodeLink, NodeLinkDetailApiResponse } from '@app/architecture/store/models/node-link.model';
 import {
   AddWorkPackageLink,
   AddWorkPackageLinkFailure,
@@ -27,7 +27,10 @@ import {
   DeleteWorkpackageLinkOwnerFailure,
   DeleteWorkPackageLinkAttribute,
   DeleteWorkPackageLinkAttributeSuccess,
-  DeleteWorkPackageLinkAttributeFailure
+  DeleteWorkPackageLinkAttributeFailure,
+  AddWorkPackageLinkAttribute,
+  AddWorkPackageLinkAttributeSuccess,
+  AddWorkPackageLinkAttributeFailure
 } from '../actions/workpackage-link.actions';
 
 @Injectable()
@@ -120,6 +123,18 @@ export class WorkPackageLinkEffects {
       return this.workpackageLinkService.deleteLinkAttribute(payload.workPackageId, payload.nodeLinkId, payload.attributeId).pipe(
         switchMap(response => [new DeleteWorkPackageLinkAttributeSuccess(response.data)]),
         catchError(error => of(new DeleteWorkPackageLinkAttributeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkpackageLinkAttribute$ = this.actions$.pipe(
+    ofType<AddWorkPackageLinkAttribute>(WorkPackageLinkActionTypes.AddWorkPackageLinkAttribute),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) => {
+      return this.workpackageLinkService.addLinkAttribute(payload.workPackageId, payload.nodeLinkId, payload.attributeId).pipe(
+        switchMap((response: NodeLinkDetailApiResponse) => [new AddWorkPackageLinkAttributeSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkAttributeFailure(error)))
       );
     })
   );
