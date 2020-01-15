@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>{{ title }}</h1>
+<mat-form-field class="example-full-width" [ngClass]="{'hidden': searchActive}" >
+  <input type="text" #searchInput placeholder="Search" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+</mat-form-field>
+<mat-form-field class="example-full-width" [ngClass]="{'hidden': !searchActive}" >
+  <input type="text"  placeholder="Components" [formControl]="selectionControl" matInput (focusin)="onFocus()">
+</mat-form-field>
+<mat-autocomplete #auto="matAutocomplete" (closed)="onAutocompleteClose()">
+  <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option.id">
+    <div (click)="optionClicked($event, option)">
+      <mat-checkbox [checked]="option.selected" (change)="toggleSelection(option)" (click)="$event.stopPropagation()">
+        {{option.name}}
+      </mat-checkbox>
+    </div>
+  </mat-option>
+</mat-autocomplete>
+<div mat-dialog-actions>
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="!selectionControl.valid"
+    (click)="onConfirm()"
+    data-hook="radio-delete-modal-yes"
+  >
+    Confirm
+  </button>
+  <button mat-raised-button (click)="onCancel()" data-hook="radio-delete-modal-no">Cancel</button>
+</div>
