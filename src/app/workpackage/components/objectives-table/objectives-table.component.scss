@@ -5,22 +5,30 @@ table {
 tr.mat-header-row {
   height: 30px;
 }
-
-th.mat-column-delete {
-  width: 5%;
+th {
+  color: #212529;
 }
 
-th.mat-column-edit {
-  width: 5%;
+.mat-column-name {
+  border-right: solid 1px #ddd;
 }
 
-.mat-icon {
-  cursor: pointer;
+.mat-column-description {
+  padding-left: 24px;
 }
 
-button {
+h6 {
   margin-top: 10px;
-  margin-left: 15px;
-  border-radius: 15px;
-  font-weight: lighter;
+  text-align: center;
+}
+
+.table-wrapper {
+  margin: 10px;
+  border: solid 1px #ddd;
+}
+
+.description-cell, .description-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
