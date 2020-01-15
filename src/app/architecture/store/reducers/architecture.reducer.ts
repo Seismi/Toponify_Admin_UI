@@ -206,6 +206,34 @@ export function reducer(
       };
     }
 
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeSuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
+      return {
+        ...state,
+        selectedNodeLink: action.payload
+      };
+    }
+
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
     case ViewActionTypes.ViewModel: {
       return {
         ...state,

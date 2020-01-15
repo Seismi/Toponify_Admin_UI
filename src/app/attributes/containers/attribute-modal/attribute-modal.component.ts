@@ -4,10 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { AttributeDetailService } from '@app/attributes/components/attribute-detail/services/attribute-detail.service';
 import { AttributeValidatorService } from '@app/attributes/components/attribute-detail/services/attribute-detail-validator.service';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
-import { Store, select } from '@ngrx/store';
-import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getSelectedNode } from '@app/architecture/store/selectors/node.selector';
 
 @Component({
   selector: 'smi-attribute-modal',
@@ -17,10 +13,8 @@ import { getSelectedNode } from '@app/architecture/store/selectors/node.selector
 })
 export class AttributeModalComponent implements OnInit {
   public attribute: AttributeEntity;
-  public node: NodeDetail;
 
   constructor(
-    private store: Store<NodeState>,
     private attributeDetailService: AttributeDetailService,
     public dialogRef: MatDialogRef<AttributeModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -28,24 +22,20 @@ export class AttributeModalComponent implements OnInit {
     this.attribute = data.attribute;
   }
 
-  ngOnInit() {
-    this.store.pipe(select(getSelectedNode)).subscribe(node => {
-      this.node = node;
-    });
-  }
+  ngOnInit(): void {}
 
   get attributeDetailForm(): FormGroup {
     return this.attributeDetailService.attributeDetailForm;
   }
 
-  onSave() {
+  onSave(): void {
     if (!this.attributeDetailService.isValid) {
       return;
     }
     this.dialogRef.close({ attribute: this.attributeDetailForm.value });
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }

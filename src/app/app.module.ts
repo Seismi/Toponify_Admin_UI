@@ -16,6 +16,7 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { CustomSerializer } from '@app/core/custom-serializer';
 import { MatIconModule } from '@angular/material';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material';
+import { AttributesModule } from './attributes/attributes.module';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/mater
     HttpClientModule,
     CommonModule,
     CoreModule,
+    AttributesModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({
       name: 'NgRx Store DevTools',
