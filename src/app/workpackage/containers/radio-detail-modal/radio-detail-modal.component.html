@@ -10,10 +10,10 @@
           <smi-radio-detail
             [data]="users$ | async"
             [group]="radioDetailsForm"
-            [isEditable]="false" 
-            [modalMode]="false" 
-            (archiveRadio)="onArchiveRadio($event)" 
-            (saveRadio)="onSaveRadio()" 
+            [isEditable]="false"
+            [modalMode]="false"
+            (archiveRadio)="onArchiveRadio($event)"
+            (saveRadio)="onSaveRadio()"
             [rows]="5"
             [relatesTo]="radio?.relatesTo"
           >

@@ -21,7 +21,6 @@ import { MembersEntity } from '@app/settings/store/models/team.model';
   providers: [TeamDetailService, TeamValidatorService]
 })
 export class TeamsDetailsComponent implements OnInit, OnDestroy {
-
   public subscriptions: Subscription[] = [];
   public team: TeamEntity;
   public isEditable: boolean = false;
@@ -42,13 +41,15 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.push(this.store.pipe(select(getTeamSelected)).subscribe(data => {
-      this.team = data;
-      if (data) {
-        this.teamDetailService.teamDetailForm.patchValue({...data});
-        this.isEditable = false;
-      }
-    }));
+    this.subscriptions.push(
+      this.store.pipe(select(getTeamSelected)).subscribe(data => {
+        this.team = data;
+        if (data) {
+          this.teamDetailService.teamDetailForm.patchValue({ ...data });
+          this.isEditable = false;
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -68,15 +69,16 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
   }
 
   onSaveTeam(): void {
-    this.store.dispatch(new UpdateTeam({
-      id: this.team.id,
-      data: {
+    this.store.dispatch(
+      new UpdateTeam({
         id: this.team.id,
-        name: this.teamDetailForm.value.name,
-        description: this.teamDetailForm.value.description,
-        type: 'team'
-      }
-    })
+        data: {
+          id: this.team.id,
+          name: this.teamDetailForm.value.name,
+          description: this.teamDetailForm.value.description,
+          type: 'team'
+        }
+      })
     );
     this.isEditable = false;
   }
