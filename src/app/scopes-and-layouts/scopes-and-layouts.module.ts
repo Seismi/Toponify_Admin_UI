@@ -62,9 +62,6 @@ import { LayoutDetailsComponent } from './containers/layout-details/layout-detai
     LayoutDetailsComponent
   ],
   providers: [],
-  entryComponents: [
-    ScopeAndLayoutModalComponent, 
-    DeleteScopesAndLayoutsModalComponent
-  ]
+  entryComponents: [ScopeAndLayoutModalComponent, DeleteScopesAndLayoutsModalComponent]
 })
 export class ScopesAndLayoutsModule {}

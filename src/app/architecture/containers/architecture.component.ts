@@ -45,7 +45,13 @@ import {
   getSelectedNodeLink
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { AddLayout, LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout } from '@app/layout/store/actions/layout.actions';
+import {
+  AddLayout,
+  LayoutActionTypes,
+  LoadLayout,
+  LoadLayouts,
+  UpdateLayout
+} from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
@@ -62,7 +68,8 @@ import { ScopeAndLayoutModalComponent } from '@app/scopes-and-layouts/containers
 import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
-  DeleteWorkpackageLinkSuccess
+  DeleteWorkpackageLinkSuccess,
+  AddWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -74,7 +81,8 @@ import {
   DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
-  WorkPackageNodeActionTypes
+  WorkPackageNodeActionTypes,
+  AddWorkPackageNodeAttribute
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -83,7 +91,11 @@ import {
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetail, WorkPackageEntity, WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
+import {
+  WorkPackageDetail,
+  WorkPackageEntity,
+  WorkPackageNodeScopes
+} from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackage,
@@ -139,6 +151,9 @@ import { ArchitectureTableViewComponent } from '../components/architecture-table
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
+import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
+import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+
 enum Events {
   NodesLinksReload = 0
 }
@@ -513,6 +528,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
     );
 
+    this.subscriptions.push(
+      this.actions.pipe(ofType(AttributeActionTypes.AddAttributeSuccess)).subscribe((action: any) => {
+        if (!this.clickedOnLink) {
+          this.workpackageStore.dispatch(new AddWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: action.payload.id
+          }))
+        } else {
+          this.workpackageStore.dispatch(new AddWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: action.payload.id
+          }))
+        }
+      })
+    )
+
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
       if (linkId) {
@@ -749,8 +782,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: {node: NodeExpandedStateApiRequest['data']; links: go.Link[]}): void {
-
+  handleUpdateNodeExpandState(data: { node: NodeExpandedStateApiRequest['data']; links: go.Link[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
@@ -1101,8 +1133,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddAttribute() {
-    this.dialog.open(AttributeModalComponent, { width: '450px' });
+  onAddAttribute(): void {
+    const dialogRef = this.dialog.open(AttributeModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        this.store.dispatch(
+          new AddAttribute({
+            workPackageId: this.workpackageId,
+            entity: { data: { ...data.attribute } }
+          })
+        );
+      }
+    });
   }
 
   openRightTab(index: number) {
@@ -1264,9 +1310,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteDescendantsModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
         mode: 'delete',
         name: descendant.name

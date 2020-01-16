@@ -20,7 +20,6 @@ import { Actions, ofType } from '@ngrx/effects';
   providers: [MyUserFormService, MyUserFormValidatorService]
 })
 export class AllUsersDetailsComponent implements OnInit, OnDestroy {
-
   public team: TeamEntity[];
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
@@ -43,32 +42,28 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(new LoadUserRoles());
       })
     );
- 
-    this.subscriptions.push(
-      this.store.pipe(select(getTeamEntities)).subscribe(team => this.team = team)
-    )
 
-    this.subscriptions.push(
-      this.store.pipe(select(getUserRolesEntities)).subscribe(role => this.role = role)
-    )
+    this.subscriptions.push(this.store.pipe(select(getTeamEntities)).subscribe(team => (this.team = team)));
+
+    this.subscriptions.push(this.store.pipe(select(getUserRolesEntities)).subscribe(role => (this.role = role)));
 
     this.subscriptions.push(
       this.store.pipe(select(getUserSelected)).subscribe(data => {
         this.user = data;
         if (data) {
-          this.myUserFormService.myUserForm.patchValue({...data});
+          this.myUserFormService.myUserForm.patchValue({ ...data });
           this.isEditable = false;
-          (data.userStatus === 'active') ? this.userStatus = 'Deactivate' : this.userStatus = 'Activate';
+          data.userStatus === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');
         }
       })
-    )
+    );
 
     this.subscriptions.push(
       this.actions.pipe(ofType(UserActionTypes.UpdateUserSuccess)).subscribe((action: any) => {
         const status = action.payload.userStatus;
-        (status === 'active') ? this.userStatus = 'Deactivate' : this.userStatus = 'Activate';
+        status === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');
       })
-    )
+    );
   }
 
   ngOnDestroy(): void {
@@ -87,7 +82,7 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
     if (this.myUserForm.invalid) {
       return;
     }
-    this.store.dispatch(new UpdateUser({id: this.user.id, data: this.myUserForm.value}));
+    this.store.dispatch(new UpdateUser({ id: this.user.id, data: this.myUserForm.value }));
     this.isEditable = false;
   }
 
@@ -96,17 +91,18 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteUser(): void {
-    this.store.dispatch(new UpdateUser({
-      id: this.user.id,
-      data: {
+    this.store.dispatch(
+      new UpdateUser({
         id: this.user.id,
-        userStatus: this.setUserStatus(this.userStatus)
-      }
-    }))
+        data: {
+          id: this.user.id,
+          userStatus: this.setUserStatus(this.userStatus)
+        }
+      })
+    );
   }
 
   setUserStatus(status: string): string {
-    return (status === 'Deactivate') ? 'disabled' : 'active';
+    return status === 'Deactivate' ? 'disabled' : 'active';
   }
-
 }

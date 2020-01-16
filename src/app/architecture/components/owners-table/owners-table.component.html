@@ -3,11 +3,11 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
         <span>Owners</span>
-        <mat-icon (click)="onAdd()" [ngClass]="{disabled: !isEditable}">add</mat-icon>
+        <mat-icon (click)="onAdd()" [ngClass]="{ disabled: !isEditable }">add</mat-icon>
       </th>
       <td mat-cell *matCellDef="let element">
         <li>
-          {{element.name}}
+          {{ element.name }}
           <mat-icon style="color: #CF3030" *ngIf="isEditable" (click)="onDelete(element)">link_off</mat-icon>
         </li>
       </td>

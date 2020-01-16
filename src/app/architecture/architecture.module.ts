@@ -78,6 +78,7 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
 import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
+import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 
 @NgModule({
   imports: [
@@ -112,9 +113,7 @@ import {DiagramImageService} from '@app/architecture/services/diagram-image.serv
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule,
-    StoreModule.forFeature('architectureFeature', reducer),
-    EffectsModule.forFeature([NodeEffects])
+    ScopesAndLayoutsModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
@@ -151,7 +150,8 @@ import {DiagramImageService} from '@app/architecture/services/diagram-image.serv
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     SearchTableViewComponent,
-    ReportsTabComponent
+    ReportsTabComponent,
+    DeleteDescendantsModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -162,7 +162,8 @@ import {DiagramImageService} from '@app/architecture/services/diagram-image.serv
     EditNameModalComponent,
     NodeScopeModalComponent,
     NewChildrenModalComponent,
-    NodeScopeModalComponent
+    NodeScopeModalComponent,
+    DeleteDescendantsModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

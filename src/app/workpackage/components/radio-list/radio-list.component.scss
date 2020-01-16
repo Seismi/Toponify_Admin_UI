@@ -4,7 +4,7 @@ table {
 
 tr.mat-row {
   cursor: pointer;
-  &:nth-child(even){
+  &:nth-child(even) {
     background-color: #f9f9f9;
   }
   &.highlight {

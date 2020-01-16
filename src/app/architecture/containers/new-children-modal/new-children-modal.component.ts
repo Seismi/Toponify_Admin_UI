@@ -20,7 +20,6 @@ const reportingConceptCategories = ['list', 'structure', 'key'];
   providers: [NewChildrenService, NewChildrenValidatorService]
 })
 export class NewChildrenModalComponent implements OnInit, OnDestroy {
-
   public categories: string[] = [];
   public filterLevelSubscription: Subscription;
   public parentId: string;
@@ -30,9 +29,10 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     private newChildrenService: NewChildrenService,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     public dialogRef: MatDialogRef<NewChildrenModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-      this.parentId = data.parentId;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.parentId = data.parentId;
+  }
 
   ngOnInit(): void {
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
@@ -59,9 +59,9 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     if (filterLevel === 'system') {
       this.layer = 'data set';
     } else if (filterLevel === 'data set') {
-      this.layer = 'dimension'
+      this.layer = 'dimension';
     } else {
-      this.layer = 'reporting concept'
+      this.layer = 'reporting concept';
     }
     return this.layer;
   }
