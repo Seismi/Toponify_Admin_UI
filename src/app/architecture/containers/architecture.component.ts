@@ -1575,4 +1575,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         () => dialogRef.close()
       );
   }
+
+  onDownloadImage(): void {
+    this.diagramComponent.getDiagramImage();
+  }
 }
