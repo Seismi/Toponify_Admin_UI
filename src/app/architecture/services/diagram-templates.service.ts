@@ -2,7 +2,7 @@ import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import { Injectable } from '@angular/core';
-import {CustomLink, GojsCustomObjectsService, customIcons, defineRoundButton} from './gojs-custom-objects.service';
+import { CustomLink, GojsCustomObjectsService, customIcons, defineRoundButton } from './gojs-custom-objects.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { Store } from '@ngrx/store';
@@ -164,14 +164,10 @@ export class DiagramTemplatesService {
       {
         margin: new go.Margin(0, 5, 0, 0)
       },
-      $(
-        go.Shape,
-        'RoundedRectangle',
-        {
-          fill: 'white',
-          height: 27
-        }
-      ),
+      $(go.Shape, 'RoundedRectangle', {
+        fill: 'white',
+        height: 27
+      }),
       $(
         go.TextBlock,
         {
@@ -230,25 +226,28 @@ export class DiagramTemplatesService {
         click: function(event, button) {
           const node = button.part;
 
-          event.diagram.model.setDataProperty(node.data, 'bottomExpanded', node.data.middleExpanded || !node.data.bottomExpanded);
+          event.diagram.model.setDataProperty(
+            node.data,
+            'bottomExpanded',
+            node.data.middleExpanded || !node.data.bottomExpanded
+          );
           event.diagram.model.setDataProperty(node.data, 'middleExpanded', false);
 
           this.diagramChangesService.nodeExpandChanged(node);
-
         }.bind(this)
       },
       $(
         go.TextBlock,
-          {
-            alignment: go.Spot.Center,
-            font: 'bold 18px calibri',
-            desiredSize: new go.Size(25, 25),
-            textAlign: 'center',
-            verticalAlignment: go.Spot.Center
-          },
+        {
+          alignment: go.Spot.Center,
+          font: 'bold 18px calibri',
+          desiredSize: new go.Size(25, 25),
+          textAlign: 'center',
+          verticalAlignment: go.Spot.Center
+        },
         // Grey out text when button disabled
         new go.Binding('text', '', function(data) {
-          return (data.middleExpanded || data.bottomExpanded) ? '-' : '+';
+          return data.middleExpanded || data.bottomExpanded ? '-' : '+';
         }),
         new go.Binding('stroke', 'isEnabled', function(enabled) {
           return enabled ? 'black' : '#AAAFB4';
@@ -316,10 +315,11 @@ export class DiagramTemplatesService {
           event.diagram.model.setDataProperty(node.data, 'middleExpanded', true);
 
           this.diagramChangesService.nodeExpandChanged(node);
-
         }.bind(this)
       },
-      $(go.TextBlock, '+',
+      $(
+        go.TextBlock,
+        '+',
         {
           alignment: go.Spot.Center,
           font: 'bold 18px calibri',
@@ -337,7 +337,7 @@ export class DiagramTemplatesService {
         return node.diagram.allowMove;
       }).ofObject(),
       // Button not visible when middle node section is collapsed
-      new go.Binding('visible', 'middleExpanded', function (middleExpanded) {
+      new go.Binding('visible', 'middleExpanded', function(middleExpanded) {
         return !middleExpanded;
       })
     );
@@ -512,11 +512,12 @@ export class DiagramTemplatesService {
         alignment: go.Spot.TopCenter,
         stretch: go.GraphObject.Horizontal,
         minSize: new go.Size(NaN, 30),
-        margin: new go.Margin(5),
+        margin: new go.Margin(5)
       },
       this.getDependencyExpandButton(),
       // Node icon, to appear at the top left of the node
-      $(go.Picture,
+      $(
+        go.Picture,
         {
           desiredSize: new go.Size(25, 25),
           source: '/assets/node-icons/data_set-master-data.svg'
@@ -550,11 +551,13 @@ export class DiagramTemplatesService {
 
           const separator = data.layer !== layers.dimension ? '-' : '';
 
-          return [imageFolderPath,
+          return [
+            imageFolderPath,
             layerImagePrefix[data.layer],
             separator,
             categoryImageSuffix[data.category],
-            '.svg'].join('');
+            '.svg'
+          ].join('');
         })
       ),
       $(
@@ -565,21 +568,17 @@ export class DiagramTemplatesService {
           margin: new go.Margin(0, 5, 0, 5),
           wrap: go.TextBlock.None,
           overflow: go.TextBlock.OverflowEllipsis,
-          toolTip: $('ToolTip',
-            $(go.TextBlock,
-              new go.Binding('text', 'name')
-            )
-          )
+          toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', 'name')))
         },
         new go.Binding('text', 'name'),
         // Size name textblock to account for presence/absence of dependency expand button
         new go.Binding('width', 'visible', function(expandButtonVisible: boolean): number {
           return expandButtonVisible ? nodeWidth - 95 : nodeWidth - 70;
         }).ofObject('DependencyExpandButton'),
-        new go.Binding('opacity', 'name',
-          function(name: boolean): number {return name ? 1 : 0; }
-        ).ofModel()
-       ),
+        new go.Binding('opacity', 'name', function(name: boolean): number {
+          return name ? 1 : 0;
+        }).ofModel()
+      ),
       isSystem ? this.getTopMenuButton() : this.getTopExpandButton()
     );
   }
@@ -617,14 +616,16 @@ export class DiagramTemplatesService {
           maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
         },
-        new go.Binding('text', 'owners',
-          function (owners: any[]): string {
-            return owners.length > 0 ?
-              'Owners - ' + owners.map(
-                function(owner): string {return owner.name; }
-              ).join(', ') : '';
-          }
-        ),
+        new go.Binding('text', 'owners', function(owners: any[]): string {
+          return owners.length > 0
+            ? 'Owners - ' +
+                owners
+                  .map(function(owner): string {
+                    return owner.name;
+                  })
+                  .join(', ')
+            : '';
+        }),
         new go.Binding('visible', 'owners').ofModel()
       ),
       $(
@@ -675,11 +676,17 @@ export class DiagramTemplatesService {
           alignment: go.Spot.LeftCenter,
           margin: new go.Margin(3, 0, 3, 0)
         },
-        new go.Binding('itemArray', 'tags', function(tags: string): string[] {
-          if (tags.trim() === '') {return []; }
+        new go.Binding(
+          'itemArray',
+          'tags',
+          function(tags: string): string[] {
+            if (tags.trim() === '') {
+              return [];
+            }
 
-          return this.getTruncatedTags(tags);
-        }.bind(this)),
+            return this.getTruncatedTags(tags);
+          }.bind(this)
+        ),
         new go.Binding('visible', 'tags').ofModel()
       ),
       $(
@@ -689,13 +696,9 @@ export class DiagramTemplatesService {
           alignment: go.Spot.BottomCenter,
           alignmentFocus: go.Spot.BottomCenter
         },
-        $(
-          go.Panel,
-          '',
-          {
-            desiredSize: new go.Size(nodeWidth - 10, 30)
-          }
-        ),
+        $(go.Panel, '', {
+          desiredSize: new go.Size(nodeWidth - 10, 30)
+        }),
         this.getRadioAlertIndicators(),
         isSystem ? {} : this.getBottomExpandButton()
       )
@@ -707,10 +710,9 @@ export class DiagramTemplatesService {
     let tagGroup;
 
     // Tags separated by commas. Also, trim any excess whitespace.
-    const tagArray = tags.split(',')
-      .map(function(tag) {
-        return tag.trim();
-      });
+    const tagArray = tags.split(',').map(function(tag) {
+      return tag.trim();
+    });
 
     // Temporary part to measure size from
     tagGroup = createTempPanel.call(this, tagArray);
@@ -724,22 +726,17 @@ export class DiagramTemplatesService {
       do {
         tagArray.splice(-2, 1);
         tagGroup = createTempPanel.call(this, tagArray);
-      }
-      while (tagGroup.naturalBounds.right > nodeWidth - 4);
+      } while (tagGroup.naturalBounds.right > nodeWidth - 4);
     }
 
     return tagArray;
 
     // Create a temporary part with the given tags
-    function createTempPanel (array: string[]): go.Panel {
-      const panel = $(
-        go.Part,
-        'Horizontal',
-        {
-          itemTemplate: this.getTagTemplate(),
-          itemArray: array
-        }
-      );
+    function createTempPanel(array: string[]): go.Panel {
+      const panel = $(go.Part, 'Horizontal', {
+        itemTemplate: this.getTagTemplate(),
+        itemArray: array
+      });
       panel.ensureBounds();
       return panel;
     }
@@ -753,13 +750,12 @@ export class DiagramTemplatesService {
       this.getStandardNodeOptions(forPalette),
       {
         doubleClick: function(event, node) {
-
           // Do not proceed for double clicks on buttons on the node
           if (event.targetObject.name.includes('Button')) {
             return;
           }
 
-         this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+          this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
         }.bind(this)
       },
       new go.Binding(
@@ -806,7 +802,8 @@ export class DiagramTemplatesService {
           }
         }),
         new go.Binding('toSpot', 'group', function(group) {
-          if (group) {return go.Spot.LeftRightSides;
+          if (group) {
+            return go.Spot.LeftRightSides;
           } else {
             return go.Spot.AllSides;
           }
@@ -857,7 +854,8 @@ export class DiagramTemplatesService {
             return;
           }
 
-         this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+          this.gojsCustomObjectsService.showDetailTabSource.next();
+
         }.bind(this)
       },
       new go.Binding(
@@ -1075,16 +1073,13 @@ export class DiagramTemplatesService {
         relinkableTo: false,
         isLayoutPositioned: true
       },
-      $(
-        go.Shape,
-        {
-          name: 'shape',
-          isPanelMain: true,
-          stroke: 'Black',
-          strokeWidth: 2.5,
-          strokeDashArray: [2.5, 1.5]
-        }
-      ),
+      $(go.Shape, {
+        name: 'shape',
+        isPanelMain: true,
+        stroke: 'Black',
+        strokeWidth: 2.5,
+        strokeDashArray: [2.5, 1.5]
+      }),
       this.getLinkLabel()
     );
   }

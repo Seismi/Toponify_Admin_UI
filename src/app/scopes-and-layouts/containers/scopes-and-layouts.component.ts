@@ -17,11 +17,7 @@ import { MatDialog } from '@angular/material';
 export class ScopesAndLayoutsComponent implements OnInit {
   public scopes$: Observable<ScopeEntity[]>;
 
-  constructor(
-    private store: Store<ScopeState>,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  constructor(private store: Store<ScopeState>, private router: Router, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadScopes({}));

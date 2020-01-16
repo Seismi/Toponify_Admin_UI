@@ -1,9 +1,10 @@
-<mat-tab-group 
+<mat-tab-group
   #architectureTableTabs
   mat-stretch-tabs
-  [@.disabled]="true" 
+  [@.disabled]="true"
   [selectedIndex]="selectedView"
-  (selectedTabChange)="onTabClick($event)">
+  (selectedTabChange)="onTabClick($event)"
+>
   <mat-tab label="Canvas" [style.width.px]="100"> </mat-tab>
   <mat-tab [label]="getLabel()" [style.width.px]="100"> </mat-tab>
   <mat-tab [label]="getLinkLabel()" [style.width.px]="100"> </mat-tab>

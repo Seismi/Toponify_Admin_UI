@@ -30,7 +30,7 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class NodeService {
   constructor(private http: HttpClient) {}
 
@@ -38,7 +38,7 @@ export class NodeService {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get(`/nodes`, {
       params: params,
-      responseType: queryParams.format ? 'text' as 'json' : 'json'
+      responseType: queryParams && queryParams.format ? ('text' as 'json') : 'json'
     });
   }
 
@@ -53,7 +53,7 @@ export class NodeService {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get(`/nodelinks`, {
       params: params,
-      responseType: queryParams.format ? 'text' as 'json' : 'json'
+      responseType: queryParams.format ? ('text' as 'json') : 'json'
     });
   }
 

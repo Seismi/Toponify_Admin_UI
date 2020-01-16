@@ -11,7 +11,6 @@ import { ScopesAndLayoutsValidatorService } from '@app/scopes-and-layouts/compon
   providers: [ScopesAndLayoutsDetailService, ScopesAndLayoutsValidatorService]
 })
 export class ScopeAndLayoutModalComponent implements OnInit {
-
   public title: string;
   public isEditable: boolean = true;
   public modalMode: boolean = true;
@@ -19,9 +18,10 @@ export class ScopeAndLayoutModalComponent implements OnInit {
   constructor(
     private scopesAndLayoutsDetailService: ScopesAndLayoutsDetailService,
     public dialogRef: MatDialogRef<ScopeAndLayoutModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.title = data.title;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.title = data.title;
+  }
 
   ngOnInit(): void {}
 
@@ -33,7 +33,7 @@ export class ScopeAndLayoutModalComponent implements OnInit {
     if (!this.scopesAndLayoutsDetailService.isValid) {
       return;
     }
-    
+
     this.dialogRef.close({ scopeAndLayout: this.scopesAndLayoutsDetailForm.value });
   }
 

@@ -20,7 +20,6 @@ import { LoadUserRoles } from '@app/settings/store/actions/user.actions';
   providers: [MyUserFormService, MyUserFormValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
 })
 export class UserModalComponent implements OnInit {
-
   public teams$: Observable<TeamEntity[]>;
   public roles$: Observable<RolesEntity[]>;
   public user: User;
@@ -33,9 +32,10 @@ export class UserModalComponent implements OnInit {
     private userStore: Store<UserState>,
     private myUserFormService: MyUserFormService,
     public dialogRef: MatDialogRef<UserModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.user = data.user;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.user = data.user;
+  }
 
   ngOnInit(): void {
     this.userStore.dispatch(new LoadUserRoles());
@@ -51,7 +51,7 @@ export class UserModalComponent implements OnInit {
     if (!this.myUserFormService.isValid) {
       return;
     }
-    this.dialogRef.close({user: this.myUserForm.value});
+    this.dialogRef.close({ user: this.myUserForm.value });
   }
 
   onCancel(): void {

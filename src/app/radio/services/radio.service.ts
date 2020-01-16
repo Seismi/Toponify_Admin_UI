@@ -7,7 +7,8 @@ import {
   RadioApiRequest,
   ReplyApiRequest,
   RadioDetailApiResponse,
-  AdvancedSearchApiRequest
+  AdvancedSearchApiRequest,
+  RadioDetail
 } from '../store/models/radio.model';
 import { delay } from 'rxjs/operators';
 
@@ -50,6 +51,14 @@ export class RadioService {
 
   searchRadio(data: AdvancedSearchApiRequest): Observable<RadioEntitiesResponse> {
     return this.http.post<RadioEntitiesResponse>(`/radios/advanced/search`, data, httpOptions);
+  }
+
+  associateRadio({ workPackageId, nodeId, radio }: { workPackageId: string; nodeId: string; radio: RadioDetail }) {
+    return this.http.post(`/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radio.id}`, { data: radio });
+  }
+
+  dissociateRadio({ workPackageId, nodeId, radioId }: { workPackageId: string; nodeId: string; radioId: string }) {
+    return this.http.delete(`/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radioId}`);
   }
 
   // TODO: move into sharable service

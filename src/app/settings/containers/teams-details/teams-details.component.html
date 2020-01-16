@@ -5,11 +5,9 @@
     (editTeam)="onEditTeam()"
     (deleteTeam)="onDeleteTeam()"
     (saveTeam)="onSaveTeam()"
-    (cancelEdit)="onCancelEdit()">
+    (cancelEdit)="onCancelEdit()"
+  >
   </smi-team-detail>
-  <smi-members-table
-    [members]="team?.members"
-    (deleteMember)="onDeleteMember($event)"
-    (addMember)="onAddMember()">
+  <smi-members-table [members]="team?.members" (deleteMember)="onDeleteMember($event)" (addMember)="onAddMember()">
   </smi-members-table>
 </app-model-container>
