@@ -80,7 +80,7 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
     }
     return {
       linkId: link.id,
-      workpackageId: link.impactedByWorkPackages[0].id
+      workpackageId: link.impactedByWorkPackages[0].id || link.impactedByWorkPackages
     };
   }
 

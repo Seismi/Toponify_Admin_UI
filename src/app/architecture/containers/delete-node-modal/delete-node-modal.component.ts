@@ -78,7 +78,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
     }
     return {
       nodeId: node.id,
-      workpackageId: node.impactedByWorkPackages[0].id
+      workpackageId: node.impactedByWorkPackages[0].id || node.impactedByWorkPackages
     };
   }
 
