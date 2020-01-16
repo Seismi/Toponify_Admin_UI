@@ -854,7 +854,8 @@ export class DiagramTemplatesService {
             return;
           }
 
-         this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+          this.gojsCustomObjectsService.showDetailTabSource.next();
+
         }.bind(this)
       },
       new go.Binding(
