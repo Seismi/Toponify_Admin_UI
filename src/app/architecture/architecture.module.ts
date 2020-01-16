@@ -77,6 +77,7 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
 import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
+import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 
 @NgModule({
@@ -171,6 +172,7 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     DiagramTemplatesService,
     DiagramLevelService,
     DiagramListenersService,
+    DiagramImageService,
     NodeService,
     WorkPackageService
   ]
