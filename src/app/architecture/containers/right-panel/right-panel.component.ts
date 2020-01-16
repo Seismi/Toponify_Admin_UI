@@ -7,7 +7,12 @@ import {
   OwnersEntityOrTeamEntityOrApproversEntity,
   NodeLinkDetail
 } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, DescendantsEntity, Node, NodeReports } from '@app/architecture/store/models/node.model';
+import {
+  CustomPropertyValuesEntity,
+  DescendantsEntity,
+  Node,
+  NodeReports
+} from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';

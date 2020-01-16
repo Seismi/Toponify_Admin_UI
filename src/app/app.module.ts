@@ -17,6 +17,12 @@ import { CustomSerializer } from '@app/core/custom-serializer';
 import { MatIconModule } from '@angular/material';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material';
 import { AttributesModule } from './attributes/attributes.module';
+import { reducer as workpackageReducer } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { WorkPackageEffects } from '@app/workpackage/store/effects/workpackage.effects';
+import { WorkPackageNodeEffects } from '@app/workpackage/store/effects/workpackage-node.effects';
+import { WorkPackageLinkEffects } from '@app/workpackage/store/effects/workpackage-link.effects';
+import { NodeEffects } from '@app/architecture/store/effects/node.effects';
+import { reducer as architectureReducer } from '@app/architecture/store/reducers/architecture.reducer';
 
 @NgModule({
   imports: [
@@ -39,7 +45,11 @@ import { AttributesModule } from './attributes/attributes.module';
     StoreRouterConnectingModule.forRoot({
       serializer: CustomSerializer
     }),
-    MatIconModule
+    MatIconModule,
+    StoreModule.forFeature('workpackageFeature', workpackageReducer),
+    EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects]),
+    StoreModule.forFeature('architectureFeature', architectureReducer),
+    EffectsModule.forFeature([NodeEffects])
   ],
   declarations: [AppComponent],
   providers: [{ provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } }],

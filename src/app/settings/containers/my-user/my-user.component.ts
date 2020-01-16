@@ -22,7 +22,6 @@ import { getUserRolesEntities } from '@app/settings/store/selectors/user.selecto
   providers: [MyUserFormService, MyUserFormValidatorService]
 })
 export class MyUserComponent implements OnInit {
-
   public user: UserDetails;
   public showButtons: boolean = true;
   public isEditable: boolean = false;
@@ -36,7 +35,7 @@ export class MyUserComponent implements OnInit {
     private userStore: Store<UserState>,
     private myUserFormService: MyUserFormService,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.store.dispatch(new LoadMyProfile());
@@ -44,17 +43,13 @@ export class MyUserComponent implements OnInit {
     this.store.pipe(select(getMyProfile)).subscribe(data => {
       this.user = data;
       if (data) {
-        this.myUserFormService.myUserForm.patchValue({...data});
+        this.myUserFormService.myUserForm.patchValue({ ...data });
       }
-    })
+    });
 
-    this.subscriptions.push(
-      this.store.pipe(select(getTeamEntities)).subscribe(team => this.team = team)
-    )
+    this.subscriptions.push(this.store.pipe(select(getTeamEntities)).subscribe(team => (this.team = team)));
 
-    this.subscriptions.push(
-      this.store.pipe(select(getUserRolesEntities)).subscribe(role => this.role = role)
-    )
+    this.subscriptions.push(this.store.pipe(select(getUserRolesEntities)).subscribe(role => (this.role = role)));
   }
 
   get myUserForm(): FormGroup {

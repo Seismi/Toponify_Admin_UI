@@ -4,7 +4,10 @@ import { Store, select } from '@ngrx/store';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { FindPotentialWorkpackageNodes, AddWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
+import {
+  FindPotentialWorkpackageNodes,
+  AddWorkPackageNode
+} from '@app/workpackage/store/actions/workpackage-node.actions';
 import { FormControl } from '@angular/forms';
 import { WorkPackageNodeFindPotential } from '@app/workpackage/store/models/workpackage.models';
 import { getPotentialWorkPackageNodes } from '@app/architecture/store/selectors/workpackage.selector';
@@ -90,11 +93,13 @@ export class DescendantsModalComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.data) {
-        this.store.dispatch(new AddWorkPackageNode({
-          workpackageId: this.workpackageId,
-          node: data.data,
-          scope: this.data.scopeId
-        }))
+        this.store.dispatch(
+          new AddWorkPackageNode({
+            workpackageId: this.workpackageId,
+            node: data.data,
+            scope: this.data.scopeId
+          })
+        );
       }
     });
   }

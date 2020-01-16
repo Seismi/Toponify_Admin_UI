@@ -78,6 +78,8 @@ import { NewChildrenModalComponent } from './containers/new-children-modal/new-c
 import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
 import { DeleteAttributeModalComponent } from './containers/delete-attribute-modal/delete-attribute-modal.component';
+import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
+import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 
 @NgModule({
   imports: [
@@ -112,9 +114,7 @@ import { DeleteAttributeModalComponent } from './containers/delete-attribute-mod
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule,
-    StoreModule.forFeature('architectureFeature', reducer),
-    EffectsModule.forFeature([NodeEffects])
+    ScopesAndLayoutsModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
@@ -152,7 +152,8 @@ import { DeleteAttributeModalComponent } from './containers/delete-attribute-mod
     NewChildrenModalComponent,
     SearchTableViewComponent,
     ReportsTabComponent,
-    DeleteAttributeModalComponent
+    DeleteAttributeModalComponent,
+    DeleteDescendantsModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -164,7 +165,8 @@ import { DeleteAttributeModalComponent } from './containers/delete-attribute-mod
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     NodeScopeModalComponent,
-    DeleteAttributeModalComponent
+    DeleteAttributeModalComponent,
+    DeleteDescendantsModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
@@ -173,6 +175,7 @@ import { DeleteAttributeModalComponent } from './containers/delete-attribute-mod
     DiagramTemplatesService,
     DiagramLevelService,
     DiagramListenersService,
+    DiagramImageService,
     NodeService,
     WorkPackageService
   ]

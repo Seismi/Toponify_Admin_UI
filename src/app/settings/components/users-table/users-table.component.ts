@@ -30,7 +30,7 @@ export class UsersTableComponent implements OnInit {
 
   constructor(public dialog: MatDialog) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   onAdd(): void {
     this.addUser.emit();
@@ -40,5 +40,4 @@ export class UsersTableComponent implements OnInit {
     this.selectedUserIndex = user.id;
     this.selectUser.emit(user);
   }
-
 }
