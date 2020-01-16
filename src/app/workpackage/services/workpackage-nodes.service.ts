@@ -142,29 +142,21 @@ export class WorkPackageNodesService extends WorkPackageService {
     );
   }
 
-  /**
-   * Add custom property to a node
-   * FIXME: missing types
-   */
-  addNodeCustomProperty(
+  updateNodeProperty(
     workPackageId: string,
     nodeId: string,
     customPropertyId: string,
     data: WorkpackageNodeCustomProperty
-  ): Observable<any> {
-    return this.http.put<any>(
+  ): Observable<NodeDetailApiResponse> {
+    return this.http.put<NodeDetailApiResponse>(
       `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`,
-      data,
+      { data },
       this.httpOptions
     );
   }
 
-  /**
-   * Delete custom property from a node
-   * FIXME: missing types
-   */
-  deleteNodeCustomProperty(workPackageId: string, nodeId: string, customPropertyId: string): Observable<any> {
-    return this.http.post<any>(
+  deleteNodeProperty(workPackageId: string, nodeId: string, customPropertyId: string): Observable<NodeDetailApiResponse> {
+    return this.http.post<NodeDetailApiResponse>(
       `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}/deleteRequest`,
       {}
     );

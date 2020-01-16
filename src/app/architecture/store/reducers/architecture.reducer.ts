@@ -200,6 +200,22 @@ export function reducer(
       };
     }
 
+    case WorkPackageNodeActionTypes.UpdateWorkPackageNodePropertySuccess:
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodePropertySuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.UpdateWorkPackageNodePropertyFailure:
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodePropertyFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
     case WorkPackageLinkActionTypes.UpdateWorkPackageLinkPropertySuccess:
     case WorkPackageLinkActionTypes.DeleteWorkPackageLinkPropertySuccess: {
       return {
@@ -418,26 +434,6 @@ export function reducer(
       return {
         ...state,
         error: action.payload
-      };
-    }
-
-    case NodeActionTypes.UpdateCustomProperty: {
-      return {
-        ...state
-      };
-    }
-
-    case NodeActionTypes.UpdateCustomPropertySuccess: {
-      return {
-        ...state,
-        selectedNode: action.payload
-      };
-    }
-
-    case NodeActionTypes.UpdateCustomPropertyFailure: {
-      return {
-        ...state,
-        error: <Error>action.payload
       };
     }
 

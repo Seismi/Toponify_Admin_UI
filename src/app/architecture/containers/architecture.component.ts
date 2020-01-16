@@ -13,7 +13,6 @@ import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
-  DeleteCustomProperty,
   LoadMapView,
   LoadNode,
   LoadNodeLink,
@@ -22,7 +21,6 @@ import {
   LoadNodes,
   LoadNodeUsageView,
   NodeActionTypes,
-  UpdateCustomProperty,
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations
@@ -84,7 +82,9 @@ import {
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
   WorkPackageNodeActionTypes,
-  AddWorkPackageNodeAttribute
+  AddWorkPackageNodeAttribute,
+  DeleteWorkPackageNodeProperty,
+  UpdateWorkPackageNodeProperty
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -1334,7 +1334,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEditProperties(customProperty: CustomPropertyValuesEntity) {
+  onEditProperties(customProperty: CustomPropertyValuesEntity): void {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
@@ -1347,14 +1347,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.customProperties) {
         if (!this.clickedOnLink) {
-          this.nodeStore.dispatch(
-            new UpdateCustomProperty({
-              workPackageId: this.workpackageId,
-              nodeId: this.nodeId,
-              customPropertyId: customProperty.propertyId,
-              data: { data: { value: data.customProperties.value } }
-            })
-          );
+          this.workpackageStore.dispatch(new UpdateWorkPackageNodeProperty({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            customPropertyId: customProperty.propertyId,
+            data: { value: data.customProperties.value }
+          }))
         } else {
           this.workpackageStore.dispatch(new UpdateWorkPackageLinkProperty({
             workPackageId: this.getWorkPackageId(),
@@ -1367,7 +1365,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteProperties(customProperty: CustomPropertyValuesEntity) {
+  onDeleteProperties(customProperty: CustomPropertyValuesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -1380,13 +1378,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
         if (!this.clickedOnLink) {
-          this.store.dispatch(
-            new DeleteCustomProperty({
-              workPackageId: this.workpackageId,
-              nodeId: this.nodeId,
-              customPropertyId: customProperty.propertyId
-            })
-          );
+          this.workpackageStore.dispatch(new DeleteWorkPackageNodeProperty({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            customPropertyId: customProperty.propertyId
+          }))
         } else {
           this.workpackageStore.dispatch(new DeleteWorkPackageLinkProperty({
             workPackageId: this.getWorkPackageId(),
