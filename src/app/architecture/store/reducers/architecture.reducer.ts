@@ -200,6 +200,23 @@ export function reducer(
       };
     }
 
+    case WorkPackageLinkActionTypes.UpdateWorkPackageLinkPropertySuccess:
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkPropertySuccess: {
+      return {
+        ...state,
+        selectedNodeLink: action.payload
+      };
+    }
+
+    case WorkPackageLinkActionTypes.UpdateWorkPackageLinkPropertyFailure:
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkPropertyFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+
     case WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess: {
       return {
         ...state,

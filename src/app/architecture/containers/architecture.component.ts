@@ -69,7 +69,9 @@ import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkSuccess,
-  AddWorkPackageLinkAttribute
+  AddWorkPackageLinkAttribute,
+  UpdateWorkPackageLinkProperty,
+  DeleteWorkPackageLinkProperty
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -1344,14 +1346,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.customProperties) {
-        this.nodeStore.dispatch(
-          new UpdateCustomProperty({
-            workPackageId: this.workpackageId,
-            nodeId: this.nodeId,
+        if (!this.clickedOnLink) {
+          this.nodeStore.dispatch(
+            new UpdateCustomProperty({
+              workPackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              customPropertyId: customProperty.propertyId,
+              data: { data: { value: data.customProperties.value } }
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(new UpdateWorkPackageLinkProperty({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
             customPropertyId: customProperty.propertyId,
-            data: { data: { value: data.customProperties.value } }
-          })
-        );
+            data: { value: data.customProperties.value }
+          }))
+        }
       }
     });
   }
@@ -1368,13 +1379,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(
-          new DeleteCustomProperty({
-            workPackageId: this.workpackageId,
-            nodeId: this.nodeId,
+        if (!this.clickedOnLink) {
+          this.store.dispatch(
+            new DeleteCustomProperty({
+              workPackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              customPropertyId: customProperty.propertyId
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(new DeleteWorkPackageLinkProperty({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
             customPropertyId: customProperty.propertyId
-          })
-        );
+          }))
+        }
       }
     });
   }
