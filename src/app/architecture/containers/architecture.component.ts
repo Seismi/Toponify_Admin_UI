@@ -108,7 +108,7 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -241,6 +241,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public scope: ScopeDetails;
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
+  private addDataSetSubscription: Subscription;
   public params: Params;
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
@@ -305,6 +306,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
       this.currentFilterLevel = filterLevel;
+    });
+    this.addDataSetSubscription = this.gojsCustomObjectsService.addDataSet$.subscribe(() => {
+      // this.onAddDescendant();
     });
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));

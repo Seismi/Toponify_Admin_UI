@@ -102,6 +102,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a new scope should be created for the selected node
   private createScopeWithNodeSource = new Subject();
   public createScopeWithNode$ = this.createScopeWithNodeSource.asObservable();
+  // Observable to indicate that a new data set is to be added to a system
+  private addDataSetSource = new Subject();
+  public addDataSet$ = this.addDataSetSource.asObservable();
   // Observable to indicate that the grid display should be toggled
   private showHideGridSource = new Subject();
   public showHideGrid$ = this.showHideGridSource.asObservable();
@@ -575,8 +578,11 @@ export class GojsCustomObjectsService {
         makeSubMenuButton(
           5,
           'Add data set',
-          function(event: object): void {
-            /*Placeholder*/
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            event.diagram.select(node);
+            thisService.addDataSetSource.next();
           }
         )
       )
