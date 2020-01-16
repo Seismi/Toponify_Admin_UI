@@ -35,7 +35,7 @@ export class WorkPackageTreeComponent implements OnInit {
     this.diagram.layout = this.workPackageDiagramService.getLayout();
     this.diagram.model = this.workPackageDiagramService.getModel(this.workpackages);
 
-    this.diagram.addDiagramListener('ChangedSelection', (ev ) => {
+    this.diagram.addDiagramListener('ChangedSelection', ev => {
       const parts = ev.diagram.selection.toArray();
       this.selectWorkpackage.emit(parts.length === 1 ? parts[0].data : null);
     });

@@ -10,7 +10,7 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 })
 export class PropertiesTabComponent {
   @Input() workPackageIsEditable: boolean;
-  @Input() nodeCategory: string
+  @Input() nodeCategory: string;
 
   @Input()
   set data(data: NodeDetail[]) {

@@ -15,14 +15,9 @@ import { Router } from '@angular/router';
   styleUrls: ['all-users.component.scss']
 })
 export class AllUsersComponent implements OnInit {
-
   public users$: Observable<User[]>;
 
-  constructor(
-    private router: Router,
-    private store: Store<UserState>, 
-    private dialog: MatDialog
-  ) { }
+  constructor(private router: Router, private store: Store<UserState>, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadUsers({}));
@@ -56,5 +51,4 @@ export class AllUsersComponent implements OnInit {
   onSelectUser(user: User): void {
     this.router.navigate([`/settings/all-users/${user.id}`]);
   }
-
 }

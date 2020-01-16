@@ -12,8 +12,22 @@
     </ng-container>
 
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.item.name }}</td>
+      <th mat-header-cell *matHeaderCellDef>
+        <span class="name-cell">
+          Name
+          <button mat-icon-button (click)="onAdd()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </span>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <span class="name-cell">
+          {{ element.item.name }}
+          <button mat-icon-button (click)="onUnLink(element)">
+            <mat-icon>link_off</mat-icon>
+          </button>
+        </span>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

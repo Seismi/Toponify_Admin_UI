@@ -40,7 +40,15 @@ export enum RadioActionTypes {
   SearchRadioSuccess = '[Radio] Search Radio Success',
   SearchRadioFailure = '[Radio] Search Radio Failure',
 
-  RadioFilter = '[Radio] Load Radio Filter Data'
+  RadioFilter = '[Radio] Load Radio Filter Data',
+
+  AssociateRadio = '[Radio] Associate Radio entity',
+  AssociateRadioSuccess = '[Radio] Associate Radio entity Success',
+  AssociateRadioFailure = '[Radio] Associate Radio entity Failure',
+
+  DissociateRadio = '[Radio] Dissociate Radio entity',
+  DissociateRadioSuccess = '[Radio] Dissociate Radio entity Success',
+  DissociateRadioFailure = '[Radio] Dissociate Radio entity Failure'
 }
 
 export class LoadRadios implements Action {
@@ -153,6 +161,36 @@ export class RadioFilter implements Action {
   constructor(public payload: RadiosAdvancedSearch) {}
 }
 
+export class AssociateRadio implements Action {
+  readonly type = RadioActionTypes.AssociateRadio;
+  constructor(public payload: { workpackageId: string; nodeId: string; radio: RadioDetail }) {}
+}
+
+export class AssociateRadioSuccess implements Action {
+  readonly type = RadioActionTypes.AssociateRadioSuccess;
+  constructor(public payload: RadioEntitiesResponse) {}
+}
+
+export class AssociateRadioFailure implements Action {
+  readonly type = RadioActionTypes.AssociateRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DissociateRadio implements Action {
+  readonly type = RadioActionTypes.DissociateRadio;
+  constructor(public payload: { workpackageId: string; nodeId: string; radioId: string }) {}
+}
+
+export class DissociateRadioSuccess implements Action {
+  readonly type = RadioActionTypes.DissociateRadioSuccess;
+  constructor(public payload: RadioEntitiesResponse) {}
+}
+
+export class DissociateRadioFailure implements Action {
+  readonly type = RadioActionTypes.DissociateRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type RadioActionsUnion =
   | LoadRadios
   | LoadRadiosSuccess
@@ -175,4 +213,10 @@ export type RadioActionsUnion =
   | SearchRadio
   | SearchRadioSuccess
   | SearchRadioFailure
-  | RadioFilter;
+  | RadioFilter
+  | AssociateRadio
+  | AssociateRadioSuccess
+  | AssociateRadioFailure
+  | DissociateRadio
+  | DissociateRadioSuccess
+  | DissociateRadioFailure;
