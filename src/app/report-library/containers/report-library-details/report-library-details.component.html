@@ -9,6 +9,7 @@
             [isEditable]="isEditable"
             [selectedOwnerIndex]="selectedOwnerIndex"
             [dataSets]="report?.dataSets"
+            [system]="report?.system"
             [owners]="report?.owners"
             [dimensions]="report?.dimensions"
             [reportingConcepts]="report?.reportingConcepts"
@@ -20,6 +21,7 @@
             (addOwner)="onAddOwner()"
             (selectOwner)="onSelectOwner($event)"
             (deleteOwner)="onDeleteOwner()"
+            (editSourceSystem)="onEditSourceSystem()"
           >
           </smi-report-library-detail>
         </p>

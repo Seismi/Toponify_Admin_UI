@@ -17,6 +17,7 @@ export interface ReportLibrary {
   id: string;
   name: string;
   description: string;
+  system?: DataSetsEntity;
   dataSets?: (DataSetsEntity)[] | null;
   impactedByWorkPackages?: (ImpactedWorkPackageEntity)[] | null;
 }
@@ -79,6 +80,7 @@ export interface Report {
   description: string;
   owners?: (OwnersEntity)[] | null;
   dataSets?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
+  system?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity) | null;
   dimensions?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
   reportingConcepts?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
