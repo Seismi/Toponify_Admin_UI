@@ -31,6 +31,7 @@ import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-li
 import {
   CustomPropertyValuesEntity,
   DescendantsEntity,
+  middleOptions,
   Node,
   NodeDetail,
   NodeExpandedStateApiRequest,
@@ -864,7 +865,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
             return nodes.map(function(node) {
-              return { ...node, middleExpanded: false, bottomExpanded: false };
+              return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });
           }
 
@@ -887,23 +888,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 );
               }
 
+              const test = {
+                ...node
+              };
+              if (test.group === '') {delete test.group; }
+
               // TEMP - remove after API update
               if (layoutExpandState) {
                 layoutExpandState = {
                   ...layoutExpandState,
-                  middleExpanded: layoutExpandState.middleExpanded ? 'children' : 'none'
+                  middleExpanded: layoutExpandState.middleExpanded ? middleOptions.children : middleOptions.none
                 };
               }
               // END TEMP
 
               return {
-                ...node,
-                // TEMP
-                isGroup: node.layer === 'system',
-                // END TEMP
+                ...test,
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
-                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : 'none',
+                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : middleOptions.none,
                 bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false
               };
             }.bind(this)

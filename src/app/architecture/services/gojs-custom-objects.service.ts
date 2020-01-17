@@ -3,7 +3,7 @@ import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { Subject } from 'rxjs';
-import { layers } from '@app/architecture/store/models/node.model';
+import {layers, middleOptions} from '@app/architecture/store/models/node.model';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { Store } from '@ngrx/store';
@@ -449,7 +449,7 @@ export class GojsCustomObjectsService {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             event.diagram.model.setDataProperty(node.data, 'bottomExpanded', !node.data.bottomExpanded);
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', 'none');
+            event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.none);
 
             diagramChangesService.nodeExpandChanged(node);
           },
@@ -482,8 +482,8 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', 'group');
+            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
+            event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.group);
 
             diagramChangesService.nodeExpandChanged(node);
 
@@ -496,7 +496,7 @@ export class GojsCustomObjectsService {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', 'group list');
+            event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.groupList);
 
             diagramChangesService.nodeExpandChanged(node);
 
@@ -548,7 +548,8 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            const newState = node.data.middleExpanded !== 'children' ? 'children' : 'none';
+            const newState = node.data.middleExpanded !== middleOptions.children ?
+              middleOptions.children : middleOptions.none;
 
             event.diagram.model.setDataProperty(node.data, 'middleExpanded', newState);
             event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
@@ -561,7 +562,7 @@ export class GojsCustomObjectsService {
           function(object: go.GraphObject, event: go.DiagramEvent) {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            return node.data.middleExpanded === 'children' ? 'Hide List' : 'Show as List';
+            return node.data.middleExpanded === middleOptions.children ? 'Hide List' : 'Show as List';
           }
         ),
         makeSubMenuButton(4,
