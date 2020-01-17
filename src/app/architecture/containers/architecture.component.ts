@@ -35,7 +35,8 @@ import {
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
-  OwnersEntityOrTeamEntityOrApproversEntity
+  OwnersEntityOrTeamEntityOrApproversEntity,
+  AttributesEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -69,6 +70,7 @@ import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkSuccess,
+  DeleteWorkPackageLinkAttribute,
   AddWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
@@ -82,6 +84,7 @@ import {
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
   WorkPackageNodeActionTypes,
+  DeleteWorkPackageNodeAttribute,
   AddWorkPackageNodeAttribute
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
@@ -151,6 +154,8 @@ import { ArchitectureTableViewComponent } from '../components/architecture-table
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
+import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
+import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 
@@ -271,7 +276,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private attributeStore: Store<AttributeState>
   ) {}
 
   ngOnInit() {
@@ -1147,6 +1153,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             entity: { data: { ...data.attribute } }
           })
         );
+      }
+    });
+  }
+
+  onDeleteAttribute(attribute: AttributesEntity): void {
+    const dialogRef = this.dialog.open(DeleteAttributeModalComponent, { 
+      width: '500px',
+      data: {
+        type: attribute.category,
+        name: attribute.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.attributeStore.dispatch(new DeleteWorkPackageNodeAttribute({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            attributeId: attribute.id
+          }))
+        } else {
+          this.attributeStore.dispatch(new DeleteWorkPackageLinkAttribute({
+            workPackageId: this.workpackageId,
+            nodeLinkId: this.nodeId,
+            attributeId: attribute.id
+          }))
+        }
       }
     });
   }
