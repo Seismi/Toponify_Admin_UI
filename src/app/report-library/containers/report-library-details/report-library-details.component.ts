@@ -254,4 +254,37 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  onEditDataSets() {
+    this.nodeStore.dispatch(new LoadNodes());
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      minWidth: '400px',
+      data: {
+        title: 'Select source data sets',
+        multi: true,
+        options$: this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.dataSet })),
+        selectedIds: this.report.dataSets ? this.report.dataSets.map(ds => ds.id) : []
+      }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        console.log(data.value);
+        this.workPackageStore
+          .select(getEditWorkpackage)
+          .pipe(take(1))
+          .subscribe(editWpId => {
+              this.store.dispatch(
+                new UpdateReport({
+                  workPackageId: editWpId,
+                  reportId: this.report.id,
+                  request: { data: { ...this.report, dataSets: data.value }}
+                })
+              );
+            }
+          );
+      }
+    });
+  }
 }
