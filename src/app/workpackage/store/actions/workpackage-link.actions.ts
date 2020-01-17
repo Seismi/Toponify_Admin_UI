@@ -23,7 +23,10 @@ export enum WorkPackageLinkActionTypes {
   DeleteWorkpackageLinkOwnerFailure = '[WorkPackage] Delete Link Owner Fail',
   AddWorkPackageLinkAttribute = '[WorkPackage] Add Link Attribute',
   AddWorkPackageLinkAttributeSuccess = '[WorkPackage] Add Link Attribute Success',
-  AddWorkPackageLinkAttributeFailure = '[WorkPackage] Add Link Attribute Failure'
+  AddWorkPackageLinkAttributeFailure = '[WorkPackage] Add Link Attribute Failure',
+  DeleteWorkPackageLinkAttribute = '[WorkPackage] Delete Link Attribute',
+  DeleteWorkPackageLinkAttributeSuccess = '[WorkPackage] Delete Link Attribute Success',
+  DeleteWorkPackageLinkAttributeFailure = '[WorkPackage] Delete Link Attribute Failure'
 }
 
 export class AddWorkPackageLink implements Action {
@@ -88,7 +91,7 @@ export class DeleteWorkpackageLinkFailure implements Action {
 
 export class AddWorkPackageLinkOwner implements Action {
   readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkOwner;
-  constructor(public payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) {}
+  constructor(public payload: { workPackageId: string; nodeLinkId: string; ownerId: string }) {}
 }
 
 export class AddWorkPackageLinkOwnerSuccess implements Action {
@@ -103,17 +106,17 @@ export class AddWorkPackageLinkOwnerFailure implements Action {
 
 export class DeleteWorkpackageLinkOwner implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwner;
-  constructor(public payload: { workPackageId: string, nodeLinkId: string, ownerId: string }) { }
+  constructor(public payload: { workPackageId: string; nodeLinkId: string; ownerId: string }) {}
 }
 
 export class DeleteWorkpackageLinkOwnerSuccess implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwnerSuccess;
-  constructor(public payload: NodeLink) { }
+  constructor(public payload: NodeLink) {}
 }
 
 export class DeleteWorkpackageLinkOwnerFailure implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkpackageLinkOwnerFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) { }
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
 export class AddWorkPackageLinkAttribute implements Action {
@@ -129,6 +132,21 @@ export class AddWorkPackageLinkAttributeSuccess implements Action {
 export class AddWorkPackageLinkAttributeFailure implements Action {
   readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkPackageLinkAttribute implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttribute;
+  constructor(public payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) { }
+}
+
+export class DeleteWorkPackageLinkAttributeSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess;
+  constructor(public payload: NodeLinkDetail) { }
+}
+
+export class DeleteWorkPackageLinkAttributeFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
 }
 
 export type WorkPackageLinkActionsUnion =
@@ -152,4 +170,7 @@ export type WorkPackageLinkActionsUnion =
   | DeleteWorkpackageLinkOwnerFailure
   | AddWorkPackageLinkAttribute
   | AddWorkPackageLinkAttributeSuccess
-  | AddWorkPackageLinkAttributeFailure;
+  | AddWorkPackageLinkAttributeFailure
+  | DeleteWorkPackageLinkAttribute
+  | DeleteWorkPackageLinkAttributeSuccess
+  | DeleteWorkPackageLinkAttributeFailure;

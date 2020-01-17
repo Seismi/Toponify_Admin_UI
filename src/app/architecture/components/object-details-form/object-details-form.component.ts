@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { OwnersEntityOrTeamEntityOrApproversEntity, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
+import {
+  OwnersEntityOrTeamEntityOrApproversEntity,
+  NodeLinkDetail
+} from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
@@ -112,13 +115,13 @@ export class ObjectDetailsFormComponent {
   getCategories(): string[] {
     switch (this.part.data.layer) {
       case 'system':
-        return (this.part instanceof Node) ? systemCategories : ['master data', 'data'];
+        return this.part instanceof Node ? systemCategories : ['master data', 'data'];
       case 'data set':
-        return (this.part instanceof Node) ? dataSetCategories : ['master data', 'data'];
+        return this.part instanceof Node ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
-        return (this.part instanceof Node) ? dimensionCategories : ['master data'];
+        return this.part instanceof Node ? dimensionCategories : ['master data'];
       case 'reporting concept':
-        return (this.part instanceof Node) ? reportingCategories : ['master data'];
+        return this.part instanceof Node ? reportingCategories : ['master data'];
     }
   }
 
@@ -128,5 +131,4 @@ export class ObjectDetailsFormComponent {
     }
     return false;
   }
-
 }

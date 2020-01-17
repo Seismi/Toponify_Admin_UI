@@ -30,7 +30,13 @@ import {
   DeleteRadioPropertyFailure,
   SearchRadio,
   SearchRadioSuccess,
-  SearchRadioFailure
+  SearchRadioFailure,
+  AssociateRadio,
+  DissociateRadio,
+  DissociateRadioSuccess,
+  DissociateRadioFailure,
+  AssociateRadioFailure,
+  AssociateRadioSuccess
 } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -128,6 +134,40 @@ export class RadioEffects {
         mergeMap((response: RadioEntitiesResponse) => [new SearchRadioSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new SearchRadioFailure(error)))
       );
+    })
+  );
+
+  @Effect()
+  associateRadio$ = this.actions$.pipe(
+    ofType<AssociateRadio>(RadioActionTypes.AssociateRadio),
+    map(action => action.payload),
+    mergeMap(payload => {
+      return this.radioService
+        .associateRadio({ workPackageId: payload.workpackageId, nodeId: payload.nodeId, radio: payload.radio })
+        .pipe(
+          mergeMap((response: RadioEntitiesResponse) => [
+            new LoadRadio(payload.radio.id),
+            new AssociateRadioSuccess(response)
+          ]),
+          catchError((error: HttpErrorResponse) => of(new AssociateRadioFailure(error)))
+        );
+    })
+  );
+
+  @Effect()
+  dissociateRadio$ = this.actions$.pipe(
+    ofType<DissociateRadio>(RadioActionTypes.DissociateRadio),
+    map(action => action.payload),
+    mergeMap(payload => {
+      return this.radioService
+        .dissociateRadio({ workPackageId: payload.workpackageId, nodeId: payload.nodeId, radioId: payload.radioId })
+        .pipe(
+          mergeMap((response: RadioEntitiesResponse) => [
+            new LoadRadio(payload.radioId),
+            new DissociateRadioSuccess(response)
+          ]),
+          catchError((error: HttpErrorResponse) => of(new DissociateRadioFailure(error)))
+        );
     })
   );
 }

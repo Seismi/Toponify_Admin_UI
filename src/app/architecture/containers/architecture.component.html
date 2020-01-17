@@ -5,7 +5,8 @@
     [selectedWorkPackageEntities]="selectedWorkPackageEntities"
     [workPackageIsEditable]="workPackageIsEditable"
     [workPackageName]="workPackageName"
-    (exitWorkPackageEditMode)="onExitWorkPackageEditMode()">
+    (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
+  >
   </smi-workpackage-name>
   <app-search></app-search>
   <app-toolbar-column>
@@ -72,9 +73,7 @@
       [selectedView]="selectedView"
       [viewLevel]="viewLevel$ | async"
     ></smi-switch-view-tabs>
-    <smi-search-table-view
-      *ngIf="selectedView !== ArchitectureView.Diagram"
-      (search)="onSearchTableView($event)">
+    <smi-search-table-view *ngIf="selectedView !== ArchitectureView.Diagram" (search)="onSearchTableView($event)">
     </smi-search-table-view>
     <div style="padding: 5px" [hidden]="selectedView !== ArchitectureView.Diagram">
       <app-architecture-diagram
@@ -152,6 +151,7 @@
         (cancel)="onCancelEdit()"
         [workPackageIsEditable]="workPackageIsEditable"
         (addAttribute)="onAddAttribute()"
+        (deleteAttribute)="onDeleteAttribute($event)"
         (addRelatedRadio)="onAddRelatedRadio()"
         (hideRightPane)="onHideRightPane()"
         [objectSelected]="objectSelected"

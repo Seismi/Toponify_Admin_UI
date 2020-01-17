@@ -44,7 +44,8 @@ li {
   list-style-type: none;
   color: #555;
   letter-spacing: -0.5px;
-  &:nth-child(1), &:nth-child(2) {
+  &:nth-child(1),
+  &:nth-child(2) {
     margin-bottom: 12px;
   }
 }
@@ -54,7 +55,7 @@ button {
   min-height: 23px !important;
   min-width: 100px !important;
   font-size: 10px !important;
-  line-height: 0px; 
+  line-height: 0px;
   float: right;
 }
 

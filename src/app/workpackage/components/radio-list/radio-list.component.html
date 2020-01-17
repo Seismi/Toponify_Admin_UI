@@ -1,5 +1,5 @@
 <mat-form-field>
-  <input matInput (keyup)="onSearch($event.target.value)" placeholder="Search">
+  <input matInput (keyup)="onSearch($event.target.value)" placeholder="Search" />
 </mat-form-field>
 
 <table mat-table [dataSource]="dataSource">
@@ -8,7 +8,7 @@
     <th mat-header-cell *matHeaderCellDef>Ref Number</th>
     <td mat-cell *matCellDef="let element">{{ element.reference }}</td>
   </ng-container>
- 
+
   <!-- Title Column -->
   <ng-container matColumnDef="title">
     <th mat-header-cell *matHeaderCellDef>Name</th>

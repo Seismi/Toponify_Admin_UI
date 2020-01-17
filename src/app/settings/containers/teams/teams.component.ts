@@ -15,14 +15,9 @@ import { Router } from '@angular/router';
   styleUrls: ['teams.component.scss']
 })
 export class TeamsComponent implements OnInit {
-
   public teams$: Observable<TeamEntity[]>;
 
-  constructor(
-    private router: Router,
-    private store: Store<TeamState>,
-    private dialog: MatDialog
-  ) { }
+  constructor(private router: Router, private store: Store<TeamState>, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadTeams({}));

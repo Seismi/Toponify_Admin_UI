@@ -9,3 +9,9 @@ tr.mat-header-row {
 tr.mat-row {
   height: 40px;
 }
+
+.name-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -148,18 +148,12 @@ export class NodeEffects {
   updateNodeExpandedState$ = this.actions$.pipe(
     ofType<NodeActions.UpdateNodeExpandedState>(NodeActionTypes.UpdateNodeExpandedState),
     map(action => action.payload),
-    switchMap(
-      (payload: {
-        layoutId: string;
-        data: NodeExpandedStateApiRequest['data']
-      }) => {
-        return this.nodeService
-          .updateNodeExpandedState(payload.layoutId, payload.data)
-          .pipe(
-            switchMap((response: any) => [new NodeActions.UpdateNodeExpandedStateSuccess(response.data)]),
-            catchError((error: Error) => of(new NodeActions.UpdateNodeExpandedStateFailure(error)))
-          );
-      })
+    switchMap((payload: { layoutId: string; data: NodeExpandedStateApiRequest['data'] }) => {
+      return this.nodeService.updateNodeExpandedState(payload.layoutId, payload.data).pipe(
+        switchMap((response: any) => [new NodeActions.UpdateNodeExpandedStateSuccess(response.data)]),
+        catchError((error: Error) => of(new NodeActions.UpdateNodeExpandedStateFailure(error)))
+      );
+    })
   );
 
   @Effect()
@@ -201,7 +195,7 @@ export class NodeEffects {
   loadNodeReports$ = this.actions$.pipe(
     ofType<NodeActions.LoadNodeReports>(NodeActionTypes.LoadNodeReports),
     map(action => action.payload),
-    switchMap((payload: { nodeId: string, queryParams?: GetNodesRequestQueryParams}) => {
+    switchMap((payload: { nodeId: string; queryParams?: GetNodesRequestQueryParams }) => {
       return this.nodeService.getReports(payload.nodeId, payload.queryParams).pipe(
         switchMap((response: NodeReportsApiResponse) => [new NodeActions.LoadNodeReportsSuccess(response.data)]),
         catchError((error: Error) => {

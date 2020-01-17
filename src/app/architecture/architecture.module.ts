@@ -79,6 +79,10 @@ import { SearchTableViewComponent } from './components/search-table-view/search-
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
 import { AddExistingAttributeModalComponent } from './containers/add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
+import { DeleteAttributeModalComponent } from './containers/delete-attribute-modal/delete-attribute-modal.component';
+import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
+import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
+
 
 @NgModule({
   imports: [
@@ -113,9 +117,7 @@ import { AttributesListComponent } from './components/attributes-list/attributes
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule,
-    StoreModule.forFeature('architectureFeature', reducer),
-    EffectsModule.forFeature([NodeEffects])
+    ScopesAndLayoutsModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
@@ -154,7 +156,9 @@ import { AttributesListComponent } from './components/attributes-list/attributes
     SearchTableViewComponent,
     ReportsTabComponent,
     AddExistingAttributeModalComponent,
-    AttributesListComponent
+    AttributesListComponent,
+    DeleteAttributeModalComponent,
+    DeleteDescendantsModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -166,7 +170,9 @@ import { AttributesListComponent } from './components/attributes-list/attributes
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     NodeScopeModalComponent,
-    AddExistingAttributeModalComponent
+    AddExistingAttributeModalComponent,
+    DeleteAttributeModalComponent,
+    DeleteDescendantsModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
@@ -175,6 +181,7 @@ import { AttributesListComponent } from './components/attributes-list/attributes
     DiagramTemplatesService,
     DiagramLevelService,
     DiagramListenersService,
+    DiagramImageService,
     NodeService,
     WorkPackageService
   ]

@@ -34,5 +34,4 @@ export class ReportsTabComponent implements OnInit {
   onOpen(report: NodeReports): void {
     this.router.navigate([`/report-library/${report.id}`], { queryParamsHandling: 'preserve' });
   }
-
 }

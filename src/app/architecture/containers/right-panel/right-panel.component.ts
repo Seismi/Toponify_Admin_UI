@@ -7,7 +7,12 @@ import {
   OwnersEntityOrTeamEntityOrApproversEntity,
   NodeLinkDetail
 } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, DescendantsEntity, Node, NodeReports } from '@app/architecture/store/models/node.model';
+import {
+  CustomPropertyValuesEntity,
+  DescendantsEntity,
+  Node,
+  NodeReports
+} from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
@@ -63,6 +68,9 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output()
   addAttribute = new EventEmitter();
+
+  @Output()
+  deleteAttribute = new EventEmitter<AttributesEntity>();
 
   @Output()
   hideRightPane = new EventEmitter();
@@ -149,6 +157,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAddAttribute() {
     this.addAttribute.emit();
+  }
+
+  onDeleteAttribute(attribute: AttributesEntity): void {
+    this.deleteAttribute.emit(attribute);
   }
 
   onAddRadio() {

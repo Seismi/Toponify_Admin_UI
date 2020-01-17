@@ -12,7 +12,6 @@ import { TeamDetails } from '@app/settings/store/models/team.model';
   providers: [TeamDetailService, TeamValidatorService]
 })
 export class TeamModalComponent implements OnInit {
-  
   public modalMode: boolean = true;
   public isEditable: boolean = true;
   public team: TeamDetails;
@@ -20,9 +19,10 @@ export class TeamModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<TeamModalComponent>,
     private teamDetailService: TeamDetailService,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-      this.team = data;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.team = data;
+  }
 
   get teamDetailForm(): FormGroup {
     return this.teamDetailService.teamDetailForm;
@@ -38,7 +38,7 @@ export class TeamModalComponent implements OnInit {
     if (!this.teamDetailService.isValid) {
       return;
     }
-    this.dialogRef.close({team: this.teamDetailForm.value});
+    this.dialogRef.close({ team: this.teamDetailForm.value });
   }
 
   onCancel(): void {

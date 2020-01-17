@@ -5,7 +5,8 @@
         <smi-scopes-and-layouts-detail
           [group]="scopesAndLayoutsDetailForm"
           (save)="onSaveScope($event)"
-          (delete)="onDeleteScope($event)">
+          (delete)="onDeleteScope($event)"
+        >
         </smi-scopes-and-layouts-detail>
       </div>
     </div>
@@ -19,7 +20,8 @@
         [defaultLayoutId]="scope?.defaultLayout"
         (setFavoriteLayout)="onSetFavoriteLayout($event)"
         (select)="onLayoutSelect($event)"
-        (add)="onAddLayout($event)">
+        (add)="onAddLayout($event)"
+      >
       </smi-scopes-and-layouts-table>
     </div>
     <router-outlet></router-outlet>
