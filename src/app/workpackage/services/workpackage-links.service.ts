@@ -48,12 +48,8 @@ export class WorkPackageLinksService extends WorkPackageService {
     );
   }
 
-  /**
-   * Delete attribute from a link
-   * FIXME: missing types
-   */
-  deleteLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<any> {
-    return this.http.post<any>(
+  deleteLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.post<NodeLinkDetailApiResponse>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/attributes/${attributeId}/deleteRequest`,
       {}
     );

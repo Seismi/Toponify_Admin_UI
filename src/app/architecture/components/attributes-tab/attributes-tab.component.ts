@@ -23,12 +23,22 @@ export class AttributesTabComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public dataSource: MatTableDataSource<AttributesEntity>;
-  public displayedColumns: string[] = ['category', 'name'];
+  public displayedColumns: string[] = ['category', 'name', 'delete'];
 
   @Output() addAttribute = new EventEmitter<void>();
+  @Output() addExisting = new EventEmitter<void>();
+  @Output() deleteAttribute = new EventEmitter<AttributesEntity>();
 
   onAdd(): void {
     this.addAttribute.emit();
+  }
+
+  onAddExisting(): void {
+    this.addExisting.emit();
+  }
+
+  onDelete(attribute: AttributesEntity): void {
+    this.deleteAttribute.emit(attribute);
   }
 
   nodeIsEditable(): boolean {
