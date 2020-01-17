@@ -158,6 +158,7 @@ import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-a
 import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -1157,6 +1158,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+  onAddExistingAttribute(): void {
+    const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
+      disableClose: false,
+      width: '600px',
+      height: '590px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.store.dispatch(new AddWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: data.attribute.id
+          }));
+        } else {
+          this.store.dispatch(new AddWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: data.attribute.id
+          }));
+        }
+      }
+    });
+  }
+
   onDeleteAttribute(attribute: AttributesEntity): void {
     const dialogRef = this.dialog.open(DeleteAttributeModalComponent, { 
       width: '500px',
@@ -1170,19 +1197,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (data && data.attribute) {
         if (!this.clickedOnLink) {
           this.attributeStore.dispatch(new DeleteWorkPackageNodeAttribute({
-            workPackageId: this.workpackageId,
+            workPackageId: this.getWorkPackageId(),
             nodeId: this.nodeId,
             attributeId: attribute.id
-          }))
+          }));
         } else {
           this.attributeStore.dispatch(new DeleteWorkPackageLinkAttribute({
-            workPackageId: this.workpackageId,
+            workPackageId: this.getWorkPackageId(),
             nodeLinkId: this.nodeId,
             attributeId: attribute.id
-          }))
+          }));
         }
       }
-    });
+    })
   }
 
   openRightTab(index: number) {

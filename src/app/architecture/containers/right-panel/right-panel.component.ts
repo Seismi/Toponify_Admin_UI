@@ -109,6 +109,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   @Output() assignRadio = new EventEmitter<void>();
 
+  @Output() addExistingAttribute = new EventEmitter<void>();
+
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
     private changeDetectorRef: ChangeDetectorRef
@@ -211,6 +213,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAssignRadio(): void {
     this.assignRadio.emit();
+  }
+
+  onAddExistingAttribute(): void {
+    this.addExistingAttribute.emit();
   }
 
   isFirst(): boolean {

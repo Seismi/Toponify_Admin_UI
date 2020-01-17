@@ -26,10 +26,15 @@ export class AttributesTabComponent {
   public displayedColumns: string[] = ['category', 'name', 'delete'];
 
   @Output() addAttribute = new EventEmitter<void>();
+  @Output() addExisting = new EventEmitter<void>();
   @Output() deleteAttribute = new EventEmitter<AttributesEntity>();
 
   onAdd(): void {
     this.addAttribute.emit();
+  }
+
+  onAddExisting(): void {
+    this.addExisting.emit();
   }
 
   onDelete(attribute: AttributesEntity): void {

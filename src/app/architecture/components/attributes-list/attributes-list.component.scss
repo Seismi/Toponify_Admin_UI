@@ -1,0 +1,29 @@
+.mat-form-field {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-row {
+  cursor: pointer;
+  &:nth-child(even){
+    background-color: #f9f9f9;
+  }
+  &.highlight {
+    background-color: #d1d1d1;
+  }
+}
+
+td.mat-cell:nth-child(1) {
+  width: 120px;
+}
+
+.mat-cell {
+  border: none;
+}
+
+.no-data-found {
+  text-align: center;
+}

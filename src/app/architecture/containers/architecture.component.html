@@ -180,6 +180,7 @@
         [nodeCategory]="part?.data.category"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
         [nodeReports]="nodeReports$ | async"
+        (addExistingAttribute)="onAddExistingAttribute()"
       >
       </smi-right-panel></p
   ></app-model-sidebar>
