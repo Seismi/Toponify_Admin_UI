@@ -32,7 +32,8 @@ export class ReportLibraryDetailComponent {
   @Output() selectOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
   @Output() deleteOwner = new EventEmitter<void>();
   @Output() editSourceSystem = new EventEmitter<void>();
-  @Output() editDataSet = new EventEmitter<void>();
+  @Output() addDataSets = new EventEmitter<void>();
+  @Output() removeDataSet = new EventEmitter<string>();
 
   onSave() {
     this.saveReport.emit();
@@ -66,11 +67,11 @@ export class ReportLibraryDetailComponent {
     this.editSourceSystem.emit();
   }
 
-  onDatasetEdit() {
-    this.editDataSet.emit();
+  onDatasetAdd() {
+    this.addDataSets.emit();
   }
 
-  getDataSets() {
-    return this.dataSets ? this.dataSets.map(ds => ds.name).join(', ') : '';
+  onRemoveDataSet(id: string) {
+    this.removeDataSet.emit(id);
   }
 }
