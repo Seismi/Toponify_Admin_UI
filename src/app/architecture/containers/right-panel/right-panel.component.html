@@ -37,7 +37,9 @@
       [data]="attributes"
       [workPackageIsEditable]="workPackageIsEditable"
       (addAttribute)="onAddAttribute()"
+      (addExisting)="onAddExistingAttribute()"
       [nodeCategory]="nodeCategory"
+      (deleteAttribute)="onDeleteAttribute($event)"
     >
     </smi-attributes-tab>
   </mat-tab>

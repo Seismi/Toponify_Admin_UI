@@ -70,6 +70,9 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   addAttribute = new EventEmitter();
 
   @Output()
+  deleteAttribute = new EventEmitter<AttributesEntity>();
+
+  @Output()
   hideRightPane = new EventEmitter();
 
   @Output()
@@ -105,6 +108,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
 
   @Output() assignRadio = new EventEmitter<void>();
+
+  @Output() addExistingAttribute = new EventEmitter<void>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -152,6 +157,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAddAttribute() {
     this.addAttribute.emit();
+  }
+
+  onDeleteAttribute(attribute: AttributesEntity): void {
+    this.deleteAttribute.emit(attribute);
   }
 
   onAddRadio() {
@@ -204,6 +213,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onAssignRadio(): void {
     this.assignRadio.emit();
+  }
+
+  onAddExistingAttribute(): void {
+    this.addExistingAttribute.emit();
   }
 
   isFirst(): boolean {

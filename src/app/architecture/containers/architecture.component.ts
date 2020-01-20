@@ -33,7 +33,8 @@ import {
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
-  OwnersEntityOrTeamEntityOrApproversEntity
+  OwnersEntityOrTeamEntityOrApproversEntity,
+  AttributesEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -69,7 +70,8 @@ import {
   DeleteWorkpackageLinkSuccess,
   AddWorkPackageLinkAttribute,
   UpdateWorkPackageLinkProperty,
-  DeleteWorkPackageLinkProperty
+  DeleteWorkPackageLinkProperty,
+  DeleteWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -82,9 +84,10 @@ import {
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
   WorkPackageNodeActionTypes,
-  AddWorkPackageNodeAttribute,
   DeleteWorkPackageNodeProperty,
-  UpdateWorkPackageNodeProperty
+  UpdateWorkPackageNodeProperty,
+  DeleteWorkPackageNodeAttribute,
+  AddWorkPackageNodeAttribute
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -153,8 +156,11 @@ import { ArchitectureTableViewComponent } from '../components/architecture-table
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
+import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
+import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -273,7 +279,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private attributeStore: Store<AttributeState>
   ) {}
 
   ngOnInit() {
@@ -1153,6 +1160,60 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+  onAddExistingAttribute(): void {
+    const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
+      disableClose: false,
+      width: '600px',
+      height: '590px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.store.dispatch(new AddWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: data.attribute.id
+          }));
+        } else {
+          this.store.dispatch(new AddWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: data.attribute.id
+          }));
+        }
+      }
+    });
+  }
+
+  onDeleteAttribute(attribute: AttributesEntity): void {
+    const dialogRef = this.dialog.open(DeleteAttributeModalComponent, { 
+      width: '500px',
+      data: {
+        type: attribute.category,
+        name: attribute.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.attributeStore.dispatch(new DeleteWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: attribute.id
+          }));
+        } else {
+          this.attributeStore.dispatch(new DeleteWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: attribute.id
+          }));
+        }
+      }
+    })
+  }
+
   openRightTab(index: number) {
     this.selectedRightTab = index;
     if (this.selectedRightTab === index) {
@@ -1589,5 +1650,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         },
         () => dialogRef.close()
       );
+  }
+
+  onDownloadImage(): void {
+    this.diagramComponent.getDiagramImage();
   }
 }

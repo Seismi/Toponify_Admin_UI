@@ -71,7 +71,11 @@ export enum WorkPackageNodeActionTypes {
 
   DeleteWorkPackageNodeProperty = '[WorkPackage] Delete Node Property',
   DeleteWorkPackageNodePropertySuccess = '[WorkPackage] Delete Node Property Success',
-  DeleteWorkPackageNodePropertyFailure = '[WorkPackage] Delete Node Property Failure'
+  DeleteWorkPackageNodePropertyFailure = '[WorkPackage] Delete Node Property Failure',
+
+  DeleteWorkPackageNodeAttribute = '[WorkPackage] Delete Node Attribute',
+  DeleteWorkPackageNodeAttributeSuccess = '[WorkPackage] Delete Node Attribute Success',
+  DeleteWorkPackageNodeAttributeFailure = '[WorkPackage] Delete Node Attribute Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -297,6 +301,22 @@ export class AddWorkPackageNodeAttributeSuccess implements Action {
 export class AddWorkPackageNodeAttributeFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
+
+}
+
+export class DeleteWorkPackageNodeAttribute implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttribute;
+  constructor(public payload: { workPackageId: string; nodeId: string; attributeId: string }) {}
+}
+
+export class DeleteWorkPackageNodeAttributeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class DeleteWorkPackageNodeAttributeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure;
+  constructor(public payload: any) {}
 }
 
 export class UpdateWorkPackageNodeProperty implements Action {
@@ -380,4 +400,7 @@ export type WorkPackageNodeActionsUnion =
   | UpdateWorkPackageNodePropertyFailure
   | DeleteWorkPackageNodeProperty
   | DeleteWorkPackageNodePropertySuccess
-  | DeleteWorkPackageNodePropertyFailure;
+  | DeleteWorkPackageNodePropertyFailure
+  | DeleteWorkPackageNodeAttribute
+  | DeleteWorkPackageNodeAttributeSuccess
+  | DeleteWorkPackageNodeAttributeFailure;
