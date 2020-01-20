@@ -3,7 +3,7 @@ import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { DiagramLevelService, Level } from './diagram-level.service';
 import { Subject } from 'rxjs';
-import {layers, middleOptions} from '@app/architecture/store/models/node.model';
+import {layers, middleOptions, NodeDetail} from '@app/architecture/store/models/node.model';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { Store } from '@ngrx/store';
@@ -308,10 +308,10 @@ export class GojsCustomObjectsService {
     function makeButton(
       row: number,
       text: string,
-      action: (event: object, object?: go.Part) => void,
-      visible_predicate?: (object: go.Part, event: object) => boolean,
-      enabled_predicate?: (object: go.Part, event: object) => boolean,
-      text_predicate?: (object: go.Part, event: object) => string
+      action: (event: object, object?: go.GraphObject) => void,
+      visible_predicate?: (object: go.GraphObject, event: object) => boolean,
+      enabled_predicate?: (object: go.GraphObject, event: object) => boolean,
+      text_predicate?: (object: go.GraphObject, event: object) => string
     ): go.Part {
       return $(
         'ContextMenuButton',
@@ -321,7 +321,11 @@ export class GojsCustomObjectsService {
             : { text: text }
         ),
         {
-          click: action,
+          click: function(event, object) {
+            action(event, object);
+            ((object.part as go.Adornment).adornedObject as go.Node)
+              .removeAdornment('ButtonMenu');
+          },
           column: 0,
           row: row,
           mouseEnter: function(event: object, object: go.Part) {
@@ -357,9 +361,9 @@ export class GojsCustomObjectsService {
     function makeSubMenuButton(
       row: number,
       name: string,
-      action: (event: object, object?: go.Part) => void,
-      enabled_predicate?: (object: go.Part, event: object) => boolean,
-      text_predicate?: (object: go.Part, event: object) => string
+      action: (event: object, object?: go.GraphObject) => void,
+      enabled_predicate?: (object: NodeDetail, event: object) => boolean,
+      text_predicate?: (object: go.GraphObject, event: object) => string
     ): go.Part {
       return $('ContextMenuButton',
         $(go.TextBlock,
@@ -368,7 +372,11 @@ export class GojsCustomObjectsService {
             : { text: name }
         ),
         {
-        click: action,
+        click: function(event, object) {
+          action(event, object);
+          ((object.part as go.Adornment).adornedObject as go.Node)
+            .removeAdornment('ButtonMenu');
+        },
         name: name,
         visible: false,
         column: 1,
@@ -429,7 +437,8 @@ export class GojsCustomObjectsService {
     return $(go.Adornment, 'Spot',
       {
         name: 'ButtonMenu',
-        background: null
+        background: null,
+        zOrder: 1
       },
       $(go.Placeholder,
         {
@@ -463,9 +472,6 @@ export class GojsCustomObjectsService {
           }
         ),
         makeButton(1, 'Show Details', function(event: go.DiagramEvent, object: go.Part): void {
-          const node = (object.part as go.Adornment).adornedPart as go.Node;
-          // Ensure node is selected so that detail tab shows correct information
-          event.diagram.select(node);
           thisService.showDetailTabSource.next();
         }),
         makeMenuButton(2, 'Grouped Components', [
@@ -507,7 +513,7 @@ export class GojsCustomObjectsService {
         makeSubMenuButton(
           4,
           'Display (groups)',
-          function(event: any, object: any): void {
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             // diagramLevelService.changeLevelWithFilter.call(this, event, node);
@@ -534,7 +540,10 @@ export class GojsCustomObjectsService {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             this.addSystemToGroupSource.next(node.data);
 
-          }.bind(this)
+          }.bind(this),
+          function(object: NodeDetail, event: go.DiagramEvent): boolean {
+            return object.group === '';
+          }
         ),
         // --End of level submenu buttons--
         makeMenuButton(3, 'Data Sets', [
@@ -556,7 +565,7 @@ export class GojsCustomObjectsService {
 
             diagramChangesService.nodeExpandChanged(node);
           },
-          function(object: go.GraphObject, event: go.DiagramEvent) {
+          function(object: NodeDetail, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
@@ -580,9 +589,6 @@ export class GojsCustomObjectsService {
           5,
           'Add data set',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
-
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            event.diagram.select(node);
             thisService.addDataSetSource.next();
           }
         )

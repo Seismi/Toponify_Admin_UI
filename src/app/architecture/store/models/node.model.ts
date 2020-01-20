@@ -54,6 +54,7 @@ export class Node {
   id: string;
   layer: string;
   isGroup?: boolean;
+  group?: string;
   name: string;
   description = '';
   category: nodeCategories;

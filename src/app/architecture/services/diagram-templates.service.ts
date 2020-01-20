@@ -272,7 +272,12 @@ export class DiagramTemplatesService {
         desiredSize: new go.Size(25, 25),
         click: function(event, button) {
           const menu = this.gojsCustomObjectsService.getPartButtonMenu();
+          event.diagram.select(button.part);
           menu.adornedObject = button.part;
+
+          button.part.adornments.first().zOrder = 0;
+          button.part.updateAdornments();
+
           button.part.addAdornment('ButtonMenu', menu);
         }.bind(this)
       },
@@ -584,7 +589,7 @@ export class DiagramTemplatesService {
   }
 
   // Get middle section of nodes, containing description, owners and descendants
-  getMiddleSection(): go.Panel {
+  getMiddleSection(isSystem = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -606,6 +611,7 @@ export class DiagramTemplatesService {
           textAlign: 'center',
           stroke: 'black',
           font: '16px Calibri',
+          stretch: go.GraphObject.Horizontal,
           maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
         },
@@ -618,6 +624,7 @@ export class DiagramTemplatesService {
           textAlign: 'center',
           stroke: 'black',
           font: 'italic 16px Calibri',
+          stretch: go.GraphObject.Horizontal,
           maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
         },
@@ -637,12 +644,24 @@ export class DiagramTemplatesService {
         go.Panel,
         'Vertical',
         {
-          stretch: go.GraphObject.Horizontal,
-          row: 3
+          stretch: go.GraphObject.Horizontal
         },
         // Descendants list
         $(go.Panel,
-          'Auto',
+          'Vertical',
+          {
+            alignment: go.Spot.TopLeft,
+            stretch: go.GraphObject.Horizontal
+          },
+          isSystem ? $(go.TextBlock,
+            'Data sets',
+            {
+              font: 'italic 18px calibri',
+              textAlign: 'center',
+              stretch: go.GraphObject.Horizontal,
+              margin: new go.Margin(0, 0, 2, 0)
+            }
+          ) : {},
           $(
             go.Panel,
             'Vertical',
@@ -666,7 +685,22 @@ export class DiagramTemplatesService {
         ),
         // Grouped members list
         $(go.Panel,
-          'Auto',
+          'Vertical',
+          {
+            alignment: go.Spot.TopLeft,
+            defaultAlignment: go.Spot.Left,
+            stretch: go.GraphObject.Horizontal
+          },
+          $(go.TextBlock,
+            'Grouped Items',
+            {
+              font: 'italic 18px calibri',
+              textAlign: 'center',
+              alignment: go.Spot.TopCenter,
+              stretch: go.GraphObject.Horizontal,
+              margin: new go.Margin(0, 0, 2, 0)
+            }
+          ),
           $(go.Panel,
             'Vertical',
             {
@@ -887,8 +921,6 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        // Prevent links attempting to avoid groups when routing to their members
-        avoidable: false,
         doubleClick: function(event, node) {
 
           // Do not proceed for double clicks on buttons on the node
@@ -970,7 +1002,7 @@ export class DiagramTemplatesService {
           defaultRowSeparatorStroke: 'black'
         },
         this.getTopSection(true),
-        this.getMiddleSection(),
+        this.getMiddleSection(true),
         this.getBottomSection(true)
       )
     );

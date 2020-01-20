@@ -309,7 +309,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.currentFilterLevel = filterLevel;
     });
     this.addDataSetSubscription = this.gojsCustomObjectsService.addDataSet$.subscribe(() => {
-      // this.onAddDescendant();
+      this.onAddDescendant();
     });
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
@@ -888,11 +888,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 );
               }
 
-              const test = {
-                ...node
-              };
-              if (test.group === '') {delete test.group; }
-
               // TEMP - remove after API update
               if (layoutExpandState) {
                 layoutExpandState = {
@@ -903,7 +898,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               // END TEMP
 
               return {
-                ...test,
+                ...node,
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
                 middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : middleOptions.none,
