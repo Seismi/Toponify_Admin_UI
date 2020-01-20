@@ -59,11 +59,13 @@ import { WorkPackageNameComponent } from './layout/header/workpackage-name/workp
     NodeNameComponent,
     WorkPackageNameComponent
   ],
-  providers: [SearchService, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: ErrorInterceptor,
-    multi: true
-  }
+  providers: [
+    SearchService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    }
   ]
 })
 export class CoreModule {}

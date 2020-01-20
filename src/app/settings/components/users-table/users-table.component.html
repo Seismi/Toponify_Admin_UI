@@ -37,10 +37,12 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
       [ngClass]="{ highlight: selectedUserIndex == row.id }"
-      (click)="onSelect(row)">
-    </tr>
+      (click)="onSelect(row)"
+    ></tr>
   </table>
 
   <div class="table-actions">

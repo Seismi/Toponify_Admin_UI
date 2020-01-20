@@ -59,7 +59,15 @@ export enum WorkPackageNodeActionTypes {
 
   AddWorkPackageNodeRadio = '[WorkPackage] Add Node Radio',
   AddWorkPackageNodeRadioSuccess = '[WorkPackage] Add Node Radio Success',
-  AddWorkPackageNodeRadioFailure = '[WorkPackage] Add Node Radio Failure'
+  AddWorkPackageNodeRadioFailure = '[WorkPackage] Add Node Radio Failure',
+
+  AddWorkPackageNodeAttribute = '[WorkPackage] Add Node Attribute',
+  AddWorkPackageNodeAttributeSuccess = '[WorkPackage] Add Node Attribute Success',
+  AddWorkPackageNodeAttributeFailure = '[WorkPackage] Add Node Attribute Failure',
+
+  DeleteWorkPackageNodeAttribute = '[WorkPackage] Delete Node Attribute',
+  DeleteWorkPackageNodeAttributeSuccess = '[WorkPackage] Delete Node Attribute Success',
+  DeleteWorkPackageNodeAttributeFailure = '[WorkPackage] Delete Node Attribute Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -259,7 +267,7 @@ export class FindPotentialWorkpackageNodesFailure implements Action {
 
 export class AddWorkPackageNodeRadio implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadio;
-  constructor(public payload: { workPackageId: string; nodeId: string, radioId: string }) {}
+  constructor(public payload: { workPackageId: string; nodeId: string; radioId: string }) {}
 }
 
 export class AddWorkPackageNodeRadioSuccess implements Action {
@@ -270,6 +278,37 @@ export class AddWorkPackageNodeRadioSuccess implements Action {
 export class AddWorkPackageNodeRadioFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadioFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddWorkPackageNodeAttribute implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttribute;
+  constructor(public payload: { workPackageId: string; nodeId: string, attributeId: string }) {}
+}
+
+export class AddWorkPackageNodeAttributeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class AddWorkPackageNodeAttributeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+
+}
+
+export class DeleteWorkPackageNodeAttribute implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttribute;
+  constructor(public payload: { workPackageId: string; nodeId: string; attributeId: string }) {}
+}
+
+export class DeleteWorkPackageNodeAttributeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class DeleteWorkPackageNodeAttributeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure;
+  constructor(public payload: any) {}
 }
 
 export type WorkPackageNodeActionsUnion =
@@ -314,4 +353,10 @@ export type WorkPackageNodeActionsUnion =
   | FindPotentialWorkpackageNodesFailure
   | AddWorkPackageNodeRadio
   | AddWorkPackageNodeRadioSuccess
-  | AddWorkPackageNodeRadioFailure;
+  | AddWorkPackageNodeRadioFailure
+  | AddWorkPackageNodeAttribute
+  | AddWorkPackageNodeAttributeSuccess
+  | AddWorkPackageNodeAttributeFailure
+  | DeleteWorkPackageNodeAttribute
+  | DeleteWorkPackageNodeAttributeSuccess
+  | DeleteWorkPackageNodeAttributeFailure;

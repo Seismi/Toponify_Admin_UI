@@ -8,6 +8,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
+import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 
 const $ = go.GraphObject.make;
 
@@ -21,6 +22,7 @@ export class DiagramListenersService {
 
   constructor(
     public diagramChangesService: DiagramChangesService,
+    public diagramImageService: DiagramImageService,
     public diagramLevelService: DiagramLevelService,
     private store: Store<RouterReducerState<RouterStateUrl>>
   ) {}
@@ -130,6 +132,32 @@ export class DiagramListenersService {
     );
 
     diagram.addModelChangedListener(this.handleModelChange.bind(this));
+
+    // Listeners to hide button menu on system nodes when user clicks outside menu
+    diagram.addDiagramListener(
+      'BackgroundSingleClicked',
+      function(event: go.DiagramEvent): void {
+        event.diagram.nodes.each(function(node: go.Part): void {
+          node.removeAdornment('ButtonMenu');
+        });
+      }
+    );
+    diagram.addDiagramListener(
+      'ObjectSingleClicked',
+      function(event: go.DiagramEvent): void {
+        event.diagram.nodes.each(function(node: go.Part): void {
+          node.removeAdornment('ButtonMenu');
+        });
+      }
+    );
+    diagram.addDiagramListener(
+      'LostFocus',
+      function(event: go.DiagramEvent): void {
+        event.diagram.nodes.each(function(node: go.Part): void {
+          node.removeAdornment('ButtonMenu');
+        });
+      }
+    );
   }
 
   handleChangedSelection(event: go.DiagramEvent): void {

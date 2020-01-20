@@ -1,5 +1,5 @@
 <div>
-  <span>{{workPackageName}}</span>
-  <span *ngIf="selectedWorkPackageEntities.length"> - {{(workPackageIsEditable) ? 'Edit' : 'Read'}}</span>
+  <span>{{ workPackageName }}</span>
+  <span *ngIf="selectedWorkPackageEntities.length"> - {{ workPackageIsEditable ? 'Edit' : 'Read' }}</span>
   <mat-icon *ngIf="workPackageIsEditable" (click)="onExitWorkPackageEditMode()">close</mat-icon>
 </div>

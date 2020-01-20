@@ -50,7 +50,13 @@ import {
   WorkPackageNodeActionTypes,
   AddWorkPackageNodeRadio,
   AddWorkPackageNodeRadioSuccess,
-  AddWorkPackageNodeRadioFailure
+  AddWorkPackageNodeRadioFailure,
+  DeleteWorkPackageNodeAttribute,
+  DeleteWorkPackageNodeAttributeSuccess,
+  DeleteWorkPackageNodeAttributeFailure,
+  AddWorkPackageNodeAttribute,
+  AddWorkPackageNodeAttributeSuccess,
+  AddWorkPackageNodeAttributeFailure
 } from '../actions/workpackage-node.actions';
 import { UpdateNodeDescendants, UpdateNodeOwners } from '@app/architecture/store/actions/node.actions';
 import {
@@ -58,7 +64,11 @@ import {
   WorkPackageNodeScopeApiResponse,
   WorkPackageNodeScopesApiResponse
 } from '../models/workpackage.models';
-import { DescendantsEntity, WorkPackageNodeDescendantsApiResponse, NodeDetailApiResponse } from '@app/architecture/store/models/node.model';
+import {
+  DescendantsEntity,
+  WorkPackageNodeDescendantsApiResponse,
+  NodeDetailApiResponse
+} from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -248,10 +258,36 @@ export class WorkPackageNodeEffects {
   addWorkPackageNodeRadio$ = this.actions$.pipe(
     ofType<AddWorkPackageNodeRadio>(WorkPackageNodeActionTypes.AddWorkPackageNodeRadio),
     map(action => action.payload),
-    switchMap((payload: { workPackageId: string; nodeId: string, radioId: string }) => {
-      return this.workpackageNodeService.addWorkPackageNodeRadio(payload.workPackageId, payload.nodeId, payload.radioId).pipe(
-        switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
-        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeRadioFailure(error)))
+    switchMap((payload: { workPackageId: string; nodeId: string; radioId: string }) => {
+      return this.workpackageNodeService
+        .addWorkPackageNodeRadio(payload.workPackageId, payload.nodeId, payload.radioId)
+        .pipe(
+          switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
+          catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeRadioFailure(error)))
+        );
+    })
+  );
+
+  @Effect()
+  deleteNodeAttribute$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageNodeAttribute>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttribute),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; nodeId: string; attributeId: string }) => {
+      return this.workpackageNodeService.deleteWorkPackageNodeAttribute(payload.workPackageId, payload.nodeId, payload.attributeId).pipe(
+        switchMap(response => [new DeleteWorkPackageNodeAttributeSuccess(response.data)]),
+        catchError(error => of(new DeleteWorkPackageNodeAttributeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkPackageNodeAttribute$ = this.actions$.pipe(
+    ofType<AddWorkPackageNodeAttribute>(WorkPackageNodeActionTypes.AddWorkPackageNodeAttribute),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; nodeId: string, attributeId: string }) => {
+      return this.workpackageNodeService.addWorkPackageNodeAttribute(payload.workPackageId, payload.nodeId, payload.attributeId).pipe(
+        switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeAttributeSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeAttributeFailure(error)))
       );
     })
   );

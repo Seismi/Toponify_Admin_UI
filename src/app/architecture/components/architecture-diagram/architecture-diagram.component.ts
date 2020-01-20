@@ -20,6 +20,7 @@ import { DiagramLevelService, Level } from '../..//services/diagram-level.servic
 import { DiagramChangesService } from '../../services/diagram-changes.service';
 import { CustomLinkShift, GojsCustomObjectsService } from '../../services/gojs-custom-objects.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
+import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -117,7 +118,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     public diagramLevelService: DiagramLevelService,
     public diagramChangesService: DiagramChangesService,
     public gojsCustomObjectsService: GojsCustomObjectsService,
-    public diagramListenersService: DiagramListenersService
+    public diagramListenersService: DiagramListenersService,
+    public diagramImageService: DiagramImageService
   ) {
     // Lets init url filtering
     this.diagramLevelService.initializeUrlFiltering();
@@ -144,7 +146,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
     this.diagram.toolManager.draggingTool.doActivate = function(): void {
-
       go.DraggingTool.prototype.doActivate.call(this);
 
       const draggedParts = this.draggedParts.toKeySet();
@@ -154,7 +155,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       // If the only part being dragged is a link that is already connected, cancel the drag
       if (draggedParts.count === 1 && draggedParts.first() instanceof go.Link) {
-
         const draggedLink = draggedParts.first();
 
         if (!draggedLink.data.isTemporary) {
@@ -195,8 +195,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
-    // Set group template
-    this.diagram.groupTemplate = diagramTemplatesService.getDataSetGroupTemplate();
+    // Set group templates
+    this.diagram.groupTemplateMap.add('system', diagramTemplatesService.getSystemGroupTemplate());
+    this.diagram.groupTemplateMap.add('', diagramTemplatesService.getDataSetGroupTemplate());
 
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
@@ -407,5 +408,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   selectById(id: string) {
     const part = this.diagram.findPartForKey(id);
     this.diagram.select(part);
+  }
+
+  getDiagramImage(): void {
+    this.diagramImageService.downloadImage(this.diagram);
   }
 }

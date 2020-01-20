@@ -13,7 +13,8 @@
         [title]="'Scopes'"
         [data]="scopes$ | async"
         (select)="onScopeSelect($event)"
-        (add)="onAddScope($event)">
+        (add)="onAddScope($event)"
+      >
       </smi-scopes-and-layouts-table>
     </div>
     <router-outlet></router-outlet>

@@ -21,11 +21,13 @@
     ></tr>
   </table>
 
-  <div class="no-data-found" *ngIf="!dataSource ||dataSource.filteredData.length === 0">No data found</div>
+  <div class="no-data-found" *ngIf="!dataSource || dataSource.filteredData.length === 0">No data found</div>
 
   <div style="display: flex;">
     <div style="flex-grow: 1;">
-      <button mat-raised-button color="primary" (click)="onAdd()" [disabled]="workPackageIsEditable"><mat-icon>add</mat-icon>Create New</button>
+      <button mat-raised-button color="primary" (click)="onAdd()" [disabled]="workPackageIsEditable">
+        <mat-icon>add</mat-icon>Create New
+      </button>
     </div>
     <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 75, 100]"></mat-paginator>
   </div>

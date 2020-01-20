@@ -71,10 +71,10 @@ export class WorkPackageDetailComponent {
   @Output()
   supersede = new EventEmitter<void>();
 
-  @Output() 
+  @Output()
   selectColour = new EventEmitter<string>();
 
-  @Output() 
+  @Output()
   openWorkPackage = new EventEmitter<void>();
 
   onSave(): void {

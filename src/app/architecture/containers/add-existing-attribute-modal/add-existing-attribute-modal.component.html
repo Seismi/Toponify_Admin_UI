@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Add Existing Attribute</h1>
+<div mat-dialog-content>
+  <smi-attributes-list 
+    [data]="attributes$ | async"
+    (attributeSelect)="onAttributeSelect($event)">
+  </smi-attributes-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()">Save</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>

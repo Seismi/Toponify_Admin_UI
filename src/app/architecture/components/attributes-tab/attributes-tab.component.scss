@@ -8,3 +8,18 @@ table {
     height: 35px;
   }
 }
+
+.actions {
+  margin: 10px 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+th.mat-column-delete {
+  width: 10%;
+}
+
+.mat-icon {
+  cursor: pointer;
+  margin-top: 3px;
+}
