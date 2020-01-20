@@ -35,10 +35,7 @@ export class DocumentationStandardsComponent implements OnInit {
   onAddDocument(): void {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
-      width: '600px',
-      data: {
-        mode: 'add'
-      }
+      width: '600px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
