@@ -6,14 +6,14 @@ import {
   ReportLibraryApiResponse,
   ReportDetailApiRequest,
   ReportEntityApiRequest,
-  ReportEntityApiResponse,
-  OwnersEntity
+  ReportEntityApiResponse
 } from '../models/report.model';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { GetReportLibraryRequestQueryParams, ReportService } from '../../services/report.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
+import { LoadReport } from '../actions/report.actions';
 
 @Injectable()
 export class ReportEffects {
@@ -61,7 +61,10 @@ export class ReportEffects {
     map(action => action.payload),
     switchMap((payload: { workPackageId: string; reportId: string; request: ReportEntityApiRequest }) => {
       return this.reportService.updateReport(payload.workPackageId, payload.reportId, payload.request).pipe(
-        switchMap((response: ReportEntityApiResponse) => [new ReportActions.UpdateReportSuccess(response)]),
+        switchMap((response: ReportEntityApiResponse) => [
+          new ReportActions.UpdateReportSuccess(response),
+          new LoadReport({ id: payload.reportId, queryParams: { workPackageQuery: [payload.workPackageId] } })
+        ]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.UpdateReportFail(error)))
       );
     })

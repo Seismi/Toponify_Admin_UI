@@ -38,10 +38,13 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       if (filterLevel === 'system') {
         this.categories = dataSetCategories;
+        this.newChildrenForm.get('category').setValue('physical');
       } else if (filterLevel === 'data set') {
         this.categories = dimensionCategories;
+        this.newChildrenForm.get('category').setValue('dimension');
       } else {
         this.categories = reportingConceptCategories;
+        this.newChildrenForm.get('category').setValue('structure');
       }
       this.getLayer(filterLevel);
     });

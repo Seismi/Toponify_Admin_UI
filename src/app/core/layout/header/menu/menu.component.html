@@ -1,11 +1,11 @@
 <i class="material-icons" data-hook="hamburger-manu" [matMenuTriggerFor]="navigationMenu">menu</i>
 <mat-menu #navigationMenu="matMenu">
-  <button data-hook="home-link" mat-menu-item routerLink="/home" queryParamsHandling="preserve">Home</button>
+  <button mat-menu-item disabled=true class="disabled-button">Document</button>
   <button data-hook="topology-link" mat-menu-item routerLink="/topology" queryParamsHandling="preserve">
-    Topology
+    <mat-icon>device_hub</mat-icon> Topology
   </button>
   <button data-hook="report-library-link" mat-menu-item routerLink="/report-library" queryParamsHandling="preserve">
-    Report Library
+    <mat-icon>bookmarks</mat-icon> Reports
   </button>
   <button
     data-hook="attributes-rules-link"
@@ -13,14 +13,17 @@
     routerLink="/attributes-and-rules"
     queryParamsHandling="preserve"
   >
-    Attributes and Rules Library
+    <mat-icon>ballot</mat-icon> Rules and Attributes
   </button>
-  <button data-hook="radio-link" mat-menu-item routerLink="/radio" queryParamsHandling="preserve">RADIO</button>
+  <button mat-menu-item disabled=true class="disabled-button">Manage</button>
   <button data-hook="package-link" mat-menu-item routerLink="/work-packages" queryParamsHandling="preserve">
-    Work Packages
+    <mat-icon>business_center</mat-icon> Work Packages
+  </button>
+  <button data-hook="radio-link" mat-menu-item routerLink="/radio" queryParamsHandling="preserve">
+    <mat-icon>track_changes</mat-icon> RADIOs
   </button>
   <button data-hook="scopes-layouts-link" mat-menu-item routerLink="/scopes-and-layouts" queryParamsHandling="preserve">
-    Scopes and Layouts
+    <mat-icon>pages</mat-icon> Scopes and Layouts
   </button>
   <button
     data-hook="documentation-standards-link"
@@ -28,9 +31,12 @@
     routerLink="/documentation-standards"
     queryParamsHandling="preserve"
   >
-    Documentation Standards
+  <mat-icon>post_add</mat-icon> Documentation Standards
   </button>
   <button data-hook="settings-link" mat-menu-item routerLink="/settings">
+    My Profile
+  </button>
+  <button data-hook="settings-link" mat-menu-item routerLink="/settings/all-users">
     Settings
   </button>
   <a href="https://support.toponify.com" target="_blank"><button data-hook="help-link" mat-menu-item>Help</button></a>

@@ -23,7 +23,10 @@ export enum WorkPackageLinkActionTypes {
   DeleteWorkpackageLinkOwnerFailure = '[WorkPackage] Delete Link Owner Fail',
   AddWorkPackageLinkAttribute = '[WorkPackage] Add Link Attribute',
   AddWorkPackageLinkAttributeSuccess = '[WorkPackage] Add Link Attribute Success',
-  AddWorkPackageLinkAttributeFailure = '[WorkPackage] Add Link Attribute Failure'
+  AddWorkPackageLinkAttributeFailure = '[WorkPackage] Add Link Attribute Failure',
+  DeleteWorkPackageLinkAttribute = '[WorkPackage] Delete Link Attribute',
+  DeleteWorkPackageLinkAttributeSuccess = '[WorkPackage] Delete Link Attribute Success',
+  DeleteWorkPackageLinkAttributeFailure = '[WorkPackage] Delete Link Attribute Failure'
 }
 
 export class AddWorkPackageLink implements Action {
@@ -131,6 +134,21 @@ export class AddWorkPackageLinkAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class DeleteWorkPackageLinkAttribute implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttribute;
+  constructor(public payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) { }
+}
+
+export class DeleteWorkPackageLinkAttributeSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess;
+  constructor(public payload: NodeLinkDetail) { }
+}
+
+export class DeleteWorkPackageLinkAttributeFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) { }
+}
+
 export type WorkPackageLinkActionsUnion =
   | AddWorkPackageLink
   | AddWorkPackageLinkSuccess
@@ -152,4 +170,7 @@ export type WorkPackageLinkActionsUnion =
   | DeleteWorkpackageLinkOwnerFailure
   | AddWorkPackageLinkAttribute
   | AddWorkPackageLinkAttributeSuccess
-  | AddWorkPackageLinkAttributeFailure;
+  | AddWorkPackageLinkAttributeFailure
+  | DeleteWorkPackageLinkAttribute
+  | DeleteWorkPackageLinkAttributeSuccess
+  | DeleteWorkPackageLinkAttributeFailure;

@@ -215,6 +215,8 @@ export function reducer(
       };
     }
 
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess:
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeSuccess: {
       return {
         ...state,
@@ -222,13 +224,8 @@ export function reducer(
       };
     }
 
-    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure: {
-      return {
-        ...state,
-        error: <Error>action.payload
-      };
-    }
 
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess: 
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
       return {
         ...state,
@@ -236,6 +233,10 @@ export function reducer(
       };
     }
 
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure: 
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure: 
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure: {
       return {
         ...state,

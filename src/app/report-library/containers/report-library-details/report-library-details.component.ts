@@ -4,22 +4,32 @@ import { ActivatedRoute } from '@angular/router';
 import { State as ReportState } from '../../store/reducers/report.reducer';
 import { select, Store } from '@ngrx/store';
 import {
-  LoadReport,
-  DeleteReport,
-  UpdateReport,
   AddOwner,
-  DeleteOwner
+  DeleteOwner,
+  DeleteReport,
+  LoadReport,
+  UpdateReport
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
 import { FormGroup } from '@angular/forms';
 import { Report } from '@app/report-library/store/models/report.model';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {
+  getEditWorkpackage,
+  getEditWorkpackages,
+  getSelectedWorkpackages,
+} from '@app/workpackage/store/selectors/workpackage.selector';
 import { MatDialog } from '@angular/material';
 import { ReportDeleteModalComponent } from '../report-delete-modal/report-delete-modal.component';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
+import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { getNodeEntitiesBy } from '@app/architecture/store/selectors/node.selector';
+import { Level } from '@app/architecture/services/diagram-level.service';
+import { take } from 'rxjs/operators';
+import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -48,7 +58,8 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private store: Store<ReportState>,
     private reportLibraryDetailService: ReportLibraryDetailService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private nodeStore: Store<NodeState>
   ) {}
 
   ngOnInit() {
@@ -209,6 +220,37 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         );
         this.selectedOwner = false;
         this.isEditable = true;
+      }
+    });
+  }
+
+  onEditSourceSystem() {
+    this.nodeStore.dispatch(new LoadNodes());
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      minWidth: '400px',
+      data: {
+        title: 'Select source system',
+        options$: this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.system })),
+        selectedIds: this.report.system ? [this.report.system.id] : []
+      }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.workPackageStore
+          .select(getEditWorkpackage)
+          .pipe(take(1))
+          .subscribe(editWpId => {
+              this.store.dispatch(
+              new UpdateReport({
+                workPackageId: editWpId,
+                reportId: this.report.id,
+                request: { data: { ...this.report, system: data.value[0] }}
+              })
+            );
+            }
+          );
       }
     });
   }
