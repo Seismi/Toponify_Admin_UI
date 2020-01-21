@@ -639,7 +639,10 @@ export class DiagramTemplatesService {
                   .join(', ')
             : '';
         }),
-        new go.Binding('visible', 'owners').ofModel()
+        new go.Binding('visible', '', function(node): boolean {
+          return node.diagram.model.modelData.owners &&
+            node.data.middleExpanded !== middleOptions.group;
+        }).ofObject()
       ),
       $(
         go.Panel,
