@@ -12,7 +12,7 @@ export interface CustomPropertyApiRequest {
 
 export interface NodeExpandedStateApiRequest {
   data: {
-    id: string
+    id: string;
     middleExpanded?: boolean;
     bottomExpanded?: boolean;
   };

@@ -13,7 +13,9 @@ import {
   WorkpackageLinkSliceUpdate
 } from '../store/models/workpackage.models';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WorkPackageLinksService extends WorkPackageService {
   /**
    * Create a new link between two architecture nodes
@@ -46,12 +48,8 @@ export class WorkPackageLinksService extends WorkPackageService {
     );
   }
 
-  /**
-   * Delete attribute from a link
-   * FIXME: missing types
-   */
-  deleteLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<any> {
-    return this.http.post<any>(
+  deleteLinkAttribute(workPackageId: string, nodeLinkId: string, attributeId: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.post<NodeLinkDetailApiResponse>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/attributes/${attributeId}/deleteRequest`,
       {}
     );
@@ -208,13 +206,17 @@ export class WorkPackageLinksService extends WorkPackageService {
     );
   }
 
-  
   addLinkOwner(workPackageId: string, nodeLinkId: string, ownerId: string): Observable<NodeLink> {
-    return this.http.post<NodeLink>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/owners/${ownerId}`, this.httpOptions);
+    return this.http.post<NodeLink>(
+      `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/owners/${ownerId}`,
+      this.httpOptions
+    );
   }
 
   deleteLinkOwner(workPackageId: string, nodeLinkId: string, ownerId: string): Observable<NodeLink> {
-    return this.http.post<NodeLink>(`/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/owners/${ownerId}/deleteRequest`, {});
+    return this.http.post<NodeLink>(
+      `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/owners/${ownerId}/deleteRequest`,
+      {}
+    );
   }
-
 }

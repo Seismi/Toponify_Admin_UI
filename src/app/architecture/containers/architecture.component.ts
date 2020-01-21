@@ -35,7 +35,8 @@ import {
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
-  OwnersEntityOrTeamEntityOrApproversEntity
+  OwnersEntityOrTeamEntityOrApproversEntity,
+  AttributesEntity
 } from '@app/architecture/store/models/node.model';
 import {
   getNodeEntities,
@@ -45,7 +46,13 @@ import {
   getSelectedNodeLink
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { AddLayout, LayoutActionTypes, LoadLayout, LoadLayouts, UpdateLayout } from '@app/layout/store/actions/layout.actions';
+import {
+  AddLayout,
+  LayoutActionTypes,
+  LoadLayout,
+  LoadLayouts,
+  UpdateLayout
+} from '@app/layout/store/actions/layout.actions';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
@@ -63,6 +70,7 @@ import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkSuccess,
+  DeleteWorkPackageLinkAttribute,
   AddWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
@@ -76,6 +84,7 @@ import {
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
   WorkPackageNodeActionTypes,
+  DeleteWorkPackageNodeAttribute,
   AddWorkPackageNodeAttribute
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
@@ -85,7 +94,11 @@ import {
   SetWorkpackageDisplayColour,
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetail, WorkPackageEntity, WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
+import {
+  WorkPackageDetail,
+  WorkPackageEntity,
+  WorkPackageNodeScopes
+} from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackage,
@@ -141,7 +154,11 @@ import { ArchitectureTableViewComponent } from '../components/architecture-table
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import { HttpParams } from '@angular/common/http';
 import { toHttpParams } from '@app/services/utils';
+import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
+import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
+import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -260,7 +277,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public gojsCustomObjectsService: GojsCustomObjectsService,
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
-    private nodeService: NodeService
+    private nodeService: NodeService,
+    private attributeStore: Store<AttributeState>
   ) {}
 
   ngOnInit() {
@@ -771,8 +789,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: {node: NodeExpandedStateApiRequest['data']; links: go.Link[]}): void {
-
+  handleUpdateNodeExpandState(data: { node: NodeExpandedStateApiRequest['data']; links: go.Link[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
@@ -1141,6 +1158,60 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+  onAddExistingAttribute(): void {
+    const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
+      disableClose: false,
+      width: '600px',
+      height: '590px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.store.dispatch(new AddWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: data.attribute.id
+          }));
+        } else {
+          this.store.dispatch(new AddWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: data.attribute.id
+          }));
+        }
+      }
+    });
+  }
+
+  onDeleteAttribute(attribute: AttributesEntity): void {
+    const dialogRef = this.dialog.open(DeleteAttributeModalComponent, { 
+      width: '500px',
+      data: {
+        type: attribute.category,
+        name: attribute.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.attribute) {
+        if (!this.clickedOnLink) {
+          this.attributeStore.dispatch(new DeleteWorkPackageNodeAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeId: this.nodeId,
+            attributeId: attribute.id
+          }));
+        } else {
+          this.attributeStore.dispatch(new DeleteWorkPackageLinkAttribute({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            attributeId: attribute.id
+          }));
+        }
+      }
+    })
+  }
+
   openRightTab(index: number) {
     this.selectedRightTab = index;
     if (this.selectedRightTab === index) {
@@ -1300,9 +1371,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteDescendantsModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
         mode: 'delete',
         name: descendant.name
@@ -1564,5 +1635,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         },
         () => dialogRef.close()
       );
+  }
+
+  onDownloadImage(): void {
+    this.diagramComponent.getDiagramImage();
   }
 }

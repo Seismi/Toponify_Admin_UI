@@ -78,9 +78,7 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     RadioModule,
     MatMenuModule,
     MatGridListModule,
-    MatTooltipModule,
-    StoreModule.forFeature('workpackageFeature', reducer),
-    EffectsModule.forFeature([WorkPackageEffects, WorkPackageNodeEffects, WorkPackageLinkEffects])
+    MatTooltipModule
   ],
   exports: [WorkPackagesTableComponent, RadioDetailModalComponent, WorkPackageColorComponent],
   declarations: [

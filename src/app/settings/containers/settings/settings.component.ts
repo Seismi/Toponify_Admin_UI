@@ -13,27 +13,22 @@ import { LoadTeams } from '@app/settings/store/actions/team.actions';
   styleUrls: ['settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-
   public selectedTabIndex: number;
 
-  constructor(
-    private router: Router, 
-    private userStore: Store<UserState>,
-    private teamStore: Store<TeamState>,
-  ) {
+  constructor(private router: Router, private userStore: Store<UserState>, private teamStore: Store<TeamState>) {
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         if (event.url === '/settings') {
           return this.router.navigate(['/settings/my-user']);
         }
-        if(event.url.includes('/my-user')) {
-          return this.selectedTabIndex = 0;
+        if (event.url.includes('/my-user')) {
+          return (this.selectedTabIndex = 0);
         } else if (event.url.includes('/teams')) {
-          return this.selectedTabIndex = 1;
+          return (this.selectedTabIndex = 1);
         } else if (event.url.includes('/all-users')) {
-          return this.selectedTabIndex = 2;
+          return (this.selectedTabIndex = 2);
         } else {
-          return this.selectedTabIndex = 3;
+          return (this.selectedTabIndex = 3);
         }
       }
     });
@@ -45,8 +40,7 @@ export class SettingsComponent implements OnInit {
   }
 
   onTabClick(event: MatTabChangeEvent): Promise<boolean> {
-    const url = event.tab.textLabel.toLowerCase().replace(" ", "-");
+    const url = event.tab.textLabel.toLowerCase().replace(' ', '-');
     return this.router.navigate([`/settings/${url}`]);
   }
-
 }

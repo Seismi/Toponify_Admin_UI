@@ -1,10 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { Subscription, Observable } from 'rxjs';
-import { RadioDetail } from '@app/radio/store/models/radio.model';
-import { LoadRadio, AddReply, DeleteRadioProperty, UpdateRadioProperty } from '@app/radio/store/actions/radio.actions';
+import { Observable, Subscription } from 'rxjs';
+import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
+import {
+  AddReply,
+  AssociateRadio,
+  DeleteRadioProperty,
+  DissociateRadio,
+  LoadRadio,
+  UpdateRadioProperty
+} from '@app/radio/store/actions/radio.actions';
 import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
@@ -17,6 +24,14 @@ import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/delete-property-modal.component';
+import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
+import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
+import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { map } from 'rxjs/operators';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
+import { DeleteRadio, LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 
 @Component({
   selector: 'app-radio-details',
@@ -37,7 +52,9 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private workpackageStore: Store<WorkPackageState>,
+    private nodeStore: Store<NodeState>
   ) {}
 
   ngOnInit() {
@@ -174,6 +191,52 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteRadioProperty({ radioId: this.radioId, customPropertyId: property.propertyId }));
+      }
+    });
+  }
+
+  onUnlinkRelatesTo(relatesTo: RelatesTo) {
+    const dialogRef = this.dialog.open(ConfirmModalComponent, {
+      disableClose: true,
+      maxWidth: '500px',
+      width: 'auto',
+      data: {
+        title: `Confirm you want to disassociate this RADIO ${this.radio.title}
+        from ${relatesTo.workPackage.name} ${relatesTo.item.itemType} ${relatesTo.item.name}?`
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.store.dispatch(
+          new DissociateRadio({
+            workpackageId: relatesTo.workPackage.id,
+            radioId: this.radio.id,
+            nodeId: relatesTo.item.id
+          })
+        );
+      }
+    });
+  }
+
+  onAddRelatesTo() {
+    this.workpackageStore.dispatch(new LoadWorkPackages({}));
+    const dialogRef = this.dialog.open(AssociateModalComponent, {
+      disableClose: true,
+      width: 'auto',
+      data: {
+        title: `Associate to RADIO ${this.radio.title} to`,
+        workpackages$: this.workpackageStore.pipe(
+          select(getWorkPackageEntities),
+          map(data => data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded'))
+        ),
+        nodes$: this.nodeStore.pipe(select(getNodeEntities))
+      }
+    });
+    dialogRef.afterClosed().subscribe((result: { workpackageId: string; nodeId: string }) => {
+      if (result) {
+        this.store.dispatch(
+          new AssociateRadio({ workpackageId: result.workpackageId, nodeId: result.nodeId, radio: this.radio })
+        );
       }
     });
   }

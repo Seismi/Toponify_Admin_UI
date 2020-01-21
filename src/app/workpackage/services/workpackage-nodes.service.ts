@@ -24,7 +24,9 @@ export interface GetWorkPackageNodeScopesQueryParams {
   availableForAddition?: boolean;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WorkPackageNodesService extends WorkPackageService {
   /**
    * Create new architecture node (system, data set, dimensions, reporting concept)
@@ -185,7 +187,10 @@ export class WorkPackageNodesService extends WorkPackageService {
   }
 
   addWorkPackageNodeRadio(workPackageId: string, nodeId: string, radioId: string): Observable<NodeDetailApiResponse> {
-    return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radioId}`, this.httpOptions);
+    return this.http.post<NodeDetailApiResponse>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radioId}`,
+      this.httpOptions
+    );
   }
 
   deleteWorkPackageNodeScope(scopeId: string, nodeId: string): Observable<WorkPackageNodeScopeApiResponse> {
@@ -194,6 +199,10 @@ export class WorkPackageNodesService extends WorkPackageService {
 
   addWorkPackageNodeAttribute(workPackageId: string, nodeId: string, attributeId: string): Observable<NodeDetailApiResponse> {
     return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}`, this.httpOptions);
+  }
+
+  deleteWorkPackageNodeAttribute(workPackageId: string, nodeId: string, attributeId: string): Observable<NodeDetailApiResponse> {
+    return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${nodeId}/attributes/${attributeId}/deleteRequest`, {});
   }
 
   // TODO: move into sharable service

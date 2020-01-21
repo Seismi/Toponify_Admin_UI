@@ -1,7 +1,15 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
-import {NodeLink, NodeLinkDetail, RoutesEntityEntity} from '../models/node-link.model';
+import { NodeLink, NodeLinkDetail, RoutesEntityEntity } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
-import {Error, ExpandedStatesEntity, LocationsEntityEntity, Node, NodeDetail, OwnersEntity, NodeReports} from '../models/node.model';
+import {
+  Error,
+  ExpandedStatesEntity,
+  LocationsEntityEntity,
+  Node,
+  NodeDetail,
+  OwnersEntity,
+  NodeReports
+} from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import {
   WorkPackageNodeActionsUnion,
@@ -96,7 +104,7 @@ export function reducer(
       return {
         ...state,
         entities: state.entities.map(entity =>
-          entity.id === action.payload.data.id ? updatePart(entity, action.payload.data) as Node : entity
+          entity.id === action.payload.data.id ? (updatePart(entity, action.payload.data) as Node) : entity
         )
       };
     }
@@ -153,7 +161,7 @@ export function reducer(
         function(updatedState, link) {
           const linkIndex = updatedState.links.findIndex(l => l.id === link.id);
           if (linkIndex > -1) {
-             return replaceLinkRoute(updatedState, linkIndex, link.id, layoutId, link.points);
+            return replaceLinkRoute(updatedState, linkIndex, link.id, layoutId, link.points);
           }
         },
         {
@@ -166,7 +174,7 @@ export function reducer(
       return {
         ...state,
         links: state.links.map(link =>
-          link.id === action.payload.data.id ? updatePart(link, action.payload.data) as NodeLink : link
+          link.id === action.payload.data.id ? (updatePart(link, action.payload.data) as NodeLink) : link
         )
       };
     }
@@ -206,6 +214,8 @@ export function reducer(
       };
     }
 
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess:
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeSuccess: {
       return {
         ...state,
@@ -213,13 +223,8 @@ export function reducer(
       };
     }
 
-    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure: {
-      return {
-        ...state,
-        error: <Error>action.payload
-      };
-    }
 
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess: 
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
       return {
         ...state,
@@ -227,6 +232,10 @@ export function reducer(
       };
     }
 
+
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure: 
+    case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure: 
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure: {
       return {
         ...state,
@@ -346,7 +355,7 @@ export function reducer(
         function(updatedState, node) {
           const nodeIndex = updatedState.entities.findIndex(n => n.id === node.id);
           if (nodeIndex > -1) {
-             return replaceNodeLocation(updatedState, nodeIndex, node.id, layoutId, node.locationCoordinates);
+            return replaceNodeLocation(updatedState, nodeIndex, node.id, layoutId, node.locationCoordinates);
           }
         },
         {
@@ -356,15 +365,13 @@ export function reducer(
     }
 
     case NodeActionTypes.UpdateNodeExpandedState: {
-      const { layoutId, data  } = action.payload;
+      const { layoutId, data } = action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === data.id);
       if (nodeIndex > -1) {
-         return replaceNodeExpandedState(state, nodeIndex, data.id, layoutId,
-           {
-             middleExpanded: data.middleExpanded,
-             bottomExpanded: data.bottomExpanded
-           }
-         );
+        return replaceNodeExpandedState(state, nodeIndex, data.id, layoutId, {
+          middleExpanded: data.middleExpanded,
+          bottomExpanded: data.bottomExpanded
+        });
       } else {
         return {
           ...state
@@ -538,18 +545,24 @@ function replaceNodeOwners(state: State, nodeIndex: number, nodeId: string, owne
   };
 }
 
-function replaceNodeLocation(state: State, nodeIndex: number, nodeId: string, layoutId: string, location: string): State {
+function replaceNodeLocation(
+  state: State,
+  nodeIndex: number,
+  nodeId: string,
+  layoutId: string,
+  location: string
+): State {
   const updatedLocations: LocationsEntityEntity[] = state.entities[nodeIndex].locations.concat();
-  const locationIndex: number = updatedLocations.findIndex( function(loc: LocationsEntityEntity) {
+  const locationIndex: number = updatedLocations.findIndex(function(loc: LocationsEntityEntity) {
     return loc.layout.id === layoutId;
   });
 
   if (locationIndex > -1) {
     const updatedLocation = updatedLocations[locationIndex];
-    updatedLocations.splice(locationIndex, 1, {...updatedLocation, locationCoordinates: location});
+    updatedLocations.splice(locationIndex, 1, { ...updatedLocation, locationCoordinates: location });
   }
 
-  const updatedNode = { ...state.entities[nodeIndex], locations: updatedLocations};
+  const updatedNode = { ...state.entities[nodeIndex], locations: updatedLocations };
   const entities = [...state.entities];
   entities[nodeIndex] = updatedNode;
 
@@ -566,24 +579,28 @@ function replaceNodeLocation(state: State, nodeIndex: number, nodeId: string, la
   };
 }
 
-function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: string, layoutId: string,
-                                  expandedState: { middleExpanded: boolean, bottomExpanded: boolean}): State {
+function replaceNodeExpandedState(
+  state: State,
+  nodeIndex: number,
+  nodeId: string,
+  layoutId: string,
+  expandedState: { middleExpanded: boolean; bottomExpanded: boolean }
+): State {
   const updatedExpandedStates: ExpandedStatesEntity[] = state.entities[nodeIndex].expandedStates.concat();
-  const expandedStateIndex: number = updatedExpandedStates.findIndex( function(exp: ExpandedStatesEntity) {
+  const expandedStateIndex: number = updatedExpandedStates.findIndex(function(exp: ExpandedStatesEntity) {
     return exp.layout.id === layoutId;
   });
 
   if (expandedStateIndex > -1) {
     const updatedExpandedState: ExpandedStatesEntity = updatedExpandedStates[expandedStateIndex];
-    updatedExpandedStates.splice(expandedStateIndex, 1,
-      {...updatedExpandedState,
-        middleExpanded: expandedState.middleExpanded,
-        bottomExpanded: expandedState.bottomExpanded
-      }
-    );
+    updatedExpandedStates.splice(expandedStateIndex, 1, {
+      ...updatedExpandedState,
+      middleExpanded: expandedState.middleExpanded,
+      bottomExpanded: expandedState.bottomExpanded
+    });
   }
 
-  const updatedNode: Node = { ...state.entities[nodeIndex], expandedStates: updatedExpandedStates};
+  const updatedNode: Node = { ...state.entities[nodeIndex], expandedStates: updatedExpandedStates };
   const entities: Node[] = [...state.entities];
   entities[nodeIndex] = updatedNode;
 
@@ -602,16 +619,16 @@ function replaceNodeExpandedState(state: State, nodeIndex: number, nodeId: strin
 
 function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layoutId: string, route: number[]): State {
   const updatedLinkRoutes: RoutesEntityEntity[] = state.links[linkIndex].routes.concat();
-  const LinkRouteIndex: number = updatedLinkRoutes.findIndex(function (path: RoutesEntityEntity) {
+  const LinkRouteIndex: number = updatedLinkRoutes.findIndex(function(path: RoutesEntityEntity) {
     return path.layout.id === layoutId;
   });
 
   if (LinkRouteIndex > -1) {
     const updatedLinkRoute: RoutesEntityEntity = updatedLinkRoutes[LinkRouteIndex];
-    updatedLinkRoutes.splice(LinkRouteIndex, 1, {...updatedLinkRoute, points: route});
+    updatedLinkRoutes.splice(LinkRouteIndex, 1, { ...updatedLinkRoute, points: route });
   }
 
-  const updatedLink: NodeLink = {...state.links[linkIndex], routes: updatedLinkRoutes};
+  const updatedLink: NodeLink = { ...state.links[linkIndex], routes: updatedLinkRoutes };
   const links: NodeLink[] = [...state.links];
   links[linkIndex] = updatedLink;
 
@@ -619,7 +636,7 @@ function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layou
     return {
       ...state,
       links,
-      selectedNodeLink: {...state.selectedNodeLink, routes: updatedLinkRoutes}
+      selectedNodeLink: { ...state.selectedNodeLink, routes: updatedLinkRoutes }
     };
   }
   return {
@@ -629,8 +646,7 @@ function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layou
 }
 
 function updatePart(oldPartData: NodeLink | Node, newPartData: NodeDetail | NodeLinkDetail): Node | NodeLink {
-
-  const updatedPart: Node | NodeLink = {...oldPartData};
+  const updatedPart: Node | NodeLink = { ...oldPartData };
 
   // Ensure no extraneous properties added to part data by only updating
   //  properties that exist in the previous state data for the part
