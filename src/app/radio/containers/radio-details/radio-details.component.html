@@ -40,7 +40,11 @@
           Documentation Standards
         </ng-template>
         <smi-radio-properties-tab
+          [group]="propertiesForm"
+          [index]="documentStandardTableRowIndex"
           (editProperty)="onEditProperty($event)"
+          (saveProperty)="onSaveProperty($event)"
+          (cancelPropertyEdit)="onCancelPropertyEdit()"
           (deleteProperty)="onDeleteProperty($event)"
           [data]="radio?.customPropertyValues"
         >

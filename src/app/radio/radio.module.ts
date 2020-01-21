@@ -43,6 +43,7 @@ import { DeleteRadioPropertyModalComponent } from './containers/delete-property-
 import { RelatesToTableComponent } from './components/relates-to-table/relates-to-table.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
+import { PropertiesFormComponent } from './components/properties-form/properties-form.component';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confi
     DeleteRadioPropertyModalComponent,
     RelatesToTableComponent,
     ConfirmModalComponent,
-    AssociateModalComponent
+    AssociateModalComponent,
+    PropertiesFormComponent
   ],
   entryComponents: [
     RadioModalComponent,
