@@ -30,7 +30,10 @@ import {
   DeleteWorkPackageLinkAttributeFailure,
   AddWorkPackageLinkAttribute,
   AddWorkPackageLinkAttributeSuccess,
-  AddWorkPackageLinkAttributeFailure
+  AddWorkPackageLinkAttributeFailure,
+  AddWorkPackageLinkRadio,
+  AddWorkPackageLinkRadioSuccess,
+  AddWorkPackageLinkRadioFailure
 } from '../actions/workpackage-link.actions';
 
 @Injectable()
@@ -134,6 +137,18 @@ export class WorkPackageLinkEffects {
       return this.workpackageLinkService.addLinkAttribute(payload.workPackageId, payload.nodeLinkId, payload.attributeId).pipe(
         switchMap((response: NodeLinkDetailApiResponse) => [new AddWorkPackageLinkAttributeSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkAttributeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkPackageLinkRadio$ = this.actions$.pipe(
+    ofType<AddWorkPackageLinkRadio>(WorkPackageLinkActionTypes.AddWorkPackageLinkRadio),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; nodeLinkId: string, radioId: string }) => {
+      return this.workpackageLinkService.addLinkRadio(payload.workPackageId, payload.nodeLinkId, payload.radioId).pipe(
+        switchMap((response: NodeLinkDetailApiResponse) => [new AddWorkPackageLinkRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkRadioFailure(error)))
       );
     })
   );

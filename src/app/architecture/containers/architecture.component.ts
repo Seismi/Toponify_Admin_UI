@@ -71,7 +71,8 @@ import {
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkSuccess,
   DeleteWorkPackageLinkAttribute,
-  AddWorkPackageLinkAttribute
+  AddWorkPackageLinkAttribute,
+  AddWorkPackageLinkRadio
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -1116,13 +1117,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeRadio({
-            workPackageId: this.getWorkPackageId(),
-            nodeId: this.nodeId,
-            radioId: data.radio.id
-          })
-        );
+        if (!this.clickedOnLink) {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeRadio({
+              workPackageId: this.getWorkPackageId(),
+              nodeId: this.nodeId,
+              radioId: data.radio.id
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageLinkRadio({
+              workPackageId: this.getWorkPackageId(),
+              nodeLinkId: this.nodeId,
+              radioId: data.radio.id
+            })
+          )
+        }
       }
     });
 
