@@ -38,6 +38,38 @@ export class CustomLinkShift extends LinkShiftingTool {
   }
 }
 
+// Customised link shifting tool that calls process to update the link route in the back end when finished
+export class CustomNodeResize extends go.ResizingTool {
+  constructor() {
+    super();
+  }
+
+  // Override mouseUp method
+  public computeMinSize(): go.Size {
+
+    const minSize = go.ResizingTool.prototype.computeMinSize.call(this);
+
+    const group = this.adornedObject.part as go.Group;
+    let memberArea;
+    if (group.memberParts.count > 0) {
+      memberArea = group.memberParts.first().actualBounds;
+
+      group.memberParts.each(
+        function(system: go.Group) {
+          memberArea.unionRect(system.actualBounds);
+        }
+      );
+    } else {
+      return minSize;
+    }
+
+    minSize.width = Math.max(minSize.width, memberArea.width);
+    minSize.height = Math.max(minSize.height, memberArea.height);
+
+    return minSize;
+  }
+}
+
 // Customised link that only updates its route when a tool that can affect link route is active
 export class CustomLink extends go.Link {
   constructor() {
@@ -62,7 +94,12 @@ export class CustomLink extends go.Link {
     });
 
     // Array of tools that can affect link routes
-    const tools = [toolManager.draggingTool, toolManager.linkReshapingTool, toolManager.linkingTool, linkShiftingTool];
+    const tools = [toolManager.draggingTool,
+      toolManager.linkReshapingTool,
+      toolManager.linkingTool,
+      linkShiftingTool,
+      toolManager.resizingTool
+    ];
 
     // Always update route if "updateRoute" flag set or no route defined
     if (this.data.updateRoute || this.points.count === 0) {

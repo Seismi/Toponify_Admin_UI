@@ -185,8 +185,10 @@ export class DiagramTemplatesService {
     return $(
       'Button',
       {
+        column: 3,
+        row: 0,
         name: 'DependencyExpandButton',
-        alignment: go.Spot.LeftCenter,
+        alignment: go.Spot.Right,
         desiredSize: new go.Size(20, 20),
         margin: new go.Margin(0, 5, 0, 0),
         click: function(event, button) {
@@ -219,6 +221,8 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        column: 2,
+        row: 0,
         name: 'TopExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
@@ -266,6 +270,8 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        row: 0,
+        column: 2,
         name: 'TopMenuButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
@@ -510,20 +516,31 @@ export class DiagramTemplatesService {
   getTopSection(isSystem = false): go.Panel {
     return $(
       go.Panel,
-      'Horizontal',
+      'Table',
       {
         name: 'top',
         row: 0,
         alignment: go.Spot.TopCenter,
         stretch: go.GraphObject.Horizontal,
-        minSize: new go.Size(NaN, 30),
+        minSize: new go.Size(nodeWidth, 30),
         margin: new go.Margin(5)
       },
+      new go.Binding('maxSize', 'middleExpanded', function(middleExpanded) {
+        return middleExpanded !== middleOptions.group ?
+          new go.Size(nodeWidth, 30) : new go.Size(NaN, 30);
+      }),
+      $(go.RowColumnDefinition, { column: 0, width: 25 }),
+      $(go.RowColumnDefinition, { column: 1 }),
+      $(go.RowColumnDefinition, { column: 2, width: 25 }),
+      $(go.RowColumnDefinition, { column: 3 }),
       this.getDependencyExpandButton(),
       // Node icon, to appear at the top left of the node
       $(
         go.Picture,
         {
+          column: 0,
+          row: 0,
+          alignment: go.Spot.Left,
           desiredSize: new go.Size(25, 25),
           source: '/assets/node-icons/data_set-master-data.svg'
         },
@@ -568,18 +585,18 @@ export class DiagramTemplatesService {
       $(
         go.TextBlock,
         {
+          column: 1,
+          row: 0,
           textAlign: 'left',
           font: 'bold italic 20px calibri',
           margin: new go.Margin(0, 5, 0, 5),
           wrap: go.TextBlock.None,
           overflow: go.TextBlock.OverflowEllipsis,
+          stretch: go.GraphObject.Horizontal,
+          alignment: go.Spot.Left,
           toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', 'name')))
         },
         new go.Binding('text', 'name'),
-        // Size name textblock to account for presence/absence of dependency expand button
-        new go.Binding('width', 'visible', function(expandButtonVisible: boolean): number {
-          return expandButtonVisible ? nodeWidth - 95 : nodeWidth - 70;
-        }).ofObject('DependencyExpandButton'),
         new go.Binding('opacity', 'name', function(name: boolean): number {
           return name ? 1 : 0;
         }).ofModel()
@@ -727,7 +744,8 @@ export class DiagramTemplatesService {
             stroke: null,
             fill: null,
             stretch: go.GraphObject.Horizontal,
-            height: 200
+            height: 200,
+            minSize: new go.Size(nodeWidth - 10, 200)
           },
           new go.Binding('visible', 'middleExpanded',
             function(middleExpanded) {
@@ -921,6 +939,7 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
+        resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 
           // Do not proceed for double clicks on buttons on the node
@@ -944,6 +963,9 @@ export class DiagramTemplatesService {
           return this.currentFilterLevel !== Level.usage;
         }.bind(this)
       ),
+      new go.Binding('resizable', 'middleExpanded', function(middleExpanded) {
+        return middleExpanded === middleOptions.group;
+      }),
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
