@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
+import {layers, middleOptions, nodeCategories} from '@app/architecture/store/models/node.model';
 import { Injectable } from '@angular/core';
 import { CustomLink, GojsCustomObjectsService, customIcons, defineRoundButton } from './gojs-custom-objects.service';
 import { DiagramLevelService, Level } from './diagram-level.service';
@@ -229,9 +229,9 @@ export class DiagramTemplatesService {
           event.diagram.model.setDataProperty(
             node.data,
             'bottomExpanded',
-            node.data.middleExpanded || !node.data.bottomExpanded
+            (node.data.middleExpanded === middleOptions.children) || !node.data.bottomExpanded
           );
-          event.diagram.model.setDataProperty(node.data, 'middleExpanded', false);
+          event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.none);
 
           this.diagramChangesService.nodeExpandChanged(node);
         }.bind(this)
@@ -247,7 +247,7 @@ export class DiagramTemplatesService {
         },
         // Grey out text when button disabled
         new go.Binding('text', '', function(data) {
-          return data.middleExpanded || data.bottomExpanded ? '-' : '+';
+          return (data.middleExpanded === middleOptions.children) || data.bottomExpanded ? '-' : '+';
         }),
         new go.Binding('stroke', 'isEnabled', function(enabled) {
           return enabled ? 'black' : '#AAAFB4';
@@ -272,7 +272,12 @@ export class DiagramTemplatesService {
         desiredSize: new go.Size(25, 25),
         click: function(event, button) {
           const menu = this.gojsCustomObjectsService.getPartButtonMenu();
+          event.diagram.select(button.part);
           menu.adornedObject = button.part;
+
+          button.part.adornments.first().zOrder = 0;
+          button.part.updateAdornments();
+
           button.part.addAdornment('ButtonMenu', menu);
         }.bind(this)
       },
@@ -312,7 +317,7 @@ export class DiagramTemplatesService {
         click: function(event, button): void {
           const node = button.part;
 
-          event.diagram.model.setDataProperty(node.data, 'middleExpanded', true);
+          event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.children);
 
           this.diagramChangesService.nodeExpandChanged(node);
         }.bind(this)
@@ -338,7 +343,7 @@ export class DiagramTemplatesService {
       }).ofObject(),
       // Button not visible when middle node section is collapsed
       new go.Binding('visible', 'middleExpanded', function(middleExpanded) {
-        return !middleExpanded;
+        return middleExpanded === middleOptions.none;
       })
     );
   }
@@ -592,9 +597,14 @@ export class DiagramTemplatesService {
         name: 'middle',
         row: 1,
         stretch: go.GraphObject.Horizontal,
-        margin: new go.Margin(5)
+        margin: new go.Margin(5),
+        visible: false
       },
-      new go.Binding('visible', 'middleExpanded').makeTwoWay(),
+      new go.Binding('visible', 'middleExpanded',
+        function(middleExpanded) {
+          return middleExpanded !== middleOptions.none;
+        }
+      ),
       // Do not show description for systems
       !isSystem ? $(
         go.TextBlock,
@@ -602,6 +612,7 @@ export class DiagramTemplatesService {
           textAlign: 'center',
           stroke: 'black',
           font: '16px Calibri',
+          stretch: go.GraphObject.Horizontal,
           maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
         },
@@ -614,6 +625,7 @@ export class DiagramTemplatesService {
           textAlign: 'center',
           stroke: 'black',
           font: 'italic 16px Calibri',
+          stretch: go.GraphObject.Horizontal,
           maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
         },
@@ -633,25 +645,97 @@ export class DiagramTemplatesService {
         go.Panel,
         'Vertical',
         {
-          stretch: go.GraphObject.Horizontal,
-          row: 3
+          stretch: go.GraphObject.Horizontal
         },
         // Descendants list
-        $(
-          go.Panel,
+        $(go.Panel,
           'Vertical',
           {
-            name: 'Descendants List',
-            // padding: 3,
+            alignment: go.Spot.TopLeft,
+            stretch: go.GraphObject.Horizontal
+          },
+          isSystem ? $(go.TextBlock,
+            'Data sets',
+            {
+              font: 'italic 18px calibri',
+              textAlign: 'center',
+              stretch: go.GraphObject.Horizontal,
+              margin: new go.Margin(0, 0, 2, 0)
+            }
+          ) : {},
+          $(
+            go.Panel,
+            'Vertical',
+            {
+              name: 'Descendants List',
+              // padding: 3,
+              alignment: go.Spot.TopLeft,
+              defaultAlignment: go.Spot.Left,
+              stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
+              itemTemplate: this.getItemTemplate()
+            },
+            new go.Binding('itemArray', 'descendants'),
+            new go.Binding('visible', 'nextLevel').ofModel()
+          ),
+          new go.Binding('visible', 'middleExpanded',
+            function(middleExpanded) {
+              return middleExpanded === middleOptions.children;
+            }
+          )
+        ),
+        // Grouped members list
+        $(go.Panel,
+          'Vertical',
+          {
             alignment: go.Spot.TopLeft,
             defaultAlignment: go.Spot.Left,
-            stretch: go.GraphObject.Horizontal,
-            itemCategoryProperty: '',
-            itemTemplate: this.getItemTemplate()
+            stretch: go.GraphObject.Horizontal
           },
-          new go.Binding('itemArray', 'descendants')
+          $(go.TextBlock,
+            'Grouped Items',
+            {
+              font: 'italic 18px calibri',
+              textAlign: 'center',
+              alignment: go.Spot.TopCenter,
+              stretch: go.GraphObject.Horizontal,
+              margin: new go.Margin(0, 0, 2, 0)
+            }
+          ),
+          $(go.Panel,
+            'Vertical',
+            {
+              name: 'Groups List',
+              alignment: go.Spot.TopLeft,
+              defaultAlignment: go.Spot.Left,
+              stretch: go.GraphObject.Horizontal,
+              itemCategoryProperty: '',
+              itemTemplate: this.getItemTemplate()
+            },
+            new go.Binding('itemArray', 'members')
+          ),
+          new go.Binding('visible', 'middleExpanded',
+            function (middleExpanded) {
+              return middleExpanded === middleOptions.groupList;
+            }
+          )
         ),
-        new go.Binding('visible', 'nextLevel').ofModel()
+        // Area for grouped systems to appear in
+        $(go.Shape,
+          {
+            name: 'Group member area',
+            figure: 'rectangle',
+            stroke: null,
+            fill: null,
+            stretch: go.GraphObject.Horizontal,
+            height: 200
+          },
+          new go.Binding('visible', 'middleExpanded',
+            function(middleExpanded) {
+              return middleExpanded === middleOptions.group;
+            }
+          )
+        )
       )
     );
   }
@@ -838,16 +922,6 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        isSubGraphExpanded: false,
-        layout: $(go.GridLayout,
-          {
-            wrappingColumn: 1,
-            spacing: new go.Size(NaN, 15),
-            alignment: go.GridLayout.Location,
-            isOngoing: true,
-            isInitial: true
-          }
-        ),
         doubleClick: function(event, node) {
 
           // Do not proceed for double clicks on buttons on the node
@@ -859,6 +933,11 @@ export class DiagramTemplatesService {
 
         }.bind(this)
       },
+      new go.Binding('isSubGraphExpanded', 'middleExpanded',
+        function(middleExpanded): boolean {
+          return middleExpanded === middleOptions.group;
+        }
+      ),
       new go.Binding(
         'movable',
         '',
@@ -955,6 +1034,14 @@ export class DiagramTemplatesService {
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
+      // Prevent links to/from nodes in collapsed groups from being visible
+      new go.Binding('visible', '', function(link): boolean {
+        if (link.toNode && link.fromNode) {
+          return link.fromNode.isVisible() && link.toNode.isVisible();
+        } else {
+          return true;
+        }
+      }).ofObject(),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
@@ -1017,6 +1104,14 @@ export class DiagramTemplatesService {
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
+      // Prevent links to/from nodes in collapsed groups from being visible
+      new go.Binding('visible', '', function(link): boolean {
+        if (link.toNode && link.fromNode) {
+          return link.fromNode.isVisible() && link.toNode.isVisible();
+        } else {
+          return true;
+        }
+      }).ofObject(),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: function(event, object) {
