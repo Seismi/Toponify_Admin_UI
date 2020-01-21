@@ -205,11 +205,11 @@ export interface NodeReportsApiResponse {
 export interface NodeReports {
   id: string;
   name: string;
-  dataSet: DataSet;
+  system: System;
   owners: (OwnersEntity)[] | null;
 }
 
-export interface DataSet {
+export interface System {
   id: string;
   name: string;
   category: string;
