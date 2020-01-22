@@ -158,14 +158,6 @@ export class DiagramListenersService {
         });
       }
     );
-
-    // Temporary - added in order to test diagram image download
-    diagram.addDiagramListener(
-      'BackgroundDoubleClicked',
-      function(): void {
-        this.diagramImageService.downloadImage(diagram);
-      }.bind(this)
-    );
   }
 
   handleChangedSelection(event: go.DiagramEvent): void {
