@@ -159,7 +159,9 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
-    case ReportActionTypes.AddOwnerSuccess: {
+    case ReportActionTypes.AddOwnerSuccess:
+    case ReportActionTypes.RemoveDataSetsFromReportSuccess:
+    case ReportActionTypes.AddDataSetsToReportSuccess: {
       return {
         ...state,
         selected: action.payload,
@@ -167,6 +169,8 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.AddDataSetsToReportFail:
+    case ReportActionTypes.RemoveDataSetsFromReportFail:
     case ReportActionTypes.AddOwnerFail: {
       return {
         ...state,
