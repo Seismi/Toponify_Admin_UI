@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>In which work package(s) does this RADIO apply?</h1>
+<div mat-dialog-content>
+
+    <mat-form-field>
+      <mat-select placeholder="Work Package" [formControl]="workpackage" multiple>
+        <mat-select-trigger>
+          {{ workpackage.value ? workpackage.value[0].name : '' }}
+          <span *ngIf="workpackage.value?.length > 1" class="additional-selection">
+            (+{{ workpackage.value.length - 1 }} {{ workpackage.value?.length === 2 ? 'other' : 'others' }})
+          </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let workpackage of selectedWorkPackages" [value]="workpackage">
+          {{ workpackage.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSave()">Save</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>

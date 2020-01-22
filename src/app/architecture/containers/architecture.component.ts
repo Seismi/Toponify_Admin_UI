@@ -160,6 +160,7 @@ import { State as AttributeState } from '@app/attributes/store/reducers/attribut
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
+import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -1069,7 +1070,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.realignTabUnderline();
   }
 
-  onAddRelatedRadio() {
+
+  onAddRelatedRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '650px',
@@ -1077,34 +1079,33 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio) {
-        this.radioStore.dispatch(
-          new AddRadioEntity({
-            data: {
-              title: data.radio.title,
-              description: data.radio.description,
-              status: data.radio.status,
-              category: data.radio.category,
-              author: data.radio.author,
-              assignedTo: data.radio.assignedTo,
-              actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation,
-              relatesTo: [
-                {
-                  workPackage: { id: this.workpackageId },
-                  item: {
-                    id: this.nodeId,
-                    itemType: this.currentFilterLevel.toLowerCase()
-                  }
-                }
-              ]
-            }
-          })
-        );
-        if (data.radio.status === 'open') {
-          this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
+      const dialogRef2 = this.dialog.open(RadioConfirmModalComponent, {
+        disableClose: false,
+        width: '500px',
+        data: {
+          selectedWorkPackages: this.selectedWorkPackageEntities
         }
-      }
+      })
+
+      dialogRef2.afterClosed().subscribe(wp => {
+        const relates = wp.workpackages.map(workpackage => {
+          return {
+            workPackage: {
+              id: workpackage.id
+            },
+            item: {
+              id: this.nodeId,
+              itemType: this.currentFilterLevel.toLowerCase()
+            }
+          }
+        });
+        if (data && data.radio) {
+          this.radioStore.dispatch(new AddRadioEntity({data: { ...data.radio, relatesTo: relates }}));
+          if (data.radio.status === 'open') {
+            this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
+          }
+        }
+      })
     });
   }
 
