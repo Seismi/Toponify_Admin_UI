@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity,
+  Dimension,
   OwnersEntity
 } from '@app/report-library/store/models/report.model';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
@@ -17,7 +18,7 @@ export class ReportLibraryDetailComponent {
   @Input() dataSets: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
   @Input() system: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity;
   @Input() owners: OwnersEntity[];
-  @Input() dimensions: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
+  @Input() dimensions: Dimension[];
   @Input() reportingConcepts: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
   @Input() modalMode = false;
   @Input() workPackageIsEditable: boolean;
@@ -34,6 +35,7 @@ export class ReportLibraryDetailComponent {
   @Output() editSourceSystem = new EventEmitter<void>();
   @Output() addDataSets = new EventEmitter<void>();
   @Output() removeDataSet = new EventEmitter<string>();
+  @Output() dimensionEdit = new EventEmitter<Dimension>();
 
   onSave() {
     this.saveReport.emit();
@@ -73,5 +75,9 @@ export class ReportLibraryDetailComponent {
 
   onRemoveDataSet(id: string) {
     this.removeDataSet.emit(id);
+  }
+
+  onDimensionEdit(dimension: Dimension) {
+    this.dimensionEdit.emit(dimension);
   }
 }

@@ -13,7 +13,9 @@ import {
   MatTableModule,
   MatTabsModule,
   MatSelectModule,
-  MatDialogModule, MatAutocompleteModule, MatCheckboxModule
+  MatDialogModule,
+  MatAutocompleteModule,
+  MatCheckboxModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -38,6 +40,7 @@ import { ReportDeleteModalComponent } from './containers/report-delete-modal/rep
 import { TableHeaderComponent } from '@app/report-library/components/table-header/table-header.component';
 import { ReportRightSideComponent } from './components/right-side/right-side.component';
 import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
+import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
 
 @NgModule({
   imports: [
@@ -80,9 +83,15 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     ReportDeleteModalComponent,
     TableHeaderComponent,
     ReportRightSideComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    ReportingConceptFilterModalComponent
   ],
-  entryComponents: [ReportModalComponent, ReportDeleteModalComponent, SelectModalComponent],
+  entryComponents: [
+    ReportModalComponent,
+    ReportDeleteModalComponent,
+    SelectModalComponent,
+    ReportingConceptFilterModalComponent
+  ],
   providers: [ReportService]
 })
 export class ReportLibraryModule {}
