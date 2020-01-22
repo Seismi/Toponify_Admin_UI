@@ -38,35 +38,85 @@ export class CustomLinkShift extends LinkShiftingTool {
   }
 }
 
-// Customised link shifting tool that calls process to update the link route in the back end when finished
+// Custom resizing tool to resize system groups
 export class CustomNodeResize extends go.ResizingTool {
   constructor() {
     super();
   }
 
-  // Override mouseUp method
+  // Constrain minimum size to encompass all system group members
   public computeMinSize(): go.Size {
 
+    // Default minimum size irrespective of group members
     const minSize = go.ResizingTool.prototype.computeMinSize.call(this);
-
     const group = this.adornedObject.part as go.Group;
-    let memberArea;
-    if (group.memberParts.count > 0) {
-      memberArea = group.memberParts.first().actualBounds;
 
-      group.memberParts.each(
-        function(system: go.Group) {
-          memberArea.unionRect(system.actualBounds);
+    // Determine which way/ways the group is being enlarged
+    //  based on alignment of the resizing handle being dragged
+    const draggedSides = {
+      top: this.handle.alignment.y === 0,
+      right: this.handle.alignment.x === 1,
+      bottom: this.handle.alignment.y === 1,
+      left: this.handle.alignment.x === 0
+    };
+
+    // Get bounds of current group member area
+    const memberArea = this.adornedObject.getDocumentBounds();
+
+    // For each direction the group is being enlarged in,
+    //  ensure that no grouped system would be left outside the group member area
+    group.memberParts.each(
+      function(system: go.Part) {
+        // Ignore links between nodes in the group
+        if (system instanceof go.Node) {
+
+          // Prevent the top side of the group being dragged too low
+          if (draggedSides.top) {
+            minSize.height = Math.max(minSize.height, memberArea.bottom - system.actualBounds.top);
+          }
+          // Prevent the right side of the group being dragged too far left
+          if (draggedSides.right) {
+            minSize.width = Math.max(minSize.width, system.actualBounds.right - memberArea.left);
+          }
+          // Prevent the bottom side of the group being dragged too high
+          if (draggedSides.bottom) {
+            minSize.height = Math.max(minSize.height, system.actualBounds.bottom - memberArea.top);
+          }
+          // Prevent the left side of the group being dragged too far right
+          if (draggedSides.left) {
+            minSize.width = Math.max(minSize.width, memberArea.right - system.actualBounds.left);
+          }
         }
-      );
-    } else {
-      return minSize;
-    }
-
-    minSize.width = Math.max(minSize.width, memberArea.width);
-    minSize.height = Math.max(minSize.height, memberArea.height);
+      }
+    );
 
     return minSize;
+  }
+
+  // Override standard resize in order to prevent grouped systems from shifting position
+  public resize(newr: go.Rect): void {
+    const memberLocations = [];
+
+    // Save grouped system's positions
+    (this.adornedObject.part as go.Group).memberParts.each(
+      function(member: go.Part) {
+        if (member instanceof go.Node) {
+          memberLocations.push({
+            node: member,
+            PrevPosition: member.position.copy()
+          });
+        }
+      }
+    );
+
+    // Perform standard resizing
+    go.ResizingTool.prototype.resize.call(this, newr);
+
+    // Restore grouped system's positions from before the resizing
+    memberLocations.forEach(function(nodeLocation) {
+      nodeLocation.node.position = nodeLocation.PrevPosition;
+    });
+
   }
 }
 
