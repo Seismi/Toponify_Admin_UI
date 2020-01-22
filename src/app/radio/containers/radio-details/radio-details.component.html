@@ -14,10 +14,12 @@
             [group]="radioDetailsForm"
             [isEditable]="isEditable"
             [modalMode]="modalMode"
+            [radioStatus]="radio?.status"
             (archiveRadio)="onArchiveRadio()"
             (saveRadio)="onSaveRadio()"
             (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
             (addRelatesTo)="onAddRelatesTo()"
+            (deleteRadio)="onDeleteRadio()"
           >
           </smi-radio-detail>
         </p>
