@@ -55,29 +55,22 @@ export class WorkPackageLinksService extends WorkPackageService {
     );
   }
 
-  /**
-   * Add custom property to a link
-   * FIXME: missing types
-   */
-  addLinkCustomProperty(
+
+  updateLinkProperty(
     workPackageId: string,
     nodeLinkId: string,
     customPropertyId: string,
     data: WorkpackageLinkCustomProperty
-  ): Observable<any> {
-    return this.http.put<any>(
+  ): Observable<NodeLinkDetailApiResponse> {
+    return this.http.put<NodeLinkDetailApiResponse>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/customPropertyValues/${customPropertyId}`,
       { data },
       this.httpOptions
     );
   }
 
-  /**
-   * Delete custom property from a link
-   * FIXME: missing types
-   */
-  deleteLinkCustomProperty(workPackageId: string, nodeLinkId: string, customPropertyId: string): Observable<any> {
-    return this.http.post<any>(
+  deleteLinkProperty(workPackageId: string, nodeLinkId: string, customPropertyId: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.post<NodeLinkDetailApiResponse>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/customPropertyValues/${customPropertyId}/deleteRequest`,
       {}
     );
