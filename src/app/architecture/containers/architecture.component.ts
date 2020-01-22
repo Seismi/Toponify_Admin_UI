@@ -13,7 +13,6 @@ import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
-  DeleteCustomProperty,
   LoadMapView,
   LoadNode,
   LoadNodeLink,
@@ -22,7 +21,6 @@ import {
   LoadNodes,
   LoadNodeUsageView,
   NodeActionTypes,
-  UpdateCustomProperty,
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations
@@ -70,8 +68,10 @@ import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkSuccess,
-  DeleteWorkPackageLinkAttribute,
-  AddWorkPackageLinkAttribute
+  AddWorkPackageLinkAttribute,
+  UpdateWorkPackageLinkProperty,
+  DeleteWorkPackageLinkProperty,
+  DeleteWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -84,6 +84,8 @@ import {
   DeleteWorkpackageNodeSuccess,
   LoadWorkPackageNodeScopes,
   WorkPackageNodeActionTypes,
+  DeleteWorkPackageNodeProperty,
+  UpdateWorkPackageNodeProperty,
   DeleteWorkPackageNodeAttribute,
   AddWorkPackageNodeAttribute
 } from '@app/workpackage/store/actions/workpackage-node.actions';
@@ -1402,7 +1404,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEditProperties(customProperty: CustomPropertyValuesEntity) {
+  onEditProperties(customProperty: CustomPropertyValuesEntity): void {
     const dialogRef = this.dialog.open(DocumentModalComponent, {
       disableClose: false,
       width: '500px',
@@ -1414,19 +1416,26 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.customProperties) {
-        this.nodeStore.dispatch(
-          new UpdateCustomProperty({
-            workPackageId: this.workpackageId,
+        if (!this.clickedOnLink) {
+          this.workpackageStore.dispatch(new UpdateWorkPackageNodeProperty({
+            workPackageId: this.getWorkPackageId(),
             nodeId: this.nodeId,
             customPropertyId: customProperty.propertyId,
-            data: { data: { value: data.customProperties.value } }
-          })
-        );
+            data: { value: data.customProperties.value }
+          }))
+        } else {
+          this.workpackageStore.dispatch(new UpdateWorkPackageLinkProperty({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            customPropertyId: customProperty.propertyId,
+            data: { value: data.customProperties.value }
+          }))
+        }
       }
     });
   }
 
-  onDeleteProperties(customProperty: CustomPropertyValuesEntity) {
+  onDeleteProperties(customProperty: CustomPropertyValuesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -1438,13 +1447,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
-        this.store.dispatch(
-          new DeleteCustomProperty({
-            workPackageId: this.workpackageId,
+        if (!this.clickedOnLink) {
+          this.workpackageStore.dispatch(new DeleteWorkPackageNodeProperty({
+            workPackageId: this.getWorkPackageId(),
             nodeId: this.nodeId,
             customPropertyId: customProperty.propertyId
-          })
-        );
+          }))
+        } else {
+          this.workpackageStore.dispatch(new DeleteWorkPackageLinkProperty({
+            workPackageId: this.getWorkPackageId(),
+            nodeLinkId: this.nodeId,
+            customPropertyId: customProperty.propertyId
+          }))
+        }
       }
     });
   }
