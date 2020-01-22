@@ -4,10 +4,11 @@ import { ActivatedRoute } from '@angular/router';
 import { State as ReportState } from '../../store/reducers/report.reducer';
 import { select, Store } from '@ngrx/store';
 import {
+  AddDataSetsToReport,
   AddOwner,
   DeleteOwner,
   DeleteReport,
-  LoadReport,
+  LoadReport, RemoveDataSetsFromReport,
   UpdateReport
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
@@ -18,7 +19,7 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import {
   getEditWorkpackage,
   getEditWorkpackages,
-  getSelectedWorkpackages,
+  getSelectedWorkpackages
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { MatDialog } from '@angular/material';
 import { ReportDeleteModalComponent } from '../report-delete-modal/report-delete-modal.component';
@@ -28,8 +29,9 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntitiesBy } from '@app/architecture/store/selectors/node.selector';
 import { Level } from '@app/architecture/services/diagram-level.service';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { ReportService } from '@app/report-library/services/report.service';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -59,7 +61,8 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     private store: Store<ReportState>,
     private reportLibraryDetailService: ReportLibraryDetailService,
     private dialog: MatDialog,
-    private nodeStore: Store<NodeState>
+    private nodeStore: Store<NodeState>,
+    private reportService: ReportService
   ) {}
 
   ngOnInit() {
@@ -242,16 +245,54 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
           .select(getEditWorkpackage)
           .pipe(take(1))
           .subscribe(editWpId => {
-              this.store.dispatch(
+            this.store.dispatch(
               new UpdateReport({
                 workPackageId: editWpId,
                 reportId: this.report.id,
-                request: { data: { ...this.report, system: data.value[0] }}
+                request: { data: { ...this.report, system: data.value[0] } }
               })
             );
-            }
-          );
+          });
       }
     });
+  }
+
+  onAddDataSets(reportId: string) {
+    // this.reportService
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      minWidth: '400px',
+      data: {
+        title: 'Select source data sets',
+        multi: true,
+        options$: this.reportService.getDataSets(this.workpackageId, reportId).pipe(
+          take(1),
+          map(data => data.data.filter(dataSet => !this.report.dataSets.some(ds => ds.id === dataSet.id)))
+        ),
+        selectedIds: []
+      }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(
+          new AddDataSetsToReport({
+            workPackageId: this.workpackageId,
+            reportId: this.report.id,
+            ids: data.value
+          })
+        );
+      }
+    });
+  }
+
+  onRemoveDataSet(dataSetId: string, reportId: string) {
+    this.store.dispatch(
+      new RemoveDataSetsFromReport({
+        workPackageId: this.workpackageId,
+        reportId: reportId,
+        dataSetId: dataSetId
+      })
+    );
   }
 }
