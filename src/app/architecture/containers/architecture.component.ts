@@ -29,6 +29,7 @@ import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-li
 import {
   CustomPropertyValuesEntity,
   DescendantsEntity,
+  middleOptions,
   Node,
   NodeDetail,
   NodeExpandedStateApiRequest,
@@ -114,7 +115,7 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from 'rxjs';
 import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 // import {Attribute} from '?/store/models/attribute.model';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -250,6 +251,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public scope: ScopeDetails;
   private currentFilterLevel: string;
   private filterLevelSubscription: Subscription;
+  private addDataSetSubscription: Subscription;
   public params: Params;
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
@@ -315,6 +317,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
       this.currentFilterLevel = filterLevel;
+    });
+    this.addDataSetSubscription = this.gojsCustomObjectsService.addDataSet$.subscribe(() => {
+      this.onAddDescendant();
     });
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
@@ -561,16 +566,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             workPackageId: this.getWorkPackageId(),
             nodeId: this.nodeId,
             attributeId: action.payload.id
-          }))
+          }));
         } else {
           this.workpackageStore.dispatch(new AddWorkPackageLinkAttribute({
             workPackageId: this.getWorkPackageId(),
             nodeLinkId: this.nodeId,
             attributeId: action.payload.id
-          }))
+          }));
         }
       })
-    )
+    );
 
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
@@ -887,7 +892,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
             return nodes.map(function(node) {
-              return { ...node, middleExpanded: false, bottomExpanded: false };
+              return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });
           }
 
@@ -910,14 +915,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 );
               }
 
+              // TEMP - remove after API update
+              if (layoutExpandState) {
+                layoutExpandState = {
+                  ...layoutExpandState,
+                  middleExpanded: layoutExpandState.middleExpanded ? middleOptions.children : middleOptions.none
+                };
+              }
+              // END TEMP
+
               return {
                 ...node,
-                // TEMP
-                isGroup: node.layer === 'system',
-                // END TEMP
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
-                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : false,
+                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : middleOptions.none,
                 bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false
               };
             }.bind(this)
