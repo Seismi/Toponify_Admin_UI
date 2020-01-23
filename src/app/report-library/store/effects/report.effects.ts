@@ -6,14 +6,14 @@ import {
   ReportLibraryApiResponse,
   ReportDetailApiRequest,
   ReportEntityApiRequest,
-  ReportEntityApiResponse,
-  OwnersEntity
+  ReportEntityApiResponse
 } from '../models/report.model';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { GetReportLibraryRequestQueryParams, ReportService } from '../../services/report.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
+import { LoadReport } from '../actions/report.actions';
 
 @Injectable()
 export class ReportEffects {
@@ -61,7 +61,10 @@ export class ReportEffects {
     map(action => action.payload),
     switchMap((payload: { workPackageId: string; reportId: string; request: ReportEntityApiRequest }) => {
       return this.reportService.updateReport(payload.workPackageId, payload.reportId, payload.request).pipe(
-        switchMap((response: ReportEntityApiResponse) => [new ReportActions.UpdateReportSuccess(response)]),
+        switchMap((response: ReportEntityApiResponse) => [
+          new ReportActions.UpdateReportSuccess(response),
+          new LoadReport({ id: payload.reportId, queryParams: { workPackageQuery: [payload.workPackageId] } })
+        ]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.UpdateReportFail(error)))
       );
     })
@@ -99,6 +102,30 @@ export class ReportEffects {
       return this.reportService.deleteOwner(payload.workPackageId, payload.reportId, payload.ownerId).pipe(
         switchMap((response: ReportDetailApiRespoonse) => [new ReportActions.DeleteOwnerSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.DeleteOwnerFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addDataSetToReport$ = this.actions$.pipe(
+    ofType<ReportActions.AddDataSetsToReport>(ReportActionTypes.AddDataSetsToReport),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; ids: { id: string }[] }) => {
+      return this.reportService.addDataSets(payload.workPackageId, payload.reportId, payload.ids).pipe(
+        mergeMap((response: ReportDetailApiRespoonse) => [new ReportActions.AddDataSetsToReportSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.AddDataSetsToReportFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  removeDataSetFromReport$ = this.actions$.pipe(
+    ofType<ReportActions.RemoveDataSetsFromReport>(ReportActionTypes.RemoveDataSetsFromReport),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; dataSetId: string }) => {
+      return this.reportService.removeDataSet(payload.workPackageId, payload.reportId, payload.dataSetId).pipe(
+        mergeMap((response: ReportDetailApiRespoonse) => [new ReportActions.RemoveDataSetsFromReportSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.RemoveDataSetsFromReportFail(error)))
       );
     })
   );

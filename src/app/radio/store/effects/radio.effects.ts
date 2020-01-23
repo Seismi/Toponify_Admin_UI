@@ -36,7 +36,10 @@ import {
   DissociateRadioSuccess,
   DissociateRadioFailure,
   AssociateRadioFailure,
-  AssociateRadioSuccess
+  AssociateRadioSuccess,
+  DeleteRadioEntity,
+  DeleteRadioEntitySuccess,
+  DeleteRadioEntityFailure
 } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -168,6 +171,18 @@ export class RadioEffects {
           ]),
           catchError((error: HttpErrorResponse) => of(new DissociateRadioFailure(error)))
         );
+    })
+  );
+
+  @Effect()
+  deleteRadioEntity$ = this.actions$.pipe(
+    ofType<DeleteRadioEntity>(RadioActionTypes.DeleteRadioEntity),
+    map(action => action.payload),
+    switchMap((payload: string) => {
+      return this.radioService.deleteRadioEntity(payload).pipe(
+        switchMap(_ => [new DeleteRadioEntitySuccess(payload)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteRadioEntityFailure(error)))
+      );
     })
   );
 }

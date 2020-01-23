@@ -36,7 +36,15 @@ export enum ReportActionTypes {
 
   DeleteOwner = '[Report] Delete Owner',
   DeleteOwnerSuccess = '[Report] Delete Owner Success',
-  DeleteOwnerFail = '[Report] Delete Owner Fail'
+  DeleteOwnerFail = '[Report] Delete Owner Fail',
+
+  AddDataSetsToReport = '[Report] Add Data Sets To Report',
+  AddDataSetsToReportSuccess = '[Report] Add Data Sets To Report Success',
+  AddDataSetsToReportFail = '[Report] Add Data Sets To Report Fail',
+
+  RemoveDataSetsFromReport = '[Report] Remove Data Set from Report',
+  RemoveDataSetsFromReportSuccess = '[Report] Remove Data Sets From Report Success',
+  RemoveDataSetsFromReportFail = '[Report] Remove Data Sets From Report Fail',
 }
 
 export class LoadReports implements Action {
@@ -144,6 +152,36 @@ export class DeleteOwnerFail implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddDataSetsToReport implements Action {
+  readonly type = ReportActionTypes.AddDataSetsToReport;
+  constructor(public payload: { workPackageId: string; reportId: string; ids: { id: string }[] }) {}
+}
+
+export class AddDataSetsToReportSuccess implements Action {
+  readonly type = ReportActionTypes.AddDataSetsToReportSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class AddDataSetsToReportFail implements Action {
+  readonly type = ReportActionTypes.AddDataSetsToReportFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class RemoveDataSetsFromReport implements Action {
+  readonly type = ReportActionTypes.RemoveDataSetsFromReport;
+  constructor(public payload: { workPackageId: string; reportId: string; dataSetId: string}) {}
+}
+
+export class RemoveDataSetsFromReportSuccess implements Action {
+  readonly type = ReportActionTypes.RemoveDataSetsFromReportSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class RemoveDataSetsFromReportFail implements Action {
+  readonly type = ReportActionTypes.RemoveDataSetsFromReportFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ReportActionsUnion =
   | LoadReports
   | LoadReportsSuccess
@@ -165,4 +203,10 @@ export type ReportActionsUnion =
   | AddOwnerFail
   | DeleteOwner
   | DeleteOwnerSuccess
-  | DeleteOwnerFail;
+  | DeleteOwnerFail
+  | AddDataSetsToReport
+  | AddDataSetsToReportSuccess
+  | AddDataSetsToReportFail
+  | RemoveDataSetsFromReport
+  | RemoveDataSetsFromReportSuccess
+  | RemoveDataSetsFromReportFail;

@@ -77,8 +77,12 @@ import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
 import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
+import { AddExistingAttributeModalComponent } from './containers/add-existing-attribute-modal/add-existing-attribute-modal.component';
+import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
+import { DeleteAttributeModalComponent } from './containers/delete-attribute-modal/delete-attribute-modal.component';
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
+
 
 @NgModule({
   imports: [
@@ -151,6 +155,9 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     NewChildrenModalComponent,
     SearchTableViewComponent,
     ReportsTabComponent,
+    AddExistingAttributeModalComponent,
+    AttributesListComponent,
+    DeleteAttributeModalComponent,
     DeleteDescendantsModalComponent
   ],
   entryComponents: [
@@ -163,6 +170,8 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     NodeScopeModalComponent,
+    AddExistingAttributeModalComponent,
+    DeleteAttributeModalComponent,
     DeleteDescendantsModalComponent
   ],
   providers: [

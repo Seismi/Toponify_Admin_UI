@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity } from '@app/report-library/store/models/report.model';
 
@@ -16,6 +16,18 @@ export class ReportDataSetTableComponent {
     this.dataSource = new MatTableDataSource<DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity>(data);
   }
 
+  @Input() edit: boolean;
+  @Output() addDataSets = new EventEmitter<void>();
+  @Output() removeDataSet = new EventEmitter<string>();
+
   public dataSource: MatTableDataSource<DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity>;
   public displayedColumns: string[] = ['name'];
+
+  onRemoveDataSet(id: string) {
+    this.removeDataSet.emit(id);
+  }
+
+  onAddDataSets() {
+    this.addDataSets.emit();
+  }
 }

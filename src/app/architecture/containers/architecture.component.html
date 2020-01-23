@@ -5,8 +5,7 @@
     [selectedWorkPackageEntities]="selectedWorkPackageEntities"
     [workPackageIsEditable]="workPackageIsEditable"
     [workPackageName]="workPackageName"
-    (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
-  >
+    (exitWorkPackageEditMode)="onSelectEditWorkpackage($event)">
   </smi-workpackage-name>
   <app-search></app-search>
   <app-toolbar-column>
@@ -64,6 +63,7 @@
       [allowEditLayouts]="allowEditLayouts"
       (editLayout)="allowEditLayout()"
       (expandAll)="onExpandAll()"
+      (downloadImage)="onDownloadImage()"
     >
     </smi-left-panel>
   </p>
@@ -151,6 +151,7 @@
         (cancel)="onCancelEdit()"
         [workPackageIsEditable]="workPackageIsEditable"
         (addAttribute)="onAddAttribute()"
+        (deleteAttribute)="onDeleteAttribute($event)"
         (addRelatedRadio)="onAddRelatedRadio()"
         (hideRightPane)="onHideRightPane()"
         [objectSelected]="objectSelected"
@@ -179,6 +180,7 @@
         [nodeCategory]="part?.data.category"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
         [nodeReports]="nodeReports$ | async"
+        (addExistingAttribute)="onAddExistingAttribute()"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

@@ -28,8 +28,17 @@
       >
       </smi-report-owners-table>
 
-      <!-- Source Data Sets -->
-      <smi-report-data-set-table [data]="dataSets" *ngIf="!modalMode"></smi-report-data-set-table>
+      <div class="source-system">
+          Source System - {{system ? system.name : ''}}
+          <button mat-icon-button (click)="onSourceEdit()" *ngIf="workPackageIsEditable">
+            <mat-icon>edit</mat-icon>
+          </button>
+      </div>
+
+      <smi-report-data-set-table [data]="dataSets"
+                                 [edit]="workPackageIsEditable"
+                                 (removeDataSet)="onRemoveDataSet($event)"
+                                 (addDataSets)="onDatasetAdd()"></smi-report-data-set-table>
 
       <smi-report-dimensions-table [data]="dimensions"></smi-report-dimensions-table>
     </div>

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageNodeFindPotential, WorkPackageNodeScopes } from '../models/workpackage.models';
+import { WorkPackageNodeFindPotential, WorkPackageNodeScopes, WorkpackageNodeCustomProperty } from '../models/workpackage.models';
 import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
 import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
 
@@ -63,7 +63,19 @@ export enum WorkPackageNodeActionTypes {
 
   AddWorkPackageNodeAttribute = '[WorkPackage] Add Node Attribute',
   AddWorkPackageNodeAttributeSuccess = '[WorkPackage] Add Node Attribute Success',
-  AddWorkPackageNodeAttributeFailure = '[WorkPackage] Add Node Attribute Failure'
+  AddWorkPackageNodeAttributeFailure = '[WorkPackage] Add Node Attribute Failure',
+
+  UpdateWorkPackageNodeProperty = '[WorkPackage] Update Node Property',
+  UpdateWorkPackageNodePropertySuccess = '[WorkPackage] Update Node Property Success',
+  UpdateWorkPackageNodePropertyFailure = '[WorkPackage] Update Node Property Failure',
+
+  DeleteWorkPackageNodeProperty = '[WorkPackage] Delete Node Property',
+  DeleteWorkPackageNodePropertySuccess = '[WorkPackage] Delete Node Property Success',
+  DeleteWorkPackageNodePropertyFailure = '[WorkPackage] Delete Node Property Failure',
+
+  DeleteWorkPackageNodeAttribute = '[WorkPackage] Delete Node Attribute',
+  DeleteWorkPackageNodeAttributeSuccess = '[WorkPackage] Delete Node Attribute Success',
+  DeleteWorkPackageNodeAttributeFailure = '[WorkPackage] Delete Node Attribute Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -289,6 +301,52 @@ export class AddWorkPackageNodeAttributeSuccess implements Action {
 export class AddWorkPackageNodeAttributeFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
+
+}
+
+export class DeleteWorkPackageNodeAttribute implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttribute;
+  constructor(public payload: { workPackageId: string; nodeId: string; attributeId: string }) {}
+}
+
+export class DeleteWorkPackageNodeAttributeSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class DeleteWorkPackageNodeAttributeFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure;
+  constructor(public payload: any) {}
+}
+
+export class UpdateWorkPackageNodeProperty implements Action {
+  readonly type = WorkPackageNodeActionTypes.UpdateWorkPackageNodeProperty;
+  constructor(public payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: WorkpackageNodeCustomProperty }) {}
+}
+
+export class UpdateWorkPackageNodePropertySuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.UpdateWorkPackageNodePropertySuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class UpdateWorkPackageNodePropertyFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.UpdateWorkPackageNodePropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkPackageNodeProperty implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodeProperty;
+  constructor(public payload: { workPackageId: string; nodeId: string; customPropertyId: string }) {}
+}
+
+export class DeleteWorkPackageNodePropertySuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodePropertySuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class DeleteWorkPackageNodePropertyFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.DeleteWorkPackageNodePropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
 export type WorkPackageNodeActionsUnion =
@@ -336,4 +394,13 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNodeRadioFailure
   | AddWorkPackageNodeAttribute
   | AddWorkPackageNodeAttributeSuccess
-  | AddWorkPackageNodeAttributeFailure;
+  | AddWorkPackageNodeAttributeFailure
+  | UpdateWorkPackageNodeProperty
+  | UpdateWorkPackageNodePropertySuccess
+  | UpdateWorkPackageNodePropertyFailure
+  | DeleteWorkPackageNodeProperty
+  | DeleteWorkPackageNodePropertySuccess
+  | DeleteWorkPackageNodePropertyFailure
+  | DeleteWorkPackageNodeAttribute
+  | DeleteWorkPackageNodeAttributeSuccess
+  | DeleteWorkPackageNodeAttributeFailure;

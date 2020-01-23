@@ -51,15 +51,25 @@ import {
   AddWorkPackageNodeRadio,
   AddWorkPackageNodeRadioSuccess,
   AddWorkPackageNodeRadioFailure,
+  DeleteWorkPackageNodeAttribute,
+  DeleteWorkPackageNodeAttributeSuccess,
+  DeleteWorkPackageNodeAttributeFailure,
   AddWorkPackageNodeAttribute,
   AddWorkPackageNodeAttributeSuccess,
-  AddWorkPackageNodeAttributeFailure
+  AddWorkPackageNodeAttributeFailure,
+  UpdateWorkPackageNodeProperty,
+  UpdateWorkPackageNodePropertySuccess,
+  UpdateWorkPackageNodePropertyFailure,
+  DeleteWorkPackageNodeProperty,
+  DeleteWorkPackageNodePropertySuccess,
+  DeleteWorkPackageNodePropertyFailure
 } from '../actions/workpackage-node.actions';
 import { UpdateNodeDescendants, UpdateNodeOwners } from '@app/architecture/store/actions/node.actions';
 import {
   WorkPackageNodeFindPotential,
   WorkPackageNodeScopeApiResponse,
-  WorkPackageNodeScopesApiResponse
+  WorkPackageNodeScopesApiResponse,
+  WorkpackageNodeCustomProperty
 } from '../models/workpackage.models';
 import {
   DescendantsEntity,
@@ -266,6 +276,18 @@ export class WorkPackageNodeEffects {
   );
 
   @Effect()
+  deleteNodeAttribute$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageNodeAttribute>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttribute),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; nodeId: string; attributeId: string }) => {
+      return this.workpackageNodeService.deleteWorkPackageNodeAttribute(payload.workPackageId, payload.nodeId, payload.attributeId).pipe(
+        switchMap(response => [new DeleteWorkPackageNodeAttributeSuccess(response.data)]),
+        catchError(error => of(new DeleteWorkPackageNodeAttributeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   addWorkPackageNodeAttribute$ = this.actions$.pipe(
     ofType<AddWorkPackageNodeAttribute>(WorkPackageNodeActionTypes.AddWorkPackageNodeAttribute),
     map(action => action.payload),
@@ -273,6 +295,30 @@ export class WorkPackageNodeEffects {
       return this.workpackageNodeService.addWorkPackageNodeAttribute(payload.workPackageId, payload.nodeId, payload.attributeId).pipe(
         switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeAttributeSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeAttributeFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  updateNodeProperty$ = this.actions$.pipe(
+    ofType<UpdateWorkPackageNodeProperty>(WorkPackageNodeActionTypes.UpdateWorkPackageNodeProperty),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: WorkpackageNodeCustomProperty }) => {
+      return this.workpackageNodeService.updateNodeProperty(payload.workPackageId, payload.nodeId, payload.customPropertyId, payload.data).pipe(
+        switchMap((response: NodeDetailApiResponse) => [new UpdateWorkPackageNodePropertySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageNodePropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteNodeProperty$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageNodeProperty>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeProperty),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; nodeId: string, customPropertyId: string }) => {
+      return this.workpackageNodeService.deleteNodeProperty(payload.workPackageId, payload.nodeId, payload.customPropertyId).pipe(
+        switchMap(response => [new DeleteWorkPackageNodePropertySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodePropertyFailure(error)))
       );
     })
   );

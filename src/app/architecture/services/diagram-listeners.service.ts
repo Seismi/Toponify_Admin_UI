@@ -135,15 +135,7 @@ export class DiagramListenersService {
 
     // Listeners to hide button menu on system nodes when user clicks outside menu
     diagram.addDiagramListener(
-      'BackgroundSingleClicked',
-      function(event: go.DiagramEvent): void {
-        event.diagram.nodes.each(function(node: go.Part): void {
-          node.removeAdornment('ButtonMenu');
-        });
-      }
-    );
-    diagram.addDiagramListener(
-      'ObjectSingleClicked',
+      'ChangedSelection',
       function(event: go.DiagramEvent): void {
         event.diagram.nodes.each(function(node: go.Part): void {
           node.removeAdornment('ButtonMenu');
@@ -157,14 +149,6 @@ export class DiagramListenersService {
           node.removeAdornment('ButtonMenu');
         });
       }
-    );
-
-    // Temporary - added in order to test diagram image download
-    diagram.addDiagramListener(
-      'BackgroundDoubleClicked',
-      function(): void {
-        this.diagramImageService.downloadImage(diagram);
-      }.bind(this)
     );
   }
 

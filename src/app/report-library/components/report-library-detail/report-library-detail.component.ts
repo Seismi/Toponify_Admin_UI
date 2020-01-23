@@ -15,6 +15,7 @@ export class ReportLibraryDetailComponent {
   @Input() isEditable: boolean;
   @Input() group: FormGroup;
   @Input() dataSets: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
+  @Input() system: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity;
   @Input() owners: OwnersEntity[];
   @Input() dimensions: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
   @Input() reportingConcepts: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
@@ -30,6 +31,9 @@ export class ReportLibraryDetailComponent {
   @Output() addOwner = new EventEmitter<void>();
   @Output() selectOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
   @Output() deleteOwner = new EventEmitter<void>();
+  @Output() editSourceSystem = new EventEmitter<void>();
+  @Output() addDataSets = new EventEmitter<void>();
+  @Output() removeDataSet = new EventEmitter<string>();
 
   onSave() {
     this.saveReport.emit();
@@ -57,5 +61,17 @@ export class ReportLibraryDetailComponent {
 
   onDeleteOwner() {
     this.deleteOwner.emit();
+  }
+
+  onSourceEdit() {
+    this.editSourceSystem.emit();
+  }
+
+  onDatasetAdd() {
+    this.addDataSets.emit();
+  }
+
+  onRemoveDataSet(id: string) {
+    this.removeDataSet.emit(id);
   }
 }
