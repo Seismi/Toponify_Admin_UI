@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { WorkPackageLinksService } from '@app/workpackage/services/workpackage-links.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
 import { NodeLink, NodeLinkDetailApiResponse } from '@app/architecture/store/models/node-link.model';
 import {
   AddWorkPackageLink,
@@ -152,9 +152,9 @@ export class WorkPackageLinkEffects {
   addWorkPackageLinkRadio$ = this.actions$.pipe(
     ofType<AddWorkPackageLinkRadio>(WorkPackageLinkActionTypes.AddWorkPackageLinkRadio),
     map(action => action.payload),
-    switchMap((payload: { workPackageId: string; nodeLinkId: string, radioId: string }) => {
+    concatMap((payload: { workPackageId: string; nodeLinkId: string, radioId: string }) => {
       return this.workpackageLinkService.addLinkRadio(payload.workPackageId, payload.nodeLinkId, payload.radioId).pipe(
-        switchMap((response: NodeLinkDetailApiResponse) => [new AddWorkPackageLinkRadioSuccess(response.data)]),
+        concatMap((response: NodeLinkDetailApiResponse) => [new AddWorkPackageLinkRadioSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkRadioFailure(error)))
       );
     })

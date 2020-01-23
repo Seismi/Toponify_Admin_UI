@@ -6,7 +6,7 @@ import {
 } from '@app/workpackage/services/workpackage-nodes.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
 import {
   AddWorkPackageNode,
   AddWorkPackageNodeDescendant,
@@ -265,11 +265,11 @@ export class WorkPackageNodeEffects {
   addWorkPackageNodeRadio$ = this.actions$.pipe(
     ofType<AddWorkPackageNodeRadio>(WorkPackageNodeActionTypes.AddWorkPackageNodeRadio),
     map(action => action.payload),
-    switchMap((payload: { workPackageId: string; nodeId: string; radioId: string }) => {
+    concatMap((payload: { workPackageId: string; nodeId: string; radioId: string }) => {
       return this.workpackageNodeService
         .addWorkPackageNodeRadio(payload.workPackageId, payload.nodeId, payload.radioId)
         .pipe(
-          switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
+          concatMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
           catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeRadioFailure(error)))
         );
     })
