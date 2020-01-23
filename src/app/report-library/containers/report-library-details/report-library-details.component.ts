@@ -322,7 +322,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
             filter: data.filter
           })
         );
-        if (data.filter === 'selection') {
+        if (data.filter === 'selected') {
           data.unlinked.forEach(concept =>
             this.store.dispatch(
               new DeleteReportingConcept({

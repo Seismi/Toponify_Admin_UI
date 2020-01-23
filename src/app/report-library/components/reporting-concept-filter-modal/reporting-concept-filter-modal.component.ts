@@ -46,7 +46,7 @@ export class ReportingConceptFilterModalComponent implements OnInit {
   }
 
   onConfirm() {
-    if (this.selectedFilter !== 'selection') {
+    if (this.selectedFilter !== 'selected') {
       this.dialogRef.close({
         filter: this.selectedFilter
       });
