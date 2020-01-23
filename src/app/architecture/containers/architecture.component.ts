@@ -837,7 +837,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         return;
       }
       // lets add selected workpackages in to node/link
-      node = { ...node, impactedByWorkPackages: this.selectedWorkpackages };
+      node = { ...node, impactedByWorkPackages: this.selectedWorkPackageEntities };
     }
     this.dialog
       .open(DeleteNodeModalComponent, {
@@ -863,7 +863,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         return;
       }
       // lets add selected workpackages in to node/link
-      link = { ...link, impactedByWorkPackages: this.selectedWorkpackages };
+      link = { ...link, impactedByWorkPackages: this.selectedWorkPackageEntities };
     }
     this.dialog
       .open(DeleteLinkModalComponent, {
