@@ -61,6 +61,10 @@ export class RadioService {
     return this.http.delete(`/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radioId}`);
   }
 
+  deleteRadioEntity(radioId: string): Observable<RadioEntitiesResponse> {
+    return this.http.delete<RadioEntitiesResponse>(`/radios/${radioId}`, httpOptions);
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());

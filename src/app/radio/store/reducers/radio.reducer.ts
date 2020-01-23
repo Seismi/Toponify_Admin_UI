@@ -200,6 +200,13 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
+    case RadioActionTypes.DeleteRadioEntitySuccess: {
+      return {
+        ...state,
+        entities: state.entities.filter(entity => entity.id !== action.payload)
+      };
+    }
+
     default: {
       return state;
     }

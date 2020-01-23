@@ -15,9 +15,9 @@ export class WorkPackageNameComponent implements OnInit {
 
   ngOnInit() {}
 
-  @Output() exitWorkPackageEditMode = new EventEmitter<void>();
+  @Output() exitWorkPackageEditMode = new EventEmitter<WorkPackageEntity[]>();
 
   onExitWorkPackageEditMode(): void {
-    this.exitWorkPackageEditMode.emit();
+    this.exitWorkPackageEditMode.emit(this.selectedWorkPackageEntities);
   }
 }

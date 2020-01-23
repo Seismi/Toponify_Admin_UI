@@ -141,3 +141,9 @@ export interface AttributesEntity {
   tags: string;
   related?: (null)[] | null;
 }
+
+export interface ReportDataSet {
+  id: string;
+  category: string;
+  name: string;
+}

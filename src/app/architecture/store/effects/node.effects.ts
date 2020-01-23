@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import * as NodeActions from '../actions/node.actions';
 import { NodeActionTypes } from '../actions/node.actions';
 import { forkJoin, of } from 'rxjs';
@@ -10,10 +10,8 @@ import {
   NodeService
 } from '@app/architecture/services/node.service';
 import {
-  CustomPropertyApiRequest,
   NodeExpandedStateApiRequest,
   Error,
-  NodeApiResponse,
   NodeDetailApiResponse,
   NodesApiResponse,
   NodeLocationsUpdatePayload,
@@ -153,41 +151,6 @@ export class NodeEffects {
         switchMap((response: any) => [new NodeActions.UpdateNodeExpandedStateSuccess(response.data)]),
         catchError((error: Error) => of(new NodeActions.UpdateNodeExpandedStateFailure(error)))
       );
-    })
-  );
-
-  @Effect()
-  updateCustomProperty$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateCustomProperty>(NodeActionTypes.UpdateCustomProperty),
-    map(action => action.payload),
-    switchMap(
-      (payload: {
-        workPackageId: string;
-        nodeId: string;
-        customPropertyId: string;
-        data: CustomPropertyApiRequest;
-      }) => {
-        return this.nodeService
-          .updateCustomPropertyValues(payload.workPackageId, payload.nodeId, payload.customPropertyId, payload.data)
-          .pipe(
-            switchMap((response: NodeApiResponse) => [new NodeActions.UpdateCustomPropertySuccess(response.data)]),
-            catchError((error: Error) => of(new NodeActions.UpdateCustomPropertyFailure(error)))
-          );
-      }
-    )
-  );
-
-  @Effect()
-  deleteCustomProperty$ = this.actions$.pipe(
-    ofType<NodeActions.DeleteCustomProperty>(NodeActionTypes.DeleteCustomProperty),
-    map(action => action.payload),
-    mergeMap((payload: { workPackageId: string; nodeId: string; customPropertyId: string }) => {
-      return this.nodeService
-        .deleteCustomPropertyValues(payload.workPackageId, payload.nodeId, payload.customPropertyId)
-        .pipe(
-          map(response => new NodeActions.DeleteCustomPropertySuccess(response.data)),
-          catchError((error: Error) => of(new NodeActions.DeleteCustomPropertyFailure(error)))
-        );
     })
   );
 
