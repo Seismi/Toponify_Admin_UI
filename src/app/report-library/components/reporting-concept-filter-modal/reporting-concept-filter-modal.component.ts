@@ -16,6 +16,7 @@ export class ReportingConceptFilterModalComponent implements OnInit {
   public initialSelectedConcepts: ReportingConcept[];
   public selectedConcepts: ReportingConcept[];
   private availableConcepts: ReportingConcept[];
+  public dimensionName: string;
 
   constructor(
     public dialogRef: MatDialogRef<ReportingConceptFilterModalComponent>,
@@ -29,6 +30,7 @@ export class ReportingConceptFilterModalComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.selectedFilter = data.dimension.filter || 'all';
+    this.dimensionName = data.dimension.name;
   }
 
   ngOnInit() {
