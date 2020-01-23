@@ -574,7 +574,7 @@ export class GojsCustomObjectsService {
           'Expand',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            const node = (object.part as go.Adornment).adornedObject as go.Group;
             event.diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
             event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.group);
 

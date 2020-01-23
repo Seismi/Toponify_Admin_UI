@@ -15,6 +15,37 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
+function SystemGroupLayout() {
+  go.GridLayout.call(this);
+  this.wrappingColumn = 1;
+  this.alignment = go.GridLayout.Location;
+  this.spacing = new go.Size(NaN, 12);
+}
+
+go.Diagram.inherit(SystemGroupLayout, go.GridLayout);
+
+SystemGroupLayout.prototype.initialOrigin = function(): go.Point {
+  const memberArea = this.group.resizeObject;
+  const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
+  return memberArea.getDocumentPoint(initialOriginLocal);
+};
+
+SystemGroupLayout.prototype.doLayout = function(coll) {
+
+  this.diagram.startTransaction('System Group Layout');
+  const nextPosition = this.initialOrigin();
+
+  this.group.memberParts.each(function(part) {
+    if (part instanceof go.Node && part.canLayout()) {
+      part.move(nextPosition, true);
+      console.log(part.data.name, part.location);
+      nextPosition.y = nextPosition.y + part.actualBounds.height + 12;
+    }
+  });
+
+  this.diagram.commitTransaction('System Group Layout');
+};
+
 const nodeWidth = 300;
 
 @Injectable()
@@ -939,6 +970,33 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
+        layout: $(SystemGroupLayout as any,
+          {
+            isOngoing: false,
+            isInitial: true
+          }
+        ),
+        subGraphExpandedChanged: function(thisGroup) {
+          if (thisGroup.isSubGraphExpanded) {
+            thisGroup.layout.isValidLayout = false;
+
+            const linksToReroute = new go.Set();
+            thisGroup.findSubGraphParts()
+              .each(
+                function(part: go.Part): void {
+                  if (part instanceof go.Node) {
+                    linksToReroute.addAll(part.linksConnected);
+                  }
+                }
+              );
+
+            linksToReroute.each(function(link: go.Link): void {
+              // thisGroup.model.setDataProperty(link.data, 'updateRoute', true);
+              link.data = Object.assign(link.data, { updateRoute: true });
+              link.invalidateRoute();
+            });
+          }
+        },
         resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 
