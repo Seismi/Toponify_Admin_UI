@@ -74,26 +74,6 @@ export class NodeService {
     return this.http.get<any>(`/nodes/${id}/usage`, { params: params });
   }
 
-  updateCustomPropertyValues(
-    workPackageId: string,
-    nodeId: string,
-    customPropertyId: string,
-    data: CustomPropertyApiRequest
-  ): Observable<any> {
-    return this.http.put<any>(
-      `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`,
-      data,
-      httpOptions
-    );
-  }
-
-  deleteCustomPropertyValues(workPackageId: string, nodeId: string, customPropertyId: string): Observable<any> {
-    return this.http.post<any>(
-      `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}/deleteRequest`,
-      {}
-    );
-  }
-
   getReports(nodeId: string, queryParams?: GetNodesRequestQueryParams): Observable<NodeReportsApiResponse> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<NodeReportsApiResponse>(`/nodes/${nodeId}/reports`, { params: params });

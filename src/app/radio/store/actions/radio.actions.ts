@@ -48,7 +48,11 @@ export enum RadioActionTypes {
 
   DissociateRadio = '[Radio] Dissociate Radio entity',
   DissociateRadioSuccess = '[Radio] Dissociate Radio entity Success',
-  DissociateRadioFailure = '[Radio] Dissociate Radio entity Failure'
+  DissociateRadioFailure = '[Radio] Dissociate Radio entity Failure',
+
+  DeleteRadioEntity = '[Radio] Delete Radio Entity',
+  DeleteRadioEntitySuccess = '[Radio] Delete Radio Entity Success',
+  DeleteRadioEntityFailure = '[Radio] Delete Radio Entity Failure'
 }
 
 export class LoadRadios implements Action {
@@ -191,6 +195,21 @@ export class DissociateRadioFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class DeleteRadioEntity implements Action {
+  readonly type = RadioActionTypes.DeleteRadioEntity;
+  constructor(public payload: string) {}
+}
+
+export class DeleteRadioEntitySuccess implements Action {
+  readonly type = RadioActionTypes.DeleteRadioEntitySuccess;
+  constructor(public payload: string) {}
+}
+
+export class DeleteRadioEntityFailure implements Action {
+  readonly type = RadioActionTypes.DeleteRadioEntityFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type RadioActionsUnion =
   | LoadRadios
   | LoadRadiosSuccess
@@ -219,4 +238,7 @@ export type RadioActionsUnion =
   | AssociateRadioFailure
   | DissociateRadio
   | DissociateRadioSuccess
-  | DissociateRadioFailure;
+  | DissociateRadioFailure
+  | DeleteRadioEntity
+  | DeleteRadioEntitySuccess
+  | DeleteRadioEntityFailure;

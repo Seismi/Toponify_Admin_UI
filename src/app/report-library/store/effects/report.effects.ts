@@ -105,4 +105,28 @@ export class ReportEffects {
       );
     })
   );
+
+  @Effect()
+  addDataSetToReport$ = this.actions$.pipe(
+    ofType<ReportActions.AddDataSetsToReport>(ReportActionTypes.AddDataSetsToReport),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; ids: { id: string }[] }) => {
+      return this.reportService.addDataSets(payload.workPackageId, payload.reportId, payload.ids).pipe(
+        mergeMap((response: ReportDetailApiRespoonse) => [new ReportActions.AddDataSetsToReportSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.AddDataSetsToReportFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  removeDataSetFromReport$ = this.actions$.pipe(
+    ofType<ReportActions.RemoveDataSetsFromReport>(ReportActionTypes.RemoveDataSetsFromReport),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; dataSetId: string }) => {
+      return this.reportService.removeDataSet(payload.workPackageId, payload.reportId, payload.dataSetId).pipe(
+        mergeMap((response: ReportDetailApiRespoonse) => [new ReportActions.RemoveDataSetsFromReportSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.RemoveDataSetsFromReportFail(error)))
+      );
+    })
+  );
 }

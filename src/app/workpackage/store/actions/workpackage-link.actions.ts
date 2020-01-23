@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
+import { WorkpackageLinkCustomProperty } from '../models/workpackage.models';
 
 export enum WorkPackageLinkActionTypes {
   AddWorkPackageLink = '[WorkPackage] Add link',
@@ -24,6 +25,12 @@ export enum WorkPackageLinkActionTypes {
   AddWorkPackageLinkAttribute = '[WorkPackage] Add Link Attribute',
   AddWorkPackageLinkAttributeSuccess = '[WorkPackage] Add Link Attribute Success',
   AddWorkPackageLinkAttributeFailure = '[WorkPackage] Add Link Attribute Failure',
+  UpdateWorkPackageLinkProperty = '[WorkPackage] Update Link Property',
+  UpdateWorkPackageLinkPropertySuccess = '[WorkPackage] Update Link Property Success',
+  UpdateWorkPackageLinkPropertyFailure = '[WorkPackage] Update Link Property Failure',
+  DeleteWorkPackageLinkProperty = '[WorkPackage] Delete Link Property',
+  DeleteWorkPackageLinkPropertySuccess = '[WorkPackage] Delete Link Property Success',
+  DeleteWorkPackageLinkPropertyFailure = '[WorkPackage] Delete Link Property Failure',
   DeleteWorkPackageLinkAttribute = '[WorkPackage] Delete Link Attribute',
   DeleteWorkPackageLinkAttributeSuccess = '[WorkPackage] Delete Link Attribute Success',
   DeleteWorkPackageLinkAttributeFailure = '[WorkPackage] Delete Link Attribute Failure'
@@ -134,6 +141,36 @@ export class AddWorkPackageLinkAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class UpdateWorkPackageLinkProperty implements Action {
+  readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLinkProperty;
+  constructor(public payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: WorkpackageLinkCustomProperty}) {}
+}
+
+export class UpdateWorkPackageLinkPropertySuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLinkPropertySuccess;
+  constructor(public payload: NodeLinkDetail) {}
+}
+
+export class UpdateWorkPackageLinkPropertyFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLinkPropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkPackageLinkProperty implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkProperty;
+  constructor(public payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string }) {}
+}
+
+export class DeleteWorkPackageLinkPropertySuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkPropertySuccess;
+  constructor(public payload: NodeLinkDetail) {}
+}
+
+export class DeleteWorkPackageLinkPropertyFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkPropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class DeleteWorkPackageLinkAttribute implements Action {
   readonly type = WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttribute;
   constructor(public payload: { workPackageId: string, nodeLinkId: string, attributeId: string }) { }
@@ -171,6 +208,12 @@ export type WorkPackageLinkActionsUnion =
   | AddWorkPackageLinkAttribute
   | AddWorkPackageLinkAttributeSuccess
   | AddWorkPackageLinkAttributeFailure
+  | UpdateWorkPackageLinkProperty
+  | UpdateWorkPackageLinkPropertySuccess
+  | UpdateWorkPackageLinkPropertyFailure
+  | DeleteWorkPackageLinkProperty
+  | DeleteWorkPackageLinkPropertySuccess
+  | DeleteWorkPackageLinkPropertyFailure
   | DeleteWorkPackageLinkAttribute
   | DeleteWorkPackageLinkAttributeSuccess
   | DeleteWorkPackageLinkAttributeFailure;
