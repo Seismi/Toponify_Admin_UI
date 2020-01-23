@@ -30,8 +30,15 @@ import {
   DeleteWorkPackageLinkAttributeFailure,
   AddWorkPackageLinkAttribute,
   AddWorkPackageLinkAttributeSuccess,
-  AddWorkPackageLinkAttributeFailure
+  AddWorkPackageLinkAttributeFailure,
+  UpdateWorkPackageLinkProperty,
+  UpdateWorkPackageLinkPropertySuccess,
+  UpdateWorkPackageLinkPropertyFailure,
+  DeleteWorkPackageLinkProperty,
+  DeleteWorkPackageLinkPropertySuccess,
+  DeleteWorkPackageLinkPropertyFailure
 } from '../actions/workpackage-link.actions';
+import { WorkpackageLinkCustomProperty } from '../models/workpackage.models';
 
 @Injectable()
 export class WorkPackageLinkEffects {
@@ -135,6 +142,32 @@ export class WorkPackageLinkEffects {
         switchMap((response: NodeLinkDetailApiResponse) => [new AddWorkPackageLinkAttributeSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkAttributeFailure(error)))
       );
+    })
+  );
+
+  @Effect()
+  updateLinkProperty$ = this.actions$.pipe(
+    ofType<UpdateWorkPackageLinkProperty>(WorkPackageLinkActionTypes.UpdateWorkPackageLinkProperty),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: WorkpackageLinkCustomProperty }) => {
+      return this.workpackageLinkService.updateLinkProperty(payload.workPackageId, payload.nodeLinkId, payload.customPropertyId, payload.data).pipe(
+        switchMap((response: NodeLinkDetailApiResponse) => [new UpdateWorkPackageLinkPropertySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageLinkPropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteLinkProperty$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageLinkProperty>(WorkPackageLinkActionTypes.DeleteWorkPackageLinkProperty),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string }) => {
+      return this.workpackageLinkService
+        .deleteLinkProperty(payload.workPackageId, payload.nodeLinkId, payload.customPropertyId)
+        .pipe(
+          switchMap(response => [new DeleteWorkPackageLinkPropertySuccess(response.data)]),
+          catchError(error => of(new DeleteWorkPackageLinkPropertyFailure(error)))
+        );
     })
   );
 }

@@ -35,8 +35,10 @@
           </button>
       </div>
 
-      <!-- Source Data Sets -->
-      <smi-report-data-set-table [data]="dataSets" *ngIf="!modalMode"></smi-report-data-set-table>
+      <smi-report-data-set-table [data]="dataSets"
+                                 [edit]="workPackageIsEditable"
+                                 (removeDataSet)="onRemoveDataSet($event)"
+                                 (addDataSets)="onDatasetAdd()"></smi-report-data-set-table>
 
       <smi-report-dimensions-table [data]="dimensions"></smi-report-dimensions-table>
     </div>
