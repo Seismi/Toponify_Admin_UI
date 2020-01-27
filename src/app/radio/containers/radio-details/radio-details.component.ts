@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
 import { Observable, Subscription } from 'rxjs';
@@ -10,7 +10,8 @@ import {
   DeleteRadioProperty,
   DissociateRadio,
   LoadRadio,
-  UpdateRadioProperty
+  UpdateRadioProperty,
+  DeleteRadioEntity
 } from '@app/radio/store/actions/radio.actions';
 import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
 import { FormGroup, Validators } from '@angular/forms';
@@ -34,6 +35,7 @@ import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.act
 import { PropertiesFormService } from '@app/radio/components/properties-form/services/properties-form.service';
 import { PropertiesFormValidatorService } from '@app/radio/components/properties-form/services/properties-form-validator.service';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
+import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
 
 @Component({
   selector: 'app-radio-details',
@@ -53,6 +55,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private userStore: Store<UserState>,
     private route: ActivatedRoute,
+    private router: Router,
     private store: Store<RadioState>,
     private propertiesFormService: PropertiesFormService,
     private radioDetailService: RadioDetailService,
@@ -252,4 +255,22 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  onDeleteRadio(): void {
+    const dialogRef = this.dialog.open(DeleteRadioModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(new DeleteRadioEntity(this.radioId));
+        this.router.navigate(['/radio'], { queryParamsHandling: 'preserve' });
+      }
+    });
+  }
+
 }

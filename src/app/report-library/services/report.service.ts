@@ -6,7 +6,7 @@ import {
   ReportLibraryApiResponse,
   ReportDetailApiRequest,
   ReportEntityApiRequest,
-  ReportEntityApiResponse
+  ReportEntityApiResponse, ReportDataSet
 } from '../store/models/report.model';
 import { toHttpParams } from '@app/services/utils';
 
@@ -67,6 +67,23 @@ export class ReportService {
   deleteOwner(workPackageId: string, reportId: string, ownerId: string): Observable<ReportDetailApiRespoonse> {
     return this.http.post<ReportDetailApiRespoonse>(
       `/workpackages/${workPackageId}/reports/${reportId}/owners/${ownerId}/deleteRequest`,
+      {}
+    );
+  }
+
+  getDataSets(workPackageId: string, reportId: string): Observable<{data: ReportDataSet[]}> {
+    return this.http.get<{data: ReportDataSet[]}>(`/workpackages/${workPackageId}/reports/${reportId}/dataSets`);
+  }
+
+  addDataSets(workPackageId: string, reportId: string, ids: { id: string }[]): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/dataSets`, {
+      data: ids
+    });
+  }
+
+  removeDataSet(workPackageId: string, reportId: string, datasetId: string): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(
+      `/workpackages/${workPackageId}/reports/${reportId}/dataSets/${datasetId}/deleteRequest`,
       {}
     );
   }

@@ -44,6 +44,7 @@ import { RelatesToTableComponent } from './components/relates-to-table/relates-t
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { PropertiesFormComponent } from './components/properties-form/properties-form.component';
+import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delete-radio-modal.component';
 
 @NgModule({
   imports: [
@@ -97,7 +98,8 @@ import { PropertiesFormComponent } from './components/properties-form/properties
     RelatesToTableComponent,
     ConfirmModalComponent,
     AssociateModalComponent,
-    PropertiesFormComponent
+    PropertiesFormComponent,
+    DeleteRadioModalComponent
   ],
   entryComponents: [
     RadioModalComponent,
@@ -105,7 +107,8 @@ import { PropertiesFormComponent } from './components/properties-form/properties
     FilterModalComponent,
     DeleteRadioPropertyModalComponent,
     ConfirmModalComponent,
-    AssociateModalComponent
+    AssociateModalComponent,
+    DeleteRadioModalComponent
   ],
   providers: [RadioService, { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }]
 })

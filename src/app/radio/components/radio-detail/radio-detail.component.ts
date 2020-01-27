@@ -14,7 +14,7 @@ export class RadioDetailComponent {
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() modalMode = false;
-  @Input() statusClosed = false;
+  @Input() radioStatus: string;
   @Input() rows = 8;
   @Input() relatesTo: RadioDetail;
 
@@ -25,7 +25,6 @@ export class RadioDetailComponent {
 
   public categories = Constants.RADIO_CATEGORIES;
   public status = Constants.RADIO_STATUS;
-  public refNumber = ['R-0001', 'R-0002', 'R-0003', 'R-0004'];
 
   @Output()
   archiveRadio = new EventEmitter<void>();
@@ -38,6 +37,9 @@ export class RadioDetailComponent {
 
   @Output()
   addRelatesTo = new EventEmitter<void>();
+
+  @Output()
+  deleteRadio = new EventEmitter<void>();
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;
@@ -58,5 +60,9 @@ export class RadioDetailComponent {
 
   onCancel() {
     this.isEditable = false;
+  }
+
+  onDelete(): void {
+    this.deleteRadio.emit();
   }
 }
