@@ -32,16 +32,13 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { PropertiesFormService } from '@app/radio/components/properties-form/services/properties-form.service';
-import { PropertiesFormValidatorService } from '@app/radio/components/properties-form/services/properties-form-validator.service';
-import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
 
 @Component({
   selector: 'app-radio-details',
   templateUrl: './radio-details.component.html',
   styleUrls: ['./radio-details.component.scss'],
-  providers: [RadioDetailService, RadioValidatorService, PropertiesFormService, PropertiesFormValidatorService]
+  providers: [RadioDetailService, RadioValidatorService]
 })
 export class RadioDetailsComponent implements OnInit, OnDestroy {
   public users$: Observable<User[]>;
@@ -50,14 +47,12 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription[] = [];
   public isEditable = false;
   public modalMode = false;
-  public documentStandardTableRowIndex: number;
 
   constructor(
     private userStore: Store<UserState>,
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<RadioState>,
-    private propertiesFormService: PropertiesFormService,
     private radioDetailService: RadioDetailService,
     private dialog: MatDialog,
     private workpackageStore: Store<WorkPackageState>,
@@ -98,10 +93,6 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
   get radioDetailsForm(): FormGroup {
     return this.radioDetailService.radioDetailsForm;
-  }
-
-  get propertiesForm(): FormGroup {
-    return this.propertiesFormService.propertiesForm;
   }
 
   onSaveRadio(): void {
@@ -165,31 +156,14 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     this.radioDetailsForm.patchValue({ replyText: '' });
   }
 
-  onEditProperty(data: { documentStandard: DocumentStandard, index: number }): void {
-    this.documentStandardTableRowIndex = data.index;
-    const reg = this.propertiesFormService.getValueValidation(data.documentStandard.type);
-    this.propertiesForm.get('value').setValidators([Validators.pattern(reg)]);
-    this.propertiesFormService.propertiesForm.patchValue({
-      value: data.documentStandard.value
-    });
-  }
-
-  onSaveProperty(propertyId: string): void {
-    if (!this.propertiesFormService.isValid) {
-      return;
-    }
+  onSaveProperty(data: { propertyId: string, value: string }): void {
     this.store.dispatch(
       new UpdateRadioProperty({
         radioId: this.radioId,
-        customPropertyId: propertyId,
-        data: { data: this.propertiesForm.value }
+        customPropertyId: data.propertyId,
+        data: { data: data.value }
       })
     );
-    this.documentStandardTableRowIndex = null;
-  }
-
-  onCancelPropertyEdit(): void {
-    this.documentStandardTableRowIndex = null;
   }
 
   onDeleteProperty(property: CustomPropertiesEntity): void {
@@ -205,7 +179,6 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteRadioProperty({ radioId: this.radioId, customPropertyId: property.propertyId }));
-        this.documentStandardTableRowIndex = null;
       }
     });
   }

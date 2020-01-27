@@ -1,4 +1,4 @@
-<p class="table-title">Relates To <span class="description">(documentation standards require the following):</span></p>
+<p>Relates To <span class="description">(documentation standards require the following):</span></p>
 <table mat-table [dataSource]="dataSource">
   <!-- Name Column -->
   <ng-container matColumnDef="name">
@@ -10,17 +10,17 @@
   <ng-container matColumnDef="value">
     <th mat-header-cell *matHeaderCellDef>Value</th>
     <td mat-cell *matCellDef="let element; let i = index">
-      <smi-properties-form 
-        *ngIf="i === index" 
-        [group]="group" 
+      <smi-edit-documentation-standards-form
+        *ngIf="i === index"
+        [group]="editDocumentationStandardsForm"
         [type]="element.type">
-      </smi-properties-form>
+      </smi-edit-documentation-standards-form>
       <span *ngIf="i !== index">
-        <a href="{{ element.value }}" target="_blank" *ngIf="element.type === 'Hyperlink'; else elseBlock2">
+        <a href="{{ element.value }}" target="_blank" *ngIf="element.type === 'Hyperlink'; else elseBlock">
           {{ element.value }}
         </a>
       </span>
-      <ng-template #elseBlock2>
+      <ng-template #elseBlock>
         {{ element.type === 'Date' ? (element.value | date) : element.value }}
       </ng-template>
     </td>

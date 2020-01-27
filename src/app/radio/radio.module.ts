@@ -31,7 +31,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { RadioEffects } from './store/effects/radio.effects';
 import { reducer } from './store/reducers/radio.reducer';
 import { RadioDetailsComponent } from './containers/radio-details/radio-details.component';
-import { RadioPropertiesTabComponent } from './components/properties-tab/properties-tab.component';
 import { SettingsModule } from '@app/settings/settings.module';
 import { RadioHeaderComponent } from './components/radio-header/radio-header.component';
 import { RadioRightSideComponent } from './components/right-side/right-side.component';
@@ -43,7 +42,6 @@ import { DeleteRadioPropertyModalComponent } from './containers/delete-property-
 import { RelatesToTableComponent } from './components/relates-to-table/relates-to-table.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
-import { PropertiesFormComponent } from './components/properties-form/properties-form.component';
 import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delete-radio-modal.component';
 
 @NgModule({
@@ -74,7 +72,6 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
   exports: [
     RadioTableComponent,
     RadioDetailsComponent,
-    RadioPropertiesTabComponent,
     ReplyTextComponent,
     ChatBoxComponent,
     RadioDetailComponent
@@ -89,7 +86,6 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
     ReplyTextComponent,
     ChatBoxComponent,
     RadioDetailsComponent,
-    RadioPropertiesTabComponent,
     RadioHeaderComponent,
     RadioRightSideComponent,
     FilterModalComponent,
@@ -98,7 +94,6 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
     RelatesToTableComponent,
     ConfirmModalComponent,
     AssociateModalComponent,
-    PropertiesFormComponent,
     DeleteRadioModalComponent
   ],
   entryComponents: [

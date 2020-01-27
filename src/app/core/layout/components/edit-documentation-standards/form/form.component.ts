@@ -4,11 +4,11 @@ import { FormGroup } from '@angular/forms';
 const booleanTypes: string[] = ['true', 'false'];
 
 @Component({
-  selector: 'smi-properties-form',
-  templateUrl: './properties-form.component.html',
-  styleUrls: ['./properties-form.component.scss']
+  selector: 'smi-edit-documentation-standards-form',
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.scss']
 })
-export class PropertiesFormComponent {
+export class EditDocumentationStandardsFormComponent {
   @Input() group: FormGroup;
   @Input() type: string;
   public booleanTypes = booleanTypes;
