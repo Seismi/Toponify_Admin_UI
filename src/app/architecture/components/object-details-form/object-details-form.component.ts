@@ -4,12 +4,11 @@ import {
   OwnersEntityOrTeamEntityOrApproversEntity,
   NodeLinkDetail
 } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, nodeCategories } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
 
-const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
 const dimensionCategories = ['dimension'];
 const reportingCategories = ['list', 'structure', 'key'];
@@ -115,7 +114,7 @@ export class ObjectDetailsFormComponent {
   getCategories(): string[] {
     switch (this.part.data.layer) {
       case 'system':
-        return this.part instanceof Node ? systemCategories : ['master data', 'data'];
+        return this.part instanceof Node ? Object.values(nodeCategories) : ['master data', 'data'];
       case 'data set':
         return this.part instanceof Node ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
