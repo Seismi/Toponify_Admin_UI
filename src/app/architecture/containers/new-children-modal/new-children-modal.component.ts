@@ -8,8 +8,8 @@ import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selec
 import { NewChildrenService } from './services/new-children-form.service';
 import { NewChildrenValidatorService } from './services/new-children-form-validator.service';
 import { FormGroup } from '@angular/forms';
-import { nodeCategories } from '@app/architecture/store/models/node.model';
 
+const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
 const dimensionCategories = ['dimension'];
 const reportingConceptCategories = ['structure', 'list', 'key'];
@@ -55,7 +55,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
 
   getCategories(filterLevel: string): string[] {
     if (this.addSystem) {
-      return Object.values(nodeCategories);
+      return systemCategories;
     }
     switch(filterLevel) {
       case 'system':
