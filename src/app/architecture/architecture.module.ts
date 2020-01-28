@@ -50,7 +50,6 @@ import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
 import { RadioTabComponent } from './components/radio-tab/radio-tab.component';
-import { PropertiesTabComponent } from './components/properties-tab/properties-tab.component';
 import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
@@ -133,7 +132,6 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     DeleteNodeModalComponent,
     WorkPackageTabComponent,
     RadioTabComponent,
-    PropertiesTabComponent,
     AttributesTabComponent,
     DeleteLinkModalComponent,
     WorkPackageTabTableComponent,
