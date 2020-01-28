@@ -69,7 +69,6 @@ import {
   WorkPackageNodeFindPotential,
   WorkPackageNodeScopeApiResponse,
   WorkPackageNodeScopesApiResponse,
-  WorkpackageNodeCustomProperty
 } from '../models/workpackage.models';
 import {
   DescendantsEntity,
@@ -303,7 +302,7 @@ export class WorkPackageNodeEffects {
   updateNodeProperty$ = this.actions$.pipe(
     ofType<UpdateWorkPackageNodeProperty>(WorkPackageNodeActionTypes.UpdateWorkPackageNodeProperty),
     map(action => action.payload),
-    mergeMap((payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: WorkpackageNodeCustomProperty }) => {
+    mergeMap((payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: string }) => {
       return this.workpackageNodeService.updateNodeProperty(payload.workPackageId, payload.nodeId, payload.customPropertyId, payload.data).pipe(
         switchMap((response: NodeDetailApiResponse) => [new UpdateWorkPackageNodePropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageNodePropertyFailure(error)))

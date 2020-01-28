@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { WorkpackageLinkCustomProperty } from '../models/workpackage.models';
 
 export enum WorkPackageLinkActionTypes {
   AddWorkPackageLink = '[WorkPackage] Add link',
@@ -143,7 +142,7 @@ export class AddWorkPackageLinkAttributeFailure implements Action {
 
 export class UpdateWorkPackageLinkProperty implements Action {
   readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLinkProperty;
-  constructor(public payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: WorkpackageLinkCustomProperty}) {}
+  constructor(public payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: string }) {}
 }
 
 export class UpdateWorkPackageLinkPropertySuccess implements Action {
