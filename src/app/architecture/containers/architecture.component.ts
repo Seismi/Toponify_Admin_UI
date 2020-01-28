@@ -468,7 +468,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               new AddWorkPackageNode({
                 workpackageId: this.workpackageId,
                 node: data.data,
-                scope: this.scopeId
+                scope: this.scope.id
               })
             );
           }
