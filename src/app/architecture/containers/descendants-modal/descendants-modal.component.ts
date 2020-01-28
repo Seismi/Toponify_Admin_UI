@@ -20,13 +20,13 @@ import { NewChildrenModalComponent } from '../new-children-modal/new-children-mo
 })
 export class DescendantsModalComponent implements OnInit {
   public descendants$: Observable<DescendantsEntity[]>;
-  public displayedColumns: string[] = ['name'];
   public selectedDescendants: DescendantsEntity[] = [];
   public workpackageId: string;
   public nodeId: string;
   public childrenOf: WorkPackageNodeFindPotential;
   public components = new FormControl();
   public title: string;
+  public addToGroup: boolean;
 
   @ViewChild('searchInput') searchInput: ElementRef;
 
@@ -40,6 +40,7 @@ export class DescendantsModalComponent implements OnInit {
     this.nodeId = data.nodeId;
     this.childrenOf = data.childrenOf;
     this.title = data.title;
+    this.addToGroup = data.addToGroup;
   }
 
   ngOnInit() {

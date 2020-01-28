@@ -180,6 +180,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private showHideGridRef;
   private showDetailTabRef;
   private showHideRadioAlertRef;
+  private addSystemToGroupRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -455,6 +456,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         } else {
           this.onZoomOut();
         }
+      }.bind(this)
+    );
+
+    this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
+      function() {
+        this.onAddDescendant({ addToGroup: true });
       }.bind(this)
     );
 
@@ -1364,7 +1371,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant() {
+  onAddDescendant(addToGroup?: boolean) {
     const dialogRef = this.dialog.open(DescendantsModalComponent, {
       disableClose: false,
       width: '500px',
@@ -1373,6 +1380,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         nodeId: this.nodeId,
         scopeId: this.scope.id,
         title: this.selectedNode.name,
+        addToGroup: (addToGroup) ? false : true,
         childrenOf: {
           id: null // Add node from the same level *not required*
         }
