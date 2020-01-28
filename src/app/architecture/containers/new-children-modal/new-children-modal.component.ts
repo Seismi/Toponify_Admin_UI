@@ -8,10 +8,11 @@ import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selec
 import { NewChildrenService } from './services/new-children-form.service';
 import { NewChildrenValidatorService } from './services/new-children-form-validator.service';
 import { FormGroup } from '@angular/forms';
+import { nodeCategories } from '@app/architecture/store/models/node.model';
 
 const dataSetCategories = ['physical', 'virtual', 'master data'];
 const dimensionCategories = ['dimension'];
-const reportingConceptCategories = ['list', 'structure', 'key'];
+const reportingConceptCategories = ['structure', 'list', 'key'];
 
 @Component({
   selector: 'smi-new-children-modal',
@@ -24,7 +25,8 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
   public filterLevelSubscription: Subscription;
   public parentId: string;
   public layer: string;
-  public newSubItem: boolean;
+  public addSystem: boolean;
+  public filterLevel: string;
 
   constructor(
     private newChildrenService: NewChildrenService,
@@ -33,23 +35,14 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.parentId = data.parentId;
-    this.newSubItem = data.newSubItem;
+    this.addSystem = data.addSystem;
   }
 
   ngOnInit(): void {
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
-      if (filterLevel === 'system') {
-        this.categories = dataSetCategories;
-        this.newChildrenForm.get('category').setValue('physical');
-      } else if (filterLevel === 'data set') {
-        this.categories = dimensionCategories;
-        this.newChildrenForm.get('category').setValue('dimension');
-      } else {
-        this.categories = reportingConceptCategories;
-        this.newChildrenForm.get('category').setValue('structure');
-      }
-      this.getLayer(filterLevel);
+      this.filterLevel = filterLevel;
     });
+    this.newChildrenForm.patchValue({ category: this.getCategories(this.filterLevel)[0] });
   }
 
   ngOnDestroy(): void {
@@ -60,27 +53,42 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     return this.newChildrenService.newChildrenForm;
   }
 
-  getLayer(filterLevel: string): string {
-    if (filterLevel === 'system') {
-      this.layer = 'data set';
-    } else if (filterLevel === 'data set') {
-      this.layer = 'dimension';
-    } else {
-      this.layer = 'reporting concept';
+  getCategories(filterLevel: string): string[] {
+    if (this.addSystem) {
+      return Object.values(nodeCategories);
     }
-    return this.layer;
+    switch(filterLevel) {
+      case 'system':
+        return dataSetCategories;
+      case 'data set':
+        return dimensionCategories;
+      case 'dimension':
+        return reportingConceptCategories;
+    }
+  }
+
+  getLayer(filterLevel: string): string {
+    if (this.addSystem) {
+      return 'system';
+    }
+    switch(filterLevel) {
+      case 'system':
+        return 'data set';
+      case 'data set':
+        return 'dimension';
+      case 'dimension':
+        return 'reporting concept';
+    }
   }
 
   onSubmit(): void {
     if (!this.newChildrenService.isValid) {
       return;
     }
-    this.dialogRef.close({
-      data: {
-        category: this.newChildrenForm.value.category,
-        name: this.newChildrenForm.value.name,
-        description: this.newChildrenForm.value.description,
-        layer: this.layer,
+    this.dialogRef.close({ 
+      data: { 
+        ...this.newChildrenForm.value, 
+        layer: this.getLayer(this.filterLevel),
         parentId: this.parentId
       }
     });

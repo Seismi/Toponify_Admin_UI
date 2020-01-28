@@ -458,7 +458,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           width: '450px',
           data: {
             parentId: this.nodeId,
-            newSubItem: true
+            addSystem: true
           }
         });
     
