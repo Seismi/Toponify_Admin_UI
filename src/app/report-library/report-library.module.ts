@@ -13,7 +13,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatSelectModule,
-  MatDialogModule, MatAutocompleteModule, MatCheckboxModule
+  MatDialogModule, MatAutocompleteModule, MatCheckboxModule, MatTooltipModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -59,6 +59,7 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     MatDialogModule,
     MatAutocompleteModule,
     MatCheckboxModule,
+    MatTooltipModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],

@@ -10,10 +10,17 @@ export interface CustomPropertyApiRequest {
   data: CustomPropertyValuesEntity;
 }
 
+export enum middleOptions {
+  none = 'none',
+  children = 'children',
+  groupList = 'group list',
+  group = 'group'
+}
+
 export interface NodeExpandedStateApiRequest {
   data: {
     id: string;
-    middleExpanded?: boolean;
+    middleExpanded?: middleOptions;
     bottomExpanded?: boolean;
   };
 }
@@ -47,6 +54,7 @@ export class Node {
   id: string;
   layer: string;
   isGroup?: boolean;
+  group?: string;
   name: string;
   description = '';
   category: nodeCategories;
@@ -85,7 +93,7 @@ export interface LocationsEntity {
 }
 export interface ExpandedStatesEntity {
   layout: Layout;
-  middleExpanded: boolean;
+  middleExpanded: middleOptions;
   bottomExpanded: boolean;
 }
 export interface Layout {
@@ -110,6 +118,7 @@ export interface NodeDetail {
   description: string;
   category: nodeCategories;
   isGroup?: boolean;
+  group?: string;
   tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
@@ -205,11 +214,11 @@ export interface NodeReportsApiResponse {
 export interface NodeReports {
   id: string;
   name: string;
-  dataSet: DataSet;
+  system: System;
   owners: (OwnersEntity)[] | null;
 }
 
-export interface DataSet {
+export interface System {
   id: string;
   name: string;
   category: string;
