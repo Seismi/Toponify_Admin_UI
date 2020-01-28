@@ -51,6 +51,8 @@
     </ng-template>
     <smi-edit-documentation-standards-table
       [data]="properties"
+      [isEditable]="workPackageIsEditable"
+      [nodeCategory]="nodeCategory"
       (saveProperty)="onSaveProperty($event)"
       (deleteProperty)="onDeleteProperty($event)"
     >

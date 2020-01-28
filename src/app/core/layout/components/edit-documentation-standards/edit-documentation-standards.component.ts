@@ -17,6 +17,8 @@ const columns: string[] = ['name', 'value', 'edit', 'delete'];
 })
 export class EditDocumentationStandardsTableComponent {
   @Input() group: FormGroup;
+  @Input() isEditable: boolean = true;
+  @Input() nodeCategory: string;
   public index: number;
 
   @Input()
@@ -63,6 +65,13 @@ export class EditDocumentationStandardsTableComponent {
   onDelete(property: CustomPropertiesEntity): void {
     this.index = -1;
     this.deleteProperty.emit(property);
+  }
+
+  nodeIsEditable(): boolean {
+    if (!this.isEditable || this.nodeCategory === 'copy') {
+      return true;
+    }
+    return false;
   }
 
 }
