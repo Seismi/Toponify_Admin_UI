@@ -13,15 +13,15 @@
     <ul>
       <li>
         Name Only
-        <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onCollapseAll()">
+        <!-- <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onCollapseAll()">
           Collapse All
-        </button>
+        </button> -->
       </li>
       <li>
         Short Summary
-        <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onSummariseAll()">
+        <!-- <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onSummariseAll()">
           Summarise All
-        </button>
+        </button> -->
       </li>
     </ul>
 
@@ -38,7 +38,7 @@
         </mat-checkbox>
       </mat-list-item>
 
-      <mat-form-field>
+      <!-- <mat-form-field>
         <mat-select
           (selectionChange)="onFilterRadioSeverity($event, 'componentsFilter')"
           formControlName="filterRADIOSeverity"
@@ -48,11 +48,11 @@
             {{ filter.level }} - {{ filter.text }}
           </mat-option>
         </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
 
       <h4>
         Detail
-        <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onExpandAll()">Expand All</button>
+        <!-- <button mat-raised-button color="primary" [disabled]="!group.valid" (click)="onExpandAll()">Expand All</button> -->
       </h4>
 
       <mat-list-item role="listitem">
@@ -73,7 +73,7 @@
         </mat-checkbox>
       </mat-list-item>
 
-      <mat-list-item role="listitem">
+      <!-- <mat-list-item role="listitem">
         <mat-checkbox (change)="checkboxClicked($event, 'attributes')" formControlName="showAttributes"
           >Attributes
         </mat-checkbox>
@@ -81,7 +81,7 @@
 
       <mat-list-item role="listitem">
         <mat-checkbox (change)="checkboxClicked($event, 'rules')" formControlName="showRules">Rules</mat-checkbox>
-      </mat-list-item>
+      </mat-list-item> -->
     </div>
   </div>
 
@@ -111,7 +111,7 @@
       >
     </mat-list-item>
 
-    <mat-form-field>
+    <!-- <mat-form-field>
       <mat-select
         (selectionChange)="onFilterRadioSeverity($event, 'linkFilter')"
         placeholder="Severity filter"
@@ -131,6 +131,6 @@
 
     <mat-list-item role="listitem">
       <mat-checkbox (change)="checkboxClicked($event, 'linkRules')" formControlName="showRules">Rules</mat-checkbox>
-    </mat-list-item>
+    </mat-list-item> -->
   </div>
 </form>
