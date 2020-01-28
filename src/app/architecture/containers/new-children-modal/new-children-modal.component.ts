@@ -24,6 +24,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
   public filterLevelSubscription: Subscription;
   public parentId: string;
   public layer: string;
+  public newSubItem: boolean;
 
   constructor(
     private newChildrenService: NewChildrenService,
@@ -32,6 +33,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.parentId = data.parentId;
+    this.newSubItem = data.newSubItem;
   }
 
   ngOnInit(): void {
