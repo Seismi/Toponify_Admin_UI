@@ -41,7 +41,6 @@ import {
   DeleteWorkPackageLinkPropertySuccess,
   DeleteWorkPackageLinkPropertyFailure
 } from '../actions/workpackage-link.actions';
-import { WorkpackageLinkCustomProperty } from '../models/workpackage.models';
 
 @Injectable()
 export class WorkPackageLinkEffects {
@@ -164,7 +163,7 @@ export class WorkPackageLinkEffects {
   updateLinkProperty$ = this.actions$.pipe(
     ofType<UpdateWorkPackageLinkProperty>(WorkPackageLinkActionTypes.UpdateWorkPackageLinkProperty),
     map(action => action.payload),
-    mergeMap((payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: WorkpackageLinkCustomProperty }) => {
+    mergeMap((payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: string }) => {
       return this.workpackageLinkService.updateLinkProperty(payload.workPackageId, payload.nodeLinkId, payload.customPropertyId, payload.data).pipe(
         switchMap((response: NodeLinkDetailApiResponse) => [new UpdateWorkPackageLinkPropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageLinkPropertyFailure(error)))

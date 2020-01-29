@@ -102,7 +102,8 @@ import {
 import {
   WorkPackageDetail,
   WorkPackageEntity,
-  WorkPackageNodeScopes
+  WorkPackageNodeScopes,
+  CustomPropertiesEntity
 } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
@@ -1475,44 +1476,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEditProperties(customProperty: CustomPropertyValuesEntity): void {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: customProperty
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        if (!this.clickedOnLink) {
-          this.workpackageStore.dispatch(new UpdateWorkPackageNodeProperty({
-            workPackageId: this.getWorkPackageId(),
-            nodeId: this.nodeId,
-            customPropertyId: customProperty.propertyId,
-            data: { value: data.customProperties.value }
-          }))
-        } else {
-          this.workpackageStore.dispatch(new UpdateWorkPackageLinkProperty({
-            workPackageId: this.getWorkPackageId(),
-            nodeLinkId: this.nodeId,
-            customPropertyId: customProperty.propertyId,
-            data: { value: data.customProperties.value }
-          }))
-        }
-      }
-    });
+  onSaveProperties(data: { propertyId: string, value: string }): void {
+    if (!this.clickedOnLink) {
+      this.workpackageStore.dispatch(new UpdateWorkPackageNodeProperty({
+        workPackageId: this.getWorkPackageId(),
+        nodeId: this.nodeId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      }));
+    } else {
+      this.workpackageStore.dispatch(new UpdateWorkPackageLinkProperty({
+        workPackageId: this.getWorkPackageId(),
+        nodeLinkId: this.nodeId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      }));
+    }
   }
 
-  onDeleteProperties(customProperty: CustomPropertyValuesEntity): void {
+  onDeleteProperties(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
         mode: 'delete',
-        name: customProperty.name
+        name: property.name
       }
     });
 
@@ -1522,13 +1510,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(new DeleteWorkPackageNodeProperty({
             workPackageId: this.getWorkPackageId(),
             nodeId: this.nodeId,
-            customPropertyId: customProperty.propertyId
+            customPropertyId: property.propertyId
           }))
         } else {
           this.workpackageStore.dispatch(new DeleteWorkPackageLinkProperty({
             workPackageId: this.getWorkPackageId(),
             nodeLinkId: this.nodeId,
-            customPropertyId: customProperty.propertyId
+            customPropertyId: property.propertyId
           }))
         }
       }

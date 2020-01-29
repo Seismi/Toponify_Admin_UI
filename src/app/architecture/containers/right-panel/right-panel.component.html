@@ -49,14 +49,14 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
     </ng-template>
-    <smi-properties-tab
+    <smi-edit-documentation-standards-table
       [data]="properties"
-      (editProperties)="onEditProperties($event)"
-      (deleteProperties)="onDeleteProperties($event)"
-      [workPackageIsEditable]="workPackageIsEditable"
+      [isEditable]="workPackageIsEditable"
       [nodeCategory]="nodeCategory"
+      (saveProperty)="onSaveProperty($event)"
+      (deleteProperty)="onDeleteProperty($event)"
     >
-    </smi-properties-tab>
+    </smi-edit-documentation-standards-table>
   </mat-tab>
 
   <!-- RADIO TAB -->
