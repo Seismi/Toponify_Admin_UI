@@ -89,7 +89,8 @@ import {
   DeleteWorkPackageNodeProperty,
   UpdateWorkPackageNodeProperty,
   DeleteWorkPackageNodeAttribute,
-  AddWorkPackageNodeAttribute
+  AddWorkPackageNodeAttribute,
+  AddWorkPackageNode
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -164,7 +165,7 @@ import { DeleteDescendantsModalComponent } from './delete-descendants-modal/dele
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
-import { RelatesToTableComponent } from '@app/radio/components/relates-to-table/relates-to-table.component';
+import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -182,6 +183,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private showHideGridRef;
   private showDetailTabRef;
   private showHideRadioAlertRef;
+  private addNewSubItemRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -449,6 +451,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
+      function() {
+        const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+          disableClose: false,
+          width: '450px',
+          data: {
+            parentId: this.nodeId,
+            addSystem: true
+          }
+        });
+    
+        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+          if (data && data.data) {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNode({
+                workpackageId: this.workpackageId,
+                node: data.data,
+                scope: this.scope.id
+              })
+            );
+          }
+        });
+      }.bind(this)
+    );
 
     this.zoomRef = this.gojsCustomObjectsService.zoom$.subscribe(
       function(zoomType: 'In' | 'Out') {

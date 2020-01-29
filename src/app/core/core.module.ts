@@ -29,6 +29,8 @@ import { CoreLayoutModule } from '@app/core/layout/core-layout.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
 import { WorkPackageNameComponent } from './layout/header/workpackage-name/workpackage-name.component';
+import { EditDocumentationStandardsFormComponent } from './layout/components/edit-documentation-standards/form/form.component';
+import { EditDocumentationStandardsTableComponent } from './layout/components/edit-documentation-standards/edit-documentation-standards.component';
 
 @NgModule({
   imports: [
@@ -57,7 +59,9 @@ import { WorkPackageNameComponent } from './layout/header/workpackage-name/workp
     RightSideBarComponent,
     LeftSideBarComponent,
     NodeNameComponent,
-    WorkPackageNameComponent
+    WorkPackageNameComponent,
+    EditDocumentationStandardsTableComponent,
+    EditDocumentationStandardsFormComponent
   ],
   providers: [
     SearchService,

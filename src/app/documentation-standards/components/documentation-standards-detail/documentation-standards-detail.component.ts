@@ -12,13 +12,8 @@ export class DocumentationStandardsDetailComponent {
   @Input() isEditable: boolean = false;
   @Input() isDisabled: boolean = true;
   @Input() modalMode: boolean = false;
-  @Input() isEditMode: boolean;
-  @Input() dateType: boolean;
-  @Input() propertyType: string;
-  @Input() booleanType: boolean;
 
   public types = Constants.PROPERTY_TYPES;
-  public booleanTypes = Constants.BOOLEAN_TYPES;
 
   @Output() saveDocument = new EventEmitter<void>();
   @Output() deleteDocument = new EventEmitter<void>();
