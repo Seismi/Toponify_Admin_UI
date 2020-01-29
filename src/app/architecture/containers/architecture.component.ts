@@ -88,7 +88,8 @@ import {
   DeleteWorkPackageNodeProperty,
   UpdateWorkPackageNodeProperty,
   DeleteWorkPackageNodeAttribute,
-  AddWorkPackageNodeAttribute
+  AddWorkPackageNodeAttribute,
+  AddWorkPackageNode
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -163,6 +164,7 @@ import { State as AttributeState } from '@app/attributes/store/reducers/attribut
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
+import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -181,6 +183,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
   private showHideRadioAlertRef;
   private addSystemToGroupRef;
+  private addNewSubItemRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -449,6 +452,37 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
+      function() {
+        const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+          disableClose: false,
+          width: '450px',
+          data: {
+            parentId: this.nodeId,
+            addSystem: true
+          }
+        });
+    
+        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+          if (data && data.data) {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNode({
+                workpackageId: this.workpackageId,
+                node: data.data,
+                scope: this.scope.id
+              })
+            );
+          }
+        });
+      }.bind(this)
+    );
+
+    this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
+      function() {
+        this.onAddDescendant({ addToGroup: true });
+      }.bind(this)
+    );
+
     this.zoomRef = this.gojsCustomObjectsService.zoom$.subscribe(
       function(zoomType: 'In' | 'Out') {
         if (zoomType === 'In') {
@@ -456,12 +490,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         } else {
           this.onZoomOut();
         }
-      }.bind(this)
-    );
-
-    this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
-      function() {
-        this.onAddDescendant({ addToGroup: true });
       }.bind(this)
     );
 

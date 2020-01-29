@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { DocumentStandardsService } from '@app/documentation-standards/components/documentation-standards-detail/services/document-standards.service';
 import { DocumentStandardsValidatorService } from '@app/documentation-standards/components/documentation-standards-detail/services/document-standards-validator.service';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
@@ -18,47 +18,14 @@ export class DocumentModalComponent implements OnInit {
   public modalMode: boolean = true;
   public isEditable: boolean = true;
   public isDisabled: boolean = false;
-  public isEditMode: boolean;
-  public mode: string;
-  public name: string;
-  private reg: string;
-  public dateType: boolean = false;
-  public booleanType: boolean = false;
-  public propertyType: string;
 
   constructor(
     private documentStandardsService: DocumentStandardsService,
     public dialogRef: MatDialogRef<DocumentModalComponent>,
-    private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.documentStandard = data.documentStandard;
-    this.customProperties = data.customProperties;
-    this.name = data.name;
-    this.mode = data.mode;
-    this.mode === 'edit' ? (this.isEditMode = true) : (this.isEditMode = false);
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    if (this.isEditMode) {
-      this.documentStandardsService.documentStandardsForm = this.fb.group({
-        value: [
-          null,
-          Validators.pattern(
-            this.documentStandardsService.getPropertyValueValidator(this.customProperties.type, this.reg)
-          )
-        ]
-      });
-
-      this.propertyType = this.customProperties.type;
-
-      this.customProperties.type === 'Date' ? (this.dateType = true) : (this.dateType = false);
-      this.customProperties.type === 'Boolean' ? (this.booleanType = true) : (this.booleanType = false);
-
-      this.documentStandardsService.documentStandardsForm.patchValue({
-        ...this.customProperties
-      });
-    }
+    this.documentStandardsService.documentStandardsForm.patchValue({ ...this.customProperties });
   }
 
   get documentStandardsForm(): FormGroup {
@@ -69,11 +36,7 @@ export class DocumentModalComponent implements OnInit {
     if (!this.documentStandardsService.isValid) {
       return;
     }
-    this.dialogRef.close({
-      customProperties: this.documentStandardsForm.value,
-      documentStandard: this.documentStandardsForm.value,
-      mode: this.mode
-    });
+    this.dialogRef.close({ documentStandard: this.documentStandardsForm.value });
   }
 
   onCancel(): void {

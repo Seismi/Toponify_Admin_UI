@@ -88,7 +88,8 @@ export class DescendantsModalComponent implements OnInit {
       disableClose: false,
       width: '450px',
       data: {
-        parentId: this.nodeId
+        parentId: this.nodeId,
+        addSystem: false
       }
     });
 
