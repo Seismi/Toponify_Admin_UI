@@ -160,21 +160,14 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
     }
 
     case ReportActionTypes.AddOwnerSuccess:
+    case ReportActionTypes.AddReportingConceptsSuccess:
+    case ReportActionTypes.DeleteReportingConceptSuccess:
+    case ReportActionTypes.SetDimensionFilterSuccess:
     case ReportActionTypes.RemoveDataSetsFromReportSuccess:
     case ReportActionTypes.AddDataSetsToReportSuccess: {
       return {
         ...state,
         selected: action.payload,
-        loading: false
-      };
-    }
-
-    case ReportActionTypes.AddDataSetsToReportFail:
-    case ReportActionTypes.RemoveDataSetsFromReportFail:
-    case ReportActionTypes.AddOwnerFail: {
-      return {
-        ...state,
-        error: action.payload,
         loading: false
       };
     }
@@ -194,7 +187,13 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
-    case ReportActionTypes.DeleteOwnerFail: {
+    case ReportActionTypes.AddDataSetsToReportFail:
+    case ReportActionTypes.RemoveDataSetsFromReportFail:
+    case ReportActionTypes.AddOwnerFail:
+    case ReportActionTypes.DeleteOwnerFail:
+    case ReportActionTypes.DeleteReportingConceptFail:
+    case ReportActionTypes.AddReportingConceptsFail:
+    case ReportActionTypes.SetDimensionFilterFail: {
       return {
         ...state,
         error: action.payload,

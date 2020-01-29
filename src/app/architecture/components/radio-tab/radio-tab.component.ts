@@ -18,7 +18,9 @@ export class RadioTabComponent {
     if (!data) {
       data = [];
     }
-    this.dataSource = new MatTableDataSource<NodeDetail>(data);
+    this.dataSource = new MatTableDataSource<NodeDetail>(
+      data.filter((data, index, radios) => radios.findIndex(radio => (JSON.stringify(radio) === JSON.stringify(data))) === index)
+    );
     this.dataSource.paginator = this.paginator;
   }
 

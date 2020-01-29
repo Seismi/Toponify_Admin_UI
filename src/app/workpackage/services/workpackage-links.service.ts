@@ -211,4 +211,11 @@ export class WorkPackageLinksService extends WorkPackageService {
       {}
     );
   }
+
+  addLinkRadio(workPackageId: string, nodeLinkId: string, radioId: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.post<NodeLinkDetailApiResponse>(
+      `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/radios/${radioId}`,
+      this.httpOptions
+    );
+  }
 }

@@ -6,15 +6,19 @@ import { select, Store } from '@ngrx/store';
 import {
   AddDataSetsToReport,
   AddOwner,
+  AddReportingConcepts,
   DeleteOwner,
   DeleteReport,
-  LoadReport, RemoveDataSetsFromReport,
+  DeleteReportingConcept,
+  LoadReport,
+  RemoveDataSetsFromReport,
+  SetDimensionFilter,
   UpdateReport
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
 import { FormGroup } from '@angular/forms';
-import { Report } from '@app/report-library/store/models/report.model';
+import { Dimension, Report } from '@app/report-library/store/models/report.model';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackage,
@@ -32,6 +36,7 @@ import { Level } from '@app/architecture/services/diagram-level.service';
 import { map, take } from 'rxjs/operators';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { ReportService } from '@app/report-library/services/report.service';
+import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -247,7 +252,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddDataSets(reportId: string) {
-    // this.reportService
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -283,5 +287,51 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         dataSetId: dataSetId
       })
     );
+  }
+
+  onDimensionEdit(dimension: Dimension, reportId: string) {
+    const dialogRef = this.dialog.open(ReportingConceptFilterModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      minWidth: '600px',
+      data: {
+        title: 'Select source data sets',
+        workpackageId: this.workpackageId,
+        dimension,
+        reportId
+      }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.filter) {
+        this.store.dispatch(
+          new SetDimensionFilter({
+            workPackageId: this.workpackageId,
+            reportId,
+            dimensionId: dimension.id,
+            filter: data.filter
+          })
+        );
+        if (data.filter === 'selected') {
+          data.unlinked.forEach(concept =>
+            this.store.dispatch(
+              new DeleteReportingConcept({
+                workPackageId: this.workpackageId,
+                reportId,
+                dimensionId: dimension.id,
+                conceptId: concept.id
+              })
+            )
+          );
+          this.store.dispatch(
+            new AddReportingConcepts({
+              workPackageId: this.workpackageId,
+              reportId,
+              dimensionId: dimension.id,
+              concepts: data.added.map(conept => ({ id: conept.id }))
+            })
+          );
+        }
+      }
+    });
   }
 }
