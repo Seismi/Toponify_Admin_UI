@@ -81,7 +81,7 @@ export interface Report {
   owners?: (OwnersEntity)[] | null;
   dataSets?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
   system?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity) | null;
-  dimensions?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
+  dimensions?: Dimension[] | null;
   reportingConcepts?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValues)[] | null;
@@ -146,4 +146,19 @@ export interface ReportDataSet {
   id: string;
   category: string;
   name: string;
+}
+
+export interface ReportingConcept {
+  id: string;
+  category: string;
+  name: string;
+}
+
+export interface Dimension {
+  sort: number;
+  id: string;
+  name: string;
+  description: string;
+  filter: string;
+  reportingConcepts: ReportingConcept[];
 }

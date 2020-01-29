@@ -82,6 +82,7 @@ import { AttributesListComponent } from './components/attributes-list/attributes
 import { DeleteAttributeModalComponent } from './containers/delete-attribute-modal/delete-attribute-modal.component';
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
+import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/radio-confirm-modal.component';
 
 
 @NgModule({
@@ -158,7 +159,8 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     AddExistingAttributeModalComponent,
     AttributesListComponent,
     DeleteAttributeModalComponent,
-    DeleteDescendantsModalComponent
+    DeleteDescendantsModalComponent,
+    RadioConfirmModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -172,7 +174,8 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     NodeScopeModalComponent,
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
-    DeleteDescendantsModalComponent
+    DeleteDescendantsModalComponent,
+    RadioConfirmModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

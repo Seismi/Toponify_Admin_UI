@@ -124,9 +124,61 @@ export class ReportEffects {
     map(action => action.payload),
     mergeMap((payload: { workPackageId: string; reportId: string; dataSetId: string }) => {
       return this.reportService.removeDataSet(payload.workPackageId, payload.reportId, payload.dataSetId).pipe(
-        mergeMap((response: ReportDetailApiRespoonse) => [new ReportActions.RemoveDataSetsFromReportSuccess(response.data)]),
+        mergeMap((response: ReportDetailApiRespoonse) => [
+          new ReportActions.RemoveDataSetsFromReportSuccess(response.data)
+        ]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.RemoveDataSetsFromReportFail(error)))
       );
+    })
+  );
+
+  @Effect()
+  setDimensionFilter$ = this.actions$.pipe(
+    ofType<ReportActions.SetDimensionFilter>(ReportActionTypes.SetDimensionFilter),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; dimensionId: string; filter: string }) => {
+      return this.reportService
+        .updateDimensionFilter(payload.workPackageId, payload.reportId, payload.dimensionId, payload.filter)
+        .pipe(
+          mergeMap((response: ReportDetailApiRespoonse) => [
+            new ReportActions.SetDimensionFilterSuccess(response.data)
+          ]),
+          catchError((error: HttpErrorResponse) => of(new ReportActions.SetDimensionFilterFail(error)))
+        );
+    })
+  );
+
+  @Effect()
+  addReportingConcept$ = this.actions$.pipe(
+    ofType<ReportActions.AddReportingConcepts>(ReportActionTypes.AddReportingConcepts),
+    map(action => action.payload),
+    mergeMap(
+      (payload: { workPackageId: string; reportId: string; dimensionId: string; concepts: { id: string }[] }) => {
+        return this.reportService
+          .addReportingConcepts(payload.workPackageId, payload.reportId, payload.dimensionId, payload.concepts)
+          .pipe(
+            mergeMap((response: ReportDetailApiRespoonse) => [
+              new ReportActions.AddReportingConceptsSuccess(response.data)
+            ]),
+            catchError((error: HttpErrorResponse) => of(new ReportActions.AddReportingConceptsFail(error)))
+          );
+      }
+    )
+  );
+
+  @Effect()
+  deleteReportingConcept$ = this.actions$.pipe(
+    ofType<ReportActions.DeleteReportingConcept>(ReportActionTypes.DeleteReportingConcept),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; dimensionId: string; conceptId: string }) => {
+      return this.reportService
+        .deleteReportingConcept(payload.workPackageId, payload.reportId, payload.dimensionId, payload.conceptId)
+        .pipe(
+          mergeMap((response: ReportDetailApiRespoonse) => [
+            new ReportActions.DeleteReportingConceptSuccess(response.data)
+          ]),
+          catchError((error: HttpErrorResponse) => of(new ReportActions.DeleteReportingConceptFail(error)))
+        );
     })
   );
 }

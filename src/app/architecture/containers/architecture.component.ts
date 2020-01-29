@@ -56,7 +56,7 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios, RadioActionTypes, LoadRadioSuccess, LoadRadiosSuccess } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
@@ -69,10 +69,11 @@ import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkSuccess,
+  DeleteWorkPackageLinkAttribute,
   AddWorkPackageLinkAttribute,
+  AddWorkPackageLinkRadio,
   UpdateWorkPackageLinkProperty,
   DeleteWorkPackageLinkProperty,
-  DeleteWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -96,8 +97,7 @@ import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode,
-  WorkPackageActionTypes
+  SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
@@ -164,6 +164,7 @@ import { State as AttributeState } from '@app/attributes/store/reducers/attribut
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
+import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 
 enum Events {
@@ -536,9 +537,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
-        this.setWorkPackage([this.getWorkPackageId()]);
-        this.eventEmitter.next(Events.NodesLinksReload);
+      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
+        if (this.selectedWorkPackageEntities.length >= 1 && this.part) {
+          this.getRadioConfirmModal(action.payload.id);
+        }
+        this.radioStore.dispatch(new LoadRadios({}));
       })
     );
 
@@ -1125,7 +1128,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.realignTabUnderline();
   }
 
-  onAddRelatedRadio() {
+  onAddRelatedRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '650px',
@@ -1134,32 +1137,60 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.radioStore.dispatch(
-          new AddRadioEntity({
-            data: {
-              title: data.radio.title,
-              description: data.radio.description,
-              status: data.radio.status,
-              category: data.radio.category,
-              author: data.radio.author,
-              assignedTo: data.radio.assignedTo,
-              actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation,
-              relatesTo: [
-                {
-                  workPackage: { id: this.workpackageId },
-                  item: {
-                    id: this.nodeId,
-                    itemType: this.currentFilterLevel.toLowerCase()
-                  }
-                }
-              ]
-            }
-          })
-        );
+        const relatesTo = [{
+          workPackage: {
+            id: '00000000-0000-0000-0000-000000000000'
+          },
+          item: {
+            id: this.nodeId,
+            itemType: this.currentFilterLevel.toLowerCase()
+          }
+        }];
+
+        this.radioStore.dispatch(new AddRadioEntity({
+          data: {
+            ...data.radio,
+            relatesTo: (this.selectedWorkPackageEntities.length === 0) ? relatesTo : []
+          }
+        }));
+
         if (data.radio.status === 'open') {
           this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
+      }
+    });
+  }
+
+  getRadioConfirmModal(radioId: string): void {
+    const dialogRef = this.dialog.open(RadioConfirmModalComponent, {
+      disableClose: true,
+      width: '500px',
+      data: {
+        selectedWorkPackages: this.selectedWorkPackageEntities
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        data.workpackages.forEach(workpackage => {
+          if (!this.clickedOnLink) {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNodeRadio({
+                workPackageId: workpackage.id,
+                nodeId: this.nodeId,
+                radioId: radioId
+              })
+            );
+          } else {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageLinkRadio({
+                workPackageId: workpackage.id,
+                nodeLinkId: this.nodeId,
+                radioId: radioId
+              })
+            )
+          }
+        });
       }
     });
   }
@@ -1173,17 +1204,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeRadio({
-            workPackageId: this.getWorkPackageId(),
-            nodeId: this.nodeId,
-            radioId: data.radio.id
-          })
-        );
+        this.getRadioConfirmModal(data.radio.id);
       }
     });
 
-    // Create new radio
     dialogRef.componentInstance.addNewRadio.subscribe(() => {
       this.onAddRelatedRadio();
     });
