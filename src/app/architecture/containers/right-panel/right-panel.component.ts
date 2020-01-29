@@ -11,7 +11,8 @@ import {
   CustomPropertyValuesEntity,
   DescendantsEntity,
   Node,
-  NodeReports
+  NodeReports,
+  Tag
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
@@ -50,6 +51,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() part: go.Part;
   @Input() filterLevel: string;
   @Input() nodeReports: NodeReports[];
+  @Input() availableTags: Tag[];
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -110,6 +112,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() assignRadio = new EventEmitter<void>();
 
   @Output() addExistingAttribute = new EventEmitter<void>();
+
+  @Output() updateAvailableTags = new EventEmitter<void>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -267,5 +271,9 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   showSkipButtons(): boolean {
     return this.selectedView !== ArchitectureView.Diagram;
+  }
+
+  onUpdateAvailableTags() {
+    this.updateAvailableTags.emit();
   }
 }

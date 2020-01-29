@@ -1,12 +1,12 @@
 import { Action } from '@ngrx/store';
 import {
-  CustomPropertyApiRequest,
   NodeExpandedStateApiRequest,
   Error,
   Node,
   NodeDetail,
   OwnersEntity,
-  NodeReports
+  NodeReports,
+  Tag
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
@@ -47,7 +47,10 @@ export enum NodeActionTypes {
   DeleteCustomPropertyFailure = '[Node] Delete Custom Property Failure',
   LoadNodeReports = '[Node] Load Node Reports',
   LoadNodeReportsSuccess = '[Node] Load Node Reports Success',
-  LoadNodeReportsFailure = '[Node] Load Node Reports Fail'
+  LoadNodeReportsFailure = '[Node] Load Node Reports Fail',
+  LoadAvailableTags = '[Node] Load Available Tags',
+  LoadAvailableTagsSuccess = '[Node] Load Available Tags Success',
+  LoadAvailableTagsFailure = '[Node] Load Available Tags Fail'
 }
 
 export class LoadNodes implements Action {
@@ -225,6 +228,21 @@ export class LoadNodeReportsFailure implements Action {
   constructor(public payload: Error) {}
 }
 
+export class LoadAvailableTags implements Action {
+  readonly type = NodeActionTypes.LoadAvailableTags;
+  constructor(public payload: { nodeId: string; workpackageId: string; type: 'link' | 'node' }) {}
+}
+
+export class LoadAvailableTagsSuccess implements Action {
+  readonly type = NodeActionTypes.LoadAvailableTagsSuccess;
+  constructor(public payload: {tags: Tag[], id: string}) {}
+}
+
+export class LoadAvailableTagsFailure implements Action {
+  readonly type = NodeActionTypes.LoadAvailableTagsFailure;
+  constructor(public payload: Error) {}
+}
+
 export type NodeActionsUnion =
   | LoadNodes
   | LoadNodesSuccess
@@ -260,4 +278,7 @@ export type NodeActionsUnion =
   | DeleteCustomPropertyFailure
   | LoadNodeReports
   | LoadNodeReportsSuccess
-  | LoadNodeReportsFailure;
+  | LoadNodeReportsFailure
+  | LoadAvailableTags
+  | LoadAvailableTagsSuccess
+  | LoadAvailableTagsFailure;

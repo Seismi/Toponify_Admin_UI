@@ -181,6 +181,8 @@
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
         [nodeReports]="nodeReports$ | async"
         (addExistingAttribute)="onAddExistingAttribute()"
+        (updateAvailableTags)="onUpdateAvailableTags()"
+        [availableTags]="availableTags$ | async"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

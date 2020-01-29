@@ -9,7 +9,8 @@ import {
   NodeDetail,
   OwnersEntity,
   NodeReports,
-  middleOptions
+  middleOptions,
+  Tag
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import {
@@ -37,6 +38,10 @@ export interface State {
   availableScopes: WorkPackageNodeScopes[];
   error: Error;
   selectedWorkpackages: string[];
+  availableTags: {
+    tags: Tag[];
+    id: string;
+  };
 }
 
 export const initialState: State = {
@@ -51,7 +56,11 @@ export const initialState: State = {
   nodeScopes: [],
   availableScopes: [],
   error: null,
-  selectedWorkpackages: []
+  selectedWorkpackages: [],
+  availableTags: {
+    tags: [],
+    id: null
+  }
 };
 
 export function reducer(
@@ -233,7 +242,6 @@ export function reducer(
       };
     }
 
-
     case WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess: {
       return {
         ...state,
@@ -248,7 +256,6 @@ export function reducer(
       };
     }
 
-
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeSuccess:
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeSuccess: {
       return {
@@ -257,8 +264,7 @@ export function reducer(
       };
     }
 
-
-    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess: 
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess:
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
       return {
         ...state,
@@ -266,10 +272,9 @@ export function reducer(
       };
     }
 
-
-    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure: 
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure:
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
-    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure: 
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure:
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure: {
       return {
         ...state,
@@ -533,6 +538,23 @@ export function reducer(
       return {
         ...state,
         error: <Error>action.payload
+      };
+    }
+
+    case NodeActionTypes.LoadAvailableTagsSuccess: {
+      return {
+        ...state,
+        availableTags: action.payload
+      };
+    }
+
+    case NodeActionTypes.LoadAvailableTags: {
+      return {
+        ...state,
+        availableTags: {
+          tags: [],
+          id: null
+        }
       };
     }
 

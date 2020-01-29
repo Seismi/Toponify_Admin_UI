@@ -82,6 +82,7 @@ import { AttributesListComponent } from './components/attributes-list/attributes
 import { DeleteAttributeModalComponent } from './containers/delete-attribute-modal/delete-attribute-modal.component';
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
+import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 
 
 @NgModule({
@@ -117,7 +118,8 @@ import { DeleteDescendantsModalComponent } from './containers/delete-descendants
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule
+    ScopesAndLayoutsModule,
+    TagListModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [

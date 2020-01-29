@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as NodeActions from '../actions/node.actions';
 import { NodeActionTypes } from '../actions/node.actions';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import {
   GetLinksRequestQueryParams,
   GetNodesRequestQueryParams,
@@ -15,7 +15,8 @@ import {
   NodeDetailApiResponse,
   NodesApiResponse,
   NodeLocationsUpdatePayload,
-  NodeReportsApiResponse
+  NodeReportsApiResponse,
+  Tag
 } from '../models/node.model';
 import { LinkUpdatePayload, NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../models/node-link.model';
 import { MatSnackBar } from '@angular/material';
@@ -163,6 +164,28 @@ export class NodeEffects {
         switchMap((response: NodeReportsApiResponse) => [new NodeActions.LoadNodeReportsSuccess(response.data)]),
         catchError((error: Error) => {
           return of(new NodeActions.LoadNodeReportsFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
+  LoadAvailableTags$ = this.actions$.pipe(
+    ofType<NodeActions.LoadAvailableTags>(NodeActionTypes.LoadAvailableTags),
+    map(action => action.payload),
+    switchMap((payload: { workpackageId: string; nodeId: string; type: 'node' | 'link' }) => {
+      let request: Observable<{ data: Tag[] }>;
+      if (payload.type === 'node') {
+        request = this.nodeService.getNodeAvailableTags(payload.workpackageId, payload.nodeId);
+      } else {
+        request = this.nodeService.getLinkAvailableTags(payload.workpackageId, payload.nodeId);
+      }
+      return request.pipe(
+        switchMap(response => [
+          new NodeActions.LoadAvailableTagsSuccess({ tags: response.data, id: payload.workpackageId + payload.nodeId })
+        ]),
+        catchError((error: Error) => {
+          return of(new NodeActions.LoadAvailableTagsFailure(error));
         })
       );
     })

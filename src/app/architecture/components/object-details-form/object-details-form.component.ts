@@ -2,9 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   OwnersEntityOrTeamEntityOrApproversEntity,
-  NodeLinkDetail
 } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, Tag } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
@@ -26,7 +25,6 @@ export class ObjectDetailsFormComponent {
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input('group') set setGroup(group) {
-    console.log('set group');
     this.group = group;
     this.values = group.value;
   }
@@ -40,7 +38,7 @@ export class ObjectDetailsFormComponent {
   @Input() selectAttribute: boolean;
   @Input() viewLevel: Level;
   @Input() part: go.Part;
-
+  @Input() availableTags: Tag[];
   Level = Level;
 
   constructor() {}
@@ -66,6 +64,8 @@ export class ObjectDetailsFormComponent {
   @Output() addRelatedAttribute = new EventEmitter<void>();
 
   @Output() deleteRelatedAttribute = new EventEmitter<void>();
+
+  @Output() updateAvailableTags = new EventEmitter<void>();
 
   onEdit(): void {
     this.editDetails.emit();
@@ -130,5 +130,9 @@ export class ObjectDetailsFormComponent {
       return true;
     }
     return false;
+  }
+
+  onUpdateAvailableTags() {
+    this.updateAvailableTags.emit();
   }
 }

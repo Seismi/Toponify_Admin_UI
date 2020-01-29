@@ -89,3 +89,8 @@ export const getNodeEntityById = createSelector(
     return state.entities.find(item => item.id === props.id);
   }
 );
+
+export const getAvailableTags = createSelector(
+  getNodeFeatureState,
+  state => state.availableTags
+);
