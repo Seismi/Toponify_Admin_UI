@@ -1,0 +1,36 @@
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 17px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  p {
+    margin: 15px;
+    display: flex;
+    font-weight: bold;
+    span {
+      margin-left: 10px;
+      font-weight: normal;
+    }
+  }
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-category {
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
