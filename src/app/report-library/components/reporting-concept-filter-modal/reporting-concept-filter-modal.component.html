@@ -1,0 +1,50 @@
+<div class="filter-container">
+  <p>Dimension <span>{{dimensionName}}</span></p>
+  <p>
+    Reporting concept
+      <mat-form-field>
+        <mat-select [(value)]="selectedFilter">
+          <mat-option value="all">All</mat-option>
+          <mat-option value="none">Exclude Dimension</mat-option>
+          <mat-option value="selected">Selection</mat-option>
+        </mat-select>
+      </mat-form-field>
+  </p>
+</div>
+<table mat-table [dataSource]="dataSource" *ngIf="selectedFilter === 'selected'">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Reporting concept</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="category">
+    <th mat-header-cell *matHeaderCellDef>
+      <button mat-icon-button (click)="addConcept()">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <span>
+          {{ element.category }}
+        <button mat-icon-button (click)="onUnlink(element)">
+            <mat-icon>link_off</mat-icon>
+          </button>
+      </span>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['name', 'category']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['name', 'category']"></tr>
+</table>
+
+<div mat-dialog-actions>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onConfirm()"
+    data-hook="radio-delete-modal-yes"
+  >
+    Confirm
+  </button>
+  <button mat-raised-button (click)="onCancel()" data-hook="radio-delete-modal-no">Cancel</button>
+</div>

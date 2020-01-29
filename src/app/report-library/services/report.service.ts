@@ -6,7 +6,9 @@ import {
   ReportLibraryApiResponse,
   ReportDetailApiRequest,
   ReportEntityApiRequest,
-  ReportEntityApiResponse, ReportDataSet
+  ReportEntityApiResponse,
+  ReportDataSet,
+  ReportingConcept,
 } from '../store/models/report.model';
 import { toHttpParams } from '@app/services/utils';
 
@@ -71,8 +73,8 @@ export class ReportService {
     );
   }
 
-  getDataSets(workPackageId: string, reportId: string): Observable<{data: ReportDataSet[]}> {
-    return this.http.get<{data: ReportDataSet[]}>(`/workpackages/${workPackageId}/reports/${reportId}/dataSets`);
+  getDataSets(workPackageId: string, reportId: string): Observable<{ data: ReportDataSet[] }> {
+    return this.http.get<{ data: ReportDataSet[] }>(`/workpackages/${workPackageId}/reports/${reportId}/dataSets`);
   }
 
   addDataSets(workPackageId: string, reportId: string, ids: { id: string }[]): Observable<ReportDetailApiRespoonse> {
@@ -84,6 +86,49 @@ export class ReportService {
   removeDataSet(workPackageId: string, reportId: string, datasetId: string): Observable<ReportDetailApiRespoonse> {
     return this.http.post<ReportDetailApiRespoonse>(
       `/workpackages/${workPackageId}/reports/${reportId}/dataSets/${datasetId}/deleteRequest`,
+      {}
+    );
+  }
+
+  updateDimensionFilter(workPackageId: string, reportId: string, dimensionId: string, filter: string) {
+    return this.http.put(`/workpackages/${workPackageId}/reports/${reportId}/dimensionOverrides/${dimensionId}`, {
+      data: {
+        sort: 0,
+        filter
+      }
+    });
+  }
+
+  getReportingConcepts(
+    wpid: string,
+    radioId: string,
+    dimensionId: string
+  ): Observable<{ data: { selected: ReportingConcept[]; available: ReportingConcept[] } }> {
+    return this.http.get<{ data: { selected: ReportingConcept[]; available: ReportingConcept[] } }>(
+      `/workpackages/${wpid}/reports/${radioId}/dimensions/${dimensionId}/conceptSelections`
+    );
+  }
+
+  addReportingConcepts(
+    wpid: string,
+    reportId: string,
+    dimensionId: string,
+    conceptIds: { id: string }[]
+  ): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(
+      `/workpackages/${wpid}/reports/${reportId}/dimensions/${dimensionId}/conceptSelections`,
+      { data: conceptIds }
+    );
+  }
+
+  deleteReportingConcept(
+    wpid: string,
+    reportId: string,
+    dimensionId: string,
+    conceptId: string
+  ): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(
+      `/workpackages/${wpid}/reports/${reportId}/dimensions/${dimensionId}/conceptSelections/${conceptId}/deleteRequest`,
       {}
     );
   }
