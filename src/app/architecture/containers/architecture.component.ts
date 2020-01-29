@@ -462,7 +462,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
         });
     
-        dialogRef.afterClosed().subscribe(data => {
+        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
           if (data && data.data) {
             this.workpackageStore.dispatch(
               new AddWorkPackageNode({

@@ -21,7 +21,6 @@ const reportingConceptCategories = ['structure', 'list', 'key'];
   providers: [NewChildrenService, NewChildrenValidatorService]
 })
 export class NewChildrenModalComponent implements OnInit, OnDestroy {
-  public categories: string[] = [];
   public filterLevelSubscription: Subscription;
   public parentId: string;
   public layer: string;
