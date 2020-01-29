@@ -258,6 +258,7 @@ export function reducer(
     }
 
 
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioSuccess:
     case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess: 
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
       return {
@@ -267,6 +268,7 @@ export function reducer(
     }
 
 
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioFailure:
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure: 
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
     case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure: 
