@@ -14,10 +14,12 @@
             [group]="radioDetailsForm"
             [isEditable]="isEditable"
             [modalMode]="modalMode"
+            [radioStatus]="radio?.status"
             (archiveRadio)="onArchiveRadio()"
             (saveRadio)="onSaveRadio()"
             (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
             (addRelatesTo)="onAddRelatesTo()"
+            (deleteRadio)="onDeleteRadio()"
           >
           </smi-radio-detail>
         </p>
@@ -39,12 +41,12 @@
           <mat-icon>insert_drive_file</mat-icon>
           Documentation Standards
         </ng-template>
-        <smi-radio-properties-tab
-          (editProperty)="onEditProperty($event)"
-          (deleteProperty)="onDeleteProperty($event)"
+        <smi-edit-documentation-standards-table
           [data]="radio?.customPropertyValues"
+          (saveProperty)="onSaveProperty($event)"
+          (deleteProperty)="onDeleteProperty($event)"
         >
-        </smi-radio-properties-tab>
+        </smi-edit-documentation-standards-table>
       </mat-tab>
     </mat-tab-group>
   </p>

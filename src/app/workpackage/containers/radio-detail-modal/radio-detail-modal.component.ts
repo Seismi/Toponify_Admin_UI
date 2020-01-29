@@ -11,7 +11,6 @@ import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
 import { LoadRadio, AddReply, UpdateRadioProperty, DeleteRadioProperty } from '@app/radio/store/actions/radio.actions';
 import { ReplyModalComponent } from '@app/radio/containers/reply-modal/reply-modal.component';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { User } from '@app/settings/store/models/user.model';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
@@ -137,31 +136,17 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
     this.radioDetailsForm.patchValue({ replyText: '' });
   }
 
-  onEditProperty(property: CustomPropertiesEntity) {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: property,
-        name: property.name
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        this.store.dispatch(
-          new UpdateRadioProperty({
-            radioId: this.radio.id,
-            customPropertyId: property.propertyId,
-            data: { data: { value: data.customProperties.value } }
-          })
-        );
-      }
-    });
+  onSaveProperty(data: {propertyId: string, value: string}): void {
+    this.store.dispatch(
+      new UpdateRadioProperty({
+        radioId: this.radio.id,
+        customPropertyId: data.propertyId,
+        data: { data: data.value }
+      })
+    );
   }
 
-  onDeleteProperty(property: CustomPropertiesEntity) {
+  onDeleteProperty(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',

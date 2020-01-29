@@ -25,7 +25,7 @@ import {
   getEditWorkpackages,
   getSelectedWorkpackages
 } from '@app/workpackage/store/selectors/workpackage.selector';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTabGroup } from '@angular/material';
 import { ReportDeleteModalComponent } from '../report-delete-modal/report-delete-modal.component';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
@@ -117,17 +117,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   get reportDetailForm(): FormGroup {
     return this.reportLibraryDetailService.reportDetailForm;
-  }
-
-  openRightTab(index: number) {
-    this.selectedRightTab = index;
-    if (this.selectedRightTab === index) {
-      this.showOrHideRightPane = false;
-    }
-  }
-
-  onHideRightPane() {
-    this.showOrHideRightPane = true;
   }
 
   onSaveReport() {

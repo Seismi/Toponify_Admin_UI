@@ -13,6 +13,7 @@ export interface DocumentStandard {
   id?: string;
   type: string;
   name: string;
+  value?: string;
   description: string;
   levels?: (string)[] | null;
 }

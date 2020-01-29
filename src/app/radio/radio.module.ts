@@ -31,7 +31,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { RadioEffects } from './store/effects/radio.effects';
 import { reducer } from './store/reducers/radio.reducer';
 import { RadioDetailsComponent } from './containers/radio-details/radio-details.component';
-import { RadioPropertiesTabComponent } from './components/properties-tab/properties-tab.component';
 import { SettingsModule } from '@app/settings/settings.module';
 import { RadioHeaderComponent } from './components/radio-header/radio-header.component';
 import { RadioRightSideComponent } from './components/right-side/right-side.component';
@@ -43,6 +42,7 @@ import { DeleteRadioPropertyModalComponent } from './containers/delete-property-
 import { RelatesToTableComponent } from './components/relates-to-table/relates-to-table.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
+import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delete-radio-modal.component';
 
 @NgModule({
   imports: [
@@ -72,7 +72,6 @@ import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confi
   exports: [
     RadioTableComponent,
     RadioDetailsComponent,
-    RadioPropertiesTabComponent,
     ReplyTextComponent,
     ChatBoxComponent,
     RadioDetailComponent
@@ -87,7 +86,6 @@ import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confi
     ReplyTextComponent,
     ChatBoxComponent,
     RadioDetailsComponent,
-    RadioPropertiesTabComponent,
     RadioHeaderComponent,
     RadioRightSideComponent,
     FilterModalComponent,
@@ -95,7 +93,8 @@ import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confi
     DeleteRadioPropertyModalComponent,
     RelatesToTableComponent,
     ConfirmModalComponent,
-    AssociateModalComponent
+    AssociateModalComponent,
+    DeleteRadioModalComponent
   ],
   entryComponents: [
     RadioModalComponent,
@@ -103,7 +102,8 @@ import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confi
     FilterModalComponent,
     DeleteRadioPropertyModalComponent,
     ConfirmModalComponent,
-    AssociateModalComponent
+    AssociateModalComponent,
+    DeleteRadioModalComponent
   ],
   providers: [RadioService, { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }]
 })

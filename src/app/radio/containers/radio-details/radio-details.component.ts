@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
 import { Observable, Subscription } from 'rxjs';
@@ -10,10 +10,11 @@ import {
   DeleteRadioProperty,
   DissociateRadio,
   LoadRadio,
-  UpdateRadioProperty
+  UpdateRadioProperty,
+  DeleteRadioEntity
 } from '@app/radio/store/actions/radio.actions';
 import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
 import { MatDialog } from '@angular/material';
@@ -22,7 +23,6 @@ import { User } from '@app/settings/store/models/user.model';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/delete-property-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
@@ -31,7 +31,8 @@ import { map } from 'rxjs/operators';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
-import { DeleteRadio, LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
 
 @Component({
   selector: 'app-radio-details',
@@ -50,6 +51,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private userStore: Store<UserState>,
     private route: ActivatedRoute,
+    private router: Router,
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
     private dialog: MatDialog,
@@ -154,28 +156,14 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     this.radioDetailsForm.patchValue({ replyText: '' });
   }
 
-  onEditProperty(property: CustomPropertiesEntity): void {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: property,
-        name: property.name
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        this.store.dispatch(
-          new UpdateRadioProperty({
-            radioId: this.radioId,
-            customPropertyId: property.propertyId,
-            data: { data: { value: data.customProperties.value } }
-          })
-        );
-      }
-    });
+  onSaveProperty(data: { propertyId: string, value: string }): void {
+    this.store.dispatch(
+      new UpdateRadioProperty({
+        radioId: this.radioId,
+        customPropertyId: data.propertyId,
+        data: { data: data.value }
+      })
+    );
   }
 
   onDeleteProperty(property: CustomPropertiesEntity): void {
@@ -240,4 +228,22 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  onDeleteRadio(): void {
+    const dialogRef = this.dialog.open(DeleteRadioModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(new DeleteRadioEntity(this.radioId));
+        this.router.navigate(['/radio'], { queryParamsHandling: 'preserve' });
+      }
+    });
+  }
+
 }

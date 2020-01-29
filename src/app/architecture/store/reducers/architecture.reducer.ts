@@ -8,7 +8,8 @@ import {
   Node,
   NodeDetail,
   OwnersEntity,
-  NodeReports
+  NodeReports,
+  middleOptions
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import {
@@ -199,6 +200,39 @@ export function reducer(
         error: <Error>action.payload
       };
     }
+
+    case WorkPackageNodeActionTypes.UpdateWorkPackageNodePropertySuccess:
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodePropertySuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.UpdateWorkPackageNodePropertyFailure:
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodePropertyFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+    case WorkPackageLinkActionTypes.UpdateWorkPackageLinkPropertySuccess:
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkPropertySuccess: {
+      return {
+        ...state,
+        selectedNodeLink: action.payload
+      };
+    }
+
+    case WorkPackageLinkActionTypes.UpdateWorkPackageLinkPropertyFailure:
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkPropertyFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
 
     case WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess: {
       return {
@@ -405,26 +439,6 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.UpdateCustomProperty: {
-      return {
-        ...state
-      };
-    }
-
-    case NodeActionTypes.UpdateCustomPropertySuccess: {
-      return {
-        ...state,
-        selectedNode: action.payload
-      };
-    }
-
-    case NodeActionTypes.UpdateCustomPropertyFailure: {
-      return {
-        ...state,
-        error: <Error>action.payload
-      };
-    }
-
     case NodeActionTypes.DeleteCustomProperty: {
       return {
         ...state
@@ -584,7 +598,7 @@ function replaceNodeExpandedState(
   nodeIndex: number,
   nodeId: string,
   layoutId: string,
-  expandedState: { middleExpanded: boolean; bottomExpanded: boolean }
+  expandedState: { middleExpanded: middleOptions; bottomExpanded: boolean }
 ): State {
   const updatedExpandedStates: ExpandedStatesEntity[] = state.entities[nodeIndex].expandedStates.concat();
   const expandedStateIndex: number = updatedExpandedStates.findIndex(function(exp: ExpandedStatesEntity) {
