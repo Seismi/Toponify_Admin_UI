@@ -634,7 +634,8 @@ export class DiagramTemplatesService {
           return middleExpanded !== middleOptions.none;
         }
       ),
-      $(
+      // Do not show description for systems
+      !isSystem ? $(
         go.TextBlock,
         {
           textAlign: 'center',
@@ -646,7 +647,7 @@ export class DiagramTemplatesService {
         },
         new go.Binding('text', 'description'),
         new go.Binding('visible', 'description').ofModel()
-      ),
+      ) : {},
       $(
         go.TextBlock,
         {
@@ -667,7 +668,10 @@ export class DiagramTemplatesService {
                   .join(', ')
             : '';
         }),
-        new go.Binding('visible', 'owners').ofModel()
+        new go.Binding('visible', '', function(node): boolean {
+          return node.diagram.model.modelData.owners &&
+            node.data.middleExpanded !== middleOptions.group;
+        }).ofObject()
       ),
       $(
         go.Panel,

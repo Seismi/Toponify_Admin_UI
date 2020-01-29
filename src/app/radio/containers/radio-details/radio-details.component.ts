@@ -14,7 +14,7 @@ import {
   DeleteRadioEntity
 } from '@app/radio/store/actions/radio.actions';
 import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
 import { MatDialog } from '@angular/material';
@@ -23,7 +23,6 @@ import { User } from '@app/settings/store/models/user.model';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/delete-property-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
@@ -157,28 +156,14 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     this.radioDetailsForm.patchValue({ replyText: '' });
   }
 
-  onEditProperty(property: CustomPropertiesEntity): void {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: property,
-        name: property.name
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        this.store.dispatch(
-          new UpdateRadioProperty({
-            radioId: this.radioId,
-            customPropertyId: property.propertyId,
-            data: { data: { value: data.customProperties.value } }
-          })
-        );
-      }
-    });
+  onSaveProperty(data: { propertyId: string, value: string }): void {
+    this.store.dispatch(
+      new UpdateRadioProperty({
+        radioId: this.radioId,
+        customPropertyId: data.propertyId,
+        data: { data: data.value }
+      })
+    );
   }
 
   onDeleteProperty(property: CustomPropertiesEntity): void {

@@ -5,7 +5,6 @@ import 'rxjs/add/observable/of';
 import { WorkPackageService } from './workpackage.service';
 import {
   WorkpackageNode,
-  WorkpackageNodeCustomProperty,
   WorkPackageNodeFindPotential,
   WorkPackageNodeScopeApiResponse,
   WorkPackageNodeScopesApiResponse,
@@ -146,7 +145,7 @@ export class WorkPackageNodesService extends WorkPackageService {
     workPackageId: string,
     nodeId: string,
     customPropertyId: string,
-    data: WorkpackageNodeCustomProperty
+    data: string
   ): Observable<NodeDetailApiResponse> {
     return this.http.put<NodeDetailApiResponse>(
       `/workpackages/${workPackageId}/nodes/${nodeId}/customPropertyValues/${customPropertyId}`,

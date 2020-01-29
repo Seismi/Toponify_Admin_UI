@@ -12,7 +12,14 @@
 
     <ng-container matColumnDef="reportingConcepts">
       <th mat-header-cell *matHeaderCellDef>Reporting Concepts</th>
-      <td mat-cell *matCellDef="let element">{{ getConcepts(element) }}</td>
+      <td mat-cell *matCellDef="let element">
+        <span>
+          {{ getConcepts(element)}}
+          <button mat-icon-button (click)="onDimensionEdit(element)" *ngIf="edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </span>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

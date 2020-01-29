@@ -40,7 +40,9 @@
                                  (removeDataSet)="onRemoveDataSet($event)"
                                  (addDataSets)="onDatasetAdd()"></smi-report-data-set-table>
 
-      <smi-report-dimensions-table [data]="dimensions"></smi-report-dimensions-table>
+      <smi-report-dimensions-table [data]="dimensions"
+                                   [edit]="workPackageIsEditable"
+                                   (dimensionEdit)="onDimensionEdit($event)"></smi-report-dimensions-table>
     </div>
   </form>
 

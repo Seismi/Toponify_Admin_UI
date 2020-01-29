@@ -6,7 +6,6 @@ import { WorkPackageService } from './workpackage.service';
 import { NodeLink, NodeLinkDetailApiResponse } from '@app/architecture/store/models/node-link.model';
 import {
   WorkpackageLink,
-  WorkpackageLinkCustomProperty,
   WorkpackageLinkSliceAdd,
   WorkpackageLinkSliceCondition,
   WorkpackageLinkSliceConditionType,
@@ -60,7 +59,7 @@ export class WorkPackageLinksService extends WorkPackageService {
     workPackageId: string,
     nodeLinkId: string,
     customPropertyId: string,
-    data: WorkpackageLinkCustomProperty
+    data: string
   ): Observable<NodeLinkDetailApiResponse> {
     return this.http.put<NodeLinkDetailApiResponse>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/customPropertyValues/${customPropertyId}`,
@@ -210,6 +209,13 @@ export class WorkPackageLinksService extends WorkPackageService {
     return this.http.post<NodeLink>(
       `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/owners/${ownerId}/deleteRequest`,
       {}
+    );
+  }
+
+  addLinkRadio(workPackageId: string, nodeLinkId: string, radioId: string): Observable<NodeLinkDetailApiResponse> {
+    return this.http.post<NodeLinkDetailApiResponse>(
+      `/workpackages/${workPackageId}/nodeLinks/${nodeLinkId}/radios/${radioId}`,
+      this.httpOptions
     );
   }
 }

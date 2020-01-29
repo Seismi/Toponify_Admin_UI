@@ -40,7 +40,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() selectedRightTab: number;
   @Input() attributes: AttributesEntity[] | null;
   @Input() relatedRadios: any;
-  @Input() properties: any;
+  @Input() properties: CustomPropertyValuesEntity;
   @Input() workpackages: any;
   @Input() objectSelected = false;
   @Input() radio: any;
@@ -88,7 +88,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
 
   @Output()
-  editProperties = new EventEmitter<CustomPropertyValuesEntity>();
+  saveProperties = new EventEmitter<Object>();
 
   @Output()
   deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
@@ -179,11 +179,11 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.deleteOwner.emit(owner);
   }
 
-  onEditProperties(customProperty: CustomPropertyValuesEntity) {
-    this.editProperties.emit(customProperty);
+  onSaveProperty(documentStandard: Object): void {
+    this.saveProperties.emit(documentStandard);
   }
 
-  onDeleteProperties(customProperty: CustomPropertyValuesEntity) {
+  onDeleteProperty(customProperty: CustomPropertyValuesEntity): void {
     this.deleteProperties.emit(customProperty);
   }
 

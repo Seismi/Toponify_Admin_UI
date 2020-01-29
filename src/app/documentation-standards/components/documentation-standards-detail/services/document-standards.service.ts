@@ -16,17 +16,6 @@ export class DocumentStandardsService {
     });
   }
 
-  getPropertyValueValidator(type: string, reg: string): string {
-    if (type === 'Text') {
-      reg = null;
-    } else if (type === 'Number') {
-      reg = '^[0-9]{0,50}$';
-    } else if (type === 'Hyperlink') {
-      reg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
-    }
-    return reg;
-  }
-
   get isValid(): boolean {
     if (!this.documentStandardsForm.valid) {
       this.documentStandardsValidatorService.validateAllFormFields(this.documentStandardsForm);

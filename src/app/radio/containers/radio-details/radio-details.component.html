@@ -41,12 +41,12 @@
           <mat-icon>insert_drive_file</mat-icon>
           Documentation Standards
         </ng-template>
-        <smi-radio-properties-tab
-          (editProperty)="onEditProperty($event)"
-          (deleteProperty)="onDeleteProperty($event)"
+        <smi-edit-documentation-standards-table
           [data]="radio?.customPropertyValues"
+          (saveProperty)="onSaveProperty($event)"
+          (deleteProperty)="onDeleteProperty($event)"
         >
-        </smi-radio-properties-tab>
+        </smi-edit-documentation-standards-table>
       </mat-tab>
     </mat-tab-group>
   </p>
