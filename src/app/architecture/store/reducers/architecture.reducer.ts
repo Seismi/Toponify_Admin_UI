@@ -555,10 +555,17 @@ export function reducer(
     }
 
     case NodeActionTypes.GetParentDescendantIdsSucces: {
-      return {
-        ...state,
-        parentNodeDescendantIds: action.payload.descendants.map(n => n.id)
-      };
+      if (action.payload && action.payload.descendants) {
+        return {
+          ...state,
+          parentNodeDescendantIds: action.payload.descendants.map(n => n.id)
+        };
+      } else {
+        return {
+          ...state,
+          parentNodeDescendantIds: []
+        };
+      }
     }
 
     default: {

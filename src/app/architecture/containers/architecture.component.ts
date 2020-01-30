@@ -398,7 +398,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         if (id) {
           const parentNode: Node = this.nodes.find(node => node.id === id);
           if (!parentNode) {
-            this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray }));
+            this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray || [] }));
           } else {
             this.store.dispatch(new SetParentDescendantIds(parentNode.descendants.map(n => n.id)));
           }
