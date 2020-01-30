@@ -344,6 +344,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         // Add tool-related adornments to selected link (if any) for enabled tools
         part.updateAdornments();
       });
+
+      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable;
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
