@@ -182,10 +182,6 @@ export interface WorkpackageNodeDescendant {
   id: string;
 }
 
-export interface WorkpackageNodeCustomProperty {
-  value: string;
-}
-
 export interface WorkpackageLink {
   id: string;
   layer: string;
@@ -194,10 +190,6 @@ export interface WorkpackageLink {
   category: string;
   sourceId: string;
   targetId: string;
-}
-
-export interface WorkpackageLinkCustomProperty {
-  value: string;
 }
 
 export interface WorkpackageLinkSliceAdd {

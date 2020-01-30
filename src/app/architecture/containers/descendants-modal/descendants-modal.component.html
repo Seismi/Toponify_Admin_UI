@@ -1,11 +1,11 @@
-<h1 mat-dialog-title>Add Children to "{{ title }}"</h1>
+<h1 mat-dialog-title>Add {{ addToGroup ? 'Children' : 'System' }} to "{{ title }}"</h1>
 <div mat-dialog-content>
   <mat-form-field
     (click)="onOpenDropdown()"
     matTooltip="Concatenation of parent name and name. Items reused across multiple parents will appear multiple times"
   >
-    <mat-select placeholder="Components" [formControl]="components" multiple>
-      <mat-select-trigger>
+    <mat-select placeholder="Components" [formControl]="components" [multiple]="addToGroup">
+      <mat-select-trigger *ngIf="addToGroup">
         {{ components.value ? components.value[0] : '' }}
         <span *ngIf="components.value?.length > 1" class="additional-selection">
           (+{{ components.value.length - 1 }} {{ components.value?.length === 2 ? 'other' : 'others' }})
@@ -35,7 +35,7 @@
 </div>
 <div mat-dialog-actions>
   <div style="flex-grow: 1;">
-    <button mat-raised-button color="primary" (click)="onAddComponent()" data-hook="descendants-modal-new">New</button>
+    <button mat-raised-button color="primary" (click)="onAddComponent()" data-hook="descendants-modal-new" *ngIf="addToGroup">New</button>
   </div>
   <button mat-button (click)="onSubmit()" data-hook="descendants-modal-save">Save</button>
   <button mat-button (click)="onCancelClick()" data-hook="descendants-modal-cancel">Cancel</button>

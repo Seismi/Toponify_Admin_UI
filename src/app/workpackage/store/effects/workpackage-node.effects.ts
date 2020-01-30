@@ -6,7 +6,7 @@ import {
 } from '@app/workpackage/services/workpackage-nodes.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
 import {
   AddWorkPackageNode,
   AddWorkPackageNodeDescendant,
@@ -69,7 +69,6 @@ import {
   WorkPackageNodeFindPotential,
   WorkPackageNodeScopeApiResponse,
   WorkPackageNodeScopesApiResponse,
-  WorkpackageNodeCustomProperty
 } from '../models/workpackage.models';
 import {
   DescendantsEntity,
@@ -265,11 +264,11 @@ export class WorkPackageNodeEffects {
   addWorkPackageNodeRadio$ = this.actions$.pipe(
     ofType<AddWorkPackageNodeRadio>(WorkPackageNodeActionTypes.AddWorkPackageNodeRadio),
     map(action => action.payload),
-    switchMap((payload: { workPackageId: string; nodeId: string; radioId: string }) => {
+    concatMap((payload: { workPackageId: string; nodeId: string; radioId: string }) => {
       return this.workpackageNodeService
         .addWorkPackageNodeRadio(payload.workPackageId, payload.nodeId, payload.radioId)
         .pipe(
-          switchMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
+          concatMap((response: NodeDetailApiResponse) => [new AddWorkPackageNodeRadioSuccess(response.data)]),
           catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeRadioFailure(error)))
         );
     })
@@ -303,7 +302,7 @@ export class WorkPackageNodeEffects {
   updateNodeProperty$ = this.actions$.pipe(
     ofType<UpdateWorkPackageNodeProperty>(WorkPackageNodeActionTypes.UpdateWorkPackageNodeProperty),
     map(action => action.payload),
-    mergeMap((payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: WorkpackageNodeCustomProperty }) => {
+    mergeMap((payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: string }) => {
       return this.workpackageNodeService.updateNodeProperty(payload.workPackageId, payload.nodeId, payload.customPropertyId, payload.data).pipe(
         switchMap((response: NodeDetailApiResponse) => [new UpdateWorkPackageNodePropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageNodePropertyFailure(error)))
