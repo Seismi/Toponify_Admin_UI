@@ -460,7 +460,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           disableClose: false,
           width: '450px',
           data: {
-            parentId: this.nodeId,
+            group: this.nodeId,
             addSystem: true
           }
         });
