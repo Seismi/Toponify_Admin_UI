@@ -255,7 +255,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedId: string;
   public layoutSettingsTab: boolean;
   public scope: ScopeDetails;
-  private currentFilterLevel: string;
+  private currentFilterLevel: Level;
   private filterLevelSubscription: Subscription;
   private addDataSetSubscription: Subscription;
   public params: Params;

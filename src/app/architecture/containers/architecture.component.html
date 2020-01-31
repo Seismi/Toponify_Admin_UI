@@ -82,7 +82,7 @@
         [allowMove]="allowMove"
         [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
-        [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+        [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
         [links]="links | layer: { byId: false } | async"
         [workpackageDetail]="workpackageDetail"
         [selectedId]="selectedId"
