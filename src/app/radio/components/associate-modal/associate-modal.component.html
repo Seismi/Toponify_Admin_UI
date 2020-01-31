@@ -2,7 +2,7 @@
 
 <mat-form-field>
   <mat-label>Work package</mat-label>
-  <mat-select value="00000000-0000-0000-0000-000000000000" (valueChange)="selectedWorkpackageId = $event">
+  <mat-select value="00000000-0000-0000-0000-000000000000" (selectionChange)="onSelectWorkPackage($event)">
     <mat-option value="00000000-0000-0000-0000-000000000000">
       Current Architecture
     </mat-option>
