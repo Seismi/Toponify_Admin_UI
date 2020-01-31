@@ -13,7 +13,9 @@ import {
   LoadReport,
   RemoveDataSetsFromReport,
   SetDimensionFilter,
-  UpdateReport
+  UpdateReport,
+  UpdateReportProperty,
+  DeleteReportProperty
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
@@ -37,6 +39,8 @@ import { map, take } from 'rxjs/operators';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { ReportService } from '@app/report-library/services/report.service';
 import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
+import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
+import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -217,6 +221,38 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         );
         this.selectedOwner = false;
         this.isEditable = true;
+      }
+    });
+  }
+
+  onSaveProperties(data: { propertyId: string, value: string }): void {
+    this.store.dispatch(
+      new UpdateReportProperty({
+        workPackageId: this.workpackageId,
+        reportId: this.reportId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      })
+    );
+  }
+
+  onDeleteProperties(property: CustomPropertiesEntity): void {
+    const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete',
+        name: property.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(new DeleteReportProperty({
+          workPackageId: this.workpackageId,
+          reportId: this.reportId,
+          customPropertyId: property.propertyId
+        }))
       }
     });
   }

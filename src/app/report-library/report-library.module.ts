@@ -34,7 +34,6 @@ import { ReportOwnersTableComponent } from './components/owners-table/owners-tab
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
 import { RadioTableInReportsPageComponent } from './components/radio-table/radio-table.component';
-import { PropertiesTableInReportsPageComponent } from './components/properties-table/properties-table.component';
 import { WorkPackageTableInReportsPageComponent } from './components/workpackage-table/workpackage-table.component';
 import { ReportModalComponent } from './containers/report-modal/report-modal.component';
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
@@ -79,7 +78,6 @@ import { ReportingConceptFilterModalComponent } from '@app/report-library/compon
     ReportDimensionsTableComponent,
     ReportReportingConceptsTableComponent,
     RadioTableInReportsPageComponent,
-    PropertiesTableInReportsPageComponent,
     WorkPackageTableInReportsPageComponent,
     ReportModalComponent,
     ReportDeleteModalComponent,
