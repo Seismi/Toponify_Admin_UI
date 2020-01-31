@@ -14,6 +14,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
+import {middleOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -184,13 +185,27 @@ export class DiagramChangesService {
     // Set to contain all parts to update
     const partsToUpdate = new go.Set();
 
-    // Moving a node will affect the positions of connected links.
-    //  Therefore, add any connected links to set of parts to update.
+    // Moving a node will affect the positions of grouped nodes
+    //  and any connected links. Therefore, add these to set of
+    //  parts to update.
     event.subject.each(function(part: go.Part) {
       partsToUpdate.add(part);
 
+      // If moved part is a node, include connected links
       if (part instanceof go.Node) {
         partsToUpdate.addAll(part.linksConnected);
+      }
+
+      // If moved part is a group, include grouped parts and any links connected to grouped nodes
+      if (part instanceof go.Group) {
+        const subParts = part.findSubGraphParts();
+        partsToUpdate.addAll(part.findSubGraphParts().iterator);
+
+        subParts.each(function(subPart: go.Part): void {
+          if (part instanceof go.Node) {
+            partsToUpdate.addAll((subPart as go.Node).linksConnected);
+          }
+        });
       }
     });
 
@@ -652,6 +667,8 @@ export class DiagramChangesService {
 
     if (group.isSubGraphExpanded) {
 
+
+
       // Run group layout to ensure member nodes are in the correct positions
       group.layout.isValidLayout = false;
       group.layout.doLayout(group);
@@ -661,7 +678,7 @@ export class DiagramChangesService {
 
       group.findSubGraphParts()
         .each(
-          function(part: go.Part): void {
+          function (part: go.Part): void {
             if (part instanceof go.Node) {
 
               /*
@@ -675,13 +692,26 @@ export class DiagramChangesService {
 
               // Add links connected to member to set of links to be rerouted
               linksToReroute.addAll(part.linksConnected);
+
+              const memberArea = part.findObject('Group member area');
+
+              if (!memberArea.getDocumentBounds().containsRect(part.actualBounds)) {
+
+                const newLocation = new go.Point();
+                newLocation.x = memberArea.getDocumentBounds().centerX;
+                newLocation.y = memberArea.getDocumentBounds().bottom + 12;
+
+                memberArea.height = memberArea.height + part.actualBounds.height + 12;
+
+                part.move(newLocation);
+              }
             }
           }
         );
 
       // Reroute all necessary links
-      linksToReroute.each(function(link: go.Link): void {
-        link.data = Object.assign(link.data, { updateRoute: true });
+      linksToReroute.each(function (link: go.Link): void {
+        link.data = Object.assign(link.data, {updateRoute: true});
         link.invalidateRoute();
         link.updateRoute();
       });
