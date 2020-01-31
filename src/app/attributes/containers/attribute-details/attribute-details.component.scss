@@ -1,16 +1,25 @@
+app-model-container {
+  position: relative;
+  background-color: #eee;
+  border-left: solid 2px #ddd;
+}
+
+.rightPane {
+  width: 100%;
+}
+
+.detailsTab {
+  padding: 15px;
+}
+
 button {
   position: absolute;
   bottom: 12px;
   left: 16px;
-  z-index: 99999;
+  z-index: 1;
 }
 
-.rightPane {
-  padding-left: 5px;
-}
-
-.detailsTab {
-  padding: 10px 15px;
-  overflow-y: auto;
-  max-height: 77vh;
+.mat-icon {
+  font-size: 19px;
+  margin-top: 5px;
 }

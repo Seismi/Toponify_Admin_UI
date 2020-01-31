@@ -40,9 +40,6 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
 export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription[] = [];
   public attribute: AttributeDetail;
-  public isEditable = false;
-  public showOrHideRightPane = false;
-  public selectedRightTab: number;
   public attributeId: string;
   public workpackageId: string;
   public selectedOwner = false;
@@ -76,13 +73,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       this.store.pipe(select(getSelectedAttribute)).subscribe(attribute => {
         this.attribute = attribute;
         if (attribute) {
-          this.objectDetailsService.updateForm({
-            name: attribute.name,
-            category: attribute.category,
-            description: attribute.description,
-            tags: attribute.tags
-          });
-          this.isEditable = false;
+          this.objectDetailsService.updateForm({...attribute});
         }
       })
     );
@@ -110,43 +101,14 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  openRightTab(index: number): void {
-    this.selectedRightTab = index;
-    if (this.selectedRightTab === index) {
-      this.showOrHideRightPane = false;
-    }
-  }
-
-  onHideRightPane(): void {
-    this.showOrHideRightPane = true;
-  }
-
-  onEditDetails(): void {
-    this.isEditable = true;
-  }
-
-  onCancelEdit(): void {
-    this.isEditable = false;
-    this.selectAttribute = false;
-    this.selectedRelatedIndex = null;
-  }
-
   onSaveAttribute(): void {
-    this.isEditable = false;
-    this.selectAttribute = false;
-    this.selectedRelatedIndex = null;
-
     this.store.dispatch(
       new UpdateAttribute({
         workPackageId: this.workpackageId,
         attributeId: this.attributeId,
         entity: {
           data: {
-            id: this.attributeId,
-            name: this.objectDetailsForm.value.name,
-            description: this.objectDetailsForm.value.description,
-            tags: this.objectDetailsForm.value.tags,
-            category: this.attribute.category
+            id: this.attributeId, ...this.objectDetailsForm.value
           }
         }
       })
@@ -166,7 +128,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.mode === 'delete') {
         this.store.dispatch(new DeleteAttribute({ workPackageId: this.workpackageId, attributeId: this.attributeId }));
-        this.router.navigate(['attributes-and-rules']);
+        this.router.navigate(['attributes-and-rules'], { queryParamsHandling: 'preserve' });
       }
     });
   }
@@ -213,32 +175,18 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEditProperty(property: CustomPropertiesEntity): void {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: property,
-        name: property.name
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        this.store.dispatch(
-          new UpdateProperty({
-            workPackageId: this.workpackageId,
-            attributeId: this.attributeId,
-            customPropertyId: property.propertyId,
-            entity: { data: { value: data.customProperties.value } }
-          })
-        );
-      }
-    });
+  onSaveProperties(data: { propertyId: string, value: string }): void {
+    this.store.dispatch(
+      new UpdateProperty({
+        workPackageId: this.workpackageId,
+        attributeId: this.attributeId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      })
+    );
   }
 
-  onDeleteProperty(property: CustomPropertiesEntity): void {
+  onDeleteProperties(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -257,7 +205,6 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
             customPropertyId: property.propertyId
           })
         );
-        this.selectAttribute = false;
       }
     });
   }
