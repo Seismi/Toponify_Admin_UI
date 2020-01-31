@@ -221,7 +221,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditLayouts: string;
   // attributeSubscription: Subscription;
   clickedOnLink = false;
-  objectSelected = false;
   isEditable = false;
   nodeId: string;
   allowEditWorkPackages: string;
@@ -235,7 +234,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   showOrHideRightPane = false;
   selectedRightTab: number;
   selectedLeftTab: number;
-  multipleSelected = false;
+  multipleSelected: boolean;
   selectedMultipleNodes = [];
   radioAlertChecked = true;
   radioTab = true;
@@ -583,22 +582,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions
-        .pipe(ofType(NodeActionTypes.LoadNodesSuccess, NodeActionTypes.LoadNodeLinksSuccess))
-        .subscribe((action: any) => {
-          const nodes = action.payload;
-          if (this.part) {
-            nodes.filter(node => {
-              if (!node.id.includes(this.part.data.id) && !this.part.isSelected) {
-                this.objectSelected = false;
-                this.radioTab = true;
-              }
-            })
-          }
-        })
-    )
-
-    this.subscriptions.push(
       this.actions.pipe(ofType(AttributeActionTypes.AddAttributeSuccess)).subscribe((action: any) => {
         if (!this.clickedOnLink) {
           this.workpackageStore.dispatch(new AddWorkPackageNodeAttribute({
@@ -692,17 +675,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = false;
       }
 
-      // Enable "Edit" and "Delete" buttons then GoJS object is selected
-      this.objectSelected = false;
-      this.isEditable = false;
-
       this.objectDetailsService.updateForm(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
       this.part = part;
-
-      this.detailsTab = false;
 
       if (part) {
         // Load node scopes
@@ -723,22 +700,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             this.setWorkPackage(workPackageIds);
             this.getNodeReports(workPackageIds);
           });
-
-        this.objectSelected = true;
-        this.radioTab = false;
-      } else {
-        this.radioTab = true;
-        this.objectSelected = false;
-        this.multipleSelected = false;
-        this.selectedMultipleNodes = [];
       }
-    } else {
-      this.objectSelected = false;
-      this.multipleSelected = true;
-      this.detailsTab = true;
     }
 
-    // Multiple selection
+    parts.length >=2 ? this.multipleSelected = true : this.multipleSelected = false;
+
+    // Multiple selections
     if (parts.length > 1) {
       for (let i = 0; i < parts.length; i++) {
         if (parts[i] instanceof Link) {
@@ -805,14 +772,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       };
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-    this.isEditable = false;
-  }
-
-  onEditDetails(details: any) {
-    this.isEditable = true;
-  }
-
-  onCancelEdit() {
     this.isEditable = false;
   }
 
