@@ -43,6 +43,7 @@ import { RouterModule } from '@angular/router';
 import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-name.component';
 import { EditDocumentationStandardsTableComponent } from './components/edit-documentation-standards/edit-documentation-standards.component';
 import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
+import { RightHandSideComponent } from './components/right-hand-side/right-hand-side.component';
 
 @NgModule({
   imports: [
@@ -87,7 +88,8 @@ import { EditDocumentationStandardsFormComponent } from './components/edit-docum
     NodeNameComponent,
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
-    EditDocumentationStandardsFormComponent
+    EditDocumentationStandardsFormComponent,
+    RightHandSideComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -113,7 +115,8 @@ import { EditDocumentationStandardsFormComponent } from './components/edit-docum
     NodeNameComponent,
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
-    EditDocumentationStandardsFormComponent
+    EditDocumentationStandardsFormComponent,
+    RightHandSideComponent
   ]
 })
 export class CoreLayoutModule {}
