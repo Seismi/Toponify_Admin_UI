@@ -9,6 +9,7 @@ import {
   ReportEntityApiResponse,
   ReportDataSet,
   ReportingConcept,
+  Report
 } from '../store/models/report.model';
 import { toHttpParams } from '@app/services/utils';
 
@@ -129,6 +130,28 @@ export class ReportService {
   ): Observable<ReportDetailApiRespoonse> {
     return this.http.post<ReportDetailApiRespoonse>(
       `/workpackages/${wpid}/reports/${reportId}/dimensions/${dimensionId}/conceptSelections/${conceptId}/deleteRequest`,
+      {}
+    );
+  }
+
+  updateCustomProperty(
+    workPackageId: string, 
+    reportId: string, 
+    customPropertyId: string, 
+    data: string
+  ): Observable<Object> {
+    return this.http.put(
+      `/workpackages/${workPackageId}/reports/${reportId}/customPropertyValues/${customPropertyId}`, { data }, httpOptions
+    );
+  }
+
+  deleteCustomProperty(
+    workPackageId: string,
+    reportId: string,
+    customPropertyId: string,
+  ): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(
+      `/workpackages/${workPackageId}/reports/${reportId}/customPropertyValues/${customPropertyId}/deleteRequest`,
       {}
     );
   }

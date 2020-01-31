@@ -46,8 +46,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
-        <smi-properties-table-in-reports-page [data]="report?.customPropertyValues">
-        </smi-properties-table-in-reports-page>
+        <smi-edit-documentation-standards-table 
+          [data]="report?.customPropertyValues" 
+          [isEditable]="workPackageIsEditable"
+          (saveProperty)="onSaveProperties($event)" 
+          (deleteProperty)="onDeleteProperties($event)">
+        </smi-edit-documentation-standards-table>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
