@@ -22,6 +22,7 @@ const reportingConceptCategories = ['structure', 'list', 'key'];
 })
 export class NewChildrenModalComponent implements OnInit, OnDestroy {
   public filterLevelSubscription: Subscription;
+  public group: string;
   public parentId: string;
   public layer: string;
   public addSystem: boolean;
@@ -34,6 +35,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.parentId = data.parentId;
+    this.group = data.group;
     this.addSystem = data.addSystem;
   }
 
@@ -84,11 +86,12 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     if (!this.newChildrenService.isValid) {
       return;
     }
-    this.dialogRef.close({ 
-      data: { 
-        ...this.newChildrenForm.value, 
+    this.dialogRef.close({
+      data: {
+        ...this.newChildrenForm.value,
         layer: this.getLayer(this.filterLevel),
-        parentId: this.parentId
+        parentId: this.parentId,
+        group: this.group
       }
     });
   }
