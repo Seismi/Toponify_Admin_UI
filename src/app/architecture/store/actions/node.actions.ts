@@ -1,6 +1,5 @@
 import { Action } from '@ngrx/store';
 import {
-  CustomPropertyApiRequest,
   NodeExpandedStateApiRequest,
   Error,
   Node,
@@ -47,7 +46,12 @@ export enum NodeActionTypes {
   DeleteCustomPropertyFailure = '[Node] Delete Custom Property Failure',
   LoadNodeReports = '[Node] Load Node Reports',
   LoadNodeReportsSuccess = '[Node] Load Node Reports Success',
-  LoadNodeReportsFailure = '[Node] Load Node Reports Fail'
+  LoadNodeReportsFailure = '[Node] Load Node Reports Fail',
+  RemoveParentDescendantIds = '[Node] Remove Parent Descendant Ids',
+  GetParentDescendantIds = '[Node] Get Parent Descendant Ids',
+  GetParentDescendantIdsSucces = '[Node] Get Parent Descendant Ids Success',
+  GetParentDescendantIdsFailure = '[Node] Get Parent Descendant Ids Failure',
+  SetParentDescendantIds = '[Node] Set Parent Descendant Ids'
 }
 
 export class LoadNodes implements Action {
@@ -225,6 +229,30 @@ export class LoadNodeReportsFailure implements Action {
   constructor(public payload: Error) {}
 }
 
+export class RemoveParentDescendantIds implements Action {
+  readonly type = NodeActionTypes.RemoveParentDescendantIds;
+}
+
+export class GetParentDescendantIds implements Action {
+  readonly type = NodeActionTypes.GetParentDescendantIds;
+  constructor(public payload: {id: string, workpackages: string[]}) {}
+}
+
+export class GetParentDescendantIdsSuccess implements Action {
+  readonly type = NodeActionTypes.GetParentDescendantIdsSucces;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class GetParentDescendantIdsFailure implements Action {
+  readonly type = NodeActionTypes.GetParentDescendantIdsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class SetParentDescendantIds implements Action {
+  readonly type = NodeActionTypes.SetParentDescendantIds;
+  constructor(public payload: string[]) {}
+}
+
 export type NodeActionsUnion =
   | LoadNodes
   | LoadNodesSuccess
@@ -260,4 +288,9 @@ export type NodeActionsUnion =
   | DeleteCustomPropertyFailure
   | LoadNodeReports
   | LoadNodeReportsSuccess
-  | LoadNodeReportsFailure;
+  | LoadNodeReportsFailure
+  | RemoveParentDescendantIds
+  | GetParentDescendantIds
+  | GetParentDescendantIdsSuccess
+  | GetParentDescendantIdsFailure
+  | SetParentDescendantIds;

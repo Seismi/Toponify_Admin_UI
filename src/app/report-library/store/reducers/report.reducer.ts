@@ -54,6 +54,8 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.DeleteReportPropertySuccess:
+    case ReportActionTypes.UpdateReportPropertySuccess:
     case ReportActionTypes.LoadReportSuccess: {
       return {
         ...state,
@@ -62,6 +64,8 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.DeleteReportPropertyFailure:
+    case ReportActionTypes.UpdateReportPropertyFailure:
     case ReportActionTypes.LoadReportFail: {
       return {
         ...state,

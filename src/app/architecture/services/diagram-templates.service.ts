@@ -15,6 +15,18 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
+function SystemGroupLayout() {
+  go.GridLayout.call(this);
+}
+
+go.Diagram.inherit(SystemGroupLayout, go.GridLayout);
+
+SystemGroupLayout.prototype.initialOrigin = function(): go.Point {
+  const memberArea = this.group.resizeObject;
+  const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
+  return memberArea.getDocumentPoint(initialOriginLocal);
+};
+
 const nodeWidth = 300;
 
 @Injectable()
@@ -184,8 +196,10 @@ export class DiagramTemplatesService {
     return $(
       'Button',
       {
+        column: 3,
+        row: 0,
         name: 'DependencyExpandButton',
-        alignment: go.Spot.LeftCenter,
+        alignment: go.Spot.Right,
         desiredSize: new go.Size(20, 20),
         margin: new go.Margin(0, 5, 0, 0),
         click: function(event, button) {
@@ -218,6 +232,8 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        column: 2,
+        row: 0,
         name: 'TopExpandButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
@@ -265,6 +281,8 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
+        row: 0,
+        column: 2,
         name: 'TopMenuButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
@@ -505,20 +523,31 @@ export class DiagramTemplatesService {
   getTopSection(isSystem = false): go.Panel {
     return $(
       go.Panel,
-      'Horizontal',
+      'Table',
       {
         name: 'top',
         row: 0,
         alignment: go.Spot.TopCenter,
         stretch: go.GraphObject.Horizontal,
-        minSize: new go.Size(NaN, 30),
+        minSize: new go.Size(nodeWidth, 30),
         margin: new go.Margin(5)
       },
+      new go.Binding('maxSize', 'middleExpanded', function(middleExpanded) {
+        return middleExpanded !== middleOptions.group ?
+          new go.Size(nodeWidth, 30) : new go.Size(NaN, 30);
+      }),
+      $(go.RowColumnDefinition, { column: 0, width: 25 }),
+      $(go.RowColumnDefinition, { column: 1 }),
+      $(go.RowColumnDefinition, { column: 2, width: 25 }),
+      $(go.RowColumnDefinition, { column: 3 }),
       this.getDependencyExpandButton(),
       // Node icon, to appear at the top left of the node
       $(
         go.Picture,
         {
+          column: 0,
+          row: 0,
+          alignment: go.Spot.Left,
           desiredSize: new go.Size(25, 25),
           source: '/assets/node-icons/data_set-master-data.svg'
         },
@@ -563,18 +592,18 @@ export class DiagramTemplatesService {
       $(
         go.TextBlock,
         {
+          column: 1,
+          row: 0,
           textAlign: 'left',
           font: 'bold italic 20px calibri',
           margin: new go.Margin(0, 5, 0, 5),
           wrap: go.TextBlock.None,
           overflow: go.TextBlock.OverflowEllipsis,
+          stretch: go.GraphObject.Horizontal,
+          alignment: go.Spot.Left,
           toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', 'name')))
         },
         new go.Binding('text', 'name'),
-        // Size name textblock to account for presence/absence of dependency expand button
-        new go.Binding('width', 'visible', function(expandButtonVisible: boolean): number {
-          return expandButtonVisible ? nodeWidth - 95 : nodeWidth - 70;
-        }).ofObject('DependencyExpandButton'),
         new go.Binding('opacity', 'name', function(name: boolean): number {
           return name ? 1 : 0;
         }).ofModel()
@@ -726,7 +755,8 @@ export class DiagramTemplatesService {
             stroke: null,
             fill: null,
             stretch: go.GraphObject.Horizontal,
-            height: 200
+            height: 200,
+            minSize: new go.Size(nodeWidth - 10, 200)
           },
           new go.Binding('visible', 'middleExpanded',
             function(middleExpanded) {
@@ -915,11 +945,23 @@ export class DiagramTemplatesService {
 
   getSystemGroupTemplate(forPalette: boolean = false): go.Group {
     return $(
+
       go.Group,
       'Auto',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
+        layout: $(SystemGroupLayout as any,
+          {
+            wrappingColumn: 1,
+            isOngoing: false,
+            isInitial: true,
+            alignment: go.GridLayout.Location,
+            spacing: new go.Size(NaN, 12)
+          },
+        ),
+        subGraphExpandedChanged: this.diagramChangesService.systemSubGraphExpandChanged,
+        resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 
           // Do not proceed for double clicks on buttons on the node
@@ -929,7 +971,27 @@ export class DiagramTemplatesService {
 
           this.gojsCustomObjectsService.showDetailTabSource.next();
 
-        }.bind(this)
+        }.bind(this),
+        dragComputation: function(part, pt, gridpt) {
+          // don't constrain top-level nodes
+          const grp = part.containingGroup;
+          if (grp === null) { return pt; }
+          // try to stay within the background Shape of the Group
+          const back = grp.resizeObject;
+          if (back === null) { return pt; }
+          const p1 = back.getDocumentPoint(go.Spot.TopLeft);
+          const p2 = back.getDocumentPoint(go.Spot.BottomRight);
+          const b = part.actualBounds;
+          const loc = part.location;
+
+          p1.offset(loc.x - b.x, loc.y - b.y);
+          p2.offset(loc.x - b.x, loc.y - b.y);
+
+          // now limit the location appropriately
+          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1)) ;
+          const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
+          return new go.Point(x, y);
+        }
       },
       new go.Binding('isSubGraphExpanded', 'middleExpanded',
         function(middleExpanded): boolean {
@@ -943,6 +1005,9 @@ export class DiagramTemplatesService {
           return this.currentFilterLevel !== Level.usage;
         }.bind(this)
       ),
+      new go.Binding('resizable', 'middleExpanded', function(middleExpanded) {
+        return middleExpanded === middleOptions.group;
+      }),
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette

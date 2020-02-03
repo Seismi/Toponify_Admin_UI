@@ -18,7 +18,7 @@ import { layers } from '@app/architecture/store/models/node.model';
 import { DiagramTemplatesService } from '../../services/diagram-templates.service';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
 import { DiagramChangesService } from '../../services/diagram-changes.service';
-import { CustomLinkShift, GojsCustomObjectsService } from '../../services/gojs-custom-objects.service';
+import {CustomLinkShift, CustomNodeResize, GojsCustomObjectsService} from '../../services/gojs-custom-objects.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 
@@ -142,6 +142,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
     this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation;
+    this.diagram.toolManager.resizingTool = new CustomNodeResize();
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
