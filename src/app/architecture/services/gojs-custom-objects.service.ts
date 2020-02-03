@@ -219,6 +219,8 @@ export class GojsCustomObjectsService {
   // Context menu for when a system group button is clicked
   getPartButtonMenu(fixedPosition = true): go.Adornment {
 
+    const disabledTextColour = '#707070';
+
     // Standard highlighting for buttons when mouse cursor enters them
     function standardMouseEnter(e: object, btn: go.Part): void {
       if (!btn.isEnabledObject()) {
@@ -246,10 +248,16 @@ export class GojsCustomObjectsService {
     ): go.Part {
       return $(
         'ContextMenuButton',
+        {
+          name: text
+        },
         $(go.TextBlock,
           text_predicate
             ? new go.Binding('text', '', text_predicate).ofObject()
-            : { text: text }
+            : { text: text },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : disabledTextColour;
+          }).ofObject(text)
         ),
         {
           click: function(event, object) {
@@ -297,10 +305,16 @@ export class GojsCustomObjectsService {
       text_predicate?: (object: go.GraphObject, event: object) => string
     ): go.Part {
       return $('ContextMenuButton',
+        {
+          name: name
+        },
         $(go.TextBlock,
           text_predicate
             ? new go.Binding('text', '', text_predicate).ofObject()
-            : { text: name }
+            : { text: name },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : disabledTextColour;
+          }).ofObject(name)
         ),
         {
         click: function(event, object) {
