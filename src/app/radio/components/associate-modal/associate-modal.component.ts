@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatSelectChange } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { Observable } from 'rxjs';
@@ -19,6 +19,8 @@ export class AssociateModalComponent implements OnInit {
   public nodes$: Observable<Node[]>;
   public selectedWorkpackageId = '00000000-0000-0000-0000-000000000000';
   public selectedNodeId: string;
+
+  @ViewChild('searchInput') searchInput: ElementRef;
 
   constructor(
     private store: Store<NodeState>,
@@ -44,6 +46,11 @@ export class AssociateModalComponent implements OnInit {
       workPackageQuery: [workPackageId]
     };
     this.store.dispatch(new LoadNodes(queryParams));
+  }
+
+  filter(node: Node): boolean {
+    const searchValue = this.searchInput.nativeElement.value;
+    return searchValue !== '' && node.name.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;
   }
 
   onConfirm() {
