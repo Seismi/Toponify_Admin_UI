@@ -339,27 +339,14 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEditProperties(customProperty: CustomPropertyValuesEntity): void {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: customProperty
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        this.store.dispatch(
-          new UpdateCustomProperty({
-            workPackageId: this.workpackageId,
-            customPropertyId: customProperty.propertyId,
-            data: { data: { value: data.customProperties.value } }
-          })
-        );
-      }
-    });
+  onSaveProperties(data: { propertyId: string, value: string }): void {
+    this.store.dispatch(
+      new UpdateCustomProperty({
+        workPackageId: this.workpackageId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      })
+    );
   }
 
   onDeleteProperties(customProperty: CustomPropertyValuesEntity): void {

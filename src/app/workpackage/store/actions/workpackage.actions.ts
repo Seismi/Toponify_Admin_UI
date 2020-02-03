@@ -300,7 +300,7 @@ export class DeleteRadioFailure implements Action {
 export class UpdateCustomProperty implements Action {
   readonly type = WorkPackageActionTypes.UpdateCustomProperty;
   constructor(
-    public payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertiesEntity } }
+    public payload: { workPackageId: string; customPropertyId: string; data: string }
   ) {}
 }
 

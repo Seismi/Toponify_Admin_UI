@@ -256,9 +256,9 @@ export class WorkPackageEffects {
     ofType<UpdateCustomProperty>(WorkPackageActionTypes.UpdateCustomProperty),
     map(action => action.payload),
     switchMap(
-      (payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertyValuesEntity } }) => {
+      (payload: { workPackageId: string; customPropertyId: string; data: string }) => {
         return this.workpackageService
-          .updateProperty(payload.workPackageId, payload.customPropertyId, payload.data.data)
+          .updateProperty(payload.workPackageId, payload.customPropertyId, payload.data)
           .pipe(
             switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
             catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
