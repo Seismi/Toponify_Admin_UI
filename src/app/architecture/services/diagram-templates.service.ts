@@ -57,7 +57,7 @@ export class DiagramTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false)
           }
         : {}
     );
@@ -103,7 +103,6 @@ export class DiagramTemplatesService {
         ? {
             // Set locationSpot in order for palette to arrange link correctly
             locationSpot: go.Spot.TopCenter,
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
             // Correct locationSpot on selection highlight adornment when link in palette
             selectionAdornmentTemplate: $(
               go.Adornment,
@@ -131,7 +130,7 @@ export class DiagramTemplatesService {
           }
         : {
             // Enable context menu for links not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getLinkContextMenu()
           }
     );
   }
@@ -289,7 +288,7 @@ export class DiagramTemplatesService {
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
         click: function(event, button) {
-          const menu = this.gojsCustomObjectsService.getPartButtonMenu();
+          const menu = this.gojsCustomObjectsService.getPartButtonMenu(true);
           event.diagram.select(button.part);
           menu.adornedObject = button.part;
 
@@ -314,11 +313,7 @@ export class DiagramTemplatesService {
         new go.Binding('stroke', 'isEnabled', function(enabled) {
           return enabled ? 'black' : '#AAAFB4';
         }).ofObject('TopMenuButton')
-      ),
-      // Disable menu when layout not editable
-      new go.Binding('isEnabled', '', function(node: go.Node): boolean {
-         return node.diagram.allowMove;
-      }).ofObject()
+      )
     );
   }
 
@@ -886,7 +881,7 @@ export class DiagramTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false)
           }
         : {
             toolTip: $(
@@ -959,7 +954,7 @@ export class DiagramTemplatesService {
         layout: $(SystemGroupLayout as any,
           {
             wrappingColumn: 1,
-            isOngoing: true,
+            isOngoing: false,
             isInitial: true,
             alignment: go.GridLayout.Location,
             spacing: new go.Size(NaN, 12)
@@ -976,7 +971,27 @@ export class DiagramTemplatesService {
 
           this.gojsCustomObjectsService.showDetailTabSource.next();
 
-        }.bind(this)
+        }.bind(this),
+        dragComputation: function(part, pt, gridpt) {
+          // don't constrain top-level nodes
+          const grp = part.containingGroup;
+          if (grp === null) { return pt; }
+          // try to stay within the background Shape of the Group
+          const back = grp.resizeObject;
+          if (back === null) { return pt; }
+          const p1 = back.getDocumentPoint(go.Spot.TopLeft);
+          const p2 = back.getDocumentPoint(go.Spot.BottomRight);
+          const b = part.actualBounds;
+          const loc = part.location;
+
+          p1.offset(loc.x - b.x, loc.y - b.y);
+          p2.offset(loc.x - b.x, loc.y - b.y);
+
+          // now limit the location appropriately
+          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1)) ;
+          const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
+          return new go.Point(x, y);
+        }
       },
       new go.Binding('isSubGraphExpanded', 'middleExpanded',
         function(middleExpanded): boolean {
@@ -996,7 +1011,7 @@ export class DiagramTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false)
           }
         : {
             toolTip: $(

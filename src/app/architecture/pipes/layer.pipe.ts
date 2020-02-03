@@ -1,37 +1,38 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Level } from '../services/diagram-level.service';
-import { Params } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Pipe({ name: 'layer' })
 export class LayerPipe implements PipeTransform {
   constructor() {}
 
-  transform(items: any[], props?: { byId: boolean; params: Params }): any {
+  transform(
+    items: any[],
+    props?: { byId: boolean; descendantIds$?: Observable<string[]>; level?: Level }
+  ): Observable<any[]> {
     if (!items || items.length < 1) {
-      return [];
+      return of([]);
+    }
+    if (!props.byId) {
+      return of(items);
     }
 
-    const { filterLevel, id } = props.params;
-
-    if (!filterLevel) {
-      return items;
+    if (props.level === Level.usage) {
+      return of(items);
+    }
+    if ([Level.dataSetMap, Level.systemMap, Level.usage].includes(props.level)) {
+      return of(items);
     }
 
-    // If current layer map or usage, do not filter
-    if ([Level.dataSetMap, Level.systemMap, Level.usage].includes(filterLevel)) {
-      return items;
-    } else {
-      const filteredItems = items.filter(item => item.layer === filterLevel.toLowerCase());
-      // Sorting by id is optional
-      if (props && props.byId && id) {
-        const parentNode = items.find(item => item.id === id);
-        if (!parentNode) {
-          return [];
+    return props.descendantIds$.pipe(
+      map(descendantIds => {
+        if (!descendantIds.length) {
+          return items;
+        } else {
+          return items.filter(item => descendantIds.some(id => id === item.id));
         }
-        const childNodeIds = parentNode.descendants.map(item => item.id);
-        return filteredItems.filter(item => childNodeIds.includes(item.id));
-      }
-      return filteredItems;
-    }
+      })
+    );
   }
 }
