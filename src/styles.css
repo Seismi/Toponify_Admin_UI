@@ -1,15 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/cdk/overlay-prebuilt.css';
 
+:root {
+  --default-font: 'Roboto', sans-serif;
+}
+
 html,
 body {
   height: 100%;
 }
+
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--default-font);
 }
+
 a {
   cursor: pointer;
 }

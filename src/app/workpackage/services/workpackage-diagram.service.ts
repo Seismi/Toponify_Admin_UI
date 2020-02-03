@@ -16,6 +16,13 @@ const statusColours = {
   draft: 'blue'
 };
 
+function textFont(style?: string): Object {
+  const font = getComputedStyle(document.body).getPropertyValue('--default-font');
+  return {
+    font: `${style} ${font}`
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -127,10 +134,10 @@ export class WorkPackageDiagramService {
         // Text showing workpackage name
         $(
           go.TextBlock,
+          textFont(),
           {
             textAlign: 'center',
             stroke: 'white',
-            font: 'bold 16px calibri',
             maxSize: new go.Size(200, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
           },
@@ -139,10 +146,10 @@ export class WorkPackageDiagramService {
         // Text showing workpackage status
         $(
           go.TextBlock,
+          textFont(),
           {
             textAlign: 'center',
             stroke: 'white',
-            font: 'italic 15px calibri',
             maxSize: new go.Size(200, Infinity),
             margin: new go.Margin(0, 0, 5, 0)
           },
