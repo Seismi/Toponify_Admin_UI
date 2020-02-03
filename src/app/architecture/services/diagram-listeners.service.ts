@@ -8,7 +8,6 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 
 const $ = go.GraphObject.make;
 
@@ -22,7 +21,6 @@ export class DiagramListenersService {
 
   constructor(
     public diagramChangesService: DiagramChangesService,
-    public diagramImageService: DiagramImageService,
     public diagramLevelService: DiagramLevelService,
     private store: Store<RouterReducerState<RouterStateUrl>>
   ) {}

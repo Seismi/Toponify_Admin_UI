@@ -645,4 +645,46 @@ export class DiagramChangesService {
       }); */
     }
   }
+
+  // Ensure group members and any connected links are positioned correctly
+  //  when a system group is expanded
+  systemSubGraphExpandChanged(group: go.Group): void {
+
+    if (group.isSubGraphExpanded) {
+
+      // Run group layout to ensure member nodes are in the correct positions
+      group.layout.isValidLayout = false;
+      group.layout.doLayout(group);
+
+      // Set of links that may need rerouting after subgraph expanded
+      const linksToReroute = new go.Set();
+
+      group.findSubGraphParts()
+        .each(
+          function(part: go.Part): void {
+            if (part instanceof go.Node) {
+
+              /*
+                Change member system location back and forth between the current location and another point.
+                This is to force GoJS to update the position of the system, as this does not appear to be
+                done correctly when the parent group is moved.
+              */
+              const location = part.location.copy();
+              part.move(location.copy().offset(1, 1));
+              part.move(location, true);
+
+              // Add links connected to member to set of links to be rerouted
+              linksToReroute.addAll(part.linksConnected);
+            }
+          }
+        );
+
+      // Reroute all necessary links
+      linksToReroute.each(function(link: go.Link): void {
+        link.data = Object.assign(link.data, { updateRoute: true });
+        link.invalidateRoute();
+        link.updateRoute();
+      });
+    }
+  }
 }

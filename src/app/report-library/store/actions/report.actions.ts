@@ -56,7 +56,15 @@ export enum ReportActionTypes {
 
   AddReportingConcepts = '[Report] Add Reporting Concepts',
   AddReportingConceptsSuccess = '[Report] Add Reporting Concepts Success',
-  AddReportingConceptsFail = '[Report]  Add Reporting Concepts Fail'
+  AddReportingConceptsFail = '[Report]  Add Reporting Concepts Fail',
+
+  UpdateReportProperty = '[Report] Update Report Property',
+  UpdateReportPropertySuccess = '[Report] Update Report Property Success',
+  UpdateReportPropertyFailure = '[Report] Update Report Property Failure',
+
+  DeleteReportProperty = '[Report] Delete Report Property',
+  DeleteReportPropertySuccess = '[Report] Delete Report Property Success',
+  DeleteReportPropertyFailure = '[Report] Delete Report Property Failure'
 }
 
 export class LoadReports implements Action {
@@ -241,6 +249,36 @@ export class AddReportingConceptsFail implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class UpdateReportProperty implements Action {
+  readonly type = ReportActionTypes.UpdateReportProperty;
+  constructor(public payload: { workPackageId: string; reportId: string; customPropertyId: string, data: string }) {}
+}
+
+export class UpdateReportPropertySuccess implements Action {
+  readonly type = ReportActionTypes.UpdateReportPropertySuccess;
+  constructor(public payload: Report) {}
+}
+
+export class UpdateReportPropertyFailure implements Action {
+  readonly type = ReportActionTypes.UpdateReportPropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteReportProperty implements Action {
+  readonly type = ReportActionTypes.DeleteReportProperty;
+  constructor(public payload: { workPackageId: string; reportId: string; customPropertyId: string }) {}
+}
+
+export class DeleteReportPropertySuccess implements Action {
+  readonly type = ReportActionTypes.DeleteReportPropertySuccess;
+  constructor(public payload: Report) {}
+}
+
+export class DeleteReportPropertyFailure implements Action {
+  readonly type = ReportActionTypes.DeleteReportPropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ReportActionsUnion =
   | LoadReports
   | LoadReportsSuccess
@@ -277,4 +315,10 @@ export type ReportActionsUnion =
   | DeleteReportingConceptFail
   | AddReportingConcepts
   | AddReportingConceptsSuccess
-  | AddReportingConceptsFail;
+  | AddReportingConceptsFail
+  | UpdateReportProperty
+  | UpdateReportPropertySuccess
+  | UpdateReportPropertyFailure
+  | DeleteReportProperty
+  | DeleteReportPropertySuccess
+  | DeleteReportPropertyFailure;
