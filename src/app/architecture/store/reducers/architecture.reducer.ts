@@ -37,6 +37,7 @@ export interface State {
   availableScopes: WorkPackageNodeScopes[];
   error: Error;
   selectedWorkpackages: string[];
+  parentNodeDescendantIds: string[];
 }
 
 export const initialState: State = {
@@ -51,7 +52,8 @@ export const initialState: State = {
   nodeScopes: [],
   availableScopes: [],
   error: null,
-  selectedWorkpackages: []
+  selectedWorkpackages: [],
+  parentNodeDescendantIds: []
 };
 
 export function reducer(
@@ -259,7 +261,7 @@ export function reducer(
 
 
     case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioSuccess:
-    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess: 
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess:
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
       return {
         ...state,
@@ -269,9 +271,9 @@ export function reducer(
 
 
     case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioFailure:
-    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure: 
+    case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure:
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
-    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure: 
+    case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure:
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeFailure: {
       return {
         ...state,
@@ -536,6 +538,34 @@ export function reducer(
         ...state,
         error: <Error>action.payload
       };
+    }
+
+    case NodeActionTypes.RemoveParentDescendantIds: {
+      return {
+        ...state,
+        parentNodeDescendantIds: []
+      };
+    }
+
+    case NodeActionTypes.SetParentDescendantIds: {
+      return {
+        ...state,
+        parentNodeDescendantIds: action.payload
+      };
+    }
+
+    case NodeActionTypes.GetParentDescendantIdsSucces: {
+      if (action.payload && action.payload.descendants) {
+        return {
+          ...state,
+          parentNodeDescendantIds: action.payload.descendants.map(n => n.id)
+        };
+      } else {
+        return {
+          ...state,
+          parentNodeDescendantIds: []
+        };
+      }
     }
 
     default: {
