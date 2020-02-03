@@ -74,7 +74,6 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       useHash: true,
       paramsInheritanceStrategy: 'always',
-      enableTracing: true
       /*preloadingStrategy: PreloadAllModules*/
     })
   ],
