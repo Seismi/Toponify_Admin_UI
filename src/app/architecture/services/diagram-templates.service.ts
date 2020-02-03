@@ -959,7 +959,7 @@ export class DiagramTemplatesService {
         layout: $(SystemGroupLayout as any,
           {
             wrappingColumn: 1,
-            isOngoing: true,
+            isOngoing: false,
             isInitial: true,
             alignment: go.GridLayout.Location,
             spacing: new go.Size(NaN, 12)
@@ -976,7 +976,27 @@ export class DiagramTemplatesService {
 
           this.gojsCustomObjectsService.showDetailTabSource.next();
 
-        }.bind(this)
+        }.bind(this),
+        dragComputation: function(part, pt, gridpt) {
+          // don't constrain top-level nodes
+          const grp = part.containingGroup;
+          if (grp === null) { return pt; }
+          // try to stay within the background Shape of the Group
+          const back = grp.resizeObject;
+          if (back === null) { return pt; }
+          const p1 = back.getDocumentPoint(go.Spot.TopLeft);
+          const p2 = back.getDocumentPoint(go.Spot.BottomRight);
+          const b = part.actualBounds;
+          const loc = part.location;
+
+          p1.offset(loc.x - b.x, loc.y - b.y);
+          p2.offset(loc.x - b.x, loc.y - b.y);
+
+          // now limit the location appropriately
+          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1)) ;
+          const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
+          return new go.Point(x, y);
+        }
       },
       new go.Binding('isSubGraphExpanded', 'middleExpanded',
         function(middleExpanded): boolean {

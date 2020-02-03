@@ -80,7 +80,7 @@ export class WorkPackageService {
   updateProperty(
     workPackageId: string,
     customPropertyId: string,
-    data: CustomPropertiesEntity
+    data: string
   ): Observable<WorkPackageDetailApiResponse> {
     return this.http.put<WorkPackageDetailApiResponse>(
       `/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`,
