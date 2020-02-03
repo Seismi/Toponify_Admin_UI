@@ -761,7 +761,7 @@ export class DiagramTemplatesService {
             fill: null,
             stretch: go.GraphObject.Horizontal,
             height: 200,
-            minSize: new go.Size(nodeWidth - 10, 200)
+            minSize: new go.Size(nodeWidth + 20, 200)
           },
           new go.Binding('visible', 'middleExpanded',
             function(middleExpanded) {

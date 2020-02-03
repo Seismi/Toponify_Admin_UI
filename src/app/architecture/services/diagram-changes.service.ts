@@ -667,8 +667,6 @@ export class DiagramChangesService {
 
     if (group.isSubGraphExpanded) {
 
-
-
       // Run group layout to ensure member nodes are in the correct positions
       group.layout.isValidLayout = false;
       group.layout.doLayout(group);
@@ -676,38 +674,57 @@ export class DiagramChangesService {
       // Set of links that may need rerouting after subgraph expanded
       const linksToReroute = new go.Set();
 
+      // Ensure visibility of group member area and group size are up to date
+      group.updateTargetBindings('middleExpanded');
+      group.ensureBounds();
+
+      const memberArea = group.findObject('Group member area');
+      const memberBounds = memberArea.getDocumentBounds().copy();
+
       group.findSubGraphParts()
         .each(
           function (part: go.Part): void {
             if (part instanceof go.Node) {
 
-              /*
-                Change member system location back and forth between the current location and another point.
-                This is to force GoJS to update the position of the system, as this does not appear to be
-                done correctly when the parent group is moved.
-              */
-              const location = part.location.copy();
-              part.move(location.copy().offset(1, 1));
-              part.move(location, true);
-
               // Add links connected to member to set of links to be rerouted
               linksToReroute.addAll(part.linksConnected);
 
-              const memberArea = part.findObject('Group member area');
-
-              if (!memberArea.getDocumentBounds().containsRect(part.actualBounds)) {
+              // If member is located outside of the group and is not automatically laid out then reposition member
+              if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
 
                 const newLocation = new go.Point();
-                newLocation.x = memberArea.getDocumentBounds().centerX;
-                newLocation.y = memberArea.getDocumentBounds().bottom + 12;
 
-                memberArea.height = memberArea.height + part.actualBounds.height + 12;
+                // Place member underneath all correctly positioned members,
+                //  centre aligned and separated by a small gap
+                newLocation.x = memberBounds.centerX;
+                newLocation.y = memberBounds.bottom + 12;
 
-                part.move(newLocation);
+                // Update the area required to contain the members
+                memberBounds.height = memberBounds.height + part.actualBounds.height + 12;
+                memberBounds.width = Math.max(memberBounds.width, part.actualBounds.width);
+
+                part.move(newLocation, true);
+              } else {
+                /*
+                  For nodes that are already located in the group, change member system location back and
+                  forth between the current location and another point.
+                  This is to force GoJS to update the position of the system, as this does not appear to be
+                  done correctly when the parent group is moved.
+                */
+                const location = part.location.copy();
+                part.move(location.copy().offset(1, 1));
+                part.move(location, true);
               }
+              // Try to ensure that each part has correct bounds after being moved
+              part.ensureBounds();
             }
           }
         );
+
+      // Set height and width of group member area to match the area previously
+      //  calculated as necessary to enclose the members.
+      group.findObject('Group member area').height = memberBounds.height;
+      group.findObject('Group member area').width = memberBounds.width;
 
       // Reroute all necessary links
       linksToReroute.each(function (link: go.Link): void {
