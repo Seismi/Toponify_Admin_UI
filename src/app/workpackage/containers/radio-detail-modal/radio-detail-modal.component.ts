@@ -19,10 +19,8 @@ import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
-import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { map } from 'rxjs/operators';
-import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer'; 
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 
 @Component({
@@ -37,7 +35,6 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription[] = [];
 
   constructor(
-    private nodeStore: Store<NodeState>, 
     private workPackageStore: Store<WorkPackageState>,
     private dialog: MatDialog,
     private userStore: Store<UserState>,
@@ -183,8 +180,7 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
         workpackages$: this.workPackageStore.pipe(
           select(getWorkPackageEntities),
           map(data => data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded'))
-        ),
-        nodes$: this.nodeStore.pipe(select(getNodeEntities))
+        )
       }
     });
     dialogRef.afterClosed().subscribe((result: { workpackageId: string; nodeId: string }) => {
