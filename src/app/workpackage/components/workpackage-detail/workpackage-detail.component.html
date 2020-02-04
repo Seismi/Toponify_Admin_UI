@@ -180,6 +180,6 @@
 </form>
 
 
-<div *ngIf="approversTableData.length === 0 && workpackageActionSubmit" class="alert alert-danger">
+<div *ngIf="approversTableData?.length === 0 && workpackageActionSubmit" class="alert alert-danger">
   No approvers identified. None of the components you are adding or updating have owners. Please assign owners to be able to submit
 </div>

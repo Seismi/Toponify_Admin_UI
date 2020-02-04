@@ -41,4 +41,12 @@ export class WorkPackagesTableComponent implements OnInit {
   onAdd(): void {
     this.addWorkpackage.emit();
   }
+
+  getOwners(data: WorkPackageEntity): string {
+    return data.owners.map(owner => owner.name).join('; ');
+  }
+
+  getApprovers(data: WorkPackageEntity): string {
+    return data.approvers.map(approver => approver.name).join('; ');
+  }
 }

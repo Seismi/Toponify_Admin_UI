@@ -15,25 +15,13 @@
     <!-- Owners Column -->
     <ng-container matColumnDef="owners">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Owners</th>
-      <td mat-cell *matCellDef="let element">
-        <ng-container *ngFor="let owner of element.owners">
-          <ul class="ownersList">
-            <li>{{ owner.name }}</li>
-          </ul>
-        </ng-container>
-      </td>
+      <td mat-cell *matCellDef="let element">{{ getOwners(element) }}</td>
     </ng-container>
 
     <!-- Approvers Column -->
     <ng-container matColumnDef="approvers">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Approvers</th>
-      <td mat-cell *matCellDef="let element">
-        <ng-container *ngFor="let approver of element.approvers">
-          <ul class="ownersList">
-            <li>{{ approver.name }}</li>
-          </ul>
-        </ng-container>
-      </td>
+      <td mat-cell *matCellDef="let element">{{ getApprovers(element) }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

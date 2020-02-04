@@ -14,7 +14,7 @@ import {
   DeleteRadioEntity
 } from '@app/radio/store/actions/radio.actions';
 import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
-import { FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
 import { MatDialog } from '@angular/material';
@@ -29,10 +29,9 @@ import { AssociateModalComponent } from '@app/radio/components/associate-modal/a
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { map } from 'rxjs/operators';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
+import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 
 @Component({
   selector: 'app-radio-details',
@@ -55,8 +54,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
     private dialog: MatDialog,
-    private workpackageStore: Store<WorkPackageState>,
-    private nodeStore: Store<NodeState>
+    private workpackageStore: Store<WorkPackageState>
   ) {}
 
   ngOnInit() {
@@ -208,6 +206,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
   onAddRelatesTo() {
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
+    this.store.dispatch(new LoadNodes());
     const dialogRef = this.dialog.open(AssociateModalComponent, {
       disableClose: true,
       width: 'auto',
@@ -216,8 +215,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
         workpackages$: this.workpackageStore.pipe(
           select(getWorkPackageEntities),
           map(data => data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded'))
-        ),
-        nodes$: this.nodeStore.pipe(select(getNodeEntities))
+        )
       }
     });
     dialogRef.afterClosed().subscribe((result: { workpackageId: string; nodeId: string }) => {

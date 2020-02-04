@@ -669,7 +669,7 @@ export class DiagramChangesService {
 
       // Run group layout to ensure member nodes are in the correct positions
       group.layout.isValidLayout = false;
-      group.layout.doLayout(group);
+      group.layout.invalidateLayout();
 
       // Set of links that may need rerouting after subgraph expanded
       const linksToReroute = new go.Set();
