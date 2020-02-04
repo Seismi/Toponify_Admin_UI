@@ -729,8 +729,10 @@ export class DiagramChangesService {
       // Reroute all necessary links
       linksToReroute.each(function (link: go.Link): void {
         link.data = Object.assign(link.data, {updateRoute: true});
-        link.invalidateRoute();
-        link.updateRoute();
+        setTimeout(function() {
+          link.invalidateRoute();
+          link.updateRoute();
+        }, 0);
       });
     }
   }

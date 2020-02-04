@@ -8,6 +8,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
+import {layers} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -86,6 +87,28 @@ export class DiagramListenersService {
               }
             }
           });
+      }.bind(this)
+    );
+
+    // After a system group is automatically laid out, ensure that links to
+    //  any grouped nodes are updated.
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event) {
+
+        const linksToUpdate = new go.Set();
+        event.diagram.nodes.each(function(node: go.Node): void {
+          if (node.canLayout() && node.containingGroup && node.category === layers.system) {
+            linksToUpdate.addAll(node.linksConnected);
+          }
+        });
+
+        linksToUpdate.each(function(link: go.Link) {
+          link.data = Object.assign(link.data, {updateRoute: true});
+          link.invalidateRoute();
+          link.updateRoute();
+        });
+
       }.bind(this)
     );
 
