@@ -66,7 +66,7 @@ import { ReportingConceptFilterModalComponent } from '@app/report-library/compon
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
-  exports: [],
+  exports: [SelectModalComponent],
   declarations: [
     ReportLibraryComponent,
     ReportLibraryTableComponent,

@@ -36,6 +36,8 @@
             (selectColour)="onSelectWorkPackageColour($event)"
             (openWorkPackage)="onOpenWorkPackage()"
             [workPackageStatus]="workPackageStatus"
+            (addBaseline)="onAddBaseline()"
+            (deleteBaseline)="onDeleteBaseline($event)"
           >
           </smi-workpackage-detail>
         </p>
