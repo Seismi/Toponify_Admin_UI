@@ -134,7 +134,7 @@ export class WorkPackageDiagramService {
         // Text showing workpackage name
         $(
           go.TextBlock,
-          textFont(),
+          textFont('bold 16px'),
           {
             textAlign: 'center',
             stroke: 'white',
@@ -146,7 +146,7 @@ export class WorkPackageDiagramService {
         // Text showing workpackage status
         $(
           go.TextBlock,
-          textFont(),
+          textFont('italic 15px'),
           {
             textAlign: 'center',
             stroke: 'white',
