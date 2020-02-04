@@ -13,7 +13,8 @@ import {
   MatTooltipModule,
   MatTableModule,
   MatPaginatorModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatDialogModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -43,6 +44,7 @@ import { RouterModule } from '@angular/router';
 import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-name.component';
 import { EditDocumentationStandardsTableComponent } from './components/edit-documentation-standards/edit-documentation-standards.component';
 import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
+import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 
 @NgModule({
   imports: [
@@ -64,7 +66,8 @@ import { EditDocumentationStandardsFormComponent } from './components/edit-docum
     MatSelectModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatDialogModule
   ],
   exports: [
     MainLayoutComponent,
@@ -87,7 +90,8 @@ import { EditDocumentationStandardsFormComponent } from './components/edit-docum
     NodeNameComponent,
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
-    EditDocumentationStandardsFormComponent
+    EditDocumentationStandardsFormComponent,
+    DeleteModalComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -113,7 +117,11 @@ import { EditDocumentationStandardsFormComponent } from './components/edit-docum
     NodeNameComponent,
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
-    EditDocumentationStandardsFormComponent
+    EditDocumentationStandardsFormComponent,
+    DeleteModalComponent
+  ],
+  entryComponents: [
+    DeleteModalComponent
   ]
 })
 export class CoreLayoutModule {}
