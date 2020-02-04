@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  padding: 15px 15px;
+  padding-top: 10px;
 }
 
 .filter {
@@ -31,4 +31,8 @@ button {
   margin-right: 5px;
   margin-top: 4px;
   padding: 0;
+}
+
+.mat-form-field {
+  width: 100%;
 }
