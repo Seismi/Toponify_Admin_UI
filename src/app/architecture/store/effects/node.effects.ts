@@ -16,9 +16,15 @@ import {
   NodesApiResponse,
   NodeLocationsUpdatePayload,
   NodeReportsApiResponse,
-  Tag
+  Tag,
+  NodeDetail
 } from '../models/node.model';
-import { LinkUpdatePayload, NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../models/node-link.model';
+import {
+  LinkUpdatePayload,
+  NodeLinkDetail,
+  NodeLinkDetailApiResponse,
+  NodeLinksApiResponse
+} from '../models/node-link.model';
 import { MatSnackBar } from '@angular/material';
 
 @Injectable()
@@ -186,6 +192,72 @@ export class NodeEffects {
         ]),
         catchError((error: Error) => {
           return of(new NodeActions.LoadAvailableTagsFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
+  createTag$ = this.actions$.pipe(
+    ofType<NodeActions.CreateTag>(NodeActionTypes.CreateTag),
+    map(action => action.payload),
+    switchMap((payload: { tag: Tag; workpackageId: string; type: 'node' | 'link'; nodeOrLinkId?: string }) => {
+      return this.nodeService.createTag(payload.tag).pipe(
+        switchMap(response => [
+          new NodeActions.CreateTagSuccess({ tag: response.data }),
+          new NodeActions.AssociateTag({
+            tag: response.data,
+            nodeOrLinkId: payload.nodeOrLinkId,
+            workpackageId: payload.workpackageId,
+            type: payload.type
+          })
+        ]),
+        catchError((error: Error) => {
+          return of(new NodeActions.CreateTagFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
+  associateTag$ = this.actions$.pipe(
+    ofType<NodeActions.AssociateTag>(NodeActionTypes.AssociateTag),
+    map(action => action.payload),
+    switchMap((payload: { workpackageId: string; tag: Tag; nodeOrLinkId: string; type: 'node' | 'link' }) => {
+      let request: Observable<{ data: NodeDetail | NodeLinkDetail }>;
+      if (payload.type === 'node') {
+        request = this.nodeService.associateTagToNode(payload.workpackageId, payload.nodeOrLinkId, payload.tag.id);
+      } else {
+        request = this.nodeService.associateTagToLink(payload.workpackageId, payload.nodeOrLinkId, payload.tag.id);
+      }
+      return request.pipe(
+        switchMap(response => [
+          new NodeActions.AssociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type })
+        ]),
+        catchError((error: Error) => {
+          return of(new NodeActions.AssociateTagFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
+  dissociateTag$ = this.actions$.pipe(
+    ofType<NodeActions.DissociateTag>(NodeActionTypes.DissociateTag),
+    map(action => action.payload),
+    switchMap((payload: { workpackageId: string; tag: Tag; nodeOrLinkId: string; type: 'node' | 'link' }) => {
+      let request: Observable<{ data: NodeDetail | NodeLinkDetail }>;
+      if (payload.type === 'node') {
+        request = this.nodeService.dissociateTagFromNode(payload.workpackageId, payload.nodeOrLinkId, payload.tag.id);
+      } else {
+        request = this.nodeService.dissociateTagFromLink(payload.workpackageId, payload.nodeOrLinkId, payload.tag.id);
+      }
+      return request.pipe(
+        switchMap(response => [
+          new NodeActions.DissociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type })
+        ]),
+        catchError((error: Error) => {
+          return of(new NodeActions.DissociateTagFailure(error));
         })
       );
     })

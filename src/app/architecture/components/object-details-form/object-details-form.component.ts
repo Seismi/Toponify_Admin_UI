@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {
-  OwnersEntityOrTeamEntityOrApproversEntity,
-} from '@app/architecture/store/models/node-link.model';
+import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 import { DescendantsEntity, Tag } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
@@ -39,6 +37,7 @@ export class ObjectDetailsFormComponent {
   @Input() viewLevel: Level;
   @Input() part: go.Part;
   @Input() availableTags: Tag[];
+  @Input() tags: Tag[];
   Level = Level;
 
   constructor() {}
@@ -66,6 +65,11 @@ export class ObjectDetailsFormComponent {
   @Output() deleteRelatedAttribute = new EventEmitter<void>();
 
   @Output() updateAvailableTags = new EventEmitter<void>();
+
+  @Output() addTag = new EventEmitter<Tag>();
+  @Output() createTag = new EventEmitter<Tag>();
+  @Output() removeTag = new EventEmitter<Tag>();
+  @Output() updateTag = new EventEmitter<Tag>();
 
   onEdit(): void {
     this.editDetails.emit();
@@ -134,5 +138,21 @@ export class ObjectDetailsFormComponent {
 
   onUpdateAvailableTags() {
     this.updateAvailableTags.emit();
+  }
+
+  onAddTag(tag: Tag) {
+    this.addTag.emit(tag);
+  }
+
+  onCreateTag(tag: Tag) {
+    this.createTag.emit(tag);
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.removeTag.emit(tag);
+  }
+
+  onUpdateTag(tag: Tag) {
+    this.updateTag.emit(tag);
   }
 }

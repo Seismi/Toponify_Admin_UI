@@ -182,6 +182,11 @@
         [nodeReports]="nodeReports$ | async"
         (addExistingAttribute)="onAddExistingAttribute()"
         (updateAvailableTags)="onUpdateAvailableTags()"
+        (addTag)="onAddTag($event)"
+        (createTag)="onCreateTag($event)"
+        (removeTag)="onRemoveTag($event)"
+        (updateTag)="onUpdateTag($event)"
+        [tags]="selectedPart.tags"
         [availableTags]="availableTags$ | async"
       >
       </smi-right-panel></p

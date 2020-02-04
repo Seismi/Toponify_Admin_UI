@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  NodeDetailApiResponse,
-  NodeReportsApiResponse, Tag
-} from '../store/models/node.model';
-import { NodeLinkDetailApiResponse } from '../store/models/node-link.model';
+import { NodeDetail, NodeDetailApiResponse, NodeReportsApiResponse, Tag } from '../store/models/node.model';
+import { NodeLinkDetail, NodeLinkDetailApiResponse } from '../store/models/node-link.model';
 
 export interface GetNodesRequestQueryParams {
   layerQuery?: string;
@@ -76,12 +73,42 @@ export class NodeService {
     return this.http.get<NodeReportsApiResponse>(`/nodes/${nodeId}/reports`, { params: params });
   }
 
-  getNodeAvailableTags(workpackageId: string, linkId: string): Observable<{data: Tag[]}> {
-    return this.http.get<{data: Tag[]}>(`/workpackages/${workpackageId}/nodes/${linkId}/tags`);
+  getNodeAvailableTags(workpackageId: string, linkId: string): Observable<{ data: Tag[] }> {
+    return this.http.get<{ data: Tag[] }>(`/workpackages/${workpackageId}/nodes/${linkId}/tags`);
   }
 
-  getLinkAvailableTags(workpackageId: string, linkId: string): Observable<{data: Tag[]}> {
-    return this.http.get<{data: Tag[]}>(`/workpackages/${workpackageId}/nodelinks/${linkId}/tags`);
+  getLinkAvailableTags(workpackageId: string, linkId: string): Observable<{ data: Tag[] }> {
+    return this.http.get<{ data: Tag[] }>(`/workpackages/${workpackageId}/nodelinks/${linkId}/tags`);
+  }
+
+  createTag(tag: Tag): Observable<{ data: Tag }> {
+    return this.http.post<{ data: Tag }>(`/tags`, { data: tag });
+  }
+
+  associateTagToNode(workpackageId: string, nodeId: string, tagId: string): Observable<{ data: NodeDetail }> {
+    return this.http.post<{ data: NodeDetail }>(`/workpackages/${workpackageId}/nodes/${nodeId}/tags`, {
+      data: { id: tagId }
+    });
+  }
+
+  associateTagToLink(workpackageId: string, linkId: string, tagId: string): Observable<{ data: NodeLinkDetail }> {
+    return this.http.post<{ data: NodeLinkDetail }>(`/workpackages/${workpackageId}/nodelinks/${linkId}/tags`, {
+      data: { id: tagId }
+    });
+  }
+
+  dissociateTagFromNode(workpackageId: string, nodeId: string, tagId: string): Observable<{ data: NodeDetail }> {
+    return this.http.post<{ data: NodeDetail }>(
+      `/workpackages/${workpackageId}/nodes/${nodeId}/tags/${tagId}/deleteRequest`,
+      {}
+    );
+  }
+
+  dissociateTagFromLink(workpackageId: string, linkId: string, tagId: string): Observable<{ data: NodeLinkDetail }> {
+    return this.http.post<{ data: NodeLinkDetail }>(
+      `/workpackages/${workpackageId}/nodelinks/${linkId}/tags/${tagId}/deleteRequest`,
+      {}
+    );
   }
 
   // FIXME: define missing types

@@ -1,14 +1,18 @@
 <mat-form-field>
   <mat-chip-list #chipList>
     <mat-chip
-      *ngFor="let tag of tags"
-      [removable]="true"
-      (removed)="onRemove(tag)">
-      {{tag.name}}
-      <mat-icon matChipRemove *ngIf="editMode">cancel</mat-icon>
-    </mat-chip>
+    *ngFor="let tag of tags"
+    [removable]="true"
+    [ngStyle]="{backgroundColor: tag.backgroundColour, color: tag.textColour}"
+    (removed)="onRemove(tag)">
+    {{tag.name}}
+    <mat-icon *ngIf="tag.iconName">tag.iconName</mat-icon>
+    <mat-icon matChipRemove *ngIf="editMode">cancel</mat-icon>
+  </mat-chip>
     <input
       #tagInput
+      *ngIf="editMode"
+      placeholder="Tags"
       [formControl]="tagControl"
       [matAutocomplete]="auto"
       [matChipInputFor]="chipList"
@@ -18,7 +22,7 @@
     <mat-option *ngFor="let tag of filteredTags$ | async" [value]="tag.id">
       {{tag.name}}
     </mat-option>
-    <mat-option *ngIf="tagControl.value as tagInputValue">
+    <mat-option *ngIf="tagControl.value as tagInputValue" [value]="'@create_' + tagInputValue">
       {{tagInputValue}} (create new)
     </mat-option>
     <mat-option value="manage">

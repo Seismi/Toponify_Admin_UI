@@ -558,6 +558,21 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.AssociateTagSuccess:
+    case NodeActionTypes.DissociateTagSuccess: {
+      if (action.payload.type === 'node') {
+        return {
+          ...state,
+          selectedNode: action.payload.nodeOrLinkDetail as NodeDetail
+        };
+      } else {
+        return {
+          ...state,
+          selectedNodeLink: action.payload.nodeOrLinkDetail as NodeLinkDetail
+        };
+      }
+    }
+
     default: {
       return state;
     }

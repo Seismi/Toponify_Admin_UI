@@ -50,7 +50,16 @@ export enum NodeActionTypes {
   LoadNodeReportsFailure = '[Node] Load Node Reports Fail',
   LoadAvailableTags = '[Node] Load Available Tags',
   LoadAvailableTagsSuccess = '[Node] Load Available Tags Success',
-  LoadAvailableTagsFailure = '[Node] Load Available Tags Fail'
+  LoadAvailableTagsFailure = '[Node] Load Available Tags Fail',
+  CreateTag = '[Node] Create Tag',
+  CreateTagSuccess = '[Node] Create Tag Success',
+  CreateTagFailure = '[Node] Create Tag Fail',
+  AssociateTag = '[Node] Associate Tag',
+  AssociateTagSuccess = '[Node] Associate Tag Success',
+  AssociateTagFailure = '[Node] Associate Tag Fail',
+  DissociateTag = '[Node] Dissociate Tag',
+  DissociateTagSuccess = '[Node] Dissociate Tag Success',
+  DissociateTagFailure = '[Node] Dissociate Tag Fail'
 }
 
 export class LoadNodes implements Action {
@@ -235,11 +244,56 @@ export class LoadAvailableTags implements Action {
 
 export class LoadAvailableTagsSuccess implements Action {
   readonly type = NodeActionTypes.LoadAvailableTagsSuccess;
-  constructor(public payload: {tags: Tag[], id: string}) {}
+  constructor(public payload: { tags: Tag[]; id: string }) {}
 }
 
 export class LoadAvailableTagsFailure implements Action {
   readonly type = NodeActionTypes.LoadAvailableTagsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class CreateTag implements Action {
+  readonly type = NodeActionTypes.CreateTag;
+  constructor(public payload: { tag: Tag; workpackageId: string; type: 'link' | 'node'; nodeOrLinkId: string }) {}
+}
+
+export class CreateTagSuccess implements Action {
+  readonly type = NodeActionTypes.CreateTagSuccess;
+  constructor(public payload: { tag: Tag }) {}
+}
+
+export class CreateTagFailure implements Action {
+  readonly type = NodeActionTypes.CreateTagFailure;
+  constructor(public payload: Error) {}
+}
+
+export class AssociateTag implements Action {
+  readonly type = NodeActionTypes.AssociateTag;
+  constructor(public payload: { tag: Tag; workpackageId: string; nodeOrLinkId: string; type: 'link' | 'node' }) {}
+}
+
+export class AssociateTagSuccess implements Action {
+  readonly type = NodeActionTypes.AssociateTagSuccess;
+  constructor(public payload: { nodeOrLinkDetail: NodeDetail | NodeLinkDetail; type: 'link' | 'node' }) {}
+}
+
+export class AssociateTagFailure implements Action {
+  readonly type = NodeActionTypes.AssociateTagFailure;
+  constructor(public payload: Error) {}
+}
+
+export class DissociateTag implements Action {
+  readonly type = NodeActionTypes.DissociateTag;
+  constructor(public payload: { tag: Tag; workpackageId: string; nodeOrLinkId: string; type: 'link' | 'node' }) {}
+}
+
+export class DissociateTagSuccess implements Action {
+  readonly type = NodeActionTypes.DissociateTagSuccess;
+  constructor(public payload: { nodeOrLinkDetail: NodeDetail | NodeLinkDetail; type: 'link' | 'node' }) {}
+}
+
+export class DissociateTagFailure implements Action {
+  readonly type = NodeActionTypes.DissociateTagFailure;
   constructor(public payload: Error) {}
 }
 
@@ -281,4 +335,13 @@ export type NodeActionsUnion =
   | LoadNodeReportsFailure
   | LoadAvailableTags
   | LoadAvailableTagsSuccess
-  | LoadAvailableTagsFailure;
+  | LoadAvailableTagsFailure
+  | CreateTag
+  | CreateTagSuccess
+  | CreateTagFailure
+  | AssociateTag
+  | AssociateTagSuccess
+  | AssociateTagFailure
+  | DissociateTag
+  | DissociateTagSuccess
+  | DissociateTagFailure;

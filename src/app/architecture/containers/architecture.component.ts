@@ -13,6 +13,8 @@ import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
+  CreateTag,
+  DissociateTag,
   LoadAvailableTags,
   LoadMapView,
   LoadNode,
@@ -45,7 +47,7 @@ import {
   getNodeLinks,
   getNodeReports,
   getSelectedNode,
-  getSelectedNodeLink,
+  getSelectedNodeLink
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import {
@@ -1717,4 +1719,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  onAddTag(tag: Tag) {
+  }
+
+  onCreateTag(tag: Tag) {
+    this.store.dispatch(
+      new CreateTag({
+        tag,
+        workpackageId: this.workpackageId,
+        nodeOrLinkId: this.selectedPart.id,
+        type: this.selectedPart.hasOwnProperty('sourceObject') ? 'link' : 'node'
+      })
+    );
+  }
+
+  onRemoveTag(tag: Tag) {
+    this.store.dispatch(
+      new DissociateTag({
+        tag,
+        workpackageId: this.workpackageId,
+        nodeOrLinkId: this.selectedPart.id,
+        type: this.selectedPart.hasOwnProperty('sourceObject') ? 'link' : 'node'
+      })
+    );
+  }
+
+  onUpdateTag(tag: Tag) {}
 }

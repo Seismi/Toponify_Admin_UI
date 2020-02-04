@@ -35,9 +35,13 @@
     <button mat-flat-button color="warn" (click)="onDelete()">Delete</button>
   </div>
   <div>
-    <smi-tag-list [tags]="group.controls['tags'].value"
+    <smi-tag-list [tags]="tags"
                   [availableTags]="availableTags"
                   [editMode]="!nodeIsEditable()"
+                  (addTag)="onAddTag($event)"
+                  (createTag)="onCreateTag($event)"
+                  (removeTag)="onRemoveTag($event)"
+                  (updateTag)="onUpdateTag($event)"
                   (updateAvailableTags)="onUpdateAvailableTags()"></smi-tag-list>
     <smi-owners-table-in-architecture
       [data]="owners"

@@ -1,10 +1,11 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Tag } from '@app/architecture/store/models/node.model';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
+import { Tag, TagApplicableTo, TagColour, TagIcon } from '@app/architecture/store/models/node.model';
+import { MatAutocompleteSelectedEvent, MatDialog } from '@angular/material';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { TagDetailModalComponent } from '@app/architecture/components/tag-list/tag-detail-modal/tag-detail-modal.component';
 
 @Component({
   selector: 'smi-tag-list',
@@ -19,27 +20,26 @@ export class TagListComponent implements OnChanges {
   }
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  tagControl = new FormControl();
+  tagControl = new FormControl({ value: '', disabled: true });
   filteredTags$: Observable<Tag[]>;
   availableTags$ = new Subject<Tag[]>();
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
 
   @Output() updateAvailableTags = new EventEmitter<void>();
+  @Output() createTag = new EventEmitter<Tag>();
+  @Output() addTag = new EventEmitter<Tag>();
+  @Output() removeTag = new EventEmitter<Tag>();
+  @Output() updateTag = new EventEmitter<Tag>();
 
-  constructor() {
+  constructor(private dialog: MatDialog) {
     this.filteredTags$ = combineLatest(this.tagControl.valueChanges.pipe(startWith(null)), this.availableTags$).pipe(
       map(([tagName, tags]) => (tagName ? this.filter(tagName, tags) : tags))
     );
   }
 
   onRemove(removedTag: Tag): void {
-    console.log('remove');
-    const index = this.tags.findIndex(tag => tag.id === removedTag.id);
-
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-    }
+    this.removeTag.emit(removedTag);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -47,7 +47,7 @@ export class TagListComponent implements OnChanges {
     if (event.option.value === 'manage') {
       return this.manageTags();
     }
-    if (event.option.value === 'create') {
+    if (event.option.value.startsWith('@create_')) {
       return this.creatNew();
     }
     console.log('selected', event);
@@ -62,8 +62,27 @@ export class TagListComponent implements OnChanges {
   }
 
   creatNew() {
+    const dialogRef = this.dialog.open(TagDetailModalComponent, {
+      disableClose: false,
+      minWidth: '500px',
+      data: {
+        tag: {
+          id: '',
+          name: this.tagControl.value.replace('@create_', '').trim(),
+          applicableTo: [],
+          textColour: TagColour.black,
+          backgroundColour: TagColour.white,
+          iconName: 'none'
+        }
+      }
+    });
     this.tagControl.reset();
-    console.log('create new');
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.tag) {
+        this.createTag.emit(data.tag);
+      }
+    });
   }
 
   manageTags() {

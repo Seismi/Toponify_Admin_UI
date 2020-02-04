@@ -235,15 +235,15 @@ export interface Tag {
 }
 
 export enum TagColour {
-  'white' = '#FFFFFF',
-  'brown' = '#AD7307',
+  'white' = '#ffffff',
+  'brown' = '#ad7307',
   'black' = '#000000',
-  'yellow' = '#FFFF19',
-  'orange' = '#FF7400',
-  'red' = '#FF0000',
+  'yellow' = '#ffff19',
+  'orange' = '#ff7400',
+  'red' = '#ff0000',
   'green' = '#008000',
-  'purple' = '#D37CB1',
-  'blue' = '#0741AD',
+  'purple' = '#d37cb1',
+  'blue' = '#0741ad',
 
 }
 

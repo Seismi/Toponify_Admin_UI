@@ -52,6 +52,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() filterLevel: string;
   @Input() nodeReports: NodeReports[];
   @Input() availableTags: Tag[];
+  @Input() tags: Tag[];
 
   @Output()
   saveAttribute = new EventEmitter();
@@ -114,6 +115,11 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() addExistingAttribute = new EventEmitter<void>();
 
   @Output() updateAvailableTags = new EventEmitter<void>();
+
+  @Output() addTag = new EventEmitter<Tag>();
+  @Output() createTag = new EventEmitter<Tag>();
+  @Output() removeTag = new EventEmitter<Tag>();
+  @Output() updateTag = new EventEmitter<Tag>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -275,5 +281,21 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onUpdateAvailableTags() {
     this.updateAvailableTags.emit();
+  }
+
+  onAddTag(tag: Tag) {
+    this.addTag.emit(tag);
+  }
+
+  onCreateTag(tag: Tag) {
+    this.createTag.emit(tag);
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.removeTag.emit(tag);
+  }
+
+  onUpdateTag(tag: Tag) {
+    this.updateTag.emit(tag);
   }
 }
