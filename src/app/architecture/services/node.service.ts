@@ -82,18 +82,27 @@ export class NodeService {
   }
 
   createTag(tag: Tag): Observable<{ data: Tag }> {
-    return this.http.post<{ data: Tag }>(`/tags`, { data: tag });
+    const {id, ...tagData} = tag;
+    return this.http.post<{ data: Tag }>(`/tags`, { data: tagData });
   }
 
-  associateTagToNode(workpackageId: string, nodeId: string, tagId: string): Observable<{ data: NodeDetail }> {
+  associateTagToNode(
+    workpackageId: string,
+    nodeId: string,
+    tagIds: { id: string }[]
+  ): Observable<{ data: NodeDetail }> {
     return this.http.post<{ data: NodeDetail }>(`/workpackages/${workpackageId}/nodes/${nodeId}/tags`, {
-      data: { id: tagId }
+      data: tagIds
     });
   }
 
-  associateTagToLink(workpackageId: string, linkId: string, tagId: string): Observable<{ data: NodeLinkDetail }> {
+  associateTagToLink(
+    workpackageId: string,
+    linkId: string,
+    tagIds: { id: string }[]
+  ): Observable<{ data: NodeLinkDetail }> {
     return this.http.post<{ data: NodeLinkDetail }>(`/workpackages/${workpackageId}/nodelinks/${linkId}/tags`, {
-      data: { id: tagId }
+      data: tagIds
     });
   }
 

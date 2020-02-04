@@ -28,7 +28,7 @@ export class TagListComponent implements OnChanges {
 
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() createTag = new EventEmitter<Tag>();
-  @Output() addTag = new EventEmitter<Tag>();
+  @Output() addTag = new EventEmitter<string>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateTag = new EventEmitter<Tag>();
 
@@ -50,8 +50,7 @@ export class TagListComponent implements OnChanges {
     if (event.option.value.startsWith('@create_')) {
       return this.creatNew();
     }
-    console.log('selected', event);
-    // this.tags.push(event.option.value);
+    this.addTag.emit(event.option.value);
     this.tagInput.nativeElement.value = '';
     this.tagControl.reset();
   }
@@ -76,6 +75,7 @@ export class TagListComponent implements OnChanges {
         }
       }
     });
+    this.tagInput.nativeElement.value = '';
     this.tagControl.reset();
 
     dialogRef.afterClosed().subscribe(data => {

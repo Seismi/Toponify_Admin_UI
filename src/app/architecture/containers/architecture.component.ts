@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
+  AssociateTag,
   CreateTag,
   DissociateTag,
   LoadAvailableTags,
@@ -1720,7 +1721,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
   }
 
-  onAddTag(tag: Tag) {
+  onAddTag(tagId: string) {
+    this.store.dispatch(
+      new AssociateTag({
+        tagIds: [{ id: tagId }],
+        workpackageId: this.workpackageId,
+        nodeOrLinkId: this.selectedPart.id,
+        type: this.selectedPart.hasOwnProperty('sourceObject') ? 'link' : 'node'
+      })
+    );
   }
 
   onCreateTag(tag: Tag) {

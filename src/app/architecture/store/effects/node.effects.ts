@@ -206,7 +206,7 @@ export class NodeEffects {
         switchMap(response => [
           new NodeActions.CreateTagSuccess({ tag: response.data }),
           new NodeActions.AssociateTag({
-            tag: response.data,
+            tagIds: [{ id: response.data.id }],
             nodeOrLinkId: payload.nodeOrLinkId,
             workpackageId: payload.workpackageId,
             type: payload.type
@@ -223,22 +223,24 @@ export class NodeEffects {
   associateTag$ = this.actions$.pipe(
     ofType<NodeActions.AssociateTag>(NodeActionTypes.AssociateTag),
     map(action => action.payload),
-    switchMap((payload: { workpackageId: string; tag: Tag; nodeOrLinkId: string; type: 'node' | 'link' }) => {
-      let request: Observable<{ data: NodeDetail | NodeLinkDetail }>;
-      if (payload.type === 'node') {
-        request = this.nodeService.associateTagToNode(payload.workpackageId, payload.nodeOrLinkId, payload.tag.id);
-      } else {
-        request = this.nodeService.associateTagToLink(payload.workpackageId, payload.nodeOrLinkId, payload.tag.id);
+    switchMap(
+      (payload: { workpackageId: string; tagIds: { id: string }[]; nodeOrLinkId: string; type: 'node' | 'link' }) => {
+        let request: Observable<{ data: NodeDetail | NodeLinkDetail }>;
+        if (payload.type === 'node') {
+          request = this.nodeService.associateTagToNode(payload.workpackageId, payload.nodeOrLinkId, payload.tagIds);
+        } else {
+          request = this.nodeService.associateTagToLink(payload.workpackageId, payload.nodeOrLinkId, payload.tagIds);
+        }
+        return request.pipe(
+          switchMap(response => [
+            new NodeActions.AssociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type })
+          ]),
+          catchError((error: Error) => {
+            return of(new NodeActions.AssociateTagFailure(error));
+          })
+        );
       }
-      return request.pipe(
-        switchMap(response => [
-          new NodeActions.AssociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type })
-        ]),
-        catchError((error: Error) => {
-          return of(new NodeActions.AssociateTagFailure(error));
-        })
-      );
-    })
+    )
   );
 
   @Effect()

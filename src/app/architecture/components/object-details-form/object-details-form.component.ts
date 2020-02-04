@@ -66,7 +66,7 @@ export class ObjectDetailsFormComponent {
 
   @Output() updateAvailableTags = new EventEmitter<void>();
 
-  @Output() addTag = new EventEmitter<Tag>();
+  @Output() addTag = new EventEmitter<string>();
   @Output() createTag = new EventEmitter<Tag>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateTag = new EventEmitter<Tag>();
@@ -140,7 +140,7 @@ export class ObjectDetailsFormComponent {
     this.updateAvailableTags.emit();
   }
 
-  onAddTag(tag: Tag) {
+  onAddTag(tag: string) {
     this.addTag.emit(tag);
   }
 

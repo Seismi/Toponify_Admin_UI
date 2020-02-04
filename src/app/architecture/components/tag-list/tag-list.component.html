@@ -5,8 +5,8 @@
     [removable]="true"
     [ngStyle]="{backgroundColor: tag.backgroundColour, color: tag.textColour}"
     (removed)="onRemove(tag)">
-    {{tag.name}}
-    <mat-icon *ngIf="tag.iconName">tag.iconName</mat-icon>
+      {{tag.name}}
+      <mat-icon [svgIcon]="tag.iconName"></mat-icon>
     <mat-icon matChipRemove *ngIf="editMode">cancel</mat-icon>
   </mat-chip>
     <input

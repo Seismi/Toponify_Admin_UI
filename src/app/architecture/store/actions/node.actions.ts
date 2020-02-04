@@ -269,7 +269,9 @@ export class CreateTagFailure implements Action {
 
 export class AssociateTag implements Action {
   readonly type = NodeActionTypes.AssociateTag;
-  constructor(public payload: { tag: Tag; workpackageId: string; nodeOrLinkId: string; type: 'link' | 'node' }) {}
+  constructor(
+    public payload: { tagIds: [{ id: string }]; workpackageId: string; nodeOrLinkId: string; type: 'link' | 'node' }
+  ) {}
 }
 
 export class AssociateTagSuccess implements Action {
