@@ -202,7 +202,7 @@ export class DiagramChangesService {
         partsToUpdate.addAll(part.findSubGraphParts().iterator);
 
         subParts.each(function(subPart: go.Part): void {
-          if (part instanceof go.Node) {
+          if (subPart instanceof go.Node) {
             partsToUpdate.addAll((subPart as go.Node).linksConnected);
           }
         });
