@@ -89,3 +89,10 @@ export const getNodeEntityById = createSelector(
     return state.entities.find(item => item.id === props.id);
   }
 );
+
+export const getParentDescendantIds = createSelector(
+  getNodeFeatureState,
+  (state: State) => {
+    return state.parentNodeDescendantIds;
+  }
+);

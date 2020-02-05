@@ -1,8 +1,7 @@
 <h1 mat-dialog-title>{{ title }}</h1>
-
 <mat-form-field>
   <mat-label>Work package</mat-label>
-  <mat-select value="00000000-0000-0000-0000-000000000000" (valueChange)="selectedWorkpackageId = $event">
+  <mat-select value="00000000-0000-0000-0000-000000000000" (selectionChange)="onSelectWorkPackage($event)">
     <mat-option value="00000000-0000-0000-0000-000000000000">
       Current Architecture
     </mat-option>
@@ -14,7 +13,13 @@
 <mat-form-field>
   <mat-label>Component</mat-label>
   <mat-select (valueChange)="selectedNodeId = $event">
-    <mat-option *ngFor="let node of nodes$ | async" [value]="node.id">
+    <input class="search" #searchInput placeholder="Search" (keydown)="$event.stopPropagation()"/>
+    <button mat-button mat-icon-button (click)="searchInput.value = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+    <mat-option
+      *ngFor="let node of nodes$ | async" [value]="node.id"
+      [class.hide]="filter(node)">
       {{ node.name }}
     </mat-option>
   </mat-select>

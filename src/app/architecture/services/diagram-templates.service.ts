@@ -64,7 +64,7 @@ export class DiagramTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false)
           }
         : {}
     );
@@ -110,7 +110,6 @@ export class DiagramTemplatesService {
         ? {
             // Set locationSpot in order for palette to arrange link correctly
             locationSpot: go.Spot.TopCenter,
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu(),
             // Correct locationSpot on selection highlight adornment when link in palette
             selectionAdornmentTemplate: $(
               go.Adornment,
@@ -138,7 +137,7 @@ export class DiagramTemplatesService {
           }
         : {
             // Enable context menu for links not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getLinkContextMenu()
           }
     );
   }
@@ -295,7 +294,7 @@ export class DiagramTemplatesService {
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
         click: function(event, button) {
-          const menu = this.gojsCustomObjectsService.getPartButtonMenu();
+          const menu = this.gojsCustomObjectsService.getPartButtonMenu(true);
           event.diagram.select(button.part);
           menu.adornedObject = button.part;
 
@@ -320,11 +319,7 @@ export class DiagramTemplatesService {
         new go.Binding('stroke', 'isEnabled', function(enabled) {
           return enabled ? 'black' : '#AAAFB4';
         }).ofObject('TopMenuButton')
-      ),
-      // Disable menu when layout not editable
-      new go.Binding('isEnabled', '', function(node: go.Node): boolean {
-         return node.diagram.allowMove;
-      }).ofObject()
+      )
     );
   }
 
@@ -888,7 +883,7 @@ export class DiagramTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false)
           }
         : {
             toolTip: $(
@@ -1018,7 +1013,7 @@ export class DiagramTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartContextMenu()
+            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false)
           }
         : {
             toolTip: $(
