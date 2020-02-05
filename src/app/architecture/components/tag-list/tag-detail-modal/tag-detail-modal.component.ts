@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Tag, TagColour, TagIcon } from '@app/architecture/store/models/node.model';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Tag, TagApplicableTo, TagColour, TagIcon } from '@app/architecture/store/models/node.model';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange } from '@angular/material';
 
 @Component({
   selector: 'smi-tag-detail',
@@ -12,9 +12,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export class TagDetailModalComponent {
   public tagForm: FormGroup;
   public tagIcons: string[] = [];
+  public applicableTo: string[] = [];
+  public selectedApplicableTo: string[];
   public selectedIcon: string;
   public tagColour = TagColour;
+  public tagApplicableTo = TagApplicableTo;
   public selectedColour: string;
+  public currentComponentType: TagApplicableTo;
+
+  get isEverywhereSelected(): boolean {
+    return this.selectedApplicableTo.includes(TagApplicableTo.everywhere);
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -22,15 +30,16 @@ export class TagDetailModalComponent {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       tag: Tag;
+      currentComponentType: TagApplicableTo;
     }
   ) {
-    for (const i in TagIcon) {
-      if (typeof i === 'string') {
-        this.tagIcons.push(i.trim());
-      }
-    }
+    this.tagIcons = Object.values(TagIcon);
+    this.applicableTo = Object.values(TagApplicableTo);
+    this.currentComponentType = data.currentComponentType;
     if (data.tag) {
       this.selectedIcon = data.tag.iconName ? data.tag.iconName : 'none';
+      this.selectedApplicableTo = data.tag.applicableTo;
+      this.selectedColour = data.tag.backgroundColour;
       this.tagForm = this.fb.group({
         name: [data.tag.name, Validators.required],
         backgroundColour: [data.tag.backgroundColour],
@@ -38,22 +47,38 @@ export class TagDetailModalComponent {
         iconName: [this.selectedIcon]
       });
     } else {
+      this.selectedIcon = 'none';
+      this.selectedApplicableTo = [TagApplicableTo.everywhere];
       this.tagForm = this.fb.group({
-        name: ['name', Validators.required],
+        name: ['', Validators.required],
         backgroundColour: [TagColour.white],
-        applicableTo: [[]],
+        applicableTo: [[TagApplicableTo.everywhere]],
         iconName: ['none']
       });
+    }
+
+    if (this.selectedApplicableTo.includes(TagApplicableTo.everywhere)) {
+      this.tagForm.controls['applicableTo'].setValue(this.applicableTo);
     }
   }
 
   onConfirm() {
+    const tag: Tag = { ...this.data.tag, ...this.tagForm.value };
+    if (tag.applicableTo.includes(TagApplicableTo.everywhere)) {
+      tag.applicableTo = [TagApplicableTo.everywhere];
+    }
     this.dialogRef.close({
-      tag: { ...this.data.tag, ...this.tagForm.value }
+      tag
     });
   }
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  selectedComponent(selection: MatSelectChange) {
+    if (selection.value.includes(TagApplicableTo.everywhere)) {
+      this.tagForm.controls['applicableTo'].setValue(this.applicableTo);
+    }
   }
 }

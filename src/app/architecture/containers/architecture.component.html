@@ -187,6 +187,7 @@
         (removeTag)="onRemoveTag($event)"
         (updateTag)="onUpdateTag($event)"
         [tags]="selectedNode.tags"
+        [componentLayer]="selectedNode.layer"
         [availableTags]="availableTags$ | async"
       >
       </smi-right-panel></p

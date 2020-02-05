@@ -1,14 +1,6 @@
 <mat-form-field>
   <mat-chip-list #chipList>
-    <mat-chip
-    *ngFor="let tag of tags"
-    [removable]="true"
-    [ngStyle]="{backgroundColor: tag.backgroundColour, color: tag.textColour}"
-    (removed)="onRemove(tag)">
-      {{tag.name}}
-      <mat-icon [svgIcon]="tag.iconName"></mat-icon>
-    <mat-icon matChipRemove *ngIf="editMode">cancel</mat-icon>
-  </mat-chip>
+    <smi-tag *ngFor="let tag of tags" [tag]="tag" [removable]="editMode" (remove)="onRemove(tag)"></smi-tag>
     <input
       #tagInput
       *ngIf="editMode"

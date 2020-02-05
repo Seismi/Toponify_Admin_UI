@@ -57,8 +57,13 @@
     </mat-form-field>
   </div>
   <mat-form-field class="applicable-to" matTooltip="Select where this tag should be available">
-    <mat-select placeholder="Applicable To" formControlName="applicableTo">
-      <mat-option value="none">None</mat-option>
+    <mat-select placeholder="Applicable To" formControlName="applicableTo" multiple
+                [(value)]="selectedApplicableTo"
+                (selectionChange)="selectedComponent($event)">
+      <mat-select-trigger>
+        {{isEverywhereSelected ? tagApplicableTo.everywhere : selectedApplicableTo.join(', ')}}
+      </mat-select-trigger>
+      <mat-option *ngFor="let comp of applicableTo" [value]="comp" [disabled]="currentComponentType === comp">{{comp}}</mat-option>
     </mat-select>
   </mat-form-field>
 </form>

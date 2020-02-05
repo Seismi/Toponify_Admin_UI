@@ -6,6 +6,8 @@ import { FormControl } from '@angular/forms';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { TagDetailModalComponent } from '@app/architecture/components/tag-list/tag-detail-modal/tag-detail-modal.component';
+import { Level } from '@app/architecture/services/diagram-level.service';
+import { ManageTagsModalComponent } from '@app/architecture/components/tag-list/manage-tags-modal/manage-tags-modal.component';
 
 @Component({
   selector: 'smi-tag-list',
@@ -18,6 +20,7 @@ export class TagListComponent implements OnChanges {
   @Input('availableTags') set availableTags(tags: Tag[]) {
     this.availableTags$.next(tags);
   }
+  @Input() componentLayer: string;
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagControl = new FormControl({ value: '', disabled: true });
@@ -68,11 +71,12 @@ export class TagListComponent implements OnChanges {
         tag: {
           id: '',
           name: this.tagControl.value.replace('@create_', '').trim(),
-          applicableTo: [],
+          applicableTo: [this.componentLayer + 's'],
           textColour: TagColour.black,
           backgroundColour: TagColour.white,
           iconName: 'none'
-        }
+        },
+        currentComponentType: this.componentLayer + 's'
       }
     });
     this.tagInput.nativeElement.value = '';
@@ -86,8 +90,15 @@ export class TagListComponent implements OnChanges {
   }
 
   manageTags() {
+    this.dialog.open(ManageTagsModalComponent, {
+      disableClose: false,
+      minWidth: '600px',
+      data: {
+       tags: this.tags
+      }
+    });
+    this.tagInput.nativeElement.value = '';
     this.tagControl.reset();
-    console.log('manage tags');
   }
 
   ngOnChanges(changes: SimpleChanges): void {

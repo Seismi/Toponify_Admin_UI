@@ -53,6 +53,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() nodeReports: NodeReports[];
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
+  @Input() componentLayer: string;
 
   @Output()
   saveAttribute = new EventEmitter();

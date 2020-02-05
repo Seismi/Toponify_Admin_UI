@@ -38,6 +38,7 @@
     <smi-tag-list [tags]="tags"
                   [availableTags]="availableTags"
                   [editMode]="!nodeIsEditable()"
+                  [componentLayer]="componentLayer"
                   (addTag)="onAddTag($event)"
                   (createTag)="onCreateTag($event)"
                   (removeTag)="onRemoveTag($event)"

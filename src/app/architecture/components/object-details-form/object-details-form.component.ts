@@ -38,6 +38,7 @@ export class ObjectDetailsFormComponent {
   @Input() part: go.Part;
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
+  @Input() componentLayer: string;
   Level = Level;
 
   constructor() {}

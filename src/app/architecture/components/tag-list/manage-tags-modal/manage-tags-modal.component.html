@@ -1,0 +1,63 @@
+<div class="wrapper">
+  <table mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        Name
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.name }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="colour">
+      <th mat-header-cell *matHeaderCellDef>
+        Colour
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <span class="square" [ngStyle]="{backgroundColor: element.backgroundColour}"></span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="icon">
+      <th mat-header-cell *matHeaderCellDef>
+        Icon
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon *ngIf="element.iconName && element.iconName !== 'none'" [svgIcon]="element.iconName"></mat-icon>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>
+        Component type
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.applicableTo.join(', ') }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        Actions
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="onEdit(element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDelete(element)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
+
+<div mat-dialog-actions class="mat-dialog-actions">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="addNew()"
+  >
+    Add new
+  </button>
+  <button mat-raised-button (click)="onClose()" data-hook="radio-delete-modal-no">Close</button>
+</div>

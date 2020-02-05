@@ -7,9 +7,11 @@ import {
   MatChipsModule,
   MatFormFieldModule,
   MatIconModule,
-  MatInputModule, MatSelectModule, MatTooltipModule
+  MatInputModule, MatSelectModule, MatTableModule, MatTooltipModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
+import { ManageTagsModalComponent } from '@app/architecture/components/tag-list/manage-tags-modal/manage-tags-modal.component';
 
 @NgModule({
   imports: [
@@ -23,10 +25,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatIconModule,
     MatButtonModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTableModule,
+    TagModule
   ],
-  declarations: [TagListComponent, TagDetailModalComponent],
-  entryComponents: [TagDetailModalComponent],
+  declarations: [TagListComponent, TagDetailModalComponent, ManageTagsModalComponent],
+  entryComponents: [TagDetailModalComponent, ManageTagsModalComponent],
   exports: [TagListComponent]
 })
 export class TagListModule {}
