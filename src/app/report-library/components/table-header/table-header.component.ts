@@ -10,6 +10,7 @@ export class TableHeaderComponent {
 
   @Output() filter = new EventEmitter<void>();
   @Output() resetFilter = new EventEmitter<void>();
+  @Output() search = new EventEmitter<string>();
 
   onFilter(): void {
     this.filter.emit();
@@ -17,5 +18,9 @@ export class TableHeaderComponent {
 
   onReset(): void {
     this.resetFilter.emit();
+  }
+
+  onSearch(filterValue: string): void {
+    this.search.emit(filterValue);
   }
 }
