@@ -39,4 +39,8 @@ export class ReportLibraryTableComponent implements OnInit {
   onAdd() {
     this.addReport.emit();
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }
