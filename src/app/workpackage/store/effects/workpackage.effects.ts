@@ -67,7 +67,16 @@ import {
   DeleteCustomPropertyFailure,
   CreateObjective,
   CreateObjectiveSuccess,
-  CreateObjectiveFailure
+  CreateObjectiveFailure,
+  LoadWorkPackageBaselineAvailability,
+  LoadWorkPackageBaselineAvailabilitySuccess,
+  LoadWorkPackageBaselineAvailabilityFailure,
+  AddWorkPackageBaseline,
+  AddWorkPackageBaselineSuccess,
+  AddWorkPackageBaselineFailure,
+  DeleteWorkPackageBaseline,
+  DeleteWorkPackageBaselineSuccess,
+  DeleteWorkPackageBaselineFailure
 } from '../actions/workpackage.actions';
 import {
   OwnersEntityOrApproversEntity,
@@ -75,7 +84,8 @@ import {
   WorkPackageApiResponse,
   WorkPackageDetailApiResponse,
   WorkPackageEntitiesHttpParams,
-  WorkPackageEntitiesResponse
+  WorkPackageEntitiesResponse,
+  Baseline
 } from '../models/workpackage.models';
 import { State as WorkpackageState } from '../reducers/workpackage.reducer';
 import { Store } from '@ngrx/store';
@@ -256,9 +266,9 @@ export class WorkPackageEffects {
     ofType<UpdateCustomProperty>(WorkPackageActionTypes.UpdateCustomProperty),
     map(action => action.payload),
     switchMap(
-      (payload: { workPackageId: string; customPropertyId: string; data: { data: CustomPropertyValuesEntity } }) => {
+      (payload: { workPackageId: string; customPropertyId: string; data: string }) => {
         return this.workpackageService
-          .updateProperty(payload.workPackageId, payload.customPropertyId, payload.data.data)
+          .updateProperty(payload.workPackageId, payload.customPropertyId, payload.data)
           .pipe(
             switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
             catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
@@ -347,6 +357,42 @@ export class WorkPackageEffects {
       return this.workpackageService.supersedeWorkpackage(payload).pipe(
         mergeMap((response: WorkPackageDetailApiResponse) => [new SupersedeWorkpackageSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new SupersedeWorkpackageFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadWorkPackageBaselineAvailability$ = this.actions$.pipe(
+    ofType<LoadWorkPackageBaselineAvailability>(WorkPackageActionTypes.LoadWorkPackageBaselineAvailability),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string }) => {
+      return this.workpackageService.getWorkPackageBaselineAvailability(payload.workPackageId).pipe(
+        switchMap((response: { data: Baseline[] }) => [new LoadWorkPackageBaselineAvailabilitySuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new LoadWorkPackageBaselineAvailabilityFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkPackageBaseline$ = this.actions$.pipe(
+    ofType<AddWorkPackageBaseline>(WorkPackageActionTypes.AddWorkPackageBaseline),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string, baselineId: string }) => {
+      return this.workpackageService.addWorkPackageBaseline(payload.workPackageId, payload.baselineId).pipe(
+        mergeMap((response: WorkPackageDetailApiResponse) => [new AddWorkPackageBaselineSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageBaselineFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteWorkPackageBaseline$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageBaseline>(WorkPackageActionTypes.DeleteWorkPackageBaseline),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; baselineId: string }) => {
+      return this.workpackageService.deleteWorkPackageBaseline(payload.workPackageId, payload.baselineId).pipe(
+        switchMap((response: WorkPackageDetailApiResponse) => [new DeleteWorkPackageBaselineSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageBaselineFailure(error)))
       );
     })
   );

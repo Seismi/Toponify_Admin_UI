@@ -13,7 +13,8 @@ import {
   MatTooltipModule,
   MatTableModule,
   MatPaginatorModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatDialogModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -44,6 +45,7 @@ import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-
 import { EditDocumentationStandardsTableComponent } from './components/edit-documentation-standards/edit-documentation-standards.component';
 import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
 import { RightHandSideComponent } from './components/right-hand-side/right-hand-side.component';
+import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 
 @NgModule({
   imports: [
@@ -65,7 +67,8 @@ import { RightHandSideComponent } from './components/right-hand-side/right-hand-
     MatSelectModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatDialogModule
   ],
   exports: [
     MainLayoutComponent,
@@ -89,7 +92,8 @@ import { RightHandSideComponent } from './components/right-hand-side/right-hand-
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
-    RightHandSideComponent
+    RightHandSideComponent,
+    DeleteModalComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -116,7 +120,11 @@ import { RightHandSideComponent } from './components/right-hand-side/right-hand-
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
-    RightHandSideComponent
+    RightHandSideComponent,
+    DeleteModalComponent
+  ],
+  entryComponents: [
+    DeleteModalComponent
   ]
 })
 export class CoreLayoutModule {}

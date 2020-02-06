@@ -82,8 +82,8 @@
         [allowMove]="allowMove"
         [workPackageIsEditable]="workPackageIsEditable"
         *ngIf="!showTable"
-        [nodes]="nodes | layer: { byId: true, params: params }"
-        [links]="links | layer: { byId: false, params: params }"
+        [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
+        [links]="links | layer: { byId: false } | async"
         [workpackageDetail]="workpackageDetail"
         [selectedId]="selectedId"
         [selectedWorkPackages]="selectedWorkPackages$ | async"
@@ -100,7 +100,7 @@
     </div>
     <div *ngIf="selectedView === ArchitectureView.System">
       <smi-architecture-table-view
-        [data]="nodes | layer: { byId: true, params: params }"
+        [data]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
@@ -111,7 +111,7 @@
     </div>
     <div *ngIf="selectedView === ArchitectureView.Links">
       <smi-architecture-table-view
-        [data]="links | layer: { byId: false, params: params }"
+        [data]="links | layer: { byId: false } | async"
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
@@ -165,10 +165,10 @@
         (addExistingScope)="onAddExistingScope()"
         (addNewScope)="onAddNewScope()"
         [selectedView]="selectedView"
-        [nodes]="nodes | layer: { byId: true, params: params }"
+        [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
         [selectedNode]="selectedNode"
         (selectNode)="onSelectNode($event)"
-        [links]="links | layer: { byId: false, params: params }"
+        [links]="links | layer: { byId: false} | async"
         [viewLevel]="viewLevel$ | async"
         [part]="part"
         (assignRadio)="onAssignRadio()"

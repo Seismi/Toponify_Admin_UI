@@ -12,14 +12,14 @@ export class EditDocumentationStandardsFormService {
     });
   }
 
-  getValueValidation(type: string): string {
+  getValueValidation(type: string): string | RegExp {
     switch(type) {
       case 'Text':
         return null;
       case 'Number':
         return '^[0-9]{0,50}$';
       case 'Hyperlink':
-        return '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
+        return /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
     }
   }
 

@@ -22,41 +22,8 @@ td.mat-cell {
   font-size: 13px;
 }
 
-th.mat-header-cell,
-td.mat-cell {
-  padding-left: 10px;
-}
-
-th.mat-column-name {
-  width: 45%;
-}
-
-th.mat-column-status {
-  width: 12%;
-  padding-right: 20px;
-}
-
 .highlight {
   background-color: #efefef;
-}
-
-.ownersList {
-  padding: 0;
-  margin: 0;
-  display: inline;
-  list-style: none;
-}
-
-.ownersList li {
-  display: inline;
-}
-
-.ownersList::before {
-  content: '; ';
-}
-
-.ownersList:first-child::before {
-  content: '';
 }
 
 button {

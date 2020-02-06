@@ -37,7 +37,14 @@
   </mat-form-field>
 
   <!-- Baseline Table -->
-  <smi-baseline-table data-hook="workpackage-detail-baseline-table" *ngIf="!modalMode" [data]="baselineTableData">
+  <smi-baseline-table 
+    data-hook="workpackage-detail-baseline-table" 
+    *ngIf="!modalMode"
+    [data]="baselineTableData"
+    [isEditable]="isEditable"
+    (add)="onAddBaseline()"
+    (delete)="onDeleteBaseline($event)"
+  >
   </smi-baseline-table>
 
   <!-- Owners Table -->
@@ -180,6 +187,6 @@
 </form>
 
 
-<div *ngIf="approversTableData.length === 0 && workpackageActionSubmit" class="alert alert-danger">
+<div *ngIf="approversTableData?.length === 0 && workpackageActionSubmit" class="alert alert-danger">
   No approvers identified. None of the components you are adding or updating have owners. Please assign owners to be able to submit
 </div>

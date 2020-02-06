@@ -3,7 +3,8 @@ import { FormGroup } from '@angular/forms';
 import {
   TeamEntityOrOwnersEntityOrApproversEntity,
   WorkPackageDetail,
-  WorkPackageEntity
+  WorkPackageEntity,
+  Baseline
 } from '@app/workpackage/store/models/workpackage.models';
 import { TeamEntity } from '@app/settings/store/models/user.model';
 
@@ -77,6 +78,12 @@ export class WorkPackageDetailComponent {
   @Output()
   openWorkPackage = new EventEmitter<void>();
 
+  @Output()
+  addBaseline = new EventEmitter<void>()
+
+  @Output()
+  deleteBaseline = new EventEmitter<Baseline>()
+
   onSave(): void {
     this.saveWorkpackage.emit();
   }
@@ -131,6 +138,14 @@ export class WorkPackageDetailComponent {
 
   onOpen(): void {
     this.openWorkPackage.emit();
+  }
+
+  onAddBaseline(): void {
+    this.addBaseline.emit();
+  }
+
+  onDeleteBaseline(baseline: Baseline): void {
+    this.deleteBaseline.emit(baseline);
   }
 
   getWorkPackageStatus(): boolean {

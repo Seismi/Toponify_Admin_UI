@@ -8,7 +8,6 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
   styleUrls: ['./scope-table.component.scss']
 })
 export class ScopeTableComponent {
-  @Input() workPackageIsEditable: boolean;
   @Input() nodeCategory: string;
 
   @Input()

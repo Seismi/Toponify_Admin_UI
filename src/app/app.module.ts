@@ -52,7 +52,7 @@ import { reducer as architectureReducer } from '@app/architecture/store/reducers
     EffectsModule.forFeature([NodeEffects])
   ],
   declarations: [AppComponent],
-  providers: [{ provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2000 } }],
+  providers: [{ provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3500 } }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

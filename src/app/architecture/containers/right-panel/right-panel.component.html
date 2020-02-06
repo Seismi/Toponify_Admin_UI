@@ -88,7 +88,6 @@
       *ngIf="part?.isSelected && !multipleSelected"
       [data]="nodeScopes"
       (delete)="onDeleteScope($event)"
-      [workPackageIsEditable]="workPackageIsEditable"
       (addExistingScope)="onAddExistingScope()"
       (newScope)="onAddNewScope()"
       [nodeCategory]="nodeCategory"
