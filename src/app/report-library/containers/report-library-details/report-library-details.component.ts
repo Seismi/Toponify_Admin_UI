@@ -258,7 +258,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   }
 
   onEditSourceSystem() {
-    this.nodeStore.dispatch(new LoadNodes());
+    this.getNodesWithWorkPackageQuery(this.workpackageId);
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -285,6 +285,13 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
           });
       }
     });
+  }
+
+  getNodesWithWorkPackageQuery(workPackageId: string): void {
+    const queryParams = {
+      workPackageQuery: [workPackageId]
+    };
+    this.nodeStore.dispatch(new LoadNodes(queryParams));
   }
 
   onAddDataSets(reportId: string) {

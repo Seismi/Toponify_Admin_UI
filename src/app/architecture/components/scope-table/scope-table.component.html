@@ -12,7 +12,7 @@
         matTooltip="Implicitly included - This either is a component of or has a component that is in the scope"
         >functions</mat-icon
       >
-      <mat-icon *ngIf="element.removeFromButton && workPackageIsEditable" (click)="onDelete(element)">delete</mat-icon>
+      <mat-icon *ngIf="element.removeFromButton" (click)="onDelete(element)">delete</mat-icon>
     </td>
   </ng-container>
 
