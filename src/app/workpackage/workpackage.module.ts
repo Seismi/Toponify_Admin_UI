@@ -16,7 +16,9 @@ import {
   MatMenuModule,
   MatGridListModule,
   MatTooltipModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatAutocompleteModule,
+  MatCheckboxModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -49,6 +51,7 @@ import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
 import { MoveObjectiveModalComponent } from './components/move-objective-modal/move-objective-modal.component';
+import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
 
 @NgModule({
   imports: [
@@ -73,7 +76,9 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     MatMenuModule,
     MatGridListModule,
     MatTooltipModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatAutocompleteModule,
+    MatCheckboxModule
   ],
   exports: [WorkPackagesTableComponent, RadioDetailModalComponent, WorkPackageColorComponent],
   declarations: [
@@ -101,7 +106,8 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     RadioDetailModalComponent,
     WorkPackageColorComponent,
     AddObjectiveModalComponent,
-    MoveObjectiveModalComponent
+    MoveObjectiveModalComponent,
+    SelectModalComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,
@@ -110,7 +116,8 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     RadioListModalComponent,
     RadioDetailModalComponent,
     AddObjectiveModalComponent,
-    MoveObjectiveModalComponent
+    MoveObjectiveModalComponent,
+    SelectModalComponent
   ],
   providers: [WorkPackageService, WorkPackageNodesService, WorkPackageLinksService]
 })

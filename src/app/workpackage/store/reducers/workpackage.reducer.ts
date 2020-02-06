@@ -6,6 +6,7 @@ export interface State {
   editId: string;
   entities: WorkPackageEntity[];
   avaialabilities: any[];
+  baseline: any[];
   page: Page;
   links: Links;
   loading: boolean;
@@ -18,6 +19,7 @@ export const initialState: State = {
   editId: null,
   entities: [],
   avaialabilities: [],
+  baseline: [],
   page: null,
   links: null,
   loading: false,
@@ -79,6 +81,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.LoadWorkPackageBaselineAvailability:
     case WorkPackageActionTypes.GetWorkpackageAvailability: {
       return {
         ...state,
@@ -94,10 +97,19 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.LoadWorkPackageBaselineAvailabilityFailure:
     case WorkPackageActionTypes.GetWorkpackageAvailabilityFailure: {
       return {
         ...state,
         error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackageBaselineAvailabilitySuccess: {
+      return {
+        ...state,
+        baseline: action.payload,
         loading: false
       };
     }
@@ -226,6 +238,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.AddWorkPackageBaseline:
     case WorkPackageActionTypes.AddOwner: {
       return {
         ...state,
@@ -233,6 +246,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.AddWorkPackageBaselineSuccess:
     case WorkPackageActionTypes.AddOwnerSuccess: {
       return {
         ...state,
@@ -247,6 +261,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.AddWorkPackageBaselineFailure:
     case WorkPackageActionTypes.AddOwnerFailure: {
       return {
         ...state,
@@ -255,6 +270,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.DeleteWorkPackageBaseline:
     case WorkPackageActionTypes.DeleteOwner: {
       return {
         ...state,
@@ -262,6 +278,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.DeleteWorkPackageBaselineSuccess:
     case WorkPackageActionTypes.DeleteOwnerSuccess: {
       return {
         ...state,
@@ -276,6 +293,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.DeleteWorkPackageBaselineFailure:
     case WorkPackageActionTypes.DeleteOwnerFailure: {
       return {
         ...state,

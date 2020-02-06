@@ -7,7 +7,8 @@ import {
   WorkPackageEntitiesHttpParams,
   WorkPackageEntitiesResponse,
   WorkPackageEntity,
-  CustomPropertiesEntity, Objective
+  Objective, 
+  Baseline
 } from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 
@@ -101,7 +102,19 @@ export enum WorkPackageActionTypes {
   SupersedeWorkpackageSuccess = '[Workpackage] Supersede Workpackage Success',
   SupersedeWorkpackageFailure = '[Workpackage] Supersede Workpackage Failure',
 
-  ArchiveWorkPackage = '[Workpackage] Archive Workpackage'
+  ArchiveWorkPackage = '[Workpackage] Archive Workpackage',
+
+  LoadWorkPackageBaselineAvailability = '[WorkPackage] Load WorkPackage Baseline Availability',
+  LoadWorkPackageBaselineAvailabilitySuccess = '[WorkPackage] Load WorkPackage Baseline Availability Success',
+  LoadWorkPackageBaselineAvailabilityFailure = '[WorkPackage] Load WorkPackage Baseline Availability Failure',
+
+  AddWorkPackageBaseline = '[WorkPackage] Add WorkPackage Baseline',
+  AddWorkPackageBaselineSuccess = '[WorkPackage] Add WorkPackage Baseline Success',
+  AddWorkPackageBaselineFailure = '[WorkPackage] Add WorkPackage Baseline Failure',
+
+  DeleteWorkPackageBaseline = '[WorkPackage] Delete WorkPackage Baseline',
+  DeleteWorkPackageBaselineSuccess = '[WorkPackage] Delete WorkPackage Baseline Success',
+  DeleteWorkPackageBaselineFailure = '[WorkPackage] Delete WorkPackage Baseline Failure'
 }
 
 export class LoadWorkPackages implements Action {
@@ -441,6 +454,51 @@ export class ArchiveWorkPackage implements Action {
   constructor(public payload: { workPackageId: string, archived: boolean }) {}
 }
 
+export class LoadWorkPackageBaselineAvailability implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackageBaselineAvailability;
+  constructor(public payload: { workPackageId: string }) {}
+}
+
+export class LoadWorkPackageBaselineAvailabilitySuccess implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackageBaselineAvailabilitySuccess;
+  constructor(public payload: Baseline[]) {}
+}
+
+export class LoadWorkPackageBaselineAvailabilityFailure implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackageBaselineAvailabilityFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddWorkPackageBaseline implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageBaseline;
+  constructor(public payload: { workPackageId: string, baselineId: string }) {}
+}
+
+export class AddWorkPackageBaselineSuccess implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageBaselineSuccess;
+  constructor(public payload: WorkPackageDetail) {}
+}
+
+export class AddWorkPackageBaselineFailure implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageBaselineFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteWorkPackageBaseline implements Action {
+  readonly type = WorkPackageActionTypes.DeleteWorkPackageBaseline;
+  constructor(public payload: { workPackageId: string, baselineId: string }) {}
+}
+
+export class DeleteWorkPackageBaselineSuccess implements Action {
+  readonly type = WorkPackageActionTypes.DeleteWorkPackageBaselineSuccess;
+  constructor(public payload: WorkPackageDetail) {}
+}
+
+export class DeleteWorkPackageBaselineFailure implements Action {
+  readonly type = WorkPackageActionTypes.DeleteWorkPackageBaselineFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
@@ -508,4 +566,13 @@ export type WorkPackageActionsUnion =
   | DeleteCustomProperty
   | DeleteCustomPropertySuccess
   | DeleteCustomPropertyFailure
-  | ArchiveWorkPackage;
+  | ArchiveWorkPackage
+  | LoadWorkPackageBaselineAvailability
+  | LoadWorkPackageBaselineAvailabilitySuccess
+  | LoadWorkPackageBaselineAvailabilityFailure
+  | AddWorkPackageBaseline
+  | AddWorkPackageBaselineSuccess
+  | AddWorkPackageBaselineFailure
+  | DeleteWorkPackageBaseline
+  | DeleteWorkPackageBaselineSuccess
+  | DeleteWorkPackageBaselineFailure;

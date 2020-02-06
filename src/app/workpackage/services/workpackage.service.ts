@@ -7,7 +7,8 @@ import {
   WorkPackageEntitiesHttpParams,
   WorkPackageEntitiesResponse,
   WorkPackageDetailApiResponse,
-  CustomPropertiesEntity
+  CustomPropertiesEntity,
+  Baseline
 } from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
@@ -93,6 +94,18 @@ export class WorkPackageService {
     return this.http.delete<WorkPackageDetailApiResponse>(
       `/workpackages/${workPackageId}/customPropertyValues/${customPropertyId}`
     );
+  }
+
+  getWorkPackageBaselineAvailability(workPackageId: string): Observable<{data: Baseline[]}> {
+    return this.http.get<{data: Baseline[]}>(`/workpackages/${workPackageId}/baseline/check/availability`);
+  }
+
+  addWorkPackageBaseline(workPackageId: string, baselineId: string): Observable<WorkPackageDetailApiResponse> {
+    return this.http.post<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/baseline/${baselineId}`, this.httpOptions);
+  }
+
+  deleteWorkPackageBaseline(workPackageId: string, baselineId: string): Observable<WorkPackageDetailApiResponse> {
+    return this.http.delete<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/baseline/${baselineId}`);
   }
 
   // TODO: move into sharable service

@@ -39,6 +39,8 @@
             [workPackageStatus]="workPackageStatus"
             [archived]="workpackage?.archived"
             [currentState]="workpackage?.id !== currentState"
+            (addBaseline)="onAddBaseline()"
+            (deleteBaseline)="onDeleteBaseline($event)"
           >
           </smi-workpackage-detail>
         </p>
