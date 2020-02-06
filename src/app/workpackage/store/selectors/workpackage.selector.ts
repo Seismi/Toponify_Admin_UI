@@ -48,6 +48,11 @@ export const getEditWorkpackage = createSelector(
   state => state.editId
 );
 
+export const getWorkPackageBaselineAvailability = createSelector(
+  getWorkPackageState,
+  state => state.baseline
+);
+
 export const getWorkPackageById = createSelector(
   getWorkPackageState,
   (state, props?: {id: string}) => {

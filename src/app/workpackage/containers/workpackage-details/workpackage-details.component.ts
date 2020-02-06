@@ -19,11 +19,14 @@ import {
   WorkPackageActionTypes,
   UpdateCustomProperty,
   DeleteCustomProperty,
-  CreateObjective
+  CreateObjective,
+  LoadWorkPackageBaselineAvailability,
+  AddWorkPackageBaseline,
+  DeleteWorkPackageBaseline
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkPackage, getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkPackage, getWorkPackageEntities, getWorkPackageBaselineAvailability } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import {
@@ -31,7 +34,8 @@ import {
   OwnersEntityOrApproversEntity,
   TeamEntityOrOwnersEntityOrApproversEntity,
   WorkPackageDetail,
-  WorkPackageEntity
+  WorkPackageEntity,
+  Baseline
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -55,6 +59,8 @@ import { map, take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
 import { MoveObjectiveModalComponent } from '@app/workpackage/components/move-objective-modal/move-objective-modal.component';
+import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -484,5 +490,47 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
           }
         });
       });
+  }
+
+  onAddBaseline(): void {
+    this.store.dispatch(new LoadWorkPackageBaselineAvailability({workPackageId: this.workpackageId}));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: true,
+      width: 'auto',
+      minWidth: '400px',
+      data: {
+        title: 'Select work package to add to baseline',
+        options$: this.store.pipe(select(getWorkPackageBaselineAvailability)),
+        selectedIds: []
+      }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(new AddWorkPackageBaseline({
+          workPackageId: this.workpackageId,
+          baselineId: data.value[0].id
+        }))
+      }
+    });
+  }
+
+  onDeleteBaseline(baseline: Baseline): void {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      data: {
+        title: 'Are you sure you want to remove the work package from the baseline?',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((data) => {
+      if (data) {
+        this.store.dispatch(new DeleteWorkPackageBaseline({
+          workPackageId: this.workpackageId,
+          baselineId: baseline.id
+        }));
+      }
+    });
   }
 }
