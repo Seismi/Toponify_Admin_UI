@@ -1,5 +1,7 @@
 .wrapper {
   margin-bottom: 15px;
+  max-height: 80vh;
+  overflow: auto;
 }
 
 tr.mat-header-row {
@@ -35,4 +37,10 @@ th, td {
   display: flex;
   justify-content: space-between;
   padding-bottom: 17px;
+}
+
+.mat-column-actions.mat-column-actions {
+  width: 94px;
+  padding: 5px;
+  text-align: center;
 }

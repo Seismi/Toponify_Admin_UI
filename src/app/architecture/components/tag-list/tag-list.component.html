@@ -1,19 +1,21 @@
+<mat-label>Tags</mat-label>
 <mat-form-field>
   <mat-chip-list #chipList>
     <smi-tag *ngFor="let tag of tags" [tag]="tag" [removable]="editMode" (remove)="onRemove(tag)"></smi-tag>
     <input
       #tagInput
       *ngIf="editMode"
-      placeholder="Tags"
       [formControl]="tagControl"
       [matAutocomplete]="auto"
       [matChipInputFor]="chipList"
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
   </mat-chip-list>
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-    <mat-option *ngFor="let tag of filteredTags$ | async" [value]="tag.id">
-      {{tag.name}}
-    </mat-option>
+    <div class="option-container">
+      <mat-option *ngFor="let tag of filteredTags$ | async" [value]="tag.id">
+        {{tag.name}}
+      </mat-option>
+    </div>
     <mat-option *ngIf="tagControl.value as tagInputValue" [value]="'@create_' + tagInputValue">
       {{tagInputValue}} (create new)
     </mat-option>

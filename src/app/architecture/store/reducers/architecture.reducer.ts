@@ -5,11 +5,11 @@ import {
   Error,
   ExpandedStatesEntity,
   LocationsEntityEntity,
+  middleOptions,
   Node,
   NodeDetail,
-  OwnersEntity,
   NodeReports,
-  middleOptions,
+  OwnersEntity,
   Tag
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
@@ -19,8 +19,8 @@ import {
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import {
-  WorkPackageLinkActionTypes,
-  WorkPackageLinkActionsUnion
+  WorkPackageLinkActionsUnion,
+  WorkPackageLinkActionTypes
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { Level } from '@app/architecture/services/diagram-level.service';
@@ -43,6 +43,7 @@ export interface State {
     tags: Tag[];
     id: string;
   };
+  tags: Tag[];
 }
 
 export const initialState: State = {
@@ -62,7 +63,8 @@ export const initialState: State = {
   availableTags: {
     tags: [],
     id: null
-  }
+  },
+  tags: []
 };
 
 export function reducer(
@@ -266,7 +268,6 @@ export function reducer(
       };
     }
 
-
     case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioSuccess:
     case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess:
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
@@ -276,7 +277,9 @@ export function reducer(
       };
     }
 
-
+    case NodeActionTypes.UpdateTagFailure:
+    case NodeActionTypes.DeleteTagFailure:
+    case NodeActionTypes.LoadTagsFailure:
     case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioFailure:
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure:
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
@@ -605,6 +608,37 @@ export function reducer(
           selectedNodeLink: action.payload.nodeOrLinkDetail as NodeLinkDetail
         };
       }
+    }
+
+    case NodeActionTypes.LoadTagsSuccess: {
+      return {
+        ...state,
+        tags: action.payload.tags
+      };
+    }
+
+    case NodeActionTypes.DeleteTagSuccess: {
+      return {
+        ...state,
+        tags: [...state.tags.filter(tag => tag.id !== action.payload.tagId)]
+      };
+    }
+
+    case NodeActionTypes.UpdateTagSuccess: {
+      const index = state.tags.findIndex(tag => tag.id === action.payload.tag.id);
+      const newTags = [...state.tags];
+      newTags[index] = action.payload.tag;
+      return {
+        ...state,
+        tags: newTags
+      };
+    }
+
+    case NodeActionTypes.CreateTagSuccess: {
+      return {
+        ...state,
+        tags: [...state.tags, action.payload.tag]
+      };
     }
 
     default: {

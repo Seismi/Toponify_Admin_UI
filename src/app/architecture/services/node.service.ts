@@ -82,7 +82,7 @@ export class NodeService {
   }
 
   createTag(tag: Tag): Observable<{ data: Tag }> {
-    const {id, ...tagData} = tag;
+    const { id, ...tagData } = tag;
     return this.http.post<{ data: Tag }>(`/tags`, { data: tagData });
   }
 
@@ -118,6 +118,18 @@ export class NodeService {
       `/workpackages/${workpackageId}/nodelinks/${linkId}/tags/${tagId}/deleteRequest`,
       {}
     );
+  }
+
+  loadTags(): Observable<{ data: Tag[] }> {
+    return this.http.get<{ data: Tag[] }>(`/tags`);
+  }
+
+  deleteTag(tagId: string): Observable<{}> {
+    return this.http.delete(`/tags/${tagId}`);
+  }
+
+  updateTag(tag: Tag): Observable<{ data: Tag }> {
+    return this.http.put<{ data: Tag }>(`/tags/${tag.id}`, { data: tag });
   }
 
   // FIXME: define missing types

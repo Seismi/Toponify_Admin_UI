@@ -20,7 +20,7 @@ export class TagListComponent implements OnChanges {
   @Input('availableTags') set availableTags(tags: Tag[]) {
     this.availableTags$.next(tags);
   }
-  @Input() componentLayer: string;
+  @Input() componentLayer: TagApplicableTo;
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagControl = new FormControl({ value: '', disabled: true });
@@ -71,12 +71,12 @@ export class TagListComponent implements OnChanges {
         tag: {
           id: '',
           name: this.tagControl.value.replace('@create_', '').trim(),
-          applicableTo: [this.componentLayer + 's'],
+          applicableTo: [this.componentLayer],
           textColour: TagColour.black,
           backgroundColour: TagColour.white,
           iconName: 'none'
         },
-        currentComponentType: this.componentLayer + 's'
+        currentComponentType: this.componentLayer
       }
     });
     this.tagInput.nativeElement.value = '';

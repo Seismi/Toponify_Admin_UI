@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity, Tag } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, Tag, TagApplicableTo } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
@@ -38,7 +38,7 @@ export class ObjectDetailsFormComponent {
   @Input() part: go.Part;
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
-  @Input() componentLayer: string;
+  @Input() componentLayer: TagApplicableTo;
   Level = Level;
 
   constructor() {}

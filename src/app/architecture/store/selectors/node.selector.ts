@@ -101,3 +101,8 @@ export const getAvailableTags = createSelector(
   getNodeFeatureState,
   state => state.availableTags
 );
+
+export const getTags = createSelector(
+  getNodeFeatureState,
+  state => state.tags
+);

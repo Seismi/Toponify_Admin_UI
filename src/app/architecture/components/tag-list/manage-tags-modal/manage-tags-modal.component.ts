@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { Tag } from '@app/architecture/store/models/node.model';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { TagDetailModalComponent } from '@app/architecture/components/tag-list/tag-detail-modal/tag-detail-modal.component';
+import { select, Store } from '@ngrx/store';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { CreateTag, DeleteTag, LoadTags, UpdateTag } from '@app/architecture/store/actions/node.actions';
+import { getTags } from '@app/architecture/store/selectors/node.selector';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'smi-manage-tags',
@@ -9,19 +15,22 @@ import { TagDetailModalComponent } from '@app/architecture/components/tag-list/t
   styleUrls: ['manage-tags-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ManageTagsModalComponent {
-  public dataSource: MatTableDataSource<Tag>;
+export class ManageTagsModalComponent implements OnInit {
+  public dataSource$: Observable<MatTableDataSource<Tag>>;
   public displayedColumns: string[] = ['name', 'colour', 'icon', 'type', 'actions'];
 
   constructor(
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<ManageTagsModalComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      tags: Tag[];
-    }
-  ) {
-    this.dataSource = new MatTableDataSource<Tag>(data.tags);
+    private store: Store<NodeState>
+  ) {}
+
+  ngOnInit(): void {
+    this.store.dispatch(new LoadTags());
+    this.dataSource$ = this.store.pipe(
+      select(getTags),
+      map(tags => new MatTableDataSource<Tag>(tags))
+    );
   }
 
   onClose(): void {
@@ -38,7 +47,7 @@ export class ManageTagsModalComponent {
     });
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.tag) {
-        console.log('edited tag', data.tag);
+        this.store.dispatch(new UpdateTag({ tag: data.tag }));
       }
     });
   }
@@ -51,12 +60,12 @@ export class ManageTagsModalComponent {
     });
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.tag) {
-        console.log('new tag', data.tag);
+        this.store.dispatch(new CreateTag({ tag: data.tag }));
       }
     });
   }
 
   onDelete(tag: Tag) {
-    console.log('delete', tag);
+    this.store.dispatch(new DeleteTag({ tagId: tag.id }));
   }
 }

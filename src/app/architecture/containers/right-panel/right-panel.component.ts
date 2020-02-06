@@ -12,7 +12,7 @@ import {
   DescendantsEntity,
   Node,
   NodeReports,
-  Tag
+  Tag, TagApplicableTo
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
@@ -53,7 +53,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() nodeReports: NodeReports[];
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
-  @Input() componentLayer: string;
+  @Input() componentLayer: TagApplicableTo;
 
   @Output()
   saveAttribute = new EventEmitter();
