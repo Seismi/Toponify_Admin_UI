@@ -15,7 +15,8 @@ import {
   NodeDetailApiResponse,
   NodesApiResponse,
   NodeLocationsUpdatePayload,
-  NodeReportsApiResponse
+  NodeReportsApiResponse,
+  GroupAreaSizeApiRequest
 } from '../models/node.model';
 import { LinkUpdatePayload, NodeLinkDetailApiResponse, NodeLinksApiResponse } from '../models/node-link.model';
 import { MatSnackBar } from '@angular/material';
@@ -150,6 +151,18 @@ export class NodeEffects {
       return this.nodeService.updateNodeExpandedState(payload.layoutId, payload.data).pipe(
         switchMap((response: any) => [new NodeActions.UpdateNodeExpandedStateSuccess(response.data)]),
         catchError((error: Error) => of(new NodeActions.UpdateNodeExpandedStateFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  UpdateGroupAreaSize$ = this.actions$.pipe(
+    ofType<NodeActions.UpdateGroupAreaSize>(NodeActionTypes.UpdateGroupAreaSize),
+    map(action => action.payload),
+    switchMap((payload: { layoutId: string; data: GroupAreaSizeApiRequest['data'] }) => {
+      return this.nodeService.UpdateGroupAreaSize(payload.layoutId, payload.data).pipe(
+        switchMap((response: any) => [new NodeActions.UpdateGroupAreaSizeSuccess(response.data)]),
+        catchError((error: Error) => of(new NodeActions.UpdateGroupAreaSizeFailure(error)))
       );
     })
   );

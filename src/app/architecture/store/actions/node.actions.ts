@@ -5,7 +5,8 @@ import {
   Node,
   NodeDetail,
   OwnersEntity,
-  NodeReports
+  NodeReports,
+  GroupAreaSizeApiRequest
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
@@ -36,6 +37,9 @@ export enum NodeActionTypes {
   UpdateNodeExpandedState = '[Node] Update node expanded state',
   UpdateNodeExpandedStateSuccess = '[Node] Update node expanded state Success',
   UpdateNodeExpandedStateFailure = '[Node] Update node expanded state Fail',
+  UpdateGroupAreaSize = '[Node] Update group area size',
+  UpdateGroupAreaSizeSuccess = '[Node] Update group area size Success',
+  UpdateGroupAreaSizeFailure = '[Node] Update group area size Fail',
   UpdateLinks = '[Node] Update links',
   UpdateLinksSuccess = '[Node] Update links Success',
   UpdateLinksFailure = '[Node] Update links Fail',
@@ -174,6 +178,21 @@ export class UpdateNodeExpandedStateFailure implements Action {
   constructor(public payload: Error) {}
 }
 
+export class UpdateGroupAreaSize implements Action {
+  readonly type = NodeActionTypes.UpdateGroupAreaSize;
+  constructor(public payload: { layoutId: string; data: GroupAreaSizeApiRequest['data'] }) {}
+}
+
+export class UpdateGroupAreaSizeSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateGroupAreaSizeSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateGroupAreaSizeFailure implements Action {
+  readonly type = NodeActionTypes.UpdateGroupAreaSizeFailure;
+  constructor(public payload: Error) {}
+}
+
 export class UpdateLinks implements Action {
   readonly type = NodeActionTypes.UpdateLinks;
   constructor(public payload: { layoutId: string; links: any[] }) {}
@@ -278,6 +297,9 @@ export type NodeActionsUnion =
   | UpdateNodeExpandedState
   | UpdateNodeExpandedStateSuccess
   | UpdateNodeExpandedStateFailure
+  | UpdateGroupAreaSize
+  | UpdateGroupAreaSizeSuccess
+  | UpdateGroupAreaSizeFailure
   | UpdateLinks
   | UpdateLinksSuccess
   | UpdateLinksFailure

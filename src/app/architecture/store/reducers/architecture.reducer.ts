@@ -9,7 +9,8 @@ import {
   NodeDetail,
   OwnersEntity,
   NodeReports,
-  middleOptions
+  middleOptions,
+  GroupAreaSizesEntity
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import {
@@ -417,6 +418,18 @@ export function reducer(
       }
     }
 
+    case NodeActionTypes.UpdateGroupAreaSize: {
+      const { layoutId, data } = action.payload;
+      const nodeIndex = state.entities.findIndex(n => n.id === data.id);
+      if (nodeIndex > -1) {
+        return replaceGroupAreaSize(state, nodeIndex, data.id, layoutId, data.areaSize);
+      } else {
+        return {
+          ...state
+        };
+      }
+    }
+
     case NodeActionTypes.UpdateNodeLocationsSuccess: {
       return {
         ...state
@@ -651,6 +664,40 @@ function replaceNodeExpandedState(
   entities[nodeIndex] = updatedNode;
 
   if (state.selectedNode && state.selectedNode.id === nodeId) {
+    return {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities
+  };
+}
+
+function replaceGroupAreaSize(
+  state: State,
+  nodeIndex: number,
+  nodeId: string,
+  layoutId: string,
+  areaSize: string
+): State {
+  const updatedGroupAreaSizes: GroupAreaSizesEntity[] = state.entities[nodeIndex].groupAreaSizes.concat();
+  const areaSizeIndex: number = updatedGroupAreaSizes.findIndex(function(size: GroupAreaSizesEntity) {
+    return size.layout.id === layoutId;
+  });
+
+  if (areaSizeIndex > -1) {
+    const updatedGroupAreaSize = updatedGroupAreaSizes[areaSizeIndex];
+    updatedGroupAreaSizes.splice(areaSizeIndex, 1, { ...updatedGroupAreaSize, areaSize: areaSize });
+  }
+
+  const updatedNode = { ...state.entities[nodeIndex], groupAreaSizes: updatedGroupAreaSizes };
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+
+  if (state.selectedNode.id === nodeId) {
     return {
       ...state,
       entities,

@@ -88,6 +88,9 @@ export class NodeService {
     return this.http.put<any>(`/layouts/${layoutId}/nodes/expandState`, { data: data }, httpOptions);
   }
   // FIXME: define missing types
+  UpdateGroupAreaSize(layoutId: string, data: any): Observable<any> {
+    return this.http.put<any>(`/layouts/${layoutId}/nodes/groupAreaSize`, { data: data }, httpOptions);
+  }
   updateLayoutNodeLinksRoute(layoutId: string, data: { id: string; points: any[] }): Observable<any> {
     return this.http.put<any>(`/layouts/${layoutId}/nodelinks/route`, { data: data }, httpOptions);
   }

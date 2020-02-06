@@ -152,6 +152,11 @@ export class DiagramListenersService {
       }.bind(this.diagramChangesService)
     );
 
+    diagram.addDiagramListener(
+      'PartResized',
+      this.diagramChangesService.groupAreaChanged.bind(this.diagramChangesService)
+    );
+
     diagram.addModelChangedListener(this.handleModelChange.bind(this));
 
     // Listeners to hide button menu on system nodes when user clicks outside menu

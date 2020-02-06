@@ -14,7 +14,6 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {middleOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -22,6 +21,7 @@ const $ = go.GraphObject.make;
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateGroupAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
 
   workpackages = [];
@@ -649,15 +649,14 @@ export class DiagramChangesService {
       node.invalidateLayout();
     } else {
       // Update expanded status of node in the back end
-      // -Temporarily removed pending API updates-
-      /* this.onUpdateExpandState.next({
+      this.onUpdateExpandState.next({
         node: {
           id: node.data.id,
           middleExpanded: node.data.middleExpanded,
           bottomExpanded: node.data.bottomExpanded
         },
         links: linkData
-      }); */
+      });
     }
   }
 
@@ -735,5 +734,35 @@ export class DiagramChangesService {
         }, 0);
       });
     }
+  }
+
+  groupAreaChanged(event: go.DiagramEvent): void {
+    const linkData: { id: string; points: number[] }[] = [];
+    const node = event.subject.part;
+
+    // Make sure node bounds are up to date so links can route correctly
+    node.ensureBounds();
+
+    // Changing group area changes node size, therefore link routes may need updating
+    node.linksConnected.each(function(link: go.Link): void {
+      // ignore disconnected links
+      if (link.toNode && link.fromNode) {
+        node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.invalidateRoute();
+        link.updateRoute();
+
+        linkData.push({ id: link.data.id, points: link.data.route });
+      }
+    });
+
+    // Update group area of node in the back end
+    this.onUpdateGroupAreaState.next({
+      node: {
+        id: node.data.id,
+        areaSize: node.data.areaSize,
+        locationCoordinates: node.data.location
+      },
+      links: linkData
+    });
   }
 }
