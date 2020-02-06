@@ -167,6 +167,7 @@
         color="primary" 
         (click)="onArchive()" 
         data-hook="workpackage-detail-archive"
+        *ngIf="currentState"
       >
         {{ archived ? 'Unarchive' : 'Archive' }}
       </button>

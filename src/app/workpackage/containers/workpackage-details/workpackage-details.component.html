@@ -38,6 +38,7 @@
             (archiveWorkPackage)="onArchiveWorkPackage()"
             [workPackageStatus]="workPackageStatus"
             [archived]="workpackage?.archived"
+            [currentState]="workpackage?.id !== currentState"
           >
           </smi-workpackage-detail>
         </p>

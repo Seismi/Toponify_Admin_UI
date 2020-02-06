@@ -62,6 +62,7 @@ import { MoveObjectiveModalComponent } from '@app/workpackage/components/move-ob
   providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
+  public currentState = '00000000-0000-0000-0000-000000000000';
   public workpackage: WorkPackageDetail;
   public subscriptions: Subscription[] = [];
   public workpackageId: string;

@@ -35,6 +35,7 @@ export class WorkPackageDetailComponent {
   @Input() workpackageColour: string;
   @Input() workPackageStatus: string;
   @Input() archived: boolean;
+  @Input() currentState: string;
 
   @Output()
   deleteWorkpackage = new EventEmitter<void>();
