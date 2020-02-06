@@ -36,6 +36,20 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.ArchiveWorkPackage: {
+      const { workPackageId, archived } = action.payload;
+      return {
+        ...state,
+        selectedWorkPackage: {
+          ...state.selectedWorkPackage,
+          ...state.selectedWorkPackage.availableActions,
+          id: workPackageId,
+          archived: archived,
+          displayColour: state.selectedWorkPackage.displayColour,
+        }
+      };
+    }
+
     case WorkPackageActionTypes.SetWorkpackageDisplayColour: {
       const { workpackageId, colour } = action.payload;
       return {

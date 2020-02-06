@@ -99,7 +99,9 @@ export enum WorkPackageActionTypes {
 
   SupersedeWorkpackage = '[Workpackage] Supersede Workpackage',
   SupersedeWorkpackageSuccess = '[Workpackage] Supersede Workpackage Success',
-  SupersedeWorkpackageFailure = '[Workpackage] Supersede Workpackage Failure'
+  SupersedeWorkpackageFailure = '[Workpackage] Supersede Workpackage Failure',
+
+  ArchiveWorkPackage = '[Workpackage] Archive Workpackage'
 }
 
 export class LoadWorkPackages implements Action {
@@ -434,6 +436,11 @@ export class SupersedeWorkpackageFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class ArchiveWorkPackage implements Action {
+  readonly type = WorkPackageActionTypes.ArchiveWorkPackage;
+  constructor(public payload: { workPackageId: string, archived: boolean }) {}
+}
+
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
@@ -500,4 +507,5 @@ export type WorkPackageActionsUnion =
   | UpdateCustomPropertyFailure
   | DeleteCustomProperty
   | DeleteCustomPropertySuccess
-  | DeleteCustomPropertyFailure;
+  | DeleteCustomPropertyFailure
+  | ArchiveWorkPackage;
