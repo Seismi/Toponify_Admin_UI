@@ -53,7 +53,6 @@ export enum NodeActionTypes {
   GetParentDescendantIdsSucces = '[Node] Get Parent Descendant Ids Success',
   GetParentDescendantIdsFailure = '[Node] Get Parent Descendant Ids Failure',
   SetParentDescendantIds = '[Node] Set Parent Descendant Ids',
-  LoadNodeReportsFailure = '[Node] Load Node Reports Fail',
   LoadAvailableTags = '[Node] Load Available Tags',
   LoadAvailableTagsSuccess = '[Node] Load Available Tags Success',
   LoadAvailableTagsFailure = '[Node] Load Available Tags Fail',
