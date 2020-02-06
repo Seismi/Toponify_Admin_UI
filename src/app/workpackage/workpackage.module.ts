@@ -15,7 +15,8 @@ import {
   MatTabsModule,
   MatMenuModule,
   MatGridListModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatSlideToggleModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -71,7 +72,8 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     RadioModule,
     MatMenuModule,
     MatGridListModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSlideToggleModule
   ],
   exports: [WorkPackagesTableComponent, RadioDetailModalComponent, WorkPackageColorComponent],
   declarations: [

@@ -107,7 +107,7 @@
         *ngIf="workpackageActionSubmit"
         (click)="submitWorkpackage()"
         data-hook="workpackage-detail-submit"
-        [disabled]="approversTableData.length === 0"
+        [disabled]="approversTableData?.length === 0"
       >
         Submit
       </button>
@@ -162,10 +162,19 @@
         Supersede
       </button>
       <button
+        type="button" 
+        mat-flat-button 
+        color="primary" 
+        (click)="onArchive()" 
+        data-hook="workpackage-detail-archive"
+      >
+        {{ archived ? 'Unarchive' : 'Archive' }}
+      </button>
+      <button
         type="button"
         mat-flat-button
         color="warn"
-        *ngIf="statusDraft || workPackageStatus === 'superseded'"
+        *ngIf="['superseded', 'draft'].includes(workPackageStatus)"
         (click)="onDelete()"
         data-hook="workpackage-detail-delete"
       >

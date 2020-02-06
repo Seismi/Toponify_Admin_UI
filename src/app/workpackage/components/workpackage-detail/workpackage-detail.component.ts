@@ -34,6 +34,7 @@ export class WorkPackageDetailComponent {
   @Input() workpackageActionSupersede: boolean;
   @Input() workpackageColour: string;
   @Input() workPackageStatus: string;
+  @Input() archived: boolean;
 
   @Output()
   deleteWorkpackage = new EventEmitter<void>();
@@ -76,6 +77,9 @@ export class WorkPackageDetailComponent {
 
   @Output()
   openWorkPackage = new EventEmitter<void>();
+
+  @Output()
+  archiveWorkPackage = new EventEmitter<void>();
 
   onSave(): void {
     this.saveWorkpackage.emit();
@@ -131,6 +135,10 @@ export class WorkPackageDetailComponent {
 
   onOpen(): void {
     this.openWorkPackage.emit();
+  }
+
+  onArchive(): void {
+    this.archiveWorkPackage.emit();
   }
 
   getWorkPackageStatus(): boolean {
