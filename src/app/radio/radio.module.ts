@@ -31,7 +31,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { RadioEffects } from './store/effects/radio.effects';
 import { reducer } from './store/reducers/radio.reducer';
 import { RadioDetailsComponent } from './containers/radio-details/radio-details.component';
-import { RadioPropertiesTabComponent } from './components/properties-tab/properties-tab.component';
 import { SettingsModule } from '@app/settings/settings.module';
 import { RadioHeaderComponent } from './components/radio-header/radio-header.component';
 import { RadioRightSideComponent } from './components/right-side/right-side.component';
@@ -73,7 +72,6 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
   exports: [
     RadioTableComponent,
     RadioDetailsComponent,
-    RadioPropertiesTabComponent,
     ReplyTextComponent,
     ChatBoxComponent,
     RadioDetailComponent
@@ -88,7 +86,6 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
     ReplyTextComponent,
     ChatBoxComponent,
     RadioDetailsComponent,
-    RadioPropertiesTabComponent,
     RadioHeaderComponent,
     RadioRightSideComponent,
     FilterModalComponent,

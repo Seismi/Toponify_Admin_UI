@@ -13,7 +13,10 @@ import {
   MatTableModule,
   MatTabsModule,
   MatSelectModule,
-  MatDialogModule, MatAutocompleteModule, MatCheckboxModule
+  MatDialogModule,
+  MatAutocompleteModule,
+  MatCheckboxModule,
+  MatTooltipModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -31,13 +34,13 @@ import { ReportOwnersTableComponent } from './components/owners-table/owners-tab
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
 import { RadioTableInReportsPageComponent } from './components/radio-table/radio-table.component';
-import { PropertiesTableInReportsPageComponent } from './components/properties-table/properties-table.component';
 import { WorkPackageTableInReportsPageComponent } from './components/workpackage-table/workpackage-table.component';
 import { ReportModalComponent } from './containers/report-modal/report-modal.component';
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
 import { TableHeaderComponent } from '@app/report-library/components/table-header/table-header.component';
 import { ReportRightSideComponent } from './components/right-side/right-side.component';
 import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
+import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
 
 @NgModule({
   imports: [
@@ -59,6 +62,7 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     MatDialogModule,
     MatAutocompleteModule,
     MatCheckboxModule,
+    MatTooltipModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
@@ -74,15 +78,20 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     ReportDimensionsTableComponent,
     ReportReportingConceptsTableComponent,
     RadioTableInReportsPageComponent,
-    PropertiesTableInReportsPageComponent,
     WorkPackageTableInReportsPageComponent,
     ReportModalComponent,
     ReportDeleteModalComponent,
     TableHeaderComponent,
     ReportRightSideComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    ReportingConceptFilterModalComponent
   ],
-  entryComponents: [ReportModalComponent, ReportDeleteModalComponent, SelectModalComponent],
+  entryComponents: [
+    ReportModalComponent,
+    ReportDeleteModalComponent,
+    SelectModalComponent,
+    ReportingConceptFilterModalComponent
+  ],
   providers: [ReportService]
 })
-export class ReportLibraryModule {}
+export class ReportLibraryModule { }

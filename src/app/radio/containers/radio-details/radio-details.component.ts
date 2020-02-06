@@ -23,17 +23,15 @@ import { User } from '@app/settings/store/models/user.model';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/delete-property-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 import { map } from 'rxjs/operators';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
+import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 
 @Component({
   selector: 'app-radio-details',
@@ -56,8 +54,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
     private dialog: MatDialog,
-    private workpackageStore: Store<WorkPackageState>,
-    private nodeStore: Store<NodeState>
+    private workpackageStore: Store<WorkPackageState>
   ) {}
 
   ngOnInit() {
@@ -157,28 +154,14 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     this.radioDetailsForm.patchValue({ replyText: '' });
   }
 
-  onEditProperty(property: CustomPropertiesEntity): void {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: property,
-        name: property.name
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        this.store.dispatch(
-          new UpdateRadioProperty({
-            radioId: this.radioId,
-            customPropertyId: property.propertyId,
-            data: { data: { value: data.customProperties.value } }
-          })
-        );
-      }
-    });
+  onSaveProperty(data: { propertyId: string, value: string }): void {
+    this.store.dispatch(
+      new UpdateRadioProperty({
+        radioId: this.radioId,
+        customPropertyId: data.propertyId,
+        data: { data: data.value }
+      })
+    );
   }
 
   onDeleteProperty(property: CustomPropertiesEntity): void {
@@ -223,6 +206,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
   onAddRelatesTo() {
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
+    this.store.dispatch(new LoadNodes());
     const dialogRef = this.dialog.open(AssociateModalComponent, {
       disableClose: true,
       width: 'auto',
@@ -231,8 +215,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
         workpackages$: this.workpackageStore.pipe(
           select(getWorkPackageEntities),
           map(data => data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded'))
-        ),
-        nodes$: this.nodeStore.pipe(select(getNodeEntities))
+        )
       }
     });
     dialogRef.afterClosed().subscribe((result: { workpackageId: string; nodeId: string }) => {

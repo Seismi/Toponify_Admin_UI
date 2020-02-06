@@ -123,7 +123,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   }
 
   onSelectReport(row: ReportLibrary) {
-    this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
+    this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' } );
   }
 
   openLeftTab(index: number) {

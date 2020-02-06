@@ -48,6 +48,12 @@ export enum NodeActionTypes {
   LoadNodeReports = '[Node] Load Node Reports',
   LoadNodeReportsSuccess = '[Node] Load Node Reports Success',
   LoadNodeReportsFailure = '[Node] Load Node Reports Fail',
+  RemoveParentDescendantIds = '[Node] Remove Parent Descendant Ids',
+  GetParentDescendantIds = '[Node] Get Parent Descendant Ids',
+  GetParentDescendantIdsSucces = '[Node] Get Parent Descendant Ids Success',
+  GetParentDescendantIdsFailure = '[Node] Get Parent Descendant Ids Failure',
+  SetParentDescendantIds = '[Node] Set Parent Descendant Ids',
+  LoadNodeReportsFailure = '[Node] Load Node Reports Fail',
   LoadAvailableTags = '[Node] Load Available Tags',
   LoadAvailableTagsSuccess = '[Node] Load Available Tags Success',
   LoadAvailableTagsFailure = '[Node] Load Available Tags Fail',
@@ -237,6 +243,30 @@ export class LoadNodeReportsFailure implements Action {
   constructor(public payload: Error) {}
 }
 
+export class RemoveParentDescendantIds implements Action {
+  readonly type = NodeActionTypes.RemoveParentDescendantIds;
+}
+
+export class GetParentDescendantIds implements Action {
+  readonly type = NodeActionTypes.GetParentDescendantIds;
+  constructor(public payload: {id: string, workpackages: string[]}) {}
+}
+
+export class GetParentDescendantIdsSuccess implements Action {
+  readonly type = NodeActionTypes.GetParentDescendantIdsSucces;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class GetParentDescendantIdsFailure implements Action {
+  readonly type = NodeActionTypes.GetParentDescendantIdsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class SetParentDescendantIds implements Action {
+  readonly type = NodeActionTypes.SetParentDescendantIds;
+  constructor(public payload: string[]) {}
+}
+
 export class LoadAvailableTags implements Action {
   readonly type = NodeActionTypes.LoadAvailableTags;
   constructor(public payload: { nodeId: string; workpackageId: string; type: 'link' | 'node' }) {}
@@ -335,6 +365,11 @@ export type NodeActionsUnion =
   | LoadNodeReports
   | LoadNodeReportsSuccess
   | LoadNodeReportsFailure
+  | RemoveParentDescendantIds
+  | GetParentDescendantIds
+  | GetParentDescendantIdsSuccess
+  | GetParentDescendantIdsFailure
+  | SetParentDescendantIds
   | LoadAvailableTags
   | LoadAvailableTagsSuccess
   | LoadAvailableTagsFailure

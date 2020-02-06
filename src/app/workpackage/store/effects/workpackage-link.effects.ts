@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { WorkPackageLinksService } from '@app/workpackage/services/workpackage-links.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
 import { NodeLink, NodeLinkDetailApiResponse } from '@app/architecture/store/models/node-link.model';
 import {
   AddWorkPackageLink,
@@ -31,6 +31,9 @@ import {
   AddWorkPackageLinkAttribute,
   AddWorkPackageLinkAttributeSuccess,
   AddWorkPackageLinkAttributeFailure,
+  AddWorkPackageLinkRadio,
+  AddWorkPackageLinkRadioSuccess,
+  AddWorkPackageLinkRadioFailure,
   UpdateWorkPackageLinkProperty,
   UpdateWorkPackageLinkPropertySuccess,
   UpdateWorkPackageLinkPropertyFailure,
@@ -38,7 +41,6 @@ import {
   DeleteWorkPackageLinkPropertySuccess,
   DeleteWorkPackageLinkPropertyFailure
 } from '../actions/workpackage-link.actions';
-import { WorkpackageLinkCustomProperty } from '../models/workpackage.models';
 
 @Injectable()
 export class WorkPackageLinkEffects {
@@ -146,10 +148,22 @@ export class WorkPackageLinkEffects {
   );
 
   @Effect()
+  addWorkPackageLinkRadio$ = this.actions$.pipe(
+    ofType<AddWorkPackageLinkRadio>(WorkPackageLinkActionTypes.AddWorkPackageLinkRadio),
+    map(action => action.payload),
+    concatMap((payload: { workPackageId: string; nodeLinkId: string, radioId: string }) => {
+      return this.workpackageLinkService.addLinkRadio(payload.workPackageId, payload.nodeLinkId, payload.radioId).pipe(
+        concatMap((response: NodeLinkDetailApiResponse) => [new AddWorkPackageLinkRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkRadioFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
   updateLinkProperty$ = this.actions$.pipe(
     ofType<UpdateWorkPackageLinkProperty>(WorkPackageLinkActionTypes.UpdateWorkPackageLinkProperty),
     map(action => action.payload),
-    mergeMap((payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: WorkpackageLinkCustomProperty }) => {
+    mergeMap((payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: string }) => {
       return this.workpackageLinkService.updateLinkProperty(payload.workPackageId, payload.nodeLinkId, payload.customPropertyId, payload.data).pipe(
         switchMap((response: NodeLinkDetailApiResponse) => [new UpdateWorkPackageLinkPropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageLinkPropertyFailure(error)))

@@ -5,7 +5,6 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  TemplateRef,
   ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -13,6 +12,7 @@ import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
+  GetParentDescendantIds,
   AssociateTag,
   CreateTag,
   DissociateTag,
@@ -25,6 +25,8 @@ import {
   LoadNodes,
   LoadNodeUsageView,
   NodeActionTypes,
+  RemoveParentDescendantIds,
+  SetParentDescendantIds,
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations
@@ -47,6 +49,7 @@ import {
   getNodeEntities,
   getNodeLinks,
   getNodeReports,
+  getParentDescendantIds,
   getSelectedNode,
   getSelectedNodeLink
 } from '@app/architecture/store/selectors/node.selector';
@@ -62,7 +65,7 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios, RadioActionTypes, LoadRadioSuccess, LoadRadiosSuccess } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
@@ -75,10 +78,11 @@ import {
   AddWorkPackageLinkOwner,
   DeleteWorkpackageLinkOwner,
   DeleteWorkpackageLinkSuccess,
+  DeleteWorkPackageLinkAttribute,
   AddWorkPackageLinkAttribute,
+  AddWorkPackageLinkRadio,
   UpdateWorkPackageLinkProperty,
   DeleteWorkPackageLinkProperty,
-  DeleteWorkPackageLinkAttribute
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -94,19 +98,21 @@ import {
   DeleteWorkPackageNodeProperty,
   UpdateWorkPackageNodeProperty,
   DeleteWorkPackageNodeAttribute,
-  AddWorkPackageNodeAttribute
+  AddWorkPackageNodeAttribute,
+  AddWorkPackageNode
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
   WorkPackageEntity,
-  WorkPackageNodeScopes
+  WorkPackageNodeScopes,
+  CustomPropertiesEntity
 } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
@@ -165,6 +171,8 @@ import { State as AttributeState } from '@app/attributes/store/reducers/attribut
 import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
+import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
+import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -182,6 +190,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private showHideGridRef;
   private showDetailTabRef;
   private showHideRadioAlertRef;
+  private addSystemToGroupRef;
+  private addNewSubItemRef;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -251,12 +261,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedId: string;
   public layoutSettingsTab: boolean;
   public scope: ScopeDetails;
-  private currentFilterLevel: string;
+  private currentFilterLevel: Level;
   private filterLevelSubscription: Subscription;
   private addDataSetSubscription: Subscription;
   public params: Params;
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
+  public parentDescendantIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
 
   @ViewChild(ArchitectureDiagramComponent)
@@ -290,6 +301,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.parentDescendantIds = this.store.pipe(select(getParentDescendantIds));
     this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
     this.subscriptions.push(
       this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
@@ -391,6 +403,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.setNodesLinks(filterLevel, id, workpackagesArray, scope);
         }
         this.parentName = parentName ? parentName : null;
+        if (id) {
+          const parentNode: Node = this.nodes.find(node => node.id === id);
+          if (!parentNode) {
+            this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray || [] }));
+          } else {
+            this.store.dispatch(new SetParentDescendantIds(parentNode.descendants.map(n => n.id)));
+          }
+        } else {
+          this.store.dispatch(new RemoveParentDescendantIds());
+        }
       }
     });
 
@@ -452,6 +474,37 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
+      function() {
+        const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+          disableClose: false,
+          width: '450px',
+          data: {
+            group: this.nodeId,
+            addSystem: true
+          }
+        });
+
+        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
+          if (data && data.data) {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNode({
+                workpackageId: this.workpackageId,
+                node: data.data,
+                scope: this.scope.id
+              })
+            );
+          }
+        });
+      }.bind(this)
+    );
+
+    this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
+      function() {
+        this.onAddDescendant({ addToGroup: true });
+      }.bind(this)
+    );
+
     this.zoomRef = this.gojsCustomObjectsService.zoom$.subscribe(
       function(zoomType: 'In' | 'Out') {
         if (zoomType === 'In') {
@@ -505,9 +558,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(_ => {
-        this.setWorkPackage([this.getWorkPackageId()]);
-        this.eventEmitter.next(Events.NodesLinksReload);
+      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
+        if (this.selectedWorkPackageEntities.length >= 1 && this.part) {
+          this.getRadioConfirmModal(action.payload.id);
+        }
+        this.radioStore.dispatch(new LoadRadios({}));
       })
     );
 
@@ -616,7 +671,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.layoutSettingsService.layoutSettingsForm;
   }
 
-  setNodesLinks(layer: string, id?: string, workpackageIds: string[] = [], scope?: string) {
+  setNodesLinks(layer: Level, id?: string, workpackageIds: string[] = [], scope?: string) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
@@ -635,6 +690,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
     } else {
+      queryParams.layerQuery = layer;
       this.nodeStore.dispatch(new LoadNodes(queryParams));
       this.nodeStore.dispatch(new LoadNodeLinks(queryParams));
     }
@@ -1097,7 +1153,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.realignTabUnderline();
   }
 
-  onAddRelatedRadio() {
+  onAddRelatedRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '650px',
@@ -1106,32 +1162,60 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.radioStore.dispatch(
-          new AddRadioEntity({
-            data: {
-              title: data.radio.title,
-              description: data.radio.description,
-              status: data.radio.status,
-              category: data.radio.category,
-              author: data.radio.author,
-              assignedTo: data.radio.assignedTo,
-              actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation,
-              relatesTo: [
-                {
-                  workPackage: { id: this.workpackageId },
-                  item: {
-                    id: this.nodeId,
-                    itemType: this.currentFilterLevel.toLowerCase()
-                  }
-                }
-              ]
-            }
-          })
-        );
+        const relatesTo = [{
+          workPackage: {
+            id: '00000000-0000-0000-0000-000000000000'
+          },
+          item: {
+            id: this.nodeId,
+            itemType: this.currentFilterLevel.toLowerCase()
+          }
+        }];
+
+        this.radioStore.dispatch(new AddRadioEntity({
+          data: {
+            ...data.radio,
+            relatesTo: (this.selectedWorkPackageEntities.length === 0) ? relatesTo : []
+          }
+        }));
+
         if (data.radio.status === 'open') {
           this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
+      }
+    });
+  }
+
+  getRadioConfirmModal(radioId: string): void {
+    const dialogRef = this.dialog.open(RadioConfirmModalComponent, {
+      disableClose: true,
+      width: '500px',
+      data: {
+        selectedWorkPackages: this.selectedWorkPackageEntities
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        data.workpackages.forEach(workpackage => {
+          if (!this.clickedOnLink) {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNodeRadio({
+                workPackageId: workpackage.id,
+                nodeId: this.nodeId,
+                radioId: radioId
+              })
+            );
+          } else {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageLinkRadio({
+                workPackageId: workpackage.id,
+                nodeLinkId: this.nodeId,
+                radioId: radioId
+              })
+            )
+          }
+        });
       }
     });
   }
@@ -1145,17 +1229,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeRadio({
-            workPackageId: this.getWorkPackageId(),
-            nodeId: this.nodeId,
-            radioId: data.radio.id
-          })
-        );
+        this.getRadioConfirmModal(data.radio.id);
       }
     });
 
-    // Create new radio
     dialogRef.componentInstance.addNewRadio.subscribe(() => {
       this.onAddRelatedRadio();
     });
@@ -1379,7 +1456,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant() {
+  onAddDescendant(addToGroup?: boolean) {
     const dialogRef = this.dialog.open(DescendantsModalComponent, {
       disableClose: false,
       width: '500px',
@@ -1388,6 +1465,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         nodeId: this.nodeId,
         scopeId: this.scope.id,
         title: this.selectedNode.name,
+        addToGroup: (addToGroup) ? false : true,
         childrenOf: {
           id: null // Add node from the same level *not required*
         }
@@ -1430,48 +1508,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onEditProperties(customProperty: CustomPropertyValuesEntity): void {
-    const dialogRef = this.dialog.open(DocumentModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        mode: 'edit',
-        customProperties: customProperty
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.customProperties) {
-        if (!this.clickedOnLink) {
-          this.workpackageStore.dispatch(
-            new UpdateWorkPackageNodeProperty({
-              workPackageId: this.getWorkPackageId(),
-              nodeId: this.nodeId,
-              customPropertyId: customProperty.propertyId,
-              data: { value: data.customProperties.value }
-            })
-          );
-        } else {
-          this.workpackageStore.dispatch(
-            new UpdateWorkPackageLinkProperty({
-              workPackageId: this.getWorkPackageId(),
-              nodeLinkId: this.nodeId,
-              customPropertyId: customProperty.propertyId,
-              data: { value: data.customProperties.value }
-            })
-          );
-        }
-      }
-    });
+  onSaveProperties(data: { propertyId: string, value: string }): void {
+    if (!this.clickedOnLink) {
+      this.workpackageStore.dispatch(new UpdateWorkPackageNodeProperty({
+        workPackageId: this.getWorkPackageId(),
+        nodeId: this.nodeId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      }));
+    } else {
+      this.workpackageStore.dispatch(new UpdateWorkPackageLinkProperty({
+        workPackageId: this.getWorkPackageId(),
+        nodeLinkId: this.nodeId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      }));
+    }
   }
 
-  onDeleteProperties(customProperty: CustomPropertyValuesEntity): void {
+  onDeleteProperties(property: CustomPropertiesEntity): void {
     const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
         mode: 'delete',
-        name: customProperty.name
+        name: property.name
       }
     });
 
@@ -1482,7 +1543,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new DeleteWorkPackageNodeProperty({
               workPackageId: this.getWorkPackageId(),
               nodeId: this.nodeId,
-              customPropertyId: customProperty.propertyId
+              customPropertyId: property.propertyId
             })
           );
         } else {
@@ -1490,7 +1551,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new DeleteWorkPackageLinkProperty({
               workPackageId: this.getWorkPackageId(),
               nodeLinkId: this.nodeId,
-              customPropertyId: customProperty.propertyId
+              customPropertyId: property.propertyId
             })
           );
         }

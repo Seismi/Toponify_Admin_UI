@@ -176,6 +176,20 @@ export class NodeEffects {
   );
 
   @Effect()
+  getParentDescendantIds$ = this.actions$.pipe(
+    ofType<NodeActions.GetParentDescendantIds>(NodeActionTypes.GetParentDescendantIds),
+    map(action => action.payload),
+    switchMap(({id, workpackages}) => {
+      return this.nodeService.getNode(id, {workPackageQuery: workpackages}).pipe(
+        switchMap((response: NodeDetailApiResponse) => [new NodeActions.GetParentDescendantIdsSuccess(response.data)]),
+        catchError((error: Error) => {
+          return of(new NodeActions.GetParentDescendantIdsFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
   LoadAvailableTags$ = this.actions$.pipe(
     ofType<NodeActions.LoadAvailableTags>(NodeActionTypes.LoadAvailableTags),
     map(action => action.payload),

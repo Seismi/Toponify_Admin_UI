@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity } from '@app/report-library/store/models/report.model';
+import { Dimension } from '@app/report-library/store/models/report.model';
 
 @Component({
   selector: 'smi-report-dimensions-table',
@@ -9,17 +9,24 @@ import { DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity } from '@app/
 })
 export class ReportDimensionsTableComponent {
   @Input()
-  set data(data: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[]) {
+  set data(data: Dimension[]) {
     if (!data) {
       data = [];
     }
-    this.dataSource = new MatTableDataSource<DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity>(data);
+    this.dataSource = new MatTableDataSource<Dimension>(data);
   }
 
-  public dataSource: MatTableDataSource<DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity>;
+  @Input() edit: boolean;
+  @Output() dimensionEdit = new EventEmitter<Dimension>();
+
+  public dataSource: MatTableDataSource<Dimension>;
   public displayedColumns: string[] = ['name', 'filter', 'reportingConcepts'];
 
   getConcepts(data) {
     return data.reportingConcepts.map(concept => concept.name).join(', ');
+  }
+
+  onDimensionEdit(dimension: Dimension) {
+    this.dimensionEdit.emit(dimension);
   }
 }

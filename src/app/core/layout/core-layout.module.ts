@@ -10,7 +10,10 @@ import {
   MatSelectModule,
   MatSliderModule,
   MatToolbarModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatDatepickerModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -38,6 +41,8 @@ import { LogoComponent } from '@app/core/layout/header/logo/logo.component';
 import { DraggerComponent } from '@app/core/layout/model-sidebar/dragger/dragger.component';
 import { RouterModule } from '@angular/router';
 import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-name.component';
+import { EditDocumentationStandardsTableComponent } from './components/edit-documentation-standards/edit-documentation-standards.component';
+import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
 
 @NgModule({
   imports: [
@@ -56,7 +61,10 @@ import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-
     FormsModule,
     ReactiveFormsModule,
     MdePopoverModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDatepickerModule
   ],
   exports: [
     MainLayoutComponent,
@@ -77,7 +85,9 @@ import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-
     RightSideBarComponent,
     LeftSideBarComponent,
     NodeNameComponent,
-    WorkPackageNameComponent
+    WorkPackageNameComponent,
+    EditDocumentationStandardsTableComponent,
+    EditDocumentationStandardsFormComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -101,7 +111,9 @@ import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-
     LeftSideBarComponent,
     RightSideBarComponent,
     NodeNameComponent,
-    WorkPackageNameComponent
+    WorkPackageNameComponent,
+    EditDocumentationStandardsTableComponent,
+    EditDocumentationStandardsFormComponent
   ]
 })
 export class CoreLayoutModule {}

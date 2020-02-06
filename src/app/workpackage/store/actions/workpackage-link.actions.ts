@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
-import { WorkpackageLinkCustomProperty } from '../models/workpackage.models';
 
 export enum WorkPackageLinkActionTypes {
   AddWorkPackageLink = '[WorkPackage] Add link',
@@ -33,7 +32,10 @@ export enum WorkPackageLinkActionTypes {
   DeleteWorkPackageLinkPropertyFailure = '[WorkPackage] Delete Link Property Failure',
   DeleteWorkPackageLinkAttribute = '[WorkPackage] Delete Link Attribute',
   DeleteWorkPackageLinkAttributeSuccess = '[WorkPackage] Delete Link Attribute Success',
-  DeleteWorkPackageLinkAttributeFailure = '[WorkPackage] Delete Link Attribute Failure'
+  DeleteWorkPackageLinkAttributeFailure = '[WorkPackage] Delete Link Attribute Failure',
+  AddWorkPackageLinkRadio = '[WorkPackage] Add Link Radio',
+  AddWorkPackageLinkRadioSuccess = '[WorkPackage] Add Link Radio Success',
+  AddWorkPackageLinkRadioFailure = '[WorkPackage] Add Link Radio Failure'
 }
 
 export class AddWorkPackageLink implements Action {
@@ -143,7 +145,7 @@ export class AddWorkPackageLinkAttributeFailure implements Action {
 
 export class UpdateWorkPackageLinkProperty implements Action {
   readonly type = WorkPackageLinkActionTypes.UpdateWorkPackageLinkProperty;
-  constructor(public payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: WorkpackageLinkCustomProperty}) {}
+  constructor(public payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: string }) {}
 }
 
 export class UpdateWorkPackageLinkPropertySuccess implements Action {
@@ -186,6 +188,21 @@ export class DeleteWorkPackageLinkAttributeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) { }
 }
 
+export class AddWorkPackageLinkRadio implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkRadio;
+  constructor(public payload: { workPackageId: string; nodeLinkId: string, radioId: string }) {}
+}
+
+export class AddWorkPackageLinkRadioSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkRadioSuccess;
+  constructor(public payload: NodeLinkDetail) {}
+}
+
+export class AddWorkPackageLinkRadioFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageLinkActionsUnion =
   | AddWorkPackageLink
   | AddWorkPackageLinkSuccess
@@ -216,4 +233,7 @@ export type WorkPackageLinkActionsUnion =
   | DeleteWorkPackageLinkPropertyFailure
   | DeleteWorkPackageLinkAttribute
   | DeleteWorkPackageLinkAttributeSuccess
-  | DeleteWorkPackageLinkAttributeFailure;
+  | DeleteWorkPackageLinkAttributeFailure
+  | AddWorkPackageLinkRadio
+  | AddWorkPackageLinkRadioSuccess
+  | AddWorkPackageLinkRadioFailure;

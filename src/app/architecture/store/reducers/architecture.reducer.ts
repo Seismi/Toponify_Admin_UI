@@ -38,6 +38,7 @@ export interface State {
   availableScopes: WorkPackageNodeScopes[];
   error: Error;
   selectedWorkpackages: string[];
+  parentNodeDescendantIds: string[];
   availableTags: {
     tags: Tag[];
     id: string;
@@ -57,6 +58,7 @@ export const initialState: State = {
   availableScopes: [],
   error: null,
   selectedWorkpackages: [],
+  parentNodeDescendantIds: [],
   availableTags: {
     tags: [],
     id: null
@@ -264,6 +266,8 @@ export function reducer(
       };
     }
 
+
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioSuccess:
     case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeSuccess:
     case WorkPackageLinkActionTypes.AddWorkPackageLinkAttributeSuccess: {
       return {
@@ -272,6 +276,8 @@ export function reducer(
       };
     }
 
+
+    case WorkPackageLinkActionTypes.AddWorkPackageLinkRadioFailure:
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeAttributeFailure:
     case WorkPackageNodeActionTypes.AddWorkPackageNodeAttributeFailure:
     case WorkPackageLinkActionTypes.DeleteWorkPackageLinkAttributeFailure:
@@ -539,6 +545,34 @@ export function reducer(
         ...state,
         error: <Error>action.payload
       };
+    }
+
+    case NodeActionTypes.RemoveParentDescendantIds: {
+      return {
+        ...state,
+        parentNodeDescendantIds: []
+      };
+    }
+
+    case NodeActionTypes.SetParentDescendantIds: {
+      return {
+        ...state,
+        parentNodeDescendantIds: action.payload
+      };
+    }
+
+    case NodeActionTypes.GetParentDescendantIdsSucces: {
+      if (action.payload && action.payload.descendants) {
+        return {
+          ...state,
+          parentNodeDescendantIds: action.payload.descendants.map(n => n.id)
+        };
+      } else {
+        return {
+          ...state,
+          parentNodeDescendantIds: []
+        };
+      }
     }
 
     case NodeActionTypes.LoadAvailableTagsSuccess: {

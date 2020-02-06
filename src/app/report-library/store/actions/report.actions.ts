@@ -45,6 +45,26 @@ export enum ReportActionTypes {
   RemoveDataSetsFromReport = '[Report] Remove Data Set from Report',
   RemoveDataSetsFromReportSuccess = '[Report] Remove Data Sets From Report Success',
   RemoveDataSetsFromReportFail = '[Report] Remove Data Sets From Report Fail',
+
+  SetDimensionFilter = '[Report] Set Dimension Filter',
+  SetDimensionFilterSuccess = '[Report] Set Dimension Filter Success',
+  SetDimensionFilterFail = '[Report] Set Dimension Filter Fail',
+
+  DeleteReportingConcept = '[Report] Delete Reporting Concept',
+  DeleteReportingConceptSuccess = '[Report] Delete Reporting Concept Success',
+  DeleteReportingConceptFail = '[Report] Delete Reporting Concept Fail',
+
+  AddReportingConcepts = '[Report] Add Reporting Concepts',
+  AddReportingConceptsSuccess = '[Report] Add Reporting Concepts Success',
+  AddReportingConceptsFail = '[Report]  Add Reporting Concepts Fail',
+
+  UpdateReportProperty = '[Report] Update Report Property',
+  UpdateReportPropertySuccess = '[Report] Update Report Property Success',
+  UpdateReportPropertyFailure = '[Report] Update Report Property Failure',
+
+  DeleteReportProperty = '[Report] Delete Report Property',
+  DeleteReportPropertySuccess = '[Report] Delete Report Property Success',
+  DeleteReportPropertyFailure = '[Report] Delete Report Property Failure'
 }
 
 export class LoadReports implements Action {
@@ -169,7 +189,7 @@ export class AddDataSetsToReportFail implements Action {
 
 export class RemoveDataSetsFromReport implements Action {
   readonly type = ReportActionTypes.RemoveDataSetsFromReport;
-  constructor(public payload: { workPackageId: string; reportId: string; dataSetId: string}) {}
+  constructor(public payload: { workPackageId: string; reportId: string; dataSetId: string }) {}
 }
 
 export class RemoveDataSetsFromReportSuccess implements Action {
@@ -179,6 +199,83 @@ export class RemoveDataSetsFromReportSuccess implements Action {
 
 export class RemoveDataSetsFromReportFail implements Action {
   readonly type = ReportActionTypes.RemoveDataSetsFromReportFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class SetDimensionFilter implements Action {
+  readonly type = ReportActionTypes.SetDimensionFilter;
+  constructor(public payload: { workPackageId: string; reportId: string; dimensionId: string; filter: string }) {}
+}
+
+export class SetDimensionFilterSuccess implements Action {
+  readonly type = ReportActionTypes.SetDimensionFilterSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class SetDimensionFilterFail implements Action {
+  readonly type = ReportActionTypes.SetDimensionFilterFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteReportingConcept implements Action {
+  readonly type = ReportActionTypes.DeleteReportingConcept;
+  constructor(public payload: { workPackageId: string; reportId: string; dimensionId: string; conceptId: string }) {}
+}
+
+export class DeleteReportingConceptSuccess implements Action {
+  readonly type = ReportActionTypes.DeleteReportingConceptSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class DeleteReportingConceptFail implements Action {
+  readonly type = ReportActionTypes.DeleteReportingConceptFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddReportingConcepts implements Action {
+  readonly type = ReportActionTypes.AddReportingConcepts;
+  constructor(
+    public payload: { workPackageId: string; reportId: string; dimensionId: string; concepts: { id: string }[] }
+  ) {}
+}
+
+export class AddReportingConceptsSuccess implements Action {
+  readonly type = ReportActionTypes.AddReportingConceptsSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class AddReportingConceptsFail implements Action {
+  readonly type = ReportActionTypes.AddReportingConceptsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class UpdateReportProperty implements Action {
+  readonly type = ReportActionTypes.UpdateReportProperty;
+  constructor(public payload: { workPackageId: string; reportId: string; customPropertyId: string, data: string }) {}
+}
+
+export class UpdateReportPropertySuccess implements Action {
+  readonly type = ReportActionTypes.UpdateReportPropertySuccess;
+  constructor(public payload: Report) {}
+}
+
+export class UpdateReportPropertyFailure implements Action {
+  readonly type = ReportActionTypes.UpdateReportPropertyFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteReportProperty implements Action {
+  readonly type = ReportActionTypes.DeleteReportProperty;
+  constructor(public payload: { workPackageId: string; reportId: string; customPropertyId: string }) {}
+}
+
+export class DeleteReportPropertySuccess implements Action {
+  readonly type = ReportActionTypes.DeleteReportPropertySuccess;
+  constructor(public payload: Report) {}
+}
+
+export class DeleteReportPropertyFailure implements Action {
+  readonly type = ReportActionTypes.DeleteReportPropertyFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -209,4 +306,19 @@ export type ReportActionsUnion =
   | AddDataSetsToReportFail
   | RemoveDataSetsFromReport
   | RemoveDataSetsFromReportSuccess
-  | RemoveDataSetsFromReportFail;
+  | RemoveDataSetsFromReportFail
+  | SetDimensionFilter
+  | SetDimensionFilterSuccess
+  | SetDimensionFilterFail
+  | DeleteReportingConcept
+  | DeleteReportingConceptSuccess
+  | DeleteReportingConceptFail
+  | AddReportingConcepts
+  | AddReportingConceptsSuccess
+  | AddReportingConceptsFail
+  | UpdateReportProperty
+  | UpdateReportPropertySuccess
+  | UpdateReportPropertyFailure
+  | DeleteReportProperty
+  | DeleteReportPropertySuccess
+  | DeleteReportPropertyFailure;

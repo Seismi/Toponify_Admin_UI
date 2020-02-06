@@ -90,6 +90,13 @@ export const getNodeEntityById = createSelector(
   }
 );
 
+export const getParentDescendantIds = createSelector(
+  getNodeFeatureState,
+  (state: State) => {
+    return state.parentNodeDescendantIds;
+  }
+);
+
 export const getAvailableTags = createSelector(
   getNodeFeatureState,
   state => state.availableTags

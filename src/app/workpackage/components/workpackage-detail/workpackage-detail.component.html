@@ -107,6 +107,7 @@
         *ngIf="workpackageActionSubmit"
         (click)="submitWorkpackage()"
         data-hook="workpackage-detail-submit"
+        [disabled]="approversTableData.length === 0"
       >
         Submit
       </button>
@@ -177,3 +178,8 @@
     </div>
   </div>
 </form>
+
+
+<div *ngIf="approversTableData?.length === 0 && workpackageActionSubmit" class="alert alert-danger">
+  No approvers identified. None of the components you are adding or updating have owners. Please assign owners to be able to submit
+</div>

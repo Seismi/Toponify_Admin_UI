@@ -6,22 +6,28 @@ import { select, Store } from '@ngrx/store';
 import {
   AddDataSetsToReport,
   AddOwner,
+  AddReportingConcepts,
   DeleteOwner,
   DeleteReport,
-  LoadReport, RemoveDataSetsFromReport,
-  UpdateReport
+  DeleteReportingConcept,
+  LoadReport,
+  RemoveDataSetsFromReport,
+  SetDimensionFilter,
+  UpdateReport,
+  UpdateReportProperty,
+  DeleteReportProperty
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
 import { FormGroup } from '@angular/forms';
-import { Report } from '@app/report-library/store/models/report.model';
+import { Dimension, Report } from '@app/report-library/store/models/report.model';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
   getEditWorkpackage,
   getEditWorkpackages,
   getSelectedWorkpackages
 } from '@app/workpackage/store/selectors/workpackage.selector';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTabGroup } from '@angular/material';
 import { ReportDeleteModalComponent } from '../report-delete-modal/report-delete-modal.component';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
@@ -32,6 +38,9 @@ import { Level } from '@app/architecture/services/diagram-level.service';
 import { map, take } from 'rxjs/operators';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { ReportService } from '@app/report-library/services/report.service';
+import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
+import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
+import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -112,17 +121,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   get reportDetailForm(): FormGroup {
     return this.reportLibraryDetailService.reportDetailForm;
-  }
-
-  openRightTab(index: number) {
-    this.selectedRightTab = index;
-    if (this.selectedRightTab === index) {
-      this.showOrHideRightPane = false;
-    }
-  }
-
-  onHideRightPane() {
-    this.showOrHideRightPane = true;
   }
 
   onSaveReport() {
@@ -227,8 +225,40 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  onSaveProperties(data: { propertyId: string, value: string }): void {
+    this.store.dispatch(
+      new UpdateReportProperty({
+        workPackageId: this.workpackageId,
+        reportId: this.reportId,
+        customPropertyId: data.propertyId,
+        data: data.value
+      })
+    );
+  }
+
+  onDeleteProperties(property: CustomPropertiesEntity): void {
+    const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        mode: 'delete',
+        name: property.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.mode === 'delete') {
+        this.store.dispatch(new DeleteReportProperty({
+          workPackageId: this.workpackageId,
+          reportId: this.reportId,
+          customPropertyId: property.propertyId
+        }))
+      }
+    });
+  }
+
   onEditSourceSystem() {
-    this.nodeStore.dispatch(new LoadNodes());
+    this.getNodesWithWorkPackageQuery(this.workpackageId);
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -257,8 +287,14 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  getNodesWithWorkPackageQuery(workPackageId: string): void {
+    const queryParams = {
+      workPackageQuery: [workPackageId]
+    };
+    this.nodeStore.dispatch(new LoadNodes(queryParams));
+  }
+
   onAddDataSets(reportId: string) {
-    // this.reportService
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -294,5 +330,51 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         dataSetId: dataSetId
       })
     );
+  }
+
+  onDimensionEdit(dimension: Dimension, reportId: string) {
+    const dialogRef = this.dialog.open(ReportingConceptFilterModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      minWidth: '600px',
+      data: {
+        title: 'Select source data sets',
+        workpackageId: this.workpackageId,
+        dimension,
+        reportId
+      }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.filter) {
+        this.store.dispatch(
+          new SetDimensionFilter({
+            workPackageId: this.workpackageId,
+            reportId,
+            dimensionId: dimension.id,
+            filter: data.filter
+          })
+        );
+        if (data.filter === 'selected') {
+          data.unlinked.forEach(concept =>
+            this.store.dispatch(
+              new DeleteReportingConcept({
+                workPackageId: this.workpackageId,
+                reportId,
+                dimensionId: dimension.id,
+                conceptId: concept.id
+              })
+            )
+          );
+          this.store.dispatch(
+            new AddReportingConcepts({
+              workPackageId: this.workpackageId,
+              reportId,
+              dimensionId: dimension.id,
+              concepts: data.added.map(conept => ({ id: conept.id }))
+            })
+          );
+        }
+      }
+    });
   }
 }

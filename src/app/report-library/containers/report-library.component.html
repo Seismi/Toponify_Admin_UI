@@ -15,7 +15,7 @@
 
 <app-model-container [topPadding]="64">
   <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="hideTab" *ngIf="!showOrHidePane"></smi-left-sidebar>
-  <app-model-sidebar [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
+  <app-model-sidebar [isLast]="true" [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
     <p class="leftPane">
       <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
         <mat-tab label="Work Packages">
@@ -28,14 +28,13 @@
           </smi-workpackage-tab-table>
         </mat-tab>
       </mat-tab-group>
-      <button mat-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>
+      <button mat-icon-button class="hide-left-pane-button" (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
     </p>
   </app-model-sidebar>
 
   <div class="container">
     <div class="row">
-      <div class="col mat-elevation-z8">
-        <smi-table-header></smi-table-header>
+      <div class="col">
         <smi-report-library-table
           [reports]="reportEntities$ | async"
           (reportSelected)="onSelectReport($event)"
@@ -44,7 +43,7 @@
         >
         </smi-report-library-table>
       </div>
-      <div class="col right-side">
+      <div class="col">
         <smi-report-right-side></smi-report-right-side>
         <router-outlet></router-outlet>
       </div>

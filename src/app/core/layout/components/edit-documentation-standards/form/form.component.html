@@ -1,0 +1,22 @@
+<form [formGroup]="group">
+  <mat-form-field *ngIf="['Text', 'Number', 'Hyperlink'].includes(type)">
+    <input matInput formControlName="value" placeholder="Value">
+    <mat-error>Not valid! Please make sure that your value matches property type</mat-error>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="type === 'Date'">
+    <input matInput [matDatepicker]="picker" placeholder="Date" formControlName="value" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error>Not valid! Please make sure that your value matches property type</mat-error>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="type === 'Boolean'">
+    <mat-label>Value</mat-label>
+    <mat-select formControlName="value">
+      <mat-option *ngFor="let boolean of booleanTypes" [value]="boolean">
+        {{ boolean }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>

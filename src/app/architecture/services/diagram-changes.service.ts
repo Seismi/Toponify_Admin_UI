@@ -14,6 +14,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
+import {middleOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -184,13 +185,27 @@ export class DiagramChangesService {
     // Set to contain all parts to update
     const partsToUpdate = new go.Set();
 
-    // Moving a node will affect the positions of connected links.
-    //  Therefore, add any connected links to set of parts to update.
+    // Moving a node will affect the positions of grouped nodes
+    //  and any connected links. Therefore, add these to set of
+    //  parts to update.
     event.subject.each(function(part: go.Part) {
       partsToUpdate.add(part);
 
+      // If moved part is a node, include connected links
       if (part instanceof go.Node) {
         partsToUpdate.addAll(part.linksConnected);
+      }
+
+      // If moved part is a group, include grouped parts and any links connected to grouped nodes
+      if (part instanceof go.Group) {
+        const subParts = part.findSubGraphParts();
+        partsToUpdate.addAll(part.findSubGraphParts().iterator);
+
+        subParts.each(function(subPart: go.Part): void {
+          if (subPart instanceof go.Node) {
+            partsToUpdate.addAll((subPart as go.Node).linksConnected);
+          }
+        });
       }
     });
 
@@ -643,6 +658,82 @@ export class DiagramChangesService {
         },
         links: linkData
       }); */
+    }
+  }
+
+  // Ensure group members and any connected links are positioned correctly
+  //  when a system group is expanded
+  systemSubGraphExpandChanged(group: go.Group): void {
+
+    if (group.isSubGraphExpanded) {
+
+      // Run group layout to ensure member nodes are in the correct positions
+      group.layout.isValidLayout = false;
+      group.layout.invalidateLayout();
+
+      // Set of links that may need rerouting after subgraph expanded
+      const linksToReroute = new go.Set();
+
+      // Ensure visibility of group member area and group size are up to date
+      group.updateTargetBindings('middleExpanded');
+      group.ensureBounds();
+
+      const memberArea = group.findObject('Group member area');
+      const memberBounds = memberArea.getDocumentBounds().copy();
+
+      group.findSubGraphParts()
+        .each(
+          function (part: go.Part): void {
+            if (part instanceof go.Node) {
+
+              // Add links connected to member to set of links to be rerouted
+              linksToReroute.addAll(part.linksConnected);
+
+              // If member is located outside of the group and is not automatically laid out then reposition member
+              if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
+
+                const newLocation = new go.Point();
+
+                // Place member underneath all correctly positioned members,
+                //  centre aligned and separated by a small gap
+                newLocation.x = memberBounds.centerX;
+                newLocation.y = memberBounds.bottom + 12;
+
+                // Update the area required to contain the members
+                memberBounds.height = memberBounds.height + part.actualBounds.height + 12;
+                memberBounds.width = Math.max(memberBounds.width, part.actualBounds.width);
+
+                part.move(newLocation, true);
+              } else {
+                /*
+                  For nodes that are already located in the group, change member system location back and
+                  forth between the current location and another point.
+                  This is to force GoJS to update the position of the system, as this does not appear to be
+                  done correctly when the parent group is moved.
+                */
+                const location = part.location.copy();
+                part.move(location.copy().offset(1, 1));
+                part.move(location, true);
+              }
+              // Try to ensure that each part has correct bounds after being moved
+              part.ensureBounds();
+            }
+          }
+        );
+
+      // Set height and width of group member area to match the area previously
+      //  calculated as necessary to enclose the members.
+      group.findObject('Group member area').height = memberBounds.height;
+      group.findObject('Group member area').width = memberBounds.width;
+
+      // Reroute all necessary links
+      linksToReroute.each(function (link: go.Link): void {
+        link.data = Object.assign(link.data, {updateRoute: true});
+        setTimeout(function() {
+          link.invalidateRoute();
+          link.updateRoute();
+        }, 0);
+      });
     }
   }
 }

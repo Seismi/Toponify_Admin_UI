@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { WorkPackageNodeFindPotential, WorkPackageNodeScopes, WorkpackageNodeCustomProperty } from '../models/workpackage.models';
+import { WorkPackageNodeFindPotential, WorkPackageNodeScopes } from '../models/workpackage.models';
 import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
 import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
 
@@ -321,7 +321,7 @@ export class DeleteWorkPackageNodeAttributeFailure implements Action {
 
 export class UpdateWorkPackageNodeProperty implements Action {
   readonly type = WorkPackageNodeActionTypes.UpdateWorkPackageNodeProperty;
-  constructor(public payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: WorkpackageNodeCustomProperty }) {}
+  constructor(public payload: { workPackageId: string; nodeId: string; customPropertyId: string, data: string }) {}
 }
 
 export class UpdateWorkPackageNodePropertySuccess implements Action {

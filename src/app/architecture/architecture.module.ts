@@ -50,7 +50,6 @@ import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
 import { RadioTabComponent } from './components/radio-tab/radio-tab.component';
-import { PropertiesTabComponent } from './components/properties-tab/properties-tab.component';
 import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
@@ -82,6 +81,7 @@ import { AttributesListComponent } from './components/attributes-list/attributes
 import { DeleteAttributeModalComponent } from './containers/delete-attribute-modal/delete-attribute-modal.component';
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
+import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/radio-confirm-modal.component';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 
 
@@ -135,7 +135,6 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
     DeleteNodeModalComponent,
     WorkPackageTabComponent,
     RadioTabComponent,
-    PropertiesTabComponent,
     AttributesTabComponent,
     DeleteLinkModalComponent,
     WorkPackageTabTableComponent,
@@ -160,7 +159,8 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
     AddExistingAttributeModalComponent,
     AttributesListComponent,
     DeleteAttributeModalComponent,
-    DeleteDescendantsModalComponent
+    DeleteDescendantsModalComponent,
+    RadioConfirmModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -174,7 +174,8 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
     NodeScopeModalComponent,
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
-    DeleteDescendantsModalComponent
+    DeleteDescendantsModalComponent,
+    RadioConfirmModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

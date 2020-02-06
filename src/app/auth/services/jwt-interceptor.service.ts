@@ -14,7 +14,6 @@ export class JWTInterceptor implements HttpInterceptor {
     const helper = new JwtHelperService();
     const token = localStorage.getItem('access_token');
     const isExpired = helper.isTokenExpired(token);
-    console.log(isExpired);
 
     if (isExpired) {
       if (request.url.includes('users/login')) {

@@ -38,6 +38,88 @@ export class CustomLinkShift extends LinkShiftingTool {
   }
 }
 
+// Custom resizing tool to resize system groups
+export class CustomNodeResize extends go.ResizingTool {
+  constructor() {
+    super();
+  }
+
+  // Constrain minimum size to encompass all system group members
+  public computeMinSize(): go.Size {
+
+    // Default minimum size irrespective of group members
+    const minSize = go.ResizingTool.prototype.computeMinSize.call(this);
+    const group = this.adornedObject.part as go.Group;
+
+    // Determine which way/ways the group is being enlarged
+    //  based on alignment of the resizing handle being dragged
+    const draggedSides = {
+      top: this.handle.alignment.y === 0,
+      right: this.handle.alignment.x === 1,
+      bottom: this.handle.alignment.y === 1,
+      left: this.handle.alignment.x === 0
+    };
+
+    // Get bounds of current group member area
+    const memberArea = this.adornedObject.getDocumentBounds();
+
+    // For each direction the group is being enlarged in,
+    //  ensure that no grouped system would be left outside the group member area
+    group.memberParts.each(
+      function(system: go.Part) {
+        // Ignore links between nodes in the group
+        if (system instanceof go.Node) {
+
+          // Prevent the top side of the group being dragged too low
+          if (draggedSides.top) {
+            minSize.height = Math.max(minSize.height, memberArea.bottom - system.actualBounds.top);
+          }
+          // Prevent the right side of the group being dragged too far left
+          if (draggedSides.right) {
+            minSize.width = Math.max(minSize.width, system.actualBounds.right - memberArea.left);
+          }
+          // Prevent the bottom side of the group being dragged too high
+          if (draggedSides.bottom) {
+            minSize.height = Math.max(minSize.height, system.actualBounds.bottom - memberArea.top);
+          }
+          // Prevent the left side of the group being dragged too far right
+          if (draggedSides.left) {
+            minSize.width = Math.max(minSize.width, memberArea.right - system.actualBounds.left);
+          }
+        }
+      }
+    );
+
+    return minSize;
+  }
+
+  // Override standard resize in order to prevent grouped systems from shifting position
+  public resize(newr: go.Rect): void {
+    const memberLocations = [];
+
+    // Save grouped system's positions
+    (this.adornedObject.part as go.Group).memberParts.each(
+      function(member: go.Part) {
+        if (member instanceof go.Node) {
+          memberLocations.push({
+            node: member,
+            PrevPosition: member.position.copy()
+          });
+        }
+      }
+    );
+
+    // Perform standard resizing
+    go.ResizingTool.prototype.resize.call(this, newr);
+
+    // Restore grouped system's positions from before the resizing
+    memberLocations.forEach(function(nodeLocation) {
+      nodeLocation.node.position = nodeLocation.PrevPosition;
+    });
+
+  }
+}
+
 // Customised link that only updates its route when a tool that can affect link route is active
 export class CustomLink extends go.Link {
   constructor() {
@@ -62,7 +144,12 @@ export class CustomLink extends go.Link {
     });
 
     // Array of tools that can affect link routes
-    const tools = [toolManager.draggingTool, toolManager.linkReshapingTool, toolManager.linkingTool, linkShiftingTool];
+    const tools = [toolManager.draggingTool,
+      toolManager.linkReshapingTool,
+      toolManager.linkingTool,
+      linkShiftingTool,
+      toolManager.resizingTool
+    ];
 
     // Always update route if "updateRoute" flag set or no route defined
     if (this.data.updateRoute || this.points.count === 0) {
@@ -120,6 +207,8 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a new system should be added to the group as a new member
   private addNewSubItemSource = new Subject();
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
+
+  public diagramEditable: boolean;
 
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
@@ -182,8 +271,8 @@ export class GojsCustomObjectsService {
     );
   }
 
-  // Context menu for when a node or link is right-clicked
-  getPartContextMenu(): go.Adornment {
+  // Context menu for when a link is right-clicked
+  getLinkContextMenu(): go.Adornment {
     const thisService = this;
     const diagramChangesService = this.diagramChangesService;
     const diagramLevelService = this.diagramLevelService;
@@ -199,94 +288,25 @@ export class GojsCustomObjectsService {
             part.doubleClick(event, part);
           }
         },
-        new go.Binding('visible', '', function(object, event) {
-          if (event.diagram.findNodeForData(object) !== null) {
-            // Can only expand nodes if not reporting concept
-            return object.layer !== layers.reportingConcept;
-          } else {
-            // Can only expand link if category is data and layer is data set
-            return object.category === linkCategories.data && object.layer === layers.dataSet;
-          }
+        new go.Binding('visible', 'layer', function(layer) {
+            // Can only expand link if layer is system or data set
+            return layer === layers.system || layer === layers.dataSet;
         })
       ),
-      // View detail for the node/link in the right hand panel
+      // View detail for the link in the right hand panel
       $('ContextMenuButton', $(go.TextBlock, 'View Detail', {}), {
         click: function(event, object) {
           thisService.showDetailTabSource.next();
         }
-      }),
-      // Create a scope that includes the node
-      $(
-        'ContextMenuButton',
-        $(go.TextBlock, 'Create Scope', {}),
-        {
-          click: function(event, object) {
-            thisService.createScopeWithNodeSource.next(object);
-          }
-        },
-        new go.Binding('visible', '', function(object, event) {
-          // Only show the create scope option for nodes
-          return event.diagram.findNodeForData(object) !== null;
-        })
-      ),
-      // Analyse dependencies of a node
-      $(
-        'ContextMenuButton',
-        $(go.TextBlock, 'Analyse Dependencies', {}),
-        {
-          click: function(event, object) {
-            const part = (object.part as go.Adornment).adornedObject;
-            diagramChangesService.hideNonDependencies(part as go.Node);
-          }
-        },
-        new go.Binding('visible', '', function(object, event) {
-          // Only show the analyse dependencies option for nodes..
-          return (
-            event.diagram.findNodeForData(object) !== null &&
-            // ..that are not in map view
-            !object.group
-          );
-        })
-      ),
-      // Return to architecture view from dependency analysis view
-      $(
-        'ContextMenuButton',
-        $(go.TextBlock, 'Return to Architecture View', {}),
-        {
-          click: function(event, object) {
-            diagramChangesService.showAllNodes(event.diagram);
-          }
-        },
-        new go.Binding('visible', '', function(object, event) {
-          // Only show the return to architecture option for nodes..
-          return (
-            event.diagram.findNodeForData(object) !== null &&
-            // ..and if some nodes in the diagram are hidden
-            event.diagram.nodes.any(function(node) {
-              return !node.visible;
-            })
-          );
-        })
-      ),
-      // Go to node usage view, for the current node
-      $(
-        'ContextMenuButton',
-        $(go.TextBlock, 'Show Use Across Levels', {}),
-        {
-          click: function(event, object) {
-            diagramLevelService.displayUsageView(event, (object.part as go.Adornment).adornedObject);
-          }
-        },
-        new go.Binding('visible', '', function(object, event) {
-          // Only show the node usage view option for nodes
-          return event.diagram.findNodeForData(object) !== null;
-        })
-      )
+      })
     );
   }
 
+
   // Context menu for when a system group button is clicked
-  getPartButtonMenu(): go.Adornment {
+  getPartButtonMenu(fixedPosition = true): go.Adornment {
+
+    const disabledTextColour = '#707070';
 
     // Standard highlighting for buttons when mouse cursor enters them
     function standardMouseEnter(e: object, btn: go.Part): void {
@@ -315,10 +335,16 @@ export class GojsCustomObjectsService {
     ): go.Part {
       return $(
         'ContextMenuButton',
+        {
+          name: text
+        },
         $(go.TextBlock,
           text_predicate
             ? new go.Binding('text', '', text_predicate).ofObject()
-            : { text: text }
+            : { text: text },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : disabledTextColour;
+          }).ofObject(text)
         ),
         {
           click: function(event, object) {
@@ -366,10 +392,16 @@ export class GojsCustomObjectsService {
       text_predicate?: (object: go.GraphObject, event: object) => string
     ): go.Part {
       return $('ContextMenuButton',
+        {
+          name: name
+        },
         $(go.TextBlock,
           text_predicate
             ? new go.Binding('text', '', text_predicate).ofObject()
-            : { text: name }
+            : { text: name },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : disabledTextColour;
+          }).ofObject(name)
         ),
         {
         click: function(event, object) {
@@ -440,11 +472,15 @@ export class GojsCustomObjectsService {
         background: null,
         zOrder: 1
       },
-      $(go.Placeholder,
-        {
-          background: null,
-          isActionable: true,
-        }),
+      // Use placeholder to ensure menu placed relative to node.
+      //  Otherwise, menu appears at the mouse cursor.
+      fixedPosition ?
+        $(go.Placeholder,
+          {
+            background: null,
+            isActionable: true,
+          }) :
+        {},
       $(go.Panel,
         'Table',
         {
@@ -487,13 +523,16 @@ export class GojsCustomObjectsService {
           'Expand',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            const node = (object.part as go.Adornment).adornedObject as go.Group;
             event.diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
             event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.group);
 
             diagramChangesService.nodeExpandChanged(node);
 
-          }.bind(this)
+          }.bind(this),
+          function(object: NodeDetail, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          }
         ),
         makeSubMenuButton(
           3,
@@ -507,7 +546,9 @@ export class GojsCustomObjectsService {
             diagramChangesService.nodeExpandChanged(node);
 
           }.bind(this),
-          null,
+          function(object: NodeDetail, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          },
           function() {return 'Show as List'; }
         ),
         makeSubMenuButton(
@@ -530,7 +571,10 @@ export class GojsCustomObjectsService {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             this.addNewSubItemSource.next(node.data);
 
-          }.bind(this)
+          }.bind(this),
+          function(object: NodeDetail, event: go.DiagramEvent) {
+            return thisService.diagramEditable;
+          }
         ),
         makeSubMenuButton(
           6,
@@ -542,15 +586,16 @@ export class GojsCustomObjectsService {
 
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
-            return object.group === '';
+            return object.group === '' && thisService.diagramEditable;
           }
         ),
-        // --End of level submenu buttons--
+        // --End of group submenu buttons--
         makeMenuButton(3, 'Data Sets', [
           'Show as List (data sets)',
           'Display (data sets)',
           'Add data set',
         ]),
+        // --Data set submenu buttons--
         makeSubMenuButton(
           3,
           'Show as List (data sets)',
@@ -590,8 +635,62 @@ export class GojsCustomObjectsService {
           'Add data set',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             thisService.addDataSetSource.next();
+          },
+          function(object: NodeDetail, event: go.DiagramEvent): boolean {
+            return thisService.diagramEditable;
+          }
+        ),
+        // --End of data set submenu buttons--
+        makeMenuButton(
+          4,
+          'Analyse',
+          [
+            'Dependencies',
+            'Use across Levels'
+          ]
+        ),
+        // --Analysis submenu buttons--
+        makeSubMenuButton(
+          4,
+          'Dependencies',
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+            const menuNode = (object.part as go.Adornment).adornedObject as go.Node;
+
+            const anyHidden: boolean = event.diagram.nodes.any(function(node: go.Node): boolean {
+              return !node.visible;
+            });
+
+            if (anyHidden) {
+              diagramChangesService.showAllNodes(event.diagram);
+            } else {
+              diagramChangesService.hideNonDependencies(menuNode);
+            }
+          },
+          function(object: NodeDetail, event: go.DiagramEvent): boolean {
+
+            let isMapLevel: boolean;
+
+            thisService
+              .store
+              .select(getFilterLevelQueryParams)
+              .pipe(take(1))
+              .subscribe(function(level) {
+                isMapLevel =  (level !== Level.systemMap && level !== Level.dataSetMap);
+              });
+
+            return isMapLevel;
+
+          }
+        ),
+        makeSubMenuButton(
+          5,
+          'Use across Levels',
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            diagramLevelService.displayUsageView(event, node);
           }
         )
+        // --End analysis submenu buttons--
       )
     );
   }
