@@ -10,6 +10,13 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 
+function textFont(style?: string): Object {
+  const font = getComputedStyle(document.body).getPropertyValue('--default-font');
+  return {
+    font: `${style} ${font}`
+  }
+}
+
 const $ = go.GraphObject.make;
 
 // Create definition for button with round shape
@@ -153,10 +160,10 @@ export class DiagramTemplatesService {
           width: nodeWidth - 10
         },
         $(
-          go.TextBlock,
+          go.TextBlock, 
+          textFont('18px'),
           {
             stroke: 'black',
-            font: '18px calibri',
             textAlign: 'center',
             wrap: go.TextBlock.None,
             overflow: go.TextBlock.OverflowEllipsis,
@@ -180,9 +187,9 @@ export class DiagramTemplatesService {
         height: 27
       }),
       $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('bold italic 20px'),
         {
-          font: 'bold italic 20px calibri',
           wrap: go.TextBlock.None,
           margin: new go.Margin(2, 2, 0, 2)
         },
@@ -207,9 +214,8 @@ export class DiagramTemplatesService {
           this.diagramChangesService.showDependencies(node);
         }.bind(this)
       },
-      $(go.TextBlock, '+', {
+      $(go.TextBlock, textFont('bold 18px'), '+', {
         alignment: go.Spot.Center,
-        font: 'bold 18px calibri',
         desiredSize: new go.Size(20, 20),
         textAlign: 'center',
         verticalAlignment: go.Spot.Center
@@ -252,10 +258,10 @@ export class DiagramTemplatesService {
         }.bind(this)
       },
       $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('bold 18px'),
         {
           alignment: go.Spot.Center,
-          font: 'bold 18px calibri',
           desiredSize: new go.Size(25, 25),
           textAlign: 'center',
           verticalAlignment: go.Spot.Center
@@ -299,10 +305,10 @@ export class DiagramTemplatesService {
         }.bind(this)
       },
       $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('bold 18px'),
           {
             alignment: go.Spot.Center,
-            font: 'bold 18px calibri',
             desiredSize: new go.Size(25, 25),
             textAlign: 'center',
             verticalAlignment: new go.Spot(0.5, 0, 0, -1.5),
@@ -336,11 +342,11 @@ export class DiagramTemplatesService {
         }.bind(this)
       },
       $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('bold 18px'), 
         '+',
         {
           alignment: go.Spot.Center,
-          font: 'bold 18px calibri',
           desiredSize: new go.Size(25, 25),
           textAlign: 'center',
           verticalAlignment: go.Spot.Center
@@ -442,11 +448,11 @@ export class DiagramTemplatesService {
         margin: new go.Margin(0, 1, 0, 1)
       }),
       $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('12px'),
         {
           textAlign: 'center',
           stroke: radioColours[type] === 'yellow' ? 'black' : 'white',
-          font: '12px calibri'
         },
         new go.Binding('text', 'relatedRadioCounts', function(counts) {
           return counts[type];
@@ -507,10 +513,8 @@ export class DiagramTemplatesService {
         go.Panel,
         'Vertical',
         $(
-          go.TextBlock,
-          {
-            font: 'bold 14px calibri'
-          },
+          go.TextBlock, 
+          textFont('bold 14px'),
           new go.Binding('text', 'name'),
           new go.Binding('visible', 'linkName').ofModel()
         ),
@@ -590,12 +594,12 @@ export class DiagramTemplatesService {
         })
       ),
       $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('bold italic 20px'),
         {
           column: 1,
           row: 0,
           textAlign: 'left',
-          font: 'bold italic 20px calibri',
           margin: new go.Margin(0, 5, 0, 5),
           wrap: go.TextBlock.None,
           overflow: go.TextBlock.OverflowEllipsis,
@@ -631,11 +635,11 @@ export class DiagramTemplatesService {
       ),
       // Do not show description for systems
       !isSystem ? $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('16px'),
         {
           textAlign: 'center',
           stroke: 'black',
-          font: '16px Calibri',
           stretch: go.GraphObject.Horizontal,
           maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
@@ -644,11 +648,11 @@ export class DiagramTemplatesService {
         new go.Binding('visible', 'description').ofModel()
       ) : {},
       $(
-        go.TextBlock,
+        go.TextBlock, 
+        textFont('italic 16px'),
         {
           textAlign: 'center',
           stroke: 'black',
-          font: 'italic 16px Calibri',
           stretch: go.GraphObject.Horizontal,
           maxSize: new go.Size(nodeWidth - 10, Infinity),
           margin: new go.Margin(5, 0, 0, 0)
@@ -681,10 +685,9 @@ export class DiagramTemplatesService {
             alignment: go.Spot.TopLeft,
             stretch: go.GraphObject.Horizontal
           },
-          isSystem ? $(go.TextBlock,
+          isSystem ? $(go.TextBlock, textFont('italic 18px'),
             'Data sets',
             {
-              font: 'italic 18px calibri',
               textAlign: 'center',
               stretch: go.GraphObject.Horizontal,
               margin: new go.Margin(0, 0, 2, 0)
@@ -719,10 +722,9 @@ export class DiagramTemplatesService {
             defaultAlignment: go.Spot.Left,
             stretch: go.GraphObject.Horizontal
           },
-          $(go.TextBlock,
+          $(go.TextBlock, textFont('italic 18px'),
             'Grouped Items',
             {
-              font: 'italic 18px calibri',
               textAlign: 'center',
               alignment: go.Spot.TopCenter,
               stretch: go.GraphObject.Horizontal,
@@ -756,7 +758,7 @@ export class DiagramTemplatesService {
             fill: null,
             stretch: go.GraphObject.Horizontal,
             height: 200,
-            minSize: new go.Size(nodeWidth - 10, 200)
+            minSize: new go.Size(nodeWidth + 20, 200)
           },
           new go.Binding('visible', 'middleExpanded',
             function(middleExpanded) {
@@ -1356,9 +1358,9 @@ export class DiagramTemplatesService {
           'Vertical',
           { margin: 10 },
           $(
-            go.TextBlock,
+            go.TextBlock, 
+            textFont('bold 20px'),
             {
-              font: 'bold 20px calibri',
               textAlign: 'center',
               stroke: 'black',
               alignment: go.Spot.TopCenter,
