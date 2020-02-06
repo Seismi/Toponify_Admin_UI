@@ -963,7 +963,7 @@ export class DiagramTemplatesService {
             spacing: new go.Size(NaN, 12)
           },
         ),
-        subGraphExpandedChanged: this.diagramChangesService.systemSubGraphExpandChanged,
+        subGraphExpandedChanged: this.diagramChangesService.systemSubGraphExpandChanged.bind(this.diagramChangesService),
         resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 

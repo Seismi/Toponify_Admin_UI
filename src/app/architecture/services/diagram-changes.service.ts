@@ -734,6 +734,7 @@ export class DiagramChangesService {
         }, 0);
       });
     }
+    this.groupMemberSizeChanged(group);
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
@@ -764,5 +765,35 @@ export class DiagramChangesService {
       },
       links: linkData
     });
+  }
+
+  groupMemberSizeChanged(member: go.Group) {
+    const nestedGroups = [];
+
+    let currentGroup = member;
+    while (currentGroup.containingGroup !== null) {
+      currentGroup = currentGroup.containingGroup;
+      nestedGroups.push(currentGroup);
+    }
+
+    let currentMinBounds = member.getDocumentBounds().copy();
+
+    nestedGroups.forEach(function(group) {
+      const memberArea = group.findObject('Group member area');
+      const memberBounds = memberArea.getDocumentBounds().copy();
+      if (!memberBounds.containsRect(currentMinBounds)) {
+
+        const prevLocation = group.location.copy();
+
+        currentMinBounds = currentMinBounds.unionRect(memberBounds);
+        memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
+        memberArea.width = Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left);
+
+
+
+        group.location = prevLocation.offset()
+      }
+    });
+
   }
 }
