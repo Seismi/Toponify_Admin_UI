@@ -41,7 +41,6 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public attributes: Subscription;
   public attribute: AttributeEntity[];
   public workpackage$: Observable<WorkPackageEntity[]>;
-  public hideTab = true;
   public selectedLeftTab: number;
   public showOrHidePane: boolean;
   public subscriptions: Subscription[] = [];

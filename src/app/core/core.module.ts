@@ -31,6 +31,7 @@ import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
 import { WorkPackageNameComponent } from './layout/header/workpackage-name/workpackage-name.component';
 import { EditDocumentationStandardsFormComponent } from './layout/components/edit-documentation-standards/form/form.component';
 import { EditDocumentationStandardsTableComponent } from './layout/components/edit-documentation-standards/edit-documentation-standards.component';
+import { RightHandSideComponent } from './layout/components/right-hand-side/right-hand-side.component';
 import { DeleteModalComponent } from './layout/components/delete-modal/delete-modal.component';
 
 @NgModule({
@@ -63,6 +64,7 @@ import { DeleteModalComponent } from './layout/components/delete-modal/delete-mo
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
+    RightHandSideComponent,
     DeleteModalComponent
   ],
   entryComponents: [
