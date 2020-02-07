@@ -82,11 +82,11 @@ export class AttributeService {
     workPackageId: string,
     attributeId: string,
     customPropertyId: string,
-    entity: CustomPropertiesApiRequest
+    data: string
   ): Observable<AttributeDetailApiResponse> {
     return this.http.put<AttributeDetailApiResponse>(
       `/workpackages/${workPackageId}/attributes/${attributeId}/customPropertyValues/${customPropertyId}`,
-      entity,
+      { data },
       httpOptions
     );
   }

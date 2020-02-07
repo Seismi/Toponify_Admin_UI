@@ -14,8 +14,8 @@
 </app-base-header>
 
 <app-model-container [topPadding]="64">
-  <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="hideTab" *ngIf="!showOrHidePane"></smi-left-sidebar>
-  <app-model-sidebar [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
+  <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="true" *ngIf="!showOrHidePane"></smi-left-sidebar>
+  <app-model-sidebar [isLast]="true" [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
     <p class="leftPane">
       <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
         <mat-tab label="Work Packages">
@@ -28,7 +28,7 @@
           </smi-workpackage-tab-table>
         </mat-tab>
       </mat-tab-group>
-      <button class="hide-btn" mat-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon>Hide</button>
+      <button mat-icon-button (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
     </p>
   </app-model-sidebar>
 
@@ -41,12 +41,14 @@
           (selectRow)="onSelectAttribute($event)"
         >
         </app-category-table>
-        <!-- Add new attribute button -->
-        <button class="add-btn" mat-raised-button color="primary" [disabled]="workPackageIsEditable" (click)="onAdd()">
-          Create New
-        </button>
+      </div>
+      <div class="col">
+        <smi-right-hand-side 
+          [title]="'Attribute'"
+          (add)="onAdd()">
+        </smi-right-hand-side>
+        <router-outlet></router-outlet>
       </div>
     </div>
   </div>
-  <router-outlet></router-outlet>
 </app-model-container>

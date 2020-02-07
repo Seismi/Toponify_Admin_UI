@@ -176,7 +176,7 @@ export class UpdateProperty implements Action {
       workPackageId: string;
       attributeId: string;
       customPropertyId: string;
-      entity: CustomPropertiesApiRequest;
+      data: string;
     }
   ) {}
 }

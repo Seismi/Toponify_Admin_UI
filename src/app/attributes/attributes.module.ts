@@ -25,7 +25,8 @@ import {
   MatTableModule,
   MatTabsModule,
   MatSnackBarModule,
-  MatSelectModule
+  MatSelectModule,
+  MatTooltipModule
 } from '@angular/material';
 import { AttributeService } from './services/attributes.service';
 import { StoreModule } from '@ngrx/store';
@@ -68,6 +69,7 @@ import { RelatedAttributesModalComponent } from './containers/related-attributes
     MatTabsModule,
     MatSnackBarModule,
     MatSelectModule,
+    MatTooltipModule,
     StoreModule.forFeature('attributesFeature', reducer),
     EffectsModule.forFeature([AttributeEffects])
   ],

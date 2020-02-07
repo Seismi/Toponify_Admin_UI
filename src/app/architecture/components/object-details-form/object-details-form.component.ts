@@ -29,7 +29,6 @@ export class ObjectDetailsFormComponent {
   }
 
   @Input() clickedOnLink = false;
-  @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
   @Input() attributesPage = false;
   @Input() relatedAttributes: AttributeEntity[];
@@ -42,35 +41,19 @@ export class ObjectDetailsFormComponent {
 
   constructor() {}
 
-  @Output() saveAttribute = new EventEmitter<void>();
-
+  @Output() save = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
-
-  @Output() editDetails = new EventEmitter<void>();
-
-  @Output() cancel = new EventEmitter<void>();
-
   @Output() addOwner = new EventEmitter<void>();
-
   @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
-
   @Output() addDescendant = new EventEmitter<void>();
-
   @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
   @Output() selectRelatedAttribute = new EventEmitter<string>();
-
   @Output() addRelatedAttribute = new EventEmitter<void>();
-
   @Output() deleteRelatedAttribute = new EventEmitter<void>();
 
-  onEdit(): void {
-    this.editDetails.emit();
-  }
-
   onSave(): void {
-    this.saveAttribute.emit();
-    this.isEditable = false;
+    this.save.emit();
   }
 
   onCancel(): void {
@@ -110,6 +93,9 @@ export class ObjectDetailsFormComponent {
   }
 
   getCategories(): string[] {
+    if (this.attributesPage) {
+      return ['attribute', 'rule'];
+    }
     switch (this.part.data.layer) {
       case 'system':
         return this.part instanceof Node ? systemCategories : ['master data', 'data'];

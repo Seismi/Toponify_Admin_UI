@@ -44,6 +44,7 @@ import { RouterModule } from '@angular/router';
 import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-name.component';
 import { EditDocumentationStandardsTableComponent } from './components/edit-documentation-standards/edit-documentation-standards.component';
 import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
+import { RightHandSideComponent } from './components/right-hand-side/right-hand-side.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 
 @NgModule({
@@ -91,6 +92,7 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
+    RightHandSideComponent,
     DeleteModalComponent
   ],
   declarations: [
@@ -118,6 +120,7 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
+    RightHandSideComponent,
     DeleteModalComponent
   ],
   entryComponents: [
