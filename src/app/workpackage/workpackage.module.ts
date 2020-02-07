@@ -16,6 +16,7 @@ import {
   MatMenuModule,
   MatGridListModule,
   MatTooltipModule,
+  MatSlideToggleModule,
   MatAutocompleteModule,
   MatCheckboxModule
 } from '@angular/material';
@@ -75,6 +76,7 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     MatMenuModule,
     MatGridListModule,
     MatTooltipModule,
+    MatSlideToggleModule,
     MatAutocompleteModule,
     MatCheckboxModule
   ],

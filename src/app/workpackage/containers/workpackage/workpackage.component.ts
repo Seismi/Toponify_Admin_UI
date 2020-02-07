@@ -1,15 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatDialog, MatSlideToggleChange } from '@angular/material';
 import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages, WorkPackageActionTypes, UpdateWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
 import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-workpackage',
@@ -18,23 +19,47 @@ import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.comp
   providers: [WorkPackageDetailService, WorkPackageValidatorService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkPackageComponent implements OnInit, OnDestroy {
-  public subscriptions: Subscription[] = [];
+export class WorkPackageComponent implements OnInit {
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
-  public workpackageId: string;
-  public selectedOwners = [];
-  public workpackages: WorkPackageEntity[];
+  public selectedRowIndex: string | number;
+  public workpackage: WorkPackageDetail;
+  public checked: boolean;
 
-  constructor(private store: Store<WorkPackageState>, private router: Router, public dialog: MatDialog) {}
+  constructor(
+    private actions: Actions, 
+    private store: Store<WorkPackageState>, 
+    private router: Router, 
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit() {
     this.store.dispatch(new LoadWorkPackages({}));
-    this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getWorkPackageEntities));
-    this.subscriptions.push(this.workpackageEntities$.subscribe(workpackages => (this.workpackages = workpackages)));
-  }
+    this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.store.pipe(select(fromWorkPackagesEntities.getSelectedWorkPackage)).subscribe((workpackage: WorkPackageDetail) => {
+      if (workpackage) {
+        this.workpackage = workpackage;
+        this.selectedRowIndex = workpackage.id;
+      }
+    });
+
+    this.actions.pipe(ofType(WorkPackageActionTypes.ArchiveWorkPackage)).subscribe((action: any) => {
+      if (action) {
+        this.store.dispatch(new UpdateWorkPackageEntity({
+          entityId: this.workpackage.id,
+          workPackage: {
+            data: {
+              id: action.payload.workPackageId,
+              archived: action.payload.archived
+            }
+          }
+        }));
+        
+        this.actions.pipe(ofType(WorkPackageActionTypes.UpdateWorkPackageSuccess)).subscribe(_ => {
+          this.getArchivedWorkPackages(this.checked);
+        });
+      }
+    })
   }
 
   onSelectWorkpackage(row: WorkPackageDetail): void {
@@ -50,5 +75,17 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px'
     });
+  }
+
+  showArchivedWorkPackages($event: MatSlideToggleChange): void {
+    this.checked = $event.checked;
+    this.getArchivedWorkPackages($event.checked);
+  }
+
+  getArchivedWorkPackages(checked: boolean): void {
+    const queryParams = {
+      includeArchived: (checked) ? true : false
+    }
+    this.store.dispatch(new LoadWorkPackages(queryParams));
   }
 }
