@@ -8,6 +8,7 @@ import {
   ReportEntityApiResponse,
   ReportDetailApiRespoonse
 } from '../models/report.model';
+import { GetReportLibraryRequestQueryParams } from '@app/report-library/services/report.service';
 
 export enum ReportActionTypes {
   LoadReports = '[Report] Load Reports',
@@ -69,7 +70,7 @@ export enum ReportActionTypes {
 
 export class LoadReports implements Action {
   readonly type = ReportActionTypes.LoadReports;
-  constructor(public payload?: any) {}
+  constructor(public payload?: GetReportLibraryRequestQueryParams) {}
 }
 
 export class LoadReportsSuccess implements Action {
