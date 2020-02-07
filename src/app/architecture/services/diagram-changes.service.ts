@@ -21,7 +21,7 @@ const $ = go.GraphObject.make;
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
-  public onUpdateGroupAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
 
   workpackages = [];
@@ -728,10 +728,8 @@ export class DiagramChangesService {
       // Reroute all necessary links
       linksToReroute.each(function (link: go.Link): void {
         link.data = Object.assign(link.data, {updateRoute: true});
-        setTimeout(function() {
-          link.invalidateRoute();
-          link.updateRoute();
-        }, 0);
+        link.invalidateRoute();
+        link.updateRoute();
       });
     }
     this.groupMemberSizeChanged(group);
@@ -757,42 +755,74 @@ export class DiagramChangesService {
     });
 
     // Update group area of node in the back end
-    this.onUpdateGroupAreaState.next({
-      node: {
+    this.onUpdateGroupsAreaState.next({
+      groups: [{
         id: node.data.id,
         areaSize: node.data.areaSize,
         locationCoordinates: node.data.location
-      },
+      }],
       links: linkData
     });
   }
 
   groupMemberSizeChanged(member: go.Group) {
-    const nestedGroups = [];
+    const nestedGroups = new go.Set();
+    const linksToUpdate = new go.Set();
 
     let currentGroup = member;
-    while (currentGroup.containingGroup !== null) {
-      currentGroup = currentGroup.containingGroup;
-      nestedGroups.push(currentGroup);
-    }
-
     let currentMinBounds = member.getDocumentBounds().copy();
 
-    nestedGroups.forEach(function(group) {
-      const memberArea = group.findObject('Group member area');
+    while (currentGroup.containingGroup !== null) {
+      currentGroup = currentGroup.containingGroup;
+
+      const memberArea = currentGroup.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
-      if (!memberBounds.containsRect(currentMinBounds)) {
 
-        const prevLocation = group.location.copy();
-
-        currentMinBounds = currentMinBounds.unionRect(memberBounds);
-        memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
-        memberArea.width = Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left);
-
-
-
-        group.location = prevLocation.offset()
+      if (memberBounds.containsRect(currentMinBounds)) {
+        break;
       }
+
+      nestedGroups.add(currentGroup);
+      linksToUpdate.addAll(currentGroup.linksConnected);
+
+      currentMinBounds = currentMinBounds.unionRect(memberBounds);
+      memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
+      memberArea.width = Math.max(memberBounds.right, currentMinBounds.right)
+        - Math.min(memberBounds.left, currentMinBounds.left);
+
+      currentGroup.location = new go.Point(currentMinBounds.centerX, currentGroup.location.y);
+
+      currentGroup.ensureBounds();
+
+      currentMinBounds = currentGroup.getDocumentBounds().copy();
+    }
+
+    const linkData = [];
+
+    linksToUpdate.each(function(link: go.Link) {
+      // ignore disconnected links
+      if (link.toNode && link.fromNode) {
+        // link.update
+        link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.invalidateRoute();
+        link.updateRoute()
+
+        linkData.push({ id: link.data.id, points: link.data.route });
+      }
+    });
+
+    const groupData = [];
+    nestedGroups.each(function(group: go.Group) {
+      groupData.push({
+        id: group.data.id,
+        areaSize: group.data.areaSize,
+        locationCoordinates: group.data.location
+      });
+    });
+
+    this.onUpdateGroupsAreaState.next({
+      groups: groupData,
+      links: linkData
     });
 
   }

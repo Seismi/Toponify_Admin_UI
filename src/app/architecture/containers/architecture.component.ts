@@ -886,18 +886,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateGroupArea(data: { node: { id: string, areaSize: string, locationCoordinates: string }; links: go.Link[] }): void {
+  handleUpdateGroupArea(data: { groups: { id: string, areaSize: string, locationCoordinates: string }[]; links: go.Link[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
 
-    const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.node.id, areaSize: data.node.areaSize };
-    const nodeLocationData = { id: data.node.id, locationCoordinates: data.node.locationCoordinates };
+    // const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.group.id, areaSize: data.group.areaSize };
+    // const nodeLocationData = { id: data.group.id, locationCoordinates: data.group.locationCoordinates };
 
     if (this.layout) {
-      this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: groupAreaData }));
-      this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: [nodeLocationData] }));
+      this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: data.groups }));
+      this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.groups }));
     }
 
     if (this.layout && data.links && data.links.length > 0) {

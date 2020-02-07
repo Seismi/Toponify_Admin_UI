@@ -160,8 +160,16 @@ export class NodeEffects {
     ofType<NodeActions.UpdateGroupAreaSize>(NodeActionTypes.UpdateGroupAreaSize),
     map(action => action.payload),
     switchMap((payload: { layoutId: string; data: GroupAreaSizeApiRequest['data'] }) => {
-      return this.nodeService.UpdateGroupAreaSize(payload.layoutId, payload.data).pipe(
-        switchMap((response: any) => [new NodeActions.UpdateGroupAreaSizeSuccess(response.data)]),
+      const observables = payload.data.map((item: any) => {
+        return this.nodeService.UpdateGroupAreaSize(payload.layoutId, item);
+      });
+
+      return forkJoin(observables).pipe(
+        map((data: any) => {
+          const mappedGroups = {};
+          data.forEach(item => (mappedGroups[item.data.id] = item.data));
+          return new NodeActions.UpdateGroupAreaSizeSuccess(mappedGroups);
+        }),
         catchError((error: Error) => of(new NodeActions.UpdateGroupAreaSizeFailure(error)))
       );
     })

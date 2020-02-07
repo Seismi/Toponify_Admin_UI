@@ -239,7 +239,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
     });
-    diagramChangesService.onUpdateGroupAreaState.subscribe((data: { nodes: any[]; links: any[] }) => {
+    diagramChangesService.onUpdateGroupsAreaState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateGroupArea.emit(data);
     });
   }

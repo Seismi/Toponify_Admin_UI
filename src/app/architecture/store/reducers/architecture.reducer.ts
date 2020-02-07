@@ -420,14 +420,18 @@ export function reducer(
 
     case NodeActionTypes.UpdateGroupAreaSize: {
       const { layoutId, data } = action.payload;
-      const nodeIndex = state.entities.findIndex(n => n.id === data.id);
-      if (nodeIndex > -1) {
-        return replaceGroupAreaSize(state, nodeIndex, data.id, layoutId, data.areaSize);
-      } else {
-        return {
+      return data.reduce(
+        function(updatedState, group) {
+          const nodeIndex = state.entities.findIndex(g => g.id === group.id);
+          if (nodeIndex > -1) {
+            return replaceGroupAreaSize(state, nodeIndex, group.id, layoutId, group.areaSize);
+          }
+        }
+        ,
+        {
           ...state
-        };
-      }
+        }
+      );
     }
 
     case NodeActionTypes.UpdateNodeLocationsSuccess: {

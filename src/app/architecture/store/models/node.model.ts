@@ -29,7 +29,7 @@ export interface GroupAreaSizeApiRequest {
   data: {
     id: string;
     areaSize: string;
-  };
+  }[];
 }
 
 export interface WorkPackageNodeDescendantsApiResponse {
