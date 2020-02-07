@@ -48,6 +48,7 @@ import { EditDocumentationStandardsTableComponent } from './components/edit-docu
 import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from './components/select-modal/select-modal.component';
+import { DownloadCSVModalComponent } from './components/download-csv-modal/download-csv-modal.component';
 
 @NgModule({
   imports: [
@@ -97,7 +98,8 @@ import { SelectModalComponent } from './components/select-modal/select-modal.com
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
     DeleteModalComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    DownloadCSVModalComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -125,11 +127,13 @@ import { SelectModalComponent } from './components/select-modal/select-modal.com
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
     DeleteModalComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    DownloadCSVModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    DownloadCSVModalComponent
   ]
 })
 export class CoreLayoutModule {}
