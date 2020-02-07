@@ -16,6 +16,7 @@ import {
   MatMenuModule,
   MatGridListModule,
   MatTooltipModule,
+  MatSlideToggleModule,
   MatAutocompleteModule,
   MatCheckboxModule
 } from '@angular/material';
@@ -74,6 +75,7 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     MatMenuModule,
     MatGridListModule,
     MatTooltipModule,
+    MatSlideToggleModule,
     MatAutocompleteModule,
     MatCheckboxModule
   ],

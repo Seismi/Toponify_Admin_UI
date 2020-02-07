@@ -46,6 +46,7 @@ import { RouterModule } from '@angular/router';
 import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-name.component';
 import { EditDocumentationStandardsTableComponent } from './components/edit-documentation-standards/edit-documentation-standards.component';
 import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
+import { RightHandSideComponent } from './components/right-hand-side/right-hand-side.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from './components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from './components/download-csv-modal/download-csv-modal.component';
@@ -99,7 +100,9 @@ import { DownloadCSVModalComponent } from './components/download-csv-modal/downl
     EditDocumentationStandardsFormComponent,
     DeleteModalComponent,
     SelectModalComponent,
-    DownloadCSVModalComponent
+    DownloadCSVModalComponent,
+    RightHandSideComponent,
+    DeleteModalComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -128,7 +131,9 @@ import { DownloadCSVModalComponent } from './components/download-csv-modal/downl
     EditDocumentationStandardsFormComponent,
     DeleteModalComponent,
     SelectModalComponent,
-    DownloadCSVModalComponent
+    DownloadCSVModalComponent,
+    RightHandSideComponent,
+    DeleteModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,

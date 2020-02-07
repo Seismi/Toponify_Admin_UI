@@ -16,10 +16,10 @@ import {
   SubmitWorkpackage,
   SupersedeWorkpackage,
   UpdateWorkPackageEntity,
-  WorkPackageActionTypes,
   UpdateCustomProperty,
   DeleteCustomProperty,
   CreateObjective,
+  ArchiveWorkPackage,
   LoadWorkPackageBaselineAvailability,
   AddWorkPackageBaseline,
   DeleteWorkPackageBaseline
@@ -50,7 +50,6 @@ import { Actions, ofType } from '@ngrx/effects';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { RadioDetailModalComponent } from '@app/workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
@@ -69,18 +68,12 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
   providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
+  public currentState = '00000000-0000-0000-0000-000000000000';
   public workpackage: WorkPackageDetail;
   public subscriptions: Subscription[] = [];
   public workpackageId: string;
   public owner: OwnersEntityOrApproversEntity;
-  public statusDraft: boolean;
   public isEditable = false;
-  public workpackageActionSubmit: boolean;
-  public workpackageActionApprove: boolean;
-  public workpackageActionReject: boolean;
-  public workpackageActionMerge: boolean;
-  public workpackageActionReset: boolean;
-  public workpackageActionSupersede: boolean;
   public workPackageColour: string;
   public workPackageStatus: string;
 
@@ -112,37 +105,11 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.store.pipe(select(getSelectedWorkPackage)).subscribe(workpackage => {
-        this.workpackage = workpackage;
         if (workpackage) {
-          this.workPackageDetailService.workPackageDetailForm.patchValue({
-            name: workpackage.name,
-            description: workpackage.description
-          });
-
+          this.workpackage = workpackage;
+          this.workPackageDetailService.workPackageDetailForm.patchValue({ ...workpackage });
           this.workPackageStatus = workpackage.status;
-
-          // Show edit button if work package status is draft
-          workpackage.status === 'draft' ? (this.statusDraft = true) : (this.statusDraft = false);
           this.isEditable = false;
-
-          workpackage.availableActions.merge
-            ? (this.workpackageActionMerge = true)
-            : (this.workpackageActionMerge = false);
-          workpackage.availableActions.reset
-            ? (this.workpackageActionReset = true)
-            : (this.workpackageActionReset = false);
-          workpackage.availableActions.reject
-            ? (this.workpackageActionReject = true)
-            : (this.workpackageActionReject = false);
-          workpackage.availableActions.submit
-            ? (this.workpackageActionSubmit = true)
-            : (this.workpackageActionSubmit = false);
-          workpackage.availableActions.approve
-            ? (this.workpackageActionApprove = true)
-            : (this.workpackageActionApprove = false);
-          workpackage.availableActions.supersede
-            ? (this.workpackageActionSupersede = true)
-            : (this.workpackageActionSupersede = false);
         }
       })
     );
@@ -409,44 +376,26 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
   submitWorkpackage(): void {
-    this.actions.pipe(ofType(WorkPackageActionTypes.SubmitWorkpackageFailure)).subscribe((error: any) => {
-      alert('ERROR: ' + error.payload);
-    });
     this.store.dispatch(new SubmitWorkpackage(this.workpackageId));
   }
 
   approveWorkpackage(): void {
-    this.actions.pipe(ofType(WorkPackageActionTypes.ApproveWorkpackageFailure)).subscribe((error: any) => {
-      alert('ERROR: ' + error.payload);
-    });
     this.store.dispatch(new ApproveWorkpackage(this.workpackageId));
   }
 
   rejectWorkpackage(): void {
-    this.actions.pipe(ofType(WorkPackageActionTypes.RejectWorkpackageFailure)).subscribe((error: any) => {
-      alert('ERROR: ' + error.payload);
-    });
     this.store.dispatch(new RejectWorkpackage(this.workpackageId));
   }
 
   mergeWorkpackage(): void {
-    this.actions.pipe(ofType(WorkPackageActionTypes.MergeWorkpackageFailure)).subscribe((error: any) => {
-      alert('ERROR: ' + error.payload);
-    });
     this.store.dispatch(new MergeWorkpackage(this.workpackageId));
   }
 
   resetWorkpackage(): void {
-    this.actions.pipe(ofType(WorkPackageActionTypes.ResetWorkpackageFailure)).subscribe((error: any) => {
-      alert('ERROR: ' + error.payload);
-    });
     this.store.dispatch(new ResetWorkpackage(this.workpackageId));
   }
 
   supersedeWorkpackage(): void {
-    this.actions.pipe(ofType(WorkPackageActionTypes.SupersedeWorkpackageFailure)).subscribe((error: any) => {
-      alert('ERROR: ' + error.payload);
-    });
     this.store.dispatch(new SupersedeWorkpackage(this.workpackageId));
   }
 
@@ -490,6 +439,16 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
           }
         });
       });
+  }
+
+
+  onArchiveWorkPackage(): void {
+    this.store.dispatch(
+      new ArchiveWorkPackage({
+        workPackageId: this.workpackageId,
+        archived: (this.workpackage.archived) ? false : true
+      })
+    )
   }
 
   onAddBaseline(): void {

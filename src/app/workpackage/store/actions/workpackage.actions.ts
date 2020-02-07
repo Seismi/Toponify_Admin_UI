@@ -102,6 +102,8 @@ export enum WorkPackageActionTypes {
   SupersedeWorkpackageSuccess = '[Workpackage] Supersede Workpackage Success',
   SupersedeWorkpackageFailure = '[Workpackage] Supersede Workpackage Failure',
 
+  ArchiveWorkPackage = '[Workpackage] Archive Workpackage',
+
   LoadWorkPackageBaselineAvailability = '[WorkPackage] Load WorkPackage Baseline Availability',
   LoadWorkPackageBaselineAvailabilitySuccess = '[WorkPackage] Load WorkPackage Baseline Availability Success',
   LoadWorkPackageBaselineAvailabilityFailure = '[WorkPackage] Load WorkPackage Baseline Availability Failure',
@@ -447,6 +449,11 @@ export class SupersedeWorkpackageFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class ArchiveWorkPackage implements Action {
+  readonly type = WorkPackageActionTypes.ArchiveWorkPackage;
+  constructor(public payload: { workPackageId: string, archived: boolean }) {}
+}
+
 export class LoadWorkPackageBaselineAvailability implements Action {
   readonly type = WorkPackageActionTypes.LoadWorkPackageBaselineAvailability;
   constructor(public payload: { workPackageId: string }) {}
@@ -469,7 +476,7 @@ export class AddWorkPackageBaseline implements Action {
 
 export class AddWorkPackageBaselineSuccess implements Action {
   readonly type = WorkPackageActionTypes.AddWorkPackageBaselineSuccess;
-  constructor(public payload: Baseline) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class AddWorkPackageBaselineFailure implements Action {
@@ -484,7 +491,7 @@ export class DeleteWorkPackageBaseline implements Action {
 
 export class DeleteWorkPackageBaselineSuccess implements Action {
   readonly type = WorkPackageActionTypes.DeleteWorkPackageBaselineSuccess;
-  constructor(public payload: Baseline) {}
+  constructor(public payload: WorkPackageDetail) {}
 }
 
 export class DeleteWorkPackageBaselineFailure implements Action {
@@ -559,6 +566,7 @@ export type WorkPackageActionsUnion =
   | DeleteCustomProperty
   | DeleteCustomPropertySuccess
   | DeleteCustomPropertyFailure
+  | ArchiveWorkPackage
   | LoadWorkPackageBaselineAvailability
   | LoadWorkPackageBaselineAvailabilitySuccess
   | LoadWorkPackageBaselineAvailabilityFailure

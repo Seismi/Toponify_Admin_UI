@@ -31,6 +31,7 @@ import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
 import { WorkPackageNameComponent } from './layout/header/workpackage-name/workpackage-name.component';
 import { EditDocumentationStandardsFormComponent } from './layout/components/edit-documentation-standards/form/form.component';
 import { EditDocumentationStandardsTableComponent } from './layout/components/edit-documentation-standards/edit-documentation-standards.component';
+import { RightHandSideComponent } from './layout/components/right-hand-side/right-hand-side.component';
 import { DeleteModalComponent } from './layout/components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from './layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from './layout/components/download-csv-modal/download-csv-modal.component';
@@ -67,7 +68,9 @@ import { DownloadCSVModalComponent } from './layout/components/download-csv-moda
     EditDocumentationStandardsFormComponent,
     DeleteModalComponent,
     SelectModalComponent,
-    DownloadCSVModalComponent
+    DownloadCSVModalComponent,
+    RightHandSideComponent,
+    DeleteModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,

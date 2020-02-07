@@ -1,6 +1,5 @@
 <div class="sidebar">
-  <!-- Architecture Page -->
-  <div *ngIf="architecturePage">
+  <div *ngIf="objectSelected && !multipleSelected; else elseBlock">
     <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
     <span (click)="openRightTab(1)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
     <span (click)="openRightTab(2)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
@@ -10,37 +9,9 @@
     <span (click)="openRightTab(6)" matTooltip="Reports" *ngIf="filterLevel"><mat-icon>bookmarks</mat-icon></span>
   </div>
 
-  <!-- Show this tab when 0 objects selected in diagram (architecture page) -->
-  <span (click)="openRightTab(0)" matTooltip="RADIO" *ngIf="architectureRadioTab"
-    ><mat-icon>track_changes</mat-icon></span
-  >
+  <ng-template #elseBlock>
+    <span (click)="openRightTab(0)" matTooltip="RADIO" *ngIf="!multipleSelected"><mat-icon>track_changes</mat-icon></span>
+  </ng-template>
 
-  <!-- Show this tab when multiple objects selected in diagram (architecture page) -->
-  <span (click)="openRightTab(0)" matTooltip="Scopes" *ngIf="architectureDetailsTab"><mat-icon>pages</mat-icon></span>
-
-  <!-- Report Library Page -->
-  <div *ngIf="reportLibraryPage">
-    <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span (click)="openRightTab(1)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
-    <span (click)="openRightTab(2)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
-    <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
-    <span (click)="openRightTab(4)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
-  </div>
-
-  <!-- Attributes Page -->
-  <div *ngIf="attributesPage">
-    <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span (click)="openRightTab(1)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
-    <span (click)="openRightTab(2)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
-    <span (click)="openRightTab(3)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
-  </div>
-
-  <!-- Workpackage Page -->
-  <div *ngIf="workPackagePage">
-    <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span (click)="openRightTab(1)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
-    <span (click)="openRightTab(2)" matTooltip="Objectives"><mat-icon>assignment_turned_in</mat-icon></span>
-    <span (click)="openRightTab(3)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
-    <span (click)="openRightTab(4)" matTooltip="Change Summary"><mat-icon>change_history</mat-icon></span>
-  </div>
+  <span (click)="openRightTab(0)" matTooltip="Scopes" *ngIf="multipleSelected"><mat-icon>pages</mat-icon></span>
 </div>

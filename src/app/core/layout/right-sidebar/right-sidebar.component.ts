@@ -6,18 +6,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./right-sidebar.component.scss']
 })
 export class RightSideBarComponent {
-  @Input() workPackagePage = false;
-  @Input() attributesPage = false;
-  @Input() reportLibraryPage = false;
-  @Input() architecturePage = false;
-  @Input() architectureRadioTab = false;
-  @Input() architectureDetailsTab = false;
-  @Input() radioPage = false;
+  @Input() objectSelected: boolean;
+  @Input() multipleSelected: boolean;
   @Input() filterLevel: string;
 
   @Output() rightTab = new EventEmitter<number>();
 
-  openRightTab(index: number) {
+  openRightTab(index: number): void {
     this.rightTab.emit(index);
   }
 }

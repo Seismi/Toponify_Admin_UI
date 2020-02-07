@@ -160,10 +160,10 @@ export class AttributeEffects {
         workPackageId: string;
         attributeId: string;
         customPropertyId: string;
-        entity: CustomPropertiesApiRequest;
+        data: string;
       }) => {
         return this.attributeService
-          .updateProperty(payload.workPackageId, payload.attributeId, payload.customPropertyId, payload.entity)
+          .updateProperty(payload.workPackageId, payload.attributeId, payload.customPropertyId, payload.data)
           .pipe(
             switchMap((response: AttributeDetailApiResponse) => [new UpdatePropertySuccess(response.data)]),
             catchError((error: HttpErrorResponse) => of(new UpdateRadioPropertyFailure(error)))
