@@ -59,7 +59,7 @@ import { map, take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
 import { MoveObjectiveModalComponent } from '@app/workpackage/components/move-objective-modal/move-objective-modal.component';
-import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({

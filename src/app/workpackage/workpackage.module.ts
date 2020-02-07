@@ -50,7 +50,6 @@ import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
 import { MoveObjectiveModalComponent } from './components/move-objective-modal/move-objective-modal.component';
-import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
 
 @NgModule({
   imports: [
@@ -104,8 +103,7 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     RadioDetailModalComponent,
     WorkPackageColorComponent,
     AddObjectiveModalComponent,
-    MoveObjectiveModalComponent,
-    SelectModalComponent
+    MoveObjectiveModalComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,
@@ -114,8 +112,7 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     RadioListModalComponent,
     RadioDetailModalComponent,
     AddObjectiveModalComponent,
-    MoveObjectiveModalComponent,
-    SelectModalComponent
+    MoveObjectiveModalComponent
   ],
   providers: [WorkPackageService, WorkPackageNodesService, WorkPackageLinksService]
 })

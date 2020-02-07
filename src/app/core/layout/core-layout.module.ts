@@ -14,7 +14,9 @@ import {
   MatTableModule,
   MatPaginatorModule,
   MatDatepickerModule,
-  MatDialogModule
+  MatDialogModule,
+  MatAutocompleteModule,
+  MatCheckboxModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -45,6 +47,7 @@ import { WorkPackageNameComponent } from './header/workpackage-name/workpackage-
 import { EditDocumentationStandardsTableComponent } from './components/edit-documentation-standards/edit-documentation-standards.component';
 import { EditDocumentationStandardsFormComponent } from './components/edit-documentation-standards/form/form.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
+import { SelectModalComponent } from './components/select-modal/select-modal.component';
 
 @NgModule({
   imports: [
@@ -67,7 +70,9 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     MatTableModule,
     MatPaginatorModule,
     MatDatepickerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatAutocompleteModule,
+    MatCheckboxModule
   ],
   exports: [
     MainLayoutComponent,
@@ -91,7 +96,8 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -118,10 +124,12 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ],
   entryComponents: [
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ]
 })
 export class CoreLayoutModule {}

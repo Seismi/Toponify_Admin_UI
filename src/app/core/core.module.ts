@@ -32,6 +32,7 @@ import { WorkPackageNameComponent } from './layout/header/workpackage-name/workp
 import { EditDocumentationStandardsFormComponent } from './layout/components/edit-documentation-standards/form/form.component';
 import { EditDocumentationStandardsTableComponent } from './layout/components/edit-documentation-standards/edit-documentation-standards.component';
 import { DeleteModalComponent } from './layout/components/delete-modal/delete-modal.component';
+import { SelectModalComponent } from './layout/components/select-modal/select-modal.component';
 
 @NgModule({
   imports: [
@@ -63,10 +64,12 @@ import { DeleteModalComponent } from './layout/components/delete-modal/delete-mo
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ],
   entryComponents: [
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ],
   providers: [
     SearchService,

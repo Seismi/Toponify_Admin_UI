@@ -31,7 +31,7 @@ import { MatDialog, MatTabGroup } from '@angular/material';
 import { ReportDeleteModalComponent } from '../report-delete-modal/report-delete-modal.component';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
-import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntitiesBy } from '@app/architecture/store/selectors/node.selector';
 import { Level } from '@app/architecture/services/diagram-level.service';
