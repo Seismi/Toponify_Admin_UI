@@ -3,7 +3,8 @@ import { FormGroup } from '@angular/forms';
 import {
   TeamEntityOrOwnersEntityOrApproversEntity,
   WorkPackageDetail,
-  WorkPackageEntity
+  WorkPackageEntity,
+  Baseline
 } from '@app/workpackage/store/models/workpackage.models';
 import { TeamEntity } from '@app/settings/store/models/user.model';
 
@@ -34,6 +35,8 @@ export class WorkPackageDetailComponent {
   @Input() workpackageActionSupersede: boolean;
   @Input() workpackageColour: string;
   @Input() workPackageStatus: string;
+  @Input() archived: boolean;
+  @Input() currentState: string;
 
   @Output()
   deleteWorkpackage = new EventEmitter<void>();
@@ -76,6 +79,15 @@ export class WorkPackageDetailComponent {
 
   @Output()
   openWorkPackage = new EventEmitter<void>();
+
+  @Output()
+  archiveWorkPackage = new EventEmitter<void>();
+
+  @Output()
+  addBaseline = new EventEmitter<void>()
+
+  @Output()
+  deleteBaseline = new EventEmitter<Baseline>()
 
   onSave(): void {
     this.saveWorkpackage.emit();
@@ -131,6 +143,18 @@ export class WorkPackageDetailComponent {
 
   onOpen(): void {
     this.openWorkPackage.emit();
+  }
+
+  onArchive(): void {
+    this.archiveWorkPackage.emit();
+  }
+
+  onAddBaseline(): void {
+    this.addBaseline.emit();
+  }
+
+  onDeleteBaseline(baseline: Baseline): void {
+    this.deleteBaseline.emit(baseline);
   }
 
   getWorkPackageStatus(): boolean {

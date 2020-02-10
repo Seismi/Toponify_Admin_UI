@@ -23,8 +23,8 @@ export interface Page {
 
 export interface WorkPackageEntity {
   id: string;
-  name: string;
-  description: string;
+  name?: string;
+  description?: string;
   owners?: (OwnersEntityOrApproversEntity)[] | null;
   approvers?: (OwnersEntityOrApproversEntity)[] | null;
   baseline?: (Baseline)[] | null;
@@ -33,6 +33,7 @@ export interface WorkPackageEntity {
   displayColour?: string;
   edit?: boolean;
   selected?: boolean;
+  archived?: boolean;
 }
 
 export interface OwnersEntityOrApproversEntity {
@@ -42,6 +43,7 @@ export interface OwnersEntityOrApproversEntity {
 }
 
 export interface WorkPackageEntitiesHttpParams {
+  includeArchived?: boolean;
   ownerQuery?: string;
   scopeQuery?: string;
   page?: string;
@@ -58,18 +60,20 @@ export interface WorkPackageDetailApiResponse {
 }
 export interface WorkPackageDetail {
   id: string;
-  name: string;
-  description: string;
+  name?: string;
+  description?: string;
   objectives?: (ObjectivesEntityOrRadiosEntity)[] | null;
   radios?: (ObjectivesEntityOrRadiosEntity)[] | null;
   customProperties?: (CustomPropertiesEntity)[] | null;
   owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
-  baseline: (Baseline)[] | null;
+  baseline?: (Baseline)[] | null;
   approvers?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
-  status: string;
+  status?: string;
   availableActions?: AvailableActions;
-  hasErrors: boolean;
+  hasErrors?: boolean;
   changes?: Changes;
+  archived?: boolean;
+  displayColour?: string;
 }
 export interface AvailableActions {
   merge: boolean;

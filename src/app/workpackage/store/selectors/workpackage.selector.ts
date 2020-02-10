@@ -18,6 +18,11 @@ export const getWorkPackageEntities = createSelector(
     })
 );
 
+export const getAllWorkPackages = createSelector(
+  getWorkPackageState,
+  state => state.entities
+)
+
 export const workpackageSelectAllowed = createSelector(
   getWorkPackageState,
   state => !state.loading
@@ -46,6 +51,11 @@ export const getEditWorkpackages = createSelector(
 export const getEditWorkpackage = createSelector(
   getWorkPackageState,
   state => state.editId
+);
+
+export const getWorkPackageBaselineAvailability = createSelector(
+  getWorkPackageState,
+  state => state.baseline
 );
 
 export const getWorkPackageById = createSelector(

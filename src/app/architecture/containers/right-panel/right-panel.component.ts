@@ -1,33 +1,30 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import {
-  AttributesEntity,
-  NodeLink,
-  OwnersEntityOrTeamEntityOrApproversEntity,
-  NodeLinkDetail
+import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node-link.model';
 import {
   CustomPropertyValuesEntity,
   DescendantsEntity,
   Node,
   NodeReports,
-  Tag, TagApplicableTo
+  Tag,
+  TagApplicableTo
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 
 @Component({
   selector: 'smi-right-panel',
   templateUrl: './right-panel.component.html',
   styleUrls: ['./right-panel.component.scss']
 })
-export class RightPanelComponent implements OnInit, OnDestroy {
+export class RightPanelComponent {
   private showDetailTabRef;
-  @Input() nodeCategory: string;
 
+  @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() selectedView: ArchitectureView;
   @Input() nodes: Node[];
@@ -36,16 +33,14 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
   @Input() clickedOnLink = false;
-  @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
   @Input() selectedRightTab: number;
   @Input() attributes: AttributesEntity[] | null;
   @Input() relatedRadios: any;
   @Input() properties: CustomPropertyValuesEntity;
   @Input() workpackages: any;
-  @Input() objectSelected = false;
   @Input() radio: any;
-  @Input() multipleSelected = false;
+  @Input() multipleSelected: boolean;
   @Input() nodeScopes: WorkPackageNodeScopes[];
   @Input() viewLevel: Level;
   @Input() part: go.Part;
@@ -55,64 +50,26 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() tags: Tag[];
   @Input() componentLayer: TagApplicableTo;
 
-  @Output()
-  saveAttribute = new EventEmitter();
-
-  @Output()
-  deleteNode = new EventEmitter<void>();
-
-  @Output()
-  editDetails = new EventEmitter();
-
-  @Output()
-  cancel = new EventEmitter();
-
-  @Output()
-  addRelatedRadio = new EventEmitter();
-
-  @Output()
-  addAttribute = new EventEmitter();
-
-  @Output()
-  deleteAttribute = new EventEmitter<AttributesEntity>();
-
-  @Output()
-  hideRightPane = new EventEmitter();
-
-  @Output()
-  addRadio = new EventEmitter();
-
-  @Output()
-  addScope = new EventEmitter();
-
-  @Output()
-  addOwner = new EventEmitter();
-
-  @Output()
-  deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
-
-  @Output()
-  saveProperties = new EventEmitter<Object>();
-
-  @Output()
-  deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
-
+  @Output() saveNode = new EventEmitter<void>();
+  @Output() deleteNode = new EventEmitter<void>();
+  @Output() addRelatedRadio = new EventEmitter<void>();
+  @Output() addAttribute = new EventEmitter();
+  @Output() deleteAttribute = new EventEmitter<AttributesEntity>();
+  @Output() hideRightPane = new EventEmitter<void>();
+  @Output() addRadio = new EventEmitter<void>();
+  @Output() addScope = new EventEmitter<void>();
+  @Output() addOwner = new EventEmitter<void>();
+  @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
+  @Output() saveProperties = new EventEmitter<Object>();
+  @Output() deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
   @Output() addDescendant = new EventEmitter<void>();
-
   @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
-
   @Output() openRadio = new EventEmitter<RadioDetail>();
-
   @Output() deleteScope = new EventEmitter<WorkPackageNodeScopes>();
-
   @Output() addExistingScope = new EventEmitter<void>();
-
   @Output() addNewScope = new EventEmitter<void>();
-
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
-
   @Output() assignRadio = new EventEmitter<void>();
-
   @Output() addExistingAttribute = new EventEmitter<void>();
 
   @Output() updateAvailableTags = new EventEmitter<void>();
@@ -142,31 +99,23 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.showDetailTabRef.unsubscribe();
   }
 
-  onSaveAttribute() {
-    this.saveAttribute.emit();
-  }
-
-  onEditDetails() {
-    this.editDetails.emit();
+  onSaveNode(): void {
+    this.saveNode.emit();
   }
 
   onDeleteNode(): void {
     this.deleteNode.emit();
   }
 
-  onCancel() {
-    this.cancel.emit();
-  }
-
-  onHidePane() {
+  onHidePane(): void {
     this.hideRightPane.emit();
   }
 
-  onAddRelatedRadio() {
+  onAddRelatedRadio(): void {
     this.addRelatedRadio.emit();
   }
 
-  onAddAttribute() {
+  onAddAttribute(): void {
     this.addAttribute.emit();
   }
 
@@ -174,15 +123,15 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.deleteAttribute.emit(attribute);
   }
 
-  onAddRadio() {
+  onAddRadio(): void {
     this.addRadio.emit();
   }
 
-  onAddScope() {
+  onAddScope(): void {
     this.addScope.emit();
   }
 
-  onAddOwner() {
+  onAddOwner(): void {
     this.addOwner.emit();
   }
 
@@ -198,7 +147,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.deleteProperties.emit(customProperty);
   }
 
-  onAddDescendant() {
+  onAddDescendant(): void {
     this.addDescendant.emit();
   }
 
@@ -206,19 +155,19 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     this.deleteDescendant.emit(descendant);
   }
 
-  onOpenRadio(radio: RadioDetail) {
+  onOpenRadio(radio: RadioDetail): void {
     this.openRadio.emit(radio);
   }
 
-  onDeleteScope(scope: WorkPackageNodeScopes) {
+  onDeleteScope(scope: WorkPackageNodeScopes): void {
     this.deleteScope.emit(scope);
   }
 
-  onAddExistingScope() {
+  onAddExistingScope(): void {
     this.addExistingScope.emit();
   }
 
-  onAddNewScope() {
+  onAddNewScope(): void {
     this.addNewScope.emit();
   }
 
@@ -252,7 +201,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  next() {
+  next(): void {
     const list = this.selectedView === ArchitectureView.System ? this.nodes : this.links;
     if (!this.selectedNode) {
       this.selectNode.emit(list[0]);
@@ -266,7 +215,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
     }
   }
 
-  previous() {
+  previous(): void {
     const list = this.selectedView === ArchitectureView.System ? this.nodes : this.links;
     const currentIndex = (list as any).findIndex(item => item.id === this.selectedNode.id);
     if (currentIndex > 0) {

@@ -13,9 +13,10 @@ tr.mat-header-row {
 tr.mat-row {
   cursor: pointer;
   height: 45px;
-  &:hover {
-    background-color: #f9f9f9;
-  }
+}
+
+td.mat-cell:first-of-type {
+  padding-left: 10px;
 }
 
 td.mat-cell {

@@ -39,7 +39,8 @@ export class ErrorInterceptor implements HttpInterceptor {
           }
         }
         if (err.status !== 401) {
-          this.store.dispatch(new ShowError(`Error -  ${err.message}`));
+          const error = err.error.errors.map(error => error.source.detail);
+          this.store.dispatch(new ShowError(`Error -  ${error}`));
         }
         return throwError(err);
       })
