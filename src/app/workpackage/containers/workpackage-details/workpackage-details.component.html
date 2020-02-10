@@ -18,14 +18,14 @@
             [approversTableData]="workpackage?.approvers"
             (deleteOwner)="onDeleteOwner($event)"
             (addOwner)="onAddOwner($event)"
-            [statusDraft]="statusDraft"
+            [statusDraft]="workpackage?.status === 'draft'"
             [isEditable]="isEditable"
-            [workpackageActionSubmit]="workpackageActionSubmit"
-            [workpackageActionApprove]="workpackageActionApprove"
-            [workpackageActionReject]="workpackageActionReject"
-            [workpackageActionMerge]="workpackageActionMerge"
-            [workpackageActionReset]="workpackageActionReset"
-            [workpackageActionSupersede]="workpackageActionSupersede"
+            [workpackageActionSubmit]="workpackage?.availableActions?.submit"
+            [workpackageActionApprove]="workpackage?.availableActions?.approve"
+            [workpackageActionReject]="workpackage?.availableActions?.reject"
+            [workpackageActionMerge]="workpackage?.availableActions?.merge"
+            [workpackageActionReset]="workpackage?.availableActions?.reset"
+            [workpackageActionSupersede]="workpackage?.availableActions?.supersede"
             (submit)="submitWorkpackage()"
             (approve)="approveWorkpackage()"
             (reject)="rejectWorkpackage()"
@@ -35,7 +35,10 @@
             [workpackageColour]="workpackage?.displayColour"
             (selectColour)="onSelectWorkPackageColour($event)"
             (openWorkPackage)="onOpenWorkPackage()"
+            (archiveWorkPackage)="onArchiveWorkPackage()"
             [workPackageStatus]="workPackageStatus"
+            [archived]="workpackage?.archived"
+            [currentState]="workpackage?.id !== currentState"
             (addBaseline)="onAddBaseline()"
             (deleteBaseline)="onDeleteBaseline($event)"
           >
@@ -48,7 +51,7 @@
         </ng-template>
         <smi-edit-documentation-standards-table
           [data]="workpackage?.customPropertyValues"
-          [isEditable]="statusDraft"
+          [isEditable]="workpackage?.status === 'draft'"
           (saveProperty)="onSaveProperties($event)"
           (deleteProperty)="onDeleteProperties($event)">
         </smi-edit-documentation-standards-table>
@@ -73,7 +76,7 @@
         <smi-radios-table
           data-hook="workpackage-page-radio-table"
           [data]="workpackage?.radios"
-          [statusDraft]="statusDraft"
+          [statusDraft]="workpackage?.status === 'draft'"
           (addRadio)="onAddObjectiveOrRadio({ objective: false })"
           (deleteRadio)="onDeleteObjectiveOrRadio($event, { objective: false })"
           (editRadio)="onEditRadio($event)"

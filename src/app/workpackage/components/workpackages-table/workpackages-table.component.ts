@@ -8,6 +8,7 @@ import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/mod
   styleUrls: ['./workpackages-table.component.scss']
 })
 export class WorkPackagesTableComponent implements OnInit {
+  @Input() selectedRowIndex: string | number = -1;
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
@@ -17,13 +18,11 @@ export class WorkPackagesTableComponent implements OnInit {
     }
   }
 
-  public selectedRowIndex: string | number = -1;
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
-  public displayedColumns: string[] = ['name', 'status', 'owners', 'approvers'];
+  public displayedColumns: string[] = ['archive', 'name', 'status', 'owners', 'approvers'];
 
   @Output()
   workpackageSelected = new EventEmitter<WorkPackageDetail>();
@@ -34,7 +33,6 @@ export class WorkPackagesTableComponent implements OnInit {
   ngOnInit(): void {}
 
   onSelectRow(row: WorkPackageDetail): void {
-    this.selectedRowIndex = row.id;
     this.workpackageSelected.emit(row);
   }
 
