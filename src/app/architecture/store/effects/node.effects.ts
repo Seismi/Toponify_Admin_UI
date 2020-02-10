@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as NodeActions from '../actions/node.actions';
-import { NodeActionTypes } from '../actions/node.actions';
+import { NodeActionTypes, ReloadNodesData } from '../actions/node.actions';
 import { forkJoin, Observable, of } from 'rxjs';
 import {
   GetLinksRequestQueryParams,
@@ -257,7 +257,8 @@ export class NodeEffects {
         }
         return request.pipe(
           switchMap(response => [
-            new NodeActions.AssociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type })
+            new NodeActions.AssociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type }),
+            new ReloadNodesData()
           ]),
           catchError((error: Error) => {
             return of(new NodeActions.AssociateTagFailure(error));
@@ -280,7 +281,8 @@ export class NodeEffects {
       }
       return request.pipe(
         switchMap(response => [
-          new NodeActions.DissociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type })
+          new NodeActions.DissociateTagSuccess({ nodeOrLinkDetail: response.data, type: payload.type }),
+          new ReloadNodesData()
         ]),
         catchError((error: Error) => {
           return of(new NodeActions.DissociateTagFailure(error));

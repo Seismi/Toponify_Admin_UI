@@ -73,7 +73,8 @@ export enum NodeActionTypes {
   DeleteTagFailure = '[Node] Delete Tag Fail',
   DissociateTag = '[Node] Dissociate Tag',
   DissociateTagSuccess = '[Node] Dissociate Tag Success',
-  DissociateTagFailure = '[Node] Dissociate Tag Fail'
+  DissociateTagFailure = '[Node] Dissociate Tag Fail',
+  ReloadNodesData = '[Node] Reload Nodes Data'
 }
 
 export class LoadNodes implements Action {
@@ -381,6 +382,10 @@ export class DeleteTagFailure implements Action {
   constructor(public payload: Error) {}
 }
 
+export class ReloadNodesData implements Action {
+  readonly type = NodeActionTypes.ReloadNodesData;
+}
+
 export type NodeActionsUnion =
   | LoadNodes
   | LoadNodesSuccess
@@ -442,4 +447,5 @@ export type NodeActionsUnion =
   | UpdateTagFailure
   | DeleteTag
   | DeleteTagSuccess
-  | DeleteTagFailure;
+  | DeleteTagFailure
+  | ReloadNodesData;

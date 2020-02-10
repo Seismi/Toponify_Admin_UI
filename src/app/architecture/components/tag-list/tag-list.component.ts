@@ -43,6 +43,7 @@ export class TagListComponent implements OnChanges {
 
   onRemove(removedTag: Tag): void {
     this.removeTag.emit(removedTag);
+    this.updateAvailableTags.emit();
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -56,6 +57,7 @@ export class TagListComponent implements OnChanges {
     this.addTag.emit(event.option.value);
     this.tagInput.nativeElement.value = '';
     this.tagControl.reset();
+    this.updateAvailableTags.emit();
   }
 
   private filter(value: string, tags: Tag[]): Tag[] {
@@ -85,12 +87,13 @@ export class TagListComponent implements OnChanges {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.tag) {
         this.createTag.emit(data.tag);
+        this.updateAvailableTags.emit();
       }
     });
   }
 
   manageTags() {
-    this.dialog.open(ManageTagsModalComponent, {
+    const dialogRef = this.dialog.open(ManageTagsModalComponent, {
       disableClose: false,
       minWidth: '600px',
       data: {
@@ -99,6 +102,10 @@ export class TagListComponent implements OnChanges {
     });
     this.tagInput.nativeElement.value = '';
     this.tagControl.reset();
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.updateAvailableTags.emit();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

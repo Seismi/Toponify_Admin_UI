@@ -33,7 +33,6 @@ import {
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
-  CustomPropertyValuesEntity,
   DescendantsEntity,
   middleOptions,
   Node,
@@ -42,7 +41,8 @@ import {
   NodeReports,
   OwnersEntityOrTeamEntityOrApproversEntity,
   AttributesEntity,
-  Tag, TagApplicableTo
+  Tag,
+  TagApplicableTo
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -65,13 +65,7 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import {
-  AddRadioEntity,
-  LoadRadios,
-  RadioActionTypes,
-  LoadRadioSuccess,
-  LoadRadiosSuccess
-} from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
@@ -144,7 +138,6 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node as goNode } from 'gojs';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
@@ -286,9 +279,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   get nodeComponentLayer(): TagApplicableTo {
     if (this.selectedNode.hasOwnProperty('sourceObject')) {
-      return this.selectedNode.layer + ' links' as TagApplicableTo;
+      return (this.selectedNode.layer + ' links') as TagApplicableTo;
     } else {
-      return this.selectedNode.layer + 's' as TagApplicableTo;
+      return (this.selectedNode.layer + 's') as TagApplicableTo;
     }
   }
 
@@ -310,7 +303,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
     private nodeService: NodeService,
-    private attributeStore: Store<AttributeState>
+    private attributeStore: Store<AttributeState>,
+    private actions$: Actions
   ) {}
 
   ngOnInit() {
@@ -325,6 +319,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workPackageName = workpackages[0].name + ' & ' + workpackages[1].name + ' ...';
         }
       })
+    );
+    this.subscriptions.push(
+      this.actions$
+        .pipe(
+          ofType(NodeActionTypes.ReloadNodesData),
+          tap(() => {
+            this.eventEmitter.next(Events.NodesLinksReload);
+          })
+        )
+        .subscribe()
     );
     this.subscriptions.push(
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
@@ -744,7 +748,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     }
 
-    parts.length >=2 ? this.multipleSelected = true : this.multipleSelected = false;
+    parts.length >= 2 ? (this.multipleSelected = true) : (this.multipleSelected = false);
 
     // Multiple selections
     if (parts.length > 1) {
@@ -1754,15 +1758,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         if (!this.workpackageId) {
           return;
         }
-        if (!tags || tags.id !== this.workpackageId + this.selectedNode.id) {
-          this.store.dispatch(
-            new LoadAvailableTags({
-              workpackageId: this.workpackageId,
-              nodeId: this.selectedNode.id,
-              type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
-            })
-          );
-        }
+        this.store.dispatch(
+          new LoadAvailableTags({
+            workpackageId: this.workpackageId,
+            nodeId: this.selectedNode.id,
+            type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+          })
+        );
       });
   }
 
