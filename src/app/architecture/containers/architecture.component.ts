@@ -895,7 +895,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.group.id, areaSize: data.group.areaSize };
     // const nodeLocationData = { id: data.group.id, locationCoordinates: data.group.locationCoordinates };
 
-    if (this.layout) {
+    if (this.layout && data.groups.length > 0) {
       this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: data.groups }));
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.groups }));
     }

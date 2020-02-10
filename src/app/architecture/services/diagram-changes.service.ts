@@ -805,7 +805,7 @@ export class DiagramChangesService {
         // link.update
         link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
         link.invalidateRoute();
-        link.updateRoute()
+        link.updateRoute();
 
         linkData.push({ id: link.data.id, points: link.data.route });
       }

@@ -422,7 +422,7 @@ export function reducer(
       const { layoutId, data } = action.payload;
       return data.reduce(
         function(updatedState, group) {
-          const nodeIndex = state.entities.findIndex(g => g.id === group.id);
+          const nodeIndex = updatedState.entities.findIndex(g => g.id === group.id);
           if (nodeIndex > -1) {
             return replaceGroupAreaSize(state, nodeIndex, group.id, layoutId, group.areaSize);
           }
