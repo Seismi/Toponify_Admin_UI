@@ -116,6 +116,9 @@
 <div *ngIf="!dataSource.filteredData.length" class="no-data-found">No data found</div>
 
 <div class="table-footer">
+  <div style="flex-grow: 1">
+    <button mat-raised-button color="primary" class="add-btn" [disabled]="!workPackageIsEditable" (click)="onAdd()"><mat-icon>add</mat-icon>Create New</button>
+  </div>
   <button mat-icon-button (click)="downloadCSV()"><mat-icon title="Export as CSV">save_alt</mat-icon></button>
   <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
 </div>

@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>New</h1>
+<div mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <mat-form-field>
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let category of getCategories()" [value]="category">{{ category }}</mat-option>
+      </mat-select>
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Name" formControlName="name">
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="data.link">
+      <mat-label>Source</mat-label>
+      <mat-select formControlName="sourceId">
+        <mat-option *ngFor="let node of nodes$ | async" [value]="node.id">{{node.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="data.link">
+      <mat-label>Target</mat-label>
+      <mat-select formControlName="targetId">
+        <mat-option *ngFor="let node of nodes$ | async" [value]="node.id">{{node.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()">Save</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>
