@@ -46,7 +46,6 @@ import { RadioListComponent } from './components/radio-list/radio-list.component
 import { RadioListModalComponent } from './containers/radio-list-modal/radio-list-modal.component';
 import { RadioModule } from '@app/radio/radio.module';
 import { WorkPackageTreeComponent } from './components/workpackage-tree/workpackage-tree.component';
-import { WorkPackageRightSideComponent } from './components/right-side/right-side.component';
 import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio-detail-modal.component';
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
@@ -102,7 +101,6 @@ import { SelectModalComponent } from '@app/report-library/components/select-moda
     RadioListComponent,
     RadioListModalComponent,
     WorkPackageTreeComponent,
-    WorkPackageRightSideComponent,
     RadioDetailModalComponent,
     WorkPackageColorComponent,
     AddObjectiveModalComponent,
