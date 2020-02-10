@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { State as ReportState } from '../../store/reducers/report.reducer';
 import { select, Store } from '@ngrx/store';
 import {
@@ -15,7 +15,8 @@ import {
   SetDimensionFilter,
   UpdateReport,
   UpdateReportProperty,
-  DeleteReportProperty
+  DeleteReportProperty,
+  ReportActionTypes
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
@@ -41,6 +42,7 @@ import { ReportingConceptFilterModalComponent } from '@app/report-library/compon
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -65,13 +67,15 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   selectedOwnerIndex: any = -1;
 
   constructor(
+    private actions: Actions,
     private workPackageStore: Store<WorkPackageState>,
     private route: ActivatedRoute,
     private store: Store<ReportState>,
     private reportLibraryDetailService: ReportLibraryDetailService,
     private dialog: MatDialog,
     private nodeStore: Store<NodeState>,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -89,11 +93,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       this.store.pipe(select(getReportSelected)).subscribe(report => {
         this.report = report;
         if (report) {
-          this.reportLibraryDetailService.reportDetailForm.patchValue({
-            name: report.name,
-            description: report.description
-          });
-          this.isEditable = false;
+          this.reportLibraryDetailService.updateForm({...report});
         }
       })
     );
@@ -142,10 +142,6 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  onEditReport() {
-    this.isEditable = true;
-  }
-
   onCancel() {
     this.isEditable = false;
     this.selectedOwner = false;
@@ -169,6 +165,9 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
             reportId: this.reportId
           })
         );
+        this.actions.pipe(ofType(ReportActionTypes.DeleteReportSuccess)).subscribe(_ => {
+          this.router.navigate(['report-library'], { queryParamsHandling: 'preserve' });
+        });
       }
     });
   }
