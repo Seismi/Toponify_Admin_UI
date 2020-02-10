@@ -8,14 +8,14 @@
             <div class="example-container">
               <div style="display:flex">
                 <mat-form-field hideRequiredMarker>
-                  <input data-hook="username" matInput formControlName="username" placeholder="Username" type="text" />
+                  <input data-qa="auth-login-user-name" matInput formControlName="username" placeholder="Username" type="text" />
                   <mat-error>Username is required</mat-error>
                 </mat-form-field>
               </div>
               <div style="display:flex">
                 <mat-form-field hideRequiredMarker>
                   <input
-                    data-hook="password"
+                    data-qa="auth-login-password"
                     matInput
                     formControlName="password"
                     placeholder="Password"
@@ -25,15 +25,15 @@
                 </mat-form-field>
               </div>
             </div>
-            <button data-hook="loginsubmit" mat-raised-button class="login-button" [disabled]="loading">Login</button>
+            <button data-qa="auth-login-login" mat-raised-button class="login-button" [disabled]="loading">Login</button>
           </form>
-          <a href="https://support.toponify.com" target="_blank">Need help? Click here</a>
+          <a href="https://support.toponify.com" target="_blank" data-qa="auth-login-help">Need help? Click here</a>
           <div class="copy-right-block">
             <p class="copy-right-text">Copyright @2019 Seismi Limited</p>
           </div>
         </div>
         <div class="error-block">
-          <h4 class="error-text" *ngIf="error | async">{{ error | async }}</h4>
+          <h4 class="error-text" *ngIf="error | async" data-qa="auth-login-error-msg">{{ error | async }}</h4>
         </div>
       </div>
     </div>
