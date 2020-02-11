@@ -23,6 +23,7 @@ export class ReportLibraryTableComponent implements OnInit {
 
   @Output() reportSelected = new EventEmitter<ReportLibrary>();
   @Output() addReport = new EventEmitter<void>();
+  @Output() download = new EventEmitter<void>();
 
   public dataSource: MatTableDataSource<ReportLibrary>;
   public displayedColumns: string[] = ['name', 'dataSets'];
@@ -45,5 +46,9 @@ export class ReportLibraryTableComponent implements OnInit {
   onSearch(filterValue: string): void {
     this.filterValue = filterValue;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  downloadCSV(): void {
+    this.download.emit();
   }
 }

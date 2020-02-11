@@ -34,6 +34,7 @@ import { EditDocumentationStandardsTableComponent } from './layout/components/ed
 import { RightHandSideComponent } from './layout/components/right-hand-side/right-hand-side.component';
 import { DeleteModalComponent } from './layout/components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from './layout/components/select-modal/select-modal.component';
+import { DownloadCSVModalComponent } from './layout/components/download-csv-modal/download-csv-modal.component';
 
 @NgModule({
   imports: [
@@ -65,6 +66,9 @@ import { SelectModalComponent } from './layout/components/select-modal/select-mo
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
     EditDocumentationStandardsFormComponent,
+    DeleteModalComponent,
+    SelectModalComponent,
+    DownloadCSVModalComponent,
     RightHandSideComponent,
     DeleteModalComponent,
     SelectModalComponent
