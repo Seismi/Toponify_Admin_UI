@@ -4,7 +4,6 @@ import { Store, select } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Link } from 'gojs';
-import { Observable } from 'rxjs';
 import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 import { Node } from '@app/architecture/store/models/node.model';
 
@@ -20,7 +19,7 @@ const reportingConceptCategories = ['structure', 'list', 'key'];
 })
 export class ComponentsOrLinksModalComponent implements OnInit {
   public formGroup: FormGroup;
-  public nodes$: Observable<Node[]>;
+  public nodes: Node[];
   
   constructor(
     private fb: FormBuilder,
@@ -42,7 +41,10 @@ export class ComponentsOrLinksModalComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.nodes$ = this.store.pipe(select(getNodeEntities));
+    this.store.pipe(select(getNodeEntities)).subscribe(nodes => {
+      const components = nodes.filter(node => !node.group.length);
+      this.nodes = components;
+    });
   }
 
   getCategories(): string[] {

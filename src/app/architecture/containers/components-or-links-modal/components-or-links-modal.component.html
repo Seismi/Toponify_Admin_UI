@@ -17,14 +17,14 @@
     <mat-form-field *ngIf="data.link">
       <mat-label>Source</mat-label>
       <mat-select formControlName="sourceId">
-        <mat-option *ngFor="let node of nodes$ | async" [value]="node.id">{{node.name}}</mat-option>
+        <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field *ngIf="data.link">
       <mat-label>Target</mat-label>
       <mat-select formControlName="targetId">
-        <mat-option *ngFor="let node of nodes$ | async" [value]="node.id">{{node.name}}</mat-option>
+        <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
     </mat-form-field>
   </form>
