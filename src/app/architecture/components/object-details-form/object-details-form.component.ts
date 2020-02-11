@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, Tag, TagApplicableTo } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
@@ -23,7 +23,6 @@ export class ObjectDetailsFormComponent {
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input('group') set setGroup(group) {
-    console.log('set group');
     this.group = group;
     this.values = group.value;
   }
@@ -36,7 +35,9 @@ export class ObjectDetailsFormComponent {
   @Input() selectAttribute: boolean;
   @Input() viewLevel: Level;
   @Input() part: go.Part;
-
+  @Input() availableTags: Tag[];
+  @Input() tags: Tag[];
+  @Input() componentLayer: TagApplicableTo;
   Level = Level;
 
   constructor() {}
@@ -51,6 +52,13 @@ export class ObjectDetailsFormComponent {
   @Output() selectRelatedAttribute = new EventEmitter<string>();
   @Output() addRelatedAttribute = new EventEmitter<void>();
   @Output() deleteRelatedAttribute = new EventEmitter<void>();
+
+  @Output() updateAvailableTags = new EventEmitter<void>();
+
+  @Output() addTag = new EventEmitter<string>();
+  @Output() createTag = new EventEmitter<Tag>();
+  @Output() removeTag = new EventEmitter<Tag>();
+  @Output() updateTag = new EventEmitter<Tag>();
 
   onSave(): void {
     this.save.emit();
@@ -113,5 +121,25 @@ export class ObjectDetailsFormComponent {
       return true;
     }
     return false;
+  }
+
+  onUpdateAvailableTags() {
+    this.updateAvailableTags.emit();
+  }
+
+  onAddTag(tag: string) {
+    this.addTag.emit(tag);
+  }
+
+  onCreateTag(tag: Tag) {
+    this.createTag.emit(tag);
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.removeTag.emit(tag);
+  }
+
+  onUpdateTag(tag: Tag) {
+    this.updateTag.emit(tag);
   }
 }

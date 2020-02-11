@@ -8,6 +8,7 @@ import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/mod
   styleUrls: ['./workpackages-table.component.scss']
 })
 export class WorkPackagesTableComponent implements OnInit {
+  public filterValue: string;
   @Input() selectedRowIndex: string | number = -1;
   @Input()
   set data(data: WorkPackageEntity[]) {
@@ -15,6 +16,7 @@ export class WorkPackagesTableComponent implements OnInit {
       this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.dataSource.filter = this.filterValue;
     }
   }
 
@@ -46,5 +48,10 @@ export class WorkPackagesTableComponent implements OnInit {
 
   getApprovers(data: WorkPackageEntity): string {
     return data.approvers.map(approver => approver.name).join('; ');
+  }
+
+  onSearch(filterValue: string): void {
+    this.filterValue = filterValue;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

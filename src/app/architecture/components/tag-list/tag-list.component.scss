@@ -1,0 +1,11 @@
+mat-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-autocomplete-panel.mat-autocomplete-visible {
+  display: flex;
+  flex-direction: column;
+}
+.option-container {
+  overflow: auto;
+}

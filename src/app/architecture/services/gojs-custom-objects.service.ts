@@ -267,6 +267,11 @@ export class GojsCustomObjectsService {
         click: function(event, object) {
           thisService.diagramChangesService.reorganise(event.diagram);
         }
+      }),
+      $('ContextMenuButton', $(go.TextBlock, 'Reorganise Links'), {
+        click: function(event, object) {
+          thisService.diagramChangesService.reorganiseLinks(event.diagram)
+        }
       })
     );
   }
