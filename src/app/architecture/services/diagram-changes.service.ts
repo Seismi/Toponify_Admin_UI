@@ -771,6 +771,8 @@ export class DiagramChangesService {
       }],
       links: linkData
     });
+
+    this.groupMemberSizeChanged(node);
   }
 
   groupMemberSizeChanged(member: go.Group) {

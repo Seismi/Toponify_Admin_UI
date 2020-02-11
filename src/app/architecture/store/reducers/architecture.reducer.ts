@@ -434,7 +434,7 @@ export function reducer(
         function(updatedState, group) {
           const nodeIndex = updatedState.entities.findIndex(g => g.id === group.id);
           if (nodeIndex > -1) {
-            return replaceGroupAreaSize(state, nodeIndex, group.id, layoutId, group.areaSize);
+            return replaceGroupAreaSize(updatedState, nodeIndex, group.id, layoutId, group.areaSize);
           }
         }
         ,
