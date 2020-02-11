@@ -21,12 +21,10 @@ import {
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
-  MatToolbarModule
+  MatToolbarModule, MatChipsModule
 } from '@angular/material';
-import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeService } from '@app/architecture/services/node.service';
-import { StoreModule } from '@ngrx/store';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
@@ -82,6 +80,8 @@ import { DeleteAttributeModalComponent } from './containers/delete-attribute-mod
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/radio-confirm-modal.component';
+import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
+import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
 
 
 @NgModule({
@@ -117,7 +117,10 @@ import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/rad
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule
+    ScopesAndLayoutsModule,
+    TagListModule,
+    TagModule,
+    MatChipsModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [

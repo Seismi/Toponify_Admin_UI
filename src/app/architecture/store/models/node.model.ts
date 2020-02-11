@@ -225,6 +225,56 @@ export interface System {
   description: string;
 }
 
+export interface Tag {
+  id: string;
+  name: string;
+  applicableTo: TagApplicableTo[];
+  textColour: TagColour;
+  backgroundColour: TagColour;
+  iconName: TagIcon;
+}
+
+export enum TagColour {
+  'white' = '#ffffff',
+  'brown' = '#ad7307',
+  'black' = '#000000',
+  'yellow' = '#ffff19',
+  'orange' = '#ff7400',
+  'red' = '#ff0000',
+  'green' = '#008000',
+  'purple' = '#d37cb1',
+  'blue' = '#0741ad',
+
+}
+
+export enum TagApplicableTo {
+  everywhere = 'everywhere',
+  systems = 'systems',
+  system_links = 'system links',
+  data_sets = 'data sets',
+  data_set_links = 'data set links',
+  dimensions = 'dimensions',
+  dimension_links = 'dimension links',
+  reporting_concepts = 'reporting concepts',
+  reporting_concept_links = 'reporting concept links',
+  reports = 'reports'
+}
+
+export enum TagIcon {
+  tag_cloud = 'tag_cloud',
+  tag_external = 'tag_external',
+  tag_process = 'tag_process',
+  tag_timer = 'tag_timer',
+  tag_user = 'tag_user'
+}
+
+// id	string($UUID)
+// name	string
+// applicableTo	[...]
+// textColour	string($HEX)
+// backgroundColour	string($HEX)
+// iconName	string
+
 // TODO: This may be shared at some point
 
 export interface Error {

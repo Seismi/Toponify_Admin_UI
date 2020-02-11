@@ -23,7 +23,7 @@ export class JWTInterceptor implements HttpInterceptor {
         return EMPTY;
       }
     } else if (token) {
-      if (!request.url.includes('assets/node-icons')) {
+      if (!request.url.includes('assets/node-icons') && !request.url.includes('assets/tag-icons')) {
         request = request.clone({
           url: environment.api + request.url,
           setHeaders: {
