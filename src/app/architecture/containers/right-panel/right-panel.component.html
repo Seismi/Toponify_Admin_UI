@@ -20,6 +20,14 @@
         [viewLevel]="viewLevel"
         [part]="part"
         [nodeCategory]="nodeCategory"
+        [availableTags]="availableTags"
+        [componentLayer]="componentLayer"
+        (updateAvailableTags)="onUpdateAvailableTags()"
+        (addTag)="onAddTag($event)"
+        (createTag)="onCreateTag($event)"
+        (removeTag)="onRemoveTag($event)"
+        (updateTag)="onUpdateTag($event)"
+        [tags]="tags"
       >
       </smi-object-details-form>
     </p>

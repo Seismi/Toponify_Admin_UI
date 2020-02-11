@@ -1,7 +1,15 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { CustomPropertyValuesEntity, DescendantsEntity, Node, NodeReports } from '@app/architecture/store/models/node.model';
+import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity
+} from '@app/architecture/store/models/node-link.model';
+import {
+  CustomPropertyValuesEntity,
+  DescendantsEntity,
+  Node,
+  NodeReports,
+  Tag,
+  TagApplicableTo
+} from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
@@ -15,7 +23,7 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 })
 export class RightPanelComponent {
   private showDetailTabRef;
-  
+
   @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() selectedView: ArchitectureView;
@@ -38,6 +46,9 @@ export class RightPanelComponent {
   @Input() part: go.Part;
   @Input() filterLevel: string;
   @Input() nodeReports: NodeReports[];
+  @Input() availableTags: Tag[];
+  @Input() tags: Tag[];
+  @Input() componentLayer: TagApplicableTo;
 
   @Output() saveNode = new EventEmitter<void>();
   @Output() deleteNode = new EventEmitter<void>();
@@ -60,6 +71,13 @@ export class RightPanelComponent {
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
   @Output() assignRadio = new EventEmitter<void>();
   @Output() addExistingAttribute = new EventEmitter<void>();
+
+  @Output() updateAvailableTags = new EventEmitter<void>();
+
+  @Output() addTag = new EventEmitter<string>();
+  @Output() createTag = new EventEmitter<Tag>();
+  @Output() removeTag = new EventEmitter<Tag>();
+  @Output() updateTag = new EventEmitter<Tag>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -209,5 +227,25 @@ export class RightPanelComponent {
 
   showSkipButtons(): boolean {
     return this.selectedView !== ArchitectureView.Diagram;
+  }
+
+  onUpdateAvailableTags() {
+    this.updateAvailableTags.emit();
+  }
+
+  onAddTag(tag: string) {
+    this.addTag.emit(tag);
+  }
+
+  onCreateTag(tag: Tag) {
+    this.createTag.emit(tag);
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.removeTag.emit(tag);
+  }
+
+  onUpdateTag(tag: Tag) {
+    this.updateTag.emit(tag);
   }
 }
