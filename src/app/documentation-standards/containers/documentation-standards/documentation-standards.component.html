@@ -18,10 +18,7 @@
         </smi-documentation-standards-table>
       </div>
       <div class="col">
-        <smi-document-standards-right-side
-          (add)="onAddDocument()"
-          [title]="'Document Standard'"
-        ></smi-document-standards-right-side>
+        <smi-right-hand-side [title]="'Document Standard'" (add)="onAddDocument()"></smi-right-hand-side>
         <router-outlet></router-outlet>
       </div>
     </div>

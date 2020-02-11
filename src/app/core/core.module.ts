@@ -70,7 +70,8 @@ import { DownloadCSVModalComponent } from './layout/components/download-csv-moda
     SelectModalComponent,
     DownloadCSVModalComponent,
     RightHandSideComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,

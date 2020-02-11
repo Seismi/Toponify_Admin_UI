@@ -102,7 +102,8 @@ import { DownloadCSVModalComponent } from './components/download-csv-modal/downl
     SelectModalComponent,
     DownloadCSVModalComponent,
     RightHandSideComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -133,12 +134,14 @@ import { DownloadCSVModalComponent } from './components/download-csv-modal/downl
     SelectModalComponent,
     DownloadCSVModalComponent,
     RightHandSideComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    SelectModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
     SelectModalComponent,
-    DownloadCSVModalComponent
+    DownloadCSVModalComponent,
+    SelectModalComponent
   ]
 })
 export class CoreLayoutModule {}
