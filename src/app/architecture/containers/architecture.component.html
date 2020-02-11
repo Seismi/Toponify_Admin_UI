@@ -180,6 +180,14 @@
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
         [nodeReports]="nodeReports$ | async"
         (addExistingAttribute)="onAddExistingAttribute()"
+        (updateAvailableTags)="onUpdateAvailableTags()"
+        (addTag)="onAddTag($event)"
+        (createTag)="onCreateTag($event)"
+        (removeTag)="onRemoveTag($event)"
+        (updateTag)="onUpdateTag($event)"
+        [tags]="selectedNode?.tags"
+        [componentLayer]="nodeComponentLayer"
+        [availableTags]="availableTags$ | async"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

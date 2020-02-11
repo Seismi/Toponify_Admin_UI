@@ -21,12 +21,10 @@ import {
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
-  MatToolbarModule
+  MatToolbarModule, MatChipsModule
 } from '@angular/material';
-import { reducer } from '@app/architecture/store/reducers/architecture.reducer';
 import { CoreModule } from '@app/core/core.module';
 import { NodeService } from '@app/architecture/services/node.service';
-import { StoreModule } from '@ngrx/store';
 import { ArchitectureRoutingModule } from './architecture-routing.module';
 import { AnalysisTabComponent } from './components/analysis-tab/analysis-tab.component';
 import { ArchitectureDiagramComponent } from './components/architecture-diagram/architecture-diagram.component';
@@ -57,8 +55,6 @@ import { WorkPackageTabTableComponent } from './components/workpackage-tab-table
 import { LayerPipe } from './pipes/layer.pipe';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
-import { EffectsModule } from '@ngrx/effects';
-import { NodeEffects } from './store/effects/node.effects';
 import { RadioTableInArchitectureComponent } from './components/radio-table/radio-table.component';
 import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
@@ -83,7 +79,8 @@ import {DiagramImageService} from '@app/architecture/services/diagram-image.serv
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/radio-confirm-modal.component';
 import { ComponentsOrLinksModalComponent } from './containers/components-or-links-modal/components-or-links-modal.component';
-
+import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
+import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
 
 @NgModule({
   imports: [
@@ -118,7 +115,10 @@ import { ComponentsOrLinksModalComponent } from './containers/components-or-link
     MatSelectModule,
     MatTooltipModule,
     MatToolbarModule,
-    ScopesAndLayoutsModule
+    ScopesAndLayoutsModule,
+    TagListModule,
+    TagModule,
+    MatChipsModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
