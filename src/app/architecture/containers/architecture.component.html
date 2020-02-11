@@ -192,3 +192,4 @@
 <ng-template #downloadingTemplate>
   <h3>Preparing...</h3>
 </ng-template>
+<smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>

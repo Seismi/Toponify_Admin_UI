@@ -42,7 +42,7 @@ import {
   OwnersEntityOrTeamEntityOrApproversEntity,
   AttributesEntity,
   Tag,
-  TagApplicableTo
+  TagApplicableTo, LoadingStatus
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -51,7 +51,7 @@ import {
   getNodeReports,
   getParentDescendantIds,
   getSelectedNode,
-  getSelectedNodeLink
+  getSelectedNodeLink, getTopologyLoadingStatus
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import {
@@ -267,6 +267,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
+  public loadingStatus = LoadingStatus;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -278,11 +279,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private tableView: ArchitectureTableViewComponent;
 
   get nodeComponentLayer(): TagApplicableTo {
+    if (!this.selectedNode) {
+      return TagApplicableTo.systems;
+    }
     if (this.selectedNode.hasOwnProperty('sourceObject')) {
       return (this.selectedNode.layer + ' links') as TagApplicableTo;
     } else {
       return (this.selectedNode.layer + 's') as TagApplicableTo;
     }
+  }
+
+  get isLoading$(): Observable<LoadingStatus> {
+    return this.store.select(getTopologyLoadingStatus);
   }
 
   constructor(
