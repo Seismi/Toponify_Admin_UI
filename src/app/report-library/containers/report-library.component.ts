@@ -212,6 +212,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   downloadCSV() {
     this.dialog.open(DownloadCSVModalComponent, {
       width: '250px',
+      disableClose: true,
       data: {
         GET: 'report-library',
         fileName: 'report-library'
