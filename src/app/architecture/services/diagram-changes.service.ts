@@ -626,6 +626,14 @@ export class DiagramChangesService {
     // Needs store update before implementation
   }
 
+  // Rerun the diagram's links
+  reorganiseLinks(diagram) {
+    diagram.links.each(link => {
+      diagram.model.setDataProperty(link.data, 'updateRoute', true);
+      link.invalidateRoute();
+    });
+  }
+
   nodeExpandChanged(node) {
     const linkData: { id: string; points: number[] }[] = [];
 

@@ -27,10 +27,6 @@
         [ngClass]="{ editable: !nodeIsEditable() }"
       ></textarea>
     </mat-form-field>
-
-    <mat-form-field>
-      <input matInput placeholder="Tags" formControlName="tags" [ngClass]="{ editable: !nodeIsEditable() }" />
-    </mat-form-field>
   </div>
 
   <div class="form-group" *ngIf="!nodeIsEditable()">
@@ -38,8 +34,16 @@
     <button mat-flat-button (click)="onCancel()">Cancel</button>
     <button mat-flat-button color="warn" (click)="onDelete()">Delete</button>
   </div>
-
   <div>
+    <smi-tag-list [tags]="tags"
+                  [availableTags]="availableTags"
+                  [editMode]="!nodeIsEditable()"
+                  [componentLayer]="componentLayer"
+                  (addTag)="onAddTag($event)"
+                  (createTag)="onCreateTag($event)"
+                  (removeTag)="onRemoveTag($event)"
+                  (updateTag)="onUpdateTag($event)"
+                  (updateAvailableTags)="onUpdateAvailableTags()"></smi-tag-list>
     <smi-owners-table-in-architecture
       [data]="owners"
       [isEditable]="!nodeIsEditable()"

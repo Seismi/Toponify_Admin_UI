@@ -8,22 +8,23 @@ import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/mod
   styleUrls: ['./workpackages-table.component.scss']
 })
 export class WorkPackagesTableComponent implements OnInit {
+  public filterValue: string;
+  @Input() selectedRowIndex: string | number = -1;
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
       this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.dataSource.filter = this.filterValue;
     }
   }
-
-  public selectedRowIndex: string | number = -1;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
-  public displayedColumns: string[] = ['name', 'status', 'owners', 'approvers'];
+  public displayedColumns: string[] = ['archive', 'name', 'status', 'owners', 'approvers'];
 
   @Output()
   workpackageSelected = new EventEmitter<WorkPackageDetail>();
@@ -34,7 +35,6 @@ export class WorkPackagesTableComponent implements OnInit {
   ngOnInit(): void {}
 
   onSelectRow(row: WorkPackageDetail): void {
-    this.selectedRowIndex = row.id;
     this.workpackageSelected.emit(row);
   }
 
@@ -48,5 +48,10 @@ export class WorkPackagesTableComponent implements OnInit {
 
   getApprovers(data: WorkPackageEntity): string {
     return data.approvers.map(approver => approver.name).join('; ');
+  }
+
+  onSearch(filterValue: string): void {
+    this.filterValue = filterValue;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

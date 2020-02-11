@@ -33,10 +33,19 @@ export class AppComponent implements AfterViewInit {
       'data-interface'
     ];
 
+    const tagIcons = ['tag_cloud', 'tag_external', 'tag_process', 'tag_timer', 'tag_user'];
+
     customIcons.forEach(icon => {
       this.matIconRegistry.addSvgIcon(
         icon,
         this.domSanitizer.bypassSecurityTrustResourceUrl(`/assets/node-icons/${icon}.svg`)
+      );
+    });
+
+    tagIcons.forEach(icon => {
+      this.matIconRegistry.addSvgIcon(
+        icon,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`/assets/tag-icons/${icon}.svg`)
       );
     });
   }

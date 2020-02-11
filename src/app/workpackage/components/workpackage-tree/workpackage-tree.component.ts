@@ -1,7 +1,8 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
 import * as go from 'gojs';
 import { WorkPackageDiagramService } from '@app/workpackage/services/workpackage-diagram.service';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Observable } from 'rxjs';
 
 const $ = go.GraphObject.make;
 
@@ -11,11 +12,12 @@ const $ = go.GraphObject.make;
   styleUrls: ['./workpackage-tree.component.scss'],
   providers: [WorkPackageDiagramService]
 })
-export class WorkPackageTreeComponent implements OnInit {
+export class WorkPackageTreeComponent implements OnInit, OnChanges {
   public diagram: go.Diagram;
 
-  @Input() workpackages: WorkPackageEntity[];
+  @Input() workpackages$: Observable<WorkPackageEntity[]>;
   @Output() selectWorkpackage = new EventEmitter<WorkPackageDetail>();
+  @Input() checked: boolean;
 
   @ViewChild('workPackageTreeDiv') private diagramRef: ElementRef;
 
@@ -28,12 +30,18 @@ export class WorkPackageTreeComponent implements OnInit {
     this.diagram.allowSelect = true;
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.checked) {
+      this.diagram.model = this.workPackageDiagramService.getModel(this.workpackages$);
+    }
+  }
+
   ngOnInit() {
     this.diagram.div = this.diagramRef.nativeElement;
     this.diagram.nodeTemplate = this.workPackageDiagramService.getNodeTemplate();
     this.diagram.linkTemplate = this.workPackageDiagramService.getLinkTemplate();
     this.diagram.layout = this.workPackageDiagramService.getLayout();
-    this.diagram.model = this.workPackageDiagramService.getModel(this.workpackages);
+    this.diagram.model = this.workPackageDiagramService.getModel(this.workpackages$);
 
     this.diagram.addDiagramListener('ChangedSelection', ev => {
       const parts = ev.diagram.selection.toArray();

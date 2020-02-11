@@ -6,7 +6,8 @@ import {
   NodeDetail,
   OwnersEntity,
   NodeReports,
-  GroupAreaSizeApiRequest
+  GroupAreaSizeApiRequest,
+  Tag
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
@@ -55,7 +56,29 @@ export enum NodeActionTypes {
   GetParentDescendantIds = '[Node] Get Parent Descendant Ids',
   GetParentDescendantIdsSucces = '[Node] Get Parent Descendant Ids Success',
   GetParentDescendantIdsFailure = '[Node] Get Parent Descendant Ids Failure',
-  SetParentDescendantIds = '[Node] Set Parent Descendant Ids'
+  SetParentDescendantIds = '[Node] Set Parent Descendant Ids',
+  LoadAvailableTags = '[Node] Load Available Tags',
+  LoadAvailableTagsSuccess = '[Node] Load Available Tags Success',
+  LoadAvailableTagsFailure = '[Node] Load Available Tags Fail',
+  CreateTag = '[Node] Create Tag',
+  CreateTagSuccess = '[Node] Create Tag Success',
+  CreateTagFailure = '[Node] Create Tag Fail',
+  AssociateTag = '[Node] Associate Tag',
+  AssociateTagSuccess = '[Node] Associate Tag Success',
+  AssociateTagFailure = '[Node] Associate Tag Fail',
+  LoadTags = '[Node] Load Tags',
+  LoadTagsSuccess = '[Node] Load Tags Success',
+  LoadTagsFailure = '[Node] Load Tags Fail',
+  UpdateTag = '[Node] Update Tag',
+  UpdateTagSuccess = '[Node] Update Tag Success',
+  UpdateTagFailure = '[Node] Update Tag Fail',
+  DeleteTag = '[Node] Delete Tag',
+  DeleteTagSuccess = '[Node] Delete Tag Success',
+  DeleteTagFailure = '[Node] Delete Tag Fail',
+  DissociateTag = '[Node] Dissociate Tag',
+  DissociateTagSuccess = '[Node] Dissociate Tag Success',
+  DissociateTagFailure = '[Node] Dissociate Tag Fail',
+  ReloadNodesData = '[Node] Reload Nodes Data'
 }
 
 export class LoadNodes implements Action {
@@ -254,7 +277,7 @@ export class RemoveParentDescendantIds implements Action {
 
 export class GetParentDescendantIds implements Action {
   readonly type = NodeActionTypes.GetParentDescendantIds;
-  constructor(public payload: {id: string, workpackages: string[]}) {}
+  constructor(public payload: { id: string; workpackages: string[] }) {}
 }
 
 export class GetParentDescendantIdsSuccess implements Action {
@@ -270,6 +293,116 @@ export class GetParentDescendantIdsFailure implements Action {
 export class SetParentDescendantIds implements Action {
   readonly type = NodeActionTypes.SetParentDescendantIds;
   constructor(public payload: string[]) {}
+}
+
+export class LoadAvailableTags implements Action {
+  readonly type = NodeActionTypes.LoadAvailableTags;
+  constructor(public payload: { nodeId: string; workpackageId: string; type: 'link' | 'node' }) {}
+}
+
+export class LoadAvailableTagsSuccess implements Action {
+  readonly type = NodeActionTypes.LoadAvailableTagsSuccess;
+  constructor(public payload: { tags: Tag[]; id: string }) {}
+}
+
+export class LoadAvailableTagsFailure implements Action {
+  readonly type = NodeActionTypes.LoadAvailableTagsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class CreateTag implements Action {
+  readonly type = NodeActionTypes.CreateTag;
+  constructor(public payload: { tag: Tag; associateWithNode?: {workpackageId: string; type: 'link' | 'node'; nodeOrLinkId: string }}) {}
+}
+
+export class CreateTagSuccess implements Action {
+  readonly type = NodeActionTypes.CreateTagSuccess;
+  constructor(public payload: { tag: Tag }) {}
+}
+
+export class CreateTagFailure implements Action {
+  readonly type = NodeActionTypes.CreateTagFailure;
+  constructor(public payload: Error) {}
+}
+
+export class AssociateTag implements Action {
+  readonly type = NodeActionTypes.AssociateTag;
+  constructor(
+    public payload: { tagIds: [{ id: string }]; workpackageId: string; nodeOrLinkId: string; type: 'link' | 'node' }
+  ) {}
+}
+
+export class AssociateTagSuccess implements Action {
+  readonly type = NodeActionTypes.AssociateTagSuccess;
+  constructor(public payload: { nodeOrLinkDetail: NodeDetail | NodeLinkDetail; type: 'link' | 'node' }) {}
+}
+
+export class AssociateTagFailure implements Action {
+  readonly type = NodeActionTypes.AssociateTagFailure;
+  constructor(public payload: Error) {}
+}
+
+export class DissociateTag implements Action {
+  readonly type = NodeActionTypes.DissociateTag;
+  constructor(public payload: { tag: Tag; workpackageId: string; nodeOrLinkId: string; type: 'link' | 'node' }) {}
+}
+
+export class DissociateTagSuccess implements Action {
+  readonly type = NodeActionTypes.DissociateTagSuccess;
+  constructor(public payload: { nodeOrLinkDetail: NodeDetail | NodeLinkDetail; type: 'link' | 'node' }) {}
+}
+
+export class DissociateTagFailure implements Action {
+  readonly type = NodeActionTypes.DissociateTagFailure;
+  constructor(public payload: Error) {}
+}
+
+export class LoadTags implements Action {
+  readonly type = NodeActionTypes.LoadTags;
+}
+
+export class LoadTagsSuccess implements Action {
+  readonly type = NodeActionTypes.LoadTagsSuccess;
+  constructor(public payload: { tags: Tag[] }) {}
+}
+
+export class LoadTagsFailure implements Action {
+  readonly type = NodeActionTypes.LoadTagsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class UpdateTag implements Action {
+  readonly type = NodeActionTypes.UpdateTag;
+  constructor(public payload: { tag: Tag }) {}
+}
+
+export class UpdateTagSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateTagSuccess;
+  constructor(public payload: { tag: Tag }) {}
+}
+
+export class UpdateTagFailure implements Action {
+  readonly type = NodeActionTypes.UpdateTagFailure;
+  constructor(public payload: Error) {}
+}
+
+export class DeleteTag implements Action {
+  readonly type = NodeActionTypes.DeleteTag;
+  constructor(public payload: { tagId: string }) {}
+}
+
+export class DeleteTagSuccess implements Action {
+  readonly type = NodeActionTypes.DeleteTagSuccess;
+  constructor(public payload: { tagId: string }) {}
+}
+
+export class DeleteTagFailure implements Action {
+  readonly type = NodeActionTypes.DeleteTagFailure;
+  constructor(public payload: Error) {}
+}
+
+export class ReloadNodesData implements Action {
+  readonly type = NodeActionTypes.ReloadNodesData;
 }
 
 export type NodeActionsUnion =
@@ -315,4 +448,26 @@ export type NodeActionsUnion =
   | GetParentDescendantIds
   | GetParentDescendantIdsSuccess
   | GetParentDescendantIdsFailure
-  | SetParentDescendantIds;
+  | SetParentDescendantIds
+  | LoadAvailableTags
+  | LoadAvailableTagsSuccess
+  | LoadAvailableTagsFailure
+  | CreateTag
+  | CreateTagSuccess
+  | CreateTagFailure
+  | AssociateTag
+  | AssociateTagSuccess
+  | AssociateTagFailure
+  | DissociateTag
+  | DissociateTagSuccess
+  | DissociateTagFailure
+  | LoadTags
+  | LoadTagsSuccess
+  | LoadTagsFailure
+  | UpdateTag
+  | UpdateTagSuccess
+  | UpdateTagFailure
+  | DeleteTag
+  | DeleteTagSuccess
+  | DeleteTagFailure
+  | ReloadNodesData;

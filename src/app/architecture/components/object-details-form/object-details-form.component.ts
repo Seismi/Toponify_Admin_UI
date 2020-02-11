@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity } from '@app/architecture/store/models/node.model';
+import { DescendantsEntity, Tag, TagApplicableTo } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
@@ -23,13 +23,11 @@ export class ObjectDetailsFormComponent {
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() descendants: DescendantsEntity[];
   @Input('group') set setGroup(group) {
-    console.log('set group');
     this.group = group;
     this.values = group.value;
   }
 
   @Input() clickedOnLink = false;
-  @Input() isEditable = false;
   @Input() workPackageIsEditable = false;
   @Input() attributesPage = false;
   @Input() relatedAttributes: AttributeEntity[];
@@ -37,40 +35,33 @@ export class ObjectDetailsFormComponent {
   @Input() selectAttribute: boolean;
   @Input() viewLevel: Level;
   @Input() part: go.Part;
-
+  @Input() availableTags: Tag[];
+  @Input() tags: Tag[];
+  @Input() componentLayer: TagApplicableTo;
   Level = Level;
 
   constructor() {}
 
-  @Output() saveAttribute = new EventEmitter<void>();
-
+  @Output() save = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
-
-  @Output() editDetails = new EventEmitter<void>();
-
-  @Output() cancel = new EventEmitter<void>();
-
   @Output() addOwner = new EventEmitter<void>();
-
   @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
-
   @Output() addDescendant = new EventEmitter<void>();
-
   @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
   @Output() selectRelatedAttribute = new EventEmitter<string>();
-
   @Output() addRelatedAttribute = new EventEmitter<void>();
-
   @Output() deleteRelatedAttribute = new EventEmitter<void>();
 
-  onEdit(): void {
-    this.editDetails.emit();
-  }
+  @Output() updateAvailableTags = new EventEmitter<void>();
+
+  @Output() addTag = new EventEmitter<string>();
+  @Output() createTag = new EventEmitter<Tag>();
+  @Output() removeTag = new EventEmitter<Tag>();
+  @Output() updateTag = new EventEmitter<Tag>();
 
   onSave(): void {
-    this.saveAttribute.emit();
-    this.isEditable = false;
+    this.save.emit();
   }
 
   onCancel(): void {
@@ -110,6 +101,9 @@ export class ObjectDetailsFormComponent {
   }
 
   getCategories(): string[] {
+    if (this.attributesPage) {
+      return ['attribute', 'rule'];
+    }
     switch (this.part.data.layer) {
       case 'system':
         return this.part instanceof Node ? systemCategories : ['master data', 'data'];
@@ -127,5 +121,25 @@ export class ObjectDetailsFormComponent {
       return true;
     }
     return false;
+  }
+
+  onUpdateAvailableTags() {
+    this.updateAvailableTags.emit();
+  }
+
+  onAddTag(tag: string) {
+    this.addTag.emit(tag);
+  }
+
+  onCreateTag(tag: Tag) {
+    this.createTag.emit(tag);
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.removeTag.emit(tag);
+  }
+
+  onUpdateTag(tag: Tag) {
+    this.updateTag.emit(tag);
   }
 }

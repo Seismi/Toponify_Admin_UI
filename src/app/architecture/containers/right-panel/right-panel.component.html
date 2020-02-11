@@ -1,6 +1,6 @@
 <mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
   <!-- Details TAB -->
-  <mat-tab *ngIf="objectSelected">
+  <mat-tab *ngIf="part?.isSelected && !multipleSelected">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Details">info</mat-icon>
     </ng-template>
@@ -10,11 +10,8 @@
         [descendants]="descendants"
         [group]="group"
         [clickedOnLink]="clickedOnLink"
-        [isEditable]="isEditable"
-        (editDetails)="onEditDetails()"
-        (saveAttribute)="onSaveAttribute()"
+        (save)="onSaveNode()"
         (delete)="onDeleteNode()"
-        (cancel)="onCancel()"
         [workPackageIsEditable]="workPackageIsEditable"
         (addOwner)="onAddOwner()"
         (deleteOwner)="onDeleteOwner($event)"
@@ -23,13 +20,21 @@
         [viewLevel]="viewLevel"
         [part]="part"
         [nodeCategory]="nodeCategory"
+        [availableTags]="availableTags"
+        [componentLayer]="componentLayer"
+        (updateAvailableTags)="onUpdateAvailableTags()"
+        (addTag)="onAddTag($event)"
+        (createTag)="onCreateTag($event)"
+        (removeTag)="onRemoveTag($event)"
+        (updateTag)="onUpdateTag($event)"
+        [tags]="tags"
       >
       </smi-object-details-form>
     </p>
   </mat-tab>
 
   <!-- Attributes and Rules TAB -->
-  <mat-tab *ngIf="objectSelected">
+  <mat-tab *ngIf="part?.isSelected && !multipleSelected">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Attributes & Rules">ballot</mat-icon>
     </ng-template>
@@ -45,7 +50,7 @@
   </mat-tab>
 
   <!-- Documentation Standards TAB -->
-  <mat-tab *ngIf="objectSelected">
+  <mat-tab *ngIf="part?.isSelected && !multipleSelected">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
     </ng-template>
@@ -65,7 +70,7 @@
       <mat-icon matTooltip="RADIO">track_changes</mat-icon>
     </ng-template>
     <smi-radio-tab
-      *ngIf="objectSelected"
+      *ngIf="part?.isSelected"
       [data]="relatedRadios"
       (addRadio)="onAddRelatedRadio()"
       (openRadio)="onOpenRadio($event)"
@@ -74,7 +79,7 @@
     >
     </smi-radio-tab>
     <smi-radio-table-in-architecture
-      *ngIf="!objectSelected"
+      *ngIf="!part?.isSelected"
       [data]="radio"
       (addRadio)="onAddRadio()"
       (openRadio)="onOpenRadio($event)"
@@ -83,12 +88,12 @@
   </mat-tab>
 
   <!-- Scopes TAB -->
-  <mat-tab *ngIf="objectSelected || multipleSelected">
+  <mat-tab *ngIf="part?.isSelected">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Scopes">pages</mat-icon>
     </ng-template>
     <smi-scope-table
-      *ngIf="objectSelected"
+      *ngIf="part?.isSelected && !multipleSelected"
       [data]="nodeScopes"
       (delete)="onDeleteScope($event)"
       (addExistingScope)="onAddExistingScope()"
@@ -103,7 +108,7 @@
   </mat-tab>
 
   <!-- Work Package TAB -->
-  <mat-tab *ngIf="objectSelected">
+  <mat-tab *ngIf="part?.isSelected && !multipleSelected">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Work Packages">business_center</mat-icon>
     </ng-template>
@@ -111,7 +116,7 @@
   </mat-tab>
 
   <!-- Reports TAB -->
-  <mat-tab *ngIf="filterLevel && objectSelected">
+  <mat-tab *ngIf="filterLevel && part?.isSelected && !multipleSelected">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Reports">bookmarks</mat-icon>
     </ng-template>

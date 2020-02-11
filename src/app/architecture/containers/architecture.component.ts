@@ -13,6 +13,10 @@ import { DiagramChangesService } from '@app/architecture/services/diagram-change
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
   GetParentDescendantIds,
+  AssociateTag,
+  CreateTag,
+  DissociateTag,
+  LoadAvailableTags,
   LoadMapView,
   LoadNode,
   LoadNodeLink,
@@ -30,7 +34,6 @@ import {
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
-  CustomPropertyValuesEntity,
   DescendantsEntity,
   middleOptions,
   Node,
@@ -39,9 +42,12 @@ import {
   NodeReports,
   OwnersEntityOrTeamEntityOrApproversEntity,
   AttributesEntity,
-  GroupAreaSizeApiRequest
+  GroupAreaSizeApiRequest,
+  Tag,
+  TagApplicableTo
 } from '@app/architecture/store/models/node.model';
 import {
+  getAvailableTags,
   getNodeEntities,
   getNodeLinks,
   getNodeReports,
@@ -61,7 +67,7 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios, RadioActionTypes, LoadRadioSuccess, LoadRadiosSuccess } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
@@ -78,7 +84,7 @@ import {
   AddWorkPackageLinkAttribute,
   AddWorkPackageLinkRadio,
   UpdateWorkPackageLinkProperty,
-  DeleteWorkPackageLinkProperty,
+  DeleteWorkPackageLinkProperty
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -102,7 +108,7 @@ import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
   SetWorkpackageDisplayColour,
-  SetWorkpackageEditMode,
+  SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   WorkPackageDetail,
@@ -134,7 +140,6 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node as goNode } from 'gojs';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
@@ -223,7 +228,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditLayouts: string;
   // attributeSubscription: Subscription;
   clickedOnLink = false;
-  objectSelected = false;
   isEditable = false;
   nodeId: string;
   allowEditWorkPackages: string;
@@ -237,7 +241,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   showOrHideRightPane = false;
   selectedRightTab: number;
   selectedLeftTab: number;
-  multipleSelected = false;
+  multipleSelected: boolean;
   selectedMultipleNodes = [];
   radioAlertChecked = true;
   radioTab = true;
@@ -264,6 +268,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
+  public availableTags$: Observable<Tag[]>;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -273,6 +278,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private switchViewTabsComponent: SwitchViewTabsComponent;
   @ViewChild(ArchitectureTableViewComponent)
   private tableView: ArchitectureTableViewComponent;
+
+  get nodeComponentLayer(): TagApplicableTo {
+    if (this.selectedNode.hasOwnProperty('sourceObject')) {
+      return (this.selectedNode.layer + ' links') as TagApplicableTo;
+    } else {
+      return (this.selectedNode.layer + 's') as TagApplicableTo;
+    }
+  }
 
   constructor(
     private layoutSettingsService: LayoutSettingsService,
@@ -292,11 +305,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
     private nodeService: NodeService,
-    private attributeStore: Store<AttributeState>
+    private attributeStore: Store<AttributeState>,
+    private actions$: Actions
   ) {}
 
   ngOnInit() {
     this.parentDescendantIds = this.store.pipe(select(getParentDescendantIds));
+    this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
     this.subscriptions.push(
       this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
         this.selectedWorkPackageEntities = workpackages;
@@ -306,6 +321,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workPackageName = workpackages[0].name + ' & ' + workpackages[1].name + ' ...';
         }
       })
+    );
+    this.subscriptions.push(
+      this.actions$
+        .pipe(
+          ofType(NodeActionTypes.ReloadNodesData),
+          tap(() => {
+            this.eventEmitter.next(Events.NodesLinksReload);
+          })
+        )
+        .subscribe()
     );
     this.subscriptions.push(
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
@@ -479,17 +504,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
         });
 
-        dialogRef.afterClosed().pipe(take(1)).subscribe(data => {
-          if (data && data.data) {
-            this.workpackageStore.dispatch(
-              new AddWorkPackageNode({
-                workpackageId: this.workpackageId,
-                node: data.data,
-                scope: this.scope.id
-              })
-            );
-          }
-        });
+        dialogRef
+          .afterClosed()
+          .pipe(take(1))
+          .subscribe(data => {
+            if (data && data.data) {
+              this.workpackageStore.dispatch(
+                new AddWorkPackageNode({
+                  workpackageId: this.workpackageId,
+                  node: data.data,
+                  scope: this.scope.id
+                })
+              );
+            }
+          });
       }.bind(this)
     );
 
@@ -597,22 +625,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions
-        .pipe(ofType(NodeActionTypes.LoadNodesSuccess, NodeActionTypes.LoadNodeLinksSuccess))
-        .subscribe((action: any) => {
-          const nodes = action.payload;
-          if (this.part) {
-            nodes.filter(node => {
-              if (!node.id.includes(this.part.data.id) && !this.part.isSelected) {
-                this.objectSelected = false;
-                this.radioTab = true;
-              }
-            });
-          }
-        })
-    );
-
-    this.subscriptions.push(
       this.actions.pipe(ofType(AttributeActionTypes.AddAttributeSuccess)).subscribe((action: any) => {
         if (!this.clickedOnLink) {
           this.workpackageStore.dispatch(
@@ -710,17 +722,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.clickedOnLink = false;
       }
 
-      // Enable "Edit" and "Delete" buttons then GoJS object is selected
-      this.objectSelected = false;
-      this.isEditable = false;
-
       this.objectDetailsService.updateForm(this.selectedPart);
 
       this.nodeId = this.selectedPart.id;
 
       this.part = part;
-
-      this.detailsTab = false;
 
       if (part) {
         // Load node scopes
@@ -741,22 +747,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             this.setWorkPackage(workPackageIds);
             this.getNodeReports(workPackageIds);
           });
-
-        this.objectSelected = true;
-        this.radioTab = false;
-      } else {
-        this.radioTab = true;
-        this.objectSelected = false;
-        this.multipleSelected = false;
-        this.selectedMultipleNodes = [];
       }
-    } else {
-      this.objectSelected = false;
-      this.multipleSelected = true;
-      this.detailsTab = true;
     }
 
-    // Multiple selection
+    parts.length >= 2 ? (this.multipleSelected = true) : (this.multipleSelected = false);
+
+    // Multiple selections
     if (parts.length > 1) {
       for (let i = 0; i < parts.length; i++) {
         if (parts[i] instanceof Link) {
@@ -823,14 +819,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       };
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-    this.isEditable = false;
-  }
-
-  onEditDetails(details: any) {
-    this.isEditable = true;
-  }
-
-  onCancelEdit() {
     this.isEditable = false;
   }
 
@@ -1174,22 +1162,26 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        const relatesTo = [{
-          workPackage: {
-            id: '00000000-0000-0000-0000-000000000000'
-          },
-          item: {
-            id: this.nodeId,
-            itemType: this.currentFilterLevel.toLowerCase()
+        const relatesTo = [
+          {
+            workPackage: {
+              id: '00000000-0000-0000-0000-000000000000'
+            },
+            item: {
+              id: this.nodeId,
+              itemType: this.currentFilterLevel.toLowerCase()
+            }
           }
-        }];
+        ];
 
-        this.radioStore.dispatch(new AddRadioEntity({
-          data: {
-            ...data.radio,
-            relatesTo: (this.selectedWorkPackageEntities.length === 0) ? relatesTo : []
-          }
-        }));
+        this.radioStore.dispatch(
+          new AddRadioEntity({
+            data: {
+              ...data.radio,
+              relatesTo: this.selectedWorkPackageEntities.length === 0 ? relatesTo : []
+            }
+          })
+        );
 
         if (data.radio.status === 'open') {
           this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
@@ -1477,7 +1469,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         nodeId: this.nodeId,
         scopeId: this.scope.id,
         title: this.selectedNode.name,
-        addToGroup: (addToGroup) ? false : true,
+        addToGroup: addToGroup ? false : true,
         childrenOf: {
           id: null // Add node from the same level *not required*
         }
@@ -1520,21 +1512,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSaveProperties(data: { propertyId: string, value: string }): void {
+  onSaveProperties(data: { propertyId: string; value: string }): void {
     if (!this.clickedOnLink) {
-      this.workpackageStore.dispatch(new UpdateWorkPackageNodeProperty({
-        workPackageId: this.getWorkPackageId(),
-        nodeId: this.nodeId,
-        customPropertyId: data.propertyId,
-        data: data.value
-      }));
+      this.workpackageStore.dispatch(
+        new UpdateWorkPackageNodeProperty({
+          workPackageId: this.getWorkPackageId(),
+          nodeId: this.nodeId,
+          customPropertyId: data.propertyId,
+          data: data.value
+        })
+      );
     } else {
-      this.workpackageStore.dispatch(new UpdateWorkPackageLinkProperty({
-        workPackageId: this.getWorkPackageId(),
-        nodeLinkId: this.nodeId,
-        customPropertyId: data.propertyId,
-        data: data.value
-      }));
+      this.workpackageStore.dispatch(
+        new UpdateWorkPackageLinkProperty({
+          workPackageId: this.getWorkPackageId(),
+          nodeLinkId: this.nodeId,
+          customPropertyId: data.propertyId,
+          data: data.value
+        })
+      );
     }
   }
 
@@ -1771,4 +1767,61 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onDownloadImage(): void {
     this.diagramComponent.getDiagramImage();
   }
+
+  onUpdateAvailableTags() {
+    this.store
+      .pipe(
+        select(getAvailableTags),
+        take(1)
+      )
+      .subscribe(tags => {
+        if (!this.workpackageId) {
+          return;
+        }
+        this.store.dispatch(
+          new LoadAvailableTags({
+            workpackageId: this.workpackageId,
+            nodeId: this.selectedNode.id,
+            type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+          })
+        );
+      });
+  }
+
+  onAddTag(tagId: string) {
+    this.store.dispatch(
+      new AssociateTag({
+        tagIds: [{ id: tagId }],
+        workpackageId: this.workpackageId,
+        nodeOrLinkId: this.selectedNode.id,
+        type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+      })
+    );
+  }
+
+  onCreateTag(tag: Tag) {
+    this.store.dispatch(
+      new CreateTag({
+        tag,
+        associateWithNode: {
+          workpackageId: this.workpackageId,
+          nodeOrLinkId: this.selectedNode.id,
+          type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+        }
+      })
+    );
+  }
+
+  onRemoveTag(tag: Tag) {
+    this.store.dispatch(
+      new DissociateTag({
+        tag,
+        workpackageId: this.workpackageId,
+        nodeOrLinkId: this.selectedNode.id,
+        type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+      })
+    );
+  }
+
+  onUpdateTag(tag: Tag) {}
 }
