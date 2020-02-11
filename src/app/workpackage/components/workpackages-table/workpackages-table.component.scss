@@ -4,6 +4,7 @@
 
 table {
   width: 100%;
+  border-top: solid 1px #ddd;
 }
 
 tr.mat-header-row {
@@ -40,4 +41,15 @@ button {
   margin-right: 5px;
   margin-top: 4px;
   padding: 0;
+}
+
+.no-data-found {
+  border-bottom: solid 1px #ddd;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.mat-form-field {
+  width: 100%;
+  padding: 10px 12px 0px 15px;
 }
