@@ -2,7 +2,11 @@
   <div class="container">
     <div class="row">
       <div class="col mat-elevation-z8">
-        <smi-teams-table [data]="teams$ | async" (selectTeam)="onSelectTeam($event)" (addTeam)="onAddTeam()">
+        <smi-teams-table
+          data-qa="setting-team-table"
+          [data]="teams$ | async" 
+          (selectTeam)="onSelectTeam($event)" 
+          (addTeam)="onAddTeam()">
         </smi-teams-table>
       </div>
       <div class="col">
