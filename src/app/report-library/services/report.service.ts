@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   ReportDetailApiRespoonse,
@@ -20,16 +20,19 @@ const httpOptions = {
 export interface GetReportLibraryRequestQueryParams {
   workPackageQuery?: string[];
   scopeQuery?: string;
+  format?: string;
 }
 
 @Injectable()
 export class ReportService {
   constructor(private http: HttpClient) {}
 
-  getReports(queryParams?: GetReportLibraryRequestQueryParams): Observable<ReportLibraryApiResponse> {
-    const params = toHttpParams(queryParams);
-    console.warn(queryParams);
-    return this.http.get<ReportLibraryApiResponse>(`/reports`, { params: params });
+  getReports(queryParams?: GetReportLibraryRequestQueryParams): Observable<any> {
+    const params = queryParams ? toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/reports`, { 
+      params: params,
+      responseType: queryParams && queryParams.format ? ('text' as 'json') : 'json'
+    });
   }
 
   getReport(id: string, queryParams?: GetReportLibraryRequestQueryParams): Observable<ReportDetailApiRespoonse> {

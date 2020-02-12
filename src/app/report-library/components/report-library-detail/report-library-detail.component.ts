@@ -13,8 +13,14 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
   styleUrls: ['report-library-detail.component.scss']
 })
 export class ReportLibraryDetailComponent {
+  public group: FormGroup;
+  private values;
+  @Input('group') set setGroup(group) {
+    this.group = group;
+    this.values = group.value;
+  }
+
   @Input() isEditable: boolean;
-  @Input() group: FormGroup;
   @Input() dataSets: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity[];
   @Input() system: DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity;
   @Input() owners: OwnersEntity[];
@@ -26,8 +32,6 @@ export class ReportLibraryDetailComponent {
   @Input() selectedOwnerIndex: any;
 
   @Output() saveReport = new EventEmitter<void>();
-  @Output() editReport = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
   @Output() deleteReport = new EventEmitter<string>();
   @Output() addOwner = new EventEmitter<void>();
   @Output() selectOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
@@ -37,47 +41,43 @@ export class ReportLibraryDetailComponent {
   @Output() removeDataSet = new EventEmitter<string>();
   @Output() dimensionEdit = new EventEmitter<Dimension>();
 
-  onSave() {
+  onSave(): void {
     this.saveReport.emit();
   }
 
-  onEdit() {
-    this.editReport.emit();
+  onCancel(): void {
+    this.group.reset(this.values);
   }
 
-  onCancel() {
-    this.cancel.emit();
-  }
-
-  onDelete() {
+  onDelete(): void {
     this.deleteReport.emit();
   }
 
-  onAddOwner() {
+  onAddOwner(): void {
     this.addOwner.emit();
   }
 
-  onSelectOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity) {
+  onSelectOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
     this.selectOwner.emit(owner);
   }
 
-  onDeleteOwner() {
+  onDeleteOwner(): void {
     this.deleteOwner.emit();
   }
 
-  onSourceEdit() {
+  onSourceEdit(): void {
     this.editSourceSystem.emit();
   }
 
-  onDatasetAdd() {
+  onDatasetAdd(): void {
     this.addDataSets.emit();
   }
 
-  onRemoveDataSet(id: string) {
+  onRemoveDataSet(id: string): void {
     this.removeDataSet.emit(id);
   }
 
-  onDimensionEdit(dimension: Dimension) {
+  onDimensionEdit(dimension: Dimension): void {
     this.dimensionEdit.emit(dimension);
   }
 }
