@@ -104,7 +104,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload(downloadingTemplate, 'node')"
+        (download)="onDownload('node')"
         [view]="'system'"
         [filterValue]="tableViewFilterValue"
       ></smi-architecture-table-view>
@@ -115,7 +115,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload(downloadingTemplate, 'links')"
+        (download)="onDownload('links')"
         [view]="'link'"
         [filterValue]="tableViewFilterValue"
       ></smi-architecture-table-view>
@@ -188,7 +188,3 @@
       </smi-right-panel></p
   ></app-model-sidebar>
 </app-model-container>
-
-<ng-template #downloadingTemplate>
-  <h3>Preparing...</h3>
-</ng-template>
