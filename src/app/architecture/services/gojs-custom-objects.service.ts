@@ -96,7 +96,7 @@ export class CustomNodeResize extends go.ResizingTool {
   public computeMaxSize(): go.Size {
 
     // Default maximum size irrespective of group membership
-    const maxSize = go.ResizingTool.prototype.computeMinSize.call(this);
+    const maxSize = go.ResizingTool.prototype.computeMaxSize.call(this);
     const group = this.adornedObject.part as go.Group;
 
     if (group.containingGroup) {

@@ -652,6 +652,8 @@ export class DiagramChangesService {
       }
     });
 
+    this.groupMemberSizeChanged(node);
+
     if (this.currentLevel.endsWith('map')) {
       // Update node's group layout in map view
       node.invalidateLayout();
@@ -740,7 +742,6 @@ export class DiagramChangesService {
         link.updateRoute();
       });
     }
-    this.groupMemberSizeChanged(group);
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
@@ -775,7 +776,9 @@ export class DiagramChangesService {
     this.groupMemberSizeChanged(node);
   }
 
-  groupMemberSizeChanged(member: go.Group) {
+  // Ensures that all groups that have the given member as part of
+  //  their subgraph are large enough to enclose the member
+  groupMemberSizeChanged(member: go.Group): void {
     const nestedGroups = new go.Set();
     const linksToUpdate = new go.Set();
 
