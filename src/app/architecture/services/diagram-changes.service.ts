@@ -785,37 +785,45 @@ export class DiagramChangesService {
     let currentGroup = member;
     let currentMinBounds = member.getDocumentBounds().copy();
 
+    // Loop through containing groups until reaching a top level group,
+    //  ensuring each is big enough
     while (currentGroup.containingGroup !== null) {
       currentGroup = currentGroup.containingGroup;
 
       const memberArea = currentGroup.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
 
+      // If currently considered group is already large enough then exit loop
       if (memberBounds.containsRect(currentMinBounds)) {
         break;
       }
 
+      // Add the current group and any connected links to the sets of parts to update in the back end
       nestedGroups.add(currentGroup);
       linksToUpdate.addAll(currentGroup.linksConnected);
 
+      // Expand minimum required area to include current group member area
       currentMinBounds = currentMinBounds.unionRect(memberBounds);
+
+      // Expand group member area width and height to ensure it is large enough to enclose all group members
       memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
       memberArea.width = Math.max(memberBounds.right, currentMinBounds.right)
         - Math.min(memberBounds.left, currentMinBounds.left);
 
+      // Shift group horizontally in order to ensure group member area correctly encloses required bounds
       currentGroup.location = new go.Point(currentMinBounds.centerX, currentGroup.location.y);
 
+      // For next iteration, set minimum bounds equal to new bounds of current group
       currentGroup.ensureBounds();
-
       currentMinBounds = currentGroup.getDocumentBounds().copy();
     }
 
     const linkData = [];
 
+    // Update routes of any links connected to any of the resized groups
     linksToUpdate.each(function(link: go.Link) {
       // ignore disconnected links
       if (link.toNode && link.fromNode) {
-        // link.update
         link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
         link.invalidateRoute();
         link.updateRoute();
@@ -824,6 +832,7 @@ export class DiagramChangesService {
       }
     });
 
+    // Construct array of group size/location data
     const groupData = [];
     nestedGroups.each(function(group: go.Group) {
       groupData.push({
@@ -833,6 +842,7 @@ export class DiagramChangesService {
       });
     });
 
+    // Update back end with new layout info for updated groups and links
     this.onUpdateGroupsAreaState.next({
       groups: groupData,
       links: linkData

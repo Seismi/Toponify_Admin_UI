@@ -99,11 +99,14 @@ export class CustomNodeResize extends go.ResizingTool {
     const maxSize = go.ResizingTool.prototype.computeMaxSize.call(this);
     const group = this.adornedObject.part as go.Group;
 
+    // If group is itself contained in a group then ensure that the group is not
+    //  expanded outside the bounds of its containing group
     if (group.containingGroup) {
       const containingArea = group.containingGroup.resizeObject.getDocumentBounds();
       const groupContainingArea = group.resizeObject.getDocumentBounds();
       const groupArea = group.getDocumentBounds();
 
+      // Constrain group member area size, accounting for the resulting size of the whole group
       maxSize.height = Math.max(maxSize.height,  containingArea.height + groupContainingArea.height - groupArea.height);
       maxSize.width = Math.max(maxSize.width,  containingArea.width + groupContainingArea.width - groupArea.width);
     }
