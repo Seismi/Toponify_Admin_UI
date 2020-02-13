@@ -174,6 +174,7 @@ import { AddExistingAttributeModalComponent } from './add-existing-attribute-mod
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -1379,21 +1380,26 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddOwner() {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
+  onAddOwner(): void {
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: 'Select owner',
+        options$: this.teamStore.pipe(select(getTeamEntities)),
+        selectedIds: []
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
+      if (data && data.value) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new AddWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: data.owner.id,
-              data: data.owner
+              ownerId: data.value[0].id,
+              data: data.value[0]
             })
           );
         } else {
@@ -1401,7 +1407,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new AddWorkPackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: data.owner.id
+              ownerId: data.value[0].id
             })
           );
         }
