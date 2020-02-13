@@ -173,6 +173,7 @@ import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/action
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -1418,17 +1419,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteOwner(id: string): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
-        mode: 'delete',
-        name: ''
+        title: 'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new DeleteWorkpackageNodeOwner({
