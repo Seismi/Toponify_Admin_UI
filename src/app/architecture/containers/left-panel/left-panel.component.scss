@@ -2,6 +2,10 @@
   margin: 7px 1px 0px 1px;
 }
 
+::ng-deep #tab-group > mat-tab-header {
+  background-color:#14212d;
+}
+
 .content {
   width: 420px;
   height: 100%;
@@ -18,6 +22,7 @@
   font-size: 18px;
   margin-top: 5px;
   margin-right: 15px;
+  color: #fff;
 }
 
 .hide-btn {
