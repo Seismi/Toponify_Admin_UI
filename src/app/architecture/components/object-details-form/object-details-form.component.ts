@@ -5,6 +5,7 @@ import { DescendantsEntity, Tag, TagApplicableTo } from '@app/architecture/store
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import { TeamDetails } from '@app/settings/store/models/team.model';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
@@ -45,7 +46,8 @@ export class ObjectDetailsFormComponent {
   @Output() save = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
   @Output() addOwner = new EventEmitter<void>();
-  @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
+  @Output() saveOwner = new EventEmitter<{object: TeamDetails, value: string}>();
+  @Output() deleteOwner = new EventEmitter<string>();
   @Output() addDescendant = new EventEmitter<void>();
   @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
 
@@ -76,8 +78,12 @@ export class ObjectDetailsFormComponent {
     this.addOwner.emit();
   }
 
-  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    this.deleteOwner.emit(owner);
+  onSaveOwner(data: { object: TeamDetails, value: string }): void {
+    this.saveOwner.emit(data);
+  }
+
+  onDeleteOwner(id: string): void {
+    this.deleteOwner.emit(id);
   }
 
   onAddDescendant(): void {

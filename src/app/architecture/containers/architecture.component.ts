@@ -29,7 +29,8 @@ import {
   SetParentDescendantIds,
   UpdateLinks,
   UpdateNodeExpandedState,
-  UpdateNodeLocations
+  UpdateNodeLocations,
+  UpdateNodeOwners
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -138,9 +139,9 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node as goNode } from 'gojs';
-import { TeamEntity } from '@app/settings/store/models/team.model';
+import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { LoadTeams, UpdateTeam, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
@@ -601,7 +602,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.actions
-        .pipe(ofType(LayoutActionTypes.LoadLayoutSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess))
+        .pipe(ofType(TeamActionTypes.UpdateTeamSuccess, LayoutActionTypes.LoadLayoutSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess))
         .subscribe(_ => {
           this.eventEmitter.next(Events.NodesLinksReload);
         })
@@ -1407,13 +1408,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
+  onSaveOwner(data: { object: TeamDetails, value: string }): void {
+    this.teamStore.dispatch(
+      new UpdateTeam({
+        id: data.object.id,
+        data: { ...data.object, name: data.value }
+      })
+    );
+  }
+
+  onDeleteOwner(id: string): void {
     const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
         mode: 'delete',
-        name: owner.name
+        name: ''
       }
     });
 
@@ -1424,7 +1434,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new DeleteWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         } else {
@@ -1432,7 +1442,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new DeleteWorkpackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         }

@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
-import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'smi-owners-table-in-architecture',
@@ -8,28 +7,45 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
   styleUrls: ['./owners-table.component.scss']
 })
 export class OwnersTableComponent {
+  public formGroup: FormGroup;
+  public index: number;
+
+  @Input() data: any;
   @Input() isEditable: boolean = false;
 
-  @Input()
-  set data(data: OwnersEntityOrTeamEntityOrApproversEntity[]) {
-    if (!data) {
-      data = [];
-    }
-    this.dataSource = new MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>(data);
+  constructor(private fb: FormBuilder) {
+    this.formGroup = this.fb.group({
+      name: [null, Validators.required]
+    });
   }
 
-  public displayedColumns: string[] = ['name'];
-  public dataSource: MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>;
-
-  @Output() addOwner = new EventEmitter<void>();
-
-  @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
+  @Output() add = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<string>();
+  @Output() save = new EventEmitter<{object: Object, value: string}>();
 
   onAdd(): void {
-    this.addOwner.emit();
+    this.add.emit();
   }
 
-  onDelete(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    this.deleteOwner.emit(owner);
+  onDelete(id: string): void {
+    this.delete.emit(id);
   }
+
+  onEdit(object: Object, index: number): void {
+    this.formGroup.patchValue({ ...object });
+    this.index = index;
+  }
+
+  onSave(object: Object): void {
+    if (this.formGroup.invalid) {
+      return;
+    }
+    this.index = -1;
+    this.save.emit({object: object, value: this.formGroup.value.name});
+  }
+
+  onCancel(): void {
+    this.index = -1;
+  }
+
 }

@@ -47,8 +47,9 @@
     <smi-owners-table-in-architecture
       [data]="owners"
       [isEditable]="!nodeIsEditable()"
-      (addOwner)="onAddOwner()"
-      (deleteOwner)="onDeleteOwner($event)"
+      (add)="onAddOwner()"
+      (delete)="onDeleteOwner($event)"
+      (save)="onSaveOwner($event)"
     >
     </smi-owners-table-in-architecture>
     <smi-descendants-table-in-architecture
