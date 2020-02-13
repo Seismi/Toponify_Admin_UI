@@ -1,7 +1,7 @@
 import * as go from 'gojs';
 import { Injectable } from '@angular/core';
 import { DiagramChangesService } from './diagram-changes.service';
-import { DiagramLevelService } from './diagram-level.service';
+import {DiagramLevelService, Level} from './diagram-level.service';
 import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
@@ -85,6 +85,35 @@ export class DiagramListenersService {
                 // Reset content alignment to the default after layout has been completed so that diagram can be scrolled
                 diagram.contentAlignment = go.Spot.Default;
               }
+            }
+          });
+      }.bind(this)
+    );
+
+    // After layout when in system view, check for system group nodes that are
+    //  too large for their groups and update the size of their containing groups
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event) {
+        this.store
+          .select(getFilterLevelQueryParams)
+          .pipe(take(1))
+          .subscribe(currentLevel => {
+            // Check current level is system
+            if (currentLevel && currentLevel === Level.system) {
+              event.diagram.nodes.each(function(node) {
+
+                // Check nodes in expanded containing groups
+                if (node.containingGroup && node.containingGroup.isSubGraphExpanded) {
+                  const containingArea = node.containingGroup.findObject('Group member area');
+                  const memberBounds = containingArea.getDocumentBounds();
+
+                  // Run process to resize containing groups if member is not correctly enclosed
+                  if (!memberBounds.containsRect(node.getDocumentBounds())) {
+                    this.diagramChangesService.groupMemberSizeChanged(node);
+                  }
+                }
+              }.bind(this));
             }
           });
       }.bind(this)
