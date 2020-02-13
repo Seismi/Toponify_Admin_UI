@@ -46,7 +46,7 @@
                   (updateAvailableTags)="onUpdateAvailableTags()"></smi-tag-list>
     <smi-owners-table-in-architecture
       [data]="owners"
-      [isEditable]="!nodeIsEditable()"
+      [workPackageIsEditable]="!nodeIsEditable()"
       (add)="onAddOwner()"
       (delete)="onDeleteOwner($event)"
       (save)="onSaveOwner($event)"

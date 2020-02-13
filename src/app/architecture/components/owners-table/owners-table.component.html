@@ -2,7 +2,7 @@
   <tr>
     <th class="title">Owners</th>
     <th>
-      <mat-icon (click)="onAdd()">add</mat-icon>
+      <mat-icon (click)="onAdd()" *ngIf="workPackageIsEditable">add</mat-icon>
     </th>
   </tr>
   <tr *ngFor="let object of data; let i = index">
@@ -14,7 +14,7 @@
         </form>
       </ng-template>
     </td>
-    <td>
+    <td *ngIf="workPackageIsEditable">
       <span *ngIf="i !== index; else elseBlock2">
         <mat-icon style="color: #CF3030" (click)="onDelete(object.id)">link_off</mat-icon>
         <mat-icon (click)="onEdit(object, i)">edit</mat-icon>

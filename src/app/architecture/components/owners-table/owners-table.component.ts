@@ -11,7 +11,7 @@ export class OwnersTableComponent {
   public index: number;
 
   @Input() data: any;
-  @Input() isEditable: boolean = false;
+  @Input() workPackageIsEditable: boolean;
 
   constructor(private fb: FormBuilder) {
     this.formGroup = this.fb.group({
