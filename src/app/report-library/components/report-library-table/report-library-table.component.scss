@@ -27,19 +27,22 @@ td.mat-cell {
   background: #efefef;
 }
 
-button {
+.create-new {
   border-radius: 15px;
   font-weight: lighter;
   padding-right: 30px;
   margin-top: 10px;
   margin-left: 15px;
+  .mat-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    margin-top: 4px;
+    padding: 0;
+  }
 }
 
-.mat-icon {
-  font-size: 18px;
-  margin-right: 5px;
-  margin-top: 4px;
-  padding: 0;
+.download {
+  margin-left: 15px;
 }
 
 .no-data-found {

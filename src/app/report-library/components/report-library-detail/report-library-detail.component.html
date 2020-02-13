@@ -1,34 +1,47 @@
 <div class="wrapper">
   <form [formGroup]="group">
-    <div [ngClass]="{ disabled: !isEditable }">
+    <div [ngClass]="{ disabled: !workPackageIsEditable }">
       <mat-form-field>
-        <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: isEditable }" />
+        <input 
+          matInput 
+          placeholder="Name" 
+          formControlName="name" 
+          [ngClass]="{ editable: workPackageIsEditable }"
+        />
         <mat-error>This field is required</mat-error>
       </mat-form-field>
-
+  
       <mat-form-field>
-        <textarea
-          matInput
-          placeholder="Description"
+        <textarea 
+          matInput 
+          placeholder="Description" 
           formControlName="description"
-          [ngClass]="{ editable: isEditable }"
-        ></textarea>
+          [ngClass]="{ editable: workPackageIsEditable }"
+        >
+        </textarea>
       </mat-form-field>
+    </div>
 
-      <!-- Owners -->
-      <smi-report-owners-table
-        *ngIf="!modalMode"
-        [data]="owners"
-        [isEditable]="isEditable"
-        [selectedOwner]="selectedOwner"
-        [selectedOwnerIndex]="selectedOwnerIndex"
-        (addOwner)="onAddOwner()"
-        (selectOwner)="onSelectOwner($event)"
-        (deleteOwner)="onDeleteOwner()"
-      >
-      </smi-report-owners-table>
+    <div *ngIf="workPackageIsEditable">
+      <button mat-flat-button color="primary" (click)="onSave()" [disabled]="group.invalid">Save</button>
+      <button mat-flat-button (click)="onCancel()">Cancel</button>
+      <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
+    </div>
 
-      <div class="source-system">
+    <!-- Owners -->
+    <smi-report-owners-table 
+      *ngIf="!modalMode" 
+      [data]="owners" 
+      [isEditable]="isEditable" 
+      [selectedOwner]="selectedOwner"
+      [selectedOwnerIndex]="selectedOwnerIndex" 
+      (addOwner)="onAddOwner()" 
+      (selectOwner)="onSelectOwner($event)"
+      (deleteOwner)="onDeleteOwner()"
+    >
+    </smi-report-owners-table>
+
+      <div class="source-system" *ngIf="!modalMode">
           Source System - {{system ? system.name : ''}}
           <button mat-icon-button (click)="onSourceEdit()" *ngIf="workPackageIsEditable">
             <mat-icon>edit</mat-icon>
@@ -36,26 +49,14 @@
       </div>
 
       <smi-report-data-set-table [data]="dataSets"
+                                 *ngIf="!modalMode"
                                  [edit]="workPackageIsEditable"
                                  (removeDataSet)="onRemoveDataSet($event)"
                                  (addDataSets)="onDatasetAdd()"></smi-report-data-set-table>
 
       <smi-report-dimensions-table [data]="dimensions"
+                                   *ngIf="!modalMode"
                                    [edit]="workPackageIsEditable"
                                    (dimensionEdit)="onDimensionEdit($event)"></smi-report-dimensions-table>
-    </div>
   </form>
-
-  <div *ngIf="workPackageIsEditable">
-    <div *ngIf="!isEditable">
-      <button type="button" mat-flat-button color="primary" (click)="onEdit()">Edit</button>
-      <button type="button" mat-raised-button color="primary">Open</button>
-      <button type="button" mat-raised-button color="primary">Copy</button>
-      <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
-    </div>
-    <div *ngIf="isEditable">
-      <button mat-flat-button color="primary" (click)="onSave()">Save</button>
-      <button mat-flat-button (click)="onCancel()">Cancel</button>
-    </div>
-  </div>
 </div>

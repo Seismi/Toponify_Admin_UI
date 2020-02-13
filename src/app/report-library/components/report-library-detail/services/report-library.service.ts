@@ -20,4 +20,11 @@ export class ReportLibraryDetailService {
     }
     return true;
   }
+
+  updateForm(object) {
+    this.reportDetailForm = this.fb.group({
+      name: [object && object.name ? object.name : null, Validators.required],
+      description: [object && object.description ? object.description : null]
+    });
+  }
 }
