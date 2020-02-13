@@ -1381,12 +1381,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddOwner(): void {
+    const ids = new Set(this.selectedNode.owners.map(({ id }) => id));
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         title: 'Select owner',
-        options$: this.teamStore.pipe(select(getTeamEntities)),
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
+          map(data => 
+            data.filter(({ id }) => !ids.has(id))
+          )
+        ),
         selectedIds: []
       }
     });
