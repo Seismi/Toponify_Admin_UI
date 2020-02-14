@@ -225,7 +225,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
-  showOrHideGrid: string;
   allowEditLayouts: string;
   // attributeSubscription: Subscription;
   clickedOnLink = false;
@@ -819,9 +818,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.isEditable = false;
   }
 
-  onShowGrid() {
+  onShowGrid(): void {
     this.showGrid = !this.showGrid;
-    this.showGrid === true ? (this.showOrHideGrid = 'border_clear') : (this.showOrHideGrid = 'border_inner');
   }
 
   allowEditWorkPackage() {
@@ -837,7 +835,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
-  onZoomMap() {
+  onZoomToFit(): void {
     this.diagramComponent.zoomToFit();
   }
 

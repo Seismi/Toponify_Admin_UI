@@ -26,7 +26,6 @@ import { AuthLayoutComponent } from '@app/core/layout/app-layouts/auth-layout.co
 import { BaseHeaderComponent } from '@app/core/layout/header/base-header.component';
 import { SearchComponent } from '@app/core/layout/header/search/search.component';
 import { ToolbarSplitterComponent } from '@app/core/layout/header/toolbar-splitter/toolbar-splitter.component';
-import { LayoutActionsComponent } from '@app/core/layout/header/layout-actions/layout-actions.component';
 import { ZoomActionsComponent } from '@app/core/layout/header/zoom-actions/zoom-actions.component';
 import { ModelContainerComponent } from '@app/core/layout/model-container/model-container.component';
 import { ModelSidebarComponent } from '@app/core/layout/model-sidebar/model-sidebar.component';
@@ -84,7 +83,6 @@ import { ReportService } from '@app/report-library/services/report.service';
     ToolbarColumnComponent,
     ToolbarSplitterComponent,
     SearchComponent,
-    LayoutActionsComponent,
     ZoomActionsComponent,
     ModelContainerComponent,
     ModelSidebarComponent,
@@ -111,7 +109,6 @@ import { ReportService } from '@app/report-library/services/report.service';
     AuthLayoutComponent,
     BaseHeaderComponent,
     ZoomActionsComponent,
-    LayoutActionsComponent,
     MenuComponent,
     SearchComponent,
     LogoComponent,
