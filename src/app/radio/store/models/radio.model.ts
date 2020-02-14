@@ -3,6 +3,7 @@ export interface RadioEntitiesHttpParams {
   scopeQuery?: string;
   page?: string;
   size?: string;
+  format?: string;
 }
 
 export interface RadioEntitiesResponse {

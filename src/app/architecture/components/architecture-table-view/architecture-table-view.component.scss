@@ -6,12 +6,6 @@ tr.mat-row {
   background-color: #efefef;
 }
 
-.mat-icon {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .badge {
   color: #fff;
   margin-right: 5px;
@@ -30,9 +24,23 @@ tr.mat-header-row {
 
 .table-footer {
   display: flex;
-  align-items: center;
   border-bottom: solid 1px #ddd;
-  button {
-    margin-left: auto;
+}
+
+button {
+  margin-top: 7px;
+}
+
+.add-btn {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+  .mat-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    margin-top: 4px;
+    padding: 0;
   }
 }
