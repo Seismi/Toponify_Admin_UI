@@ -50,6 +50,7 @@ import { RightHandSideComponent } from './components/right-hand-side/right-hand-
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from './components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from './components/download-csv-modal/download-csv-modal.component';
+import { ReportService } from '@app/report-library/services/report.service';
 
 @NgModule({
   imports: [
@@ -142,6 +143,9 @@ import { DownloadCSVModalComponent } from './components/download-csv-modal/downl
     SelectModalComponent,
     DownloadCSVModalComponent,
     SelectModalComponent
+  ],
+  providers: [
+    ReportService
   ]
 })
 export class CoreLayoutModule {}
