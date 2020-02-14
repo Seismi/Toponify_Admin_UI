@@ -46,11 +46,10 @@
       <textarea
         matInput
         placeholder="Description"
-        [rows]="rows"
-        data-hook="radio-details-description"
-        [ngClass]="{ editable: isEditable }"
+        [ngStyle]="{ display: 'none' }"
         formControlName="description"
       ></textarea>
+      <ckeditor [editor]="editor" formControlName="description"></ckeditor>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 

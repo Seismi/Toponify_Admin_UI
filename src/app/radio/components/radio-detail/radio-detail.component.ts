@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
 @Component({
   selector: 'smi-radio-detail',
@@ -25,6 +26,7 @@ export class RadioDetailComponent {
 
   public categories = Constants.RADIO_CATEGORIES;
   public status = Constants.RADIO_STATUS;
+  public editor = InlineEditor;
 
   @Output()
   archiveRadio = new EventEmitter<void>();
