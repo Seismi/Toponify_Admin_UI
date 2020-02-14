@@ -33,7 +33,6 @@ import { reducer } from './store/reducers/radio.reducer';
 import { RadioDetailsComponent } from './containers/radio-details/radio-details.component';
 import { SettingsModule } from '@app/settings/settings.module';
 import { RadioHeaderComponent } from './components/radio-header/radio-header.component';
-import { RadioRightSideComponent } from './components/right-side/right-side.component';
 import { FilterModalComponent } from './containers/filter-modal/filter-modal.component';
 import { FilterRadioFormComponent } from './components/filter-radio-form/filter-radio-form.component';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
@@ -87,7 +86,6 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
     ChatBoxComponent,
     RadioDetailsComponent,
     RadioHeaderComponent,
-    RadioRightSideComponent,
     FilterModalComponent,
     FilterRadioFormComponent,
     DeleteRadioPropertyModalComponent,

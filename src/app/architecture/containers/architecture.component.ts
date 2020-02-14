@@ -82,7 +82,9 @@ import {
   AddWorkPackageLinkAttribute,
   AddWorkPackageLinkRadio,
   UpdateWorkPackageLinkProperty,
-  DeleteWorkPackageLinkProperty
+  DeleteWorkPackageLinkProperty,
+  AddWorkPackageLink,
+  WorkPackageLinkActionTypes
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -172,6 +174,7 @@ import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/action
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
+import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -602,17 +605,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
-        this.eventEmitter.next(Events.NodesLinksReload);
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions
-        .pipe(ofType(LayoutActionTypes.LoadLayoutSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess))
-        .subscribe(_ => {
+      this.actions.pipe(ofType(
+        WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess,
+        WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess,
+        LayoutActionTypes.LoadLayoutSuccess,
+        WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess)).subscribe(_ => {
           this.eventEmitter.next(Events.NodesLinksReload);
-        })
+      })
     );
 
     this.subscriptions.push(
@@ -1754,6 +1753,39 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onDownloadImage(): void {
     this.diagramComponent.getDiagramImage();
+  }
+
+  onAddComponentOrLink(): void {
+    const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        workPackageId: this.workpackageId,
+        link: this.selectedView === ArchitectureView.Links,
+        level: this.currentFilterLevel.toLowerCase()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.node) {
+        if (this.selectedView !== ArchitectureView.Links) {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNode({
+              workpackageId: this.workpackageId,
+              node: { ...data.node, layer: this.currentFilterLevel.toLowerCase() },
+              scope: this.scope.id
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageLink({
+              workpackageId: this.workpackageId,
+              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+            })
+          );
+        }
+      }
+    })
   }
 
   onUpdateAvailableTags() {

@@ -29,6 +29,7 @@ import { ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
+import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -207,4 +208,17 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     };
     this.store.dispatch(new LoadReports(queryParams));
   }
+
+  downloadCSV() {
+    this.dialog.open(DownloadCSVModalComponent, {
+      width: '250px',
+      disableClose: true,
+      data: {
+        GET: 'report-library',
+        fileName: 'report-library'
+      }
+    });
+  }
+
+
 }

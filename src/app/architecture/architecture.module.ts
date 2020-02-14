@@ -78,10 +78,10 @@ import { DeleteAttributeModalComponent } from './containers/delete-attribute-mod
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/radio-confirm-modal.component';
+import { ComponentsOrLinksModalComponent } from './containers/components-or-links-modal/components-or-links-modal.component';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
 import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
-
 
 @NgModule({
   imports: [
@@ -162,6 +162,7 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     DeleteAttributeModalComponent,
     DeleteDescendantsModalComponent,
     RadioConfirmModalComponent,
+    ComponentsOrLinksModalComponent,
     SpinnerComponent
   ],
   entryComponents: [
@@ -177,7 +178,8 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
     DeleteDescendantsModalComponent,
-    RadioConfirmModalComponent
+    RadioConfirmModalComponent,
+    ComponentsOrLinksModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

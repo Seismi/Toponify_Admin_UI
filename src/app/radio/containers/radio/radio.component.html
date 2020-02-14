@@ -16,11 +16,12 @@
           [data]="radio$ | async"
           (selectRadio)="onSelectRadio($event)"
           (addRadio)="onAddRadio($event)"
+          (download)="downloadCSV()"
         >
         </smi-radio-table>
       </div>
       <div class="col">
-        <smi-radio-right-side (addRadio)="onAddRadio()"></smi-radio-right-side>
+        <smi-right-hand-side [title]="'Radio'" (add)="onAddRadio()"></smi-right-hand-side>
         <router-outlet></router-outlet>
       </div>
     </div>
