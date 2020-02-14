@@ -327,18 +327,38 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.LoadMapView: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
+      };
+    }
+
     case NodeActionTypes.LoadMapViewSuccess: {
       return {
         ...state,
         entities: [...action.payload.nodes],
-        links: [...action.payload.links]
+        links: [...action.payload.links],
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
       };
     }
 
     case NodeActionTypes.LoadMapViewFailure: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loadingNodes: LoadingStatus.error,
+        loadingLinks: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadNodeUsageView: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
       };
     }
 
@@ -346,14 +366,18 @@ export function reducer(
       return {
         ...state,
         entities: [...action.payload.nodes],
-        links: [...action.payload.links]
+        links: [...action.payload.links],
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
       };
     }
 
     case NodeActionTypes.LoadNodeUsageViewFailure: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loadingNodes: LoadingStatus.error,
+        loadingLinks: LoadingStatus.error
       };
     }
 
