@@ -6,6 +6,7 @@ import { RouterStateUrl } from '@app/core/store';
 import { getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take, switchMap } from 'rxjs/operators';
 import { ReportService } from '@app/report-library/services/report.service';
+import { RadioService } from '@app/radio/services/radio.service';
 
 @Component({
   selector: 'smi-download-csv-modal',
@@ -13,8 +14,8 @@ import { ReportService } from '@app/report-library/services/report.service';
   styleUrls: ['./download-csv-modal.component.scss']
 })
 export class DownloadCSVModalComponent implements OnInit {
-
   constructor(
+    private radioService: RadioService,
     private reportService: ReportService,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     public dialogRef: MatDialogRef<DownloadCSVModalComponent>,
@@ -66,6 +67,8 @@ export class DownloadCSVModalComponent implements OnInit {
     switch(this.data.GET) {
       case 'report-library':
         return this.reportService.getReports(queryParams);
+      case 'radio':
+        return this.radioService.getRadioEntities(queryParams);
     }
   }
 

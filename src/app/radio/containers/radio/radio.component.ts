@@ -15,6 +15,7 @@ import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 
 @Component({
   selector: 'smi-radio',
@@ -138,4 +139,16 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.store.dispatch(new LoadRadios({}));
     this.store.dispatch(new RadioFilter(null));
   }
+
+  downloadCSV(): void {
+    this.dialog.open(DownloadCSVModalComponent, {
+      width: '250px',
+      disableClose: true,
+      data: {
+        GET: 'radio',
+        fileName: 'RADIO'
+      }
+    });
+  }
+
 }
