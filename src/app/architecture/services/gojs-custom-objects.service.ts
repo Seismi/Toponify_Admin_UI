@@ -189,6 +189,18 @@ export class CustomLink extends go.Link {
       return true;
     }
 
+    // Leave link route as is if resizing a node that the link is not connected to
+    if (toolManager.resizingTool.isActive) {
+
+      const resizingNode = toolManager.resizingTool.adornedObject.part as go.Node;
+
+      // Check if current link is connected to the node being resized
+      if (this.fromNode.data.id !== resizingNode.data.id &&
+        this.toNode.data.id !== resizingNode.data.id) {
+        return true;
+      }
+    }
+
     // Call standard computePoints method
     return go.Link.prototype.computePoints.call(this);
   }
