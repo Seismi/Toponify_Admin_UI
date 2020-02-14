@@ -27,6 +27,26 @@ export class RadioDetailComponent {
   public categories = Constants.RADIO_CATEGORIES;
   public status = Constants.RADIO_STATUS;
   public editor = InlineEditor;
+  public config = {
+    toolbar: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'link',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'indent',
+      'outdent',
+      '|',
+      'blockQuote',
+      'insertTable',
+      'undo',
+      'redo'
+    ],
+    removePlugins: ['MediaEmbed', 'ImageUpload', 'ImageToolbar', 'ImageStyle', 'ImageCaption', 'Image', 'EasyImage']
+  };
 
   @Output()
   archiveRadio = new EventEmitter<void>();
