@@ -11,6 +11,7 @@ import {
   RadioDetail
 } from '../store/models/radio.model';
 import { delay } from 'rxjs/operators';
+import { toHttpParams } from '@app/services/utils';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,9 +21,12 @@ const httpOptions = {
 export class RadioService {
   constructor(private http: HttpClient) {}
 
-  getRadioEntities(queryParams: RadioEntitiesHttpParams): Observable<RadioEntitiesResponse> {
-    const params = this.toHttpParams(queryParams);
-    return this.http.get<any>(`/radios`, { params: params });
+  getRadioEntities(queryParams: RadioEntitiesHttpParams): Observable<any> {
+    const params = queryParams ? toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/radios`, {
+      params: params,
+      responseType: queryParams && queryParams.format ? ('text' as 'json') : 'json'
+    });
   }
 
   getRadio(id: string): Observable<RadioDetailApiResponse> {

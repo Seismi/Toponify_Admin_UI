@@ -16,6 +16,7 @@
           [data]="radio$ | async"
           (selectRadio)="onSelectRadio($event)"
           (addRadio)="onAddRadio($event)"
+          (download)="downloadCSV()"
         >
         </smi-radio-table>
       </div>

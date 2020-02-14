@@ -29,6 +29,9 @@ export class RadioTableComponent {
   @Output()
   addRadio = new EventEmitter<void>();
 
+  @Output()
+  download = new EventEmitter<void>();
+
   onSelectRow(row) {
     this.selectedRowIndex = row.id;
     this.selectRadio.emit(row);
@@ -36,5 +39,9 @@ export class RadioTableComponent {
 
   onAdd() {
     this.addRadio.emit();
+  }
+
+  downloadCSV(): void {
+    this.download.emit();
   }
 }
