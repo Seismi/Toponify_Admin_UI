@@ -1,0 +1,5 @@
+<a (click)="zoomIn.emit()"><mat-icon matTooltip="Zoom In">zoom_in</mat-icon></a>
+<a (click)="zoomOut.emit()"><mat-icon matTooltip="Zoom Out">zoom_out</mat-icon></a>
+<a (click)="showGrid.emit()"><mat-icon matTooltip="Grid">{{ grid ? 'border_clear' : 'border_inner' }}</mat-icon></a>
+<a (click)="zoomToFit.emit()"><mat-icon matTooltip="Fit To Screen">zoom_out_map</mat-icon></a>
+<a (click)="downloadImage.emit()"><mat-icon matTooltip="Download image of the layout">get_app</mat-icon></a>

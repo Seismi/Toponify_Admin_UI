@@ -16,3 +16,12 @@
   padding: 5px;
   background-color: #a4a4a4;
 }
+
+.diagram-actions {
+  position: absolute;
+  margin: 5px;
+  z-index: 1000;
+  a {
+    cursor: pointer;
+  }
+}
