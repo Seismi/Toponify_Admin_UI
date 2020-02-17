@@ -2,25 +2,25 @@
   <div [ngClass]="{ disabled: !isEditable }">
     <!-- Email -->
     <mat-form-field>
-      <input matInput placeholder="Email" [readonly]="disableEmailInput" formControlName="email" />
+      <input matInput placeholder="Email" [readonly]="disableEmailInput" formControlName="email" data-qa="setting-user-email" />
       <mat-error>Invalid email address</mat-error>
     </mat-form-field>
 
     <!-- First Name -->
     <mat-form-field>
-      <input matInput placeholder="First Name" formControlName="firstName" [ngClass]="{ editable: isEditable }" />
+      <input matInput placeholder="First Name" formControlName="firstName" [ngClass]="{ editable: isEditable }" data-qa="setting-user-first-name" />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <!-- Last Name -->
     <mat-form-field>
-      <input matInput placeholder="Last Name" formControlName="lastName" [ngClass]="{ editable: isEditable }" />
+      <input matInput placeholder="Last Name" formControlName="lastName" [ngClass]="{ editable: isEditable }" data-qa="setting-user-last-name" />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <!-- Phone Number -->
     <mat-form-field>
-      <input matInput placeholder="Phone Number" formControlName="phone" [ngClass]="{ editable: isEditable }" />
+      <input matInput placeholder="Phone Number" formControlName="phone" [ngClass]="{ editable: isEditable }" data-qa="setting-user-phone-number" />
       <mat-error>Invalid phone number</mat-error>
     </mat-form-field>
 
@@ -32,6 +32,7 @@
         formControlName="team"
         [compareWith]="compareFn"
         [ngClass]="{ editable: isEditable }"
+        data-qa="setting-user-teams"
       >
         <mat-option *ngFor="let team of teams" [value]="team">
           {{ team.name }}
@@ -47,6 +48,7 @@
         formControlName="roles"
         [compareWith]="compareFn"
         [ngClass]="{ editable: isEditable }"
+        data-qa="setting-user-roles"
       >
         <mat-option *ngFor="let role of roles" [value]="role">
           {{ role.name }}
@@ -57,14 +59,14 @@
   </div>
 
   <div class="form-actions" *ngIf="!modalMode">
-    <button mat-raised-button color="primary" *ngIf="!isEditable; else elseBlock" (click)="onEdit()">Edit</button>
-    <button mat-raised-button class="status-btn" *ngIf="!myUserPage && !isEditable" (click)="onDelete()">
+    <button mat-raised-button color="primary" *ngIf="!isEditable; else elseBlock" (click)="onEdit()" data-qa="setting-user-edit">Edit</button>
+    <button mat-raised-button class="status-btn" *ngIf="!myUserPage && !isEditable" (click)="onDelete()" data-qa="setting-all-users-activate-or-deactivate">
       {{ userStatus }}
     </button>
-    <button mat-button color="primary" *ngIf="myUserPage" (click)="onChangePassword()">Change Password</button>
+    <button mat-button color="primary" *ngIf="myUserPage && !isEditable" (click)="onChangePassword()" data-qa="setting-my-user-change-password">Change Password</button>
     <ng-template #elseBlock>
-      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
-      <button mat-raised-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSave()" data-qa="setting-user-save">Save</button>
+      <button mat-raised-button (click)="onCancel()" data-qa="setting-user-cancel">Cancel</button>
     </ng-template>
   </div>
 </form>
