@@ -54,8 +54,6 @@
       (filterRadioSeverity)="onFilterRadioSeverity()"
       (collapseAllNodes)="onCollapseAllNodes()"
       (summariseAllNodes)="onSummariseAllNodes()"
-      [allowEditLayouts]="allowEditLayouts"
-      (editLayout)="allowEditLayout()"
       (expandAll)="onExpandAll()"
     >
     </smi-left-panel>
@@ -70,10 +68,12 @@
       class="diagram-actions"
       *ngIf="selectedView === ArchitectureView.Diagram"
       [grid]="showGrid"
+      [allowMove]="allowMove"
       (zoomIn)="onZoomIn()"
       (zoomOut)="onZoomOut()"
       (showGrid)="onShowGrid()"
       (zoomToFit)="onZoomToFit()"
+      (editLayout)="allowEditLayout()"
       (downloadImage)="onDownloadImage()"
     >
     </smi-layout-actions>

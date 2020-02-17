@@ -21,7 +21,6 @@ export class LeftPanelComponent {
   @Input() layoutSettingsTab: boolean;
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
-  @Input() allowEditLayouts: string;
 
   @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
@@ -48,8 +47,6 @@ export class LeftPanelComponent {
   @Output() collapseAllNodes = new EventEmitter<void>();
 
   @Output() summariseAllNodes = new EventEmitter<void>();
-
-  @Output() editLayout = new EventEmitter<void>();
 
   @Output() expandAll = new EventEmitter<void>();
 
@@ -97,10 +94,6 @@ export class LeftPanelComponent {
 
   onSummariseAllNodes(): void {
     this.summariseAllNodes.emit();
-  }
-
-  onEditLayout(): void {
-    this.editLayout.emit();
   }
 
   onExpandAll(): void {

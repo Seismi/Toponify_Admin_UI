@@ -35,10 +35,10 @@ const SeverityFilter = [
 export class AnalysisTabComponent implements OnChanges {
   public defaultLayout: string = '00000000-0000-0000-0000-000000000000';
 
+  @Input() viewLevel: Level;
   @Input() checked: boolean;
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
-  @Input() allowEditLayouts: string;
 
   public severityFilter = SeverityFilter;
 
@@ -49,10 +49,7 @@ export class AnalysisTabComponent implements OnChanges {
   @Output() filterRadioSeverity = new EventEmitter<void>();
   @Output() collapseAllNodes = new EventEmitter<void>();
   @Output() summariseAllNodes = new EventEmitter<void>();
-  @Output() editLayout = new EventEmitter<void>();
   @Output() expandAll = new EventEmitter<void>();
-
-  @Input() viewLevel: Level;
 
   @ViewChild('Description') Description;
   @ViewChild('Tags') Tags;
@@ -94,10 +91,6 @@ export class AnalysisTabComponent implements OnChanges {
 
   onSummariseAll(): void {
     this.summariseAllNodes.emit();
-  }
-
-  onEditLayout(): void {
-    this.editLayout.emit();
   }
 
   onExpandAll(): void {

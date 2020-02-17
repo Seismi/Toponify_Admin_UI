@@ -7,9 +7,11 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
 })
 export class LayoutActionsComponent {
   @Input() grid: boolean;
+  @Input() allowMove: boolean;
   @Output() zoomIn = new EventEmitter<void>();
   @Output() zoomOut = new EventEmitter<void>();
   @Output() showGrid = new EventEmitter<void>();
   @Output() zoomToFit = new EventEmitter<void>();
   @Output() downloadImage = new EventEmitter<void>();
+  @Output() editLayout = new EventEmitter<void>();
 }
