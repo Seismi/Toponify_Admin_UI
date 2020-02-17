@@ -42,6 +42,7 @@ import { RelatesToTableComponent } from './components/relates-to-table/relates-t
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delete-radio-modal.component';
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
   imports: [
@@ -66,7 +67,8 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
     MatMomentDateModule,
     DocumentationStandardsModule,
     StoreModule.forFeature('radioFeature', reducer),
-    EffectsModule.forFeature([RadioEffects])
+    EffectsModule.forFeature([RadioEffects]),
+    CKEditorModule
   ],
   exports: [
     RadioTableComponent,

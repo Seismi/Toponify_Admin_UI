@@ -6,6 +6,7 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
   styleUrls: ['./right-hand-side.component.scss']
 })
 export class RightHandSideComponent {
+  @Input() disabled: boolean = false;
   @Input() title: string;
   @Output() add = new EventEmitter<void>();
 

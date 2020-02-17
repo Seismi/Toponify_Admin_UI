@@ -55,8 +55,6 @@ import { WorkPackageTabTableComponent } from './components/workpackage-tab-table
 import { LayerPipe } from './pipes/layer.pipe';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailComponent } from '@app/attributes/components/attribute-detail/attribute-detail.component';
-import { EffectsModule } from '@ngrx/effects';
-import { NodeEffects } from './store/effects/node.effects';
 import { RadioTableInArchitectureComponent } from './components/radio-table/radio-table.component';
 import { CategoryTableComponent } from '@app/attributes/components/category-table/category-table.component';
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
@@ -80,9 +78,10 @@ import { DeleteAttributeModalComponent } from './containers/delete-attribute-mod
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
 import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/radio-confirm-modal.component';
+import { ComponentsOrLinksModalComponent } from './containers/components-or-links-modal/components-or-links-modal.component';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
-
+import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
 
 @NgModule({
   imports: [
@@ -120,7 +119,8 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     ScopesAndLayoutsModule,
     TagListModule,
     TagModule,
-    MatChipsModule
+    MatChipsModule,
+    MatProgressSpinnerModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
@@ -161,7 +161,9 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     AttributesListComponent,
     DeleteAttributeModalComponent,
     DeleteDescendantsModalComponent,
-    RadioConfirmModalComponent
+    RadioConfirmModalComponent,
+    ComponentsOrLinksModalComponent,
+    SpinnerComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -176,7 +178,8 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
     DeleteDescendantsModalComponent,
-    RadioConfirmModalComponent
+    RadioConfirmModalComponent,
+    ComponentsOrLinksModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

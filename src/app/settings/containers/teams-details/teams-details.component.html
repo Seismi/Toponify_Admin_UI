@@ -1,5 +1,6 @@
 <app-model-container>
   <smi-team-detail
+    data-qa="setting-team-detail-form"
     [group]="teamDetailForm"
     [isEditable]="isEditable"
     (editTeam)="onEditTeam()"
@@ -8,6 +9,10 @@
     (cancelEdit)="onCancelEdit()"
   >
   </smi-team-detail>
-  <smi-members-table [members]="team?.members" (deleteMember)="onDeleteMember($event)" (addMember)="onAddMember()">
+  <smi-members-table
+    data-qa="setting-team-members-table"
+    [members]="team?.members" 
+    (deleteMember)="onDeleteMember($event)" 
+    (addMember)="onAddMember()">
   </smi-members-table>
 </app-model-container>

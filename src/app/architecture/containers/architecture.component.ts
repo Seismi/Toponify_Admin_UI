@@ -42,7 +42,7 @@ import {
   OwnersEntityOrTeamEntityOrApproversEntity,
   AttributesEntity,
   Tag,
-  TagApplicableTo
+  TagApplicableTo, LoadingStatus
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -51,7 +51,7 @@ import {
   getNodeReports,
   getParentDescendantIds,
   getSelectedNode,
-  getSelectedNodeLink
+  getSelectedNodeLink, getTopologyLoadingStatus
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import {
@@ -82,7 +82,9 @@ import {
   AddWorkPackageLinkAttribute,
   AddWorkPackageLinkRadio,
   UpdateWorkPackageLinkProperty,
-  DeleteWorkPackageLinkProperty
+  DeleteWorkPackageLinkProperty,
+  AddWorkPackageLink,
+  WorkPackageLinkActionTypes
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNodeDescendant,
@@ -173,6 +175,7 @@ import { AddExistingAttributeModalComponent } from './add-existing-attribute-mod
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
+import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -268,6 +271,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
+  public loadingStatus = LoadingStatus;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -279,11 +283,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private tableView: ArchitectureTableViewComponent;
 
   get nodeComponentLayer(): TagApplicableTo {
+    if (!this.selectedNode) {
+      return TagApplicableTo.systems;
+    }
     if (this.selectedNode.hasOwnProperty('sourceObject')) {
       return (this.selectedNode.layer + ' links') as TagApplicableTo;
     } else {
       return (this.selectedNode.layer + 's') as TagApplicableTo;
     }
+  }
+
+  get isLoading$(): Observable<LoadingStatus> {
+    return this.store.select(getTopologyLoadingStatus);
   }
 
   constructor(
@@ -595,17 +606,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe(_ => {
-        this.eventEmitter.next(Events.NodesLinksReload);
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions
-        .pipe(ofType(LayoutActionTypes.LoadLayoutSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess))
-        .subscribe(_ => {
+      this.actions.pipe(ofType(
+        WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess,
+        WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess,
+        LayoutActionTypes.LoadLayoutSuccess,
+        WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess)).subscribe(_ => {
           this.eventEmitter.next(Events.NodesLinksReload);
-        })
+      })
     );
 
     this.subscriptions.push(
@@ -1714,6 +1721,39 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onDownloadImage(): void {
     this.diagramComponent.getDiagramImage();
+  }
+
+  onAddComponentOrLink(): void {
+    const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        workPackageId: this.workpackageId,
+        link: this.selectedView === ArchitectureView.Links,
+        level: this.currentFilterLevel.toLowerCase()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.node) {
+        if (this.selectedView !== ArchitectureView.Links) {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNode({
+              workpackageId: this.workpackageId,
+              node: { ...data.node, layer: this.currentFilterLevel.toLowerCase() },
+              scope: this.scope.id
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageLink({
+              workpackageId: this.workpackageId,
+              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+            })
+          );
+        }
+      }
+    })
   }
 
   onUpdateAvailableTags() {

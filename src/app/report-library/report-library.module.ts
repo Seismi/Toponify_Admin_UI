@@ -38,7 +38,6 @@ import { WorkPackageTableInReportsPageComponent } from './components/workpackage
 import { ReportModalComponent } from './containers/report-modal/report-modal.component';
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
 import { TableHeaderComponent } from '@app/report-library/components/table-header/table-header.component';
-import { ReportRightSideComponent } from './components/right-side/right-side.component';
 import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
 
 @NgModule({
@@ -80,7 +79,6 @@ import { ReportingConceptFilterModalComponent } from '@app/report-library/compon
     ReportModalComponent,
     ReportDeleteModalComponent,
     TableHeaderComponent,
-    ReportRightSideComponent,
     ReportingConceptFilterModalComponent
   ],
   entryComponents: [

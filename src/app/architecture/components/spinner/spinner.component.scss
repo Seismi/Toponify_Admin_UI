@@ -1,0 +1,17 @@
+.wrapper {
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(0,0,0,0.2);
+}
+button {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  z-index: 1001;
+}
