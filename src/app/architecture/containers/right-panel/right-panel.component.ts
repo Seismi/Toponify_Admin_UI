@@ -60,7 +60,6 @@ export class RightPanelComponent {
   @Output() addRadio = new EventEmitter<void>();
   @Output() addScope = new EventEmitter<void>();
   @Output() addOwner = new EventEmitter<void>();
-  @Output() saveOwner = new EventEmitter<{object: TeamDetails, value: string}>();
   @Output() deleteOwner = new EventEmitter<string>();
   @Output() saveProperties = new EventEmitter<Object>();
   @Output() deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
@@ -135,10 +134,6 @@ export class RightPanelComponent {
 
   onAddOwner(): void {
     this.addOwner.emit();
-  }
-
-  onSaveOwner(data: { object: TeamDetails, value: string }): void {
-    this.saveOwner.emit(data);
   }
 
   onDeleteOwner(id: string): void {

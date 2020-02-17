@@ -10,19 +10,15 @@ table {
   color: #212529;
 }
 
-td, th {
+td {
   border: none;
   text-align: left;
-  font-size: 13px;
+  font-size: 13.5px;
   padding: 3px 0px;
 }
 
 td:nth-child(1) {
   padding-left: 15px;
-}
-
-td:nth-child(2), th:nth-child(2) {
-  width: 100px;
 }
 
 .mat-icon {
@@ -32,6 +28,3 @@ td:nth-child(2), th:nth-child(2) {
   margin-left: 5px;
 }
 
-input {
-  width: 100%;
-}

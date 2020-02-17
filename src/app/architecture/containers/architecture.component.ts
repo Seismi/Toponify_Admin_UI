@@ -608,10 +608,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
-
     this.subscriptions.push(
       this.actions.pipe(ofType(
-        TeamActionTypes.UpdateTeamSuccess, 
         WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess,
         WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess,
         LayoutActionTypes.LoadLayoutSuccess,
@@ -1428,15 +1426,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  onSaveOwner(data: { object: TeamDetails, value: string }): void {
-    this.teamStore.dispatch(
-      new UpdateTeam({
-        id: data.object.id,
-        data: { ...data.object, name: data.value }
-      })
-    );
   }
 
   onDeleteOwner(id: string): void {

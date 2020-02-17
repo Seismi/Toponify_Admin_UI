@@ -46,7 +46,6 @@ export class ObjectDetailsFormComponent {
   @Output() save = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
   @Output() addOwner = new EventEmitter<void>();
-  @Output() saveOwner = new EventEmitter<{object: TeamDetails, value: string}>();
   @Output() deleteOwner = new EventEmitter<string>();
   @Output() addDescendant = new EventEmitter<void>();
   @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
@@ -76,10 +75,6 @@ export class ObjectDetailsFormComponent {
 
   onAddOwner(): void {
     this.addOwner.emit();
-  }
-
-  onSaveOwner(data: { object: TeamDetails, value: string }): void {
-    this.saveOwner.emit(data);
   }
 
   onDeleteOwner(id: string): void {
