@@ -1,6 +1,6 @@
 <form [formGroup]="group">
-  <div [ngClass]="{ disabled: !isEditable }">
-    <mat-form-field>
+  <div>
+    <mat-form-field [ngClass]="{ disabled: !isEditable }">
       <input
         matInput
         placeholder="Title"
@@ -11,7 +11,7 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <div class="align-in-row">
+    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
       <mat-form-field [ngClass]="{ categoryInput: modalMode }">
         <mat-label>Category</mat-label>
         <mat-select data-qa="radio-detail-category" formControlName="category" [ngClass]="{ editable: isEditable }">
@@ -46,15 +46,15 @@
       <textarea
         matInput
         placeholder="Description"
-        [rows]="rows"
-        data-qa="radio-detail-description"
-        [ngClass]="{ editable: isEditable }"
+        [ngStyle]="{ display: 'none' }"
         formControlName="description"
       ></textarea>
+      <ckeditor [editor]="editor" [config]="config" formControlName="description" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <div class="description-content" [innerHTML]="group.controls['description'].value" [ngClass]="{hidden: isEditable}"></div>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <div class="align-in-row">
+    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
       <mat-form-field class="assigned-to-input">
         <mat-label>Assigned To</mat-label>
         <mat-select
@@ -81,7 +81,7 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field>
+    <mat-form-field [ngClass]="{ disabled: !isEditable }">
       <textarea
         matInput
         [rows]="rows"
@@ -105,8 +105,8 @@
     <div *ngIf="!isEditable">
       <button
         data-qa="radio-detail-edit"
-        mat-raised-button 
-        color="primary" 
+        mat-raised-button
+        color="primary"
         (click)="onEdit()"
       >
         Edit
