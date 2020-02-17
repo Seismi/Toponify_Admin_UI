@@ -19,6 +19,7 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
   descendants: any[] = [];
   processing = false;
   error: string = null;
+  workpackageId: string;
   private subscriptions: Subscription[] = [];
 
   payload: any = null;
@@ -31,6 +32,7 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
   ) {
     this.processing = true;
     this.payload = data.payload;
+    this.workpackageId = data.workpackageId;
 
     this.subscriptions.push(
       this.actions
@@ -80,7 +82,7 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
     }
     return {
       linkId: link.id,
-      workpackageId: link.impactedByWorkPackages[0].id
+      workpackageId: this.workpackageId
     };
   }
 

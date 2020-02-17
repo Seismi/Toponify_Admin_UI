@@ -20,6 +20,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
   processing = false;
   error: string = null;
   payload: any = null;
+  workpackageId: string;
 
   subscriptions: Subscription[] = [];
 
@@ -31,6 +32,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
   ) {
     this.processing = true;
     this.payload = data.payload;
+    this.workpackageId = data.workpackageId;
 
     this.subscriptions.push(
       this.actions
@@ -78,7 +80,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
     }
     return {
       nodeId: node.id,
-      workpackageId: node.impactedByWorkPackages[0].id
+      workpackageId: this.workpackageId
     };
   }
 
