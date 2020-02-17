@@ -19,8 +19,12 @@
 
 .diagram-actions {
   position: absolute;
+  padding: 4px;
   margin: 5px;
   z-index: 1000;
+  height: 33px;
+  background-color: #fff;
+  border: solid 1px #14212d;
   a {
     cursor: pointer;
   }

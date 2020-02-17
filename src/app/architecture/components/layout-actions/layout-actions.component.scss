@@ -1,3 +1,6 @@
-a:nth-child(n+2) {
-  margin-right: 5px;
+.mat-icon {
+  cursor: pointer;
+  &:nth-child(n+1) {
+    margin-right: 5px;
+  }
 }
