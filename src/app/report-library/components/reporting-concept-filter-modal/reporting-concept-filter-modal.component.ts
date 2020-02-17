@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource } from '@a
 import { of } from 'rxjs';
 import { Dimension, ReportingConcept } from '@app/report-library/store/models/report.model';
 import { ReportService } from '@app/report-library/services/report.service';
-import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 
 @Component({
   selector: 'smi-reporting-concept-filter-modal',

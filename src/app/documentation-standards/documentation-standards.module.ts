@@ -30,7 +30,6 @@ import { DocumentationStandardsDetailsComponent } from './containers/documentati
 import { DocumentStandardsLevelsComponent } from './components/document-standards-levels/document-standards-levels.component';
 import { DeleteDocumentModalComponent } from './containers/delete-document-modal/delete-document.component';
 import { DocumentModalComponent } from './containers/document-modal/document-modal.component';
-import { DocumentStandardsRightSideComponent } from './components/right-side/right-side.component';
 
 @NgModule({
   imports: [
@@ -63,8 +62,7 @@ import { DocumentStandardsRightSideComponent } from './components/right-side/rig
     DocumentationStandardsDetailsComponent,
     DocumentStandardsLevelsComponent,
     DeleteDocumentModalComponent,
-    DocumentModalComponent,
-    DocumentStandardsRightSideComponent
+    DocumentModalComponent
   ],
   providers: [DocumentationStandardsService],
   entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent, DocumentModalComponent]

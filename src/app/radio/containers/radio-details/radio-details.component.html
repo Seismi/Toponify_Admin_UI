@@ -1,14 +1,14 @@
 <app-model-container>
   <p class="rightPane">
     <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
-      <mat-tab>
+      <mat-tab data-qa="radio-details-tab">
         <ng-template mat-tab-label>
           <mat-icon class="example-tab-icon">info</mat-icon>
           Details
         </ng-template>
         <p class="detailsTab">
           <smi-radio-detail
-            data-hook="radio-details"
+            data-qa="radio-detail-form"
             [data]="users$ | async"
             [relatesTo]="radio?.relatesTo"
             [group]="radioDetailsForm"
@@ -24,24 +24,25 @@
           </smi-radio-detail>
         </p>
       </mat-tab>
-      <mat-tab>
+      <mat-tab data-qa="radio-discussions-tab">
         <ng-template mat-tab-label>
           <mat-icon>comment</mat-icon>
           Discussions
         </ng-template>
         <p class="discussion-tab">
-          <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies"> </smi-chatbox>
+          <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies" data-qa="radio-chatbox"></smi-chatbox>
         </p>
         <p class="reply-input">
-          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply($event)"> </smi-reply-text>
+          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply($event)" data-qa="radio-message-form"></smi-reply-text>
         </p>
       </mat-tab>
-      <mat-tab>
+      <mat-tab data-qa="radio-documentation-standards-tab">
         <ng-template mat-tab-label>
           <mat-icon>insert_drive_file</mat-icon>
           Documentation Standards
         </ng-template>
         <smi-edit-documentation-standards-table
+          data-qa="radio-documentation-standards-table"
           [data]="radio?.customPropertyValues"
           (saveProperty)="onSaveProperty($event)"
           (deleteProperty)="onDeleteProperty($event)"

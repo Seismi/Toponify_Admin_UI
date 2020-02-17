@@ -107,6 +107,8 @@
         (download)="onDownload(downloadingTemplate, 'node')"
         [view]="'system'"
         [filterValue]="tableViewFilterValue"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (add)="onAddComponentOrLink()"
       ></smi-architecture-table-view>
     </div>
     <div *ngIf="selectedView === ArchitectureView.Links">
@@ -118,6 +120,8 @@
         (download)="onDownload(downloadingTemplate, 'links')"
         [view]="'link'"
         [filterValue]="tableViewFilterValue"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (add)="onAddComponentOrLink()"
       ></smi-architecture-table-view>
     </div>
   </app-model-content>
@@ -192,3 +196,4 @@
 <ng-template #downloadingTemplate>
   <h3>Preparing...</h3>
 </ng-template>
+<smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>

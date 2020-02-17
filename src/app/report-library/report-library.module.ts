@@ -39,7 +39,6 @@ import { ReportModalComponent } from './containers/report-modal/report-modal.com
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
 import { TableHeaderComponent } from '@app/report-library/components/table-header/table-header.component';
 import { ReportRightSideComponent } from './components/right-side/right-side.component';
-import { SelectModalComponent } from '@app/report-library/components/select-modal/select-modal.component';
 import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
 
 @NgModule({
@@ -66,7 +65,6 @@ import { ReportingConceptFilterModalComponent } from '@app/report-library/compon
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
-  exports: [SelectModalComponent],
   declarations: [
     ReportLibraryComponent,
     ReportLibraryTableComponent,
@@ -83,13 +81,11 @@ import { ReportingConceptFilterModalComponent } from '@app/report-library/compon
     ReportDeleteModalComponent,
     TableHeaderComponent,
     ReportRightSideComponent,
-    SelectModalComponent,
     ReportingConceptFilterModalComponent
   ],
   entryComponents: [
     ReportModalComponent,
     ReportDeleteModalComponent,
-    SelectModalComponent,
     ReportingConceptFilterModalComponent
   ],
   providers: [ReportService]
