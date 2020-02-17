@@ -1,7 +1,8 @@
 <h1 mat-dialog-title>{{ title }}</h1>
 <mat-form-field>
   <mat-label>Work package</mat-label>
-  <mat-select value="00000000-0000-0000-0000-000000000000" (selectionChange)="onSelectWorkPackage($event)">
+  <mat-select value="00000000-0000-0000-0000-000000000000" (selectionChange)="onSelectWorkPackage($event)"
+    data-qa="radio-associate-modal-work-package">
     <mat-option value="00000000-0000-0000-0000-000000000000">
       Current Architecture
     </mat-option>
@@ -12,9 +13,11 @@
 </mat-form-field>
 <mat-form-field>
   <mat-label>Component</mat-label>
-  <mat-select (valueChange)="selectedNodeId = $event">
-    <input class="search" #searchInput placeholder="Search" (keydown)="$event.stopPropagation()"/>
-    <button mat-button mat-icon-button (click)="searchInput.value = ''">
+  <mat-select (valueChange)="selectedNodeId = $event" data-qa="radio-associate-modal-components">
+    <input class="search" #searchInput placeholder="Search" (keydown)="$event.stopPropagation()" 
+      data-qa="radio-associate-modal-components-search" />
+    <button mat-button mat-icon-button (click)="searchInput.value = ''"
+      data-qa="radio-associate-modal-components-reset-search">
       <mat-icon>close</mat-icon>
     </button>
     <mat-option
@@ -30,9 +33,9 @@
     color="primary"
     [disabled]="!selectedNodeId"
     (click)="onConfirm()"
-    data-hook="radio-delete-modal-yes"
+    data-qa="radio-associate-modal-confirm"
   >
     Confirm
   </button>
-  <button mat-raised-button (click)="onCancel()" data-hook="radio-delete-modal-no">Cancel</button>
+  <button mat-raised-button (click)="onCancel()" data-qa="radio-associate-modal-cancel">Cancel</button>
 </div>
