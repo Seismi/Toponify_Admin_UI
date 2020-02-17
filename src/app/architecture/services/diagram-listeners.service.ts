@@ -107,9 +107,17 @@ export class DiagramListenersService {
                 if (node.containingGroup && node.containingGroup.isSubGraphExpanded) {
                   const containingArea = node.containingGroup.findObject('Group member area');
                   const memberBounds = containingArea.getDocumentBounds();
+                  const nodeBounds = node.getDocumentBounds();
+
+                  // Do not attempt to resize group to enclose members that are
+                  //  not positioned in member area
+                  if (memberBounds.top > nodeBounds.top
+                    || !memberBounds.intersectsRect(nodeBounds)) {
+                    return;
+                  }
 
                   // Run process to resize containing groups if member is not correctly enclosed
-                  if (!memberBounds.containsRect(node.getDocumentBounds())) {
+                  if (!memberBounds.containsRect(nodeBounds)) {
                     this.diagramChangesService.groupMemberSizeChanged(node);
                   }
                 }
