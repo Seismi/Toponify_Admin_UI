@@ -1395,6 +1395,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       width: '500px',
       data: {
         title: 'Select owner',
+        placeholder: 'Teams',
         options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
           map(data => 
             data.filter(({ id }) => !ids.has(id))

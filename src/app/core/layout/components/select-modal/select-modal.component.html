@@ -3,7 +3,7 @@
   <input type="text" #searchInput placeholder="Search" matInput [formControl]="searchControl" [matAutocomplete]="auto">
 </mat-form-field>
 <mat-form-field class="example-full-width" [ngClass]="{'hidden': !searchActive}" >
-  <input type="text"  placeholder="Components" [formControl]="selectionControl" matInput (focusin)="onFocus()">
+  <input type="text" placeholder="{{data.placeholder}}" [formControl]="selectionControl" matInput (focusin)="onFocus()">
 </mat-form-field>
 <mat-autocomplete #auto="matAutocomplete" (closed)="onAutocompleteClose()">
   <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option.id">
