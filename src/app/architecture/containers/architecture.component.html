@@ -108,7 +108,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload(downloadingTemplate, 'node')"
+        (download)="onDownload('node')"
         [view]="'system'"
         [filterValue]="tableViewFilterValue"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -121,7 +121,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload(downloadingTemplate, 'links')"
+        (download)="onDownload('links')"
         [view]="'link'"
         [filterValue]="tableViewFilterValue"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -197,6 +197,5 @@
   ></app-model-sidebar>
 </app-model-container>
 
-<ng-template #downloadingTemplate>
-  <h3>Preparing...</h3>
-</ng-template>
+<smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>
+

@@ -1,6 +1,7 @@
 <form [formGroup]="group">
   <mat-form-field>
     <textarea
+      data-qa="radio-discussions-tab-your-message"
       matInput
       [rows]="rows"
       placeholder="Your Message"
@@ -9,7 +10,14 @@
       formControlName="replyText"
     ></textarea>
   </mat-form-field>
-  <button mat-raised-button *ngIf="!replyMode" color="primary" (click)="onSend()" [disabled]="disabled">
+  <button
+    data-qa="radio-discussions-tab-send"
+    mat-raised-button 
+    *ngIf="!replyMode" 
+    color="primary" 
+    (click)="onSend()" 
+    [disabled]="disabled"
+  >
     <mat-icon>send</mat-icon>Send
   </button>
 </form>
