@@ -45,7 +45,7 @@
         </smi-report-library-table>
       </div>
       <div class="col">
-        <smi-report-right-side></smi-report-right-side>
+        <smi-right-hand-side [title]="'Report'" (add)="onAddReport()" [disabled]="workPackageIsEditable"></smi-right-hand-side>
         <router-outlet></router-outlet>
       </div>
     </div>

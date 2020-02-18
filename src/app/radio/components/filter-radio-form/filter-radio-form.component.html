@@ -3,7 +3,7 @@
     <!-- Status -->
     <mat-form-field>
       <mat-label>Status</mat-label>
-      <mat-select formControlName="status" multiple>
+      <mat-select formControlName="status" multiple data-qa="radio-filter-status">
         <mat-option *ngFor="let status of status" [value]="status">{{ status }}</mat-option>
       </mat-select>
     </mat-form-field>
@@ -13,7 +13,7 @@
     <!-- Type -->
     <mat-form-field>
       <mat-label>Type</mat-label>
-      <mat-select formControlName="type" multiple>
+      <mat-select formControlName="type" multiple data-qa="radio-filter-type">
         <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
       </mat-select>
     </mat-form-field>
@@ -22,7 +22,7 @@
   <!-- Assigned To -->
   <mat-form-field>
     <mat-label>Assigned To</mat-label>
-    <mat-select formControlName="assignedTo" multiple>
+    <mat-select formControlName="assignedTo" multiple data-qa="radio-filter-assigned-to">
       <mat-option *ngFor="let user of users" [value]="user"> {{ user.firstName }} {{ user.lastName }} </mat-option>
     </mat-select>
   </mat-form-field>
@@ -30,7 +30,7 @@
   <!-- Relates To -->
   <mat-form-field>
     <mat-label>Relates To</mat-label>
-    <mat-select formControlName="relatesTo" multiple>
+    <mat-select formControlName="relatesTo" multiple data-qa="radio-filter-relates-to">
       <mat-option *ngFor="let node of nodes" [value]="node">
         {{ node.name }}
       </mat-option>
@@ -41,7 +41,13 @@
     <div class="due-date-title">Due Date</div>
     <!-- Due Date -->
     <mat-form-field>
-      <input matInput [matDatepicker]="picker" placeholder="From" formControlName="from" />
+      <input
+        data-qa="radio-filter-due-date-from"
+        matInput
+        [matDatepicker]="picker"
+        placeholder="From"
+        formControlName="from"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
@@ -49,7 +55,13 @@
     <span class="and-title">and</span>
 
     <mat-form-field>
-      <input matInput [matDatepicker]="picker2" placeholder="To" formControlName="to" />
+      <input
+        data-qa="radio-filter-due-date-to"
+        matInput
+        [matDatepicker]="picker2"
+        placeholder="To"
+        formControlName="to"
+      />
       <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
       <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
@@ -57,6 +69,13 @@
 
   <!-- Text -->
   <mat-form-field>
-    <textarea matInput rows="4" placeholder="Text Contains" formControlName="text"></textarea>
+    <textarea
+      data-qa="radio-filter-text"
+      matInput 
+      rows="4" 
+      placeholder="Text Contains" 
+      formControlName="text"
+    >
+    </textarea>
   </mat-form-field>
 </form>

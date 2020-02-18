@@ -9,13 +9,7 @@
   </smi-workpackage-name>
   <app-search></app-search>
   <app-toolbar-column>
-    <app-zoom-actions (zoomIn)="onZoomIn()" (zoomOut)="onZoomOut()"></app-zoom-actions>
-    <app-layout-actions
-      *ngIf="!attributesView"
-      (showGrid)="onShowGrid()"
-      [showOrHideGrid]="showOrHideGrid"
-      (zoomMap)="onZoomMap()"
-    ></app-layout-actions>
+    <app-zoom-actions></app-zoom-actions>
   </app-toolbar-column>
   <app-toolbar-column>
     <smi-quicklinks-actions
@@ -60,10 +54,7 @@
       (filterRadioSeverity)="onFilterRadioSeverity()"
       (collapseAllNodes)="onCollapseAllNodes()"
       (summariseAllNodes)="onSummariseAllNodes()"
-      [allowEditLayouts]="allowEditLayouts"
-      (editLayout)="allowEditLayout()"
       (expandAll)="onExpandAll()"
-      (downloadImage)="onDownloadImage()"
     >
     </smi-left-panel>
   </p>
@@ -73,6 +64,19 @@
       [selectedView]="selectedView"
       [viewLevel]="viewLevel$ | async"
     ></smi-switch-view-tabs>
+    <smi-layout-actions
+      class="diagram-actions"
+      *ngIf="selectedView === ArchitectureView.Diagram"
+      [grid]="showGrid"
+      [allowMove]="allowMove"
+      (zoomIn)="onZoomIn()"
+      (zoomOut)="onZoomOut()"
+      (showGrid)="onShowGrid()"
+      (zoomToFit)="onZoomToFit()"
+      (editLayout)="allowEditLayout()"
+      (downloadImage)="onDownloadImage()"
+    >
+    </smi-layout-actions>
     <smi-search-table-view *ngIf="selectedView !== ArchitectureView.Diagram" (search)="onSearchTableView($event)">
     </smi-search-table-view>
     <div style="padding: 5px" [hidden]="selectedView !== ArchitectureView.Diagram">
@@ -104,7 +108,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload(downloadingTemplate, 'node')"
+        (download)="onDownload('node')"
         [view]="'system'"
         [filterValue]="tableViewFilterValue"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -117,7 +121,7 @@
         [selectedItem]="selectedNode"
         (selectNode)="onSelectNode($event)"
         (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload(downloadingTemplate, 'links')"
+        (download)="onDownload('links')"
         [view]="'link'"
         [filterValue]="tableViewFilterValue"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -193,6 +197,5 @@
   ></app-model-sidebar>
 </app-model-container>
 
-<ng-template #downloadingTemplate>
-  <h3>Preparing...</h3>
-</ng-template>
+<smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>
+

@@ -4,7 +4,6 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { FormGroup } from '@angular/forms';
 import { Level } from '@app/architecture/services/diagram-level.service';
-import { ArchitectureDiagramComponent } from '@app/architecture/components/architecture-diagram/architecture-diagram.component';
 
 @Component({
   selector: 'smi-left-panel',
@@ -22,7 +21,6 @@ export class LeftPanelComponent {
   @Input() layoutSettingsTab: boolean;
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
-  @Input() allowEditLayouts: string;
 
   @ViewChild('mainTabGroup') mainTabGroup: MatTabGroup;
 
@@ -50,15 +48,7 @@ export class LeftPanelComponent {
 
   @Output() summariseAllNodes = new EventEmitter<void>();
 
-  @Output() editLayout = new EventEmitter<void>();
-
   @Output() expandAll = new EventEmitter<void>();
-
-  @Output() downloadImage = new EventEmitter<void>();
-
-  onDownloadImage(): void {
-    this.downloadImage.emit();
-  }
 
   realignTabUnderline(): void {
     this.mainTabGroup.realignInkBar();
@@ -104,10 +94,6 @@ export class LeftPanelComponent {
 
   onSummariseAllNodes(): void {
     this.summariseAllNodes.emit();
-  }
-
-  onEditLayout(): void {
-    this.editLayout.emit();
   }
 
   onExpandAll(): void {

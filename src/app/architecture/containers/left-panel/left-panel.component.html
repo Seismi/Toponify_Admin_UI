@@ -2,6 +2,7 @@
   <mat-tab-group
     [style.width.px]="tabIndex === 1 ? 205 : 420"
     #mainTabGroup
+    id="tab-group"
     mat-stretch-tabs
     [@.disabled]="true"
     [selectedIndex]="selectedLeftTab"
@@ -43,8 +44,6 @@
         (filterRadioSeverity)="onFilterRadioSeverity()"
         (collapseAllNodes)="onCollapseAllNodes()"
         (summariseAllNodes)="onSummariseAllNodes()"
-        [allowEditLayouts]="allowEditLayouts"
-        (editLayout)="onEditLayout()"
         (expandAll)="onExpandAll()"
       >
       </smi-analysis-tab>
@@ -61,11 +60,3 @@
 <button mat-raised-button color="primary" class="layout-btn" (click)="onAddLayout()" *ngIf="layoutSettingsTab">
   Add Layout
 </button>
-
-<!-- Download layout image button -->
-<mat-icon class="download-image"
-  matTooltip="Download image of the layout"
-  (click)="onDownloadImage()"
-  *ngIf="layoutSettingsTab">
-  get_app
-</mat-icon>

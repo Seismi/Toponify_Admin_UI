@@ -29,6 +29,7 @@ export class SelectModalComponent implements OnInit {
       options$: Observable<{ id: string; name: string }[]>;
       multi: boolean;
       selectedIds: string[];
+      placeholder: string;
     }
   ) {
     this.title = data.title;

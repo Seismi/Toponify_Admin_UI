@@ -6,6 +6,7 @@ import { RouterStateUrl } from '@app/core/store';
 import { getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take, switchMap } from 'rxjs/operators';
 import { ReportService } from '@app/report-library/services/report.service';
+import { NodeService } from '@app/architecture/services/node.service';
 import { RadioService } from '@app/radio/services/radio.service';
 
 @Component({
@@ -17,12 +18,13 @@ export class DownloadCSVModalComponent implements OnInit {
   constructor(
     private radioService: RadioService,
     private reportService: ReportService,
+    private nodeService: NodeService,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     public dialogRef: MatDialogRef<DownloadCSVModalComponent>,
-    @Inject(MAT_DIALOG_DATA) 
-    public data: { 
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
       GET: string,
-      fileName: string 
+      fileName: string
     }
   ) { }
 
@@ -64,9 +66,13 @@ export class DownloadCSVModalComponent implements OnInit {
   }
 
   getData(queryParams) {
-    switch(this.data.GET) {
+    switch (this.data.GET) {
       case 'report-library':
         return this.reportService.getReports(queryParams);
+      case 'node':
+        return this.nodeService.getNodes(queryParams);
+      case 'links':
+        return this.nodeService.getNodeLinks(queryParams);
       case 'radio':
         return this.radioService.getRadioEntities(queryParams);
     }

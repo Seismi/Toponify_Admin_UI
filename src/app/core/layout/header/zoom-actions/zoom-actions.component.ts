@@ -30,12 +30,6 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     { level: Level.usage, name: 'usage analysis' }
   ];
 
-  @Output()
-  zoomIn = new EventEmitter<void>();
-
-  @Output()
-  zoomOut = new EventEmitter<void>();
-
   constructor(private store: Store<ViewState>) {}
 
   ngOnInit() {
@@ -65,13 +59,5 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     if ([Level.systemMap, Level.dataSetMap, Level.usage].indexOf(level) !== -1) {
       return true;
     }
-  }
-
-  onZoomIn() {
-    this.zoomIn.emit();
-  }
-
-  onZoomOut() {
-    this.zoomOut.emit();
   }
 }

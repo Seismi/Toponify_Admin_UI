@@ -81,6 +81,8 @@ import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/rad
 import { ComponentsOrLinksModalComponent } from './containers/components-or-links-modal/components-or-links-modal.component';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
+import { LayoutActionsComponent } from './components/layout-actions/layout-actions.component';
+import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
 
 @NgModule({
   imports: [
@@ -118,7 +120,8 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     ScopesAndLayoutsModule,
     TagListModule,
     TagModule,
-    MatChipsModule
+    MatChipsModule,
+    MatProgressSpinnerModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
@@ -160,7 +163,9 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     DeleteAttributeModalComponent,
     DeleteDescendantsModalComponent,
     RadioConfirmModalComponent,
-    ComponentsOrLinksModalComponent
+    ComponentsOrLinksModalComponent,
+    LayoutActionsComponent,
+    SpinnerComponent
   ],
   entryComponents: [
     DeleteModalComponent,
