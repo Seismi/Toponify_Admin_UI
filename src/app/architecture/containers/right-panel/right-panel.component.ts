@@ -15,6 +15,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
+import { TeamDetails } from '@app/settings/store/models/team.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -59,7 +60,7 @@ export class RightPanelComponent {
   @Output() addRadio = new EventEmitter<void>();
   @Output() addScope = new EventEmitter<void>();
   @Output() addOwner = new EventEmitter<void>();
-  @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
+  @Output() deleteOwner = new EventEmitter<string>();
   @Output() saveProperties = new EventEmitter<Object>();
   @Output() deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
   @Output() addDescendant = new EventEmitter<void>();
@@ -135,8 +136,8 @@ export class RightPanelComponent {
     this.addOwner.emit();
   }
 
-  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    this.deleteOwner.emit(owner);
+  onDeleteOwner(id: string): void {
+    this.deleteOwner.emit(id);
   }
 
   onSaveProperty(documentStandard: Object): void {
