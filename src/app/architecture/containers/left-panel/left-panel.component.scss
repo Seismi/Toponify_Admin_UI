@@ -2,10 +2,15 @@
   margin: 7px 1px 0px 1px;
 }
 
+::ng-deep #tab-group > mat-tab-header {
+  background-color: #D7E1E6;
+}
+
 .content {
-  width: 420px;
+  width: 422px;
   height: 100%;
   transition: all 0.2s ease-in-out;
+  border-right: solid 2px #3F51B5;
 }
 
 .editTab {

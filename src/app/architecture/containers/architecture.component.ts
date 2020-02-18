@@ -29,7 +29,8 @@ import {
   SetParentDescendantIds,
   UpdateLinks,
   UpdateNodeExpandedState,
-  UpdateNodeLocations
+  UpdateNodeLocations,
+  UpdateNodeOwners
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -140,9 +141,9 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node as goNode } from 'gojs';
-import { TeamEntity } from '@app/settings/store/models/team.model';
+import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { LoadTeams, UpdateTeam, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
@@ -174,6 +175,8 @@ import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/action
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
 
@@ -1377,21 +1380,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddOwner() {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
+  onAddOwner(): void {
+    const ids = new Set(this.selectedNode.owners.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: 'Select owner',
+        placeholder: 'Teams',
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
+          map(data => 
+            data.filter(({ id }) => !ids.has(id))
+          )
+        ),
+        selectedIds: []
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
+      if (data && data.value) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new AddWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: data.owner.id,
-              data: data.owner
+              ownerId: data.value[0].id,
+              data: data.value[0]
             })
           );
         } else {
@@ -1399,7 +1413,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new AddWorkPackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: data.owner.id
+              ownerId: data.value[0].id
             })
           );
         }
@@ -1407,24 +1421,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+  onDeleteOwner(id: string): void {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
-        mode: 'delete',
-        name: owner.name
+        title: 'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new DeleteWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         } else {
@@ -1432,7 +1447,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new DeleteWorkpackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         }
