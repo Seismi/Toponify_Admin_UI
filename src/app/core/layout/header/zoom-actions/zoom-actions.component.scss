@@ -4,30 +4,10 @@
   width: 170px;
   opacity: 1;
   margin-left: 5px;
-  margin-right: 35px;
 }
 
 .mat-select {
   background-color: #ddd;
   padding: 10px 8px;
   border-radius: 5px;
-}
-
-:host {
-  display: flex;
-  align-items: stretch;
-  margin: 0;
-  a {
-    display: flex;
-    align-items: center;
-    .mat-icon {
-      opacity: 0.8;
-      font-size: 28px;
-    }
-    &:hover {
-      .mat-icon {
-        opacity: 1;
-      }
-    }
-  }
 }

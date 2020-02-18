@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { AuthLayoutComponent } from './layout/app-layouts/auth-layout.component';
 import { BaseHeaderComponent } from './layout/header/base-header.component';
 import { ZoomActionsComponent } from './layout/header/zoom-actions/zoom-actions.component';
-import { LayoutActionsComponent } from './layout/header/layout-actions/layout-actions.component';
 import { SearchComponent } from './layout/header/search/search.component';
 import { ToolbarColumnComponent } from './layout/header/toolbar-column/toolbar-column.component';
 import { CommonModule } from '@angular/common';
@@ -51,7 +50,6 @@ import { DownloadCSVModalComponent } from './layout/components/download-csv-moda
     ToolbarColumnComponent,
     ToolbarSplitterComponent,
     SearchComponent,
-    LayoutActionsComponent,
     ZoomActionsComponent,
     ModelContainerComponent,
     ModelSidebarComponent,

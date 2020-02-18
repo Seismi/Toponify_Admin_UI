@@ -229,8 +229,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
-  showOrHideGrid: string;
-  allowEditLayouts: string;
   // attributeSubscription: Subscription;
   clickedOnLink = false;
   isEditable = false;
@@ -578,11 +576,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => {
         this.allowMove = workpackages.length > 0;
-        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
         this.workPackageIsEditable = this.allowMove;
-        this.workPackageIsEditable === true
-          ? (this.allowEditWorkPackages = 'close')
-          : (this.allowEditWorkPackages = 'edit');
       });
 
     this.subscriptions.push(
@@ -831,9 +825,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.isEditable = false;
   }
 
-  onShowGrid() {
+  onShowGrid(): void {
     this.showGrid = !this.showGrid;
-    this.showGrid === true ? (this.showOrHideGrid = 'border_clear') : (this.showOrHideGrid = 'border_inner');
   }
 
   allowEditWorkPackage() {
@@ -845,11 +838,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   allowEditLayout(): void {
     this.allowMove = !this.allowMove;
-    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
     this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
-  onZoomMap() {
+  onZoomToFit(): void {
     this.diagramComponent.zoomToFit();
   }
 
