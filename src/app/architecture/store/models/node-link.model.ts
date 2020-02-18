@@ -50,6 +50,7 @@ export interface NodeLinkDetail {
   name: string;
   description: string;
   category: string;
+  owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   sourceObject: SourceObjectOrTargetObject;
   targetObject: SourceObjectOrTargetObject;
   descendants: Descendants;

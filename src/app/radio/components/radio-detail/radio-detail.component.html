@@ -1,20 +1,20 @@
 <form [formGroup]="group">
-  <div [ngClass]="{ disabled: !isEditable }">
-    <mat-form-field>
+  <div>
+    <mat-form-field [ngClass]="{ disabled: !isEditable }">
       <input
         matInput
         placeholder="Title"
-        data-hook="radio-details-title"
+        data-qa="radio-detail-title"
         formControlName="title"
         [ngClass]="{ editable: isEditable }"
       />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <div class="align-in-row">
+    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
       <mat-form-field [ngClass]="{ categoryInput: modalMode }">
         <mat-label>Category</mat-label>
-        <mat-select data-hook="radio-details-category" formControlName="category" [ngClass]="{ editable: isEditable }">
+        <mat-select data-qa="radio-detail-category" formControlName="category" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let category of categories" [value]="category">
             {{ category }}
           </mat-option>
@@ -26,7 +26,7 @@
         <input
           matInput
           placeholder="Ref. Number"
-          data-hook="radio-details-reference"
+          data-qa="radio-detail-reference-number"
           formControlName="reference"
           readonly
         />
@@ -34,7 +34,7 @@
 
       <mat-form-field>
         <mat-label>Status</mat-label>
-        <mat-select data-hook="radio-details-status" formControlName="status" [ngClass]="{ editable: isEditable }">
+        <mat-select data-qa="radio-detail-status" formControlName="status" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let status of status" [value]="status">
             {{ status }}
           </mat-option>
@@ -46,19 +46,19 @@
       <textarea
         matInput
         placeholder="Description"
-        [rows]="rows"
-        data-hook="radio-details-description"
-        [ngClass]="{ editable: isEditable }"
+        [ngStyle]="{ display: 'none' }"
         formControlName="description"
       ></textarea>
+      <ckeditor [editor]="editor" [config]="config" formControlName="description" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <div class="description-content" [innerHTML]="group.controls['description'].value" [ngClass]="{hidden: isEditable}"></div>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <div class="align-in-row">
+    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
       <mat-form-field class="assigned-to-input">
         <mat-label>Assigned To</mat-label>
         <mat-select
-          data-hook="radio-details-assignedTo"
+          data-qa="radio-detail-assigned-to"
           formControlName="assignedTo"
           [compareWith]="compareUsers"
           [ngClass]="{ editable: isEditable }"
@@ -69,6 +69,7 @@
 
       <mat-form-field>
         <input
+          data-qa="radio-detail-action-by"
           matInput
           [matDatepicker]="picker"
           placeholder="Action By"
@@ -80,12 +81,12 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field>
+    <mat-form-field [ngClass]="{ disabled: !isEditable }">
       <textarea
         matInput
         [rows]="rows"
         placeholder="Mitigation / Resolution"
-        data-hook="radio-details-mitigation"
+        data-qa="radio-detail-mitigation"
         formControlName="mitigation"
         [ngClass]="{ editable: isEditable }"
       ></textarea>
@@ -93,6 +94,7 @@
   </div>
 
   <smi-relates-to-table
+    data-qa="radio-detail-relates-to-table"
     [data]="relatesTo"
     *ngIf="!modalMode"
     (unlinkRelatesTo)="unlinkRelatesTo.emit($event)"
@@ -101,15 +103,36 @@
 
   <div class="buttons-group" *ngIf="!modalMode">
     <div *ngIf="!isEditable">
-      <button mat-raised-button color="primary" (click)="onEdit()">Edit</button>
-      <button mat-raised-button color="warn" (click)="onDelete()" *ngIf="radioStatus === 'closed'">Delete</button>
-      <button mat-raised-button class="archive-btn" [disabled]="radioStatus === 'closed'" (click)="onArchive()">
+      <button
+        data-qa="radio-detail-edit"
+        mat-raised-button
+        color="primary"
+        (click)="onEdit()"
+      >
+        Edit
+      </button>
+      <button
+        data-qa="radio-detail-delete"
+        *ngIf="radioStatus === 'closed'"
+        mat-raised-button
+        color="warn"
+        (click)="onDelete()"
+      >
+        Delete
+      </button>
+      <button
+        data-qa="radio-detail-archive"
+        mat-raised-button
+        class="archive-btn"
+        [disabled]="radioStatus === 'closed'"
+        (click)="onArchive()"
+      >
         <mat-icon>archive</mat-icon>Archive
       </button>
     </div>
     <div *ngIf="isEditable">
-      <button mat-raised-button color="primary" (click)="onSave()">Save</button>
-      <button mat-raised-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="onSave()" data-qa="radio-detail-save">Save</button>
+      <button mat-raised-button (click)="onCancel()" data-qa="radio-detail-cancel">Cancel</button>
     </div>
   </div>
 </form>

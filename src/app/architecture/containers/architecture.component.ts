@@ -30,7 +30,8 @@ import {
   UpdateGroupAreaSize,
   UpdateLinks,
   UpdateNodeExpandedState,
-  UpdateNodeLocations
+  UpdateNodeLocations,
+  UpdateNodeOwners
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -44,7 +45,7 @@ import {
   AttributesEntity,
   GroupAreaSizeApiRequest,
   Tag,
-  TagApplicableTo
+  TagApplicableTo, LoadingStatus
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -53,7 +54,7 @@ import {
   getNodeReports,
   getParentDescendantIds,
   getSelectedNode,
-  getSelectedNodeLink
+  getSelectedNodeLink, getTopologyLoadingStatus
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import {
@@ -142,9 +143,9 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node as goNode } from 'gojs';
-import { TeamEntity } from '@app/settings/store/models/team.model';
+import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { LoadTeams, UpdateTeam, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
@@ -176,6 +177,9 @@ import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/action
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
 
 enum Events {
@@ -272,6 +276,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
+  public loadingStatus = LoadingStatus;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -283,11 +288,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private tableView: ArchitectureTableViewComponent;
 
   get nodeComponentLayer(): TagApplicableTo {
+    if (!this.selectedNode) {
+      return TagApplicableTo.systems;
+    }
     if (this.selectedNode.hasOwnProperty('sourceObject')) {
       return (this.selectedNode.layer + ' links') as TagApplicableTo;
     } else {
       return (this.selectedNode.layer + 's') as TagApplicableTo;
     }
+  }
+
+  get isLoading$(): Observable<LoadingStatus> {
+    return this.store.select(getTopologyLoadingStatus);
   }
 
   constructor(
@@ -1396,21 +1408,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddOwner() {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
+  onAddOwner(): void {
+    const ids = new Set(this.selectedNode.owners.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: 'Select owner',
+        placeholder: 'Teams',
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
+          map(data => 
+            data.filter(({ id }) => !ids.has(id))
+          )
+        ),
+        selectedIds: []
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
+      if (data && data.value) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new AddWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: data.owner.id,
-              data: data.owner
+              ownerId: data.value[0].id,
+              data: data.value[0]
             })
           );
         } else {
@@ -1418,7 +1441,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new AddWorkPackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: data.owner.id
+              ownerId: data.value[0].id
             })
           );
         }
@@ -1426,24 +1449,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+  onDeleteOwner(id: string): void {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
-        mode: 'delete',
-        name: owner.name
+        title: 'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new DeleteWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         } else {
@@ -1451,7 +1475,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new DeleteWorkpackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         }
@@ -1719,48 +1743,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.tableViewFilterValue = filterValue;
   }
 
-  onDownload(templateRef, type: 'node' | 'links') {
-    const dialogRef = this.dialog.open(templateRef, {
-      width: '250px'
+  onDownload(type: 'node' | 'links') {
+    this.dialog.open(DownloadCSVModalComponent, {
+      width: '250px',
+      disableClose: true,
+      data: {
+        GET: (type === 'node') ? 'node' : 'links',
+        fileName: (type === 'node') ? 'components' : 'links',
+      }
     });
-    this.routerStore
-      .select(getQueryParams)
-      .pipe(
-        take(1),
-        switchMap(params => {
-          let workPackages = [];
-          if (params.workpackages && typeof params.workpackages === 'string') {
-            workPackages.push(params.workpackages);
-          } else if (params.workpackages) {
-            workPackages = params.workpackages;
-          }
-          const queryParams = {
-            workPackageQuery: workPackages,
-            scopeQuery: params.scope,
-            format: 'csv'
-          };
-          if (type === 'node') {
-            return this.nodeService.getNodes(queryParams);
-          } else {
-            return this.nodeService.getNodeLinks(queryParams);
-          }
-        })
-      )
-      .subscribe(
-        csv => {
-          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-          const link = document.createElement('a');
-          const url = URL.createObjectURL(blob);
-          link.setAttribute('href', url);
-          link.setAttribute('download', 'components.csv');
-          link.style.visibility = 'hidden';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          dialogRef.close();
-        },
-        () => dialogRef.close()
-      );
   }
 
   onDownloadImage(): void {

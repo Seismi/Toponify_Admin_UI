@@ -4,6 +4,7 @@ import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 import {
   Error,
   ExpandedStatesEntity,
+  LoadingStatus,
   LocationsEntityEntity,
   Node,
   NodeDetail,
@@ -14,15 +15,9 @@ import {
   Tag
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
-import {
-  WorkPackageNodeActionsUnion,
-  WorkPackageNodeActionTypes
-} from '@app/workpackage/store/actions/workpackage-node.actions';
+import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
-import {
-  WorkPackageLinkActionsUnion,
-  WorkPackageLinkActionTypes
-} from '@app/workpackage/store/actions/workpackage-link.actions';
+import { WorkPackageLinkActionsUnion, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { Level } from '@app/architecture/services/diagram-level.service';
 
@@ -45,6 +40,8 @@ export interface State {
     id: string;
   };
   tags: Tag[];
+  loadingLinks: LoadingStatus;
+  loadingNodes: LoadingStatus;
 }
 
 export const initialState: State = {
@@ -65,7 +62,9 @@ export const initialState: State = {
     tags: [],
     id: null
   },
-  tags: []
+  tags: [],
+  loadingLinks: null,
+  loadingNodes: null
 };
 
 export function reducer(
@@ -306,17 +305,34 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.LoadNodes: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading
+      };
+    }
+
     case NodeActionTypes.LoadNodesSuccess: {
       return {
         ...state,
-        entities: [...action.payload]
+        entities: [...action.payload],
+        loadingNodes: LoadingStatus.loaded
       };
     }
 
     case NodeActionTypes.LoadNodeFailure: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loadingNodes: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadMapView: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
       };
     }
 
@@ -324,14 +340,26 @@ export function reducer(
       return {
         ...state,
         entities: [...action.payload.nodes],
-        links: [...action.payload.links]
+        links: [...action.payload.links],
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
       };
     }
 
     case NodeActionTypes.LoadMapViewFailure: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loadingNodes: LoadingStatus.error,
+        loadingLinks: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadNodeUsageView: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
       };
     }
 
@@ -339,14 +367,18 @@ export function reducer(
       return {
         ...state,
         entities: [...action.payload.nodes],
-        links: [...action.payload.links]
+        links: [...action.payload.links],
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
       };
     }
 
     case NodeActionTypes.LoadNodeUsageViewFailure: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loadingNodes: LoadingStatus.error,
+        loadingLinks: LoadingStatus.error
       };
     }
 
@@ -357,17 +389,26 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.LoadNodeLinks: {
+      return {
+        ...state,
+        loadingLinks: LoadingStatus.loading
+      };
+    }
+
     case NodeActionTypes.LoadNodeLinksSuccess: {
       return {
         ...state,
-        links: [...action.payload]
+        links: [...action.payload],
+        loadingLinks: LoadingStatus.loaded
       };
     }
 
     case NodeActionTypes.LoadNodeLinksFailure: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loadingLinks: LoadingStatus.error
       };
     }
 

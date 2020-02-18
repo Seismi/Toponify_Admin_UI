@@ -302,3 +302,9 @@ export interface Source {
   title: string;
   detail: string;
 }
+
+export enum LoadingStatus {
+  loading,
+  loaded,
+  error
+}
