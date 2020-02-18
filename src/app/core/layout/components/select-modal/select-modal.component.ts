@@ -1,8 +1,12 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 import { combineLatest, Observable } from 'rxjs';
 import { FormControl, Validators } from '@angular/forms';
 import { map, startWith, tap } from 'rxjs/operators';
+import { NewChildrenModalComponent } from '@app/architecture/containers/new-children-modal/new-children-modal.component';
+import { AddWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { Store } from '@ngrx/store';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 
 @Component({
   selector: 'smi-select-modal',
@@ -22,6 +26,8 @@ export class SelectModalComponent implements OnInit {
   private options: { id: string; name: string; selected?: boolean }[];
 
   constructor(
+    private store: Store<WorkPackageState>,
+    private dialog: MatDialog,
     public dialogRef: MatDialogRef<SelectModalComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -30,6 +36,10 @@ export class SelectModalComponent implements OnInit {
       multi: boolean;
       selectedIds: string[];
       placeholder: string;
+      descendants: boolean;
+      nodeId: string,
+      workPackageId: string,
+      scopeId: string
     }
   ) {
     this.title = data.title;
@@ -101,5 +111,29 @@ export class SelectModalComponent implements OnInit {
 
   onAutocompleteClose() {
     this.searchActive = !this.searchActive;
+  }
+
+  onAddComponent(): void {
+    this.dialogRef.close();
+    const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+      disableClose: false,
+      width: '450px',
+      data: {
+        parentId: this.data.nodeId,
+        addSystem: false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.data) {
+        this.store.dispatch(
+          new AddWorkPackageNode({
+            workpackageId: this.data.workPackageId,
+            node: data.data,
+            scope: this.data.scopeId
+          })
+        );
+      }
+    });
   }
 }
