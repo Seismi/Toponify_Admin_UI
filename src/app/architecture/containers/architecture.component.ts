@@ -1518,7 +1518,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     )
     if (type === 'addToGroup') {
-      return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length)));
+      const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
+      return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id))));
     } else {
       return this.store.pipe(select(getPotentialWorkPackageNodes));
     }
