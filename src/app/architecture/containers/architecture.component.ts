@@ -104,7 +104,8 @@ import {
   UpdateWorkPackageNodeProperty,
   DeleteWorkPackageNodeAttribute,
   AddWorkPackageNodeAttribute,
-  AddWorkPackageNode
+  AddWorkPackageNode,
+  FindPotentialWorkpackageNodes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -153,7 +154,7 @@ import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/servi
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
-import { getNodeScopes } from '../store/selectors/workpackage.selector';
+import { getNodeScopes, getPotentialWorkPackageNodes } from '../store/selectors/workpackage.selector';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
@@ -536,7 +537,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
       function() {
-        this.onAddDescendant({ addToGroup: true });
+        this.onAddDescendant('addToGroup');
       }.bind(this)
     );
 
@@ -1475,33 +1476,54 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant(addToGroup?: boolean) {
-    const dialogRef = this.dialog.open(DescendantsModalComponent, {
+  onAddDescendant(type?: string) {
+    const title = (type != undefined) ? 'System' : 'Children';
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        workpackageId: this.workpackageId,
+        title: `Add ${title} to "${this.selectedNode.name}"`,
+        placeholder: 'Components',
+        descendants: (type != undefined) ? false : true,
         nodeId: this.nodeId,
+        workPackageId: this.workpackageId,
         scopeId: this.scope.id,
-        title: this.selectedNode.name,
-        addToGroup: addToGroup ? false : true,
-        childrenOf: {
-          id: null // Add node from the same level *not required*
-        }
+        options$: this.getDataForAddDescendantsDropdown(type),
+        selectedIds: [],
+        multi: (type != undefined) ? false : true
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.descendant) {
+      if (data && data.value) {
         this.workpackageStore.dispatch(
           new AddWorkPackageNodeDescendant({
             workPackageId: this.workpackageId,
             nodeId: this.nodeId,
-            data: data.descendant
+            data: data.value
           })
         );
       }
     });
+  }
+
+  getDataForAddDescendantsDropdown(type: string) {
+    this.store.dispatch(
+      new FindPotentialWorkpackageNodes({
+        workPackageId: this.workpackageId,
+        nodeId: this.nodeId,
+        data: {
+          childrenOf: {
+            id: null
+          }
+        }
+      })
+    )
+    if (type === 'addToGroup') {
+      return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length)));
+    } else {
+      return this.store.pipe(select(getPotentialWorkPackageNodes));
+    }
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {
