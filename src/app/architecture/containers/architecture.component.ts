@@ -1527,17 +1527,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {
-    const dialogRef = this.dialog.open(DeleteDescendantsModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        mode: 'delete',
-        name: descendant.name
+        title: 'Are you sure you want to un-associate? Neither components will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.workpackageStore.dispatch(
           new DeleteWorkPackageNodeDescendant({
             workpackageId: this.workpackageId,
