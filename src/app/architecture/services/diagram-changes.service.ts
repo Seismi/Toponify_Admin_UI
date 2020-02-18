@@ -680,9 +680,6 @@ export class DiagramChangesService {
       group.layout.isValidLayout = false;
       group.layout.invalidateLayout();
 
-      // Set of links that may need rerouting after subgraph expanded
-      const linksToReroute = new go.Set();
-
       // Ensure visibility of group member area and group size are up to date
       group.updateTargetBindings('middleExpanded');
       group.ensureBounds();
@@ -694,9 +691,6 @@ export class DiagramChangesService {
         .each(
           function (part: go.Part): void {
             if (part instanceof go.Node) {
-
-              // Add links connected to member to set of links to be rerouted
-              linksToReroute.addAll(part.linksConnected);
 
               // If member is located outside of the group and is not automatically laid out then reposition member
               if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
@@ -734,14 +728,31 @@ export class DiagramChangesService {
       //  calculated as necessary to enclose the members.
       group.findObject('Group member area').height = memberBounds.height;
       group.findObject('Group member area').width = memberBounds.width;
-
-      // Reroute all necessary links
-      linksToReroute.each(function (link: go.Link): void {
-        link.data = Object.assign(link.data, {updateRoute: true});
-        link.invalidateRoute();
-        link.updateRoute();
-      });
+    } else {
+      // If group collapsed, just ensure bounds are correct
+      group.ensureBounds();
     }
+
+    // Set of links that may need rerouting after subgraph expanded/collapsed
+    const linksToReroute = new go.Set();
+
+    // Get any links that may need rerouting
+    group.findSubGraphParts()
+      .each(
+        function(part: go.Part): void {
+          if (part instanceof go.Node) {
+            // Add links connected to member to set of links to be rerouted
+            linksToReroute.addAll(part.linksConnected);
+          }
+        }
+      );
+
+    // Reroute all necessary links
+    linksToReroute.each(function (link: go.Link): void {
+      link.data = Object.assign(link.data, {updateRoute: true});
+      link.invalidateRoute();
+      link.updateRoute();
+    });
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
