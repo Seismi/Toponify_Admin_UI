@@ -22,3 +22,8 @@ export const getLayoutError = createSelector(
   getReportFeatureState,
   state => state.error
 );
+
+export const getReportAvailableTags = createSelector(
+  getReportFeatureState,
+  state => state.availableTags
+);
