@@ -75,7 +75,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
     if (!node.id) {
       throw new Error('Missing node id');
     }
-    if (!node.impactedByWorkPackages || node.impactedByWorkPackages.length < 1) {
+    if (!this.workpackageId) {
       throw new Error('Workpackage missing');
     }
     return {

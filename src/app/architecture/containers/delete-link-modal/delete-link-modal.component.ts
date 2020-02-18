@@ -77,7 +77,7 @@ export class DeleteLinkModalComponent implements OnInit, OnDestroy {
     if (!link.id) {
       throw new Error('Missing link id');
     }
-    if (!link.impactedByWorkPackages || link.impactedByWorkPackages.length < 1) {
+    if (!this.workpackageId) {
       throw new Error('Workpackage missing');
     }
     return {
