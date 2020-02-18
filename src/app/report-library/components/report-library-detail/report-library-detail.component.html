@@ -20,6 +20,16 @@
         >
         </textarea>
       </mat-form-field>
+
+      <smi-tag-list 
+        [tags]="tags"
+        [availableTags]="availableTags"
+        [editMode]="workPackageIsEditable"
+        (addTag)="addTag.emit($event)"
+        (removeTag)="removeTag.emit($event)"
+        (updateAvailableTags)="updateAvailableTags.emit()"
+      >
+      </smi-tag-list>
     </div>
 
     <div *ngIf="workPackageIsEditable">

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { State as ReportState } from '../../store/reducers/report.reducer';
 import { select, Store } from '@ngrx/store';
@@ -16,9 +16,12 @@ import {
   UpdateReport,
   UpdateReportProperty,
   DeleteReportProperty,
-  ReportActionTypes
+  ReportActionTypes,
+  AddReportTags,
+  LoadReportTags,
+  DeleteReportTags
 } from '@app/report-library/store/actions/report.actions';
-import { getReportSelected } from '@app/report-library/store/selecrtors/report.selectors';
+import { getReportSelected, getReportAvailableTags } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
 import { FormGroup } from '@angular/forms';
 import { Dimension, Report } from '@app/report-library/store/models/report.model';
@@ -31,7 +34,7 @@ import {
 import { MatDialog, MatTabGroup } from '@angular/material';
 import { ReportDeleteModalComponent } from '../report-delete-modal/report-delete-modal.component';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
-import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
+import { OwnersEntityOrTeamEntityOrApproversEntity, Tag } from '@app/architecture/store/models/node.model';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntitiesBy } from '@app/architecture/store/selectors/node.selector';
 import { Level } from '@app/architecture/services/diagram-level.service';
@@ -65,6 +68,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   ownerId: string;
   ownerName: string;
   selectedOwnerIndex: any = -1;
+  availableTags$: Observable<Tag[]>;
 
   constructor(
     private actions: Actions,
@@ -79,6 +83,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.availableTags$ = this.store.select(getReportAvailableTags);
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         this.reportId = params['reportId'];
@@ -375,5 +380,44 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  onUpdateAvailableTags(): void {
+    this.store
+      .pipe(
+        select(getReportAvailableTags),
+        take(1)
+      )
+      .subscribe(tags => {
+        if (!this.workpackageId) {
+          return;
+        }
+        this.store.dispatch(
+          new LoadReportTags({
+            workPackageId: this.workpackageId,
+            reportId: this.report.id
+          })
+        );
+      });
+  }
+
+  onAddTag(tagId: string): void {
+    this.store.dispatch(
+      new AddReportTags({
+        workPackageId: this.workpackageId,
+        reportId: this.report.id,
+        tagIds: [{ id: tagId }]
+      })
+    )
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.store.dispatch(
+      new DeleteReportTags({
+        workPackageId: this.workpackageId,
+        reportId: this.report.id,
+        tagId: tag.id
+      })
+    )
   }
 }
