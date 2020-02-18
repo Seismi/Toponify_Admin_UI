@@ -14,7 +14,7 @@ function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
   return {
     font: `${style} ${font}`
-  }
+  };
 }
 
 const $ = go.GraphObject.make;
@@ -160,7 +160,7 @@ export class DiagramTemplatesService {
           width: nodeWidth - 10
         },
         $(
-          go.TextBlock, 
+          go.TextBlock,
           textFont('18px'),
           {
             stroke: 'black',
@@ -187,7 +187,7 @@ export class DiagramTemplatesService {
         height: 27
       }),
       $(
-        go.TextBlock, 
+        go.TextBlock,
         textFont('bold italic 20px'),
         {
           wrap: go.TextBlock.None,
@@ -258,7 +258,7 @@ export class DiagramTemplatesService {
         }.bind(this)
       },
       $(
-        go.TextBlock, 
+        go.TextBlock,
         textFont('bold 18px'),
         {
           alignment: go.Spot.Center,
@@ -305,7 +305,7 @@ export class DiagramTemplatesService {
         }.bind(this)
       },
       $(
-        go.TextBlock, 
+        go.TextBlock,
         textFont('bold 18px'),
           {
             alignment: go.Spot.Center,
@@ -342,8 +342,8 @@ export class DiagramTemplatesService {
         }.bind(this)
       },
       $(
-        go.TextBlock, 
-        textFont('bold 18px'), 
+        go.TextBlock,
+        textFont('bold 18px'),
         '+',
         {
           alignment: go.Spot.Center,
@@ -448,7 +448,7 @@ export class DiagramTemplatesService {
         margin: new go.Margin(0, 1, 0, 1)
       }),
       $(
-        go.TextBlock, 
+        go.TextBlock,
         textFont('12px'),
         {
           textAlign: 'center',
@@ -513,7 +513,7 @@ export class DiagramTemplatesService {
         go.Panel,
         'Vertical',
         $(
-          go.TextBlock, 
+          go.TextBlock,
           textFont('bold 14px'),
           new go.Binding('text', 'name'),
           new go.Binding('visible', 'linkName').ofModel()
@@ -594,7 +594,7 @@ export class DiagramTemplatesService {
         })
       ),
       $(
-        go.TextBlock, 
+        go.TextBlock,
         textFont('bold italic 20px'),
         {
           column: 1,
@@ -635,7 +635,7 @@ export class DiagramTemplatesService {
       ),
       // Do not show description for systems
       !isSystem ? $(
-        go.TextBlock, 
+        go.TextBlock,
         textFont('16px'),
         {
           textAlign: 'center',
@@ -648,7 +648,7 @@ export class DiagramTemplatesService {
         new go.Binding('visible', 'description').ofModel()
       ) : {},
       $(
-        go.TextBlock, 
+        go.TextBlock,
         textFont('italic 16px'),
         {
           textAlign: 'center',
@@ -760,6 +760,7 @@ export class DiagramTemplatesService {
             height: 200,
             minSize: new go.Size(nodeWidth + 20, 200)
           },
+          new go.Binding('desiredSize', 'areaSize', go.Size.parse).makeTwoWay(go.Size.stringify),
           new go.Binding('visible', 'middleExpanded',
             function(middleExpanded) {
               return middleExpanded === middleOptions.group;
@@ -962,7 +963,7 @@ export class DiagramTemplatesService {
             spacing: new go.Size(NaN, 12)
           },
         ),
-        subGraphExpandedChanged: this.diagramChangesService.systemSubGraphExpandChanged,
+        subGraphExpandedChanged: this.diagramChangesService.systemSubGraphExpandChanged.bind(this.diagramChangesService),
         resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 
@@ -1358,7 +1359,7 @@ export class DiagramTemplatesService {
           'Vertical',
           { margin: 10 },
           $(
-            go.TextBlock, 
+            go.TextBlock,
             textFont('bold 20px'),
             {
               textAlign: 'center',

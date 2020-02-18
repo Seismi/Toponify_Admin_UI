@@ -25,6 +25,13 @@ export interface NodeExpandedStateApiRequest {
   };
 }
 
+export interface GroupAreaSizeApiRequest {
+  data: {
+    id: string;
+    areaSize: string;
+  }[];
+}
+
 export interface WorkPackageNodeDescendantsApiResponse {
   data: (DescendantsEntity)[] | null;
 }
@@ -60,7 +67,8 @@ export class Node {
   category: nodeCategories;
   tags = '';
   locations?: (LocationsEntity)[] | null;
-  expandedStates?: ((ExpandedStatesEntity)[] | null) | null;
+  expandedStates?: (ExpandedStatesEntity)[] | null;
+  groupAreaSizes?: (GroupAreaSizesEntity)[] | null;
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
@@ -96,6 +104,10 @@ export interface ExpandedStatesEntity {
   middleExpanded: middleOptions;
   bottomExpanded: boolean;
 }
+export interface GroupAreaSizesEntity {
+  layout: Layout;
+  areaSize: string;
+}
 export interface Layout {
   id: string;
   name: string;
@@ -123,7 +135,8 @@ export interface NodeDetail {
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
   locations?: (LocationsEntityEntity)[] | null;
-  expandedStates?: ((ExpandedStatesEntity)[] | null) | null;
+  expandedStates?: (ExpandedStatesEntity)[] | null;
+  groupAreaSizes?: (GroupAreaSizesEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;

@@ -14,7 +14,6 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {middleOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -22,6 +21,7 @@ const $ = go.GraphObject.make;
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
 
   workpackages = [];
@@ -652,20 +652,21 @@ export class DiagramChangesService {
       }
     });
 
+    this.groupMemberSizeChanged(node);
+
     if (this.currentLevel.endsWith('map')) {
       // Update node's group layout in map view
       node.invalidateLayout();
     } else {
       // Update expanded status of node in the back end
-      // -Temporarily removed pending API updates-
-      /* this.onUpdateExpandState.next({
+      this.onUpdateExpandState.next({
         node: {
           id: node.data.id,
           middleExpanded: node.data.middleExpanded,
           bottomExpanded: node.data.bottomExpanded
         },
         links: linkData
-      }); */
+      });
     }
   }
 
@@ -737,11 +738,115 @@ export class DiagramChangesService {
       // Reroute all necessary links
       linksToReroute.each(function (link: go.Link): void {
         link.data = Object.assign(link.data, {updateRoute: true});
-        setTimeout(function() {
-          link.invalidateRoute();
-          link.updateRoute();
-        }, 0);
+        link.invalidateRoute();
+        link.updateRoute();
       });
     }
+  }
+
+  groupAreaChanged(event: go.DiagramEvent): void {
+    const linkData: { id: string; points: number[] }[] = [];
+    const node = event.subject.part;
+
+    // Make sure node bounds are up to date so links can route correctly
+    node.ensureBounds();
+
+    // Changing group area changes node size, therefore link routes may need updating
+    node.linksConnected.each(function(link: go.Link): void {
+      // ignore disconnected links
+      if (link.toNode && link.fromNode) {
+        node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.invalidateRoute();
+        link.updateRoute();
+
+        linkData.push({ id: link.data.id, points: link.data.route });
+      }
+    });
+
+    // Update group area of node in the back end
+    this.onUpdateGroupsAreaState.next({
+      groups: [{
+        id: node.data.id,
+        areaSize: node.data.areaSize,
+        locationCoordinates: node.data.location
+      }],
+      links: linkData
+    });
+
+    this.groupMemberSizeChanged(node);
+  }
+
+  // Ensures that all groups that have the given member as part of
+  //  their subgraph are large enough to enclose the member
+  groupMemberSizeChanged(member: go.Group): void {
+    const nestedGroups = new go.Set();
+    const linksToUpdate = new go.Set();
+
+    let currentGroup = member;
+    let currentMinBounds = member.getDocumentBounds().copy();
+
+    // Loop through containing groups until reaching a top level group,
+    //  ensuring each is big enough
+    while (currentGroup.containingGroup !== null) {
+      currentGroup = currentGroup.containingGroup;
+
+      const memberArea = currentGroup.findObject('Group member area');
+      const memberBounds = memberArea.getDocumentBounds().copy();
+
+      // If currently considered group is already large enough then exit loop
+      if (memberBounds.containsRect(currentMinBounds)) {
+        break;
+      }
+
+      // Add the current group and any connected links to the sets of parts to update in the back end
+      nestedGroups.add(currentGroup);
+      linksToUpdate.addAll(currentGroup.linksConnected);
+
+      // Expand minimum required area to include current group member area
+      currentMinBounds = currentMinBounds.unionRect(memberBounds);
+
+      // Expand group member area width and height to ensure it is large enough to enclose all group members
+      memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
+      memberArea.width = Math.max(memberBounds.right, currentMinBounds.right)
+        - Math.min(memberBounds.left, currentMinBounds.left);
+
+      // Shift group horizontally in order to ensure group member area correctly encloses required bounds
+      currentGroup.location = new go.Point(currentMinBounds.centerX, currentGroup.location.y);
+
+      // For next iteration, set minimum bounds equal to new bounds of current group
+      currentGroup.ensureBounds();
+      currentMinBounds = currentGroup.getDocumentBounds().copy();
+    }
+
+    const linkData = [];
+
+    // Update routes of any links connected to any of the resized groups
+    linksToUpdate.each(function(link: go.Link) {
+      // ignore disconnected links
+      if (link.toNode && link.fromNode) {
+        link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.invalidateRoute();
+        link.updateRoute();
+
+        linkData.push({ id: link.data.id, points: link.data.route });
+      }
+    });
+
+    // Construct array of group size/location data
+    const groupData = [];
+    nestedGroups.each(function(group: go.Group) {
+      groupData.push({
+        id: group.data.id,
+        areaSize: group.data.areaSize,
+        locationCoordinates: group.data.location
+      });
+    });
+
+    // Update back end with new layout info for updated groups and links
+    this.onUpdateGroupsAreaState.next({
+      groups: groupData,
+      links: linkData
+    });
+
   }
 }
