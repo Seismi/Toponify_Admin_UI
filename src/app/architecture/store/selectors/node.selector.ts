@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { State } from '../reducers/architecture.reducer';
-import { Level } from '@app/architecture/services/diagram-level.service';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 export const getNodeFeatureState = createFeatureSelector<State>('architectureFeature');
 
@@ -105,4 +105,17 @@ export const getAvailableTags = createSelector(
 export const getTags = createSelector(
   getNodeFeatureState,
   state => state.tags
+);
+
+export const getTopologyLoadingStatus = createSelector(
+  getNodeFeatureState,
+  state => {
+    if (state.loadingLinks === LoadingStatus.loaded && state.loadingNodes === LoadingStatus.loaded) {
+      return LoadingStatus.loaded;
+    }
+    if (state.loadingLinks === LoadingStatus.error || state.loadingNodes === LoadingStatus.error) {
+      return LoadingStatus.error;
+    }
+    return LoadingStatus.loading;
+  }
 );

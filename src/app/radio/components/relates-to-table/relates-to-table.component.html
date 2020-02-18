@@ -15,7 +15,8 @@
       <th mat-header-cell *matHeaderCellDef>
         <span class="name-cell">
           Name
-          <button mat-icon-button (click)="onAdd()">
+          <button mat-icon-button (click)="onAdd()"
+            data-qa="radio-relates-to-add">
             <mat-icon>add</mat-icon>
           </button>
         </span>
@@ -23,7 +24,8 @@
       <td mat-cell *matCellDef="let element">
         <span class="name-cell">
           {{ element.item.name }}
-          <button mat-icon-button (click)="onUnLink(element)">
+          <button mat-icon-button (click)="onUnLink(element)"
+            data-qa="radio-relates-to-disassociate">
             <mat-icon>link_off</mat-icon>
           </button>
         </span>
