@@ -696,6 +696,9 @@ function replaceNodeLocation(
   if (locationIndex > -1) {
     const updatedLocation = updatedLocations[locationIndex];
     updatedLocations.splice(locationIndex, 1, { ...updatedLocation, locationCoordinates: location });
+  } else {
+    // Temporary - can be removed after newly added system group members are initialised correctly
+    updatedLocations.push({ layout: {id: layoutId, name: ''} , locationCoordinates: location});
   }
 
   const updatedNode = { ...state.entities[nodeIndex], locations: updatedLocations };
