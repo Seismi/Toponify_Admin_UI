@@ -185,15 +185,40 @@ export class DiagramTemplatesService {
       $(go.Shape, 'RoundedRectangle', {
         fill: 'white',
         height: 27
-      }),
-      $(
-        go.TextBlock,
-        textFont('bold italic 20px'),
+      },
+      new go.Binding('fill', 'backgroundColour')
+      ),
+      $(go.Panel,
+        'Horizontal',
         {
-          wrap: go.TextBlock.None,
+          stretch: go.GraphObject.Vertical,
           margin: new go.Margin(2, 2, 0, 2)
         },
-        new go.Binding('text', '')
+        $(go.Picture,
+          {
+            desiredSize: new go.Size(25, 25),
+            imageStretch: go.GraphObject.Uniform
+          },
+          new go.Binding('source', 'iconName',
+            function(iconName) {
+              return `assets/tag-icons/${iconName}.svg`;
+            }
+          ),
+          new go.Binding('visible', 'iconName',
+            function(iconName) {
+              return !!iconName;
+            }
+          )
+        ),
+        $(
+          go.TextBlock,
+          textFont('bold italic 20px'),
+          {
+            wrap: go.TextBlock.None
+          },
+          new go.Binding('text', 'name'),
+          new go.Binding('stroke', 'textColour')
+        )
       )
     );
   }
@@ -795,9 +820,9 @@ export class DiagramTemplatesService {
         new go.Binding(
           'itemArray',
           'tags',
-          function(tags: string): string[] {
-            if (tags.trim() === '') {
-              return [];
+          function(tags: any[]): any[] {
+            if (tags.length === 0) {
+              return tags;
             }
 
             return this.getTruncatedTags(tags);
@@ -822,13 +847,11 @@ export class DiagramTemplatesService {
   }
 
   // Gets an array of tags, truncated to fit in the node if necessary
-  getTruncatedTags(tags: string): string[] {
+  getTruncatedTags(tags: any[]): any[] {
     let tagGroup;
 
     // Tags separated by commas. Also, trim any excess whitespace.
-    const tagArray = tags.split(',').map(function(tag) {
-      return tag.trim();
-    });
+    const tagArray = tags.concat();
 
     // Temporary part to measure size from
     tagGroup = createTempPanel.call(this, tagArray);
@@ -836,7 +859,14 @@ export class DiagramTemplatesService {
     // If size of tag section too big then...
     if (tagGroup.naturalBounds.right > nodeWidth - 4) {
       // ...add an ellipsis to the end of the tag list to show that some tags are not shown...
-      tagArray.push('...');
+      tagArray.push({
+        id: '00000000-0000-0000-0000-000000000000',
+        name: '...',
+        applicableTo: [],
+        textColour: 'black',
+        backgroundColour: 'white',
+        iconName: null
+      });
 
       // ...and remove each tag before the ellipsis until the section fits
       do {
@@ -848,7 +878,7 @@ export class DiagramTemplatesService {
     return tagArray;
 
     // Create a temporary part with the given tags
-    function createTempPanel(array: string[]): go.Panel {
+    function createTempPanel(array: any[]): go.Panel {
       const panel = $(go.Part, 'Horizontal', {
         itemTemplate: this.getTagTemplate(),
         itemArray: array
