@@ -1,14 +1,14 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {layers, middleOptions, nodeCategories} from '@app/architecture/store/models/node.model';
-import { Injectable } from '@angular/core';
-import { CustomLink, GojsCustomObjectsService, customIcons, defineRoundButton } from './gojs-custom-objects.service';
-import { DiagramLevelService, Level } from './diagram-level.service';
-import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
-import { Store } from '@ngrx/store';
-import { RouterReducerState } from '@ngrx/router-store';
-import { RouterStateUrl } from '@app/core/store';
-import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
+import {layers, middleOptions, nodeCategories, Tag, TagColour} from '@app/architecture/store/models/node.model';
+import {Injectable} from '@angular/core';
+import {CustomLink, defineRoundButton, GojsCustomObjectsService} from './gojs-custom-objects.service';
+import {DiagramLevelService, Level} from './diagram-level.service';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
+import {Store} from '@ngrx/store';
+import {RouterReducerState} from '@ngrx/router-store';
+import {RouterStateUrl} from '@app/core/store';
+import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -223,12 +223,29 @@ export class DiagramTemplatesService {
     );
   }
 
+  // Template for tag icons as displayed in node's title row
+  getTitleTagIconTemplate(): go.Panel {
+    return $(go.Panel,
+      'Auto',
+      $(go.Picture,
+        {
+          desiredSize: new go.Size(25, 25)
+        },
+        new go.Binding('source', 'iconName',
+          function(iconName: string): string {
+            return `assets/tag-icons/${iconName}.svg`;
+          }
+        )
+      )
+    );
+  }
+
   // Get button for revealing the next level of dependencies
   getDependencyExpandButton(): go.Panel {
     return $(
       'Button',
       {
-        column: 3,
+        column: 4,
         row: 0,
         name: 'DependencyExpandButton',
         alignment: go.Spot.Right,
@@ -263,7 +280,7 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
-        column: 2,
+        column: 3,
         row: 0,
         name: 'TopExpandButton',
         alignment: go.Spot.RightCenter,
@@ -313,7 +330,7 @@ export class DiagramTemplatesService {
       'RoundButton',
       {
         row: 0,
-        column: 2,
+        column: 3,
         name: 'TopMenuButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
@@ -548,7 +565,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get top section of nodes, containing icon and name
+  // Get top section of nodes, containing icons and name
   getTopSection(isSystem = false): go.Panel {
     return $(
       go.Panel,
@@ -567,8 +584,9 @@ export class DiagramTemplatesService {
       }),
       $(go.RowColumnDefinition, { column: 0, width: 25 }),
       $(go.RowColumnDefinition, { column: 1 }),
-      $(go.RowColumnDefinition, { column: 2, width: 25 }),
-      $(go.RowColumnDefinition, { column: 3 }),
+      $(go.RowColumnDefinition, { column: 2 }),
+      $(go.RowColumnDefinition, { column: 3, width: 25 }),
+      $(go.RowColumnDefinition, { column: 4 }),
       this.getDependencyExpandButton(),
       // Node icon, to appear at the top left of the node
       $(
@@ -618,11 +636,61 @@ export class DiagramTemplatesService {
           ].join('');
         })
       ),
+      $(go.Panel,
+        'Horizontal',
+        {
+          column: 1,
+          row: 0,
+        },
+        // Panel to contain tag icons
+        $(go.Panel,
+          'Horizontal',
+          {
+            itemTemplate: this.getTitleTagIconTemplate()
+          },
+          new go.Binding('itemArray', 'tags',
+            function(tags: Tag[]): Tag[] {
+              let iconTags = tags.concat();
+
+              // Filter out any tags without an icon
+              iconTags = iconTags.filter(
+                function(tag: Tag): boolean {
+                  return !!tag.iconName;
+                }
+              );
+              // Restrict tag icons in title row to a maximum of five
+              iconTags = iconTags.slice(0, 5);
+
+              return iconTags;
+            }
+          )
+        ),
+        // Ellipsis to indicate that there are additional tag
+        //  icons associated with the node
+        $(go.TextBlock,
+          '...',
+          textFont('bold 18px'),
+          {
+            margin: new go.Margin(0, 0, 0, 4)
+          },
+          // Should only be visible if there are more than five
+          //  tags with icons against the  node
+          new go.Binding('visible', 'tags',
+            function(tags: Tag[]): boolean {
+              return tags.filter(
+                function (tag: Tag): boolean {
+                  return !!tag.iconName;
+                }
+              ).length > 5;
+            }
+          )
+        )
+      ),
       $(
         go.TextBlock,
         textFont('bold italic 20px'),
         {
-          column: 1,
+          column: 2,
           row: 0,
           textAlign: 'left',
           margin: new go.Margin(0, 5, 0, 5),
@@ -820,7 +888,7 @@ export class DiagramTemplatesService {
         new go.Binding(
           'itemArray',
           'tags',
-          function(tags: any[]): any[] {
+          function(tags: Tag[]): Tag[] {
             if (tags.length === 0) {
               return tags;
             }
@@ -847,10 +915,9 @@ export class DiagramTemplatesService {
   }
 
   // Gets an array of tags, truncated to fit in the node if necessary
-  getTruncatedTags(tags: any[]): any[] {
+  getTruncatedTags(tags: Tag[]): Tag[] {
     let tagGroup;
 
-    // Tags separated by commas. Also, trim any excess whitespace.
     const tagArray = tags.concat();
 
     // Temporary part to measure size from
@@ -863,8 +930,8 @@ export class DiagramTemplatesService {
         id: '00000000-0000-0000-0000-000000000000',
         name: '...',
         applicableTo: [],
-        textColour: 'black',
-        backgroundColour: 'white',
+        textColour: TagColour.black,
+        backgroundColour: TagColour.white,
         iconName: null
       });
 
@@ -878,7 +945,7 @@ export class DiagramTemplatesService {
     return tagArray;
 
     // Create a temporary part with the given tags
-    function createTempPanel(array: any[]): go.Panel {
+    function createTempPanel(array: Tag[]): go.Panel {
       const panel = $(go.Part, 'Horizontal', {
         itemTemplate: this.getTagTemplate(),
         itemArray: array
