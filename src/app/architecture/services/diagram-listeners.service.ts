@@ -101,19 +101,44 @@ export class DiagramListenersService {
           .subscribe(currentLevel => {
             // Check current level is system
             if (currentLevel && currentLevel === Level.system) {
-              event.diagram.nodes.each(function(node) {
+              event.diagram.nodes.each(function(node: go.Node): void {
+
+                const group = node.containingGroup;
 
                 // Check nodes in expanded containing groups
-                if (node.containingGroup && node.containingGroup.isSubGraphExpanded) {
-                  const containingArea = node.containingGroup.findObject('Group member area');
-                  const memberBounds = containingArea.getDocumentBounds();
+                if (group && group.isSubGraphExpanded) {
+                  const containingArea = group.findObject('Group member area');
+                  const memberBounds = containingArea.getDocumentBounds().copy();
                   const nodeBounds = node.getDocumentBounds();
 
-                  // Do not attempt to resize group to enclose members that are
-                  //  not positioned in member area
+                  // Reposition members that lie outside of the containing group's bounds
                   if (memberBounds.top > nodeBounds.top
                     || !memberBounds.intersectsRect(nodeBounds)) {
-                    return;
+
+                    const newLocation = new go.Point();
+
+                    // Centre align member
+                    newLocation.x = memberBounds.centerX;
+
+                    // Initialise new member location to be near the top of the member
+                    //  area, in case group has no other members
+                    newLocation.y = memberBounds.top + 12;
+
+                    // Place member underneath all correctly positioned members,
+                    //  separated by a small gap
+                    group.findSubGraphParts().each(function(part: go.Part) {
+
+                      const partBounds = part.getDocumentBounds();
+
+                      if (part instanceof go.Node
+                        && memberBounds.containsRect(partBounds)
+                      ) {
+                        newLocation.y = Math.max(newLocation.y, partBounds.bottom + 12);
+                      }
+                    });
+
+                    node.move(newLocation, true);
+                    node.ensureBounds();
                   }
 
                   // Run process to resize containing groups if member is not correctly enclosed
