@@ -16,7 +16,8 @@ import {
   MatDatepickerModule,
   MatDialogModule,
   MatAutocompleteModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatSidenavModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -38,7 +39,7 @@ import { LayoutsDropdownComponent } from '@app/core/layout/header/quicklinks-act
 import { NodeNameComponent } from '@app/core/layout/header/node-name/node-name.component';
 import { RightSideBarComponent } from '@app/core/layout/right-sidebar/right-sidebar.component';
 import { ScopesDropdownComponent } from '@app/core/layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
-import { MenuComponent } from '@app/core/layout/header/menu/menu.component';
+import { MenuComponent } from '@app/core/layout/menu/menu.component';
 import { LogoComponent } from '@app/core/layout/header/logo/logo.component';
 import { DraggerComponent } from '@app/core/layout/model-sidebar/dragger/dragger.component';
 import { RouterModule } from '@angular/router';
@@ -50,6 +51,7 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
 import { SelectModalComponent } from './components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from './components/download-csv-modal/download-csv-modal.component';
 import { ReportService } from '@app/report-library/services/report.service';
+import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component';
 
 @NgModule({
   imports: [
@@ -74,7 +76,8 @@ import { ReportService } from '@app/report-library/services/report.service';
     MatDatepickerModule,
     MatDialogModule,
     MatAutocompleteModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSidenavModule
   ],
   exports: [
     MainLayoutComponent,
@@ -102,7 +105,9 @@ import { ReportService } from '@app/report-library/services/report.service';
     DownloadCSVModalComponent,
     RightHandSideComponent,
     DeleteModalComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    LeftHandPaneComponent,
+    MenuComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -133,7 +138,8 @@ import { ReportService } from '@app/report-library/services/report.service';
     DownloadCSVModalComponent,
     RightHandSideComponent,
     DeleteModalComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    LeftHandPaneComponent
   ],
   entryComponents: [
     DeleteModalComponent,
