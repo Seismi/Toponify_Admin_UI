@@ -109,6 +109,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Output()
   updateNodeExpandState = new EventEmitter();
 
+  @Output()
+  updateGroupArea = new EventEmitter();
+
   get level() {
     return this.viewLevel ? this.viewLevel : Level.system;
   }
@@ -236,6 +239,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
     });
+    diagramChangesService.onUpdateGroupsAreaState.subscribe((data: { nodes: any[]; links: any[] }) => {
+      this.updateGroupArea.emit(data);
+    });
   }
 
   // Zoom out diagram
@@ -307,6 +313,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     if (changes.allowMove) {
       this.diagram.allowMove = this.allowMove;
       this.diagram.allowDelete = this.allowMove;
+      this.diagram.allowReshape = this.allowMove;
+      this.diagram.allowResize = this.allowMove;
+      this.diagram.toolManager.resizingTool.isEnabled = this.allowMove;
       this.diagram.toolManager.linkReshapingTool.isEnabled = this.allowMove;
       const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(function(tool) {
         return tool.name === 'LinkShifting';
@@ -315,15 +324,19 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       this.diagram.updateAllTargetBindings('');
 
-      // Handle changes tool-related adornments if a link is selected
-      this.diagram.selection.each(function(part) {
-        // Remove tool-related adornments from selected link (if any) for disabled tools
+      // Handle changes tool-related adornments if a part is selected
+      this.diagram.selection.each(function(part: go.Part): void {
+        // Remove tool-related adornments from selected part (if any) for disabled tools
         if (!linkShiftingTool.isEnabled) {
           part.removeAdornment('LinkShiftingFrom');
           part.removeAdornment('LinkShiftingTo');
         }
         if (!part.diagram.toolManager.linkReshapingTool.isEnabled) {
           part.removeAdornment('LinkReshaping');
+        }
+
+        if (!part.diagram.toolManager.resizingTool.isEnabled) {
+          part.removeAdornment('Resizing');
         }
 
         // Add tool-related adornments to selected link (if any) for enabled tools

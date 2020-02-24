@@ -269,6 +269,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       minWidth: '400px',
       data: {
         title: 'Select source system',
+        placeholder: 'Components',
         options$: this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.system })),
         selectedIds: this.report.system ? [this.report.system.id] : []
       }
@@ -305,6 +306,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       minWidth: '400px',
       data: {
         title: 'Select source data sets',
+        placeholder: 'Components',
         multi: true,
         options$: this.reportService.getDataSets(this.workpackageId, reportId).pipe(
           take(1),

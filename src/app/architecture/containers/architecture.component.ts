@@ -27,9 +27,11 @@ import {
   NodeActionTypes,
   RemoveParentDescendantIds,
   SetParentDescendantIds,
+  UpdateGroupAreaSize,
   UpdateLinks,
   UpdateNodeExpandedState,
-  UpdateNodeLocations
+  UpdateNodeLocations,
+  UpdateNodeOwners
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -41,6 +43,7 @@ import {
   NodeReports,
   OwnersEntityOrTeamEntityOrApproversEntity,
   AttributesEntity,
+  GroupAreaSizeApiRequest,
   Tag,
   TagApplicableTo, LoadingStatus
 } from '@app/architecture/store/models/node.model';
@@ -140,9 +143,9 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node as goNode } from 'gojs';
-import { TeamEntity } from '@app/settings/store/models/team.model';
+import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { LoadTeams, UpdateTeam, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
@@ -174,6 +177,8 @@ import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/action
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
 
@@ -226,8 +231,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
-  showOrHideGrid: string;
-  allowEditLayouts: string;
   // attributeSubscription: Subscription;
   clickedOnLink = false;
   isEditable = false;
@@ -575,11 +578,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => {
         this.allowMove = workpackages.length > 0;
-        this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
         this.workPackageIsEditable = this.allowMove;
-        this.workPackageIsEditable === true
-          ? (this.allowEditWorkPackages = 'close')
-          : (this.allowEditWorkPackages = 'edit');
       });
 
     this.subscriptions.push(
@@ -729,9 +728,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
 
       this.objectDetailsService.updateForm(this.selectedPart);
-
       this.nodeId = this.selectedPart.id;
-
       this.part = part;
 
       if (part) {
@@ -739,20 +736,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
         this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
 
-        // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part instanceof Link;
 
-        // Load node details
-        this.workpackageStore
-          .pipe(
-            select(getSelectedWorkpackages),
-            take(1)
-          )
-          .subscribe(workpackages => {
-            const workPackageIds = workpackages.map(item => item.id);
-            this.setWorkPackage(workPackageIds);
-            this.getNodeReports(workPackageIds);
-          });
+        const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
+        this.setWorkPackage(workPackageIds);
+        this.getNodeReports(workPackageIds);
       }
     }
 
@@ -828,9 +816,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.isEditable = false;
   }
 
-  onShowGrid() {
+  onShowGrid(): void {
     this.showGrid = !this.showGrid;
-    this.showGrid === true ? (this.showOrHideGrid = 'border_clear') : (this.showOrHideGrid = 'border_inner');
   }
 
   allowEditWorkPackage() {
@@ -842,11 +829,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   allowEditLayout(): void {
     this.allowMove = !this.allowMove;
-    this.allowMove === true ? (this.allowEditLayouts = 'close') : (this.allowEditLayouts = 'brush');
     this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
-  onZoomMap() {
+  onZoomToFit(): void {
     this.diagramComponent.zoomToFit();
   }
 
@@ -880,6 +866,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleUpdateGroupArea(data: { groups: { id: string, areaSize: string, locationCoordinates: string }[]; links: go.Link[] }): void {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    // const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.group.id, areaSize: data.group.areaSize };
+    // const nodeLocationData = { id: data.group.id, locationCoordinates: data.group.locationCoordinates };
+
+    if (this.layout && data.groups.length > 0) {
+      this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: data.groups }));
+      this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.groups }));
+    }
+
+    if (this.layout && data.links && data.links.length > 0) {
+      this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
+    }
+  }
+
   handleNodeDeleteRequested(node: any) {
     // check if particular node is under any workpackage
     if (node.impactedByWorkPackages && node.impactedByWorkPackages.length < 1) {
@@ -888,14 +893,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         return;
       }
       // lets add selected workpackages in to node/link
-      node = { ...node, impactedByWorkPackages: this.selectedWorkPackageEntities };
+      node = { ...node };
     }
     this.dialog
       .open(DeleteNodeModalComponent, {
         disableClose: false,
         width: 'auto',
         data: {
-          payload: node
+          payload: node,
+          workpackageId: this.workpackageId
         }
       })
       .beforeClosed()
@@ -914,14 +920,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         return;
       }
       // lets add selected workpackages in to node/link
-      link = { ...link, impactedByWorkPackages: this.selectedWorkPackageEntities };
+      link = { ...link };
     }
     this.dialog
       .open(DeleteLinkModalComponent, {
         disableClose: false,
         width: 'auto',
         data: {
-          payload: link
+          payload: link,
+          workpackageId: this.workpackageId
         }
       })
       .beforeClosed()
@@ -936,7 +943,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesSubscription = this.nodeStore
       .pipe(
         select(getNodeEntities),
-        // Get correct location and expanded state for nodes, based on selected layout
+        // Get correct location, expanded state and group area size for nodes, based on selected layout
         map(nodes => {
           if (nodes === null) {
             return null;
@@ -949,6 +956,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
           let layoutLoc;
           let layoutExpandState;
+          let layoutGroupAreaSize;
 
           return nodes.map(
             function(node) {
@@ -964,23 +972,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                     return exp.layout && exp.layout.id === this.layout.id;
                   }.bind(this)
                 );
-              }
 
-              // TEMP - remove after API update
-              if (layoutExpandState) {
-                layoutExpandState = {
-                  ...layoutExpandState,
-                  middleExpanded: layoutExpandState.middleExpanded ? middleOptions.children : middleOptions.none
-                };
+                layoutGroupAreaSize = node.groupAreaSizes.find(
+                  function(areaSize) {
+                    return areaSize.layout && areaSize.layout.id === this.layout.id;
+                  }.bind(this)
+                );
               }
-              // END TEMP
 
               return {
                 ...node,
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
                 middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : middleOptions.none,
-                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false
+                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false,
+                areaSize: layoutGroupAreaSize ? layoutGroupAreaSize.areaSize : null
               };
             }.bind(this)
           );
@@ -1385,21 +1391,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddOwner() {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
+  onAddOwner(): void {
+    const ids = new Set(this.selectedNode.owners.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: 'Select owner',
+        placeholder: 'Teams',
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
+          map(data =>
+            data.filter(({ id }) => !ids.has(id))
+          )
+        ),
+        selectedIds: []
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
+      if (data && data.value) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new AddWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: data.owner.id,
-              data: data.owner
+              ownerId: data.value[0].id,
+              data: data.value[0]
             })
           );
         } else {
@@ -1407,7 +1424,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new AddWorkPackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: data.owner.id
+              ownerId: data.value[0].id
             })
           );
         }
@@ -1415,24 +1432,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+  onDeleteOwner(id: string): void {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
-        mode: 'delete',
-        name: owner.name
+        title: 'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         if (!this.clickedOnLink) {
           this.nodeStore.dispatch(
             new DeleteWorkpackageNodeOwner({
               workpackageId: this.workpackageId,
               nodeId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         } else {
@@ -1440,7 +1458,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new DeleteWorkpackageLinkOwner({
               workPackageId: this.workpackageId,
               nodeLinkId: this.nodeId,
-              ownerId: owner.id
+              ownerId: id
             })
           );
         }
@@ -1753,7 +1771,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           );
         }
       }
-    })
+    });
   }
 
   onUpdateAvailableTags() {

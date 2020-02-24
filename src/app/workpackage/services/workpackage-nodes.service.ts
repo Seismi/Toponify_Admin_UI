@@ -93,7 +93,7 @@ export class WorkPackageNodesService extends WorkPackageService {
    */
   deleteNodeDescendant(workPackageId: string, nodeId: string, descendantNodeId: string): Observable<any> {
     return this.http.post<any>(
-      `/workpackages/${workPackageId}/nodes/${nodeId}/descendants/${descendantNodeId}/deleteRequest`,
+      `/workpackages/${workPackageId}/nodes/${nodeId}/children/${descendantNodeId}/deleteRequest`,
       {}
     );
   }

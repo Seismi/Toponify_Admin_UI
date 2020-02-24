@@ -6,10 +6,11 @@ import {
   ExpandedStatesEntity,
   LoadingStatus,
   LocationsEntityEntity,
-  middleOptions,
   Node,
   NodeDetail,
   NodeReports,
+  middleOptions,
+  GroupAreaSizesEntity,
   OwnersEntity,
   Tag
 } from '../models/node.model';
@@ -468,6 +469,22 @@ export function reducer(
       }
     }
 
+    case NodeActionTypes.UpdateGroupAreaSize: {
+      const { layoutId, data } = action.payload;
+      return data.reduce(
+        function(updatedState, group) {
+          const nodeIndex = updatedState.entities.findIndex(g => g.id === group.id);
+          if (nodeIndex > -1) {
+            return replaceGroupAreaSize(updatedState, nodeIndex, group.id, layoutId, group.areaSize);
+          }
+        }
+        ,
+        {
+          ...state
+        }
+      );
+    }
+
     case NodeActionTypes.UpdateNodeLocationsSuccess: {
       return {
         ...state
@@ -720,6 +737,9 @@ function replaceNodeLocation(
   if (locationIndex > -1) {
     const updatedLocation = updatedLocations[locationIndex];
     updatedLocations.splice(locationIndex, 1, { ...updatedLocation, locationCoordinates: location });
+  } else {
+    // Temporary - can be removed after newly added system group members are initialised correctly
+    updatedLocations.push({ layout: {id: layoutId, name: ''} , locationCoordinates: location});
   }
 
   const updatedNode = { ...state.entities[nodeIndex], locations: updatedLocations };
@@ -765,6 +785,40 @@ function replaceNodeExpandedState(
   entities[nodeIndex] = updatedNode;
 
   if (state.selectedNode && state.selectedNode.id === nodeId) {
+    return {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities
+  };
+}
+
+function replaceGroupAreaSize(
+  state: State,
+  nodeIndex: number,
+  nodeId: string,
+  layoutId: string,
+  areaSize: string
+): State {
+  const updatedGroupAreaSizes: GroupAreaSizesEntity[] = state.entities[nodeIndex].groupAreaSizes.concat();
+  const areaSizeIndex: number = updatedGroupAreaSizes.findIndex(function(size: GroupAreaSizesEntity) {
+    return size.layout.id === layoutId;
+  });
+
+  if (areaSizeIndex > -1) {
+    const updatedGroupAreaSize = updatedGroupAreaSizes[areaSizeIndex];
+    updatedGroupAreaSizes.splice(areaSizeIndex, 1, { ...updatedGroupAreaSize, areaSize: areaSize });
+  }
+
+  const updatedNode = { ...state.entities[nodeIndex], groupAreaSizes: updatedGroupAreaSizes };
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+
+  if (state.selectedNode.id === nodeId) {
     return {
       ...state,
       entities,

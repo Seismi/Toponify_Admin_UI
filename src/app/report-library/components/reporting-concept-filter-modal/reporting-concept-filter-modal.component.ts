@@ -82,6 +82,7 @@ export class ReportingConceptFilterModalComponent implements OnInit {
       minWidth: '400px',
       data: {
         title: 'Add reporting concept to dimension',
+        placeholder: 'Components',
         multi: true,
         options$: of(this.availableConcepts),
         selectedIds: []

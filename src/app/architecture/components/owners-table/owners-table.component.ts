@@ -1,6 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
-import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'smi-owners-table-in-architecture',
@@ -8,28 +6,17 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
   styleUrls: ['./owners-table.component.scss']
 })
 export class OwnersTableComponent {
-  @Input() isEditable: boolean = false;
+  @Input() data: any;
+  @Input() workPackageIsEditable: boolean;
 
-  @Input()
-  set data(data: OwnersEntityOrTeamEntityOrApproversEntity[]) {
-    if (!data) {
-      data = [];
-    }
-    this.dataSource = new MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>(data);
-  }
-
-  public displayedColumns: string[] = ['name'];
-  public dataSource: MatTableDataSource<OwnersEntityOrTeamEntityOrApproversEntity>;
-
-  @Output() addOwner = new EventEmitter<void>();
-
-  @Output() deleteOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
+  @Output() add = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<string>();
 
   onAdd(): void {
-    this.addOwner.emit();
+    this.add.emit();
   }
 
-  onDelete(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    this.deleteOwner.emit(owner);
+  onDelete(id: string): void {
+    this.delete.emit(id);
   }
 }

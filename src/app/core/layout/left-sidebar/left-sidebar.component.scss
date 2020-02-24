@@ -1,20 +1,16 @@
 div {
   height: 100%;
   width: 40px;
-  background-color: #f9f9f9;
-  border-right: solid 1px #ddd;
+  background-color:#3F51B5;
 }
 
 span {
   display: flex;
   justify-content: flex-start;
-  color: #555;
+  color: #fff;
   writing-mode: vertical-lr;
   transform: rotate(-90deg);
   cursor: pointer;
   padding: 15px 8px;
   font-size: 15px;
-  &:hover {
-    color: #222;
-  }
 }

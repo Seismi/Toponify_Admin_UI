@@ -459,6 +459,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       minWidth: '400px',
       data: {
         title: 'Select work package to add to baseline',
+        placeholder: 'Work Packages',
         options$: this.store.pipe(select(getWorkPackageBaselineAvailability)),
         selectedIds: []
       }

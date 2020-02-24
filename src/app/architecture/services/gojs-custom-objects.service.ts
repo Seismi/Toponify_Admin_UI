@@ -93,12 +93,33 @@ export class CustomNodeResize extends go.ResizingTool {
     return minSize;
   }
 
+  public computeMaxSize(): go.Size {
+
+    // Default maximum size irrespective of group membership
+    const maxSize = go.ResizingTool.prototype.computeMaxSize.call(this);
+    const group = this.adornedObject.part as go.Group;
+
+    // If group is itself contained in a group then ensure that the group is not
+    //  expanded outside the bounds of its containing group
+    if (group.containingGroup) {
+      const containingArea = group.containingGroup.resizeObject.getDocumentBounds();
+      const groupContainingArea = group.resizeObject.getDocumentBounds();
+      const groupArea = group.getDocumentBounds();
+
+      // Constrain group member area size, accounting for the resulting size of the whole group
+      maxSize.height = Math.max(maxSize.height,  containingArea.height + groupContainingArea.height - groupArea.height);
+      maxSize.width = Math.max(maxSize.width,  containingArea.width + groupContainingArea.width - groupArea.width);
+    }
+
+    return maxSize;
+  }
+
   // Override standard resize in order to prevent grouped systems from shifting position
   public resize(newr: go.Rect): void {
     const memberLocations = [];
 
     // Save grouped system's positions
-    (this.adornedObject.part as go.Group).memberParts.each(
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
       function(member: go.Part) {
         if (member instanceof go.Node) {
           memberLocations.push({
@@ -166,6 +187,18 @@ export class CustomLink extends go.Link {
       !this.data.isTemporary
     ) {
       return true;
+    }
+
+    // Leave link route as is if resizing a node that the link is not connected to
+    if (toolManager.resizingTool.isActive) {
+
+      const resizingNode = toolManager.resizingTool.adornedObject.part as go.Node;
+
+      // Check if current link is connected to the node being resized
+      if (this.fromNode.data.id !== resizingNode.data.id &&
+        this.toNode.data.id !== resizingNode.data.id) {
+        return true;
+      }
     }
 
     // Call standard computePoints method
@@ -270,7 +303,7 @@ export class GojsCustomObjectsService {
       }),
       $('ContextMenuButton', $(go.TextBlock, 'Reorganise Links'), {
         click: function(event, object) {
-          thisService.diagramChangesService.reorganiseLinks(event.diagram)
+          thisService.diagramChangesService.reorganiseLinks(event.diagram);
         }
       })
     );

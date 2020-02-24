@@ -1,7 +1,7 @@
 import * as go from 'gojs';
 import { Injectable } from '@angular/core';
 import { DiagramChangesService } from './diagram-changes.service';
-import { DiagramLevelService } from './diagram-level.service';
+import {DiagramLevelService, Level} from './diagram-level.service';
 import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
@@ -90,6 +90,68 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
+    // After layout when in system view, check for system group nodes that are
+    //  too large for their groups and update the size of their containing groups
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event) {
+        this.store
+          .select(getFilterLevelQueryParams)
+          .pipe(take(1))
+          .subscribe(currentLevel => {
+            // Check current level is system
+            if (currentLevel && currentLevel === Level.system) {
+              event.diagram.nodes.each(function(node: go.Node): void {
+
+                const group = node.containingGroup;
+
+                // Check nodes in expanded containing groups
+                if (group && group.isSubGraphExpanded) {
+                  const containingArea = group.findObject('Group member area');
+                  const memberBounds = containingArea.getDocumentBounds().copy();
+                  const nodeBounds = node.getDocumentBounds();
+
+                  // Reposition members that lie outside of the containing group's bounds
+                  if (memberBounds.top > nodeBounds.top
+                    || !memberBounds.intersectsRect(nodeBounds)) {
+
+                    const newLocation = new go.Point();
+
+                    // Centre align member
+                    newLocation.x = memberBounds.centerX;
+
+                    // Initialise new member location to be near the top of the member
+                    //  area, in case group has no other members
+                    newLocation.y = memberBounds.top + 12;
+
+                    // Place member underneath all correctly positioned members,
+                    //  separated by a small gap
+                    group.findSubGraphParts().each(function(part: go.Part) {
+
+                      const partBounds = part.getDocumentBounds();
+
+                      if (part instanceof go.Node
+                        && memberBounds.containsRect(partBounds)
+                      ) {
+                        newLocation.y = Math.max(newLocation.y, partBounds.bottom + 12);
+                      }
+                    });
+
+                    node.move(newLocation, true);
+                    node.ensureBounds();
+                  }
+
+                  // Run process to resize containing groups if member is not correctly enclosed
+                  if (!memberBounds.containsRect(nodeBounds)) {
+                    this.diagramChangesService.groupMemberSizeChanged(node);
+                  }
+                }
+              }.bind(this));
+            }
+          });
+      }.bind(this)
+    );
+
     // After a system group is automatically laid out, ensure that links to
     //  any grouped nodes are updated.
     diagram.addDiagramListener(
@@ -150,6 +212,11 @@ export class DiagramListenersService {
 
         this.updatePosition(event);
       }.bind(this.diagramChangesService)
+    );
+
+    diagram.addDiagramListener(
+      'PartResized',
+      this.diagramChangesService.groupAreaChanged.bind(this.diagramChangesService)
     );
 
     diagram.addModelChangedListener(this.handleModelChange.bind(this));
