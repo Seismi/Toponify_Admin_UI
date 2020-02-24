@@ -105,7 +105,8 @@ import {
   DeleteWorkPackageNodeAttribute,
   AddWorkPackageNodeAttribute,
   AddWorkPackageNode,
-  FindPotentialWorkpackageNodes
+  FindPotentialWorkpackageNodes,
+  AddWorkPackageNodeGroup
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -1485,13 +1486,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeDescendant({
-            workPackageId: this.workpackageId,
-            nodeId: this.nodeId,
-            data: data.value
-          })
-        );
+        if (type == 'addToGroup') {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeGroup({
+              workPackageId: this.workpackageId,
+              systemId: this.nodeId,
+              groupId: data.value[0].id
+            })
+          )
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeDescendant({
+              workPackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              data: data.value
+            })
+          );
+        }
       }
     });
   }
