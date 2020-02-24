@@ -5,7 +5,8 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
@@ -245,7 +246,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   editedWorkpackageSubscription: Subscription;
   showOrHideRightPane = false;
   selectedRightTab: number;
-  selectedLeftTab: number;
+  selectedLeftTab: number | string;
   multipleSelected: boolean;
   selectedMultipleNodes = [];
   radioAlertChecked = true;
@@ -258,13 +259,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackageId: string;
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
-  editTabIndex: number;
   public parentName: string | null;
   public workPackageName: string;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
-  public layoutSettingsTab: boolean;
   public scope: ScopeDetails;
   private currentFilterLevel: Level;
   private filterLevelSubscription: Subscription;
@@ -284,6 +283,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private switchViewTabsComponent: SwitchViewTabsComponent;
   @ViewChild(ArchitectureTableViewComponent)
   private tableView: ArchitectureTableViewComponent;
+  @ViewChild('drawer') drawer;
 
   get nodeComponentLayer(): TagApplicableTo {
     if (!this.selectedNode) {
@@ -1126,34 +1126,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  onTabClick(index: number) {
-    this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
-    !this.workPackageIsEditable && index === 1
-      ? (this.layoutSettingsTab = true)
-      : this.workPackageIsEditable && index === 2
-      ? (this.layoutSettingsTab = true)
-      : (this.layoutSettingsTab = false);
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  openLeftTab(index: number) {
+  onTabClick(index: number | string): void {
     this.selectedLeftTab = index;
-    if (this.selectedLeftTab === index) {
-      this.showOrHideLeftPane = true;
-    }
-
-    index === 2 ? (this.layoutSettingsTab = true) : (this.layoutSettingsTab = false);
-
-    this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
-
-    this.diagramComponent.updateDiagramArea();
-    this.realignTabUnderline();
+    setTimeout(() => {
+      this.diagramComponent.updateDiagramArea();
+      this.realignTabUnderline();
+    }, 250)
   }
 
-  onHideLeftPane() {
-    this.showOrHideLeftPane = false;
-    this.diagramComponent.updateDiagramArea();
-    this.realignTabUnderline();
+  openLeftTab(tab: number | string): void {
+    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
+    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    if (!this.drawer.opened) {
+      this.selectedLeftTab = 'menu';
+    }
+    setTimeout(() => {
+      this.diagramComponent.updateDiagramArea();
+      this.realignTabUnderline();
+    }, 250)
   }
 
   onAddRelatedRadio(): void {
