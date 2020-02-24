@@ -64,22 +64,22 @@
       [selectedView]="selectedView"
       [viewLevel]="viewLevel$ | async"
     ></smi-switch-view-tabs>
-    <smi-layout-actions
-      class="diagram-actions"
-      *ngIf="selectedView === ArchitectureView.Diagram"
-      [grid]="showGrid"
-      [allowMove]="allowMove"
-      (zoomIn)="onZoomIn()"
-      (zoomOut)="onZoomOut()"
-      (showGrid)="onShowGrid()"
-      (zoomToFit)="onZoomToFit()"
-      (editLayout)="allowEditLayout()"
-      (downloadImage)="onDownloadImage()"
-    >
-    </smi-layout-actions>
     <smi-search-table-view *ngIf="selectedView !== ArchitectureView.Diagram" (search)="onSearchTableView($event)">
     </smi-search-table-view>
-    <div style="padding: 5px" [hidden]="selectedView !== ArchitectureView.Diagram">
+    <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
+      <smi-layout-actions 
+        class="diagram-actions" 
+        *ngIf="selectedView === ArchitectureView.Diagram" 
+        [grid]="showGrid"
+        [allowMove]="allowMove" 
+        (zoomIn)="onZoomIn()" 
+        (zoomOut)="onZoomOut()" 
+        (showGrid)="onShowGrid()"
+        (zoomToFit)="onZoomToFit()" 
+        (editLayout)="allowEditLayout()" 
+        (downloadImage)="onDownloadImage()"
+      >
+      </smi-layout-actions>
       <app-architecture-diagram
         [mapView]="mapView"
         [showGrid]="showGrid"

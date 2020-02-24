@@ -12,6 +12,7 @@ import {
   Report
 } from '../store/models/report.model';
 import { toHttpParams } from '@app/services/utils';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -158,4 +159,17 @@ export class ReportService {
       {}
     );
   }
+
+  getReportTags(workPackageId: string, reportId: string): Observable<{ data: Tag[] }> {
+    return this.http.get<{ data: Tag[] }>(`/workpackages/${workPackageId}/reports/${reportId}/tags`);
+  }
+
+  addReportTags(workPackageId: string, reportId: string, tagIds: { id: string }[]): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/tags`, { data: tagIds });
+  }
+
+  deleteReportTags(workPackageId: string, reportId: string, tagId: string): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/tags/${tagId}/deleteRequest`, {});
+  }
+
 }
