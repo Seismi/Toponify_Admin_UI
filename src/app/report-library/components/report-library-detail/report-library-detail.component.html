@@ -20,16 +20,6 @@
         >
         </textarea>
       </mat-form-field>
-
-      <smi-tag-list 
-        [tags]="tags"
-        [availableTags]="availableTags"
-        [editMode]="workPackageIsEditable"
-        (addTag)="addTag.emit($event)"
-        (removeTag)="removeTag.emit($event)"
-        (updateAvailableTags)="updateAvailableTags.emit()"
-      >
-      </smi-tag-list>
     </div>
 
     <div *ngIf="workPackageIsEditable">
@@ -37,6 +27,16 @@
       <button mat-flat-button (click)="onCancel()">Cancel</button>
       <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
     </div>
+
+    <smi-tag-list 
+      [tags]="tags"
+      [availableTags]="availableTags"
+      [editMode]="workPackageIsEditable"
+      (addTag)="addTag.emit($event)"
+      (removeTag)="removeTag.emit($event)"
+      (updateAvailableTags)="updateAvailableTags.emit()"
+    >
+    </smi-tag-list>
 
     <!-- Owners -->
     <smi-report-owners-table 
