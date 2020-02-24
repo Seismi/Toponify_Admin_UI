@@ -6,6 +6,7 @@ import {
   NodeDetail,
   OwnersEntity,
   NodeReports,
+  GroupAreaSizeApiRequest,
   Tag
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
@@ -37,6 +38,9 @@ export enum NodeActionTypes {
   UpdateNodeExpandedState = '[Node] Update node expanded state',
   UpdateNodeExpandedStateSuccess = '[Node] Update node expanded state Success',
   UpdateNodeExpandedStateFailure = '[Node] Update node expanded state Fail',
+  UpdateGroupAreaSize = '[Node] Update group area size',
+  UpdateGroupAreaSizeSuccess = '[Node] Update group area size Success',
+  UpdateGroupAreaSizeFailure = '[Node] Update group area size Fail',
   UpdateLinks = '[Node] Update links',
   UpdateLinksSuccess = '[Node] Update links Success',
   UpdateLinksFailure = '[Node] Update links Fail',
@@ -194,6 +198,21 @@ export class UpdateNodeExpandedStateSuccess implements Action {
 
 export class UpdateNodeExpandedStateFailure implements Action {
   readonly type = NodeActionTypes.UpdateNodeExpandedStateFailure;
+  constructor(public payload: Error) {}
+}
+
+export class UpdateGroupAreaSize implements Action {
+  readonly type = NodeActionTypes.UpdateGroupAreaSize;
+  constructor(public payload: { layoutId: string; data: GroupAreaSizeApiRequest['data'] }) {}
+}
+
+export class UpdateGroupAreaSizeSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateGroupAreaSizeSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateGroupAreaSizeFailure implements Action {
+  readonly type = NodeActionTypes.UpdateGroupAreaSizeFailure;
   constructor(public payload: Error) {}
 }
 
@@ -411,6 +430,9 @@ export type NodeActionsUnion =
   | UpdateNodeExpandedState
   | UpdateNodeExpandedStateSuccess
   | UpdateNodeExpandedStateFailure
+  | UpdateGroupAreaSize
+  | UpdateGroupAreaSizeSuccess
+  | UpdateGroupAreaSizeFailure
   | UpdateLinks
   | UpdateLinksSuccess
   | UpdateLinksFailure

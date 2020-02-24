@@ -27,6 +27,7 @@ import {
   NodeActionTypes,
   RemoveParentDescendantIds,
   SetParentDescendantIds,
+  UpdateGroupAreaSize,
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations,
@@ -42,6 +43,7 @@ import {
   NodeReports,
   OwnersEntityOrTeamEntityOrApproversEntity,
   AttributesEntity,
+  GroupAreaSizeApiRequest,
   Tag,
   TagApplicableTo, LoadingStatus
 } from '@app/architecture/store/models/node.model';
@@ -864,6 +866,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleUpdateGroupArea(data: { groups: { id: string, areaSize: string, locationCoordinates: string }[]; links: go.Link[] }): void {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    // const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.group.id, areaSize: data.group.areaSize };
+    // const nodeLocationData = { id: data.group.id, locationCoordinates: data.group.locationCoordinates };
+
+    if (this.layout && data.groups.length > 0) {
+      this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: data.groups }));
+      this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.groups }));
+    }
+
+    if (this.layout && data.links && data.links.length > 0) {
+      this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
+    }
+  }
+
   handleNodeDeleteRequested(node: any) {
     // check if particular node is under any workpackage
     if (node.impactedByWorkPackages && node.impactedByWorkPackages.length < 1) {
@@ -922,7 +943,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesSubscription = this.nodeStore
       .pipe(
         select(getNodeEntities),
-        // Get correct location and expanded state for nodes, based on selected layout
+        // Get correct location, expanded state and group area size for nodes, based on selected layout
         map(nodes => {
           if (nodes === null) {
             return null;
@@ -935,6 +956,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
           let layoutLoc;
           let layoutExpandState;
+          let layoutGroupAreaSize;
 
           return nodes.map(
             function(node) {
@@ -950,23 +972,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                     return exp.layout && exp.layout.id === this.layout.id;
                   }.bind(this)
                 );
-              }
 
-              // TEMP - remove after API update
-              if (layoutExpandState) {
-                layoutExpandState = {
-                  ...layoutExpandState,
-                  middleExpanded: layoutExpandState.middleExpanded ? middleOptions.children : middleOptions.none
-                };
+                layoutGroupAreaSize = node.groupAreaSizes.find(
+                  function(areaSize) {
+                    return areaSize.layout && areaSize.layout.id === this.layout.id;
+                  }.bind(this)
+                );
               }
-              // END TEMP
 
               return {
                 ...node,
                 location: layoutLoc ? layoutLoc.locationCoordinates : null,
                 locationMissing: !layoutLoc,
                 middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : middleOptions.none,
-                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false
+                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false,
+                areaSize: layoutGroupAreaSize ? layoutGroupAreaSize.areaSize : null
               };
             }.bind(this)
           );
@@ -1380,7 +1400,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         title: 'Select owner',
         placeholder: 'Teams',
         options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
-          map(data => 
+          map(data =>
             data.filter(({ id }) => !ids.has(id))
           )
         ),
@@ -1751,7 +1771,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           );
         }
       }
-    })
+    });
   }
 
   onUpdateAvailableTags() {
