@@ -1467,7 +1467,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddDescendant(type?: string) {
-    const title = (type != undefined) ? 'System' : 'Children';
+    const title = (type != undefined) ? '' : 'Children';
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: '500px',
