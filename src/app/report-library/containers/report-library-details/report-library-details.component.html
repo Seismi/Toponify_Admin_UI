@@ -30,6 +30,11 @@
             (addDataSets)="onAddDataSets(report.id)"
             (removeDataSet)="onRemoveDataSet($event, report.id)"
             (dimensionEdit)="onDimensionEdit($event, report.id)"
+            [tags]="report?.tags"
+            [availableTags]="availableTags$ | async"
+            (updateAvailableTags)="onUpdateAvailableTags()"
+            (addTag)="onAddTag($event)"
+            (removeTag)="onRemoveTag($event)"
           >
           </smi-report-library-detail>
         </p>
