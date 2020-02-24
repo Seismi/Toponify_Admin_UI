@@ -1,11 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Links, Page, Report, ReportLibrary } from '../models/report.model';
 import { ReportActionsUnion, ReportActionTypes } from '../actions/report.actions';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 export interface State {
   loading: boolean;
   entities: ReportLibrary[];
   selected: Report;
+  availableTags: Tag[];
   page: Page;
   links: Links;
   error?: HttpErrorResponse | { message: string };
@@ -15,6 +17,7 @@ export const initialState: State = {
   loading: false,
   entities: null,
   selected: null,
+  availableTags: null,
   page: null,
   links: null,
   error: null
@@ -163,6 +166,8 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.DeleteReportTagsSuccess:
+    case ReportActionTypes.AddReportTagsSuccess:
     case ReportActionTypes.AddOwnerSuccess:
     case ReportActionTypes.AddReportingConceptsSuccess:
     case ReportActionTypes.DeleteReportingConceptSuccess:
@@ -191,6 +196,8 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.DeleteReportTagsFail:
+    case ReportActionTypes.AddReportTagsFail:
     case ReportActionTypes.AddDataSetsToReportFail:
     case ReportActionTypes.RemoveDataSetsFromReportFail:
     case ReportActionTypes.AddOwnerFail:
@@ -202,6 +209,13 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
         ...state,
         error: action.payload,
         loading: false
+      };
+    }
+
+    case ReportActionTypes.LoadReportTagsSuccess: {
+      return {
+        ...state,
+        availableTags: action.payload
       };
     }
 

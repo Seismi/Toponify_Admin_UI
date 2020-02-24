@@ -9,6 +9,7 @@ import {
   ReportDetailApiRespoonse
 } from '../models/report.model';
 import { GetReportLibraryRequestQueryParams } from '@app/report-library/services/report.service';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 export enum ReportActionTypes {
   LoadReports = '[Report] Load Reports',
@@ -65,7 +66,19 @@ export enum ReportActionTypes {
 
   DeleteReportProperty = '[Report] Delete Report Property',
   DeleteReportPropertySuccess = '[Report] Delete Report Property Success',
-  DeleteReportPropertyFailure = '[Report] Delete Report Property Failure'
+  DeleteReportPropertyFailure = '[Report] Delete Report Property Failure',
+
+  LoadReportTags = '[Report] Load Report Tags',
+  LoadReportTagsSuccess = '[Report] Load Report Tags Success',
+  LoadReportTagsFail = '[Report] Load Report Tags Fail',
+
+  AddReportTags = '[Report] Add Report Tags',
+  AddReportTagsSuccess = '[Report] Add Report Tags Success',
+  AddReportTagsFail = '[Report] Add Report Tags Fail',
+
+  DeleteReportTags = '[Report] Delete Report Tags',
+  DeleteReportTagsSuccess = '[Report] Delete Report Tags Success',
+  DeleteReportTagsFail = '[Report] Delete Report Tags Fail'
 }
 
 export class LoadReports implements Action {
@@ -280,6 +293,51 @@ export class DeleteReportPropertyFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadReportTags implements Action {
+  readonly type = ReportActionTypes.LoadReportTags;
+  constructor(public payload: { workPackageId: string, reportId: string }) {}
+}
+
+export class LoadReportTagsSuccess implements Action {
+  readonly type = ReportActionTypes.LoadReportTagsSuccess;
+  constructor(public payload: Tag[]) {}
+}
+
+export class LoadReportTagsFail implements Action {
+  readonly type = ReportActionTypes.LoadReportTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddReportTags implements Action {
+  readonly type = ReportActionTypes.AddReportTags;
+  constructor(public payload: { workPackageId: string; reportId: string, tagIds: { id: string }[] }) {}
+}
+
+export class AddReportTagsSuccess implements Action {
+  readonly type = ReportActionTypes.AddReportTagsSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class AddReportTagsFail implements Action {
+  readonly type = ReportActionTypes.AddReportTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteReportTags implements Action {
+  readonly type = ReportActionTypes.DeleteReportTags;
+  constructor(public payload: { workPackageId: string; reportId: string, tagId: string }) {}
+}
+
+export class DeleteReportTagsSuccess implements Action {
+  readonly type = ReportActionTypes.DeleteReportTagsSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class DeleteReportTagsFail implements Action {
+  readonly type = ReportActionTypes.DeleteReportTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ReportActionsUnion =
   | LoadReports
   | LoadReportsSuccess
@@ -322,4 +380,13 @@ export type ReportActionsUnion =
   | UpdateReportPropertyFailure
   | DeleteReportProperty
   | DeleteReportPropertySuccess
-  | DeleteReportPropertyFailure;
+  | DeleteReportPropertyFailure
+  | LoadReportTags
+  | LoadReportTagsSuccess
+  | LoadReportTagsFail
+  | AddReportTags
+  | AddReportTagsSuccess
+  | AddReportTagsFail
+  | DeleteReportTags
+  | DeleteReportTagsSuccess
+  | DeleteReportTagsFail;

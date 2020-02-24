@@ -14,6 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { LoadReport } from '../actions/report.actions';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class ReportEffects {
@@ -202,6 +203,42 @@ export class ReportEffects {
       return this.reportService.deleteCustomProperty(payload.workPackageId, payload.reportId, payload.customPropertyId).pipe(
         mergeMap((response: ReportDetailApiRespoonse) => [new ReportActions.DeleteReportPropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.DeleteReportPropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadReportTags$ = this.actions$.pipe(
+    ofType<ReportActions.LoadReportTags>(ReportActionTypes.LoadReportTags),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; reportId: string }) => {
+      return this.reportService.getReportTags(payload.workPackageId, payload.reportId).pipe(
+        switchMap((response: { data: Tag[] }) => [new ReportActions.LoadReportTagsSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.LoadReportTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addReportTags$ = this.actions$.pipe(
+    ofType<ReportActions.AddReportTags>(ReportActionTypes.AddReportTags),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; reportId: string, tagIds: { id: string }[] }) => {
+      return this.reportService.addReportTags(payload.workPackageId, payload.reportId, payload.tagIds).pipe(
+        switchMap((response: ReportDetailApiRespoonse) => [new ReportActions.AddReportTagsSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.AddReportTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteReportTags$ = this.actions$.pipe(
+    ofType<ReportActions.DeleteReportTags>(ReportActionTypes.DeleteReportTags),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string, tagId: string }) => {
+      return this.reportService.deleteReportTags(payload.workPackageId, payload.reportId, payload.tagId).pipe(
+        map(response => new ReportActions.DeleteReportTagsSuccess(response.data)),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.DeleteReportTagsFail(error)))
       );
     })
   );

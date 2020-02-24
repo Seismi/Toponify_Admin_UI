@@ -40,6 +40,8 @@ import { ReportModalComponent } from './containers/report-modal/report-modal.com
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
 import { TableHeaderComponent } from '@app/report-library/components/table-header/table-header.component';
 import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
+import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
+import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
 
 @NgModule({
   imports: [
@@ -63,6 +65,8 @@ import { ReportingConceptFilterModalComponent } from '@app/report-library/compon
     MatCheckboxModule,
     MatTooltipModule,
     MatSidenavModule,
+    TagListModule,
+    TagModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
