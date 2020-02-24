@@ -1100,14 +1100,6 @@ export class DiagramTemplatesService {
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
-      // Prevent links to/from nodes in collapsed groups from being visible
-      new go.Binding('visible', '', function(link): boolean {
-        if (link.toNode && link.fromNode) {
-          return link.fromNode.isVisible() && link.toNode.isVisible();
-        } else {
-          return true;
-        }
-      }).ofObject(),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
@@ -1170,14 +1162,6 @@ export class DiagramTemplatesService {
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing'),
-      // Prevent links to/from nodes in collapsed groups from being visible
-      new go.Binding('visible', '', function(link): boolean {
-        if (link.toNode && link.fromNode) {
-          return link.fromNode.isVisible() && link.toNode.isVisible();
-        } else {
-          return true;
-        }
-      }).ofObject(),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: function(event, object) {
