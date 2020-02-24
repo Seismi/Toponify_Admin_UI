@@ -727,9 +727,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
 
       this.objectDetailsService.updateForm(this.selectedPart);
-
       this.nodeId = this.selectedPart.id;
-
       this.part = part;
 
       if (part) {
@@ -737,20 +735,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
         this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
 
-        // By clicking on link show only name, category and description in the right panel
         this.clickedOnLink = part instanceof Link;
 
-        // Load node details
-        this.workpackageStore
-          .pipe(
-            select(getSelectedWorkpackages),
-            take(1)
-          )
-          .subscribe(workpackages => {
-            const workPackageIds = workpackages.map(item => item.id);
-            this.setWorkPackage(workPackageIds);
-            this.getNodeReports(workPackageIds);
-          });
+        const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
+        this.setWorkPackage(workPackageIds);
+        this.getNodeReports(workPackageIds);
       }
     }
 
@@ -903,14 +892,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         return;
       }
       // lets add selected workpackages in to node/link
-      node = { ...node, impactedByWorkPackages: this.selectedWorkPackageEntities };
+      node = { ...node };
     }
     this.dialog
       .open(DeleteNodeModalComponent, {
         disableClose: false,
         width: 'auto',
         data: {
-          payload: node
+          payload: node,
+          workpackageId: this.workpackageId
         }
       })
       .beforeClosed()
@@ -929,14 +919,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         return;
       }
       // lets add selected workpackages in to node/link
-      link = { ...link, impactedByWorkPackages: this.selectedWorkPackageEntities };
+      link = { ...link };
     }
     this.dialog
       .open(DeleteLinkModalComponent, {
         disableClose: false,
         width: 'auto',
         data: {
-          payload: link
+          payload: link,
+          workpackageId: this.workpackageId
         }
       })
       .beforeClosed()
@@ -1408,7 +1399,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         title: 'Select owner',
         placeholder: 'Teams',
         options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
-          map(data => 
+          map(data =>
             data.filter(({ id }) => !ids.has(id))
           )
         ),
@@ -1802,7 +1793,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           );
         }
       }
-    })
+    });
   }
 
   onUpdateAvailableTags() {

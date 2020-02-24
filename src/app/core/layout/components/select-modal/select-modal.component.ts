@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatAutocompleteTrigger, MatDialog } from '@angular/material';
 import { combineLatest, Observable } from 'rxjs';
 import { FormControl, Validators } from '@angular/forms';
 import { map, startWith, tap } from 'rxjs/operators';
@@ -24,6 +24,7 @@ export class SelectModalComponent implements OnInit {
   public searchActive: boolean;
   private multi: boolean;
   private options: { id: string; name: string; selected?: boolean }[];
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
   constructor(
     private store: Store<WorkPackageState>,
@@ -95,6 +96,7 @@ export class SelectModalComponent implements OnInit {
           }
         });
         this.selectedOptions = [option];
+        this.autocompleteTrigger.closePanel();
       } else {
         this.selectedOptions = [];
       }

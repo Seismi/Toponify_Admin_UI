@@ -20,6 +20,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
   processing = false;
   error: string = null;
   payload: any = null;
+  workpackageId: string;
 
   subscriptions: Subscription[] = [];
 
@@ -31,6 +32,7 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
   ) {
     this.processing = true;
     this.payload = data.payload;
+    this.workpackageId = data.workpackageId;
 
     this.subscriptions.push(
       this.actions
@@ -73,12 +75,12 @@ export class DeleteNodeModalComponent implements OnInit, OnDestroy {
     if (!node.id) {
       throw new Error('Missing node id');
     }
-    if (!node.impactedByWorkPackages || node.impactedByWorkPackages.length < 1) {
+    if (!this.workpackageId) {
       throw new Error('Workpackage missing');
     }
     return {
       nodeId: node.id,
-      workpackageId: node.impactedByWorkPackages[0].id
+      workpackageId: this.workpackageId
     };
   }
 
