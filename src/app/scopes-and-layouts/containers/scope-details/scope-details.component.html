@@ -3,6 +3,7 @@
     <div class="col">
       <div class="scope-details-form">
         <smi-scopes-and-layouts-detail
+          data-qa="scopes-and-layouts-scope-details-form"
           [group]="scopesAndLayoutsDetailForm"
           (save)="onSaveScope($event)"
           (delete)="onDeleteScope($event)"
@@ -15,6 +16,7 @@
 
     <div class="col layouts-table">
       <smi-scopes-and-layouts-table
+        data-qa="scopes-and-layouts-layout-table"
         [title]="'Layouts'"
         [data]="scope?.layouts"
         [defaultLayoutId]="scope?.defaultLayout"
