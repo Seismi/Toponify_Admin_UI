@@ -11,6 +11,7 @@
     <div class="row">
       <div class="col mat-elevation-z8">
         <mat-slide-toggle
+          data-qa="work-packages-show-archived"
           color="primary"
           (change)="showArchivedWorkPackages($event)"
         >
@@ -20,7 +21,7 @@
           <mat-tab>
             <ng-template mat-tab-label> <mat-icon>list</mat-icon> List </ng-template>
             <smi-workpackages-table
-              data-hook="workpackage-table"
+              data-qa="work-packages-table"
               [data]="workpackageEntities$ | async"
               (workpackageSelected)="onSelectWorkpackage($event)"
               (addWorkpackage)="onAddWorkPackage()"

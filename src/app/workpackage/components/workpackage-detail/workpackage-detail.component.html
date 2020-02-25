@@ -7,7 +7,7 @@
           matInput
           placeholder="Name"
           formControlName="name"
-          data-hook="workpackage-detail-name"
+          data-qa="work-packages-details-name"
           [ngClass]="{ editable: isEditable }"
         />
         <mat-error>This field is required!</mat-error>
@@ -15,6 +15,7 @@
     </div>
     <div style="padding: 5px 10px 5px 25px;">
       <smi-color-picker
+        data-qa="work-packages-colour-picker"
         matTooltip="Work package display colour"
         [workpackageColour]="workpackageColour"
         (selectColour)="onSelectColour($event)"
@@ -31,14 +32,14 @@
       rows="5"
       placeholder="Description"
       formControlName="description"
-      data-hook="workpackage-detail-description"
+      data-qa="work-packages-details-description"
       [ngClass]="{ editable: isEditable }"
     ></textarea>
   </mat-form-field>
 
   <!-- Baseline Table -->
   <smi-baseline-table 
-    data-hook="workpackage-detail-baseline-table" 
+    data-qa="work-packages-baseline-table" 
     *ngIf="!modalMode"
     [data]="baselineTableData"
     [isEditable]="isEditable"
@@ -50,7 +51,7 @@
   <!-- Owners Table -->
   <smi-owners-table
     [ngClass]="{ disabled: !isEditable }"
-    data-hook="workpackage-detail-owners-table"
+    data-qa="work-packages-owners-table"
     *ngIf="!modalMode"
     [data]="ownersTableData"
     (addOwner)="onAddOwner($event)"
@@ -60,7 +61,7 @@
   </smi-owners-table>
 
   <!-- Approvers Table -->
-  <smi-approvers-table data-hook="workpackage-detail-approvers-table" *ngIf="!modalMode" [data]="approversTableData">
+  <smi-approvers-table data-qa="work-packages-approvers-table" *ngIf="!modalMode" [data]="approversTableData">
   </smi-approvers-table>
 
   <!-- Select Baseline -->
@@ -94,7 +95,7 @@
         color="primary"
         *ngIf="statusDraft"
         (click)="onEdit()"
-        data-hook="workpackage-detail-edit"
+        data-qa="work-packages-edit"
       >
         Edit
       </button>
@@ -102,7 +103,7 @@
         type="button"
         mat-raised-button
         (click)="onOpen()"
-        data-hook="workpackage-detail-edit"
+        data-qa="work-package-open"
         *ngIf="getWorkPackageStatus()"
       >
         Open
@@ -113,7 +114,7 @@
         color="primary"
         *ngIf="workpackageActionSubmit"
         (click)="submitWorkpackage()"
-        data-hook="workpackage-detail-submit"
+        data-qa="work-packages-submit"
         [disabled]="approversTableData?.length === 0"
       >
         Submit
@@ -124,7 +125,7 @@
         color="primary"
         *ngIf="workpackageActionApprove"
         (click)="approveWorkpackage()"
-        data-hook="workpackage-detail-approve"
+        data-qa="work-packages-approve"
       >
         Approve
       </button>
@@ -134,7 +135,7 @@
         color="primary"
         *ngIf="workpackageActionReject"
         (click)="rejectWorkpackage()"
-        data-hook="workpackage-detail-reject"
+        data-qa="work-packages-reject"
       >
         Reject
       </button>
@@ -144,7 +145,7 @@
         color="primary"
         *ngIf="workpackageActionMerge"
         (click)="mergeWorkpackage()"
-        data-hook="workpackage-detail-merge"
+        data-qa="work-packages-merge"
       >
         Merge
       </button>
@@ -154,7 +155,7 @@
         color="primary"
         *ngIf="workpackageActionReset"
         (click)="resetWorkpackage()"
-        data-hook="workpackage-detail-reset"
+        data-qa="work-packages-reset"
       >
         Reset
       </button>
@@ -164,7 +165,7 @@
         color="primary"
         *ngIf="workpackageActionSupersede"
         (click)="supersedeWorkpackage()"
-        data-hook="workpackage-detail-supersede"
+        data-qa="work-packages-supersede"
       >
         Supersede
       </button>
@@ -173,7 +174,7 @@
         mat-flat-button 
         color="primary" 
         (click)="onArchive()" 
-        data-hook="workpackage-detail-archive"
+        data-qa="work-packages-archive"
         *ngIf="currentState"
       >
         {{ archived ? 'Unarchive' : 'Archive' }}
@@ -184,14 +185,14 @@
         color="warn"
         *ngIf="['superseded', 'draft'].includes(workPackageStatus)"
         (click)="onDelete()"
-        data-hook="workpackage-detail-delete"
+        data-qa="work-packages-delete"
       >
         Delete
       </button>
     </div>
     <div *ngIf="isEditable">
-      <button mat-flat-button color="primary" (click)="onSave()" data-hook="workpackage-detail-save">Save</button>
-      <button mat-flat-button (click)="onCancel()" data-hook="workpackage-detail-cancel">Cancel</button>
+      <button mat-flat-button color="primary" (click)="onSave()" data-qa="work-packages-save">Save</button>
+      <button mat-flat-button (click)="onCancel()" data-hook="work-packages-cancel">Cancel</button>
     </div>
   </div>
 </form>
