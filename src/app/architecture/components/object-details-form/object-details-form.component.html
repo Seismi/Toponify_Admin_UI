@@ -43,7 +43,8 @@
                   (createTag)="onCreateTag($event)"
                   (removeTag)="onRemoveTag($event)"
                   (updateTag)="onUpdateTag($event)"
-                  (updateAvailableTags)="onUpdateAvailableTags()"></smi-tag-list>
+                  (updateAvailableTags)="onUpdateAvailableTags()"
+                  [workPackageIsEditable]="workPackageIsEditable"></smi-tag-list>
     <smi-owners-table-in-architecture
       [data]="owners"
       [workPackageIsEditable]="!nodeIsEditable()"

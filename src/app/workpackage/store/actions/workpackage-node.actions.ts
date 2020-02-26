@@ -75,7 +75,11 @@ export enum WorkPackageNodeActionTypes {
 
   DeleteWorkPackageNodeAttribute = '[WorkPackage] Delete Node Attribute',
   DeleteWorkPackageNodeAttributeSuccess = '[WorkPackage] Delete Node Attribute Success',
-  DeleteWorkPackageNodeAttributeFailure = '[WorkPackage] Delete Node Attribute Failure'
+  DeleteWorkPackageNodeAttributeFailure = '[WorkPackage] Delete Node Attribute Failure',
+
+  AddWorkPackageNodeGroup = '[WorkPackage] Add Node To Group',
+  AddWorkPackageNodeGroupSuccess = '[WorkPackage] Add Node To Group Success',
+  AddWorkPackageNodeGroupFailure = '[WorkPackage] Add Node To Group Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -349,6 +353,21 @@ export class DeleteWorkPackageNodePropertyFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddWorkPackageNodeGroup implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeGroup;
+  constructor(public payload: { workPackageId: string; systemId: any; groupId: string }) {}
+}
+
+export class AddWorkPackageNodeGroupSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeGroupSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class AddWorkPackageNodeGroupFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeGroupFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
@@ -403,4 +422,7 @@ export type WorkPackageNodeActionsUnion =
   | DeleteWorkPackageNodePropertyFailure
   | DeleteWorkPackageNodeAttribute
   | DeleteWorkPackageNodeAttributeSuccess
-  | DeleteWorkPackageNodeAttributeFailure;
+  | DeleteWorkPackageNodeAttributeFailure
+  | AddWorkPackageNodeGroup
+  | AddWorkPackageNodeGroupSuccess
+  | AddWorkPackageNodeGroupFailure;

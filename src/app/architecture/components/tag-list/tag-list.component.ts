@@ -21,6 +21,7 @@ export class TagListComponent implements OnChanges {
     this.availableTags$.next(tags);
   }
   @Input() componentLayer: TagApplicableTo;
+  @Input() workPackageIsEditable: boolean;
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagControl = new FormControl({ value: '', disabled: true });
