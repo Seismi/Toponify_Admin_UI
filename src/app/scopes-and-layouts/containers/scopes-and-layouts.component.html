@@ -1,22 +1,37 @@
-<app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
-  <app-search></app-search>
-  <app-toolbar-column>
-    <smi-quicklinks-actions></smi-quicklinks-actions>
-  </app-toolbar-column>
-</app-base-header>
+<app-model-container>
+  <smi-left-hand-pane
+    [workPackageIsEditable]="workPackageIsEditable"
+    [selectedLeftTab]="selectedLeftTab"
+    (openSideBar)="openLeftTab($event)"
+  >
+  </smi-left-hand-pane>
+  <mat-drawer-container class="drawer-container" autosize>
+    <mat-drawer #drawer mode="side" class="left-sidebar">
+      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+    </mat-drawer>
+    <app-base-header>
+      <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+      <app-search></app-search>
+      <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+      </app-toolbar-column>
+    </app-base-header>
+    <app-model-container class="diagram-container">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <smi-scopes-and-layouts-table
+              [title]="'Scopes'"
+              [data]="scopes$ | async"
+              (select)="onScopeSelect($event)"
+              (add)="onAddScope($event)"
+            >
+            </smi-scopes-and-layouts-table>
+          </div>
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </app-model-container>
+  </mat-drawer-container>
+</app-model-container>
 
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <smi-scopes-and-layouts-table
-        [title]="'Scopes'"
-        [data]="scopes$ | async"
-        (select)="onScopeSelect($event)"
-        (add)="onAddScope($event)"
-      >
-      </smi-scopes-and-layouts-table>
-    </div>
-    <router-outlet></router-outlet>
-  </div>
-</div>
