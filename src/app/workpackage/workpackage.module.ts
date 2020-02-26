@@ -18,7 +18,8 @@ import {
   MatTooltipModule,
   MatSlideToggleModule,
   MatAutocompleteModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatSidenavModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -76,7 +77,8 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     MatTooltipModule,
     MatSlideToggleModule,
     MatAutocompleteModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSidenavModule
   ],
   exports: [WorkPackagesTableComponent, RadioDetailModalComponent, WorkPackageColorComponent],
   declarations: [
