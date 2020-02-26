@@ -10,6 +10,7 @@
   <div class="row">
     <div class="col">
       <smi-scopes-and-layouts-table
+        data-qa="scopes-and-layouts-scope-table"
         [title]="'Scopes'"
         [data]="scopes$ | async"
         (select)="onScopeSelect($event)"
