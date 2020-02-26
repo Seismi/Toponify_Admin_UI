@@ -1,3 +1,16 @@
 .container {
   max-width: 100%;
 }
+
+.drawer-container {
+  width: 100%;
+  background-color: #fff;
+}
+
+.left-sidebar {
+  background-color: #F4F5F7;
+}
+
+.diagram-container {
+  height: calc(100% - 64px);
+}
