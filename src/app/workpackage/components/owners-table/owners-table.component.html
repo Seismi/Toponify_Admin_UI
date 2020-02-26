@@ -7,9 +7,18 @@
 
   <!-- Delete Column -->
   <ng-container matColumnDef="delete">
-    <th mat-header-cell *matHeaderCellDef><mat-icon (click)="onAdd()" *ngIf="isEditable">add</mat-icon></th>
+    <th mat-header-cell *matHeaderCellDef>
+      <mat-icon (click)="onAdd()" *ngIf="isEditable" data-qa="work-packages-owners-table-add">add</mat-icon>
+    </th>
     <td mat-cell *matCellDef="let element">
-      <mat-icon (click)="onDelete(element)" style="color: #CF3030" *ngIf="isEditable">delete</mat-icon>
+      <mat-icon 
+        (click)="onDelete(element)" 
+        style="color: #CF3030" 
+        *ngIf="isEditable"
+        data-qa="work-packages-owners-table-delete"
+      >
+        delete
+      </mat-icon>
     </td>
   </ng-container>
 

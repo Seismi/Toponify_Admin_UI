@@ -13,7 +13,7 @@
         <mat-error>This field is required!</mat-error>
       </mat-form-field>
     </div>
-    <div style="padding: 5px 10px 5px 25px;">
+    <div style="padding: 5px 10px 5px 25px;" *ngIf="!modalMode">
       <smi-color-picker
         data-qa="work-packages-colour-picker"
         matTooltip="Work package display colour"
@@ -64,18 +64,17 @@
   <smi-approvers-table data-qa="work-packages-approvers-table" *ngIf="!modalMode" [data]="approversTableData">
   </smi-approvers-table>
 
-  <!-- Select Baseline -->
+
   <smi-wp-baseline-dropdown
-    data-hook="workpackage-detail-baseline-selection"
+    data-qa="work-packages-details-baseline-selection"
     *ngIf="modalMode"
     [data]="baseline"
     [selectedBaseline]="selectedBaselines"
   >
   </smi-wp-baseline-dropdown>
 
-  <!-- Select Owners -->
   <smi-wp-owners-dropdown
-    data-hook="workpackage-detail-owners-selection"
+    data-qa="work-packages-details-owners-selection"
     *ngIf="modalMode"
     [data]="owners"
     [selectedOwners]="selectedOwners"
@@ -84,7 +83,7 @@
 
   <!-- Select Status -->
   <mat-form-field [ngClass]="{ disabled: disableStatusInput }" *ngIf="modalMode">
-    <input matInput placeholder="Status" formControlName="status" data-hook="workpackage-detail-status" />
+    <input matInput placeholder="Status" formControlName="status" data-qa="work-packages-details-status" />
   </mat-form-field>
 
   <div class="form-group" *ngIf="!modalMode">
@@ -103,7 +102,7 @@
         type="button"
         mat-raised-button
         (click)="onOpen()"
-        data-qa="work-package-open"
+        data-qa="work-packages-open"
         *ngIf="getWorkPackageStatus()"
       >
         Open
@@ -192,7 +191,7 @@
     </div>
     <div *ngIf="isEditable">
       <button mat-flat-button color="primary" (click)="onSave()" data-qa="work-packages-save">Save</button>
-      <button mat-flat-button (click)="onCancel()" data-hook="work-packages-cancel">Cancel</button>
+      <button mat-flat-button (click)="onCancel()" data-qa="work-packages-cancel">Cancel</button>
     </div>
   </div>
 </form>
