@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { MatDialog } from '@angular/material';
@@ -29,6 +29,9 @@ export class RadioComponent implements OnInit, OnDestroy {
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
   public status: string | any;
+  public selectedLeftTab: number | string;
+
+  @ViewChild('drawer') drawer;
 
   constructor(
     private nodeStore: Store<NodeState>,
@@ -149,6 +152,14 @@ export class RadioComponent implements OnInit, OnDestroy {
         fileName: 'RADIO'
       }
     });
+  }
+
+  openLeftTab(tab: number | string): void {
+    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
+    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    if (!this.drawer.opened) {
+      this.selectedLeftTab = 'menu';
+    }
   }
 
 }
