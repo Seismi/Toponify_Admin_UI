@@ -26,11 +26,11 @@
 
   <div style="display: flex;">
     <div style="flex-grow: 1;">
-      <button class="create-new" mat-raised-button color="primary" (click)="onAdd()" [disabled]="workPackageIsEditable">
+      <button class="create-new" data-qa="reports-create-new" mat-raised-button color="primary" (click)="onAdd()" [disabled]="workPackageIsEditable">
         <mat-icon>add</mat-icon>Create New
       </button>
     </div>
-    <button class="download" mat-icon-button (click)="downloadCSV()"><mat-icon title="Export as CSV">save_alt</mat-icon></button>
+    <button class="download" data-qa="reports-download" mat-icon-button (click)="downloadCSV()"><mat-icon title="Export as CSV">save_alt</mat-icon></button>
     <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 75, 100]"></mat-paginator>
   </div>
 </div>

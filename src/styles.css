@@ -38,3 +38,7 @@ a {
 .mat-select-placeholder {
   color: black !important;
 }
+
+.mat-autocomplete-panel > .mat-option {
+  min-height: 45px;
+}

@@ -2,7 +2,8 @@
   <form [formGroup]="group">
     <div [ngClass]="{ disabled: !workPackageIsEditable }">
       <mat-form-field>
-        <input 
+        <input
+          data-qa="reports-details-name" 
           matInput 
           placeholder="Name" 
           formControlName="name" 
@@ -12,7 +13,8 @@
       </mat-form-field>
   
       <mat-form-field>
-        <textarea 
+        <textarea
+          data-qa="reports-details-description" 
           matInput 
           placeholder="Description" 
           formControlName="description"
@@ -23,23 +25,27 @@
     </div>
 
     <div *ngIf="workPackageIsEditable">
-      <button mat-flat-button color="primary" (click)="onSave()" [disabled]="group.invalid">Save</button>
-      <button mat-flat-button (click)="onCancel()">Cancel</button>
-      <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
+      <button mat-flat-button data-qa="reports-save" color="primary" (click)="onSave()" [disabled]="group.invalid">Save</button>
+      <button mat-flat-button data-qa="reports-cancel" (click)="onCancel()">Cancel</button>
+      <button type="button" data-qa="reports-delete" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
     </div>
 
-    <smi-tag-list 
+    <smi-tag-list
+      *ngIf="!modalMode"
+      data-qa="reports-details-tags"
       [tags]="tags"
       [availableTags]="availableTags"
       [editMode]="workPackageIsEditable"
       (addTag)="addTag.emit($event)"
       (removeTag)="removeTag.emit($event)"
       (updateAvailableTags)="updateAvailableTags.emit()"
+      [workPackageIsEditable]="workPackageIsEditable"
     >
     </smi-tag-list>
 
     <!-- Owners -->
-    <smi-report-owners-table 
+    <smi-report-owners-table
+      data-qa="reports-owners-table" 
       *ngIf="!modalMode" 
       [data]="owners" 
       [isEditable]="isEditable" 
@@ -51,20 +57,22 @@
     >
     </smi-report-owners-table>
 
-      <div class="source-system" *ngIf="!modalMode">
+      <div class="source-system" *ngIf="!modalMode" data-qa="reports-source-system">
           Source System - {{system ? system.name : ''}}
           <button mat-icon-button (click)="onSourceEdit()" *ngIf="workPackageIsEditable">
             <mat-icon>edit</mat-icon>
           </button>
       </div>
 
-      <smi-report-data-set-table [data]="dataSets"
+      <smi-report-data-set-table data-qa="reports-data-sets-table"
+                                 [data]="dataSets"
                                  *ngIf="!modalMode"
                                  [edit]="workPackageIsEditable"
                                  (removeDataSet)="onRemoveDataSet($event)"
                                  (addDataSets)="onDatasetAdd()"></smi-report-data-set-table>
 
-      <smi-report-dimensions-table [data]="dimensions"
+      <smi-report-dimensions-table data-qa="reports-dimensions-table"
+                                   [data]="dimensions"
                                    *ngIf="!modalMode"
                                    [edit]="workPackageIsEditable"
                                    (dimensionEdit)="onDimensionEdit($event)"></smi-report-dimensions-table>

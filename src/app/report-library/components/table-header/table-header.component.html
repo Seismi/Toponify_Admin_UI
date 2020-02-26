@@ -4,7 +4,7 @@
     <button mat-raised-button color="primary" class="reset" (click)="onReset()"><mat-icon>close</mat-icon></button>
     <span>No filter applied</span> -->
     <mat-form-field>
-      <input matInput placeholder="Search" (keyup)="onSearch($event.target.value)">
+      <input matInput data-qa="reports-quick-search" placeholder="Search" (keyup)="onSearch($event.target.value)">
     </mat-form-field>
   </div>
 </div>
