@@ -53,7 +53,7 @@ export interface NodeLinkDetail {
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   sourceObject: SourceObjectOrTargetObject;
   targetObject: SourceObjectOrTargetObject;
-  descendants: Descendants;
+  descendants: null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   routes?: (RoutesEntityEntity)[] | null;

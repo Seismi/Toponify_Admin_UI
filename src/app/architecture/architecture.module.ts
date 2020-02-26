@@ -61,7 +61,6 @@ import { TableCollapseComponent } from '@app/attributes/components/category-tabl
 import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layouts.module';
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
 import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
-import { DescendantsModalComponent } from './containers/descendants-modal/descendants-modal.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
 import { SettingsModule } from '@app/settings/settings.module';
@@ -76,7 +75,6 @@ import { AddExistingAttributeModalComponent } from './containers/add-existing-at
 import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
 import { DeleteAttributeModalComponent } from './containers/delete-attribute-modal/delete-attribute-modal.component';
 import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
-import { DeleteDescendantsModalComponent } from './containers/delete-descendants-modal/delete-descendants-modal.component';
 import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/radio-confirm-modal.component';
 import { ComponentsOrLinksModalComponent } from './containers/components-or-links-modal/components-or-links-modal.component';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
@@ -149,7 +147,6 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     TableCollapseComponent,
     OwnersTableComponent,
     DescendantsTableComponent,
-    DescendantsModalComponent,
     EditNameModalComponent,
     RelatedAttributeTableComponent,
     SwitchViewTabsComponent,
@@ -162,7 +159,6 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     AddExistingAttributeModalComponent,
     AttributesListComponent,
     DeleteAttributeModalComponent,
-    DeleteDescendantsModalComponent,
     RadioConfirmModalComponent,
     ComponentsOrLinksModalComponent,
     LayoutActionsComponent,
@@ -173,14 +169,12 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     DeleteNodeModalComponent,
     DeleteLinkModalComponent,
     AttributeModalComponent,
-    DescendantsModalComponent,
     EditNameModalComponent,
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     NodeScopeModalComponent,
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
-    DeleteDescendantsModalComponent,
     RadioConfirmModalComponent,
     ComponentsOrLinksModalComponent
   ],

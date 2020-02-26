@@ -8,7 +8,8 @@
       [formControl]="tagControl"
       [matAutocomplete]="auto"
       [matChipInputFor]="chipList"
-      [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [ngClass]="{ editable: workPackageIsEditable }">
   </mat-chip-list>
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
     <div class="option-container">
