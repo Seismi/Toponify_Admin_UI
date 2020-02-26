@@ -1,26 +1,38 @@
-<app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
-  <app-search></app-search>
-  <app-toolbar-column>
-    <smi-quicklinks-actions></smi-quicklinks-actions>
-  </app-toolbar-column>
-</app-base-header>
-
-<app-model-container [topPadding]="64">
-  <div class="container">
-    <div class="row">
-      <div class="col mat-elevation-z8">
-        <smi-documentation-standards-table
-          [data]="documentStandards$ | async"
-          (documentSelected)="onSelectDocument($event)"
-          (addDocument)="onAddDocument($event)"
-        >
-        </smi-documentation-standards-table>
+<app-model-container>
+  <smi-left-hand-pane
+    [workPackageIsEditable]="workPackageIsEditable"
+    [selectedLeftTab]="selectedLeftTab"
+    (openSideBar)="openLeftTab($event)"
+  >
+  </smi-left-hand-pane>
+  <mat-drawer-container class="drawer-container" autosize>
+    <mat-drawer #drawer mode="side" class="left-sidebar">
+      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+    </mat-drawer>
+    <app-base-header>
+      <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+      <app-search></app-search>
+      <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+      </app-toolbar-column>
+    </app-base-header>
+    <app-model-container>
+      <div class="container">
+        <div class="row">
+          <div class="col mat-elevation-z8">
+            <smi-documentation-standards-table
+              [data]="documentStandards$ | async"
+              (documentSelected)="onSelectDocument($event)"
+              (addDocument)="onAddDocument($event)"
+            >
+            </smi-documentation-standards-table>
+          </div>
+          <div class="col">
+            <smi-right-hand-side [title]="'Document Standard'" (add)="onAddDocument()"></smi-right-hand-side>
+            <router-outlet></router-outlet>
+          </div>
+        </div>
       </div>
-      <div class="col">
-        <smi-right-hand-side [title]="'Document Standard'" (add)="onAddDocument()"></smi-right-hand-side>
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
+    </app-model-container>
+  </mat-drawer-container>
 </app-model-container>
