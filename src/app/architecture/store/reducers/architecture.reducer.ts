@@ -1,5 +1,5 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
-import { NodeLink, NodeLinkDetail, RoutesEntityEntity } from '../models/node-link.model';
+import {LinkLayoutSettingsEntity, NodeLink, NodeLinkDetail, RoutesEntityEntity} from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
 import {
   Error,
@@ -12,7 +12,7 @@ import {
   middleOptions,
   GroupAreaSizesEntity,
   OwnersEntity,
-  Tag
+  Tag, NodeLayoutSettingsEntity
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
@@ -445,7 +445,14 @@ export function reducer(
         function(updatedState, node) {
           const nodeIndex = updatedState.entities.findIndex(n => n.id === node.id);
           if (nodeIndex > -1) {
-            return replaceNodeLocation(updatedState, nodeIndex, node.id, layoutId, node.locationCoordinates);
+            return replaceNodeLayoutSetting(
+              updatedState,
+              nodeIndex,
+              node.id,
+              layoutId,
+              node.locationCoordinates,
+              'locationCoordinates'
+            );
           }
         },
         {
@@ -458,10 +465,27 @@ export function reducer(
       const { layoutId, data } = action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === data.id);
       if (nodeIndex > -1) {
-        return replaceNodeExpandedState(state, nodeIndex, data.id, layoutId, {
-          middleExpanded: data.middleExpanded,
-          bottomExpanded: data.bottomExpanded
-        });
+
+        let updatedState = replaceNodeLayoutSetting(
+          state,
+          nodeIndex,
+          data.id,
+          layoutId,
+          data.middleExpanded,
+          'middleExpanded'
+        );
+
+        updatedState = replaceNodeLayoutSetting(
+          updatedState,
+          nodeIndex,
+          data.id,
+          layoutId,
+          data.bottomExpanded,
+          'bottomExpanded'
+        );
+
+        return updatedState;
+
       } else {
         return {
           ...state
@@ -475,7 +499,14 @@ export function reducer(
         function(updatedState, group) {
           const nodeIndex = updatedState.entities.findIndex(g => g.id === group.id);
           if (nodeIndex > -1) {
-            return replaceGroupAreaSize(updatedState, nodeIndex, group.id, layoutId, group.areaSize);
+            return replaceNodeLayoutSetting(
+              updatedState,
+              nodeIndex,
+              group.id,
+              layoutId,
+              group.areaSize,
+              'areaSize'
+            );
           }
         }
         ,
@@ -722,99 +753,27 @@ function replaceNodeOwners(state: State, nodeIndex: number, nodeId: string, owne
   };
 }
 
-function replaceNodeLocation(
+function replaceNodeLayoutSetting(
   state: State,
   nodeIndex: number,
   nodeId: string,
   layoutId: string,
-  location: string
+  newValue: any,
+  setting: string
 ): State {
-  const updatedLocations: LocationsEntityEntity[] = state.entities[nodeIndex].locations.concat();
-  const locationIndex: number = updatedLocations.findIndex(function(loc: LocationsEntityEntity) {
-    return loc.layout.id === layoutId;
+  const updatedLayouts: NodeLayoutSettingsEntity[] = state.entities[nodeIndex].positionPerLayout.concat();
+  const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: NodeLayoutSettingsEntity): boolean {
+    return layoutSettings.layout.id === layoutId;
   });
 
-  if (locationIndex > -1) {
-    const updatedLocation = updatedLocations[locationIndex];
-    updatedLocations.splice(locationIndex, 1, { ...updatedLocation, locationCoordinates: location });
-  } else {
-    // Temporary - can be removed after newly added system group members are initialised correctly
-    updatedLocations.push({ layout: {id: layoutId, name: ''} , locationCoordinates: location});
+  if (layoutIndex > -1) {
+    const updatedLayout = updatedLayouts[layoutIndex];
+    const newPositionSettings = { ...updatedLayout.layout.positionSettings, [setting]: newValue };
+    const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
+    updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
   }
 
-  const updatedNode = { ...state.entities[nodeIndex], locations: updatedLocations };
-  const entities = [...state.entities];
-  entities[nodeIndex] = updatedNode;
-
-  if (state.selectedNode.id === nodeId) {
-    return {
-      ...state,
-      entities,
-      selectedNode: updatedNode
-    };
-  }
-  return {
-    ...state,
-    entities
-  };
-}
-
-function replaceNodeExpandedState(
-  state: State,
-  nodeIndex: number,
-  nodeId: string,
-  layoutId: string,
-  expandedState: { middleExpanded: middleOptions; bottomExpanded: boolean }
-): State {
-  const updatedExpandedStates: ExpandedStatesEntity[] = state.entities[nodeIndex].expandedStates.concat();
-  const expandedStateIndex: number = updatedExpandedStates.findIndex(function(exp: ExpandedStatesEntity) {
-    return exp.layout.id === layoutId;
-  });
-
-  if (expandedStateIndex > -1) {
-    const updatedExpandedState: ExpandedStatesEntity = updatedExpandedStates[expandedStateIndex];
-    updatedExpandedStates.splice(expandedStateIndex, 1, {
-      ...updatedExpandedState,
-      middleExpanded: expandedState.middleExpanded,
-      bottomExpanded: expandedState.bottomExpanded
-    });
-  }
-
-  const updatedNode: Node = { ...state.entities[nodeIndex], expandedStates: updatedExpandedStates };
-  const entities: Node[] = [...state.entities];
-  entities[nodeIndex] = updatedNode;
-
-  if (state.selectedNode && state.selectedNode.id === nodeId) {
-    return {
-      ...state,
-      entities,
-      selectedNode: updatedNode
-    };
-  }
-  return {
-    ...state,
-    entities
-  };
-}
-
-function replaceGroupAreaSize(
-  state: State,
-  nodeIndex: number,
-  nodeId: string,
-  layoutId: string,
-  areaSize: string
-): State {
-  const updatedGroupAreaSizes: GroupAreaSizesEntity[] = state.entities[nodeIndex].groupAreaSizes.concat();
-  const areaSizeIndex: number = updatedGroupAreaSizes.findIndex(function(size: GroupAreaSizesEntity) {
-    return size.layout.id === layoutId;
-  });
-
-  if (areaSizeIndex > -1) {
-    const updatedGroupAreaSize = updatedGroupAreaSizes[areaSizeIndex];
-    updatedGroupAreaSizes.splice(areaSizeIndex, 1, { ...updatedGroupAreaSize, areaSize: areaSize });
-  }
-
-  const updatedNode = { ...state.entities[nodeIndex], groupAreaSizes: updatedGroupAreaSizes };
+  const updatedNode = { ...state.entities[nodeIndex], positionPerLayout: updatedLayouts };
   const entities = [...state.entities];
   entities[nodeIndex] = updatedNode;
 
@@ -832,17 +791,19 @@ function replaceGroupAreaSize(
 }
 
 function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layoutId: string, route: number[]): State {
-  const updatedLinkRoutes: RoutesEntityEntity[] = state.links[linkIndex].routes.concat();
-  const LinkRouteIndex: number = updatedLinkRoutes.findIndex(function(path: RoutesEntityEntity) {
-    return path.layout.id === layoutId;
+  const updatedLayouts: LinkLayoutSettingsEntity[] = state.links[linkIndex].positionPerLayout.concat();
+  const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: LinkLayoutSettingsEntity) {
+    return layoutSettings.layout.id === layoutId;
   });
 
-  if (LinkRouteIndex > -1) {
-    const updatedLinkRoute: RoutesEntityEntity = updatedLinkRoutes[LinkRouteIndex];
-    updatedLinkRoutes.splice(LinkRouteIndex, 1, { ...updatedLinkRoute, points: route });
+  if (layoutIndex > -1) {
+    const updatedLayout: any = updatedLayouts[layoutIndex];
+    const newPositionSettings = { ...updatedLayout.layout.positionSettings, route: route };
+    const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
+    updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
   }
 
-  const updatedLink: NodeLink = { ...state.links[linkIndex], routes: updatedLinkRoutes };
+  const updatedLink = { ...state.links[linkIndex], positionPerLayout: updatedLayouts };
   const links: NodeLink[] = [...state.links];
   links[linkIndex] = updatedLink;
 
@@ -850,7 +811,7 @@ function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layou
     return {
       ...state,
       links,
-      selectedNodeLink: { ...state.selectedNodeLink, routes: updatedLinkRoutes }
+      selectedNodeLink: { ...state.selectedNodeLink }
     };
   }
   return {
