@@ -1,22 +1,3 @@
-<!-- Topology -->
-<a class="architecture-icon" *ngIf="!gojsView"
-  ><mat-icon routerLink="/topology" queryParamsHandling="preserve" matTooltip="Topology">device_hub</mat-icon></a
->
-
-<!-- WorkPackage -->
-<a
-  ><mat-icon routerLink="/work-packages" queryParamsHandling="preserve" matTooltip="Work Packages"
-  data-qa="header-work-packages-shortcut">business_center</mat-icon
-  ></a
->
-
-<!--Scopes and Layouts -->
-<a
-  ><mat-icon routerLink="/scopes-and-layouts" queryParamsHandling="preserve" matTooltip="Scopes and Layouts"
-  data-qa="header-scopes-and-layouts-shortcut">pages</mat-icon
-  ></a
->
-
 <!-- Scopes dropdown -->
 <smi-scopes-dropdown
   data-qa="header-scopes-dropdown"
@@ -37,9 +18,3 @@
   (addLayout)="onAddLayout()"
 >
 </smi-layouts-dropdown>
-
-<!-- RADIO Log -->
-<a><mat-icon routerLink="/radio" queryParamsHandling="preserve" matTooltip="RADIO Log" data-qa="header-radio-shortcut">track_changes</mat-icon></a>
-
-<!-- Help -->
-<a href="https://support.toponify.com" target="_blank" data-qa="header-help-shortcut"><mat-icon matTooltip="Help">help_outline</mat-icon></a>

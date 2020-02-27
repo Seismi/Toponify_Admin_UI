@@ -1,19 +1,42 @@
-<app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
-  <app-search></app-search>
-  <app-toolbar-column>
-    <smi-quicklinks-actions></smi-quicklinks-actions>
-  </app-toolbar-column>
-</app-base-header>
+<app-model-container>
+  <smi-left-hand-pane
+    [workPackageIsEditable]="workPackageIsEditable"
+    [selectedLeftTab]="selectedLeftTab"
+    (openSideBar)="openLeftTab($event)"
+  >
+  </smi-left-hand-pane>
+  <mat-drawer-container class="drawer-container" autosize>
+    <mat-drawer #drawer mode="side" class="left-sidebar">
+      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+    </mat-drawer>
 
-<smi-my-radio-table data-hook="radio-table" [data]="myRadios$ | async"> </smi-my-radio-table>
+    <app-base-header>
+      <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+      <app-search></app-search>
+      <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+      </app-toolbar-column>
+    </app-base-header>
+  
+    <smi-my-radio-table 
+      data-hook="radio-table" 
+      [data]="myRadios$ | async"
+    > 
+    </smi-my-radio-table>
+  
+    <smi-my-layouts-table 
+      data-hook="layouts-table" 
+      [data]="myLayouts$ | async" 
+      (openLayout)="onOpenLayout()"
+    >
+    </smi-my-layouts-table>
+  
+    <smi-my-workpackages-table
+      data-hook="package-table"
+      [data]="myWorkPackages$ | async"
+      (openWorkPackage)="onOpenWorkPackage($event)"
+    >
+  </smi-my-workpackages-table>
+  </mat-drawer-container>
+</app-model-container>
 
-<smi-my-layouts-table data-hook="layouts-table" [data]="myLayouts$ | async" (openLayout)="onOpenLayout()">
-</smi-my-layouts-table>
-
-<smi-my-workpackages-table
-  data-hook="package-table"
-  [data]="myWorkPackages$ | async"
-  (openWorkPackage)="onOpenWorkPackage($event)"
->
-</smi-my-workpackages-table>

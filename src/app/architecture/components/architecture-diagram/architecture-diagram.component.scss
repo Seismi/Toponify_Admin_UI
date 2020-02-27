@@ -1,7 +1,6 @@
 :host {
   div {
-    display: inline-block;
-    vertical-align: top;
+    position: relative;
     width: 100%;
     height: calc(100vh - 125px);
     overflow: hidden;

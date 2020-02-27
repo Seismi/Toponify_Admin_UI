@@ -62,9 +62,12 @@ import {
   UpdateWorkPackageNodePropertyFailure,
   DeleteWorkPackageNodeProperty,
   DeleteWorkPackageNodePropertySuccess,
-  DeleteWorkPackageNodePropertyFailure
+  DeleteWorkPackageNodePropertyFailure,
+  AddWorkPackageNodeGroup,
+  AddWorkPackageNodeGroupSuccess,
+  AddWorkPackageNodeGroupFailure
 } from '../actions/workpackage-node.actions';
-import { UpdateNodeDescendants, UpdateNodeOwners } from '@app/architecture/store/actions/node.actions';
+import { UpdateNodeDescendants, UpdateNodeOwners, ReloadNodesData } from '@app/architecture/store/actions/node.actions';
 import {
   WorkPackageNodeFindPotential,
   WorkPackageNodeScopeApiResponse,
@@ -318,6 +321,21 @@ export class WorkPackageNodeEffects {
       return this.workpackageNodeService.deleteNodeProperty(payload.workPackageId, payload.nodeId, payload.customPropertyId).pipe(
         switchMap(response => [new DeleteWorkPackageNodePropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodePropertyFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkpackageNodeGroup$ = this.actions$.pipe(
+    ofType<AddWorkPackageNodeGroup>(WorkPackageNodeActionTypes.AddWorkPackageNodeGroup),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; systemId: string; groupId: string }) => {
+      return this.workpackageNodeService.addWorkPackageNodeGroup(payload.workPackageId, payload.systemId, payload.groupId).pipe(
+        switchMap((response: NodeDetailApiResponse) => [
+          new AddWorkPackageNodeGroupSuccess(response.data),
+          new ReloadNodesData()
+        ]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeGroupFailure(error)))
       );
     })
   );

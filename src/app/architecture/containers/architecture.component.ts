@@ -5,7 +5,8 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
@@ -104,7 +105,9 @@ import {
   UpdateWorkPackageNodeProperty,
   DeleteWorkPackageNodeAttribute,
   AddWorkPackageNodeAttribute,
-  AddWorkPackageNode
+  AddWorkPackageNode,
+  FindPotentialWorkpackageNodes,
+  AddWorkPackageNodeGroup
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -148,12 +151,11 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams, UpdateTeam, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
-import { DescendantsModalComponent } from '@app/architecture/containers/descendants-modal/descendants-modal.component';
 import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
-import { getNodeScopes } from '../store/selectors/workpackage.selector';
+import { getNodeScopes, getPotentialWorkPackageNodes } from '../store/selectors/workpackage.selector';
 import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
@@ -172,7 +174,6 @@ import { ArchitectureTableViewComponent } from '../components/architecture-table
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
 import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
-import { DeleteDescendantsModalComponent } from './delete-descendants-modal/delete-descendants-modal.component';
 import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
@@ -245,7 +246,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   editedWorkpackageSubscription: Subscription;
   showOrHideRightPane = false;
   selectedRightTab: number;
-  selectedLeftTab: number;
+  selectedLeftTab: number | string;
   multipleSelected: boolean;
   selectedMultipleNodes = [];
   radioAlertChecked = true;
@@ -258,13 +259,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   workpackageId: string;
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
-  editTabIndex: number;
   public parentName: string | null;
   public workPackageName: string;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
-  public layoutSettingsTab: boolean;
   public scope: ScopeDetails;
   private currentFilterLevel: Level;
   private filterLevelSubscription: Subscription;
@@ -284,6 +283,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private switchViewTabsComponent: SwitchViewTabsComponent;
   @ViewChild(ArchitectureTableViewComponent)
   private tableView: ArchitectureTableViewComponent;
+  @ViewChild('drawer') drawer;
 
   get nodeComponentLayer(): TagApplicableTo {
     if (!this.selectedNode) {
@@ -536,7 +536,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
       function() {
-        this.onAddDescendant({ addToGroup: true });
+        this.onAddDescendant('addToGroup');
       }.bind(this)
     );
 
@@ -1117,34 +1117,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  onTabClick(index: number) {
-    this.workPackageIsEditable === true && index === 1 ? (this.editTabIndex = 1) : (this.editTabIndex = null);
-    !this.workPackageIsEditable && index === 1
-      ? (this.layoutSettingsTab = true)
-      : this.workPackageIsEditable && index === 2
-      ? (this.layoutSettingsTab = true)
-      : (this.layoutSettingsTab = false);
-    this.diagramComponent.updateDiagramArea();
-  }
-
-  openLeftTab(index: number) {
+  onTabClick(index: number | string): void {
     this.selectedLeftTab = index;
-    if (this.selectedLeftTab === index) {
-      this.showOrHideLeftPane = true;
-    }
-
-    index === 2 ? (this.layoutSettingsTab = true) : (this.layoutSettingsTab = false);
-
-    this.selectedLeftTab === 0 || this.selectedLeftTab === 2 ? (this.editTabIndex = null) : (this.editTabIndex = 1);
-
-    this.diagramComponent.updateDiagramArea();
-    this.realignTabUnderline();
+    setTimeout(() => {
+      this.diagramComponent.updateDiagramArea();
+      this.realignTabUnderline();
+    }, 250)
   }
 
-  onHideLeftPane() {
-    this.showOrHideLeftPane = false;
-    this.diagramComponent.updateDiagramArea();
-    this.realignTabUnderline();
+  openLeftTab(tab: number | string): void {
+    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
+    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    if (!this.drawer.opened) {
+      this.selectedLeftTab = 'menu';
+    }
+    setTimeout(() => {
+      this.diagramComponent.updateDiagramArea();
+      this.realignTabUnderline();
+    }, 250)
   }
 
   onAddRelatedRadio(): void {
@@ -1466,47 +1456,79 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant(addToGroup?: boolean) {
-    const dialogRef = this.dialog.open(DescendantsModalComponent, {
+  onAddDescendant(type?: string) {
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        workpackageId: this.workpackageId,
+        title: (type === 'addToGroup') ? `Add "${this.part.data.name}" to...` : `Add Children to "${this.part.data.name}"`,
+        placeholder: 'Components',
+        descendants: (type != undefined) ? false : true,
         nodeId: this.nodeId,
+        workPackageId: this.workpackageId,
         scopeId: this.scope.id,
-        title: this.selectedNode.name,
-        addToGroup: addToGroup ? false : true,
-        childrenOf: {
-          id: null // Add node from the same level *not required*
-        }
+        options$: this.getDataForAddDescendantsDropdown(type),
+        selectedIds: [],
+        multi: (type != undefined) ? false : true
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.descendant) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeDescendant({
-            workPackageId: this.workpackageId,
-            nodeId: this.nodeId,
-            data: data.descendant
-          })
-        );
+      if (data && data.value) {
+        if (type == 'addToGroup') {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeGroup({
+              workPackageId: this.workpackageId,
+              systemId: this.nodeId,
+              groupId: data.value[0].id
+            })
+          )
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeDescendant({
+              workPackageId: this.workpackageId,
+              nodeId: this.nodeId,
+              data: data.value
+            })
+          );
+        }
       }
     });
   }
 
+  getDataForAddDescendantsDropdown(type: string) {
+    this.store.dispatch(
+      new FindPotentialWorkpackageNodes({
+        workPackageId: this.workpackageId,
+        nodeId: this.nodeId,
+        data: {
+          childrenOf: {
+            id: null
+          }
+        }
+      })
+    )
+    if (type === 'addToGroup') {
+      const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
+      return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id))));
+    } else {
+      return this.store.pipe(select(getPotentialWorkPackageNodes));
+    }
+  }
+
   onDeleteDescendant(descendant: DescendantsEntity): void {
-    const dialogRef = this.dialog.open(DeleteDescendantsModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        mode: 'delete',
-        name: descendant.name
+        title: 'Are you sure you want to un-associate? Neither components will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.workpackageStore.dispatch(
           new DeleteWorkPackageNodeDescendant({
             workpackageId: this.workpackageId,

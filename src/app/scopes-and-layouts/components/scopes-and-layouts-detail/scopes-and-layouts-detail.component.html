@@ -20,14 +20,14 @@
   <!-- Form Actions -->
   <div class="form-actions" *ngIf="!modalMode">
     <div *ngIf="!isEditable">
-      <button type="button" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
-      <button type="button" mat-raised-button color="primary">Open</button>
-      <button type="button" mat-raised-button color="primary">Copy</button>
-      <button type="button" mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+      <button type="button" mat-raised-button color="primary" (click)="onEdit()" data-qa="scopes-and-layouts-edit">Edit</button>
+      <button type="button" mat-raised-button color="primary" data-qa="scopes-and-layouts-open">Open</button>
+      <button type="button" mat-raised-button color="primary" data-qa="scopes-and-layouts-copy">Copy</button>
+      <button type="button" mat-raised-button color="warn" (click)="onDelete()" data-qa="scopes-and-layouts-delete">Delete</button>
     </div>
     <div *ngIf="isEditable">
-      <button mat-flat-button color="primary" (click)="onSave()">Save</button>
-      <button mat-flat-button (click)="onCancel()">Cancel</button>
+      <button mat-flat-button color="primary" (click)="onSave()" data-qa="scopes-and-layouts-save">Save</button>
+      <button mat-flat-button (click)="onCancel()" data-qa="scopes-and-layouts-cancel">Cancel</button>
     </div>
   </div>
 </form>

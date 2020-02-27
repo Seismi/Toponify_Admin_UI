@@ -1,7 +1,12 @@
 <h1 mat-dialog-title>Add {{ title }}</h1>
-<smi-scopes-and-layouts-detail [group]="scopesAndLayoutsDetailForm" [isEditable]="isEditable" [modalMode]="modalMode">
+<smi-scopes-and-layouts-detail
+  data-qa="scopes-and-layouts-modal-details" 
+  [group]="scopesAndLayoutsDetailForm" 
+  [isEditable]="isEditable" 
+  [modalMode]="modalMode"
+>
 </smi-scopes-and-layouts-detail>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSave()">Save</button>
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSave()" data-qa="scopes-and-layouts-modal-save">Save</button>
+  <button mat-button (click)="onCancel()" data-qa="scopes-and-layouts-modal-cancel">Cancel</button>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State as ReportState } from '../store/reducers/report.reducer';
 import { AddReport, LoadReports } from '../store/actions/report.actions';
@@ -41,7 +41,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public selectedScope$: Observable<ScopeEntity>;
   public reportEntities$: Observable<ReportLibrary[]>;
   public workpackage$: Observable<WorkPackageEntity[]>;
-  public selectedLeftTab: number;
+  public selectedLeftTab: number | string;
   public showOrHidePane = false;
   public hideTab = true;
   public canSelectWorkpackage = true;
@@ -50,6 +50,8 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public scopeId: string;
 
   private subscriptions: Subscription[] = [];
+
+  @ViewChild('drawer') drawer;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -127,15 +129,12 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' } );
   }
 
-  openLeftTab(index: number) {
-    this.selectedLeftTab = index;
-    if (this.selectedLeftTab === index) {
-      this.showOrHidePane = true;
+  openLeftTab(tab: number | string): void {
+    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
+    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    if (!this.drawer.opened) {
+      this.selectedLeftTab = 'menu';
     }
-  }
-
-  hideLeftPane() {
-    this.showOrHidePane = false;
   }
 
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {
@@ -219,6 +218,5 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
 }

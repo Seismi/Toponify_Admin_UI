@@ -1,19 +1,7 @@
 <mat-toolbar>
   <mat-toolbar-row>
-    <!-- Logo goes here-->
-    <app-menu></app-menu>
-    <app-toolbar-column>
-      <app-logo></app-logo>
-    </app-toolbar-column>
-
-    <!-- Breadcrumb -->
-    <app-toolbar-column>
-      <smi-breadcrumb></smi-breadcrumb>
-    </app-toolbar-column>
-
+    <app-logo></app-logo>
+    <smi-breadcrumb></smi-breadcrumb>
     <ng-content></ng-content>
-
-    <!-- Right side action panel -->
-    <app-toolbar-column [isLast]="true"> </app-toolbar-column>
   </mat-toolbar-row>
 </mat-toolbar>

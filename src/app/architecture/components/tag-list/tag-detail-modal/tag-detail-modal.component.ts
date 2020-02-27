@@ -42,6 +42,7 @@ export class TagDetailModalComponent {
       this.selectedColour = data.tag.backgroundColour;
       this.tagForm = this.fb.group({
         name: [data.tag.name, Validators.required],
+        textColour: [data.tag.textColour],
         backgroundColour: [data.tag.backgroundColour],
         applicableTo: [data.tag.applicableTo],
         iconName: [this.selectedIcon]
@@ -51,6 +52,7 @@ export class TagDetailModalComponent {
       this.selectedApplicableTo = [TagApplicableTo.everywhere];
       this.tagForm = this.fb.group({
         name: ['', Validators.required],
+        textColour: [TagColour.black],
         backgroundColour: [TagColour.white],
         applicableTo: ['everywhere'],
         iconName: ['none']
@@ -67,6 +69,9 @@ export class TagDetailModalComponent {
     if (tag.applicableTo.includes(TagApplicableTo.everywhere)) {
       tag.applicableTo = Object.values(TagApplicableTo);
     }
+    ([TagColour.white, TagColour.yellow].includes(tag.backgroundColour)) 
+      ?  tag.textColour = TagColour.black
+      :  tag.textColour = TagColour.white
     this.dialogRef.close({
       tag
     });
