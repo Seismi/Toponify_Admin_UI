@@ -21,7 +21,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
-  MatToolbarModule, MatChipsModule
+  MatToolbarModule, MatChipsModule, MatSidenavModule
 } from '@angular/material';
 import { CoreModule } from '@app/core/core.module';
 import { NodeService } from '@app/architecture/services/node.service';
@@ -119,7 +119,8 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     TagListModule,
     TagModule,
     MatChipsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSidenavModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [

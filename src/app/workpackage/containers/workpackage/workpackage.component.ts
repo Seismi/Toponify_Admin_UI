@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatSlideToggleChange } from '@angular/material';
 import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
@@ -24,6 +24,9 @@ export class WorkPackageComponent implements OnInit {
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;
+  public selectedLeftTab: number | string;
+
+  @ViewChild('drawer') drawer;
 
   constructor(
     private actions: Actions, 
@@ -87,5 +90,13 @@ export class WorkPackageComponent implements OnInit {
       includeArchived: (checked) ? true : false
     }
     this.store.dispatch(new LoadWorkPackages(queryParams));
+  }
+
+  openLeftTab(tab: number | string): void {
+    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
+    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    if (!this.drawer.opened) {
+      this.selectedLeftTab = 'menu';
+    }
   }
 }

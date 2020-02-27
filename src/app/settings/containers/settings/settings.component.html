@@ -1,17 +1,29 @@
-<app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true"></app-toolbar-column>
-  <app-search></app-search>
-  <app-toolbar-column>
-    <smi-quicklinks-actions></smi-quicklinks-actions>
-  </app-toolbar-column>
-</app-base-header>
-
-<app-model-container [topPadding]="64">
-  <div class="container">
-    <div class="row">
-      <smi-settings-tabs [style.width.%]="100" [selectedTabIndex]="selectedTabIndex" (tabClick)="onTabClick($event)">
-      </smi-settings-tabs>
-    </div>
-    <router-outlet></router-outlet>
-  </div>
+<app-model-container>
+  <smi-left-hand-pane
+    [workPackageIsEditable]="workPackageIsEditable"
+    [selectedLeftTab]="selectedLeftTab"
+    (openSideBar)="openLeftTab($event)"
+  >
+  </smi-left-hand-pane>
+  <mat-drawer-container class="drawer-container" autosize>
+    <mat-drawer #drawer mode="side" class="left-sidebar">
+      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+    </mat-drawer>
+    <app-base-header>
+      <app-toolbar-column [fillFreeSpace]="true"></app-toolbar-column>
+      <app-search></app-search>
+      <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+      </app-toolbar-column>
+    </app-base-header>
+    <app-model-container class="diagram-container">
+      <div class="container">
+        <div class="row">
+          <smi-settings-tabs [style.width.%]="100" [selectedTabIndex]="selectedTabIndex" (tabClick)="onTabClick($event)">
+          </smi-settings-tabs>
+        </div>
+        <router-outlet></router-outlet>
+      </div>
+    </app-model-container>
+  </mat-drawer-container>
 </app-model-container>

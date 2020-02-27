@@ -34,6 +34,8 @@ import { RightHandSideComponent } from './layout/components/right-hand-side/righ
 import { DeleteModalComponent } from './layout/components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from './layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from './layout/components/download-csv-modal/download-csv-modal.component';
+import { LeftHandPaneComponent } from './layout/left-hand-pane/left-hand-pane.component';
+import { MenuComponent } from './layout/menu/menu.component';
 
 @NgModule({
   imports: [
@@ -69,7 +71,9 @@ import { DownloadCSVModalComponent } from './layout/components/download-csv-moda
     DownloadCSVModalComponent,
     RightHandSideComponent,
     DeleteModalComponent,
-    SelectModalComponent
+    SelectModalComponent,
+    LeftHandPaneComponent,
+    MenuComponent
   ],
   entryComponents: [
     DeleteModalComponent,

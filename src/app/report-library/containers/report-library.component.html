@@ -1,55 +1,56 @@
-<app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
-  <smi-scopes-dropdown
-    class="scope-dropdown"
-    [data]="scopes$ | async"
-    [selectedScope]="selectedScope$ | async"
-    (selectScope)="onSelectScope($event)"
+<app-model-container>
+  <smi-left-hand-pane
+    [workPackageIsEditable]="workPackageIsEditable"
+    [selectedLeftTab]="selectedLeftTab"
+    (openSideBar)="openLeftTab($event)"
+    [sideNavActions]="true"
   >
-  </smi-scopes-dropdown>
-  <app-search></app-search>
-  <app-toolbar-column>
-    <smi-quicklinks-actions></smi-quicklinks-actions>
-  </app-toolbar-column>
-</app-base-header>
-
-<app-model-container [topPadding]="64">
-  <smi-left-sidebar (leftTab)="openLeftTab($event)" [hideTab]="hideTab" *ngIf="!showOrHidePane"></smi-left-sidebar>
-  <app-model-sidebar [isLast]="true" [minWidth]="600" [maxWidth]="1000" *ngIf="showOrHidePane">
-    <p class="leftPane">
-      <mat-tab-group mat-stretch-tabs [@.disabled]="true" [selectedIndex]="selectedLeftTab">
-        <mat-tab label="Work Packages">
-          <smi-workpackage-tab-table
-            data-qa="reports-work-package-table"
-            [data]="workpackage$ | async"
-            (selectWorkPackage)="onSelectWorkPackage($event)"
-            (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-            [canSelectWorkpackage]="canSelectWorkpackage"
+  </smi-left-hand-pane>
+  <mat-drawer-container class="drawer-container" autosize fixedInViewport="true">
+    <mat-drawer #drawer mode="side" class="left-sidebar">
+      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+      <smi-workpackage-tab-table
+        *ngIf="selectedLeftTab !== 'menu'"
+        [data]="workpackage$ | async"
+        (selectWorkPackage)="onSelectWorkPackage($event)"
+        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+        [canSelectWorkpackage]="canSelectWorkpackage"
+      >
+      </smi-workpackage-tab-table>
+    </mat-drawer>
+  <app-base-header>
+    <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+    <smi-scopes-dropdown
+      class="scope-dropdown"
+      [data]="scopes$ | async"
+      [selectedScope]="selectedScope$ | async"
+      (selectScope)="onSelectScope($event)"
+    >
+    </smi-scopes-dropdown>
+    <app-search></app-search>
+    <app-toolbar-column>
+      <smi-quicklinks-actions></smi-quicklinks-actions>
+    </app-toolbar-column>
+  </app-base-header>
+  <app-model-container class="diagram-container">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <smi-report-library-table
+            [reports]="reportEntities$ | async"
+            (reportSelected)="onSelectReport($event)"
+            (addReport)="onAddReport()"
+            [workPackageIsEditable]="workPackageIsEditable"
+            (download)="downloadCSV()"
           >
-          </smi-workpackage-tab-table>
-        </mat-tab>
-      </mat-tab-group>
-      <button mat-icon-button class="hide-left-pane-button" (click)="hideLeftPane()"><mat-icon>keyboard_arrow_left</mat-icon></button>
-    </p>
-  </app-model-sidebar>
-
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <smi-report-library-table
-          data-qa="reports-table"
-          [reports]="reportEntities$ | async"
-          (reportSelected)="onSelectReport($event)"
-          (addReport)="onAddReport()"
-          [workPackageIsEditable]="workPackageIsEditable"
-          (download)="downloadCSV()"
-        >
-        </smi-report-library-table>
-      </div>
-      <div class="col">
-        <smi-right-hand-side [title]="'Report'" (add)="onAddReport()" [disabled]="workPackageIsEditable"></smi-right-hand-side>
-        <router-outlet></router-outlet>
+          </smi-report-library-table>
+        </div>
+        <div class="col">
+          <smi-right-hand-side [title]="'Report'" (add)="onAddReport()" [disabled]="workPackageIsEditable"></smi-right-hand-side>
+          <router-outlet></router-outlet>
+        </div>
       </div>
     </div>
-  </div>
+  </app-model-container>
+  </mat-drawer-container>
 </app-model-container>

@@ -1,34 +1,50 @@
 .wrapper {
-  border-bottom: solid 1px #ddd;
+  width: 400px;
+  height: 100%;
+  background-color: #fff;
 }
 
 table {
   width: 100%;
-  tr.mat-header-row {
-    height: 35px;
+}
+
+td {
+  font-size: 12px;
+  color: #222;
+  &:nth-child(1) {
+    padding-top: 10px;
   }
-  td {
-    font-size: 12px;
-    &:nth-child(1) {
-      padding-top: 10px;
-    }
+  &:first-of-type {
+    padding-right: 10px;
   }
-  th {
-    font-size: 11px;
+  &.mat-cell:nth-child(2) {
+    width: 80%;
   }
-  th.mat-column-show {
-    width: 16%;
+  &.mat-cell:nth-child(3) {
+    padding-right: 3px;
   }
-  tr.mat-row {
-    cursor: pointer;
-  }
+}
+
+tr.mat-row {
+  cursor: context-menu;
 }
 
 .mat-icon {
   cursor: pointer;
-  font-size: 25px;
-  color: #555;
+  font-size: 22px;
+  color: rgb(66, 82, 110);
+  margin-top: 4px;
   &:hover {
     color: #222;
   }
+}
+
+.mat-paginator {
+  display: flex;  
+  justify-content: flex-end;
+  border-bottom: solid 1px #ddd;
+}
+
+.mat-header-row {
+  height: 40px;
 }

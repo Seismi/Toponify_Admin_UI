@@ -50,6 +50,7 @@ export class AnalysisTabComponent implements OnChanges {
   @Output() collapseAllNodes = new EventEmitter<void>();
   @Output() summariseAllNodes = new EventEmitter<void>();
   @Output() expandAll = new EventEmitter<void>();
+  @Output() addLayout = new EventEmitter<void>();
 
   @ViewChild('Description') Description;
   @ViewChild('Tags') Tags;
@@ -81,19 +82,4 @@ export class AnalysisTabComponent implements OnChanges {
     this.displayOptionsChanged.emit({ event: event, option: option });
   }
 
-  onFilterRadioSeverity(): void {
-    this.filterRadioSeverity.emit();
-  }
-
-  onCollapseAll(): void {
-    this.collapseAllNodes.emit();
-  }
-
-  onSummariseAll(): void {
-    this.summariseAllNodes.emit();
-  }
-
-  onExpandAll(): void {
-    this.expandAll.emit();
-  }
 }
