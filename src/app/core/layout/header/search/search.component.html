@@ -14,9 +14,9 @@
 
 <div class="results-container mat-elevation-z8" *ngIf="toggleSearch" data-qa="header-global-search-results">
   <ul *ngFor="let result of results$ | async">
-    <li>
-      {{ result.name }}: <small>{{ result.objectType }}</small> -
-      <small>{{ result.workPackage.lenght ? result.workPackage.name : 'N/A' }}</small>
+    <li (click)="onSelect(result)">
+      {{ result.name }}: <small>{{ result.objectType }}</small>
+      <small>{{ result.workPackage.name ? ' - ' + result.workPackage.name : '' }}</small>
     </li>
   </ul>
 </div>

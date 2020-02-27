@@ -1,10 +1,12 @@
-import { Component, OnInit, HostListener, ViewChildren } from '@angular/core';
-import { SearchEntity } from '@app/core/store/models/search.models';
-import { Observable } from 'rxjs';
+import { Component, HostListener, OnInit, ViewChildren } from '@angular/core';
+import { ObjectType, SearchEntity } from '@app/core/store/models/search.models';
+import { Observable, Subject } from 'rxjs';
 import { State as SearchState } from '@app/core/store/reducers/search.reducer';
 import { Search } from '@app/core/store/actions/search.actions';
 import { getSearchResults } from '@app/core/store/selectors/search.selectors';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -13,6 +15,7 @@ import { Store, select } from '@ngrx/store';
 })
 export class SearchComponent implements OnInit {
   public results$: Observable<SearchEntity[]>;
+  private search$ = new Subject<string>();
 
   public toggleSearch = false;
 
@@ -25,18 +28,22 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  constructor(private searchStore: Store<SearchState>) {}
+  constructor(private searchStore: Store<SearchState>, private router: Router) {}
 
-  ngOnInit(): void {}
-
-  onSearch(text: string): void {
-    this.search(text);
+  ngOnInit(): void {
+    this.results$ = this.searchStore.pipe(select(getSearchResults));
+    this.search$
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged()
+      )
+      .subscribe(searchTerm => {
+        this.searchStore.dispatch(new Search({ text: searchTerm }));
+      });
   }
 
-  search(text: string): void {
-    const queryParams = { text: text };
-    this.searchStore.dispatch(new Search(queryParams));
-    this.results$ = this.searchStore.pipe(select(getSearchResults));
+  onSearch(text: string): void {
+    this.search$.next(text);
   }
 
   openSearch(): void {
@@ -46,5 +53,40 @@ export class SearchComponent implements OnInit {
 
   searchClose(): void {
     this.toggleSearch = false;
+    this.inp.first.nativeElement.value = '';
+  }
+
+  onSelect(selectedSearch: SearchEntity) {
+    switch (selectedSearch.objectType) {
+      case ObjectType.radio: {
+        this.router.navigate(['/radio', selectedSearch.id]);
+        break;
+      }
+      case ObjectType.attribute: {
+        const queryParams: { [key: string]: any } = {};
+        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+          queryParams.workPackages = [selectedSearch.workPackage.id];
+        }
+        this.router.navigate(['/attributes-and-rules', selectedSearch.id], { queryParams });
+        break;
+      }
+      case ObjectType.report: {
+        const queryParams: { [key: string]: any } = {};
+        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+          queryParams.workPackages = [selectedSearch.workPackage.id];
+        }
+        this.router.navigate(['/report-library', selectedSearch.id], { queryParams });
+        break;
+      }
+      case ObjectType.workpackage: {
+        const queryParams: { [key: string]: any } = {};
+        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+          queryParams.workPackages = [selectedSearch.workPackage.id];
+        }
+        this.router.navigate(['/work-packages', selectedSearch.id], { queryParams });
+        break;
+      }
+    }
+    this.searchClose();
   }
 }
