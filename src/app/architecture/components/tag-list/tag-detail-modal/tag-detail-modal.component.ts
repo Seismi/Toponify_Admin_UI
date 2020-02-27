@@ -81,9 +81,14 @@ export class TagDetailModalComponent {
     this.dialogRef.close();
   }
 
-  selectedComponent(selection: MatSelectChange) {
-    if (selection.value.includes(TagApplicableTo.everywhere)) {
+  selectedOption(option: TagApplicableTo) {
+    if (option === TagApplicableTo.everywhere) {
       this.tagForm.controls['applicableTo'].setValue(['everywhere']);
+    } else {
+      this.tagForm.controls['applicableTo'].setValue(
+        this.selectedApplicableTo.filter(val => val !== TagApplicableTo.everywhere)
+      );
     }
   }
 }
+
