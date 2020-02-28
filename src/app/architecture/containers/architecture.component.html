@@ -68,8 +68,8 @@
           [viewLevel]="viewLevel$ | async"
         >
         </smi-switch-view-tabs>
-        <smi-search-table-view 
-          *ngIf="selectedView !== ArchitectureView.Diagram" 
+        <smi-search-table-view
+          *ngIf="selectedView !== ArchitectureView.Diagram"
           (search)="onSearchTableView($event)"
         >
         </smi-search-table-view>
@@ -107,6 +107,7 @@
             (updateNodeLocation)="handleUpdateNodeLocation($event)"
             (updateNodeExpandState)="handleUpdateNodeExpandState($event)"
             (updateGroupArea)="handleUpdateGroupArea($event)"
+            (updateDiagramLayout)="handleUpdateDiagramLayout()"
           >
           </app-architecture-diagram>
         </div>

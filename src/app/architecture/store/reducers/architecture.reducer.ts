@@ -12,7 +12,8 @@ import {
   middleOptions,
   GroupAreaSizesEntity,
   OwnersEntity,
-  Tag, NodeLayoutSettingsEntity
+  Tag,
+  NodeLayoutSettingsEntity
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
@@ -777,7 +778,7 @@ function replaceNodeLayoutSetting(
   const entities = [...state.entities];
   entities[nodeIndex] = updatedNode;
 
-  if (state.selectedNode.id === nodeId) {
+  if (state.selectedNode && state.selectedNode.id === nodeId) {
     return {
       ...state,
       entities,
@@ -797,7 +798,7 @@ function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layou
   });
 
   if (layoutIndex > -1) {
-    const updatedLayout: any = updatedLayouts[layoutIndex];
+    const updatedLayout = updatedLayouts[layoutIndex];
     const newPositionSettings = { ...updatedLayout.layout.positionSettings, route: route };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
@@ -807,13 +808,6 @@ function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layou
   const links: NodeLink[] = [...state.links];
   links[linkIndex] = updatedLink;
 
-  if (state.selectedNodeLink && state.selectedNodeLink.id === linkId) {
-    return {
-      ...state,
-      links,
-      selectedNodeLink: { ...state.selectedNodeLink }
-    };
-  }
   return {
     ...state,
     links

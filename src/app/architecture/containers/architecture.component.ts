@@ -32,7 +32,8 @@ import {
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations,
-  UpdateNodeOwners
+  UpdateNodeOwners,
+  UpdatePartsLayout
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -872,9 +873,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.group.id, areaSize: data.group.areaSize };
-    // const nodeLocationData = { id: data.group.id, locationCoordinates: data.group.locationCoordinates };
-
     if (this.layout && data.groups.length > 0) {
       this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: data.groups }));
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.groups }));
@@ -882,6 +880,53 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
+    }
+  }
+
+  handleUpdateDiagramLayout() {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray
+      .map(function(node) {
+        return {
+          id: node.id,
+          positionSettings: {
+            locationCoordinates: node.location,
+            middleExpanded: node.middleExpanded,
+            bottomExpanded: node.bottomExpanded,
+            areaSize: node.areaSize
+          }
+        };
+      });
+
+    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray
+      .map(function(link) {
+        return {
+          id: link.id,
+          positionSettings: {
+            route: link.route
+          }
+        };
+      });
+
+    if (this.layout) {
+      this.store.dispatch(new UpdatePartsLayout(
+        {
+          layoutId: this.layout.id,
+          data: {
+            positionDetails: {
+              workPackages: this.selectedWorkPackageEntities,
+              positions: {
+                nodes: nodeLayoutData,
+                nodeLinks: linkLayoutData
+              }
+            }
+          }
+        }
+      ));
     }
   }
 

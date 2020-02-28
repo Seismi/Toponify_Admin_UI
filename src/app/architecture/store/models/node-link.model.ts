@@ -1,5 +1,3 @@
-import {middleOptions, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
-
 export interface NodeLinksApiResponse {
   data?: (NodeLink)[] | null;
 }

@@ -67,9 +67,6 @@ export class Node {
   category: nodeCategories;
   tags = '';
   positionPerLayout: NodeLayoutSettingsEntity[];
-  // locations?: (LocationsEntity)[] | null;
-  // expandedStates?: (ExpandedStatesEntity)[] | null;
-  // groupAreaSizes?: (GroupAreaSizesEntity)[] | null;
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
