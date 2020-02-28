@@ -35,7 +35,6 @@ import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage
 import { WorkpackageDetailsComponent } from './containers/workpackage-details/workpackage-details.component';
 import { WpOwnersDropdownComponent } from './components/wp-owners-dropdown/wp-owners-dropdown.component';
 import { SettingsModule } from '@app/settings/settings.module';
-import { WpBaselineDropdownComponent } from './components/wp-baseline-dropdown/wp-baseline-dropdown.component';
 import { BaselineTableComponent } from './components/baseline-table/baseline-table.component';
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
 import { ApproversTableComponent } from './components/approvers-table/approvers-table.component';
@@ -93,7 +92,6 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     DeleteWorkPackageModalComponent,
     WorkpackageDetailsComponent,
     WpOwnersDropdownComponent,
-    WpBaselineDropdownComponent,
     BaselineTableComponent,
     OwnersTableComponent,
     ApproversTableComponent,

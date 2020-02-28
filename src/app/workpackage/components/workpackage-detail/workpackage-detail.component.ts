@@ -24,8 +24,6 @@ export class WorkPackageDetailComponent {
   @Input() baselineTableData: WorkPackageDetail;
   @Input() ownersTableData: WorkPackageDetail;
   @Input() approversTableData: WorkPackageDetail;
-  @Input() selectedBaselines = [];
-  @Input() selectedOwners = [];
   @Input() statusDraft: boolean;
   @Input() workpackageActionSubmit: boolean;
   @Input() workpackageActionApprove: boolean;
