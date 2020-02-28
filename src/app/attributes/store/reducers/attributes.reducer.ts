@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { AttributeActionsUnion, AttributeActionTypes } from '../actions/attributes.actions';
 import { AttributeEntity, Page, Links, AttributeDetail } from '../models/attributes.model';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 export interface State {
   entities: AttributeEntity[];
+  availableTags: Tag[];
   page: Page;
   links: Links;
   loading: boolean;
@@ -13,6 +15,7 @@ export interface State {
 
 export const initialState: State = {
   entities: [],
+  availableTags: null,
   page: null,
   links: null,
   loading: false,
@@ -62,6 +65,8 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
       };
     }
 
+    case AttributeActionTypes.DeleteAttributeTagsFail:
+    case AttributeActionTypes.AddAttributeTagsFail:
     case AttributeActionTypes.LoadAttributeFailure: {
       return {
         ...state,
@@ -262,6 +267,8 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
       };
     }
 
+    case AttributeActionTypes.DeleteAttributeTagsSuccess:
+    case AttributeActionTypes.AddAttributeTagsSuccess:
     case AttributeActionTypes.AddRelatedSuccess: {
       return {
         ...state,
@@ -310,6 +317,13 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
         ...state,
         error: action.payload,
         loading: false
+      };
+    }
+
+    case AttributeActionTypes.LoadAttributeTagsSuccess: {
+      return {
+        ...state,
+        availableTags: action.payload
       };
     }
 
