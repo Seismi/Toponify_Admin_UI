@@ -39,12 +39,22 @@ import {
   AssociateRadioSuccess,
   DeleteRadioEntity,
   DeleteRadioEntitySuccess,
-  DeleteRadioEntityFailure
+  DeleteRadioEntityFailure,
+  LoadRadioTags,
+  LoadRadioTagsSuccess,
+  LoadRadioTagsFail,
+  AddRadioTags,
+  AddRadioTagsSuccess,
+  AddRadioTagsFail,
+  DeleteRadioTags,
+  DeleteRadioTagsSuccess,
+  DeleteRadioTagsFail
 } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class RadioEffects {
@@ -182,6 +192,42 @@ export class RadioEffects {
       return this.radioService.deleteRadioEntity(payload).pipe(
         switchMap(_ => [new DeleteRadioEntitySuccess(payload)]),
         catchError((error: HttpErrorResponse) => of(new DeleteRadioEntityFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadRadioTags$ = this.actions$.pipe(
+    ofType<LoadRadioTags>(RadioActionTypes.LoadRadioTags),
+    map(action => action.payload),
+    switchMap((payload: { radioId: string }) => {
+      return this.radioService.getRadioTags(payload.radioId).pipe(
+        switchMap((response: { data: Tag[] }) => [new LoadRadioTagsSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new LoadRadioTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addRadioTags$ = this.actions$.pipe(
+    ofType<AddRadioTags>(RadioActionTypes.AddRadioTags),
+    map(action => action.payload),
+    switchMap((payload: { radioId: string, tagIds: { id: string }[] }) => {
+      return this.radioService.addRadioTags(payload.radioId, payload.tagIds).pipe(
+        switchMap((response: RadioDetailApiResponse) => [new AddRadioTagsSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddRadioTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteRadioTags$ = this.actions$.pipe(
+    ofType<DeleteRadioTags>(RadioActionTypes.DeleteRadioTags),
+    map(action => action.payload),
+    mergeMap((payload: { radioId: string, tagId: string }) => {
+      return this.radioService.deleteRadioTags(payload.radioId, payload.tagId).pipe(
+        map(response => new DeleteRadioTagsSuccess(response.data)),
+        catchError((error: HttpErrorResponse) => of(new DeleteRadioTagsFail(error)))
       );
     })
   );
