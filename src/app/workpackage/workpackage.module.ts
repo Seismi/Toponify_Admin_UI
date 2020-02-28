@@ -31,7 +31,6 @@ import { WorkPackageComponent } from './containers/workpackage/workpackage.compo
 import { WorkPackagesTableComponent } from './components/workpackages-table/workpackages-table.component';
 import { WorkPackageDetailComponent } from './components/workpackage-detail/workpackage-detail.component';
 import { WorkPackageModalComponent } from './containers/workpackage-modal/workpackage.component';
-import { DeleteWorkPackageModalComponent } from './containers/delete-workpackage-modal/delete-workpackage.component';
 import { WorkpackageDetailsComponent } from './containers/workpackage-details/workpackage-details.component';
 import { WpOwnersDropdownComponent } from './components/wp-owners-dropdown/wp-owners-dropdown.component';
 import { SettingsModule } from '@app/settings/settings.module';
@@ -89,7 +88,6 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     RadiosTableComponent,
     ChangeTableComponent,
     WorkPackageModalComponent,
-    DeleteWorkPackageModalComponent,
     WorkpackageDetailsComponent,
     WpOwnersDropdownComponent,
     BaselineTableComponent,
@@ -107,7 +105,6 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
   ],
   entryComponents: [
     WorkPackageModalComponent,
-    DeleteWorkPackageModalComponent,
     OwnersModalComponent,
     RadioListModalComponent,
     RadioDetailModalComponent,
