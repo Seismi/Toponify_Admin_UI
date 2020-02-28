@@ -796,6 +796,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         category: this.objectDetailsForm.value.category,
         layer: this.selectedPart.layer,
         name: this.objectDetailsForm.value.name,
+        reference: this.objectDetailsForm.value.reference,
         tags: this.objectDetailsForm.value.tags,
         description: this.objectDetailsForm.value.description,
         sourceId: this.selectedPart.sourceId,
@@ -808,12 +809,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         layer: this.selectedPart.layer,
         category: this.objectDetailsForm.value.category,
         name: this.objectDetailsForm.value.name,
+        reference: this.objectDetailsForm.value.reference,
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
       };
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-    this.isEditable = false;
   }
 
   onShowGrid(): void {

@@ -19,6 +19,10 @@
     </mat-form-field>
 
     <mat-form-field>
+      <input matInput placeholder="Reference" formControlName="reference" [ngClass]="{ editable: !nodeIsEditable() }" />
+    </mat-form-field>
+
+    <mat-form-field>
       <textarea
         matInput
         placeholder="Description"
