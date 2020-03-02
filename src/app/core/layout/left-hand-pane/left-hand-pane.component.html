@@ -1,4 +1,4 @@
-<mat-icon (click)="openSideBar.emit('menu')">menu</mat-icon>
+<mat-icon (click)="openSideBar.emit('menu')" data-qa="main-menu-open-close">menu</mat-icon>
 <div class="open-tab" *ngIf="sideNavActions">
   <button mat-icon-button [ngClass]="{ selected: selectedLeftTab === 0 }">
     <mat-icon title="Work Packages" (click)="openSideBar.emit(0)">
