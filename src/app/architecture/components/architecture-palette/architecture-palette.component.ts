@@ -28,6 +28,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.model.nodeCategoryProperty = 'layer';
     this.palette.autoScrollRegion = new go.Margin(0);
     this.palette.toolManager.toolTipDuration = 20000;
+    this.diagramTemplatesService.forPalette = true;
     (this.palette.model as go.GraphLinksModel).linkKeyProperty = 'id';
     this.palette.model.modelData = {
       name: true,

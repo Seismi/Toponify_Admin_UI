@@ -39,6 +39,7 @@ const nodeWidth = 300;
 @Injectable()
 export class DiagramTemplatesService {
   private currentFilterLevel: Level;
+  public forPalette: boolean = false;
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
     public diagramLevelService: DiagramLevelService,
@@ -286,6 +287,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
+        visible: (this.forPalette) ? false : true,
         click: function(event, button) {
           const node = button.part;
 
@@ -335,6 +337,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
+        visible: (this.forPalette) ? false : true,
         click: function(event, button) {
           const menu = this.gojsCustomObjectsService.getPartButtonMenu(true);
           event.diagram.select(button.part);
@@ -375,6 +378,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
+        visible: (this.forPalette) ? false : true,
         click: function(event, button): void {
           const node = button.part;
 
