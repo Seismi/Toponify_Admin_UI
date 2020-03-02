@@ -1461,7 +1461,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title: (type === 'addToGroup') ? `Add "${this.part.data.name}" to...` : `Add Children to "${this.part.data.name}"`,
+        title: (type === 'addToGroup') ? `Add "${this.selectedNode.name}" to...` : `Add Children to "${this.selectedNode.name}"`,
         placeholder: 'Components',
         descendants: (type != undefined) ? false : true,
         nodeId: this.nodeId,
