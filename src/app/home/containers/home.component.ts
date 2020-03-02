@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State as HomePageState } from '../store/reducers/home.reducers';
 import { LoadMyLayouts, LoadMyRadios, LoadMyWorkPackages } from '../store/actions/home.actions';
@@ -18,6 +18,9 @@ export class HomeComponent implements OnInit {
   public myWorkPackages$: Observable<WorkPackageEntity[]>;
   public myRadios$: Observable<RadioEntity[]>;
   public myLayouts$: Observable<LayoutDetails[]>;
+  public selectedLeftTab: number | string;
+
+  @ViewChild('drawer') drawer;
 
   constructor(private router: Router, private store: Store<HomePageState>) {}
 
@@ -38,5 +41,10 @@ export class HomeComponent implements OnInit {
 
   onOpenLayout() {
     this.router.navigate(['/architecture'], { queryParamsHandling: 'preserve' });
+  }
+
+  openLeftTab(tab: number | string): void {
+    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
+    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
   }
 }

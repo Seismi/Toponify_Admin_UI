@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>New</h1>
 <div mat-dialog-content>
   <smi-report-library-detail
-    data-hook="report-library-detail-in-modal"
+    data-qa="reports-modal-details"
     [owners]="owners$ | async"
     [group]="reportDetailForm"
     [modalMode]="true"
@@ -10,6 +10,6 @@
   </smi-report-library-detail>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()" data-hook="report-modal-save">Save</button>
-  <button mat-button (click)="onCancel()" data-hook="report-modal-cancel">Cancel</button>
+  <button mat-button (click)="onSubmit()" data-qa="reports-modal-save">Save</button>
+  <button mat-button (click)="onCancel()" data-qa="reports-modal-cancel">Cancel</button>
 </div>

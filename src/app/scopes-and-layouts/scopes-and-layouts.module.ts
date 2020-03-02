@@ -15,7 +15,8 @@ import {
   MatListModule,
   MatProgressSpinnerModule,
   MatInputModule,
-  MatIconModule
+  MatIconModule,
+  MatSidenavModule
 } from '@angular/material';
 import { ScopesAndLayoutsTableComponent } from './components/scopes-and-layouts-table/scopes-and-layouts-table.component';
 import { ScopeModule } from '@app/scope/scope.module';
@@ -48,7 +49,8 @@ import { LayoutDetailsComponent } from './containers/layout-details/layout-detai
     MatIconModule,
     ScopeModule,
     LayoutModule,
-    SettingsModule
+    SettingsModule,
+    MatSidenavModule
   ],
   exports: [],
   declarations: [

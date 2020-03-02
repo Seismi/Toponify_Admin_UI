@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { AttributeEntity } from '../../store/models/attributes.model';
 import { State as AttributeState } from '../../store/reducers/attributes.reducer';
@@ -41,13 +41,14 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public attributes: Subscription;
   public attribute: AttributeEntity[];
   public workpackage$: Observable<WorkPackageEntity[]>;
-  public selectedLeftTab: number;
+  public selectedLeftTab: number | string;
   public showOrHidePane: boolean;
   public subscriptions: Subscription[] = [];
   public workpackageId: string;
   public canSelectWorkpackage = true;
   public workPackageIsEditable: boolean;
   public scopeId: string;
+  @ViewChild('drawer') drawer;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -160,15 +161,12 @@ export class AttributesComponent implements OnInit, OnDestroy {
       });
   }
 
-  openLeftTab(index: number): void {
-    this.selectedLeftTab = index;
-    if (this.selectedLeftTab === index) {
-      this.showOrHidePane = true;
+  openLeftTab(tab: number | string): void {
+    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
+    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    if (!this.drawer.opened) {
+      this.selectedLeftTab = 'menu';
     }
-  }
-
-  hideLeftPane(): void {
-    this.showOrHidePane = false;
   }
 
   onSelectEditWorkpackage(workpackage: any): void {

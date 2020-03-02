@@ -1,71 +1,77 @@
-<app-base-header>
-  <smi-node-name *ngIf="parentName" [parentName]="parentName"></smi-node-name>
-  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
-  <smi-workpackage-name
-    [selectedWorkPackageEntities]="selectedWorkPackageEntities"
+<app-model-container>
+  <smi-left-hand-pane
     [workPackageIsEditable]="workPackageIsEditable"
-    [workPackageName]="workPackageName"
-    (exitWorkPackageEditMode)="onSelectEditWorkpackage($event)">
-  </smi-workpackage-name>
-  <app-search></app-search>
-  <app-toolbar-column>
-    <app-zoom-actions></app-zoom-actions>
-  </app-toolbar-column>
-  <app-toolbar-column>
-    <smi-quicklinks-actions
-      [gojsView]="true"
-      [scopes]="scopes$ | async"
-      [selectedScope]="selectedScope$ | async"
-      [layouts]="scopeDetails$ | async"
-      (selectScope)="onSelectScope($event)"
-      (selectLayout)="onSelectLayout($event)"
-      [selectedLayout]="selectedLayout$ | async"
-      (addLayout)="onAddLayout()"
-    >
-    </smi-quicklinks-actions>
-  </app-toolbar-column>
-</app-base-header>
-<app-model-container [topPadding]="64">
-  <smi-left-sidebar
-    *ngIf="!showOrHideLeftPane"
-    (leftTab)="openLeftTab($event)"
-    [workPackageIsEditable]="workPackageIsEditable"
+    [selectedLeftTab]="selectedLeftTab"
+    (openSideBar)="openLeftTab($event)"
+    [sideNavActions]="true"
+    [architecturePage]="true"
   >
-  </smi-left-sidebar>
-  <p class="leftPane" *ngIf="showOrHideLeftPane">
-    <smi-left-panel
-      [tabIndex]="editTabIndex"
-      (tabClick)="onTabClick($event)"
-      [viewLevel]="viewLevel$ | async"
-      [workpackages]="workpackage$ | async"
-      [workPackageIsEditable]="workPackageIsEditable"
-      (displayOptionsChangedEvent)="displayOptionsChanged($event)"
-      (selectWorkPackage)="onSelectWorkPackage($event)"
-      (selectColour)="selectColourForWorkPackage($event)"
-      (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-      [selectedLeftTab]="selectedLeftTab"
-      [checked]="radioAlertChecked"
-      [canSelectWorkpackages]="canSelectWorkpackages"
-      (hideLeftPane)="onHideLeftPane()"
-      [layoutSettingsTab]="layoutSettingsTab"
-      (addLayout)="onAddLayout()"
-      [group]="layoutSettingsForm"
-      [layout]="layout"
-      (filterRadioSeverity)="onFilterRadioSeverity()"
-      (collapseAllNodes)="onCollapseAllNodes()"
-      (summariseAllNodes)="onSummariseAllNodes()"
-      (expandAll)="onExpandAll()"
-    >
-    </smi-left-panel>
-  </p>
-  <app-model-content>
-    <smi-switch-view-tabs
-      (viewChange)="onViewChange($event)"
-      [selectedView]="selectedView"
-      [viewLevel]="viewLevel$ | async"
-    ></smi-switch-view-tabs>
-    <smi-search-table-view *ngIf="selectedView !== ArchitectureView.Diagram" (search)="onSearchTableView($event)">
-    </smi-search-table-view>
+  </smi-left-hand-pane>
+  <mat-drawer-container class="drawer-container" autosize fixedInViewport="true">
+    <mat-drawer #drawer mode="side" class="left-sidebar">
+      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+      <smi-left-panel
+        *ngIf="selectedLeftTab !== 'menu'"
+        (tabClick)="onTabClick($event)"
+        [viewLevel]="viewLevel$ | async"
+        [workpackages]="workpackage$ | async"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (displayOptionsChangedEvent)="displayOptionsChanged($event)"
+        (selectWorkPackage)="onSelectWorkPackage($event)"
+        (selectColour)="selectColourForWorkPackage($event)"
+        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+        [selectedLeftTab]="selectedLeftTab"
+        [checked]="radioAlertChecked"
+        [canSelectWorkpackages]="canSelectWorkpackages"
+        (addLayout)="onAddLayout()"
+        [group]="layoutSettingsForm"
+        [layout]="layout"
+        (filterRadioSeverity)="onFilterRadioSeverity()"
+        (collapseAllNodes)="onCollapseAllNodes()"
+        (summariseAllNodes)="onSummariseAllNodes()"
+        (expandAll)="onExpandAll()"
+      >
+      </smi-left-panel>
+    </mat-drawer>
+    <app-base-header>
+      <smi-node-name *ngIf="parentName" [parentName]="parentName"></smi-node-name>
+      <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+      <smi-workpackage-name
+        [selectedWorkPackageEntities]="selectedWorkPackageEntities"
+        [workPackageIsEditable]="workPackageIsEditable"
+        [workPackageName]="workPackageName"
+        (exitWorkPackageEditMode)="onSelectEditWorkpackage($event)">
+      </smi-workpackage-name>
+      <app-search></app-search>
+      <app-toolbar-column>
+        <app-zoom-actions></app-zoom-actions>
+      </app-toolbar-column>
+      <app-toolbar-column>
+        <smi-quicklinks-actions
+          [gojsView]="true"
+          [scopes]="scopes$ | async"
+          [selectedScope]="selectedScope$ | async"
+          [layouts]="scopeDetails$ | async"
+          (selectScope)="onSelectScope($event)"
+          (selectLayout)="onSelectLayout($event)"
+          [selectedLayout]="selectedLayout$ | async"
+          (addLayout)="onAddLayout()"
+        >
+        </smi-quicklinks-actions>
+      </app-toolbar-column>
+    </app-base-header>
+    <app-model-container class="diagram-container">
+      <app-model-content>
+        <smi-switch-view-tabs
+          (viewChange)="onViewChange($event)"
+          [selectedView]="selectedView"
+          [viewLevel]="viewLevel$ | async"
+        >
+        </smi-switch-view-tabs>
+        <smi-search-table-view
+          *ngIf="selectedView !== ArchitectureView.Diagram"
+          (search)="onSearchTableView($event)"
+        ></smi-search-table-view>
     <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
       <smi-layout-actions
         class="diagram-actions"
@@ -194,10 +200,11 @@
         [availableTags]="availableTags$ | async"
         (seeUsage)="onSeeUsage()"
         (seeDependencies)="onSeeDependencies()"
-      >
-      </smi-right-panel></p
-  ></app-model-sidebar>
+          >
+          </smi-right-panel></p
+      ></app-model-sidebar>
+    </app-model-container>
+  </mat-drawer-container>
 </app-model-container>
 
 <smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>
-

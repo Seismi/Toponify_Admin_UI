@@ -17,7 +17,8 @@ import {
   MatTabsModule,
   MatDatepickerModule,
   MatIconModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatSidenavModule
 } from '@angular/material';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
 import { RadioModalComponent } from './containers/radio-modal/radio-modal.component';
@@ -66,6 +67,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     MatIconModule,
     MatMomentDateModule,
     DocumentationStandardsModule,
+    MatSidenavModule,
     StoreModule.forFeature('radioFeature', reducer),
     EffectsModule.forFeature([RadioEffects]),
     CKEditorModule

@@ -1,0 +1,34 @@
+<div class="menu">
+  <h6>Document</h6>
+  <button data-qa="main-menu-topology" routerLink="/topology" queryParamsHandling="preserve">
+    <mat-icon>device_hub</mat-icon> Topology
+  </button>
+  <button data-qa="main-menu-reports" routerLink="/report-library" queryParamsHandling="preserve">
+    <mat-icon>bookmarks</mat-icon> Reports
+  </button>
+  <button data-qa="main-menu-attributes-and-rules" routerLink="/attributes-and-rules" queryParamsHandling="preserve">
+    <mat-icon>ballot</mat-icon> Rules and Attributes
+  </button>
+  <h6>Manage</h6>
+  <button data-qa="main-menu-work-packages" routerLink="/work-packages" queryParamsHandling="preserve">
+    <mat-icon>business_center</mat-icon> Work Packages
+  </button>
+  <button data-qa="main-menu-radios" routerLink="/radio" queryParamsHandling="preserve">
+    <mat-icon>track_changes</mat-icon> RADIOs
+  </button>
+  <button data-qa="main-menu-scopes-and-layouts" routerLink="/scopes-and-layouts" queryParamsHandling="preserve">
+    <mat-icon>pages</mat-icon> Scopes and Layouts
+  </button>
+  <button data-qa="main-menu-documentation-standards" routerLink="/documentation-standards"
+    queryParamsHandling="preserve">
+    <mat-icon>post_add</mat-icon> Documentation Standards
+  </button>
+  <button data-qa="main-menu-my-profile" routerLink="/settings">
+    My Profile
+  </button>
+  <button data-qa="main-menu-settings" routerLink="/settings/all-users">
+    Settings
+  </button>
+  <a href="https://support.toponify.com" target="_blank"><button data-qa="main-menu-help">Help</button></a>
+  <button (click)="onLogOut()" data-qa="main-menu-log-out">Log Out</button>
+</div>

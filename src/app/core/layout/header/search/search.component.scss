@@ -18,7 +18,7 @@ header {
   @extend header;
   background: #fff;
   &.active {
-    width: 100%;
+    width: calc(100% - 55px);
   }
   .search-control {
     flex: 1;

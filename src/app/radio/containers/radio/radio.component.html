@@ -1,29 +1,41 @@
-<app-base-header>
-  <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
-  <app-search></app-search>
-  <app-toolbar-column>
-    <smi-quicklinks-actions></smi-quicklinks-actions>
-  </app-toolbar-column>
-</app-base-header>
-
-<app-model-container [topPadding]="64">
-  <div class="container">
-    <div class="row">
-      <div class="col mat-elevation-z8">
-        <smi-radio-header (filter)="onFilter()" (resetFilter)="onResetFilter()" [status]="status"> </smi-radio-header>
-        <smi-radio-table
-          data-qa="radio-table"
-          [data]="radio$ | async"
-          (selectRadio)="onSelectRadio($event)"
-          (addRadio)="onAddRadio($event)"
-          (download)="downloadCSV()"
-        >
-        </smi-radio-table>
+<app-model-container>
+  <smi-left-hand-pane
+    [workPackageIsEditable]="workPackageIsEditable"
+    [selectedLeftTab]="selectedLeftTab"
+    (openSideBar)="openLeftTab($event)"
+  >
+  </smi-left-hand-pane>
+  <mat-drawer-container class="drawer-container" autosize >
+    <mat-drawer #drawer mode="side" class="left-sidebar">
+      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+    </mat-drawer>
+    <app-base-header>
+      <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+      <app-search></app-search>
+      <app-toolbar-column>
+        <smi-quicklinks-actions></smi-quicklinks-actions>
+      </app-toolbar-column>
+    </app-base-header>
+    <app-model-container class="diagram-container">
+      <div class="container">
+        <div class="row">
+          <div class="col mat-elevation-z8">
+            <smi-radio-header (filter)="onFilter()" (resetFilter)="onResetFilter()" [status]="status"> </smi-radio-header>
+            <smi-radio-table
+              data-qa="radio-table"
+              [data]="radio$ | async"
+              (selectRadio)="onSelectRadio($event)"
+              (addRadio)="onAddRadio($event)"
+              (download)="downloadCSV()"
+            >
+            </smi-radio-table>
+          </div>
+          <div class="col">
+            <smi-right-hand-side [title]="'Radio'" (add)="onAddRadio()"></smi-right-hand-side>
+            <router-outlet></router-outlet>
+          </div>
+        </div>
       </div>
-      <div class="col">
-        <smi-right-hand-side [title]="'Radio'" (add)="onAddRadio()"></smi-right-hand-side>
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
+    </app-model-container>
+  </mat-drawer-container>
 </app-model-container>
