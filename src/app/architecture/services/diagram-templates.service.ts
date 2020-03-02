@@ -964,7 +964,7 @@ export class DiagramTemplatesService {
       {
         doubleClick: function(event, node) {
           // Do not proceed for double clicks on buttons on the node
-          if (event.targetObject.name.includes('Button')) {
+          if (event.targetObject.name.includes('Button') || forPalette) {
             return;
           }
 
@@ -1065,7 +1065,7 @@ export class DiagramTemplatesService {
         doubleClick: function(event, node) {
 
           // Do not proceed for double clicks on buttons on the node
-          if (event.targetObject.name.includes('Button')) {
+          if (event.targetObject.name.includes('Button') || forPalette) {
             return;
           }
 
@@ -1199,7 +1199,7 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       {
-        doubleClick: this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
+        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
       },
       $(
         go.Shape,
@@ -1262,6 +1262,10 @@ export class DiagramTemplatesService {
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: function(event, object) {
+          if (forPalette) {
+            return;
+          }
+          
           if ([layers.system, layers.dataSet].includes(object.data.layer)) {
             this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, object);
           }
