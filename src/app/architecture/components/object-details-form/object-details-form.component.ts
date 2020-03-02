@@ -5,7 +5,6 @@ import { DescendantsEntity, Tag, TagApplicableTo } from '@app/architecture/store
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
-import { TeamDetails } from '@app/settings/store/models/team.model';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
@@ -60,6 +59,8 @@ export class ObjectDetailsFormComponent {
   @Output() createTag = new EventEmitter<Tag>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateTag = new EventEmitter<Tag>();
+  @Output() seeUsage = new EventEmitter<void>();
+  @Output() seeDependencies = new EventEmitter<void>();
 
   onSave(): void {
     this.save.emit();
@@ -142,5 +143,17 @@ export class ObjectDetailsFormComponent {
 
   onUpdateTag(tag: Tag) {
     this.updateTag.emit(tag);
+  }
+
+  onSeeDependencies() {
+    this.seeDependencies.emit();
+  }
+
+  onSeeUsage() {
+    this.seeUsage.emit();
+  }
+
+  get isNode(): boolean {
+    return this.part.data && !this.part.data.hasOwnProperty('sourceId');
   }
 }

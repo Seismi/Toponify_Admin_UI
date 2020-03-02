@@ -67,16 +67,16 @@
     <smi-search-table-view *ngIf="selectedView !== ArchitectureView.Diagram" (search)="onSearchTableView($event)">
     </smi-search-table-view>
     <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
-      <smi-layout-actions 
-        class="diagram-actions" 
-        *ngIf="selectedView === ArchitectureView.Diagram" 
+      <smi-layout-actions
+        class="diagram-actions"
+        *ngIf="selectedView === ArchitectureView.Diagram"
         [grid]="showGrid"
-        [allowMove]="allowMove" 
-        (zoomIn)="onZoomIn()" 
-        (zoomOut)="onZoomOut()" 
+        [allowMove]="allowMove"
+        (zoomIn)="onZoomIn()"
+        (zoomOut)="onZoomOut()"
         (showGrid)="onShowGrid()"
-        (zoomToFit)="onZoomToFit()" 
-        (editLayout)="allowEditLayout()" 
+        (zoomToFit)="onZoomToFit()"
+        (editLayout)="allowEditLayout()"
         (downloadImage)="onDownloadImage()"
       >
       </smi-layout-actions>
@@ -189,10 +189,11 @@
         (addTag)="onAddTag($event)"
         (createTag)="onCreateTag($event)"
         (removeTag)="onRemoveTag($event)"
-        (updateTag)="onUpdateTag($event)"
         [tags]="selectedNode?.tags"
         [componentLayer]="nodeComponentLayer"
         [availableTags]="availableTags$ | async"
+        (seeUsage)="onSeeUsage()"
+        (seeDependencies)="onSeeDependencies()"
       >
       </smi-right-panel></p
   ></app-model-sidebar>

@@ -65,7 +65,7 @@ export class SearchComponent implements OnInit {
       case ObjectType.attribute: {
         const queryParams: { [key: string]: any } = {};
         if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workPackages = [selectedSearch.workPackage.id];
+          queryParams.workpackages = [selectedSearch.workPackage.id];
         }
         this.router.navigate(['/attributes-and-rules', selectedSearch.id], { queryParams });
         break;
@@ -73,7 +73,7 @@ export class SearchComponent implements OnInit {
       case ObjectType.report: {
         const queryParams: { [key: string]: any } = {};
         if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workPackages = [selectedSearch.workPackage.id];
+          queryParams.workpackages = [selectedSearch.workPackage.id];
         }
         this.router.navigate(['/report-library', selectedSearch.id], { queryParams });
         break;
@@ -81,9 +81,45 @@ export class SearchComponent implements OnInit {
       case ObjectType.workpackage: {
         const queryParams: { [key: string]: any } = {};
         if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workPackages = [selectedSearch.workPackage.id];
+          queryParams.workpackages = [selectedSearch.workPackage.id];
         }
         this.router.navigate(['/work-packages', selectedSearch.id], { queryParams });
+        break;
+      }
+      case ObjectType.system_link:
+      case ObjectType.system: {
+        const queryParams: { [key: string]: any } = { filterLevel: 'system', selectedItem: selectedSearch.id };
+        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+          queryParams.workpackages = [selectedSearch.workPackage.id];
+        }
+        this.router.navigate(['/topology'], { queryParams });
+        break;
+      }
+      case ObjectType.data_set_link:
+      case ObjectType.data_set: {
+        const queryParams: { [key: string]: any } = { filterLevel: 'data set', selectedItem: selectedSearch.id };
+        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+          queryParams.workpackages = [selectedSearch.workPackage.id];
+        }
+        this.router.navigate(['/topology'], { queryParams });
+        break;
+      }
+      case ObjectType.dimension_link:
+      case ObjectType.dimension: {
+        const queryParams: { [key: string]: any } = { filterLevel: 'dimension', selectedItem: selectedSearch.id };
+        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+          queryParams.workpackages = [selectedSearch.workPackage.id];
+        }
+        this.router.navigate(['/topology'], { queryParams });
+        break;
+      }
+      case ObjectType.reporting_concept_link:
+      case ObjectType.reporting_concept: {
+        const queryParams: { [key: string]: any } = { filterLevel: 'reporting', selectedItem: selectedSearch.id };
+        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+          queryParams.workpackages = [selectedSearch.workPackage.id];
+        }
+        this.router.navigate(['/topology'], { queryParams });
         break;
       }
     }
