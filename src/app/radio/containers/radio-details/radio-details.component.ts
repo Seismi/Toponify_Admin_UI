@@ -11,9 +11,12 @@ import {
   DissociateRadio,
   LoadRadio,
   UpdateRadioProperty,
-  DeleteRadioEntity
+  DeleteRadioEntity,
+  LoadRadioTags,
+  AddRadioTags,
+  DeleteRadioTags
 } from '@app/radio/store/actions/radio.actions';
-import { getSelectedRadio } from '@app/radio/store/selectors/radio.selector';
+import { getSelectedRadio, getRadioAvailableTags } from '@app/radio/store/selectors/radio.selector';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
@@ -27,11 +30,12 @@ import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/dele
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'app-radio-details',
@@ -46,6 +50,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription[] = [];
   public isEditable = false;
   public modalMode = false;
+  public availableTags$: Observable<Tag[]>;
 
   constructor(
     private userStore: Store<UserState>,
@@ -58,6 +63,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.availableTags$ = this.store.select(getRadioAvailableTags);
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         const radioId = params['radioId'];
@@ -244,4 +250,27 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  onUpdateAvailableTags(): void {
+    this.store.pipe(select(getRadioAvailableTags), take(1)).subscribe(tags => {
+      this.store.dispatch(new LoadRadioTags({radioId: this.radioId}));
+    });
+  }
+
+  onAddTag(tagId: string): void {
+    this.store.dispatch(
+      new AddRadioTags({
+        radioId: this.radioId,
+        tagIds: [{ id: tagId }]
+      })
+    )
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.store.dispatch(
+      new DeleteRadioTags({
+        radioId: this.radioId,
+        tagId: tag.id
+      })
+    )
+  }
 }
