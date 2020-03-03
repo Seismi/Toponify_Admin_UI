@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { ObjectDetailsService } from '@app/architecture/components/object-details-form/services/object-details-form.service';
@@ -15,9 +15,12 @@ import {
   UpdateProperty,
   DeleteProperty,
   AddRelated,
-  DeleteRelated
+  DeleteRelated,
+  LoadAttributeTags,
+  AddAttributeTags,
+  DeleteAttributeTags
 } from '@app/attributes/store/actions/attributes.actions';
-import { getSelectedAttribute } from '@app/attributes/store/selectors/attributes.selector';
+import { getSelectedAttribute, getAttributeAvailableTags } from '@app/attributes/store/selectors/attributes.selector';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -29,7 +32,8 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RelatedAttributesModalComponent } from '../related-attributes-modal/related-attributes-modal.component';
-import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node.model';
+import { OwnersEntityOrTeamEntityOrApproversEntity, Tag } from '@app/architecture/store/models/node.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-attribute-details',
@@ -47,6 +51,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public selectedRelatedIndex: string | null;
   public selectAttribute = false;
   public relatedAttributeId: string;
+  public availableTags$: Observable<Tag[]>;
 
   constructor(
     private dialog: MatDialog,
@@ -58,6 +63,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.availableTags$ = this.store.select(getAttributeAvailableTags);
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         this.attributeId = params['attributeId'];
@@ -255,5 +261,44 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       }
       this.selectAttribute = false;
     });
+  }
+
+  onUpdateAvailableTags(): void {
+    this.store
+      .pipe(
+        select(getAttributeAvailableTags),
+        take(1)
+      )
+      .subscribe(tags => {
+        if (!this.workpackageId) {
+          return;
+        }
+        this.store.dispatch(
+          new LoadAttributeTags({
+            workPackageId: this.workpackageId,
+            attributeId: this.attributeId
+          })
+        );
+      });
+  }
+
+  onAddTag(tagId: string): void {
+    this.store.dispatch(
+      new AddAttributeTags({
+        workPackageId: this.workpackageId,
+        attributeId: this.attributeId,
+        tagIds: [{ id: tagId }]
+      })
+    )
+  }
+
+  onRemoveTag(tag: Tag): void {
+    this.store.dispatch(
+      new DeleteAttributeTags({
+        workPackageId: this.workpackageId,
+        attributeId: this.attributeId,
+        tagId: tag.id
+      })
+    )
   }
 }
