@@ -60,7 +60,6 @@ import { CategoryTableComponent } from '@app/attributes/components/category-tabl
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layouts.module';
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
-import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
 import { SettingsModule } from '@app/settings/settings.module';
@@ -146,7 +145,6 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     CategoryTableComponent,
     TableCollapseComponent,
     OwnersTableComponent,
-    DescendantsTableComponent,
     EditNameModalComponent,
     RelatedAttributeTableComponent,
     SwitchViewTabsComponent,
