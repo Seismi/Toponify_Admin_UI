@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SearchApiResponse } from '../models/search.models';
 
 export enum SearchActionTypes {
+  ClearSearch = '[Search] Clear Search',
   Search = '[Search] Search',
   SearchSuccess = '[Search] Search Success',
   SearchFailure = '[Search] Search Failure'
@@ -23,4 +24,8 @@ export class SearchFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
-export type SearchActionsUnion = Search | SearchSuccess | SearchFailure;
+export class ClearSearch implements Action {
+  readonly type = SearchActionTypes.ClearSearch;
+}
+
+export type SearchActionsUnion = Search | SearchSuccess | SearchFailure | ClearSearch;

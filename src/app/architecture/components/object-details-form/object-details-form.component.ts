@@ -154,6 +154,6 @@ export class ObjectDetailsFormComponent {
   }
 
   get isNode(): boolean {
-    return this.part.data && !this.part.data.hasOwnProperty('sourceId');
+    return this.part && this.part.data && !this.part.data.hasOwnProperty('sourceId');
   }
 }

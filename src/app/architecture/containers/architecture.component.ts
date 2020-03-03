@@ -5,18 +5,17 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewChild,
-  ElementRef
+  ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
-  GetParentDescendantIds,
   AssociateTag,
   CreateTag,
   DissociateTag,
+  GetParentDescendantIds,
   LoadAvailableTags,
   LoadMapView,
   LoadNode,
@@ -31,23 +30,20 @@ import {
   UpdateGroupAreaSize,
   UpdateLinks,
   UpdateNodeExpandedState,
-  UpdateNodeLocations,
-  UpdateNodeOwners
+  UpdateNodeLocations
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
+  AttributesEntity,
   DescendantsEntity,
+  LoadingStatus,
   middleOptions,
   Node,
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
-  OwnersEntityOrTeamEntityOrApproversEntity,
-  AttributesEntity,
-  GroupAreaSizeApiRequest,
   Tag,
-  TagApplicableTo,
-  LoadingStatus
+  TagApplicableTo
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -81,35 +77,35 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeAndLayoutModalComponent } from '@app/scopes-and-layouts/containers/scope-and-layout-modal/scope-and-layout-modal.component';
 import {
-  AddWorkPackageLinkOwner,
-  DeleteWorkpackageLinkOwner,
-  DeleteWorkpackageLinkSuccess,
-  DeleteWorkPackageLinkAttribute,
-  AddWorkPackageLinkAttribute,
-  AddWorkPackageLinkRadio,
-  UpdateWorkPackageLinkProperty,
-  DeleteWorkPackageLinkProperty,
   AddWorkPackageLink,
+  AddWorkPackageLinkAttribute,
+  AddWorkPackageLinkOwner,
+  AddWorkPackageLinkRadio,
+  DeleteWorkPackageLinkAttribute,
+  DeleteWorkpackageLinkOwner,
+  DeleteWorkPackageLinkProperty,
+  DeleteWorkpackageLinkSuccess,
+  UpdateWorkPackageLinkProperty,
   WorkPackageLinkActionTypes
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
+  AddWorkPackageNode,
+  AddWorkPackageNodeAttribute,
   AddWorkPackageNodeDescendant,
+  AddWorkPackageNodeGroup,
   AddWorkpackageNodeOwner,
   AddWorkPackageNodeRadio,
   AddWorkPackageNodeScope,
+  DeleteWorkPackageNodeAttribute,
   DeleteWorkPackageNodeDescendant,
   DeleteWorkpackageNodeOwner,
+  DeleteWorkPackageNodeProperty,
   DeleteWorkPackageNodeScope,
   DeleteWorkpackageNodeSuccess,
-  LoadWorkPackageNodeScopes,
-  WorkPackageNodeActionTypes,
-  DeleteWorkPackageNodeProperty,
-  UpdateWorkPackageNodeProperty,
-  DeleteWorkPackageNodeAttribute,
-  AddWorkPackageNodeAttribute,
-  AddWorkPackageNode,
   FindPotentialWorkpackageNodes,
-  AddWorkPackageNodeGroup
+  LoadWorkPackageNodeScopes,
+  UpdateWorkPackageNodeProperty,
+  WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -119,10 +115,10 @@ import {
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
+  CustomPropertiesEntity,
   WorkPackageDetail,
   WorkPackageEntity,
-  WorkPackageNodeScopes,
-  CustomPropertiesEntity
+  WorkPackageNodeScopes
 } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
@@ -136,8 +132,8 @@ import {
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
-import { BehaviorSubject, combineLatest, iif, Observable, Subject, Subscription } from 'rxjs';
-import { filter, map, shareReplay, switchMap, take, takeWhile, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
@@ -148,11 +144,10 @@ import { State as NodeState, State as ViewState } from '../store/reducers/archit
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { Link, Node as goNode } from 'gojs';
-import { TeamEntity, TeamDetails } from '@app/settings/store/models/team.model';
+import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { LoadTeams, UpdateTeam, TeamActionTypes } from '@app/settings/store/actions/team.actions';
+import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
-import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/services/node.service';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
@@ -291,7 +286,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (!this.selectedNode) {
       return TagApplicableTo.systems;
     }
-    if (this.selectedNode.hasOwnProperty('sourceObject')) {
+    if (this.selectedNode.hasOwnProperty('sourceId')) {
       return (this.selectedNode.layer + ' links') as TagApplicableTo;
     } else {
       return (this.selectedNode.layer + 's') as TagApplicableTo;
@@ -430,7 +425,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, workpackages, selectedItem } = fil;
+        const { filterLevel, id, scope, parentName, workpackages, selectedItem, selectedType } = fil;
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
 
         if (filterLevel) {
@@ -443,10 +438,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               filter(status => status === LoadingStatus.loaded),
               take(1)
             )
-            .subscribe(entities => {
-              this.routerStore.dispatch(new UpdateQueryParams({ selectedItem: null }));
+            .subscribe(() => {
+              this.routerStore.dispatch(new UpdateQueryParams({ selectedItem: null, selectedType: null }));
               this.diagramComponent.selectNode(selectedItem);
               this.openRightTab(0);
+              if (selectedType === 'node') {
+                this.selectedView = ArchitectureView.System;
+              } else {
+                this.selectedView = ArchitectureView.Links;
+              }
             });
         }
 
@@ -1147,19 +1147,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();
-    }, 250)
+    }, 250);
   }
 
   openLeftTab(tab: number | string): void {
-    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
-    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
+    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
     if (!this.drawer.opened) {
       this.selectedLeftTab = 'menu';
     }
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();
-    }, 250)
+    }, 250);
   }
 
   onAddRelatedRadio(): void {
@@ -1836,7 +1836,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           new LoadAvailableTags({
             workpackageId: this.workpackageId,
             nodeId: this.selectedNode.id,
-            type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+            type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
           })
         );
       });
@@ -1848,7 +1848,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         tagIds: [{ id: tagId }],
         workpackageId: this.workpackageId,
         nodeOrLinkId: this.selectedNode.id,
-        type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+        type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
       })
     );
   }
@@ -1860,7 +1860,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         associateWithNode: {
           workpackageId: this.workpackageId,
           nodeOrLinkId: this.selectedNode.id,
-          type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+          type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
         }
       })
     );
@@ -1872,7 +1872,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         tag,
         workpackageId: this.workpackageId,
         nodeOrLinkId: this.selectedNode.id,
-        type: this.selectedNode.hasOwnProperty('sourceObject') ? 'link' : 'node'
+        type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
       })
     );
   }

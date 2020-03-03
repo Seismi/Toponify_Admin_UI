@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit, ViewChildren } from '@angular/core';
 import { ObjectType, SearchEntity } from '@app/core/store/models/search.models';
 import { Observable, Subject } from 'rxjs';
 import { State as SearchState } from '@app/core/store/reducers/search.reducer';
-import { Search } from '@app/core/store/actions/search.actions';
+import { ClearSearch, Search } from '@app/core/store/actions/search.actions';
 import { getSearchResults } from '@app/core/store/selectors/search.selectors';
 import { select, Store } from '@ngrx/store';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -88,7 +88,11 @@ export class SearchComponent implements OnInit {
       }
       case ObjectType.system_link:
       case ObjectType.system: {
-        const queryParams: { [key: string]: any } = { filterLevel: 'system', selectedItem: selectedSearch.id };
+        const queryParams: { [key: string]: any } = {
+          filterLevel: 'system',
+          selectedItem: selectedSearch.id,
+          selectedType: selectedSearch.objectType === ObjectType.system_link ? 'link' : 'node'
+        };
         if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
           queryParams.workpackages = [selectedSearch.workPackage.id];
         }
@@ -97,7 +101,11 @@ export class SearchComponent implements OnInit {
       }
       case ObjectType.data_set_link:
       case ObjectType.data_set: {
-        const queryParams: { [key: string]: any } = { filterLevel: 'data set', selectedItem: selectedSearch.id };
+        const queryParams: { [key: string]: any } = {
+          filterLevel: 'data set',
+          selectedItem: selectedSearch.id,
+          selectedType: selectedSearch.objectType === ObjectType.data_set_link ? 'link' : 'node'
+        };
         if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
           queryParams.workpackages = [selectedSearch.workPackage.id];
         }
@@ -106,7 +114,11 @@ export class SearchComponent implements OnInit {
       }
       case ObjectType.dimension_link:
       case ObjectType.dimension: {
-        const queryParams: { [key: string]: any } = { filterLevel: 'dimension', selectedItem: selectedSearch.id };
+        const queryParams: { [key: string]: any } = {
+          filterLevel: 'dimension',
+          selectedItem: selectedSearch.id,
+          selectedType: selectedSearch.objectType === ObjectType.dimension_link ? 'link' : 'node'
+        };
         if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
           queryParams.workpackages = [selectedSearch.workPackage.id];
         }
@@ -115,7 +127,11 @@ export class SearchComponent implements OnInit {
       }
       case ObjectType.reporting_concept_link:
       case ObjectType.reporting_concept: {
-        const queryParams: { [key: string]: any } = { filterLevel: 'reporting', selectedItem: selectedSearch.id };
+        const queryParams: { [key: string]: any } = {
+          filterLevel: 'reporting',
+          selectedItem: selectedSearch.id,
+          selectedType: selectedSearch.objectType === ObjectType.reporting_concept_link ? 'link' : 'node'
+        };
         if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
           queryParams.workpackages = [selectedSearch.workPackage.id];
         }
@@ -124,5 +140,6 @@ export class SearchComponent implements OnInit {
       }
     }
     this.searchClose();
+    this.searchStore.dispatch(new ClearSearch());
   }
 }

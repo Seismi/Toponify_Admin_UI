@@ -34,6 +34,13 @@ export function reducer(state = initialState, action: SearchActionsUnion): State
       };
     }
 
+    case SearchActionTypes.ClearSearch: {
+      return {
+        ...state,
+        entities: []
+      };
+    }
+
     default: {
       return state;
     }
