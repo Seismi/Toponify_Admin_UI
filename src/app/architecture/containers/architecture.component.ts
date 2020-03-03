@@ -918,7 +918,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           layoutId: this.layout.id,
           data: {
             positionDetails: {
-              workPackages: this.selectedWorkPackageEntities,
+              workPackages: this.selectedWorkPackageEntities.map(
+                function(workpackage: WorkPackageEntity): { id: string, name: string } {
+                  return { id: workpackage.id, name: workpackage.name };
+                }
+              ),
               positions: {
                 nodes: nodeLayoutData,
                 nodeLinks: linkLayoutData

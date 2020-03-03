@@ -9,8 +9,8 @@ export interface UpdateDiagramLayoutApiRequest {
         name: string
       }[],
       positions: {
-        nodes: NodeLayoutSettingsEntity[],
-        links: LinkLayoutSettingsEntity[]
+        nodes: NodeLayoutSettingsEntity['layout'][],
+        nodeLinks: LinkLayoutSettingsEntity['layout'][]
       }
     }
   };
