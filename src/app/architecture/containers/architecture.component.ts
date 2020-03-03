@@ -32,7 +32,8 @@ import {
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations,
-  UpdateNodeOwners
+  UpdateNodeOwners,
+  UpdatePartsLayout
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -872,9 +873,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.group.id, areaSize: data.group.areaSize };
-    // const nodeLocationData = { id: data.group.id, locationCoordinates: data.group.locationCoordinates };
-
     if (this.layout && data.groups.length > 0) {
       this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: data.groups }));
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.groups }));
@@ -882,6 +880,57 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
+    }
+  }
+
+  handleUpdateDiagramLayout() {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray
+      .map(function(node) {
+        return {
+          id: node.id,
+          positionSettings: {
+            locationCoordinates: node.location,
+            middleExpanded: node.middleExpanded,
+            bottomExpanded: node.bottomExpanded,
+            areaSize: node.areaSize
+          }
+        };
+      });
+
+    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray
+      .map(function(link) {
+        return {
+          id: link.id,
+          positionSettings: {
+            route: link.route
+          }
+        };
+      });
+
+    if (this.layout) {
+      this.store.dispatch(new UpdatePartsLayout(
+        {
+          layoutId: this.layout.id,
+          data: {
+            positionDetails: {
+              workPackages: this.selectedWorkPackageEntities.map(
+                function(workpackage: WorkPackageEntity): { id: string, name: string } {
+                  return { id: workpackage.id, name: workpackage.name };
+                }
+              ),
+              positions: {
+                nodes: nodeLayoutData,
+                nodeLinks: linkLayoutData
+              }
+            }
+          }
+        }
+      ));
     }
   }
 
@@ -954,39 +1003,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             });
           }
 
-          let layoutLoc;
-          let layoutExpandState;
-          let layoutGroupAreaSize;
-
           return nodes.map(
             function(node) {
+
+              let nodeLayout;
+
               if (this.layout && 'id' in this.layout) {
-                layoutLoc = node.locations.find(
-                  function(loc) {
-                    return loc.layout && loc.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-
-                layoutExpandState = node.expandedStates.find(
-                  function(exp) {
-                    return exp.layout && exp.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-
-                layoutGroupAreaSize = node.groupAreaSizes.find(
-                  function(areaSize) {
-                    return areaSize.layout && areaSize.layout.id === this.layout.id;
+                nodeLayout = node.positionPerLayout.find(
+                  function(layoutSettings) {
+                    return layoutSettings.layout.id === this.layout.id;
                   }.bind(this)
                 );
               }
 
+              const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
+
               return {
                 ...node,
-                location: layoutLoc ? layoutLoc.locationCoordinates : null,
-                locationMissing: !layoutLoc,
-                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : middleOptions.none,
-                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false,
-                areaSize: layoutGroupAreaSize ? layoutGroupAreaSize.areaSize : null
+                location: (layoutProps && layoutProps.locationCoordinates) ? layoutProps.locationCoordinates : null,
+                locationMissing: !(layoutProps && layoutProps.locationCoordinates),
+                middleExpanded: (layoutProps && layoutProps.middleExpanded) ? layoutProps.middleExpanded : middleOptions.none,
+                bottomExpanded: layoutProps ? !!layoutProps.bottomExpanded : false,
+                areaSize: (layoutProps && layoutProps.areaSize) ? layoutProps.areaSize : null
               };
             }.bind(this)
           );
@@ -1016,22 +1054,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             return links;
           }
 
-          let layoutRoute;
-
           return links.map(
             function(link) {
+
+              let linkLayout;
+
               if (this.layout && 'id' in this.layout) {
-                layoutRoute = link.routes.find(
-                  function(route) {
-                    return route.layout && route.layout.id === this.layout.id;
+                linkLayout = link.positionPerLayout.find(
+                  function(layoutSettings) {
+                    return layoutSettings.layout.id === this.layout.id;
                   }.bind(this)
                 );
               }
 
+              const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
+
               return {
                 ...link,
-                route: layoutRoute ? layoutRoute.points : [],
-                routeMissing: !layoutRoute
+                route: (layoutProps && layoutProps.route) ? layoutProps.route : [],
+                routeMissing: !(layoutProps && layoutProps.route)
               };
             }.bind(this)
           );
@@ -1122,7 +1163,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();
-    }, 250)
+    }, 250);
   }
 
   openLeftTab(tab: number | string): void {
@@ -1134,7 +1175,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();
-    }, 250)
+    }, 250);
   }
 
   onAddRelatedRadio(): void {
@@ -1482,7 +1523,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               systemId: this.nodeId,
               groupId: data.value[0].id
             })
-          )
+          );
         } else {
           this.workpackageStore.dispatch(
             new AddWorkPackageNodeDescendant({
@@ -1507,7 +1548,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
         }
       })
-    )
+    );
     if (type === 'addToGroup') {
       const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
       return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id))));
