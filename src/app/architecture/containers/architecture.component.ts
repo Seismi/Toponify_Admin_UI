@@ -1824,10 +1824,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             })
           );
         } else {
+          const sourceName = this.nodes.find(node => node.id === data.node.sourceId).name;
+          const targetName = this.nodes.find(node => node.id === data.node.targetId).name;
           this.workpackageStore.dispatch(
             new AddWorkPackageLink({
               workpackageId: this.workpackageId,
-              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+              link: { 
+                ...data.node,
+                name: (data.node.name) ? data.node.name : `${sourceName} - ${targetName}`,
+                layer: this.currentFilterLevel.toLowerCase() 
+              }
             })
           );
         }

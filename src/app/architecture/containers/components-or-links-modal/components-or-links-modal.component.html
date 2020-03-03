@@ -19,6 +19,7 @@
       <mat-select formControlName="sourceId">
         <mat-option *ngFor="let node of nodes$ | async" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
+      <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <mat-form-field *ngIf="data.link">
@@ -26,6 +27,7 @@
       <mat-select formControlName="targetId">
         <mat-option *ngFor="let node of nodes$ | async" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
+      <mat-error>This field is required</mat-error>
     </mat-form-field>
   </form>
 </div>

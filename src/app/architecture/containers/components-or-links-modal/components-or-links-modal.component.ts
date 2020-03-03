@@ -35,9 +35,9 @@ export class ComponentsOrLinksModalComponent implements OnInit {
     ) {
       this.formGroup = this.fb.group({
         category: [this.getCategories()[0], Validators.required],
-        name: [null, Validators.required],
-        sourceId: [null],
-        targetId: [null]
+        name: [null, (!this.data.link) ? Validators.required : null],
+        sourceId: [null, (this.data.link) ? Validators.required : null],
+        targetId: [null, (this.data.link) ? Validators.required : null]
       });
     }
 
@@ -62,7 +62,7 @@ export class ComponentsOrLinksModalComponent implements OnInit {
     if (this.formGroup.invalid) {
       return;
     }
-    this.dialogRef.close({node: this.formGroup.value});
+    this.dialogRef.close({ node: this.formGroup.value });
   }
 
   onCancel(): void {
