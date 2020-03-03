@@ -12,6 +12,7 @@ import {
 } from '../store/models/radio.model';
 import { delay } from 'rxjs/operators';
 import { toHttpParams } from '@app/services/utils';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -67,6 +68,18 @@ export class RadioService {
 
   deleteRadioEntity(radioId: string): Observable<RadioEntitiesResponse> {
     return this.http.delete<RadioEntitiesResponse>(`/radios/${radioId}`, httpOptions);
+  }
+
+  getRadioTags(radioId: string): Observable<{ data: Tag[] }> {
+    return this.http.get<{ data: Tag[] }>(`/radios/${radioId}/tags`);
+  }
+
+  addRadioTags(radioId: string, tagIds: { id: string }[]): Observable<RadioDetailApiResponse> {
+    return this.http.post<RadioDetailApiResponse>(`/radios/${radioId}/tags`, { data: tagIds });
+  }
+
+  deleteRadioTags(radioId: string, tagId: string): Observable<RadioDetailApiResponse> {
+    return this.http.delete<RadioDetailApiResponse>(`/radios/${radioId}/tags/${tagId}`);
   }
 
   // TODO: move into sharable service

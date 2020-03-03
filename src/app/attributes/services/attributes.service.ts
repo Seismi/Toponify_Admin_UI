@@ -11,6 +11,7 @@ import {
   CustomPropertiesApiRequest
 } from '../store/models/attributes.model';
 import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -122,6 +123,18 @@ export class AttributeService {
       `/workpackages/${workPackageId}/attributes/${attributeId}/related/${relatedAttributeId}/deleteRequest`,
       {}
     );
+  }
+
+  getAttributeTags(workPackageId: string, attributeId: string): Observable<{ data: Tag[] }> {
+    return this.http.get<{ data: Tag[] }>(`/workpackages/${workPackageId}/attributes/${attributeId}/tags`);
+  }
+
+  addAttributeTags(workPackageId: string, attributeId: string, tagIds: { id: string }[]): Observable<AttributeDetailApiResponse> {
+    return this.http.post<AttributeDetailApiResponse>(`/workpackages/${workPackageId}/attributes/${attributeId}/tags`, { data: tagIds });
+  }
+
+  deleteAttributeTags(workPackageId: string, attributeId: string, tagId: string): Observable<AttributeDetailApiResponse> {
+    return this.http.post<AttributeDetailApiResponse>(`/workpackages/${workPackageId}/attributes/${attributeId}/tags/${tagId}/deleteRequest`, {});
   }
 
   // TODO: move into sharable service

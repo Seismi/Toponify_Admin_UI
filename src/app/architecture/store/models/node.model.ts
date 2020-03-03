@@ -66,9 +66,7 @@ export class Node {
   description = '';
   category: nodeCategories;
   tags = '';
-  locations?: (LocationsEntity)[] | null;
-  expandedStates?: (ExpandedStatesEntity)[] | null;
-  groupAreaSizes?: (GroupAreaSizesEntity)[] | null;
+  positionPerLayout: NodeLayoutSettingsEntity[];
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
@@ -108,6 +106,19 @@ export interface GroupAreaSizesEntity {
   layout: Layout;
   areaSize: string;
 }
+
+export interface NodeLayoutSettingsEntity {
+  layout: {
+    id: string
+    positionSettings: {
+      locationCoordinates?: string;
+      middleExpanded?: middleOptions,
+      bottomExpanded?: boolean,
+      areaSize?: string
+    }
+  };
+}
+
 export interface Layout {
   id: string;
   name: string;
@@ -134,9 +145,6 @@ export interface NodeDetail {
   tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
-  locations?: (LocationsEntityEntity)[] | null;
-  expandedStates?: (ExpandedStatesEntity)[] | null;
-  groupAreaSizes?: (GroupAreaSizesEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;

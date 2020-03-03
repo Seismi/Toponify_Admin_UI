@@ -22,7 +22,7 @@ export interface Page {
 }
 
 export interface WorkPackageEntity {
-  id: string;
+  id?: string;
   name?: string;
   description?: string;
   owners?: (OwnersEntityOrApproversEntity)[] | null;

@@ -46,7 +46,9 @@
           <div class="col">
             <smi-right-hand-side 
               [title]="'Attribute'"
-              (add)="onAdd()">
+              (add)="onAdd()"
+              [disabled]="workPackageIsEditable"
+            >
             </smi-right-hand-side>
             <router-outlet></router-outlet>
           </div>
