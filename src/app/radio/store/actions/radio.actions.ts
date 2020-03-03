@@ -10,6 +10,7 @@ import {
   RadiosAdvancedSearch
 } from '../models/radio.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 export enum RadioActionTypes {
   LoadRadios = '[Radio] Load Radio entities',
@@ -52,7 +53,19 @@ export enum RadioActionTypes {
 
   DeleteRadioEntity = '[Radio] Delete Radio Entity',
   DeleteRadioEntitySuccess = '[Radio] Delete Radio Entity Success',
-  DeleteRadioEntityFailure = '[Radio] Delete Radio Entity Failure'
+  DeleteRadioEntityFailure = '[Radio] Delete Radio Entity Failure',
+
+  LoadRadioTags = '[Radio] Load Radio Tags',
+  LoadRadioTagsSuccess = '[Radio] Load Radio Tags Success',
+  LoadRadioTagsFail = '[Radio] Load Radio Tags Fail',
+
+  AddRadioTags = '[Radio] Add Radio Tags',
+  AddRadioTagsSuccess = '[Radio] Add Radio Tags Success',
+  AddRadioTagsFail = '[Radio] Add Radio Tags Fail',
+
+  DeleteRadioTags = '[Radio] Delete Radio Tags',
+  DeleteRadioTagsSuccess = '[Radio] Delete Radio Tags Success',
+  DeleteRadioTagsFail = '[Radio] Delete Radio Tags Fail'
 }
 
 export class LoadRadios implements Action {
@@ -210,6 +223,51 @@ export class DeleteRadioEntityFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadRadioTags implements Action {
+  readonly type = RadioActionTypes.LoadRadioTags;
+  constructor(public payload: { radioId: string }) {}
+}
+
+export class LoadRadioTagsSuccess implements Action {
+  readonly type = RadioActionTypes.LoadRadioTagsSuccess;
+  constructor(public payload: Tag[]) {}
+}
+
+export class LoadRadioTagsFail implements Action {
+  readonly type = RadioActionTypes.LoadRadioTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddRadioTags implements Action {
+  readonly type = RadioActionTypes.AddRadioTags;
+  constructor(public payload: { radioId: string, tagIds: { id: string }[] }) {}
+}
+
+export class AddRadioTagsSuccess implements Action {
+  readonly type = RadioActionTypes.AddRadioTagsSuccess;
+  constructor(public payload: RadioDetail) {}
+}
+
+export class AddRadioTagsFail implements Action {
+  readonly type = RadioActionTypes.AddRadioTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteRadioTags implements Action {
+  readonly type = RadioActionTypes.DeleteRadioTags;
+  constructor(public payload: { radioId: string, tagId: string }) {}
+}
+
+export class DeleteRadioTagsSuccess implements Action {
+  readonly type = RadioActionTypes.DeleteRadioTagsSuccess;
+  constructor(public payload: RadioDetail) {}
+}
+
+export class DeleteRadioTagsFail implements Action {
+  readonly type = RadioActionTypes.DeleteRadioTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type RadioActionsUnion =
   | LoadRadios
   | LoadRadiosSuccess
@@ -241,4 +299,13 @@ export type RadioActionsUnion =
   | DissociateRadioFailure
   | DeleteRadioEntity
   | DeleteRadioEntitySuccess
-  | DeleteRadioEntityFailure;
+  | DeleteRadioEntityFailure
+  | LoadRadioTags
+  | LoadRadioTagsSuccess
+  | LoadRadioTagsFail
+  | AddRadioTags
+  | AddRadioTagsSuccess
+  | AddRadioTagsFail
+  | DeleteRadioTags
+  | DeleteRadioTagsSuccess
+  | DeleteRadioTagsFail;
