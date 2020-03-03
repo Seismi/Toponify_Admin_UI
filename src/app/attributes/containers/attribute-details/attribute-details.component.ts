@@ -27,7 +27,6 @@ import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/s
 import { MatDialog } from '@angular/material';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DeleteModalComponent } from '@app/architecture/containers/delete-modal/delete-modal.component';
-import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
@@ -122,17 +121,16 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteAttribute(): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: this.attribute.name
+        title: `Are you sure you want to delete "${this.attribute.name}"?`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteAttribute({ workPackageId: this.workpackageId, attributeId: this.attributeId }));
         this.router.navigate(['attributes-and-rules'], { queryParamsHandling: 'preserve' });
       }

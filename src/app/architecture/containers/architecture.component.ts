@@ -157,7 +157,6 @@ import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { getNodeScopes, getPotentialWorkPackageNodes } from '../store/selectors/workpackage.selector';
-import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
@@ -1688,17 +1687,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteScope(scope: WorkPackageNodeScopes): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: scope.name
+        title: `Are you sure you want to delete "${scope.name}" scope?`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.scopeStore.dispatch(new DeleteWorkPackageNodeScope({ scopeId: scope.id, nodeId: this.nodeId }));
       }
     });
