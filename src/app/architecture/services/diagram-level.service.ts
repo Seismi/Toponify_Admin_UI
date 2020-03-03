@@ -1,16 +1,16 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import { layers, Node, nodeCategories } from '@app/architecture/store/models/node.model';
-import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
+import {layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
+import {linkCategories, RoutesEntityEntity} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
-import { Location } from '@angular/common';
-import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
-import { NodeToolTips } from '@app/core/node-tooltips';
-import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
-import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {State as ArchitectureState} from '@app/architecture/store/reducers/architecture.reducer';
+import {Location} from '@angular/common';
+import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
+import {NodeToolTips} from '@app/core/node-tooltips';
+import {UpdateQueryParams} from '@app/core/store/actions/route.actions';
+import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 
 const $ = go.GraphObject.make;
 
@@ -255,6 +255,13 @@ export class DiagramLevelService {
           layer: layers.system,
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[4].Tooltip
+        }),
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: layers.system,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
         })
       ];
     } else if (level === Level.dataSet) {
@@ -279,6 +286,13 @@ export class DiagramLevelService {
           layer: layers.dataSet,
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[9].Tooltip
+        }),
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: layers.dataSet,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
         })
       ];
     } else if (level === Level.dimension) {
@@ -289,6 +303,13 @@ export class DiagramLevelService {
           layer: layers.dimension,
           category: nodeCategories.dimension,
           tooltip: NodeToolTips[12].Tooltip
+        }),
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: layers.dimension,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
         })
       ];
     } else if (level === Level.reportingConcept) {
@@ -313,6 +334,33 @@ export class DiagramLevelService {
           layer: layers.reportingConcept,
           category: nodeCategories.key,
           tooltip: NodeToolTips[16].Tooltip
+        }),
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: layers.system,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
+        })
+      ];
+    } else if (level === Level.systemMap) {
+      paletteViewNodes = [
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: layers.dataSet,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
+        })
+      ];
+    } else if (level === Level.dataSetMap) {
+      paletteViewNodes = [
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: layers.dimension,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
         })
       ];
     }
@@ -337,9 +385,16 @@ export class DiagramLevelService {
       nodeCategoryProperty: level.endsWith('map') ?
         function(data) {
           // Ensure systems are represented by map view groups in map view
-          return data.layer === 'system' ? '' : data.layer;
-        }
-        : 'layer',
+          return data.layer === 'system' ? '' :
+            data.category === 'transformation' ? nodeCategories.transformation :
+              data.layer;
+        } :
+        function(data) {
+          // Ensure that transformation nodes use their own category, separate from the layer
+          return data.category === nodeCategories.transformation
+            ? nodeCategories.transformation
+            : data.layer;
+        },
       linkFromKeyProperty: level.endsWith('map') ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
       linkToKeyProperty: level.endsWith('map') ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,

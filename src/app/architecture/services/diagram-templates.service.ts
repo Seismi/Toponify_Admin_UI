@@ -39,7 +39,7 @@ const nodeWidth = 300;
 @Injectable()
 export class DiagramTemplatesService {
   private currentFilterLevel: Level;
-  public forPalette: boolean = false;
+  public forPalette = false;
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
     public diagramLevelService: DiagramLevelService,
@@ -959,6 +959,59 @@ export class DiagramTemplatesService {
     }
   }
 
+  getTransformationNodeTemplate(forPalette: boolean = false): go.Node {
+    return $(
+      go.Node,
+      'Auto',
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
+      this.getStandardNodeOptions(false),
+      {
+        contextMenu: null
+      },
+      new go.Binding(
+        'movable',
+        '',
+        function() {
+          return this.currentFilterLevel !== Level.usage;
+        }.bind(this)
+      ),
+      forPalette ? {
+        toolTip: $(
+          'ToolTip',
+          $(
+            go.TextBlock,
+            {
+              width: 150
+            },
+            new go.Binding('text', 'tooltip')
+          )
+        )
+      } : {},
+      // Have the diagram position the node if no location set
+      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      $(go.Shape,
+        this.getStandardNodeShapeOptions(),
+        {
+          desiredSize: new go.Size(90, 80)
+        }
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel, {
+        alignment: go.Spot.TopCenter,
+        desiredSize: new go.Size(0, 0),
+        name: 'location panel'
+      }),
+      $(go.Picture,
+        {
+          source: 'assets/node-icons/transformation.svg',
+          alignment: go.Spot.Center,
+          imageStretch: go.GraphObject.Uniform
+        }
+      )
+    );
+  }
+
   getNodeTemplate(forPalette: boolean = false): go.Node {
     return $(
       go.Node,
@@ -1269,7 +1322,7 @@ export class DiagramTemplatesService {
           if (forPalette) {
             return;
           }
-          
+
           if ([layers.system, layers.dataSet].includes(object.data.layer)) {
             this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, object);
           }
