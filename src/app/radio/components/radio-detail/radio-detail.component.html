@@ -93,15 +93,7 @@
     </mat-form-field>
   </div>
 
-  <smi-relates-to-table
-    data-qa="radio-detail-relates-to-table"
-    [data]="relatesTo"
-    *ngIf="!modalMode"
-    (unlinkRelatesTo)="unlinkRelatesTo.emit($event)"
-    (addRelatesTo)="addRelatesTo.emit()"
-  ></smi-relates-to-table>
-
-  <div class="buttons-group" *ngIf="!modalMode">
+  <div class="radio-actions" *ngIf="!modalMode">
     <div *ngIf="!isEditable">
       <button
         data-qa="radio-detail-edit"
@@ -135,4 +127,23 @@
       <button mat-raised-button (click)="onCancel()" data-qa="radio-detail-cancel">Cancel</button>
     </div>
   </div>
+
+  <smi-tag-list 
+    [tags]="tags"
+    [availableTags]="availableTags"
+    [editMode]="true"
+    [workPackageIsEditable]="true"
+    (addTag)="addTag.emit($event)"
+    (removeTag)="removeTag.emit($event)"
+    (updateAvailableTags)="updateAvailableTags.emit()"
+  >
+  </smi-tag-list>
+
+  <smi-relates-to-table
+    data-qa="radio-detail-relates-to-table"
+    [data]="relatesTo"
+    *ngIf="!modalMode"
+    (unlinkRelatesTo)="unlinkRelatesTo.emit($event)"
+    (addRelatesTo)="addRelatesTo.emit()"
+  ></smi-relates-to-table>
 </form>
