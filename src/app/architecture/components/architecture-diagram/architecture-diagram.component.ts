@@ -112,6 +112,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Output()
   updateGroupArea = new EventEmitter();
 
+  @Output()
+  updateDiagramLayout = new EventEmitter();
+
   get level() {
     return this.viewLevel ? this.viewLevel : Level.system;
   }
@@ -233,6 +236,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
+    diagramChangesService.onUpdateDiagramLayout.subscribe(() => {
+      this.updateDiagramLayout.emit();
+    });
     diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeLocation.emit(data);
     });

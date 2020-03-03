@@ -27,6 +27,7 @@ import {
   NodeLinksApiResponse
 } from '../models/node-link.model';
 import { MatSnackBar } from '@angular/material';
+import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
 
 @Injectable()
 export class NodeEffects {
@@ -146,6 +147,18 @@ export class NodeEffects {
           return new NodeActions.UpdateNodeLocationsSuccess(mappedNodes);
         }),
         catchError((error: Error) => of(new NodeActions.UpdateNodeLocationsFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  updatePartsLayout$ = this.actions$.pipe(
+    ofType<NodeActions.UpdatePartsLayout>(NodeActionTypes.UpdatePartsLayout),
+    map(action => action.payload),
+    switchMap((payload: {layoutId: string; data: UpdateDiagramLayoutApiRequest['data']}) => {
+      return this.nodeService.updatePartsLayout(payload.layoutId, payload.data).pipe(
+        switchMap((response: any) => [new NodeActions.UpdatePartsLayoutSuccess(response.data)]),
+        catchError((error: Error) => of(new NodeActions.UpdatePartsLayoutFailure(error)))
       );
     })
   );
