@@ -86,7 +86,15 @@ export class WorkPackageComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.workpackage) {
-        this.store.dispatch(new AddWorkPackageEntity({data: { ...data.workpackage }}));
+        this.store.dispatch(
+          new AddWorkPackageEntity({ 
+            data: {
+              ...data.workpackage,
+              baseline: (data.workpackage.baseline) ? data.workpackage.baseline : [],
+              owners: (data.workpackage.owners) ? data.workpackage.owners : []
+            } 
+          })
+        );
       }
     });
   }

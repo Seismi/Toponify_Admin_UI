@@ -17,7 +17,7 @@ import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpac
   selector: 'smi-workpackage-modal',
   templateUrl: './workpackage.component.html',
   styleUrls: ['./workpackage.component.scss'],
-  providers: [WorkPackageDetailService, WorkPackageValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
+  providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkPackageModalComponent implements OnInit {
   public owners$: Observable<TeamEntity[]>;
@@ -32,9 +32,7 @@ export class WorkPackageModalComponent implements OnInit {
     private workPackageDetailService: WorkPackageDetailService,
     public dialogRef: MatDialogRef<WorkPackageModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.workpackage = data.workpackage;
-  }
+  ) { }
 
   ngOnInit() {
     this.teamStore.dispatch(new LoadTeams({}));
@@ -50,7 +48,7 @@ export class WorkPackageModalComponent implements OnInit {
     if (!this.workPackageDetailService.isValid) {
       return;
     }
-    this.dialogRef.close({workpackage: this.workPackageDetailForm.value});
+    this.dialogRef.close({ workpackage: this.workPackageDetailForm.value });
   }
 
   onCancelClick(): void {
