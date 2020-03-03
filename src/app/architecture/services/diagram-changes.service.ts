@@ -22,6 +22,7 @@ export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
 
   workpackages = [];
@@ -237,6 +238,8 @@ export class DiagramChangesService {
       nodes: nodes,
       links: links
     });
+
+    this.onUpdateDiagramLayout.next({});
   }
 
   // Update diagram when display options have been changed
@@ -668,6 +671,8 @@ export class DiagramChangesService {
         },
         links: linkData
       });
+
+      this.onUpdateDiagramLayout.next({});
     }
   }
 
@@ -859,6 +864,8 @@ export class DiagramChangesService {
       groups: groupData,
       links: linkData
     });
+
+    this.onUpdateDiagramLayout.next({});
 
   }
 }

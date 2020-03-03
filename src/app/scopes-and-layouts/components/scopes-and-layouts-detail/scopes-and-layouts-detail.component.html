@@ -21,9 +21,18 @@
   <div class="form-actions" *ngIf="!modalMode">
     <div *ngIf="!isEditable">
       <button type="button" mat-raised-button color="primary" (click)="onEdit()" data-qa="scopes-and-layouts-edit">Edit</button>
-      <button type="button" mat-raised-button color="primary" data-qa="scopes-and-layouts-open">Open</button>
-      <button type="button" mat-raised-button color="primary" data-qa="scopes-and-layouts-copy">Copy</button>
-      <button type="button" mat-raised-button color="warn" (click)="onDelete()" data-qa="scopes-and-layouts-delete">Delete</button>
+      <button 
+        type="button" 
+        mat-raised-button 
+        color="primary" 
+        data-qa="scopes-and-layouts-open" 
+        *ngIf="!layoutDetails"
+        (click)="open.emit()"
+      >
+        Open
+      </button>
+      <!-- <button type="button" mat-raised-button color="primary" data-qa="scopes-and-layouts-copy">Copy</button> -->
+      <button type="button" mat-raised-button color="warn" (click)="delete.emit()" data-qa="scopes-and-layouts-delete">Delete</button>
     </div>
     <div *ngIf="isEditable">
       <button mat-flat-button color="primary" (click)="onSave()" data-qa="scopes-and-layouts-save">Save</button>

@@ -18,6 +18,7 @@ export class ScopesAndLayoutsDetailComponent {
 
   @Output() delete = new EventEmitter<void>();
   @Output() save = new EventEmitter<void>();
+  @Output() open = new EventEmitter<void>();
 
   onEdit(): void {
     this.isEditable = true;
@@ -30,9 +31,5 @@ export class ScopesAndLayoutsDetailComponent {
 
   onCancel(): void {
     this.isEditable = false;
-  }
-
-  onDelete(): void {
-    this.delete.emit();
   }
 }

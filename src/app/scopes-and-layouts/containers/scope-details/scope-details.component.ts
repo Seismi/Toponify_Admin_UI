@@ -41,6 +41,7 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
         const id = params['scopeId'];
         if (!this.scope || id !== this.scope.id) {
           this.store.dispatch(new LoadScope(id));
+          this.store.dispatch(new UpdateQueryParams({ scope: id }));
         }
       })
     );
@@ -124,5 +125,9 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
 
   onSetFavoriteLayout(id: string) {
     this.store.dispatch(new UpdateScope({ id: this.scope.id, data: { ...this.scope, defaultLayout: id } }));
+  }
+
+  onOpen(): void {
+    this.router.navigate(['topology'], { queryParamsHandling: 'preserve' });
   }
 }

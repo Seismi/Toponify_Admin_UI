@@ -1,9 +1,11 @@
 import { RadioActionsUnion, RadioActionTypes } from '../actions/radio.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RadioEntity, Page, Links, RadioDetail, Reply, RadiosAdvancedSearch } from '../models/radio.model';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 export interface State {
   entities: RadioEntity[];
+  availableTags: Tag[];
   page: Page;
   links: Links;
   loading: boolean;
@@ -15,6 +17,7 @@ export interface State {
 
 export const initialState: State = {
   entities: [],
+  availableTags: null,
   page: null,
   links: null,
   loading: false,
@@ -58,6 +61,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
+    case RadioActionTypes.AddRadioTagsSuccess:
+    case RadioActionTypes.DeleteRadioTagsSuccess:
     case RadioActionTypes.LoadRadioSuccess: {
       return {
         ...state,
@@ -66,6 +71,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
+    case RadioActionTypes.AddRadioTagsFail:
+    case RadioActionTypes.DeleteRadioTagsFail:
     case RadioActionTypes.LoadRadioFailure: {
       return {
         ...state,
@@ -204,6 +211,13 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       return {
         ...state,
         entities: state.entities.filter(entity => entity.id !== action.payload)
+      };
+    }
+
+    case RadioActionTypes.LoadRadioTagsSuccess: {
+      return {
+        ...state,
+        availableTags: action.payload
       };
     }
 

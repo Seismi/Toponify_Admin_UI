@@ -65,21 +65,31 @@
   </smi-approvers-table>
 
 
-  <smi-wp-baseline-dropdown
-    data-qa="work-packages-details-baseline-selection"
-    *ngIf="modalMode"
-    [data]="baseline"
-    [selectedBaseline]="selectedBaselines"
-  >
-  </smi-wp-baseline-dropdown>
+  <mat-form-field *ngIf="modalMode">
+    <mat-select 
+      placeholder="Baseline" 
+      formControlName="baseline"
+      multiple
+      data-qa="work-packages-details-baseline-selection"
+    >
+      <mat-option *ngFor="let baseline of baseline" [value]="baseline">
+        {{ baseline.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
-  <smi-wp-owners-dropdown
-    data-qa="work-packages-details-owners-selection"
-    *ngIf="modalMode"
-    [data]="owners"
-    [selectedOwners]="selectedOwners"
-  >
-  </smi-wp-owners-dropdown>
+  <mat-form-field *ngIf="modalMode">
+    <mat-select 
+      placeholder="Owners" 
+      formControlName="owners" 
+      multiple 
+      data-qa="work-packages-details-owners-selection"
+    >
+      <mat-option *ngFor="let owner of owners" [value]="owner">
+        {{ owner.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
   <!-- Select Status -->
   <mat-form-field [ngClass]="{ disabled: disableStatusInput }" *ngIf="modalMode">

@@ -11,23 +11,20 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as WorkPackageState } from '../../store/reducers/workpackage.reducer';
-import { AddWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-workpackage-modal',
   templateUrl: './workpackage.component.html',
   styleUrls: ['./workpackage.component.scss'],
-  providers: [WorkPackageDetailService, WorkPackageValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
+  providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkPackageModalComponent implements OnInit {
   public owners$: Observable<TeamEntity[]>;
   public baseline$: Observable<WorkPackageEntity[]>;
   public workpackage: WorkPackageEntity;
-  public modalMode = true;
-  public isEditable = true;
-  public selectedOwners = [];
-  public selectedBaseline = [];
+  public modalMode: boolean = true;
+  public isEditable: boolean = true;
 
   constructor(
     private teamStore: Store<TeamState>,
@@ -35,9 +32,7 @@ export class WorkPackageModalComponent implements OnInit {
     private workPackageDetailService: WorkPackageDetailService,
     public dialogRef: MatDialogRef<WorkPackageModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.workpackage = data.workpackage;
-  }
+  ) { }
 
   ngOnInit() {
     this.teamStore.dispatch(new LoadTeams({}));
@@ -53,21 +48,7 @@ export class WorkPackageModalComponent implements OnInit {
     if (!this.workPackageDetailService.isValid) {
       return;
     }
-
-    this.dialogRef.close(
-      this.workPackageStore.dispatch(
-        new AddWorkPackageEntity({
-          data: {
-            id: null,
-            name: this.workPackageDetailForm.value.name,
-            description: this.workPackageDetailForm.value.description,
-            status: this.workPackageDetailForm.value.status,
-            owners: this.selectedOwners,
-            baseline: this.selectedBaseline
-          }
-        })
-      )
-    );
+    this.dialogRef.close({ workpackage: this.workPackageDetailForm.value });
   }
 
   onCancelClick(): void {

@@ -10,17 +10,9 @@ export class WorkPackageDetailService {
     this.workPackageDetailForm = this.fb.group({
       name: [null, Validators.required],
       description: [null],
-      owners: this.fb.array([this.OwnersOrApprovers()]),
-      approvers: this.fb.array([this.OwnersOrApprovers()]),
+      baseline: [null],
+      owners: [null],
       status: ['draft']
-    });
-  }
-
-  OwnersOrApprovers(): FormGroup {
-    return this.fb.group({
-      id: [null],
-      name: [null],
-      type: [null]
     });
   }
 
