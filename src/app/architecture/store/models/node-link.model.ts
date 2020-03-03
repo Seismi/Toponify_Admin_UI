@@ -18,6 +18,7 @@ export interface NodeLink {
   sourceName: string;
   targetId: string;
   targetName: string;
+  positionPerLayout: LinkLayoutSettingsEntity[];
   routes?: (RoutesEntityEntity)[] | null;
   impactedByWorkPackages;
 }
@@ -99,6 +100,16 @@ export interface RoutesEntityEntity {
   layout: LayoutOrRolesEntity;
   points?: (number)[] | null;
 }
+
+export interface LinkLayoutSettingsEntity {
+  layout: {
+    id: string
+    positionSettings: {
+      route?: number[];
+    }
+  };
+}
+
 export interface AttributesEntity {
   id: string;
   category: string;

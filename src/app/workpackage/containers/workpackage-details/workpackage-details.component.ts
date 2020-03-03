@@ -39,7 +39,6 @@ import {
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
-import { DeleteWorkPackageModalComponent } from '../delete-workpackage-modal/delete-workpackage.component';
 import { MatDialog } from '@angular/material';
 import { OwnersModalComponent } from '../owners-modal/owners-modal.component';
 import { RadioListModalComponent } from '../radio-list-modal/radio-list-modal.component';
@@ -149,17 +148,16 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteWorkpackage(): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: this.workpackage.name
+        title: `Are your sure you want to delete "${this.workpackage.name}" workpackage?`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteWorkPackageEntity(this.workpackageId));
         this.router.navigate(['work-packages'], { queryParamsHandling: 'preserve' });
       }
@@ -186,17 +184,16 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteOwner(owner: TeamEntityOrOwnersEntityOrApproversEntity): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: owner.name
+        title: `Are your sure you want to delete "${owner.name}" owner?`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteOwner({ workPackageId: this.workpackageId, ownerId: owner.id }));
       }
     });
@@ -284,17 +281,16 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteObjectiveOrRadio(radio: RadioEntity | Objective, value): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: radio.title
+        title: `Are your sure you want to delete "${radio.title}" RADIO?`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         value.objective
           ? this.store.dispatch(new DeleteObjective({ workPackageId: this.workpackageId, objectiveId: radio.id }))
           : this.store.dispatch(new DeleteRadio({ workPackageId: this.workpackageId, radioId: radio.id }));

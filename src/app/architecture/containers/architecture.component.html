@@ -106,7 +106,7 @@
         (updateNodeLocation)="handleUpdateNodeLocation($event)"
         (updateNodeExpandState)="handleUpdateNodeExpandState($event)"
         (updateGroupArea)="handleUpdateGroupArea($event)"
-      >
+      (updateDiagramLayout)="handleUpdateDiagramLayout()">
       </app-architecture-diagram>
     </div>
     <div *ngIf="selectedView === ArchitectureView.System">
