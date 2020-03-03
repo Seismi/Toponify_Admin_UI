@@ -2,6 +2,13 @@
   <div [ngClass]="{ disabled: nodeIsEditable() }">
     <mat-form-field>
       <div class="input-wrapper">
+        <label>Ref.</label>
+        <input matInput formControlName="reference" [ngClass]="{ editable: !nodeIsEditable() }" />
+      </div>
+    </mat-form-field>
+    
+    <mat-form-field>
+      <div class="input-wrapper">
         <label>Name</label>
         <input matInput formControlName="name" [ngClass]="{ editable: !nodeIsEditable() }" />
       </div>
@@ -16,10 +23,6 @@
           </mat-option>
         </mat-select>
       </div>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input matInput placeholder="Reference" formControlName="reference" [ngClass]="{ editable: !nodeIsEditable() }" />
     </mat-form-field>
 
     <mat-form-field>
