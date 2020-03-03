@@ -37,7 +37,16 @@ import {
   AddRelatedFailure,
   DeleteRelated,
   DeleteRelatedSuccess,
-  DeleteRelatedFailure
+  DeleteRelatedFailure,
+  LoadAttributeTags,
+  LoadAttributeTagsSuccess,
+  LoadAttributeTagsFail,
+  AddAttributeTags,
+  AddAttributeTagsSuccess,
+  AddAttributeTagsFail,
+  DeleteAttributeTags,
+  DeleteAttributeTagsSuccess,
+  DeleteAttributeTagsFail
 } from '../actions/attributes.actions';
 import {
   AttributeEntitiesHttpParams,
@@ -53,6 +62,7 @@ import {
 } from '../models/attributes.model';
 import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
 import { UpdateRadioPropertyFailure } from '@app/radio/store/actions/radio.actions';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 @Injectable()
 export class AttributeEffects {
@@ -211,6 +221,42 @@ export class AttributeEffects {
           switchMap((response: AttributeDetailApiResponse) => [new DeleteRelatedSuccess(response.data)]),
           catchError((error: HttpErrorResponse) => of(new DeleteRelatedFailure(error)))
         );
+    })
+  );
+
+  @Effect()
+  loadAttributeTags$ = this.actions$.pipe(
+    ofType<LoadAttributeTags>(AttributeActionTypes.LoadAttributeTags),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; attributeId: string }) => {
+      return this.attributeService.getAttributeTags(payload.workPackageId, payload.attributeId).pipe(
+        switchMap((response: { data: Tag[] }) => [new LoadAttributeTagsSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new LoadAttributeTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addAttributeTags$ = this.actions$.pipe(
+    ofType<AddAttributeTags>(AttributeActionTypes.AddAttributeTags),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; attributeId: string, tagIds: { id: string }[] }) => {
+      return this.attributeService.addAttributeTags(payload.workPackageId, payload.attributeId, payload.tagIds).pipe(
+        switchMap((response: AttributeDetailApiResponse) => [new AddAttributeTagsSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddAttributeTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteAttributeTags$ = this.actions$.pipe(
+    ofType<DeleteAttributeTags>(AttributeActionTypes.DeleteAttributeTags),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; attributeId: string, tagId: string }) => {
+      return this.attributeService.deleteAttributeTags(payload.workPackageId, payload.attributeId, payload.tagId).pipe(
+        map(response => new DeleteAttributeTagsSuccess(response.data)),
+        catchError((error: HttpErrorResponse) => of(new DeleteAttributeTagsFail(error)))
+      );
     })
   );
 }

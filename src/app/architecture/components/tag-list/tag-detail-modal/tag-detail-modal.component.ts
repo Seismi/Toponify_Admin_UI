@@ -54,20 +54,20 @@ export class TagDetailModalComponent {
         name: ['', Validators.required],
         textColour: [TagColour.black],
         backgroundColour: [TagColour.white],
-        applicableTo: [[TagApplicableTo.everywhere]],
+        applicableTo: ['everywhere'],
         iconName: ['none']
       });
     }
 
     if (this.selectedApplicableTo.includes(TagApplicableTo.everywhere)) {
-      this.tagForm.controls['applicableTo'].setValue(this.applicableTo);
+      this.tagForm.controls['applicableTo'].setValue(['everywhere']);
     }
   }
 
   onConfirm() {
     const tag: Tag = { ...this.data.tag, ...this.tagForm.value };
     if (tag.applicableTo.includes(TagApplicableTo.everywhere)) {
-      tag.applicableTo = [TagApplicableTo.everywhere];
+      tag.applicableTo = Object.values(TagApplicableTo);
     }
     ([TagColour.white, TagColour.yellow].includes(tag.backgroundColour)) 
       ?  tag.textColour = TagColour.black
@@ -81,9 +81,14 @@ export class TagDetailModalComponent {
     this.dialogRef.close();
   }
 
-  selectedComponent(selection: MatSelectChange) {
-    if (selection.value.includes(TagApplicableTo.everywhere)) {
-      this.tagForm.controls['applicableTo'].setValue(this.applicableTo);
+  selectedOption(option: TagApplicableTo) {
+    if (option === TagApplicableTo.everywhere) {
+      this.tagForm.controls['applicableTo'].setValue(['everywhere']);
+    } else {
+      this.tagForm.controls['applicableTo'].setValue(
+        this.selectedApplicableTo.filter(val => val !== TagApplicableTo.everywhere)
+      );
     }
   }
 }
+
