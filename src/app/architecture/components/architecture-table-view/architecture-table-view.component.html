@@ -18,6 +18,12 @@
     </td>
   </ng-container>
 
+  <!-- Reference Column -->
+  <ng-container matColumnDef="reference">
+    <th mat-header-cell *matHeaderCellDef>Ref.</th>
+    <td mat-cell *matCellDef="let element">{{ element.reference }}</td>
+  </ng-container>
+
   <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>
