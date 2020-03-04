@@ -7,7 +7,8 @@ import {
   Node,
   NodeReports,
   Tag,
-  TagApplicableTo
+  TagApplicableTo,
+  GroupInfo
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
@@ -44,6 +45,8 @@ export class RightPanelComponent {
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
   @Input() componentLayer: TagApplicableTo;
+  @Input() groupInfo: GroupInfo;
+  @Input() clickedOnLink: boolean;
 
   @Output() saveNode = new EventEmitter<void>();
   @Output() deleteNode = new EventEmitter<void>();
@@ -64,6 +67,7 @@ export class RightPanelComponent {
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
   @Output() assignRadio = new EventEmitter<void>();
   @Output() addExistingAttribute = new EventEmitter<void>();
+  @Output() editGroup = new EventEmitter<void>();
 
   @Output() updateAvailableTags = new EventEmitter<void>();
 

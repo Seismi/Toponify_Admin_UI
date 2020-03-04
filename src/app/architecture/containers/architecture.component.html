@@ -196,6 +196,9 @@
             [tags]="selectedNode?.tags"
             [componentLayer]="nodeComponentLayer"
             [availableTags]="availableTags$ | async"
+            [groupInfo]="selectedNode?.groupinfo"
+            (editGroup)="onAddDescendant('addToGroup')"
+            [clickedOnLink]="clickedOnLink"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

@@ -59,6 +59,13 @@
       (delete)="onDeleteOwner($event)"
     >
     </smi-owners-table-in-architecture>
+    <smi-group-info-table
+      *ngIf="!clickedOnLink"
+      [groupInfo]="groupInfo" 
+      (editGroup)="editGroup.emit()" 
+      [workPackageIsEditable]="workPackageIsEditable"
+    >
+    </smi-group-info-table>
     <smi-related-attribute-table
       *ngIf="attributesPage"
       [data]="relatedAttributes"

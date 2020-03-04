@@ -23,6 +23,9 @@
         (removeTag)="onRemoveTag($event)"
         (updateTag)="onUpdateTag($event)"
         [tags]="tags"
+        [groupInfo]="groupInfo"
+        (editGroup)="editGroup.emit()"
+        [clickedOnLink]="clickedOnLink"
       >
       </smi-object-details-form>
     </p>

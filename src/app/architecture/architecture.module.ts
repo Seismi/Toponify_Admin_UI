@@ -80,6 +80,7 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
 import { LayoutActionsComponent } from './components/layout-actions/layout-actions.component';
 import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
+import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 
 @NgModule({
   imports: [
@@ -160,7 +161,8 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     RadioConfirmModalComponent,
     ComponentsOrLinksModalComponent,
     LayoutActionsComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    GroupInfoTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,
