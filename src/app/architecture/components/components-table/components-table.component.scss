@@ -1,0 +1,25 @@
+table {
+  width: 100%;
+  border: solid 1px #ddd;
+  margin-bottom: 15px;
+}
+
+tr.mat-row, tr.mat-header-row {
+  height: 15px;
+}
+
+td.mat-column-arrow-up, td.mat-column-arrow-down, td.mat-column-actions {
+  width: 5% !important;
+}
+
+th:first-of-type {
+  text-align: left;
+}
+
+th, td:last-of-type {
+  text-align: right;
+}
+
+.mat-icon {
+  font-size: 18px;
+}

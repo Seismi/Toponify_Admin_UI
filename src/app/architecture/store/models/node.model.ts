@@ -144,11 +144,27 @@ export interface NodeDetail {
   group?: string;
   tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
+  systems?: (Components)[] | null;
+  dataSets?: (Components)[] | null;
+  dimensions: (Components)[] | null;
+  reportingConcepts?: (Components)[] | null;
   descendants?: (DescendantsEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
+}
+export interface Components {
+  id: string;
+  layer: string;
+  name: string;
+  reference: string;
+  description: string;
+  category: string;
+  tags: (Tag)[] | null;
+  group: string;
+  sortOrder: string;
+  direct: boolean;
 }
 export interface OwnersEntityOrTeamEntityOrApproversEntity {
   id: string;

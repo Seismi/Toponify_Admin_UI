@@ -147,7 +147,7 @@
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
       >
       </smi-right-sidebar>
-      <app-model-sidebar [isLast]="true" [minWidth]="450" [maxWidth]="650" *ngIf="showOrHideRightPane">
+      <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
             [owners]="selectedNode?.owners"
@@ -201,6 +201,10 @@
             [tags]="selectedNode?.tags"
             [componentLayer]="nodeComponentLayer"
             [availableTags]="availableTags$ | async"
+            [systems]="selectedNode?.systems"
+            [dataSets]="selectedNode?.dataSets"
+            [dimensions]="selectedNode?.dimensions"
+            [reportingConcepts]="selectedNode?.reportingConcepts"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

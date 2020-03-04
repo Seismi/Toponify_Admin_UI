@@ -81,6 +81,7 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
 import { LayoutActionsComponent } from './components/layout-actions/layout-actions.component';
 import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
+import { ComponentsTableComponent } from './components/components-table/components-table.component';
 
 @NgModule({
   imports: [
@@ -162,7 +163,8 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
     RadioConfirmModalComponent,
     ComponentsOrLinksModalComponent,
     LayoutActionsComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    ComponentsTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

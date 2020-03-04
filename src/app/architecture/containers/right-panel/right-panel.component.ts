@@ -8,14 +8,14 @@ import {
   Node,
   NodeReports,
   Tag,
-  TagApplicableTo
+  TagApplicableTo,
+  Components
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { TeamDetails } from '@app/settings/store/models/team.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -50,6 +50,10 @@ export class RightPanelComponent {
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
   @Input() componentLayer: TagApplicableTo;
+  @Input() systems: Components[];
+  @Input() dataSets: Components[];
+  @Input() dimensions: Components[];
+  @Input() reportingConcepts: Components[];
 
   @Output() saveNode = new EventEmitter<void>();
   @Output() deleteNode = new EventEmitter<void>();
