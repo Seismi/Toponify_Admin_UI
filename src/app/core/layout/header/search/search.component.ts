@@ -128,7 +128,7 @@ export class SearchComponent implements OnInit {
       case ObjectType.reporting_concept_link:
       case ObjectType.reporting_concept: {
         const queryParams: { [key: string]: any } = {
-          filterLevel: 'reporting',
+          filterLevel: 'reporting concept',
           selectedItem: selectedSearch.id,
           selectedType: selectedSearch.objectType === ObjectType.reporting_concept_link ? 'link' : 'node'
         };

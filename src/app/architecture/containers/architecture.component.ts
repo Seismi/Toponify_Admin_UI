@@ -32,7 +32,7 @@ import {
   UpdateNodeExpandedState,
   UpdateNodeLocations,
   UpdateNodeOwners,
-  UpdatePartsLayout,
+  UpdatePartsLayout
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -913,48 +913,46 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray
-      .map(function(node) {
-        return {
-          id: node.id,
-          positionSettings: {
-            locationCoordinates: node.location,
-            middleExpanded: node.middleExpanded,
-            bottomExpanded: node.bottomExpanded,
-            areaSize: node.areaSize
-          }
-        };
-      });
+    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray.map(function(node) {
+      return {
+        id: node.id,
+        positionSettings: {
+          locationCoordinates: node.location,
+          middleExpanded: node.middleExpanded,
+          bottomExpanded: node.bottomExpanded,
+          areaSize: node.areaSize
+        }
+      };
+    });
 
-    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray
-      .map(function(link) {
-        return {
-          id: link.id,
-          positionSettings: {
-            route: link.route
-          }
-        };
-      });
+    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray.map(function(link) {
+      return {
+        id: link.id,
+        positionSettings: {
+          route: link.route
+        }
+      };
+    });
 
     if (this.layout) {
-      this.store.dispatch(new UpdatePartsLayout(
-        {
+      this.store.dispatch(
+        new UpdatePartsLayout({
           layoutId: this.layout.id,
           data: {
             positionDetails: {
-              workPackages: this.selectedWorkPackageEntities.map(
-                function(workpackage: WorkPackageEntity): { id: string, name: string } {
-                  return { id: workpackage.id, name: workpackage.name };
-                }
-              ),
+              workPackages: this.selectedWorkPackageEntities.map(function(
+                workpackage: WorkPackageEntity
+              ): { id: string; name: string } {
+                return { id: workpackage.id, name: workpackage.name };
+              }),
               positions: {
                 nodes: nodeLayoutData,
                 nodeLinks: linkLayoutData
               }
             }
           }
-        }
-      ));
+        })
+      );
     }
   }
 
@@ -1029,7 +1027,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
           return nodes.map(
             function(node) {
-
               let nodeLayout;
 
               if (this.layout && 'id' in this.layout) {
@@ -1044,11 +1041,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
               return {
                 ...node,
-                location: (layoutProps && layoutProps.locationCoordinates) ? layoutProps.locationCoordinates : null,
+                location: layoutProps && layoutProps.locationCoordinates ? layoutProps.locationCoordinates : null,
                 locationMissing: !(layoutProps && layoutProps.locationCoordinates),
-                middleExpanded: (layoutProps && layoutProps.middleExpanded) ? layoutProps.middleExpanded : middleOptions.none,
+                middleExpanded:
+                  layoutProps && layoutProps.middleExpanded ? layoutProps.middleExpanded : middleOptions.none,
                 bottomExpanded: layoutProps ? !!layoutProps.bottomExpanded : false,
-                areaSize: (layoutProps && layoutProps.areaSize) ? layoutProps.areaSize : null
+                areaSize: layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null
               };
             }.bind(this)
           );
@@ -1080,7 +1078,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
           return links.map(
             function(link) {
-
               let linkLayout;
 
               if (this.layout && 'id' in this.layout) {
@@ -1095,7 +1092,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
               return {
                 ...link,
-                route: (layoutProps && layoutProps.route) ? layoutProps.route : [],
+                route: layoutProps && layoutProps.route ? layoutProps.route : [],
                 routeMissing: !(layoutProps && layoutProps.route)
               };
             }.bind(this)
@@ -1121,8 +1118,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   displayOptionsChanged({ event, option }: { event: any; option: string }) {
-    this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
-    this.updateLayoutSettings();
+    if (this.diagramComponent) {
+      this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
+      this.updateLayoutSettings();
+    }
   }
 
   onZoomIn() {
