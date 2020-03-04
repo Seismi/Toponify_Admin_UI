@@ -20,7 +20,7 @@
     <mat-option *ngIf="tagControl.value as tagInputValue" [value]="'@create_' + tagInputValue">
       {{tagInputValue}} (create new)
     </mat-option>
-    <mat-option value="manage">
+    <mat-option value="manage" id="manage-tags">
       Manage Tags
     </mat-option>
   </mat-autocomplete>
