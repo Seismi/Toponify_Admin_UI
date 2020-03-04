@@ -1289,10 +1289,7 @@ export class DiagramTemplatesService {
           toArrow: 'Triangle'
         },
         new go.Binding('fill', 'stroke').ofObject('shape'),
-        new go.Binding('stroke', 'stroke').ofObject('shape'),
-        new go.Binding('visible', 'layer', function(layer) {
-          return layer !== layers.system;
-        })
+        new go.Binding('stroke', 'stroke').ofObject('shape')
       )
     );
   }
@@ -1352,7 +1349,16 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? this.getLinkLabel() : {}
+      !forPalette ? this.getLinkLabel() : {},
+      $(
+        go.Shape, // The 'to' arrowhead
+        {
+          scale: 1.2,
+          toArrow: 'Triangle'
+        },
+        new go.Binding('fill', 'stroke').ofObject('shape'),
+        new go.Binding('stroke', 'stroke').ofObject('shape')
+      )
     );
   }
 

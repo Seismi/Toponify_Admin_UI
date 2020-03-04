@@ -14,6 +14,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
+import {nodeCategories} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -528,6 +529,21 @@ export class DiagramChangesService {
       } else {
         // Link being moved
         oldlink = draggingTool.draggedParts.first().key as go.Link;
+      }
+    }
+
+    // Prevent links between two transformation nodes
+    if (fromnode.data.category === nodeCategories.transformation
+      && tonode.data.category === nodeCategories.transformation) {
+      return false;
+    }
+
+    // Prevent links to transformation node in more than one direction
+    if (fromnode.data.category === nodeCategories.transformation
+      || tonode.data.category === nodeCategories.transformation) {
+      const allLinks = tonode.findLinksTo(fromnode);
+      if (allLinks.count > 0) {
+        return false;
       }
     }
 
