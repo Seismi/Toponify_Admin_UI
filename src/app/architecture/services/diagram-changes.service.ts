@@ -810,7 +810,7 @@ export class DiagramChangesService {
 
   // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
-  groupMemberSizeChanged(member: go.Group): void {
+  groupMemberSizeChanged(member: go.Node): void {
     const nestedGroups = new go.Set();
     const linksToUpdate = new go.Set();
 

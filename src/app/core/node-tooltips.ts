@@ -104,6 +104,6 @@ export const NodeToolTips = [
   {
     Layer: 'Any',
     Object: 'Transformation',
-    Tooltip: 'PLACEHOLDER'
+    Tooltip: 'A transformation - use to indicate of data or master data is manipulated, enriched or summarised in an interface between two or more systems.'
   }
 ];

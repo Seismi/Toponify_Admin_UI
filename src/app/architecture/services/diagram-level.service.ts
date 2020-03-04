@@ -198,8 +198,9 @@ export class DiagramLevelService {
     diagram.commandHandler.copyToClipboard(null);
 
     // Array of nodes to be used in the palette
-    let paletteViewNodes: object[] = [];
+    const paletteViewNodes = [];
 
+    // Array of links to be used in the palette
     const paletteViewLinks = [];
 
     const linkLayer =
@@ -217,10 +218,30 @@ export class DiagramLevelService {
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForMasterDataLinks(level)
       });
+
+      let transformationLayer;
+
+      if (level === Level.systemMap) {
+        transformationLayer = layers.dataSet;
+      } else if (level === Level.dataSetMap) {
+        transformationLayer = layers.dimension;
+      } else {
+        transformationLayer = level;
+      }
+
+      paletteViewNodes.push(
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: transformationLayer,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
+        })
+      );
     }
 
     if (level === Level.system) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New Transactional System',
           name: 'New Transactional System',
@@ -255,17 +276,10 @@ export class DiagramLevelService {
           layer: layers.system,
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[4].Tooltip
-        }),
-        new Node({
-          id: 'New transformation',
-          name: 'New transformation',
-          layer: layers.system,
-          category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip
         })
-      ];
+      );
     } else if (level === Level.dataSet) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New Physical Data Set',
           name: 'New Physical Data Set',
@@ -286,34 +300,20 @@ export class DiagramLevelService {
           layer: layers.dataSet,
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[9].Tooltip
-        }),
-        new Node({
-          id: 'New transformation',
-          name: 'New transformation',
-          layer: layers.dataSet,
-          category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip
         })
-      ];
+      );
     } else if (level === Level.dimension) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New Dimension',
           name: 'New Dimension',
           layer: layers.dimension,
           category: nodeCategories.dimension,
           tooltip: NodeToolTips[12].Tooltip
-        }),
-        new Node({
-          id: 'New transformation',
-          name: 'New transformation',
-          layer: layers.dimension,
-          category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip
         })
-      ];
+      );
     } else if (level === Level.reportingConcept) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New List Reporting Concept',
           name: 'New List Reporting Concept',
@@ -334,35 +334,8 @@ export class DiagramLevelService {
           layer: layers.reportingConcept,
           category: nodeCategories.key,
           tooltip: NodeToolTips[16].Tooltip
-        }),
-        new Node({
-          id: 'New transformation',
-          name: 'New transformation',
-          layer: layers.system,
-          category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip
         })
-      ];
-    } else if (level === Level.systemMap) {
-      paletteViewNodes = [
-        new Node({
-          id: 'New transformation',
-          name: 'New transformation',
-          layer: layers.dataSet,
-          category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip
-        })
-      ];
-    } else if (level === Level.dataSetMap) {
-      paletteViewNodes = [
-        new Node({
-          id: 'New transformation',
-          name: 'New transformation',
-          layer: layers.dimension,
-          category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip
-        })
-      ];
+      );
     }
 
     if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
@@ -385,8 +358,8 @@ export class DiagramLevelService {
       nodeCategoryProperty: level.endsWith('map') ?
         function(data) {
           // Ensure systems are represented by map view groups in map view
-          return data.layer === 'system' ? '' :
-            data.category === 'transformation' ? nodeCategories.transformation :
+          return data.layer === layers.system ? '' :
+            data.category === nodeCategories.transformation ? nodeCategories.transformation :
               data.layer;
         } :
         function(data) {

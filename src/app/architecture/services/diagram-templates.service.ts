@@ -242,16 +242,21 @@ export class DiagramTemplatesService {
   }
 
   // Get button for revealing the next level of dependencies
-  getDependencyExpandButton(): go.Panel {
+  getDependencyExpandButton(forTransformation = false): go.Panel {
     return $(
       'Button',
-      {
+      forTransformation ? {
+        alignment: go.Spot.TopRight,
+        margin: new go.Margin(5, 5, 0, 0)
+      } : {
         column: 4,
         row: 0,
-        name: 'DependencyExpandButton',
         alignment: go.Spot.Right,
+        margin: new go.Margin(0, 0, 0, 5)
+      },
+      {
+        name: 'DependencyExpandButton',
         desiredSize: new go.Size(20, 20),
-        margin: new go.Margin(0, 5, 0, 0),
         click: function(event, button) {
           const node = button.part;
           this.diagramChangesService.showDependencies(node);
@@ -580,7 +585,8 @@ export class DiagramTemplatesService {
         alignment: go.Spot.TopCenter,
         stretch: go.GraphObject.Horizontal,
         minSize: new go.Size(nodeWidth, 30),
-        margin: new go.Margin(5)
+        margin: new go.Margin(5),
+        maxSize: new go.Size(nodeWidth, 30)
       },
       new go.Binding('maxSize', 'middleExpanded', function(middleExpanded) {
         return middleExpanded !== middleOptions.group ?
@@ -993,7 +999,15 @@ export class DiagramTemplatesService {
         this.getStandardNodeShapeOptions(),
         {
           desiredSize: new go.Size(90, 80)
-        }
+        },
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding(
+          'stroke',
+          'impactedByWorkPackages',
+          function(impactedPackages, shape) {
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+          }.bind(this)
+        )
       ),
       // Dummy panel with no size and no contents.
       // Used to ensure node usage view lays out nodes vertically aligned.
@@ -1008,7 +1022,8 @@ export class DiagramTemplatesService {
           alignment: go.Spot.Center,
           imageStretch: go.GraphObject.Uniform
         }
-      )
+      ),
+      this.getDependencyExpandButton(true)
     );
   }
 
