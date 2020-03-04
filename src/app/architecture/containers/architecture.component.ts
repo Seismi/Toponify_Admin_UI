@@ -56,7 +56,7 @@ import {
   getNodeReports,
   getParentDescendantIds,
   getSelectedNode,
-  getSelectedNodeLink, getTopologyLoadingStatus
+  getSelectedNodeLink, getTopologyLoadingStatus, getDraft
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import {
@@ -229,6 +229,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodeReports$: Observable<NodeReports[]>;
   mapView: boolean;
   viewLevel$: Observable<Level>;
+  draft: any;
   // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
@@ -621,6 +622,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
+    // FIXME: how to better get draft from store
+    this.subscriptions.push(
+      this.nodeStore.pipe(select(getDraft)).subscribe(draft => {
+        this.draft = !!this.layout && !!this.layout.id && !!draft[this.layout.id] ? draft[this.layout.id] : null;
+      })
+    );
+
     this.subscriptions.push(
       this.actions
         .pipe(ofType(ScopeActionTypes.AddScopeSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess))
@@ -837,13 +845,29 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.zoomToFit();
   }
 
+  onSaveLayout(): void {
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+    if (this.draft) {
+      this.store.dispatch(new UpdatePartsLayout({
+          ...this.draft,
+          draft: false
+        }));
+    }
+  }
+
+  onSaveAsLayout(): void {
+    alert("SaveAsLayout");
+  }
+
   // FIXME: types
   handleUpdateNodeLocation(data: { nodes: any[]; links: any[] }) {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
-
+    console.info("Data to be updated: ", data);
     if (this.layout && data.nodes && data.nodes.length > 0) {
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.nodes }));
     }
@@ -883,6 +907,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Here
   handleUpdateDiagramLayout() {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
@@ -928,7 +953,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 nodeLinks: linkLayoutData
               }
             }
-          }
+          },
+          draft: true
         }
       ));
     }

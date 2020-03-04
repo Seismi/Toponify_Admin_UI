@@ -85,6 +85,10 @@
             (zoomToFit)="onZoomToFit()"
             (editLayout)="allowEditLayout()"
             (downloadImage)="onDownloadImage()"
+            (saveLayout)="onSaveLayout()"
+            (saveAsLayout)="onSaveAsLayout()"
+            [allowSave]="allowMove"
+            [allowSaveAs]="false"
           >
           </smi-layout-actions>
           <app-architecture-diagram

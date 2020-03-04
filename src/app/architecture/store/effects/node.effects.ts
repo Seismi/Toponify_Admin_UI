@@ -29,6 +29,10 @@ import {
 import { MatSnackBar } from '@angular/material';
 import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
 
+if (!(window as any)._draft) {
+  (window as any)._draft = {};
+}
+
 @Injectable()
 export class NodeEffects {
   constructor(private actions$: Actions, private nodeService: NodeService, private snackBar: MatSnackBar) {}
@@ -111,57 +115,86 @@ export class NodeEffects {
     })
   );
 
-  @Effect()
-  updateLinks$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateLinks>(NodeActionTypes.UpdateLinks),
-    map(action => action.payload),
-    switchMap((payload: LinkUpdatePayload) => {
-      const observables = payload.links.map((item: any) => {
-        return this.nodeService.updateLayoutNodeLinksRoute(payload.layoutId, item);
-      });
+  // Could be moved into draft
+  // @Effect()
+  // updateLinks$ = this.actions$.pipe(
+  //   ofType<NodeActions.UpdateLinks>(NodeActionTypes.UpdateLinks),
+  //   map(action => action.payload),
+  //   switchMap((payload: LinkUpdatePayload) => {
+  //     payload.links.forEach((item: any) => {
+  //       (window as any)._draft[item.id] = this.nodeService.updateLayoutNodeLinksRoute(payload.layoutId, item);
+  //     });
 
-      return forkJoin(observables).pipe(
-        map(data => {
-          const mappedLinks = {};
-          data.forEach(item => (mappedLinks[item.data.id] = item.data));
-          return new NodeActions.UpdateLinksSuccess(mappedLinks);
-        }),
-        catchError(error => of(new NodeActions.UpdateLinksFailure(error)))
-      );
-    })
-  );
+  //     // (window as._draft = "";
 
-  @Effect()
-  updateNodeLocations$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateNodeLocations>(NodeActionTypes.UpdateNodeLocations),
-    map(action => action.payload),
-    switchMap((payload: NodeLocationsUpdatePayload) => {
-      const observables = payload.nodes.map((item: any) => {
-        return this.nodeService.updateLayoutNodesLocation(payload.layoutId, item);
-      });
+  //     return of(new NodeActions.UpdateLinksSuccess({}));
 
-      return forkJoin(observables).pipe(
-        map((data: any) => {
-          const mappedNodes = {};
-          data.forEach(item => (mappedNodes[item.data.id] = item.data));
-          return new NodeActions.UpdateNodeLocationsSuccess(mappedNodes);
-        }),
-        catchError((error: Error) => of(new NodeActions.UpdateNodeLocationsFailure(error)))
-      );
-    })
-  );
+  //     // return forkJoin(observables).pipe(
+  //     //   map(data => {
+  //     //     const mappedLinks = {};
+  //     //     data.forEach(item => (mappedLinks[item.data.id] = item.data));
+  //     //     return new NodeActions.UpdateLinksSuccess(mappedLinks);
+  //     //   }),
+  //     //   catchError(error => of(new NodeActions.UpdateLinksFailure(error)))
+  //     // );
+  //   })
+  // );
 
+  // Could be moved into draft
+  // @Effect()
+  // updateNodeLocations$ = this.actions$.pipe(
+  //   ofType<NodeActions.UpdateNodeLocations>(NodeActionTypes.UpdateNodeLocations),
+  //   map(action => action.payload),
+  //   switchMap((payload: NodeLocationsUpdatePayload) => {
+  //     payload.nodes.map((item: any) => {
+  //       (window as any)._draft[item.id] = this.nodeService.updateLayoutNodesLocation(payload.layoutId, item);
+  //     });
+
+  //     return of(new NodeActions.UpdateNodeLocationsSuccess({}));
+
+  //     // return forkJoin(observables).pipe(
+  //     //   map((data: any) => {
+  //     //     const mappedNodes = {};
+  //     //     data.forEach(item => (mappedNodes[item.data.id] = item.data));
+  //     //     return new NodeActions.UpdateNodeLocationsSuccess(mappedNodes);
+  //     //   }),
+  //     //   catchError((error: Error) => of(new NodeActions.UpdateNodeLocationsFailure(error)))
+  //     // );
+  //   })
+  // );
+
+  // Could be moved into draft
   @Effect()
   updatePartsLayout$ = this.actions$.pipe(
     ofType<NodeActions.UpdatePartsLayout>(NodeActionTypes.UpdatePartsLayout),
     map(action => action.payload),
-    switchMap((payload: {layoutId: string; data: UpdateDiagramLayoutApiRequest['data']}) => {
-      return this.nodeService.updatePartsLayout(payload.layoutId, payload.data).pipe(
-        switchMap((response: any) => [new NodeActions.UpdatePartsLayoutSuccess(response.data)]),
-        catchError((error: Error) => of(new NodeActions.UpdatePartsLayoutFailure(error)))
-      );
+    switchMap((payload: {layoutId: string; data: UpdateDiagramLayoutApiRequest['data']; draft: boolean}) => {
+      const { draft , ...rest} = payload;
+      if (draft) {
+        return of(new NodeActions.SetDraft(rest));
+      } else {
+        return this.nodeService.updatePartsLayout(payload.layoutId, payload.data).pipe(
+          switchMap((response: any) => [new NodeActions.UpdatePartsLayoutSuccess(response.data)]),
+          catchError((error: Error) => of(new NodeActions.UpdatePartsLayoutFailure(error)))
+        );
+      }
     })
   );
+
+  // @Effect()
+  // updatePartsLayout2$ = this.actions$.pipe(
+  //   ofType<NodeActions.UpdatePartsLayout>(NodeActionTypes.UpdatePartsLayout),
+  //   map(action => action.payload),
+  //   switchMap((payload: {layoutId: string; data: UpdateDiagramLayoutApiRequest['data']}) => {
+
+  //     return of(new NodeActions.SetDraft(payload));
+
+  //     // return this.nodeService.updatePartsLayout(payload.layoutId, payload.data).pipe(
+  //     //   switchMap((response: any) => [new NodeActions.UpdatePartsLayoutSuccess(response.data)]),
+  //     //   catchError((error: Error) => of(new NodeActions.UpdatePartsLayoutFailure(error)))
+  //     // );
+  //   })
+  // );
 
   @Effect()
   updateNodeExpandedState$ = this.actions$.pipe(

@@ -1,6 +1,6 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
 import {LinkLayoutSettingsEntity, NodeLink, NodeLinkDetail, RoutesEntityEntity} from '../models/node-link.model';
-import { NodeActionsUnion, NodeActionTypes } from '../actions/node.actions';
+import { NodeActionsUnion, NodeActionTypes, SetDraft } from '../actions/node.actions';
 import {
   Error,
   ExpandedStatesEntity,
@@ -26,6 +26,9 @@ export interface State {
   reports: NodeReports[];
   zoomLevel: number;
   viewLevel: Level;
+  draft: {
+    [key: string]: any
+  };
   entities: Node[];
   descendants: DescendantsEntity[];
   selectedNode: NodeDetail;
@@ -65,7 +68,8 @@ export const initialState: State = {
   },
   tags: [],
   loadingLinks: null,
-  loadingNodes: null
+  loadingNodes: null,
+  draft: {}
 };
 
 export function reducer(
@@ -437,6 +441,16 @@ export function reducer(
       return {
         ...state,
         error: action.payload
+      };
+    }
+
+    case NodeActionTypes.SetDraft: {
+      return {
+        ...state,
+        draft: {
+          ...state.draft,
+          [action.payload.layoutId]: action.payload
+        }
       };
     }
 
