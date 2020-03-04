@@ -1,0 +1,12 @@
+<div class="wrapper">
+  <table>
+    <tr>
+      <th class="title">Grouped in</th>
+      <th><mat-icon (click)="editGroup.emit()" *ngIf="workPackageIsEditable">edit</mat-icon></th>
+    </tr>
+    <tr>
+      <td>{{groupInfo?.reference}}</td>
+      <td>{{groupInfo?.name}}</td>
+    </tr>
+  </table>
+</div>

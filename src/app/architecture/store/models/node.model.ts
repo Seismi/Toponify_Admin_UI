@@ -142,6 +142,7 @@ export interface NodeDetail {
   category: nodeCategories;
   isGroup?: boolean;
   group?: string;
+  groupinfo?: GroupInfo;
   tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
@@ -149,6 +150,18 @@ export interface NodeDetail {
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
+}
+export interface GroupInfo {
+  id: string,
+  layer: string,
+  name: string,
+  reference: string,
+  description: string,
+  category: string,
+  tags: (Tag)[] | null;
+  roup: string,
+  sortOrder: number,
+  direct: boolean
 }
 export interface OwnersEntityOrTeamEntityOrApproversEntity {
   id: string;

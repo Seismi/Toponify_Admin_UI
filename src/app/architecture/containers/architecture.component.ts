@@ -1537,18 +1537,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDataForAddDescendantsDropdown(type: string) {
-    this.store.dispatch(
-      new FindPotentialWorkpackageNodes({
-        workPackageId: this.workpackageId,
-        nodeId: this.nodeId,
-        data: {
-          childrenOf: {
-            id: null
-          }
-        }
-      })
-    );
+  getDataForAddDescendantsDropdown(type: string): Observable<Node[] | DescendantsEntity[]>  {
+    this.store.dispatch(new FindPotentialWorkpackageNodes({workPackageId: this.workpackageId, nodeId: this.nodeId, data: {}}));
     if (type === 'addToGroup') {
       const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
       return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id))));
