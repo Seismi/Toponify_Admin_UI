@@ -4,6 +4,7 @@ import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-radio-detail',
@@ -18,6 +19,8 @@ export class RadioDetailComponent {
   @Input() radioStatus: string;
   @Input() rows = 8;
   @Input() relatesTo: RadioDetail;
+  @Input() tags: Tag[];
+  @Input() availableTags: Tag[];
 
   @Input()
   set data(data: any[]) {
@@ -62,6 +65,10 @@ export class RadioDetailComponent {
 
   @Output()
   deleteRadio = new EventEmitter<void>();
+  
+  @Output() addTag = new EventEmitter<string>();
+  @Output() updateAvailableTags = new EventEmitter<void>();
+  @Output() removeTag = new EventEmitter<Tag>();
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;

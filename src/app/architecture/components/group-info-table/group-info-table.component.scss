@@ -1,0 +1,37 @@
+.wrapper {
+  margin-top: 15px;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  font-size: 16px;
+  &:first-of-type {
+    width: 1%;
+    white-space: nowrap;
+    padding-right: 10px;
+  }
+}
+
+.title {
+  font-weight: lighter;
+  font-size: 15px;
+  font-weight: 400;
+  color: #212529;
+  min-width: 100px;
+}
+
+input {
+  width: 100%;
+  cursor: auto;
+  background-color: #eee;
+}
+
+.mat-icon {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 5px;
+}

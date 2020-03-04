@@ -20,7 +20,13 @@
             (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
             [selectAttribute]="selectAttribute"
             (addRelatedAttribute)="onAddRelatedAttribute()"
-            (deleteRelatedAttribute)="onDeleteRelatedAttribute()">
+            (deleteRelatedAttribute)="onDeleteRelatedAttribute()"
+            [availableTags]="availableTags$ | async"
+            [tags]="attribute?.tags"
+            (updateAvailableTags)="onUpdateAvailableTags()"
+            (addTag)="onAddTag($event)"
+            (removeTag)="onRemoveTag($event)"
+          >
           </smi-object-details-form>
         </p>
       </mat-tab>

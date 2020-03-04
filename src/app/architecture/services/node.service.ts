@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { NodeDetail, NodeDetailApiResponse, NodeReportsApiResponse, Tag } from '../store/models/node.model';
 import { NodeLinkDetail, NodeLinkDetailApiResponse } from '../store/models/node-link.model';
+import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
 
 export interface GetNodesRequestQueryParams {
   layerQuery?: string;
@@ -146,6 +147,10 @@ export class NodeService {
   }
   updateLayoutNodeLinksRoute(layoutId: string, data: { id: string; points: any[] }): Observable<any> {
     return this.http.put<any>(`/layouts/${layoutId}/nodelinks/route`, { data: data }, httpOptions);
+  }
+
+  updatePartsLayout(layoutId: string, data: UpdateDiagramLayoutApiRequest['data']): Observable<any> {
+    return this.http.put<any>(`/layouts/${layoutId}/positionDetails`, { data: data}, httpOptions);
   }
 
   // TODO: move into sharable service
