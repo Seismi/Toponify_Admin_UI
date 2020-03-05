@@ -6,7 +6,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Link } from 'gojs';
 import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 import { Node } from '@app/architecture/store/models/node.model';
-import { Observable } from 'rxjs';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
@@ -20,8 +19,9 @@ const reportingConceptCategories = ['structure', 'list', 'key'];
 })
 export class ComponentsOrLinksModalComponent implements OnInit {
   public formGroup: FormGroup;
-  public nodes$: Observable<Node[]>;
-  
+  public nodes: Node[];
+  public nameValue: string = '';
+
   constructor(
     private fb: FormBuilder,
     private store: Store<NodeState>,
@@ -39,10 +39,18 @@ export class ComponentsOrLinksModalComponent implements OnInit {
         sourceId: [null, (this.data.link) ? Validators.required : null],
         targetId: [null, (this.data.link) ? Validators.required : null]
       });
+
+      this.formGroup.valueChanges.subscribe(change => {
+        const selectionOptions = this.nodes.filter(node => [change.sourceId, change.targetId].includes(node.id)).map(node => node.name).join(' - ');
+        this.nameValue = selectionOptions;
+        if (change.sourceId && change.targetId && this.formGroup.value.name === null) {
+          return change.name = selectionOptions;
+        }
+      })
     }
 
   ngOnInit(): void {
-    this.nodes$ = this.store.pipe(select(getNodeEntities));
+    this.store.pipe(select(getNodeEntities)).subscribe(data => this.nodes = data);
   }
 
   getCategories(): string[] {
