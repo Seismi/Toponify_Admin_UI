@@ -144,12 +144,25 @@ export interface NodeDetail {
   isGroup?: boolean;
   group?: string;
   tags: Tag[];
+  groupinfo?: GroupInfo;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
+}
+export interface GroupInfo {
+  id: string;
+  layer: string;
+  name: string;
+  reference: string;
+  description: string;
+  category: string;
+  tags: (Tag)[] | null;
+  roup: string;
+  sortOrder: number;
+  direct: boolean;
 }
 export interface OwnersEntityOrTeamEntityOrApproversEntity {
   id: string;
