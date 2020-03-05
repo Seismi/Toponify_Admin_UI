@@ -1016,10 +1016,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 );
               }
 
+              // Temporary workaround for issue with API incorrectly assigning group status to system level transformation nodes
+              const correctedIsGroup = node.category === 'transformation' ? false : node.isGroup;
+
               const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
 
               return {
                 ...node,
+                isGroup: correctedIsGroup,
                 location: (layoutProps && layoutProps.locationCoordinates) ? layoutProps.locationCoordinates : null,
                 locationMissing: !(layoutProps && layoutProps.locationCoordinates),
                 middleExpanded: (layoutProps && layoutProps.middleExpanded) ? layoutProps.middleExpanded : middleOptions.none,
