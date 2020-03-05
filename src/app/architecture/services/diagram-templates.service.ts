@@ -247,7 +247,7 @@ export class DiagramTemplatesService {
       'Button',
       forTransformation ? {
         alignment: go.Spot.TopRight,
-        margin: new go.Margin(5, 5, 0, 0)
+        margin: new go.Margin(2, 2, 0, 0)
       } : {
         column: 4,
         row: 0,
@@ -998,7 +998,7 @@ export class DiagramTemplatesService {
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
         {
-          desiredSize: new go.Size(90, 80)
+          desiredSize: new go.Size(73.7, 65.5)
         },
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
