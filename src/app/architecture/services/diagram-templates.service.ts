@@ -998,7 +998,7 @@ export class DiagramTemplatesService {
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
         {
-          desiredSize: new go.Size(73.7, 65.5)
+          desiredSize: new go.Size(60.3, 53.6)
         },
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
@@ -1020,6 +1020,7 @@ export class DiagramTemplatesService {
         {
           source: 'assets/node-icons/transformation.svg',
           alignment: go.Spot.Center,
+          maxSize: new go.Size(82, 82),
           imageStretch: go.GraphObject.Uniform
         }
       ),
