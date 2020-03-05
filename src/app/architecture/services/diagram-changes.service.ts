@@ -14,6 +14,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
+import {nodeCategories} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -531,6 +532,21 @@ export class DiagramChangesService {
       }
     }
 
+    // Prevent links between two transformation nodes
+    if (fromnode.data.category === nodeCategories.transformation
+      && tonode.data.category === nodeCategories.transformation) {
+      return false;
+    }
+
+    // Prevent links to transformation node in more than one direction
+    if (fromnode.data.category === nodeCategories.transformation
+      || tonode.data.category === nodeCategories.transformation) {
+      const allLinks = tonode.findLinksTo(fromnode);
+      if (allLinks.count > 0) {
+        return false;
+      }
+    }
+
     // Only validate master data links
     if (oldlink.category === linkCategories.masterData) {
       // Prevent multiple master data links between the same pair of nodes
@@ -794,7 +810,7 @@ export class DiagramChangesService {
 
   // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
-  groupMemberSizeChanged(member: go.Group): void {
+  groupMemberSizeChanged(member: go.Node): void {
     const nestedGroups = new go.Set();
     const linksToUpdate = new go.Set();
 

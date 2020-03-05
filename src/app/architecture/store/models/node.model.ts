@@ -54,7 +54,8 @@ export enum nodeCategories {
   dimension = 'dimension',
   list = 'list',
   structure = 'structure',
-  key = 'key'
+  key = 'key',
+  transformation = 'transformation'
 }
 
 export class Node {
@@ -65,7 +66,7 @@ export class Node {
   name: string;
   description = '';
   category: nodeCategories;
-  tags = '';
+  tags: Tag[] = [];
   positionPerLayout: NodeLayoutSettingsEntity[];
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
@@ -86,7 +87,7 @@ export class Node {
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
-      this.isGroup = options.layer === layers.system;
+      this.isGroup = options.layer === layers.system && options.category !== nodeCategories.transformation;
       this.tooltip = options.tooltip;
       this.owners = [];
       this.impactedByWorkPackages = [];
@@ -142,8 +143,8 @@ export interface NodeDetail {
   category: nodeCategories;
   isGroup?: boolean;
   group?: string;
+  tags: Tag[];
   groupinfo?: GroupInfo;
-  tags: string;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
@@ -152,16 +153,16 @@ export interface NodeDetail {
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
 }
 export interface GroupInfo {
-  id: string,
-  layer: string,
-  name: string,
-  reference: string,
-  description: string,
-  category: string,
+  id: string;
+  layer: string;
+  name: string;
+  reference: string;
+  description: string;
+  category: string;
   tags: (Tag)[] | null;
-  roup: string,
-  sortOrder: number,
-  direct: boolean
+  roup: string;
+  sortOrder: number;
+  direct: boolean;
 }
 export interface OwnersEntityOrTeamEntityOrApproversEntity {
   id: string;
