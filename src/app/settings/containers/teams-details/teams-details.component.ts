@@ -72,12 +72,7 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       new UpdateTeam({
         id: this.team.id,
-        data: {
-          id: this.team.id,
-          name: this.teamDetailForm.value.name,
-          description: this.teamDetailForm.value.description,
-          type: 'team'
-        }
+        data: { id: this.team.id, ...this.teamDetailForm.value }
       })
     );
     this.isEditable = false;

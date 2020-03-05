@@ -60,7 +60,6 @@ import { CategoryTableComponent } from '@app/attributes/components/category-tabl
 import { TableCollapseComponent } from '@app/attributes/components/category-table/table-collapse/table-collapse.component';
 import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layouts.module';
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
-import { DescendantsTableComponent } from '@app/architecture/components/descendants-table/descendants-table.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
 import { SettingsModule } from '@app/settings/settings.module';
@@ -82,6 +81,7 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
 import { LayoutActionsComponent } from './components/layout-actions/layout-actions.component';
 import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
+import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 
 @NgModule({
   imports: [
@@ -147,7 +147,6 @@ import { ComponentsTableComponent } from './components/components-table/componen
     CategoryTableComponent,
     TableCollapseComponent,
     OwnersTableComponent,
-    DescendantsTableComponent,
     EditNameModalComponent,
     RelatedAttributeTableComponent,
     SwitchViewTabsComponent,
@@ -164,7 +163,8 @@ import { ComponentsTableComponent } from './components/components-table/componen
     ComponentsOrLinksModalComponent,
     LayoutActionsComponent,
     SpinnerComponent,
-    ComponentsTableComponent
+    ComponentsTableComponent,
+    GroupInfoTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,
