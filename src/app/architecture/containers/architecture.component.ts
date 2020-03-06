@@ -362,6 +362,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.onSaveLayout();
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
@@ -380,6 +381,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayouts({}));
     this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
+
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -684,6 +686,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.onSaveLayout();
   }
 
   get layoutSettingsForm(): FormGroup {
@@ -846,7 +849,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveLayout(): void {
-    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+    if (!this.layout || this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
     if (this.draft) {
@@ -867,7 +870,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
     }
-    console.info("Data to be updated: ", data);
+
     if (this.layout && data.nodes && data.nodes.length > 0) {
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.nodes }));
     }
@@ -1176,11 +1179,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectScope(id) {
+    this.onSaveLayout();
     this.scopeStore.dispatch(new LoadScope(id));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
   }
 
   onSelectLayout(id) {
+    this.onSaveLayout();
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 

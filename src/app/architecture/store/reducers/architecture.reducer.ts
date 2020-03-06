@@ -454,6 +454,15 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.UpdatePartsLayoutSuccess: {
+      const newDraft = { ...state.draft};
+      delete newDraft[action.payload];
+      return {
+        ...state,
+        draft: newDraft
+      };
+    }
+
     case NodeActionTypes.UpdateNodeLocations: {
       const { layoutId, nodes } = action.payload;
       return nodes.reduce(

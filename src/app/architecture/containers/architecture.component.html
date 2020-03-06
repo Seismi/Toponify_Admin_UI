@@ -87,7 +87,7 @@
             (downloadImage)="onDownloadImage()"
             (saveLayout)="onSaveLayout()"
             (saveAsLayout)="onSaveAsLayout()"
-            [allowSave]="allowMove"
+            [allowSave]="!!draft"
             [allowSaveAs]="false"
           >
           </smi-layout-actions>
