@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 
@@ -9,6 +9,8 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 })
 export class ComponentsTableComponent {
   @Input() title: string;
+  @Input() workPackageIsEditable: boolean;
+  @Input() currentFilterLevel: string;
   @Input()
   set data(data: NodeDetail[]) {
     if (!data) {
@@ -16,6 +18,9 @@ export class ComponentsTableComponent {
     }
     this.dataSource = new MatTableDataSource<NodeDetail>(data);
   }
+
+  @Output() add = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<any>();
 
   public dataSource: MatTableDataSource<NodeDetail>;
   public displayedColumns: string[] = ['name', 'arrow-up', 'arrow-down', 'actions'];

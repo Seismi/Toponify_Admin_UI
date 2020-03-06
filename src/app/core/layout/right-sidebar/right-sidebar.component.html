@@ -1,7 +1,7 @@
 <div class="sidebar">
   <div *ngIf="objectSelected && !multipleSelected; else elseBlock">
     <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span (click)="openRightTab(1)" matTooltip="Components"><mat-icon>device_hub</mat-icon></span>
+    <span (click)="openRightTab(1)" matTooltip="Components" [ngClass]="{ disabled: clickedOnLink }"><mat-icon>device_hub</mat-icon></span>
     <span (click)="openRightTab(2)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
     <span (click)="openRightTab(3)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
     <span (click)="openRightTab(4)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>

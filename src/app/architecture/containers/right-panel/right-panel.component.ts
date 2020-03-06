@@ -51,6 +51,7 @@ export class RightPanelComponent {
   @Input() reportingConcepts: GroupInfo[];
   @Input() groupInfo: GroupInfo;
   @Input() clickedOnLink: boolean;
+  @Input() currentFilterLevel: string;
 
   @Output() saveNode = new EventEmitter<void>();
   @Output() deleteNode = new EventEmitter<void>();
@@ -72,6 +73,9 @@ export class RightPanelComponent {
   @Output() assignRadio = new EventEmitter<void>();
   @Output() addExistingAttribute = new EventEmitter<void>();
   @Output() editGroup = new EventEmitter<void>();
+  @Output() addSystemToGroup = new EventEmitter<void>();
+  @Output() addDescendants = new EventEmitter<void>();
+  @Output() deleteDescendants = new EventEmitter<any>();
 
   @Output() updateAvailableTags = new EventEmitter<void>();
 

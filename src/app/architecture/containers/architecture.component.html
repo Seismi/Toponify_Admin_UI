@@ -145,6 +145,7 @@
         [objectSelected]="part?.isSelected ? true : false"
         [multipleSelected]="multipleSelected"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
+        [clickedOnLink]="clickedOnLink"
       >
       </smi-right-sidebar>
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
@@ -203,6 +204,10 @@
             [groupInfo]="selectedNode?.groupinfo"
             (editGroup)="onAddDescendant('addToGroup')"
             [clickedOnLink]="clickedOnLink"
+            (addSystemToGroup)="onAddDescendant('addToGroup')"
+            (addDescendants)="onAddDescendant()"
+            (deleteDescendants)="onDeleteDescendant($event)"
+            [currentFilterLevel]="currentFilterLevel"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

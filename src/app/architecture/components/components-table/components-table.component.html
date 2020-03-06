@@ -7,7 +7,7 @@
   <ng-container matColumnDef="arrow-up">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
-      <button mat-icon-button>
+      <button mat-icon-button *ngIf="workPackageIsEditable">
         <mat-icon>keyboard_arrow_up</mat-icon>
       </button>
     </td>
@@ -16,7 +16,7 @@
   <ng-container matColumnDef="arrow-down">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
-      <button mat-icon-button>
+      <button mat-icon-button *ngIf="workPackageIsEditable">
         <mat-icon>keyboard_arrow_down</mat-icon>
       </button>
     </td>
@@ -24,12 +24,20 @@
 
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>
-      <button mat-icon-button>
+      <button 
+        mat-icon-button 
+        (click)="add.emit()" 
+        *ngIf="workPackageIsEditable"
+        [disabled]="currentFilterLevel">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
     </th>
     <td mat-cell *matCellDef="let element">
-      <button mat-icon-button color="warn">
+      <button 
+        mat-icon-button 
+        color="warn" 
+        *ngIf="workPackageIsEditable"
+        (click)="delete.emit(element)">
         <mat-icon>link_off</mat-icon>
       </button>
     </td>
