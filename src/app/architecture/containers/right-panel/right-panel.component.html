@@ -68,6 +68,7 @@
         [title]="'Reporting Concepts'"
         [data]="reportingConcepts"
         [workPackageIsEditable]="workPackageIsEditable"
+        (add)="addDescendants.emit()"
         (delete)="deleteDescendants.emit($event)"
         [currentFilterLevel]="!['dimension'].includes(currentFilterLevel)"
       >
