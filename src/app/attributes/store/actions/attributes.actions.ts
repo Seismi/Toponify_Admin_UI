@@ -10,6 +10,7 @@ import {
   CustomPropertiesApiRequest
 } from '../models/attributes.model';
 import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Tag } from '@app/architecture/store/models/node.model';
 
 export enum AttributeActionTypes {
   LoadAttributes = '[Attribute] Load Attributes entities',
@@ -54,7 +55,19 @@ export enum AttributeActionTypes {
 
   DeleteRelated = '[Attribute] Delete Related',
   DeleteRelatedSuccess = '[Attribute] Delete Related Success',
-  DeleteRelatedFailure = '[Attribute] Delete Related Failure'
+  DeleteRelatedFailure = '[Attribute] Delete Related Failure',
+
+  LoadAttributeTags = '[Attribute] Load Attribute Tags',
+  LoadAttributeTagsSuccess = '[Attribute] Load Attribute Tags Success',
+  LoadAttributeTagsFail = '[Attribute] Load Attribute Tags Fail',
+
+  AddAttributeTags = '[Attribute] Add Attribute Tags',
+  AddAttributeTagsSuccess = '[Attribute] Add Attribute Tags Success',
+  AddAttributeTagsFail = '[Attribute] Add Attribute Tags Fail',
+
+  DeleteAttributeTags = '[Attribute] Delete Attribute Tags',
+  DeleteAttributeTagsSuccess = '[Attribute] Delete Attribute Tags Success',
+  DeleteAttributeTagsFail = '[Attribute] Delete Attribute Tags Fail'
 }
 
 export class LoadAttributes implements Action {
@@ -236,6 +249,51 @@ export class DeleteRelatedFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadAttributeTags implements Action {
+  readonly type = AttributeActionTypes.LoadAttributeTags;
+  constructor(public payload: { workPackageId: string, attributeId: string }) {}
+}
+
+export class LoadAttributeTagsSuccess implements Action {
+  readonly type = AttributeActionTypes.LoadAttributeTagsSuccess;
+  constructor(public payload: Tag[]) {}
+}
+
+export class LoadAttributeTagsFail implements Action {
+  readonly type = AttributeActionTypes.LoadAttributeTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddAttributeTags implements Action {
+  readonly type = AttributeActionTypes.AddAttributeTags;
+  constructor(public payload: { workPackageId: string; attributeId: string, tagIds: { id: string }[] }) {}
+}
+
+export class AddAttributeTagsSuccess implements Action {
+  readonly type = AttributeActionTypes.AddAttributeTagsSuccess;
+  constructor(public payload: AttributeDetail) {}
+}
+
+export class AddAttributeTagsFail implements Action {
+  readonly type = AttributeActionTypes.AddAttributeTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteAttributeTags implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeTags;
+  constructor(public payload: { workPackageId: string; attributeId: string, tagId: string }) {}
+}
+
+export class DeleteAttributeTagsSuccess implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeTagsSuccess;
+  constructor(public payload: AttributeDetail) {}
+}
+
+export class DeleteAttributeTagsFail implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeTagsFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type AttributeActionsUnion =
   | LoadAttributes
   | LoadAttributesSuccess
@@ -269,4 +327,13 @@ export type AttributeActionsUnion =
   | AddRelatedFailure
   | DeleteRelated
   | DeleteRelatedSuccess
-  | DeleteRelatedFailure;
+  | DeleteRelatedFailure
+  | LoadAttributeTags
+  | LoadAttributeTagsSuccess
+  | LoadAttributeTagsFail
+  | AddAttributeTags
+  | AddAttributeTagsSuccess
+  | AddAttributeTagsFail
+  | DeleteAttributeTags
+  | DeleteAttributeTagsSuccess
+  | DeleteAttributeTagsFail;

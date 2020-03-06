@@ -6,6 +6,15 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
+    <!-- Slide toggle -->
+    <mat-slide-toggle
+      color="primary" 
+      formControlName="designAuthority"
+      matTooltip="Groups flagged as design authorities are asked to approve all work packages regardless of the systems they impact."
+    >
+      Design Authority
+    </mat-slide-toggle>
+
     <!-- Description -->
     <mat-form-field>
       <textarea
@@ -21,12 +30,12 @@
 
   <div *ngIf="!modalMode">
     <div *ngIf="!isEditable; else elseBlock">
-      <button mat-raised-button color="primary" (click)="onEdit()" data-qa="setting-team-detail-edit">Edit</button>
-      <button mat-raised-button color="warn" (click)="onDelete()" data-qa="setting-team-detail-delete">Delete</button>
+      <button mat-raised-button color="primary" (click)="editTeam.emit()" data-qa="setting-team-detail-edit">Edit</button>
+      <button mat-raised-button color="warn" (click)="deleteTeam.emit()" data-qa="setting-team-detail-delete">Delete</button>
     </div>
     <ng-template #elseBlock>
-      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="group.invalid" data-qa="setting-team-detail-save">Save</button>
-      <button mat-raised-button (click)="onCancel()" data-qa="setting-team-detail-cancel">Cancle</button>
+      <button mat-raised-button color="primary" (click)="saveTeam.emit()" [disabled]="group.invalid" data-qa="setting-team-detail-save">Save</button>
+      <button mat-raised-button (click)="cancelEdit.emit()" data-qa="setting-team-detail-cancel">Cancel</button>
     </ng-template>
   </div>
 </form>

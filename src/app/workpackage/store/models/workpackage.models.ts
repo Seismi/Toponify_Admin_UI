@@ -22,7 +22,7 @@ export interface Page {
 }
 
 export interface WorkPackageEntity {
-  id: string;
+  id?: string;
   name?: string;
   description?: string;
   owners?: (OwnersEntityOrApproversEntity)[] | null;
@@ -237,7 +237,7 @@ export interface WorkPackageNodeScopes {
 }
 
 export interface WorkPackageNodeFindPotential {
-  childrenOf: ChildrenOf;
+  childrenOf?: ChildrenOf;
 }
 
 interface ChildrenOf {

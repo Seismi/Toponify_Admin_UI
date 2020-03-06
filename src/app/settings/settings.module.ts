@@ -18,7 +18,9 @@ import {
   MatDialogModule,
   MatIconModule,
   MatListModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatSlideToggleModule,
+  MatTooltipModule
 } from '@angular/material';
 import { UsersTableComponent } from './components/users-table/users-table.component';
 import { MyUserFormComponent } from './components/my-user-form/my-user-form.component';
@@ -73,6 +75,8 @@ import { AllUsersDetailsComponent } from './containers/all-users-details/all-use
     MatIconModule,
     MatListModule,
     MatSidenavModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
     StoreModule.forFeature('userFeature', UserReducer),
     StoreModule.forFeature('teamFeature', TeamReducer),
     EffectsModule.forFeature([UserEffects, TeamEffects])

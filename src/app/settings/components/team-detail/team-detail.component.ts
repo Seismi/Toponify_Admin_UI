@@ -15,20 +15,4 @@ export class TeamDetailComponent {
   @Output() deleteTeam = new EventEmitter<void>();
   @Output() saveTeam = new EventEmitter<void>();
   @Output() cancelEdit = new EventEmitter<void>();
-
-  onEdit(): void {
-    this.editTeam.emit();
-  }
-
-  onDelete(): void {
-    this.deleteTeam.emit();
-  }
-
-  onSave(): void {
-    this.saveTeam.emit();
-  }
-
-  onCancel(): void {
-    this.cancelEdit.emit();
-  }
 }

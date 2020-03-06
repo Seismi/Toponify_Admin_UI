@@ -10,6 +10,7 @@ export class ObjectDetailsService {
     this.objectDetailsForm = this.fb.group({
       name: [null, Validators.required],
       category: [null],
+      reference: [null],
       owner: [null],
       description: [null],
       tags: [null],
@@ -29,6 +30,7 @@ export class ObjectDetailsService {
     this.objectDetailsForm = this.fb.group({
       name: [object && object.name ? object.name : null, Validators.required],
       category: [object && object.category ? object.category : null],
+      reference: [object && object.reference ? object.reference : null, Validators.required],
       owner: [null],
       description: [object && object.description ? object.description : null],
       tags: [object && object.tags ? object.tags : null],

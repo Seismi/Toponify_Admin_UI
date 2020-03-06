@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 
-const SystemColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner'];
-const LinkColumns = ['category', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target'];
+const SystemColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner'];
+const LinkColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target'];
 
 @Component({
   selector: 'smi-architecture-table-view',

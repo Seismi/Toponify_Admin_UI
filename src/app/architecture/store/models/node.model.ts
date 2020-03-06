@@ -54,7 +54,8 @@ export enum nodeCategories {
   dimension = 'dimension',
   list = 'list',
   structure = 'structure',
-  key = 'key'
+  key = 'key',
+  transformation = 'transformation'
 }
 
 export class Node {
@@ -65,10 +66,8 @@ export class Node {
   name: string;
   description = '';
   category: nodeCategories;
-  tags = '';
-  locations?: (LocationsEntity)[] | null;
-  expandedStates?: (ExpandedStatesEntity)[] | null;
-  groupAreaSizes?: (GroupAreaSizesEntity)[] | null;
+  tags: Tag[] = [];
+  positionPerLayout: NodeLayoutSettingsEntity[];
   owners?: (OwnersEntity)[] | null;
   descendants: DescendantsEntity[] = [];
   relatedRadioCount: number;
@@ -88,7 +87,7 @@ export class Node {
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
-      this.isGroup = options.layer === layers.system;
+      this.isGroup = options.layer === layers.system && options.category !== nodeCategories.transformation;
       this.tooltip = options.tooltip;
       this.owners = [];
       this.impactedByWorkPackages = [];
@@ -108,6 +107,19 @@ export interface GroupAreaSizesEntity {
   layout: Layout;
   areaSize: string;
 }
+
+export interface NodeLayoutSettingsEntity {
+  layout: {
+    id: string
+    positionSettings: {
+      locationCoordinates?: string;
+      middleExpanded?: middleOptions,
+      bottomExpanded?: boolean,
+      areaSize?: string
+    }
+  };
+}
+
 export interface Layout {
   id: string;
   name: string;
@@ -131,16 +143,26 @@ export interface NodeDetail {
   category: nodeCategories;
   isGroup?: boolean;
   group?: string;
-  tags: string;
+  tags: Tag[];
+  groupinfo?: GroupInfo;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   descendants?: (DescendantsEntity)[] | null;
-  locations?: (LocationsEntityEntity)[] | null;
-  expandedStates?: (ExpandedStatesEntity)[] | null;
-  groupAreaSizes?: (GroupAreaSizesEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
+}
+export interface GroupInfo {
+  id: string;
+  layer: string;
+  name: string;
+  reference: string;
+  description: string;
+  category: string;
+  tags: (Tag)[] | null;
+  roup: string;
+  sortOrder: number;
+  direct: boolean;
 }
 export interface OwnersEntityOrTeamEntityOrApproversEntity {
   id: string;

@@ -3,7 +3,7 @@ import { MatDialog, MatSlideToggleChange } from '@angular/material';
 import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
-import { LoadWorkPackages, WorkPackageActionTypes, UpdateWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
+import { LoadWorkPackages, WorkPackageActionTypes, UpdateWorkPackageEntity, AddWorkPackageEntity } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -63,6 +63,11 @@ export class WorkPackageComponent implements OnInit {
         });
       }
     })
+
+    this.actions.pipe(ofType(WorkPackageActionTypes.AddWorkPackageSuccess)).subscribe((action: any) => {
+      this.selectedRowIndex = action.payload.id;
+      this.onSelectWorkpackage(action.payload);
+    })
   }
 
   onSelectWorkpackage(row: WorkPackageDetail): void {
@@ -74,9 +79,23 @@ export class WorkPackageComponent implements OnInit {
   }
 
   onAddWorkPackage(): void {
-    this.dialog.open(WorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(WorkPackageModalComponent, {
       disableClose: false,
       width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.workpackage) {
+        this.store.dispatch(
+          new AddWorkPackageEntity({ 
+            data: {
+              ...data.workpackage,
+              baseline: (data.workpackage.baseline) ? data.workpackage.baseline : [],
+              owners: (data.workpackage.owners) ? data.workpackage.owners : []
+            } 
+          })
+        );
+      }
     });
   }
 
