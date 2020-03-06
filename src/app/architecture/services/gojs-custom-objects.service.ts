@@ -477,9 +477,21 @@ export class GojsCustomObjectsService {
                 button.visible = false;
               }
             });
+            // Hide "Move to Group" button from array of subMenuNames
+            let i = subMenuNames.length;
+            while (i--) {
+              if (subMenuNames[i] === 'Move to Group') {
+                subMenuNames.splice(i, 1);
+              }
+            }
             // Show any submenu buttons assigned to this menu button
             subMenuNames.forEach(function(buttonName: string): void {
               object.part.findObject(buttonName).visible = true;
+              const group = object.part.data.group;
+              if (group) {
+                object.part.findObject('Move to Group').visible = true;
+                object.part.findObject('Add to Group').visible = false;
+              }
             });
           },
           column: 0,
@@ -553,7 +565,8 @@ export class GojsCustomObjectsService {
           'Show as List (groups)',
           'Display (groups)',
           'Add Sub-item',
-          'Add to Group'
+          'Add to Group',
+          'Move to Group'
         ]),
         // --Grouped components submenu buttons--
         makeSubMenuButton(
@@ -632,6 +645,11 @@ export class GojsCustomObjectsService {
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             return object.group === '' && thisService.diagramEditable;
+          }
+        ),
+        makeSubMenuButton(7, 'Move to Group', function() { return 'Move to Group' }.bind(this),
+          function(object: NodeDetail, event: go.DiagramEvent) {
+            return thisService.diagramEditable;
           }
         ),
         // --End of group submenu buttons--
