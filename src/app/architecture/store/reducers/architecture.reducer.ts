@@ -454,6 +454,14 @@ export function reducer(
       };
     }
 
+
+    case NodeActionTypes.RemoveAllDraft: {
+      return {
+        ...state,
+        draft: {}
+      };
+    }
+
     case NodeActionTypes.UpdatePartsLayoutSuccess: {
       const newDraft = { ...state.draft};
       delete newDraft[action.payload];

@@ -33,7 +33,8 @@ import {
   UpdateNodeExpandedState,
   UpdateNodeLocations,
   UpdateNodeOwners,
-  UpdatePartsLayout
+  UpdatePartsLayout,
+  RemoveAllDraft
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -362,7 +363,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
-      this.onSaveLayout();
+      this.removeAllDraft();
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
@@ -624,10 +625,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
-    // FIXME: how to better get draft from store
     this.subscriptions.push(
       this.nodeStore.pipe(select(getDraft)).subscribe(draft => {
         this.draft = !!this.layout && !!this.layout.id && !!draft[this.layout.id] ? draft[this.layout.id] : null;
+        this.ref.detectChanges();
       })
     );
 
@@ -686,7 +687,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
-    this.onSaveLayout();
+    this.removeAllDraft();
   }
 
   get layoutSettingsForm(): FormGroup {
@@ -846,6 +847,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onZoomToFit(): void {
     this.diagramComponent.zoomToFit();
+  }
+
+  removeAllDraft(): void {
+    this.store.dispatch(new RemoveAllDraft());
   }
 
   onSaveLayout(): void {
@@ -1179,13 +1184,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectScope(id) {
-    this.onSaveLayout();
+    this.removeAllDraft();
     this.scopeStore.dispatch(new LoadScope(id));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
   }
 
   onSelectLayout(id) {
-    this.onSaveLayout();
+    this.removeAllDraft();
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
