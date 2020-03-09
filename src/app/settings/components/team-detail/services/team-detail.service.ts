@@ -9,8 +9,9 @@ export class TeamDetailService {
   constructor(private fb: FormBuilder, private teamValidatorService: TeamValidatorService) {
     this.teamDetailForm = this.fb.group({
       name: [null, Validators.required],
+      designAuthority: [null],
       description: [null],
-      type: [null]
+      type: ['team']
     });
   }
 

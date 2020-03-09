@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
-import { layers } from '@app/architecture/store/models/node.model';
+import {layers, nodeCategories} from '@app/architecture/store/models/node.model';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { DiagramTemplatesService } from '../..//services/diagram-templates.service';
 import { DiagramLevelService } from '../../services/diagram-level.service';
@@ -25,7 +25,10 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.animationManager.isEnabled = false;
     this.palette.model = new go.GraphLinksModel();
     this.palette.model.nodeKeyProperty = 'id';
-    this.palette.model.nodeCategoryProperty = 'layer';
+    this.palette.model.nodeCategoryProperty = function(data): string {
+      return data.category === nodeCategories.transformation ?
+        nodeCategories.transformation : data.layer;
+    };
     this.palette.autoScrollRegion = new go.Margin(0);
     this.palette.toolManager.toolTipDuration = 20000;
     this.diagramTemplatesService.forPalette = true;
@@ -50,6 +53,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     // Set node templates
 
     this.palette.nodeTemplate = diagramTemplatesService.getNodeTemplate(true);
+    this.palette.nodeTemplateMap.add('transformation', diagramTemplatesService.getTransformationNodeTemplate(true));
 
     // Set group template
     this.palette.groupTemplate = diagramTemplatesService.getSystemGroupTemplate(true);

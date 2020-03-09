@@ -7,17 +7,12 @@
     <p class="detailsTab">
       <smi-object-details-form
         [owners]="owners"
-        [descendants]="descendants"
         [group]="group"
-        [clickedOnLink]="clickedOnLink"
         (save)="onSaveNode()"
         (delete)="onDeleteNode()"
         [workPackageIsEditable]="workPackageIsEditable"
         (addOwner)="onAddOwner()"
         (deleteOwner)="onDeleteOwner($event)"
-        (addDescendant)="onAddDescendant()"
-        (deleteDescendant)="onDeleteDescendant($event)"
-        [viewLevel]="viewLevel"
         [part]="part"
         [nodeCategory]="nodeCategory"
         [availableTags]="availableTags"
@@ -28,6 +23,9 @@
         (removeTag)="onRemoveTag($event)"
         (updateTag)="onUpdateTag($event)"
         [tags]="tags"
+        [groupInfo]="groupInfo"
+        (editGroup)="editGroup.emit()"
+        [clickedOnLink]="clickedOnLink"
         (seeUsage)="onSeeUsage()"
         (seeDependencies)="onSeeDependencies()"
       >

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { DescendantsEntity, Tag, TagApplicableTo } from '@app/architecture/store/models/node.model';
+import { Tag, TagApplicableTo, GroupInfo } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
@@ -21,24 +21,22 @@ export class ObjectDetailsFormComponent {
   private values;
   @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
-  @Input() descendants: DescendantsEntity[];
   @Input('group') set setGroup(group) {
     this.group = group;
     this.values = group.value;
   }
 
-  @Input() clickedOnLink = false;
   @Input() workPackageIsEditable = false;
   @Input() attributesPage = false;
   @Input() relatedAttributes: AttributeEntity[];
   @Input() selectedRelatedIndex: string | null;
   @Input() selectAttribute: boolean;
-  @Input() viewLevel: Level;
   @Input() part: go.Part;
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
   @Input() componentLayer: TagApplicableTo;
-  Level = Level;
+  @Input() groupInfo: GroupInfo;
+  @Input() clickedOnLink: boolean;
 
   constructor() {}
 
@@ -46,8 +44,7 @@ export class ObjectDetailsFormComponent {
   @Output() delete = new EventEmitter<void>();
   @Output() addOwner = new EventEmitter<void>();
   @Output() deleteOwner = new EventEmitter<string>();
-  @Output() addDescendant = new EventEmitter<void>();
-  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
+  @Output() editGroup = new EventEmitter<void>();
 
   @Output() selectRelatedAttribute = new EventEmitter<string>();
   @Output() addRelatedAttribute = new EventEmitter<void>();
@@ -80,14 +77,6 @@ export class ObjectDetailsFormComponent {
 
   onDeleteOwner(id: string): void {
     this.deleteOwner.emit(id);
-  }
-
-  onAddDescendant(): void {
-    this.addDescendant.emit();
-  }
-
-  onDeleteDescendant(descendant: DescendantsEntity): void {
-    this.deleteDescendant.emit(descendant);
   }
 
   onSelectRelatedAttribute(relatedAttributeId: string): void {

@@ -1,16 +1,16 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import { layers, Node, nodeCategories } from '@app/architecture/store/models/node.model';
-import { linkCategories, RoutesEntityEntity } from '@app/architecture/store/models/node-link.model';
+import {layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
+import {linkCategories, RoutesEntityEntity} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
-import { Location } from '@angular/common';
-import { SetViewLevel } from '@app/architecture/store/actions/view.actions';
-import { NodeToolTips } from '@app/core/node-tooltips';
-import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
-import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {Store} from '@ngrx/store';
+import {State as ArchitectureState} from '@app/architecture/store/reducers/architecture.reducer';
+import {Location} from '@angular/common';
+import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
+import {NodeToolTips} from '@app/core/node-tooltips';
+import {UpdateQueryParams} from '@app/core/store/actions/route.actions';
+import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 
 const $ = go.GraphObject.make;
 
@@ -198,8 +198,9 @@ export class DiagramLevelService {
     diagram.commandHandler.copyToClipboard(null);
 
     // Array of nodes to be used in the palette
-    let paletteViewNodes: object[] = [];
+    const paletteViewNodes = [];
 
+    // Array of links to be used in the palette
     const paletteViewLinks = [];
 
     const linkLayer =
@@ -217,10 +218,30 @@ export class DiagramLevelService {
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForMasterDataLinks(level)
       });
+
+      let transformationLayer;
+
+      if (level === Level.systemMap) {
+        transformationLayer = layers.dataSet;
+      } else if (level === Level.dataSetMap) {
+        transformationLayer = layers.dimension;
+      } else {
+        transformationLayer = level;
+      }
+
+      paletteViewNodes.push(
+        new Node({
+          id: 'New transformation',
+          name: 'New transformation',
+          layer: transformationLayer,
+          category: nodeCategories.transformation,
+          tooltip: NodeToolTips[18].Tooltip
+        })
+      );
     }
 
     if (level === Level.system) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New Transactional System',
           name: 'New Transactional System',
@@ -256,9 +277,9 @@ export class DiagramLevelService {
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[4].Tooltip
         })
-      ];
+      );
     } else if (level === Level.dataSet) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New Physical Data Set',
           name: 'New Physical Data Set',
@@ -280,9 +301,9 @@ export class DiagramLevelService {
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[9].Tooltip
         })
-      ];
+      );
     } else if (level === Level.dimension) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New Dimension',
           name: 'New Dimension',
@@ -290,9 +311,9 @@ export class DiagramLevelService {
           category: nodeCategories.dimension,
           tooltip: NodeToolTips[12].Tooltip
         })
-      ];
+      );
     } else if (level === Level.reportingConcept) {
-      paletteViewNodes = [
+      paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New List Reporting Concept',
           name: 'New List Reporting Concept',
@@ -314,7 +335,7 @@ export class DiagramLevelService {
           category: nodeCategories.key,
           tooltip: NodeToolTips[16].Tooltip
         })
-      ];
+      );
     }
 
     if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
@@ -337,9 +358,16 @@ export class DiagramLevelService {
       nodeCategoryProperty: level.endsWith('map') ?
         function(data) {
           // Ensure systems are represented by map view groups in map view
-          return data.layer === 'system' ? '' : data.layer;
-        }
-        : 'layer',
+          return data.layer === layers.system ? '' :
+            data.category === nodeCategories.transformation ? nodeCategories.transformation :
+              data.layer;
+        } :
+        function(data) {
+          // Ensure that transformation nodes use their own category, separate from the layer
+          return data.category === nodeCategories.transformation
+            ? nodeCategories.transformation
+            : data.layer;
+        },
       linkFromKeyProperty: level.endsWith('map') ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
       linkToKeyProperty: level.endsWith('map') ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,

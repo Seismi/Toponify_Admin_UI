@@ -71,135 +71,135 @@
         <smi-search-table-view
           *ngIf="selectedView !== ArchitectureView.Diagram"
           (search)="onSearchTableView($event)"
-        ></smi-search-table-view>
-    <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
-      <smi-layout-actions
-        class="diagram-actions"
-        *ngIf="selectedView === ArchitectureView.Diagram"
-        [grid]="showGrid"
-        [allowMove]="allowMove"
-        (zoomIn)="onZoomIn()"
-        (zoomOut)="onZoomOut()"
-        (showGrid)="onShowGrid()"
-        (zoomToFit)="onZoomToFit()"
-        (editLayout)="allowEditLayout()"
-        (downloadImage)="onDownloadImage()"
-      >
-      </smi-layout-actions>
-      <app-architecture-diagram
-        [mapView]="mapView"
-        [showGrid]="showGrid"
-        [allowMove]="allowMove"
-        [workPackageIsEditable]="workPackageIsEditable"
-        *ngIf="!showTable"
-        [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
-        [links]="links | layer: { byId: false } | async"
-        [workpackageDetail]="workpackageDetail"
-        [selectedId]="selectedId"
-        [selectedWorkPackages]="selectedWorkPackages$ | async"
-        [workpackages]="workpackage$ | async"
-        [viewLevel]="viewLevel$ | async"
-        (partsSelected)="partsSelected($event)"
-        (modelChanged)="modelChanged($event)"
-        (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
-        (linkDeleteRequested)="handleLinkDeleteRequested($event)"
-        (updateNodeLocation)="handleUpdateNodeLocation($event)"
-        (updateNodeExpandState)="handleUpdateNodeExpandState($event)"
-        (updateGroupArea)="handleUpdateGroupArea($event)"
-      (updateDiagramLayout)="handleUpdateDiagramLayout()">
-      </app-architecture-diagram>
-    </div>
-    <div *ngIf="selectedView === ArchitectureView.System">
-      <smi-architecture-table-view
-        [data]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
-        [selectedItem]="selectedNode"
-        (selectNode)="onSelectNode($event)"
-        (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload('node')"
-        [view]="'system'"
-        [filterValue]="tableViewFilterValue"
-        [workPackageIsEditable]="workPackageIsEditable"
-        (add)="onAddComponentOrLink()"
-      ></smi-architecture-table-view>
-    </div>
-    <div *ngIf="selectedView === ArchitectureView.Links">
-      <smi-architecture-table-view
-        [data]="links | layer: { byId: false } | async"
-        [selectedItem]="selectedNode"
-        (selectNode)="onSelectNode($event)"
-        (changeLevel)="onChangeLevel($event)"
-        (download)="onDownload('links')"
-        [view]="'link'"
-        [filterValue]="tableViewFilterValue"
-        [workPackageIsEditable]="workPackageIsEditable"
-        (add)="onAddComponentOrLink()"
-      ></smi-architecture-table-view>
-    </div>
-  </app-model-content>
-  <smi-right-sidebar
-    data-hook="right-sidebar"
-    *ngIf="!showOrHideRightPane"
-    (rightTab)="openRightTab($event)"
-    [objectSelected]="part?.isSelected ? true : false"
-    [multipleSelected]="multipleSelected"
-    [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
-  >
-  </smi-right-sidebar>
-  <app-model-sidebar [isLast]="true" [minWidth]="450" [maxWidth]="650" *ngIf="showOrHideRightPane">
-    <p class="rightPane">
-      <smi-right-panel
-        [owners]="selectedNode?.owners"
-        [descendants]="selectedNode?.descendants"
-        [selectedRightTab]="selectedRightTab"
-        [group]="objectDetailsForm"
-        [clickedOnLink]="clickedOnLink"
-        (saveNode)="onSaveObjectDetails()"
-        (deleteNode)="onDeleteNode()"
-        [attributes]="selectedNode?.attributes"
-        [relatedRadios]="selectedNode?.relatedRadios"
-        [radio]="radio$ | async"
-        [properties]="selectedNode?.customPropertyValues"
-        [workpackages]="selectedNode?.relatedWorkPackages"
-        [workPackageIsEditable]="workPackageIsEditable"
-        (addAttribute)="onAddAttribute()"
-        (deleteAttribute)="onDeleteAttribute($event)"
-        (addRelatedRadio)="onAddRelatedRadio()"
-        (hideRightPane)="onHideRightPane()"
-        (addRadio)="onAddRadio()"
+        >
+        </smi-search-table-view>
+        <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
+          <smi-layout-actions
+            class="diagram-actions"
+            *ngIf="selectedView === ArchitectureView.Diagram"
+            [grid]="showGrid"
+            [allowMove]="allowMove"
+            (zoomIn)="onZoomIn()"
+            (zoomOut)="onZoomOut()"
+            (showGrid)="onShowGrid()"
+            (zoomToFit)="onZoomToFit()"
+            (editLayout)="allowEditLayout()"
+            (downloadImage)="onDownloadImage()"
+          >
+          </smi-layout-actions>
+          <app-architecture-diagram
+            [mapView]="mapView"
+            [showGrid]="showGrid"
+            [allowMove]="allowMove"
+            [workPackageIsEditable]="workPackageIsEditable"
+            *ngIf="!showTable"
+            [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
+            [links]="links | layer: { byId: false } | async"
+            [workpackageDetail]="workpackageDetail"
+            [selectedId]="selectedId"
+            [selectedWorkPackages]="selectedWorkPackages$ | async"
+            [workpackages]="workpackage$ | async"
+            [viewLevel]="viewLevel$ | async"
+            (partsSelected)="partsSelected($event)"
+            (modelChanged)="modelChanged($event)"
+            (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
+            (linkDeleteRequested)="handleLinkDeleteRequested($event)"
+            (updateNodeLocation)="handleUpdateNodeLocation($event)"
+            (updateNodeExpandState)="handleUpdateNodeExpandState($event)"
+            (updateGroupArea)="handleUpdateGroupArea($event)"
+            (updateDiagramLayout)="handleUpdateDiagramLayout()"
+          >
+          </app-architecture-diagram>
+        </div>
+        <div *ngIf="selectedView === ArchitectureView.System">
+          <smi-architecture-table-view
+            [data]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [selectedItem]="selectedNode"
+            (selectNode)="onSelectNode($event)"
+            (changeLevel)="onChangeLevel($event)"
+            (download)="onDownload('node')"
+            [view]="'system'"
+            [filterValue]="tableViewFilterValue"
+            [workPackageIsEditable]="workPackageIsEditable"
+            (add)="onAddComponentOrLink()"
+          ></smi-architecture-table-view>
+        </div>
+        <div *ngIf="selectedView === ArchitectureView.Links">
+          <smi-architecture-table-view
+            [data]="links | layer: { byId: false } | async"
+            [selectedItem]="selectedNode"
+            (selectNode)="onSelectNode($event)"
+            (changeLevel)="onChangeLevel($event)"
+            (download)="onDownload('links')"
+            [view]="'link'"
+            [filterValue]="tableViewFilterValue"
+            [workPackageIsEditable]="workPackageIsEditable"
+            (add)="onAddComponentOrLink()"
+          ></smi-architecture-table-view>
+        </div>
+      </app-model-content>
+      <smi-right-sidebar
+        data-hook="right-sidebar"
+        *ngIf="!showOrHideRightPane"
+        (rightTab)="openRightTab($event)"
+        [objectSelected]="part?.isSelected ? true : false"
         [multipleSelected]="multipleSelected"
-        (addScope)="onAddScope()"
-        (addOwner)="onAddOwner()"
-        (deleteOwner)="onDeleteOwner($event)"
-        (saveProperties)="onSaveProperties($event)"
-        (deleteProperties)="onDeleteProperties($event)"
-        (addDescendant)="onAddDescendant()"
-        (deleteDescendant)="onDeleteDescendant($event)"
-        (openRadio)="onOpenRadio($event)"
-        [nodeScopes]="nodeScopes$ | async"
-        (deleteScope)="onDeleteScope($event)"
-        (addExistingScope)="onAddExistingScope()"
-        (addNewScope)="onAddNewScope()"
-        [selectedView]="selectedView"
-        [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
-        [selectedNode]="selectedNode"
-        (selectNode)="onSelectNode($event)"
-        [links]="links | layer: { byId: false} | async"
-        [viewLevel]="viewLevel$ | async"
-        [part]="part"
-        (assignRadio)="onAssignRadio()"
-        [nodeCategory]="part?.data.category"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
-        [nodeReports]="nodeReports$ | async"
-        (addExistingAttribute)="onAddExistingAttribute()"
-        (updateAvailableTags)="onUpdateAvailableTags()"
-        (addTag)="onAddTag($event)"
-        (createTag)="onCreateTag($event)"
-        (removeTag)="onRemoveTag($event)"
-        [tags]="selectedNode?.tags"
-        [componentLayer]="nodeComponentLayer"
-        [availableTags]="availableTags$ | async"
-        (seeUsage)="onSeeUsage()"
-        (seeDependencies)="onSeeDependencies()"
+      >
+      </smi-right-sidebar>
+      <app-model-sidebar [isLast]="true" [minWidth]="450" [maxWidth]="650" *ngIf="showOrHideRightPane">
+        <p class="rightPane">
+          <smi-right-panel
+            [owners]="selectedNode?.owners"
+            [selectedRightTab]="selectedRightTab"
+            [group]="objectDetailsForm"
+            (saveNode)="onSaveObjectDetails()"
+            (deleteNode)="onDeleteNode()"
+            [attributes]="selectedNode?.attributes"
+            [relatedRadios]="selectedNode?.relatedRadios"
+            [radio]="radio$ | async"
+            [properties]="selectedNode?.customPropertyValues"
+            [workpackages]="selectedNode?.relatedWorkPackages"
+            [workPackageIsEditable]="workPackageIsEditable"
+            (addAttribute)="onAddAttribute()"
+            (deleteAttribute)="onDeleteAttribute($event)"
+            (addRelatedRadio)="onAddRelatedRadio()"
+            (hideRightPane)="onHideRightPane()"
+            (addRadio)="onAddRadio()"
+            [multipleSelected]="multipleSelected"
+            (addScope)="onAddScope()"
+            (addOwner)="onAddOwner()"
+            (deleteOwner)="onDeleteOwner($event)"
+            (saveProperties)="onSaveProperties($event)"
+            (deleteProperties)="onDeleteProperties($event)"
+            (openRadio)="onOpenRadio($event)"
+            [nodeScopes]="nodeScopes$ | async"
+            (deleteScope)="onDeleteScope($event)"
+            (addExistingScope)="onAddExistingScope()"
+            (addNewScope)="onAddNewScope()"
+            [selectedView]="selectedView"
+            [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [selectedNode]="selectedNode"
+            (selectNode)="onSelectNode($event)"
+            [links]="links | layer: { byId: false} | async"
+            [part]="part"
+            (assignRadio)="onAssignRadio()"
+            [nodeCategory]="part?.data.category"
+            [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
+            [nodeReports]="nodeReports$ | async"
+            (addExistingAttribute)="onAddExistingAttribute()"
+            (updateAvailableTags)="onUpdateAvailableTags()"
+            (addTag)="onAddTag($event)"
+            (createTag)="onCreateTag($event)"
+            (removeTag)="onRemoveTag($event)"
+            [tags]="selectedNode?.tags"
+            [componentLayer]="nodeComponentLayer"
+            [availableTags]="availableTags$ | async"
+            [groupInfo]="selectedNode?.groupinfo"
+            (editGroup)="onAddDescendant('addToGroup')"
+            [clickedOnLink]="clickedOnLink"
+            (seeUsage)="onSeeUsage()"
+            (seeDependencies)="onSeeDependencies()"
           >
           </smi-right-panel></p
       ></app-model-sidebar>
