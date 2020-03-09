@@ -20,7 +20,7 @@ function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
   return {
     font: `${style} ${font}`
-  }
+  };
 }
 
 @Injectable({

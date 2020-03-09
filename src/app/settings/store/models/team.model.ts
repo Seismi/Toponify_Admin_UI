@@ -35,6 +35,7 @@ export interface TeamDetails {
   description: string;
   type: string;
   members?: (MembersEntity)[] | null;
+  designAuthority: boolean;
 }
 
 export interface MembersEntity {

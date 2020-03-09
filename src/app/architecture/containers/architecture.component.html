@@ -155,10 +155,8 @@
         <p class="rightPane">
           <smi-right-panel
             [owners]="selectedNode?.owners"
-            [descendants]="selectedNode?.descendants"
             [selectedRightTab]="selectedRightTab"
             [group]="objectDetailsForm"
-            [clickedOnLink]="clickedOnLink"
             (saveNode)="onSaveObjectDetails()"
             (deleteNode)="onDeleteNode()"
             [attributes]="selectedNode?.attributes"
@@ -178,8 +176,6 @@
             (deleteOwner)="onDeleteOwner($event)"
             (saveProperties)="onSaveProperties($event)"
             (deleteProperties)="onDeleteProperties($event)"
-            (addDescendant)="onAddDescendant()"
-            (deleteDescendant)="onDeleteDescendant($event)"
             (openRadio)="onOpenRadio($event)"
             [nodeScopes]="nodeScopes$ | async"
             (deleteScope)="onDeleteScope($event)"
@@ -190,7 +186,6 @@
             [selectedNode]="selectedNode"
             (selectNode)="onSelectNode($event)"
             [links]="links | layer: { byId: false} | async"
-            [viewLevel]="viewLevel$ | async"
             [part]="part"
             (assignRadio)="onAssignRadio()"
             [nodeCategory]="part?.data.category"
@@ -205,6 +200,9 @@
             [tags]="selectedNode?.tags"
             [componentLayer]="nodeComponentLayer"
             [availableTags]="availableTags$ | async"
+            [groupInfo]="selectedNode?.groupinfo"
+            (editGroup)="onAddDescendant('addToGroup')"
+            [clickedOnLink]="clickedOnLink"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

@@ -92,7 +92,7 @@ export const NodeToolTips = [
   },
   {
     Layer: 'Reporting Concept',
-    Object: 'New Ley Reporting Concept',
+    Object: 'New Key Reporting Concept',
     Tooltip: 'A key point to be reported for the business. For example "Total UK"'
   },
   {
@@ -100,5 +100,10 @@ export const NodeToolTips = [
     Object: 'Master Data Link',
     Tooltip:
       'A relation between reporting concepts. For example, "Stores" are linked to "Geography" to indicate they are sorted by geography. "Total UK" is linked to "Geography" to indicate it is calculated through this structure.'
+  },
+  {
+    Layer: 'Any',
+    Object: 'Transformation',
+    Tooltip: 'A transformation - use to indicate of data or master data is manipulated, enriched or summarised in an interface between two or more systems.'
   }
 ];
