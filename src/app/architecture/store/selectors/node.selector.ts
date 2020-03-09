@@ -107,6 +107,11 @@ export const getTags = createSelector(
   state => state.tags
 );
 
+export const getDraft = createSelector(
+  getNodeFeatureState,
+  state => state.draft
+);
+
 export const getTopologyLoadingStatus = createSelector(
   getNodeFeatureState,
   state => {

@@ -1,3 +1,5 @@
+<mat-icon *ngIf="allowSave" (click)="saveLayout.emit()" matTooltip="Save">save</mat-icon>
+<mat-icon *ngIf="allowSaveAs" (click)="saveAsLayout.emit()" matTooltip="Save as">file_copy</mat-icon>
 <mat-icon (click)="zoomIn.emit()" matTooltip="Zoom In">zoom_in</mat-icon>
 <mat-icon (click)="zoomOut.emit()" matTooltip="Zoom Out">zoom_out</mat-icon>
 <mat-icon (click)="zoomToFit.emit()" matTooltip="Fit To Screen">zoom_out_map</mat-icon>
