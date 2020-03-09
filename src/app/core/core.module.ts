@@ -16,7 +16,6 @@ import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.compo
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
 import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { RightSideBarComponent } from './layout/right-sidebar/right-sidebar.component';
-import { LeftSideBarComponent } from './layout/left-sidebar/left-sidebar.component';
 import { SearchService } from './services/search.service';
 import { StoreModule } from '@ngrx/store';
 import { reducer } from '../core/store/reducers/search.reducer';
@@ -62,7 +61,6 @@ import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/le
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
     RightSideBarComponent,
-    LeftSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
