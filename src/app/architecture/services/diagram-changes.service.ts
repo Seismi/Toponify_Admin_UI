@@ -14,6 +14,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
+import {nodeCategories} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -429,6 +430,14 @@ export class DiagramChangesService {
       diagram.select(diagram.findPartForKey(selectedPartKey));
     }
 
+    // Ensure bounds of all nodes with any connected links.
+    //  This makes sure that links can route correctly if a reroute is necessary.
+    diagram.nodes.each(function(node) {
+      if (node.linksConnected.count > 0) {
+        node.ensureBounds();
+      }
+    });
+
     /* Check for any links that do not have a valid route between source and target nodes.
        This can happen if the source or target nodes are moved in a work package where
        the link no longer exists.
@@ -528,6 +537,21 @@ export class DiagramChangesService {
       } else {
         // Link being moved
         oldlink = draggingTool.draggedParts.first().key as go.Link;
+      }
+    }
+
+    // Prevent links between two transformation nodes
+    if (fromnode.data.category === nodeCategories.transformation
+      && tonode.data.category === nodeCategories.transformation) {
+      return false;
+    }
+
+    // Prevent links to transformation node in more than one direction
+    if (fromnode.data.category === nodeCategories.transformation
+      || tonode.data.category === nodeCategories.transformation) {
+      const allLinks = tonode.findLinksTo(fromnode);
+      if (allLinks.count > 0) {
+        return false;
       }
     }
 
@@ -794,7 +818,7 @@ export class DiagramChangesService {
 
   // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
-  groupMemberSizeChanged(member: go.Group): void {
+  groupMemberSizeChanged(member: go.Node): void {
     const nestedGroups = new go.Set();
     const linksToUpdate = new go.Set();
 

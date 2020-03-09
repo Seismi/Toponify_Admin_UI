@@ -237,7 +237,7 @@ export interface WorkPackageNodeScopes {
 }
 
 export interface WorkPackageNodeFindPotential {
-  childrenOf: ChildrenOf;
+  childrenOf?: ChildrenOf;
 }
 
 interface ChildrenOf {

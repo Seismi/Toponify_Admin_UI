@@ -59,14 +59,13 @@
       (delete)="onDeleteOwner($event)"
     >
     </smi-owners-table-in-architecture>
-    <smi-descendants-table-in-architecture
-      *ngIf="!clickedOnLink && !attributesPage && viewLevel !== Level.reportingConcept"
-      [data]="descendants"
-      [isEditable]="!nodeIsEditable()"
-      (addDescendant)="onAddDescendant()"
-      (deleteDescendant)="onDeleteDescendant($event)"
+    <smi-group-info-table
+      *ngIf="!clickedOnLink"
+      [groupInfo]="groupInfo" 
+      (editGroup)="editGroup.emit()" 
+      [workPackageIsEditable]="workPackageIsEditable"
     >
-    </smi-descendants-table-in-architecture>
+    </smi-group-info-table>
     <smi-related-attribute-table
       *ngIf="attributesPage"
       [data]="relatedAttributes"

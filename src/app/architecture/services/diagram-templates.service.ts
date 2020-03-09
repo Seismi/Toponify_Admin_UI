@@ -39,7 +39,7 @@ const nodeWidth = 300;
 @Injectable()
 export class DiagramTemplatesService {
   private currentFilterLevel: Level;
-  public forPalette: boolean = false;
+  public forPalette = false;
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
     public diagramLevelService: DiagramLevelService,
@@ -242,16 +242,21 @@ export class DiagramTemplatesService {
   }
 
   // Get button for revealing the next level of dependencies
-  getDependencyExpandButton(): go.Panel {
+  getDependencyExpandButton(forTransformation = false): go.Panel {
     return $(
       'Button',
-      {
+      forTransformation ? {
+        alignment: go.Spot.TopRight,
+        margin: new go.Margin(2, 2, 0, 0)
+      } : {
         column: 4,
         row: 0,
-        name: 'DependencyExpandButton',
         alignment: go.Spot.Right,
+        margin: new go.Margin(0, 0, 0, 5)
+      },
+      {
+        name: 'DependencyExpandButton',
         desiredSize: new go.Size(20, 20),
-        margin: new go.Margin(0, 5, 0, 0),
         click: function(event, button) {
           const node = button.part;
           this.diagramChangesService.showDependencies(node);
@@ -580,7 +585,8 @@ export class DiagramTemplatesService {
         alignment: go.Spot.TopCenter,
         stretch: go.GraphObject.Horizontal,
         minSize: new go.Size(nodeWidth, 30),
-        margin: new go.Margin(5)
+        margin: new go.Margin(5),
+        maxSize: new go.Size(nodeWidth, 30)
       },
       new go.Binding('maxSize', 'middleExpanded', function(middleExpanded) {
         return middleExpanded !== middleOptions.group ?
@@ -959,6 +965,69 @@ export class DiagramTemplatesService {
     }
   }
 
+  getTransformationNodeTemplate(forPalette: boolean = false): go.Node {
+    return $(
+      go.Node,
+      'Auto',
+      new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
+      this.getStandardNodeOptions(false),
+      {
+        contextMenu: null
+      },
+      new go.Binding(
+        'movable',
+        '',
+        function() {
+          return this.currentFilterLevel !== Level.usage;
+        }.bind(this)
+      ),
+      forPalette ? {
+        toolTip: $(
+          'ToolTip',
+          $(
+            go.TextBlock,
+            {
+              width: 150
+            },
+            new go.Binding('text', 'tooltip')
+          )
+        )
+      } : {},
+      // Have the diagram position the node if no location set
+      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      $(go.Shape,
+        this.getStandardNodeShapeOptions(),
+        {
+          desiredSize: new go.Size(60.3, 53.6)
+        },
+        // Bind stroke to multicoloured brush based on work packages impacted by
+        new go.Binding(
+          'stroke',
+          'impactedByWorkPackages',
+          function(impactedPackages, shape) {
+            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+          }.bind(this)
+        )
+      ),
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel, {
+        alignment: go.Spot.TopCenter,
+        desiredSize: new go.Size(0, 0),
+        name: 'location panel'
+      }),
+      $(go.Picture,
+        {
+          source: 'assets/node-icons/transformation.svg',
+          alignment: go.Spot.Center,
+          maxSize: new go.Size(82, 82),
+          imageStretch: go.GraphObject.Uniform
+        }
+      ),
+      this.getDependencyExpandButton(true)
+    );
+  }
+
   getNodeTemplate(forPalette: boolean = false): go.Node {
     return $(
       go.Node,
@@ -1236,10 +1305,7 @@ export class DiagramTemplatesService {
           toArrow: 'Triangle'
         },
         new go.Binding('fill', 'stroke').ofObject('shape'),
-        new go.Binding('stroke', 'stroke').ofObject('shape'),
-        new go.Binding('visible', 'layer', function(layer) {
-          return layer !== layers.system;
-        })
+        new go.Binding('stroke', 'stroke').ofObject('shape')
       )
     );
   }
@@ -1269,7 +1335,7 @@ export class DiagramTemplatesService {
           if (forPalette) {
             return;
           }
-          
+
           if ([layers.system, layers.dataSet].includes(object.data.layer)) {
             this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, object);
           }
@@ -1299,7 +1365,16 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? this.getLinkLabel() : {}
+      !forPalette ? this.getLinkLabel() : {},
+      $(
+        go.Shape, // The 'to' arrowhead
+        {
+          scale: 1.2,
+          toArrow: 'Triangle'
+        },
+        new go.Binding('fill', 'stroke').ofObject('shape'),
+        new go.Binding('stroke', 'stroke').ofObject('shape')
+      )
     );
   }
 
