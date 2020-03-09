@@ -8,7 +8,7 @@
   </smi-left-hand-pane>
   <mat-drawer-container class="drawer-container" autosize>
     <mat-drawer #drawer mode="side" class="left-sidebar">
-      <smi-left-hand-pane-content (close)="drawer.close()">
+      <smi-left-hand-pane-content (close)="drawer.close(selectedLeftTab = 'menu')">
         <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
         <smi-workpackage-tab-table
           *ngIf="selectedLeftTab !== 'menu'"
