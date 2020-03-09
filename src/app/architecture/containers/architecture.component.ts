@@ -444,9 +444,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               this.diagramComponent.selectNode(selectedItem);
               this.openRightTab(0);
               if (selectedType === 'node') {
-                this.onViewChange(ArchitectureView.System);
+                setTimeout(() => this.onViewChange(ArchitectureView.System));
               } else {
-                this.onViewChange(ArchitectureView.Links);
+                setTimeout(() => this.onViewChange(ArchitectureView.Links));
               }
             });
         }
@@ -1671,9 +1671,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onViewChange(view: ArchitectureView, from?) {
-    if (view) {
-      this.selectedView = view;
-    }
+    this.selectedView = view;
     if (view === ArchitectureView.Diagram) {
       this.tableViewFilterValue = null;
     }
