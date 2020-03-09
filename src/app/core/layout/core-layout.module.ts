@@ -52,6 +52,7 @@ import { SelectModalComponent } from './components/select-modal/select-modal.com
 import { DownloadCSVModalComponent } from './components/download-csv-modal/download-csv-modal.component';
 import { ReportService } from '@app/report-library/services/report.service';
 import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component';
+import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand-pane-content.component';
 
 @NgModule({
   imports: [
@@ -107,7 +108,8 @@ import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component
     DeleteModalComponent,
     SelectModalComponent,
     LeftHandPaneComponent,
-    MenuComponent
+    MenuComponent,
+    LeftHandPaneContentComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -139,7 +141,8 @@ import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component
     RightHandSideComponent,
     DeleteModalComponent,
     SelectModalComponent,
-    LeftHandPaneComponent
+    LeftHandPaneComponent,
+    LeftHandPaneContentComponent
   ],
   entryComponents: [
     DeleteModalComponent,

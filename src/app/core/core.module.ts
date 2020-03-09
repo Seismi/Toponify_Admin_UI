@@ -36,6 +36,7 @@ import { SelectModalComponent } from './layout/components/select-modal/select-mo
 import { DownloadCSVModalComponent } from './layout/components/download-csv-modal/download-csv-modal.component';
 import { LeftHandPaneComponent } from './layout/left-hand-pane/left-hand-pane.component';
 import { MenuComponent } from './layout/menu/menu.component';
+import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/left-hand-pane-content.component';
 
 @NgModule({
   imports: [
@@ -73,7 +74,8 @@ import { MenuComponent } from './layout/menu/menu.component';
     DeleteModalComponent,
     SelectModalComponent,
     LeftHandPaneComponent,
-    MenuComponent
+    MenuComponent,
+    LeftHandPaneContentComponent
   ],
   entryComponents: [
     DeleteModalComponent,
