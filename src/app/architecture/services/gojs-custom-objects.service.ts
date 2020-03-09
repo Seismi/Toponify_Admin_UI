@@ -647,7 +647,15 @@ export class GojsCustomObjectsService {
             return object.group === '' && thisService.diagramEditable;
           }
         ),
-        makeSubMenuButton(7, 'Move to Group', function() { return 'Move to Group' }.bind(this),
+        makeSubMenuButton(
+          7, 
+          'Move to Group', 
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            this.addSystemToGroupSource.next(node.data);
+
+          }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent) {
             return thisService.diagramEditable;
           }
