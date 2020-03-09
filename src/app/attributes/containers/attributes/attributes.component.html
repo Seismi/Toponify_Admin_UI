@@ -8,15 +8,17 @@
   </smi-left-hand-pane>
   <mat-drawer-container class="drawer-container" autosize>
     <mat-drawer #drawer mode="side" class="left-sidebar">
-      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
-      <smi-workpackage-tab-table
-        *ngIf="selectedLeftTab !== 'menu'"
-        [data]="workpackage$ | async"
-        (selectWorkPackage)="onSelectWorkPackage($event)"
-        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-        [canSelectWorkpackage]="canSelectWorkpackage"
-      >
-      </smi-workpackage-tab-table>
+      <smi-left-hand-pane-content (close)="drawer.close()">
+        <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+        <smi-workpackage-tab-table
+          *ngIf="selectedLeftTab !== 'menu'"
+          [data]="workpackage$ | async"
+          (selectWorkPackage)="onSelectWorkPackage($event)"
+          (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+          [canSelectWorkpackage]="canSelectWorkpackage"
+        >
+        </smi-workpackage-tab-table>
+      </smi-left-hand-pane-content>
     </mat-drawer>
     <app-base-header>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
