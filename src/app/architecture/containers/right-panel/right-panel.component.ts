@@ -8,7 +8,8 @@ import {
   NodeReports,
   Tag,
   TagApplicableTo,
-  GroupInfo
+  GroupInfo,
+  DescendantsEntity
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
@@ -73,9 +74,10 @@ export class RightPanelComponent {
   @Output() assignRadio = new EventEmitter<void>();
   @Output() addExistingAttribute = new EventEmitter<void>();
   @Output() editGroup = new EventEmitter<void>();
-  @Output() addSystemToGroup = new EventEmitter<void>();
+  @Output() addNewSystem = new EventEmitter<void>();
   @Output() addDescendants = new EventEmitter<void>();
-  @Output() deleteDescendants = new EventEmitter<any>();
+  @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
+  @Output() deleteNodeGroup = new EventEmitter<Node>();
 
   @Output() updateAvailableTags = new EventEmitter<void>();
 

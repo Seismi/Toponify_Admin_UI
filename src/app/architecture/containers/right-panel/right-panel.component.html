@@ -41,8 +41,8 @@
         [title]="'Systems'"
         [data]="systems"
         [workPackageIsEditable]="workPackageIsEditable"
-        (add)="addSystemToGroup.emit()"
-        (delete)="deleteDescendants.emit($event)"
+        (add)="addNewSystem.emit()"
+        (delete)="deleteNodeGroup.emit($event)"
         [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
       >
       </smi-components-table>
