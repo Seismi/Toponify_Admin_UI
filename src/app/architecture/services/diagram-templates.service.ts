@@ -1273,7 +1273,8 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       {
-        doubleClick: (forPalette) ? undefined : this.diagramChangesService.getMapViewForLink
+        doubleClick: (forPalette) ? undefined :
+          this.diagramChangesService.getMapViewForLink.bind(this.diagramChangesService)
       },
       $(
         go.Shape,
@@ -1332,13 +1333,13 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       {
-        doubleClick: function(event, object) {
+        doubleClick: function(event: go.InputEvent, object: go.Link): void {
           if (forPalette) {
             return;
           }
 
           if ([layers.system, layers.dataSet].includes(object.data.layer)) {
-            this.diagramChangesService.getMapViewForLink(event, object);
+            this.diagramChangesService.getMapViewForLink.call(this.diagramChangesService, event, object);
           }
         }.bind(this)
       },
