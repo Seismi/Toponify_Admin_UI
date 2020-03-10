@@ -89,7 +89,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         this.reportId = params['reportId'];
         this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
-          this.setWorkPackage(workPackageIds);
+          this.getReport(workPackageIds);
         });
       })
     );
@@ -113,7 +113,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  setWorkPackage(workpackageIds: string[] = []) {
+  getReport(workpackageIds: string[] = []) {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
