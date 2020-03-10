@@ -34,7 +34,6 @@ import { ModelContentComponent } from '@app/core/layout/model-content/model-cont
 import { ToolbarColumnComponent } from '@app/core/layout/header/toolbar-column/toolbar-column.component';
 import { QuicklinksActionsComponent } from '@app/core/layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from '@app/core/layout/header/breadcrumb/breadcrumb.component';
-import { LeftSideBarComponent } from '@app/core/layout/left-sidebar/left-sidebar.component';
 import { LayoutsDropdownComponent } from '@app/core/layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { NodeNameComponent } from '@app/core/layout/header/node-name/node-name.component';
 import { RightSideBarComponent } from '@app/core/layout/right-sidebar/right-sidebar.component';
@@ -52,6 +51,7 @@ import { SelectModalComponent } from './components/select-modal/select-modal.com
 import { DownloadCSVModalComponent } from './components/download-csv-modal/download-csv-modal.component';
 import { ReportService } from '@app/report-library/services/report.service';
 import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component';
+import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand-pane-content.component';
 
 @NgModule({
   imports: [
@@ -95,7 +95,6 @@ import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
     RightSideBarComponent,
-    LeftSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
     EditDocumentationStandardsTableComponent,
@@ -107,7 +106,8 @@ import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component
     DeleteModalComponent,
     SelectModalComponent,
     LeftHandPaneComponent,
-    MenuComponent
+    MenuComponent,
+    LeftHandPaneContentComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -127,7 +127,6 @@ import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component
     BreadcrumbComponent,
     ScopesDropdownComponent,
     LayoutsDropdownComponent,
-    LeftSideBarComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
@@ -139,7 +138,8 @@ import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component
     RightHandSideComponent,
     DeleteModalComponent,
     SelectModalComponent,
-    LeftHandPaneComponent
+    LeftHandPaneComponent,
+    LeftHandPaneContentComponent
   ],
   entryComponents: [
     DeleteModalComponent,

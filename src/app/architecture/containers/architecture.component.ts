@@ -33,7 +33,8 @@ import {
   UpdateNodeExpandedState,
   UpdateNodeLocations,
   UpdateNodeOwners,
-  UpdatePartsLayout
+  UpdatePartsLayout,
+  RemoveAllDraft
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -56,7 +57,7 @@ import {
   getNodeReports,
   getParentDescendantIds,
   getSelectedNode,
-  getSelectedNodeLink, getTopologyLoadingStatus
+  getSelectedNodeLink, getTopologyLoadingStatus, getDraft
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import {
@@ -230,6 +231,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodeReports$: Observable<NodeReports[]>;
   mapView: boolean;
   viewLevel$: Observable<Level>;
+  draft: any;
   // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
@@ -362,6 +364,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.removeAllDraft();
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
@@ -380,6 +383,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayouts({}));
     this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
+
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -601,6 +605,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
+      this.nodeStore.pipe(select(getDraft)).subscribe(draft => {
+        this.draft = !!this.layout && !!this.layout.id && !!draft[this.layout.id] ? draft[this.layout.id] : null;
+        this.ref.detectChanges();
+      })
+    );
+
+    this.subscriptions.push(
       this.actions
         .pipe(ofType(ScopeActionTypes.AddScopeSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess))
         .subscribe(_ => {
@@ -655,6 +666,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.removeAllDraft();
   }
 
   get layoutSettingsForm(): FormGroup {
@@ -820,6 +832,26 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.zoomToFit();
   }
 
+  removeAllDraft(): void {
+    this.store.dispatch(new RemoveAllDraft());
+  }
+
+  onSaveLayout(): void {
+    if (!this.layout || this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+    if (this.draft) {
+      this.store.dispatch(new UpdatePartsLayout({
+          ...this.draft,
+          draft: false
+        }));
+    }
+  }
+
+  onSaveAsLayout(): void {
+    alert("SaveAsLayout");
+  }
+
   // FIXME: types
   handleUpdateNodeLocation(data: { nodes: any[]; links: any[] }) {
     // Do not update back end if using default layout
@@ -866,6 +898,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Here
   handleUpdateDiagramLayout() {
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
@@ -911,7 +944,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 nodeLinks: linkLayoutData
               }
             }
-          }
+          },
+          draft: true
         }
       ));
     }
@@ -1137,11 +1171,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectScope(id) {
+    this.removeAllDraft();
     this.scopeStore.dispatch(new LoadScope(id));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
   }
 
   onSelectLayout(id) {
+    this.removeAllDraft();
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
@@ -1156,9 +1192,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   openLeftTab(tab: number | string): void {
     (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
     (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();

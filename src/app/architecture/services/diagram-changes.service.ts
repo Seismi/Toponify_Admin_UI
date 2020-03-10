@@ -321,6 +321,7 @@ export class DiagramChangesService {
 
         newLink.sourceId = link.fromNode.data.id;
         newLink.targetId = link.toNode.data.id;
+        newLink.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`
 
         this.workpackages.forEach(workpackage => {
           this.workpackageStore.dispatch(
@@ -429,6 +430,14 @@ export class DiagramChangesService {
     if (selectedPartKey) {
       diagram.select(diagram.findPartForKey(selectedPartKey));
     }
+
+    // Ensure bounds of all nodes with any connected links.
+    //  This makes sure that links can route correctly if a reroute is necessary.
+    diagram.nodes.each(function(node) {
+      if (node.linksConnected.count > 0) {
+        node.ensureBounds();
+      }
+    });
 
     /* Check for any links that do not have a valid route between source and target nodes.
        This can happen if the source or target nodes are moved in a work package where
