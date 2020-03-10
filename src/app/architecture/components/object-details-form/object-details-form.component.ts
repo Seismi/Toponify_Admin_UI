@@ -44,6 +44,7 @@ export class ObjectDetailsFormComponent {
   @Output() addOwner = new EventEmitter<void>();
   @Output() deleteOwner = new EventEmitter<string>();
   @Output() editGroup = new EventEmitter<void>();
+  @Output() deleteGroup = new EventEmitter<void>();
 
   @Output() selectRelatedAttribute = new EventEmitter<string>();
   @Output() addRelatedAttribute = new EventEmitter<void>();

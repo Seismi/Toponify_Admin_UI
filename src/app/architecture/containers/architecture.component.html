@@ -204,6 +204,7 @@
             [availableTags]="availableTags$ | async"
             [groupInfo]="selectedNode?.groupinfo"
             (editGroup)="onAddDescendant('addToGroup')"
+            (deleteGroup)="onDeleteGroup()"
             [clickedOnLink]="clickedOnLink"
           >
           </smi-right-panel></p

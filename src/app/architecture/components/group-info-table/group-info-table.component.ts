@@ -10,4 +10,5 @@ export class GroupInfoTableComponent {
   @Input() groupInfo: GroupInfo;
   @Input() workPackageIsEditable: boolean;
   @Output() editGroup = new EventEmitter<void>();
+  @Output() deleteGroup = new EventEmitter<void>();
 }

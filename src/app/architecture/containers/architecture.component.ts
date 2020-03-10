@@ -1922,4 +1922,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onUpdateTag(tag: Tag) {}
+
+  onDeleteGroup(): void {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: 'Are you sure you want to un-associate? Neither components will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      
+    });
+  }
 }
