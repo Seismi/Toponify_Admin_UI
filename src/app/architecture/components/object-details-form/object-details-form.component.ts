@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { Tag, TagApplicableTo, GroupInfo } from '@app/architecture/store/models/node.model';
+import { Tag, TagApplicableTo, NodeDetail } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
+
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataSetCategories = ['physical', 'virtual', 'master data'];
@@ -34,7 +35,7 @@ export class ObjectDetailsFormComponent {
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
   @Input() componentLayer: TagApplicableTo;
-  @Input() groupInfo: GroupInfo;
+  @Input() groupInfo: NodeDetail;
   @Input() clickedOnLink: boolean;
 
   constructor() {}
@@ -44,7 +45,7 @@ export class ObjectDetailsFormComponent {
   @Output() addOwner = new EventEmitter<void>();
   @Output() deleteOwner = new EventEmitter<string>();
   @Output() editGroup = new EventEmitter<void>();
-  @Output() deleteGroup = new EventEmitter<void>();
+  @Output() deleteNodeGroup = new EventEmitter<void>();
 
   @Output() selectRelatedAttribute = new EventEmitter<string>();
   @Output() addRelatedAttribute = new EventEmitter<void>();

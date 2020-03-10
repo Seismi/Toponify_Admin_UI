@@ -74,7 +74,6 @@ export class RightPanelComponent {
   @Output() assignRadio = new EventEmitter<void>();
   @Output() addExistingAttribute = new EventEmitter<void>();
   @Output() editGroup = new EventEmitter<void>();
-  @Output() deleteGroup = new EventEmitter<void>();
   @Output() addNewSystem = new EventEmitter<void>();
   @Output() addDescendants = new EventEmitter<void>();
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();

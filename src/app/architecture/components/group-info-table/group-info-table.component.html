@@ -2,17 +2,16 @@
   <table>
     <tr>
       <th class="title">Grouped in</th>
-      <th></th>
       <th>
-        <mat-icon (click)="editGroup.emit()" *ngIf="workPackageIsEditable">edit</mat-icon>
+        <div *ngIf="workPackageIsEditable">
+          <mat-icon *ngIf="groupInfo?.name" (click)="deleteNodeGroup.emit()">delete</mat-icon>
+          <mat-icon (click)="editGroup.emit()">edit</mat-icon>
+        </div>
       </th>
     </tr>
     <tr>
       <td>{{groupInfo?.reference}}</td>
       <td>{{groupInfo?.name}}</td>
-      <td>
-        <mat-icon *ngIf="workPackageIsEditable && groupInfo?.name" (click)="deleteGroup.emit()">delete</mat-icon>
-      </td>
     </tr>
   </table>
 </div>

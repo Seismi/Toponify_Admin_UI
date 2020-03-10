@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
-import { GroupInfo } from '@app/architecture/store/models/node.model';
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-group-info-table',
@@ -7,8 +7,8 @@ import { GroupInfo } from '@app/architecture/store/models/node.model';
   styleUrls: ['./group-info-table.component.scss']
 })
 export class GroupInfoTableComponent {
-  @Input() groupInfo: GroupInfo;
+  @Input() groupInfo: NodeDetail;
   @Input() workPackageIsEditable: boolean;
   @Output() editGroup = new EventEmitter<void>();
-  @Output() deleteGroup = new EventEmitter<void>();
+  @Output() deleteNodeGroup = new EventEmitter<void>();
 }
