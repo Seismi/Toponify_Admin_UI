@@ -45,6 +45,7 @@ import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confi
 import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delete-radio-modal.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
+import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
 
 @NgModule({
   imports: [
@@ -98,7 +99,8 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
     RelatesToTableComponent,
     ConfirmModalComponent,
     AssociateModalComponent,
-    DeleteRadioModalComponent
+    DeleteRadioModalComponent,
+    AlphabeticalOrderPipe
   ],
   entryComponents: [
     RadioModalComponent,
