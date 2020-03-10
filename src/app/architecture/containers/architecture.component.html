@@ -151,9 +151,10 @@
         [objectSelected]="part?.isSelected ? true : false"
         [multipleSelected]="multipleSelected"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
+        [clickedOnLink]="clickedOnLink"
       >
       </smi-right-sidebar>
-      <app-model-sidebar [isLast]="true" [minWidth]="450" [maxWidth]="650" *ngIf="showOrHideRightPane">
+      <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
             [owners]="selectedNode?.owners"
@@ -202,9 +203,18 @@
             [tags]="selectedNode?.tags"
             [componentLayer]="nodeComponentLayer"
             [availableTags]="availableTags$ | async"
+            [systems]="selectedNode?.systems"
+            [dataSets]="selectedNode?.dataSets"
+            [dimensions]="selectedNode?.dimensions"
+            [reportingConcepts]="selectedNode?.reportingConcepts"
             [groupInfo]="selectedNode?.groupinfo"
-            (editGroup)="onAddDescendant('addToGroup')"
+            (editGroup)="onAddToGroup()"
             [clickedOnLink]="clickedOnLink"
+            (addNewSystem)="onAddNewSystem()"
+            (addDescendants)="onAddDescendant()"
+            (deleteDescendants)="onDeleteDescendant($event)"
+            (deleteNodeGroup)="onDeleteNodeGroup($event)"
+            [currentFilterLevel]="currentFilterLevel"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

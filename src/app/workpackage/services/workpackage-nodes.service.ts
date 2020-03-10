@@ -199,6 +199,10 @@ export class WorkPackageNodesService extends WorkPackageService {
   addWorkPackageNodeGroup(workPackageId: string, systemId: string, groupId: string): Observable<NodeDetailApiResponse> {
     return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${systemId}/group/set/${groupId}`, this.httpOptions);
   }
+  
+  deleteWorkPackageNodeGroup(workPackageId: string, systemId: string): Observable<NodeDetailApiResponse> {
+    return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${systemId}/group/deleteRequest`, {});
+  }
 
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {

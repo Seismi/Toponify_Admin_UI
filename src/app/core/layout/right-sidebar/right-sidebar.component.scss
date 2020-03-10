@@ -16,3 +16,8 @@ span {
     color: #222;
   }
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
