@@ -109,7 +109,8 @@ import {
   AddWorkPackageNodeAttribute,
   AddWorkPackageNode,
   FindPotentialWorkpackageNodes,
-  AddWorkPackageNodeGroup
+  AddWorkPackageNodeGroup,
+  DeleteWorkPackageNodeGroup
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -512,35 +513,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
       function() {
-        const dialogRef = this.dialog.open(NewChildrenModalComponent, {
-          disableClose: false,
-          width: '450px',
-          data: {
-            group: this.nodeId,
-            addSystem: true
-          }
-        });
-
-        dialogRef
-          .afterClosed()
-          .pipe(take(1))
-          .subscribe(data => {
-            if (data && data.data) {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageNode({
-                  workpackageId: this.workpackageId,
-                  node: data.data,
-                  scope: this.scope.id
-                })
-              );
-            }
-          });
+        this.onAddNewSystem();
       }.bind(this)
     );
 
     this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
       function() {
-        this.onAddDescendant('addToGroup');
+        this.onAddToGroup();
       }.bind(this)
     );
 
@@ -753,6 +732,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
         this.getNodeReports(workPackageIds);
+
+        if (this.clickedOnLink && this.selectedRightTab === 1) {
+          this.showOrHideRightPane = false;
+        }
       }
     }
 
@@ -1209,9 +1192,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   openLeftTab(tab: number | string): void {
     (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
     (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();
@@ -1537,54 +1517,41 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant(type?: string) {
+  onAddDescendant() {
+    this.store.dispatch(
+      new FindPotentialWorkpackageNodes({
+        workPackageId: this.workpackageId, 
+        nodeId: this.nodeId, 
+        data: {}
+      })
+    );
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        title: (type === 'addToGroup') ? `Add "${this.part.data.name}" to...` : `Add Children to "${this.part.data.name}"`,
+        title: `Add Children to "${this.selectedNode.name}"`,
         placeholder: 'Components',
-        descendants: (type != undefined) ? false : true,
+        descendants: true,
         nodeId: this.nodeId,
         workPackageId: this.workpackageId,
         scopeId: this.scope.id,
-        options$: this.getDataForAddDescendantsDropdown(type),
+        options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
         selectedIds: [],
-        multi: (type != undefined) ? false : true
+        multi: true
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        if (type == 'addToGroup') {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageNodeGroup({
-              workPackageId: this.workpackageId,
-              systemId: this.nodeId,
-              groupId: data.value[0].id
-            })
-          );
-        } else {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageNodeDescendant({
-              workPackageId: this.workpackageId,
-              nodeId: this.nodeId,
-              data: data.value
-            })
-          );
-        }
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeDescendant({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            data: data.value
+          })
+        );
       }
     });
-  }
-
-  getDataForAddDescendantsDropdown(type: string): Observable<Node[] | DescendantsEntity[]>  {
-    this.store.dispatch(new FindPotentialWorkpackageNodes({workPackageId: this.workpackageId, nodeId: this.nodeId, data: {}}));
-    if (type === 'addToGroup') {
-      const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
-      return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id))));
-    } else {
-      return this.store.pipe(select(getPotentialWorkPackageNodes));
-    }
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {
@@ -1606,7 +1573,59 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             nodeId: this.nodeId,
             descendantId: descendant.id
           })
+        )
+      }
+    });
+  }
+
+  onAddToGroup() {
+    const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: `Add "${this.selectedNode.name}" to...`,
+        placeholder: 'Components',
+        options$: this.store.pipe(select(getNodeEntities))
+          .pipe(
+            map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id)))
+          ),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeGroup({
+            workPackageId: this.workpackageId,
+            systemId: this.nodeId,
+            groupId: data.value[0].id
+          })
         );
+      }
+    });
+  }
+
+  onDeleteNodeGroup(node: Node) {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: 'Are you sure you want to un-associate? Neither components will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.workpackageStore.dispatch(
+          new DeleteWorkPackageNodeGroup({
+            workPackageId: this.workpackageId,
+            systemId: node.id
+          })
+        )
       }
     });
   }
@@ -1938,4 +1957,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       
     });
   }
+
+  onAddNewSystem(): void {
+    const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+      disableClose: false,
+      width: '450px',
+      data: {
+        group: this.nodeId,
+        addSystem: true
+      }
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(data => {
+        if (data && data.data) {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNode({
+              workpackageId: this.workpackageId,
+              node: data.data,
+              scope: this.scope.id
+            })
+          );
+        }
+      });
+    }
+    
 }
