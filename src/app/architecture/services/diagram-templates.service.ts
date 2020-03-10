@@ -34,6 +34,26 @@ SystemGroupLayout.prototype.initialOrigin = function(): go.Point {
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
 
+function MapViewLayout(): void {
+  go.Layout.call(this);
+}
+go.Diagram.inherit(MapViewLayout, go.Layout);
+
+MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
+  const allParts = this.collectParts(coll);
+
+  const sourceGroups = new go.Set();
+  const targetGroups = new go.Set();
+
+  allParts.each(function(part: go.Part) {
+    if (part.data.endPointType === 'source') {
+      sourceGroups.add(part);
+    } else if (part.data.endPointType === 'target') {
+      targetGroups.add(part);
+    }
+  });
+};
+
 const nodeWidth = 300;
 
 @Injectable()
