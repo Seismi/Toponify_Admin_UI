@@ -82,7 +82,19 @@ export enum NodeActionTypes {
   DissociateTag = '[Node] Dissociate Tag',
   DissociateTagSuccess = '[Node] Dissociate Tag Success',
   DissociateTagFailure = '[Node] Dissociate Tag Fail',
-  ReloadNodesData = '[Node] Reload Nodes Data'
+  ReloadNodesData = '[Node] Reload Nodes Data',
+  SetDraft = '[Node] Set draft',
+  RemoveAllDraft = '[Node] Remove all draft'
+}
+
+export class SetDraft implements Action {
+  readonly type = NodeActionTypes.SetDraft;
+  constructor(public payload: { layoutId: string; data: any}) {}
+}
+
+export class RemoveAllDraft implements Action {
+  readonly type = NodeActionTypes.RemoveAllDraft;
+  constructor() {}
 }
 
 export class LoadNodes implements Action {
@@ -192,7 +204,7 @@ export class UpdateNodeLocationsFailure implements Action {
 
 export class UpdatePartsLayout implements Action {
   readonly type = NodeActionTypes.UpdatePartsLayout;
-  constructor(public payload: { layoutId: string; data: UpdateDiagramLayoutApiRequest['data'] }) {}
+  constructor(public payload: { layoutId: string; data: UpdateDiagramLayoutApiRequest['data']; draft: boolean }) {}
 }
 
 export class UpdatePartsLayoutSuccess implements Action {
@@ -425,6 +437,8 @@ export class ReloadNodesData implements Action {
 }
 
 export type NodeActionsUnion =
+  | SetDraft
+  | RemoveAllDraft
   | LoadNodes
   | LoadNodesSuccess
   | LoadNodesFailure
