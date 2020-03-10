@@ -57,6 +57,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   public report: Report;
   public selectedRightTab: number;
   public showOrHideRightPane = false;
+  public systems$: Observable<Node[]>;
 
   private subscriptions: Subscription[] = [];
   private reportId: string;
