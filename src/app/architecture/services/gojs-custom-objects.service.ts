@@ -548,13 +548,21 @@ export class GojsCustomObjectsService {
         makeButton(1, 'Show Details', function(event: go.DiagramEvent, object: go.Part): void {
           thisService.showDetailTabSource.next();
         }),
-        makeMenuButton(2, 'Grouped Components', [
-          'Expand',
-          'Show as List (groups)',
-          'Display (groups)',
-          'Add Sub-item',
-          'Add to Group'
-        ]),
+        makeMenuButton(
+          2, 
+          'Grouped Components', 
+            [
+              'Expand',
+              'Show as List (groups)',
+              'Display (groups)',
+              'Add Sub-item',
+              'Add to Group'
+            ],
+          function(object: go.GraphObject): boolean {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            return node.data.layer === 'system' ? true : false;
+          }.bind(this)
+        ),
         // --Grouped components submenu buttons--
         makeSubMenuButton(
           2,
