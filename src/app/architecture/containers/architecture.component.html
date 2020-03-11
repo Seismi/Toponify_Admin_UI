@@ -9,29 +9,31 @@
   </smi-left-hand-pane>
   <mat-drawer-container class="drawer-container" autosize fixedInViewport="true">
     <mat-drawer #drawer mode="side" class="left-sidebar">
-      <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
-      <smi-left-panel
-        *ngIf="selectedLeftTab !== 'menu'"
-        (tabClick)="onTabClick($event)"
-        [viewLevel]="viewLevel$ | async"
-        [workpackages]="workpackage$ | async"
-        [workPackageIsEditable]="workPackageIsEditable"
-        (displayOptionsChangedEvent)="displayOptionsChanged($event)"
-        (selectWorkPackage)="onSelectWorkPackage($event)"
-        (selectColour)="selectColourForWorkPackage($event)"
-        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-        [selectedLeftTab]="selectedLeftTab"
-        [checked]="radioAlertChecked"
-        [canSelectWorkpackages]="canSelectWorkpackages"
-        (addLayout)="onAddLayout()"
-        [group]="layoutSettingsForm"
-        [layout]="layout"
-        (filterRadioSeverity)="onFilterRadioSeverity()"
-        (collapseAllNodes)="onCollapseAllNodes()"
-        (summariseAllNodes)="onSummariseAllNodes()"
-        (expandAll)="onExpandAll()"
-      >
-      </smi-left-panel>
+      <smi-left-hand-pane-content (close)="drawer.close(selectedLeftTab = 'menu')">
+        <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
+        <smi-left-panel
+          *ngIf="selectedLeftTab !== 'menu'"
+          (tabClick)="onTabClick($event)"
+          [viewLevel]="viewLevel$ | async"
+          [workpackages]="workpackage$ | async"
+          [workPackageIsEditable]="workPackageIsEditable"
+          (displayOptionsChangedEvent)="displayOptionsChanged($event)"
+          (selectWorkPackage)="onSelectWorkPackage($event)"
+          (selectColour)="selectColourForWorkPackage($event)"
+          (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+          [selectedLeftTab]="selectedLeftTab"
+          [checked]="radioAlertChecked"
+          [canSelectWorkpackages]="canSelectWorkpackages"
+          (addLayout)="onAddLayout()"
+          [group]="layoutSettingsForm"
+          [layout]="layout"
+          (filterRadioSeverity)="onFilterRadioSeverity()"
+          (collapseAllNodes)="onCollapseAllNodes()"
+          (summariseAllNodes)="onSummariseAllNodes()"
+          (expandAll)="onExpandAll()"
+        >
+        </smi-left-panel>
+      </smi-left-hand-pane-content>
     </mat-drawer>
     <app-base-header>
       <smi-node-name *ngIf="parentName" [parentName]="parentName"></smi-node-name>
@@ -85,6 +87,10 @@
             (zoomToFit)="onZoomToFit()"
             (editLayout)="allowEditLayout()"
             (downloadImage)="onDownloadImage()"
+            (saveLayout)="onSaveLayout()"
+            (saveAsLayout)="onSaveAsLayout()"
+            [allowSave]="!!draft"
+            [allowSaveAs]="false"
           >
           </smi-layout-actions>
           <app-architecture-diagram
@@ -145,9 +151,10 @@
         [objectSelected]="part?.isSelected ? true : false"
         [multipleSelected]="multipleSelected"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
+        [clickedOnLink]="clickedOnLink"
       >
       </smi-right-sidebar>
-      <app-model-sidebar [isLast]="true" [minWidth]="450" [maxWidth]="650" *ngIf="showOrHideRightPane">
+      <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
             [owners]="selectedNode?.owners"
@@ -196,9 +203,18 @@
             [tags]="selectedNode?.tags"
             [componentLayer]="nodeComponentLayer"
             [availableTags]="availableTags$ | async"
+            [systems]="selectedNode?.systems"
+            [dataSets]="selectedNode?.dataSets"
+            [dimensions]="selectedNode?.dimensions"
+            [reportingConcepts]="selectedNode?.reportingConcepts"
             [groupInfo]="selectedNode?.groupinfo"
-            (editGroup)="onAddDescendant('addToGroup')"
+            (editGroup)="onAddToGroup()"
             [clickedOnLink]="clickedOnLink"
+            (addNewSystem)="onAddNewSystem()"
+            (addDescendants)="onAddDescendant()"
+            (deleteDescendants)="onDeleteDescendant($event)"
+            (deleteNodeGroup)="onDeleteNodeGroup($event)"
+            [currentFilterLevel]="currentFilterLevel"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

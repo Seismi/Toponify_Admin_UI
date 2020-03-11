@@ -321,6 +321,7 @@ export class DiagramChangesService {
 
         newLink.sourceId = link.fromNode.data.id;
         newLink.targetId = link.toNode.data.id;
+        newLink.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`
 
         this.workpackages.forEach(workpackage => {
           this.workpackageStore.dispatch(

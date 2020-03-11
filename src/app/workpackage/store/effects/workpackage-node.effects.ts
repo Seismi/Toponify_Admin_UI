@@ -65,7 +65,10 @@ import {
   DeleteWorkPackageNodePropertyFailure,
   AddWorkPackageNodeGroup,
   AddWorkPackageNodeGroupSuccess,
-  AddWorkPackageNodeGroupFailure
+  AddWorkPackageNodeGroupFailure,
+  DeleteWorkPackageNodeGroup,
+  DeleteWorkPackageNodeGroupSuccess,
+  DeleteWorkPackageNodeGroupFailure
 } from '../actions/workpackage-node.actions';
 import { UpdateNodeDescendants, UpdateNodeOwners, ReloadNodesData } from '@app/architecture/store/actions/node.actions';
 import {
@@ -336,6 +339,21 @@ export class WorkPackageNodeEffects {
           new ReloadNodesData()
         ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeGroupFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteWorkPackageNodeGroup$ = this.actions$.pipe(
+    ofType<DeleteWorkPackageNodeGroup>(WorkPackageNodeActionTypes.DeleteWorkPackageNodeGroup),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; systemId: string }) => {
+      return this.workpackageNodeService.deleteWorkPackageNodeGroup(payload.workPackageId, payload.systemId).pipe(
+        switchMap(response => [
+          new DeleteWorkPackageNodeGroupSuccess(response.data),
+          new ReloadNodesData()
+        ]),
+        catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodeGroupFailure(error)))
       );
     })
   );
