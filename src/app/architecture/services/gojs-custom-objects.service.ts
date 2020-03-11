@@ -645,11 +645,19 @@ export class GojsCustomObjectsService {
           }
         ),
         // --End of group submenu buttons--
-        makeMenuButton(3, 'Data Sets', [
-          'Show as List (data sets)',
-          'Display (data sets)',
-          'Add data set',
-        ]),
+        makeMenuButton(
+          3, 
+          'Data Sets', 
+            [
+              'Show as List (data sets)',
+              'Display (data sets)',
+              'Add data set',
+            ],
+          function(object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            return node.data.layer === 'reporting concept' ? false : true;
+          }.bind(this)
+        ),
         // --Data set submenu buttons--
         makeSubMenuButton(
           3,
