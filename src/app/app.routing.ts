@@ -72,7 +72,7 @@ const routes: Routes = [
   // https://angular.io/guide/router#preloading-background-loading-of-feature-areas
   imports: [
     RouterModule.forRoot(routes, {
-      enableTracing: true,
+      // enableTracing: true,
       paramsInheritanceStrategy: 'always',
       /*preloadingStrategy: PreloadAllModules*/
     })
