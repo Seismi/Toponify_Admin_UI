@@ -46,6 +46,8 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { Actions, ofType } from '@ngrx/effects';
+import { getScopeSelected } from '@app/scope/store/selectors/scope.selector';
+import { ScopeEntity } from '@app/scope/store/models/scope.model';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -70,6 +72,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   ownerName: string;
   selectedOwnerIndex: any = -1;
   availableTags$: Observable<Tag[]>;
+  scope: ScopeEntity;
 
   constructor(
     private actions: Actions,
@@ -90,7 +93,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         this.reportId = params['reportId'];
         this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
-          this.setWorkPackage(workPackageIds);
+          this.getReport(workPackageIds);
         });
       })
     );
@@ -112,9 +115,13 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
       })
     );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getScopeSelected)).subscribe(scope => this.scope = scope)
+    )
   }
 
-  setWorkPackage(workpackageIds: string[] = []) {
+  getReport(workpackageIds: string[] = []) {
     const queryParams = {
       workPackageQuery: workpackageIds
     };
@@ -295,7 +302,8 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   getNodesWithWorkPackageQuery(workPackageId: string): void {
     const queryParams = {
-      workPackageQuery: [workPackageId]
+      workPackageQuery: [workPackageId],
+      scopeQuery: this.scope.id
     };
     this.nodeStore.dispatch(new LoadNodes(queryParams));
   }
