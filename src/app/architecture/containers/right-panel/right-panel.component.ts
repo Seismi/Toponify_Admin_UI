@@ -4,18 +4,17 @@ import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node-link.model';
 import {
   CustomPropertyValuesEntity,
-  DescendantsEntity,
   Node,
   NodeReports,
   Tag,
-  TagApplicableTo
+  TagApplicableTo,
+  GroupInfo,
+  DescendantsEntity
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
-import { Level } from '@app/architecture/services/diagram-level.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
-import { TeamDetails } from '@app/settings/store/models/team.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -31,9 +30,7 @@ export class RightPanelComponent {
   @Input() nodes: Node[];
   @Input() links: NodeLink[];
   @Input() selectedNode: Node;
-  @Input() descendants: DescendantsEntity[];
   @Input() group: FormGroup;
-  @Input() clickedOnLink = false;
   @Input() workPackageIsEditable = false;
   @Input() selectedRightTab: number;
   @Input() attributes: AttributesEntity[] | null;
@@ -43,13 +40,19 @@ export class RightPanelComponent {
   @Input() radio: any;
   @Input() multipleSelected: boolean;
   @Input() nodeScopes: WorkPackageNodeScopes[];
-  @Input() viewLevel: Level;
   @Input() part: go.Part;
   @Input() filterLevel: string;
   @Input() nodeReports: NodeReports[];
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
   @Input() componentLayer: TagApplicableTo;
+  @Input() systems: GroupInfo[];
+  @Input() dataSets: GroupInfo[];
+  @Input() dimensions: GroupInfo[];
+  @Input() reportingConcepts: GroupInfo[];
+  @Input() groupInfo: GroupInfo;
+  @Input() clickedOnLink: boolean;
+  @Input() currentFilterLevel: string;
 
   @Output() saveNode = new EventEmitter<void>();
   @Output() deleteNode = new EventEmitter<void>();
@@ -63,8 +66,6 @@ export class RightPanelComponent {
   @Output() deleteOwner = new EventEmitter<string>();
   @Output() saveProperties = new EventEmitter<Object>();
   @Output() deleteProperties = new EventEmitter<CustomPropertyValuesEntity>();
-  @Output() addDescendant = new EventEmitter<void>();
-  @Output() deleteDescendant = new EventEmitter<DescendantsEntity>();
   @Output() openRadio = new EventEmitter<RadioDetail>();
   @Output() deleteScope = new EventEmitter<WorkPackageNodeScopes>();
   @Output() addExistingScope = new EventEmitter<void>();
@@ -72,6 +73,11 @@ export class RightPanelComponent {
   @Output() selectNode = new EventEmitter<Node | NodeLink>();
   @Output() assignRadio = new EventEmitter<void>();
   @Output() addExistingAttribute = new EventEmitter<void>();
+  @Output() editGroup = new EventEmitter<void>();
+  @Output() addNewSystem = new EventEmitter<void>();
+  @Output() addDescendants = new EventEmitter<void>();
+  @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
+  @Output() deleteNodeGroup = new EventEmitter<Node>();
 
   @Output() updateAvailableTags = new EventEmitter<void>();
 
@@ -146,14 +152,6 @@ export class RightPanelComponent {
 
   onDeleteProperty(customProperty: CustomPropertyValuesEntity): void {
     this.deleteProperties.emit(customProperty);
-  }
-
-  onAddDescendant(): void {
-    this.addDescendant.emit();
-  }
-
-  onDeleteDescendant(descendant: DescendantsEntity): void {
-    this.deleteDescendant.emit(descendant);
   }
 
   onOpenRadio(radio: RadioDetail): void {

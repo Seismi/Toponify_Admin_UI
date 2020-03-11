@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TeamValidatorService } from '@app/settings/components/team-detail/services/team-detail-validator.service';
 import { TeamDetailService } from '@app/settings/components/team-detail/services/team-detail.service';
@@ -11,7 +11,7 @@ import { TeamDetails } from '@app/settings/store/models/team.model';
   styleUrls: ['./team-modal.component.scss'],
   providers: [TeamDetailService, TeamValidatorService]
 })
-export class TeamModalComponent implements OnInit {
+export class TeamModalComponent {
   public modalMode: boolean = true;
   public isEditable: boolean = true;
   public team: TeamDetails;
@@ -27,13 +27,7 @@ export class TeamModalComponent implements OnInit {
   get teamDetailForm(): FormGroup {
     return this.teamDetailService.teamDetailForm;
   }
-
-  ngOnInit(): void {
-    this.teamDetailService.teamDetailForm.patchValue({
-      type: 'team'
-    });
-  }
-
+  
   onSave(): void {
     if (!this.teamDetailService.isValid) {
       return;

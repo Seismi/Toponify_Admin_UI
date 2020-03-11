@@ -44,6 +44,8 @@ import { AssociateModalComponent } from '@app/radio/components/associate-modal/a
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delete-radio-modal.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
+import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
 
 @NgModule({
   imports: [
@@ -68,6 +70,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     MatMomentDateModule,
     DocumentationStandardsModule,
     MatSidenavModule,
+    TagListModule,
     StoreModule.forFeature('radioFeature', reducer),
     EffectsModule.forFeature([RadioEffects]),
     CKEditorModule
@@ -96,7 +99,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
     RelatesToTableComponent,
     ConfirmModalComponent,
     AssociateModalComponent,
-    DeleteRadioModalComponent
+    DeleteRadioModalComponent,
+    AlphabeticalOrderPipe
   ],
   entryComponents: [
     RadioModalComponent,

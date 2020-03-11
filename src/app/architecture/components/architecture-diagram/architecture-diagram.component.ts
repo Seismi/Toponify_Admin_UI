@@ -112,6 +112,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   @Output()
   updateGroupArea = new EventEmitter();
 
+  @Output()
+  updateDiagramLayout = new EventEmitter();
+
   get level() {
     return this.viewLevel ? this.viewLevel : Level.system;
   }
@@ -187,8 +190,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     // Set context menu
     this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
 
-    // Set node template
+    // Set node templates
     this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
+    this.diagram.nodeTemplateMap.add('transformation', diagramTemplatesService.getTransformationNodeTemplate());
 
     // Set links templates
     this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());
@@ -233,6 +237,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
+    diagramChangesService.onUpdateDiagramLayout.subscribe(() => {
+      this.updateDiagramLayout.emit();
+    });
     diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeLocation.emit(data);
     });

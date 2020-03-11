@@ -26,7 +26,13 @@
         <app-table-collapse [entry]="entry"></app-table-collapse>
       </td>
       <td class="mat-cell">{{ entry.description }}</td>
-      <td class="mat-cell">{{ entry.tags }}</td>
+      <td class="mat-cell">
+        <mat-chip-list>
+          <div *ngFor="let tag of entry.tags">
+            <smi-tag [removable]="false" [tag]="tag"></smi-tag>
+          </div>
+        </mat-chip-list>
+      </td>
     </tr>
     <ng-container
       *ngIf="!entry.collapsed && entry.related && entry.related.length > 0"

@@ -32,7 +32,9 @@ import {
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations,
-  UpdateNodeOwners
+  UpdateNodeOwners,
+  UpdatePartsLayout,
+  RemoveAllDraft
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -55,7 +57,7 @@ import {
   getNodeReports,
   getParentDescendantIds,
   getSelectedNode,
-  getSelectedNodeLink, getTopologyLoadingStatus
+  getSelectedNodeLink, getTopologyLoadingStatus, getDraft
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
 import {
@@ -107,7 +109,8 @@ import {
   AddWorkPackageNodeAttribute,
   AddWorkPackageNode,
   FindPotentialWorkpackageNodes,
-  AddWorkPackageNodeGroup
+  AddWorkPackageNodeGroup,
+  DeleteWorkPackageNodeGroup
 } from '@app/workpackage/store/actions/workpackage-node.actions';
 import {
   GetWorkpackageAvailability,
@@ -156,7 +159,6 @@ import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { getNodeScopes, getPotentialWorkPackageNodes } from '../store/selectors/workpackage.selector';
-import { DeleteWorkPackageModalComponent } from '@app/workpackage/containers/delete-workpackage-modal/delete-workpackage.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
@@ -229,6 +231,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   nodeReports$: Observable<NodeReports[]>;
   mapView: boolean;
   viewLevel$: Observable<Level>;
+  draft: any;
   // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
@@ -361,6 +364,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.removeAllDraft();
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
@@ -379,6 +383,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayouts({}));
     this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
+
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -508,35 +513,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
       function() {
-        const dialogRef = this.dialog.open(NewChildrenModalComponent, {
-          disableClose: false,
-          width: '450px',
-          data: {
-            group: this.nodeId,
-            addSystem: true
-          }
-        });
-
-        dialogRef
-          .afterClosed()
-          .pipe(take(1))
-          .subscribe(data => {
-            if (data && data.data) {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageNode({
-                  workpackageId: this.workpackageId,
-                  node: data.data,
-                  scope: this.scope.id
-                })
-              );
-            }
-          });
+        this.onAddNewSystem();
       }.bind(this)
     );
 
     this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
       function() {
-        this.onAddDescendant('addToGroup');
+        this.onAddToGroup();
       }.bind(this)
     );
 
@@ -622,6 +605,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
+      this.nodeStore.pipe(select(getDraft)).subscribe(draft => {
+        this.draft = !!this.layout && !!this.layout.id && !!draft[this.layout.id] ? draft[this.layout.id] : null;
+        this.ref.detectChanges();
+      })
+    );
+
+    this.subscriptions.push(
       this.actions
         .pipe(ofType(ScopeActionTypes.AddScopeSuccess, WorkPackageNodeActionTypes.AddWorkPackageNodeScopeSuccess))
         .subscribe(_ => {
@@ -676,6 +666,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.removeAllDraft();
   }
 
   get layoutSettingsForm(): FormGroup {
@@ -741,6 +732,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
         this.getNodeReports(workPackageIds);
+
+        if (this.clickedOnLink && this.selectedRightTab === 1) {
+          this.showOrHideRightPane = false;
+        }
       }
     }
 
@@ -796,6 +791,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         category: this.objectDetailsForm.value.category,
         layer: this.selectedPart.layer,
         name: this.objectDetailsForm.value.name,
+        reference: this.objectDetailsForm.value.reference,
         tags: this.objectDetailsForm.value.tags,
         description: this.objectDetailsForm.value.description,
         sourceId: this.selectedPart.sourceId,
@@ -808,12 +804,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         layer: this.selectedPart.layer,
         category: this.objectDetailsForm.value.category,
         name: this.objectDetailsForm.value.name,
+        reference: this.objectDetailsForm.value.reference,
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
       };
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
-    this.isEditable = false;
   }
 
   onShowGrid(): void {
@@ -834,6 +830,26 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onZoomToFit(): void {
     this.diagramComponent.zoomToFit();
+  }
+
+  removeAllDraft(): void {
+    this.store.dispatch(new RemoveAllDraft());
+  }
+
+  onSaveLayout(): void {
+    if (!this.layout || this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+    if (this.draft) {
+      this.store.dispatch(new UpdatePartsLayout({
+          ...this.draft,
+          draft: false
+        }));
+    }
+  }
+
+  onSaveAsLayout(): void {
+    alert("SaveAsLayout");
   }
 
   // FIXME: types
@@ -872,9 +888,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // const groupAreaData: GroupAreaSizeApiRequest['data'] = { id: data.group.id, areaSize: data.group.areaSize };
-    // const nodeLocationData = { id: data.group.id, locationCoordinates: data.group.locationCoordinates };
-
     if (this.layout && data.groups.length > 0) {
       this.store.dispatch(new UpdateGroupAreaSize({ layoutId: this.layout.id, data: data.groups }));
       this.store.dispatch(new UpdateNodeLocations({ layoutId: this.layout.id, nodes: data.groups }));
@@ -882,6 +895,59 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     if (this.layout && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
+    }
+  }
+
+  // Here
+  handleUpdateDiagramLayout() {
+    // Do not update back end if using default layout
+    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+      return;
+    }
+
+    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray
+      .map(function(node) {
+        return {
+          id: node.id,
+          positionSettings: {
+            locationCoordinates: node.location,
+            middleExpanded: node.middleExpanded,
+            bottomExpanded: node.bottomExpanded,
+            areaSize: node.areaSize
+          }
+        };
+      });
+
+    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray
+      .map(function(link) {
+        return {
+          id: link.id,
+          positionSettings: {
+            route: link.route
+          }
+        };
+      });
+
+    if (this.layout) {
+      this.store.dispatch(new UpdatePartsLayout(
+        {
+          layoutId: this.layout.id,
+          data: {
+            positionDetails: {
+              workPackages: this.selectedWorkPackageEntities.map(
+                function(workpackage: WorkPackageEntity): { id: string, name: string } {
+                  return { id: workpackage.id, name: workpackage.name };
+                }
+              ),
+              positions: {
+                nodes: nodeLayoutData,
+                nodeLinks: linkLayoutData
+              }
+            }
+          },
+          draft: true
+        }
+      ));
     }
   }
 
@@ -954,39 +1020,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             });
           }
 
-          let layoutLoc;
-          let layoutExpandState;
-          let layoutGroupAreaSize;
-
           return nodes.map(
             function(node) {
+
+              let nodeLayout;
+
               if (this.layout && 'id' in this.layout) {
-                layoutLoc = node.locations.find(
-                  function(loc) {
-                    return loc.layout && loc.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-
-                layoutExpandState = node.expandedStates.find(
-                  function(exp) {
-                    return exp.layout && exp.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-
-                layoutGroupAreaSize = node.groupAreaSizes.find(
-                  function(areaSize) {
-                    return areaSize.layout && areaSize.layout.id === this.layout.id;
+                nodeLayout = node.positionPerLayout.find(
+                  function(layoutSettings) {
+                    return layoutSettings.layout.id === this.layout.id;
                   }.bind(this)
                 );
               }
 
+              // Temporary workaround for issue with API incorrectly assigning group status to system level transformation nodes
+              const correctedIsGroup = node.category === 'transformation' ? false : node.isGroup;
+
+              const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
+
               return {
                 ...node,
-                location: layoutLoc ? layoutLoc.locationCoordinates : null,
-                locationMissing: !layoutLoc,
-                middleExpanded: layoutExpandState ? layoutExpandState.middleExpanded : middleOptions.none,
-                bottomExpanded: layoutExpandState ? layoutExpandState.bottomExpanded : false,
-                areaSize: layoutGroupAreaSize ? layoutGroupAreaSize.areaSize : null
+                isGroup: correctedIsGroup,
+                location: (layoutProps && layoutProps.locationCoordinates) ? layoutProps.locationCoordinates : null,
+                locationMissing: !(layoutProps && layoutProps.locationCoordinates),
+                middleExpanded: (layoutProps && layoutProps.middleExpanded) ? layoutProps.middleExpanded : middleOptions.none,
+                bottomExpanded: layoutProps ? !!layoutProps.bottomExpanded : false,
+                areaSize: (layoutProps && layoutProps.areaSize) ? layoutProps.areaSize : null
               };
             }.bind(this)
           );
@@ -1016,22 +1075,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             return links;
           }
 
-          let layoutRoute;
-
           return links.map(
             function(link) {
+
+              let linkLayout;
+
               if (this.layout && 'id' in this.layout) {
-                layoutRoute = link.routes.find(
-                  function(route) {
-                    return route.layout && route.layout.id === this.layout.id;
+                linkLayout = link.positionPerLayout.find(
+                  function(layoutSettings) {
+                    return layoutSettings.layout.id === this.layout.id;
                   }.bind(this)
                 );
               }
 
+              const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
+
               return {
                 ...link,
-                route: layoutRoute ? layoutRoute.points : [],
-                routeMissing: !layoutRoute
+                route: (layoutProps && layoutProps.route) ? layoutProps.route : [],
+                routeMissing: !(layoutProps && layoutProps.route)
               };
             }.bind(this)
           );
@@ -1109,11 +1171,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSelectScope(id) {
+    this.removeAllDraft();
     this.scopeStore.dispatch(new LoadScope(id));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
   }
 
   onSelectLayout(id) {
+    this.removeAllDraft();
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
@@ -1122,7 +1186,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();
-    }, 250)
+    }, 250);
   }
 
   openLeftTab(tab: number | string): void {
@@ -1134,7 +1198,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.diagramComponent.updateDiagramArea();
       this.realignTabUnderline();
-    }, 250)
+    }, 250);
   }
 
   onAddRelatedRadio(): void {
@@ -1456,64 +1520,41 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant(type?: string) {
+  onAddDescendant() {
+    this.store.dispatch(
+      new FindPotentialWorkpackageNodes({
+        workPackageId: this.workpackageId, 
+        nodeId: this.nodeId, 
+        data: {}
+      })
+    );
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        title: (type === 'addToGroup') ? `Add "${this.part.data.name}" to...` : `Add Children to "${this.part.data.name}"`,
+        title: `Add Children to "${this.selectedNode.name}"`,
         placeholder: 'Components',
-        descendants: (type != undefined) ? false : true,
+        descendants: true,
         nodeId: this.nodeId,
         workPackageId: this.workpackageId,
         scopeId: this.scope.id,
-        options$: this.getDataForAddDescendantsDropdown(type),
+        options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
         selectedIds: [],
-        multi: (type != undefined) ? false : true
+        multi: true
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        if (type == 'addToGroup') {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageNodeGroup({
-              workPackageId: this.workpackageId,
-              systemId: this.nodeId,
-              groupId: data.value[0].id
-            })
-          )
-        } else {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageNodeDescendant({
-              workPackageId: this.workpackageId,
-              nodeId: this.nodeId,
-              data: data.value
-            })
-          );
-        }
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeDescendant({
+            workPackageId: this.workpackageId,
+            nodeId: this.nodeId,
+            data: data.value
+          })
+        );
       }
     });
-  }
-
-  getDataForAddDescendantsDropdown(type: string) {
-    this.store.dispatch(
-      new FindPotentialWorkpackageNodes({
-        workPackageId: this.workpackageId,
-        nodeId: this.nodeId,
-        data: {
-          childrenOf: {
-            id: null
-          }
-        }
-      })
-    )
-    if (type === 'addToGroup') {
-      const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
-      return this.store.pipe(select(getNodeEntities)).pipe(map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id))));
-    } else {
-      return this.store.pipe(select(getPotentialWorkPackageNodes));
-    }
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {
@@ -1535,7 +1576,59 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             nodeId: this.nodeId,
             descendantId: descendant.id
           })
+        )
+      }
+    });
+  }
+
+  onAddToGroup() {
+    const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: `Add "${this.selectedNode.name}" to...`,
+        placeholder: 'Components',
+        options$: this.store.pipe(select(getNodeEntities))
+          .pipe(
+            map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id)))
+          ),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNodeGroup({
+            workPackageId: this.workpackageId,
+            systemId: this.nodeId,
+            groupId: data.value[0].id
+          })
         );
+      }
+    });
+  }
+
+  onDeleteNodeGroup(node: Node) {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: 'Are you sure you want to un-associate? Neither components will be deleted but they will no longer be associated.',
+        confirmBtn: 'Yes',
+        cancelBtn: 'No'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.workpackageStore.dispatch(
+          new DeleteWorkPackageNodeGroup({
+            workPackageId: this.workpackageId,
+            systemId: node.id
+          })
+        )
       }
     });
   }
@@ -1647,17 +1740,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onDeleteScope(scope: WorkPackageNodeScopes): void {
-    const dialogRef = this.dialog.open(DeleteWorkPackageModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: scope.name
+        title: `Are you sure you want to delete "${scope.name}" scope?`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.scopeStore.dispatch(new DeleteWorkPackageNodeScope({ scopeId: scope.id, nodeId: this.nodeId }));
       }
     });
@@ -1852,4 +1944,30 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onUpdateTag(tag: Tag) {}
+
+  onAddNewSystem(): void {
+    const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+      disableClose: false,
+      width: '450px',
+      data: {
+        group: this.nodeId,
+        addSystem: true
+      }
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe(data => {
+        if (data && data.data) {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNode({
+              workpackageId: this.workpackageId,
+              node: data.data,
+              scope: this.scope.id
+            })
+          );
+        }
+      });
+  }
 }

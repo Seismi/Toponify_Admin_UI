@@ -12,6 +12,7 @@ import {
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
+import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
 
 export enum NodeActionTypes {
   LoadNodes = '[Node] Load Nodes',
@@ -35,6 +36,9 @@ export enum NodeActionTypes {
   UpdateNodeLocations = '[Node] Update node locations',
   UpdateNodeLocationsSuccess = '[Node] Update node locations Success',
   UpdateNodeLocationsFailure = '[Node] Update node locations Fail',
+  UpdatePartsLayout = '[Node] update layout for nodes and links',
+  UpdatePartsLayoutSuccess = '[Node] update layout for nodes and links Success',
+  UpdatePartsLayoutFailure = '[Node] update layout for nodes and links Fail',
   UpdateNodeExpandedState = '[Node] Update node expanded state',
   UpdateNodeExpandedStateSuccess = '[Node] Update node expanded state Success',
   UpdateNodeExpandedStateFailure = '[Node] Update node expanded state Fail',
@@ -78,7 +82,19 @@ export enum NodeActionTypes {
   DissociateTag = '[Node] Dissociate Tag',
   DissociateTagSuccess = '[Node] Dissociate Tag Success',
   DissociateTagFailure = '[Node] Dissociate Tag Fail',
-  ReloadNodesData = '[Node] Reload Nodes Data'
+  ReloadNodesData = '[Node] Reload Nodes Data',
+  SetDraft = '[Node] Set draft',
+  RemoveAllDraft = '[Node] Remove all draft'
+}
+
+export class SetDraft implements Action {
+  readonly type = NodeActionTypes.SetDraft;
+  constructor(public payload: { layoutId: string; data: any}) {}
+}
+
+export class RemoveAllDraft implements Action {
+  readonly type = NodeActionTypes.RemoveAllDraft;
+  constructor() {}
 }
 
 export class LoadNodes implements Action {
@@ -183,6 +199,21 @@ export class UpdateNodeLocationsSuccess implements Action {
 
 export class UpdateNodeLocationsFailure implements Action {
   readonly type = NodeActionTypes.UpdateNodeLocationsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class UpdatePartsLayout implements Action {
+  readonly type = NodeActionTypes.UpdatePartsLayout;
+  constructor(public payload: { layoutId: string; data: UpdateDiagramLayoutApiRequest['data']; draft: boolean }) {}
+}
+
+export class UpdatePartsLayoutSuccess implements Action {
+  readonly type = NodeActionTypes.UpdatePartsLayoutSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdatePartsLayoutFailure implements Action {
+  readonly type = NodeActionTypes.UpdatePartsLayoutFailure;
   constructor(public payload: Error) {}
 }
 
@@ -406,6 +437,8 @@ export class ReloadNodesData implements Action {
 }
 
 export type NodeActionsUnion =
+  | SetDraft
+  | RemoveAllDraft
   | LoadNodes
   | LoadNodesSuccess
   | LoadNodesFailure
@@ -427,6 +460,9 @@ export type NodeActionsUnion =
   | UpdateNodeLocations
   | UpdateNodeLocationsSuccess
   | UpdateNodeLocationsFailure
+  | UpdatePartsLayout
+  | UpdatePartsLayoutSuccess
+  | UpdatePartsLayoutFailure
   | UpdateNodeExpandedState
   | UpdateNodeExpandedStateSuccess
   | UpdateNodeExpandedStateFailure

@@ -20,6 +20,11 @@
             (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
             (addRelatesTo)="onAddRelatesTo()"
             (deleteRadio)="onDeleteRadio()"
+            [tags]="radio?.tags"
+            [availableTags]="availableTags$ | async"
+            (updateAvailableTags)="onUpdateAvailableTags()"
+            (addTag)="onAddTag($event)"
+            (removeTag)="onRemoveTag($event)"
           >
           </smi-radio-detail>
         </p>
