@@ -1626,7 +1626,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.workpackageStore.dispatch(
           new DeleteWorkPackageNodeGroup({
             workPackageId: this.workpackageId,
-            systemId: node.id
+            systemId: (node === undefined) ? this.nodeId : node.id
           })
         )
       }
@@ -1969,5 +1969,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           );
         }
       });
-  }
+    }
+    
 }
