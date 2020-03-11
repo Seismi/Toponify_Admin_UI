@@ -625,13 +625,15 @@ export class GojsCustomObjectsService {
           6,
           'Add to Group',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
-
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             this.addSystemToGroupSource.next(node.data);
-
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
-            return object.group === '' && thisService.diagramEditable;
+            return thisService.diagramEditable;
+          },
+          function(object: go.GraphObject): string {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            return node.data.group ? 'Move to Group' : 'Add to Group';
           }
         ),
         // --End of group submenu buttons--

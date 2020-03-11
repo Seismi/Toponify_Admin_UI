@@ -22,9 +22,17 @@
         >
         </textarea>
       </mat-form-field>
+
+      <mat-form-field *ngIf="modalMode">
+        <mat-select formControlName="system" placeholder="Systems">
+          <mat-option *ngFor="let system of systems" [value]="system">
+            {{ system.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
-    <div *ngIf="workPackageIsEditable">
+    <div *ngIf="workPackageIsEditable && !modalMode">
       <button mat-flat-button data-qa="reports-save" color="primary" (click)="onSave()" [disabled]="group.invalid">Save</button>
       <button mat-flat-button data-qa="reports-cancel" (click)="onCancel()">Cancel</button>
       <button type="button" data-qa="reports-delete" mat-flat-button color="warn" (click)="onDelete()">Delete</button>

@@ -146,6 +146,10 @@ export interface NodeDetail {
   tags: Tag[];
   groupinfo?: GroupInfo;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
+  systems?: (GroupInfo)[] | null;
+  dataSets?: (GroupInfo)[] | null;
+  dimensions?: (GroupInfo)[] | null;
+  reportingConcepts?: (GroupInfo)[] | null;
   descendants?: (DescendantsEntity)[] | null;
   attributes?: (AttributesEntity)[] | null;
   relatedRadios?: (RelatedRadiosEntity)[] | null;
@@ -153,16 +157,16 @@ export interface NodeDetail {
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
 }
 export interface GroupInfo {
-  id: string;
-  layer: string;
-  name: string;
-  reference: string;
-  description: string;
-  category: string;
+  id: string,
+  layer: string,
+  name: string,
+  reference: string,
+  description: string,
+  category: string,
   tags: (Tag)[] | null;
-  roup: string;
-  sortOrder: number;
-  direct: boolean;
+  group: string,
+  sortOrder: number,
+  direct: boolean
 }
 export interface OwnersEntityOrTeamEntityOrApproversEntity {
   id: string;

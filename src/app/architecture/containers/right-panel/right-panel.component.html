@@ -25,11 +25,57 @@
         [tags]="tags"
         [groupInfo]="groupInfo"
         (editGroup)="editGroup.emit()"
+        (deleteNodeGroup)="deleteNodeGroup.emit()"
         [clickedOnLink]="clickedOnLink"
         (seeUsage)="onSeeUsage()"
         (seeDependencies)="onSeeDependencies()"
       >
       </smi-object-details-form>
+    </p>
+  </mat-tab>
+
+  <!-- Components TAB -->
+  <mat-tab *ngIf="part?.isSelected && !multipleSelected" [disabled]="clickedOnLink">
+    <ng-template mat-tab-label>
+      <mat-icon matTooltip="Components">device_hub</mat-icon>
+    </ng-template>
+    <p class="components-tab">
+      <smi-components-table
+        [title]="'Systems'"
+        [data]="systems"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (add)="addNewSystem.emit()"
+        (delete)="deleteNodeGroup.emit($event)"
+        [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
+      >
+      </smi-components-table>
+      <smi-components-table
+        [title]="'Data Sets'"
+        [data]="dataSets"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (add)="addDescendants.emit()"
+        (delete)="deleteDescendants.emit($event)"
+        [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
+      >
+      </smi-components-table>
+      <smi-components-table
+        [title]="'Dimensions'"
+        [data]="dimensions"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (add)="addDescendants.emit()"
+        (delete)="deleteDescendants.emit($event)"
+        [currentFilterLevel]="!['data set'].includes(currentFilterLevel)"
+      >
+      </smi-components-table>
+      <smi-components-table
+        [title]="'Reporting Concepts'"
+        [data]="reportingConcepts"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (add)="addDescendants.emit()"
+        (delete)="deleteDescendants.emit($event)"
+        [currentFilterLevel]="!['dimension'].includes(currentFilterLevel)"
+      >
+      </smi-components-table>
     </p>
   </mat-tab>
 
