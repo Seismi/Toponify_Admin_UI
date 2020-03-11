@@ -21,7 +21,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="ref-number-input" *ngIf="!modalMode">
+      <mat-form-field class="space" *ngIf="!modalMode">
         <mat-label>Ref. Number</mat-label>
         <input
           matInput
@@ -54,6 +54,38 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
+    <div class="align-in-row" *ngIf="!modalMode">
+      <mat-form-field>
+        <input 
+          matInput 
+          data-qa="radio-detail-raised-by" 
+          formControlName="raisedBy" 
+          placeholder="Raised By" 
+          readonly
+        />
+      </mat-form-field>
+
+      <mat-form-field class="space">
+        <input 
+          matInput 
+          data-qa="radio-detail-created-on" 
+          formControlName="createdOn" 
+          placeholder="Created on" 
+          readonly
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input 
+          matInput 
+          data-qa="radio-detail-last-updated-by" 
+          formControlName="lastUpdatedOn" 
+          placeholder="Last Updated on" 
+          readonly
+        />
+      </mat-form-field>
+    </div>
+
     <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
       <mat-form-field class="assigned-to-input">
         <mat-label>Assigned To</mat-label>
@@ -78,6 +110,24 @@
         />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="space" *ngIf="!modalMode">
+        <mat-label>Severity</mat-label>
+        <mat-select data-qa="radio-detail-severity" formControlName="severity" [ngClass]="{ editable: isEditable }">
+          <mat-option *ngFor="let score of scores" [value]="score.level">
+            {{ score.level }} - {{ score.text }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="!modalMode">
+        <mat-label>Frequency / Probability</mat-label>
+        <mat-select data-qa="radio-detail-frequency" formControlName="frequency" [ngClass]="{ editable: isEditable }">
+          <mat-option *ngFor="let score of scores" [value]="score.level">
+            {{ score.level }} - {{ score.text }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
 
@@ -129,6 +179,7 @@
   </div>
 
   <smi-tag-list 
+    *ngIf="!modalMode"
     [tags]="tags"
     [availableTags]="availableTags"
     [editMode]="true"
