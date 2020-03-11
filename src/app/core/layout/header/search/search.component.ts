@@ -57,89 +57,65 @@ export class SearchComponent implements OnInit {
   }
 
   onSelect(selectedSearch: SearchEntity) {
+    const queryParams: { [key: string]: any } = {};
+    if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
+      queryParams.workpackages = [selectedSearch.workPackage.id];
+    }
     switch (selectedSearch.objectType) {
       case ObjectType.radio: {
         this.router.navigate(['/radio', selectedSearch.id]);
         break;
       }
       case ObjectType.attribute: {
-        const queryParams: { [key: string]: any } = {};
-        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workpackages = [selectedSearch.workPackage.id];
-        }
         this.router.navigate(['/attributes-and-rules', selectedSearch.id], { queryParams });
         break;
       }
       case ObjectType.report: {
-        const queryParams: { [key: string]: any } = {};
-        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workpackages = [selectedSearch.workPackage.id];
-        }
         this.router.navigate(['/report-library', selectedSearch.id], { queryParams });
         break;
       }
       case ObjectType.workpackage: {
-        const queryParams: { [key: string]: any } = {};
-        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workpackages = [selectedSearch.workPackage.id];
-        }
         this.router.navigate(['/work-packages', selectedSearch.id], { queryParams });
         break;
       }
       case ObjectType.system_link:
       case ObjectType.system: {
-        const queryParams: { [key: string]: any } = {
-          filterLevel: 'system',
-          selectedItem: selectedSearch.id,
-          selectedType: selectedSearch.objectType === ObjectType.system_link ? 'link' : 'node'
-        };
-        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workpackages = [selectedSearch.workPackage.id];
-        }
-        this.router.navigate(['/topology'], { queryParams });
+        queryParams.filterLevel = 'system';
+        queryParams.selectedItem = selectedSearch.id;
+        queryParams.selectedType = selectedSearch.objectType === ObjectType.system_link ? 'link' : 'node';
+        this.goToTopology(queryParams);
         break;
       }
       case ObjectType.data_set_link:
       case ObjectType.data_set: {
-        const queryParams: { [key: string]: any } = {
-          filterLevel: 'data set',
-          selectedItem: selectedSearch.id,
-          selectedType: selectedSearch.objectType === ObjectType.data_set_link ? 'link' : 'node'
-        };
-        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workpackages = [selectedSearch.workPackage.id];
-        }
-        this.router.navigate(['/topology'], { queryParams });
+        queryParams.filterLevel = 'data set';
+        queryParams.selectedItem = selectedSearch.id;
+        queryParams.selectedType = selectedSearch.objectType === ObjectType.data_set_link ? 'link' : 'node';
+        this.goToTopology(queryParams);
         break;
       }
       case ObjectType.dimension_link:
       case ObjectType.dimension: {
-        const queryParams: { [key: string]: any } = {
-          filterLevel: 'dimension',
-          selectedItem: selectedSearch.id,
-          selectedType: selectedSearch.objectType === ObjectType.dimension_link ? 'link' : 'node'
-        };
-        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workpackages = [selectedSearch.workPackage.id];
-        }
-        this.router.navigate(['/topology'], { queryParams });
+        queryParams.filterLevel = 'dimension';
+        queryParams.selectedItem = selectedSearch.id;
+        queryParams.selectedType = selectedSearch.objectType === ObjectType.dimension_link ? 'link' : 'node';
+        this.goToTopology(queryParams);
         break;
       }
       case ObjectType.reporting_concept_link:
       case ObjectType.reporting_concept: {
-        const queryParams: { [key: string]: any } = {
-          filterLevel: 'reporting concept',
-          selectedItem: selectedSearch.id,
-          selectedType: selectedSearch.objectType === ObjectType.reporting_concept_link ? 'link' : 'node'
-        };
-        if (selectedSearch.workPackage && selectedSearch.workPackage.id) {
-          queryParams.workpackages = [selectedSearch.workPackage.id];
-        }
-        this.router.navigate(['/topology'], { queryParams });
+        queryParams.filterLevel = 'reporting concept';
+        queryParams.selectedItem = selectedSearch.id;
+        queryParams.selectedType = selectedSearch.objectType === ObjectType.reporting_concept_link ? 'link' : 'node';
+        this.goToTopology(queryParams);
         break;
       }
     }
     this.searchClose();
     this.searchStore.dispatch(new ClearSearch());
+  }
+
+  goToTopology(queryParams: { [key: string]: any }) {
+    this.router.navigate(['/topology'], { queryParams });
   }
 }

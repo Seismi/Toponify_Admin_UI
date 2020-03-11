@@ -434,21 +434,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.setNodesLinks(filterLevel, id, workpackagesArray, scope);
         }
         if (selectedItem) {
-          this.isLoading$
-            .pipe(
-              filter(status => status === LoadingStatus.loaded),
-              take(1)
-            )
-            .subscribe(() => {
-              this.routerStore.dispatch(new UpdateQueryParams({ selectedItem: null, selectedType: null }));
-              this.diagramComponent.selectNode(selectedItem);
-              this.openRightTab(0);
-              if (selectedType === 'node') {
-                setTimeout(() => this.onViewChange(ArchitectureView.System));
-              } else {
-                setTimeout(() => this.onViewChange(ArchitectureView.Links));
-              }
-            });
+          setTimeout(() => {
+            this.isLoading$
+              .pipe(
+                filter(status => status === LoadingStatus.loaded),
+                take(1)
+              )
+              .subscribe(() => {
+                this.routerStore.dispatch(new UpdateQueryParams({ selectedItem: null, selectedType: null }));
+                this.diagramComponent.selectNode(selectedItem);
+                this.openRightTab(0);
+                if (selectedType === 'node') {
+                  this.onViewChange(ArchitectureView.System);
+                } else {
+                  this.onViewChange(ArchitectureView.Links);
+                }
+              });
+          });
         }
 
         this.parentName = parentName ? parentName : null;
@@ -1563,8 +1565,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDataForAddDescendantsDropdown(type: string): Observable<Node[] | DescendantsEntity[]>  {
-    this.store.dispatch(new FindPotentialWorkpackageNodes({workPackageId: this.workpackageId, nodeId: this.nodeId, data: {}}));
+  getDataForAddDescendantsDropdown(type: string): Observable<Node[] | DescendantsEntity[]> {
+    this.store.dispatch(
+      new FindPotentialWorkpackageNodes({ workPackageId: this.workpackageId, nodeId: this.nodeId, data: {} })
+    );
     if (type === 'addToGroup') {
       const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
       return this.store
