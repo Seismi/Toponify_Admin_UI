@@ -1589,10 +1589,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       data: {
         title: `Add "${this.selectedNode.name}" to...`,
         placeholder: 'Components',
-        options$: this.store.pipe(select(getNodeEntities))
-          .pipe(
-            map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id)))
-          ),
+        options$: this.store.pipe(select(getNodeEntities)).pipe(
+          map(nodes => nodes.filter(node => 
+            !node.group.length && 
+            !ids.has(node.id) && 
+            node.category !== 'transformation'))
+        ),
         selectedIds: []
       }
     });
