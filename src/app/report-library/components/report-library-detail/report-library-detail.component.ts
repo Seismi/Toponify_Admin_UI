@@ -5,7 +5,7 @@ import {
   Dimension,
   OwnersEntity
 } from '@app/report-library/store/models/report.model';
-import { OwnersEntityOrTeamEntityOrApproversEntity, Tag } from '@app/architecture/store/models/node.model';
+import { OwnersEntityOrTeamEntityOrApproversEntity, Tag, Node } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-report-library-detail',
@@ -32,6 +32,7 @@ export class ReportLibraryDetailComponent {
   @Input() selectedOwnerIndex: any;
   @Input() tags: Tag[];
   @Input() availableTags: Tag[];
+  @Input() systems: Node[];
 
   @Output() saveReport = new EventEmitter<void>();
   @Output() deleteReport = new EventEmitter<string>();
