@@ -463,11 +463,18 @@ export class GojsCustomObjectsService {
       row: number,
       text: string,
       subMenuNames: string[],
-      visible_predicate?: (object: go.Part, event: object) => boolean
+      visible_predicate?: (object: go.Part, event: object) => boolean,
+      text_predicate?: (object: go.GraphObject, event: object) => string
     ): go.Part {
-      return $(
-        'ContextMenuButton',
-        $(go.TextBlock, text),
+      return $('ContextMenuButton',
+        {
+          name: text
+        },
+        $(go.TextBlock,
+          text_predicate
+            ? new go.Binding('text', '', text_predicate).ofObject()
+            : { text: text }
+        ),
         {
           mouseEnter: function(event: object, object: go.Part): void {
             standardMouseEnter(event, object);
@@ -656,7 +663,18 @@ export class GojsCustomObjectsService {
           function(object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
             return node.data.layer === 'reporting concept' ? false : true;
-          }.bind(this)
+          }.bind(this),
+          function(object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            switch(node.data.layer) {
+              case 'data set': 
+                return 'Dimensions';
+              case 'dimension':
+                return 'Reporting Layer';
+              default: 
+                return 'Data Sets';
+            }
+          }
         ),
         // --Data set submenu buttons--
         makeSubMenuButton(
