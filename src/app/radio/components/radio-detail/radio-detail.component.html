@@ -1,6 +1,6 @@
 <form [formGroup]="group">
-  <div>
-    <mat-form-field [ngClass]="{ disabled: !isEditable }">
+  <div [ngClass]="{ disabled: !isEditable }">
+    <mat-form-field>
       <input
         matInput
         placeholder="Title"
@@ -11,8 +11,8 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
-      <mat-form-field [ngClass]="{ categoryInput: modalMode }">
+    <div class="align-in-row">
+      <mat-form-field [ngClass]="{ spaceToRight: modalMode }">
         <mat-label>Category</mat-label>
         <mat-select data-qa="radio-detail-category" formControlName="category" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let category of categories" [value]="category">
@@ -21,7 +21,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="space" *ngIf="!modalMode">
+      <mat-form-field class="space-around" *ngIf="!modalMode">
         <mat-label>Ref. Number</mat-label>
         <input
           matInput
@@ -65,7 +65,7 @@
         />
       </mat-form-field>
 
-      <mat-form-field class="space">
+      <mat-form-field class="space-around">
         <input 
           matInput 
           data-qa="radio-detail-created-on" 
@@ -86,8 +86,8 @@
       </mat-form-field>
     </div>
 
-    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
-      <mat-form-field class="assigned-to-input">
+    <div class="align-in-row">
+      <mat-form-field class="spaceToRight">
         <mat-label>Assigned To</mat-label>
         <mat-select
           data-qa="radio-detail-assigned-to"
@@ -111,8 +111,10 @@
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
+    </div>
 
-      <mat-form-field class="space" *ngIf="!modalMode">
+    <div class="align-in-row" *ngIf="!modalMode">
+      <mat-form-field class="spaceToRight">
         <mat-label>Severity</mat-label>
         <mat-select data-qa="radio-detail-severity" formControlName="severity" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let score of scores" [value]="score.level">
@@ -121,7 +123,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field *ngIf="!modalMode">
+      <mat-form-field>
         <mat-label>Frequency / Probability</mat-label>
         <mat-select data-qa="radio-detail-frequency" formControlName="frequency" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let score of scores" [value]="score.level">
@@ -131,15 +133,17 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field [ngClass]="{ disabled: !isEditable }">
+    <mat-form-field>
       <textarea
         matInput
         [rows]="rows"
         placeholder="Mitigation / Resolution"
         data-qa="radio-detail-mitigation"
         formControlName="mitigation"
-        [ngClass]="{ editable: isEditable }"
+        [ngStyle]="{ display: 'none' }"
       ></textarea>
+      <ckeditor [editor]="editor" [config]="config" formControlName="mitigation" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <div class="description-content" [innerHTML]="group.controls['mitigation'].value" [ngClass]="{hidden: isEditable}"></div>
     </mat-form-field>
   </div>
 
