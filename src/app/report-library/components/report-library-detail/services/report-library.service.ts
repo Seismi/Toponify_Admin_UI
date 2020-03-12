@@ -9,7 +9,8 @@ export class ReportLibraryDetailService {
   constructor(private fb: FormBuilder) {
     this.reportDetailForm = this.fb.group({
       name: [null, Validators.required],
-      description: [null]
+      description: [null],
+      system: [null]
     });
   }
 

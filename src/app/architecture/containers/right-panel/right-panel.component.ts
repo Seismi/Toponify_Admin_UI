@@ -78,7 +78,6 @@ export class RightPanelComponent {
   @Output() addDescendants = new EventEmitter<void>();
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
   @Output() deleteNodeGroup = new EventEmitter<Node>();
-
   @Output() updateAvailableTags = new EventEmitter<void>();
 
   @Output() addTag = new EventEmitter<string>();

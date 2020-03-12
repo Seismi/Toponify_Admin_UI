@@ -48,6 +48,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public workpackageId: string;
   public workPackageIsEditable: boolean;
   public scopeId: string;
+  public workPackageIds: string[];
 
   private subscriptions: Subscription[] = [];
 
@@ -87,8 +88,9 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-        const workPackageIds = workpackages.map(item => item.id);
-        this.setWorkPackage(workPackageIds);
+        const wpIds = workpackages.map(item => item.id);
+        this.workPackageIds = wpIds;
+        this.getReports(wpIds);
       })
     );
 
@@ -116,7 +118,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  setWorkPackage(workpackageIds: string[] = []) {
+  getReports(workpackageIds: string[] = []) {
     const queryParams = {
       workPackageQuery: workpackageIds,
       scopeQuery: this.scopeId
@@ -179,7 +181,11 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onAddReport() {
     const dialogRef = this.dialog.open(ReportModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        workPackageId: this.workpackageId,
+        scopeId: this.scopeId
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -198,11 +204,12 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   onSelectScope(scopeId: string): void {
     this.scopeStore.dispatch(new LoadScope(scopeId));
-    this.getReportWithScopeQuery(scopeId);
+    this.getReportsWithScopeQuery(scopeId);
   }
 
-  getReportWithScopeQuery(scopeId: string): void {
+  getReportsWithScopeQuery(scopeId: string): void {
     const queryParams = {
+      workPackageQuery: this.workPackageIds,
       scopeQuery: scopeId
     };
     this.store.dispatch(new LoadReports(queryParams));
