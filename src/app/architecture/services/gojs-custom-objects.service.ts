@@ -463,11 +463,18 @@ export class GojsCustomObjectsService {
       row: number,
       text: string,
       subMenuNames: string[],
-      visible_predicate?: (object: go.Part, event: object) => boolean
+      visible_predicate?: (object: go.Part, event: object) => boolean,
+      text_predicate?: (object: go.GraphObject, event: object) => string
     ): go.Part {
-      return $(
-        'ContextMenuButton',
-        $(go.TextBlock, text),
+      return $('ContextMenuButton',
+        {
+          name: text
+        },
+        $(go.TextBlock,
+          text_predicate
+            ? new go.Binding('text', '', text_predicate).ofObject()
+            : { text: text }
+        ),
         {
           mouseEnter: function(event: object, object: go.Part): void {
             standardMouseEnter(event, object);
@@ -548,13 +555,21 @@ export class GojsCustomObjectsService {
         makeButton(1, 'Show Details', function(event: go.DiagramEvent, object: go.Part): void {
           thisService.showDetailTabSource.next();
         }),
-        makeMenuButton(2, 'Grouped Components', [
-          'Expand',
-          'Show as List (groups)',
-          'Display (groups)',
-          'Add Sub-item',
-          'Add to Group'
-        ]),
+        makeMenuButton(
+          2, 
+          'Grouped Components', 
+            [
+              'Expand',
+              'Show as List (groups)',
+              'Display (groups)',
+              'Add Sub-item',
+              'Add to Group'
+            ],
+          function(object: go.GraphObject): boolean {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            return node.data.layer === 'system' ? true : false;
+          }.bind(this)
+        ),
         // --Grouped components submenu buttons--
         makeSubMenuButton(
           2,
@@ -625,21 +640,42 @@ export class GojsCustomObjectsService {
           6,
           'Add to Group',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
-
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             this.addSystemToGroupSource.next(node.data);
-
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
-            return object.group === '' && thisService.diagramEditable;
+            return thisService.diagramEditable;
+          },
+          function(object: go.GraphObject): string {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            return node.data.group ? 'Move to Group' : 'Add to Group';
           }
         ),
         // --End of group submenu buttons--
-        makeMenuButton(3, 'Data Sets', [
-          'Show as List (data sets)',
-          'Display (data sets)',
-          'Add data set',
-        ]),
+        makeMenuButton(
+          3, 
+          'Data Sets', 
+            [
+              'Show as List (data sets)',
+              'Display (data sets)',
+              'Add data set',
+            ],
+          function(object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            return node.data.layer === 'reporting concept' ? false : true;
+          }.bind(this),
+          function(object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            switch(node.data.layer) {
+              case 'data set': 
+                return 'Dimensions';
+              case 'dimension':
+                return 'Reporting Layer';
+              default: 
+                return 'Data Sets';
+            }
+          }
+        ),
         // --Data set submenu buttons--
         makeSubMenuButton(
           3,

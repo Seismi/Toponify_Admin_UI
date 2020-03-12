@@ -7,7 +7,7 @@ import {
   WorkPackageEntitiesHttpParams,
   WorkPackageEntitiesResponse,
   WorkPackageEntity,
-  Objective, 
+  Objective,
   Baseline
 } from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
