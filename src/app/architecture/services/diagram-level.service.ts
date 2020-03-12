@@ -52,6 +52,56 @@ export const moreDetailOrderMapping = {
   [Level.dimension]: Level.reportingConcept
 };
 
+// Define custom layout for top level nodes in map view
+function MapViewLayout() {
+  go.Layout.call(this);
+}
+go.Diagram.inherit(MapViewLayout, go.Layout);
+
+MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
+  const allParts = this.collectParts(coll);
+
+  const sourceGroups = new go.Set<go.Group>();
+  const targetGroups = new go.Set<go.Group>();
+  const transformationNodes = new go.Set<go.Node>();
+
+  allParts.each(function(part: go.Part) {
+    if (part.data.endPointType === 'source') {
+      sourceGroups.add(part as go.Group);
+    } else if (part.data.endPointType === 'target') {
+      targetGroups.add(part as go.Group);
+    } else if (part.category === nodeCategories.transformation) {
+      transformationNodes.add(part as go.Node);
+    }
+  });
+
+  this.diagram.startTransaction('Map View Layout');
+  const viewBounds = this.diagram.viewportBounds;
+  const nextLocation = new go.Point(0, 0);
+
+  sourceGroups.each(function(source: go.Group): void {
+    source.move(nextLocation.copy(), true);
+    nextLocation.offset(0, source.actualBounds.height + 15);
+  });
+
+  nextLocation.setTo(600, 0);
+
+  targetGroups.each(function(target: go.Group): void {
+    target.move(nextLocation.copy(), true);
+    nextLocation.offset(0, target.actualBounds.height + 15);
+  });
+
+  nextLocation.setTo(300, 0);
+
+  transformationNodes.each(function(trans: go.Node): void {
+    trans.move(nextLocation.copy(), true);
+    nextLocation.offset(0, trans.actualBounds.height + 15);
+  });
+
+  this.diagram.commitTransaction('Map View Layout');
+};
+// End map view layout
+
 @Injectable()
 export class DiagramLevelService {
   historyOfFilters: any = {};
@@ -383,10 +433,7 @@ export class DiagramLevelService {
 
     // Settings and layout for map view
     if (level.endsWith('map')) {
-      diagram.layout = $(go.GridLayout, {
-        spacing: new go.Size(100, 100),
-        alignment: go.GridLayout.Position,
-        wrappingWidth: Infinity,
+      diagram.layout = $(MapViewLayout as any, {
         isInitial: true,
         isOngoing: true
       });

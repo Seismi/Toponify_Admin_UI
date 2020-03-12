@@ -321,7 +321,7 @@ export class DiagramChangesService {
 
         newLink.sourceId = link.fromNode.data.id;
         newLink.targetId = link.toNode.data.id;
-        newLink.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`
+        newLink.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`;
 
         this.workpackages.forEach(workpackage => {
           this.workpackageStore.dispatch(
@@ -680,12 +680,13 @@ export class DiagramChangesService {
       }
     });
 
-    this.groupMemberSizeChanged(node);
-
     if (this.currentLevel.endsWith('map')) {
       // Update node's group layout in map view
       node.invalidateLayout();
     } else {
+
+      this.groupMemberSizeChanged(node);
+
       // Update expanded status of node in the back end
       this.onUpdateExpandState.next({
         node: {
@@ -817,7 +818,7 @@ export class DiagramChangesService {
     this.groupMemberSizeChanged(node);
   }
 
-  // Ensures that all groups that have the given member as part of
+  // Ensures that all system groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
   groupMemberSizeChanged(member: go.Node): void {
     const nestedGroups = new go.Set();

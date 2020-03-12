@@ -22,6 +22,8 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
+// Custom layout for system groups.
+//   Based on GridLayout but with custom initialOrigin method.
 function SystemGroupLayout() {
   go.GridLayout.call(this);
 }
@@ -33,26 +35,7 @@ SystemGroupLayout.prototype.initialOrigin = function(): go.Point {
   const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
-
-function MapViewLayout(): void {
-  go.Layout.call(this);
-}
-go.Diagram.inherit(MapViewLayout, go.Layout);
-
-MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
-  const allParts = this.collectParts(coll);
-
-  const sourceGroups = new go.Set();
-  const targetGroups = new go.Set();
-
-  allParts.each(function(part: go.Part) {
-    if (part.data.endPointType === 'source') {
-      sourceGroups.add(part);
-    } else if (part.data.endPointType === 'target') {
-      targetGroups.add(part);
-    }
-  });
-};
+// End system group layout
 
 const nodeWidth = 300;
 
