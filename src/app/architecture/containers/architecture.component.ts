@@ -263,7 +263,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
   public parentName: string | null;
-  public workPackageName: string;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
@@ -329,14 +328,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.parentDescendantIds = this.store.pipe(select(getParentDescendantIds));
     this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
     this.subscriptions.push(
-      this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-        this.selectedWorkPackageEntities = workpackages;
-        if (workpackages.length <= 2) {
-          this.workPackageName = workpackages.map(workpackage => workpackage.name).join(' & ');
-        } else {
-          this.workPackageName = workpackages[0].name + ' & ' + workpackages[1].name + ' ...';
-        }
-      })
+      this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(
+        workpackages => this.selectedWorkPackageEntities = workpackages
+      )
     );
     this.subscriptions.push(
       this.actions$
