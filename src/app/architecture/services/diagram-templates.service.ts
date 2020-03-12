@@ -1502,10 +1502,9 @@ export class DiagramTemplatesService {
           }.bind(this)
         }),
         computesBoundsAfterDrag: true,
-        computesBoundsIncludingLocation: true,
+        computesBoundsIncludingLocation: false,
         computesBoundsIncludingLinks: false,
-        locationSpot: go.Spot.TopCenter,
-        locationObjectName: 'shape',
+        locationSpot: new go.Spot(0.5, 0, 0, -30),
         isLayoutPositioned: true,
         layoutConditions: go.Part.LayoutStandard,
         selectable: false,
