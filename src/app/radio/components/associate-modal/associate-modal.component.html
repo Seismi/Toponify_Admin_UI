@@ -21,7 +21,7 @@
       <mat-icon>close</mat-icon>
     </button>
     <mat-option
-      *ngFor="let node of nodes$ | async" [value]="node.id"
+      *ngFor="let node of nodes$ | async | orderBy: 'name'" [value]="node.id"
       [class.hide]="filter(node)">
       {{ node.name }}
     </mat-option>
