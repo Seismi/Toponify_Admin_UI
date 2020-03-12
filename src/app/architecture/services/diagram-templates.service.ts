@@ -975,7 +975,8 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(false),
       {
-        contextMenu: null
+        contextMenu: null,
+        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
       },
       new go.Binding(
         'movable',
@@ -1275,7 +1276,8 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       {
-        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
+        doubleClick: (forPalette) ? undefined :
+          this.diagramChangesService.getMapViewForLink.bind(this.diagramChangesService)
       },
       $(
         go.Shape,
@@ -1334,13 +1336,13 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing'),
       this.getStandardLinkOptions(forPalette),
       {
-        doubleClick: function(event, object) {
+        doubleClick: function(event: go.InputEvent, object: go.Link): void {
           if (forPalette) {
             return;
           }
 
           if ([layers.system, layers.dataSet].includes(object.data.layer)) {
-            this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, object);
+            this.diagramChangesService.getMapViewForLink.call(this.diagramChangesService, event, object);
           }
         }.bind(this)
       },

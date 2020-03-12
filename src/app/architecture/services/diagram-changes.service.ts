@@ -893,4 +893,21 @@ export class DiagramChangesService {
     this.onUpdateDiagramLayout.next({});
 
   }
+
+  // Display map view for a link
+  getMapViewForLink(event: go.InputEvent, object: go.Link): void {
+    let mapViewSource: go.Part;
+
+    // If link connects to a transformation node then use this node as the source of the map view.
+    if (object.fromNode && object.fromNode.category === nodeCategories.transformation) {
+        mapViewSource = object.fromNode;
+      } else if (object.toNode && object.toNode.category === nodeCategories.transformation) {
+        mapViewSource = object.toNode;
+        // Otherwise, use the link as the source of the map view.
+      } else {
+        mapViewSource = object;
+      }
+
+    this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, mapViewSource);
+  }
 }

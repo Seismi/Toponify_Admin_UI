@@ -433,11 +433,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, workpackages } = fil;
+        const { filterLevel, id, scope, parentName, workpackages, isTransformation } = fil;
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
         if (filterLevel) {
           this.selectedWorkpackages = workpackagesArray;
-          this.setNodesLinks(filterLevel, id, workpackagesArray, scope);
+          this.setNodesLinks(filterLevel, id, workpackagesArray, scope, isTransformation);
         }
         this.parentName = parentName ? parentName : null;
         if (id) {
@@ -673,7 +673,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.layoutSettingsService.layoutSettingsForm;
   }
 
-  setNodesLinks(layer: Level, id?: string, workpackageIds: string[] = [], scope?: string) {
+  setNodesLinks(layer: Level,
+    id?: string,
+    workpackageIds: string[] = [],
+    scope?: string,
+    isTransformation?: boolean
+  ) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
@@ -685,6 +690,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     };
     if (scope) {
       queryParams.scopeQuery = scope;
+    }
+    if (isTransformation) {
+      queryParams.isTransformation = isTransformation;
     }
 
     if (layer.endsWith('map')) {

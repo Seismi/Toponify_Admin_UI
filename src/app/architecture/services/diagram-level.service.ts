@@ -169,7 +169,7 @@ export class DiagramLevelService {
 
   }
 
-  displayMapView(event: any, object: go.Link): void {
+  displayMapView(event: go.DiagramEvent, object: go.Part): void {
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
@@ -177,12 +177,10 @@ export class DiagramLevelService {
       new UpdateQueryParams({
         filterLevel: object.data.layer + ' map',
         id: object.data.id,
-        parentName: object.data.name
+        parentName: object.data.name,
+        isTransformation: object instanceof go.Node
       })
     );
-
-    const fromNode = JSON.parse(JSON.stringify(object.fromNode.data));
-    const toNode = JSON.parse(JSON.stringify(object.toNode.data));
 
     // Ensure that diagram content is initially centered while layouts are performed
     event.diagram.contentAlignment = go.Spot.Center;
