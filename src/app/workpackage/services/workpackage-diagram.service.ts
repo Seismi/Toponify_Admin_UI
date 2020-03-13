@@ -47,6 +47,76 @@ export class WorkPackageDiagramService {
     });
   }
 
+  // Get standard options used for node shapes
+  getStandardNodeShapeOptions(): go.Shape {
+    return $(
+      go.Shape,
+      {
+        figure: 'RoundedRectangle',
+        fill: 'white',
+        stroke: 'black',
+        strokeWidth: 1
+      }
+    )
+  }
+
+  // Get work package icon
+  getIcon(): go.Picture {
+    return $(
+      go.Picture,
+      {
+        row: 0,
+        desiredSize: new go.Size(20, 20),
+        source: '/assets/node-icons/work-package.svg'
+      }
+    )
+  }
+
+  // Get work package name
+  getName(): go.TextBlock {
+    return $(
+      go.TextBlock,
+      textFont('bold 16px'),
+      {
+        textAlign: 'center',
+        stroke: 'black',
+        row: 0,
+        margin: new go.Margin(3, 10, 0, 10),
+      },
+      new go.Binding('text', 'name')
+    )
+  }
+
+  // Get work package status
+  getStatus() {
+    return $(
+      go.Panel, 
+      "Auto", {
+        alignment: go.Spot.Right
+      },
+      $(go.Shape, 'RoundedRectangle',
+        new go.Binding('fill', '', (data) => {
+          if (data.hasErrors) {
+            return 'red';
+          } else {
+            return statusColours[data.status];
+          }
+        })
+      ),
+      $(
+        go.TextBlock,
+        textFont('italic 15px'),
+        {
+          textAlign: 'center',
+          stroke: 'white',
+          row: 0,
+          maxSize: new go.Size(200, Infinity),
+        },
+        new go.Binding('text', 'status')
+      )
+    )
+  }
+
   // Check if a node is in a branch containing only merged/superseded workpackages
   isInMergedSupersededBranch(workpackage): boolean {
     if (['superseded', 'merged'].includes(workpackage.data.status)) {
@@ -104,59 +174,18 @@ export class WorkPackageDiagramService {
           return !this.isInMergedSupersededBranch(node);
         }.bind(this)
       ).ofObject(),
+      this.getStandardNodeShapeOptions(),
       $(
-        go.Shape,
+        go.Panel, 
+        'Horizontal',
         {
-          figure: 'Rectangle',
-          stroke: 'black',
-          strokeWidth: 1,
-          fromLinkable: true,
-          toLinkable: true,
-          name: 'shape'
+          padding: 8
         },
-        // Get fill colour based on workpackage status and whether workpackage has errors
-        new go.Binding('fill', '', function(data) {
-          if (data.hasErrors) {
-            return 'red';
-          } else {
-            return statusColours[data.status];
-          }
-        })
-      ),
-      $(
-        go.Panel,
-        'Vertical',
-        {
-          alignment: go.Spot.TopCenter,
-          minSize: new go.Size(100, 100),
-          margin: 5
-        },
-        // Text showing workpackage name
-        $(
-          go.TextBlock,
-          textFont('bold 16px'),
-          {
-            textAlign: 'center',
-            stroke: 'white',
-            maxSize: new go.Size(200, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'name')
-        ),
-        // Text showing workpackage status
-        $(
-          go.TextBlock,
-          textFont('italic 15px'),
-          {
-            textAlign: 'center',
-            stroke: 'white',
-            maxSize: new go.Size(200, Infinity),
-            margin: new go.Margin(0, 0, 5, 0)
-          },
-          new go.Binding('text', 'status')
+          this.getIcon(),
+          this.getName(),
+          this.getStatus()
         )
       )
-    );
   }
 
   // Get link template for links in workpackage tree diagram
