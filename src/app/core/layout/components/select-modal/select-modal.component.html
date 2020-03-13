@@ -23,9 +23,9 @@
     color="primary"
     [disabled]="!selectionControl.valid"
     (click)="onConfirm()"
-    data-hook="radio-delete-modal-yes"
+    data-qa="select-modal-confirm"
   >
     Confirm
   </button>
-  <button mat-raised-button (click)="onCancel()" data-hook="radio-delete-modal-no">Cancel</button>
+  <button mat-raised-button (click)="onCancel()" data-hook="select-modal-cancel">Cancel</button>
 </div>
