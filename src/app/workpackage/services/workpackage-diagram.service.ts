@@ -57,7 +57,7 @@ export class WorkPackageDiagramService {
         stroke: 'black',
         strokeWidth: 1
       }
-    )
+    );
   }
 
   // Get work package icon
@@ -68,7 +68,7 @@ export class WorkPackageDiagramService {
         desiredSize: new go.Size(20, 20),
         source: '/assets/node-icons/work-package.svg'
       }
-    )
+    );
   }
 
   // Get work package name
@@ -82,14 +82,14 @@ export class WorkPackageDiagramService {
         margin: new go.Margin(3, 10, 0, 10),
       },
       new go.Binding('text', 'name')
-    )
+    );
   }
 
   // Get work package status
   getStatus() {
     return $(
-      go.Panel, 
-      "Auto", {
+      go.Panel,
+      'Auto', {
         alignment: go.Spot.Right
       },
       $(go.Shape, 'RoundedRectangle',
@@ -110,7 +110,7 @@ export class WorkPackageDiagramService {
         },
         new go.Binding('text', 'status')
       )
-    )
+    );
   }
 
   // Check if a node is in a branch containing only merged/superseded workpackages
@@ -172,7 +172,7 @@ export class WorkPackageDiagramService {
       ).ofObject(),
       this.getStandardNodeShapeOptions(),
       $(
-        go.Panel, 
+        go.Panel,
         'Horizontal',
         {
           padding: 8
@@ -181,7 +181,7 @@ export class WorkPackageDiagramService {
           this.getName(),
           this.getStatus()
         )
-      )
+      );
   }
 
   // Get link template for links in workpackage tree diagram
