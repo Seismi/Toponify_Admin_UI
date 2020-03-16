@@ -204,7 +204,7 @@ export class DiagramLevelService {
     const linkLayer =
       level === Level.systemMap ? layers.dataSet : level === Level.dataSetMap ? layers.dimension : level.toLowerCase();
 
-    if (level !== Level.usage) {
+    if (level !== Level.usage && !level.includes('map')) {
       paletteViewLinks.push({
         category: linkCategories.masterData,
         id: 'New master data link',
@@ -216,6 +216,9 @@ export class DiagramLevelService {
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForMasterDataLinks(level)
       });
+    }
+
+    if (level !== Level.usage) {
 
       let transformationLayer;
 
@@ -336,7 +339,7 @@ export class DiagramLevelService {
       );
     }
 
-    if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
+    if ([Level.system, Level.dataSet].includes(level)) {
       paletteViewLinks.push({
         category: linkCategories.data,
         id: 'New data link',
@@ -371,7 +374,7 @@ export class DiagramLevelService {
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,
-      makeUniqueKeyFunction: function() {
+      makeUniqueKeyFunction: function(model: go.Model, data: go.ObjectData) {
         return uuid();
       },
       makeUniqueLinkKeyFunction: function() {
