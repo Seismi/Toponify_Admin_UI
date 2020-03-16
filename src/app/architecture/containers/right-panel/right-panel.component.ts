@@ -84,6 +84,8 @@ export class RightPanelComponent {
   @Output() createTag = new EventEmitter<Tag>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateTag = new EventEmitter<Tag>();
+  @Output() seeUsage = new EventEmitter<void>();
+  @Output() seeDependencies = new EventEmitter<void>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -245,5 +247,13 @@ export class RightPanelComponent {
 
   onUpdateTag(tag: Tag) {
     this.updateTag.emit(tag);
+  }
+
+  onSeeUsage() {
+    this.seeUsage.emit();
+  }
+
+  onSeeDependencies() {
+    this.seeDependencies.emit();
   }
 }

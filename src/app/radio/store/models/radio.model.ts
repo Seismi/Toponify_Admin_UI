@@ -91,6 +91,8 @@ export interface RadioDetail {
   replyCount: number;
   replies?: (Replies)[] | null;
   relatesTo: (RelatesTo)[] | null;
+  severity: number;
+  frequency: number;
 }
 
 export interface RelatesTo {

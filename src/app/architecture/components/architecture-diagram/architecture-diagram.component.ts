@@ -312,6 +312,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.select(this.diagram.findPartForKey(id));
   }
 
+  getNodeFromId(id: string) {
+    return this.diagram.findNodeForKey(id);
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes.showGrid) {
       this.diagram.grid.visible = this.showGrid;
