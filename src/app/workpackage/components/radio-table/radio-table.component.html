@@ -22,7 +22,7 @@
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon (click)="onEdit(element)">open_in_new</mat-icon>
+        <mat-icon data-qa="work-packages-radio-table-open" (click)="onEdit(element)">open_in_new</mat-icon>
       </td>
     </ng-container>
 
@@ -30,7 +30,7 @@
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon (click)="onDelete(element)" [hidden]="true" style="color: #cf3030">delete</mat-icon>
+        <mat-icon data-qa="work-packages-radio-table-delete" (click)="onDelete(element)" [hidden]="true" style="color: #cf3030">delete</mat-icon>
       </td>
     </ng-container>
 
@@ -40,7 +40,7 @@
 
   <div style="display: flex; background-color: #fff">
     <div style="flex-grow: 1;">
-      <button mat-raised-button color="primary" (click)="onAdd()">Add</button>
+      <button mat-raised-button color="primary" (click)="onAdd()" data-qa="work-packages-radio-table-add">Add</button>
     </div>
     <mat-paginator [pageSizeOptions]="[10, 15, 20]"></mat-paginator>
   </div>
