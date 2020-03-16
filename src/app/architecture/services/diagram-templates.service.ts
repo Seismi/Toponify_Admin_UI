@@ -1447,42 +1447,14 @@ export class DiagramTemplatesService {
           comparer: function(a, b) {
             // Only perform this comparison for initial layout. This prevents users' reordering of nodes from being overridden.
             if (this.diagramLevelService.groupLayoutInitial) {
-              // Get nodes connected to each node
-              const aLinkedNodes = a.findNodesConnected();
-              const bLinkedNodes = b.findNodesConnected();
-
-              // Place unconnected nodes after nodes with links
-              if (aLinkedNodes.count === 0 && bLinkedNodes.count !== 0) {
-                return 1;
-              } else if (aLinkedNodes.count !== 0 && bLinkedNodes.count === 0) {
+              if (isNaN(a.data.sortOrder) || isNaN(b.data.sortOrder)) {
+                return 0;
+              } else if (a.data.sortOrder < b.data.sortOrder) {
                 return -1;
-              } else if (aLinkedNodes.count !== 0 && bLinkedNodes.count !== 0) {
-                // Initialise variables to hold total heights of connected nodes for each compare node
-                let aHeights = 0;
-                let bHeights = 0;
-
-                // Total y values of co-ordinates of centre of each node connected to node a
-                while (aLinkedNodes.next()) {
-                  aHeights = aHeights + aLinkedNodes.value.findObject('shape').getDocumentPoint(go.Spot.Center).y;
-                }
-
-                // Calculate average height by dividing by the number of linked nodes
-                aHeights = aHeights / aLinkedNodes.count;
-
-                // Total y values of co-ordinates of centre of each node connected to node b
-                while (bLinkedNodes.next()) {
-                  bHeights = bHeights + bLinkedNodes.value.findObject('shape').getDocumentPoint(go.Spot.Center).y;
-                }
-
-                // Calculate average height by dividing by the number of linked nodes
-                bHeights = bHeights / bLinkedNodes.count;
-
-                // Compare average connected node height to determine order
-                if (aHeights > bHeights) {
-                  return 1;
-                } else if (bHeights > aHeights) {
-                  return -1;
-                }
+              } else if (a.data.sortOrder > b.data.sortOrder) {
+                return 1;
+              } else {
+                return 0;
               }
             }
 
