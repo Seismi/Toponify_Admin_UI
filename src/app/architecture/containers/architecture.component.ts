@@ -276,6 +276,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public parentDescendantIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
+  public byId = false;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -432,12 +433,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, workpackages, selectedItem, selectedType } = fil;
+        const { filterLevel, id, scope, parentName, workpackages, isTransformation, selectedItem, selectedType } = fil;
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
 
         if (filterLevel) {
           this.selectedWorkpackages = workpackagesArray;
-          this.setNodesLinks(filterLevel, id, workpackagesArray, scope);
+          this.setNodesLinks(filterLevel, id, workpackagesArray, scope, isTransformation);
         }
         if (selectedItem) {
           setTimeout(() => {
@@ -461,6 +462,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
         this.parentName = parentName ? parentName : null;
         if (id) {
+          this.byId = true;
           const parentNode: Node = this.nodes.find(node => node.id === id);
           if (!parentNode) {
             this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray || [] }));
@@ -468,6 +470,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             this.store.dispatch(new SetParentDescendantIds(parentNode.descendants.map(n => n.id)));
           }
         } else {
+          this.byId = false;
           this.store.dispatch(new RemoveParentDescendantIds());
         }
       }
@@ -698,7 +701,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.layoutSettingsService.layoutSettingsForm;
   }
 
-  setNodesLinks(layer: Level, id?: string, workpackageIds: string[] = [], scope?: string) {
+  setNodesLinks(layer: Level,
+    id?: string,
+    workpackageIds: string[] = [],
+    scope?: string,
+    isTransformation?: boolean
+  ) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
@@ -710,6 +718,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     };
     if (scope) {
       queryParams.scopeQuery = scope;
+    }
+    if (isTransformation) {
+      queryParams.isTransformation = isTransformation;
     }
 
     if (layer.endsWith('map')) {
@@ -1231,8 +1242,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddRelatedRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px',
-      height: '730px'
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1423,8 +1433,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddRadio() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px',
-      height: '730px'
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1614,10 +1623,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       data: {
         title: `Add "${this.selectedNode.name}" to...`,
         placeholder: 'Components',
-        options$: this.store.pipe(select(getNodeEntities))
-          .pipe(
-            map(nodes => nodes.filter(node => !node.group.length && !ids.has(node.id)))
-          ),
+        options$: this.store.pipe(select(getNodeEntities)).pipe(
+          map(nodes => nodes.filter(node =>
+            !node.group.length &&
+            !ids.has(node.id) &&
+            node.category !== 'transformation'))
+        ),
         selectedIds: []
       }
     });
