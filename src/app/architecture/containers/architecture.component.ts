@@ -277,6 +277,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public parentDescendantIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
+  public byId = false;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -433,14 +434,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, workpackages } = fil;
+        const { filterLevel, id, scope, parentName, workpackages, isTransformation } = fil;
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
         if (filterLevel) {
           this.selectedWorkpackages = workpackagesArray;
-          this.setNodesLinks(filterLevel, id, workpackagesArray, scope);
+          this.setNodesLinks(filterLevel, id, workpackagesArray, scope, isTransformation);
         }
         this.parentName = parentName ? parentName : null;
         if (id) {
+          this.byId = true;
           const parentNode: Node = this.nodes.find(node => node.id === id);
           if (!parentNode) {
             this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray || [] }));
@@ -448,6 +450,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             this.store.dispatch(new SetParentDescendantIds(parentNode.descendants.map(n => n.id)));
           }
         } else {
+          this.byId = false;
           this.store.dispatch(new RemoveParentDescendantIds());
         }
       }
@@ -673,7 +676,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.layoutSettingsService.layoutSettingsForm;
   }
 
-  setNodesLinks(layer: Level, id?: string, workpackageIds: string[] = [], scope?: string) {
+  setNodesLinks(layer: Level,
+    id?: string,
+    workpackageIds: string[] = [],
+    scope?: string,
+    isTransformation?: boolean
+  ) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
@@ -685,6 +693,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     };
     if (scope) {
       queryParams.scopeQuery = scope;
+    }
+    if (isTransformation) {
+      queryParams.isTransformation = isTransformation;
     }
 
     if (layer.endsWith('map')) {

@@ -10,6 +10,7 @@ export interface GetNodesRequestQueryParams {
   scopeQuery?: string;
   layoutQuery?: string;
   workPackageQuery: string[];
+  isTransformation?: boolean;
   format?: string;
 }
 
