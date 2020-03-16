@@ -51,7 +51,7 @@ export class RadioDetailComponent {
     },
     {
       level: 5,
-      text: 'Highes'
+      text: 'Highest'
     }
   ];
   public categories = Constants.RADIO_CATEGORIES;
