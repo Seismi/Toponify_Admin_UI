@@ -72,8 +72,8 @@ export const initialState: State = {
   loadingLinks: null,
   loadingNodes: null,
   draft: {},
-  loadingNode: null,
-  loadingLink: null
+  loadingNode: LoadingStatus.loaded,
+  loadingLink: LoadingStatus.loaded
 };
 
 export function reducer(

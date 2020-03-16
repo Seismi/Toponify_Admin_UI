@@ -1,9 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getNodeLoadingStatus } from '@app/architecture/store/selectors/node.selector';
+import { Component, Input, OnInit } from '@angular/core';
 import { LoadingStatus } from '@app/architecture/store/models/node.model';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar-loader',
@@ -13,12 +9,10 @@ import { Observable } from 'rxjs';
 
 export class LoaderComponent implements OnInit {
 
-  loadingStatus = LoadingStatus;
-  isLoading$: Observable<LoadingStatus>;
+  @Input() loadingStatus: LoadingStatus;
+  status = LoadingStatus;
 
-  constructor(private store: Store<NodeState>) {}
+  constructor() {}
 
-  ngOnInit(): void {
-    this.isLoading$ = this.store.select(getNodeLoadingStatus);
-  }
+  ngOnInit(): void {}
 }
