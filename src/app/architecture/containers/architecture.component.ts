@@ -1964,5 +1964,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       });
     }
-    
+
+    onExitWorkPackageEditMode(): void {
+      this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
+    }
 }

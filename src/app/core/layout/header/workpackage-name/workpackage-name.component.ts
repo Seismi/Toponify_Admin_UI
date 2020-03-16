@@ -10,7 +10,7 @@ export class WorkPackageNameComponent {
   @Input() selectedWorkPackageEntities: WorkPackageEntity[];
   @Input() workPackageIsEditable: boolean;
 
-  @Output() exitWorkPackageEditMode = new EventEmitter<WorkPackageEntity[]>();
+  @Output() exitWorkPackageEditMode = new EventEmitter<void>();
 
   showWorkPackages(): string {
     const workPackageNameArray = this.selectedWorkPackageEntities.map(workpackage => workpackage['name']);
