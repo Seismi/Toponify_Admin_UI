@@ -65,7 +65,6 @@ export class WorkPackageDiagramService {
     return $(
       go.Picture,
       {
-        row: 0,
         desiredSize: new go.Size(20, 20),
         source: '/assets/node-icons/work-package.svg'
       }
@@ -80,7 +79,6 @@ export class WorkPackageDiagramService {
       {
         textAlign: 'center',
         stroke: 'black',
-        row: 0,
         margin: new go.Margin(3, 10, 0, 10),
       },
       new go.Binding('text', 'name')
@@ -108,9 +106,7 @@ export class WorkPackageDiagramService {
         textFont('italic 15px'),
         {
           textAlign: 'center',
-          stroke: 'white',
-          row: 0,
-          maxSize: new go.Size(200, Infinity),
+          stroke: 'white'
         },
         new go.Binding('text', 'status')
       )
