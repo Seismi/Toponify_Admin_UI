@@ -27,10 +27,14 @@ export class LayerPipe implements PipeTransform {
 
     return props.descendantIds$.pipe(
       map(descendantIds => {
-        if (!descendantIds.length) {
-          return items;
-        } else {
+        if (descendantIds.length > 0) {
           return items.filter(item => descendantIds.some(id => id === item.id));
+        } else {
+          if (props.byId) {
+            return [];
+          } else {
+            return items;
+          }
         }
       })
     );

@@ -277,6 +277,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public parentDescendantIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
+  public byId = false;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -441,6 +442,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
         this.parentName = parentName ? parentName : null;
         if (id) {
+          this.byId = true;
           const parentNode: Node = this.nodes.find(node => node.id === id);
           if (!parentNode) {
             this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray || [] }));
@@ -448,6 +450,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             this.store.dispatch(new SetParentDescendantIds(parentNode.descendants.map(n => n.id)));
           }
         } else {
+          this.byId = false;
           this.store.dispatch(new RemoveParentDescendantIds());
         }
       }
