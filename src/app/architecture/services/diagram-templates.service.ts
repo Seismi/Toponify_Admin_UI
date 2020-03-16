@@ -1506,7 +1506,8 @@ export class DiagramTemplatesService {
               stroke: 'black',
               alignment: go.Spot.TopCenter,
               stretch: go.GraphObject.Horizontal,
-              width: 180
+              overflow: go.TextBlock.OverflowEllipsis,
+              wrap: go.TextBlock.None
             },
             new go.Binding('text', 'name')
           ),
