@@ -1,5 +1,10 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { DraggerPosition } from './dragger/dragger.component';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { Store } from '@ngrx/store';
+import { getNodeLoadingStatus, getNodeLinkLoadingStatus } from '@app/architecture/store/selectors/node.selector';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-model-sidebar',
@@ -11,23 +16,44 @@ export class ModelSidebarComponent implements OnInit, OnDestroy {
   @Input() maxWidth = 400;
   @Input() isLast: boolean;
 
+  subscriptions: Subscription[] = [];
+
+  loadingStatus: LoadingStatus = LoadingStatus.loaded;
+
   resizing = false;
 
   get draggerPosition(): DraggerPosition {
     return this.isLast ? DraggerPosition.right : DraggerPosition.left;
   }
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
+  constructor(
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
+    private store: Store<NodeState>,
+    private ref: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.setElementWidth(this.minWidth);
     document.addEventListener('mousemove', this.handleMouseMove.bind(this));
     document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+    this.subscriptions.push(
+      this.store.select(getNodeLoadingStatus).subscribe(status => {
+        this.loadingStatus = status;
+        this.ref.detectChanges();
+      })
+    );
+    this.subscriptions.push(
+      this.store.select(getNodeLinkLoadingStatus).subscribe(status => {
+        this.loadingStatus = status;
+        this.ref.detectChanges();
+      })
+    );
   }
 
   ngOnDestroy() {
     document.removeEventListener('mousemove', this.handleMouseMove.bind(this));
     document.removeEventListener('mouseup', this.handleMouseUp.bind(this));
+    this.subscriptions.forEach(subscription => subscription.unsubscribe())
   }
 
   handleMouseDown() {

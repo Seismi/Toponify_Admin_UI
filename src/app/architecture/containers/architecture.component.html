@@ -99,7 +99,7 @@
             [allowMove]="allowMove"
             [workPackageIsEditable]="workPackageIsEditable"
             *ngIf="!showTable"
-            [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
+            [nodes]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
             [links]="links | layer: { byId: false } | async"
             [workpackageDetail]="workpackageDetail"
             [selectedId]="selectedId"
@@ -215,6 +215,8 @@
             (deleteDescendants)="onDeleteDescendant($event)"
             (deleteNodeGroup)="onDeleteNodeGroup($event)"
             [currentFilterLevel]="currentFilterLevel"
+            (seeUsage)="onSeeUsage()"
+            (seeDependencies)="onSeeDependencies()"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

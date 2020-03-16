@@ -6,6 +6,11 @@ import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import { Tag } from '@app/architecture/store/models/node.model';
 
+interface Scores {
+  level: number;
+  text: string;
+}
+
 @Component({
   selector: 'smi-radio-detail',
   templateUrl: './radio-detail.component.html',
@@ -27,6 +32,28 @@ export class RadioDetailComponent {
     this.users = data;
   }
 
+  public scores: Scores[] = [
+    {
+      level: 1,
+      text: 'Lowest'
+    },
+    {
+      level: 2,
+      text: 'Low'
+    },
+    {
+      level: 3,
+      text: 'Medium'
+    },
+    {
+      level: 4,
+      text: 'High'
+    },
+    {
+      level: 5,
+      text: 'Highest'
+    }
+  ];
   public categories = Constants.RADIO_CATEGORIES;
   public status = Constants.RADIO_STATUS;
   public editor = InlineEditor;
