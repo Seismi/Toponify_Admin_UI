@@ -54,6 +54,7 @@ export class SearchComponent implements OnInit {
   searchClose(): void {
     this.toggleSearch = false;
     this.inp.first.nativeElement.value = '';
+    this.search$.next('');
   }
 
   onSelect(selectedSearch: SearchEntity) {
