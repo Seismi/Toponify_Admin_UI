@@ -9,4 +9,10 @@
   >
     cancel
   </mat-icon>
+  <mat-icon
+    *ngIf="!workPackageIsEditable && selectedWorkPackageEntities?.length === 1"
+    (click)="editWorkPackage.emit(selectedWorkPackageEntities[0])"
+  >
+    edit
+  </mat-icon>
 </div>
