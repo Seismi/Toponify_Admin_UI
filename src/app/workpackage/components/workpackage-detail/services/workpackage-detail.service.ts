@@ -11,7 +11,7 @@ export class WorkPackageDetailService {
       name: [null, Validators.required],
       description: [null],
       baseline: [null],
-      owners: [null],
+      owners: [null, Validators.required],
       status: ['draft']
     });
   }
