@@ -29,6 +29,9 @@
         [clickedOnLink]="clickedOnLink"
         (seeUsage)="onSeeUsage()"
         (seeDependencies)="onSeeDependencies()"
+        [sourceObject]="sourceObject"
+        [targetObject]="targetObject"
+        (editSourceOrTarget)="editSourceOrTarget.emit($event)"
       >
       </smi-object-details-form>
     </p>

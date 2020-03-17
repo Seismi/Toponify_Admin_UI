@@ -24,6 +24,8 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 export class RightPanelComponent {
   private showDetailTabRef;
 
+  @Input() sourceObject: any;
+  @Input() targetObject: any;
   @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() selectedView: ArchitectureView;
@@ -86,6 +88,7 @@ export class RightPanelComponent {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() editSourceOrTarget = new EventEmitter<string>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
