@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import {layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
+import {endPointTypes, layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
 import {linkCategories, RoutesEntityEntity} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
@@ -68,9 +68,9 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
 
   // Populate node lists
   allParts.each(function(part: go.Part) {
-    if (part.data.endPointType === 'source') {
+    if (part.data.endPointType === endPointTypes.source) {
       sourceGroups.add(part as go.Group);
-    } else if (part.data.endPointType === 'target') {
+    } else if (part.data.endPointType === endPointTypes.target) {
       targetGroups.add(part as go.Group);
     } else if (part.category === nodeCategories.transformation) {
       transformationNodes.add(part as go.Node);
