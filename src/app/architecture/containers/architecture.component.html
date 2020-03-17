@@ -41,8 +41,8 @@
       <smi-workpackage-name
         [selectedWorkPackageEntities]="selectedWorkPackageEntities"
         [workPackageIsEditable]="workPackageIsEditable"
-        [workPackageName]="workPackageName"
-        (exitWorkPackageEditMode)="onSelectEditWorkpackage($event)">
+        (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
+        (editWorkPackage)="onSelectEditWorkpackage($event)">
       </smi-workpackage-name>
       <app-search></app-search>
       <app-toolbar-column>
