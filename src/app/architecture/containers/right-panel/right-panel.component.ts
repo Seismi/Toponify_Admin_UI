@@ -79,6 +79,7 @@ export class RightPanelComponent {
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
   @Output() deleteNodeGroup = new EventEmitter<Node>();
   @Output() updateAvailableTags = new EventEmitter<void>();
+  @Output() itemClick = new EventEmitter<void>();
 
   @Output() addTag = new EventEmitter<string>();
   @Output() createTag = new EventEmitter<Tag>();
@@ -180,6 +181,9 @@ export class RightPanelComponent {
   }
 
   isFirst(): boolean {
+    if (this.nodes.length < 1) {
+      return false;
+    }
     if (!this.selectedNode) {
       return true;
     }
@@ -191,6 +195,9 @@ export class RightPanelComponent {
   }
 
   isLast(): boolean {
+    if (this.nodes.length < 1) {
+      return false;
+    }
     if (!this.selectedNode) {
       return false;
     }

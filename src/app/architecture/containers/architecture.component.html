@@ -119,7 +119,7 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.System">
           <smi-architecture-table-view
-            [data]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [data]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds } | async"
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
             (changeLevel)="onChangeLevel($event)"
@@ -157,6 +157,7 @@
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
+            (itemClick)="itemClick($event)"
             [owners]="selectedNode?.owners"
             [selectedRightTab]="selectedRightTab"
             [group]="objectDetailsForm"
