@@ -790,11 +790,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  itemClick(item: any) {
-    // Find out level e.g. system, data set
-    console.info(this.selectedPart);
-    console.info(item);
-
+  itemClick(item: any): void {
     const params: {id?: string; filterLevel: string; selectedItem: string; selectedType: string} = {
       filterLevel: item.layer,
       selectedItem: item.id,
@@ -804,9 +800,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (item.layer !== Level.system) {
       params.id = this.selectedPart.id;
     }
-
-    //selectedItem
-
     this.routerStore.dispatch(
       new UpdateQueryParams(params)
     );
