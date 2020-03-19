@@ -180,7 +180,15 @@ export function reducer(
         function(updatedState, link) {
           const linkIndex = updatedState.links.findIndex(l => l.id === link.id);
           if (linkIndex > -1) {
-            return replaceLinkRoute(updatedState, linkIndex, link.id, layoutId, link.points);
+            return replaceLinkRoute(
+              updatedState,
+              linkIndex,
+              link.id,
+              layoutId,
+              link.points,
+              link.fromSpot,
+              link.toSpot
+            );
           }
         },
         {
@@ -822,7 +830,14 @@ function replaceNodeLayoutSetting(
   };
 }
 
-function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layoutId: string, route: number[]): State {
+function replaceLinkRoute(state: State,
+  linkIndex: number,
+  linkId: string,
+  layoutId: string,
+  route: number[],
+  fromSpot: string,
+  toSpot: string
+): State {
   const updatedLayouts: LinkLayoutSettingsEntity[] = state.links[linkIndex].positionPerLayout.concat();
   const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: LinkLayoutSettingsEntity) {
     return layoutSettings.layout.id === layoutId;
@@ -830,7 +845,12 @@ function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layou
 
   if (layoutIndex > -1) {
     const updatedLayout = updatedLayouts[layoutIndex];
-    const newPositionSettings = { ...updatedLayout.layout.positionSettings, route: route };
+    const newPositionSettings = {
+      ...updatedLayout.layout.positionSettings,
+      route: route,
+      fromSpot: fromSpot,
+      toSpot: toSpot
+    };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
   }

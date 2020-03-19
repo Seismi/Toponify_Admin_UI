@@ -226,7 +226,11 @@ export class DiagramChangesService {
         if (part instanceof go.Link) {
           // Ignore disconnected links
           if (part.fromNode && part.toNode) {
-            links.push({ id: part.key, points: part.data.route });
+            links.push({ id: part.key,
+              points: part.data.route,
+              fromSpot: part.data.fromSpot,
+              toSpot: part.data.toSpot
+            });
           }
         } else {
           // Part is a node
@@ -295,24 +299,6 @@ export class DiagramChangesService {
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
-
-      // TEMPORARY - condition to prevent error while impactedByWorkPackages missing from nodeLink components response
-      if (!this.currentLevel.endsWith('map')) {
-        // Add currently editing workpackage to array of workpackages impacted by if not there already
-        if (
-          link.data.impactedByWorkPackages.every(
-            function(workpackage) {
-              return workpackage.id !== this.workpackages[0].id;
-            }.bind(this)
-          )
-        ) {
-          link.diagram.model.setDataProperty(
-            link.data,
-            'impactedByWorkPackages',
-            link.data.impactedByWorkPackages.concat([this.workpackages[0]])
-          );
-        }
-      }
 
       // Create link if not already in database
       if (link.data.isTemporary) {

@@ -885,7 +885,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveAsLayout(): void {
-    alert("SaveAsLayout");
+    alert('SaveAsLayout');
   }
 
   // FIXME: types
@@ -960,7 +960,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return {
         id: link.id,
         positionSettings: {
-          route: link.route
+          route: link.route,
+          fromSpot: link.fromSpot,
+          toSpot: link.toSpot
         }
       };
     });
@@ -1069,14 +1071,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 );
               }
 
-              // Temporary workaround for issue with API incorrectly assigning group status to system level transformation nodes
-              const correctedIsGroup = node.category === 'transformation' ? false : node.isGroup;
-
               const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
 
               return {
                 ...node,
-                isGroup: correctedIsGroup,
                 location: layoutProps && layoutProps.locationCoordinates ? layoutProps.locationCoordinates : null,
                 locationMissing: !(layoutProps && layoutProps.locationCoordinates),
                 middleExpanded:
@@ -1128,6 +1126,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
               return {
                 ...link,
+                fromSpot: layoutProps && layoutProps.fromSpot ? layoutProps.fromSpot : go.Spot.stringify(go.Spot.Default),
+                toSpot: layoutProps && layoutProps.toSpot ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default),
                 route: layoutProps && layoutProps.route ? layoutProps.route : [],
                 routeMissing: !(layoutProps && layoutProps.route)
               };
@@ -1610,7 +1610,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             nodeId: this.nodeId,
             descendantId: descendant.id
           })
-        )
+        );
       }
     });
   }
@@ -1664,7 +1664,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             workPackageId: this.workpackageId,
             systemId: (node === undefined) ? this.nodeId : node.id
           })
-        )
+        );
       }
     });
   }
