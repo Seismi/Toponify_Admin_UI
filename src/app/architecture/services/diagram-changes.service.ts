@@ -649,7 +649,7 @@ export class DiagramChangesService {
   }
 
   nodeExpandChanged(node) {
-    const linkData: { id: string; points: number[] }[] = [];
+    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
@@ -662,7 +662,11 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 
@@ -772,7 +776,7 @@ export class DiagramChangesService {
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
-    const linkData: { id: string; points: number[] }[] = [];
+    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
     const node = event.subject.part;
 
     // Make sure node bounds are up to date so links can route correctly
@@ -786,7 +790,11 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 
@@ -855,7 +863,11 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 

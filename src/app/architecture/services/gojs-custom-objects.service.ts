@@ -166,7 +166,6 @@ export class CustomLink extends go.Link {
 
     // Array of tools that can affect link routes
     const tools = [toolManager.draggingTool,
-      toolManager.linkReshapingTool,
       toolManager.linkingTool,
       linkShiftingTool,
       toolManager.resizingTool
