@@ -41,8 +41,8 @@
       <smi-workpackage-name
         [selectedWorkPackageEntities]="selectedWorkPackageEntities"
         [workPackageIsEditable]="workPackageIsEditable"
-        [workPackageName]="workPackageName"
-        (exitWorkPackageEditMode)="onSelectEditWorkpackage($event)">
+        (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
+        (editWorkPackage)="onSelectEditWorkpackage($event)">
       </smi-workpackage-name>
       <app-search></app-search>
       <app-toolbar-column>
@@ -119,7 +119,7 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.System">
           <smi-architecture-table-view
-            [data]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [data]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds } | async"
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
             (changeLevel)="onChangeLevel($event)"
@@ -185,7 +185,7 @@
             (addExistingScope)="onAddExistingScope()"
             (addNewScope)="onAddNewScope()"
             [selectedView]="selectedView"
-            [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [nodes]="nodes | layer: { byId: false, descendantIds$: parentDescendantIds } | async"
             [selectedNode]="selectedNode"
             (selectNode)="onSelectNode($event)"
             [links]="links | layer: { byId: false} | async"

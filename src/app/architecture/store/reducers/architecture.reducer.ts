@@ -46,6 +46,8 @@ export interface State {
   tags: Tag[];
   loadingLinks: LoadingStatus;
   loadingNodes: LoadingStatus;
+  loadingNode: LoadingStatus;
+  loadingLink: LoadingStatus;
 }
 
 export const initialState: State = {
@@ -69,7 +71,9 @@ export const initialState: State = {
   tags: [],
   loadingLinks: null,
   loadingNodes: null,
-  draft: {}
+  draft: {},
+  loadingNode: LoadingStatus.loaded,
+  loadingLink: LoadingStatus.loaded
 };
 
 export function reducer(
@@ -318,6 +322,69 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.LoadNodeLink: {
+      return {
+        ...state,
+        loadingLink: LoadingStatus.loading
+      };
+    }
+
+    case NodeActionTypes.LoadNodeLinkSuccess: {
+      return {
+        ...state,
+        selectedNodeLink: action.payload,
+        loadingLink: LoadingStatus.loaded
+      };
+    }
+
+    case NodeActionTypes.LoadNodeLinkFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loadingLink: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadNode: {
+      return {
+        ...state,
+        loadingNode: LoadingStatus.loading
+      };
+    }
+
+    case NodeActionTypes.LoadNodeSuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload,
+        loadingNode: LoadingStatus.loaded
+      };
+    }
+
+    case NodeActionTypes.LoadNodeFailure: {
+      return {
+        ...state,
+        loadingNode: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReports: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReportsSuccess: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReportsFailure: {
+      return {
+        ...state
+      };
+    }
+
     case NodeActionTypes.LoadNodes: {
       return {
         ...state,
@@ -395,13 +462,6 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.LoadNodeSuccess: {
-      return {
-        ...state,
-        selectedNode: action.payload
-      };
-    }
-
     case NodeActionTypes.LoadNodeLinks: {
       return {
         ...state,
@@ -422,20 +482,6 @@ export function reducer(
         ...state,
         error: action.payload,
         loadingLinks: LoadingStatus.error
-      };
-    }
-
-    case NodeActionTypes.LoadNodeLinkSuccess: {
-      return {
-        ...state,
-        selectedNodeLink: action.payload
-      };
-    }
-
-    case NodeActionTypes.LoadNodeLinkFailure: {
-      return {
-        ...state,
-        error: action.payload
       };
     }
 
@@ -596,26 +642,6 @@ export function reducer(
     }
 
     case NodeActionTypes.DeleteCustomPropertyFailure: {
-      return {
-        ...state,
-        error: action.payload
-      };
-    }
-
-    case NodeActionTypes.LoadNodeReports: {
-      return {
-        ...state
-      };
-    }
-
-    case NodeActionTypes.LoadNodeReportsSuccess: {
-      return {
-        ...state,
-        reports: action.payload
-      };
-    }
-
-    case NodeActionTypes.LoadNodeReportsFailure: {
       return {
         ...state,
         error: action.payload
