@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node-link.model';
@@ -21,7 +21,7 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
   templateUrl: './right-panel.component.html',
   styleUrls: ['./right-panel.component.scss']
 })
-export class RightPanelComponent {
+export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
   @Input() nodeCategory: string;

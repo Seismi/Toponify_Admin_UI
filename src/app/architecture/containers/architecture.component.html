@@ -186,7 +186,7 @@
             (addExistingScope)="onAddExistingScope()"
             (addNewScope)="onAddNewScope()"
             [selectedView]="selectedView"
-            [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [nodes]="nodes | layer: { byId: false, descendantIds$: parentDescendantIds } | async"
             [selectedNode]="selectedNode"
             (selectNode)="onSelectNode($event)"
             [links]="links | layer: { byId: false} | async"
