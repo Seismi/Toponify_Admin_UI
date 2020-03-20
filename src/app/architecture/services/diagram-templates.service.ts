@@ -1274,6 +1274,8 @@ export class DiagramTemplatesService {
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
+      new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
+      new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: (forPalette) ? undefined :

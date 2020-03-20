@@ -166,7 +166,6 @@ export class CustomLink extends go.Link {
 
     // Array of tools that can affect link routes
     const tools = [toolManager.draggingTool,
-      toolManager.linkReshapingTool,
       toolManager.linkingTool,
       linkShiftingTool,
       toolManager.resizingTool
@@ -556,8 +555,8 @@ export class GojsCustomObjectsService {
           thisService.showDetailTabSource.next();
         }),
         makeMenuButton(
-          2, 
-          'Grouped Components', 
+          2,
+          'Grouped Components',
             [
               'Expand',
               'Show as List (groups)',
@@ -653,8 +652,8 @@ export class GojsCustomObjectsService {
         ),
         // --End of group submenu buttons--
         makeMenuButton(
-          3, 
-          'Data Sets', 
+          3,
+          'Data Sets',
             [
               'Show as List (data sets)',
               'Display (data sets)',
@@ -666,12 +665,12 @@ export class GojsCustomObjectsService {
           }.bind(this),
           function(object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            switch(node.data.layer) {
-              case 'data set': 
+            switch (node.data.layer) {
+              case 'data set':
                 return 'Dimensions';
               case 'dimension':
                 return 'Reporting Layer';
-              default: 
+              default:
                 return 'Data Sets';
             }
           }

@@ -39,6 +39,8 @@ export interface OwnersEntity {
 export interface RoutesEntityEntity {
   layout: Layout;
   points?: (number)[] | null;
+  fromSpot?: string;
+  toSpot?: string;
 }
 
 // Detail
