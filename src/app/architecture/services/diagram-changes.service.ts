@@ -908,4 +908,17 @@ export class DiagramChangesService {
 
     this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, mapViewSource);
   }
+
+  // Expands the currently viewed area of the diagram to include the given menu
+  updateViewAreaForMenu(menu: go.Adornment) {
+    const diagram = menu.diagram;
+
+    menu.ensureBounds();
+    // Expand diagram area to include the menu
+    diagram.documentBounds.unionRect(menu.actualBounds);
+    // Calculate new view area based on current view area and menu bounds
+    const updatedViewArea = diagram.viewportBounds.copy().unionRect(menu.actualBounds);
+    // Scroll screen to calculated view area
+    diagram.scrollToRect(updatedViewArea);
+  }
 }
