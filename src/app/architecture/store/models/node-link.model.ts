@@ -10,6 +10,7 @@ export enum linkCategories {
 
 export interface NodeLink {
   id: string;
+  displayId?: string;
   layer: string;
   name: string;
   description: string;
