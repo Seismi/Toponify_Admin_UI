@@ -791,14 +791,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   itemClick(item: any): void {
-    const params: {id?: string; filterLevel: string; selectedItem: string; selectedType: string} = {
+    const params: {id?: string; filterLevel: string; selectedItem: string; selectedType: string; parentName?: string} = {
       filterLevel: item.layer,
       selectedItem: item.id,
-      selectedType: 'node'
+      selectedType: 'node',
     };
 
     if (item.layer !== Level.system) {
       params.id = this.selectedPart.id;
+      params.parentName = this.selectedPart.name;
     }
     this.routerStore.dispatch(
       new UpdateQueryParams(params)
