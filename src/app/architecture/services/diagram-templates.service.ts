@@ -1264,12 +1264,12 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('relinkableFrom', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
-      new go.Binding('relinkableTo', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
+      new go.Binding('relinkableFrom', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
+      new go.Binding('relinkableTo', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
@@ -1330,6 +1330,12 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      new go.Binding('relinkableFrom', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
+      new go.Binding('relinkableTo', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
@@ -1383,7 +1389,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get template for master data links
+  // Get template for copy links in map view
   getLinkCopyTemplate(): CustomLink {
     return $(
       CustomLink,

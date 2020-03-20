@@ -62,6 +62,10 @@ export class DiagramChangesService {
           // Set workpackage currently being edited as "impacted by" workpackage for the part
           event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
+          if ('displayId' in part.data) {
+            part.data.id = part.data.displayId;
+          }
+
           // Only add nodes here as new links are temporary until connected
           if (part instanceof go.Node) {
             const node = Object.assign({}, part.data);
@@ -97,10 +101,6 @@ export class DiagramChangesService {
                 }
               });
             });
-          } else {
-            if ('displayId' in part.data) {
-              part.data.id = part.data.displayId;
-            }
           }
         });
       });
