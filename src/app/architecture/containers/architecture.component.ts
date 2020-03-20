@@ -262,6 +262,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
   public parentName: string | null;
+  public groupName: string | null;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
@@ -427,7 +428,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, workpackages, isTransformation, selectedItem, selectedType } = fil;
+        const { filterLevel, id, scope, parentName, groupName,  workpackages, isTransformation, selectedItem, selectedType } = fil;
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
 
         if (filterLevel) {
@@ -455,6 +456,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
 
         this.parentName = parentName ? parentName : null;
+        this.groupName = groupName ? groupName : null;
         if (id) {
           this.byId = true;
           const parentNode: Node = this.nodes.find(node => node.id === id);
