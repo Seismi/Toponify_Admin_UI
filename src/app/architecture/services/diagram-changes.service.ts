@@ -62,6 +62,10 @@ export class DiagramChangesService {
           // Set workpackage currently being edited as "impacted by" workpackage for the part
           event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
+          if ('displayId' in part.data) {
+            part.data.id = part.data.displayId;
+          }
+
           // Only add nodes here as new links are temporary until connected
           if (part instanceof go.Node) {
             const node = Object.assign({}, part.data);
@@ -97,10 +101,6 @@ export class DiagramChangesService {
                 }
               });
             });
-          } else {
-            if ('displayId' in part.data) {
-              part.data.id = part.data.displayId;
-            }
           }
         });
       });
@@ -226,7 +226,11 @@ export class DiagramChangesService {
         if (part instanceof go.Link) {
           // Ignore disconnected links
           if (part.fromNode && part.toNode) {
-            links.push({ id: part.key, points: part.data.route });
+            links.push({ id: part.key,
+              points: part.data.route,
+              fromSpot: part.data.fromSpot,
+              toSpot: part.data.toSpot
+            });
           }
         } else {
           // Part is a node
@@ -295,24 +299,6 @@ export class DiagramChangesService {
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
-
-      // TEMPORARY - condition to prevent error while impactedByWorkPackages missing from nodeLink components response
-      if (!this.currentLevel.endsWith('map')) {
-        // Add currently editing workpackage to array of workpackages impacted by if not there already
-        if (
-          link.data.impactedByWorkPackages.every(
-            function(workpackage) {
-              return workpackage.id !== this.workpackages[0].id;
-            }.bind(this)
-          )
-        ) {
-          link.diagram.model.setDataProperty(
-            link.data,
-            'impactedByWorkPackages',
-            link.data.impactedByWorkPackages.concat([this.workpackages[0]])
-          );
-        }
-      }
 
       // Create link if not already in database
       if (link.data.isTemporary) {
@@ -663,7 +649,7 @@ export class DiagramChangesService {
   }
 
   nodeExpandChanged(node) {
-    const linkData: { id: string; points: number[] }[] = [];
+    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
@@ -676,7 +662,11 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 
@@ -787,7 +777,7 @@ export class DiagramChangesService {
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
-    const linkData: { id: string; points: number[] }[] = [];
+    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
     const node = event.subject.part;
 
     // Make sure node bounds are up to date so links can route correctly
@@ -801,7 +791,11 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 
@@ -870,7 +864,11 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 
@@ -909,5 +907,18 @@ export class DiagramChangesService {
       }
 
     this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, mapViewSource);
+  }
+
+  // Expands the currently viewed area of the diagram to include the given menu
+  updateViewAreaForMenu(menu: go.Adornment) {
+    const diagram = menu.diagram;
+
+    menu.ensureBounds();
+    // Expand diagram area to include the menu
+    diagram.documentBounds.unionRect(menu.actualBounds);
+    // Calculate new view area based on current view area and menu bounds
+    const updatedViewArea = diagram.viewportBounds.copy().unionRect(menu.actualBounds);
+    // Scroll screen to calculated view area
+    diagram.scrollToRect(updatedViewArea);
   }
 }

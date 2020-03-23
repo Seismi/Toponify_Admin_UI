@@ -355,6 +355,10 @@ export class DiagramTemplatesService {
           button.part.updateAdornments();
 
           button.part.addAdornment('ButtonMenu', menu);
+
+          // Ensure that menu does not appear outside of diagram bounds
+          this.diagramChangesService.updateViewAreaForMenu(menu);
+
         }.bind(this)
       },
       $(
@@ -1264,16 +1268,18 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('relinkableFrom', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
-      new go.Binding('relinkableTo', 'id', function(id) {
-        return id !== '00000000-0000-0000-0000-000000000000';
-      }),
+      new go.Binding('relinkableFrom', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
+      new go.Binding('relinkableTo', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing'),
+      new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
+      new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: (forPalette) ? undefined :
@@ -1330,6 +1336,12 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      new go.Binding('relinkableFrom', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
+      new go.Binding('relinkableTo', '', function() {
+        return !this.currentFilterLevel.includes('map');
+      }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
@@ -1383,7 +1395,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get template for master data links
+  // Get template for copy links in map view
   getLinkCopyTemplate(): CustomLink {
     return $(
       CustomLink,
