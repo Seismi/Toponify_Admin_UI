@@ -18,7 +18,12 @@ export class RadioDetailService {
       description: [null, Validators.required],
       replyText: [null],
       author: this.fb.array([this.author()]),
-      replies: this.fb.array([this.replies()])
+      replies: this.fb.array([this.replies()]),
+      raisedBy: [null],
+      createdOn: [null],
+      lastUpdatedOn: [null],
+      severity: [null],
+      frequency: [null]
     });
   }
 

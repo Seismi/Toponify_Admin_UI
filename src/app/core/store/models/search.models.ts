@@ -4,7 +4,7 @@ export interface SearchApiResponse {
 
 export interface SearchEntity {
   id: string;
-  objectType: string;
+  objectType: ObjectType;
   name: string;
   workPackage: WorkPackage;
   description: string;
@@ -13,4 +13,19 @@ export interface SearchEntity {
 export interface WorkPackage {
   id: string;
   name: string;
+}
+
+export enum ObjectType {
+  system = 'system',
+  system_link= 'system link',
+  data_set = 'data set',
+  data_set_link = 'data set link',
+  dimension = 'dimension',
+  dimension_link = 'dimension link',
+  reporting_concept = 'reporting concept',
+  reporting_concept_link = 'reporting concept link',
+  attribute = 'attribute',
+  report = 'report',
+  radio = 'radio',
+  workpackage = 'workpackage'
 }

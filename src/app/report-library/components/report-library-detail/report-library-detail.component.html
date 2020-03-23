@@ -55,13 +55,10 @@
     <smi-report-owners-table
       data-qa="reports-owners-table" 
       *ngIf="!modalMode" 
-      [data]="owners" 
-      [isEditable]="isEditable" 
-      [selectedOwner]="selectedOwner"
-      [selectedOwnerIndex]="selectedOwnerIndex" 
-      (addOwner)="onAddOwner()" 
-      (selectOwner)="onSelectOwner($event)"
-      (deleteOwner)="onDeleteOwner()"
+      [data]="owners"
+      [workPackageIsEditable]="workPackageIsEditable"
+      (add)="addOwner.emit()"
+      (delete)="deleteOwner.emit($event)"
     >
     </smi-report-owners-table>
 
