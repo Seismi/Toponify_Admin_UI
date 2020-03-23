@@ -75,7 +75,7 @@ import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/a
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
-import { AddScope, LoadScope, LoadScopes, ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
+import { AddScope, LoadScope, LoadScopes, ScopeActionTypes, AddScopeNodes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
@@ -1472,6 +1472,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
       this.selectedMultipleNodes = [];
+    });
+  }
+
+  onAddToScope(): void {
+    const selectedNodes = this.selectedMultipleNodes.map(nodes => nodes.name);
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: `Add ${selectedNodes} to...`,
+        placeholder: 'Scopes',
+        options$: this.scopeStore.pipe(select(getScopeEntities)),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(
+          new AddScopeNodes({
+            scopeId: data.value[0].id,
+            data: this.selectedMultipleNodes.map(nodes => nodes.id)
+          })
+        );
+      }
     });
   }
 

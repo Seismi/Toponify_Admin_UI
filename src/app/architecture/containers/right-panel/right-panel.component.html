@@ -151,6 +151,10 @@
     <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="onAddScope()">
       Add Scope
     </button>
+
+    <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="addToScope.emit()">
+      Add To Scope
+    </button>
   </mat-tab>
 
   <!-- Work Package TAB -->

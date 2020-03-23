@@ -86,6 +86,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() addToScope = new EventEmitter<void>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
