@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import {layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
+import {endPointTypes, layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
 import {linkCategories, RoutesEntityEntity} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
@@ -68,9 +68,9 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
 
   // Populate node lists
   allParts.each(function(part: go.Part) {
-    if (part.data.endPointType === 'source') {
+    if (part.data.endPointType === endPointTypes.source) {
       sourceGroups.add(part as go.Group);
-    } else if (part.data.endPointType === 'target') {
+    } else if (part.data.endPointType === endPointTypes.target) {
       targetGroups.add(part as go.Group);
     } else if (part.category === nodeCategories.transformation) {
       transformationNodes.add(part as go.Node);
@@ -355,7 +355,7 @@ export class DiagramLevelService {
     const linkLayer =
       level === Level.systemMap ? layers.dataSet : level === Level.dataSetMap ? layers.dimension : level.toLowerCase();
 
-    if (level !== Level.usage) {
+    if (level !== Level.usage && !level.includes('map')) {
       paletteViewLinks.push({
         category: linkCategories.masterData,
         id: 'New master data link',
@@ -367,6 +367,9 @@ export class DiagramLevelService {
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForMasterDataLinks(level)
       });
+    }
+
+    if (level !== Level.usage) {
 
       let transformationLayer;
 
@@ -487,7 +490,7 @@ export class DiagramLevelService {
       );
     }
 
-    if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
+    if ([Level.system, Level.dataSet].includes(level)) {
       paletteViewLinks.push({
         category: linkCategories.data,
         id: 'New data link',
@@ -522,7 +525,7 @@ export class DiagramLevelService {
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,
-      makeUniqueKeyFunction: function() {
+      makeUniqueKeyFunction: function(model: go.Model, data: go.ObjectData) {
         return uuid();
       },
       makeUniqueLinkKeyFunction: function() {

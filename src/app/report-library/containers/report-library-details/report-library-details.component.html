@@ -26,7 +26,7 @@
             [selectedOwner]="selectedOwner"
             (addOwner)="onAddOwner()"
             (selectOwner)="onSelectOwner($event)"
-            (deleteOwner)="onDeleteOwner()"
+            (deleteOwner)="onDeleteOwner($event)"
             (editSourceSystem)="onEditSourceSystem()"
             (addDataSets)="onAddDataSets(report.id)"
             (removeDataSet)="onRemoveDataSet($event, report.id)"
