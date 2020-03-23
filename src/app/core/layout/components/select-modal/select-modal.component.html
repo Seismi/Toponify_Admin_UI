@@ -1,12 +1,12 @@
 <h1 mat-dialog-title>{{ title }}</h1>
 <mat-form-field class="example-full-width" [ngClass]="{'hidden': searchActive}" >
-  <input type="text" data-qa="select-modal-value" #searchInput placeholder="Search" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+  <input type="text" data-qa="select-modal-search" #searchInput placeholder="Search" matInput [formControl]="searchControl" [matAutocomplete]="auto">
 </mat-form-field>
 <mat-form-field class="example-full-width" [ngClass]="{'hidden': !searchActive}" >
   <input type="text" data-qa="select-modal-value" placeholder="{{data.placeholder}}" [formControl]="selectionControl" matInput (focusin)="onFocus()">
 </mat-form-field>
 <mat-autocomplete #auto="matAutocomplete" (closed)="onAutocompleteClose()">
-  <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option.id">
+  <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option.id" data-qa="select-modal-option">
     <div (click)="optionClicked($event, option)">
       <mat-checkbox [checked]="option.selected" (change)="toggleSelection(option)" (click)="$event.stopPropagation()">
         {{ data.descendants ? option.displayName : option.name }}
