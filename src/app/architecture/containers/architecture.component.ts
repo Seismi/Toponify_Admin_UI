@@ -33,7 +33,10 @@ import {
   UpdateNodeLocations,
   UpdateNodeOwners,
   UpdatePartsLayout,
-  RemoveAllDraft
+  RemoveAllDraft,
+  RemoveGroupMemberIds,
+  GetGroupMemberIds,
+  SetGroupMemberIds
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -54,6 +57,7 @@ import {
   getNodeLinks,
   getNodeReports,
   getParentDescendantIds,
+  getGroupMemberIds,
   getSelectedNode,
   getSelectedNodeLink,
   getTopologyLoadingStatus,
@@ -274,6 +278,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
+  public groupMemberIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
   public byId = false;
@@ -327,6 +332,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.parentDescendantIds = this.store.pipe(select(getParentDescendantIds));
+    this.groupMemberIds = this.store.pipe(select(getGroupMemberIds));
     this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
     this.subscriptions.push(
       this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(
@@ -428,7 +434,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, groupName,  workpackages, isTransformation, selectedItem, selectedType } = fil;
+        const { filterLevel,
+          id,
+          scope,
+          parentName,
+          groupName,
+          workpackages,
+          isTransformation,
+          selectedItem,
+          selectedType
+        } = fil;
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
 
         if (filterLevel) {
@@ -459,15 +474,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.groupName = groupName ? groupName : null;
         if (id) {
           this.byId = true;
-          const parentNode: Node = this.nodes.find(node => node.id === id);
+          const parentNode: NodeDetail = this.nodes.find(node => node.id === id);
           if (!parentNode) {
             this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray || [] }));
+            this.store.dispatch(new GetGroupMemberIds({ id, workpackages: workpackagesArray || [] }));
           } else {
             this.store.dispatch(new SetParentDescendantIds(parentNode.descendants.map(n => n.id)));
+            this.store.dispatch(new SetGroupMemberIds(parentNode));
           }
         } else {
           this.byId = false;
           this.store.dispatch(new RemoveParentDescendantIds());
+          this.store.dispatch(new RemoveGroupMemberIds());
         }
       }
     });
