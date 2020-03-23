@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'smi-relates-to-table',
@@ -24,11 +25,22 @@ export class RelatesToTableComponent {
   public displayedColumns: string[] = ['workPackage', 'itemType', 'name'];
   public dataSource: MatTableDataSource<RadioDetail>;
 
+  constructor(private router: Router) {}
+
   onAdd() {
     this.addRelatesTo.emit();
   }
 
   onUnLink(relatesTo: RelatesTo) {
     this.unlinkRelatesTo.emit(relatesTo);
+  }
+
+  loadRelateTo(element: any): void {
+    const quesryParams = {
+      workpackages: element.workPackage.id,
+      filterLevel: element.item.itemType,
+      selectedItem: element.item.id
+    };
+    this.router.navigate(['/topology'], { queryParams: quesryParams});
   }
 }
