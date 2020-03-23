@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node-link.model';
@@ -21,7 +21,7 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
   templateUrl: './right-panel.component.html',
   styleUrls: ['./right-panel.component.scss']
 })
-export class RightPanelComponent {
+export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
   @Input() nodeCategory: string;
@@ -84,6 +84,8 @@ export class RightPanelComponent {
   @Output() createTag = new EventEmitter<Tag>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateTag = new EventEmitter<Tag>();
+  @Output() seeUsage = new EventEmitter<void>();
+  @Output() seeDependencies = new EventEmitter<void>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -178,7 +180,7 @@ export class RightPanelComponent {
   }
 
   isFirst(): boolean {
-    if (!this.selectedNode) {
+    if (!this.selectedNode || this.nodes.length < 1) {
       return true;
     }
     if (this.selectedView === ArchitectureView.System) {
@@ -189,7 +191,7 @@ export class RightPanelComponent {
   }
 
   isLast(): boolean {
-    if (!this.selectedNode) {
+    if (!this.selectedNode || this.nodes.length < 1) {
       return false;
     }
     if (this.selectedView === ArchitectureView.System) {
@@ -245,5 +247,13 @@ export class RightPanelComponent {
 
   onUpdateTag(tag: Tag) {
     this.updateTag.emit(tag);
+  }
+
+  onSeeUsage() {
+    this.seeUsage.emit();
+  }
+
+  onSeeDependencies() {
+    this.seeDependencies.emit();
   }
 }
