@@ -48,6 +48,10 @@ import { SelectModalComponent } from '@app/core/layout/components/select-modal/s
 import { Actions, ofType } from '@ngrx/effects';
 import { getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeEntity } from '@app/scope/store/models/scope.model';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
+import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
+import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -75,6 +79,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   scope: ScopeEntity;
 
   constructor(
+    private teamStore: Store<TeamState>,
     private actions: Actions,
     private workPackageStore: Store<WorkPackageState>,
     private route: ActivatedRoute,
@@ -186,53 +191,53 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddOwner() {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
+    const ids = new Set(this.report.owners.map(({ id }) => id));
+    this.teamStore.dispatch(new LoadTeams({}));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: `Select owner to add to owners`,
+        placeholder: 'Owners',
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
+          map(data => data.filter(({ id }) => !ids.has(id)))
+        ),
+        selectedIds: []
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
+      if (data && data.value) {
         this.store.dispatch(
           new AddOwner({
             workPackageId: this.workpackageId,
             reportId: this.reportId,
-            ownerId: data.owner.id
+            ownerId: data.value[0].id
           })
         );
       }
-      this.isEditable = true;
     });
   }
 
-  onSelectOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity) {
-    this.ownerId = owner.id;
-    this.ownerName = owner.name;
-    this.selectedOwner = true;
-    this.selectedOwnerIndex = owner.id;
-  }
-
-  onDeleteOwner() {
-    const dialogRef = this.dialog.open(ReportDeleteModalComponent, {
+  onDeleteOwner(ownerId: string) {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
-        mode: 'delete',
-        name: this.ownerName
+        title:
+         'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(
           new DeleteOwner({
             workPackageId: this.workpackageId,
             reportId: this.reportId,
-            ownerId: this.ownerId
+            ownerId: ownerId
           })
         );
-        this.selectedOwner = false;
-        this.isEditable = true;
       }
     });
   }

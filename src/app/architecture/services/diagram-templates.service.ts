@@ -355,6 +355,10 @@ export class DiagramTemplatesService {
           button.part.updateAdornments();
 
           button.part.addAdornment('ButtonMenu', menu);
+
+          // Ensure that menu does not appear outside of diagram bounds
+          this.diagramChangesService.updateViewAreaForMenu(menu);
+
         }.bind(this)
       },
       $(

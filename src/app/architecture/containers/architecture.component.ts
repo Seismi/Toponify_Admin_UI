@@ -768,6 +768,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         if (this.clickedOnLink && this.selectedRightTab === 1) {
           this.showOrHideRightPane = false;
         }
+
+        if (!this.clickedOnLink) {
+          this.showOrHideRightPane = true;
+        }
       }
     }
 
@@ -786,6 +790,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  itemClick(item: any): void {
+    const params: {id?: string; filterLevel: string; selectedItem: string; selectedType: string; parentName?: string} = {
+      filterLevel: item.layer,
+      selectedItem: item.id,
+      selectedType: 'node',
+    };
+
+    if (item.layer !== Level.system) {
+      params.id = this.selectedPart.id;
+      params.parentName = this.selectedPart.name;
+    }
+    this.routerStore.dispatch(
+      new UpdateQueryParams(params)
+    );
   }
 
   getNodeReports(workpackageIds: string[] = []): void {

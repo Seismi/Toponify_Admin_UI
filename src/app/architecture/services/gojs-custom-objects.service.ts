@@ -475,7 +475,10 @@ export class GojsCustomObjectsService {
             : { text: text }
         ),
         {
-          mouseEnter: function(event: object, object: go.Part): void {
+          mouseEnter: function(event: go.InputEvent, object: go.Part): void {
+
+            const menu = object.part as go.Adornment;
+
             standardMouseEnter(event, object);
             // Hide any open submenu that is already open
             object.panel.elements.each(function(button: go.Part): void {
@@ -483,10 +486,15 @@ export class GojsCustomObjectsService {
                 button.visible = false;
               }
             });
+
             // Show any submenu buttons assigned to this menu button
             subMenuNames.forEach(function(buttonName: string): void {
-              object.part.findObject(buttonName).visible = true;
+              menu.findObject(buttonName).visible = true;
             });
+
+            // Ensure that opened submenus do not appear outside of diagram bounds
+            diagramChangesService.updateViewAreaForMenu(menu);
+
           },
           column: 0,
           row: row
@@ -514,7 +522,8 @@ export class GojsCustomObjectsService {
       {
         name: 'ButtonMenu',
         background: null,
-        zOrder: 1
+        zOrder: 1,
+        isInDocumentBounds: true
       },
       // Use placeholder to ensure menu placed relative to node.
       //  Otherwise, menu appears at the mouse cursor.
