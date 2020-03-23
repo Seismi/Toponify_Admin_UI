@@ -41,6 +41,7 @@
     </ng-template>
     <p class="components-tab">
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Systems'"
         [data]="systems"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -50,6 +51,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Data Sets'"
         [data]="dataSets"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -59,6 +61,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Dimensions'"
         [data]="dimensions"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -68,6 +71,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Reporting Concepts'"
         [data]="reportingConcepts"
         [workPackageIsEditable]="workPackageIsEditable"
