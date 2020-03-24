@@ -36,16 +36,29 @@ export class RelatesToTableComponent {
   }
 
   loadRelateTo(element: any): void {
-    const quesryParams = {
-      filterLevel: element.item.itemType,
-      selectedItem: element.item.id,
-      selectedType: 'node'
-    };
+    try {
+      const linkStringPos = element.item.itemType.indexOf('link');
+      const isLink = linkStringPos !== -1;
+      const selectedType = isLink ? 'link' : 'node';
+      const filterLevel = (() => {
+        if (isLink) {
+          return element.item.itemType.substring(0, linkStringPos).trim();
+        }
+        return element.item.itemType;
+      })();
 
-    if (element.workPackage.id !== '00000000-0000-0000-0000-000000000000') {
-      quesryParams['workpackages'] = element.workPackage.id;
+      const quesryParams = {
+        filterLevel: filterLevel,
+        selectedItem: element.item.id,
+        selectedType: selectedType
+      };
+
+      if (element.workPackage.id !== '00000000-0000-0000-0000-000000000000') {
+        quesryParams['workpackages'] = element.workPackage.id;
+      }
+      this.router.navigate(['/topology'], { queryParams: quesryParams});
+    } catch (err) {
+      console.error(err);
     }
-
-    this.router.navigate(['/topology'], { queryParams: quesryParams});
   }
 }
