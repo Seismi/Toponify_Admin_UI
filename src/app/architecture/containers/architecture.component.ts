@@ -1751,6 +1751,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onViewChange(view: ArchitectureView, from?) {
     this.selectedView = view;
     if (view === ArchitectureView.Diagram) {
+
+      const diagramComponent = this.diagramComponent;
+
+      // If the diagram's width and height have not been correctly set
+      //  then update the diagram area and fit the diagram to the screen
+      if (diagramComponent) {
+        const diagramCanvas = diagramComponent.diagram.div
+          .getElementsByTagName('CANVAS')[0] as HTMLCanvasElement;
+
+        if (diagramCanvas.width < 20 || diagramCanvas.height < 20) {
+          diagramComponent.updateDiagramArea();
+          setTimeout(() => {
+            diagramComponent.zoomToFit();
+            diagramComponent.centreDiagram();
+          }, 0);
+        }
+      }
+
       this.tableViewFilterValue = null;
     }
   }
