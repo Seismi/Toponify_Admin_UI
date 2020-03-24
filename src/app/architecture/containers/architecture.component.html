@@ -99,7 +99,11 @@
             [allowMove]="allowMove"
             [workPackageIsEditable]="workPackageIsEditable"
             *ngIf="!showTable"
-            [nodes]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
+            [nodes]="nodes | layer: { byId: byId,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds,
+              level: currentFilterLevel
+            } | async"
             [links]="links | layer: { byId: false } | async"
             [workpackageDetail]="workpackageDetail"
             [selectedId]="selectedId"
@@ -119,7 +123,10 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.System">
           <smi-architecture-table-view
-            [data]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds } | async"
+            [data]="nodes | layer: { byId: byId,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds
+            } | async"
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
             (changeLevel)="onChangeLevel($event)"
@@ -186,7 +193,10 @@
             (addExistingScope)="onAddExistingScope()"
             (addNewScope)="onAddNewScope()"
             [selectedView]="selectedView"
-            [nodes]="nodes | layer: { byId: false, descendantIds$: parentDescendantIds } | async"
+            [nodes]="nodes | layer: { byId: false,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds
+            } | async"
             [selectedNode]="selectedNode"
             (selectNode)="onSelectNode($event)"
             [links]="links | layer: { byId: false} | async"
