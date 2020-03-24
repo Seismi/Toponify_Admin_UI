@@ -30,6 +30,9 @@
         (seeUsage)="onSeeUsage()"
         (seeDependencies)="onSeeDependencies()"
         (viewStructure)="viewStructure.emit()"
+        [sourceObject]="sourceObject"
+        [targetObject]="targetObject"
+        (editSourceOrTarget)="editSourceOrTarget.emit($event)"
       >
       </smi-object-details-form>
     </p>

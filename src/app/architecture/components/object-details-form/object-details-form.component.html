@@ -59,6 +59,27 @@
       (delete)="onDeleteOwner($event)"
     >
     </smi-owners-table-in-architecture>
+
+
+    <smi-source-or-target-table
+      *ngIf="clickedOnLink"
+      [title]="'Source'"
+      [data]="sourceObject"
+      (edit)="editSourceOrTarget.emit('source')"
+      [workPackageIsEditable]="workPackageIsEditable"
+    >
+    </smi-source-or-target-table>
+
+    <smi-source-or-target-table
+      *ngIf="clickedOnLink"
+      [title]="'Target'"
+      [data]="targetObject"
+      (edit)="editSourceOrTarget.emit('target')"
+      [workPackageIsEditable]="workPackageIsEditable"
+    >
+    </smi-source-or-target-table>
+
+
     <smi-group-info-table
       *ngIf="!clickedOnLink"
       [groupInfo]="groupInfo" 
