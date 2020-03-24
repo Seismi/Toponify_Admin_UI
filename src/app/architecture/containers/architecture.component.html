@@ -152,6 +152,7 @@
         [multipleSelected]="multipleSelected"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
         [clickedOnLink]="clickedOnLink"
+        [nodeCategory]="part?.data.category"
       >
       </smi-right-sidebar>
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
@@ -218,6 +219,7 @@
             [currentFilterLevel]="currentFilterLevel"
             (seeUsage)="onSeeUsage()"
             (seeDependencies)="onSeeDependencies()"
+            (viewStructure)="onViewStructure()"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

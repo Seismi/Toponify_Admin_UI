@@ -82,5 +82,8 @@
       <button mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
       <button mat-flat-button color="primary" (click)="onSeeUsage()">See Usage Across Levels</button>
     </div>
+    <div *ngIf="isLink()">
+      <button mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
+    </div>
   </div>
 </form>
