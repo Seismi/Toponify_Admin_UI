@@ -24,6 +24,8 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
+  @Input() sourceObject: any;
+  @Input() targetObject: any;
   @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() selectedView: ArchitectureView;
@@ -79,6 +81,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
   @Output() deleteNodeGroup = new EventEmitter<Node>();
   @Output() updateAvailableTags = new EventEmitter<void>();
+  @Output() itemClick = new EventEmitter<void>();
 
   @Output() addTag = new EventEmitter<string>();
   @Output() createTag = new EventEmitter<Tag>();
@@ -86,6 +89,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() editSourceOrTarget = new EventEmitter<string>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -180,7 +184,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   }
 
   isFirst(): boolean {
-    if (!this.selectedNode || this.nodes.length < 1) {
+    if (this.nodes.length < 1) {
+      return false;
+    }
+    if (!this.selectedNode) {
       return true;
     }
     if (this.selectedView === ArchitectureView.System) {
@@ -191,7 +198,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   }
 
   isLast(): boolean {
-    if (!this.selectedNode || this.nodes.length < 1) {
+    if (this.nodes.length < 1) {
+      return false;
+    }
+    if (!this.selectedNode) {
       return false;
     }
     if (this.selectedView === ArchitectureView.System) {

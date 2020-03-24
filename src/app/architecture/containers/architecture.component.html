@@ -157,6 +157,7 @@
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
+            (itemClick)="itemClick($event)"
             [owners]="selectedNode?.owners"
             [selectedRightTab]="selectedRightTab"
             [group]="objectDetailsForm"
@@ -217,6 +218,9 @@
             [currentFilterLevel]="currentFilterLevel"
             (seeUsage)="onSeeUsage()"
             (seeDependencies)="onSeeDependencies()"
+            [sourceObject]="selectedNode?.sourceObject"
+            [targetObject]="selectedNode?.targetObject"
+            (editSourceOrTarget)="onEditSourceOrTarget($event)"
           >
           </smi-right-panel></p
       ></app-model-sidebar>
