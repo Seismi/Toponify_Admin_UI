@@ -27,6 +27,9 @@ export class ObjectDetailsFormComponent {
     this.values = group.value;
   }
 
+  @Input() sourceObject: any;
+  @Input() targetObject: any;
+
   @Input() workPackageIsEditable = false;
   @Input() attributesPage = false;
   @Input() relatedAttributes: AttributeEntity[];
@@ -60,6 +63,7 @@ export class ObjectDetailsFormComponent {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() editSourceOrTarget = new EventEmitter<string>();
 
   onSave(): void {
     this.save.emit();
