@@ -76,8 +76,8 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (
       changes.selectedItem &&
-      changes.selectedItem.currentValue && changes.selectedItem.previousValue &&
-      changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id) {
+      changes.selectedItem.currentValue && (!changes.selectedItem.previousValue ||
+      changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id)) {
       setTimeout(() => this.navigateToSelectedItem());
     }
   }

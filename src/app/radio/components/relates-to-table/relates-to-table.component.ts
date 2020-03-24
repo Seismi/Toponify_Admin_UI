@@ -37,10 +37,15 @@ export class RelatesToTableComponent {
 
   loadRelateTo(element: any): void {
     const quesryParams = {
-      workpackages: element.workPackage.id,
       filterLevel: element.item.itemType,
-      selectedItem: element.item.id
+      selectedItem: element.item.id,
+      selectedType: 'node'
     };
+
+    if (element.workPackage.id !== '00000000-0000-0000-0000-000000000000') {
+      quesryParams['workpackages'] = element.workPackage.id;
+    }
+
     this.router.navigate(['/topology'], { queryParams: quesryParams});
   }
 }
