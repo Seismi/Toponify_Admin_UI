@@ -76,6 +76,7 @@
         >
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
+          <span class="viewing-dependencies" *ngIf="dependenciesView">Viewing Dependencies <mat-icon (click)="exitDependenciesView()">close</mat-icon></span>
           <smi-layout-actions
             class="diagram-actions"
             *ngIf="selectedView === ArchitectureView.Diagram"
