@@ -283,6 +283,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
   public byId = false;
+  public filterLevel: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -448,6 +449,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
 
         if (filterLevel) {
+          this.filterLevel = filterLevel;
           this.selectedWorkpackages = workpackagesArray;
           this.setNodesLinks(filterLevel, id, workpackagesArray, scope, isTransformation);
         }
@@ -2056,12 +2058,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   exitUsageView() {
-    this.routerStore.dispatch(
-      new UpdateQueryParams({
-        workpackages: this.workpackageId,
-        filterLevel: Level.system
-      })
-    );
+    this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system, id: null }));
   }
 
   onSeeDependencies() {
