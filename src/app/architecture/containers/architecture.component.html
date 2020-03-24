@@ -218,6 +218,9 @@
             [currentFilterLevel]="currentFilterLevel"
             (seeUsage)="onSeeUsage()"
             (seeDependencies)="onSeeDependencies()"
+            [sourceObject]="selectedNode?.sourceObject"
+            [targetObject]="selectedNode?.targetObject"
+            (editSourceOrTarget)="onEditSourceOrTarget($event)"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

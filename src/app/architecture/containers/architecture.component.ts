@@ -90,7 +90,8 @@ import {
   DeleteWorkPackageLinkProperty,
   DeleteWorkpackageLinkSuccess,
   UpdateWorkPackageLinkProperty,
-  WorkPackageLinkActionTypes
+  WorkPackageLinkActionTypes,
+  UpdateWorkPackageLink
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNode,
@@ -2037,5 +2038,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSeeDependencies() {
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
     this.diagramChangesService.hideNonDependencies(part);
+  }
+
+  onEditSourceOrTarget(type: 'source' | 'target') {
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: type,
+        placeholder: 'Components',
+        options$: this.store.pipe(select(getNodeEntities)),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.workpackageStore.dispatch(
+          new UpdateWorkPackageLink({
+            workpackageId: this.workpackageId,
+            linkId: this.nodeId,
+            link: {
+              ...this.part.data,
+              sourceId: (type === 'source') ? data.value[0].id : null,
+              targetId: (type === 'target') ? data.value[0].id : null
+            }
+          })
+        );
+      }
+    });
   }
 }
