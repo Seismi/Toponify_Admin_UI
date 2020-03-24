@@ -194,6 +194,20 @@ export class NodeEffects {
   );
 
   @Effect()
+  getGroupMemberIds$ = this.actions$.pipe(
+    ofType<NodeActions.GetGroupMemberIds>(NodeActionTypes.GetGroupMemberIds),
+    map(action => action.payload),
+    switchMap(({ id, workpackages }) => {
+      return this.nodeService.getNode(id, { workPackageQuery: workpackages }).pipe(
+        switchMap((response: NodeDetailApiResponse) => [new NodeActions.GetGroupMemberIdsSuccess(response.data)]),
+        catchError((error: Error) => {
+          return of(new NodeActions.GetGroupMemberIdsFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
   LoadAvailableTags$ = this.actions$.pipe(
     ofType<NodeActions.LoadAvailableTags>(NodeActionTypes.LoadAvailableTags),
     map(action => action.payload),

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Node } from '@app/architecture/store/models/node.model';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
@@ -15,7 +15,7 @@ const LinkColumns = ['category', 'reference', 'name', 'description', 'tags', 'ra
   templateUrl: 'architecture-table-view.component.html',
   styleUrls: ['architecture-table-view.component.scss']
 })
-export class ArchitectureTableViewComponent implements OnInit {
+export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   @Input() workPackageIsEditable: boolean;
   @Input() selectedItem: NodeDetail | NodeLinkDetail;
   @Input() view: 'system' | 'link';
@@ -52,6 +52,46 @@ export class ArchitectureTableViewComponent implements OnInit {
     } else {
       this.displayedColumns = LinkColumns;
     }
+    setTimeout(() => this.navigateToSelectedItem());
+  }
+
+  navigateToSelectedItem() {
+    if (this.selectedItem) {
+      const pageIndex = this.getPageIndex();
+      if (this.dataSource.paginator.pageIndex !== pageIndex) {
+        if (this.dataSource.paginator.pageIndex > pageIndex) {
+          while (this.dataSource.paginator.pageIndex > pageIndex) {
+            this.dataSource.paginator.previousPage();
+          }
+        }
+        if (this.dataSource.paginator.pageIndex < pageIndex) {
+          while (this.dataSource.paginator.pageIndex < pageIndex) {
+            this.dataSource.paginator.nextPage();
+          }
+        }
+      }
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes.selectedItem &&
+      changes.selectedItem.currentValue && changes.selectedItem.previousValue &&
+      changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id) {
+      setTimeout(() => this.navigateToSelectedItem());
+    }
+  }
+
+  getPageIndex(): number {
+    if (this.selectedItem) {
+      const arrIndex = this.dataSource.data.findIndex(item => item.id === this.selectedItem.id);
+      const page = (arrIndex + 1) / 10;
+      if (page <= 1) {
+        return 0;
+      }
+      return Math.floor(page);
+    }
+    return 0;
   }
 
   onSelect(row: Node | NodeLink) {

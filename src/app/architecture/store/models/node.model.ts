@@ -164,6 +164,7 @@ export interface NodeDetail {
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
+  members?: (GroupInfo[]) | null;
 }
 export interface GroupInfo {
   id: string;
