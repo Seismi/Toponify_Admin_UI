@@ -48,6 +48,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public canSelectWorkpackage = true;
   public workPackageIsEditable: boolean;
   public scopeId: string;
+  public selectedWorkPackageEntities: WorkPackageEntity[];
   @ViewChild('drawer') drawer;
 
   constructor(
@@ -96,6 +97,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.selectedWorkPackageEntities = workpackages;
         const workPackageIds = workpackages.map(item => item.id);
         this.setWorkPackage(workPackageIds);
       })
@@ -207,5 +209,9 @@ export class AttributesComponent implements OnInit, OnDestroy {
       scopeQuery: scopeId
     };
     this.store.dispatch(new LoadAttributes(queryParams));
+  }
+
+  onExitWorkPackageEditMode(): void {
+    this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
   }
 }
