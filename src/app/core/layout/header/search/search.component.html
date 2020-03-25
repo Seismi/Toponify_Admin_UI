@@ -1,4 +1,4 @@
-<div class="eaton mat-typography" style="overflow-x: hidden;" fxFlexFill cdkScrollable>
+<div style="overflow-x: hidden;">
   <button mat-icon-button (click)="openSearch()" class="open-search-button" data-qa="header-global-search-open">
     <mat-icon>search</mat-icon>
   </button>
@@ -12,11 +12,17 @@
   </mat-toolbar>
 </div>
 
-<div class="results-container mat-elevation-z8" *ngIf="toggleSearch" data-qa="header-global-search-results">
-  <ul *ngFor="let result of results$ | async">
-    <li (click)="onSelect(result)">
-      {{ result.name }}: <small>{{ result.objectType }}</small>
-      <small>{{ result.workPackage.name ? ' - ' + result.workPackage.name : '' }}</small>
-    </li>
-  </ul>
+<div *ngIf="toggleSearch" class="mat-elevation-z8">
+  <table>
+    <tr *ngIf="(results$ | async)?.length > 1">
+      <th class="results-col">Results</th>
+      <th class="type-col">Type</th>
+      <th class="work-package-col">Work Package</th>
+    </tr>
+    <tr *ngFor="let result of results$ | async" (click)="onSelect(result)">
+      <td>{{ result.name }}</td>
+      <td>{{ result.objectType }}</td>
+      <td>{{ result.workPackage.name ?  result.workPackage.name : ' - ' }}</td>
+    </tr>
+  </table>
 </div>
