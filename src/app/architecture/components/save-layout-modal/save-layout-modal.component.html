@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Add Layout</h1>
+<form (ngSubmit)="onSubmit()" [formGroup]="nameForm">
+  <mat-form-field>
+    <input matInput placeholder="Name" formControlName="name" />
+  </mat-form-field>
+  <div mat-dialog-actions>
+    <button mat-button>Save</button>
+  </div>
+</form>

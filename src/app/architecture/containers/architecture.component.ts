@@ -188,6 +188,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
+import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -284,6 +285,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public loadingStatus = LoadingStatus;
   public byId = false;
   public filterLevel: string;
+
+  // Controls if layout can be copied
+  public allowSaveAs = true;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -922,7 +926,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveAsLayout(): void {
-    alert('SaveAsLayout');
+    // TODO:
+    const dialogRef = this.dialog.open(SaveLayoutModalComponent, {
+      disableClose: false,
+      width: 'auto',
+      data: {
+        name: ''
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      debugger;
+      // if (data && data.attribute) {
+      //   this.store.dispatch(
+      //     new AddAttribute({
+      //       workPackageId: this.workpackageId,
+      //       entity: { data: { ...data.attribute } }
+      //     })
+      //   );
+      // }
+    });
+
   }
 
   // FIXME: types
