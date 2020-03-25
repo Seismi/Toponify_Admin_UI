@@ -97,6 +97,13 @@ export const getParentDescendantIds = createSelector(
   }
 );
 
+export const getGroupMemberIds = createSelector(
+  getNodeFeatureState,
+  (state: State) => {
+    return state.groupMemberIds;
+  }
+);
+
 export const getAvailableTags = createSelector(
   getNodeFeatureState,
   state => state.availableTags

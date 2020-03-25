@@ -39,6 +39,7 @@ export interface State {
   error: Error;
   selectedWorkpackages: string[];
   parentNodeDescendantIds: string[];
+  groupMemberIds: string[];
   availableTags: {
     tags: Tag[];
     id: string;
@@ -64,6 +65,7 @@ export const initialState: State = {
   error: null,
   selectedWorkpackages: [],
   parentNodeDescendantIds: [],
+  groupMemberIds: [],
   availableTags: {
     tags: [],
     id: null
@@ -719,7 +721,7 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.GetParentDescendantIdsSucces: {
+    case NodeActionTypes.GetParentDescendantIdsSuccess: {
       if (action.payload && action.payload.descendants) {
         return {
           ...state,
@@ -729,6 +731,34 @@ export function reducer(
         return {
           ...state,
           parentNodeDescendantIds: []
+        };
+      }
+    }
+
+    case NodeActionTypes.RemoveGroupMemberIds: {
+      return {
+        ...state,
+        groupMemberIds: []
+      };
+    }
+
+    case NodeActionTypes.SetGroupMemberIds: {
+      return {
+        ...state,
+        groupMemberIds: getNestedMembers(state, action.payload).map((n) => n.id )
+      };
+    }
+
+    case NodeActionTypes.GetGroupMemberIdsSuccess: {
+      if (action.payload) {
+        return {
+          ...state,
+          groupMemberIds: getNestedMembers(state, action.payload).map((n) => n.id )
+        };
+      } else {
+        return {
+          ...state,
+          groupMemberIds: []
         };
       }
     }
@@ -912,4 +942,25 @@ function updatePart(oldPartData: NodeLink | Node, newPartData: NodeDetail | Node
   }
 
   return updatedPart;
+}
+
+// Get all nodes that are contained in a group node, including indirectly
+function getNestedMembers(state: State, group: NodeDetail): Node[] {
+  return state.entities.filter(function(node: Node): boolean {
+    let currentGroup = node;
+
+    // Loop through a node's sequence of containing groups
+    do {
+
+      // Check if node is a direct member of the provided group
+      if (currentGroup.group === group.id) {
+        return true;
+      }
+
+      // Consider the next group up in the sequence
+      currentGroup = state.entities.find(item => item.id === currentGroup.group);
+    } while (currentGroup);
+
+    return false;
+  });
 }
