@@ -1781,13 +1781,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const diagramCanvas = diagramComponent.diagram.div
           .getElementsByTagName('CANVAS')[0] as HTMLCanvasElement;
 
-        if (diagramCanvas.width < 20 || diagramCanvas.height < 20) {
-          diagramComponent.updateDiagramArea();
+        const initialWidth = diagramCanvas.width;
+        const initialHeight = diagramCanvas.height;
+        diagramComponent.updateDiagramArea();
+
           setTimeout(() => {
-            diagramComponent.zoomToFit();
-            diagramComponent.centreDiagram();
+            if (diagramCanvas.width !== initialWidth || diagramCanvas.height !== initialHeight) {
+              diagramComponent.zoomToFit();
+              diagramComponent.centreDiagram();
+            }
           }, 0);
-        }
       }
 
       this.tableViewFilterValue = null;
