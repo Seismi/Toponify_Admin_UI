@@ -19,3 +19,11 @@ mat-form-field {
   background-color: #ddd;
   color: #42526e;
 }
+
+.title {
+  color: rgba(0,0,0,.58);
+  font: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px !important; 
+}
