@@ -625,7 +625,7 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            // diagramLevelService.changeLevelWithFilter.call(this, event, node);
+            diagramLevelService.displayGroupMembers.call(this, event, node);
 
           }.bind(this),
           null,
