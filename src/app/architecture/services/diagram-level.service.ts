@@ -266,8 +266,10 @@ export class DiagramLevelService {
     );
   }
 
-  displayGroupMembers() {
-
+  displayGroupMembers(_event: any, object: go.Node) {
+    this.store.dispatch(
+      new UpdateQueryParams({ filterLevel: Level.system, id: object.data.id, groupName: object.data.name })
+    );
   }
 
   displayMapView(event: go.DiagramEvent, object: go.Part): void {
