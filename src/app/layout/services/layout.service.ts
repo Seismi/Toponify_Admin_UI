@@ -29,7 +29,7 @@ export class LayoutService {
 
   // FIXME: set correct payload type
   addLayout(data: any): Observable<AddLayoutApiResponse> {
-    return this.http.post<AddLayoutApiResponse>(`/layouts`, { data: data }, httpOptions);
+    return this.http.post<any>(`/layouts`, { data: data }, httpOptions);
   }
 
   updateLayout(id: string, data: LayoutDetails): Observable<UpdateLayoutApiResponse> {

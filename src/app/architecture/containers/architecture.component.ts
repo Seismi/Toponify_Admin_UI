@@ -926,36 +926,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveAsLayout(): void {
-    // TODO:
-    const dialogRef = this.dialog.open(SaveLayoutModalComponent, {
+    this.dialog.open(SaveLayoutModalComponent, {
       disableClose: false,
-      width: 'auto',
+      minWidth: '500px',
       data: {
+        layout: this.layout,
+        draft: this.draft,
+        scope: this.scope,
         name: ''
       }
     });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.name) {
-        this.store.dispatch(
-          new AddLayout({
-            copyFromLayoutId: this.draft ? this.draft.layoutId : this.layout.id,
-            layoutDetails: {
-              name: data.name,
-              scope: this.scope
-            },
-            positionDetails: this.draft ? this.draft.data.positionDetails : {
-              workPackages: [],
-              positions: {
-                nodes: [],
-                nodeLinks: []
-              }
-            }
-          })
-        );
-      }
-    });
-
   }
 
   // FIXME: types
