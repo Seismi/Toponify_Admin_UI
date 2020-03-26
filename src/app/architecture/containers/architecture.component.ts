@@ -945,7 +945,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               scope: this.scope
             },
             positionDetails: this.draft ? this.draft.data.positionDetails : {
-              workPackages: []
+              workPackages: [],
+              positions: {
+                nodes: [],
+                nodeLinks: []
+              }
             }
           })
         );
