@@ -936,15 +936,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      debugger;
-      // if (data && data.attribute) {
-      //   this.store.dispatch(
-      //     new AddAttribute({
-      //       workPackageId: this.workpackageId,
-      //       entity: { data: { ...data.attribute } }
-      //     })
-      //   );
-      // }
+      if (data && data.name) {
+        this.store.dispatch(
+          new AddLayout({
+            copyFromLayoutId: this.draft ? this.draft.layoutId : this.layout.id,
+            layoutDetails: {
+              name: data.name,
+              scope: this.scope
+            },
+            positionDetails: this.draft ? this.draft.data.positionDetails : {
+              workPackages: []
+            }
+          })
+        );
+      }
     });
 
   }
@@ -1814,6 +1819,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
   }
 
+  //
   onAddLayout(): void {
     const dialogRef = this.dialog.open(ScopeAndLayoutModalComponent, {
       disableClose: false,

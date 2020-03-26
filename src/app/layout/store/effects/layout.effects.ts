@@ -48,9 +48,11 @@ export class LayoutEffects {
   addlayout$ = this.actions$.pipe(
     ofType<LayoutActions.AddLayout>(LayoutActionTypes.AddLayout),
     map(action => action.payload),
-    switchMap((payload: LayoutDetails) => {
+    // FIXME: set correct payload type
+    switchMap((payload: any) => {
       return this.layoutService.addLayout(payload).pipe(
         switchMap((resp: AddLayoutApiResponse) => [
+          new LayoutActions.LoadLayouts({}),
           new LayoutActions.AddLayoutSuccess(resp),
           new ScopeActions.UpdateScope({
             id: payload.scope.id,

@@ -27,7 +27,8 @@ export class LayoutService {
     return this.http.get<GetLayoutApiResponse>(`/layouts/${id}`);
   }
 
-  addLayout(data: LayoutDetails): Observable<AddLayoutApiResponse> {
+  // FIXME: set correct payload type
+  addLayout(data: any): Observable<AddLayoutApiResponse> {
     return this.http.post<AddLayoutApiResponse>(`/layouts`, { data: data }, httpOptions);
   }
 
