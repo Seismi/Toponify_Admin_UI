@@ -1,4 +1,4 @@
-<mat-label>Tags</mat-label>
+<mat-label class="title">Tags</mat-label>
 <mat-form-field>
   <mat-chip-list #chipList>
     <smi-tag *ngFor="let tag of tags" [tag]="tag" [removable]="editMode" (remove)="onRemove(tag)"></smi-tag>
