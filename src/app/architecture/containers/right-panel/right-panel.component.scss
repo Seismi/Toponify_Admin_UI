@@ -45,5 +45,8 @@
 }
 
 #add-scope-button {
-  margin-right: 5px;
+  margin: 5px;
+  &:nth-child(2) {
+    float: right;
+  }
 }
