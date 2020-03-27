@@ -996,28 +996,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray.map(function(node) {
-      return {
-        id: node.id,
-        positionSettings: {
-          locationCoordinates: node.location,
-          middleExpanded: node.middleExpanded,
-          bottomExpanded: node.bottomExpanded,
-          areaSize: node.areaSize
-        }
-      };
-    });
-
-    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray.map(function(link) {
-      return {
-        id: link.id,
-        positionSettings: {
-          route: link.route,
-          fromSpot: link.fromSpot,
-          toSpot: link.toSpot
-        }
-      };
-    });
+    const diagram = this.diagramComponent.diagram;
+    const { nodeLayoutData, linkLayoutData } = this.diagramChangesService.getCurrentPartsLayoutData(diagram);
 
     if (this.layout) {
       this.store.dispatch(
