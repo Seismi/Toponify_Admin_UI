@@ -5,7 +5,7 @@ import {
   WorkPackageNodesService
 } from '@app/workpackage/services/workpackage-nodes.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import {forkJoin, of} from 'rxjs';
 import { catchError, map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
 import {
   AddWorkPackageNode,
@@ -81,18 +81,32 @@ import {
   WorkPackageNodeDescendantsApiResponse,
   NodeDetailApiResponse
 } from '@app/architecture/store/models/node.model';
+import {NodeService} from '@app/architecture/services/node.service';
 
 @Injectable()
 export class WorkPackageNodeEffects {
-  constructor(private actions$: Actions, private workpackageNodeService: WorkPackageNodesService) {}
+  constructor(
+    private actions$: Actions,
+    private workpackageNodeService: WorkPackageNodesService,
+    private nodeService: NodeService
+  ) {}
 
   @Effect()
   addWorkpackageNode$ = this.actions$.pipe(
     ofType<AddWorkPackageNode>(WorkPackageNodeActionTypes.AddWorkPackageNode),
     map(action => action.payload),
-    mergeMap((payload: { workpackageId: string; node: any; scope?: string }) => {
-      return this.workpackageNodeService.addNode(payload.workpackageId, payload.node, payload.scope).pipe(
-        switchMap((data: any) => [new AddWorkPackageNodeSuccess(data)]),
+    mergeMap((payload: { workpackageId: string; node: any; scope?: string, newLayoutDetails?: any }) => {
+      const observables = [
+        this.workpackageNodeService.addNode(payload.workpackageId, payload.node, payload.scope)
+      ];
+      if (payload.newLayoutDetails) {
+        observables.push(this.nodeService.updatePartsLayout(
+          payload.newLayoutDetails.layoutId,
+          payload.newLayoutDetails.data
+        ));
+      }
+      return forkJoin(observables).pipe(
+        map((data: any) => new AddWorkPackageNodeSuccess(data[0])),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeFailure(error)))
       );
     })
