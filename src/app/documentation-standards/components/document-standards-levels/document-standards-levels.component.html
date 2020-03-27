@@ -1,5 +1,5 @@
 <div>
-  <mat-checkbox class="select-all" (change)="checkAll($event)" [disabled]="isDisabled">Everywhere</mat-checkbox>
+  <mat-checkbox data-qa="documentation-standards-level-everywhere" class="select-all" (change)="checkAll($event)" [disabled]="isDisabled">Everywhere</mat-checkbox>
 </div>
 <mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl" [ngClass]="{ editable: modalMode }">
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
@@ -9,14 +9,15 @@
       [checked]="checklistSelection.isSelected(node)"
       (change)="levelSelectionToggle(node)"
       [disabled]="isDisabled"
+      data-qa="documentation-standards-level-option"
     >
       {{ node.item }}
     </mat-checkbox>
   </mat-tree-node>
 
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding data-qa="documentation-standards-level">
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
-      <mat-icon class="mat-icon-rtl-mirror">
+      <mat-icon class="mat-icon-rtl-mirror" data-qa="documentation-standards-level-expand">
         {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
       </mat-icon>
     </button>
@@ -25,6 +26,7 @@
       [indeterminate]="descendantsPartiallySelected(node)"
       (change)="levelItemSelectionToggle($event, node)"
       [disabled]="isDisabled"
+      data-qa="documentation-standards-level-option"
     >
       {{ node.item }}
     </mat-checkbox>
