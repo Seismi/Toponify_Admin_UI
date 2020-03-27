@@ -157,7 +157,11 @@
     </smi-scope-table>
     <!-- Add Scope Button -->
     <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="onAddScope()">
-      Add Scope
+      New Scope
+    </button>
+
+    <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="addToScope.emit()">
+      Add to existing
     </button>
   </mat-tab>
 

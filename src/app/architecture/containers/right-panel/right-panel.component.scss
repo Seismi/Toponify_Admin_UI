@@ -43,3 +43,10 @@
   overflow-y: auto;
   max-height: 77vh;
 }
+
+#add-scope-button {
+  margin: 5px;
+  &:nth-child(2) {
+    float: right;
+  }
+}
