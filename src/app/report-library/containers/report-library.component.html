@@ -22,6 +22,12 @@
     </mat-drawer>
   <app-base-header>
     <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
+    <smi-workpackage-name
+      [selectedWorkPackageEntities]="selectedWorkPackageEntities"
+      [workPackageIsEditable]="!workPackageIsEditable"
+      (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
+      (editWorkPackage)="onSelectEditWorkpackage($event)">
+    </smi-workpackage-name>
     <smi-scopes-dropdown
       class="scope-dropdown"
       [data]="scopes$ | async"

@@ -166,7 +166,6 @@ export class CustomLink extends go.Link {
 
     // Array of tools that can affect link routes
     const tools = [toolManager.draggingTool,
-      toolManager.linkReshapingTool,
       toolManager.linkingTool,
       linkShiftingTool,
       toolManager.resizingTool
@@ -476,7 +475,10 @@ export class GojsCustomObjectsService {
             : { text: text }
         ),
         {
-          mouseEnter: function(event: object, object: go.Part): void {
+          mouseEnter: function(event: go.InputEvent, object: go.Part): void {
+
+            const menu = object.part as go.Adornment;
+
             standardMouseEnter(event, object);
             // Hide any open submenu that is already open
             object.panel.elements.each(function(button: go.Part): void {
@@ -484,10 +486,15 @@ export class GojsCustomObjectsService {
                 button.visible = false;
               }
             });
+
             // Show any submenu buttons assigned to this menu button
             subMenuNames.forEach(function(buttonName: string): void {
-              object.part.findObject(buttonName).visible = true;
+              menu.findObject(buttonName).visible = true;
             });
+
+            // Ensure that opened submenus do not appear outside of diagram bounds
+            diagramChangesService.updateViewAreaForMenu(menu);
+
           },
           column: 0,
           row: row
@@ -515,7 +522,8 @@ export class GojsCustomObjectsService {
       {
         name: 'ButtonMenu',
         background: null,
-        zOrder: 1
+        zOrder: 1,
+        isInDocumentBounds: true
       },
       // Use placeholder to ensure menu placed relative to node.
       //  Otherwise, menu appears at the mouse cursor.
@@ -556,8 +564,8 @@ export class GojsCustomObjectsService {
           thisService.showDetailTabSource.next();
         }),
         makeMenuButton(
-          2, 
-          'Grouped Components', 
+          2,
+          'Grouped Components',
             [
               'Expand',
               'Show as List (groups)',
@@ -617,7 +625,7 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            // diagramLevelService.changeLevelWithFilter.call(this, event, node);
+            diagramLevelService.displayGroupMembers.call(this, event, node);
 
           }.bind(this),
           null,
@@ -653,8 +661,8 @@ export class GojsCustomObjectsService {
         ),
         // --End of group submenu buttons--
         makeMenuButton(
-          3, 
-          'Data Sets', 
+          3,
+          'Data Sets',
             [
               'Show as List (data sets)',
               'Display (data sets)',
@@ -666,12 +674,12 @@ export class GojsCustomObjectsService {
           }.bind(this),
           function(object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            switch(node.data.layer) {
-              case 'data set': 
+            switch (node.data.layer) {
+              case 'data set':
                 return 'Dimensions';
               case 'dimension':
                 return 'Reporting Layer';
-              default: 
+              default:
                 return 'Data Sets';
             }
           }

@@ -16,6 +16,7 @@ import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'smi-radio',
@@ -45,10 +46,12 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.userStore.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadRadios({}));
     this.nodeStore.dispatch(new LoadNodes());
-    this.radio$ = this.store.pipe(select(getRadioEntities));
+    this.radio$ = this.store.pipe(select(getRadioEntities)).pipe(
+      map(radios => radios.filter(radio => this.filterData === null ? radio.status !== 'closed' : radio))
+    );
 
     this.store.pipe(select(getRadioFilter)).subscribe(data => {
-      data && data.status ? (this.status = data.status) : (this.status = 'new,open,closed');
+      data && data.status ? (this.status = data.status) : (this.status = 'new,open');
       this.filterData = data;
     });
   }
@@ -64,8 +67,7 @@ export class RadioComponent implements OnInit, OnDestroy {
   onAddRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px',
-      height: '730px'
+      width: '650px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

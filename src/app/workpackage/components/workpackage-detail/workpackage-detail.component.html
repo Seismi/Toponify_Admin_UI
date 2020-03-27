@@ -89,6 +89,7 @@
         {{ owner.name }}
       </mat-option>
     </mat-select>
+    <mat-error>This field is required!</mat-error>
   </mat-form-field>
 
   <!-- Select Status -->
@@ -162,11 +163,11 @@
         type="button"
         mat-raised-button
         color="primary"
-        *ngIf="workpackageActionReset"
+        *ngIf="workpackageActionReset && !statusDraft"
         (click)="resetWorkpackage()"
         data-qa="work-packages-reset"
       >
-        Reset
+        Reset to draft
       </button>
       <button
         type="button"

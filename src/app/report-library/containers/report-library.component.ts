@@ -49,6 +49,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public workPackageIsEditable: boolean;
   public scopeId: string;
   public workPackageIds: string[];
+  public selectedWorkPackageEntities: WorkPackageEntity[];
 
   private subscriptions: Subscription[] = [];
 
@@ -88,6 +89,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.selectedWorkPackageEntities = workpackages;
         const wpIds = workpackages.map(item => item.id);
         this.workPackageIds = wpIds;
         this.getReports(wpIds);
@@ -224,6 +226,10 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
         fileName: 'report-library'
       }
     });
+  }
+
+  onExitWorkPackageEditMode(): void {
+    this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
   }
 
 }

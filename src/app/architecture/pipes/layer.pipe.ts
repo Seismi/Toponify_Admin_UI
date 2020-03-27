@@ -9,7 +9,7 @@ export class LayerPipe implements PipeTransform {
 
   transform(
     items: any[],
-    props?: { byId: boolean; descendantIds$?: Observable<string[]>; level?: Level }
+    props?: { byId: boolean; descendantIds$?: Observable<string[]>; groupMemberIds$?: Observable<string[]>;  level?: Level }
   ): Observable<any[]> {
     if (!items || items.length < 1) {
       return of([]);
@@ -25,10 +25,13 @@ export class LayerPipe implements PipeTransform {
       return of(items);
     }
 
-    return props.descendantIds$.pipe(
-      map(descendantIds => {
-        if (descendantIds.length > 0) {
-          return items.filter(item => descendantIds.some(id => id === item.id));
+    const filterNodeIds$ = props.level === Level.system ?
+      props.groupMemberIds$ : props.descendantIds$;
+
+    return filterNodeIds$.pipe(
+      map(filterNodeIds => {
+        if (filterNodeIds.length > 0) {
+          return items.filter(item => filterNodeIds.some(id => id === item.id));
         } else {
           if (props.byId) {
             return [];
