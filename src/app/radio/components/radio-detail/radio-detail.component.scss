@@ -6,41 +6,12 @@
   margin-bottom: 20px;
 }
 
-input,
-textarea,
-.mat-select {
-  background-color: #eee;
-}
-
 .archive-btn {
   float: right;
 }
 
 button {
   margin-right: 5px;
-}
-
-.disabled {
-  pointer-events: none;
-}
-
-.editable {
-  background-color: #fff;
-}
-
-.ref-number-input {
-  margin: 0 35px;
-}
-
-.assigned-to-input {
-  margin-right: 35px;
-}
-
-.align-in-row {
-  display: flex;
-}
-
-button {
   border-radius: 15px;
   font-weight: lighter;
 }
@@ -52,12 +23,24 @@ button {
   padding: 0;
 }
 
-.categoryInput {
+.disabled {
+  pointer-events: none;
+}
+
+.editable {
+  background-color: #fff;
+}
+
+.space-around {
+  margin: 0 35px;
+}
+
+.spaceToRight {
   margin-right: 35px;
 }
 
-.buttons-group {
-  margin-top: 15px;
+.align-in-row {
+  display: flex;
 }
 
 .hidden {
@@ -65,4 +48,8 @@ button {
 }
 .description-content {
   padding: 10px 0 0 10px;
+}
+::ng-deep .ck-content {
+  background-color:white;
+  height: 110px;
 }

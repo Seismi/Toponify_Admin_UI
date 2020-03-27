@@ -82,6 +82,7 @@ import { LayoutActionsComponent } from './components/layout-actions/layout-actio
 import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
+import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
 
 @NgModule({
   imports: [
@@ -164,7 +165,8 @@ import { GroupInfoTableComponent } from './components/group-info-table/group-inf
     LayoutActionsComponent,
     SpinnerComponent,
     ComponentsTableComponent,
-    GroupInfoTableComponent
+    GroupInfoTableComponent,
+    SourceOrTargetTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

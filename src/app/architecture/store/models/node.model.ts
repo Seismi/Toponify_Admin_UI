@@ -58,11 +58,18 @@ export enum nodeCategories {
   transformation = 'transformation'
 }
 
+export enum endPointTypes {
+  source = 'source',
+  target = 'target',
+  none = ''
+}
+
 export class Node {
   id: string;
   layer: string;
   isGroup?: boolean;
   group?: string;
+  displayId?: string;
   name: string;
   description = '';
   category: nodeCategories;
@@ -80,6 +87,8 @@ export class Node {
   };
   impactedByWorkPackages = [];
   tooltip?: string;
+  sortOrder?: number;
+  endPointType?: endPointTypes;
 
   constructor(options: { id: string; name: string; layer: layers; category: nodeCategories; tooltip: string }) {
     if (options) {
@@ -155,18 +164,19 @@ export interface NodeDetail {
   relatedRadios?: (RelatedRadiosEntity)[] | null;
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
+  members?: (GroupInfo[]) | null;
 }
 export interface GroupInfo {
-  id: string,
-  layer: string,
-  name: string,
-  reference: string,
-  description: string,
-  category: string,
+  id: string;
+  layer: string;
+  name: string;
+  reference: string;
+  description: string;
+  category: string;
   tags: (Tag)[] | null;
-  group: string,
-  sortOrder: number,
-  direct: boolean
+  group: string;
+  sortOrder: number;
+  direct: boolean;
 }
 export interface OwnersEntityOrTeamEntityOrApproversEntity {
   id: string;

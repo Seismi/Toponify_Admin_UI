@@ -39,6 +39,7 @@ export interface State {
   error: Error;
   selectedWorkpackages: string[];
   parentNodeDescendantIds: string[];
+  groupMemberIds: string[];
   availableTags: {
     tags: Tag[];
     id: string;
@@ -46,6 +47,8 @@ export interface State {
   tags: Tag[];
   loadingLinks: LoadingStatus;
   loadingNodes: LoadingStatus;
+  loadingNode: LoadingStatus;
+  loadingLink: LoadingStatus;
 }
 
 export const initialState: State = {
@@ -62,6 +65,7 @@ export const initialState: State = {
   error: null,
   selectedWorkpackages: [],
   parentNodeDescendantIds: [],
+  groupMemberIds: [],
   availableTags: {
     tags: [],
     id: null
@@ -69,7 +73,9 @@ export const initialState: State = {
   tags: [],
   loadingLinks: null,
   loadingNodes: null,
-  draft: {}
+  draft: {},
+  loadingNode: LoadingStatus.loaded,
+  loadingLink: LoadingStatus.loaded
 };
 
 export function reducer(
@@ -180,7 +186,15 @@ export function reducer(
         function(updatedState, link) {
           const linkIndex = updatedState.links.findIndex(l => l.id === link.id);
           if (linkIndex > -1) {
-            return replaceLinkRoute(updatedState, linkIndex, link.id, layoutId, link.points);
+            return replaceLinkRoute(
+              updatedState,
+              linkIndex,
+              link.id,
+              layoutId,
+              link.points,
+              link.fromSpot,
+              link.toSpot
+            );
           }
         },
         {
@@ -310,6 +324,69 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.LoadNodeLink: {
+      return {
+        ...state,
+        loadingLink: LoadingStatus.loading
+      };
+    }
+
+    case NodeActionTypes.LoadNodeLinkSuccess: {
+      return {
+        ...state,
+        selectedNodeLink: action.payload,
+        loadingLink: LoadingStatus.loaded
+      };
+    }
+
+    case NodeActionTypes.LoadNodeLinkFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loadingLink: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadNode: {
+      return {
+        ...state,
+        loadingNode: LoadingStatus.loading
+      };
+    }
+
+    case NodeActionTypes.LoadNodeSuccess: {
+      return {
+        ...state,
+        selectedNode: action.payload,
+        loadingNode: LoadingStatus.loaded
+      };
+    }
+
+    case NodeActionTypes.LoadNodeFailure: {
+      return {
+        ...state,
+        loadingNode: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReports: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReportsSuccess: {
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.LoadNodeReportsFailure: {
+      return {
+        ...state
+      };
+    }
+
     case NodeActionTypes.LoadNodes: {
       return {
         ...state,
@@ -387,13 +464,6 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.LoadNodeSuccess: {
-      return {
-        ...state,
-        selectedNode: action.payload
-      };
-    }
-
     case NodeActionTypes.LoadNodeLinks: {
       return {
         ...state,
@@ -414,20 +484,6 @@ export function reducer(
         ...state,
         error: action.payload,
         loadingLinks: LoadingStatus.error
-      };
-    }
-
-    case NodeActionTypes.LoadNodeLinkSuccess: {
-      return {
-        ...state,
-        selectedNodeLink: action.payload
-      };
-    }
-
-    case NodeActionTypes.LoadNodeLinkFailure: {
-      return {
-        ...state,
-        error: action.payload
       };
     }
 
@@ -594,26 +650,6 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.LoadNodeReports: {
-      return {
-        ...state
-      };
-    }
-
-    case NodeActionTypes.LoadNodeReportsSuccess: {
-      return {
-        ...state,
-        reports: action.payload
-      };
-    }
-
-    case NodeActionTypes.LoadNodeReportsFailure: {
-      return {
-        ...state,
-        error: action.payload
-      };
-    }
-
     case NodeActionTypes.UpdateNodeDescendants: {
       const { nodeId, descendants } = <{ descendants: DescendantsEntity[]; nodeId: string }>action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === nodeId);
@@ -685,7 +721,7 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.GetParentDescendantIdsSucces: {
+    case NodeActionTypes.GetParentDescendantIdsSuccess: {
       if (action.payload && action.payload.descendants) {
         return {
           ...state,
@@ -695,6 +731,34 @@ export function reducer(
         return {
           ...state,
           parentNodeDescendantIds: []
+        };
+      }
+    }
+
+    case NodeActionTypes.RemoveGroupMemberIds: {
+      return {
+        ...state,
+        groupMemberIds: []
+      };
+    }
+
+    case NodeActionTypes.SetGroupMemberIds: {
+      return {
+        ...state,
+        groupMemberIds: getNestedMembers(state, action.payload).map((n) => n.id )
+      };
+    }
+
+    case NodeActionTypes.GetGroupMemberIdsSuccess: {
+      if (action.payload) {
+        return {
+          ...state,
+          groupMemberIds: getNestedMembers(state, action.payload).map((n) => n.id )
+        };
+      } else {
+        return {
+          ...state,
+          groupMemberIds: []
         };
       }
     }
@@ -822,7 +886,14 @@ function replaceNodeLayoutSetting(
   };
 }
 
-function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layoutId: string, route: number[]): State {
+function replaceLinkRoute(state: State,
+  linkIndex: number,
+  linkId: string,
+  layoutId: string,
+  route: number[],
+  fromSpot: string,
+  toSpot: string
+): State {
   const updatedLayouts: LinkLayoutSettingsEntity[] = state.links[linkIndex].positionPerLayout.concat();
   const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: LinkLayoutSettingsEntity) {
     return layoutSettings.layout.id === layoutId;
@@ -830,7 +901,12 @@ function replaceLinkRoute(state: State, linkIndex: number, linkId: string, layou
 
   if (layoutIndex > -1) {
     const updatedLayout = updatedLayouts[layoutIndex];
-    const newPositionSettings = { ...updatedLayout.layout.positionSettings, route: route };
+    const newPositionSettings = {
+      ...updatedLayout.layout.positionSettings,
+      route: route,
+      fromSpot: fromSpot,
+      toSpot: toSpot
+    };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
   }
@@ -866,4 +942,25 @@ function updatePart(oldPartData: NodeLink | Node, newPartData: NodeDetail | Node
   }
 
   return updatedPart;
+}
+
+// Get all nodes that are contained in a group node, including indirectly
+function getNestedMembers(state: State, group: NodeDetail): Node[] {
+  return state.entities.filter(function(node: Node): boolean {
+    let currentGroup = node;
+
+    // Loop through a node's sequence of containing groups
+    do {
+
+      // Check if node is a direct member of the provided group
+      if (currentGroup.group === group.id) {
+        return true;
+      }
+
+      // Consider the next group up in the sequence
+      currentGroup = state.entities.find(item => item.id === currentGroup.group);
+    } while (currentGroup);
+
+    return false;
+  });
 }

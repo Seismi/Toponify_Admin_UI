@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
@@ -6,18 +6,20 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
   templateUrl: './workpackage-name.component.html',
   styleUrls: ['./workpackage-name.component.scss']
 })
-export class WorkPackageNameComponent implements OnInit {
-  @Input() workPackageName: string;
-  @Input() workPackageIsEditable: boolean;
+export class WorkPackageNameComponent {
   @Input() selectedWorkPackageEntities: WorkPackageEntity[];
+  @Input() workPackageIsEditable: boolean;
 
-  constructor() {}
+  @Output() exitWorkPackageEditMode = new EventEmitter<void>();
+  @Output() editWorkPackage = new EventEmitter<WorkPackageEntity>();
 
-  ngOnInit() {}
-
-  @Output() exitWorkPackageEditMode = new EventEmitter<WorkPackageEntity[]>();
-
-  onExitWorkPackageEditMode(): void {
-    this.exitWorkPackageEditMode.emit(this.selectedWorkPackageEntities);
+  showWorkPackages(): string {
+    const workPackageNameArray = this.selectedWorkPackageEntities.map(workpackage => workpackage['name']);
+    return workPackageNameArray.slice(0, 2).map(name => name).join(' & ');
   }
+
+  getSelectedWorkPackages(): string {
+    return this.selectedWorkPackageEntities.map(workpackage => workpackage.name).join("\n");
+  }
+
 }

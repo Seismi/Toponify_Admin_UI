@@ -5,7 +5,7 @@ import {
   Dimension,
   OwnersEntity
 } from '@app/report-library/store/models/report.model';
-import { OwnersEntityOrTeamEntityOrApproversEntity, Tag, Node } from '@app/architecture/store/models/node.model';
+import { Tag, Node } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-report-library-detail',
@@ -37,8 +37,7 @@ export class ReportLibraryDetailComponent {
   @Output() saveReport = new EventEmitter<void>();
   @Output() deleteReport = new EventEmitter<string>();
   @Output() addOwner = new EventEmitter<void>();
-  @Output() selectOwner = new EventEmitter<OwnersEntityOrTeamEntityOrApproversEntity>();
-  @Output() deleteOwner = new EventEmitter<void>();
+  @Output() deleteOwner = new EventEmitter<string>();
   @Output() editSourceSystem = new EventEmitter<void>();
   @Output() addDataSets = new EventEmitter<void>();
   @Output() removeDataSet = new EventEmitter<string>();
@@ -57,18 +56,6 @@ export class ReportLibraryDetailComponent {
 
   onDelete(): void {
     this.deleteReport.emit();
-  }
-
-  onAddOwner(): void {
-    this.addOwner.emit();
-  }
-
-  onSelectOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    this.selectOwner.emit(owner);
-  }
-
-  onDeleteOwner(): void {
-    this.deleteOwner.emit();
   }
 
   onSourceEdit(): void {

@@ -97,6 +97,13 @@ export const getParentDescendantIds = createSelector(
   }
 );
 
+export const getGroupMemberIds = createSelector(
+  getNodeFeatureState,
+  (state: State) => {
+    return state.groupMemberIds;
+  }
+);
+
 export const getAvailableTags = createSelector(
   getNodeFeatureState,
   state => state.availableTags
@@ -110,6 +117,16 @@ export const getTags = createSelector(
 export const getDraft = createSelector(
   getNodeFeatureState,
   state => state.draft
+);
+
+export const getNodeLoadingStatus = createSelector(
+  getNodeFeatureState,
+  state => state.loadingNode
+);
+
+export const getNodeLinkLoadingStatus = createSelector(
+  getNodeFeatureState,
+  state => state.loadingLink
 );
 
 export const getTopologyLoadingStatus = createSelector(
