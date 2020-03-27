@@ -203,6 +203,15 @@ export class DiagramTemplatesService {
             desiredSize: new go.Size(25, 25),
             imageStretch: go.GraphObject.Uniform
           },
+          new go.Binding('source', 'iconName',
+            function(iconName) {
+              if (iconName) {
+                return `/assets/tag-icons/${iconName}.svg`;
+              } else {
+                return iconName.forEach(icon => `/assets/tag-icons/${icon}.svg`);
+              }
+            }
+          ),
           new go.Binding('visible', 'iconName',
             function(iconName) {
               return !!iconName;
