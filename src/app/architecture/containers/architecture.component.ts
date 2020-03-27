@@ -33,7 +33,10 @@ import {
   UpdateNodeLocations,
   UpdateNodeOwners,
   UpdatePartsLayout,
-  RemoveAllDraft
+  RemoveAllDraft,
+  RemoveGroupMemberIds,
+  GetGroupMemberIds,
+  SetGroupMemberIds
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -54,6 +57,7 @@ import {
   getNodeLinks,
   getNodeReports,
   getParentDescendantIds,
+  getGroupMemberIds,
   getSelectedNode,
   getSelectedNodeLink,
   getTopologyLoadingStatus,
@@ -90,7 +94,8 @@ import {
   DeleteWorkPackageLinkProperty,
   DeleteWorkpackageLinkSuccess,
   UpdateWorkPackageLinkProperty,
-  WorkPackageLinkActionTypes
+  WorkPackageLinkActionTypes,
+  UpdateWorkPackageLink
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNode,
@@ -262,6 +267,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
   public parentName: string | null;
+  public groupName: string | null;
   public selectedView: ArchitectureView = ArchitectureView.Diagram;
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
@@ -273,9 +279,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
+  public groupMemberIds: Observable<string[]>;
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
   public byId = false;
+  public filterLevel: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -326,6 +334,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.parentDescendantIds = this.store.pipe(select(getParentDescendantIds));
+    this.groupMemberIds = this.store.pipe(select(getGroupMemberIds));
     this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
     this.subscriptions.push(
       this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(
@@ -427,10 +436,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel, id, scope, parentName, workpackages, isTransformation, selectedItem, selectedType } = fil;
+        const { filterLevel,
+          id,
+          scope,
+          parentName,
+          groupName,
+          workpackages,
+          isTransformation,
+          selectedItem,
+          selectedType
+        } = fil;
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
 
         if (filterLevel) {
+          this.filterLevel = filterLevel;
           this.selectedWorkpackages = workpackagesArray;
           this.setNodesLinks(filterLevel, id, workpackagesArray, scope, isTransformation);
         }
@@ -455,17 +474,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
 
         this.parentName = parentName ? parentName : null;
+        this.groupName = groupName ? groupName : null;
         if (id) {
           this.byId = true;
-          const parentNode: Node = this.nodes.find(node => node.id === id);
+          const parentNode: NodeDetail = this.nodes.find(node => node.id === id);
           if (!parentNode) {
             this.store.dispatch(new GetParentDescendantIds({ id, workpackages: workpackagesArray || [] }));
+            this.store.dispatch(new GetGroupMemberIds({ id, workpackages: workpackagesArray || [] }));
           } else {
             this.store.dispatch(new SetParentDescendantIds(parentNode.descendants.map(n => n.id)));
+            this.store.dispatch(new SetGroupMemberIds(parentNode));
           }
         } else {
           this.byId = false;
           this.store.dispatch(new RemoveParentDescendantIds());
+          this.store.dispatch(new RemoveGroupMemberIds());
         }
       }
     });
@@ -766,6 +789,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         if (this.clickedOnLink && this.selectedRightTab === 1) {
           this.showOrHideRightPane = false;
         }
+
+        if (!this.clickedOnLink) {
+          this.showOrHideRightPane = true;
+        }
       }
     }
 
@@ -784,6 +811,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  itemClick(item: any): void {
+    const params: {id?: string; filterLevel: string; selectedItem: string; selectedType: string; parentName?: string} = {
+      filterLevel: item.layer,
+      selectedItem: item.id,
+      selectedType: 'node',
+    };
+
+    if (item.layer !== Level.system) {
+      params.id = this.selectedPart.id;
+      params.parentName = this.selectedPart.name;
+    }
+    this.routerStore.dispatch(
+      new UpdateQueryParams(params)
+    );
   }
 
   getNodeReports(workpackageIds: string[] = []): void {
@@ -1731,6 +1774,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onViewChange(view: ArchitectureView, from?) {
     this.selectedView = view;
     if (view === ArchitectureView.Diagram) {
+
+      const diagramComponent = this.diagramComponent;
+
+      // If the diagram's width and height have not been correctly set
+      //  then update the diagram area and fit the diagram to the screen
+      if (diagramComponent) {
+        const diagramCanvas = diagramComponent.diagram.div
+          .getElementsByTagName('CANVAS')[0] as HTMLCanvasElement;
+
+        const initialWidth = diagramCanvas.width;
+        const initialHeight = diagramCanvas.height;
+        diagramComponent.updateDiagramArea();
+
+          setTimeout(() => {
+            if (diagramCanvas.width !== initialWidth || diagramCanvas.height !== initialHeight) {
+              diagramComponent.zoomToFit();
+              diagramComponent.centreDiagram();
+            }
+          }, 0);
+      }
+
       this.tableViewFilterValue = null;
     }
   }
@@ -2014,8 +2078,41 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
   }
 
+  exitUsageView() {
+    this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system, id: null }));
+  }
+
   onSeeDependencies() {
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
     this.diagramChangesService.hideNonDependencies(part);
+  }
+
+  onEditSourceOrTarget(type: 'source' | 'target') {
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: type,
+        placeholder: 'Components',
+        options$: this.store.pipe(select(getNodeEntities)),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.workpackageStore.dispatch(
+          new UpdateWorkPackageLink({
+            workpackageId: this.workpackageId,
+            linkId: this.nodeId,
+            link: {
+              ...this.part.data,
+              sourceId: (type === 'source') ? data.value[0].id : null,
+              targetId: (type === 'target') ? data.value[0].id : null
+            }
+          })
+        );
+      }
+    });
   }
 }

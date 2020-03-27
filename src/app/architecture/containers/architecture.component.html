@@ -76,6 +76,10 @@
         >
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
+          <span class="viewing-dependencies" *ngIf="filterLevel === 'usage analysis'">
+            Showing Usage Across Levels
+            <mat-icon (click)="exitUsageView()">close</mat-icon>
+          </span>
           <smi-layout-actions
             class="diagram-actions"
             *ngIf="selectedView === ArchitectureView.Diagram"
@@ -99,7 +103,11 @@
             [allowMove]="allowMove"
             [workPackageIsEditable]="workPackageIsEditable"
             *ngIf="!showTable"
-            [nodes]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
+            [nodes]="nodes | layer: { byId: byId,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds,
+              level: currentFilterLevel
+            } | async"
             [links]="links | layer: { byId: false } | async"
             [workpackageDetail]="workpackageDetail"
             [selectedId]="selectedId"
@@ -119,7 +127,10 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.System">
           <smi-architecture-table-view
-            [data]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds } | async"
+            [data]="nodes | layer: { byId: byId,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds
+            } | async"
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
             (changeLevel)="onChangeLevel($event)"
@@ -157,6 +168,7 @@
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
+            (itemClick)="itemClick($event)"
             [owners]="selectedNode?.owners"
             [selectedRightTab]="selectedRightTab"
             [group]="objectDetailsForm"
@@ -185,7 +197,10 @@
             (addExistingScope)="onAddExistingScope()"
             (addNewScope)="onAddNewScope()"
             [selectedView]="selectedView"
-            [nodes]="nodes | layer: { byId: false, descendantIds$: parentDescendantIds } | async"
+            [nodes]="nodes | layer: { byId: false,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds
+            } | async"
             [selectedNode]="selectedNode"
             (selectNode)="onSelectNode($event)"
             [links]="links | layer: { byId: false} | async"
@@ -217,6 +232,9 @@
             [currentFilterLevel]="currentFilterLevel"
             (seeUsage)="onSeeUsage()"
             (seeDependencies)="onSeeDependencies()"
+            [sourceObject]="selectedNode?.sourceObject"
+            [targetObject]="selectedNode?.targetObject"
+            (editSourceOrTarget)="onEditSourceOrTarget($event)"
           >
           </smi-right-panel></p
       ></app-model-sidebar>
