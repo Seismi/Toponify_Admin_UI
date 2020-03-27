@@ -1,0 +1,35 @@
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 17px;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:nth-child(1) {
+  background-color: #ddd;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.search-container {
+  width: 100%;
+  padding: 7px 15px;
+  background-color: #eee;
+}
+
+.search {
+  width: 91%;
+  padding: 5px 10px;
+  &:focus {
+    outline: none;
+  }
+}
+
+.hide {
+  display: none;
+}

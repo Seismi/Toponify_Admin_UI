@@ -31,6 +31,10 @@
           (collapseAllNodes)="onCollapseAllNodes()"
           (summariseAllNodes)="onSummariseAllNodes()"
           (expandAll)="onExpandAll()"
+          [currentFilterLevel]="currentFilterLevel"
+          (addComponent)="onAddComponentOrLink($event)"
+          (addInterface)="onAddComponentOrLink($event)"
+          (addInterfaceWithTransformation)="onAddInterfaceWithTransformation()"
         >
         </smi-left-panel>
       </smi-left-hand-pane-content>
@@ -138,7 +142,7 @@
             [view]="'system'"
             [filterValue]="tableViewFilterValue"
             [workPackageIsEditable]="workPackageIsEditable"
-            (add)="onAddComponentOrLink()"
+            (add)="onAddComponentOrLink('component')"
           ></smi-architecture-table-view>
         </div>
         <div *ngIf="selectedView === ArchitectureView.Links">
@@ -151,7 +155,7 @@
             [view]="'link'"
             [filterValue]="tableViewFilterValue"
             [workPackageIsEditable]="workPackageIsEditable"
-            (add)="onAddComponentOrLink()"
+            (add)="onAddComponentOrLink('interface')"
           ></smi-architecture-table-view>
         </div>
       </app-model-content>

@@ -83,6 +83,7 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
+import { InterfaceWithTransformationModalComponent } from './containers/interface-with-transformation-modal/interface-with-transformation-modal.component';
 
 @NgModule({
   imports: [
@@ -166,7 +167,8 @@ import { SourceOrTargetTableComponent } from './components/source-or-target-tabl
     SpinnerComponent,
     ComponentsTableComponent,
     GroupInfoTableComponent,
-    SourceOrTargetTableComponent
+    SourceOrTargetTableComponent,
+    InterfaceWithTransformationModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -180,7 +182,8 @@ import { SourceOrTargetTableComponent } from './components/source-or-target-tabl
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
     RadioConfirmModalComponent,
-    ComponentsOrLinksModalComponent
+    ComponentsOrLinksModalComponent,
+    InterfaceWithTransformationModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
