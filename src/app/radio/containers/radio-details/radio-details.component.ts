@@ -84,7 +84,12 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
             reference: radio.reference,
             status: radio.status,
             mitigation: radio.mitigation,
-            description: radio.description
+            description: radio.description,
+            severity: radio.severity,
+            frequency: radio.frequency,
+            raisedBy: `${radio.author.firstName} ${radio.author.lastName}`,
+            createdOn: new Date(radio.createdOn).toLocaleDateString(),
+            lastUpdatedOn: new Date(radio.lastUpdatedOn).toLocaleDateString()
           });
         }
       })

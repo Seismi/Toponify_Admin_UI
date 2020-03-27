@@ -17,7 +17,8 @@ import {
   MatDialogModule,
   MatAutocompleteModule,
   MatCheckboxModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -52,6 +53,7 @@ import { DownloadCSVModalComponent } from './components/download-csv-modal/downl
 import { ReportService } from '@app/report-library/services/report.service';
 import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component';
 import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand-pane-content.component';
+import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.component';
 
 @NgModule({
   imports: [
@@ -60,6 +62,7 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
     MatIconModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatProgressSpinnerModule,
     MatInputModule,
     MatMenuModule,
     MatSliderModule,
@@ -123,6 +126,7 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
     ModelSidebarComponent,
     ModelContentComponent,
     DraggerComponent,
+    LoaderComponent,
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,

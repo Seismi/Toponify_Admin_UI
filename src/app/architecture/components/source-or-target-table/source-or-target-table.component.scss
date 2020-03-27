@@ -1,7 +1,9 @@
+div {
+  margin-top: 15px;
+}
+
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
 }
 
 .title {
@@ -9,17 +11,7 @@ table {
   font-size: 15px;
   font-weight: 400;
   color: #212529;
-}
-
-td {
-  border: none;
-  text-align: left;
-  font-size: 13.5px;
-  padding: 3px 0px;
-}
-
-td:nth-child(1) {
-  padding-left: 15px;
+  min-width: 100px;
 }
 
 .mat-icon {
@@ -28,4 +20,3 @@ td:nth-child(1) {
   font-size: 20px;
   margin-left: 5px;
 }
-

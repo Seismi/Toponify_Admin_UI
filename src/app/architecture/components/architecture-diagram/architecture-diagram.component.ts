@@ -277,6 +277,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.requestUpdate();
   }
 
+  centreDiagram(): void {
+    const diagram = this.diagram;
+    diagram.centerRect(diagram.computePartsBounds(diagram.nodes));
+  }
+
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
@@ -310,6 +315,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   // Call when you want to select a node
   selectNode(id: string): void {
     this.diagram.select(this.diagram.findPartForKey(id));
+  }
+
+  getNodeFromId(id: string) {
+    return this.diagram.findNodeForKey(id);
   }
 
   ngOnChanges(changes: SimpleChanges) {

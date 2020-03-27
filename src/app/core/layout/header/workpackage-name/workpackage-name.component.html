@@ -1,5 +1,18 @@
-<div>
-  <span>{{ workPackageName }}</span>
-  <span *ngIf="selectedWorkPackageEntities.length"> - {{ workPackageIsEditable ? 'Edit' : 'Read' }}</span>
-  <mat-icon *ngIf="workPackageIsEditable" (click)="onExitWorkPackageEditMode()">close</mat-icon>
+<div *ngIf="selectedWorkPackageEntities?.length">
+  <span title="{{ getSelectedWorkPackages() }}">
+    {{ showWorkPackages() }}
+    {{ selectedWorkPackageEntities.length > 2 ? '...' : null }}
+  </span>
+  <mat-icon
+    *ngIf="workPackageIsEditable"
+    (click)="exitWorkPackageEditMode.emit()"
+  >
+    cancel
+  </mat-icon>
+  <mat-icon
+    *ngIf="!workPackageIsEditable && selectedWorkPackageEntities?.length === 1"
+    (click)="editWorkPackage.emit(selectedWorkPackageEntities[0])"
+  >
+    edit
+  </mat-icon>
 </div>

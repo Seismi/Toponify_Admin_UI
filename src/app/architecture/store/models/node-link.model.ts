@@ -10,6 +10,7 @@ export enum linkCategories {
 
 export interface NodeLink {
   id: string;
+  displayId?: string;
   layer: string;
   name: string;
   description: string;
@@ -38,6 +39,8 @@ export interface OwnersEntity {
 export interface RoutesEntityEntity {
   layout: Layout;
   points?: (number)[] | null;
+  fromSpot?: string;
+  toSpot?: string;
 }
 
 // Detail

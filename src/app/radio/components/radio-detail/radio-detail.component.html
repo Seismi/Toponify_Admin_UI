@@ -1,6 +1,6 @@
 <form [formGroup]="group">
-  <div>
-    <mat-form-field [ngClass]="{ disabled: !isEditable }">
+  <div [ngClass]="{ disabled: !isEditable }">
+    <mat-form-field>
       <input
         matInput
         placeholder="Title"
@@ -11,8 +11,8 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
-      <mat-form-field [ngClass]="{ categoryInput: modalMode }">
+    <div class="align-in-row">
+      <mat-form-field [ngClass]="{ spaceToRight: modalMode }">
         <mat-label>Category</mat-label>
         <mat-select data-qa="radio-detail-category" formControlName="category" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let category of categories" [value]="category">
@@ -21,7 +21,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field class="ref-number-input" *ngIf="!modalMode">
+      <mat-form-field class="space-around" *ngIf="!modalMode">
         <mat-label>Ref. Number</mat-label>
         <input
           matInput
@@ -42,7 +42,7 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field>
+    <mat-form-field floatLabel="always">
       <textarea
         matInput
         placeholder="Description"
@@ -54,8 +54,40 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <div class="align-in-row" [ngClass]="{ disabled: !isEditable }">
-      <mat-form-field class="assigned-to-input">
+    <div class="align-in-row" *ngIf="!modalMode">
+      <mat-form-field>
+        <input 
+          matInput 
+          data-qa="radio-detail-raised-by" 
+          formControlName="raisedBy" 
+          placeholder="Raised By" 
+          readonly
+        />
+      </mat-form-field>
+
+      <mat-form-field class="space-around">
+        <input 
+          matInput 
+          data-qa="radio-detail-created-on" 
+          formControlName="createdOn" 
+          placeholder="Created on" 
+          readonly
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <input 
+          matInput 
+          data-qa="radio-detail-last-updated-by" 
+          formControlName="lastUpdatedOn" 
+          placeholder="Last Updated on" 
+          readonly
+        />
+      </mat-form-field>
+    </div>
+
+    <div class="align-in-row">
+      <mat-form-field class="spaceToRight">
         <mat-label>Assigned To</mat-label>
         <mat-select
           data-qa="radio-detail-assigned-to"
@@ -81,15 +113,37 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field [ngClass]="{ disabled: !isEditable }">
+    <div class="align-in-row" *ngIf="!modalMode">
+      <mat-form-field class="spaceToRight">
+        <mat-label>Severity</mat-label>
+        <mat-select data-qa="radio-detail-severity" formControlName="severity" [ngClass]="{ editable: isEditable }">
+          <mat-option *ngFor="let score of scores" [value]="score.level">
+            {{ score.level }} - {{ score.text }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Frequency / Probability</mat-label>
+        <mat-select data-qa="radio-detail-frequency" formControlName="frequency" [ngClass]="{ editable: isEditable }">
+          <mat-option *ngFor="let score of scores" [value]="score.level">
+            {{ score.level }} - {{ score.text }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field floatLabel="always">
       <textarea
         matInput
         [rows]="rows"
         placeholder="Mitigation / Resolution"
         data-qa="radio-detail-mitigation"
         formControlName="mitigation"
-        [ngClass]="{ editable: isEditable }"
+        [ngStyle]="{ display: 'none' }"
       ></textarea>
+      <ckeditor [editor]="editor" [config]="config" formControlName="mitigation" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <div class="description-content" [innerHTML]="group.controls['mitigation'].value" [ngClass]="{hidden: isEditable}"></div>
     </mat-form-field>
   </div>
 
@@ -119,7 +173,7 @@
         [disabled]="radioStatus === 'closed'"
         (click)="onArchive()"
       >
-        <mat-icon>archive</mat-icon>Archive
+        Close
       </button>
     </div>
     <div *ngIf="isEditable">
@@ -129,6 +183,7 @@
   </div>
 
   <smi-tag-list 
+    *ngIf="!modalMode"
     [tags]="tags"
     [availableTags]="availableTags"
     [editMode]="true"
