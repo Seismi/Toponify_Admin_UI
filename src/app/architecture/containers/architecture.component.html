@@ -95,7 +95,7 @@
             (saveLayout)="onSaveLayout()"
             (saveAsLayout)="onSaveAsLayout()"
             [allowSave]="!!draft"
-            [allowSaveAs]="false"
+            [allowSaveAs]="true"
             [dependenciesView]="dependenciesView"
           >
           </smi-layout-actions>
@@ -189,6 +189,7 @@
             (addRadio)="onAddRadio()"
             [multipleSelected]="multipleSelected"
             (addScope)="onAddScope()"
+            (addToScope)="onAddToScope()"
             (addOwner)="onAddOwner()"
             (deleteOwner)="onDeleteOwner($event)"
             (saveProperties)="onSaveProperties($event)"
