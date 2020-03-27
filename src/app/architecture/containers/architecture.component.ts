@@ -283,6 +283,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
   public byId = false;
+  public dependenciesView: boolean;
   public filterLevel: string;
 
   @ViewChild(ArchitectureDiagramComponent)
@@ -367,6 +368,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.dependenciesView = false;
       this.removeAllDraft();
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
@@ -2063,8 +2065,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSeeDependencies() {
+    this.dependenciesView = true;
+    this.allowMove = false;
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
     this.diagramChangesService.hideNonDependencies(part);
+  }
+
+  exitDependenciesView() {
+    this.dependenciesView = false;
+    this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
   }
 
   onEditSourceOrTarget(type: 'source' | 'target') {
