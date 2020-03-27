@@ -283,6 +283,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public availableTags$: Observable<Tag[]>;
   public loadingStatus = LoadingStatus;
   public byId = false;
+  public dependenciesView: boolean;
+  public filterLevel: string;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -366,6 +368,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.dependenciesView = false;
       this.removeAllDraft();
       if (!this.currentFilterLevel && !filterLevel) {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
@@ -448,6 +451,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const workpackagesArray = typeof workpackages === 'string' ? [workpackages] : workpackages;
 
         if (filterLevel) {
+          this.filterLevel = filterLevel;
           this.selectedWorkpackages = workpackagesArray;
           this.setNodesLinks(filterLevel, id, workpackagesArray, scope, isTransformation);
         }
@@ -1797,6 +1801,27 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onViewChange(view: ArchitectureView, from?) {
     this.selectedView = view;
     if (view === ArchitectureView.Diagram) {
+
+      const diagramComponent = this.diagramComponent;
+
+      // If the diagram's width and height have not been correctly set
+      //  then update the diagram area and fit the diagram to the screen
+      if (diagramComponent) {
+        const diagramCanvas = diagramComponent.diagram.div
+          .getElementsByTagName('CANVAS')[0] as HTMLCanvasElement;
+
+        const initialWidth = diagramCanvas.width;
+        const initialHeight = diagramCanvas.height;
+        diagramComponent.updateDiagramArea();
+
+          setTimeout(() => {
+            if (diagramCanvas.width !== initialWidth || diagramCanvas.height !== initialHeight) {
+              diagramComponent.zoomToFit();
+              diagramComponent.centreDiagram();
+            }
+          }, 0);
+      }
+
       this.tableViewFilterValue = null;
     }
   }
@@ -2080,9 +2105,20 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
   }
 
+  exitUsageView() {
+    this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system, id: null }));
+  }
+
   onSeeDependencies() {
+    this.dependenciesView = true;
+    this.allowMove = false;
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
     this.diagramChangesService.hideNonDependencies(part);
+  }
+
+  exitDependenciesView() {
+    this.dependenciesView = false;
+    this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
   }
 
   onEditSourceOrTarget(type: 'source' | 'target') {
