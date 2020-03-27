@@ -59,6 +59,9 @@ import { AddObjectiveModalComponent } from '@app/workpackage/components/add-obje
 import { MoveObjectiveModalComponent } from '@app/workpackage/components/move-objective-modal/move-objective-modal.component';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
+import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -83,6 +86,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     private radioEffects: RadioEffects,
     private dialog: MatDialog,
     private route: ActivatedRoute,
+    private teamStore: Store<TeamState>,
     private store: Store<WorkPackageState>,
     private workPackageDetailService: WorkPackageDetailService
   ) {}
@@ -165,20 +169,33 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddOwner(): void {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
-      disableClose: false,
-      width: '500px'
+    const ids = new Set(this.workpackage.owners.map(({ id }) => id));
+    this.teamStore.dispatch(new LoadTeams({}));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: true,
+      width: 'auto',
+      minWidth: '400px',
+      data: {
+        title: 'Select owner to add to owners',
+        placeholder: 'Owners',
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
+          map(data =>
+            data.filter(({ id }) => !ids.has(id))
+          )
+        ),
+        selectedIds: []
+      }
     });
-
+    
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
+      if (data && data.value) {
         this.store.dispatch(
           new AddOwner({
             workPackageId: this.workpackageId,
-            ownerId: data.owner.id,
-            owners: data.owner
+            ownerId: data.value[0].id,
+            owners: data.value[0]
           })
-        );
+        )
       }
     });
   }
