@@ -277,6 +277,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.requestUpdate();
   }
 
+  centreDiagram(): void {
+    const diagram = this.diagram;
+    diagram.centerRect(diagram.computePartsBounds(diagram.nodes));
+  }
+
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
