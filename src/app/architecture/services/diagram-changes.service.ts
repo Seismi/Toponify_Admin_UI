@@ -93,7 +93,7 @@ export class DiagramChangesService {
 
                 const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node};
 
-                if (this.layout.id !== '000000000000-0000-0000-0000-00000000') {
+                if (this.layout.id !== '00000000-0000-0000-0000-000000000000') {
 
                   const { nodeLayoutData, linkLayoutData } = this.getCurrentPartsLayoutData(event.diagram);
 
