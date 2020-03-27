@@ -104,7 +104,7 @@
       <button mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
     </div>
     <div *ngIf="isLink()">
-      <button mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
+      <button class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
     </div>
   </div>
 </form>
