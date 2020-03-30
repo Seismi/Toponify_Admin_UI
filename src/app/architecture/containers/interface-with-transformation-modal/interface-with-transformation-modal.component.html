@@ -6,45 +6,49 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Source</mat-label>
-      <mat-select formControlName="sourceId" multiple>
-        <div class="search-container">
-          <input class="search" #searchSource placeholder="Search" (keydown)="$event.stopPropagation()"/>
-          <button mat-button mat-icon-button (click)="searchSource.value = ''">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <mat-option 
-          *ngFor="let node of sourceArray" 
-          [value]="node"
-          [class.hide]="filter(node)"
-        >
-          {{node.name}}
-        </mat-option>
-      </mat-select>
-      <mat-error>This field is required</mat-error>
-    </mat-form-field>
+      <div style="display: inline-block; width: 48%; margin-right: 4%;">
+        <mat-form-field>
+          <mat-label>Source</mat-label>
+          <mat-select formControlName="sourceId" multiple>
+            <div class="search-container">
+              <input class="search" #searchSource placeholder="Search" (keydown)="$event.stopPropagation()"/>
+              <button mat-button mat-icon-button (click)="searchSource.value = ''">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            <mat-option 
+              *ngFor="let node of sourceArray" 
+              [value]="node"
+              [class.hide]="filter(node)"
+            >
+              {{node.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error>This field is required</mat-error>
+        </mat-form-field>
+      </div>
 
-    <mat-form-field>
-      <mat-label>Target</mat-label>
-      <mat-select formControlName="targetId" multiple>
-        <div class="search-container">
-          <input class="search" #searchTarget placeholder="Search" (keydown)="$event.stopPropagation()"/>
-          <button mat-button mat-icon-button (click)="searchTarget.value = ''">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <mat-option 
-          *ngFor="let node of targetArray" 
-          [value]="node"
-          [class.hide]="filter(node)"
-        >
-          {{node.name}}
-        </mat-option>
-      </mat-select>
-      <mat-error>This field is required</mat-error>
-    </mat-form-field>
+      <div style="display: inline-block; width: 48%;">
+        <mat-form-field>
+          <mat-label>Target</mat-label>
+          <mat-select formControlName="targetId" multiple>
+            <div class="search-container">
+              <input class="search" #searchTarget placeholder="Search" (keydown)="$event.stopPropagation()"/>
+              <button mat-button mat-icon-button (click)="searchTarget.value = ''">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            <mat-option 
+              *ngFor="let node of targetArray" 
+              [value]="node"
+              [class.hide]="filter(node)"
+            >
+              {{node.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error>This field is required</mat-error>
+        </mat-form-field>
+      </div>
   </form>
 </div>
 <div mat-dialog-actions>
