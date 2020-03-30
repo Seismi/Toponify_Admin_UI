@@ -1981,13 +1981,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddComponentOrLink(type: string): void {
+  onAddComponentOrLink(type: 'component' | 'link'): void {
     const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         workPackageId: this.workpackageId,
-        link: type === 'interface',
+        link: type === 'link',
         level: this.currentFilterLevel.toLowerCase()
       }
     });

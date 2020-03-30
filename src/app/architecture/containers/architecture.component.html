@@ -32,7 +32,6 @@
           (summariseAllNodes)="onSummariseAllNodes()"
           (expandAll)="onExpandAll()"
           [currentFilterLevel]="currentFilterLevel"
-          (addComponent)="onAddComponentOrLink($event)"
           (addInterface)="onAddComponentOrLink($event)"
           (addInterfaceWithTransformation)="onAddInterfaceWithTransformation()"
         >
@@ -157,7 +156,7 @@
             [view]="'link'"
             [filterValue]="tableViewFilterValue"
             [workPackageIsEditable]="workPackageIsEditable"
-            (add)="onAddComponentOrLink('interface')"
+            (add)="onAddComponentOrLink('link')"
           ></smi-architecture-table-view>
         </div>
       </app-model-content>

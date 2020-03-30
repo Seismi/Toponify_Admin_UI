@@ -28,7 +28,6 @@ export class LeftPanelComponent {
   @Output() collapseAllNodes = new EventEmitter<void>();
   @Output() summariseAllNodes = new EventEmitter<void>();
   @Output() expandAll = new EventEmitter<void>();
-  @Output() addComponent = new EventEmitter<string>();
   @Output() addInterface = new EventEmitter<string>();
   @Output() addInterfaceWithTransformation = new EventEmitter<void>();
 
@@ -52,12 +51,4 @@ export class LeftPanelComponent {
     return [Level.systemMap, Level.dataSetMap].includes(this.currentFilterLevel as Level);
   }
 
-  getType(): string {
-    switch (this.currentFilterLevel) {
-      case Level.systemMap:
-        return 'data set';
-      case Level.dataSetMap:
-        return 'dimension';
-    }
-  }
 }
