@@ -1,6 +1,7 @@
 <h1 mat-dialog-title>{{ isEditMode ? 'Edit ' + '"' + this.customProperties.name + '"' : 'New' }}</h1>
 <div mat-dialog-content>
   <smi-documentation-standards-detail
+    data-qa="documentation-standards-modal-form"
     [group]="documentStandardsForm"
     [isEditable]="isEditable"
     [modalMode]="modalMode"
