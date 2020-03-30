@@ -85,6 +85,7 @@ import { GroupInfoTableComponent } from './components/group-info-table/group-inf
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
 import { InterfaceWithTransformationModalComponent } from './containers/interface-with-transformation-modal/interface-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
+import { SelectionListSearchPipe } from '@app/pipes/selection-list-search.pipe';
 
 @NgModule({
   imports: [
@@ -170,7 +171,8 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     ComponentsTableComponent,
     GroupInfoTableComponent,
     SourceOrTargetTableComponent,
-    InterfaceWithTransformationModalComponent
+    InterfaceWithTransformationModalComponent,
+    SelectionListSearchPipe
   ],
   entryComponents: [
     DeleteModalComponent,
