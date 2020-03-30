@@ -21,7 +21,7 @@ export const getWorkPackageEntities = createSelector(
 export const getAllWorkPackages = createSelector(
   getWorkPackageState,
   state => state.entities
-)
+);
 
 export const workpackageSelectAllowed = createSelector(
   getWorkPackageState,
@@ -36,6 +36,16 @@ export const getSelectedWorkPackage = createSelector(
 export const getSelectedWorkpackages = createSelector(
   getWorkPackageState,
   state => state.entities.filter(item => state.selectedWorkPackageIds.some(id => id === item.id))
+);
+
+export const getSelectablePackageIds = createSelector(
+  getWorkPackageState,
+  getSelectedWorkpackages,
+  state => {
+    return state.avaialabilities
+      .filter(availability => availability.isSelectable)
+      .map(availability => availability.id);
+  }
 );
 
 export const getSelectedWorkpackageIds = createSelector(

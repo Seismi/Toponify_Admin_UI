@@ -137,7 +137,8 @@ import {
   getSelectedWorkpackageIds,
   getSelectedWorkpackages,
   getWorkPackageEntities,
-  workpackageSelectAllowed
+  workpackageSelectAllowed,
+  getSelectablePackageIds
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
@@ -246,7 +247,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   allowEditWorkPackages: string;
   workPackageIsEditable = false;
   workpackageDetail: any;
-  public selectedWorkPackages$: Observable<WorkPackageDetail>;
+  public selectedWorkPackages$: Observable<any>;
   filterServiceSubscription: Subscription;
   layout: LayoutDetails;
   layoutStoreSubscription: Subscription;
@@ -337,11 +338,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.parentDescendantIds = this.store.pipe(select(getParentDescendantIds));
     this.groupMemberIds = this.store.pipe(select(getGroupMemberIds));
     this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
-    this.subscriptions.push(
-      this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(
-        workpackages => this.selectedWorkPackageEntities = workpackages
-      )
+
+    this.selectedWorkPackages$ = combineLatest(
+      this.workpackageStore.pipe(select(getSelectedWorkpackages)),
+      this.workpackageStore.pipe(select(getSelectablePackageIds)),
+    ).pipe(
+      map(([selectedWorkpackages, availableWorkpackages]) =>
+        selectedWorkpackages.filter(swp => availableWorkpackages.find(id => swp.id === id)))
     );
+
+    this.subscriptions.push(this.selectedWorkPackages$.subscribe(workpackages => {
+      this.selectedWorkPackageEntities = workpackages;
+    }));
+
     this.subscriptions.push(
       this.actions$
         .pipe(
