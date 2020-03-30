@@ -188,6 +188,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
+import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -285,6 +286,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public byId = false;
   public dependenciesView: boolean;
   public filterLevel: string;
+
+  // Controls if layout can be copied
+  public allowSaveAs = true;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -924,7 +928,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveAsLayout(): void {
-    alert('SaveAsLayout');
+    this.dialog.open(SaveLayoutModalComponent, {
+      disableClose: false,
+      minWidth: '500px',
+      data: {
+        layout: this.layout,
+        draft: this.draft,
+        scope: this.scope,
+        name: ''
+      }
+    });
   }
 
   // FIXME: types
@@ -983,28 +996,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray.map(function(node) {
-      return {
-        id: node.id,
-        positionSettings: {
-          locationCoordinates: node.location,
-          middleExpanded: node.middleExpanded,
-          bottomExpanded: node.bottomExpanded,
-          areaSize: node.areaSize
-        }
-      };
-    });
-
-    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray.map(function(link) {
-      return {
-        id: link.id,
-        positionSettings: {
-          route: link.route,
-          fromSpot: link.fromSpot,
-          toSpot: link.toSpot
-        }
-      };
-    });
+    const diagram = this.diagramComponent.diagram;
+    const { nodeLayoutData, linkLayoutData } = this.diagramChangesService.getCurrentPartsLayoutData(diagram);
 
     if (this.layout) {
       this.store.dispatch(
@@ -1838,6 +1831,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
   }
 
+  //
   onAddLayout(): void {
     const dialogRef = this.dialog.open(ScopeAndLayoutModalComponent, {
       disableClose: false,
