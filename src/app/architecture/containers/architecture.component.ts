@@ -1389,7 +1389,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
       disableClose: false,
       width: '600px',
-      height: '590px'
+      height: '590px',
+      data: {
+        workPackageIds: [this.workpackageId]
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
