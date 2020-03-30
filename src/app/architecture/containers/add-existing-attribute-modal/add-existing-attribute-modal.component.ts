@@ -19,10 +19,14 @@ export class AddExistingAttributeModalComponent implements OnInit {
   constructor(
     private store: Store<AttributeState>,
     public dialogRef: MatDialogRef<AddExistingAttributeModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AttributeEntity) { }
+    @Inject(MAT_DIALOG_DATA) public data: { workPackageIds: string[] }
+    ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(new LoadAttributes({}));
+    const queryParams = {
+      workPackageQuery: this.data.workPackageIds
+    };
+    this.store.dispatch(new LoadAttributes(queryParams));
     this.attributes$ = this.store.pipe(select(getAttributeEntities));
   }
 
