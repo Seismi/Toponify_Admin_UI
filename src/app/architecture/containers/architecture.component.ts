@@ -153,7 +153,7 @@ import { DiagramLevelService, Level } from '../services/diagram-level.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { Link, Node as goNode } from 'gojs';
+import { Link, Node as goNode, DiagramEvent } from 'gojs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
@@ -2113,6 +2113,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   exitDependenciesView() {
     this.dependenciesView = false;
     this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
+  }
+
+  onViewStructure() {
+    this.diagramLevelService.displayMapView.call(this.diagramLevelService, this.part, this.part);
   }
 
   onEditSourceOrTarget(type: 'source' | 'target') {
