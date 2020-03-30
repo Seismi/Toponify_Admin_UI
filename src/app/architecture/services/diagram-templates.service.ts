@@ -205,7 +205,11 @@ export class DiagramTemplatesService {
           },
           new go.Binding('source', 'iconName',
             function(iconName) {
-              return `assets/tag-icons/${iconName}.svg`;
+              if (iconName) {
+                return `/assets/tag-icons/${iconName}.svg`;
+              } else {
+                return '';
+              }
             }
           ),
           new go.Binding('visible', 'iconName',
