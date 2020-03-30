@@ -27,7 +27,7 @@
         <app-architecture-palette></app-architecture-palette>
       </p>
       <div class="edit-tab-mapView" *ngIf="mapView">
-        <button mat-raised-button color="primary" (click)="addComponent.emit('component')">Create {{ currentFilterLevel.replace('map', '') }}</button>
+        <button mat-raised-button color="primary" (click)="addComponent.emit('component')">Create {{ getType() }}</button>
         <button mat-raised-button color="primary" (click)="addInterface.emit('interface')">Create direct interface</button>
         <button mat-raised-button color="primary" (click)="addInterfaceWithTransformation.emit()">Create interface with transformation</button>
       </div>

@@ -51,4 +51,13 @@ export class LeftPanelComponent {
   get mapView(): boolean {
     return [Level.systemMap, Level.dataSetMap].includes(this.currentFilterLevel as Level);
   }
+
+  getType(): string {
+    switch (this.currentFilterLevel) {
+      case Level.systemMap:
+        return 'data set';
+      case Level.dataSetMap:
+        return 'dimension';
+    }
+  }
 }
