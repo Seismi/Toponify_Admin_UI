@@ -39,6 +39,10 @@ export class ScopeService {
     return this.http.delete<any>(`/scopes/${id}`);
   }
 
+  addScopeNodes(scopeId: string, data: string[]): Observable<{ data: string[] }> {
+    return this.http.post<{ data: string[] }>(`/scopes/${scopeId}/nodes`, { data: data }, httpOptions);
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());

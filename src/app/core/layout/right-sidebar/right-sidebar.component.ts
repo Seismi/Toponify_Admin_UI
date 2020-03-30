@@ -10,6 +10,7 @@ export class RightSideBarComponent {
   @Input() multipleSelected: boolean;
   @Input() filterLevel: string;
   @Input() clickedOnLink: boolean;
+  @Input() nodeCategory: string;
 
   @Output() rightTab = new EventEmitter<number>();
 

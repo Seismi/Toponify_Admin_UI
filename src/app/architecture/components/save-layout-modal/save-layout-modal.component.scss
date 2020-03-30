@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  position: relative;
+
+  .spinner-container {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, .5);
+  }
+
+  .mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 17px;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button:focus {
+    outline: none;
+  }
+}
