@@ -80,6 +80,7 @@
         >
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
+          <span class="viewing-dependencies" *ngIf="dependenciesView">Viewing Dependencies <mat-icon (click)="exitDependenciesView()">close</mat-icon></span>
           <span class="viewing-dependencies" *ngIf="filterLevel === 'usage analysis'">
             Showing Usage Across Levels
             <mat-icon (click)="exitUsageView()">close</mat-icon>
@@ -98,7 +99,8 @@
             (saveLayout)="onSaveLayout()"
             (saveAsLayout)="onSaveAsLayout()"
             [allowSave]="!!draft"
-            [allowSaveAs]="false"
+            [allowSaveAs]="true"
+            [dependenciesView]="dependenciesView"
           >
           </smi-layout-actions>
           <app-architecture-diagram
@@ -191,6 +193,7 @@
             (addRadio)="onAddRadio()"
             [multipleSelected]="multipleSelected"
             (addScope)="onAddScope()"
+            (addToScope)="onAddToScope()"
             (addOwner)="onAddOwner()"
             (deleteOwner)="onDeleteOwner($event)"
             (saveProperties)="onSaveProperties($event)"

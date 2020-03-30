@@ -84,6 +84,7 @@ import { ComponentsTableComponent } from './components/components-table/componen
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
 import { InterfaceWithTransformationModalComponent } from './containers/interface-with-transformation-modal/interface-with-transformation-modal.component';
+import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
 
 @NgModule({
   imports: [
@@ -150,6 +151,7 @@ import { InterfaceWithTransformationModalComponent } from './containers/interfac
     TableCollapseComponent,
     OwnersTableComponent,
     EditNameModalComponent,
+    SaveLayoutModalComponent,
     RelatedAttributeTableComponent,
     SwitchViewTabsComponent,
     ArchitectureTableViewComponent,
@@ -176,6 +178,7 @@ import { InterfaceWithTransformationModalComponent } from './containers/interfac
     DeleteLinkModalComponent,
     AttributeModalComponent,
     EditNameModalComponent,
+    SaveLayoutModalComponent,
     NodeScopeModalComponent,
     NewChildrenModalComponent,
     NodeScopeModalComponent,
