@@ -7,15 +7,33 @@
     </mat-form-field>
     <div class="row">
       <div class="col">
-        <mat-selection-list>
-          <mat-list-option *ngFor="let node of sourceArray">
+        <mat-selection-list #list formControlName="sourceId">
+          <div class="search-container">
+            <input class="search-input" #sourceSearch placeholder="Search" (keydown)="$event.stopPropagation()">
+            <button mat-button mat-icon-button style="flex-grow: 1;" (click)="sourceSearch.value = ''">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <mat-list-option 
+            *ngFor="let node of (sourceArray | selectionListSearch: sourceSearch.value)"
+            [value]="node"
+          >
             {{ node.name }}
           </mat-list-option>
         </mat-selection-list>
       </div>
       <div class="col">
-        <mat-selection-list>
-          <mat-list-option *ngFor="let node of targetArray">
+        <mat-selection-list #list formControlName="targetId">
+          <div class="search-container">
+            <input class="search-input" #targetSearch placeholder="Search" (keydown)="$event.stopPropagation()">
+            <button mat-button mat-icon-button style="flex-grow: 1;" (click)="targetSearch.value = ''">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <mat-list-option 
+            *ngFor="let node of (targetArray | selectionListSearch: targetSearch.value)" 
+            [value]="node"
+          >
             {{ node.name }}
           </mat-list-option>
         </mat-selection-list>
@@ -24,6 +42,6 @@
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
+  <button mat-button (click)="onSubmit()" [disabled]="list.selectedOptions.selected.length === 0">Save</button>
   <button mat-button (click)="onCancel()">Cancel</button>
 </div>

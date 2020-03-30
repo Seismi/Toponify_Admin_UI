@@ -1,7 +1,7 @@
 .mat-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  padding-bottom: 17px;
+  padding: 17px;
 }
 
 button:focus {
@@ -17,19 +17,32 @@ button:nth-child(1) {
 }
 
 .search-container {
-  width: 100%;
-  padding: 7px 15px;
-  background-color: #eee;
+  display: flex;
+  padding: 10px 15px;
+  background-color: #F5F5F5;
 }
 
-.search {
-  width: 86%;
+.search-input {
+  width: 100%;
   padding: 5px 10px;
   &:focus {
     outline: none;
   }
 }
 
-.hide {
-  display: none;
+.row {
+  height: 450px;
+  margin: 1px;
+}
+
+.col {
+  padding: 0;
+  border: solid 2px#F5F5F5;
+  &:first-of-type {
+    margin-right: 10px;
+  }
+}
+
+.mat-list-base {
+  padding-top: 0px !important;
 }

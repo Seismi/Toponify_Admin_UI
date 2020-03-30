@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Store, select } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
@@ -15,9 +15,6 @@ export class InterfaceWithTransformationModalComponent implements OnInit {
   public formGroup: FormGroup;
   public targetArray: Node[];
   public sourceArray: Node[];
-
-  @ViewChild('searchTarget') searchTarget: ElementRef;
-  @ViewChild('searchSource') searchSource: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -50,11 +47,6 @@ export class InterfaceWithTransformationModalComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
-  }
-
-  filter(node: Node): boolean {
-    const searchValue = this.searchTarget.nativeElement.value || this.searchSource.nativeElement.value;
-    return searchValue !== '' && node.name.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;
   }
 
 }
