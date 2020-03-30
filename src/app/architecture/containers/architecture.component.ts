@@ -2016,8 +2016,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onAddInterfaceWithTransformation() {
     const dialogRef = this.dialog.open(InterfaceWithTransformationModalComponent, {
-      disableClose: false,
-      width: '700px'
+      disableClose: false
     });
 
     dialogRef.beforeClosed().subscribe(data => {
