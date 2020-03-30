@@ -208,7 +208,7 @@ export class DiagramTemplatesService {
               if (iconName) {
                 return `/assets/tag-icons/${iconName}.svg`;
               } else {
-                return iconName.forEach(icon => `/assets/tag-icons/${icon}.svg`);
+                return '';
               }
             }
           ),
