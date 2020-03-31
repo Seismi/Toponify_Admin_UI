@@ -1973,10 +1973,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   getLevel(level: string): string {
-    if (level === 'system map') {
-      return 'data set';
-    } else if (level === 'data set map') {
-      return 'dimension';
+    if (level === Level.systemMap) {
+      return Level.dataSet;
+    } else if (level === Level.dataSetMap) {
+      return Level.dimension;
     } else {
       return level;
     }
