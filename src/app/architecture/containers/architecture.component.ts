@@ -49,7 +49,8 @@ import {
   NodeExpandedStateApiRequest,
   NodeReports,
   Tag,
-  TagApplicableTo
+  TagApplicableTo,
+  NodeApiResponse
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -2037,7 +2038,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.subscriptions.push(
           this.actions.pipe(
             take(1),
-            ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: any) => {
+            ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: { payload: NodeApiResponse }) => {
             const transformationId = action.payload.data.id;
 
             data.node.sourceId.forEach(source => {
