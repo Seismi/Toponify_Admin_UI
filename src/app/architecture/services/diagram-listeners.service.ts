@@ -181,6 +181,78 @@ export class DiagramListenersService {
       diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
     });
 
+    // After a system group is automatically laid out, ensure that links to
+    //  any grouped nodes are updated.
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event) {
+        this.store
+          .select(getFilterLevelQueryParams)
+          .pipe(take(1))
+          .subscribe(currentLevel => {
+
+            const lanes = new go.Map<string, go.Part>();
+
+            if (currentLevel === Level.usage) {
+              event.diagram.parts.each(function(part) {
+                if (part.category === 'lane') {
+                  lanes.add(part.name, part);
+                }
+              });
+
+              const areas = {
+                [layers.system]: null,
+                [layers.dataSet]: null,
+                [layers.dimension]: null,
+                [layers.reportingConcept]: null,
+                all: null
+              };
+
+              diagram.nodes.each(function(node) {
+                const area = areas[node.data.layer];
+                const nodeBounds = node.getDocumentBounds();
+                if (!area) {
+                  areas[node.data.layer] = nodeBounds.copy();
+                } else {
+                  area.unionRect(nodeBounds);
+                }
+                if (!areas.all) {
+                  areas.all = nodeBounds.copy();
+                } else {
+                  areas.all.unionRect(nodeBounds);
+                }
+              });
+
+              const sideMargin = 25;
+
+              const layerOrder = [layers.system, layers.dataSet, layers.dimension, layers.reportingConcept];
+
+              layerOrder.forEach(function(layer, index) {
+                const lane = lanes.get(layer);
+
+                const currentLayerArea = areas[layer];
+                const priorLayerArea = index > 0 ? areas[layerOrder[index - 1]] : null;
+                const nextLayerArea = index < layerOrder.length - 1 ? areas[layerOrder[index + 1]] : null;
+
+                const shape = lane.findObject('shape');
+
+                if (currentLayerArea) {
+                  shape.width = areas.all.width + sideMargin * 2;
+                  shape.height = currentLayerArea.height
+                    + (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin)
+                    + (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin);
+
+                  lane.location = new go.Point(
+                    areas.all.left - sideMargin,
+                    (priorLayerArea ? (priorLayerArea.bottom + currentLayerArea.top) / 2 : currentLayerArea.top - sideMargin)
+                  );
+                }
+              });
+            }
+          });
+      }.bind(this)
+    );
+
     // If diagram non-empty, fit diagram to screen
     function initialFitToScreen(event: go.DiagramEvent): void {
       // Fit to screen when diagram contains both nodes and links
