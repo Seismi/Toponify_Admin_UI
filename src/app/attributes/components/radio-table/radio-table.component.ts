@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { Router } from '@angular/router';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
@@ -21,10 +21,13 @@ export class RadioTableInAttributesPageComponent {
 
   constructor(private router: Router) {}
 
-  public dataSource: MatTableDataSource<AttributeDetail>;
-  displayedColumns: string[] = ['name', 'navigate'];
+  @Output() raiseNew = new EventEmitter<void>();
+  @Output() assignRadio = new EventEmitter<void>();
 
-  onSelect(id) {
+  public dataSource: MatTableDataSource<AttributeDetail>;
+  public displayedColumns: string[] = ['refNo', 'name', 'status', 'navigate'];
+
+  onSelect(id: string): void {
     this.router.navigate(['/radio/' + id], { queryParamsHandling: 'preserve' });
   }
 }
