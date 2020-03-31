@@ -46,7 +46,13 @@ import {
   AddAttributeTagsFail,
   DeleteAttributeTags,
   DeleteAttributeTagsSuccess,
-  DeleteAttributeTagsFail
+  DeleteAttributeTagsFail,
+  AddAttributeRadio,
+  AddAttributeRadioSuccess,
+  AddAttributeRadioFailure,
+  DeleteAttributeRadio,
+  DeleteAttributeRadioSuccess,
+  DeleteAttributeRadioFailure
 } from '../actions/attributes.actions';
 import {
   AttributeEntitiesHttpParams,
@@ -256,6 +262,30 @@ export class AttributeEffects {
       return this.attributeService.deleteAttributeTags(payload.workPackageId, payload.attributeId, payload.tagId).pipe(
         map(response => new DeleteAttributeTagsSuccess(response.data)),
         catchError((error: HttpErrorResponse) => of(new DeleteAttributeTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addAttributeRadio$ = this.actions$.pipe(
+    ofType<AddAttributeRadio>(AttributeActionTypes.AddAttributeRadio),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; attributeId: string; radioId: string }) => {
+      return this.attributeService.addAttributeRadio(payload.workPackageId, payload.attributeId, payload.radioId).pipe(
+        mergeMap((response: AttributeDetailApiResponse) => [new AddAttributeRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new AddAttributeRadioFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteAttributeRadio$ = this.actions$.pipe(
+    ofType<DeleteAttributeRadio>(AttributeActionTypes.DeleteAttributeRadio),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; attributeId: string; radioId: string }) => {
+      return this.attributeService.deleteAttributeRadio(payload.workPackageId, payload.attributeId, payload.radioId).pipe(
+        switchMap((response: AttributeDetailApiResponse) => [new DeleteAttributeRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new DeleteAttributeRadioFailure(error)))
       );
     })
   );
