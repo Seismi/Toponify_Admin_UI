@@ -13,8 +13,8 @@ import { Node } from '@app/architecture/store/models/node.model';
 })
 export class LinkWithTransformationModalComponent implements OnInit {
   public formGroup: FormGroup;
-  public targetArray: Node[];
-  public sourceArray: Node[];
+  public nodesInTargetGroup: Node[];
+  public nodesInSourceGroup: Node[];
 
   constructor(
     private fb: FormBuilder,
@@ -33,8 +33,8 @@ export class LinkWithTransformationModalComponent implements OnInit {
     this.store.pipe(select(getNodeEntities)).subscribe(data => {
       const target = data.filter(node => node.endPointType === 'target');
       const source = data.filter(node => node.endPointType === 'source');
-      this.targetArray = data.filter(node => node.group === target[0].id);
-      this.sourceArray = data.filter(node => node.group === source[0].id);
+      this.nodesInTargetGroup = data.filter(node => node.group === target[0].id);
+      this.nodesInSourceGroup = data.filter(node => node.group === source[0].id);
     });
   }
 

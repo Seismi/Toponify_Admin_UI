@@ -15,7 +15,7 @@
             </button>
           </div>
           <mat-list-option 
-            *ngFor="let node of (sourceArray | selectionListSearch: sourceSearch.value)"
+            *ngFor="let node of (nodesInSourceGroup | selectionListSearch: sourceSearch.value)"
             [value]="node"
           >
             {{ node.name }}
@@ -31,7 +31,7 @@
             </button>
           </div>
           <mat-list-option 
-            *ngFor="let node of (targetArray | selectionListSearch: targetSearch.value)" 
+            *ngFor="let node of (nodesInTargetGroup | selectionListSearch: targetSearch.value)" 
             [value]="node"
           >
             {{ node.name }}
