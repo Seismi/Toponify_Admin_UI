@@ -34,9 +34,12 @@ export const getWorkPackagesQueryParams: MemoizedSelector<Params, any> = createS
   getQueryParams,
   state => {
     if (!state) {
-      return null;
+      return [];
     }
-    return state['workpackages'];
+    if (!state['workpackages']) {
+      return [];
+    }
+    return typeof state['workpackages'] === 'string' ? [state['workpackages']] : state['workpackages'];
   }
 );
 

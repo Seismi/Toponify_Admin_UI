@@ -6,7 +6,7 @@ const getWorkPackageState = createFeatureSelector<State>('workpackageFeature');
 export const getWorkPackageEntities = createSelector(
   getWorkPackageState,
   state =>
-    state.entities.map(entity => {
+  state.avaialabilities ? state.entities.map(entity => {
       const wa = state.avaialabilities.find(availability => availability.id === entity.id);
       const newEntity = {
         ...entity,
@@ -15,7 +15,7 @@ export const getWorkPackageEntities = createSelector(
         edit: entity.id === state.editId
       };
       return newEntity;
-    })
+    }) : []
 );
 
 export const getAllWorkPackages = createSelector(
@@ -38,13 +38,13 @@ export const getSelectedWorkpackages = createSelector(
   state => state.entities.filter(item => state.selectedWorkPackageIds.some(id => id === item.id))
 );
 
-export const getSelectablePackageIds = createSelector(
+export const getAvailableWorkPackageIds = createSelector(
   getWorkPackageState,
   getSelectedWorkpackages,
   state => {
-    return state.avaialabilities
-      .filter(availability => availability.isSelectable)
-      .map(availability => availability.id);
+    return state.avaialabilities ? state.avaialabilities
+      .filter(availability => availability.isSelectable || availability.isEditable)
+      .map(availability => availability.id) : [];
   }
 );
 

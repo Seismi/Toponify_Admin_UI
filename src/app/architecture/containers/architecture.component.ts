@@ -138,13 +138,13 @@ import {
   getSelectedWorkpackages,
   getWorkPackageEntities,
   workpackageSelectAllowed,
-  getSelectablePackageIds
+  getAvailableWorkPackageIds
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, take, tap, distinctUntilChanged } from 'rxjs/operators';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
@@ -341,7 +341,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.selectedWorkPackages$ = combineLatest(
       this.workpackageStore.pipe(select(getSelectedWorkpackages)),
-      this.workpackageStore.pipe(select(getSelectablePackageIds)),
+      this.workpackageStore.pipe(select(getAvailableWorkPackageIds)),
     ).pipe(
       map(([selectedWorkpackages, availableWorkpackages]) =>
         selectedWorkpackages.filter(swp => availableWorkpackages.find(id => swp.id === id)))
@@ -365,6 +365,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
     );
     this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
+
+
+    this.subscriptions.push(
+      combineLatest(
+        this.routerStore.select(getWorkPackagesQueryParams).pipe(take(1)),
+        this.workpackageStore.pipe(select(getAvailableWorkPackageIds)),
+      ).pipe(
+        map(([selectedWorkpackages, availableWorkpackages]) => {
+          return selectedWorkpackages.filter(swp => availableWorkpackages.find(aid => swp === aid));
+        })
+      ).pipe(distinctUntilChanged((p, c) => {
+        return JSON.stringify(p) === JSON.stringify(c);
+      })).subscribe((workpackages: string[]) => {
+        this.routerStore.dispatch(new UpdateQueryParams({ workpackages: workpackages }));
+      }));
+
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
         if (typeof workpackages === 'string') {
