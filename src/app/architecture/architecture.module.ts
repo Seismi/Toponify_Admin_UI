@@ -83,7 +83,7 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
-import { InterfaceWithTransformationModalComponent } from './containers/interface-with-transformation-modal/interface-with-transformation-modal.component';
+import { LinkWithTransformationModalComponent } from './containers/link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
 import { SelectionListSearchPipe } from '@app/pipes/selection-list-search.pipe';
 
@@ -171,7 +171,7 @@ import { SelectionListSearchPipe } from '@app/pipes/selection-list-search.pipe';
     ComponentsTableComponent,
     GroupInfoTableComponent,
     SourceOrTargetTableComponent,
-    InterfaceWithTransformationModalComponent,
+    LinkWithTransformationModalComponent,
     SelectionListSearchPipe
   ],
   entryComponents: [
@@ -188,7 +188,7 @@ import { SelectionListSearchPipe } from '@app/pipes/selection-list-search.pipe';
     DeleteAttributeModalComponent,
     RadioConfirmModalComponent,
     ComponentsOrLinksModalComponent,
-    InterfaceWithTransformationModalComponent
+    LinkWithTransformationModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

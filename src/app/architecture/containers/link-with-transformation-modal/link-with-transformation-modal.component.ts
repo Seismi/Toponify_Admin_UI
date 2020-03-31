@@ -7,11 +7,11 @@ import { getNodeEntities } from '@app/architecture/store/selectors/node.selector
 import { Node } from '@app/architecture/store/models/node.model';
 
 @Component({
-  selector: 'smi-interface-with-transformation-modal',
-  templateUrl: './interface-with-transformation-modal.component.html',
-  styleUrls: ['./interface-with-transformation-modal.component.scss']
+  selector: 'smi-link-with-transformation-modal',
+  templateUrl: './link-with-transformation-modal.component.html',
+  styleUrls: ['./link-with-transformation-modal.component.scss']
 })
-export class InterfaceWithTransformationModalComponent implements OnInit {
+export class LinkWithTransformationModalComponent implements OnInit {
   public formGroup: FormGroup;
   public targetArray: Node[];
   public sourceArray: Node[];
@@ -19,7 +19,7 @@ export class InterfaceWithTransformationModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private store: Store<NodeState>,
-    public dialogRef: MatDialogRef<InterfaceWithTransformationModalComponent>,
+    public dialogRef: MatDialogRef<LinkWithTransformationModalComponent>,
     @Inject(MAT_DIALOG_DATA) { }
     ) {
       this.formGroup = this.fb.group({

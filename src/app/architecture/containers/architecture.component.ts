@@ -189,7 +189,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
-import { InterfaceWithTransformationModalComponent } from './interface-with-transformation-modal/interface-with-transformation-modal.component';
+import { LinkWithTransformationModalComponent } from './link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
 
 enum Events {
@@ -2015,8 +2015,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddInterfaceWithTransformation() {
-    const dialogRef = this.dialog.open(InterfaceWithTransformationModalComponent, {
+  onAddLinkWithTransformation() {
+    const dialogRef = this.dialog.open(LinkWithTransformationModalComponent, {
       disableClose: false,
       width: '800px'
     });

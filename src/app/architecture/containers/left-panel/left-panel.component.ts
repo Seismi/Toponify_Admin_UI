@@ -29,7 +29,7 @@ export class LeftPanelComponent {
   @Output() summariseAllNodes = new EventEmitter<void>();
   @Output() expandAll = new EventEmitter<void>();
   @Output() addInterface = new EventEmitter<string>();
-  @Output() addInterfaceWithTransformation = new EventEmitter<void>();
+  @Output() addLinkWithTransformation = new EventEmitter<void>();
 
   @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
   @Output() selectWorkPackage = new EventEmitter<{ id: string; newState: boolean }>();
