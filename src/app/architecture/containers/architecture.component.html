@@ -76,6 +76,7 @@
         >
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
+          <span class="viewing-dependencies" *ngIf="dependenciesView">Viewing Dependencies <mat-icon (click)="exitDependenciesView()">close</mat-icon></span>
           <span class="viewing-dependencies" *ngIf="filterLevel === 'usage analysis'">
             Showing Usage Across Levels
             <mat-icon (click)="exitUsageView()">close</mat-icon>
@@ -94,7 +95,8 @@
             (saveLayout)="onSaveLayout()"
             (saveAsLayout)="onSaveAsLayout()"
             [allowSave]="!!draft"
-            [allowSaveAs]="false"
+            [allowSaveAs]="true"
+            [dependenciesView]="dependenciesView"
           >
           </smi-layout-actions>
           <app-architecture-diagram
@@ -163,6 +165,7 @@
         [multipleSelected]="multipleSelected"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
         [clickedOnLink]="clickedOnLink"
+        [nodeCategory]="part?.data.category"
       >
       </smi-right-sidebar>
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
@@ -187,6 +190,7 @@
             (addRadio)="onAddRadio()"
             [multipleSelected]="multipleSelected"
             (addScope)="onAddScope()"
+            (addToScope)="onAddToScope()"
             (addOwner)="onAddOwner()"
             (deleteOwner)="onDeleteOwner($event)"
             (saveProperties)="onSaveProperties($event)"
@@ -232,6 +236,7 @@
             [currentFilterLevel]="currentFilterLevel"
             (seeUsage)="onSeeUsage()"
             (seeDependencies)="onSeeDependencies()"
+            (viewStructure)="onViewStructure()"
             [sourceObject]="selectedNode?.sourceObject"
             [targetObject]="selectedNode?.targetObject"
             (editSourceOrTarget)="onEditSourceOrTarget($event)"
