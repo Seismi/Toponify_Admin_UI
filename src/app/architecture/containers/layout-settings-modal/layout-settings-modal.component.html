@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Layout Settings</h1>
+<div mat-dialog-content>
+  <form [formGroup]="layoutSettingsForm">
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'dataLinks')" formControlName="showDataLinks">
+        Show Data Links
+      </mat-checkbox>
+    </mat-list-item>
+
+    <mat-list-item role="listitem">
+      <mat-checkbox (change)="checkboxClicked($event, 'masterDataLinks')" formControlName="showMasterDataLinks">
+        Show Master Data Links
+      </mat-checkbox>
+    </mat-list-item>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSubmit()">Save</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>

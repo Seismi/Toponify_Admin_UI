@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatCheckboxChange } from '@angular/material';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import {
@@ -189,6 +189,7 @@ import { SelectModalComponent } from '@app/core/layout/components/select-modal/s
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
 import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
+import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -2150,4 +2151,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
+  openLayoutSettings() {
+    const dialogRef = this.dialog.open(LayoutSettingsModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        layout: this.layout
+      }
+    });
+
+    dialogRef.componentInstance.displayOptionsChanged.subscribe((data: { event: MatCheckboxChange, option: string }) => {
+      dialogRef.afterClosed().subscribe((settings) => {
+        if (settings) {
+          this.displayOptionsChanged(data);
+        }
+      });
+    });
+  }
+
 }

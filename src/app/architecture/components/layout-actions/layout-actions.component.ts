@@ -18,5 +18,6 @@ export class LayoutActionsComponent {
   @Output() editLayout = new EventEmitter<void>();
   @Output() saveLayout = new EventEmitter<void>();
   @Output() saveAsLayout = new EventEmitter<void>();
+  @Output() layoutSettings = new EventEmitter<void>();
   @Input() dependenciesView: boolean;
 }

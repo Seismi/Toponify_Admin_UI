@@ -6,3 +6,4 @@
 <mat-icon (click)="showGrid.emit()" matTooltip="Grid">{{ grid ? 'border_clear' : 'border_inner' }}</mat-icon>
 <mat-icon (click)="editLayout.emit()" [ngClass]="{ disable: dependenciesView }" matTooltip="Edit layout of objects in the canvas">{{ !allowMove ? 'brush' : 'close' }}</mat-icon>
 <mat-icon (click)="downloadImage.emit()" matTooltip="Download image of the layout">get_app</mat-icon>
+<mat-icon (click)="layoutSettings.emit()" matTooltip="Layout Settings">settings_applications</mat-icon>

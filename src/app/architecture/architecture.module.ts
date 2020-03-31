@@ -84,6 +84,7 @@ import { ComponentsTableComponent } from './components/components-table/componen
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
+import { LayoutSettingsModalComponent } from './containers/layout-settings-modal/layout-settings-modal.component';
 
 @NgModule({
   imports: [
@@ -168,7 +169,8 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     SpinnerComponent,
     ComponentsTableComponent,
     GroupInfoTableComponent,
-    SourceOrTargetTableComponent
+    SourceOrTargetTableComponent,
+    LayoutSettingsModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -183,7 +185,8 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
     RadioConfirmModalComponent,
-    ComponentsOrLinksModalComponent
+    ComponentsOrLinksModalComponent,
+    LayoutSettingsModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
