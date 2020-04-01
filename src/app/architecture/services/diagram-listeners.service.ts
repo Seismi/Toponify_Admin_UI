@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
+import {getFilterLevelQueryParams, getQueryParams} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
 import {layers} from '@app/architecture/store/models/node.model';
 
@@ -244,6 +244,23 @@ export class DiagramListenersService {
         });
       }
     );
+
+    diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
+      if (event.modelChange === 'nodeDataArray') {
+        this.store
+          .select(getQueryParams)
+            .pipe(take(1))
+            .subscribe(params => {
+              if (params.filterLevel === Level.usage && params.id) {
+                const usageNode = diagram.findNodeForKey(params.id);
+                if (usageNode) {
+                  usageNode.shadowColor = 'blue';
+                  usageNode.shadowBlur = 18;
+                }
+              }
+            });
+      }
+    }.bind(this));
   }
 
   handleChangedSelection(event: go.DiagramEvent): void {
