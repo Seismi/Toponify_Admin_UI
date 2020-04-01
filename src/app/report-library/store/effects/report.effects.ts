@@ -242,4 +242,29 @@ export class ReportEffects {
       );
     })
   );
+
+  @Effect()
+  addReportRadio$ = this.actions$.pipe(
+    ofType<ReportActions.AddReportRadio>(ReportActionTypes.AddReportRadio),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; radioId: string }) => {
+      return this.reportService.addReportRadio(payload.workPackageId, payload.reportId, payload.radioId).pipe(
+        mergeMap((response: ReportDetailApiRespoonse) => [new ReportActions.AddReportRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.AddReportRadioFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteReportRadio$ = this.actions$.pipe(
+    ofType<ReportActions.DeleteReportRadio>(ReportActionTypes.DeleteReportRadio),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; reportId: string; radioId: string }) => {
+      return this.reportService.deleteReportRadio(payload.workPackageId, payload.reportId, payload.radioId).pipe(
+        switchMap((response: ReportDetailApiRespoonse) => [new ReportActions.DeleteReportRadioSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.DeleteReportRadioFailure(error)))
+      );
+    })
+  );
+
 }
