@@ -172,4 +172,12 @@ export class ReportService {
     return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/tags/${tagId}/deleteRequest`, {});
   }
 
+  addReportRadio(workPackageId: string, reportId: string, radioId: string): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/radios/${radioId}`, {});
+  }
+
+  deleteReportRadio(workPackageId: string, reportId: string, radioId: string) {
+    return this.http.delete(`/workpackages/${workPackageId}/reports/${reportId}/radios/${radioId}`);
+  }
+
 }

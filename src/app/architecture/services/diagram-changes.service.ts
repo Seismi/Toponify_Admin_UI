@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import {linkCategories, LinkLayoutSettingsEntity} from '@app/architecture/store/models/node-link.model';
 import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -14,7 +14,9 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {nodeCategories} from '@app/architecture/store/models/node.model';
+import {nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
+import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
+import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 
 const $ = go.GraphObject.make;
 
@@ -27,16 +29,21 @@ export class DiagramChangesService {
   private currentLevel: Level;
 
   workpackages = [];
+  layout;
 
   constructor(
     public diagramLevelService: DiagramLevelService,
     private store: Store<RouterReducerState<RouterStateUrl>>,
+    private layoutStore: Store<LayoutState>,
     public dialog: MatDialog,
     private workpackageStore: Store<WorkPackageState>
   ) {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
+    this.layoutStore
+      .pipe(select(getLayoutSelected))
+      .subscribe(layout => (this.layout = layout));
     this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
   }
 
@@ -69,7 +76,6 @@ export class DiagramChangesService {
           // Only add nodes here as new links are temporary until connected
           if (part instanceof go.Node) {
             const node = Object.assign({}, part.data);
-            node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
             const dialogRef = this.dialog.open(EditNameModalComponent, {
               disableClose: false,
               width: 'auto',
@@ -82,23 +88,36 @@ export class DiagramChangesService {
               if (data && data.name) {
                 node.name = data.name;
               }
+
               this.workpackages.forEach(workpackage => {
-                if (nodeId) {
-                  this.workpackageStore.dispatch(
-                    new AddWorkPackageNode({
-                      workpackageId: workpackage.id,
-                      node: {
-                        ...node,
-                        parentId: nodeId
-                      },
-                      scope
-                    })
-                  );
-                } else {
-                  this.workpackageStore.dispatch(
-                    new AddWorkPackageNode({ workpackageId: workpackage.id, node, scope })
-                  );
+
+                const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node};
+
+                if (this.layout.id !== '00000000-0000-0000-0000-000000000000') {
+
+                  const { nodeLayoutData, linkLayoutData } = this.getCurrentPartsLayoutData(event.diagram);
+
+                  addWorkPackageNodeParams.newLayoutDetails = {
+                    layoutId: this.layout.id,
+                    data: {
+                      positionDetails: {
+                        workPackages: [{ id: workpackage.id, name: workpackage.name }],
+                        positions: {
+                          nodes: nodeLayoutData,
+                          nodeLinks: linkLayoutData
+                        }
+                      }
+                    }
+                  };
                 }
+
+                if (nodeId) {
+                  addWorkPackageNodeParams.node.parentId = nodeId;
+                }
+
+                this.workpackageStore.dispatch(
+                  new AddWorkPackageNode(addWorkPackageNodeParams)
+                );
               });
             });
           }
@@ -562,15 +581,15 @@ export class DiagramChangesService {
   hideNonDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Analyse Dependencies');
 
-    // Get direct dependencies
-    const dependencies = [depNode.key];
-    depNode.findNodesConnected().each(function(connectedNode) {
-      dependencies.push(connectedNode.key);
-    });
+    // Highlight specified node with a thicker blue shadow
+    depNode.shadowColor = 'blue';
+    depNode.shadowBlur = 18;
+
+    const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
 
     // Hide all non-directly-dependent nodes
     depNode.diagram.nodes.each(function(node) {
-      if (!dependencies.includes(node.key)) {
+      if (!nodesToStayVisible.has(node)) {
         node.visible = false;
       }
     });
@@ -592,9 +611,10 @@ export class DiagramChangesService {
   showDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Show Dependencies');
 
-    // Get linked nodes and ensure they are visible
-    depNode.findNodesConnected().each(function(connectedNode) {
-      connectedNode.visible = true;
+    const nodesToShow = this.getNodesToShowDependencies(depNode);
+
+    nodesToShow.each(function(node) {
+      node.visible = true;
     });
 
     // Update bindings so that the appropriate nodes show the button to expand dependency levels shown
@@ -607,13 +627,41 @@ export class DiagramChangesService {
     depNode.diagram.commitTransaction('Show Dependencies');
   }
 
+  // Get a set of all nodes that need to be visible to show dependencies from the given input node
+  getNodesToShowDependencies(depNode: go.Node): go.Set<go.Part> {
+
+    // Get direct dependencies
+    const dependencies = new go.Set<go.Part>([depNode]);
+    dependencies.addAll(depNode.findNodesConnected());
+
+    // Get any top-level groups containing the direct dependencies
+    const groups = new go.Set<go.Group>();
+    dependencies.each(function(node) {
+      const topPart = node.findTopLevelPart();
+      if (topPart instanceof go.Group) {
+        groups.add(topPart);
+      }
+    });
+
+    // Get all members of the groups containing direct dependencies
+    const members = new go.Set<go.Part>();
+    groups.each(function(group) {
+      members.addAll(group.findSubGraphParts());
+    });
+
+    return new go.Set<go.Part>(dependencies)
+      .addAll(groups).addAll(members);
+  }
+
   // Set all nodes in the specified diagram to visible
   showAllNodes(diagram: go.Diagram): void {
     diagram.startTransaction('Show All Nodes');
 
-    // Set all nodes to visible
+    // Set all nodes to visible and reset shadow
     diagram.nodes.each(function(node) {
       node.visible = true;
+      node.shadowColor = 'gray';
+      node.shadowBlur = 4;
     });
 
     // Update bindings so that nodes no longer show the button to expand dependency levels
@@ -635,9 +683,6 @@ export class DiagramChangesService {
     });
     diagram.commitTransaction('Clear set positions');
     diagram.layout.isValidLayout = false;
-
-    // Placeholder - update all node and link positions in back end for current layout
-    // Needs store update before implementation
   }
 
   // Rerun the diagram's links
@@ -920,5 +965,37 @@ export class DiagramChangesService {
     const updatedViewArea = diagram.viewportBounds.copy().unionRect(menu.actualBounds);
     // Scroll screen to calculated view area
     diagram.scrollToRect(updatedViewArea);
+  }
+
+  // Get current layout data for all parts in the diagram
+  getCurrentPartsLayoutData(diagram: go.Diagram): {
+    nodeLayoutData: NodeLayoutSettingsEntity['layout'][],
+    linkLayoutData: LinkLayoutSettingsEntity['layout'][]
+  } {
+
+    const nodeLayoutData = diagram.model.nodeDataArray.map(function(node) {
+      return {
+        id: node.id,
+        positionSettings: {
+          locationCoordinates: node.location,
+          middleExpanded: node.middleExpanded,
+          bottomExpanded: node.bottomExpanded,
+          areaSize: node.areaSize
+        }
+      };
+    });
+
+    const linkLayoutData = (diagram.model as go.GraphLinksModel).linkDataArray.map(function(link) {
+      return {
+        id: link.id,
+        positionSettings: {
+          route: link.route,
+          fromSpot: link.fromSpot,
+          toSpot: link.toSpot
+        }
+      };
+    });
+
+    return { nodeLayoutData, linkLayoutData };
   }
 }

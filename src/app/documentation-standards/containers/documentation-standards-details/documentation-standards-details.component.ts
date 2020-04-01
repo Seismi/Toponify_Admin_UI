@@ -14,9 +14,9 @@ import {
   DocumentationStandardActionTypes
 } from '@app/documentation-standards/store/actions/documentation-standards.actions';
 import { getDocumentStandard } from '@app/documentation-standards/store/selectors/documentation-standards.selector';
-import { DeleteDocumentModalComponent } from '../delete-document-modal/delete-document.component';
 import { MatDialog } from '@angular/material';
 import { Actions, ofType } from '@ngrx/effects';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-documentation-standards-details',
@@ -80,17 +80,16 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
   }
 
   onDeleteDocument(): void {
-    const dialogRef = this.dialog.open(DeleteDocumentModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: this.documentStandard.name
+        title: 'Are you sure you want to delete?'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteDocumentationStandard(this.documentStandard.id));
         this.actions.pipe(ofType(DocumentationStandardActionTypes.DeleteDocumentationStandardSuccess)).subscribe(_ => {
           this.router.navigate(['/documentation-standards']);

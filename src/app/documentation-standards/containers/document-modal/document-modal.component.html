@@ -1,6 +1,7 @@
 <h1 mat-dialog-title>{{ isEditMode ? 'Edit ' + '"' + this.customProperties.name + '"' : 'New' }}</h1>
 <div mat-dialog-content>
   <smi-documentation-standards-detail
+    data-qa="documentation-standards-modal-form"
     [group]="documentStandardsForm"
     [isEditable]="isEditable"
     [modalMode]="modalMode"
@@ -9,6 +10,6 @@
   </smi-documentation-standards-detail>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button data-qa="documentation-standards-modal-save" (click)="onSubmit()">Save</button>
+  <button mat-button data-qa="documentation-standards-modal-cancel" (click)="onCancel()">Cancel</button>
 </div>

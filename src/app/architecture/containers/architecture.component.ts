@@ -79,7 +79,7 @@ import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/a
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
-import { AddScope, LoadScope, LoadScopes, ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
+import { AddScope, LoadScope, LoadScopes, ScopeActionTypes, AddScopeNodes } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
@@ -153,7 +153,7 @@ import { DiagramLevelService, Level } from '../services/diagram-level.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { Link, Node as goNode } from 'gojs';
+import { Link, Node as goNode, DiagramEvent } from 'gojs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
@@ -188,6 +188,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
+import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -285,6 +286,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public byId = false;
   public dependenciesView: boolean;
   public filterLevel: string;
+
+  // Controls if layout can be copied
+  public allowSaveAs = true;
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
@@ -924,7 +928,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveAsLayout(): void {
-    alert('SaveAsLayout');
+    this.dialog.open(SaveLayoutModalComponent, {
+      disableClose: false,
+      minWidth: '500px',
+      data: {
+        layout: this.layout,
+        draft: this.draft,
+        scope: this.scope,
+        name: ''
+      }
+    });
   }
 
   // FIXME: types
@@ -983,28 +996,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const nodeLayoutData = this.diagramComponent.diagram.model.nodeDataArray.map(function(node) {
-      return {
-        id: node.id,
-        positionSettings: {
-          locationCoordinates: node.location,
-          middleExpanded: node.middleExpanded,
-          bottomExpanded: node.bottomExpanded,
-          areaSize: node.areaSize
-        }
-      };
-    });
-
-    const linkLayoutData = (this.diagramComponent.diagram.model as any).linkDataArray.map(function(link) {
-      return {
-        id: link.id,
-        positionSettings: {
-          route: link.route,
-          fromSpot: link.fromSpot,
-          toSpot: link.toSpot
-        }
-      };
-    });
+    const diagram = this.diagramComponent.diagram;
+    const { nodeLayoutData, linkLayoutData } = this.diagramChangesService.getCurrentPartsLayoutData(diagram);
 
     if (this.layout) {
       this.store.dispatch(
@@ -1396,7 +1389,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
       disableClose: false,
       width: '600px',
-      height: '590px'
+      height: '590px',
+      data: {
+        workPackageIds: [this.workpackageId]
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -1517,6 +1513,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
       this.selectedMultipleNodes = [];
+    });
+  }
+
+  onAddToScope(): void {
+    const selectedNodes = this.selectedMultipleNodes.map(nodes => nodes.name);
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: `Add ${selectedNodes} to...`,
+        placeholder: 'Scopes',
+        options$: this.scopeStore.pipe(select(getScopeEntities)),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(
+          new AddScopeNodes({
+            scopeId: data.value[0].id,
+            data: this.selectedMultipleNodes.map(nodes => nodes.id)
+          })
+        );
+      }
     });
   }
 
@@ -1813,6 +1834,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
   }
 
+  //
   onAddLayout(): void {
     const dialogRef = this.dialog.open(ScopeAndLayoutModalComponent, {
       disableClose: false,
@@ -2094,6 +2116,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   exitDependenciesView() {
     this.dependenciesView = false;
     this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
+  }
+
+  onViewStructure() {
+    this.diagramLevelService.displayMapView.call(this.diagramLevelService, this.part, this.part);
   }
 
   onEditSourceOrTarget(type: 'source' | 'target') {
