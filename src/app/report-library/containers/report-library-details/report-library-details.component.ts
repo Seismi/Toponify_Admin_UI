@@ -19,7 +19,8 @@ import {
   ReportActionTypes,
   AddReportTags,
   LoadReportTags,
-  DeleteReportTags
+  DeleteReportTags,
+  AddReportRadio
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected, getReportAvailableTags } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
@@ -52,6 +53,10 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
+import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
+import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -79,6 +84,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   scope: ScopeEntity;
 
   constructor(
+    private radioStore: Store<RadioState>,
     private teamStore: Store<TeamState>,
     private actions: Actions,
     private workPackageStore: Store<WorkPackageState>,
@@ -436,4 +442,52 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       })
     )
   }
+
+  onRaiseNew(): void {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '650px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio } }));
+        this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
+          const radioId = action.payload.id;
+          this.store.dispatch(
+            new AddReportRadio({
+              workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+              reportId: this.reportId,
+              radioId: radioId
+            })
+          );
+        });
+      }
+    });
+  }
+
+  onAssignRadio(): void {
+    const dialogRef = this.dialog.open(RadioListModalComponent, {
+      disableClose: false,
+      width: '650px',
+      height: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.store.dispatch(
+          new AddReportRadio({
+            workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+            reportId: this.reportId,
+            radioId: data.radio.id
+          })
+        );
+      }
+    });
+
+    dialogRef.componentInstance.addNewRadio.subscribe(() => {
+      this.onRaiseNew();
+    });
+  }
+
 }

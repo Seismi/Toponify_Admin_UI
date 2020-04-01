@@ -581,6 +581,10 @@ export class DiagramChangesService {
   hideNonDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Analyse Dependencies');
 
+    // Highlight specified node with a thicker blue shadow
+    depNode.shadowColor = 'blue';
+    depNode.shadowBlur = 18;
+
     const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
 
     // Hide all non-directly-dependent nodes
@@ -653,9 +657,11 @@ export class DiagramChangesService {
   showAllNodes(diagram: go.Diagram): void {
     diagram.startTransaction('Show All Nodes');
 
-    // Set all nodes to visible
+    // Set all nodes to visible and reset shadow
     diagram.nodes.each(function(node) {
       node.visible = true;
+      node.shadowColor = 'gray';
+      node.shadowBlur = 4;
     });
 
     // Update bindings so that nodes no longer show the button to expand dependency levels

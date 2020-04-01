@@ -13,6 +13,11 @@ button {
 .levels-label {
   margin-bottom: 5px;
   margin-top: 10px;
+  color: rgba(0,0,0,.58);
+  font: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px !important; 
 }
 
 .editable {
