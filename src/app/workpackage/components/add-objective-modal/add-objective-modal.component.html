@@ -3,7 +3,7 @@
   <form [formGroup]="formGroup">
     <div class="form-container">
       <mat-form-field>
-        <input matInput placeholder="Name" formControlName="title"/>
+        <input matInput placeholder="Name" formControlName="title" data-qa="work-packages-objectives-modal-name"/>
       </mat-form-field>
       <mat-form-field>
         <textarea
@@ -11,12 +11,13 @@
           placeholder="Description"
           rows="4"
           formControlName="description"
+          data-qa="work-packages-objectives-modal-description"
         ></textarea>
       </mat-form-field>
     </div>
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button [disabled]="!formGroup.valid" color="primary" (click)="onConfirm()">Confirm</button>
-  <button mat-raised-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button data-qa="work-packages-objectives-modal-confirm" [disabled]="!formGroup.valid" color="primary" (click)="onConfirm()">Confirm</button>
+  <button mat-raised-button data-qa="work-packages-objectives-modal-cancel" (click)="onCancel()">Cancel</button>
 </div>
