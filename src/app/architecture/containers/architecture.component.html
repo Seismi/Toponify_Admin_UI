@@ -14,23 +14,13 @@
         <smi-left-panel
           *ngIf="selectedLeftTab !== 'menu'"
           (tabClick)="onTabClick($event)"
-          [viewLevel]="viewLevel$ | async"
           [workpackages]="workpackage$ | async"
           [workPackageIsEditable]="workPackageIsEditable"
-          (displayOptionsChangedEvent)="displayOptionsChanged($event)"
           (selectWorkPackage)="onSelectWorkPackage($event)"
           (selectColour)="selectColourForWorkPackage($event)"
           (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
           [selectedLeftTab]="selectedLeftTab"
-          [checked]="radioAlertChecked"
           [canSelectWorkpackages]="canSelectWorkpackages"
-          (addLayout)="onAddLayout()"
-          [group]="layoutSettingsForm"
-          [layout]="layout"
-          (filterRadioSeverity)="onFilterRadioSeverity()"
-          (collapseAllNodes)="onCollapseAllNodes()"
-          (summariseAllNodes)="onSummariseAllNodes()"
-          (expandAll)="onExpandAll()"
         >
         </smi-left-panel>
       </smi-left-hand-pane-content>
@@ -87,7 +77,7 @@
             [allowSave]="!!draft"
             [allowSaveAs]="true"
             [dependenciesView]="dependenciesView"
-            (layoutSettings)="openLayoutSettings()"
+            (layoutSettings)="openLayoutSettingsModal()"
             [layouts]="scopeDetails$ | async"
             [selectedLayout]="selectedLayout$ | async"
             (addLayout)="onAddLayout()"

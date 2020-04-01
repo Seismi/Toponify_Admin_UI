@@ -1910,46 +1910,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateLayoutSettings(): void {
-    // Do not update back end if using default layout
-    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
-      return;
-    }
-
-    this.store.dispatch(
-      new UpdateLayout({
-        id: this.layout.id,
-        data: {
-          id: this.layout.id,
-          name: this.layout.name,
-          scope: {
-            id: this.scope.id
-          },
-          settings: {
-            components: { ...this.layoutSettingsForm.get('components').value },
-            links: { ...this.layoutSettingsForm.get('links').value }
-          }
-        }
-      })
-    );
-  }
-
-  onFilterRadioSeverity(): void {
-    this.updateLayoutSettings();
-  }
-
-  onCollapseAllNodes(): void {
-    console.log('collapse all');
-  }
-
-  onSummariseAllNodes(): void {
-    console.log('summarise all');
-  }
-
-  onExpandAll(): void {
-    console.log('expand all');
-  }
-
   onSearchTableView(filterValue: string): void {
     const dataSource = this.tableView.dataSource;
     dataSource.filter = filterValue.toLowerCase().toUpperCase();
@@ -2150,7 +2110,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
 
-  openLayoutSettings() {
+  openLayoutSettingsModal() {
     const dialogRef = this.dialog.open(LayoutSettingsModalComponent, {
       disableClose: false,
       width: '500px',
