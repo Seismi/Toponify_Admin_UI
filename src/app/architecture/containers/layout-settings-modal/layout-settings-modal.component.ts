@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatCheckboxChange } from '@angular/material';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 
 @Component({
@@ -10,27 +10,38 @@ import { LayoutDetails } from '@app/layout/store/models/layout.model';
 })
 export class LayoutSettingsModalComponent implements OnInit {
   public layoutSettingsForm: FormGroup;
-  public layout: LayoutDetails;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<LayoutSettingsModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+    @Inject(MAT_DIALOG_DATA) public data: { layout: LayoutDetails }) {
       this.layoutSettingsForm = this.fb.group({
-        showDataLinks: [null],
-        showMasterDataLinks: [null]
+        components: new FormGroup({
+          showTags: new FormControl(),
+          showRADIO: new FormControl(),
+          filterRADIOSeverity: new FormControl(),
+          showDescription: new FormControl(),
+          showOwners: new FormControl(),
+          showNextLevel: new FormControl(),
+          showAttributes: new FormControl(),
+          showRules: new FormControl()
+        }),
+        links: new FormGroup({
+          showDataLinks: new FormControl(),
+          showMasterDataLinks: new FormControl(),
+          showName: new FormControl(),
+          showRADIO: new FormControl(),
+          filterRADIOSeverity: new FormControl(),
+          showAttributes: new FormControl(),
+          showRules: new FormControl()
+        })
       });
-      this.layout = data.layout;
     }
 
   @Output() displayOptionsChanged = new EventEmitter<{ event: MatCheckboxChange; option: string; }>();
 
-  ngOnInit() {
-    this.layoutSettingsForm.patchValue({
-      showDataLinks: this.layout.settings.links.showDataLinks,
-      showMasterDataLinks: this.layout.settings.links.showMasterDataLinks
-    });
-    console.log(this.layout.settings.links);
+  ngOnInit(): void {
+    this.layoutSettingsForm.patchValue({ ...this.data.layout.settings });
   }
 
   onSubmit(): void {

@@ -258,7 +258,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedLeftTab: number | string;
   multipleSelected: boolean;
   selectedMultipleNodes = [];
-  radioAlertChecked = true;
   radioTab = true;
   detailsTab = false;
   selectedWorkpackages = [];
@@ -599,7 +598,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.showHideRadioAlertRef = this.gojsCustomObjectsService.showHideRadioAlert$.subscribe(
       function() {
-        this.radioAlertChecked = !this.radioAlertChecked;
         this.ref.detectChanges();
       }.bind(this)
     );
@@ -1189,7 +1187,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   displayOptionsChanged({ event, option }: { event: any; option: string }) {
     if (this.diagramComponent) {
       this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
-      this.updateLayoutSettings();
     }
   }
 
@@ -2166,6 +2163,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       dialogRef.afterClosed().subscribe((settings) => {
         if (settings && settings.value) {
           this.displayOptionsChanged(data);
+          this.store.dispatch(
+            new UpdateLayout({
+              id: this.layout.id,
+              data: {
+                id: this.layout.id,
+                name: this.layout.name,
+                scope: {
+                  id: this.scope.id
+                },
+                settings: {
+                  components: settings.value.components,
+                  links: settings.value.links
+                }
+              }
+            })
+          );
         }
       });
     });
