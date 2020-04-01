@@ -1085,7 +1085,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (nodes === null) {
             return null;
           }
-          if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
+          if (this.currentFilterLevel &&
+            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel)) {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });

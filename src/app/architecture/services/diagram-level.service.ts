@@ -569,6 +569,7 @@ export class DiagramLevelService {
     this.paletteLinksSource.next(paletteViewLinks);
   }
 
+  // Create parts to represent swim lanes to indicate layers when in node usage view
   createNodeUsageLanes(diagram: go.Diagram): void {
 
     [layers.system,
@@ -584,6 +585,7 @@ export class DiagramLevelService {
                category: 'lane',
                locationObjectName: 'shape'
              },
+             // Label section of the lane
              $(go.Panel, 'Auto',
                {
                  stretch: go.GraphObject.Vertical,
@@ -603,6 +605,7 @@ export class DiagramLevelService {
                  }
                )
              ),
+             // Area to enclose nodes from the lane's layer
              $(go.Shape,
                {
                  name: 'shape',
