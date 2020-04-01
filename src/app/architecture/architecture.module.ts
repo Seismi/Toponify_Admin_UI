@@ -78,13 +78,15 @@ import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/rad
 import { ComponentsOrLinksModalComponent } from './containers/components-or-links-modal/components-or-links-modal.component';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
-import { LayoutActionsComponent } from './components/layout-actions/layout-actions.component';
+import { LayoutActionsComponent } from './components/diagram-actions/layout-actions/layout-actions.component';
 import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
 import { LayoutSettingsModalComponent } from './containers/layout-settings-modal/layout-settings-modal.component';
+import { DiagramActionsComponent } from './components/diagram-actions/diagram-actions.component';
+import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-dropdown/layouts-dropdown.component';
 
 @NgModule({
   imports: [
@@ -170,7 +172,9 @@ import { LayoutSettingsModalComponent } from './containers/layout-settings-modal
     ComponentsTableComponent,
     GroupInfoTableComponent,
     SourceOrTargetTableComponent,
-    LayoutSettingsModalComponent
+    LayoutSettingsModalComponent,
+    DiagramActionsComponent,
+    LayoutsDropdownComponent
   ],
   entryComponents: [
     DeleteModalComponent,

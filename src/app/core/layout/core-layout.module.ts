@@ -35,7 +35,6 @@ import { ModelContentComponent } from '@app/core/layout/model-content/model-cont
 import { ToolbarColumnComponent } from '@app/core/layout/header/toolbar-column/toolbar-column.component';
 import { QuicklinksActionsComponent } from '@app/core/layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from '@app/core/layout/header/breadcrumb/breadcrumb.component';
-import { LayoutsDropdownComponent } from '@app/core/layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { NodeNameComponent } from '@app/core/layout/header/node-name/node-name.component';
 import { RightSideBarComponent } from '@app/core/layout/right-sidebar/right-sidebar.component';
 import { ScopesDropdownComponent } from '@app/core/layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
@@ -96,7 +95,6 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
@@ -130,7 +128,6 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,

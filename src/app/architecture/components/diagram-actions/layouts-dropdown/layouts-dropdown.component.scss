@@ -1,9 +1,7 @@
 .mat-form-field {
   font-size: 12px;
-  margin-top: 8px;
   width: 150px;
   opacity: 1;
-  margin-left: 5px;
 }
 
 .mat-select {
@@ -18,4 +16,13 @@ button {
   font-size: 12px !important;
   line-height: 0px;
   font-weight: lighter;
+}
+
+::ng-deep .mat-form-field-infix {
+  border-top: none;
+  padding: 0;
+}
+
+::ng-deep .mat-form-field-wrapper {
+  padding-bottom: 0;
 }

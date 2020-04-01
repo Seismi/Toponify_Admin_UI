@@ -2164,7 +2164,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.componentInstance.displayOptionsChanged.subscribe((data: { event: MatCheckboxChange, option: string }) => {
       dialogRef.afterClosed().subscribe((settings) => {
-        if (settings) {
+        if (settings && settings.value) {
           this.displayOptionsChanged(data);
         }
       });

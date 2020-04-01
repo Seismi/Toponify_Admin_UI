@@ -30,10 +30,11 @@ export class LayoutSettingsModalComponent implements OnInit {
       showDataLinks: this.layout.settings.links.showDataLinks,
       showMasterDataLinks: this.layout.settings.links.showMasterDataLinks
     });
+    console.log(this.layout.settings.links);
   }
 
   onSubmit(): void {
-    this.dialogRef.close(this.layoutSettingsForm.value);
+    this.dialogRef.close({ value: this.layoutSettingsForm.value });
   }
 
   onCancel(): void {

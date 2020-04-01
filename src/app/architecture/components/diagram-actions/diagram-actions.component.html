@@ -1,0 +1,46 @@
+<div class="wrapper">
+  <div class="block">
+    <mat-chip-list>
+      <mat-chip *ngIf="dependenciesView">
+        Viewing Dependencies
+        <mat-icon matChipRemove (click)="exitDependenciesView.emit()">cancel</mat-icon>
+      </mat-chip>
+      
+      <mat-chip *ngIf="filterLevel === 'usage analysis'">
+        Showing Usage Across Levels
+        <mat-icon matChipRemove (click)="exitUsageView.emit()">cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-list>
+  </div>
+
+  <div class="block">
+    <smi-layouts-dropdown
+      (selectLayout)="selectLayout.emit($event)"
+      [selectedLayout]="selectedLayout"
+      (addLayout)="addLayout.emit()"
+      [data]="layouts"
+    >
+    </smi-layouts-dropdown>
+  </div>
+
+  <div class="block">
+    <smi-layout-actions
+      class="layout-actions"
+      [grid]="grid"
+      [allowMove]="allowMove"
+      (zoomIn)="zoomIn.emit()"
+      (zoomOut)="zoomOut.emit()"
+      (showGrid)="showGrid.emit()"
+      (zoomToFit)="zoomToFit.emit()"
+      (editLayout)="editLayout.emit()"
+      (downloadImage)="downloadImage.emit()"
+      (saveLayout)="saveLayout.emit()"
+      (saveAsLayout)="saveAsLayout.emit()"
+      [allowSave]="allowSave"
+      [allowSaveAs]="allowSaveAs"
+      [dependenciesView]="dependenciesView"
+      (layoutSettings)="layoutSettings.emit()"
+    >
+    </smi-layout-actions>
+  </div>
+</div>
