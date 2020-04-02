@@ -2094,7 +2094,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           new LoadAvailableTags({
             workpackageId: this.workpackageId,
             nodeId: this.selectedNode.id,
-            type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
+            type: this.clickedOnLink ? 'link' : 'node'
           })
         );
       });
@@ -2106,7 +2106,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         tagIds: [{ id: tagId }],
         workpackageId: this.workpackageId,
         nodeOrLinkId: this.selectedNode.id,
-        type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
+        type: this.clickedOnLink ? 'link' : 'node'
       })
     );
   }
@@ -2118,7 +2118,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         associateWithNode: {
           workpackageId: this.workpackageId,
           nodeOrLinkId: this.selectedNode.id,
-          type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
+          type: this.clickedOnLink ? 'link' : 'node'
         }
       })
     );
@@ -2130,7 +2130,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         tag,
         workpackageId: this.workpackageId,
         nodeOrLinkId: this.selectedNode.id,
-        type: this.selectedNode.hasOwnProperty('sourceId') ? 'link' : 'node'
+        type: this.clickedOnLink ? 'link' : 'node'
       })
     );
   }
