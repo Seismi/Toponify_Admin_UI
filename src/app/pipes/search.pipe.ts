@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'selectionListSearch' })
-export class SelectionListSearchPipe implements PipeTransform {
+@Pipe({ name: 'searchPipe' })
+export class SearchPipe implements PipeTransform {
   transform(value: any[], args?: string): any {
     if (!value) {
       return null;

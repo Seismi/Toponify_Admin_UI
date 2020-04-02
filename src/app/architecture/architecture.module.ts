@@ -85,7 +85,7 @@ import { GroupInfoTableComponent } from './components/group-info-table/group-inf
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
 import { LinkWithTransformationModalComponent } from './containers/link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
-import { SelectionListSearchPipe } from '@app/pipes/selection-list-search.pipe';
+import { SearchPipe } from '@app/pipes/search.pipe';
 
 @NgModule({
   imports: [
@@ -127,7 +127,7 @@ import { SelectionListSearchPipe } from '@app/pipes/selection-list-search.pipe';
     MatProgressSpinnerModule,
     MatSidenavModule
   ],
-  exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
+  exports: [ObjectDetailsFormComponent, SearchPipe, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
     ArchitectureRoutingComponent,
     ArchitectureComponent,
@@ -172,7 +172,7 @@ import { SelectionListSearchPipe } from '@app/pipes/selection-list-search.pipe';
     GroupInfoTableComponent,
     SourceOrTargetTableComponent,
     LinkWithTransformationModalComponent,
-    SelectionListSearchPipe
+    SearchPipe
   ],
   entryComponents: [
     DeleteModalComponent,

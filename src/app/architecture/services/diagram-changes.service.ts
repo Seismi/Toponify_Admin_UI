@@ -581,15 +581,15 @@ export class DiagramChangesService {
   hideNonDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Analyse Dependencies');
 
-    // Get direct dependencies
-    const dependencies = [depNode.key];
-    depNode.findNodesConnected().each(function(connectedNode) {
-      dependencies.push(connectedNode.key);
-    });
+    // Highlight specified node with a thicker blue shadow
+    depNode.shadowColor = 'blue';
+    depNode.shadowBlur = 18;
+
+    const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
 
     // Hide all non-directly-dependent nodes
     depNode.diagram.nodes.each(function(node) {
-      if (!dependencies.includes(node.key)) {
+      if (!nodesToStayVisible.has(node)) {
         node.visible = false;
       }
     });
@@ -611,9 +611,10 @@ export class DiagramChangesService {
   showDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Show Dependencies');
 
-    // Get linked nodes and ensure they are visible
-    depNode.findNodesConnected().each(function(connectedNode) {
-      connectedNode.visible = true;
+    const nodesToShow = this.getNodesToShowDependencies(depNode);
+
+    nodesToShow.each(function(node) {
+      node.visible = true;
     });
 
     // Update bindings so that the appropriate nodes show the button to expand dependency levels shown
@@ -626,13 +627,41 @@ export class DiagramChangesService {
     depNode.diagram.commitTransaction('Show Dependencies');
   }
 
+  // Get a set of all nodes that need to be visible to show dependencies from the given input node
+  getNodesToShowDependencies(depNode: go.Node): go.Set<go.Part> {
+
+    // Get direct dependencies
+    const dependencies = new go.Set<go.Part>([depNode]);
+    dependencies.addAll(depNode.findNodesConnected());
+
+    // Get any top-level groups containing the direct dependencies
+    const groups = new go.Set<go.Group>();
+    dependencies.each(function(node) {
+      const topPart = node.findTopLevelPart();
+      if (topPart instanceof go.Group) {
+        groups.add(topPart);
+      }
+    });
+
+    // Get all members of the groups containing direct dependencies
+    const members = new go.Set<go.Part>();
+    groups.each(function(group) {
+      members.addAll(group.findSubGraphParts());
+    });
+
+    return new go.Set<go.Part>(dependencies)
+      .addAll(groups).addAll(members);
+  }
+
   // Set all nodes in the specified diagram to visible
   showAllNodes(diagram: go.Diagram): void {
     diagram.startTransaction('Show All Nodes');
 
-    // Set all nodes to visible
+    // Set all nodes to visible and reset shadow
     diagram.nodes.each(function(node) {
       node.visible = true;
+      node.shadowColor = 'gray';
+      node.shadowBlur = 4;
     });
 
     // Update bindings so that nodes no longer show the button to expand dependency levels

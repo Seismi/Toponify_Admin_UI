@@ -99,9 +99,14 @@
       (deleteRelatedAttribute)="onDeleteRelatedAttribute()"
     >
     </smi-related-attribute-table>
-    <div *ngIf="isNode">
-      <button mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
-      <button mat-flat-button color="primary" (click)="onSeeUsage()">See Usage Across Levels</button>
+    <div *ngIf="!attributesPage">
+      <div *ngIf="isNode">
+        <button mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
+        <button mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
+      </div>
+      <div *ngIf="isLink()">
+        <button class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
+      </div>
     </div>
   </div>
 </form>

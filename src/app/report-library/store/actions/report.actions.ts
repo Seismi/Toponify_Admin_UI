@@ -78,7 +78,15 @@ export enum ReportActionTypes {
 
   DeleteReportTags = '[Report] Delete Report Tags',
   DeleteReportTagsSuccess = '[Report] Delete Report Tags Success',
-  DeleteReportTagsFail = '[Report] Delete Report Tags Fail'
+  DeleteReportTagsFail = '[Report] Delete Report Tags Fail',
+
+  AddReportRadio = '[Report] Add Report Radio',
+  AddReportRadioSuccess = '[Report] Add Report Radio Success',
+  AddReportRadioFailure = '[Report] Add Report Radio Failure',
+
+  DeleteReportRadio = '[Report] Delete Report Radio',
+  DeleteReportRadioSuccess = '[Report] Delete Report Radio Success',
+  DeleteReportRadioFailure = '[Report] Delete Report Radio Failure'
 }
 
 export class LoadReports implements Action {
@@ -338,6 +346,36 @@ export class DeleteReportTagsFail implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddReportRadio implements Action {
+  readonly type = ReportActionTypes.AddReportRadio;
+  constructor(public payload: { workPackageId: string; reportId: string, radioId: string }) {}
+}
+
+export class AddReportRadioSuccess implements Action {
+  readonly type = ReportActionTypes.AddReportRadioSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class AddReportRadioFailure implements Action {
+  readonly type = ReportActionTypes.AddReportRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteReportRadio implements Action {
+  readonly type = ReportActionTypes.DeleteReportRadio;
+  constructor(public payload: { workPackageId: string; reportId: string; radioId: string }) {}
+}
+
+export class DeleteReportRadioSuccess implements Action {
+  readonly type = ReportActionTypes.DeleteReportRadioSuccess;
+  constructor(public payload: Report) {}
+}
+
+export class DeleteReportRadioFailure implements Action {
+  readonly type = ReportActionTypes.DeleteReportRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ReportActionsUnion =
   | LoadReports
   | LoadReportsSuccess
@@ -389,4 +427,10 @@ export type ReportActionsUnion =
   | AddReportTagsFail
   | DeleteReportTags
   | DeleteReportTagsSuccess
-  | DeleteReportTagsFail;
+  | DeleteReportTagsFail
+  | AddReportRadio
+  | AddReportRadioSuccess
+  | AddReportRadioFailure
+  | DeleteReportRadio
+  | DeleteReportRadioSuccess
+  | DeleteReportRadioFailure;

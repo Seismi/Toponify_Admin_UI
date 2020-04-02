@@ -7,10 +7,10 @@ import { Node } from 'gojs';
 import { Level } from '@app/architecture/services/diagram-level.service';
 
 
-const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
-const dataSetCategories = ['physical', 'virtual', 'master data'];
-const dimensionCategories = ['dimension'];
-const reportingCategories = ['list', 'structure', 'key'];
+const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file', 'transformation'];
+const dataSetCategories = ['physical', 'virtual', 'master data', 'transformation'];
+const dimensionCategories = ['dimension', 'transformation'];
+const reportingCategories = ['list', 'structure', 'key', 'transformation'];
 
 @Component({
   selector: 'smi-object-details-form',
@@ -63,6 +63,7 @@ export class ObjectDetailsFormComponent {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() viewStructure = new EventEmitter<void>();
   @Output() editSourceOrTarget = new EventEmitter<string>();
 
   onSave(): void {
@@ -150,5 +151,15 @@ export class ObjectDetailsFormComponent {
 
   get isNode(): boolean {
     return this.part && this.part.data && !this.part.data.hasOwnProperty('sourceId');
+  }
+
+  isLink(): boolean {
+    if (this.part.data.layer === 'reporting concept') {
+      return false;
+    } else if (this.clickedOnLink || this.nodeCategory === 'transformation') {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
