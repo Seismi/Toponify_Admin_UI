@@ -582,8 +582,7 @@ export class DiagramChangesService {
     depNode.diagram.startTransaction('Analyse Dependencies');
 
     // Highlight specified node with a thicker blue shadow
-    depNode.shadowColor = 'blue';
-    depNode.shadowBlur = 18;
+    this.setBlueShadowHighlight(depNode, true);
 
     const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
 
@@ -660,9 +659,8 @@ export class DiagramChangesService {
     // Set all nodes to visible and reset shadow
     diagram.nodes.each(function(node) {
       node.visible = true;
-      node.shadowColor = 'gray';
-      node.shadowBlur = 4;
-    });
+      this.setBlueShadowHighlight(node, false);
+    }.bind(this));
 
     // Update bindings so that nodes no longer show the button to expand dependency levels
     diagram.nodes.each(function(node) {
@@ -1100,5 +1098,10 @@ export class DiagramChangesService {
         }
       });
     }
+  }
+
+  setBlueShadowHighlight(node: go.Node, highlight: boolean): void {
+    node.shadowColor = highlight ? 'blue' : 'gray';
+    node.shadowBlur = highlight ? 18 : 4;
   }
 }
