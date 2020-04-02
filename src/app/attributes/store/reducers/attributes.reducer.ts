@@ -57,6 +57,7 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
       };
     }
 
+    case AttributeActionTypes.AddAttributeRadioSuccess:
     case AttributeActionTypes.LoadAttributeSuccess: {
       return {
         ...state,
@@ -65,6 +66,7 @@ export function reducer(state = initialState, action: AttributeActionsUnion): St
       };
     }
 
+    case AttributeActionTypes.AddAttributeRadioFailure:
     case AttributeActionTypes.DeleteAttributeTagsFail:
     case AttributeActionTypes.AddAttributeTagsFail:
     case AttributeActionTypes.LoadAttributeFailure: {
