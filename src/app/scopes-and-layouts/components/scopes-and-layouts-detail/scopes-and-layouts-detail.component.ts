@@ -12,9 +12,9 @@ export class ScopesAndLayoutsDetailComponent {
   public layerFilter: string[] = layers;
 
   @Input() group: FormGroup;
-  @Input() isEditable: boolean = false;
-  @Input() modalMode: boolean = false;
-  @Input() layoutDetails: boolean = false;
+  @Input() isEditable = false;
+  @Input() modalMode = false;
+  @Input() layoutDetails = false;
 
   @Output() delete = new EventEmitter<void>();
   @Output() save = new EventEmitter<void>();
