@@ -728,7 +728,7 @@ export class GojsCustomObjectsService {
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             return thisService.diagramEditable;
           },
-          function(object: go.GraphObject) {
+          function(object: go.GraphObject): string {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             switch (node.data.layer) {
               case 'data set':
