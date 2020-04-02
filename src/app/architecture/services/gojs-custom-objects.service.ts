@@ -241,6 +241,7 @@ export class GojsCustomObjectsService {
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
 
   public diagramEditable: boolean;
+  private currentLevel;
 
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
@@ -251,7 +252,9 @@ export class GojsCustomObjectsService {
       })
     )
     public diagramLevelService: DiagramLevelService
-  ) {}
+  ) {
+    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+  }
 
   // Context menu for when the background is right-clicked
   getBackgroundContextMenu(): go.Adornment {
@@ -285,14 +288,9 @@ export class GojsCustomObjectsService {
           event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
 
           // Redo layout for node usage view after updating RADIO alert display setting
-          thisService.store
-            .select(getFilterLevelQueryParams)
-            .pipe(take(1))
-            .subscribe(level => {
-              if (level === Level.usage) {
-                event.diagram.layout.isValidLayout = false;
-              }
-            });
+          if (thisService.currentLevel === Level.usage) {
+            event.diagram.layout.isValidLayout = false;
+          }
         }
       }),
       $('ContextMenuButton', $(go.TextBlock, 'Reorganise'), {
@@ -641,7 +639,7 @@ export class GojsCustomObjectsService {
 
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent) {
-            return thisService.diagramEditable;
+            return thisService.diagramEditable && thisService.currentLevel !== Level.usage;
           }
         ),
         makeSubMenuButton(
@@ -652,7 +650,7 @@ export class GojsCustomObjectsService {
             this.addSystemToGroupSource.next(node.data);
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
-            return thisService.diagramEditable;
+            return thisService.diagramEditable && thisService.currentLevel !== Level.usage;
           },
           function(object: go.GraphObject): string {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
@@ -767,19 +765,8 @@ export class GojsCustomObjectsService {
             }
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
-
-            let isMapLevel: boolean;
-
-            thisService
-              .store
-              .select(getFilterLevelQueryParams)
-              .pipe(take(1))
-              .subscribe(function(level) {
-                isMapLevel =  (level !== Level.systemMap && level !== Level.dataSetMap);
-              });
-
-            return isMapLevel;
-
+            const level = thisService.currentLevel;
+            return (level !== Level.systemMap && level !== Level.dataSetMap);
           }
         ),
         makeSubMenuButton(

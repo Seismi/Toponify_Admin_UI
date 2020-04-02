@@ -1,0 +1,48 @@
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 17px;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:nth-child(1) {
+  background-color: #ddd;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.search-container {
+  display: flex;
+  padding: 10px 15px;
+  background-color: #F5F5F5;
+}
+
+.search-input {
+  width: 100%;
+  padding: 5px 10px;
+  &:focus {
+    outline: none;
+  }
+}
+
+.row {
+  height: 450px;
+  margin: 1px;
+}
+
+.col {
+  padding: 0;
+  border: solid 2px#F5F5F5;
+  &:first-of-type {
+    margin-right: 10px;
+  }
+}
+
+.mat-list-base {
+  padding-top: 0px !important;
+}
