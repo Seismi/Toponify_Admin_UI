@@ -535,6 +535,16 @@ export class DiagramLevelService {
       }
     });
 
+    diagram.parts.each(function(part) {
+      if (part.category === 'lane') {
+        diagram.remove(part);
+      }
+    });
+
+    if (level === Level.usage) {
+      this.createNodeUsageLanes(diagram);
+    }
+
     // Settings and layout for map view
     if (level.endsWith('map')) {
       diagram.layout = $(MapViewLayout as any, {
@@ -557,5 +567,54 @@ export class DiagramLevelService {
 
     this.paletteNodesSource.next(paletteViewNodes);
     this.paletteLinksSource.next(paletteViewLinks);
+  }
+
+  // Create parts to represent swim lanes to indicate layers when in node usage view
+  createNodeUsageLanes(diagram: go.Diagram): void {
+
+    [layers.system,
+     layers.dataSet,
+     layers.dimension,
+     layers.reportingConcept ].forEach(
+       function(layer) {
+         diagram.add(
+           $(go.Part, 'Horizontal',
+             {
+               selectable: false,
+               name: layer,
+               category: 'lane',
+               locationObjectName: 'shape'
+             },
+             // Label section of the lane
+             $(go.Panel, 'Auto',
+               {
+                 stretch: go.GraphObject.Vertical,
+                 width: 50
+               },
+               $(go.Shape,
+                 {
+                   fill: null
+                 }
+               ),
+               $(go.TextBlock,
+                 {
+                   angle: 270,
+                   text: layer,
+                   margin: 2,
+                   font: '18px ' + getComputedStyle(document.body).getPropertyValue('--default-font')
+                 }
+               )
+             ),
+             // Area to enclose nodes from the lane's layer
+             $(go.Shape,
+               {
+                 name: 'shape',
+                 fill: null
+               }
+             )
+           )
+         );
+       }
+     );
   }
 }

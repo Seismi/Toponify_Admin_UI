@@ -49,7 +49,8 @@ import {
   NodeExpandedStateApiRequest,
   NodeReports,
   Tag,
-  TagApplicableTo
+  TagApplicableTo,
+  NodeApiResponse
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -188,6 +189,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
+import { LinkWithTransformationModalComponent } from './link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
 
 enum Events {
@@ -1085,7 +1087,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (nodes === null) {
             return null;
           }
-          if (this.currentFilterLevel && this.currentFilterLevel.endsWith('map')) {
+          if (this.currentFilterLevel &&
+            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel)) {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });
@@ -1973,24 +1976,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.getDiagramImage();
   }
 
-  onAddComponentOrLink(): void {
+  getLevel(level: string): string {
+    if (level === Level.systemMap) {
+      return Level.dataSet;
+    } else if (level === Level.dataSetMap) {
+      return Level.dimension;
+    } else {
+      return level;
+    }
+  }
+
+  onAddComponentOrLink(type: 'component' | 'link'): void {
     const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         workPackageId: this.workpackageId,
-        link: this.selectedView === ArchitectureView.Links,
+        link: type === 'link',
         level: this.currentFilterLevel.toLowerCase()
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.node) {
-        if (this.selectedView !== ArchitectureView.Links) {
+        if (type === 'component') {
           this.workpackageStore.dispatch(
             new AddWorkPackageNode({
               workpackageId: this.workpackageId,
-              node: { ...data.node, layer: this.currentFilterLevel.toLowerCase() },
+              node: { ...data.node, layer: this.getLevel(this.currentFilterLevel.toLowerCase()) },
               scope: this.scope.id
             })
           );
@@ -1998,10 +2011,71 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(
             new AddWorkPackageLink({
               workpackageId: this.workpackageId,
-              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+              link: { ...data.node, layer: this.getLevel(this.currentFilterLevel.toLowerCase()) }
             })
           );
         }
+      }
+    });
+  }
+
+  onAddLinkWithTransformation() {
+    const dialogRef = this.dialog.open(LinkWithTransformationModalComponent, {
+      disableClose: false,
+      width: '800px'
+    });
+
+    dialogRef.beforeClosed().subscribe(data => {
+      if (data && data.node) {
+        this.workpackageStore.dispatch(
+          new AddWorkPackageNode({
+            workpackageId: this.workpackageId,
+            scope: this.scope.id,
+            node: {
+              ...data.node,
+              layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
+              category: 'transformation'
+            }
+          })
+        );
+
+        this.subscriptions.push(
+          this.actions.pipe(
+            take(1),
+            ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: { payload: NodeApiResponse }) => {
+            const transformationId = action.payload.data.id;
+
+            data.node.sourceId.forEach(source => {
+              this.workpackageStore.dispatch(
+                new AddWorkPackageLink({
+                  workpackageId: this.workpackageId,
+                  link: {
+                    name: `${source.name} to ${data.node.name}`,
+                    layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
+                    sourceId: source.id,
+                    targetId: transformationId,
+                    category: 'data'
+                  }
+                })
+              );
+            });
+
+            data.node.targetId.forEach(target => {
+              this.workpackageStore.dispatch(
+                new AddWorkPackageLink({
+                  workpackageId: this.workpackageId,
+                  link: {
+                    name: `${data.node.name} to ${target.name}`,
+                    layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
+                    sourceId: transformationId,
+                    targetId: target.id,
+                    category: 'data'
+                  }
+                })
+              );
+            });
+          })
+        );
       }
     });
   }

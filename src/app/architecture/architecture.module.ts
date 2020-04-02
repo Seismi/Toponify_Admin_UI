@@ -83,7 +83,9 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
+import { LinkWithTransformationModalComponent } from './containers/link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
+import { SearchPipe } from '@app/pipes/search.pipe';
 
 @NgModule({
   imports: [
@@ -125,7 +127,7 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     MatProgressSpinnerModule,
     MatSidenavModule
   ],
-  exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
+  exports: [ObjectDetailsFormComponent, SearchPipe, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
     ArchitectureRoutingComponent,
     ArchitectureComponent,
@@ -168,7 +170,9 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     SpinnerComponent,
     ComponentsTableComponent,
     GroupInfoTableComponent,
-    SourceOrTargetTableComponent
+    SourceOrTargetTableComponent,
+    LinkWithTransformationModalComponent,
+    SearchPipe
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -183,7 +187,8 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
     RadioConfirmModalComponent,
-    ComponentsOrLinksModalComponent
+    ComponentsOrLinksModalComponent,
+    LinkWithTransformationModalComponent
   ],
   providers: [
     GojsCustomObjectsService,
