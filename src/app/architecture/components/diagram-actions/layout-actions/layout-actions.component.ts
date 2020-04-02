@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { ScopeDetails } from '@app/scope/store/models/scope.model';
+import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 
 @Component({
   selector: 'smi-layout-actions',
@@ -25,4 +26,6 @@ export class LayoutActionsComponent {
   @Output() layoutSettings = new EventEmitter<void>();
   @Output() selectLayout = new EventEmitter<string>();
   @Output() addLayout = new EventEmitter<void>();
+
+  constructor(private diagramChangesService: DiagramChangesService) { }
 }

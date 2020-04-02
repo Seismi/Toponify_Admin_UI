@@ -27,6 +27,7 @@ export class DiagramChangesService {
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
+  public dependenciesView = false;
 
   workpackages = [];
   layout;
@@ -44,7 +45,10 @@ export class DiagramChangesService {
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
-    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+    this.store.select(getFilterLevelQueryParams).subscribe(level => {
+      this.currentLevel = level;
+      this.dependenciesView = false;
+    });
   }
 
   // Add newly created nodes to the back end
@@ -586,6 +590,10 @@ export class DiagramChangesService {
 
     const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
 
+    if (nodesToStayVisible) {
+      this.dependenciesView = true;
+    }
+
     // Hide all non-directly-dependent nodes
     depNode.diagram.nodes.each(function(node) {
       if (!nodesToStayVisible.has(node)) {
@@ -661,6 +669,8 @@ export class DiagramChangesService {
       node.visible = true;
       this.setBlueShadowHighlight(node, false);
     }.bind(this));
+
+    this.dependenciesView = false;
 
     // Update bindings so that nodes no longer show the button to expand dependency levels
     diagram.nodes.each(function(node) {
