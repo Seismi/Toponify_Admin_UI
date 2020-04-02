@@ -26,7 +26,8 @@ a {
 }
 
 .mat-checkbox-checked.mat-accent .mat-checkbox-background,
-.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-pseudo-checkbox-checked {
   background-color: #3f51b5 !important;
 }
 

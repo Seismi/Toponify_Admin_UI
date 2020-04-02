@@ -20,13 +20,15 @@ const reportingConceptCategories = ['structure', 'list', 'key'];
 export class ComponentsOrLinksModalComponent implements OnInit {
   public formGroup: FormGroup;
   public nodes: Node[];
-  public nameValue: string = '';
+  public nameValue = '';
+  public targetArray: Node[];
+  public sourceArray: Node[];
 
   constructor(
     private fb: FormBuilder,
     private store: Store<NodeState>,
     public dialogRef: MatDialogRef<ComponentsOrLinksModalComponent>,
-    @Inject(MAT_DIALOG_DATA) 
+    @Inject(MAT_DIALOG_DATA)
       public data: {
         workPackageId: string,
         link: Link,
@@ -41,23 +43,34 @@ export class ComponentsOrLinksModalComponent implements OnInit {
       });
 
       this.formGroup.valueChanges.subscribe(change => {
-        const selectionOptions = this.nodes.filter(node => [change.sourceId, change.targetId].includes(node.id)).map(node => node.name).join(' - ');
+        const selectionOptions = this.nodes.filter(node =>
+          [change.sourceId, change.targetId].includes(node.id)).map(node => node.name).join(' - ');
         this.nameValue = selectionOptions;
         if (change.sourceId && change.targetId && this.formGroup.value.name === null) {
           return change.name = selectionOptions;
         }
-      })
+      });
     }
 
   ngOnInit(): void {
-    this.store.pipe(select(getNodeEntities)).subscribe(data => this.nodes = data);
+    this.store.pipe(select(getNodeEntities)).subscribe(data => {
+      this.nodes = data;
+      const target = data.filter(node => node.endPointType === 'target');
+      const source = data.filter(node => node.endPointType === 'source');
+      this.targetArray = (this.data.level.endsWith('map')) ? data.filter(node => node.group === target[0].id) : data;
+      this.sourceArray = (this.data.level.endsWith('map')) ? data.filter(node => node.group === source[0].id) : data;
+    });
   }
 
   getCategories(): string[] {
     switch (this.data.level) {
       case 'system':
         return (!this.data.link) ? systemCategories : ['master data', 'data'];
+      case 'system map':
+        return (!this.data.link) ? systemCategories : ['master data', 'data'];
       case 'data set':
+        return (!this.data.link) ? dataSetCategories : ['master data', 'data'];
+      case 'data set map':
         return (!this.data.link) ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
         return (!this.data.link) ? dimensionCategories : ['master data'];

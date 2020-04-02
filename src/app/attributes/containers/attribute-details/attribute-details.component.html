@@ -47,7 +47,10 @@
           <mat-icon matTooltip="RADIO">track_changes</mat-icon>
         </ng-template>
         <smi-radio-table-in-attributes-page 
-          [data]="attribute?.relatedRadios"> 
+          [data]="attribute?.relatedRadios"
+          (raiseNew)="onRaiseNew()"
+          (assignRadio)="onAssignRadio()"
+        > 
         </smi-radio-table-in-attributes-page>
       </mat-tab>
       <mat-tab>

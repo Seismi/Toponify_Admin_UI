@@ -1005,7 +1005,7 @@ export class DiagramTemplatesService {
           )
         )
       } : {},
-      // Have the diagram position the node if no location set
+      // Have the diagram position the node if no location set or in node usage view
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
@@ -1080,8 +1080,10 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      // Have the diagram position the node if no location set or in node usage view
+      new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
+        return locationMissing || this.currentFilterLevel === Level.usage;
+      }.bind(this)),
       $(
         go.Shape,
         // Bind stroke to multicoloured brush based on work packages impacted by
@@ -1211,7 +1213,9 @@ export class DiagramTemplatesService {
             )
           },
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
+        return locationMissing || this.currentFilterLevel === Level.usage;
+      }.bind(this)),
       $(
         go.Shape,
         // Bind stroke to multicoloured brush based on work packages impacted by
