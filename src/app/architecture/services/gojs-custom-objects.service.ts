@@ -727,6 +727,17 @@ export class GojsCustomObjectsService {
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             return thisService.diagramEditable;
+          },
+          function(object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            switch (node.data.layer) {
+              case 'data set':
+                return 'Add dimension';
+              case 'dimension':
+                return 'Add reporting concept';
+              default:
+                return 'Add data set';
+            }
           }
         ),
         // --End of data set submenu buttons--
