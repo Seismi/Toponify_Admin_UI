@@ -40,4 +40,8 @@ export class UsersTableComponent implements OnInit {
     this.selectedUserIndex = user.id;
     this.selectUser.emit(user);
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

@@ -87,6 +87,7 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
 import { LayoutSettingsModalComponent } from './containers/layout-settings-modal/layout-settings-modal.component';
 import { DiagramActionsComponent } from './components/diagram-actions/diagram-actions.component';
 import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-dropdown/layouts-dropdown.component';
+import { SearchPipe } from '@app/pipes/search.pipe';
 
 @NgModule({
   imports: [
@@ -128,7 +129,7 @@ import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-d
     MatProgressSpinnerModule,
     MatSidenavModule
   ],
-  exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
+  exports: [ObjectDetailsFormComponent, SearchPipe, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
     ArchitectureRoutingComponent,
     ArchitectureComponent,
@@ -174,7 +175,8 @@ import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-d
     SourceOrTargetTableComponent,
     LayoutSettingsModalComponent,
     DiagramActionsComponent,
-    LayoutsDropdownComponent
+    LayoutsDropdownComponent,
+    SearchPipe
   ],
   entryComponents: [
     DeleteModalComponent,

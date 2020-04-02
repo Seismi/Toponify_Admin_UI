@@ -36,4 +36,8 @@ export class DocumentationStandardsTableComponent {
   onAdd(): void {
     this.addDocument.emit();
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }
