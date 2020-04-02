@@ -1,11 +1,13 @@
 :host {
-  padding: 12px 8px 0px 8px;
+  display: flex;
+  padding: 5px 7px;
   background-color: #f5f5f5;
   border-radius: 5px;
   border: solid 1px #eee;
 }
 
 .mat-icon {
+  margin-top: 5px;
   font-size: 23px;
   cursor: pointer;
   color: rgb(66, 82, 110);

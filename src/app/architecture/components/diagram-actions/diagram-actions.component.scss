@@ -9,10 +9,7 @@
 .block {
   &:first-of-type {
     float: left;
-  }
-  &:nth-child(2) {
-    display: inline;
-    margin: 0px 7px;
+    margin: 12px 12px 0px 0px;
   }
   &:last-of-type {
     float: right;
