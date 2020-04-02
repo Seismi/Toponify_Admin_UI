@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getTeamSelected } from '@app/settings/store/selectors/team.selector';
 import { TeamEntity } from '@app/settings/store/models/user.model';
 import { MembersEntity } from '@app/settings/store/models/team.model';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'smi-teams-details',
@@ -79,12 +80,11 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteTeam(): void {
-    const dialogRef = this.dialog.open(DeleteTeamAndMemberModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: this.team.name
+        title: `Are you sure you want to disable user "${this.team.name}"?`
       }
     });
 
