@@ -23,9 +23,13 @@
       <mat-icon matTooltip="Edit">edit</mat-icon>
     </ng-template>
     <ng-template matTabContent>
-      <p class="palette">
+      <p class="palette" *ngIf="!mapView">
         <app-architecture-palette></app-architecture-palette>
       </p>
+      <div class="edit-tab-mapView" *ngIf="mapView">
+        <button mat-raised-button color="primary" (click)="addInterface.emit('link')">Create direct interface</button>
+        <button mat-raised-button color="primary" (click)="addLinkWithTransformation.emit()">Create interface with transformation</button>
+      </div>
     </ng-template>
   </mat-tab>
   <mat-tab>

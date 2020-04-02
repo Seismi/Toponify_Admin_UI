@@ -57,6 +57,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.DeleteReportRadioSuccess:
     case ReportActionTypes.DeleteReportPropertySuccess:
     case ReportActionTypes.UpdateReportPropertySuccess:
     case ReportActionTypes.LoadReportSuccess: {
@@ -166,6 +167,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.AddReportRadioSuccess:
     case ReportActionTypes.DeleteReportTagsSuccess:
     case ReportActionTypes.AddReportTagsSuccess:
     case ReportActionTypes.AddOwnerSuccess:
@@ -196,6 +198,8 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       };
     }
 
+    case ReportActionTypes.DeleteReportRadioFailure:
+    case ReportActionTypes.AddReportRadioFailure:
     case ReportActionTypes.DeleteReportTagsFail:
     case ReportActionTypes.AddReportTagsFail:
     case ReportActionTypes.AddDataSetsToReportFail:

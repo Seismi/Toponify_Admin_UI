@@ -29,7 +29,6 @@ import { DocumentationStandardsService } from './services/dcoumentation-standard
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentationStandardsDetailsComponent } from './containers/documentation-standards-details/documentation-standards-details.component';
 import { DocumentStandardsLevelsComponent } from './components/document-standards-levels/document-standards-levels.component';
-import { DeleteDocumentModalComponent } from './containers/delete-document-modal/delete-document.component';
 import { DocumentModalComponent } from './containers/document-modal/document-modal.component';
 
 @NgModule({
@@ -63,10 +62,9 @@ import { DocumentModalComponent } from './containers/document-modal/document-mod
     DocumentationStandardsDetailComponent,
     DocumentationStandardsDetailsComponent,
     DocumentStandardsLevelsComponent,
-    DeleteDocumentModalComponent,
     DocumentModalComponent
   ],
   providers: [DocumentationStandardsService],
-  entryComponents: [DeleteDocumentModalComponent, DocumentModalComponent, DocumentModalComponent]
+  entryComponents: [DocumentModalComponent, DocumentModalComponent]
 })
 export class DocumentationStandardsModule {}

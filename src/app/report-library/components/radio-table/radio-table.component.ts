@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { RelatedRadios } from '@app/report-library/store/models/report.model';
@@ -9,6 +9,7 @@ import { RelatedRadios } from '@app/report-library/store/models/report.model';
   styleUrls: ['./radio-table.component.scss']
 })
 export class RadioTableInReportsPageComponent {
+  @Input() workPackageIsEditable: boolean;
   @Input()
   set data(data: RelatedRadios[]) {
     if (!data) {
@@ -20,10 +21,14 @@ export class RadioTableInReportsPageComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  @Output() raiseNew = new EventEmitter<void>();
+  @Output() assignRadio = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<string>();
+
   constructor(private router: Router) {}
 
   public dataSource: MatTableDataSource<RelatedRadios>;
-  displayedColumns: string[] = ['name', 'navigate'];
+  displayedColumns: string[] = ['refNo', 'name', 'status', 'navigate'];
 
   onSelect(id: string) {
     this.router.navigate(['/radio/' + id], { queryParamsHandling: 'preserve' });
