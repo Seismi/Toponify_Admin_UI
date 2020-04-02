@@ -137,6 +137,22 @@ export class AttributeService {
     return this.http.post<AttributeDetailApiResponse>(`/workpackages/${workPackageId}/attributes/${attributeId}/tags/${tagId}/deleteRequest`, {});
   }
 
+  addAttributeRadio(
+    workPackageId: string,
+    attributeId: string,
+    radioId: string
+  ): Observable<AttributeDetailApiResponse> {
+    return this.http.post<AttributeDetailApiResponse>(`/workpackages/${workPackageId}/attributes/${attributeId}/radios/${radioId}`, {});
+  }
+
+  deleteAttributeRadio(
+    workPackageId: string,
+    attributeId: string,
+    radioId: string
+  ): Observable<AttributeDetailApiResponse> {
+    return this.http.delete<AttributeDetailApiResponse>(`/workpackages/${workPackageId}/attributes/${attributeId}/radios/${radioId}`);
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     let httpParams = new HttpParams();

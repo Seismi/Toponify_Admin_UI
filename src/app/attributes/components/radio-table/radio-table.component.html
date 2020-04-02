@@ -1,11 +1,23 @@
 <table mat-table [dataSource]="dataSource">
+  <!-- Reference Column -->
+  <ng-container matColumnDef="refNo">
+    <th mat-header-cell *matHeaderCellDef>Ref. No</th>
+    <td mat-cell *matCellDef="let element">{{ element.reference }}</td>
+  </ng-container>
+
   <!-- Name Column -->
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>Name</th>
     <td mat-cell *matCellDef="let element">{{ element.title | titlecase }}</td>
   </ng-container>
 
-  <!-- Name Column -->
+  <!-- Status Column -->
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+  </ng-container>
+
+  <!-- Navigate Column -->
   <ng-container matColumnDef="navigate">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
@@ -17,3 +29,8 @@
 </table>
 
 <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
+
+<div class="actions">
+  <button mat-raised-button color="primary" (click)="raiseNew.emit()">Raise New</button>
+  <button mat-raised-button color="primary" (click)="assignRadio.emit()">Assign RADIO</button>
+</div>

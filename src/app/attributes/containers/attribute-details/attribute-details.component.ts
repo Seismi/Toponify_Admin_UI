@@ -18,7 +18,8 @@ import {
   DeleteRelated,
   LoadAttributeTags,
   AddAttributeTags,
-  DeleteAttributeTags
+  DeleteAttributeTags,
+  AddAttributeRadio
 } from '@app/attributes/store/actions/attributes.actions';
 import { getSelectedAttribute, getAttributeAvailableTags } from '@app/attributes/store/selectors/attributes.selector';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
@@ -28,11 +29,14 @@ import { MatDialog } from '@angular/material';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DeleteModalComponent } from '@app/architecture/containers/delete-modal/delete-modal.component';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
-import { DocumentModalComponent } from '@app/documentation-standards/containers/document-modal/document-modal.component';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RelatedAttributesModalComponent } from '../related-attributes-modal/related-attributes-modal.component';
 import { OwnersEntityOrTeamEntityOrApproversEntity, Tag } from '@app/architecture/store/models/node.model';
 import { take } from 'rxjs/operators';
+import { Actions, ofType } from '@ngrx/effects';
+import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
+import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 
 @Component({
   selector: 'app-attribute-details',
@@ -53,6 +57,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public availableTags$: Observable<Tag[]>;
 
   constructor(
+    private actions: Actions,
     private dialog: MatDialog,
     private workPackageStore: Store<WorkPackageState>,
     private route: ActivatedRoute,
@@ -298,5 +303,52 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         tagId: tag.id
       })
     )
+  }
+
+  onRaiseNew() {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '650px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.store.dispatch(new AddRadioEntity({ data: { ...data.radio } }));
+        this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
+          const radioId = action.payload.id;
+          this.store.dispatch(
+            new AddAttributeRadio({
+              workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+              attributeId: this.attributeId,
+              radioId: radioId
+            })
+          );
+        });
+      }
+    });
+  }
+
+  onAssignRadio() {
+    const dialogRef = this.dialog.open(RadioListModalComponent, {
+      disableClose: false,
+      width: '650px',
+      height: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.store.dispatch(
+          new AddAttributeRadio({
+            workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+            attributeId: this.attributeId,
+            radioId: data.radio.id
+          })
+        );
+      }
+    });
+
+    dialogRef.componentInstance.addNewRadio.subscribe(() => {
+      this.onRaiseNew();
+    });
   }
 }
