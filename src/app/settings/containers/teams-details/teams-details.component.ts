@@ -89,7 +89,7 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteTeam(this.team.id));
         this.router.navigate(['/settings/teams']);
       }
