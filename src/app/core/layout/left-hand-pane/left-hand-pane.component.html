@@ -11,17 +11,6 @@
       edit
     </mat-icon>
   </button>
-  <button
-    *ngIf="architecturePage"
-    mat-icon-button 
-    [ngClass]="{ 
-      selected: !workPackageIsEditable ? selectedLeftTab === 1 : selectedLeftTab === 2
-    }"
-  >
-    <mat-icon title="Layout Settings" (click)="onOpenSideBar()">
-      settings_applications
-    </mat-icon>
-  </button>
 </div>
 <div class="shortcuts">
   <mat-icon routerLink="/topology" queryParamsHandling="preserve" title="Topology">device_hub</mat-icon>
