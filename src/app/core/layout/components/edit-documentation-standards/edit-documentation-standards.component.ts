@@ -74,4 +74,8 @@ export class EditDocumentationStandardsTableComponent {
     return false;
   }
 
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
 }
