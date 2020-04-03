@@ -1,4 +1,6 @@
-<p>Relates To <span class="description">(documentation standards require the following):</span></p>
+<div class="search-container">
+  <input placeholder="Search" data-qa="documentation-standards-quick-search" (keyup)="onSearch($event.target.value)">
+</div>
 <table mat-table [dataSource]="dataSource">
   <!-- Name Column -->
   <ng-container matColumnDef="name">
