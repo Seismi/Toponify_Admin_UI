@@ -1847,9 +1847,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (data && data.scopeAndLayout) {
         this.store.dispatch(
           new AddLayout({
-            id: data.scopeAndLayout.id,
-            name: data.scopeAndLayout.name,
-            scope: this.scope
+            layoutDetails: {
+              name: data.scopeAndLayout.name,
+              scope: this.scope
+            },
+            positionDetails: {
+              workPackages: [],
+              positions: {
+                nodes: [],
+                nodeLinks: []
+              }
+            }
           })
         );
       }

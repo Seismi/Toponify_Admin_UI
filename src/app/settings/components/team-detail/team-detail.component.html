@@ -31,7 +31,7 @@
   <div *ngIf="!modalMode">
     <div *ngIf="!isEditable; else elseBlock">
       <button mat-raised-button color="primary" (click)="editTeam.emit()" data-qa="setting-team-detail-edit">Edit</button>
-      <button mat-raised-button color="warn" (click)="deleteTeam.emit()" data-qa="setting-team-detail-delete">Delete</button>
+      <button mat-raised-button color="warn" (click)="deleteTeam.emit()" data-qa="setting-team-detail-delete">Disable</button>
     </div>
     <ng-template #elseBlock>
       <button mat-raised-button color="primary" (click)="saveTeam.emit()" [disabled]="group.invalid" data-qa="setting-team-detail-save">Save</button>

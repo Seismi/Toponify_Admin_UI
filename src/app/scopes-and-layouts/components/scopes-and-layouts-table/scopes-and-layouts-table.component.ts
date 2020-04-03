@@ -45,4 +45,8 @@ export class ScopesAndLayoutsTableComponent {
     console.log('set favorite', id);
     this.setFavoriteLayout.emit(id);
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }
