@@ -272,17 +272,6 @@ export class DiagramChangesService {
 
   // Update diagram when display options have been changed
   updateDisplayOptions(event: any, option: string, diagram: go.Diagram): void {
-    const model = diagram.model;
-    model.setDataProperty(model.modelData, option, event.checked);
-
-    // If option to show data links disabled then deselect any data links
-    if (option === 'dataLinks' && !event.checked) {
-      diagram.selection.each(function(part) {
-        if (part instanceof go.Link && part.category === linkCategories.data) {
-          part.isSelected = false;
-        }
-      });
-    }
 
     // If option to show master data links disabled then deselect any master data links
     if (option === 'masterDataLinks' && !event.checked) {

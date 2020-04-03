@@ -567,7 +567,7 @@ export class DiagramTemplatesService {
 
           return (
             (link.diagram.model.modelData.linkName && link.data.name !== '') ||
-            (link.diagram.model.modelData.showRadioAlerts && anyRadios)
+            (link.diagram.model.modelData.linkRadio && anyRadios)
           );
         }
       }).ofObject(),
