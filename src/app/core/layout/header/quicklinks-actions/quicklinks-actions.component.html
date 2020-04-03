@@ -7,14 +7,3 @@
   (selectScope)="onSelectScope($event)"
 >
 </smi-scopes-dropdown>
-
-<!-- Layouts dropdown -->
-<smi-layouts-dropdown
-  data-qa="header-layouts-dropdown"
-  *ngIf="gojsView"
-  [data]="layouts"
-  [selectedLayout]="selectedLayout"
-  (selectLayout)="onSelectLayout($event)"
-  (addLayout)="onAddLayout()"
->
-</smi-layouts-dropdown>

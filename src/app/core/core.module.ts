@@ -14,7 +14,6 @@ import { ModelContentComponent } from './layout/model-content/model-content.comp
 import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
-import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { RightSideBarComponent } from './layout/right-sidebar/right-sidebar.component';
 import { SearchService } from './services/search.service';
 import { StoreModule } from '@ngrx/store';
@@ -59,7 +58,6 @@ import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/le
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,

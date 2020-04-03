@@ -23,7 +23,4 @@ export class LayoutsDropdownComponent {
     this.selectLayout.emit(selectChange.value);
   }
 
-  onAdd(): void {
-    this.addLayout.emit();
-  }
 }

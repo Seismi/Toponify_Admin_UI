@@ -9,12 +9,10 @@ export class LeftHandPaneComponent {
   @Input() workPackageIsEditable: boolean;
   @Input() selectedLeftTab: number;
   @Output() openSideBar = new EventEmitter<number | string>();
-  @Input() sideNavActions: boolean = false;
-  @Input() architecturePage: boolean = false;
+  @Input() sideNavActions = false;
+  @Input() architecturePage = false;
 
-  onOpenSideBar(): void {
-    let index: number;
-    (!this.workPackageIsEditable) ? index = 1 : index = 2;
+  onOpenSideBar(index: number): void {
     this.openSideBar.emit(index);
   }
 }

@@ -14,17 +14,21 @@ table {
   }
 }
 
-p {
-  padding: 25px 0px 10px 22px;
-  margin: 0;
-  background-color: #fff;
-  color: #555;
-}
-
-.description {
-  font-size: 15px;
-}
-
 .mat-icon {
   cursor: pointer;
+}
+
+.search-container {
+  width: 100%;
+  padding: 10px;
+  background-color: #eee;
+  input {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: solid 1px #eee;
+    &:focus {
+      outline: none;
+    }
+  }
 }
