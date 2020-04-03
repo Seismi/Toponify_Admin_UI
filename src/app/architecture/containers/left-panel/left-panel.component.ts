@@ -14,15 +14,12 @@ export class LeftPanelComponent {
   @Input() workPackageIsEditable: boolean;
   @Input() workpackages: WorkPackageEntity[];
   @Input() selectedLeftTab: number;
-  @Input() checked: boolean;
-  @Input() viewLevel: Level;
   @Input() canSelectWorkpackages: boolean;
+  @Output() setWorkpackageEditMode = new EventEmitter<object>();
+  @Output() tabClick = new EventEmitter<number>();
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
   @Input() currentFilterLevel: string;
-
-  @Output() setWorkpackageEditMode = new EventEmitter<object>();
-  @Output() tabClick = new EventEmitter<number>();
   @Output() addLayout = new EventEmitter<void>();
   @Output() filterRadioSeverity = new EventEmitter<void>();
   @Output() collapseAllNodes = new EventEmitter<void>();
@@ -34,10 +31,6 @@ export class LeftPanelComponent {
   @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
   @Output() selectWorkPackage = new EventEmitter<{ id: string; newState: boolean }>();
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
-
-  displayOptionsChanged({ event, option }: { event: MatCheckboxChange; option: string }): void {
-    this.displayOptionsChangedEvent.emit({ event, option });
-  }
 
   onSelectWorkPackage(selection: { id: string; newState: boolean }): void {
     this.selectWorkPackage.emit(selection);
