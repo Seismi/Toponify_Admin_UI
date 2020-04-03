@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
+import {getFilterLevelQueryParams, getNodeIdQueryParams, getQueryParams} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
 import {layers} from '@app/architecture/store/models/node.model';
 
@@ -20,11 +20,17 @@ export class DiagramListenersService {
   private modelChangedSource = new Subject();
   public modelChanged$ = this.modelChangedSource.asObservable();
 
+  private currentLevel: Level;
+  private nodeId: string;
+
   constructor(
     public diagramChangesService: DiagramChangesService,
     public diagramLevelService: DiagramLevelService,
     private store: Store<RouterReducerState<RouterStateUrl>>
-  ) {}
+  ) {
+    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+    this.store.select(getNodeIdQueryParams).subscribe(id => (this.nodeId = id));
+  }
 
   // Add all needed listeners to the diagram
   enableListeners(diagram: go.Diagram): void {
@@ -63,30 +69,27 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
-        this.store
-          .select(getFilterLevelQueryParams)
-          .pipe(take(1))
-          .subscribe(currentLevel => {
-            // Ensure links are updated in map view after group layout is performed
-            if (currentLevel && currentLevel.endsWith('map')) {
-              event.diagram.links.each(function(link) {
-                link.data = Object.assign({}, link.data, { updateRoute: true });
-                link.invalidateRoute();
-              });
-            }
+        const currentLevel = this.currentLevel;
 
-            if (currentLevel && currentLevel.endsWith('map') && this.diagramLevelService.groupLayoutInitial) {
-              diagram.findTopLevelGroups().each(function(group) {
-                group.invalidateLayout();
-              });
-              if (diagram.model.nodeDataArray.length !== 0) {
-                // Indicate that the initial layout for the groups has been performed
-                this.diagramLevelService.groupLayoutInitial = false;
-                // Reset content alignment to the default after layout has been completed so that diagram can be scrolled
-                diagram.contentAlignment = go.Spot.Default;
-              }
-            }
+        // Ensure links are updated in map view after group layout is performed
+        if (currentLevel && currentLevel.endsWith('map')) {
+          event.diagram.links.each(function(link) {
+            link.data = Object.assign({}, link.data, { updateRoute: true });
+            link.invalidateRoute();
           });
+        }
+
+        if (currentLevel && currentLevel.endsWith('map') && this.diagramLevelService.groupLayoutInitial) {
+          diagram.findTopLevelGroups().each(function(group) {
+            group.invalidateLayout();
+          });
+          if (diagram.model.nodeDataArray.length !== 0) {
+            // Indicate that the initial layout for the groups has been performed
+            this.diagramLevelService.groupLayoutInitial = false;
+            // Reset content alignment to the default after layout has been completed so that diagram can be scrolled
+            diagram.contentAlignment = go.Spot.Default;
+          }
+        }
       }.bind(this)
     );
 
@@ -95,60 +98,57 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
-        this.store
-          .select(getFilterLevelQueryParams)
-          .pipe(take(1))
-          .subscribe(currentLevel => {
-            // Check current level is system
-            if (currentLevel && currentLevel === Level.system) {
-              event.diagram.nodes.each(function(node: go.Node): void {
+        const currentLevel = this.currentLevel;
 
-                const group = node.containingGroup;
+        // Check current level is system
+        if (currentLevel && currentLevel === Level.system) {
+          event.diagram.nodes.each(function(node: go.Node): void {
 
-                // Check nodes in expanded containing groups
-                if (group && group.isSubGraphExpanded) {
-                  const containingArea = group.findObject('Group member area');
-                  const memberBounds = containingArea.getDocumentBounds().copy();
-                  const nodeBounds = node.getDocumentBounds();
+            const group = node.containingGroup;
 
-                  // Reposition members that lie outside of the containing group's bounds
-                  if (memberBounds.top > nodeBounds.top
-                    || !memberBounds.intersectsRect(nodeBounds)) {
+            // Check nodes in expanded containing groups
+            if (group && group.isSubGraphExpanded) {
+              const containingArea = group.findObject('Group member area');
+              const memberBounds = containingArea.getDocumentBounds().copy();
+              const nodeBounds = node.getDocumentBounds();
 
-                    const newLocation = new go.Point();
+              // Reposition members that lie outside of the containing group's bounds
+              if (memberBounds.top > nodeBounds.top
+                || !memberBounds.intersectsRect(nodeBounds)) {
 
-                    // Centre align member
-                    newLocation.x = memberBounds.centerX;
+                const newLocation = new go.Point();
 
-                    // Initialise new member location to be near the top of the member
-                    //  area, in case group has no other members
-                    newLocation.y = memberBounds.top + 12;
+                // Centre align member
+                newLocation.x = memberBounds.centerX;
 
-                    // Place member underneath all correctly positioned members,
-                    //  separated by a small gap
-                    group.findSubGraphParts().each(function(part: go.Part) {
+                // Initialise new member location to be near the top of the member
+                //  area, in case group has no other members
+                newLocation.y = memberBounds.top + 12;
 
-                      const partBounds = part.getDocumentBounds();
+                // Place member underneath all correctly positioned members,
+                //  separated by a small gap
+                group.findSubGraphParts().each(function(part: go.Part) {
 
-                      if (part instanceof go.Node
-                        && memberBounds.containsRect(partBounds)
-                      ) {
-                        newLocation.y = Math.max(newLocation.y, partBounds.bottom + 12);
-                      }
-                    });
+                  const partBounds = part.getDocumentBounds();
 
-                    node.move(newLocation, true);
-                    node.ensureBounds();
+                  if (part instanceof go.Node
+                    && memberBounds.containsRect(partBounds)
+                  ) {
+                    newLocation.y = Math.max(newLocation.y, partBounds.bottom + 12);
                   }
+                });
 
-                  // Run process to resize containing groups if member is not correctly enclosed
-                  if (!memberBounds.containsRect(nodeBounds)) {
-                    this.diagramChangesService.groupMemberSizeChanged(node);
-                  }
-                }
-              }.bind(this));
+                node.move(newLocation, true);
+                node.ensureBounds();
+              }
+
+              // Run process to resize containing groups if member is not correctly enclosed
+              if (!memberBounds.containsRect(nodeBounds)) {
+                this.diagramChangesService.groupMemberSizeChanged(node);
+              }
             }
-          });
+          }.bind(this));
+        }
       }.bind(this)
     );
 
@@ -180,6 +180,12 @@ export class DiagramListenersService {
     diagram.addDiagramListener('ExternalObjectsDropped', function(): void {
       diagram.removeDiagramListener('LayoutCompleted', initialFitToScreen);
     });
+
+    // Place lanes to indicate node layers in node usage view
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      this.diagramChangesService.placeNodeUsageLanes.bind(this.diagramChangesService)
+    );
 
     // If diagram non-empty, fit diagram to screen
     function initialFitToScreen(event: go.DiagramEvent): void {
@@ -238,6 +244,21 @@ export class DiagramListenersService {
         });
       }
     );
+
+    // In node usage view, highlight the originating node with a blue shadow
+    diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
+      if (event.modelChange === 'nodeDataArray') {
+        const currentLevel = this.currentLevel;
+        const nodeId = this.nodeId;
+
+        if (currentLevel === Level.usage && nodeId) {
+          const usageNode = diagram.findNodeForKey(nodeId);
+          if (usageNode) {
+            this.diagramChangesService.setBlueShadowHighlight(usageNode, true);
+          }
+        }
+      }
+    }.bind(this));
   }
 
   handleChangedSelection(event: go.DiagramEvent): void {

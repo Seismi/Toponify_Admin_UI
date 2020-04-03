@@ -14,23 +14,15 @@
         <smi-left-panel
           *ngIf="selectedLeftTab !== 'menu'"
           (tabClick)="onTabClick($event)"
-          [viewLevel]="viewLevel$ | async"
           [workpackages]="workpackage$ | async"
           [workPackageIsEditable]="workPackageIsEditable"
-          (displayOptionsChangedEvent)="displayOptionsChanged($event)"
           (selectWorkPackage)="onSelectWorkPackage($event)"
           (selectColour)="selectColourForWorkPackage($event)"
           (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
           [selectedLeftTab]="selectedLeftTab"
-          [checked]="radioAlertChecked"
           [canSelectWorkpackages]="canSelectWorkpackages"
-          (addLayout)="onAddLayout()"
           [group]="layoutSettingsForm"
           [layout]="layout"
-          (filterRadioSeverity)="onFilterRadioSeverity()"
-          (collapseAllNodes)="onCollapseAllNodes()"
-          (summariseAllNodes)="onSummariseAllNodes()"
-          (expandAll)="onExpandAll()"
           [currentFilterLevel]="currentFilterLevel"
           (addInterface)="onAddComponentOrLink($event)"
           (addLinkWithTransformation)="onAddLinkWithTransformation()"
@@ -56,11 +48,7 @@
           [gojsView]="true"
           [scopes]="scopes$ | async"
           [selectedScope]="selectedScope$ | async"
-          [layouts]="scopeDetails$ | async"
           (selectScope)="onSelectScope($event)"
-          (selectLayout)="onSelectLayout($event)"
-          [selectedLayout]="selectedLayout$ | async"
-          (addLayout)="onAddLayout()"
         >
         </smi-quicklinks-actions>
       </app-toolbar-column>
@@ -79,13 +67,7 @@
         >
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
-          <span class="viewing-dependencies" *ngIf="dependenciesView">Viewing Dependencies <mat-icon (click)="exitDependenciesView()">close</mat-icon></span>
-          <span class="viewing-dependencies" *ngIf="filterLevel === 'usage analysis'">
-            Showing Usage Across Levels
-            <mat-icon (click)="exitUsageView()">close</mat-icon>
-          </span>
-          <smi-layout-actions
-            class="diagram-actions"
+          <smi-diagram-actions
             *ngIf="selectedView === ArchitectureView.Diagram"
             [grid]="showGrid"
             [allowMove]="allowMove"
@@ -100,8 +82,16 @@
             [allowSave]="!!draft"
             [allowSaveAs]="true"
             [dependenciesView]="dependenciesView"
+            (layoutSettings)="openLayoutSettingsModal()"
+            [layouts]="scopeDetails$ | async"
+            [selectedLayout]="selectedLayout$ | async"
+            (addLayout)="onAddLayout()"
+            (selectLayout)="onSelectLayout($event)"
+            [filterLevel]="filterLevel"
+            (exitDependenciesView)="exitDependenciesView()"
+            (exitUsageView)="exitUsageView()"
           >
-          </smi-layout-actions>
+          </smi-diagram-actions>
           <app-architecture-diagram
             [mapView]="mapView"
             [showGrid]="showGrid"
