@@ -1,6 +1,7 @@
 <div class="col-xl">
   <div class="details-form">
     <smi-scopes-and-layouts-detail
+      [defaultId]="scope?.id"
       data-qa="scopes-and-layouts-scope-details-form"
       [group]="scopesAndLayoutsDetailForm"
       (save)="onSaveScope($event)"

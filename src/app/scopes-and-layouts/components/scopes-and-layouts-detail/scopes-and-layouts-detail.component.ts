@@ -15,6 +15,7 @@ export class ScopesAndLayoutsDetailComponent {
   @Input() isEditable = false;
   @Input() modalMode = false;
   @Input() layoutDetails = false;
+  @Input() defaultId: string;
 
   @Output() delete = new EventEmitter<void>();
   @Output() save = new EventEmitter<void>();
