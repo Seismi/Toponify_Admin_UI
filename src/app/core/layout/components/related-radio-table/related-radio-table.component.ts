@@ -6,12 +6,12 @@ import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { Constants } from '@app/core/constants';
 
 @Component({
-  selector: 'smi-radio-tab',
-  templateUrl: './radio-tab.component.html',
-  styleUrls: ['./radio-tab.component.scss']
+  selector: 'smi-related-radio-table',
+  templateUrl: './related-radio-table.component.html',
+  styleUrls: ['./related-radio-table.component.scss']
 })
-export class RadioTabComponent {
-  @Input() nodeCategory: string;
+export class RelatedRadioTableComponent {
+  @Input() showButtons = true;
 
   @Input()
   set data(data: NodeDetail[]) {
@@ -19,36 +19,29 @@ export class RadioTabComponent {
       data = [];
     }
     this.dataSource = new MatTableDataSource<NodeDetail>(
-      data.filter((data, index, radios) => radios.findIndex(radio => (JSON.stringify(radio) === JSON.stringify(data))) === index)
+      data.filter((data, index, radios) =>
+        radios.findIndex(radio => (JSON.stringify(radio) === JSON.stringify(data))) === index)
     );
     this.dataSource.paginator = this.paginator;
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   public dataSource: MatTableDataSource<NodeDetail>;
   public displayedColumns: string[] = Constants.RADIO_TABLE_COLUMNS;
 
-  @Output()
-  addRadio = new EventEmitter<void>();
+  @Output() raiseNew = new EventEmitter<void>();
+  @Output() openModal = new EventEmitter<RadioDetail>();
+  @Output() assignRadio = new EventEmitter<void>();
 
-  @Output()
-  openRadio = new EventEmitter<RadioDetail>();
-
-  @Output()
-  assignRadio = new EventEmitter<void>();
-
-  onAdd(): void {
-    this.addRadio.emit();
+  openRadio(radioId: string): void {
+    this.router.navigate(['/radio/' + radioId], { queryParamsHandling: 'preserve' });
   }
 
-  onOpen(radio: RadioDetail) {
-    this.openRadio.emit(radio);
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  onAssignRadio(): void {
-    this.assignRadio.emit();
-  }
 }

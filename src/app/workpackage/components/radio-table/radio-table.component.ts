@@ -39,4 +39,8 @@ export class RadiosTableComponent {
   onEdit(radio: WorkPackageDetail): void {
     this.editRadio.emit(radio);
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }
