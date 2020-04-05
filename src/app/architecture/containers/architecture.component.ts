@@ -152,7 +152,17 @@ import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map, shareReplay, take, tap, distinctUntilChanged } from 'rxjs/operators';
+import {
+  filter,
+  map,
+  shareReplay,
+  take,
+  tap,
+  distinctUntilChanged,
+  last,
+  takeLast,
+  withLatestFrom
+} from 'rxjs/operators';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
@@ -378,36 +388,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
 
     this.subscriptions.push(
-      combineLatest(
-        this.routerStore.select(getWorkPackagesQueryParams).pipe(take(1)),
-        this.workpackageStore.pipe(select(getSelectableWorkPackageIds))
-      )
-        .pipe(
-          map(([selectedWorkpackages, availableWorkpackages]) => {
-            return selectedWorkpackages.filter(swp => availableWorkpackages.find(aid => swp === aid));
-          })
-        )
-        .pipe(
-          distinctUntilChanged((p, c) => {
-            return JSON.stringify(p) === JSON.stringify(c);
-          })
-        )
-        .subscribe((workpackages: string[]) => {
-          this.routerStore.dispatch(new UpdateQueryParams({ workpackages: workpackages }));
+      this.routerStore
+        .select(getWorkPackagesQueryParams)
+        .pipe(distinctUntilChanged((p, c) => JSON.stringify(p) === JSON.stringify(c)))
+        .subscribe(workpackages => {
+          return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: workpackages }));
         })
     );
 
-    this.subscriptions.push(
-      this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
-        if (typeof workpackages === 'string') {
-          return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [workpackages] }));
-        }
-        if (workpackages) {
-          return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: workpackages }));
-        }
-        return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [] }));
-      })
-    );
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       this.dependenciesView = false;
       this.removeAllDraft();
@@ -443,12 +431,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.workpackageStore.pipe(select(getSelectedWorkpackageIds)).subscribe(ids => {
-        if (JSON.stringify(this.sw) !== JSON.stringify(ids)) {
-          this.sw = ids;
+      this.workpackageStore
+        .pipe(
+          select(getSelectedWorkpackageIds),
+          distinctUntilChanged((p, c) => JSON.stringify(p) === JSON.stringify(c))
+        )
+        .subscribe(ids => {
           this.workpackageStore.dispatch(new GetWorkpackageAvailability({ workPackageQuery: ids }));
-        }
-      })
+        })
     );
 
     this.workpackageStore

@@ -265,16 +265,12 @@ export class WorkPackageEffects {
   updateCustomProperty$ = this.actions$.pipe(
     ofType<UpdateCustomProperty>(WorkPackageActionTypes.UpdateCustomProperty),
     map(action => action.payload),
-    switchMap(
-      (payload: { workPackageId: string; customPropertyId: string; data: string }) => {
-        return this.workpackageService
-          .updateProperty(payload.workPackageId, payload.customPropertyId, payload.data)
-          .pipe(
-            switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
-            catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
-          );
-      }
-    )
+    switchMap((payload: { workPackageId: string; customPropertyId: string; data: string }) => {
+      return this.workpackageService.updateProperty(payload.workPackageId, payload.customPropertyId, payload.data).pipe(
+        switchMap((response: WorkPackageDetailApiResponse) => [new UpdateCustomPropertySuccess(response.data)]),
+        catchError((error: Error) => of(new UpdateCustomPropertyFailure(error)))
+      );
+    })
   );
 
   @Effect()
@@ -377,7 +373,7 @@ export class WorkPackageEffects {
   addWorkPackageBaseline$ = this.actions$.pipe(
     ofType<AddWorkPackageBaseline>(WorkPackageActionTypes.AddWorkPackageBaseline),
     map(action => action.payload),
-    mergeMap((payload: { workPackageId: string, baselineId: string }) => {
+    mergeMap((payload: { workPackageId: string; baselineId: string }) => {
       return this.workpackageService.addWorkPackageBaseline(payload.workPackageId, payload.baselineId).pipe(
         mergeMap((response: WorkPackageDetailApiResponse) => [new AddWorkPackageBaselineSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageBaselineFailure(error)))
