@@ -1250,8 +1250,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {
     this.routerStore
       .select(getWorkPackagesQueryParams)
-      .pipe(take(1))
-      .subscribe(workpackages => {
+      .pipe(
+        take(1),
+        withLatestFrom(this.workpackageStore.select(getAvailableWorkPackageIds))
+      )
+      .subscribe(([workpackages, selectableWorkpackages]) => {
         let urlWorkpackages: string[];
         let params: Params;
         if (typeof workpackages === 'string') {
@@ -1260,6 +1263,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           urlWorkpackages = workpackages ? [...workpackages] : [];
         }
         const index = urlWorkpackages.findIndex(id => id === selection.id);
+
         if (selection.newState) {
           if (index === -1) {
             params = { workpackages: [...urlWorkpackages, selection.id] };
@@ -1272,6 +1276,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           params = { workpackages: [...urlWorkpackages] };
         }
+        // Lets ensure, any unvalid wp are removed from url
+        params.workpackages = params.workpackages.filter(id => selectableWorkpackages.find(wid => id === wid));
+
         this.routerStore.dispatch(new UpdateQueryParams(params));
       });
   }
