@@ -17,12 +17,9 @@ export class AttributeModalComponent implements OnInit {
   constructor(
     private attributeDetailService: AttributeDetailService,
     public dialogRef: MatDialogRef<AttributeModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.attribute = data.attribute;
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   get attributeDetailForm(): FormGroup {
     return this.attributeDetailService.attributeDetailForm;
