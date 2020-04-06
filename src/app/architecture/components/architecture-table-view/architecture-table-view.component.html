@@ -16,6 +16,7 @@
       <mat-icon *ngSwitchCase="'transactional'" svgIcon="sys-transactional"></mat-icon>
       <mat-icon *ngSwitchCase="'data'" svgIcon="data-interface"></mat-icon>
       <mat-icon *ngSwitchCase="'transformation'" svgIcon="transformation"></mat-icon>
+      <mat-icon svgIcon="group" *ngIf="element.members?.length">add</mat-icon>
     </td>
   </ng-container>
 
