@@ -1,32 +1,32 @@
-<div class="col">
-  <div class="row">
-    <div class="col">
-      <div class="scope-details-form">
-        <smi-scopes-and-layouts-detail
-          data-qa="scopes-and-layouts-scope-details-form"
-          [group]="scopesAndLayoutsDetailForm"
-          (save)="onSaveScope($event)"
-          (delete)="onDeleteScope($event)"
-          (open)="onOpen()"
-        >
-        </smi-scopes-and-layouts-detail>
-      </div>
-    </div>
-
-    <div class="w-100"></div>
-
-    <div class="col layouts-table">
-      <smi-scopes-and-layouts-table
-        data-qa="scopes-and-layouts-layout-table"
-        [title]="'Layouts'"
+<div class="col-xl">
+  <div class="details-form">
+    <smi-scopes-and-layouts-detail
+      [defaultId]="scope?.id"
+      data-qa="scopes-and-layouts-scope-details-form"
+      [group]="scopesAndLayoutsDetailForm"
+      (save)="onSaveScope($event)"
+      (delete)="onDeleteScope($event)"
+      (open)="onOpen()"
+      >
+    </smi-scopes-and-layouts-detail>
+  </div>
+</div>
+<div class="col-xl">
+  <div style="display: flex;">
+    <div class="col-md-6">
+      <smi-scopes-and-layouts-table 
+        data-qa="scopes-and-layouts-layout-table" 
+        [title]="'Layouts'" 
         [data]="scope?.layouts"
-        [defaultLayoutId]="scope?.defaultLayout"
+        [defaultLayoutId]="scope?.defaultLayout" 
         (setFavoriteLayout)="onSetFavoriteLayout($event)"
-        (select)="onLayoutSelect($event)"
+        (select)="onLayoutSelect($event)" 
         (add)="onAddLayout($event)"
       >
       </smi-scopes-and-layouts-table>
     </div>
-    <router-outlet></router-outlet>
+    <div class="col-md-6">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>
