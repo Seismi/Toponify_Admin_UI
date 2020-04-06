@@ -31,6 +31,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     };
     this.palette.autoScrollRegion = new go.Margin(0);
     this.palette.toolManager.toolTipDuration = 20000;
+    this.palette.toolManager.draggingTool.dragsLink = true;
     this.diagramTemplatesService.forPalette = true;
     (this.palette.model as go.GraphLinksModel).linkKeyProperty = 'id';
     this.palette.model.modelData = {
@@ -65,6 +66,53 @@ export class ArchitecturePaletteComponent implements OnInit {
       linkCategories.masterData,
       diagramTemplatesService.getLinkMasterDataTemplate(true)
     );
+
+    this.palette.addDiagramListener('LayoutCompleted',
+      function(event) {
+        const diagram = event.diagram;
+        let transformationNode, toTransformationLink, fromTransformationLink;
+        diagram.nodes.each(function(node) {
+          if (node.data.category === nodeCategories.transformation) {
+            transformationNode = node;
+            toTransformationLink = node.findLinksInto().first();
+            fromTransformationLink = node.findLinksOutOf().first();
+          }
+        });
+
+        if (toTransformationLink && fromTransformationLink) {
+
+          transformationNode.ensureBounds();
+          const transformationBounds = transformationNode.getDocumentBounds().copy();
+          const halfHeight = transformationBounds.height / 2;
+          const toRoute = [-20, 0, -10, 0, -10, -halfHeight, 0, -halfHeight]
+            .map(function(coordinate: number, index: number): number {
+                return index % 2 === 0 ? transformationBounds.left + coordinate :
+                  transformationBounds.bottom + coordinate;
+              }
+            );
+
+          const fromRoute = [0, halfHeight, 10, halfHeight, 10, 0, 20, 0]
+            .map(function(coordinate: number, index: number): number {
+                return index % 2 === 0  ? transformationBounds.right + coordinate :
+                  transformationBounds.top + coordinate;
+              }
+            );
+
+          diagram.model.setDataProperty(toTransformationLink.data, 'route', toRoute);
+          diagram.model.setDataProperty(fromTransformationLink.data, 'route', fromRoute);
+          // toTransformationLink.updateTargetBindings('route');
+          // fromTransformationLink.updateTargetBindings('route');
+
+        }
+      }
+    );
+
+    this.palette.addDiagramListener('ChangedSelection',
+      function (event) {
+        console.log(event.subject.first() ? event.subject.first().data.route : '' );
+      }
+    );
+
   }
 
   updateDisplayOptions(event: any, option: string) {

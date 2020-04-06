@@ -665,7 +665,8 @@ export class DiagramTemplatesService {
         isSystem ? $(go.Picture,
           {
             desiredSize: new go.Size(25, 25),
-            source: '/assets/node-icons/group.svg'
+            source: '/assets/node-icons/group.svg',
+            visible: false
           },
           new go.Binding('visible', 'members', function(groupMembers) {
             return groupMembers.length > 0;
@@ -1291,11 +1292,11 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('relinkableFrom', '', function() {
-        return !this.currentFilterLevel.includes('map');
+      new go.Binding('relinkableFrom', 'isTemporary', function(isTemp) {
+        return !this.currentFilterLevel.includes('map') || isTemp;
       }.bind(this)),
-      new go.Binding('relinkableTo', '', function() {
-        return !this.currentFilterLevel.includes('map');
+      new go.Binding('relinkableTo', 'isTemporary', function(isTemp) {
+        return !this.currentFilterLevel.includes('map') || isTemp;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
@@ -1364,11 +1365,11 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
-      new go.Binding('relinkableFrom', '', function() {
-        return !this.currentFilterLevel.includes('map');
+      new go.Binding('relinkableFrom', 'isTemporary', function(isTemp) {
+        return !this.currentFilterLevel.includes('map') || isTemp;
       }.bind(this)),
-      new go.Binding('relinkableTo', '', function() {
-        return !this.currentFilterLevel.includes('map');
+      new go.Binding('relinkableTo', 'isTemporary', function(isTemp) {
+        return !this.currentFilterLevel.includes('map') || isTemp;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),

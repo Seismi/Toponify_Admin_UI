@@ -357,7 +357,7 @@ export class DiagramLevelService {
     const linkLayer =
       level === Level.systemMap ? layers.dataSet : level === Level.dataSetMap ? layers.dimension : level.toLowerCase();
 
-    if (level !== Level.usage && !level.includes('map')) {
+    if (level !== Level.usage) {
       paletteViewLinks.push({
         category: linkCategories.masterData,
         id: 'New master data link',
@@ -389,7 +389,8 @@ export class DiagramLevelService {
           name: 'New transformation',
           layer: transformationLayer,
           category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip
+          tooltip: NodeToolTips[18].Tooltip,
+          isTemporary: level.endsWith('map')
         })
       );
     }
@@ -492,7 +493,7 @@ export class DiagramLevelService {
       );
     }
 
-    if ([Level.system, Level.dataSet].includes(level)) {
+    if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
       paletteViewLinks.push({
         category: linkCategories.data,
         id: 'New data link',
@@ -503,6 +504,33 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForDataLinks(level)
+      });
+    }
+
+    if (level.endsWith('map')) {
+      paletteViewLinks.push({
+        category: level === Level.systemMap ? linkCategories.data : linkCategories.masterData,
+        id: 'New link to transformation',
+        name: 'New link to transformation',
+        description: '',
+        to: 'New transformation',
+        layer: linkLayer,
+        isTemporary: true,
+        impactedByWorkPackages: [],
+        tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
+          this.getToolTipForMasterDataLinks(level)
+      });
+      paletteViewLinks.push({
+        category: level === Level.systemMap ? linkCategories.data : linkCategories.masterData,
+        id: 'New link from transformation',
+        name: 'New link from transformation',
+        description: '',
+        from: 'New transformation',
+        layer: linkLayer,
+        isTemporary: true,
+        impactedByWorkPackages: [],
+        tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
+          this.getToolTipForMasterDataLinks(level)
       });
     }
 

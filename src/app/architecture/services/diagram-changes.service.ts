@@ -14,7 +14,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
+import {endPointTypes, layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 
@@ -513,16 +513,24 @@ export class DiagramChangesService {
     toport: go.GraphObject,
     oldlink: go.Link
   ): boolean {
+
+    // Ensure that links in map view go in the right direction
+    if (this.currentLevel.endsWith('map')) {
+      if (fromnode &&
+        fromnode.containingGroup &&
+        fromnode.containingGroup.data.endPointType !== endPointTypes.source) {
+        return false;
+      }
+      if (tonode &&
+        tonode.containingGroup &&
+        tonode.containingGroup.data.endPointType !== endPointTypes.target) {
+        return false;
+      }
+    }
+
     // Only validate links that are connected at both ends
     if (!fromnode || !tonode) {
       return true;
-    }
-
-    // If both nodes linked are from a group, then ensure the nodes are not part of the same group
-    if (fromnode.containingGroup && tonode.containingGroup) {
-      if (fromnode.containingGroup.key === tonode.containingGroup.key) {
-        return false;
-      }
     }
 
     // When connecting links via drag and drop, the oldlink parameter is not passed.
@@ -550,6 +558,13 @@ export class DiagramChangesService {
       || tonode.data.category === nodeCategories.transformation) {
       const allLinks = tonode.findLinksTo(fromnode);
       if (allLinks.count > 0) {
+        return false;
+      }
+    }
+
+    // Prevent links between equivalent nodes in map view
+    if (this.currentLevel.endsWith('map')) {
+      if (fromnode.data.id === tonode.data.id) {
         return false;
       }
     }
