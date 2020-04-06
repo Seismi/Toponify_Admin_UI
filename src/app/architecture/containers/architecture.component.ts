@@ -217,6 +217,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedPart = null;
 
   showOrHideLeftPane = false;
+  layoutSettings;
 
   private nodesSubscription: Subscription;
   private linksSubscription: Subscription;
@@ -550,6 +551,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (layout) {
         // Show layout data in settings tab
         this.layoutSettingsService.layoutSettingsForm.patchValue({ ...layout.settings });
+        this.layoutSettings = { ...layout.settings };
         // Reload nodes and links for new layout if not in map view
         if (this.currentFilterLevel && !this.currentFilterLevel.endsWith('map') && !this.nodesSubscription) {
           this.subscribeForNodesLinksData();
@@ -643,6 +645,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           )
         )
         .subscribe(_ => {
+          this.layoutSettings = this.layout.settings;
           this.eventEmitter.next(Events.NodesLinksReload);
         })
     );

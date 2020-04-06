@@ -567,7 +567,7 @@ export class DiagramTemplatesService {
 
           return (
             (link.diagram.model.modelData.linkName && link.data.name !== '') ||
-            (link.diagram.model.modelData.showRadioAlerts && anyRadios)
+            (link.diagram.model.modelData.linkRadio && anyRadios)
           );
         }
       }).ofObject(),
@@ -1324,7 +1324,12 @@ export class DiagramTemplatesService {
           toArrow: 'Triangle'
         },
         new go.Binding('fill', 'stroke').ofObject('shape'),
-        new go.Binding('stroke', 'stroke').ofObject('shape')
+        new go.Binding('stroke', 'stroke').ofObject('shape'),
+        new go.Binding('visible', 'strokeWidth',
+          function(strokeWidth: number): boolean {
+            return strokeWidth > 0;
+          }
+        ).ofObject('shape')
       )
     );
   }
@@ -1398,7 +1403,12 @@ export class DiagramTemplatesService {
           toArrow: 'Triangle'
         },
         new go.Binding('fill', 'stroke').ofObject('shape'),
-        new go.Binding('stroke', 'stroke').ofObject('shape')
+        new go.Binding('stroke', 'stroke').ofObject('shape'),
+        new go.Binding('visible', 'strokeWidth',
+          function(strokeWidth: number): boolean {
+            return strokeWidth > 0;
+          }
+        ).ofObject('shape')
       )
     );
   }
