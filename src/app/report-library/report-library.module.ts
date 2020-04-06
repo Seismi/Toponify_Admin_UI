@@ -17,7 +17,8 @@ import {
   MatAutocompleteModule,
   MatCheckboxModule,
   MatTooltipModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatChipsModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -67,6 +68,7 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     MatSidenavModule,
     TagListModule,
     TagModule,
+    MatChipsModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
