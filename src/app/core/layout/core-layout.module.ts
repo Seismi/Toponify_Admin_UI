@@ -53,6 +53,7 @@ import { ReportService } from '@app/report-library/services/report.service';
 import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component';
 import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand-pane-content.component';
 import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.component';
+import { RelatedRadioTableComponent } from './components/related-radio-table/related-radio-table.component';
 
 @NgModule({
   imports: [
@@ -108,7 +109,8 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     SelectModalComponent,
     LeftHandPaneComponent,
     MenuComponent,
-    LeftHandPaneContentComponent
+    LeftHandPaneContentComponent,
+    RelatedRadioTableComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -140,7 +142,8 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     DeleteModalComponent,
     SelectModalComponent,
     LeftHandPaneComponent,
-    LeftHandPaneContentComponent
+    LeftHandPaneContentComponent,
+    RelatedRadioTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,
