@@ -1,4 +1,7 @@
 <div class="wrapper">
+  <div class="search-container">
+    <input placeholder="Search" data-qa="settings-all-users-quick-search" (keyup)="onSearch($event.target.value)">
+  </div>
   <table mat-table [dataSource]="dataSource" matSort>
     <!-- First Name Column -->
     <ng-container matColumnDef="firstName">

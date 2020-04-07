@@ -14,7 +14,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
+import {layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 
@@ -27,6 +27,7 @@ export class DiagramChangesService {
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
+  public dependenciesView = false;
 
   workpackages = [];
   layout;
@@ -44,7 +45,10 @@ export class DiagramChangesService {
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
-    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+    this.store.select(getFilterLevelQueryParams).subscribe(level => {
+      this.currentLevel = level;
+      this.dependenciesView = false;
+    });
   }
 
   // Add newly created nodes to the back end
@@ -268,17 +272,6 @@ export class DiagramChangesService {
 
   // Update diagram when display options have been changed
   updateDisplayOptions(event: any, option: string, diagram: go.Diagram): void {
-    const model = diagram.model;
-    model.setDataProperty(model.modelData, option, event.checked);
-
-    // If option to show data links disabled then deselect any data links
-    if (option === 'dataLinks' && !event.checked) {
-      diagram.selection.each(function(part) {
-        if (part instanceof go.Link && part.category === linkCategories.data) {
-          part.isSelected = false;
-        }
-      });
-    }
 
     // If option to show master data links disabled then deselect any master data links
     if (option === 'masterDataLinks' && !event.checked) {
@@ -582,10 +575,13 @@ export class DiagramChangesService {
     depNode.diagram.startTransaction('Analyse Dependencies');
 
     // Highlight specified node with a thicker blue shadow
-    depNode.shadowColor = 'blue';
-    depNode.shadowBlur = 18;
+    this.setBlueShadowHighlight(depNode, true);
 
     const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
+
+    if (nodesToStayVisible) {
+      this.dependenciesView = true;
+    }
 
     // Hide all non-directly-dependent nodes
     depNode.diagram.nodes.each(function(node) {
@@ -660,9 +656,10 @@ export class DiagramChangesService {
     // Set all nodes to visible and reset shadow
     diagram.nodes.each(function(node) {
       node.visible = true;
-      node.shadowColor = 'gray';
-      node.shadowBlur = 4;
-    });
+      this.setBlueShadowHighlight(node, false);
+    }.bind(this));
+
+    this.dependenciesView = false;
 
     // Update bindings so that nodes no longer show the button to expand dependency levels
     diagram.nodes.each(function(node) {
@@ -715,8 +712,8 @@ export class DiagramChangesService {
       }
     });
 
-    if (this.currentLevel.endsWith('map')) {
-      // Update node's group layout in map view
+    if ([Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentLevel)) {
+      // Update node's layout in map view or usage view
       node.invalidateLayout();
     } else {
 
@@ -844,6 +841,11 @@ export class DiagramChangesService {
       }
     });
 
+    if (this.currentLevel === Level.usage) {
+      // Update node's layout in map view or usage view
+      node.invalidateLayout();
+    }
+
     // Update group area of node in the back end
     this.onUpdateGroupsAreaState.next({
       groups: [{
@@ -933,6 +935,11 @@ export class DiagramChangesService {
       links: linkData
     });
 
+    if (this.currentLevel === Level.usage) {
+      // Update node's layout in map view or usage view
+      member.invalidateLayout();
+    }
+
     this.onUpdateDiagramLayout.next({});
 
   }
@@ -997,5 +1004,103 @@ export class DiagramChangesService {
     });
 
     return { nodeLayoutData, linkLayoutData };
+  }
+
+  // If in node usage view, place the layer lanes around the displayed nodes
+  placeNodeUsageLanes(event: go.DiagramEvent): void {
+
+    // Only proceed if in node usage view
+    if (this.currentLevel === Level.usage) {
+
+      // A map to map each layer to its lane
+      const lanes = new go.Map<string, go.Part>();
+
+      // Get parts used to represent each lane
+      event.diagram.parts.each(function(part) {
+        if (part.category === 'lane') {
+          lanes.add(part.name, part);
+        }
+      });
+
+      // Variable to hold the areas that are taken up by nodes in each layer
+      const areas = {
+        [layers.system]: null,
+        [layers.dataSet]: null,
+        [layers.dimension]: null,
+        [layers.reportingConcept]: null,
+        // Also include a property for the area of all nodes
+        all: null
+      };
+
+      // Calculate areas taken up by nodes from each layer
+      event.diagram.nodes.each(function(node) {
+
+        // Get current area for the node's layer
+        const area = areas[node.data.layer];
+        const nodeBounds = node.getDocumentBounds();
+
+        // If area property has not yet been set then set it equal to the node's bounds
+        if (!area) {
+          areas[node.data.layer] = nodeBounds.copy();
+          // Otherwise, update current area for the layer to include the node's bounds
+        } else {
+          area.unionRect(nodeBounds);
+        }
+
+        // If area property has not yet been set then set it equal to the node's bounds
+        if (!areas.all) {
+          areas.all = nodeBounds.copy();
+          // Otherwise, update current area to include the node's bounds
+        } else {
+          areas.all.unionRect(nodeBounds);
+        }
+      });
+
+      // Minimum distance to leave between the edge of a lane and the nodes
+      const sideMargin = 25;
+
+      const layerOrder = [layers.system, layers.dataSet, layers.dimension, layers.reportingConcept];
+
+      // Adjust location and size of the lane for each layer
+      layerOrder.forEach(function(layer, index) {
+        const lane = lanes.get(layer);
+
+        const currentLayerArea = areas[layer];
+        // If current layer is the topmost layer then set previous layer area to null
+        const priorLayerArea = index > 0 ? areas[layerOrder[index - 1]] : null;
+        // If current layer is the bottommost layer then set next layer area to null
+        const nextLayerArea = index < layerOrder.length - 1 ? areas[layerOrder[index + 1]] : null;
+
+        const shape = lane.findObject('shape');
+
+        if (currentLayerArea) {
+          lane.visible = true;
+          // Lane width must be wide enough to fit all of the diagram's nodes, including a margin at each side
+          shape.width = areas.all.width + sideMargin * 2;
+
+          // Lane must be tall enough to enclose its layer...
+          shape.height = currentLayerArea.height
+            // ...plus half the distance to the previous layer (if present)...
+            + (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin)
+            // ...plus half the distance to the next layer (if present).
+            + (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin);
+
+          lane.location = new go.Point(
+            // Position the left side of all lanes to the left of the diagram's nodes
+            areas.all.left - sideMargin,
+            // Position the top of the lane equidistant between its layer and the previous layer (if present)
+            (priorLayerArea ? (priorLayerArea.bottom + currentLayerArea.top) / 2 : currentLayerArea.top - sideMargin)
+          );
+          // If no nodes from the current layer exist in the diagram then hide lane for that layer
+        } else {
+          lane.visible = false;
+        }
+      });
+    }
+  }
+
+  setBlueShadowHighlight(node: go.Node, highlight: boolean): void {
+    node.shadowColor = highlight ? 'blue' : 'gray';
+    node.shadowBlur = highlight ? 18 : 4;
   }
 }

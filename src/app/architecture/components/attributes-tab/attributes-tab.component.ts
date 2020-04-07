@@ -47,4 +47,8 @@ export class AttributesTabComponent {
     }
     return false;
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

@@ -47,7 +47,6 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
-import { RadioTabComponent } from './components/radio-tab/radio-tab.component';
 import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
@@ -78,12 +77,17 @@ import { RadioConfirmModalComponent } from './containers/radio-confirm-modal/rad
 import { ComponentsOrLinksModalComponent } from './containers/components-or-links-modal/components-or-links-modal.component';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
-import { LayoutActionsComponent } from './components/layout-actions/layout-actions.component';
+import { LayoutActionsComponent } from './components/diagram-actions/layout-actions/layout-actions.component';
 import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
+import { LinkWithTransformationModalComponent } from './containers/link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
+import { LayoutSettingsModalComponent } from './containers/layout-settings-modal/layout-settings-modal.component';
+import { DiagramActionsComponent } from './components/diagram-actions/diagram-actions.component';
+import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-dropdown/layouts-dropdown.component';
+import { SearchPipe } from '@app/pipes/search.pipe';
 
 @NgModule({
   imports: [
@@ -125,7 +129,7 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     MatProgressSpinnerModule,
     MatSidenavModule
   ],
-  exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
+  exports: [ObjectDetailsFormComponent, SearchPipe, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [
     ArchitectureRoutingComponent,
     ArchitectureComponent,
@@ -138,7 +142,6 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     AnalysisTabComponent,
     DeleteNodeModalComponent,
     WorkPackageTabComponent,
-    RadioTabComponent,
     AttributesTabComponent,
     DeleteLinkModalComponent,
     WorkPackageTabTableComponent,
@@ -168,7 +171,12 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     SpinnerComponent,
     ComponentsTableComponent,
     GroupInfoTableComponent,
-    SourceOrTargetTableComponent
+    SourceOrTargetTableComponent,
+    LayoutSettingsModalComponent,
+    DiagramActionsComponent,
+    LayoutsDropdownComponent,
+    LinkWithTransformationModalComponent,
+    SearchPipe
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -183,7 +191,9 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
     AddExistingAttributeModalComponent,
     DeleteAttributeModalComponent,
     RadioConfirmModalComponent,
-    ComponentsOrLinksModalComponent
+    ComponentsOrLinksModalComponent,
+    LayoutSettingsModalComponent,
+    LinkWithTransformationModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

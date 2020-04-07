@@ -35,7 +35,6 @@ import { ModelContentComponent } from '@app/core/layout/model-content/model-cont
 import { ToolbarColumnComponent } from '@app/core/layout/header/toolbar-column/toolbar-column.component';
 import { QuicklinksActionsComponent } from '@app/core/layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from '@app/core/layout/header/breadcrumb/breadcrumb.component';
-import { LayoutsDropdownComponent } from '@app/core/layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { NodeNameComponent } from '@app/core/layout/header/node-name/node-name.component';
 import { RightSideBarComponent } from '@app/core/layout/right-sidebar/right-sidebar.component';
 import { ScopesDropdownComponent } from '@app/core/layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
@@ -54,6 +53,7 @@ import { ReportService } from '@app/report-library/services/report.service';
 import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component';
 import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand-pane-content.component';
 import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.component';
+import { RelatedRadioTableComponent } from './components/related-radio-table/related-radio-table.component';
 
 @NgModule({
   imports: [
@@ -96,7 +96,6 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
@@ -110,7 +109,8 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     SelectModalComponent,
     LeftHandPaneComponent,
     MenuComponent,
-    LeftHandPaneContentComponent
+    LeftHandPaneContentComponent,
+    RelatedRadioTableComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -130,7 +130,6 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
@@ -143,7 +142,8 @@ import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.co
     DeleteModalComponent,
     SelectModalComponent,
     LeftHandPaneComponent,
-    LeftHandPaneContentComponent
+    LeftHandPaneContentComponent,
+    RelatedRadioTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

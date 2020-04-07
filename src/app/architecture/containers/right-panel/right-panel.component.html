@@ -123,15 +123,14 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="RADIO">track_changes</mat-icon>
     </ng-template>
-    <smi-radio-tab
+    <smi-related-radio-table
       *ngIf="part?.isSelected"
       [data]="relatedRadios"
-      (addRadio)="onAddRelatedRadio()"
-      (openRadio)="onOpenRadio($event)"
+      (raiseNew)="onAddRelatedRadio()"
       (assignRadio)="onAssignRadio()"
-      [nodeCategory]="nodeCategory"
+      (openModal)="onOpenRadio($event)"
     >
-    </smi-radio-tab>
+    </smi-related-radio-table>
     <smi-radio-table-in-architecture
       *ngIf="!part?.isSelected"
       [data]="radio"

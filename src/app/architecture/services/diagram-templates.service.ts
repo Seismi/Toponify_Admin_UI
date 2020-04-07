@@ -567,7 +567,7 @@ export class DiagramTemplatesService {
 
           return (
             (link.diagram.model.modelData.linkName && link.data.name !== '') ||
-            (link.diagram.model.modelData.showRadioAlerts && anyRadios)
+            (link.diagram.model.modelData.linkRadio && anyRadios)
           );
         }
       }).ofObject(),
@@ -603,59 +603,74 @@ export class DiagramTemplatesService {
         return middleExpanded !== middleOptions.group ?
           new go.Size(nodeWidth, 30) : new go.Size(NaN, 30);
       }),
-      $(go.RowColumnDefinition, { column: 0, width: 25 }),
+      $(go.RowColumnDefinition, { column: 0, maximum: 50}),
       $(go.RowColumnDefinition, { column: 1 }),
       $(go.RowColumnDefinition, { column: 2 }),
       $(go.RowColumnDefinition, { column: 3, width: 25 }),
       $(go.RowColumnDefinition, { column: 4 }),
       this.getDependencyExpandButton(),
-      // Node icon, to appear at the top left of the node
-      $(
-        go.Picture,
+      $(go.Panel,
+        'Horizontal',
         {
           column: 0,
           row: 0,
           alignment: go.Spot.Left,
-          desiredSize: new go.Size(25, 25),
-          source: '/assets/node-icons/data_set-master-data.svg'
         },
-        new go.Binding('source', '', function(data): string {
-          const imageFolderPath = '/assets/node-icons/';
+        // Node icon, to appear at the top left of the node
+        $(
+          go.Picture,
+          {
+            desiredSize: new go.Size(25, 25),
+            source: '/assets/node-icons/data_set-master-data.svg'
+          },
+          new go.Binding('source', '', function(data): string {
+            const imageFolderPath = '/assets/node-icons/';
 
-          // Section of the image name determined by layer
-          const layerImagePrefix = {
-            [layers.system]: 'sys',
-            [layers.dataSet]: 'data_set',
-            [layers.dimension]: 'dim',
-            [layers.reportingConcept]: 'rc'
-          };
+            // Section of the image name determined by layer
+            const layerImagePrefix = {
+              [layers.system]: 'sys',
+              [layers.dataSet]: 'data_set',
+              [layers.dimension]: 'dim',
+              [layers.reportingConcept]: 'rc'
+            };
 
-          // Section of the image name determined by category
-          const categoryImageSuffix = {
-            [nodeCategories.transactional]: 'transactional',
-            [nodeCategories.analytical]: 'analytical',
-            [nodeCategories.reporting]: 'reporting',
-            [nodeCategories.masterData]: 'master-data',
-            [nodeCategories.file]: 'files',
-            [nodeCategories.physical]: 'physical',
-            [nodeCategories.virtual]: 'virtual',
-            [nodeCategories.masterData]: 'master-data',
-            [nodeCategories.dimension]: '',
-            [nodeCategories.list]: 'list',
-            [nodeCategories.structure]: 'structure',
-            [nodeCategories.key]: 'keyrc'
-          };
+            // Section of the image name determined by category
+            const categoryImageSuffix = {
+              [nodeCategories.transactional]: 'transactional',
+              [nodeCategories.analytical]: 'analytical',
+              [nodeCategories.reporting]: 'reporting',
+              [nodeCategories.masterData]: 'master-data',
+              [nodeCategories.file]: 'files',
+              [nodeCategories.physical]: 'physical',
+              [nodeCategories.virtual]: 'virtual',
+              [nodeCategories.masterData]: 'master-data',
+              [nodeCategories.dimension]: '',
+              [nodeCategories.list]: 'list',
+              [nodeCategories.structure]: 'structure',
+              [nodeCategories.key]: 'keyrc'
+            };
 
-          const separator = data.layer !== layers.dimension ? '-' : '';
+            const separator = data.layer !== layers.dimension ? '-' : '';
 
-          return [
-            imageFolderPath,
-            layerImagePrefix[data.layer],
-            separator,
-            categoryImageSuffix[data.category],
-            '.svg'
-          ].join('');
-        })
+            return [
+              imageFolderPath,
+              layerImagePrefix[data.layer],
+              separator,
+              categoryImageSuffix[data.category],
+              '.svg'
+            ].join('');
+          })
+        ),
+        // Icon to indicate that the system group contains group members
+        isSystem ? $(go.Picture,
+          {
+            desiredSize: new go.Size(25, 25),
+            source: '/assets/node-icons/group.svg'
+          },
+          new go.Binding('visible', 'members', function(groupMembers) {
+            return groupMembers.length > 0;
+          })
+        ) : {}
       ),
       $(go.Panel,
         'Horizontal',
@@ -1005,7 +1020,7 @@ export class DiagramTemplatesService {
           )
         )
       } : {},
-      // Have the diagram position the node if no location set
+      // Have the diagram position the node if no location set or in node usage view
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
@@ -1080,8 +1095,10 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      // Have the diagram position the node if no location set or in node usage view
+      new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
+        return locationMissing || this.currentFilterLevel === Level.usage;
+      }.bind(this)),
       $(
         go.Shape,
         // Bind stroke to multicoloured brush based on work packages impacted by
@@ -1211,7 +1228,9 @@ export class DiagramTemplatesService {
             )
           },
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
+        return locationMissing || this.currentFilterLevel === Level.usage;
+      }.bind(this)),
       $(
         go.Shape,
         // Bind stroke to multicoloured brush based on work packages impacted by
@@ -1320,7 +1339,12 @@ export class DiagramTemplatesService {
           toArrow: 'Triangle'
         },
         new go.Binding('fill', 'stroke').ofObject('shape'),
-        new go.Binding('stroke', 'stroke').ofObject('shape')
+        new go.Binding('stroke', 'stroke').ofObject('shape'),
+        new go.Binding('visible', 'strokeWidth',
+          function(strokeWidth: number): boolean {
+            return strokeWidth > 0;
+          }
+        ).ofObject('shape')
       )
     );
   }
@@ -1394,7 +1418,12 @@ export class DiagramTemplatesService {
           toArrow: 'Triangle'
         },
         new go.Binding('fill', 'stroke').ofObject('shape'),
-        new go.Binding('stroke', 'stroke').ofObject('shape')
+        new go.Binding('stroke', 'stroke').ofObject('shape'),
+        new go.Binding('visible', 'strokeWidth',
+          function(strokeWidth: number): boolean {
+            return strokeWidth > 0;
+          }
+        ).ofObject('shape')
       )
     );
   }

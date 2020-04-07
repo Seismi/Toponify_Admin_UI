@@ -105,6 +105,7 @@ export function reducer(state = initialState, action: LayoutActionsUnion): State
       const updatedEntity = action.payload.data;
       return {
         ...state,
+        selected: action.payload.data,
         entities: state.entities.map(entity => {
           if (entity.id === updatedEntity.id) {
             return updatedEntity;

@@ -13,6 +13,16 @@ import {
 import 'rxjs/add/observable/of';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
+
+interface WorkpackageAvailabilityQuery {
+  // Array of work package Ids
+  workPackageQuery: string[];
+  // Id of the layout
+  layoutQuery: string;
+  // Indicates whether archived items are to be included
+  includeArchived?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,8 +33,7 @@ export class WorkPackageService {
 
   constructor(public http: HttpClient) {}
 
-  // FIXME: set type
-  getWorkPackageAvailability(queryParams: any): Observable<any> {
+  getWorkPackageAvailability(queryParams: WorkpackageAvailabilityQuery): Observable<any> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<any>(`/workpackages/selector/availability`, { params: params });
   }

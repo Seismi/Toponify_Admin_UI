@@ -23,27 +23,13 @@
       <mat-icon matTooltip="Edit">edit</mat-icon>
     </ng-template>
     <ng-template matTabContent>
-      <p class="palette">
+      <p class="palette" *ngIf="!mapView">
         <app-architecture-palette></app-architecture-palette>
       </p>
+      <div class="edit-tab-mapView" *ngIf="mapView">
+        <button mat-raised-button color="primary" (click)="addInterface.emit('link')">Create direct interface</button>
+        <button mat-raised-button color="primary" (click)="addLinkWithTransformation.emit()">Create interface with transformation</button>
+      </div>
     </ng-template>
-  </mat-tab>
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <mat-icon matTooltip="Layout Settings">settings_applications</mat-icon>
-    </ng-template>
-    <smi-analysis-tab
-      (displayOptionsChanged)="displayOptionsChanged($event)"
-      [viewLevel]="viewLevel"
-      [checked]="checked"
-      [layout]="layout"
-      [group]="group"
-      (addLayout)="addLayout.emit()"
-      (filterRadioSeverity)="filterRadioSeverity.emit()"
-      (collapseAllNodes)="collapseAllNodes.emit()"
-      (summariseAllNodes)="summariseAllNodes.emit()"
-      (expandAll)="expandAll.emit()"
-    >
-    </smi-analysis-tab>
   </mat-tab>
 </mat-tab-group>
