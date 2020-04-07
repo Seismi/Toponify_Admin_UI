@@ -80,7 +80,13 @@ import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/a
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
-import { AddScope, LoadScope, LoadScopes, ScopeActionTypes, AddScopeNodes } from '@app/scope/store/actions/scope.actions';
+import {
+  AddScope,
+  LoadScope,
+  LoadScopes,
+  ScopeActionTypes,
+  AddScopeNodes
+} from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
@@ -344,9 +350,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.groupMemberIds = this.store.pipe(select(getGroupMemberIds));
     this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
     this.subscriptions.push(
-      this.workpackageStore.pipe(select(getSelectedWorkpackages)).subscribe(
-        workpackages => this.selectedWorkPackageEntities = workpackages
-      )
+      this.workpackageStore
+        .pipe(select(getSelectedWorkpackages))
+        .subscribe(workpackages => (this.selectedWorkPackageEntities = workpackages))
     );
     this.subscriptions.push(
       this.actions$
@@ -395,7 +401,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
     this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
-
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
 
@@ -409,10 +414,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.workpackageStore.pipe(select(getSelectedWorkpackageIds)).subscribe(ids => {
-        if (JSON.stringify(this.sw) !== JSON.stringify(ids)) {
-          this.sw = ids;
-          this.workpackageStore.dispatch(new GetWorkpackageAvailability({ workPackageQuery: ids }));
+      combineLatest(
+        this.workpackageStore.select(getSelectedWorkpackageIds),
+        this.layoutStore.select(getLayoutSelected)
+      ).subscribe(([workpackageIds, selectedLayout]) => {
+        const layoutId = selectedLayout ? selectedLayout.id : '';
+        if (layoutId) {
+          this.workpackageStore.dispatch(
+            new GetWorkpackageAvailability({ workPackageQuery: workpackageIds, layoutQuery: layoutId })
+          );
         }
       })
     );
@@ -444,7 +454,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.filterServiceSubscription = this.nodesLinks$.subscribe(([fil, _]) => {
       if (fil) {
-        const { filterLevel,
+        const {
+          filterLevel,
           id,
           scope,
           parentName,
@@ -726,12 +737,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.layoutSettingsService.layoutSettingsForm;
   }
 
-  setNodesLinks(layer: Level,
-    id?: string,
-    workpackageIds: string[] = [],
-    scope?: string,
-    isTransformation?: boolean
-  ) {
+  setNodesLinks(layer: Level, id?: string, workpackageIds: string[] = [], scope?: string, isTransformation?: boolean) {
     if (layer !== Level.attribute) {
       this.attributesView = false;
     } else {
@@ -822,19 +828,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   itemClick(item: any): void {
-    const params: {id?: string; filterLevel: string; selectedItem: string; selectedType: string; parentName?: string} = {
+    const params: {
+      id?: string;
+      filterLevel: string;
+      selectedItem: string;
+      selectedType: string;
+      parentName?: string;
+    } = {
       filterLevel: item.layer,
       selectedItem: item.id,
-      selectedType: 'node',
+      selectedType: 'node'
     };
 
     if (item.layer !== Level.system) {
       params.id = this.selectedPart.id;
       params.parentName = this.selectedPart.name;
     }
-    this.routerStore.dispatch(
-      new UpdateQueryParams(params)
-    );
+    this.routerStore.dispatch(new UpdateQueryParams(params));
   }
 
   getNodeReports(workpackageIds: string[] = []): void {
@@ -922,10 +932,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.draft) {
-      this.store.dispatch(new UpdatePartsLayout({
+      this.store.dispatch(
+        new UpdatePartsLayout({
           ...this.draft,
           draft: false
-        }));
+        })
+      );
     }
   }
 
@@ -1160,7 +1172,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
               return {
                 ...link,
-                fromSpot: layoutProps && layoutProps.fromSpot ? layoutProps.fromSpot : go.Spot.stringify(go.Spot.Default),
+                fromSpot:
+                  layoutProps && layoutProps.fromSpot ? layoutProps.fromSpot : go.Spot.stringify(go.Spot.Default),
                 toSpot: layoutProps && layoutProps.toSpot ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default),
                 route: layoutProps && layoutProps.route ? layoutProps.route : [],
                 routeMissing: !(layoutProps && layoutProps.route)
@@ -1685,12 +1698,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       data: {
         title: `Add "${this.selectedNode.name}" to...`,
         placeholder: 'Components',
-        options$: this.store.pipe(select(getNodeEntities)).pipe(
-          map(nodes => nodes.filter(node =>
-            !node.group.length &&
-            !ids.has(node.id) &&
-            node.category !== 'transformation'))
-        ),
+        options$: this.store
+          .pipe(select(getNodeEntities))
+          .pipe(
+            map(nodes =>
+              nodes.filter(node => !node.group.length && !ids.has(node.id) && node.category !== 'transformation')
+            )
+          ),
         selectedIds: []
       }
     });
@@ -1713,7 +1727,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title: 'Are you sure you want to un-associate? Neither components will be deleted but they will no longer be associated.',
+        title:
+          'Are you sure you want to un-associate? Neither components will be deleted but they will no longer be associated.',
         confirmBtn: 'Yes',
         cancelBtn: 'No'
       }
@@ -1724,7 +1739,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.workpackageStore.dispatch(
           new DeleteWorkPackageNodeGroup({
             workPackageId: this.workpackageId,
-            systemId: (node === undefined) ? this.nodeId : node.id
+            systemId: node === undefined ? this.nodeId : node.id
           })
         );
       }
@@ -1799,25 +1814,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onViewChange(view: ArchitectureView, from?) {
     this.selectedView = view;
     if (view === ArchitectureView.Diagram) {
-
       const diagramComponent = this.diagramComponent;
 
       // If the diagram's width and height have not been correctly set
       //  then update the diagram area and fit the diagram to the screen
       if (diagramComponent) {
-        const diagramCanvas = diagramComponent.diagram.div
-          .getElementsByTagName('CANVAS')[0] as HTMLCanvasElement;
+        const diagramCanvas = diagramComponent.diagram.div.getElementsByTagName('CANVAS')[0] as HTMLCanvasElement;
 
         const initialWidth = diagramCanvas.width;
         const initialHeight = diagramCanvas.height;
         diagramComponent.updateDiagramArea();
 
-          setTimeout(() => {
-            if (diagramCanvas.width !== initialWidth || diagramCanvas.height !== initialHeight) {
-              diagramComponent.zoomToFit();
-              diagramComponent.centreDiagram();
-            }
-          }, 0);
+        setTimeout(() => {
+          if (diagramCanvas.width !== initialWidth || diagramCanvas.height !== initialHeight) {
+            diagramComponent.zoomToFit();
+            diagramComponent.centreDiagram();
+          }
+        }, 0);
       }
 
       this.tableViewFilterValue = null;
@@ -2039,41 +2052,44 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
 
         this.subscriptions.push(
-          this.actions.pipe(
-            take(1),
-            ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: { payload: NodeApiResponse }) => {
-            const transformationId = action.payload.data.id;
+          this.actions
+            .pipe(
+              take(1),
+              ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)
+            )
+            .subscribe((action: { payload: NodeApiResponse }) => {
+              const transformationId = action.payload.data.id;
 
-            data.node.sourceId.forEach(source => {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageLink({
-                  workpackageId: this.workpackageId,
-                  link: {
-                    name: `${source.name} to ${data.node.name}`,
-                    layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
-                    sourceId: source.id,
-                    targetId: transformationId,
-                    category: 'data'
-                  }
-                })
-              );
-            });
+              data.node.sourceId.forEach(source => {
+                this.workpackageStore.dispatch(
+                  new AddWorkPackageLink({
+                    workpackageId: this.workpackageId,
+                    link: {
+                      name: `${source.name} to ${data.node.name}`,
+                      layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
+                      sourceId: source.id,
+                      targetId: transformationId,
+                      category: 'data'
+                    }
+                  })
+                );
+              });
 
-            data.node.targetId.forEach(target => {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageLink({
-                  workpackageId: this.workpackageId,
-                  link: {
-                    name: `${data.node.name} to ${target.name}`,
-                    layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
-                    sourceId: transformationId,
-                    targetId: target.id,
-                    category: 'data'
-                  }
-                })
-              );
-            });
-          })
+              data.node.targetId.forEach(target => {
+                this.workpackageStore.dispatch(
+                  new AddWorkPackageLink({
+                    workpackageId: this.workpackageId,
+                    link: {
+                      name: `${data.node.name} to ${target.name}`,
+                      layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
+                      sourceId: transformationId,
+                      targetId: target.id,
+                      category: 'data'
+                    }
+                  })
+                );
+              });
+            })
         );
       }
     });
@@ -2160,7 +2176,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           );
         }
       });
-    }
+  }
 
   onExitWorkPackageEditMode(): void {
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
@@ -2215,8 +2231,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             linkId: this.nodeId,
             link: {
               ...this.part.data,
-              sourceId: (type === 'source') ? data.value[0].id : null,
-              targetId: (type === 'target') ? data.value[0].id : null
+              sourceId: type === 'source' ? data.value[0].id : null,
+              targetId: type === 'target' ? data.value[0].id : null
             }
           })
         );
