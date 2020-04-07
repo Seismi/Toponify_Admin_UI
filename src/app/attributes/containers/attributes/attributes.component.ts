@@ -47,7 +47,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public workpackageId: string;
   public canSelectWorkpackage = true;
   public workPackageIsEditable: boolean;
-  public scopeId: string;
+  public scopeId = '00000000-0000-0000-0000-000000000000';
+  public selectedWorkPackageEntities: WorkPackageEntity[];
   @ViewChild('drawer') drawer;
 
   constructor(
@@ -76,7 +77,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
         if (scope) {
           this.scopeStore.dispatch(new LoadScope(scope));
         } else {
-          this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
+          this.scopeStore.dispatch(new LoadScope(scope.id));
         }
       });
 
@@ -96,6 +97,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.selectedWorkPackageEntities = workpackages;
         const workPackageIds = workpackages.map(item => item.id);
         this.setWorkPackage(workPackageIds);
       })
@@ -162,8 +164,8 @@ export class AttributesComponent implements OnInit, OnDestroy {
   }
 
   openLeftTab(tab: number | string): void {
-    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
-    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
+    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
     if (!this.drawer.opened) {
       this.selectedLeftTab = 'menu';
     }
@@ -207,5 +209,9 @@ export class AttributesComponent implements OnInit, OnDestroy {
       scopeQuery: scopeId
     };
     this.store.dispatch(new LoadAttributes(queryParams));
+  }
+
+  onExitWorkPackageEditMode(): void {
+    this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
   }
 }

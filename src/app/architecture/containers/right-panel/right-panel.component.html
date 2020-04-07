@@ -27,18 +27,25 @@
         (editGroup)="editGroup.emit()"
         (deleteNodeGroup)="deleteNodeGroup.emit()"
         [clickedOnLink]="clickedOnLink"
+        (seeUsage)="onSeeUsage()"
+        (seeDependencies)="onSeeDependencies()"
+        (viewStructure)="viewStructure.emit()"
+        [sourceObject]="sourceObject"
+        [targetObject]="targetObject"
+        (editSourceOrTarget)="editSourceOrTarget.emit($event)"
       >
       </smi-object-details-form>
     </p>
   </mat-tab>
 
   <!-- Components TAB -->
-  <mat-tab *ngIf="part?.isSelected && !multipleSelected" [disabled]="clickedOnLink">
+  <mat-tab *ngIf="part?.isSelected && !multipleSelected" [disabled]="clickedOnLink || nodeCategory === 'transformation'">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Components">device_hub</mat-icon>
     </ng-template>
     <p class="components-tab">
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Systems'"
         [data]="systems"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -48,6 +55,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Data Sets'"
         [data]="dataSets"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -57,6 +65,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Dimensions'"
         [data]="dimensions"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -66,6 +75,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        (itemClick)="itemClick.emit($event)"
         [title]="'Reporting Concepts'"
         [data]="reportingConcepts"
         [workPackageIsEditable]="workPackageIsEditable"
@@ -113,15 +123,14 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="RADIO">track_changes</mat-icon>
     </ng-template>
-    <smi-radio-tab
+    <smi-related-radio-table
       *ngIf="part?.isSelected"
       [data]="relatedRadios"
-      (addRadio)="onAddRelatedRadio()"
-      (openRadio)="onOpenRadio($event)"
+      (raiseNew)="onAddRelatedRadio()"
       (assignRadio)="onAssignRadio()"
-      [nodeCategory]="nodeCategory"
+      (openModal)="onOpenRadio($event)"
     >
-    </smi-radio-tab>
+    </smi-related-radio-table>
     <smi-radio-table-in-architecture
       *ngIf="!part?.isSelected"
       [data]="radio"
@@ -147,7 +156,11 @@
     </smi-scope-table>
     <!-- Add Scope Button -->
     <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="onAddScope()">
-      Add Scope
+      New Scope
+    </button>
+
+    <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="addToScope.emit()">
+      Add to existing
     </button>
   </mat-tab>
 

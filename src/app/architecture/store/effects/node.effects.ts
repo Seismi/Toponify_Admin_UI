@@ -27,7 +27,7 @@ import {
   NodeLinksApiResponse
 } from '../models/node-link.model';
 import { MatSnackBar } from '@angular/material';
-import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
+import { UpdateDiagramLayoutApiRequest } from '@app/architecture/store/models/layout.model';
 
 if (!(window as any)._draft) {
   (window as any)._draft = {};
@@ -120,8 +120,8 @@ export class NodeEffects {
   updatePartsLayout$ = this.actions$.pipe(
     ofType<NodeActions.UpdatePartsLayout>(NodeActionTypes.UpdatePartsLayout),
     map(action => action.payload),
-    switchMap((payload: {layoutId: string; data: UpdateDiagramLayoutApiRequest['data']; draft: boolean}) => {
-      const { draft , ...rest} = payload;
+    switchMap((payload: { layoutId: string; data: UpdateDiagramLayoutApiRequest['data']; draft: boolean }) => {
+      const { draft, ...rest } = payload;
       if (draft) {
         return of(new NodeActions.SetDraft(rest));
       } else {
@@ -188,6 +188,20 @@ export class NodeEffects {
         switchMap((response: NodeDetailApiResponse) => [new NodeActions.GetParentDescendantIdsSuccess(response.data)]),
         catchError((error: Error) => {
           return of(new NodeActions.GetParentDescendantIdsFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
+  getGroupMemberIds$ = this.actions$.pipe(
+    ofType<NodeActions.GetGroupMemberIds>(NodeActionTypes.GetGroupMemberIds),
+    map(action => action.payload),
+    switchMap(({ id, workpackages }) => {
+      return this.nodeService.getNode(id, { workPackageQuery: workpackages }).pipe(
+        switchMap((response: NodeDetailApiResponse) => [new NodeActions.GetGroupMemberIdsSuccess(response.data)]),
+        catchError((error: Error) => {
+          return of(new NodeActions.GetGroupMemberIdsFailure(error));
         })
       );
     })

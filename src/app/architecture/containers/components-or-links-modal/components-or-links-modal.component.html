@@ -12,7 +12,7 @@
     <mat-form-field *ngIf="data.link">
       <mat-label>Source</mat-label>
       <mat-select formControlName="sourceId">
-        <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
+        <mat-option *ngFor="let node of sourceArray" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
@@ -20,7 +20,7 @@
     <mat-form-field *ngIf="data.link">
       <mat-label>Target</mat-label>
       <mat-select formControlName="targetId">
-        <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
+        <mat-option *ngFor="let node of targetArray" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
       <mat-error>This field is required</mat-error>
     </mat-form-field>

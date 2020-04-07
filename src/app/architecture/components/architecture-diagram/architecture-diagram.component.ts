@@ -89,6 +89,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   @Input() allowMove = false;
 
+  @Input() layoutSettings;
+
   @Input() workPackageIsEditable = false;
 
   @Output()
@@ -277,6 +279,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.requestUpdate();
   }
 
+  centreDiagram(): void {
+    const diagram = this.diagram;
+    diagram.centerRect(diagram.computePartsBounds(diagram.nodes));
+  }
+
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
@@ -312,9 +319,33 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.select(this.diagram.findPartForKey(id));
   }
 
+  getNodeFromId(id: string) {
+    return this.diagram.findNodeForKey(id);
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes.showGrid) {
       this.diagram.grid.visible = this.showGrid;
+    }
+
+    if (changes.layoutSettings) {
+      const modelData = this.diagram.model.modelData;
+      const layoutSettings = this.layoutSettings;
+
+      if (layoutSettings) {
+        modelData.name = true;
+        modelData.description = layoutSettings.components.showDescription;
+        modelData.showRadioAlerts = layoutSettings.components.showRADIO;
+        modelData.tags = layoutSettings.components.showTags;
+        modelData.nextLevel = layoutSettings.components.showNextLevel;
+        modelData.responsibilities = false;
+        modelData.dataLinks = layoutSettings.links.showDataLinks;
+        modelData.masterDataLinks = layoutSettings.links.showMasterDataLinks;
+        modelData.linkName = layoutSettings.links.showName;
+        modelData.linkRadio = layoutSettings.links.showRADIO;
+      }
+
+      this.diagram.updateAllTargetBindings('');
     }
 
     if (changes.allowMove) {

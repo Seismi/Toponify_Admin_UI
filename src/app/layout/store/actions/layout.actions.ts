@@ -71,7 +71,8 @@ export class LoadLayoutFailure implements Action {
 
 export class AddLayout implements Action {
   readonly type = LayoutActionTypes.AddLayout;
-  constructor(public payload: LayoutDetails) {}
+  // FIXME: set correct payload type
+  constructor(public payload: any) {}
 }
 
 export class AddLayoutSuccess implements Action {

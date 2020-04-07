@@ -17,7 +17,8 @@ import {
   MatDialogModule,
   MatAutocompleteModule,
   MatCheckboxModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MdePopoverModule } from '@material-extended/mde';
@@ -34,7 +35,6 @@ import { ModelContentComponent } from '@app/core/layout/model-content/model-cont
 import { ToolbarColumnComponent } from '@app/core/layout/header/toolbar-column/toolbar-column.component';
 import { QuicklinksActionsComponent } from '@app/core/layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from '@app/core/layout/header/breadcrumb/breadcrumb.component';
-import { LayoutsDropdownComponent } from '@app/core/layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { NodeNameComponent } from '@app/core/layout/header/node-name/node-name.component';
 import { RightSideBarComponent } from '@app/core/layout/right-sidebar/right-sidebar.component';
 import { ScopesDropdownComponent } from '@app/core/layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
@@ -52,6 +52,8 @@ import { DownloadCSVModalComponent } from './components/download-csv-modal/downl
 import { ReportService } from '@app/report-library/services/report.service';
 import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component';
 import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand-pane-content.component';
+import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.component';
+import { RelatedRadioTableComponent } from './components/related-radio-table/related-radio-table.component';
 
 @NgModule({
   imports: [
@@ -60,6 +62,7 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
     MatIconModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatProgressSpinnerModule,
     MatInputModule,
     MatMenuModule,
     MatSliderModule,
@@ -93,7 +96,6 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
@@ -107,7 +109,8 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
     SelectModalComponent,
     LeftHandPaneComponent,
     MenuComponent,
-    LeftHandPaneContentComponent
+    LeftHandPaneContentComponent,
+    RelatedRadioTableComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -123,10 +126,10 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
     ModelSidebarComponent,
     ModelContentComponent,
     DraggerComponent,
+    LoaderComponent,
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
@@ -139,7 +142,8 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
     DeleteModalComponent,
     SelectModalComponent,
     LeftHandPaneComponent,
-    LeftHandPaneContentComponent
+    LeftHandPaneContentComponent,
+    RelatedRadioTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

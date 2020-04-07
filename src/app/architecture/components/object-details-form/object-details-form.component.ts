@@ -4,12 +4,13 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
 import { Tag, TagApplicableTo, NodeDetail } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 
-const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
-const dataSetCategories = ['physical', 'virtual', 'master data'];
-const dimensionCategories = ['dimension'];
-const reportingCategories = ['list', 'structure', 'key'];
+const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file', 'transformation'];
+const dataSetCategories = ['physical', 'virtual', 'master data', 'transformation'];
+const dimensionCategories = ['dimension', 'transformation'];
+const reportingCategories = ['list', 'structure', 'key', 'transformation'];
 
 @Component({
   selector: 'smi-object-details-form',
@@ -25,6 +26,9 @@ export class ObjectDetailsFormComponent {
     this.group = group;
     this.values = group.value;
   }
+
+  @Input() sourceObject: any;
+  @Input() targetObject: any;
 
   @Input() workPackageIsEditable = false;
   @Input() attributesPage = false;
@@ -57,6 +61,10 @@ export class ObjectDetailsFormComponent {
   @Output() createTag = new EventEmitter<Tag>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateTag = new EventEmitter<Tag>();
+  @Output() seeUsage = new EventEmitter<void>();
+  @Output() seeDependencies = new EventEmitter<void>();
+  @Output() viewStructure = new EventEmitter<void>();
+  @Output() editSourceOrTarget = new EventEmitter<string>();
 
   onSave(): void {
     this.save.emit();
@@ -131,5 +139,27 @@ export class ObjectDetailsFormComponent {
 
   onUpdateTag(tag: Tag) {
     this.updateTag.emit(tag);
+  }
+
+  onSeeDependencies() {
+    this.seeDependencies.emit();
+  }
+
+  onSeeUsage() {
+    this.seeUsage.emit();
+  }
+
+  get isNode(): boolean {
+    return this.part && this.part.data && !this.part.data.hasOwnProperty('sourceId');
+  }
+
+  isLink(): boolean {
+    if (this.part.data.layer === 'reporting concept') {
+      return false;
+    } else if (this.clickedOnLink || this.nodeCategory === 'transformation') {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

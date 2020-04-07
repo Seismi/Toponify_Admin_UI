@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node-link.model';
@@ -21,9 +21,11 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
   templateUrl: './right-panel.component.html',
   styleUrls: ['./right-panel.component.scss']
 })
-export class RightPanelComponent {
+export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
+  @Input() sourceObject: any;
+  @Input() targetObject: any;
   @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input() selectedView: ArchitectureView;
@@ -79,11 +81,17 @@ export class RightPanelComponent {
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
   @Output() deleteNodeGroup = new EventEmitter<Node>();
   @Output() updateAvailableTags = new EventEmitter<void>();
+  @Output() itemClick = new EventEmitter<void>();
 
   @Output() addTag = new EventEmitter<string>();
   @Output() createTag = new EventEmitter<Tag>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateTag = new EventEmitter<Tag>();
+  @Output() seeUsage = new EventEmitter<void>();
+  @Output() seeDependencies = new EventEmitter<void>();
+  @Output() viewStructure = new EventEmitter<void>();
+  @Output() addToScope = new EventEmitter<void>();
+  @Output() editSourceOrTarget = new EventEmitter<string>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -178,6 +186,9 @@ export class RightPanelComponent {
   }
 
   isFirst(): boolean {
+    if (this.nodes.length < 1) {
+      return false;
+    }
     if (!this.selectedNode) {
       return true;
     }
@@ -189,6 +200,9 @@ export class RightPanelComponent {
   }
 
   isLast(): boolean {
+    if (this.nodes.length < 1) {
+      return false;
+    }
     if (!this.selectedNode) {
       return false;
     }
@@ -245,5 +259,13 @@ export class RightPanelComponent {
 
   onUpdateTag(tag: Tag) {
     this.updateTag.emit(tag);
+  }
+
+  onSeeUsage() {
+    this.seeUsage.emit();
+  }
+
+  onSeeDependencies() {
+    this.seeDependencies.emit();
   }
 }

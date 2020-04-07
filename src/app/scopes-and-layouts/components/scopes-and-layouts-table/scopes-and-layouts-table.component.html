@@ -1,5 +1,8 @@
 <h1 class="title">{{ title }}</h1>
 <div class="mat-elevation-z8">
+  <div class="search-container">
+    <input placeholder="Search" data-qa="scopes-and-layouts-quick-search" (keyup)="onSearch($event.target.value)">
+  </div>
   <table mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
@@ -27,7 +30,19 @@
     ></tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
+  <div style="display: flex;">
+    <div style="flex-grow: 1;">
+      <button
+        mat-raised-button
+        class="create-new-btn"
+        color="primary"
+        data-qa="scopes-and-layouts-create-new"
+        (click)="onAdd()"
+      >
+        <mat-icon>add</mat-icon> Create New
+      </button>
+    </div>
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+  </div>
 </div>
-<br />
-<button mat-raised-button color="primary" data-qa="scopes-and-layouts-create-new" (click)="onAdd()">Create New</button>
+

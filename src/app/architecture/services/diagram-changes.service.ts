@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import {linkCategories, LinkLayoutSettingsEntity} from '@app/architecture/store/models/node-link.model';
 import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -14,7 +14,9 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {nodeCategories} from '@app/architecture/store/models/node.model';
+import {layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
+import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
+import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 
 const $ = go.GraphObject.make;
 
@@ -25,19 +27,28 @@ export class DiagramChangesService {
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
+  public dependenciesView = false;
 
   workpackages = [];
+  layout;
 
   constructor(
     public diagramLevelService: DiagramLevelService,
     private store: Store<RouterReducerState<RouterStateUrl>>,
+    private layoutStore: Store<LayoutState>,
     public dialog: MatDialog,
     private workpackageStore: Store<WorkPackageState>
   ) {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
-    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+    this.layoutStore
+      .pipe(select(getLayoutSelected))
+      .subscribe(layout => (this.layout = layout));
+    this.store.select(getFilterLevelQueryParams).subscribe(level => {
+      this.currentLevel = level;
+      this.dependenciesView = false;
+    });
   }
 
   // Add newly created nodes to the back end
@@ -62,10 +73,13 @@ export class DiagramChangesService {
           // Set workpackage currently being edited as "impacted by" workpackage for the part
           event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
+          if ('displayId' in part.data) {
+            part.data.id = part.data.displayId;
+          }
+
           // Only add nodes here as new links are temporary until connected
           if (part instanceof go.Node) {
             const node = Object.assign({}, part.data);
-            node.location = [{ view: 'Default', locationCoordinates: part.data.location }];
             const dialogRef = this.dialog.open(EditNameModalComponent, {
               disableClose: false,
               width: 'auto',
@@ -78,29 +92,38 @@ export class DiagramChangesService {
               if (data && data.name) {
                 node.name = data.name;
               }
+
               this.workpackages.forEach(workpackage => {
-                if (nodeId) {
-                  this.workpackageStore.dispatch(
-                    new AddWorkPackageNode({
-                      workpackageId: workpackage.id,
-                      node: {
-                        ...node,
-                        parentId: nodeId
-                      },
-                      scope
-                    })
-                  );
-                } else {
-                  this.workpackageStore.dispatch(
-                    new AddWorkPackageNode({ workpackageId: workpackage.id, node, scope })
-                  );
+
+                const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node};
+
+                if (this.layout.id !== '00000000-0000-0000-0000-000000000000') {
+
+                  const { nodeLayoutData, linkLayoutData } = this.getCurrentPartsLayoutData(event.diagram);
+
+                  addWorkPackageNodeParams.newLayoutDetails = {
+                    layoutId: this.layout.id,
+                    data: {
+                      positionDetails: {
+                        workPackages: [{ id: workpackage.id, name: workpackage.name }],
+                        positions: {
+                          nodes: nodeLayoutData,
+                          nodeLinks: linkLayoutData
+                        }
+                      }
+                    }
+                  };
                 }
+
+                if (nodeId) {
+                  addWorkPackageNodeParams.node.parentId = nodeId;
+                }
+
+                this.workpackageStore.dispatch(
+                  new AddWorkPackageNode(addWorkPackageNodeParams)
+                );
               });
             });
-          } else {
-            if ('displayId' in part.data) {
-              part.data.id = part.data.displayId;
-            }
           }
         });
       });
@@ -226,7 +249,11 @@ export class DiagramChangesService {
         if (part instanceof go.Link) {
           // Ignore disconnected links
           if (part.fromNode && part.toNode) {
-            links.push({ id: part.key, points: part.data.route });
+            links.push({ id: part.key,
+              points: part.data.route,
+              fromSpot: part.data.fromSpot,
+              toSpot: part.data.toSpot
+            });
           }
         } else {
           // Part is a node
@@ -245,17 +272,6 @@ export class DiagramChangesService {
 
   // Update diagram when display options have been changed
   updateDisplayOptions(event: any, option: string, diagram: go.Diagram): void {
-    const model = diagram.model;
-    model.setDataProperty(model.modelData, option, event.checked);
-
-    // If option to show data links disabled then deselect any data links
-    if (option === 'dataLinks' && !event.checked) {
-      diagram.selection.each(function(part) {
-        if (part instanceof go.Link && part.category === linkCategories.data) {
-          part.isSelected = false;
-        }
-      });
-    }
 
     // If option to show master data links disabled then deselect any master data links
     if (option === 'masterDataLinks' && !event.checked) {
@@ -295,24 +311,6 @@ export class DiagramChangesService {
       // Update link route
       link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.updateRoute();
-
-      // TEMPORARY - condition to prevent error while impactedByWorkPackages missing from nodeLink components response
-      if (!this.currentLevel.endsWith('map')) {
-        // Add currently editing workpackage to array of workpackages impacted by if not there already
-        if (
-          link.data.impactedByWorkPackages.every(
-            function(workpackage) {
-              return workpackage.id !== this.workpackages[0].id;
-            }.bind(this)
-          )
-        ) {
-          link.diagram.model.setDataProperty(
-            link.data,
-            'impactedByWorkPackages',
-            link.data.impactedByWorkPackages.concat([this.workpackages[0]])
-          );
-        }
-      }
 
       // Create link if not already in database
       if (link.data.isTemporary) {
@@ -576,15 +574,18 @@ export class DiagramChangesService {
   hideNonDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Analyse Dependencies');
 
-    // Get direct dependencies
-    const dependencies = [depNode.key];
-    depNode.findNodesConnected().each(function(connectedNode) {
-      dependencies.push(connectedNode.key);
-    });
+    // Highlight specified node with a thicker blue shadow
+    this.setBlueShadowHighlight(depNode, true);
+
+    const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
+
+    if (nodesToStayVisible) {
+      this.dependenciesView = true;
+    }
 
     // Hide all non-directly-dependent nodes
     depNode.diagram.nodes.each(function(node) {
-      if (!dependencies.includes(node.key)) {
+      if (!nodesToStayVisible.has(node)) {
         node.visible = false;
       }
     });
@@ -606,9 +607,10 @@ export class DiagramChangesService {
   showDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Show Dependencies');
 
-    // Get linked nodes and ensure they are visible
-    depNode.findNodesConnected().each(function(connectedNode) {
-      connectedNode.visible = true;
+    const nodesToShow = this.getNodesToShowDependencies(depNode);
+
+    nodesToShow.each(function(node) {
+      node.visible = true;
     });
 
     // Update bindings so that the appropriate nodes show the button to expand dependency levels shown
@@ -621,14 +623,43 @@ export class DiagramChangesService {
     depNode.diagram.commitTransaction('Show Dependencies');
   }
 
+  // Get a set of all nodes that need to be visible to show dependencies from the given input node
+  getNodesToShowDependencies(depNode: go.Node): go.Set<go.Part> {
+
+    // Get direct dependencies
+    const dependencies = new go.Set<go.Part>([depNode]);
+    dependencies.addAll(depNode.findNodesConnected());
+
+    // Get any top-level groups containing the direct dependencies
+    const groups = new go.Set<go.Group>();
+    dependencies.each(function(node) {
+      const topPart = node.findTopLevelPart();
+      if (topPart instanceof go.Group) {
+        groups.add(topPart);
+      }
+    });
+
+    // Get all members of the groups containing direct dependencies
+    const members = new go.Set<go.Part>();
+    groups.each(function(group) {
+      members.addAll(group.findSubGraphParts());
+    });
+
+    return new go.Set<go.Part>(dependencies)
+      .addAll(groups).addAll(members);
+  }
+
   // Set all nodes in the specified diagram to visible
   showAllNodes(diagram: go.Diagram): void {
     diagram.startTransaction('Show All Nodes');
 
-    // Set all nodes to visible
+    // Set all nodes to visible and reset shadow
     diagram.nodes.each(function(node) {
       node.visible = true;
-    });
+      this.setBlueShadowHighlight(node, false);
+    }.bind(this));
+
+    this.dependenciesView = false;
 
     // Update bindings so that nodes no longer show the button to expand dependency levels
     diagram.nodes.each(function(node) {
@@ -649,9 +680,6 @@ export class DiagramChangesService {
     });
     diagram.commitTransaction('Clear set positions');
     diagram.layout.isValidLayout = false;
-
-    // Placeholder - update all node and link positions in back end for current layout
-    // Needs store update before implementation
   }
 
   // Rerun the diagram's links
@@ -663,7 +691,7 @@ export class DiagramChangesService {
   }
 
   nodeExpandChanged(node) {
-    const linkData: { id: string; points: number[] }[] = [];
+    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
@@ -676,16 +704,21 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 
-    this.groupMemberSizeChanged(node);
-
-    if (this.currentLevel.endsWith('map')) {
-      // Update node's group layout in map view
+    if ([Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentLevel)) {
+      // Update node's layout in map view or usage view
       node.invalidateLayout();
     } else {
+
+      this.groupMemberSizeChanged(node);
+
       // Update expanded status of node in the back end
       this.onUpdateExpandState.next({
         node: {
@@ -786,7 +819,7 @@ export class DiagramChangesService {
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
-    const linkData: { id: string; points: number[] }[] = [];
+    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
     const node = event.subject.part;
 
     // Make sure node bounds are up to date so links can route correctly
@@ -800,9 +833,18 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
+
+    if (this.currentLevel === Level.usage) {
+      // Update node's layout in map view or usage view
+      node.invalidateLayout();
+    }
 
     // Update group area of node in the back end
     this.onUpdateGroupsAreaState.next({
@@ -817,7 +859,7 @@ export class DiagramChangesService {
     this.groupMemberSizeChanged(node);
   }
 
-  // Ensures that all groups that have the given member as part of
+  // Ensures that all system groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
   groupMemberSizeChanged(member: go.Node): void {
     const nestedGroups = new go.Set();
@@ -869,7 +911,11 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id, points: link.data.route });
+        linkData.push({ id: link.data.id,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot
+        });
       }
     });
 
@@ -888,6 +934,11 @@ export class DiagramChangesService {
       groups: groupData,
       links: linkData
     });
+
+    if (this.currentLevel === Level.usage) {
+      // Update node's layout in map view or usage view
+      member.invalidateLayout();
+    }
 
     this.onUpdateDiagramLayout.next({});
 
@@ -908,5 +959,148 @@ export class DiagramChangesService {
       }
 
     this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, mapViewSource);
+  }
+
+  // Expands the currently viewed area of the diagram to include the given menu
+  updateViewAreaForMenu(menu: go.Adornment) {
+    const diagram = menu.diagram;
+
+    menu.ensureBounds();
+    // Expand diagram area to include the menu
+    diagram.documentBounds.unionRect(menu.actualBounds);
+    // Calculate new view area based on current view area and menu bounds
+    const updatedViewArea = diagram.viewportBounds.copy().unionRect(menu.actualBounds);
+    // Scroll screen to calculated view area
+    diagram.scrollToRect(updatedViewArea);
+  }
+
+  // Get current layout data for all parts in the diagram
+  getCurrentPartsLayoutData(diagram: go.Diagram): {
+    nodeLayoutData: NodeLayoutSettingsEntity['layout'][],
+    linkLayoutData: LinkLayoutSettingsEntity['layout'][]
+  } {
+
+    const nodeLayoutData = diagram.model.nodeDataArray.map(function(node) {
+      return {
+        id: node.id,
+        positionSettings: {
+          locationCoordinates: node.location,
+          middleExpanded: node.middleExpanded,
+          bottomExpanded: node.bottomExpanded,
+          areaSize: node.areaSize
+        }
+      };
+    });
+
+    const linkLayoutData = (diagram.model as go.GraphLinksModel).linkDataArray.map(function(link) {
+      return {
+        id: link.id,
+        positionSettings: {
+          route: link.route,
+          fromSpot: link.fromSpot,
+          toSpot: link.toSpot
+        }
+      };
+    });
+
+    return { nodeLayoutData, linkLayoutData };
+  }
+
+  // If in node usage view, place the layer lanes around the displayed nodes
+  placeNodeUsageLanes(event: go.DiagramEvent): void {
+
+    // Only proceed if in node usage view
+    if (this.currentLevel === Level.usage) {
+
+      // A map to map each layer to its lane
+      const lanes = new go.Map<string, go.Part>();
+
+      // Get parts used to represent each lane
+      event.diagram.parts.each(function(part) {
+        if (part.category === 'lane') {
+          lanes.add(part.name, part);
+        }
+      });
+
+      // Variable to hold the areas that are taken up by nodes in each layer
+      const areas = {
+        [layers.system]: null,
+        [layers.dataSet]: null,
+        [layers.dimension]: null,
+        [layers.reportingConcept]: null,
+        // Also include a property for the area of all nodes
+        all: null
+      };
+
+      // Calculate areas taken up by nodes from each layer
+      event.diagram.nodes.each(function(node) {
+
+        // Get current area for the node's layer
+        const area = areas[node.data.layer];
+        const nodeBounds = node.getDocumentBounds();
+
+        // If area property has not yet been set then set it equal to the node's bounds
+        if (!area) {
+          areas[node.data.layer] = nodeBounds.copy();
+          // Otherwise, update current area for the layer to include the node's bounds
+        } else {
+          area.unionRect(nodeBounds);
+        }
+
+        // If area property has not yet been set then set it equal to the node's bounds
+        if (!areas.all) {
+          areas.all = nodeBounds.copy();
+          // Otherwise, update current area to include the node's bounds
+        } else {
+          areas.all.unionRect(nodeBounds);
+        }
+      });
+
+      // Minimum distance to leave between the edge of a lane and the nodes
+      const sideMargin = 25;
+
+      const layerOrder = [layers.system, layers.dataSet, layers.dimension, layers.reportingConcept];
+
+      // Adjust location and size of the lane for each layer
+      layerOrder.forEach(function(layer, index) {
+        const lane = lanes.get(layer);
+
+        const currentLayerArea = areas[layer];
+        // If current layer is the topmost layer then set previous layer area to null
+        const priorLayerArea = index > 0 ? areas[layerOrder[index - 1]] : null;
+        // If current layer is the bottommost layer then set next layer area to null
+        const nextLayerArea = index < layerOrder.length - 1 ? areas[layerOrder[index + 1]] : null;
+
+        const shape = lane.findObject('shape');
+
+        if (currentLayerArea) {
+          lane.visible = true;
+          // Lane width must be wide enough to fit all of the diagram's nodes, including a margin at each side
+          shape.width = areas.all.width + sideMargin * 2;
+
+          // Lane must be tall enough to enclose its layer...
+          shape.height = currentLayerArea.height
+            // ...plus half the distance to the previous layer (if present)...
+            + (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin)
+            // ...plus half the distance to the next layer (if present).
+            + (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin);
+
+          lane.location = new go.Point(
+            // Position the left side of all lanes to the left of the diagram's nodes
+            areas.all.left - sideMargin,
+            // Position the top of the lane equidistant between its layer and the previous layer (if present)
+            (priorLayerArea ? (priorLayerArea.bottom + currentLayerArea.top) / 2 : currentLayerArea.top - sideMargin)
+          );
+          // If no nodes from the current layer exist in the diagram then hide lane for that layer
+        } else {
+          lane.visible = false;
+        }
+      });
+    }
+  }
+
+  setBlueShadowHighlight(node: go.Node, highlight: boolean): void {
+    node.shadowColor = highlight ? 'blue' : 'gray';
+    node.shadowBlur = highlight ? 18 : 4;
   }
 }

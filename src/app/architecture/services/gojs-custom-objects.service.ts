@@ -166,7 +166,6 @@ export class CustomLink extends go.Link {
 
     // Array of tools that can affect link routes
     const tools = [toolManager.draggingTool,
-      toolManager.linkReshapingTool,
       toolManager.linkingTool,
       linkShiftingTool,
       toolManager.resizingTool
@@ -242,6 +241,7 @@ export class GojsCustomObjectsService {
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
 
   public diagramEditable: boolean;
+  private currentLevel;
 
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
@@ -252,7 +252,9 @@ export class GojsCustomObjectsService {
       })
     )
     public diagramLevelService: DiagramLevelService
-  ) {}
+  ) {
+    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+  }
 
   // Context menu for when the background is right-clicked
   getBackgroundContextMenu(): go.Adornment {
@@ -286,14 +288,9 @@ export class GojsCustomObjectsService {
           event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
 
           // Redo layout for node usage view after updating RADIO alert display setting
-          thisService.store
-            .select(getFilterLevelQueryParams)
-            .pipe(take(1))
-            .subscribe(level => {
-              if (level === Level.usage) {
-                event.diagram.layout.isValidLayout = false;
-              }
-            });
+          if (thisService.currentLevel === Level.usage) {
+            event.diagram.layout.isValidLayout = false;
+          }
         }
       }),
       $('ContextMenuButton', $(go.TextBlock, 'Reorganise'), {
@@ -476,7 +473,10 @@ export class GojsCustomObjectsService {
             : { text: text }
         ),
         {
-          mouseEnter: function(event: object, object: go.Part): void {
+          mouseEnter: function(event: go.InputEvent, object: go.Part): void {
+
+            const menu = object.part as go.Adornment;
+
             standardMouseEnter(event, object);
             // Hide any open submenu that is already open
             object.panel.elements.each(function(button: go.Part): void {
@@ -484,10 +484,15 @@ export class GojsCustomObjectsService {
                 button.visible = false;
               }
             });
+
             // Show any submenu buttons assigned to this menu button
             subMenuNames.forEach(function(buttonName: string): void {
-              object.part.findObject(buttonName).visible = true;
+              menu.findObject(buttonName).visible = true;
             });
+
+            // Ensure that opened submenus do not appear outside of diagram bounds
+            diagramChangesService.updateViewAreaForMenu(menu);
+
           },
           column: 0,
           row: row
@@ -515,7 +520,8 @@ export class GojsCustomObjectsService {
       {
         name: 'ButtonMenu',
         background: null,
-        zOrder: 1
+        zOrder: 1,
+        isInDocumentBounds: true
       },
       // Use placeholder to ensure menu placed relative to node.
       //  Otherwise, menu appears at the mouse cursor.
@@ -556,8 +562,8 @@ export class GojsCustomObjectsService {
           thisService.showDetailTabSource.next();
         }),
         makeMenuButton(
-          2, 
-          'Grouped Components', 
+          2,
+          'Grouped Components',
             [
               'Expand',
               'Show as List (groups)',
@@ -617,7 +623,7 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            // diagramLevelService.changeLevelWithFilter.call(this, event, node);
+            diagramLevelService.displayGroupMembers.call(this, event, node);
 
           }.bind(this),
           null,
@@ -633,7 +639,7 @@ export class GojsCustomObjectsService {
 
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent) {
-            return thisService.diagramEditable;
+            return thisService.diagramEditable && thisService.currentLevel !== Level.usage;
           }
         ),
         makeSubMenuButton(
@@ -644,7 +650,7 @@ export class GojsCustomObjectsService {
             this.addSystemToGroupSource.next(node.data);
           }.bind(this),
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
-            return thisService.diagramEditable;
+            return thisService.diagramEditable && thisService.currentLevel !== Level.usage;
           },
           function(object: go.GraphObject): string {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
@@ -653,8 +659,8 @@ export class GojsCustomObjectsService {
         ),
         // --End of group submenu buttons--
         makeMenuButton(
-          3, 
-          'Data Sets', 
+          3,
+          'Data Sets',
             [
               'Show as List (data sets)',
               'Display (data sets)',
@@ -666,12 +672,12 @@ export class GojsCustomObjectsService {
           }.bind(this),
           function(object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            switch(node.data.layer) {
-              case 'data set': 
+            switch (node.data.layer) {
+              case 'data set':
                 return 'Dimensions';
               case 'dimension':
                 return 'Reporting Layer';
-              default: 
+              default:
                 return 'Data Sets';
             }
           }
@@ -719,6 +725,17 @@ export class GojsCustomObjectsService {
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             return thisService.diagramEditable;
+          },
+          function(object: go.GraphObject): string {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            switch (node.data.layer) {
+              case 'data set':
+                return 'Add dimension';
+              case 'dimension':
+                return 'Add reporting concept';
+              default:
+                return 'Add data set';
+            }
           }
         ),
         // --End of data set submenu buttons--
@@ -748,19 +765,8 @@ export class GojsCustomObjectsService {
             }
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
-
-            let isMapLevel: boolean;
-
-            thisService
-              .store
-              .select(getFilterLevelQueryParams)
-              .pipe(take(1))
-              .subscribe(function(level) {
-                isMapLevel =  (level !== Level.systemMap && level !== Level.dataSetMap);
-              });
-
-            return isMapLevel;
-
+            const level = thisService.currentLevel;
+            return (level !== Level.systemMap && level !== Level.dataSetMap);
           }
         ),
         makeSubMenuButton(

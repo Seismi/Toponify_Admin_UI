@@ -17,7 +17,8 @@ import {
   MatAutocompleteModule,
   MatCheckboxModule,
   MatTooltipModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatChipsModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -34,7 +35,6 @@ import { ReportDataSetTableComponent } from './components/data-set-table/data-se
 import { ReportOwnersTableComponent } from './components/owners-table/owners-table.component';
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
-import { RadioTableInReportsPageComponent } from './components/radio-table/radio-table.component';
 import { WorkPackageTableInReportsPageComponent } from './components/workpackage-table/workpackage-table.component';
 import { ReportModalComponent } from './containers/report-modal/report-modal.component';
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
@@ -67,6 +67,7 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     MatSidenavModule,
     TagListModule,
     TagModule,
+    MatChipsModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
@@ -80,7 +81,6 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     ReportOwnersTableComponent,
     ReportDimensionsTableComponent,
     ReportReportingConceptsTableComponent,
-    RadioTableInReportsPageComponent,
     WorkPackageTableInReportsPageComponent,
     ReportModalComponent,
     ReportDeleteModalComponent,

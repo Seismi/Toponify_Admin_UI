@@ -1,5 +1,5 @@
 header {
-  position: fixed;
+  position: absolute;
   top: 0;
   z-index: 11;
   transition: all 50ms ease-in-out;
@@ -17,8 +17,10 @@ header {
   right: 0;
   @extend header;
   background: #fff;
+  display: none;
   &.active {
-    width: calc(100% - 55px);
+    width: 100%;
+    display: block;
   }
   .search-control {
     flex: 1;
@@ -34,27 +36,59 @@ header {
   margin-right: 3px;
 }
 
-.results-container {
+.mat-elevation-z8{
+  border-radius: 5px;
   position: absolute;
   left: 0;
   top: 70px;
   background-color: #fff;
-  width: 40%;
-  max-height: 300px;
+  min-width: 50%;
+  max-height: 400px;
   overflow-y: auto;
   z-index: 9999;
   margin-left: 15px;
 }
 
-ul {
-  padding: 0;
-  margin: 0;
+table {
+  position: relative;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 400;
+  color: #555;
+  .mat-icon {
+    font-size: 14px;
+    margin-top: 5px;
+  }
 }
 
-li {
-  list-style-type: none;
-  border-bottom: solid 1px #eee;
-  font-size: 14px;
+.results-col {
+  width: 55%;
+}
+
+.type-col, .work-package-col {
+  width: 20%;
+}
+
+th {
+  font-weight: 500;
+  color: #000;
+  pointer-events: none;
+  padding: 8px 0px;
+}
+
+th, td {
+  padding: 3px 15px;
+}
+
+tr:first-of-type {
+  background-color: #f9f9f9;
+}
+
+tr {
+  padding: 0px 15px;
   cursor: pointer;
-  padding-left: 15px;
+  &:hover {
+    color: #000;
+    background-color: #f9f9f9;
+  }
 }

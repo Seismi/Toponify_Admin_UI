@@ -58,9 +58,14 @@ export enum NodeActionTypes {
   LoadNodeReportsFailure = '[Node] Load Node Reports Fail',
   RemoveParentDescendantIds = '[Node] Remove Parent Descendant Ids',
   GetParentDescendantIds = '[Node] Get Parent Descendant Ids',
-  GetParentDescendantIdsSucces = '[Node] Get Parent Descendant Ids Success',
+  GetParentDescendantIdsSuccess = '[Node] Get Parent Descendant Ids Success',
   GetParentDescendantIdsFailure = '[Node] Get Parent Descendant Ids Failure',
   SetParentDescendantIds = '[Node] Set Parent Descendant Ids',
+  RemoveGroupMemberIds = '[Node] Remove Group Member Ids',
+  GetGroupMemberIds = '[Node] Get Group Member Ids',
+  GetGroupMemberIdsSuccess = '[Node] Get Group Member Ids Success',
+  GetGroupMemberIdsFailure = '[Node] Get Group Member Ids Failure',
+  SetGroupMemberIds = '[Node] Set Group Member Ids',
   LoadAvailableTags = '[Node] Load Available Tags',
   LoadAvailableTagsSuccess = '[Node] Load Available Tags Success',
   LoadAvailableTagsFailure = '[Node] Load Available Tags Fail',
@@ -312,7 +317,7 @@ export class GetParentDescendantIds implements Action {
 }
 
 export class GetParentDescendantIdsSuccess implements Action {
-  readonly type = NodeActionTypes.GetParentDescendantIdsSucces;
+  readonly type = NodeActionTypes.GetParentDescendantIdsSuccess;
   constructor(public payload: NodeDetail) {}
 }
 
@@ -324,6 +329,30 @@ export class GetParentDescendantIdsFailure implements Action {
 export class SetParentDescendantIds implements Action {
   readonly type = NodeActionTypes.SetParentDescendantIds;
   constructor(public payload: string[]) {}
+}
+
+export class RemoveGroupMemberIds implements Action {
+  readonly type = NodeActionTypes.RemoveGroupMemberIds;
+}
+
+export class GetGroupMemberIds implements Action {
+  readonly type = NodeActionTypes.GetGroupMemberIds;
+  constructor(public payload: { id: string; workpackages: string[] }) {}
+}
+
+export class GetGroupMemberIdsSuccess implements Action {
+  readonly type = NodeActionTypes.GetGroupMemberIdsSuccess;
+  constructor(public payload: NodeDetail) {}
+}
+
+export class GetGroupMemberIdsFailure implements Action {
+  readonly type = NodeActionTypes.GetGroupMemberIdsFailure;
+  constructor(public payload: Error) {}
+}
+
+export class SetGroupMemberIds implements Action {
+  readonly type = NodeActionTypes.SetGroupMemberIds;
+  constructor(public payload: NodeDetail) {}
 }
 
 export class LoadAvailableTags implements Action {
@@ -485,6 +514,11 @@ export type NodeActionsUnion =
   | GetParentDescendantIdsSuccess
   | GetParentDescendantIdsFailure
   | SetParentDescendantIds
+  | RemoveGroupMemberIds
+  | GetGroupMemberIds
+  | GetGroupMemberIdsSuccess
+  | GetGroupMemberIdsFailure
+  | SetGroupMemberIds
   | LoadAvailableTags
   | LoadAvailableTagsSuccess
   | LoadAvailableTagsFailure

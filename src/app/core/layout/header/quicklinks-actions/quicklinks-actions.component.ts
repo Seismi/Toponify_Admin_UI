@@ -8,28 +8,15 @@ import { ScopeEntity, ScopeDetails } from '@app/scope/store/models/scope.model';
 })
 export class QuicklinksActionsComponent {
   @Input() gojsView = false;
-  @Input() scopes: any;
-  @Input() layouts: any;
+  @Input() scopes: ScopeDetails;
   @Input() selectedScope: ScopeEntity;
-  @Input() selectedLayout: ScopeDetails;
 
   @Output() selectScope = new EventEmitter<string>();
 
   @Output()
   selectLayout = new EventEmitter();
 
-  @Output()
-  addLayout = new EventEmitter<void>();
-
   onSelectScope(id) {
     this.selectScope.emit(id);
-  }
-
-  onSelectLayout(id) {
-    this.selectLayout.emit(id);
-  }
-
-  onAddLayout(): void {
-    this.addLayout.emit();
   }
 }

@@ -1,4 +1,6 @@
-<p>Relates To <span class="description">(documentation standards require the following):</span></p>
+<div class="search-container">
+  <input placeholder="Search" data-qa="documentation-standards-quick-search" (keyup)="onSearch($event.target.value)">
+</div>
 <table mat-table [dataSource]="dataSource">
   <!-- Name Column -->
   <ng-container matColumnDef="name">
@@ -31,11 +33,11 @@
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element; let i = index">
       <span *ngIf="!nodeIsEditable()">
-        <mat-icon (click)="onEdit(element, i)" *ngIf="i !== index; else elseBlock">edit</mat-icon>
+        <mat-icon data-qa="documentation-standards-table-edit" (click)="onEdit(element, i)" *ngIf="i !== index; else elseBlock">edit</mat-icon>
       </span>
       <ng-template #elseBlock>
-        <mat-icon (click)="onSave(element.propertyId)">check</mat-icon>
-        <mat-icon (click)="onCancel()">close</mat-icon>
+        <mat-icon data-qa="documentation-standards-table-save" (click)="onSave(element.propertyId)">check</mat-icon>
+        <mat-icon data-qa="documentation-standards-table-cancel" (click)="onCancel()">close</mat-icon>
       </ng-template>
     </td>
   </ng-container>
@@ -44,7 +46,7 @@
   <ng-container matColumnDef="delete">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">
-      <mat-icon *ngIf="!nodeIsEditable()" (click)="onDelete(element)" style="color: #CF3030">delete</mat-icon>
+      <mat-icon data-qa="documentation-standards-table-delete" *ngIf="!nodeIsEditable()" (click)="onDelete(element)" style="color: #CF3030">delete</mat-icon>
     </td>
   </ng-container>
 

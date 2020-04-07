@@ -47,8 +47,9 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public canSelectWorkpackage = true;
   public workpackageId: string;
   public workPackageIsEditable: boolean;
-  public scopeId: string;
+  public scopeId = '00000000-0000-0000-0000-000000000000';
   public workPackageIds: string[];
+  public selectedWorkPackageEntities: WorkPackageEntity[];
 
   private subscriptions: Subscription[] = [];
 
@@ -80,7 +81,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
         if (scope) {
           this.scopeStore.dispatch(new LoadScope(scope));
         } else {
-          this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
+          this.scopeStore.dispatch(new LoadScope(this.scopeId));
         }
       });
 
@@ -88,6 +89,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.selectedWorkPackageEntities = workpackages;
         const wpIds = workpackages.map(item => item.id);
         this.workPackageIds = wpIds;
         this.getReports(wpIds);
@@ -128,12 +130,12 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   }
 
   onSelectReport(row: ReportLibrary) {
-    this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' } );
+    this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
   }
 
   openLeftTab(tab: number | string): void {
-    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
-    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
+    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
+    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
     if (!this.drawer.opened) {
       this.selectedLeftTab = 'menu';
     }
@@ -226,4 +228,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     });
   }
 
+  onExitWorkPackageEditMode(): void {
+    this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
+  }
 }

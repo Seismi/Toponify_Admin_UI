@@ -59,8 +59,29 @@
       (delete)="onDeleteOwner($event)"
     >
     </smi-owners-table-in-architecture>
+
+
+    <smi-source-or-target-table
+      *ngIf="clickedOnLink"
+      [title]="'Source'"
+      [data]="sourceObject"
+      (edit)="editSourceOrTarget.emit('source')"
+      [workPackageIsEditable]="workPackageIsEditable"
+    >
+    </smi-source-or-target-table>
+
+    <smi-source-or-target-table
+      *ngIf="clickedOnLink"
+      [title]="'Target'"
+      [data]="targetObject"
+      (edit)="editSourceOrTarget.emit('target')"
+      [workPackageIsEditable]="workPackageIsEditable"
+    >
+    </smi-source-or-target-table>
+
+
     <smi-group-info-table
-      *ngIf="!clickedOnLink"
+      *ngIf="!clickedOnLink && !attributesPage"
       [groupInfo]="groupInfo" 
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"
@@ -78,5 +99,14 @@
       (deleteRelatedAttribute)="onDeleteRelatedAttribute()"
     >
     </smi-related-attribute-table>
+    <div *ngIf="!attributesPage">
+      <div *ngIf="isNode">
+        <button mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
+        <button mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
+      </div>
+      <div *ngIf="isLink()">
+        <button class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
+      </div>
+    </div>
   </div>
 </form>

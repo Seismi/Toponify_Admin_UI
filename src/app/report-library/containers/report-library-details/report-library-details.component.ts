@@ -19,7 +19,9 @@ import {
   ReportActionTypes,
   AddReportTags,
   LoadReportTags,
-  DeleteReportTags
+  DeleteReportTags,
+  AddReportRadio,
+  LoadReports
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected, getReportAvailableTags } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
@@ -48,6 +50,14 @@ import { SelectModalComponent } from '@app/core/layout/components/select-modal/s
 import { Actions, ofType } from '@ngrx/effects';
 import { getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeEntity } from '@app/scope/store/models/scope.model';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
+import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
+import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
+import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
+import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -75,6 +85,8 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   scope: ScopeEntity;
 
   constructor(
+    private radioStore: Store<RadioState>,
+    private teamStore: Store<TeamState>,
     private actions: Actions,
     private workPackageStore: Store<WorkPackageState>,
     private route: ActivatedRoute,
@@ -118,7 +130,20 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.store.pipe(select(getScopeSelected)).subscribe(scope => this.scope = scope)
-    )
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(
+        ReportActionTypes.AddReportTagsSuccess,
+        ReportActionTypes.DeleteReportTagsSuccess
+      )).subscribe(_ => {
+        const queryParams = {
+          workPackageQuery: [this.workpackageId],
+          scopeQuery: this.scope.id
+        };
+        this.store.dispatch(new LoadReports(queryParams));
+      })
+    );
   }
 
   getReport(workpackageIds: string[] = []) {
@@ -186,53 +211,53 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddOwner() {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
+    const ids = new Set(this.report.owners.map(({ id }) => id));
+    this.teamStore.dispatch(new LoadTeams({}));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: `Select owner to add to owners`,
+        placeholder: 'Owners',
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
+          map(data => data.filter(({ id }) => !ids.has(id)))
+        ),
+        selectedIds: []
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
+      if (data && data.value) {
         this.store.dispatch(
           new AddOwner({
             workPackageId: this.workpackageId,
             reportId: this.reportId,
-            ownerId: data.owner.id
+            ownerId: data.value[0].id
           })
         );
       }
-      this.isEditable = true;
     });
   }
 
-  onSelectOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity) {
-    this.ownerId = owner.id;
-    this.ownerName = owner.name;
-    this.selectedOwner = true;
-    this.selectedOwnerIndex = owner.id;
-  }
-
-  onDeleteOwner() {
-    const dialogRef = this.dialog.open(ReportDeleteModalComponent, {
+  onDeleteOwner(ownerId: string) {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
-      width: 'auto',
+      width: '500px',
       data: {
-        mode: 'delete',
-        name: this.ownerName
+        title:
+         'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(
           new DeleteOwner({
             workPackageId: this.workpackageId,
             reportId: this.reportId,
-            ownerId: this.ownerId
+            ownerId: ownerId
           })
         );
-        this.selectedOwner = false;
-        this.isEditable = true;
       }
     });
   }
@@ -419,7 +444,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         reportId: this.report.id,
         tagIds: [{ id: tagId }]
       })
-    )
+    );
   }
 
   onRemoveTag(tag: Tag): void {
@@ -431,4 +456,52 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       })
     )
   }
+
+  onRaiseNew(): void {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '650px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio } }));
+        this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
+          const radioId = action.payload.id;
+          this.store.dispatch(
+            new AddReportRadio({
+              workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+              reportId: this.reportId,
+              radioId: radioId
+            })
+          );
+        });
+      }
+    });
+  }
+
+  onAssignRadio(): void {
+    const dialogRef = this.dialog.open(RadioListModalComponent, {
+      disableClose: false,
+      width: '650px',
+      height: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.store.dispatch(
+          new AddReportRadio({
+            workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+            reportId: this.reportId,
+            radioId: data.radio.id
+          })
+        );
+      }
+    });
+
+    dialogRef.componentInstance.addNewRadio.subscribe(() => {
+      this.onRaiseNew();
+    });
+  }
+
 }

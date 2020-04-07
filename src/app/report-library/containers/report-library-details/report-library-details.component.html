@@ -26,7 +26,7 @@
             [selectedOwner]="selectedOwner"
             (addOwner)="onAddOwner()"
             (selectOwner)="onSelectOwner($event)"
-            (deleteOwner)="onDeleteOwner()"
+            (deleteOwner)="onDeleteOwner($event)"
             (editSourceSystem)="onEditSourceSystem()"
             (addDataSets)="onAddDataSets(report.id)"
             (removeDataSet)="onRemoveDataSet($event, report.id)"
@@ -62,7 +62,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="RADIO">track_changes</mat-icon>
         </ng-template>
-        <smi-radio-table-in-reports-page [data]="report?.relatedRadios" data-qa="reports-radio-table"> </smi-radio-table-in-reports-page>
+        <smi-related-radio-table
+          [data]="report?.relatedRadios"
+          (raiseNew)="onRaiseNew()"
+          (assignRadio)="onAssignRadio()"
+        >
+        </smi-related-radio-table>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>

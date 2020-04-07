@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import {layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
+import {endPointTypes, layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
 import {linkCategories, RoutesEntityEntity} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
@@ -51,6 +51,157 @@ export const moreDetailOrderMapping = {
   [Level.dataSet]: Level.dimension,
   [Level.dimension]: Level.reportingConcept
 };
+
+// Define custom layout for top level nodes in map view
+function MapViewLayout() {
+  go.Layout.call(this);
+}
+go.Diagram.inherit(MapViewLayout, go.Layout);
+
+MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
+  const allParts = this.collectParts(coll);
+
+  // Lists of source groups, target groups and transformation nodes
+  const sourceGroups = new go.List<go.Group>();
+  const targetGroups = new go.List<go.Group>();
+  const transformationNodes = new go.List<go.Node>();
+
+  // Populate node lists
+  allParts.each(function(part: go.Part) {
+    if (part.data.endPointType === endPointTypes.source) {
+      sourceGroups.add(part as go.Group);
+    } else if (part.data.endPointType === endPointTypes.target) {
+      targetGroups.add(part as go.Group);
+    } else if (part.category === nodeCategories.transformation) {
+      transformationNodes.add(part as go.Node);
+    }
+  });
+
+  this.diagram.startTransaction('Map View Layout');
+
+  // Set initial location to place nodes as the origin
+  const nextLocation = new go.Point(0, 0);
+
+  // Sort source groups so that groups without any linked members appear at the bottom
+  sourceGroups.sort(function(a: go.Group, b: go.Group): number {
+    const aLinks = a.findExternalLinksConnected().count;
+    const bLinks = b.findExternalLinksConnected().count;
+
+    if (aLinks === 0 && bLinks !== 0) {
+      return 1;
+    } else if (bLinks === 0 && aLinks !== 0) {
+      return -1;
+    } else {
+      return 0;
+    }
+  });
+
+  // Place source groups in a descending list
+  sourceGroups.each(function(source: go.Group): void {
+    source.move(nextLocation.copy(), true);
+    // Set location of next source group to be below the previously set group with a small gap
+    nextLocation.offset(0, source.actualBounds.height + 15);
+  });
+
+  // Function to return the number of member nodes connected between a given source and target group.
+  //   Includes member nodes directly linked as well as nodes connected through a transformation node
+  function countConnections(source: go.Group, target: go.Group): number {
+    // Initialise connections count
+    let totalConnections = 0;
+    // For each node linked to a target member node...
+    target.findExternalNodesConnected().each(function(node: go.Node): void {
+      // ...if node is a member of the source group then increment count of connections
+      if (node.containingGroup && node.containingGroup.key === source.key) {
+        totalConnections++;
+        // ...if node is transformation node then increase connection count by number of linked source group members
+      } else if (node.category === nodeCategories.transformation) {
+        node.findNodesInto().each(function(node2: go.Node): void {
+          if (node2.containingGroup && node2.containingGroup.key === source.key) {
+            totalConnections++;
+          }
+        });
+      }
+    });
+    return totalConnections;
+  }
+
+  // Sort target groups according to number of connections to each source group
+  targetGroups.sort(function(a: go.Group, b: go.Group): number {
+
+    // Sort by connections to first source group, then each subsequent source group in order
+    for (let i = 0; i < sourceGroups.count; i++) {
+      const sourceGroup = sourceGroups.elt(i);
+
+      const aLinks = countConnections(sourceGroup, a);
+      const bLinks = countConnections(sourceGroup, b);
+
+      // If one target group has more connections then use this to order them.
+      //   Otherwise, continue and attempt to order using connections to subsequent source group.
+      if (aLinks !== bLinks) {
+        return bLinks - aLinks;
+      }
+    }
+
+    // If both target groups have equal numbers of connections to all source groups
+    //   then neither group has priority in ordering
+    return 0;
+  });
+
+  // Set initial location for target groups.
+  // Place to the right of source groups.
+  nextLocation.setTo(600, 0);
+
+  // Place target groups in a descending list
+  targetGroups.each(function(target: go.Group): void {
+    target.move(nextLocation.copy(), true);
+    // Set location of next target group to be below the previously set group with a small gap
+    nextLocation.offset(0, target.actualBounds.height + 15);
+  });
+
+  // Sort transformation nodes depending on vertical distance of linked nodes
+  transformationNodes.sort(function(a: go.Node, b: go.Node): number {
+
+    // Function to return average height of nodes linked to the given node
+    function getAverageLinkedHeight(node) {
+      let totalLinkedHeight = 0;
+      // Sum the Y co-ordinate values of connected nodes
+      node.findNodesConnected().each(function(connectedNode: go.Node) {
+        totalLinkedHeight += connectedNode.location.y;
+      });
+      // Divide total by number of connections to work out the average
+      return totalLinkedHeight / node.findNodesConnected().count;
+    }
+
+    const averageHeightA = getAverageLinkedHeight(a);
+    const averageHeightB = getAverageLinkedHeight(b);
+
+    // Sort based on difference between the averages for the two nodes
+    return averageHeightA - averageHeightB;
+  });
+
+  // Calculate suitable gap between transformation nodes to ensure an even spread
+  //    Determine available vertical space adjacent to the source and target groups
+  const lowestGroupPoint = Math.max(
+    // Set to 0 in case no source or target groups found
+    sourceGroups.last() ? sourceGroups.last().actualBounds.bottom : 0,
+    targetGroups.last() ? targetGroups.last().actualBounds.bottom : 0
+  );
+  //    Get a suitable gap between each node based on available space and number of transformation nodes
+  const step = lowestGroupPoint / (transformationNodes.count + 1);
+
+  // Set initial location for transformation nodes.
+  // Place in between source and target groups.
+  nextLocation.setTo(300, step - 27);
+
+  transformationNodes.each(function(trans: go.Node): void {
+    trans.move(nextLocation.copy(), true);
+    // Set location of the next node to be below the previous node, separated by the predetermined gap
+    nextLocation.offset(0, step);
+  });
+
+  this.diagram.commitTransaction('Map View Layout');
+};
+// End map view layout
 
 @Injectable()
 export class DiagramLevelService {
@@ -115,8 +266,10 @@ export class DiagramLevelService {
     );
   }
 
-  displayGroupMembers() {
-
+  displayGroupMembers(_event: any, object: go.Node) {
+    this.store.dispatch(
+      new UpdateQueryParams({ filterLevel: Level.system, id: object.data.id, groupName: object.data.name })
+    );
   }
 
   displayMapView(event: go.DiagramEvent, object: go.Part): void {
@@ -204,7 +357,7 @@ export class DiagramLevelService {
     const linkLayer =
       level === Level.systemMap ? layers.dataSet : level === Level.dataSetMap ? layers.dimension : level.toLowerCase();
 
-    if (level !== Level.usage) {
+    if (level !== Level.usage && !level.includes('map')) {
       paletteViewLinks.push({
         category: linkCategories.masterData,
         id: 'New master data link',
@@ -216,6 +369,9 @@ export class DiagramLevelService {
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForMasterDataLinks(level)
       });
+    }
+
+    if (level !== Level.usage) {
 
       let transformationLayer;
 
@@ -336,7 +492,7 @@ export class DiagramLevelService {
       );
     }
 
-    if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
+    if ([Level.system, Level.dataSet].includes(level)) {
       paletteViewLinks.push({
         category: linkCategories.data,
         id: 'New data link',
@@ -371,7 +527,7 @@ export class DiagramLevelService {
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
       copiesKey: false,
-      makeUniqueKeyFunction: function() {
+      makeUniqueKeyFunction: function(model: go.Model, data: go.ObjectData) {
         return uuid();
       },
       makeUniqueLinkKeyFunction: function() {
@@ -379,12 +535,19 @@ export class DiagramLevelService {
       }
     });
 
+    diagram.parts.each(function(part) {
+      if (part.category === 'lane') {
+        diagram.remove(part);
+      }
+    });
+
+    if (level === Level.usage) {
+      this.createNodeUsageLanes(diagram);
+    }
+
     // Settings and layout for map view
     if (level.endsWith('map')) {
-      diagram.layout = $(go.GridLayout, {
-        spacing: new go.Size(100, 100),
-        alignment: go.GridLayout.Position,
-        wrappingWidth: Infinity,
+      diagram.layout = $(MapViewLayout as any, {
         isInitial: true,
         isOngoing: true
       });
@@ -404,5 +567,54 @@ export class DiagramLevelService {
 
     this.paletteNodesSource.next(paletteViewNodes);
     this.paletteLinksSource.next(paletteViewLinks);
+  }
+
+  // Create parts to represent swim lanes to indicate layers when in node usage view
+  createNodeUsageLanes(diagram: go.Diagram): void {
+
+    [layers.system,
+     layers.dataSet,
+     layers.dimension,
+     layers.reportingConcept ].forEach(
+       function(layer) {
+         diagram.add(
+           $(go.Part, 'Horizontal',
+             {
+               selectable: false,
+               name: layer,
+               category: 'lane',
+               locationObjectName: 'shape'
+             },
+             // Label section of the lane
+             $(go.Panel, 'Auto',
+               {
+                 stretch: go.GraphObject.Vertical,
+                 width: 50
+               },
+               $(go.Shape,
+                 {
+                   fill: null
+                 }
+               ),
+               $(go.TextBlock,
+                 {
+                   angle: 270,
+                   text: layer,
+                   margin: 2,
+                   font: '18px ' + getComputedStyle(document.body).getPropertyValue('--default-font')
+                 }
+               )
+             ),
+             // Area to enclose nodes from the lane's layer
+             $(go.Shape,
+               {
+                 name: 'shape',
+                 fill: null
+               }
+             )
+           )
+         );
+       }
+     );
   }
 }

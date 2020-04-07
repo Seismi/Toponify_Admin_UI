@@ -1,6 +1,9 @@
 <!--  FIXME: when mat-table component added into dom, it also add additional styles for table, with out mat-table component styles not added. Find out why. -->
 <!-- <table mat-table></table> -->
 <div class="wrapper">
+  <div class="search-container">
+    <input placeholder="Search" #searchInput (keydown)="$event.stopPropagation()">
+  </div>
   <table class="mat-table">
     <thead>
       <tr class="mat-header-row">
@@ -20,7 +23,7 @@
 
 <!-- Templates -->
 <ng-template #trTemplate let-data="data" let-category="category">
-  <ng-container *ngFor="let entry of data">
+  <ng-container *ngFor="let entry of (data | searchPipe: searchInput.value)">
     <tr class="mat-row" [ngClass]="{ highlight: selectedRowIndex == entry.id }" (click)="onSelectRow(entry)">
       <td class="mat-cell" (click)="entry.collapsed = !entry.collapsed">
         <app-table-collapse [entry]="entry"></app-table-collapse>

@@ -1,9 +1,16 @@
 .title {
-  font-size: 25px;
+  font-size: 22px;
+  color: #555;
+  text-transform: uppercase;
+  margin-top: 22px;
 }
 
 table {
   width: 100%;
+}
+
+.mat-elevation-z8, .mat-paginator {
+  border-radius: 5px;
 }
 
 tr.mat-header-row {
@@ -22,4 +29,34 @@ tr.mat-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.search-container {
+  width: 100%;
+  padding: 10px;
+  background-color: #eee;
+  border-radius: 5px 5px 0px 0px;
+  input {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: solid 1px #eee;
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.create-new-btn {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 15px;
+  .mat-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    margin-top: 4px;
+    padding: 0;
+  }
 }

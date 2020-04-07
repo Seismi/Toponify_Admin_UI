@@ -21,6 +21,7 @@ export class ComponentsTableComponent {
 
   @Output() add = new EventEmitter<void>();
   @Output() delete = new EventEmitter<any>();
+  @Output() itemClick = new EventEmitter<any>();
 
   public dataSource: MatTableDataSource<NodeDetail>;
   public displayedColumns: string[] = ['name', 'arrow-up', 'arrow-down', 'actions'];

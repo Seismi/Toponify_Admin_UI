@@ -1,0 +1,16 @@
+<mat-icon (click)="zoomIn.emit()" matTooltip="Zoom In">zoom_in</mat-icon>
+<mat-icon (click)="zoomOut.emit()" matTooltip="Zoom Out">zoom_out</mat-icon>
+<mat-icon (click)="zoomToFit.emit()" matTooltip="Fit To Screen">zoom_out_map</mat-icon>
+<mat-icon (click)="showGrid.emit()" matTooltip="Grid">{{ grid ? 'border_clear' : 'border_inner' }}</mat-icon>
+<mat-icon (click)="editLayout.emit()" [ngClass]="{ disable: dependenciesView }" matTooltip="Edit layout of objects in the canvas">{{ !allowMove ? 'brush' : 'close' }}</mat-icon>
+<mat-icon style="margin-right: 20px;" (click)="downloadImage.emit()" matTooltip="Download image of the layout">get_app</mat-icon>
+<mat-icon *ngIf="allowSave" (click)="saveLayout.emit()" matTooltip="Save">save</mat-icon>
+<mat-icon *ngIf="allowSaveAs" (click)="saveAsLayout.emit()" matTooltip="Save as">file_copy</mat-icon>
+<smi-layouts-dropdown
+  (selectLayout)="selectLayout.emit($event)"
+  [selectedLayout]="selectedLayout"
+  (addLayout)="addLayout.emit()"
+  [data]="layouts"
+>
+</smi-layouts-dropdown>
+<mat-icon (click)="layoutSettings.emit()" [ngClass]="{ disable: selectedLayout?.id === '00000000-0000-0000-0000-000000000000' }" matTooltip="Layout Settings">settings_applications</mat-icon>

@@ -28,7 +28,11 @@ export enum ScopeActionTypes {
 
   DeleteScope = '[Scope] Delete Scope entity',
   DeleteScopeSuccess = '[Scope] Delete Scope entity Success',
-  DeleteScopeFailure = '[Scope] Delete Scope entity Failure'
+  DeleteScopeFailure = '[Scope] Delete Scope entity Failure',
+
+  AddScopeNodes = '[Scope] Add Scope Nodes',
+  AddScopeNodesSuccess = '[Scope] Add Scope Nodes Success',
+  AddScopeNodesFailure = '[Scope] Add Scope Nodes Failure'
 }
 
 export class LoadScopes implements Action {
@@ -106,6 +110,21 @@ export class DeleteScopeFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddScopeNodes implements Action {
+  readonly type = ScopeActionTypes.AddScopeNodes;
+  constructor(public payload: { scopeId: string, data: string[] }) {}
+}
+
+export class AddScopeNodesSuccess implements Action {
+  readonly type = ScopeActionTypes.AddScopeNodesSuccess;
+  constructor(public payload: AddScopeApiResponse) {}
+}
+
+export class AddScopeNodesFailure implements Action {
+  readonly type = ScopeActionTypes.AddScopeNodesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ScopeActionsUnion =
   | LoadScopes
   | LoadScopesSuccess
@@ -121,4 +140,7 @@ export type ScopeActionsUnion =
   | UpdateScopeFailure
   | DeleteScope
   | DeleteScopeSuccess
-  | DeleteScopeFailure;
+  | DeleteScopeFailure
+  | AddScopeNodes
+  | AddScopeNodesSuccess
+  | AddScopeNodesFailure;

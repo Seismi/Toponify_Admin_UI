@@ -30,7 +30,9 @@ export class AppComponent implements AfterViewInit {
       'sys-master-data',
       'sys-reporting',
       'sys-transactional',
-      'data-interface'
+      'data-interface',
+      'transformation',
+      'group'
     ];
 
     const tagIcons = ['tag_cloud', 'tag_external', 'tag_process', 'tag_timer', 'tag_user'];

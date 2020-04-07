@@ -14,23 +14,18 @@
         <smi-left-panel
           *ngIf="selectedLeftTab !== 'menu'"
           (tabClick)="onTabClick($event)"
-          [viewLevel]="viewLevel$ | async"
           [workpackages]="workpackage$ | async"
           [workPackageIsEditable]="workPackageIsEditable"
-          (displayOptionsChangedEvent)="displayOptionsChanged($event)"
           (selectWorkPackage)="onSelectWorkPackage($event)"
           (selectColour)="selectColourForWorkPackage($event)"
           (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
           [selectedLeftTab]="selectedLeftTab"
-          [checked]="radioAlertChecked"
           [canSelectWorkpackages]="canSelectWorkpackages"
-          (addLayout)="onAddLayout()"
           [group]="layoutSettingsForm"
           [layout]="layout"
-          (filterRadioSeverity)="onFilterRadioSeverity()"
-          (collapseAllNodes)="onCollapseAllNodes()"
-          (summariseAllNodes)="onSummariseAllNodes()"
-          (expandAll)="onExpandAll()"
+          [currentFilterLevel]="currentFilterLevel"
+          (addInterface)="onAddComponentOrLink($event)"
+          (addLinkWithTransformation)="onAddLinkWithTransformation()"
         >
         </smi-left-panel>
       </smi-left-hand-pane-content>
@@ -41,8 +36,8 @@
       <smi-workpackage-name
         [selectedWorkPackageEntities]="selectedWorkPackageEntities"
         [workPackageIsEditable]="workPackageIsEditable"
-        [workPackageName]="workPackageName"
-        (exitWorkPackageEditMode)="onSelectEditWorkpackage($event)">
+        (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
+        (editWorkPackage)="onSelectEditWorkpackage($event)">
       </smi-workpackage-name>
       <app-search></app-search>
       <app-toolbar-column>
@@ -53,11 +48,7 @@
           [gojsView]="true"
           [scopes]="scopes$ | async"
           [selectedScope]="selectedScope$ | async"
-          [layouts]="scopeDetails$ | async"
           (selectScope)="onSelectScope($event)"
-          (selectLayout)="onSelectLayout($event)"
-          [selectedLayout]="selectedLayout$ | async"
-          (addLayout)="onAddLayout()"
         >
         </smi-quicklinks-actions>
       </app-toolbar-column>
@@ -76,8 +67,7 @@
         >
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
-          <smi-layout-actions
-            class="diagram-actions"
+          <smi-diagram-actions
             *ngIf="selectedView === ArchitectureView.Diagram"
             [grid]="showGrid"
             [allowMove]="allowMove"
@@ -90,22 +80,36 @@
             (saveLayout)="onSaveLayout()"
             (saveAsLayout)="onSaveAsLayout()"
             [allowSave]="!!draft"
-            [allowSaveAs]="false"
+            [allowSaveAs]="true"
+            [dependenciesView]="dependenciesView"
+            (layoutSettings)="openLayoutSettingsModal()"
+            [layouts]="scopeDetails$ | async"
+            [selectedLayout]="selectedLayout$ | async"
+            (addLayout)="onAddLayout()"
+            (selectLayout)="onSelectLayout($event)"
+            [filterLevel]="filterLevel"
+            (exitDependenciesView)="exitDependenciesView()"
+            (exitUsageView)="exitUsageView()"
           >
-          </smi-layout-actions>
+          </smi-diagram-actions>
           <app-architecture-diagram
             [mapView]="mapView"
             [showGrid]="showGrid"
             [allowMove]="allowMove"
             [workPackageIsEditable]="workPackageIsEditable"
             *ngIf="!showTable"
-            [nodes]="nodes | layer: { byId: byId, descendantIds$: parentDescendantIds, level: currentFilterLevel } | async"
+            [nodes]="nodes | layer: { byId: byId,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds,
+              level: currentFilterLevel
+            } | async"
             [links]="links | layer: { byId: false } | async"
             [workpackageDetail]="workpackageDetail"
             [selectedId]="selectedId"
             [selectedWorkPackages]="selectedWorkPackages$ | async"
             [workpackages]="workpackage$ | async"
             [viewLevel]="viewLevel$ | async"
+            [layoutSettings]="layoutSettings"
             (partsSelected)="partsSelected($event)"
             (modelChanged)="modelChanged($event)"
             (nodeDeleteRequested)="handleNodeDeleteRequested($event)"
@@ -119,7 +123,10 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.System">
           <smi-architecture-table-view
-            [data]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [data]="nodes | layer: { byId: byId,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds
+            } | async"
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
             (changeLevel)="onChangeLevel($event)"
@@ -127,7 +134,7 @@
             [view]="'system'"
             [filterValue]="tableViewFilterValue"
             [workPackageIsEditable]="workPackageIsEditable"
-            (add)="onAddComponentOrLink()"
+            (add)="onAddComponentOrLink('component')"
           ></smi-architecture-table-view>
         </div>
         <div *ngIf="selectedView === ArchitectureView.Links">
@@ -140,7 +147,7 @@
             [view]="'link'"
             [filterValue]="tableViewFilterValue"
             [workPackageIsEditable]="workPackageIsEditable"
-            (add)="onAddComponentOrLink()"
+            (add)="onAddComponentOrLink('link')"
           ></smi-architecture-table-view>
         </div>
       </app-model-content>
@@ -152,11 +159,13 @@
         [multipleSelected]="multipleSelected"
         [filterLevel]="['system', 'data set'].indexOf(currentFilterLevel) != -1"
         [clickedOnLink]="clickedOnLink"
+        [nodeCategory]="part?.data.category"
       >
       </smi-right-sidebar>
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
+            (itemClick)="itemClick($event)"
             [owners]="selectedNode?.owners"
             [selectedRightTab]="selectedRightTab"
             [group]="objectDetailsForm"
@@ -175,6 +184,7 @@
             (addRadio)="onAddRadio()"
             [multipleSelected]="multipleSelected"
             (addScope)="onAddScope()"
+            (addToScope)="onAddToScope()"
             (addOwner)="onAddOwner()"
             (deleteOwner)="onDeleteOwner($event)"
             (saveProperties)="onSaveProperties($event)"
@@ -185,7 +195,10 @@
             (addExistingScope)="onAddExistingScope()"
             (addNewScope)="onAddNewScope()"
             [selectedView]="selectedView"
-            [nodes]="nodes | layer: { byId: true, descendantIds$: parentDescendantIds } | async"
+            [nodes]="nodes | layer: { byId: false,
+              descendantIds$: parentDescendantIds,
+              groupMemberIds$: groupMemberIds
+            } | async"
             [selectedNode]="selectedNode"
             (selectNode)="onSelectNode($event)"
             [links]="links | layer: { byId: false} | async"
@@ -215,6 +228,12 @@
             (deleteDescendants)="onDeleteDescendant($event)"
             (deleteNodeGroup)="onDeleteNodeGroup($event)"
             [currentFilterLevel]="currentFilterLevel"
+            (seeUsage)="onSeeUsage()"
+            (seeDependencies)="onSeeDependencies()"
+            (viewStructure)="onViewStructure()"
+            [sourceObject]="selectedNode?.sourceObject"
+            [targetObject]="selectedNode?.targetObject"
+            (editSourceOrTarget)="onEditSourceOrTarget($event)"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

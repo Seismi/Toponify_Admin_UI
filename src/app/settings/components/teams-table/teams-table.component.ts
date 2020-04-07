@@ -36,4 +36,8 @@ export class TeamsTableComponent {
   onAdd(): void {
     this.addTeam.emit();
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }
