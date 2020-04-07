@@ -112,15 +112,13 @@ export class DiagramTemplatesService {
       },
       forPalette
         ? {
-            // Set locationSpot in order for palette to arrange link correctly
-            locationSpot: go.Spot.TopCenter,
             // Correct locationSpot on selection highlight adornment when link in palette
             selectionAdornmentTemplate: $(
               go.Adornment,
               'Link',
-              {
-                locationSpot: new go.Spot(0.5, 0, 1, 0)
-              },
+              new go.Binding('locationSpot', '', function(linkData): go.Spot {
+                return (linkData.from || linkData.to) ? go.Spot.TopLeft : new go.Spot(0.5, 0, 1, 0);
+              }),
               $(go.Shape, {
                 isPanelMain: true,
                 fill: null,
@@ -1292,6 +1290,11 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      forPalette ?
+        // Set locationSpot in order for palette to arrange link correctly
+        new go.Binding('locationSpot', '', function(linkData): go.Spot {
+          return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
+        }) : {},
       new go.Binding('relinkableFrom', 'isTemporary', function(isTemp) {
         return !this.currentFilterLevel.includes('map') || isTemp;
       }.bind(this)),
@@ -1365,6 +1368,11 @@ export class DiagramTemplatesService {
 
         return Path;
       }),
+      forPalette ?
+        // Set locationSpot in order for palette to arrange link correctly
+        new go.Binding('locationSpot', '', function(linkData): go.Spot {
+          return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
+        }) : {},
       new go.Binding('relinkableFrom', 'isTemporary', function(isTemp) {
         return !this.currentFilterLevel.includes('map') || isTemp;
       }.bind(this)),
