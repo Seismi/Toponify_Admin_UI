@@ -109,6 +109,7 @@
             [selectedWorkPackages]="selectedWorkPackages$ | async"
             [workpackages]="workpackage$ | async"
             [viewLevel]="viewLevel$ | async"
+            [layoutSettings]="layoutSettings"
             (partsSelected)="partsSelected($event)"
             (modelChanged)="modelChanged($event)"
             (nodeDeleteRequested)="handleNodeDeleteRequested($event)"

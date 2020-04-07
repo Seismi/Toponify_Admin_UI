@@ -21,4 +21,8 @@ export class AttributesTableInReportsPageComponent {
 
   public dataSource: MatTableDataSource<AttributesEntity>;
   public displayedColumns: string[] = ['category', 'name', 'description'];
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

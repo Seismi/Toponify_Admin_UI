@@ -35,11 +35,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { AttributeEffects } from './store/effects/attributes.effects';
 import { reducer } from './store/reducers/attributes.reducer';
 import { ArchitectureModule } from '@app/architecture/architecture.module';
-import { AttributeDetailComponent } from './components/attribute-detail/attribute-detail.component';
 import { AttributeModalComponent } from './containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailsComponent } from './containers/attribute-details/attribute-details.component';
 import { PropertiesTableInAttributesPageComponent } from './components/properties-table/properties-table.component';
-import { RadioTableInAttributesPageComponent } from './components/radio-table/radio-table.component';
 import { WorkPackageTableInAttributesPageComponent } from './components/workpackage-table/workpackage-table.component';
 import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
 import { RelatedAttributesModalComponent } from './containers/related-attributes-modal/related-attributes-modal.component';
@@ -82,7 +80,6 @@ import { RelatedAttributesModalComponent } from './containers/related-attributes
     AttributeDetailsComponent,
     AttributesRoutingComponent,
     PropertiesTableInAttributesPageComponent,
-    RadioTableInAttributesPageComponent,
     WorkPackageTableInAttributesPageComponent,
     AttributesListComponent,
     RelatedAttributesModalComponent

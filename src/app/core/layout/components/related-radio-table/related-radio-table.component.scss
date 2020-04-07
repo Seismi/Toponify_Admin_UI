@@ -1,28 +1,20 @@
 table {
   width: 100%;
+  tr.mat-header-row {
+    height: 45px;
+  }
+  tr.mat-row {
+    cursor: pointer;
+  }
+  td.mat-column-navigate {
+    width: 10%;
+  }
 }
 
-tr.mat-header-row {
-  height: 45px;
-}
-
-th.mat-column-delete {
-  width: 5%;
-}
-
-th.mat-column-edit {
-  width: 5%;
-}
-
-.mat-icon {
-  cursor: pointer;
-}
-
-button {
-  margin-top: 10px;
-  margin-left: 15px;
-  border-radius: 15px;
-  font-weight: lighter;
+.actions {
+  margin: 10px 5px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .search-container {
