@@ -73,8 +73,11 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Work Packages">business_center</mat-icon>
         </ng-template>
-        <smi-workpackage-table-in-reports-page [data]="report?.relatedWorkPackages" data-qa="reports-related-work-package-table">
-        </smi-workpackage-table-in-reports-page>
+        <smi-related-work-package-table
+          data-qa="reports-related-work-package-table"
+          [data]="report?.relatedWorkPackages"
+        >
+        </smi-related-work-package-table>
       </mat-tab>
     </mat-tab-group>
   </p>

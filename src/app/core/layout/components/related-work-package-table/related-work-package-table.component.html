@@ -1,4 +1,7 @@
 <div class="mat-elevation-z8">
+  <div class="search-container">
+    <input placeholder="Search" (keyup)="onSearch($event.target.value)">
+  </div>
   <table mat-table [dataSource]="dataSource">
     <!-- Name Column -->
     <ng-container matColumnDef="name">

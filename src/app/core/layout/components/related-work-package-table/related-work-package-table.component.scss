@@ -1,0 +1,22 @@
+table {
+  width: 100%;
+  tr.mat-header-row {
+    height: 35px;
+  }
+}
+
+.search-container {
+  width: 100%;
+  padding: 10px;
+  background-color: #eee;
+  input {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: solid 1px #eee;
+    &:focus {
+      outline: none;
+    }
+  }
+}
+

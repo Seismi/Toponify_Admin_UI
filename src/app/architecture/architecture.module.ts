@@ -46,7 +46,6 @@ import { DiagramLevelService } from './services/diagram-level.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
-import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
 import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
@@ -141,7 +140,6 @@ import { SearchPipe } from '@app/pipes/search.pipe';
     LeftPanelComponent,
     AnalysisTabComponent,
     DeleteNodeModalComponent,
-    WorkPackageTabComponent,
     AttributesTabComponent,
     DeleteLinkModalComponent,
     WorkPackageTabTableComponent,

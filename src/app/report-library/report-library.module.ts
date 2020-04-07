@@ -35,7 +35,6 @@ import { ReportDataSetTableComponent } from './components/data-set-table/data-se
 import { ReportOwnersTableComponent } from './components/owners-table/owners-table.component';
 import { ReportDimensionsTableComponent } from './components/dimensions-table/dimensions-table.component';
 import { ReportReportingConceptsTableComponent } from './components/reporting-concepts-table/reporting-concepts-table.component';
-import { WorkPackageTableInReportsPageComponent } from './components/workpackage-table/workpackage-table.component';
 import { ReportModalComponent } from './containers/report-modal/report-modal.component';
 import { ReportDeleteModalComponent } from './containers/report-delete-modal/report-delete-modal.component';
 import { TableHeaderComponent } from '@app/report-library/components/table-header/table-header.component';
@@ -81,7 +80,6 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     ReportOwnersTableComponent,
     ReportDimensionsTableComponent,
     ReportReportingConceptsTableComponent,
-    WorkPackageTableInReportsPageComponent,
     ReportModalComponent,
     ReportDeleteModalComponent,
     TableHeaderComponent,
