@@ -229,10 +229,9 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((params: any) => {
       return this.workpackageService.getWorkPackageAvailability(params).pipe(
-        switchMap((response: any) => [
-          new GetWorkpackageAvailabilitySuccess(response.data),
-          new SetWorkpackageEditMode({ newState: false })
-        ]),
+        switchMap((response: any) => {
+          return [new GetWorkpackageAvailabilitySuccess(response.data)];
+        }),
         catchError((error: HttpErrorResponse) => of(new GetWorkpackageAvailabilityFailure(error)))
       );
     })

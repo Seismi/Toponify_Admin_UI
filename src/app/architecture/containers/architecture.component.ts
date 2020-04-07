@@ -427,6 +427,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.subscriptions.push(
+      this.layoutStore.select(getLayoutSelected).subscribe(_ => {
+        this.workpackageStore.dispatch(new SetWorkpackageEditMode({ newState: false }));
+      })
+    );
+
     this.workpackageStore
       .pipe(select(workpackageSelectAllowed))
       .subscribe(canSelect => (this.canSelectWorkpackages = canSelect));
