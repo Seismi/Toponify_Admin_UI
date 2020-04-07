@@ -26,7 +26,7 @@ export class ReportLibraryTableComponent implements OnInit {
   @Output() download = new EventEmitter<void>();
 
   public dataSource: MatTableDataSource<ReportLibrary>;
-  public displayedColumns: string[] = ['name', 'dataSets'];
+  public displayedColumns: string[] = ['name', 'description', 'tags'];
   public selectedRowId: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
