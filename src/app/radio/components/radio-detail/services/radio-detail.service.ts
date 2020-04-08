@@ -23,7 +23,8 @@ export class RadioDetailService {
       createdOn: [null],
       lastUpdatedOn: [null],
       severity: [null],
-      frequency: [null]
+      frequency: [null],
+      relatesTo: [true]
     });
   }
 

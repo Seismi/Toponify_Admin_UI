@@ -11,6 +11,8 @@ import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-radio-modal',
@@ -24,6 +26,7 @@ export class RadioModalComponent implements OnInit {
   public modalMode = true;
   public radio: RadioDetail;
   public selectedNode = null;
+  public workpackages$: Observable<WorkPackageEntity[]>;
 
   constructor(
     private store: Store<UserState>,
@@ -38,6 +41,9 @@ export class RadioModalComponent implements OnInit {
   ngOnInit() {
     this.store.dispatch(new LoadUsers({}));
     this.users$ = this.store.pipe(select(getUsers));
+    if (this.data.selectedNode) {
+      this.workpackages$ = this.store.pipe(select(getWorkPackageEntities));
+    }
   }
 
   get radioDetailsForm(): FormGroup {

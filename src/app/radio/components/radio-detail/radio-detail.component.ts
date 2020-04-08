@@ -5,6 +5,7 @@ import { User } from '@app/settings/store/models/user.model';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import { Tag, NodeDetail } from '@app/architecture/store/models/node.model';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 interface Scores {
   level: number;
@@ -27,6 +28,7 @@ export class RadioDetailComponent {
   @Input() tags: Tag[];
   @Input() availableTags: Tag[];
   @Input() selectedNode: NodeDetail;
+  @Input() workpackages: WorkPackageEntity[];
 
   @Input()
   set data(data: any[]) {

@@ -146,9 +146,21 @@
       <div class="description-content" [innerHTML]="group.controls['mitigation'].value" [ngClass]="{hidden: isEditable}"></div>
     </mat-form-field>
 
-    <p *ngIf="modalMode && selectedNode">
-      “This RADIO will be associated to "{{ selectedNode.name }}" in the context of the following work packages”
-    </p>
+    <div *ngIf="modalMode && selectedNode">
+      <p>
+        “This RADIO will be associated to "{{ selectedNode.name }}" in the context of the following work packages”
+      </p>
+    
+      <mat-selection-list formControlName="relatesTo">
+        <mat-list-option 
+          *ngFor="let workpackage of workpackages" 
+          [value]="workpackage" 
+          [selected]="true"
+        >
+          {{ workpackage.name }}
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
   </div>
 
   <div class="radio-actions" *ngIf="!modalMode">
