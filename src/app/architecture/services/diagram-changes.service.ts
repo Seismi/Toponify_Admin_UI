@@ -27,6 +27,8 @@ export class DiagramChangesService {
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
+  private currentScope: string;
+  private currentNodeId: string;
   public dependenciesView = false;
 
   workpackages = [];
@@ -45,8 +47,10 @@ export class DiagramChangesService {
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
-    this.store.select(getFilterLevelQueryParams).subscribe(level => {
-      this.currentLevel = level;
+    this.store.select(getQueryParams).subscribe(params => {
+      this.currentLevel = params.filterLevel;
+      this.currentScope = params.scope;
+      this.currentNodeId = params.nodeId;
       this.dependenciesView = false;
     });
   }
@@ -119,9 +123,11 @@ export class DiagramChangesService {
                   addWorkPackageNodeParams.node.parentId = nodeId;
                 }
 
-                this.workpackageStore.dispatch(
-                  new AddWorkPackageNode(addWorkPackageNodeParams)
-                );
+                if (!node.isTemporary) {
+                  this.workpackageStore.dispatch(
+                    new AddWorkPackageNode(addWorkPackageNodeParams)
+                  );
+                }
               });
             });
           }
@@ -321,17 +327,27 @@ export class DiagramChangesService {
         newLink.targetId = link.toNode.data.id;
         newLink.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`;
 
-        this.workpackages.forEach(workpackage => {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageLink({
-              workpackageId: workpackage.id,
-              link: newLink
-            })
-          );
-        });
+        if (this.currentLevel.endsWith('map')) {
+          if (link.fromNode.data.isTemporary) {
+            this.createMapViewTransformationLink(link.fromNode);
+          } else if (link.toNode.data.isTemporary) {
+            this.createMapViewTransformationLink(link.toNode);
+          } else {
+            // create new link
+          }
+        } else {
+          this.workpackages.forEach(workpackage => {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageLink({
+                workpackageId: workpackage.id,
+                link: newLink
+              })
+            );
+          });
 
-        // Flag that link now exists in the database
-        link.data.isTemporary = false;
+          // Flag that link now exists in the database
+          link.data.isTemporary = false;
+        }
 
         if (draggingTool.isActive) {
           draggingTool.doDeactivate();
@@ -533,20 +549,6 @@ export class DiagramChangesService {
       return true;
     }
 
-    // When connecting links via drag and drop, the oldlink parameter is not passed.
-    // Therefore, set the value of this parameter here in this case.
-    if (!oldlink) {
-      const draggingTool = fromnode.diagram.toolManager.draggingTool;
-
-      // Copy of a link being created
-      if (draggingTool.copiedParts) {
-        oldlink = draggingTool.copiedParts.first().key as go.Link;
-      } else {
-        // Link being moved
-        oldlink = draggingTool.draggedParts.first().key as go.Link;
-      }
-    }
-
     // Prevent links between two transformation nodes
     if (fromnode.data.category === nodeCategories.transformation
       && tonode.data.category === nodeCategories.transformation) {
@@ -567,19 +569,6 @@ export class DiagramChangesService {
       if (fromnode.data.id === tonode.data.id) {
         return false;
       }
-    }
-
-    // Only validate master data links
-    if (oldlink.category === linkCategories.masterData) {
-      // Prevent multiple master data links between the same pair of nodes
-      const allLinks = fromnode.findLinksBetween(tonode);
-      return !allLinks.any(function(link) {
-        return (
-          link.data.category === linkCategories.masterData &&
-          // Don't count current link when checking if master data links already exist
-          oldlink.data.id !== link.data.id
-        );
-      });
     }
 
     return true;
@@ -1117,5 +1106,34 @@ export class DiagramChangesService {
   setBlueShadowHighlight(node: go.Node, highlight: boolean): void {
     node.shadowColor = highlight ? 'blue' : 'gray';
     node.shadowBlur = highlight ? 18 : 4;
+  }
+
+  createMapViewTransformationLink(node: go.Node): void {
+    const linksIn = [];
+    const linksOut = [];
+
+    node.findLinksInto().each(function(link) {
+      if (link.fromNode) {
+        linksIn.push(link.data);
+      }
+    });
+
+    node.findLinksOutOf().each(function(link) {
+      if (link.toNode) {
+        linksOut.push(link.data);
+      }
+    });
+
+    if (linksIn.length > 0 && linksOut.length > 0) {
+
+      const params: any = {
+        workpackageId: this.workpackages[0].id,
+        scope: this.currentScope,
+        nodeData: node.data,
+        linkData: [].concat(linksIn, linksOut)
+      };
+
+      // action to create stuff
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
+import { WorkPackageNodesService } from '@app/workpackage/services/workpackage-nodes.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
@@ -76,7 +77,8 @@ import {
   AddWorkPackageBaselineFailure,
   DeleteWorkPackageBaseline,
   DeleteWorkPackageBaselineSuccess,
-  DeleteWorkPackageBaselineFailure
+  DeleteWorkPackageBaselineFailure,
+  AddWorkPackageMapViewTransformation
 } from '../actions/workpackage.actions';
 import {
   OwnersEntityOrApproversEntity,
@@ -96,7 +98,8 @@ export class WorkPackageEffects {
   constructor(
     private store$: Store<WorkpackageState>,
     private actions$: Actions,
-    private workpackageService: WorkPackageService
+    private workpackageService: WorkPackageService,
+    private workpackageNodeService: WorkPackageNodesService
   ) {}
 
   @Effect()
@@ -390,6 +393,15 @@ export class WorkPackageEffects {
         switchMap((response: WorkPackageDetailApiResponse) => [new DeleteWorkPackageBaselineSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageBaselineFailure(error)))
       );
+    })
+  );
+
+  @Effect()
+  addWorkPackageMapViewTransformation$ = this.actions$.pipe(
+    ofType<AddWorkPackageMapViewTransformation>(WorkPackageActionTypes.AddWorkPackageMapViewTransformation),
+    map(action => action.payload),
+    mergeMap((payload: { workpackageId: string, scope: string, nodeData: any, linkData: any }) => {
+      const observables = []
     })
   );
 }
