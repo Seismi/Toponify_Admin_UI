@@ -9,12 +9,16 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
+import { Params } from '@angular/router';
+import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
+import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/services/node.service';
 import {
   AssociateTag,
   CreateTag,
   DissociateTag,
+  GetGroupMemberIds,
   GetParentDescendantIds,
   LoadAvailableTags,
   LoadMapView,
@@ -25,18 +29,16 @@ import {
   LoadNodes,
   LoadNodeUsageView,
   NodeActionTypes,
+  RemoveAllDraft,
+  RemoveGroupMemberIds,
   RemoveParentDescendantIds,
+  SetGroupMemberIds,
   SetParentDescendantIds,
   UpdateGroupAreaSize,
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations,
-  UpdateNodeOwners,
-  UpdatePartsLayout,
-  RemoveAllDraft,
-  RemoveGroupMemberIds,
-  GetGroupMemberIds,
-  SetGroupMemberIds
+  UpdatePartsLayout
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -45,26 +47,39 @@ import {
   LoadingStatus,
   middleOptions,
   Node,
+  NodeApiResponse,
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
   Tag,
-  TagApplicableTo,
-  NodeApiResponse
+  TagApplicableTo
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
+  getDraft,
+  getGroupMemberIds,
   getNodeEntities,
   getNodeLinks,
   getNodeReports,
   getParentDescendantIds,
-  getGroupMemberIds,
   getSelectedNode,
   getSelectedNodeLink,
-  getTopologyLoadingStatus,
-  getDraft
+  getTopologyLoadingStatus
 } from '@app/architecture/store/selectors/node.selector';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
+import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { RouterStateUrl } from '@app/core/store';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import {
+  getFilterLevelQueryParams,
+  getQueryParams,
+  getScopeQueryParams,
+  getWorkPackagesQueryParams
+} from '@app/core/store/selectors/route.selectors';
 import {
   AddLayout,
   LayoutActionTypes,
@@ -75,6 +90,7 @@ import {
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
+import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
@@ -82,15 +98,20 @@ import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import {
   AddScope,
+  AddScopeNodes,
   LoadScope,
   LoadScopes,
-  ScopeActionTypes,
-  AddScopeNodes
+  ScopeActionTypes
 } from '@app/scope/store/actions/scope.actions';
 import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeAndLayoutModalComponent } from '@app/scopes-and-layouts/containers/scope-and-layout-modal/scope-and-layout-modal.component';
+import { LoadTeams } from '@app/settings/store/actions/team.actions';
+import { TeamEntity } from '@app/settings/store/models/team.model';
+import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
+import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
+import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import {
   AddWorkPackageLink,
   AddWorkPackageLinkAttribute,
@@ -100,9 +121,9 @@ import {
   DeleteWorkpackageLinkOwner,
   DeleteWorkPackageLinkProperty,
   DeleteWorkpackageLinkSuccess,
+  UpdateWorkPackageLink,
   UpdateWorkPackageLinkProperty,
-  WorkPackageLinkActionTypes,
-  UpdateWorkPackageLink
+  WorkPackageLinkActionTypes
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import {
   AddWorkPackageNode,
@@ -141,62 +162,41 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import {
   getEditWorkpackage,
   getEditWorkpackages,
+  getSelectedFromAvailabilities,
   getSelectedWorkpackageIds,
   getSelectedWorkpackages,
   getWorkPackageEntities,
   workpackageSelectAllowed
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Actions, ofType } from '@ngrx/effects';
+import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
+import { Link, Node as goNode } from 'gojs';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
+import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
+import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
+import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
+import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
+import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
 import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
 import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
 import { DiagramLevelService, Level } from '../services/diagram-level.service';
 import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
 import { getViewLevel } from '../store/selectors/view.selector';
-import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { Link, Node as goNode, DiagramEvent } from 'gojs';
-import { TeamEntity } from '@app/settings/store/models/team.model';
-import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { LoadTeams } from '@app/settings/store/actions/team.actions';
-import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
-import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/services/node.service';
-import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
-import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
-import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { getNodeScopes, getPotentialWorkPackageNodes } from '../store/selectors/workpackage.selector';
-import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
-import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
-import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
-import {
-  getFilterLevelQueryParams,
-  getQueryParams,
-  getScopeQueryParams,
-  getWorkPackagesQueryParams
-} from '@app/core/store/selectors/route.selectors';
-import { RouterReducerState } from '@ngrx/router-store';
-import { RouterStateUrl } from '@app/core/store';
-import { Params } from '@angular/router';
-import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
-import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
-import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
-import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
-import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
-import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
-import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
-import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
-import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
-import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
-import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
+import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
+import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
+import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { LinkWithTransformationModalComponent } from './link-with-transformation-modal/link-with-transformation-modal.component';
-import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
+import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
+import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -427,9 +427,23 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
+    // On layout selected
     this.subscriptions.push(
       this.layoutStore.select(getLayoutSelected).subscribe(_ => {
+        // Reset workpackage edit mode
         this.workpackageStore.dispatch(new SetWorkpackageEditMode({ newState: false }));
+        // On availability data
+        this.workpackageStore
+          .pipe(select(getSelectedFromAvailabilities))
+          .subscribe(swp => {
+            // Reset selected workpackages according availability data
+            this.routerStore.dispatch(
+              new UpdateQueryParams({
+                workpackages: swp
+              })
+            );
+          })
+          .unsubscribe();
       })
     );
 
