@@ -1,5 +1,7 @@
 <div class="wrapper">
-  <h6>Objectives</h6>
+  <div class="search-container">
+    <input placeholder="Search" data-qa="work-packages-objectives-table-quick-search" (keyup)="onSearch($event.target.value)">
+  </div>
   <div class="table-wrapper">
     <table mat-table [dataSource]="dataSource">
 
