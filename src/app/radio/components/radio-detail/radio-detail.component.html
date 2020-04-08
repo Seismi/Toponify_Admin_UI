@@ -145,6 +145,10 @@
       <ckeditor [editor]="editor" [config]="config" formControlName="mitigation" [ngClass]="{hidden: !isEditable}"></ckeditor>
       <div class="description-content" [innerHTML]="group.controls['mitigation'].value" [ngClass]="{hidden: isEditable}"></div>
     </mat-form-field>
+
+    <p *ngIf="modalMode && selectedNode">
+      “This RADIO will be associated to "{{ selectedNode.name }}" in the context of the following work packages”
+    </p>
   </div>
 
   <div class="radio-actions" *ngIf="!modalMode">

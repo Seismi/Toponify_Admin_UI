@@ -88,6 +88,7 @@ import { LayoutSettingsModalComponent } from './containers/layout-settings-modal
 import { DiagramActionsComponent } from './components/diagram-actions/diagram-actions.component';
 import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-dropdown/layouts-dropdown.component';
 import { SearchPipe } from '@app/pipes/search.pipe';
+import { WorkPackageListModalComponent } from './containers/workpackage-list-modal/workpackage-list-modal.component';
 
 @NgModule({
   imports: [
@@ -176,7 +177,8 @@ import { SearchPipe } from '@app/pipes/search.pipe';
     DiagramActionsComponent,
     LayoutsDropdownComponent,
     LinkWithTransformationModalComponent,
-    SearchPipe
+    SearchPipe,
+    WorkPackageListModalComponent
   ],
   entryComponents: [
     DeleteModalComponent,
@@ -193,7 +195,8 @@ import { SearchPipe } from '@app/pipes/search.pipe';
     RadioConfirmModalComponent,
     ComponentsOrLinksModalComponent,
     LayoutSettingsModalComponent,
-    LinkWithTransformationModalComponent
+    LinkWithTransformationModalComponent,
+    WorkPackageListModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

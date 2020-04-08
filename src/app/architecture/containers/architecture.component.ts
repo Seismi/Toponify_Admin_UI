@@ -211,6 +211,7 @@ import { ComponentsOrLinksModalComponent } from './components-or-links-modal/com
 import { LinkWithTransformationModalComponent } from './link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
 import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
+import { WorkPackageListModalComponent } from '@app/architecture/containers/workpackage-list-modal/workpackage-list-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -653,15 +654,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.pipe(select(getSelectedNode)).subscribe(nodeDetail => {
         this.selectedNode = nodeDetail;
         this.ref.detectChanges();
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
-        if (this.selectedWorkPackageEntities.length >= 1 && this.part) {
-          this.getRadioConfirmModal(action.payload.id);
-        }
-        this.radioStore.dispatch(new LoadRadios({}));
       })
     );
 
@@ -1323,33 +1315,40 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onAddRelatedRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      data: {
+        selectedNode: this.selectedNode
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        const relatesTo = [
-          {
+        this.getWorkPackageList(data.radio);
+      }
+    });
+  }
+
+  getWorkPackageList(radio: RadioDetail) {
+    const dialogRef = this.dialog.open(WorkPackageListModalComponent, {
+      disableClose: false,
+      width: '650px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.wp) {
+        const relatesTo = data.wp.workpackages.map(workpackage => {
+          return {
             workPackage: {
-              id: '00000000-0000-0000-0000-000000000000'
+              id: workpackage.id
             },
             item: {
               id: this.nodeId,
               itemType: this.currentFilterLevel.toLowerCase()
             }
-          }
-        ];
-
-        this.radioStore.dispatch(
-          new AddRadioEntity({
-            data: {
-              ...data.radio,
-              relatesTo: this.selectedWorkPackageEntities.length === 0 ? relatesTo : []
-            }
-          })
-        );
-
-        if (data.radio.status === 'open') {
+          };
+        });
+        this.radioStore.dispatch(new AddRadioEntity({data: { ...radio, relatesTo: relatesTo }}));
+        if (radio.status === 'open') {
           this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
       }
@@ -1400,6 +1399,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
         this.getRadioConfirmModal(data.radio.id);
+        this.subscriptions.push(
+          this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
+            if (this.selectedWorkPackageEntities.length >= 1 && this.part) {
+              this.getRadioConfirmModal(action.payload.id);
+            }
+            this.radioStore.dispatch(new LoadRadios({}));
+          })
+        );
       }
     });
 
@@ -1512,33 +1519,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.showOrHideRightPane = false;
     this.diagramComponent.updateDiagramArea();
     this.realignTabUnderline();
-  }
-
-  onAddRadio() {
-    const dialogRef = this.dialog.open(RadioModalComponent, {
-      disableClose: false,
-      width: '650px'
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio) {
-        this.store.dispatch(
-          new AddRadioEntity({
-            data: {
-              title: data.radio.title,
-              description: data.radio.description,
-              status: data.radio.status,
-              category: data.radio.category,
-              assignedTo: data.radio.assignedTo,
-              author: data.radio.author,
-              relatesTo: [{ workPackage: { id: '00000000-0000-0000-0000-000000000000' } }],
-              actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation
-            }
-          })
-        );
-      }
-    });
   }
 
   onAddScope(): void {

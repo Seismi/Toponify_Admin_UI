@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>In which work package(s) does this RADIO apply?</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-selection-list formControlName="workpackages">
+      <mat-list-option 
+        *ngFor="let workpackage of workpackages$ | async" 
+        [value]="workpackage"
+        [selected]="true"
+      >
+        {{ workpackage.name }}
+      </mat-list-option>
+    </mat-selection-list>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onSave()">Save</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+</div>

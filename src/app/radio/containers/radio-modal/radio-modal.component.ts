@@ -10,27 +10,30 @@ import { Store, select } from '@ngrx/store';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-radio-modal',
   templateUrl: './radio-modal.component.html',
   styleUrls: ['./radio-modal.component.scss'],
-  providers: [RadioDetailService, RadioValidatorService, { provide: MAT_DIALOG_DATA, useValue: {} }]
+  providers: [RadioDetailService, RadioValidatorService]
 })
 export class RadioModalComponent implements OnInit {
   public users$: Observable<User[]>;
   public isEditable = true;
   public modalMode = true;
   public radio: RadioDetail;
+  public selectedNode = null;
 
   constructor(
     private store: Store<UserState>,
     private radioDetailService: RadioDetailService,
     public dialogRef: MatDialogRef<RadioModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    this.radio = data.radio;
-  }
+    @Inject(MAT_DIALOG_DATA)
+      public data: {
+        selectedNode: NodeDetail;
+      }
+    ) { }
 
   ngOnInit() {
     this.store.dispatch(new LoadUsers({}));
