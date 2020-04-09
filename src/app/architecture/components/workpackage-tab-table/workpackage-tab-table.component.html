@@ -17,7 +17,7 @@
           </mat-icon>
             <div class="actions">
               <mat-checkbox
-                style="position: relative; top: 2.5px;"
+                class="checkbox"
                 [disabled]="!canSelect(element)"
                 [checked]="element.selected"
                 (click)="onSelect(element.id, !element.selected, $event, element)"
@@ -44,6 +44,7 @@
               </ng-template>
 
               <smi-color-picker
+                style="margin-right: 5px;"
                 matTooltip="Colour of the objects modified by this work package"
                 [workpackageColour]="element.displayColour"
                 (selectColour)="onSelectColour($event, element.id)"

@@ -56,7 +56,7 @@ th.mat-header-cell {
 
 .title {
   width: 328px;
-  font-size: 17px;
+  font-size: 14px;
 }
 
 .selected {
@@ -64,14 +64,22 @@ th.mat-header-cell {
 }
 
 .actions {
-  margin-top: 10px;
   margin-left: 1px;
 }
 
 label {
   left: 5px;
   bottom: 3px;
-  color: #42526E;
   margin-right: 15px;
-  margin-left: 3px;
+  color: rgba(0,0,0,.54);
+  font: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px !important;
+}
+
+.checkbox {
+  position: relative; 
+  top: 2.5px;
+  margin-right: 5px;
 }
