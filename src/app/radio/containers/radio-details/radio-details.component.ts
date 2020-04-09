@@ -107,7 +107,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   onSaveRadio(): void {
     const dialogRef = this.dialog.open(ReplyModalComponent, {
       disableClose: false,
-      width: '400px'
+      width: '600px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -130,7 +130,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   onArchiveRadio(): void {
     const dialogRef = this.dialog.open(ReplyModalComponent, {
       disableClose: false,
-      width: '400px'
+      width: '600px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

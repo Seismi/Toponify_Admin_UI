@@ -1,22 +1,23 @@
 <form [formGroup]="group">
-  <mat-form-field>
+  <mat-form-field floatLabel="always">
     <textarea
       data-qa="radio-discussions-tab-your-message"
       matInput
       [rows]="rows"
       placeholder="Your Message"
       class="input"
-      (ngModelChange)="onType($event)"
       formControlName="replyText"
+      [ngStyle]="{ display: 'none' }"
     ></textarea>
+    <ckeditor [editor]="editor" [config]="config" formControlName="replyText"></ckeditor>
   </mat-form-field>
   <button
     data-qa="radio-discussions-tab-send"
     mat-raised-button 
     *ngIf="!replyMode" 
     color="primary" 
-    (click)="onSend()" 
-    [disabled]="disabled"
+    (click)="sendReply.emit()"
+    [disabled]="!group.controls.replyText.value"
   >
     <mat-icon>send</mat-icon>Send
   </button>
