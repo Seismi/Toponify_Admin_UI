@@ -1,8 +1,4 @@
 <div class="wrapper" *ngFor="let data of radio">
-  <p class="username">
-    {{ data.author.firstName }} {{ data.author.lastName }}
-    <small>{{ data.postedOn | date }}</small>
-  </p>
   <div class="mat-elevation-z8">
     <div class="reply-text" [innerHTML]="data.replyText"></div>
     <mat-accordion *ngIf="data.changes.hasChanges">
@@ -28,4 +24,8 @@
       </mat-expansion-panel>
     </mat-accordion>
   </div>
+  <p class="username">
+    {{ data.author.firstName }} {{ data.author.lastName }}
+    <small>{{ data.postedOn | date }}</small>
+  </p>
 </div>
