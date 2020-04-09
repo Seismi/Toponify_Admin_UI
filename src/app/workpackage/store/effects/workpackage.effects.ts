@@ -113,10 +113,7 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((payload: WorkPackageEntitiesHttpParams) => {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
-        switchMap((data: WorkPackageEntitiesResponse) => [
-          new LoadWorkPackagesSuccess(data),
-          new GetWorkpackageAvailability({ workPackageQuery: [] })
-        ]),
+        switchMap((data: WorkPackageEntitiesResponse) => [new LoadWorkPackagesSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
       );
     })

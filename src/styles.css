@@ -20,6 +20,10 @@ a {
   cursor: pointer;
 }
 
+p {
+  margin-bottom: 0;
+}
+
 .mat-pseudo-checkbox-checked::after {
   top: 3.2px !important;
   left: 2px !important;

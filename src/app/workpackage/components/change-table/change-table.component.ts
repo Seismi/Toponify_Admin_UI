@@ -22,4 +22,8 @@ export class ChangeTableComponent {
 
   displayedColumns: string[] = ['action', 'itemType', 'name'];
   public dataSource: MatTableDataSource<WorkPackageDetail>;
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

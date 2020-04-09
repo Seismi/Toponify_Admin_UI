@@ -13,4 +13,4 @@
   [data]="layouts"
 >
 </smi-layouts-dropdown>
-<mat-icon (click)="layoutSettings.emit()" matTooltip="Layout Settings">settings_applications</mat-icon>
+<mat-icon (click)="layoutSettings.emit()" [ngClass]="{ disable: selectedLayout?.id === '00000000-0000-0000-0000-000000000000' }" matTooltip="Layout Settings">settings_applications</mat-icon>
