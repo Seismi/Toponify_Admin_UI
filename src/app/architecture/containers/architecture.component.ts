@@ -174,7 +174,7 @@ import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
 import { go } from 'gojs/release/go-module';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, take, tap, withLatestFrom, distinctUntilChanged } from 'rxjs/operators';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
@@ -197,6 +197,7 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { LinkWithTransformationModalComponent } from './link-with-transformation-modal/link-with-transformation-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
+import isEqual from 'lodash.isequal';
 
 enum Events {
   NodesLinksReload = 0
@@ -379,14 +380,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: [] }));
       })
     );
-    this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
-      this.dependenciesView = false;
-      this.removeAllDraft();
-      if (!this.currentFilterLevel && !filterLevel) {
-        this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
-      }
-      this.currentFilterLevel = filterLevel;
-    });
     this.addDataSetSubscription = this.gojsCustomObjectsService.addDataSet$.subscribe(() => {
       this.onAddDescendant();
     });
@@ -399,7 +392,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
     this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
-    this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
+    // FIXME: Why this ?
+    // this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -413,38 +407,64 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       shareReplay()
     );
 
+    // On workpackage selected
     this.subscriptions.push(
-      combineLatest(
-        this.workpackageStore.select(getSelectedWorkpackageIds),
-        this.layoutStore.select(getLayoutSelected)
-      ).subscribe(([workpackageIds, selectedLayout]) => {
-        const layoutId = selectedLayout ? selectedLayout.id : '';
-        if (layoutId) {
+      this.workpackageStore
+        .pipe(
+          select(getSelectedWorkpackageIds),
+          distinctUntilChanged(isEqual),
+          withLatestFrom(this.layoutStore.select(getLayoutSelected))
+        )
+        .subscribe(([selectedWorkpackageIds, selectedLayout]) => {
           this.workpackageStore.dispatch(
-            new GetWorkpackageAvailability({ workPackageQuery: workpackageIds, layoutQuery: layoutId })
+            new GetWorkpackageAvailability({
+              workPackageQuery: selectedWorkpackageIds,
+              ...(selectedLayout && { layoutQuery: selectedLayout.id })
+            })
           );
-        }
-      })
+        })
+    );
+
+    // On workpackage availability being changed
+    this.subscriptions.push(
+      this.workpackageStore
+        .pipe(
+          select(getSelectedFromAvailabilities),
+          distinctUntilChanged(isEqual)
+        )
+        .pipe(
+          withLatestFrom(this.layoutStore.select(getLayoutSelected)),
+          distinctUntilChanged(isEqual)
+        )
+        .subscribe(([selectedWorkpackageIdsAccordingSelectedLayout, selectedLayout]) => {
+          if (selectedLayout) {
+            this.routerStore.dispatch(
+              new UpdateQueryParams({
+                workpackages: selectedWorkpackageIdsAccordingSelectedLayout
+              })
+            );
+          }
+        })
     );
 
     // On layout selected
     this.subscriptions.push(
-      this.layoutStore.select(getLayoutSelected).subscribe(_ => {
-        // Reset workpackage edit mode
-        this.workpackageStore.dispatch(new SetWorkpackageEditMode({ newState: false }));
-        // On availability data
-        this.workpackageStore
-          .pipe(select(getSelectedFromAvailabilities))
-          .subscribe(swp => {
-            // Reset selected workpackages according availability data
-            this.routerStore.dispatch(
-              new UpdateQueryParams({
-                workpackages: swp
+      this.layoutStore
+        .pipe(
+          select(getLayoutSelected),
+          distinctUntilChanged(isEqual),
+          withLatestFrom(this.workpackageStore.select(getSelectedWorkpackageIds))
+        )
+        .subscribe(([selectedLayout, selectedWorkpackageIds]) => {
+          if (selectedLayout) {
+            this.workpackageStore.dispatch(
+              new GetWorkpackageAvailability({
+                workPackageQuery: selectedWorkpackageIds,
+                ...(selectedLayout && { layoutQuery: selectedLayout.id })
               })
             );
-          })
-          .unsubscribe();
-      })
+          }
+        })
     );
 
     this.workpackageStore
@@ -562,11 +582,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (scope) {
         this.scope = scope;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
-        // this.filterService.addFilter({ scope: scope.id });
       }
     });
 
-    // const { scope, workpackages } = this.filterService.getFilter();
+    this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.dependenciesView = false;
+      this.removeAllDraft();
+      if (!this.currentFilterLevel && !filterLevel) {
+        this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
+      }
+      this.currentFilterLevel = filterLevel;
+    });
+
     this.routerStore
       .select(getScopeQueryParams)
       .pipe(take(1))
