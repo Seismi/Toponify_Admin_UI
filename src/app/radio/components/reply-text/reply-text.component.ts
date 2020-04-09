@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
 @Component({
   selector: 'smi-reply-text',
@@ -9,17 +10,29 @@ import { FormGroup } from '@angular/forms';
 export class ReplyTextComponent {
   @Input() group: FormGroup;
   @Input() replyMode = false;
-  @Input() rows = 4;
-  public disabled = true;
+  @Input() rows = 3;
 
-  @Output()
-  sendReply = new EventEmitter<void>();
+  public editor = InlineEditor;
+  public config = {
+    toolbar: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'link',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'indent',
+      'outdent',
+      '|',
+      'blockQuote',
+      'insertTable',
+      'undo',
+      'redo'
+    ],
+    removePlugins: ['MediaEmbed', 'ImageUpload', 'ImageToolbar', 'ImageStyle', 'ImageCaption', 'Image', 'EasyImage']
+  };
 
-  onType(event) {
-    event.length ? (this.disabled = false) : (this.disabled = true);
-  }
-
-  onSend() {
-    this.sendReply.emit();
-  }
+  @Output() sendReply = new EventEmitter<void>();
 }

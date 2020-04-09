@@ -1,22 +1,31 @@
-<div *ngFor="let data of radio">
-  <div class="wrapper">
-    <div class="bubble mat-elevation-z8">
-      {{ data.replyText }}
-      <div class="changes" *ngIf="data.changes.hasChanges === true">
-        <hr />
-        Changes:
-        <ul *ngFor="let changes of data.changes.listChanges">
-          <li>
-            "{{ changes.changedProperty }}" set to "{{
-              changes.changedProperty === 'actionBy' ? (changes.changedTo | date) : changes.changedTo
-            }}"
-          </li>
-        </ul>
-      </div>
-    </div>
-    <p class="username">
-      {{ data.author.firstName }} {{ data.author.lastName }}
-      <small>{{ data.postedOn | date }}</small>
-    </p>
+<div class="wrapper" *ngFor="let data of radio">
+  <div class="mat-elevation-z8">
+    <div class="reply-text" [innerHTML]="data.replyText"></div>
+    <mat-accordion *ngIf="data.changes.hasChanges">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-description>
+            Changes
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <table *ngFor="let changes of data.changes.listChanges">
+          <tr>
+            <th colspan="2" class="property-name">{{ changes.changedProperty }}</th>
+          </tr>
+          <tr>
+            <th style="width: 130px">SET FROM:</th>
+            <td [innerHTML]="changes.changedFrom">{{ changedFrom(changes) }}</td>
+          </tr>
+          <tr>
+            <th style="width: 130px">TO:</th>
+            <td [innerHTML]="changes.changedTo">{{ changedTo(changes) }}</td>
+          </tr>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
+  <p class="username">
+    {{ data.author.firstName }} {{ data.author.lastName }}
+    <small>{{ data.postedOn | date }}</small>
+  </p>
 </div>
