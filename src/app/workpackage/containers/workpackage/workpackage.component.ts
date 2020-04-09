@@ -67,7 +67,7 @@ export class WorkPackageComponent implements OnInit {
     this.actions.pipe(ofType(WorkPackageActionTypes.AddWorkPackageSuccess)).subscribe((action: any) => {
       this.selectedRowIndex = action.payload.id;
       this.onSelectWorkpackage(action.payload);
-    })
+    });
   }
 
   onSelectWorkpackage(row: WorkPackageDetail): void {
