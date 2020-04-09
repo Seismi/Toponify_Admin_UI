@@ -1,5 +1,6 @@
 <app-model-container>
   <smi-left-hand-pane
+    data-qa="topology-left-hand-pane"
     [workPackageIsEditable]="workPackageIsEditable"
     [selectedLeftTab]="selectedLeftTab"
     (openSideBar)="openLeftTab($event)"
@@ -12,6 +13,7 @@
       <smi-left-hand-pane-content (close)="drawer.close(selectedLeftTab = 'menu')">
         <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
         <smi-left-panel
+          data-qa="topology-left-panel"
           *ngIf="selectedLeftTab !== 'menu'"
           (tabClick)="onTabClick($event)"
           [workpackages]="workpackage$ | async"
@@ -31,9 +33,10 @@
       </smi-left-hand-pane-content>
     </mat-drawer>
     <app-base-header>
-      <smi-node-name *ngIf="parentName" [parentName]="parentName"></smi-node-name>
+      <smi-node-name data-qa="header-node-name" *ngIf="parentName" [parentName]="parentName"></smi-node-name>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
       <smi-workpackage-name
+        data-qa="header-work-package"
         [selectedWorkPackageEntities]="selectedWorkPackageEntities"
         [workPackageIsEditable]="workPackageIsEditable"
         (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
@@ -68,6 +71,7 @@
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
           <smi-diagram-actions
+            data-qa="topology-diagram-actions"
             *ngIf="selectedView === ArchitectureView.Diagram"
             [grid]="showGrid"
             [allowMove]="allowMove"
@@ -93,6 +97,7 @@
           >
           </smi-diagram-actions>
           <app-architecture-diagram
+            data-qa="topology-diagram"
             [mapView]="mapView"
             [showGrid]="showGrid"
             [allowMove]="allowMove"
@@ -123,6 +128,7 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.System">
           <smi-architecture-table-view
+            data-qa="topology-table-components"
             [data]="nodes | layer: { byId: byId,
               descendantIds$: parentDescendantIds,
               groupMemberIds$: groupMemberIds
@@ -139,6 +145,7 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.Links">
           <smi-architecture-table-view
+            data-qa="topology-table-links"
             [data]="links | layer: { byId: false } | async"
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
@@ -152,7 +159,7 @@
         </div>
       </app-model-content>
       <smi-right-sidebar
-        data-hook="right-sidebar"
+        data-qa="topology-right-hand-pane"
         *ngIf="!showOrHideRightPane"
         (rightTab)="openRightTab($event)"
         [objectSelected]="part?.isSelected ? true : false"
@@ -165,6 +172,7 @@
       <app-model-sidebar [isLast]="true" [minWidth]="515" [maxWidth]="650" *ngIf="showOrHideRightPane">
         <p class="rightPane">
           <smi-right-panel
+            data-qa="topology-right-panel"
             (itemClick)="itemClick($event)"
             [owners]="selectedNode?.owners"
             [selectedRightTab]="selectedRightTab"
