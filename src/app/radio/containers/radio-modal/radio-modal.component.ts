@@ -12,7 +12,7 @@ import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-radio-modal',
@@ -42,7 +42,7 @@ export class RadioModalComponent implements OnInit {
     this.store.dispatch(new LoadUsers({}));
     this.users$ = this.store.pipe(select(getUsers));
     if (this.data.selectedNode) {
-      this.workpackages$ = this.store.pipe(select(getWorkPackageEntities));
+      this.workpackages$ = this.store.pipe(select(getSelectedWorkpackages));
     }
   }
 

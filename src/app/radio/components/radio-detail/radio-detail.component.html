@@ -153,6 +153,12 @@
     
       <mat-selection-list formControlName="relatesTo">
         <mat-list-option 
+          [value]="{ id: '00000000-0000-0000-0000-000000000000', name: 'Current State' }"
+          [selected]="true"
+        >
+          Current State
+        </mat-list-option>
+        <mat-list-option 
           *ngFor="let workpackage of workpackages" 
           [value]="workpackage" 
           [selected]="true"
