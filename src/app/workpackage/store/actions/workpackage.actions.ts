@@ -505,12 +505,12 @@ export class DeleteWorkPackageBaselineFailure implements Action {
 
 export class AddWorkPackageMapViewTransformation implements Action {
   readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformation;
-  constructor(public payload: { workPackageId: string, baselineId: string }) {}
+  constructor(public payload: { workpackageId: string, scope: string, nodeData: any, linkData: any, mapViewParams: any}) {}
 }
 
 export class AddWorkPackageMapViewTransformationSuccess implements Action {
   readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformationSuccess;
-  constructor(public payload: { workpackageId: string, scope: string, nodeData: any, linkData: any}) {}
+  constructor(public payload: any) {}
 }
 
 export class AddWorkPackageMapViewTransformationFailure implements Action {

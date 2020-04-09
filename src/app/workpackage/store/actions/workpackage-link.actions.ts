@@ -6,6 +6,9 @@ export enum WorkPackageLinkActionTypes {
   AddWorkPackageLink = '[WorkPackage] Add link',
   AddWorkPackageLinkSuccess = '[WorkPackage] Add link success',
   AddWorkPackageLinkFailure = '[WorkPackage] Add link failure',
+  AddWorkPackageMapViewLink = '[WorkPackage] Add Map View link',
+  AddWorkPackageMapViewLinkSuccess = '[WorkPackage] Add Map View link success',
+  AddWorkPackageMapViewLinkFailure = '[WorkPackage] Add Map View link failure',
   UpdateWorkPackageLink = '[WorkPackage] Update link',
   UpdateWorkPackageLinkSuccess = '[WorkPackage] Update link success',
   UpdateWorkPackageLinkFailure = '[WorkPackage] Update link failure',
@@ -50,6 +53,21 @@ export class AddWorkPackageLinkSuccess implements Action {
 
 export class AddWorkPackageLinkFailure implements Action {
   readonly type = WorkPackageLinkActionTypes.AddWorkPackageLinkFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddWorkPackageMapViewLink implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageMapViewLink;
+  constructor(public payload: { workpackageId: string, link: any, mapViewParams: any}) {}
+}
+
+export class AddWorkPackageMapViewLinkSuccess implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageMapViewLinkSuccess;
+  constructor(public payload: any) {}
+}
+
+export class AddWorkPackageMapViewLinkFailure implements Action {
+  readonly type = WorkPackageLinkActionTypes.AddWorkPackageMapViewLinkFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -207,6 +225,9 @@ export type WorkPackageLinkActionsUnion =
   | AddWorkPackageLink
   | AddWorkPackageLinkSuccess
   | AddWorkPackageLinkFailure
+  | AddWorkPackageMapViewLink
+  | AddWorkPackageMapViewLinkSuccess
+  | AddWorkPackageMapViewLinkFailure
   | LoadWorkpackageLinkDescendants
   | LoadWorkpackageLinkDescendantsSuccess
   | LoadWorkpackageLinkDescendantsFailure

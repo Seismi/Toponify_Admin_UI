@@ -9,6 +9,7 @@ import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
+import {NodeLink} from '@app/architecture/store/models/node-link.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -1019,7 +1020,7 @@ export class DiagramTemplatesService {
           )
         )
       } : {},
-      // Have the diagram position the node if no location set or in node usage view
+      // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing'),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
@@ -1295,11 +1296,11 @@ export class DiagramTemplatesService {
         new go.Binding('locationSpot', '', function(linkData): go.Spot {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
-      new go.Binding('relinkableFrom', 'isTemporary', function(isTemp) {
-        return !this.currentFilterLevel.includes('map') || isTemp;
+      new go.Binding('relinkableFrom', '', function(linkData): boolean {
+        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
       }.bind(this)),
-      new go.Binding('relinkableTo', 'isTemporary', function(isTemp) {
-        return !this.currentFilterLevel.includes('map') || isTemp;
+      new go.Binding('relinkableTo', '', function(linkData): boolean {
+        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
@@ -1373,11 +1374,11 @@ export class DiagramTemplatesService {
         new go.Binding('locationSpot', '', function(linkData): go.Spot {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
-      new go.Binding('relinkableFrom', 'isTemporary', function(isTemp) {
-        return !this.currentFilterLevel.includes('map') || isTemp;
+      new go.Binding('relinkableFrom', '', function(linkData): boolean {
+        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
       }.bind(this)),
-      new go.Binding('relinkableTo', 'isTemporary', function(isTemp) {
-        return !this.currentFilterLevel.includes('map') || isTemp;
+      new go.Binding('relinkableTo', '', function(linkData): boolean {
+        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),

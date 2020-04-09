@@ -72,7 +72,7 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
       sourceGroups.add(part as go.Group);
     } else if (part.data.endPointType === endPointTypes.target) {
       targetGroups.add(part as go.Group);
-    } else if (part.category === nodeCategories.transformation) {
+    } else if (part.category === nodeCategories.transformation && !part.data.isTemporary) {
       transformationNodes.add(part as go.Node);
     }
   });
