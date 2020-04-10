@@ -5,7 +5,7 @@ import { Links, Page, WorkPackageDetail, WorkPackageEntity } from '../models/wor
 export interface State {
   editId: string;
   entities: WorkPackageEntity[];
-  avaialabilities: any[];
+  avaialabilities: any[] | null;
   baseline: any[];
   page: Page;
   links: Links;
@@ -18,7 +18,7 @@ export interface State {
 export const initialState: State = {
   editId: null,
   entities: [],
-  avaialabilities: [],
+  avaialabilities: null,
   baseline: [],
   page: null,
   links: null,

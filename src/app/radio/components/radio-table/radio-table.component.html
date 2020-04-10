@@ -42,7 +42,7 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{ highlight: selectedRowIndex == row.id }"
+      [ngClass]="{ highlight: selectedRadioIndex == row.id }"
       (click)="onSelectRow(row)"
     ></tr>
   </table>

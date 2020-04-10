@@ -14,7 +14,6 @@ import { ModelContentComponent } from './layout/model-content/model-content.comp
 import { QuicklinksActionsComponent } from './layout/header/quicklinks-actions/quicklinks-actions.component';
 import { BreadcrumbComponent } from './layout/header/breadcrumb/breadcrumb.component';
 import { ScopesDropdownComponent } from './layout/header/quicklinks-actions/scopes-dropdown/scopes-dropdown.component';
-import { LayoutsDropdownComponent } from './layout/header/quicklinks-actions/layouts-dropdown/layouts-dropdown.component';
 import { RightSideBarComponent } from './layout/right-sidebar/right-sidebar.component';
 import { SearchService } from './services/search.service';
 import { StoreModule } from '@ngrx/store';
@@ -36,6 +35,7 @@ import { DownloadCSVModalComponent } from './layout/components/download-csv-moda
 import { LeftHandPaneComponent } from './layout/left-hand-pane/left-hand-pane.component';
 import { MenuComponent } from './layout/menu/menu.component';
 import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/left-hand-pane-content.component';
+import { RelatedRadioTableComponent } from './layout/components/related-radio-table/related-radio-table.component';
 
 @NgModule({
   imports: [
@@ -59,7 +59,6 @@ import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/le
     QuicklinksActionsComponent,
     BreadcrumbComponent,
     ScopesDropdownComponent,
-    LayoutsDropdownComponent,
     RightSideBarComponent,
     NodeNameComponent,
     WorkPackageNameComponent,
@@ -73,7 +72,8 @@ import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/le
     SelectModalComponent,
     LeftHandPaneComponent,
     MenuComponent,
-    LeftHandPaneContentComponent
+    LeftHandPaneContentComponent,
+    RelatedRadioTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

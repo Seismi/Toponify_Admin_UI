@@ -81,7 +81,7 @@
 
 
     <smi-group-info-table
-      *ngIf="!clickedOnLink"
+      *ngIf="!clickedOnLink && !attributesPage"
       [groupInfo]="groupInfo" 
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"

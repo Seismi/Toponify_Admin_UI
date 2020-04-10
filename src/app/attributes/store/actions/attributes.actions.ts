@@ -67,7 +67,15 @@ export enum AttributeActionTypes {
 
   DeleteAttributeTags = '[Attribute] Delete Attribute Tags',
   DeleteAttributeTagsSuccess = '[Attribute] Delete Attribute Tags Success',
-  DeleteAttributeTagsFail = '[Attribute] Delete Attribute Tags Fail'
+  DeleteAttributeTagsFail = '[Attribute] Delete Attribute Tags Fail',
+
+  AddAttributeRadio = '[Attribute] Add Attribute Radio',
+  AddAttributeRadioSuccess = '[Attribute] Add Attribute Radio Success',
+  AddAttributeRadioFailure = '[Attribute] Add Attribute Radio Failure',
+
+  DeleteAttributeRadio = '[Attribute] Delete Attribute Radio',
+  DeleteAttributeRadioSuccess = '[Attribute] Delete Attribute Radio Success',
+  DeleteAttributeRadioFailure = '[Attribute] Delete Attribute Radio Failure',
 }
 
 export class LoadAttributes implements Action {
@@ -294,6 +302,36 @@ export class DeleteAttributeTagsFail implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddAttributeRadio implements Action {
+  readonly type = AttributeActionTypes.AddAttributeRadio;
+  constructor(public payload: { workPackageId: string; attributeId: string, radioId: string }) {}
+}
+
+export class AddAttributeRadioSuccess implements Action {
+  readonly type = AttributeActionTypes.AddAttributeRadioSuccess;
+  constructor(public payload: AttributeDetail) {}
+}
+
+export class AddAttributeRadioFailure implements Action {
+  readonly type = AttributeActionTypes.AddAttributeRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteAttributeRadio implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeRadio;
+  constructor(public payload: { workPackageId: string; attributeId: string, radioId: string }) {}
+}
+
+export class DeleteAttributeRadioSuccess implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeRadioSuccess;
+  constructor(public payload: AttributeDetail) {}
+}
+
+export class DeleteAttributeRadioFailure implements Action {
+  readonly type = AttributeActionTypes.DeleteAttributeRadioFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type AttributeActionsUnion =
   | LoadAttributes
   | LoadAttributesSuccess
@@ -336,4 +374,10 @@ export type AttributeActionsUnion =
   | AddAttributeTagsFail
   | DeleteAttributeTags
   | DeleteAttributeTagsSuccess
-  | DeleteAttributeTagsFail;
+  | DeleteAttributeTagsFail
+  | AddAttributeRadio
+  | AddAttributeRadioSuccess
+  | AddAttributeRadioFailure
+  | DeleteAttributeRadio
+  | DeleteAttributeRadioSuccess
+  | DeleteAttributeRadioFailure;

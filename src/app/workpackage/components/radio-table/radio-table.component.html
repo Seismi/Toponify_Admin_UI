@@ -1,4 +1,7 @@
 <div class="wrapper">
+  <div class="search-container">
+    <input placeholder="Search" (keyup)="onSearch($event.target.value)">
+  </div>
   <table mat-table [dataSource]="dataSource">
     <!-- Ref Number Column -->
     <ng-container matColumnDef="refNo">

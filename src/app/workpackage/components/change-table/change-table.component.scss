@@ -7,9 +7,24 @@ tr.mat-row {
 }
 
 tr.mat-header-row {
-  height: 30px;
+  height: 45px;
 }
 
 th.mat-column-object {
   width: 50%;
+}
+
+.search-container {
+  width: 100%;
+  padding: 10px;
+  background-color: #eee;
+  input {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: solid 1px #eee;
+    &:focus {
+      outline: none;
+    }
+  }
 }

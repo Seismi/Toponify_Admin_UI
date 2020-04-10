@@ -20,7 +20,8 @@ import {
   AddReportTags,
   LoadReportTags,
   DeleteReportTags,
-  AddReportRadio
+  AddReportRadio,
+  LoadReports
 } from '@app/report-library/store/actions/report.actions';
 import { getReportSelected, getReportAvailableTags } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
@@ -129,7 +130,20 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.store.pipe(select(getScopeSelected)).subscribe(scope => this.scope = scope)
-    )
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(
+        ReportActionTypes.AddReportTagsSuccess,
+        ReportActionTypes.DeleteReportTagsSuccess
+      )).subscribe(_ => {
+        const queryParams = {
+          workPackageQuery: [this.workpackageId],
+          scopeQuery: this.scope.id
+        };
+        this.store.dispatch(new LoadReports(queryParams));
+      })
+    );
   }
 
   getReport(workpackageIds: string[] = []) {
@@ -430,7 +444,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         reportId: this.report.id,
         tagIds: [{ id: tagId }]
       })
-    )
+    );
   }
 
   onRemoveTag(tag: Tag): void {
