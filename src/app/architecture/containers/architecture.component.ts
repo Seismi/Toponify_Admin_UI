@@ -452,8 +452,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.workpackageStore
         .pipe(
-          select(getSelectedFromAvailabilities),
-          distinctUntilChanged(isEqual)
+          select(getSelectedFromAvailabilities)
+          // distinctUntilChanged(isEqual)
         )
         .pipe(
           withLatestFrom(this.layoutStore.select(getLayoutSelected)),
