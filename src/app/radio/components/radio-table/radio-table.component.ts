@@ -8,7 +8,7 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
   styleUrls: ['./radio-table.component.scss']
 })
 export class RadioTableComponent {
-  public selectedRowIndex = -1;
+  @Input() selectedRadioIndex: string | number = -1;
 
   @Input()
   set data(data: RadioEntity[]) {
@@ -23,17 +23,11 @@ export class RadioTableComponent {
   public displayedColumns: string[] = ['refNo', 'category', 'status', 'title', 'last_update_date', 'last_update_by'];
   public dataSource: MatTableDataSource<RadioEntity>;
 
-  @Output()
-  selectRadio = new EventEmitter<string>();
-
-  @Output()
-  addRadio = new EventEmitter<void>();
-
-  @Output()
-  download = new EventEmitter<void>();
+  @Output() selectRadio = new EventEmitter<string>();
+  @Output() addRadio = new EventEmitter<void>();
+  @Output() download = new EventEmitter<void>();
 
   onSelectRow(row) {
-    this.selectedRowIndex = row.id;
     this.selectRadio.emit(row);
   }
 
