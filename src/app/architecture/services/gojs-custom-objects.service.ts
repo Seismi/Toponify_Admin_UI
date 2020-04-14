@@ -821,4 +821,30 @@ export class GojsCustomObjectsService {
 
     return $(go.Brush, 'Linear', newBrushParams);
   }
+
+  avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
+    if (node.diagram instanceof go.Palette) { return snappedLoc; }
+    // this assumes each node is fully rectangular
+    const bnds = node.actualBounds;
+    const loc = node.location;
+    // use newLoc instead of snappedLoc if you want to ignore any grid snapping behavior
+    // see if the area at the proposed location is unoccupied
+    const rectangle = new go.Rect(snappedLoc.x - (loc.x - bnds.x), snappedLoc.y - (loc.y - bnds.y), bnds.width, bnds.height);
+
+    rectangle.inflate(-0.5, -0.5);  // by default, deflate to avoid edge overlaps with "exact" fits
+    // when dragging a node from another Diagram, choose an unoccupied area
+    if (!(node.diagram.currentTool instanceof go.DraggingTool) &&
+      (!node['_temp'] || !node.layer.isTemporary)) {  // in Temporary Layer during external drag-and-drop
+      node['_temp'] = true;  // flag to avoid repeated searches during external drag-and-drop
+      while (!this.diagramChangesService.isUnoccupied(rectangle, node)) {
+        rectangle.x += 10;
+        rectangle.y += 2;
+      }
+      rectangle.inflate(0.5, 0.5);  // restore to actual size
+      // return the proposed new location point
+      return new go.Point(rectangle.x - (loc.x - bnds.x), rectangle.y - (loc.y - bnds.y));
+    }
+    if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
+    return loc;  // give up -- don't allow the node to be moved to the new location
+  }
 }
