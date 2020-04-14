@@ -277,7 +277,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   sw: string[] = [];
   canSelectWorkpackages = false;
-  workpackageSelected = false;
   workpackageId: string;
   public selectedScope$: Observable<ScopeEntity>;
   public selectedLayout$: Observable<ScopeDetails>;
@@ -403,6 +402,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
       this.currentFilterLevel = filterLevel;
     });
+
     this.addDataSetSubscription = this.gojsCustomObjectsService.addDataSet$.subscribe(() => {
       this.onAddDescendant();
     });
@@ -480,7 +480,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         )
         .subscribe(([selectedLayout, selectedWorkpackageIds]) => {
           if (selectedLayout) {
-            this.workpackageSelected = false;
             this.workpackageStore.dispatch(
               new GetWorkpackageAvailability({
                 workPackageQuery: selectedWorkpackageIds,
@@ -650,15 +649,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.scope = scope;
         this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
       }
-    });
-
-    this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
-      this.dependenciesView = false;
-      this.removeAllDraft();
-      if (!this.currentFilterLevel && !filterLevel) {
-        this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
-      }
-      this.currentFilterLevel = filterLevel;
     });
 
     this.routerStore
@@ -1126,7 +1116,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   handleUpdateDiagramLayout(): void {
-    debugger;
     // Do not update back end if using default layout
     if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
       return;
