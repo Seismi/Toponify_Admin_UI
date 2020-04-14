@@ -817,14 +817,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
         this.getNodeReports(workPackageIds);
-
-        if (this.clickedOnLink && this.selectedRightTab === 1) {
-          this.showOrHideRightPane = false;
-        }
-
-        if (!this.clickedOnLink) {
-          this.showOrHideRightPane = true;
-        }
       }
     }
 
