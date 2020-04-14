@@ -1321,8 +1321,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio) {
-        const relatesTo = data.radio.relatesTo.map(workpackage => {
+      if (data && data.radio || data.selectedWorkPackages) {
+        const relatesTo = data.selectedWorkPackages.map(workpackage => {
           return {
             workPackage: {
               id: workpackage.id

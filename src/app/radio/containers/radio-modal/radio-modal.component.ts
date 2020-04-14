@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
@@ -20,13 +20,14 @@ import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpa
   styleUrls: ['./radio-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-export class RadioModalComponent implements OnInit {
+export class RadioModalComponent implements OnInit, OnDestroy {
   public users$: Observable<User[]>;
   public isEditable = true;
   public modalMode = true;
   public radio: RadioDetail;
   public selectedNode = null;
   public workpackages$: Observable<WorkPackageEntity[]>;
+  public selectedOption: any;
 
   constructor(
     private store: Store<UserState>,
@@ -46,6 +47,10 @@ export class RadioModalComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.selectedOption = [];
+  }
+
   get radioDetailsForm(): FormGroup {
     return this.radioDetailService.radioDetailsForm;
   }
@@ -54,10 +59,14 @@ export class RadioModalComponent implements OnInit {
     if (!this.radioDetailService.isValid) {
       return;
     }
-    this.dialogRef.close({ radio: this.radioDetailsForm.value });
+    this.dialogRef.close({ radio: this.radioDetailsForm.value, selectedWorkPackages: this.selectedOption });
   }
 
   onCancelClick() {
     this.dialogRef.close();
+  }
+
+  onSelectWorkPackage($event) {
+    this.selectedOption = $event;
   }
 }

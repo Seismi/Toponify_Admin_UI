@@ -29,6 +29,7 @@ export class RadioDetailComponent {
   @Input() availableTags: Tag[];
   @Input() selectedNode: NodeDetail;
   @Input() workpackages: WorkPackageEntity[];
+  public selectedOptions = [];
 
   @Input()
   set data(data: any[]) {
@@ -95,10 +96,11 @@ export class RadioDetailComponent {
 
   @Output()
   deleteRadio = new EventEmitter<void>();
-  
+
   @Output() addTag = new EventEmitter<string>();
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();
+  @Output() selectWorkPackage = new EventEmitter<any>();
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;
