@@ -202,3 +202,25 @@
     (addRelatesTo)="addRelatesTo.emit()"
   ></smi-relates-to-table>
 </form>
+
+<div *ngIf="modalMode && selectedNode">
+  <p>
+    “This RADIO will be associated to "{{ selectedNode.name }}" in the context of the following work packages”
+  </p>
+
+  <mat-selection-list [(ngModel)]="selectedOptions" (ngModelChange)="selectWorkPackage.emit($event)">
+    <mat-list-option 
+      [value]="{ id: '00000000-0000-0000-0000-000000000000', name: 'Current State' }"
+      selected
+    >
+      Current State
+    </mat-list-option>
+    <mat-list-option 
+      *ngFor="let workpackage of workpackages" 
+      [value]="workpackage"
+      selected
+    >
+      {{ workpackage.name }}
+    </mat-list-option>
+  </mat-selection-list>
+</div>
