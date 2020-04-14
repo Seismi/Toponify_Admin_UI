@@ -45,6 +45,10 @@ export class RadioModalComponent implements OnInit, OnDestroy {
     if (this.data.selectedNode) {
       this.workpackages$ = this.store.pipe(select(getSelectedWorkpackages));
     }
+    this.radioDetailsForm.patchValue({
+      severity: 3,
+      frequency: 3
+    });
   }
 
   ngOnDestroy(): void {

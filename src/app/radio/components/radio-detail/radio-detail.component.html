@@ -113,19 +113,19 @@
       </mat-form-field>
     </div>
 
-    <div class="align-in-row" *ngIf="!modalMode">
+    <div class="align-in-row">
       <mat-form-field class="spaceToRight">
-        <mat-label>Severity</mat-label>
-        <mat-select data-qa="radio-detail-severity" formControlName="severity" [ngClass]="{ editable: isEditable }">
+        <mat-label>{{ getSeverityLabel() }}</mat-label>
+        <mat-select (mouseover)="getSeverityTooltip()" matTooltip="{{ severityTooltip }}" data-qa="radio-detail-severity" formControlName="severity" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let score of scores" [value]="score.level">
             {{ score.level }} - {{ score.text }}
           </mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Frequency / Probability</mat-label>
-        <mat-select data-qa="radio-detail-frequency" formControlName="frequency" [ngClass]="{ editable: isEditable }">
+      <mat-form-field (mouseover)="getFrequencyTooltip()">
+        <mat-label>{{ getFrequencyLabel() }}</mat-label>
+        <mat-select (mouseover)="getFrequencyTooltip()" matTooltip="{{ frequencyTooltip }}" data-qa="radio-detail-frequency" formControlName="frequency" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let score of scores" [value]="score.level">
             {{ score.level }} - {{ score.text }}
           </mat-option>
