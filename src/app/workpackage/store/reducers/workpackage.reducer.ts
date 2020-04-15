@@ -47,7 +47,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
           ...state.selectedWorkPackage.availableActions,
           id: workPackageId,
           archived: archived,
-          displayColour: state.selectedWorkPackage.displayColour,
+          displayColour: state.selectedWorkPackage.displayColour
         }
       };
     }
