@@ -18,10 +18,7 @@ export class LayerPipe implements PipeTransform {
       return of(items);
     }
 
-    if (props.level === Level.usage) {
-      return of(items);
-    }
-    if ([Level.dataSetMap, Level.systemMap, Level.usage].includes(props.level)) {
+    if (props.level.endsWith('map') || props.level === Level.usage) {
       return of(items);
     }
 

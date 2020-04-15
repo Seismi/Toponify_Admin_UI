@@ -1195,7 +1195,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (
             this.currentFilterLevel &&
-            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel)
+            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
           ) {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
@@ -1248,7 +1248,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (
             this.currentFilterLevel &&
-            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel as Level)
+            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
           ) {
             return links;
           }
@@ -2041,6 +2041,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       return Level.dataSet;
     } else if (level === Level.dataSetMap) {
       return Level.dimension;
+    } else if (level === Level.dimensionMap) {
+      return Level.reportingConcept;
     } else {
       return level;
     }

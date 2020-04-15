@@ -41,7 +41,7 @@ export class LeftPanelComponent {
   }
 
   get mapView(): boolean {
-    return [Level.systemMap, Level.dataSetMap].includes(this.currentFilterLevel as Level);
+    return this.currentFilterLevel.endsWith('map');
   }
 
 }
