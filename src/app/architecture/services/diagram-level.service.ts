@@ -507,7 +507,9 @@ export class DiagramLevelService {
       });
     }
 
+    // In map view, add links connected to the transformation node in the palette
     if (level.endsWith('map')) {
+      // Input link to transformation node
       paletteViewLinks.push({
         category: level === Level.systemMap ? linkCategories.data : linkCategories.masterData,
         id: 'New link to transformation',
@@ -520,6 +522,7 @@ export class DiagramLevelService {
         tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
           this.getToolTipForMasterDataLinks(level)
       });
+      // Output link from transformation node
       paletteViewLinks.push({
         category: level === Level.systemMap ? linkCategories.data : linkCategories.masterData,
         id: 'New link from transformation',
