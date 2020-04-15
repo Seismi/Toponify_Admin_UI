@@ -6,6 +6,7 @@ import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import { Tag, NodeDetail } from '@app/architecture/store/models/node.model';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { radioCategories } from '../../store/models/radio.model';
 
 interface Scores {
   level: number;
@@ -29,7 +30,10 @@ export class RadioDetailComponent {
   @Input() availableTags: Tag[];
   @Input() selectedNode: NodeDetail;
   @Input() workpackages: WorkPackageEntity[];
+  @Input() radioCategory: string;
   public selectedOptions = [];
+  public severityTooltip: string;
+  public frequencyTooltip: string;
 
   @Input()
   set data(data: any[]) {
@@ -126,4 +130,65 @@ export class RadioDetailComponent {
   onDelete(): void {
     this.deleteRadio.emit();
   }
+
+  getSeverityLabel(): string {
+    switch (this.radioCategory) {
+      case radioCategories.risk:
+        return 'Severity';
+      case radioCategories.opportunity:
+        return 'Potential';
+      case radioCategories.assumption:
+      case radioCategories.dependency:
+      case radioCategories.issue:
+        return 'Impact';
+      default:
+        return 'Severity';
+    }
+  }
+
+  getSeverityTooltip(): string {
+    switch (this.radioCategory) {
+      case radioCategories.risk:
+        return this.severityTooltip = 'Severity of the risk';
+      case radioCategories.assumption:
+        return this.severityTooltip = 'Impact of the assumption if it is revealed to be incorrect';
+      case radioCategories.dependency:
+        return this.severityTooltip = 'Impact of the dependency if it is not met';
+      case radioCategories.issue:
+        return this.severityTooltip = 'Impact of the issue';
+      case radioCategories.opportunity:
+        return this.severityTooltip = 'Potential of the opportunity';
+    }
+  }
+
+  getFrequencyLabel(): string {
+    switch (this.radioCategory) {
+      case radioCategories.risk:
+        return 'Probability';
+      case radioCategories.assumption:
+      case radioCategories.dependency:
+        return 'Improbability';
+      case radioCategories.issue:
+      case radioCategories.opportunity:
+        return 'Frequency';
+      default:
+        return 'Frequency / Probability';
+    }
+  }
+
+  getFrequencyTooltip(): string {
+    switch (this.radioCategory) {
+      case radioCategories.risk:
+        return this.frequencyTooltip = 'Probability of the risk';
+      case radioCategories.assumption:
+        return this.frequencyTooltip = 'Probability that the assumption is incorrect';
+      case radioCategories.dependency:
+        return this.frequencyTooltip = 'Probability that the dependency is not met';
+      case radioCategories.issue:
+        return this.frequencyTooltip = 'Frequency at which the issue occurs';
+      case radioCategories.opportunity:
+        return this.frequencyTooltip = 'Frequency of the opportunity';
+    }
+  }
+
 }
