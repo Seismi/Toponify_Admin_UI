@@ -4,7 +4,7 @@
       Owners
     </th>
     <th>
-      <mat-icon (click)="onAdd()" *ngIf="workPackageIsEditable">add</mat-icon>
+      <mat-icon data-qa="topology-owners-table-add" (click)="onAdd()" *ngIf="workPackageIsEditable">add</mat-icon>
     </th>
   </tr>
   <tr *ngFor="let object of data; let i = index">
@@ -12,7 +12,7 @@
       {{ object.name }}
     </td>
     <td *ngIf="workPackageIsEditable">
-      <mat-icon style="color: #CF3030" (click)="onDelete(object.id)">link_off</mat-icon>
+      <mat-icon data-qa="topology-owners-table-delete" style="color: #CF3030" (click)="onDelete(object.id)">link_off</mat-icon>
     </td>
   </tr>
 </table>

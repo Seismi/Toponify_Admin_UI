@@ -1,12 +1,12 @@
 <div class="wrapper">
   <div class="block">
     <mat-chip-list>
-      <mat-chip *ngIf="dependenciesView">
+      <mat-chip *ngIf="dependenciesView" data-qa="topology-viewing-dependencies">
         Viewing Dependencies
         <mat-icon matChipRemove (click)="exitDependenciesView.emit()">cancel</mat-icon>
       </mat-chip>
       
-      <mat-chip *ngIf="filterLevel === 'usage analysis'">
+      <mat-chip *ngIf="filterLevel === 'usage analysis'" data-qa="topology-showing-usage-across-levels">
         Showing Usage Across Levels
         <mat-icon matChipRemove (click)="exitUsageView.emit()">cancel</mat-icon>
       </mat-chip>
@@ -15,6 +15,7 @@
 
   <div class="block">
     <smi-layout-actions
+      data-qa="topology-layout-actions"
       class="layout-actions"
       [grid]="grid"
       [allowMove]="allowMove"

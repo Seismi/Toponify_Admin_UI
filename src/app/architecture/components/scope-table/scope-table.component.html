@@ -12,7 +12,7 @@
         matTooltip="Implicitly included - This either is a component of or has a component that is in the scope"
         >functions</mat-icon
       >
-      <mat-icon *ngIf="element.removeFromButton" (click)="onDelete(element)">delete</mat-icon>
+      <mat-icon data-qa="topology-scopes-table-delete" *ngIf="element.removeFromButton" (click)="onDelete(element)">delete</mat-icon>
     </td>
   </ng-container>
 
@@ -22,6 +22,6 @@
 
 <mat-paginator [pageSizeOptions]="[5, 10]"></mat-paginator>
 <div class="actions" *ngIf="nodeCategory !== 'copy'">
-  <button mat-raised-button color="primary" (click)="onNew()">New Scope</button>
-  <button mat-raised-button color="primary" (click)="onAdd()">Add to Existing</button>
+  <button data-qa="topology-scopes-table-new-scope" mat-raised-button color="primary" (click)="onNew()">New Scope</button>
+  <button data-qa="topology-scopes-table-add-to-existing" mat-raised-button color="primary" (click)="onAdd()">Add to Existing</button>
 </div>
