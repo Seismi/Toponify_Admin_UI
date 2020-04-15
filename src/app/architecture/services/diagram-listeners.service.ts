@@ -152,6 +152,41 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
+    // After diagram layout is completed, ensure that no nodes overlap
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event: go.DiagramEvent): void {
+
+        const currentLevel = this.currentLevel;
+
+        if (!currentLevel.endsWith('map') && currentLevel !== Level.usage) {
+
+          // Check each node for overlap
+          event.diagram.nodes.each(function(node: go.Node): void {
+            if (!this.diagramChangesService.isUnoccupied(node.actualBounds, node)) {
+              const rectangle = node.actualBounds.copy();
+
+              // If node is found to overlap, look for unoccupied area to move node to
+              do {
+                // Move search area down until a space is found
+                rectangle.offset(0, 10);
+              } while (!this.diagramChangesService.isUnoccupied(rectangle, node));
+
+              // Move node to unoccupied area
+              node.moveTo(rectangle.left, rectangle.top);
+              node.ensureBounds();
+
+              // Reroute any links connected to the node
+              node.findLinksConnected().each(function(link: go.Link): void {
+                link.data.updateRoute = true;
+                link.updateRoute();
+              });
+            }
+          }.bind(this));
+        }
+      }.bind(this)
+    );
+
     // After a system group is automatically laid out, ensure that links to
     //  any grouped nodes are updated.
     diagram.addDiagramListener(

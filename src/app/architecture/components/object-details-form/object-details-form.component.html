@@ -17,7 +17,11 @@
     <mat-form-field>
       <div class="input-wrapper">
         <label>Category</label>
-        <mat-select data-qa="object-details-category" formControlName="category" [ngClass]="{ editable: !nodeIsEditable() }">
+        <mat-select 
+          formControlName="category" 
+          [ngClass]="{ editable: !nodeIsEditable() }" 
+          data-qa="object-details-category"
+        >
           <mat-option *ngFor="let category of getCategories()" [value]="category">
             {{ category }}
           </mat-option>
@@ -33,6 +37,7 @@
         rows="4"
         formControlName="description"
         [ngClass]="{ editable: !nodeIsEditable() }"
+        data-qa="object-details-description"
       ></textarea>
     </mat-form-field>
   </div>
@@ -53,7 +58,8 @@
                   (removeTag)="onRemoveTag($event)"
                   (updateTag)="onUpdateTag($event)"
                   (updateAvailableTags)="onUpdateAvailableTags()"
-                  [workPackageIsEditable]="workPackageIsEditable"></smi-tag-list>
+                  [workPackageIsEditable]="workPackageIsEditable"
+                  data-qa="object-details-tags"></smi-tag-list>
     <smi-owners-table-in-architecture
       data-qa="object-details-owners-table"
       [data]="owners"
@@ -108,11 +114,11 @@
     </smi-related-attribute-table>
     <div *ngIf="!attributesPage">
       <div *ngIf="isNode">
-        <button mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
-        <button mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
+        <button data-qa="object-details-see-dependencies" mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
+        <button data-qa="object-details-see-usage-across-levels" mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
       </div>
       <div *ngIf="isLink()">
-        <button class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
+        <button data-qa="object-details-view-structure" class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
       </div>
     </div>
   </div>
