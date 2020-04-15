@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
@@ -20,7 +20,7 @@ import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpa
   styleUrls: ['./radio-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-export class RadioModalComponent implements OnInit, OnDestroy {
+export class RadioModalComponent implements OnInit, OnDestroy, DoCheck {
   public users$: Observable<User[]>;
   public isEditable = true;
   public modalMode = true;
@@ -28,6 +28,7 @@ export class RadioModalComponent implements OnInit, OnDestroy {
   public selectedNode = null;
   public workpackages$: Observable<WorkPackageEntity[]>;
   public selectedOption: any;
+  public radioCategory: string;
 
   constructor(
     private store: Store<UserState>,
@@ -38,6 +39,10 @@ export class RadioModalComponent implements OnInit, OnDestroy {
         selectedNode: NodeDetail;
       }
     ) { }
+
+  ngDoCheck(): void {
+    this.radioCategory = this.radioDetailsForm.value.category;
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadUsers({}));
