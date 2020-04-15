@@ -7,12 +7,12 @@
           (editUser)="onEditUser($event)"
           (addUser)="onAddUser($event)"
           (selectUser)="onSelectUser($event)"
-          data-hook="all-users-table"
+          data-qa="all-users-table"
         >
         </smi-users-table>
       </div>
       <div class="col">
-        <smi-settings-right-side (add)="onAddUser()" [title]="'User'"></smi-settings-right-side>
+        <smi-right-hand-side (add)="onAddUser()" [title]="'User'"></smi-right-hand-side>
         <router-outlet></router-outlet>
       </div>
     </div>

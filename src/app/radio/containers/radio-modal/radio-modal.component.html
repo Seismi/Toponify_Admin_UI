@@ -1,14 +1,17 @@
-<h1 mat-dialog-title>New</h1>
+<h1 mat-dialog-title>New RADIO</h1>
 <div mat-dialog-content>
   <smi-radio-detail 
     [data]="users$ | async" 
     [group]="radioDetailsForm" 
     [isEditable]="isEditable" 
     [modalMode]="modalMode"
+    [selectedNode]="data?.selectedNode"
+    [workpackages]="workpackages$ | async"
+    (selectWorkPackage)="onSelectWorkPackage($event)"
   >
   </smi-radio-detail>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button data-qa="radio-modal-save" (click)="onSubmit()">Save</button>
+  <button mat-button data-qa="radio-modal-cancel" (click)="onCancelClick()">Cancel</button>
 </div>
