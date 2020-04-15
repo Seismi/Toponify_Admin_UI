@@ -1,5 +1,10 @@
+form {
+  padding: 5px 0px;
+}
+
 .mat-form-field {
   width: 100%;
+  margin: 5px 0px;
 }
 
 .radio-actions {
@@ -52,4 +57,9 @@ button {
 ::ng-deep .ck-content {
   background-color:white;
   height: 110px;
+}
+
+p {
+  text-align: center;
+  font-size: 20px;
 }
