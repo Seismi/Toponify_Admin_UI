@@ -4,7 +4,8 @@ import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import { Tag } from '@app/architecture/store/models/node.model';
+import { Tag, NodeDetail } from '@app/architecture/store/models/node.model';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 interface Scores {
   level: number;
@@ -26,6 +27,9 @@ export class RadioDetailComponent {
   @Input() relatesTo: RadioDetail;
   @Input() tags: Tag[];
   @Input() availableTags: Tag[];
+  @Input() selectedNode: NodeDetail;
+  @Input() workpackages: WorkPackageEntity[];
+  public selectedOptions = [];
 
   @Input()
   set data(data: any[]) {
@@ -92,10 +96,11 @@ export class RadioDetailComponent {
 
   @Output()
   deleteRadio = new EventEmitter<void>();
-  
+
   @Output() addTag = new EventEmitter<string>();
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();
+  @Output() selectWorkPackage = new EventEmitter<any>();
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;

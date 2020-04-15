@@ -36,4 +36,8 @@ export class ObjectivesTableComponent {
   onMove(objective: Objective): void {
     this.moveObjective.emit(objective);
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

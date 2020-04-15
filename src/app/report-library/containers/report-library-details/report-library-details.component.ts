@@ -454,27 +454,34 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         reportId: this.report.id,
         tagId: tag.id
       })
-    )
+    );
   }
 
   onRaiseNew(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      data: {
+        selectedNode: this.report
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio) {
+      if (data && data.radio || data.selectedWorkPackages) {
         this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio } }));
         this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
           const radioId = action.payload.id;
-          this.store.dispatch(
-            new AddReportRadio({
-              workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
-              reportId: this.reportId,
-              radioId: radioId
-            })
-          );
+          if (action) {
+            data.selectedWorkPackages.forEach(workpackage => {
+              this.store.dispatch(
+                new AddReportRadio({
+                  workPackageId: workpackage.id,
+                  reportId: this.reportId,
+                  radioId: radioId
+                })
+              );
+            });
+          }
         });
       }
     });

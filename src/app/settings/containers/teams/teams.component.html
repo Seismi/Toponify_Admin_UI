@@ -3,14 +3,14 @@
     <div class="row">
       <div class="col mat-elevation-z8">
         <smi-teams-table
-          data-qa="setting-team-table"
+          data-qa="settings-teams-table"
           [data]="teams$ | async" 
           (selectTeam)="onSelectTeam($event)" 
           (addTeam)="onAddTeam()">
         </smi-teams-table>
       </div>
       <div class="col">
-        <smi-settings-right-side (add)="onAddTeam()" [title]="'Team'"></smi-settings-right-side>
+        <smi-right-hand-side (add)="onAddTeam()" [title]="'Team'"></smi-right-hand-side>
         <router-outlet></router-outlet>
       </div>
     </div>

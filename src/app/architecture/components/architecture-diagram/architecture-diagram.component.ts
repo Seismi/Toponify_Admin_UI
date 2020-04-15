@@ -332,17 +332,41 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       const modelData = this.diagram.model.modelData;
       const layoutSettings = this.layoutSettings;
 
+      const defaultLayoutSettings = {
+        name: true,
+        description: true,
+        showRadioAlerts: true,
+        tags: true,
+        nextLevel: true,
+        responsibilities: false,
+        dataLinks: true,
+        masterDataLinks: true,
+        linkName: false,
+        linkRadio: true
+      };
+
+      // Function to set model data properties in accordance with the layout settings.
+      // If layout setting not available then set to default value.
+      const setLayoutSetting = function(
+        modelDataSetting: string,
+        layoutSetting: string,
+        partType: 'components' | 'links'): void {
+        modelData[modelDataSetting] = layoutSetting in layoutSettings[partType] ?
+          layoutSettings[partType][layoutSetting] :
+          defaultLayoutSettings[modelDataSetting];
+      };
+
       if (layoutSettings) {
-        modelData.name = true;
-        modelData.description = layoutSettings.components.showDescription;
-        modelData.showRadioAlerts = layoutSettings.components.showRADIO;
-        modelData.tags = layoutSettings.components.showTags;
-        modelData.nextLevel = layoutSettings.components.showNextLevel;
-        modelData.responsibilities = false;
-        modelData.dataLinks = layoutSettings.links.showDataLinks;
-        modelData.masterDataLinks = layoutSettings.links.showMasterDataLinks;
-        modelData.linkName = layoutSettings.links.showName;
-        modelData.linkRadio = layoutSettings.links.showRADIO;
+        setLayoutSetting('name', '', 'components');
+        setLayoutSetting('description', 'showDescription', 'components');
+        setLayoutSetting('showRadioAlerts', 'showRADIO', 'components');
+        setLayoutSetting('tags', 'showTags', 'components');
+        setLayoutSetting('nextLevel', 'showNextLevel', 'components');
+        setLayoutSetting('responsibilities', '', 'components');
+        setLayoutSetting('dataLinks', 'showDataLinks', 'links');
+        setLayoutSetting('masterDataLinks', 'showMasterDataLinks', 'links');
+        setLayoutSetting('linkName', 'showName', 'links');
+        setLayoutSetting('linkRadio', 'showRadio', 'links');
       }
 
       this.diagram.updateAllTargetBindings('');

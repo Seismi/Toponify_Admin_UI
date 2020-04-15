@@ -25,7 +25,7 @@
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-          <mat-icon style="color: #CF3030" (click)="onDelete(element)" data-qa="setting-team-members-table-delete">delete</mat-icon>
+          <mat-icon style="color: #CF3030" (click)="onDelete(element)" data-qa="settings-teams-members-table-delete">delete</mat-icon>
         </td>
       </ng-container>
 
@@ -35,7 +35,7 @@
 
     <div style="display: flex;">
       <div style="flex-grow: 1; background-color: #fff;">
-        <button mat-raised-button color="primary" (click)="onAdd()" data-qa="setting-team-members-table-add">Add</button>
+        <button mat-raised-button color="primary" (click)="onAdd()" data-qa="settings-teams-members-table-add">Add</button>
       </div>
       <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 75, 100]"></mat-paginator>
     </div>
