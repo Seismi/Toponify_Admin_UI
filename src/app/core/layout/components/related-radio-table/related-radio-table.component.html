@@ -36,6 +36,6 @@
 </div>
 
 <div class="actions" *ngIf="showButtons">
-  <button data-qa="related-radio-table-raise-new" mat-raised-button color="primary" (click)="raiseNew.emit()">Raise New</button>
-  <button data-qa="related-radio-table-assign-radio" mat-raised-button color="primary" (click)="assignRadio.emit()">Assign RADIO</button>
+  <button mat-raised-button color="primary" data-qa="related-radio-table-raise-new" (click)="raiseNew.emit()">Raise New</button>
+  <button mat-raised-button color="primary" data-qa="related-radio-table-assign-radio" (click)="assignRadio.emit()">Assign RADIO</button>
 </div>
