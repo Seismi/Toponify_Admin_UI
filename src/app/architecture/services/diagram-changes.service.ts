@@ -22,6 +22,7 @@ import {endPointTypes, layers, nodeCategories, NodeLayoutSettingsEntity} from '@
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
+import {autoLayoutId} from '@app/architecture/store/models/layout.model';
 
 const $ = go.GraphObject.make;
 
@@ -109,7 +110,7 @@ export class DiagramChangesService {
 
             const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node};
 
-            if (this.layout.id !== '00000000-0000-0000-0000-000000000000') {
+            if (this.layout.id !== autoLayoutId) {
 
               const { nodeLayoutData, linkLayoutData } = this.getCurrentPartsLayoutData(event.diagram);
 

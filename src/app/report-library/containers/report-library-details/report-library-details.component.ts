@@ -44,7 +44,7 @@ import { map, take } from 'rxjs/operators';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { ReportService } from '@app/report-library/services/report.service';
 import { ReportingConceptFilterModalComponent } from '@app/report-library/components/reporting-concept-filter-modal/reporting-concept-filter-modal.component';
-import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
+import {currentArchitecturePackageId, CustomPropertiesEntity} from '@app/workpackage/store/models/workpackage.models';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { Actions, ofType } from '@ngrx/effects';
@@ -470,7 +470,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
           const radioId = action.payload.id;
           this.store.dispatch(
             new AddReportRadio({
-              workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+              workPackageId: (this.workpackageId) ? this.workpackageId : currentArchitecturePackageId,
               reportId: this.reportId,
               radioId: radioId
             })
@@ -491,7 +491,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       if (data && data.radio) {
         this.store.dispatch(
           new AddReportRadio({
-            workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+            workPackageId: (this.workpackageId) ? this.workpackageId : currentArchitecturePackageId,
             reportId: this.reportId,
             radioId: data.radio.id
           })

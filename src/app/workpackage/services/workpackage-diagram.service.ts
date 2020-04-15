@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { Store } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpackage.models';
 
 const $ = go.GraphObject.make;
 
@@ -132,7 +133,7 @@ export class WorkPackageDiagramService {
     const links = [];
 
     workPackages.forEach(function(workPackage) {
-      if (workPackage.id === '00000000-0000-0000-0000-000000000000') {
+      if (workPackage.id === currentArchitecturePackageId) {
         return;
       }
 

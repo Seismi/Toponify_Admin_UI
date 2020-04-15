@@ -28,7 +28,7 @@ import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/s
 import { MatDialog } from '@angular/material';
 import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
 import { DeleteModalComponent } from '@app/architecture/containers/delete-modal/delete-modal.component';
-import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
+import {currentArchitecturePackageId, CustomPropertiesEntity} from '@app/workpackage/store/models/workpackage.models';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RelatedAttributesModalComponent } from '../related-attributes-modal/related-attributes-modal.component';
 import { OwnersEntityOrTeamEntityOrApproversEntity, Tag } from '@app/architecture/store/models/node.model';
@@ -318,7 +318,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
           const radioId = action.payload.id;
           this.store.dispatch(
             new AddAttributeRadio({
-              workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+              workPackageId: (this.workpackageId) ? this.workpackageId : currentArchitecturePackageId,
               attributeId: this.attributeId,
               radioId: radioId
             })
@@ -339,7 +339,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       if (data && data.radio) {
         this.store.dispatch(
           new AddAttributeRadio({
-            workPackageId: (this.workpackageId) ? this.workpackageId : '00000000-0000-0000-0000-000000000000',
+            workPackageId: (this.workpackageId) ? this.workpackageId : currentArchitecturePackageId,
             attributeId: this.attributeId,
             radioId: data.radio.id
           })

@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import {currentArchitecturePackageId, WorkPackageEntity} from '@app/workpackage/store/models/workpackage.models';
 import { Store, select } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -24,7 +24,7 @@ export class RadioConfirmModalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.store.pipe(select(getWorkPackageEntities)).subscribe(workpackages => {
-      const currentState = workpackages.filter(workpackage => workpackage.id === '00000000-0000-0000-0000-000000000000');
+      const currentState = workpackages.filter(workpackage => workpackage.id === currentArchitecturePackageId);
       this.selectedWorkPackages.unshift(...currentState);
     });
   }

@@ -13,7 +13,7 @@ import {
 import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
-import { linkCategories } from '@app/architecture/store/models/node-link.model';
+import {dummyLinkId, linkCategories} from '@app/architecture/store/models/node-link.model';
 import { layers } from '@app/architecture/store/models/node.model';
 import { DiagramTemplatesService } from '../../services/diagram-templates.service';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
@@ -220,7 +220,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       const deletedPart = this.diagram.selection.first();
 
       // Disallow delete of dummy links in map view
-      if (deletedPart.data.id === '00000000-0000-0000-0000-000000000000') {
+      if (deletedPart.data.id === dummyLinkId) {
         return;
       }
 
