@@ -396,12 +396,6 @@ export class DiagramChangesService {
 
     diagram.model.nodeDataArray = JSON.parse(JSON.stringify(nodes));
 
-    diagram.nodes.each(function(node) {
-      if (!this.isUnoccupied(node.actualBounds, node)) {
-        diagram.model.setDataProperty(node.data, 'locationMissing', true);
-      }
-    }.bind(this));
-
     if (diagram.layout.isValidLayout) {
       diagram.layout.isValidLayout = false;
     }

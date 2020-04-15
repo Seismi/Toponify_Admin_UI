@@ -1,16 +1,14 @@
 import * as go from 'gojs';
-import { LinkShiftingTool } from 'gojs/extensionsTS/LinkShiftingTool';
-import { forwardRef, Inject, Injectable } from '@angular/core';
-import { DiagramLevelService, Level } from './diagram-level.service';
-import { Subject } from 'rxjs';
-import {layers, middleOptions, NodeDetail} from '@app/architecture/store/models/node.model';
-import { linkCategories } from '@app/architecture/store/models/node-link.model';
-import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
-import { Store } from '@ngrx/store';
-import { RouterReducerState } from '@ngrx/router-store';
-import { RouterStateUrl } from '@app/core/store';
-import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
-import { take } from 'rxjs/operators';
+import {LinkShiftingTool} from 'gojs/extensionsTS/LinkShiftingTool';
+import {forwardRef, Inject, Injectable} from '@angular/core';
+import {DiagramLevelService, Level} from './diagram-level.service';
+import {Subject} from 'rxjs';
+import {layers, middleOptions, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
+import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
+import {Store} from '@ngrx/store';
+import {RouterReducerState} from '@ngrx/router-store';
+import {RouterStateUrl} from '@app/core/store';
+import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 
 const $ = go.GraphObject.make;
 
@@ -822,7 +820,15 @@ export class GojsCustomObjectsService {
     return $(go.Brush, 'Linear', newBrushParams);
   }
 
+  // Set node dragComputation to this to prevent dragging one node to overlap another
   avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
+
+    // Allow overlap for grouped nodes in map view so user can drag nodes to rearrange the order.
+    // Group layout will ensure there is ultimately no overlap.
+    if (this.currentLevel.endsWith('map') && node.data.category !== nodeCategories.transformation) {
+      return newLoc;
+    }
+
     if (node.diagram instanceof go.Palette) { return snappedLoc; }
     // this assumes each node is fully rectangular
     const bnds = node.actualBounds;
