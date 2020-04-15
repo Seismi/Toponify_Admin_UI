@@ -3,21 +3,21 @@
     <mat-form-field>
       <div class="input-wrapper">
         <label>Ref.</label>
-        <input matInput formControlName="reference" [ngClass]="{ editable: !nodeIsEditable() }" />
+        <input data-qa="object-details-reference" matInput formControlName="reference" [ngClass]="{ editable: !nodeIsEditable() }" />
       </div>
     </mat-form-field>
     
     <mat-form-field>
       <div class="input-wrapper">
         <label>Name</label>
-        <input matInput formControlName="name" [ngClass]="{ editable: !nodeIsEditable() }" />
+        <input data-qa="object-details-name" matInput formControlName="name" [ngClass]="{ editable: !nodeIsEditable() }" />
       </div>
     </mat-form-field>
 
     <mat-form-field>
       <div class="input-wrapper">
         <label>Category</label>
-        <mat-select formControlName="category" [ngClass]="{ editable: !nodeIsEditable() }">
+        <mat-select data-qa="object-details-category" formControlName="category" [ngClass]="{ editable: !nodeIsEditable() }">
           <mat-option *ngFor="let category of getCategories()" [value]="category">
             {{ category }}
           </mat-option>
@@ -27,6 +27,7 @@
 
     <mat-form-field>
       <textarea
+        data-qa="object-details-description"
         matInput
         placeholder="Description"
         rows="4"
@@ -37,12 +38,13 @@
   </div>
 
   <div class="form-group" *ngIf="!nodeIsEditable()">
-    <button mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
-    <button mat-flat-button (click)="onCancel()">Cancel</button>
-    <button mat-flat-button color="warn" (click)="onDelete()">Delete</button>
+    <button data-qa="object-details-save" mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
+    <button data-qa="object-details-cancel" mat-flat-button (click)="onCancel()">Cancel</button>
+    <button data-qa="object-details-delete" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
   </div>
   <div>
-    <smi-tag-list [tags]="tags"
+    <smi-tag-list data-qa="object-details-tags"
+                  [tags]="tags"
                   [availableTags]="availableTags"
                   [editMode]="!nodeIsEditable()"
                   [componentLayer]="componentLayer"
@@ -53,6 +55,7 @@
                   (updateAvailableTags)="onUpdateAvailableTags()"
                   [workPackageIsEditable]="workPackageIsEditable"></smi-tag-list>
     <smi-owners-table-in-architecture
+      data-qa="object-details-owners-table"
       [data]="owners"
       [workPackageIsEditable]="!nodeIsEditable()"
       (add)="onAddOwner()"
@@ -62,6 +65,7 @@
 
 
     <smi-source-or-target-table
+      data-qa="object-details-source-table"
       *ngIf="clickedOnLink"
       [title]="'Source'"
       [data]="sourceObject"
@@ -71,6 +75,7 @@
     </smi-source-or-target-table>
 
     <smi-source-or-target-table
+      data-qa="object-details-target-table"
       *ngIf="clickedOnLink"
       [title]="'Target'"
       [data]="targetObject"
@@ -81,6 +86,7 @@
 
 
     <smi-group-info-table
+      data-qa="object-details-grouped-in-table"
       *ngIf="!clickedOnLink && !attributesPage"
       [groupInfo]="groupInfo" 
       (editGroup)="editGroup.emit()"
@@ -89,6 +95,7 @@
     >
     </smi-group-info-table>
     <smi-related-attribute-table
+      data-qa="object-details-related-attributes-table"
       *ngIf="attributesPage"
       [data]="relatedAttributes"
       [isEditable]="workPackageIsEditable"
