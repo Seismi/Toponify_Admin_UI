@@ -23,9 +23,6 @@
           [canSelectWorkpackages]="canSelectWorkpackages"
           [group]="layoutSettingsForm"
           [layout]="layout"
-          [currentFilterLevel]="currentFilterLevel"
-          (addInterface)="onAddComponentOrLink($event)"
-          (addLinkWithTransformation)="onAddLinkWithTransformation()"
         >
         </smi-left-panel>
       </smi-left-hand-pane-content>
@@ -134,7 +131,7 @@
             [view]="'system'"
             [filterValue]="tableViewFilterValue"
             [workPackageIsEditable]="workPackageIsEditable"
-            (add)="onAddComponentOrLink('component')"
+            (add)="onAddComponentOrLink()"
           ></smi-architecture-table-view>
         </div>
         <div *ngIf="selectedView === ArchitectureView.Links">
@@ -147,7 +144,7 @@
             [view]="'link'"
             [filterValue]="tableViewFilterValue"
             [workPackageIsEditable]="workPackageIsEditable"
-            (add)="onAddComponentOrLink('link')"
+            (add)="onAddComponentOrLink()"
           ></smi-architecture-table-view>
         </div>
       </app-model-content>
