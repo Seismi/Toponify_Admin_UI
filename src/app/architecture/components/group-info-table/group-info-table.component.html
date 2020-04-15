@@ -4,8 +4,8 @@
       <th class="title">Grouped in</th>
       <th>
         <div *ngIf="workPackageIsEditable">
-          <mat-icon *ngIf="groupInfo?.name" (click)="deleteNodeGroup.emit()">delete</mat-icon>
-          <mat-icon (click)="editGroup.emit()">edit</mat-icon>
+          <mat-icon data-qa="grouped-in-table-delete" *ngIf="groupInfo?.name" (click)="deleteNodeGroup.emit()">delete</mat-icon>
+          <mat-icon data-qa="grouped-in-table-edit" (click)="editGroup.emit()">edit</mat-icon>
         </div>
       </th>
     </tr>

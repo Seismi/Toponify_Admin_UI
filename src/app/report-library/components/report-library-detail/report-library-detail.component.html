@@ -64,7 +64,7 @@
 
       <div class="source-system" *ngIf="!modalMode" data-qa="reports-source-system">
           Source System - {{system ? system.name : ''}}
-          <button mat-icon-button (click)="onSourceEdit()" *ngIf="workPackageIsEditable">
+          <button mat-icon-button data-qa="reports-source-system-edit" (click)="onSourceEdit()" *ngIf="workPackageIsEditable">
             <mat-icon>edit</mat-icon>
           </button>
       </div>

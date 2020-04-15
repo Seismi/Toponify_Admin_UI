@@ -1,5 +1,6 @@
 <app-model-container>
   <smi-left-hand-pane
+    data-qa="rules-and-attributes-left-hand-pane"
     [workPackageIsEditable]="workPackageIsEditable"
     [selectedLeftTab]="selectedLeftTab"
     (openSideBar)="openLeftTab($event)"
@@ -11,6 +12,7 @@
       <smi-left-hand-pane-content (close)="drawer.close(selectedLeftTab = 'menu')">
         <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
         <smi-workpackage-tab-table
+          data-qa="rules-and-attributes-work-package-table"
           *ngIf="selectedLeftTab !== 'menu'"
           [data]="workpackage$ | async"
           (selectWorkPackage)="onSelectWorkPackage($event)"
@@ -29,6 +31,7 @@
         (editWorkPackage)="onSelectEditWorkpackage($event)">
       </smi-workpackage-name>
       <smi-scopes-dropdown
+        data-qa="rules-and-attributes-scopes"
         class="scope-dropdown"
         [data]="scopes$ | async"
         [selectedScope]="selectedScope$ | async"
@@ -45,6 +48,7 @@
         <div class="row">
           <div class="col">
             <app-category-table
+              data-qa="rules-and-attributes-table"
               [data]="categoryTableData"
               [categories]="['attribute', 'rule']"
               (selectRow)="onSelectAttribute($event)"
@@ -52,7 +56,8 @@
             </app-category-table>
           </div>
           <div class="col">
-            <smi-right-hand-side 
+            <smi-right-hand-side
+              data-qa="rules-and-attributes-right-hand-side"
               [title]="'Attribute'"
               (add)="onAdd()"
               [disabled]="workPackageIsEditable"

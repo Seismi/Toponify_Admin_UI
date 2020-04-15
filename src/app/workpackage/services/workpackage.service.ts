@@ -105,12 +105,15 @@ export class WorkPackageService {
     );
   }
 
-  getWorkPackageBaselineAvailability(workPackageId: string): Observable<{data: Baseline[]}> {
-    return this.http.get<{data: Baseline[]}>(`/workpackages/${workPackageId}/baseline/check/availability`);
+  getWorkPackageBaselineAvailability(workPackageId: string): Observable<{ data: Baseline[] }> {
+    return this.http.get<{ data: Baseline[] }>(`/workpackages/${workPackageId}/baseline/check/availability`);
   }
 
   addWorkPackageBaseline(workPackageId: string, baselineId: string): Observable<WorkPackageDetailApiResponse> {
-    return this.http.post<WorkPackageDetailApiResponse>(`/workpackages/${workPackageId}/baseline/${baselineId}`, this.httpOptions);
+    return this.http.post<WorkPackageDetailApiResponse>(
+      `/workpackages/${workPackageId}/baseline/${baselineId}`,
+      this.httpOptions
+    );
   }
 
   deleteWorkPackageBaseline(workPackageId: string, baselineId: string): Observable<WorkPackageDetailApiResponse> {
