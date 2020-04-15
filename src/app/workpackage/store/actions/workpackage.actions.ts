@@ -233,7 +233,7 @@ export class SetWorkpackageDisplayColour implements Action {
 
 export class SetWorkpackageEditMode implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageEditMode;
-  constructor(public payload: { id: string; newState: boolean }) {}
+  constructor(public payload: { id?: string; newState: boolean }) {}
 }
 
 export class SetSelectedWorkPackages implements Action {
@@ -318,9 +318,7 @@ export class DeleteRadioFailure implements Action {
 
 export class UpdateCustomProperty implements Action {
   readonly type = WorkPackageActionTypes.UpdateCustomProperty;
-  constructor(
-    public payload: { workPackageId: string; customPropertyId: string; data: string }
-  ) {}
+  constructor(public payload: { workPackageId: string; customPropertyId: string; data: string }) {}
 }
 
 export class UpdateCustomPropertySuccess implements Action {
@@ -455,7 +453,7 @@ export class SupersedeWorkpackageFailure implements Action {
 
 export class ArchiveWorkPackage implements Action {
   readonly type = WorkPackageActionTypes.ArchiveWorkPackage;
-  constructor(public payload: { workPackageId: string, archived: boolean }) {}
+  constructor(public payload: { workPackageId: string; archived: boolean }) {}
 }
 
 export class LoadWorkPackageBaselineAvailability implements Action {
@@ -475,7 +473,7 @@ export class LoadWorkPackageBaselineAvailabilityFailure implements Action {
 
 export class AddWorkPackageBaseline implements Action {
   readonly type = WorkPackageActionTypes.AddWorkPackageBaseline;
-  constructor(public payload: { workPackageId: string, baselineId: string }) {}
+  constructor(public payload: { workPackageId: string; baselineId: string }) {}
 }
 
 export class AddWorkPackageBaselineSuccess implements Action {
@@ -490,7 +488,7 @@ export class AddWorkPackageBaselineFailure implements Action {
 
 export class DeleteWorkPackageBaseline implements Action {
   readonly type = WorkPackageActionTypes.DeleteWorkPackageBaseline;
-  constructor(public payload: { workPackageId: string, baselineId: string }) {}
+  constructor(public payload: { workPackageId: string; baselineId: string }) {}
 }
 
 export class DeleteWorkPackageBaselineSuccess implements Action {

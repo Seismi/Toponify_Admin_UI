@@ -292,7 +292,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         attributeId: this.attributeId,
         tagIds: [{ id: tagId }]
       })
-    )
+    );
   }
 
   onRemoveTag(tag: Tag): void {
@@ -302,27 +302,34 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         attributeId: this.attributeId,
         tagId: tag.id
       })
-    )
+    );
   }
 
   onRaiseNew() {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      data: {
+        selectedNode: this.attribute
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio) {
+      if (data && data.radio || data.selectedWorkPackages) {
         this.store.dispatch(new AddRadioEntity({ data: { ...data.radio } }));
         this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
           const radioId = action.payload.id;
-          this.store.dispatch(
-            new AddAttributeRadio({
-              workPackageId: (this.workpackageId) ? this.workpackageId : currentArchitecturePackageId,
-              attributeId: this.attributeId,
-              radioId: radioId
-            })
-          );
+          if (action) {
+            data.selectedWorkPackages.forEach(workpackage => {
+              this.store.dispatch(
+                new AddAttributeRadio({
+                  workPackageId: workpackage.id,
+                  attributeId: this.attributeId,
+                  radioId: radioId
+                })
+              );
+            });
+          }
         });
       }
     });

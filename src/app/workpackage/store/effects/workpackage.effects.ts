@@ -81,7 +81,8 @@ import {
   DeleteWorkPackageBaselineFailure,
   AddWorkPackageMapViewTransformation,
   AddWorkPackageMapViewTransformationFailure,
-  AddWorkPackageMapViewTransformationSuccess
+  AddWorkPackageMapViewTransformationSuccess,
+  SetWorkpackageEditMode
 } from '../actions/workpackage.actions';
 import {LoadMapView} from '@app/architecture/store/actions/node.actions';
 import {
@@ -236,7 +237,9 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((params: any) => {
       return this.workpackageService.getWorkPackageAvailability(params).pipe(
-        switchMap((response: any) => [new GetWorkpackageAvailabilitySuccess(response.data)]),
+        switchMap((response: any) => {
+          return [new GetWorkpackageAvailabilitySuccess(response.data)];
+        }),
         catchError((error: HttpErrorResponse) => of(new GetWorkpackageAvailabilityFailure(error)))
       );
     })

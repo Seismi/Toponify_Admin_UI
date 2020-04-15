@@ -6,9 +6,10 @@
   [disableEmailInput]="disableEmailInput"
   [modalMode]="modalMode"
   [isEditable]="isEditable"
+  data-qa="settings-all-users-modal-form"
 >
 </smi-my-user-form>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSubmit()" data-qa="settings-all-users-modal-save">Save</button>
+  <button mat-button (click)="onCancel()" data-qa="settings-all-users-modal-cancel">Cancel</button>
 </div>

@@ -7,7 +7,6 @@ import { MemberModalComponent } from '../member-modal/member-modal.component';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { UpdateTeam, AddMember, DeleteMember, DeleteTeam, LoadTeam } from '@app/settings/store/actions/team.actions';
-import { DeleteTeamAndMemberModalComponent } from '../delete-modal/delete-modal.component';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getTeamSelected } from '@app/settings/store/selectors/team.selector';
@@ -117,17 +116,16 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteMember(member: MembersEntity): void {
-    const dialogRef = this.dialog.open(DeleteTeamAndMemberModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: `${member.firstName} ${member.lastName}`
+        title: `Are you sure you want to delete "${member.firstName} ${member.lastName}"?`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteMember({ teamId: this.team.id, userId: member.id }));
       }
     });
