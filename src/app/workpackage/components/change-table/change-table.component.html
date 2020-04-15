@@ -1,3 +1,6 @@
+<div class="search-container">
+  <input placeholder="Search" data-qa="work-packages-change-table-quick-search" (keyup)="onSearch($event.target.value)">
+</div>
 <table mat-table [dataSource]="dataSource" matSort>
   <!-- Change Column -->
   <ng-container matColumnDef="action">

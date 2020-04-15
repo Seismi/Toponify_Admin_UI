@@ -91,6 +91,11 @@ export const getWorkPackageBaselineAvailability = createSelector(
   state => state.baseline
 );
 
+export const getSelectedFromAvailabilities = createSelector(
+  getWorkPackageState,
+  state => (state.avaialabilities ? state.avaialabilities.filter(item => item.isSelected).map(item => item.id) : [])
+);
+
 export const getWorkPackageById = createSelector(
   getWorkPackageState,
   (state, props?: { id: string }) => {
