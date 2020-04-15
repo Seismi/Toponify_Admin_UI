@@ -6,12 +6,14 @@
   <mat-icon
     *ngIf="workPackageIsEditable"
     (click)="exitWorkPackageEditMode.emit()"
+    data-qa="header-work-package-exit"
   >
     cancel
   </mat-icon>
   <mat-icon
     *ngIf="!workPackageIsEditable && selectedWorkPackageEntities?.length === 1"
     (click)="editWorkPackage.emit(selectedWorkPackageEntities[0])"
+    data-qa="header-work-package-edit"
   >
     edit
   </mat-icon>

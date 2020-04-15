@@ -1,5 +1,6 @@
 <app-model-container>
   <smi-left-hand-pane
+    data-qa="reports-left-hand-pane"
     [workPackageIsEditable]="workPackageIsEditable"
     [selectedLeftTab]="selectedLeftTab"
     (openSideBar)="openLeftTab($event)"
@@ -11,6 +12,7 @@
       <smi-left-hand-pane-content (close)="drawer.close(selectedLeftTab = 'menu')">
         <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
         <smi-workpackage-tab-table
+          data-qa="reports-work-package-table"
           *ngIf="selectedLeftTab !== 'menu'"
           [data]="workpackage$ | async"
           (selectWorkPackage)="onSelectWorkPackage($event)"
@@ -45,6 +47,7 @@
       <div class="row">
         <div class="col">
           <smi-report-library-table
+            data-qa="reports-table"
             [reports]="reportEntities$ | async"
             (reportSelected)="onSelectReport($event)"
             (addReport)="onAddReport()"
@@ -54,7 +57,7 @@
           </smi-report-library-table>
         </div>
         <div class="col">
-          <smi-right-hand-side [title]="'Report'" (add)="onAddReport()" [disabled]="workPackageIsEditable"></smi-right-hand-side>
+          <smi-right-hand-side data-qa="reports-right-hand-side" [title]="'Report'" (add)="onAddReport()" [disabled]="workPackageIsEditable"></smi-right-hand-side>
           <router-outlet></router-outlet>
         </div>
       </div>

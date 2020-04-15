@@ -15,7 +15,7 @@
       <td mat-cell *matCellDef="let element">
         <span>
           {{ getConcepts(element)}}
-          <button mat-icon-button (click)="onDimensionEdit(element)" *ngIf="edit">
+          <button data-qa="reports-dimensions-table-edit" mat-icon-button (click)="onDimensionEdit(element)" *ngIf="edit">
             <mat-icon>edit</mat-icon>
           </button>
         </span>
