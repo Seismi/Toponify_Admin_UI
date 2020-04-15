@@ -31,6 +31,7 @@
 
     <mat-form-field>
       <textarea
+        data-qa="object-details-description"
         matInput
         placeholder="Description"
         rows="4"
@@ -47,7 +48,8 @@
     <button data-qa="object-details-delete" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
   </div>
   <div>
-    <smi-tag-list [tags]="tags"
+    <smi-tag-list data-qa="object-details-tags"
+                  [tags]="tags"
                   [availableTags]="availableTags"
                   [editMode]="!nodeIsEditable()"
                   [componentLayer]="componentLayer"
@@ -99,7 +101,7 @@
     >
     </smi-group-info-table>
     <smi-related-attribute-table
-      data-qa="object-details-related-attribute-table"
+      data-qa="object-details-related-attributes-table"
       *ngIf="attributesPage"
       [data]="relatedAttributes"
       [isEditable]="workPackageIsEditable"
