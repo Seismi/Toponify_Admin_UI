@@ -1,4 +1,4 @@
 <div>
   <b>{{ title }}:</b> {{ data?.name }}
-  <mat-icon (click)="edit.emit()" *ngIf="workPackageIsEditable">edit</mat-icon>
+  <mat-icon data-qa="source-or-target-table-add" (click)="edit.emit()" *ngIf="workPackageIsEditable">edit</mat-icon>
 </div>
