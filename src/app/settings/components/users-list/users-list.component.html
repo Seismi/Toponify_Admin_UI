@@ -1,5 +1,5 @@
 <mat-form-field>
-  <input matInput (keyup)="onSearch($event.target.value)" placeholder="Search" />
+  <input matInput data-qa="settings-users-list-modal-quick-search" (keyup)="onSearch($event.target.value)" placeholder="Search" />
 </mat-form-field>
 
 <table mat-table [dataSource]="dataSource">
