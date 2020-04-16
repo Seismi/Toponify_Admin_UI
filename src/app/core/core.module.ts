@@ -36,6 +36,7 @@ import { LeftHandPaneComponent } from './layout/left-hand-pane/left-hand-pane.co
 import { MenuComponent } from './layout/menu/menu.component';
 import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/left-hand-pane-content.component';
 import { RelatedRadioTableComponent } from './layout/components/related-radio-table/related-radio-table.component';
+import { RelatedWorkPackageTableComponent } from './layout/components/related-work-package-table/related-work-package-table.component';
 
 @NgModule({
   imports: [
@@ -73,7 +74,8 @@ import { RelatedRadioTableComponent } from './layout/components/related-radio-ta
     LeftHandPaneComponent,
     MenuComponent,
     LeftHandPaneContentComponent,
-    RelatedRadioTableComponent
+    RelatedRadioTableComponent,
+    RelatedWorkPackageTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

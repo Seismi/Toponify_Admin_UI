@@ -41,4 +41,8 @@ export class ScopeTableComponent {
   onNew(): void {
     this.newScope.emit();
   }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

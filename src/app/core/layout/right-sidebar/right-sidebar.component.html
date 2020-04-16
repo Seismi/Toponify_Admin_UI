@@ -1,13 +1,13 @@
 <div class="sidebar">
   <div *ngIf="objectSelected && !multipleSelected; else elseBlock">
-    <span data-qa="right-hand-pane-details" (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span data-qa="right-hand-pane-components" (click)="openRightTab(1)" matTooltip="Components" [ngClass]="{ disabled: clickedOnLink || nodeCategory === 'transformation' }"><mat-icon>device_hub</mat-icon></span>
-    <span data-qa="right-hand-pane-attributes-and-rules" (click)="openRightTab(2)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
-    <span data-qa="right-hand-pane-documentation-standards" (click)="openRightTab(3)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
-    <span data-qa="right-hand-pane-radio" (click)="openRightTab(4)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
-    <span data-qa="right-hand-pane-scopes" (click)="openRightTab(5)" matTooltip="Scopes"><mat-icon>pages</mat-icon></span>
-    <span data-qa="right-hand-pane-work-packages" (click)="openRightTab(6)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
-    <span data-qa="right-hand-pane-reports" (click)="openRightTab(7)" matTooltip="Reports" *ngIf="filterLevel"><mat-icon>bookmarks</mat-icon></span>
+    <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
+    <span (click)="openRightTab(1)" matTooltip="Components" [ngClass]="{ disabled: clickedOnLink || nodeCategory === 'transformation' }"><mat-icon>device_hub</mat-icon></span>
+    <span (click)="openRightTab(2)" matTooltip="Reports" *ngIf="filterLevel"><mat-icon>bookmarks</mat-icon></span>
+    <span (click)="openRightTab(3)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
+    <span (click)="openRightTab(4)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
+    <span (click)="openRightTab(5)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
+    <span (click)="openRightTab(6)" matTooltip="Scopes"><mat-icon>pages</mat-icon></span>
+    <span (click)="openRightTab(7)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
   </div>
 
   <ng-template #elseBlock>
