@@ -211,6 +211,9 @@ import { ComponentsOrLinksModalComponent } from './components-or-links-modal/com
 import { LinkWithTransformationModalComponent } from './link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
 import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
+import { NotificationState } from '@app/core/store/reducers/notification.reducer';
+import { getNotificationOpen } from '@app/core/store/selectors/notification.selectors';
+import { NotificationPanelOpen } from '@app/core/store/actions/notification.actions';
 
 enum Events {
   NodesLinksReload = 0
@@ -355,10 +358,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private diagramLevelService: DiagramLevelService,
     private nodeService: NodeService,
     private attributeStore: Store<AttributeState>,
-    private actions$: Actions
+    private actions$: Actions,
+    private notificationStore: Store<NotificationState>
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.notificationStore.pipe(select(getNotificationOpen)).subscribe(open => {
+        if (open) {
+          this.selectedLeftTab = 'notifications';
+          this.drawer.open();
+        } else {
+          if (this.selectedLeftTab === 'notifications') {
+            this.selectedLeftTab = '';
+            this.drawer.close();
+          }
+        }
+      })
+    );
+
     this.parentDescendantIds = this.store.pipe(select(getParentDescendantIds));
     this.groupMemberIds = this.store.pipe(select(getGroupMemberIds));
     this.availableTags$ = this.store.select(getAvailableTags).pipe(map(storeTagsObj => storeTagsObj.tags));
@@ -751,6 +769,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.removeAllDraft();
   }
 
+  handleCloseDrawer(): void {
+    if (this.selectedLeftTab === 'notifications') {
+      this.notificationStore.dispatch(new NotificationPanelOpen(false));
+    }
+    this.drawer.close();
+  }
+
   get layoutSettingsForm(): FormGroup {
     return this.layoutSettingsService.layoutSettingsForm;
   }
@@ -1117,8 +1142,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (nodes === null) {
             return null;
           }
-          if (this.currentFilterLevel &&
-            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel)) {
+          if (
+            this.currentFilterLevel &&
+            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel)
+          ) {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });
@@ -1321,7 +1348,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio || data.selectedWorkPackages) {
+      if ((data && data.radio) || data.selectedWorkPackages) {
         const relatesTo = data.selectedWorkPackages.map(workpackage => {
           return {
             workPackage: {
@@ -1333,7 +1360,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             }
           };
         });
-        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio, relatesTo: relatesTo }}));
+        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio, relatesTo: relatesTo } }));
         if (data.radio.status === 'open') {
           this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
         }
@@ -2021,41 +2048,44 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
 
         this.subscriptions.push(
-          this.actions.pipe(
-            take(1),
-            ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: { payload: NodeApiResponse }) => {
-            const transformationId = action.payload.data.id;
+          this.actions
+            .pipe(
+              take(1),
+              ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)
+            )
+            .subscribe((action: { payload: NodeApiResponse }) => {
+              const transformationId = action.payload.data.id;
 
-            data.node.sourceId.forEach(source => {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageLink({
-                  workpackageId: this.workpackageId,
-                  link: {
-                    name: `${source.name} to ${data.node.name}`,
-                    layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
-                    sourceId: source.id,
-                    targetId: transformationId,
-                    category: 'data'
-                  }
-                })
-              );
-            });
+              data.node.sourceId.forEach(source => {
+                this.workpackageStore.dispatch(
+                  new AddWorkPackageLink({
+                    workpackageId: this.workpackageId,
+                    link: {
+                      name: `${source.name} to ${data.node.name}`,
+                      layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
+                      sourceId: source.id,
+                      targetId: transformationId,
+                      category: 'data'
+                    }
+                  })
+                );
+              });
 
-            data.node.targetId.forEach(target => {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageLink({
-                  workpackageId: this.workpackageId,
-                  link: {
-                    name: `${data.node.name} to ${target.name}`,
-                    layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
-                    sourceId: transformationId,
-                    targetId: target.id,
-                    category: 'data'
-                  }
-                })
-              );
-            });
-          })
+              data.node.targetId.forEach(target => {
+                this.workpackageStore.dispatch(
+                  new AddWorkPackageLink({
+                    workpackageId: this.workpackageId,
+                    link: {
+                      name: `${data.node.name} to ${target.name}`,
+                      layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
+                      sourceId: transformationId,
+                      targetId: target.id,
+                      category: 'data'
+                    }
+                  })
+                );
+              });
+            })
         );
       }
     });
@@ -2204,7 +2234,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-
   openLayoutSettingsModal() {
     const dialogRef = this.dialog.open(LayoutSettingsModalComponent, {
       disableClose: false,
@@ -2214,29 +2243,30 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.componentInstance.displayOptionsChanged.subscribe((data: { event: MatCheckboxChange, option: string }) => {
-      dialogRef.afterClosed().subscribe((settings) => {
-        if (settings && settings.value) {
-          this.displayOptionsChanged(data);
-          this.store.dispatch(
-            new UpdateLayout({
-              id: this.layout.id,
-              data: {
+    dialogRef.componentInstance.displayOptionsChanged.subscribe(
+      (data: { event: MatCheckboxChange; option: string }) => {
+        dialogRef.afterClosed().subscribe(settings => {
+          if (settings && settings.value) {
+            this.displayOptionsChanged(data);
+            this.store.dispatch(
+              new UpdateLayout({
                 id: this.layout.id,
-                name: this.layout.name,
-                scope: {
-                  id: this.scope.id
-                },
-                settings: {
-                  components: settings.value.components,
-                  links: settings.value.links
+                data: {
+                  id: this.layout.id,
+                  name: this.layout.name,
+                  scope: {
+                    id: this.scope.id
+                  },
+                  settings: {
+                    components: settings.value.components,
+                    links: settings.value.links
+                  }
                 }
-              }
-            })
-          );
-        }
-      });
-    });
+              })
+            );
+          }
+        });
+      }
+    );
   }
-
 }

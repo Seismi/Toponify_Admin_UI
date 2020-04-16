@@ -5,17 +5,37 @@
       business_center
     </mat-icon>
   </button>
-  <button 
-    mat-icon-button *ngIf="workPackageIsEditable && architecturePage" [ngClass]="{ selected: selectedLeftTab === 1 }">
+  <button
+    mat-icon-button
+    *ngIf="workPackageIsEditable && architecturePage"
+    [ngClass]="{ selected: selectedLeftTab === 1 }"
+  >
     <mat-icon title="Edit" (click)="openSideBar.emit(1)">
       edit
     </mat-icon>
   </button>
 </div>
 <div class="shortcuts">
+  <smi-notification-indicator> </smi-notification-indicator>
   <mat-icon routerLink="/topology" queryParamsHandling="preserve" title="Topology">device_hub</mat-icon>
-  <mat-icon routerLink="/work-packages" queryParamsHandling="preserve" title="Work Packages" data-qa="header-work-packages-shortcut">business_center</mat-icon>
-  <mat-icon routerLink="/radio" queryParamsHandling="preserve" title="RADIO Log" data-qa="header-radio-shortcut">track_changes</mat-icon>
-  <mat-icon routerLink="/scopes-and-layouts" queryParamsHandling="preserve" title="Scopes and Layouts" data-qa="header-scopes-and-layouts-shortcut">pages</mat-icon>
-  <a href="https://support.toponify.com" target="_blank" data-qa="header-help-shortcut"><mat-icon title="Help" data-qa="header-help-shortcut">help_outline</mat-icon></a>
+  <mat-icon
+    routerLink="/work-packages"
+    queryParamsHandling="preserve"
+    title="Work Packages"
+    data-qa="header-work-packages-shortcut"
+    >business_center</mat-icon
+  >
+  <mat-icon routerLink="/radio" queryParamsHandling="preserve" title="RADIO Log" data-qa="header-radio-shortcut"
+    >track_changes</mat-icon
+  >
+  <mat-icon
+    routerLink="/scopes-and-layouts"
+    queryParamsHandling="preserve"
+    title="Scopes and Layouts"
+    data-qa="header-scopes-and-layouts-shortcut"
+    >pages</mat-icon
+  >
+  <a href="https://support.toponify.com" target="_blank" data-qa="header-help-shortcut"
+    ><mat-icon title="Help" data-qa="header-help-shortcut">help_outline</mat-icon></a
+  >
 </div>

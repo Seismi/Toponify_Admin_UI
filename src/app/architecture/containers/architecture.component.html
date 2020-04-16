@@ -9,10 +9,10 @@
   </smi-left-hand-pane>
   <mat-drawer-container class="drawer-container" autosize fixedInViewport="true">
     <mat-drawer #drawer mode="side" class="left-sidebar">
-      <smi-left-hand-pane-content (close)="drawer.close(selectedLeftTab = 'menu')">
+      <smi-left-hand-pane-content (close)="handleCloseDrawer()">
         <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
         <smi-left-panel
-          *ngIf="selectedLeftTab !== 'menu'"
+          *ngIf="selectedLeftTab !== 'menu' && selectedLeftTab !== 'notifications'"
           (tabClick)="onTabClick($event)"
           [workpackages]="workpackage$ | async"
           [workPackageIsEditable]="workPackageIsEditable"
@@ -28,6 +28,7 @@
           (addLinkWithTransformation)="onAddLinkWithTransformation()"
         >
         </smi-left-panel>
+        <smi-notification-pane *ngIf="selectedLeftTab === 'notifications'"></smi-notification-pane>
       </smi-left-hand-pane-content>
     </mat-drawer>
     <app-base-header>
@@ -37,7 +38,8 @@
         [selectedWorkPackageEntities]="selectedWorkPackageEntities"
         [workPackageIsEditable]="workPackageIsEditable"
         (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
-        (editWorkPackage)="onSelectEditWorkpackage($event)">
+        (editWorkPackage)="onSelectEditWorkpackage($event)"
+      >
       </smi-workpackage-name>
       <app-search></app-search>
       <app-toolbar-column>
@@ -61,10 +63,7 @@
           [viewLevel]="viewLevel$ | async"
         >
         </smi-switch-view-tabs>
-        <smi-search-table-view
-          *ngIf="selectedView !== ArchitectureView.Diagram"
-          (search)="onSearchTableView($event)"
-        >
+        <smi-search-table-view *ngIf="selectedView !== ArchitectureView.Diagram" (search)="onSearchTableView($event)">
         </smi-search-table-view>
         <div style="padding: 5px; position: relative" [hidden]="selectedView !== ArchitectureView.Diagram">
           <smi-diagram-actions
@@ -98,11 +97,17 @@
             [allowMove]="allowMove"
             [workPackageIsEditable]="workPackageIsEditable"
             *ngIf="!showTable"
-            [nodes]="nodes | layer: { byId: byId,
-              descendantIds$: parentDescendantIds,
-              groupMemberIds$: groupMemberIds,
-              level: currentFilterLevel
-            } | async"
+            [nodes]="
+              nodes
+                | layer
+                  : {
+                      byId: byId,
+                      descendantIds$: parentDescendantIds,
+                      groupMemberIds$: groupMemberIds,
+                      level: currentFilterLevel
+                    }
+                | async
+            "
             [links]="links | layer: { byId: false } | async"
             [workpackageDetail]="workpackageDetail"
             [selectedId]="selectedId"
@@ -123,10 +128,11 @@
         </div>
         <div *ngIf="selectedView === ArchitectureView.System">
           <smi-architecture-table-view
-            [data]="nodes | layer: { byId: byId,
-              descendantIds$: parentDescendantIds,
-              groupMemberIds$: groupMemberIds
-            } | async"
+            [data]="
+              nodes
+                | layer: { byId: byId, descendantIds$: parentDescendantIds, groupMemberIds$: groupMemberIds }
+                | async
+            "
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
             (changeLevel)="onChangeLevel($event)"
@@ -195,13 +201,14 @@
             (addExistingScope)="onAddExistingScope()"
             (addNewScope)="onAddNewScope()"
             [selectedView]="selectedView"
-            [nodes]="nodes | layer: { byId: false,
-              descendantIds$: parentDescendantIds,
-              groupMemberIds$: groupMemberIds
-            } | async"
+            [nodes]="
+              nodes
+                | layer: { byId: false, descendantIds$: parentDescendantIds, groupMemberIds$: groupMemberIds }
+                | async
+            "
             [selectedNode]="selectedNode"
             (selectNode)="onSelectNode($event)"
-            [links]="links | layer: { byId: false} | async"
+            [links]="links | layer: { byId: false } | async"
             [part]="part"
             (assignRadio)="onAssignRadio()"
             [nodeCategory]="part?.data.category"
