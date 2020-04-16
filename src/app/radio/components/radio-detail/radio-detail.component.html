@@ -113,9 +113,15 @@
       </mat-form-field>
     </div>
 
-    <div class="align-in-row" *ngIf="!modalMode">
+    <div class="align-in-row">
       <mat-form-field class="spaceToRight">
-        <mat-label>Severity</mat-label>
+        <mat-label 
+          style="pointer-events: auto;" 
+          (mouseover)="getSeverityTooltip()" 
+          matTooltip="{{ severityTooltip }}"
+        >
+          {{ getSeverityLabel() }}
+        </mat-label>
         <mat-select data-qa="radio-detail-severity" formControlName="severity" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let score of scores" [value]="score.level">
             {{ score.level }} - {{ score.text }}
@@ -123,8 +129,14 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
-        <mat-label>Frequency / Probability</mat-label>
+      <mat-form-field (mouseover)="getFrequencyTooltip()">
+        <mat-label
+          style="pointer-events: auto;"
+          (mouseover)="getFrequencyTooltip()" 
+          matTooltip="{{ frequencyTooltip }}"
+        >
+          {{ getFrequencyLabel() }}
+        </mat-label>
         <mat-select data-qa="radio-detail-frequency" formControlName="frequency" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let score of scores" [value]="score.level">
             {{ score.level }} - {{ score.text }}
@@ -202,3 +214,25 @@
     (addRelatesTo)="addRelatesTo.emit()"
   ></smi-relates-to-table>
 </form>
+
+<div *ngIf="modalMode && selectedNode">
+  <p>
+    “This RADIO will be associated to "{{ selectedNode.name }}" in the context of the following work packages”
+  </p>
+
+  <mat-selection-list [(ngModel)]="selectedOptions" (ngModelChange)="selectWorkPackage.emit($event)">
+    <mat-list-option 
+      [value]="{ id: '00000000-0000-0000-0000-000000000000', name: 'Current State' }"
+      selected
+    >
+      Current State
+    </mat-list-option>
+    <mat-list-option 
+      *ngFor="let workpackage of workpackages" 
+      [value]="workpackage"
+      selected
+    >
+      {{ workpackage.name }}
+    </mat-list-option>
+  </mat-selection-list>
+</div>

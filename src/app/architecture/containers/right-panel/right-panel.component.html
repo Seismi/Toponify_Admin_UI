@@ -6,6 +6,7 @@
     </ng-template>
     <p class="detailsTab">
       <smi-object-details-form
+        data-qa="topology-object-details-form"
         [owners]="owners"
         [group]="group"
         (save)="onSaveNode()"
@@ -45,6 +46,7 @@
     </ng-template>
     <p class="components-tab">
       <smi-components-table
+        data-qa="topology-components-table-systems"
         (itemClick)="itemClick.emit($event)"
         [title]="'Systems'"
         [data]="systems"
@@ -55,6 +57,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        data-qa="topology-components-table-data-sets"
         (itemClick)="itemClick.emit($event)"
         [title]="'Data Sets'"
         [data]="dataSets"
@@ -65,6 +68,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        data-qa="topology-components-table-dimensions"
         (itemClick)="itemClick.emit($event)"
         [title]="'Dimensions'"
         [data]="dimensions"
@@ -75,6 +79,7 @@
       >
       </smi-components-table>
       <smi-components-table
+        data-qa="topology-components-table-reporting-concepts"
         (itemClick)="itemClick.emit($event)"
         [title]="'Reporting Concepts'"
         [data]="reportingConcepts"
@@ -101,6 +106,7 @@
       <mat-icon matTooltip="Attributes & Rules">ballot</mat-icon>
     </ng-template>
     <smi-attributes-tab
+      data-qa="topology-attributes-and-rules-table"
       [data]="attributes"
       [workPackageIsEditable]="workPackageIsEditable"
       (addAttribute)="onAddAttribute()"
@@ -117,6 +123,7 @@
       <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
     </ng-template>
     <smi-edit-documentation-standards-table
+      data-qa="topology-documentation-standards-table"
       [data]="properties"
       [isEditable]="workPackageIsEditable"
       [nodeCategory]="nodeCategory"
@@ -132,6 +139,7 @@
       <mat-icon matTooltip="RADIO">track_changes</mat-icon>
     </ng-template>
     <smi-related-radio-table
+      data-qa="topology-related-radio-table"
       *ngIf="part?.isSelected"
       [data]="relatedRadios"
       (raiseNew)="onAddRelatedRadio()"
@@ -140,6 +148,7 @@
     >
     </smi-related-radio-table>
     <smi-radio-table-in-architecture
+      data-qa="topology-radio-table"
       *ngIf="!part?.isSelected"
       [data]="radio"
       (addRadio)="onAddRadio()"
@@ -154,6 +163,7 @@
       <mat-icon matTooltip="Scopes">pages</mat-icon>
     </ng-template>
     <smi-scope-table
+      data-qa="topology-scopes-table"
       *ngIf="part?.isSelected && !multipleSelected"
       [data]="nodeScopes"
       (delete)="onDeleteScope($event)"
@@ -163,11 +173,25 @@
     >
     </smi-scope-table>
     <!-- Add Scope Button -->
-    <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="onAddScope()">
+    <button 
+      *ngIf="multipleSelected" 
+      mat-raised-button 
+      color="primary" 
+      id="add-scope-button" 
+      (click)="onAddScope()"
+      data-qa="topology-scopes-tab-new-scope"
+    >
       New Scope
     </button>
 
-    <button *ngIf="multipleSelected" mat-raised-button color="primary" id="add-scope-button" (click)="addToScope.emit()">
+    <button 
+      *ngIf="multipleSelected" 
+      mat-raised-button 
+      color="primary" 
+      id="add-scope-button" 
+      (click)="addToScope.emit()"
+      data-qa="topology-scopes-tab-add-to-existing"
+    >
       Add to existing
     </button>
   </mat-tab>
@@ -182,16 +206,16 @@
 </mat-tab-group>
 
 <!-- Hide right pane -->
-<button mat-raised-button color="primary" class="hide-pane-button" (click)="onHidePane()">
+<button data-qa="right-hand-pane-close" mat-raised-button color="primary" class="hide-pane-button" (click)="onHidePane()">
   <mat-icon>keyboard_arrow_right</mat-icon>
 </button>
 
 <!-- Skip buttons -->
 <div class="skip-buttons" *ngIf="showSkipButtons()">
-  <button mat-raised-button color="primary" [disabled]="isFirst()" (click)="previous()">
+  <button data-qa="right-hand-pane-previous" mat-raised-button color="primary" [disabled]="isFirst()" (click)="previous()">
     <mat-icon>skip_previous</mat-icon>
   </button>
-  <button mat-raised-button color="primary" [disabled]="isLast()" (click)="next()">
+  <button data-qa="right-hand-pane-next" mat-raised-button color="primary" [disabled]="isLast()" (click)="next()">
     <mat-icon>skip_next</mat-icon>
   </button>
 </div>

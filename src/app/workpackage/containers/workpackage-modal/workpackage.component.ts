@@ -11,7 +11,8 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as WorkPackageState } from '../../store/reducers/workpackage.reducer';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getAllWorkPackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 
 @Component({
   selector: 'smi-workpackage-modal',
@@ -35,9 +36,10 @@ export class WorkPackageModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
-    this.baseline$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
+    this.baseline$ = this.workPackageStore.pipe(select(getAllWorkPackages));
   }
 
   get workPackageDetailForm(): FormGroup {

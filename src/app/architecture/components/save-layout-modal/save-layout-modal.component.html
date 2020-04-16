@@ -6,9 +6,9 @@
 </ng-container>
 <form (ngSubmit)="onSubmit()" [formGroup]="nameForm">
   <mat-form-field>
-    <input matInput placeholder="Name" formControlName="name" />
+    <input data-qa="topology-save-layout-modal-name" matInput placeholder="Name" formControlName="name" />
   </mat-form-field>
   <div mat-dialog-actions>
-    <button mat-button>Save</button>
+    <button data-qa="topology-save-layout-modal-save" mat-button>Save</button>
   </div>
 </form>

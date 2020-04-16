@@ -11,8 +11,8 @@
   </div>
 
   <ng-template #elseBlock>
-    <span (click)="openRightTab(0)" matTooltip="RADIO" *ngIf="!multipleSelected"><mat-icon>track_changes</mat-icon></span>
+    <span data-qa="right-hand-pane-radio" (click)="openRightTab(0)" matTooltip="RADIO" *ngIf="!multipleSelected"><mat-icon>track_changes</mat-icon></span>
   </ng-template>
 
-  <span (click)="openRightTab(0)" matTooltip="Scopes" *ngIf="multipleSelected"><mat-icon>pages</mat-icon></span>
+  <span data-qa="right-hand-pane-scopes" (click)="openRightTab(0)" matTooltip="Scopes" *ngIf="multipleSelected"><mat-icon>pages</mat-icon></span>
 </div>

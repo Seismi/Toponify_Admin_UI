@@ -7,6 +7,7 @@
         </ng-template>
         <p class="detailsTab">
           <smi-object-details-form
+            data-qa="rules-and-attributes-object-details-form"
             [owners]="attribute?.owners"
             [group]="objectDetailsForm"
             (save)="onSaveAttribute($event)" 
@@ -35,6 +36,7 @@
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
         <smi-edit-documentation-standards-table
+          data-qa="rules-and-attributes-documentation-standards-table"
           [data]="attribute?.customProperties"
           [isEditable]="workPackageIsEditable"
           (saveProperty)="onSaveProperties($event)"
@@ -47,6 +49,7 @@
           <mat-icon matTooltip="RADIO">track_changes</mat-icon>
         </ng-template>
         <smi-related-radio-table
+          data-qa="rules-and-attributes-radio-table"
           [data]="attribute?.relatedRadios"
           (raiseNew)="onRaiseNew()"
           (assignRadio)="onAssignRadio()"

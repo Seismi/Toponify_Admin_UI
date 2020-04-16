@@ -4,10 +4,10 @@ import { RadioValidatorService } from '../../components/radio-detail/services/ra
 import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { RadioEntity, RadiosAdvancedSearch } from '../../store/models/radio.model';
+import { RadioEntity, RadiosAdvancedSearch, RadioDetail } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { LoadRadios, AddRadioEntity, SearchRadio, RadioFilter } from '../../store/actions/radio.actions';
-import { getRadioEntities, getRadioFilter } from '../../store/selectors/radio.selector';
+import { LoadRadios, AddRadioEntity, SearchRadio, RadioFilter, RadioActionTypes } from '../../store/actions/radio.actions';
+import { getRadioEntities, getRadioFilter, getSelectedRadio } from '../../store/selectors/radio.selector';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
@@ -17,6 +17,8 @@ import { State as NodeState } from '@app/architecture/store/reducers/architectur
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { map } from 'rxjs/operators';
+import { Actions, ofType } from '@ngrx/effects';
+
 
 @Component({
   selector: 'smi-radio',
@@ -31,10 +33,12 @@ export class RadioComponent implements OnInit, OnDestroy {
   public filterData: RadiosAdvancedSearch;
   public status: string | any;
   public selectedLeftTab: number | string;
+  public selectedRadioIndex: string | number;
 
   @ViewChild('drawer') drawer;
 
   constructor(
+    private actions: Actions,
     private nodeStore: Store<NodeState>,
     private userStore: Store<UserState>,
     private store: Store<RadioState>,
@@ -54,6 +58,18 @@ export class RadioComponent implements OnInit, OnDestroy {
       data && data.status ? (this.status = data.status) : (this.status = 'new,open');
       this.filterData = data;
     });
+
+    this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
+      if (action) {
+        this.selectedRadioIndex = action.id;
+      }
+    });
+
+    this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
+      this.selectedRadioIndex = action.payload.id;
+      this.store.dispatch(new LoadRadios({}));
+      this.onSelectRadio(action.payload);
+    });
   }
 
   ngOnDestroy(): void {
@@ -67,7 +83,10 @@ export class RadioComponent implements OnInit, OnDestroy {
   onAddRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      data: {
+        selectedNode: null
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -83,7 +102,9 @@ export class RadioComponent implements OnInit, OnDestroy {
               author: data.radio.author,
               relatesTo: [{ workPackage: { id: '00000000-0000-0000-0000-000000000000' } }],
               actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation
+              mitigation: data.radio.mitigation,
+              severity: data.radio.severity,
+              frequency: data.radio.frequency
             }
           })
         );

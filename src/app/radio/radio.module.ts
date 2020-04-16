@@ -18,7 +18,10 @@ import {
   MatDatepickerModule,
   MatIconModule,
   MatNativeDateModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatListModule,
+  MatExpansionModule,
+  MatTooltipModule
 } from '@angular/material';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
 import { RadioModalComponent } from './containers/radio-modal/radio-modal.component';
@@ -71,6 +74,9 @@ import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
     DocumentationStandardsModule,
     MatSidenavModule,
     TagListModule,
+    MatListModule,
+    MatExpansionModule,
+    MatTooltipModule,
     StoreModule.forFeature('radioFeature', reducer),
     EffectsModule.forFeature([RadioEffects]),
     CKEditorModule

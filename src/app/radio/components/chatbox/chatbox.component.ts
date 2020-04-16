@@ -25,4 +25,21 @@ export class ChatBoxComponent {
   onSend() {
     this.sendReply.emit();
   }
+
+  changedFrom(changes): string {
+    if (changes.changedProperty === 'actionBy') {
+      return new Date(changes.changedFrom).toLocaleDateString();
+    } else {
+      return changes.changedFrom;
+    }
+  }
+
+  changedTo(changes): string {
+    if (changes.changedProperty === 'actionBy') {
+      return new Date(changes.changedTo).toLocaleDateString();
+    } else {
+      return changes.changedTo;
+    }
+  }
+
 }
