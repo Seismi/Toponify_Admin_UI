@@ -175,7 +175,7 @@ import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
 import { go } from 'gojs/release/go-module';
 import isEqual from 'lodash.isequal';
-import { BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip } from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip, merge} from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFrom, delay } from 'rxjs/operators';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
@@ -201,6 +201,7 @@ import { LinkWithTransformationModalComponent } from './link-with-transformation
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
+import {DiagramTemplatesService} from '@app/architecture/services/diagram-templates.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -289,6 +290,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private currentFilterLevel: Level;
   private filterLevelSubscription: Subscription;
   private addDataSetSubscription: Subscription;
+  private addChildSubscription: Subscription;
   public params: Params;
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
@@ -348,7 +350,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private diagramLevelService: DiagramLevelService,
     private nodeService: NodeService,
     private attributeStore: Store<AttributeState>,
-    private actions$: Actions
+    private actions$: Actions,
+    private diagramTemplatesService: DiagramTemplatesService,
   ) {}
 
   ngOnInit() {
@@ -403,9 +406,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.currentFilterLevel = filterLevel;
     });
 
-    this.addDataSetSubscription = this.gojsCustomObjectsService.addDataSet$.subscribe(() => {
+    this.addChildSubscription = merge(
+      this.gojsCustomObjectsService.addDataSet$,
+      this.diagramTemplatesService.addChild$
+    ).subscribe(() => {
       this.onAddDescendant();
     });
+
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
