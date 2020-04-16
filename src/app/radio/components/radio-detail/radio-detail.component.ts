@@ -12,6 +12,12 @@ interface Scores {
   text: string;
 }
 
+enum TrafficLightColour {
+  green = '#99c140',
+  yellow = '#e7b416',
+  red = '#cc3232'
+}
+
 @Component({
   selector: 'smi-radio-detail',
   templateUrl: './radio-detail.component.html',
@@ -29,6 +35,7 @@ export class RadioDetailComponent {
   @Input() selectedNode: NodeDetail;
   @Input() workpackages: WorkPackageEntity[];
   @Input() radioCategory: string;
+  @Input() disabled: boolean;
   public selectedOptions = [];
   public severityTooltip: string;
   public frequencyTooltip: string;
@@ -174,6 +181,39 @@ export class RadioDetailComponent {
         return this.frequencyTooltip = 'Frequency at which the issue occurs';
       case radioCategories.opportunity:
         return this.frequencyTooltip = 'Frequency of the opportunity';
+    }
+  }
+
+  getSliderValue(sliderValue: number): string {
+    if ([1, 2].includes(sliderValue)) {
+      return 'Low';
+    } else if (sliderValue === 3) {
+      return 'Medium';
+    } else {
+      return 'High';
+    }
+  }
+
+  getChipColour(sliderValue: number): string {
+    if ([1, 2].includes(sliderValue)) {
+      return TrafficLightColour.red;
+    } else if (sliderValue === 3) {
+      return TrafficLightColour.yellow;
+    } else {
+      return TrafficLightColour.green;
+    }
+  }
+
+  getMitigationLabel(): string {
+    switch (this.radioCategory) {
+      case radioCategories.risk:
+      case radioCategories.assumption:
+      case radioCategories.dependency:
+        return 'Mitigation';
+      case radioCategories.issue:
+        return 'Resolution';
+      case radioCategories.opportunity:
+        return 'Action plan';
     }
   }
 

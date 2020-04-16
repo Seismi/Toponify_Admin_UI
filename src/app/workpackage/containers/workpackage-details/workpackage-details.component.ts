@@ -250,7 +250,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     dialogRef.componentInstance.addNewRadio.subscribe(() => {
       const dialogRef2 = this.dialog.open(RadioModalComponent, {
         disableClose: false,
-        width: '650px'
+        width: '800px'
       });
 
       dialogRef2.afterClosed().subscribe(data => {

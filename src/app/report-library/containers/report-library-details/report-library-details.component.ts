@@ -460,7 +460,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   onRaiseNew(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px',
+      width: '800px',
       data: {
         selectedNode: this.report
       }
