@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
+import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
 
@@ -14,6 +14,10 @@ export class RelatesToTableComponent {
     if (data) {
       this.dataSource = new MatTableDataSource<RadioDetail>(data);
       this.dataSource.paginator = this.paginator;
+      this.dataSource.filterPredicate = (radio: RadioDetail, filter) => {
+        const dataStr = JSON.stringify(radio).toLowerCase();
+        return dataStr.indexOf(filter) !== -1;
+      };
     }
   }
 
@@ -60,5 +64,9 @@ export class RelatesToTableComponent {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
-import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import { Tag, NodeDetail } from '@app/architecture/store/models/node.model';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
@@ -25,7 +24,6 @@ export class RadioDetailComponent {
   @Input() modalMode = false;
   @Input() radioStatus: string;
   @Input() rows = 8;
-  @Input() relatesTo: RadioDetail;
   @Input() tags: Tag[];
   @Input() availableTags: Tag[];
   @Input() selectedNode: NodeDetail;
@@ -86,21 +84,9 @@ export class RadioDetailComponent {
     removePlugins: ['MediaEmbed', 'ImageUpload', 'ImageToolbar', 'ImageStyle', 'ImageCaption', 'Image', 'EasyImage']
   };
 
-  @Output()
-  archiveRadio = new EventEmitter<void>();
-
-  @Output()
-  saveRadio = new EventEmitter<void>();
-
-  @Output()
-  unlinkRelatesTo = new EventEmitter<RelatesTo>();
-
-  @Output()
-  addRelatesTo = new EventEmitter<void>();
-
-  @Output()
-  deleteRadio = new EventEmitter<void>();
-
+  @Output() archiveRadio = new EventEmitter<void>();
+  @Output() saveRadio = new EventEmitter<void>();
+  @Output() deleteRadio = new EventEmitter<void>();
   @Output() addTag = new EventEmitter<string>();
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();

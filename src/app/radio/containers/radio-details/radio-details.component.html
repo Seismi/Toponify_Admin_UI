@@ -10,15 +10,12 @@
           <smi-radio-detail
             data-qa="radio-detail-form"
             [data]="users$ | async"
-            [relatesTo]="radio?.relatesTo"
             [group]="radioDetailsForm"
             [isEditable]="isEditable"
             [modalMode]="modalMode"
             [radioStatus]="radio?.status"
             (archiveRadio)="onArchiveRadio()"
             (saveRadio)="onSaveRadio()"
-            (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
-            (addRelatesTo)="onAddRelatesTo()"
             (deleteRadio)="onDeleteRadio()"
             [tags]="radio?.tags"
             [availableTags]="availableTags$ | async"
@@ -29,6 +26,18 @@
           >
           </smi-radio-detail>
         </p>
+      </mat-tab>
+      <mat-tab data-qa="radio-relates-to-tab">
+        <ng-template mat-tab-label>
+          <mat-icon>device_hub</mat-icon>
+          Relates To
+        </ng-template>
+        <smi-relates-to-table
+          data-qa="radio-relates-to-table"
+          [data]="radio?.relatesTo"
+          (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
+          (addRelatesTo)="onAddRelatesTo()"
+      ></smi-relates-to-table>
       </mat-tab>
       <mat-tab data-qa="radio-discussions-tab">
         <ng-template mat-tab-label>

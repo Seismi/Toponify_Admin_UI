@@ -205,14 +205,6 @@
     (updateAvailableTags)="updateAvailableTags.emit()"
   >
   </smi-tag-list>
-
-  <smi-relates-to-table
-    data-qa="radio-detail-relates-to-table"
-    [data]="relatesTo"
-    *ngIf="!modalMode"
-    (unlinkRelatesTo)="unlinkRelatesTo.emit($event)"
-    (addRelatesTo)="addRelatesTo.emit()"
-  ></smi-relates-to-table>
 </form>
 
 <div *ngIf="modalMode && selectedNode">
