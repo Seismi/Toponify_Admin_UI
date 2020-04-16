@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { Store } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { FishboneLayout, FishboneLink } from 'gojs/extensionsTS/FishboneLayout';
 
 const $ = go.GraphObject.make;
 
@@ -200,4 +201,19 @@ export class WorkPackageDiagramService {
       })
     );
   }
+
+  getFishboneLayout(): go.TreeLayout {
+    return $(FishboneLayout, {
+      layerSpacing: 80,
+      nodeSpacing: 50,
+      rowSpacing: 50
+    });
+  }
+
+  getFishboneLink(): go.Link {
+    return $(FishboneLink,
+      $(go.Shape)
+    );
+  }
+
 }
