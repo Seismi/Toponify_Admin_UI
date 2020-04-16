@@ -54,6 +54,7 @@ import { LeftHandPaneComponent } from './left-hand-pane/left-hand-pane.component
 import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand-pane-content.component';
 import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.component';
 import { RelatedRadioTableComponent } from './components/related-radio-table/related-radio-table.component';
+import { RelatedWorkPackageTableComponent } from './components/related-work-package-table/related-work-package-table.component';
 
 @NgModule({
   imports: [
@@ -110,7 +111,8 @@ import { RelatedRadioTableComponent } from './components/related-radio-table/rel
     LeftHandPaneComponent,
     MenuComponent,
     LeftHandPaneContentComponent,
-    RelatedRadioTableComponent
+    RelatedRadioTableComponent,
+    RelatedWorkPackageTableComponent
   ],
   declarations: [
     MainLayoutComponent,
@@ -143,7 +145,8 @@ import { RelatedRadioTableComponent } from './components/related-radio-table/rel
     SelectModalComponent,
     LeftHandPaneComponent,
     LeftHandPaneContentComponent,
-    RelatedRadioTableComponent
+    RelatedRadioTableComponent,
+    RelatedWorkPackageTableComponent
   ],
   entryComponents: [
     DeleteModalComponent,

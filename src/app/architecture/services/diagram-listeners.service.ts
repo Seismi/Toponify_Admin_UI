@@ -159,7 +159,7 @@ export class DiagramListenersService {
 
         const currentLevel = this.currentLevel;
 
-        if (!currentLevel.endsWith('map') && currentLevel !== Level.usage) {
+        if (currentLevel && !currentLevel.endsWith('map') && currentLevel !== Level.usage) {
 
           // Check each node for overlap
           event.diagram.nodes.each(function(node: go.Node): void {
@@ -286,7 +286,7 @@ export class DiagramListenersService {
         const currentLevel = this.currentLevel;
         const nodeId = this.nodeId;
 
-        if (currentLevel === Level.usage && nodeId) {
+        if (currentLevel && currentLevel === Level.usage && nodeId) {
           const usageNode = diagram.findNodeForKey(nodeId);
           if (usageNode) {
             this.diagramChangesService.setBlueShadowHighlight(usageNode, true);
