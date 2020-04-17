@@ -40,6 +40,7 @@ import { NotificationService } from './services/notification.service';
 import { NotificationEffects } from './store/effects/notification.effects';
 import { NotificationPaneComponent } from './components/notification-pane/notification-pane.component';
 import { MatSidenavModule } from '@angular/material';
+import { RelatedWorkPackageTableComponent } from './layout/components/related-work-package-table/related-work-package-table.component';
 
 @NgModule({
   imports: [
@@ -79,7 +80,8 @@ import { MatSidenavModule } from '@angular/material';
     MenuComponent,
     LeftHandPaneContentComponent,
     RelatedRadioTableComponent,
-    NotificationPaneComponent
+    NotificationPaneComponent,
+    RelatedWorkPackageTableComponent
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [

@@ -1,5 +1,5 @@
 <mat-form-field floatLabel="never" appearance="none" matTooltip="Layer - select the layer to be displayed">
-  <mat-select [(value)]="selected">
+  <mat-select [(value)]="selected" data-qa="header-layer">
     <mat-option
       *ngFor="let layer of layers"
       (click)="onViewLevelSelected(layer.level)"

@@ -1,8 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
+import { WorkPackageNodesService } from '@app/workpackage/services/workpackage-nodes.service';
+import {WorkPackageLinksService} from '@app/workpackage/services/workpackage-links.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import {forkJoin, of} from 'rxjs';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import {
   AddObjective,
@@ -76,8 +78,13 @@ import {
   AddWorkPackageBaselineFailure,
   DeleteWorkPackageBaseline,
   DeleteWorkPackageBaselineSuccess,
-  DeleteWorkPackageBaselineFailure
+  DeleteWorkPackageBaselineFailure,
+  AddWorkPackageMapViewTransformation,
+  AddWorkPackageMapViewTransformationFailure,
+  AddWorkPackageMapViewTransformationSuccess,
+  SetWorkpackageEditMode
 } from '../actions/workpackage.actions';
+import {LoadMapView} from '@app/architecture/store/actions/node.actions';
 import {
   OwnersEntityOrApproversEntity,
   WorkPackageApiRequest,
@@ -96,7 +103,9 @@ export class WorkPackageEffects {
   constructor(
     private store$: Store<WorkpackageState>,
     private actions$: Actions,
-    private workpackageService: WorkPackageService
+    private workpackageService: WorkPackageService,
+    private workpackageNodeService: WorkPackageNodesService,
+    private workpackageLinkService: WorkPackageLinksService
   ) {}
 
   @Effect()
@@ -228,7 +237,9 @@ export class WorkPackageEffects {
     map(action => action.payload),
     switchMap((params: any) => {
       return this.workpackageService.getWorkPackageAvailability(params).pipe(
-        switchMap((response: any) => [new GetWorkpackageAvailabilitySuccess(response.data)]),
+        switchMap((response: any) => {
+          return [new GetWorkpackageAvailabilitySuccess(response.data)];
+        }),
         catchError((error: HttpErrorResponse) => of(new GetWorkpackageAvailabilityFailure(error)))
       );
     })
@@ -386,6 +397,29 @@ export class WorkPackageEffects {
       return this.workpackageService.deleteWorkPackageBaseline(payload.workPackageId, payload.baselineId).pipe(
         switchMap((response: WorkPackageDetailApiResponse) => [new DeleteWorkPackageBaselineSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageBaselineFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkPackageMapViewTransformation$ = this.actions$.pipe(
+    ofType<AddWorkPackageMapViewTransformation>(WorkPackageActionTypes.AddWorkPackageMapViewTransformation),
+    map(action => action.payload),
+    mergeMap((payload: { workpackageId: string, scope: string, nodeData: any, linkData: any[], mapViewParams: any }) => {
+      return this.workpackageNodeService.addNode(payload.workpackageId, payload.nodeData, payload.scope).pipe(
+        mergeMap(response => {
+          const newLinkObservables = payload.linkData.map(function(data) {
+            return this.workpackageLinkService.addLink(payload.workpackageId, data);
+          }.bind(this));
+
+          return forkJoin(newLinkObservables).pipe(
+            mergeMap((data: any) => [
+              new AddWorkPackageMapViewTransformationSuccess(data.concat(response)),
+              new LoadMapView(payload.mapViewParams)
+            ]),
+            catchError((error: HttpErrorResponse) => of(new AddWorkPackageMapViewTransformationFailure(error)))
+          );
+        })
       );
     })
   );

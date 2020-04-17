@@ -114,7 +114,11 @@ export enum WorkPackageActionTypes {
 
   DeleteWorkPackageBaseline = '[WorkPackage] Delete WorkPackage Baseline',
   DeleteWorkPackageBaselineSuccess = '[WorkPackage] Delete WorkPackage Baseline Success',
-  DeleteWorkPackageBaselineFailure = '[WorkPackage] Delete WorkPackage Baseline Failure'
+  DeleteWorkPackageBaselineFailure = '[WorkPackage] Delete WorkPackage Baseline Failure',
+
+  AddWorkPackageMapViewTransformation = '[WorkPackage] Add Transformation in Map View',
+  AddWorkPackageMapViewTransformationSuccess = '[WorkPackage] Add Transformation in Map View Success',
+  AddWorkPackageMapViewTransformationFailure = '[WorkPackage] Add Transformation in Map View Failure'
 }
 
 export class LoadWorkPackages implements Action {
@@ -229,7 +233,7 @@ export class SetWorkpackageDisplayColour implements Action {
 
 export class SetWorkpackageEditMode implements Action {
   readonly type = WorkPackageActionTypes.SetWorkpackageEditMode;
-  constructor(public payload: { id: string; newState: boolean }) {}
+  constructor(public payload: { id?: string; newState: boolean }) {}
 }
 
 export class SetSelectedWorkPackages implements Action {
@@ -314,9 +318,7 @@ export class DeleteRadioFailure implements Action {
 
 export class UpdateCustomProperty implements Action {
   readonly type = WorkPackageActionTypes.UpdateCustomProperty;
-  constructor(
-    public payload: { workPackageId: string; customPropertyId: string; data: string }
-  ) {}
+  constructor(public payload: { workPackageId: string; customPropertyId: string; data: string }) {}
 }
 
 export class UpdateCustomPropertySuccess implements Action {
@@ -451,7 +453,7 @@ export class SupersedeWorkpackageFailure implements Action {
 
 export class ArchiveWorkPackage implements Action {
   readonly type = WorkPackageActionTypes.ArchiveWorkPackage;
-  constructor(public payload: { workPackageId: string, archived: boolean }) {}
+  constructor(public payload: { workPackageId: string; archived: boolean }) {}
 }
 
 export class LoadWorkPackageBaselineAvailability implements Action {
@@ -471,7 +473,7 @@ export class LoadWorkPackageBaselineAvailabilityFailure implements Action {
 
 export class AddWorkPackageBaseline implements Action {
   readonly type = WorkPackageActionTypes.AddWorkPackageBaseline;
-  constructor(public payload: { workPackageId: string, baselineId: string }) {}
+  constructor(public payload: { workPackageId: string; baselineId: string }) {}
 }
 
 export class AddWorkPackageBaselineSuccess implements Action {
@@ -486,7 +488,7 @@ export class AddWorkPackageBaselineFailure implements Action {
 
 export class DeleteWorkPackageBaseline implements Action {
   readonly type = WorkPackageActionTypes.DeleteWorkPackageBaseline;
-  constructor(public payload: { workPackageId: string, baselineId: string }) {}
+  constructor(public payload: { workPackageId: string; baselineId: string }) {}
 }
 
 export class DeleteWorkPackageBaselineSuccess implements Action {
@@ -496,6 +498,21 @@ export class DeleteWorkPackageBaselineSuccess implements Action {
 
 export class DeleteWorkPackageBaselineFailure implements Action {
   readonly type = WorkPackageActionTypes.DeleteWorkPackageBaselineFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddWorkPackageMapViewTransformation implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformation;
+  constructor(public payload: { workpackageId: string, scope: string, nodeData: any, linkData: any, mapViewParams: any}) {}
+}
+
+export class AddWorkPackageMapViewTransformationSuccess implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformationSuccess;
+  constructor(public payload: any) {}
+}
+
+export class AddWorkPackageMapViewTransformationFailure implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformationFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -575,4 +592,7 @@ export type WorkPackageActionsUnion =
   | AddWorkPackageBaselineFailure
   | DeleteWorkPackageBaseline
   | DeleteWorkPackageBaselineSuccess
-  | DeleteWorkPackageBaselineFailure;
+  | DeleteWorkPackageBaselineFailure
+  | AddWorkPackageMapViewTransformation
+  | AddWorkPackageMapViewTransformationSuccess
+  | AddWorkPackageMapViewTransformationFailure;

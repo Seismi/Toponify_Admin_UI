@@ -18,6 +18,7 @@ import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { map } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
+import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpackage.models';
 
 
 @Component({
@@ -83,7 +84,10 @@ export class RadioComponent implements OnInit, OnDestroy {
   onAddRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      data: {
+        selectedNode: null
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -97,9 +101,11 @@ export class RadioComponent implements OnInit, OnDestroy {
               description: data.radio.description,
               assignedTo: data.radio.assignedTo,
               author: data.radio.author,
-              relatesTo: [{ workPackage: { id: '00000000-0000-0000-0000-000000000000' } }],
+              relatesTo: [{ workPackage: { id: currentArchitecturePackageId } }],
               actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation
+              mitigation: data.radio.mitigation,
+              severity: data.radio.severity,
+              frequency: data.radio.frequency
             }
           })
         );

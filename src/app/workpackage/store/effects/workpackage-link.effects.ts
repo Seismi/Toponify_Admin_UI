@@ -9,6 +9,9 @@ import {
   AddWorkPackageLink,
   AddWorkPackageLinkFailure,
   AddWorkPackageLinkSuccess,
+  AddWorkPackageMapViewLink,
+  AddWorkPackageMapViewLinkSuccess,
+  AddWorkPackageMapViewLinkFailure,
   DeleteWorkpackageLink,
   DeleteWorkpackageLinkFailure,
   DeleteWorkpackageLinkSuccess,
@@ -41,6 +44,7 @@ import {
   DeleteWorkPackageLinkPropertySuccess,
   DeleteWorkPackageLinkPropertyFailure
 } from '../actions/workpackage-link.actions';
+import {LoadMapView} from '@app/architecture/store/actions/node.actions';
 
 @Injectable()
 export class WorkPackageLinkEffects {
@@ -54,6 +58,21 @@ export class WorkPackageLinkEffects {
       return this.workpackageLinkService.addLink(payload.workpackageId, payload.link).pipe(
         switchMap((data: any) => [new AddWorkPackageLinkSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addWorkpackageMapViewLink$ = this.actions$.pipe(
+    ofType<AddWorkPackageMapViewLink>(WorkPackageLinkActionTypes.AddWorkPackageMapViewLink),
+    map(action => action.payload),
+    mergeMap((payload: { workpackageId: string; link: any, mapViewParams: any }) => {
+      return this.workpackageLinkService.addLink(payload.workpackageId, payload.link).pipe(
+        switchMap((data: any) => [
+          new AddWorkPackageMapViewLinkSuccess(data),
+          new LoadMapView(payload.mapViewParams)
+        ]),
+        catchError((error: HttpErrorResponse) => of(new AddWorkPackageMapViewLinkFailure(error)))
       );
     })
   );
@@ -164,7 +183,12 @@ export class WorkPackageLinkEffects {
     ofType<UpdateWorkPackageLinkProperty>(WorkPackageLinkActionTypes.UpdateWorkPackageLinkProperty),
     map(action => action.payload),
     mergeMap((payload: { workPackageId: string; nodeLinkId: string; customPropertyId: string, data: string }) => {
-      return this.workpackageLinkService.updateLinkProperty(payload.workPackageId, payload.nodeLinkId, payload.customPropertyId, payload.data).pipe(
+      return this.workpackageLinkService.updateLinkProperty(
+        payload.workPackageId,
+        payload.nodeLinkId,
+        payload.customPropertyId,
+        payload.data
+      ).pipe(
         switchMap((response: NodeLinkDetailApiResponse) => [new UpdateWorkPackageLinkPropertySuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageLinkPropertyFailure(error)))
       );

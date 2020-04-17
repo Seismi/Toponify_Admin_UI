@@ -3,11 +3,11 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
-  selector: 'smi-workpackage-tab',
-  templateUrl: './workpackage-tab.component.html',
-  styleUrls: ['./workpackage-tab.component.scss']
+  selector: 'smi-related-work-package-table',
+  templateUrl: './related-work-package-table.component.html',
+  styleUrls: ['./related-work-package-table.component.scss']
 })
-export class WorkPackageTabComponent {
+export class RelatedWorkPackageTableComponent {
   @Input()
   set data(data: NodeDetail[]) {
     if (!data) {
@@ -21,4 +21,8 @@ export class WorkPackageTabComponent {
 
   public dataSource: MatTableDataSource<NodeDetail>;
   public displayedColumns: string[] = ['name', 'status'];
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

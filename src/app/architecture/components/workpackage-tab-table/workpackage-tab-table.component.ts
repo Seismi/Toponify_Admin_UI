@@ -8,6 +8,7 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
   styleUrls: ['./workpackage-tab-table.component.scss']
 })
 export class WorkPackageTabTableComponent {
+  private filterValue: string;
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
@@ -15,6 +16,7 @@ export class WorkPackageTabTableComponent {
         data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded')
       );
       this.dataSource.paginator = this.paginator;
+      this.dataSource.filter = this.filterValue;
     }
   }
 
@@ -22,7 +24,7 @@ export class WorkPackageTabTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public dataSource: MatTableDataSource<WorkPackageEntity>;
-  public displayedColumns: string[] = ['show', 'name', 'c', 'e', 'd'];
+  public displayedColumns: string[] = ['workpackage'];
 
   @Output() selectWorkPackage = new EventEmitter<{ id: string; newState: boolean }>();
 
@@ -52,5 +54,10 @@ export class WorkPackageTabTableComponent {
 
   onSelectColour(colour: string, id: string) {
     this.selectColour.emit({ colour, id });
+  }
+
+  onSearch(filterValue: string): void {
+    this.filterValue = filterValue;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

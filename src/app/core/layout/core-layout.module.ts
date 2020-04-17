@@ -56,6 +56,7 @@ import { LeftHandPaneContentComponent } from './left-hand-pane-content/left-hand
 import { LoaderComponent } from '@app/core/layout/model-sidebar/loader/loader.component';
 import { RelatedRadioTableComponent } from './components/related-radio-table/related-radio-table.component';
 import { NotificationIndicatorComponent } from '../components/notification-indicator/notification-indicator.component';
+import { RelatedWorkPackageTableComponent } from './components/related-work-package-table/related-work-package-table.component';
 
 @NgModule({
   imports: [
@@ -114,7 +115,8 @@ import { NotificationIndicatorComponent } from '../components/notification-indic
     MenuComponent,
     LeftHandPaneContentComponent,
     RelatedRadioTableComponent,
-    NotificationIndicatorComponent
+    NotificationIndicatorComponent,
+    RelatedWorkPackageTableComponent
   ],
   declarations: [
     NotificationIndicatorComponent,
@@ -148,7 +150,8 @@ import { NotificationIndicatorComponent } from '../components/notification-indic
     SelectModalComponent,
     LeftHandPaneComponent,
     LeftHandPaneContentComponent,
-    RelatedRadioTableComponent
+    RelatedRadioTableComponent,
+    RelatedWorkPackageTableComponent
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent, DownloadCSVModalComponent, SelectModalComponent],
   providers: [ReportService]

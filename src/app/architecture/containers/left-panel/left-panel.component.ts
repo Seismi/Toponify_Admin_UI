@@ -19,14 +19,11 @@ export class LeftPanelComponent {
   @Output() tabClick = new EventEmitter<number>();
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
-  @Input() currentFilterLevel: string;
   @Output() addLayout = new EventEmitter<void>();
   @Output() filterRadioSeverity = new EventEmitter<void>();
   @Output() collapseAllNodes = new EventEmitter<void>();
   @Output() summariseAllNodes = new EventEmitter<void>();
   @Output() expandAll = new EventEmitter<void>();
-  @Output() addInterface = new EventEmitter<string>();
-  @Output() addLinkWithTransformation = new EventEmitter<void>();
 
   @Output() displayOptionsChangedEvent = new EventEmitter<{ event: MatCheckboxChange; option: string }>();
   @Output() selectWorkPackage = new EventEmitter<{ id: string; newState: boolean }>();
@@ -38,10 +35,6 @@ export class LeftPanelComponent {
 
   onSelectColour(event: { colour: string; id: string }) {
     this.selectColour.emit(event);
-  }
-
-  get mapView(): boolean {
-    return [Level.systemMap, Level.dataSetMap].includes(this.currentFilterLevel as Level);
   }
 
 }

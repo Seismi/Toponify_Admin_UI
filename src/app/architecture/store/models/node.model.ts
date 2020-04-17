@@ -89,8 +89,14 @@ export class Node {
   tooltip?: string;
   sortOrder?: number;
   endPointType?: endPointTypes;
+  isTemporary: boolean;
 
-  constructor(options: { id: string; name: string; layer: layers; category: nodeCategories; tooltip: string }) {
+  constructor(options: { id: string;
+    name: string;
+    layer: layers;
+    category: nodeCategories;
+    tooltip: string;
+    isTemporary?: boolean }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;
@@ -98,6 +104,7 @@ export class Node {
       this.category = options.category;
       this.isGroup = options.layer === layers.system && options.category !== nodeCategories.transformation;
       this.tooltip = options.tooltip;
+      this.isTemporary = options.isTemporary || false;
       this.owners = [];
       this.impactedByWorkPackages = [];
     }

@@ -22,11 +22,12 @@ import {
   ArchiveWorkPackage,
   LoadWorkPackageBaselineAvailability,
   AddWorkPackageBaseline,
-  DeleteWorkPackageBaseline
+  DeleteWorkPackageBaseline,
+  LoadWorkPackages
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkPackage, getWorkPackageEntities, getWorkPackageBaselineAvailability } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkPackage, getWorkPackageBaselineAvailability, getAllWorkPackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import {
@@ -35,7 +36,7 @@ import {
   TeamEntityOrOwnersEntityOrApproversEntity,
   WorkPackageDetail,
   WorkPackageEntity,
-  Baseline
+  Baseline, currentArchitecturePackageId
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -70,7 +71,7 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
   providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
-  public currentState = '00000000-0000-0000-0000-000000000000';
+  public currentState = currentArchitecturePackageId;
   public workpackage: WorkPackageDetail;
   public subscriptions: Subscription[] = [];
   public workpackageId: string;
@@ -186,7 +187,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         selectedIds: []
       }
     });
-    
+
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
         this.store.dispatch(
@@ -432,7 +433,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onMoveObjective(objective: Objective) {
     this.store
       .pipe(
-        select(getWorkPackageEntities),
+        select(getAllWorkPackages),
         take(1),
         map(workpackages => workpackages.filter(wp => wp.status === 'draft'))
       )

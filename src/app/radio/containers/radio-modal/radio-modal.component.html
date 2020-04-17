@@ -8,10 +8,11 @@
     [selectedNode]="data?.selectedNode"
     [workpackages]="workpackages$ | async"
     (selectWorkPackage)="onSelectWorkPackage($event)"
+    [radioCategory]="radioCategory"
   >
   </smi-radio-detail>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button data-qa="radio-modal-save" (click)="onSubmit()">Save</button>
+  <button mat-button data-qa="radio-modal-cancel" (click)="onCancelClick()">Cancel</button>
 </div>
