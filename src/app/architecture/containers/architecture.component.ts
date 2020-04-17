@@ -409,8 +409,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.addChildSubscription = merge(
       this.gojsCustomObjectsService.addDataSet$,
       this.diagramTemplatesService.addChild$
-    ).subscribe(() => {
-      this.onAddDescendant();
+    ).subscribe((parentData) => {
+      this.onAddDescendant(parentData);
     });
 
     // Scopes
@@ -1715,11 +1715,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant() {
+  onAddDescendant(parentData) {
+
     this.store.dispatch(
       new FindPotentialWorkpackageNodes({
         workPackageId: this.workpackageId,
-        nodeId: this.nodeId,
+        nodeId: parentData.id,
         data: {}
       })
     );
@@ -1727,10 +1728,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title: `Add Children to "${this.selectedNode.name}"`,
+        title: `Add Children to "${parentData.name}"`,
         placeholder: 'Components',
         descendants: true,
-        nodeId: this.nodeId,
+        nodeId: parentData.id,
         workPackageId: this.workpackageId,
         scopeId: this.scope.id,
         options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
@@ -1744,7 +1745,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.workpackageStore.dispatch(
           new AddWorkPackageNodeDescendant({
             workPackageId: this.workpackageId,
-            nodeId: this.nodeId,
+            nodeId: parentData.id,
             data: data.value
           })
         );

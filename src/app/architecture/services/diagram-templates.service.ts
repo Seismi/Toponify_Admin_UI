@@ -46,7 +46,7 @@ export class DiagramTemplatesService {
   private currentFilterLevel: Level;
   public forPalette = false;
 
-  // Observable to indicate that a child set is to be added to a node
+  // Observable to indicate that a child is to be added to a node
   private addChildSource = new Subject();
   public addChild$ = this.addChildSource.asObservable();
 
@@ -1572,8 +1572,8 @@ export class DiagramTemplatesService {
               name: 'addChildButton',
               alignment: go.Spot.BottomCenter,
               margin: new go.Margin(15, 5, 0, 5),
-              click: function() {
-                this.addChildSource.next();
+              click: function(event: go.InputEvent, button: go.Panel): void {
+                this.addChildSource.next(button.part.data);
               }.bind(this)
             },
             // Disable button if moves not allowed in diagram
