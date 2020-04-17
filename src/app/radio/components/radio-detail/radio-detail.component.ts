@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, DoCheck } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
@@ -23,7 +23,7 @@ enum TrafficLightColour {
   templateUrl: './radio-detail.component.html',
   styleUrls: ['./radio-detail.component.scss']
 })
-export class RadioDetailComponent {
+export class RadioDetailComponent implements DoCheck {
   public users: User[];
   @Input() group: FormGroup;
   @Input() isEditable = false;
@@ -98,6 +98,10 @@ export class RadioDetailComponent {
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() selectWorkPackage = new EventEmitter<any>();
+
+  ngDoCheck(): void {
+    this.radioCategory = this.group.value.category;
+  }
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;

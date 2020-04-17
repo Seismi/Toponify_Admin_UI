@@ -19,7 +19,7 @@ import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpa
   styleUrls: ['./radio-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-export class RadioModalComponent implements OnInit, OnDestroy, DoCheck {
+export class RadioModalComponent implements OnInit, OnDestroy {
   public users$: Observable<User[]>;
   public isEditable = true;
   public modalMode = true;
@@ -27,7 +27,6 @@ export class RadioModalComponent implements OnInit, OnDestroy, DoCheck {
   public selectedNode = null;
   public workpackages$: Observable<WorkPackageEntity[]>;
   public selectedOption: any;
-  public radioCategory: string;
 
   constructor(
     private store: Store<UserState>,
@@ -38,10 +37,6 @@ export class RadioModalComponent implements OnInit, OnDestroy, DoCheck {
         selectedNode: NodeDetail;
       }
     ) { }
-
-  ngDoCheck(): void {
-    this.radioCategory = this.radioDetailsForm.value.category;
-  }
 
   ngOnInit() {
     this.users$ = this.store.pipe(select(getUsers));
