@@ -197,7 +197,7 @@ export class WorkPackageDiagramService {
   getLink(): go.Link {
     return $(go.Link,
       {
-        routing: go.Link.Orthogonal,
+        routing: go.Link.AvoidsNodes,
         corner: 4
       },
       $(go.Shape)
@@ -209,7 +209,7 @@ export class WorkPackageDiagramService {
       go.TreeLayout,
       {
         nodeSpacing: 40,
-        layerSpacing: 50
+        layerSpacing: 60
       }
     );
   }
