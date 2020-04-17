@@ -6,6 +6,14 @@ export interface RadioEntitiesHttpParams {
   format?: string;
 }
 
+export enum radioCategories {
+  risk = 'risk',
+  assumption = 'assumption',
+  dependency = 'dependency',
+  issue = 'issue',
+  opportunity = 'opportunity'
+}
+
 export interface RadioEntitiesResponse {
   data?: (RadioEntity)[] | null;
   links: Links;
@@ -174,6 +182,8 @@ interface AddRadioOrReplyChanges {
   relatesTo?: (RelatesTo)[] | null;
   actionBy?: string;
   mitigation?: string;
+  severity?: number;
+  frequency?: number;
 }
 
 // RADIO advanced search

@@ -84,7 +84,10 @@ export class RadioComponent implements OnInit, OnDestroy {
   onAddRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '650px'
+      width: '650px',
+      data: {
+        selectedNode: null
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -100,7 +103,9 @@ export class RadioComponent implements OnInit, OnDestroy {
               author: data.radio.author,
               relatesTo: [{ workPackage: { id: currentArchitecturePackageId } }],
               actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation
+              mitigation: data.radio.mitigation,
+              severity: data.radio.severity,
+              frequency: data.radio.frequency
             }
           })
         );

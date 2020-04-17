@@ -433,6 +433,7 @@ export class DiagramChangesService {
     const selectedPartKey: string | null = diagram.selection.count === 1 ? diagram.selection.first().key : null;
 
     diagram.model.nodeDataArray = JSON.parse(JSON.stringify(nodes));
+
     if (diagram.layout.isValidLayout) {
       diagram.layout.isValidLayout = false;
     }
@@ -1173,5 +1174,30 @@ export class DiagramChangesService {
 
       this.workpackageStore.dispatch(new AddWorkPackageMapViewTransformation(params));
     }
+  }
+
+  // Check for any other nodes already occupying a given space
+  isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
+    const diagram = node.diagram;
+
+    // nested function used by Layer.findObjectsIn, below
+    // only consider Parts, and ignore the given Node, any Links, and Group members
+    function navigate(obj: go.GraphObject): go.Part {
+      const part = obj.part;
+      if (part === node) { return null; }
+      if (part instanceof go.Link) { return null; }
+      if (part.isMemberOf(node)) { return null; }
+      if (node.isMemberOf(part)) { return null; }
+      return part;
+    }
+
+    // only consider non-temporary Layers
+    const diagramLayers = diagram.layers;
+    while (diagramLayers.next()) {
+      const layer = diagramLayers.value;
+      if (layer.isTemporary) { continue; }
+      if (layer.findObjectsIn(rectangle, navigate, null, true).count > 0) { return false; }
+    }
+    return true;
   }
 }

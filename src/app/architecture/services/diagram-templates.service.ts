@@ -64,7 +64,8 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        locationObjectName: 'location panel'
+        locationObjectName: 'location panel',
+        dragComputation: this.gojsCustomObjectsService.avoidNodeOverlap.bind(this.gojsCustomObjectsService)
       },
       !forPalette
         ? {
@@ -1177,7 +1178,7 @@ export class DiagramTemplatesService {
         dragComputation: function(part, pt, gridpt) {
           // don't constrain top-level nodes
           const grp = part.containingGroup;
-          if (grp === null) { return pt; }
+          if (grp === null) { return this.gojsCustomObjectsService.avoidNodeOverlap(part, pt, gridpt); }
           // try to stay within the background Shape of the Group
           const back = grp.resizeObject;
           if (back === null) { return pt; }
@@ -1192,8 +1193,10 @@ export class DiagramTemplatesService {
           // now limit the location appropriately
           const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1)) ;
           const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
-          return new go.Point(x, y);
-        }
+          const newPoint = new go.Point(x, y);
+
+          return this.gojsCustomObjectsService.avoidNodeOverlap(part, newPoint, newPoint);
+        }.bind(this)
       },
       new go.Binding('isSubGraphExpanded', 'middleExpanded',
         function(middleExpanded): boolean {

@@ -22,11 +22,12 @@ import {
   ArchiveWorkPackage,
   LoadWorkPackageBaselineAvailability,
   AddWorkPackageBaseline,
-  DeleteWorkPackageBaseline
+  DeleteWorkPackageBaseline,
+  LoadWorkPackages
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkPackage, getWorkPackageEntities, getWorkPackageBaselineAvailability } from '@app/workpackage/store/selectors/workpackage.selector';
+import { getSelectedWorkPackage, getWorkPackageBaselineAvailability, getAllWorkPackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import {
@@ -432,7 +433,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onMoveObjective(objective: Objective) {
     this.store
       .pipe(
-        select(getWorkPackageEntities),
+        select(getAllWorkPackages),
         take(1),
         map(workpackages => workpackages.filter(wp => wp.status === 'draft'))
       )
