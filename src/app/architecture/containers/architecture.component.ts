@@ -46,7 +46,6 @@ import {
   LoadingStatus,
   middleOptions,
   Node,
-  NodeApiResponse,
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
@@ -102,7 +101,7 @@ import {
   LoadScopes,
   ScopeActionTypes
 } from '@app/scope/store/actions/scope.actions';
-import { ScopeDetails, ScopeEntity } from '@app/scope/store/models/scope.model';
+import {defaultScopeId, ScopeDetails, ScopeEntity} from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { ScopeAndLayoutModalComponent } from '@app/scopes-and-layouts/containers/scope-and-layout-modal/scope-and-layout-modal.component';
@@ -152,6 +151,7 @@ import {
   SetWorkpackageEditMode
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
+  currentArchitecturePackageId,
   CustomPropertiesEntity,
   WorkPackageEntity,
   WorkPackageNodeScopes
@@ -194,10 +194,10 @@ import { getNodeScopes, getPotentialWorkPackageNodes } from '../store/selectors/
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
+import { autoLayoutId } from '@app/architecture/store/models/layout.model';
 import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
 import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
 import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { LinkWithTransformationModalComponent } from './link-with-transformation-modal/link-with-transformation-modal.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
@@ -415,8 +415,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
     this.selectedLayout$ = this.layoutStore.pipe(select(getLayoutSelected));
+
     // FIXME: Why this ?
-    // this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
+    // this.layoutStore.dispatch(new LoadLayout(autoLayoutId));
 
     // Load Work Packages
     this.workpackageStore.dispatch(new LoadWorkPackages({}));
@@ -658,7 +659,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         if (scope) {
           this.scopeStore.dispatch(new LoadScope(scope));
         } else {
-          this.scopeStore.dispatch(new LoadScope('00000000-0000-0000-0000-000000000000'));
+          this.scopeStore.dispatch(new LoadScope(defaultScopeId));
         }
       });
 
@@ -674,6 +675,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.subscribeForNodesLinksData();
 
     this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
       function() {
@@ -1023,7 +1026,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSaveLayout(): void {
-    if (!this.layout || this.layout.id === '00000000-0000-0000-0000-000000000000') {
+    if (!this.layout || this.layout.id === autoLayoutId) {
       return;
     }
     if (this.draft) {
@@ -1052,7 +1055,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   // FIXME: types
   handleUpdateNodeLocation(data: { nodes: any[]; links: any[] }) {
     // Do not update back end if using default layout
-    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+    if (this.layout.id === autoLayoutId) {
       return;
     }
 
@@ -1066,7 +1069,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   handleUpdateNodeExpandState(data: { node: NodeExpandedStateApiRequest['data']; links: go.Link[] }): void {
     // Do not update back end if using default layout
-    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+    if (this.layout.id === autoLayoutId) {
       return;
     }
 
@@ -1084,7 +1087,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     links: go.Link[];
   }): void {
     // Do not update back end if using default layout
-    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+    if (this.layout.id === autoLayoutId) {
       return;
     }
 
@@ -1100,7 +1103,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   handleUpdateDiagramLayout(): void {
     // Do not update back end if using default layout
-    if (this.layout.id === '00000000-0000-0000-0000-000000000000') {
+    if (this.layout.id === autoLayoutId) {
       return;
     }
 
@@ -1362,7 +1365,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSelectScope(id) {
     this.removeAllDraft();
     this.scopeStore.dispatch(new LoadScope(id));
-    this.layoutStore.dispatch(new LoadLayout('00000000-0000-0000-0000-000000000000'));
+    this.layoutStore.dispatch(new LoadLayout(autoLayoutId));
   }
 
   onSelectLayout(id) {
@@ -1485,7 +1488,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.workpackageId) {
       return this.workpackageId;
     } else {
-      return '00000000-0000-0000-0000-000000000000';
+      return currentArchitecturePackageId;
     }
   }
 
@@ -2036,34 +2039,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.getDiagramImage();
   }
 
-  getLevel(level: string): string {
-    if (level === Level.systemMap) {
-      return Level.dataSet;
-    } else if (level === Level.dataSetMap) {
-      return Level.dimension;
-    } else {
-      return level;
-    }
-  }
-
-  onAddComponentOrLink(type: 'component' | 'link'): void {
+  onAddComponentOrLink(): void {
     const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         workPackageId: this.workpackageId,
-        link: type === 'link',
+        link: this.selectedView === ArchitectureView.Links,
         level: this.currentFilterLevel.toLowerCase()
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.node) {
-        if (type === 'component') {
+        if (this.selectedView !== ArchitectureView.Links) {
           this.workpackageStore.dispatch(
             new AddWorkPackageNode({
               workpackageId: this.workpackageId,
-              node: { ...data.node, layer: this.getLevel(this.currentFilterLevel.toLowerCase()) },
+              node: { ...data.node, layer: this.currentFilterLevel.toLowerCase() },
               scope: this.scope.id
             })
           );
@@ -2071,74 +2064,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(
             new AddWorkPackageLink({
               workpackageId: this.workpackageId,
-              link: { ...data.node, layer: this.getLevel(this.currentFilterLevel.toLowerCase()) }
+              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
             })
           );
         }
-      }
-    });
-  }
-
-  onAddLinkWithTransformation() {
-    const dialogRef = this.dialog.open(LinkWithTransformationModalComponent, {
-      disableClose: false,
-      width: '800px'
-    });
-
-    dialogRef.beforeClosed().subscribe(data => {
-      if (data && data.node) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNode({
-            workpackageId: this.workpackageId,
-            scope: this.scope.id,
-            node: {
-              ...data.node,
-              layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
-              category: 'transformation'
-            }
-          })
-        );
-
-        this.subscriptions.push(
-          this.actions
-            .pipe(
-              take(1),
-              ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)
-            )
-            .subscribe((action: { payload: NodeApiResponse }) => {
-              const transformationId = action.payload.data.id;
-
-              data.node.sourceId.forEach(source => {
-                this.workpackageStore.dispatch(
-                  new AddWorkPackageLink({
-                    workpackageId: this.workpackageId,
-                    link: {
-                      name: `${source.name} to ${data.node.name}`,
-                      layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
-                      sourceId: source.id,
-                      targetId: transformationId,
-                      category: 'data'
-                    }
-                  })
-                );
-              });
-
-              data.node.targetId.forEach(target => {
-                this.workpackageStore.dispatch(
-                  new AddWorkPackageLink({
-                    workpackageId: this.workpackageId,
-                    link: {
-                      name: `${data.node.name} to ${target.name}`,
-                      layer: this.getLevel(this.currentFilterLevel.toLowerCase()),
-                      sourceId: transformationId,
-                      targetId: target.id,
-                      category: 'data'
-                    }
-                  })
-                );
-              });
-            })
-        );
       }
     });
   }

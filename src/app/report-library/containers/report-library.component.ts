@@ -25,7 +25,7 @@ import { take } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { RouterStateUrl } from '@app/core/store';
 import { RouterReducerState } from '@ngrx/router-store';
-import { ScopeEntity } from '@app/scope/store/models/scope.model';
+import {defaultScopeId, ScopeEntity} from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
@@ -47,7 +47,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public canSelectWorkpackage = true;
   public workpackageId: string;
   public workPackageIsEditable: boolean;
-  public scopeId = '00000000-0000-0000-0000-000000000000';
+  public scopeId = defaultScopeId;
   public workPackageIds: string[];
   public selectedWorkPackageEntities: WorkPackageEntity[];
 

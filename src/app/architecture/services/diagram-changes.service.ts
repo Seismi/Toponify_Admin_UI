@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import {linkCategories, LinkLayoutSettingsEntity} from '@app/architecture/store/models/node-link.model';
-import { AddWorkPackageLink, UpdateWorkPackageLink } from '@app/workpackage/store/actions/workpackage-link.actions';
+import {linkCategories, LinkLayoutSettingsEntity, NodeLink} from '@app/architecture/store/models/node-link.model';
+import {
+  AddWorkPackageLink,
+  AddWorkPackageMapViewLink,
+  UpdateWorkPackageLink
+} from '@app/workpackage/store/actions/workpackage-link.actions';
 import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
@@ -14,9 +18,11 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
+import {endPointTypes, layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
+import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
+import {autoLayoutId} from '@app/architecture/store/models/layout.model';
 
 const $ = go.GraphObject.make;
 
@@ -27,6 +33,9 @@ export class DiagramChangesService {
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   private currentLevel: Level;
+  private currentScope: string;
+  private currentNodeId: string;
+  private currentMapViewSource: { id: string, isTransformation: boolean };
   public dependenciesView = false;
 
   workpackages = [];
@@ -45,8 +54,14 @@ export class DiagramChangesService {
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
-    this.store.select(getFilterLevelQueryParams).subscribe(level => {
-      this.currentLevel = level;
+    this.store.select(getQueryParams).subscribe(params => {
+      this.currentLevel = params.filterLevel;
+      this.currentScope = params.scope;
+      this.currentNodeId = params.nodeId;
+      this.currentMapViewSource = {
+        id: params.id,
+        isTransformation: params.isTransformation
+      };
       this.dependenciesView = false;
     });
   }
@@ -55,78 +70,77 @@ export class DiagramChangesService {
   //  -event
   //    -subject: set of nodes to add to the database
   createObjects(event: go.DiagramEvent): void {
-    this.store
-      .select(getQueryParams)
-      .pipe(take(1))
-      .subscribe(params => {
-        const { id: nodeId, scope } = params;
+    const nodeId = this.currentNodeId;
+    const scope = this.currentScope;
 
-        const shortEditWorkpackage = {
-          id: this.workpackages[0].id,
-          name: this.workpackages[0].name,
-          description: this.workpackages[0].description,
-          hasErrors: this.workpackages[0].hasErrors,
-          status: this.workpackages[0].status
-        };
+    const shortEditWorkpackage = {
+      id: this.workpackages[0].id,
+      name: this.workpackages[0].name,
+      description: this.workpackages[0].description,
+      hasErrors: this.workpackages[0].hasErrors,
+      status: this.workpackages[0].status
+    };
 
-        event.subject.each((part: go.Part) => {
-          // Set workpackage currently being edited as "impacted by" workpackage for the part
-          event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
+    event.subject.each((part: go.Part) => {
+      // Set workpackage currently being edited as "impacted by" workpackage for the part
+      event.diagram.model.setDataProperty(part.data, 'impactedByWorkPackages', [shortEditWorkpackage]);
 
-          if ('displayId' in part.data) {
-            part.data.id = part.data.displayId;
-          }
+      if ('displayId' in part.data) {
+        part.data.id = part.data.displayId;
+      }
 
-          // Only add nodes here as new links are temporary until connected
-          if (part instanceof go.Node) {
-            const node = Object.assign({}, part.data);
-            const dialogRef = this.dialog.open(EditNameModalComponent, {
-              disableClose: false,
-              width: 'auto',
-              data: {
-                name: node.name
-              }
-            });
-
-            dialogRef.afterClosed().subscribe((data: { name: string }) => {
-              if (data && data.name) {
-                node.name = data.name;
-              }
-
-              this.workpackages.forEach(workpackage => {
-
-                const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node};
-
-                if (this.layout.id !== '00000000-0000-0000-0000-000000000000') {
-
-                  const { nodeLayoutData, linkLayoutData } = this.getCurrentPartsLayoutData(event.diagram);
-
-                  addWorkPackageNodeParams.newLayoutDetails = {
-                    layoutId: this.layout.id,
-                    data: {
-                      positionDetails: {
-                        workPackages: [{ id: workpackage.id, name: workpackage.name }],
-                        positions: {
-                          nodes: nodeLayoutData,
-                          nodeLinks: linkLayoutData
-                        }
-                      }
-                    }
-                  };
-                }
-
-                if (nodeId) {
-                  addWorkPackageNodeParams.node.parentId = nodeId;
-                }
-
-                this.workpackageStore.dispatch(
-                  new AddWorkPackageNode(addWorkPackageNodeParams)
-                );
-              });
-            });
+      // Only add nodes here as new links are temporary until connected
+      if (part instanceof go.Node) {
+        const node = Object.assign({}, part.data);
+        const dialogRef = this.dialog.open(EditNameModalComponent, {
+          disableClose: false,
+          width: 'auto',
+          data: {
+            name: node.name
           }
         });
-      });
+
+        dialogRef.afterClosed().subscribe((data: { name: string }) => {
+          if (data && data.name) {
+            part.data.name = data.name;
+            node.name = data.name;
+          }
+
+          this.workpackages.forEach(workpackage => {
+
+            const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node};
+
+            if (this.layout.id !== autoLayoutId) {
+
+              const { nodeLayoutData, linkLayoutData } = this.getCurrentPartsLayoutData(event.diagram);
+
+              addWorkPackageNodeParams.newLayoutDetails = {
+                layoutId: this.layout.id,
+                data: {
+                  positionDetails: {
+                    workPackages: [{ id: workpackage.id, name: workpackage.name }],
+                    positions: {
+                      nodes: nodeLayoutData,
+                      nodeLinks: linkLayoutData
+                    }
+                  }
+                }
+              };
+            }
+
+            if (nodeId) {
+              addWorkPackageNodeParams.node.parentId = nodeId;
+            }
+
+            if (!node.isTemporary) {
+              this.workpackageStore.dispatch(
+                new AddWorkPackageNode(addWorkPackageNodeParams)
+              );
+            }
+          });
+        });
+      }
+    });
   }
 
   // Updates the properties associated with a node or link
@@ -314,24 +328,48 @@ export class DiagramChangesService {
 
       // Create link if not already in database
       if (link.data.isTemporary) {
-        // Create copy of link data
-        const newLink = Object.assign({}, link.data);
 
-        newLink.sourceId = link.fromNode.data.id;
-        newLink.targetId = link.toNode.data.id;
-        newLink.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`;
+        link.data.sourceId = link.fromNode.data.id;
+        link.data.targetId = link.toNode.data.id;
+        link.data.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`;
 
-        this.workpackages.forEach(workpackage => {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageLink({
-              workpackageId: workpackage.id,
-              link: newLink
-            })
-          );
-        });
+        // If in map view, check if newly connected link connects to a transformation node
+        if (this.currentLevel.endsWith('map')) {
+          if (link.fromNode.data.isTemporary) {
+            this.createMapViewTransformationLink(link.fromNode);
+          } else if (link.toNode.data.isTemporary) {
+            this.createMapViewTransformationLink(link.toNode);
+          } else {
+            this.workpackages.forEach(workpackage => {
+              this.workpackageStore.dispatch(
+                new AddWorkPackageMapViewLink({
+                  workpackageId: workpackage.id,
+                  link: Object.assign({}, link.data),
+                  mapViewParams: {
+                    id: this.currentMapViewSource.id,
+                    queryParams: {
+                      workPackageQuery: [workpackage.id],
+                      scope: this.currentScope,
+                      isTransformation: this.currentMapViewSource.isTransformation
+                    }
+                  }
+                })
+              );
+            });
+          }
+        } else {
+          this.workpackages.forEach(workpackage => {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageLink({
+                workpackageId: workpackage.id,
+                link: Object.assign({}, link.data)
+              })
+            );
+          });
 
-        // Flag that link now exists in the database
-        link.data.isTemporary = false;
+          // Flag that link now exists in the database
+          link.data.isTemporary = false;
+        }
 
         if (draggingTool.isActive) {
           draggingTool.doDeactivate();
@@ -514,30 +552,24 @@ export class DiagramChangesService {
     toport: go.GraphObject,
     oldlink: go.Link
   ): boolean {
-    // Only validate links that are connected at both ends
-    if (!fromnode || !tonode) {
-      return true;
-    }
 
-    // If both nodes linked are from a group, then ensure the nodes are not part of the same group
-    if (fromnode.containingGroup && tonode.containingGroup) {
-      if (fromnode.containingGroup.key === tonode.containingGroup.key) {
+    // Ensure that links in map view go in the right direction
+    if (this.currentLevel.endsWith('map')) {
+      if (fromnode &&
+        fromnode.containingGroup &&
+        fromnode.containingGroup.data.endPointType !== endPointTypes.source) {
+        return false;
+      }
+      if (tonode &&
+        tonode.containingGroup &&
+        tonode.containingGroup.data.endPointType !== endPointTypes.target) {
         return false;
       }
     }
 
-    // When connecting links via drag and drop, the oldlink parameter is not passed.
-    // Therefore, set the value of this parameter here in this case.
-    if (!oldlink) {
-      const draggingTool = fromnode.diagram.toolManager.draggingTool;
-
-      // Copy of a link being created
-      if (draggingTool.copiedParts) {
-        oldlink = draggingTool.copiedParts.first().key as go.Link;
-      } else {
-        // Link being moved
-        oldlink = draggingTool.draggedParts.first().key as go.Link;
-      }
+    // Only validate links that are connected at both ends
+    if (!fromnode || !tonode) {
+      return true;
     }
 
     // Prevent links between two transformation nodes
@@ -555,17 +587,11 @@ export class DiagramChangesService {
       }
     }
 
-    // Only validate master data links
-    if (oldlink.category === linkCategories.masterData) {
-      // Prevent multiple master data links between the same pair of nodes
-      const allLinks = fromnode.findLinksBetween(tonode);
-      return !allLinks.any(function(link) {
-        return (
-          link.data.category === linkCategories.masterData &&
-          // Don't count current link when checking if master data links already exist
-          oldlink.data.id !== link.data.id
-        );
-      });
+    // Prevent links between equivalent nodes in map view
+    if (this.currentLevel.endsWith('map')) {
+      if (fromnode.data.id === tonode.data.id) {
+        return false;
+      }
     }
 
     return true;
@@ -1103,6 +1129,51 @@ export class DiagramChangesService {
   setBlueShadowHighlight(node: go.Node, highlight: boolean): void {
     node.shadowColor = highlight ? 'blue' : 'gray';
     node.shadowBlur = highlight ? 18 : 4;
+  }
+
+  // Update back end with all parts necessary for a transformation
+  createMapViewTransformationLink(node: go.Node): void {
+    const linksIn = [];
+    const linksOut = [];
+
+    // Get links connecting a source node to a transformation node
+    node.findLinksInto().each(function(link) {
+      if (link.fromNode) {
+        link.data.sourceId = link.fromNode.data.id;
+        link.data.targetId = link.toNode.data.id;
+        linksIn.push(link.data);
+      }
+    });
+
+    // Get links connecting a transformation node to a target node
+    node.findLinksOutOf().each(function(link) {
+      if (link.toNode) {
+        link.data.sourceId = link.fromNode.data.id;
+        link.data.targetId = link.toNode.data.id;
+        linksOut.push(link.data);
+      }
+    });
+
+    // Only proceed if at least one fully attached link is connected to the transformation node in both directions
+    if (linksIn.length > 0 && linksOut.length > 0) {
+
+      const params: any = {
+        workpackageId: this.workpackages[0].id,
+        scope: this.currentScope,
+        nodeData: node.data,
+        linkData: [].concat(linksIn, linksOut),
+        mapViewParams: {
+          id: this.currentMapViewSource.id,
+          queryParams: {
+            workPackageQuery: [this.workpackages[0].id],
+            scope: this.currentScope,
+            isTransformation: this.currentMapViewSource.isTransformation
+          }
+        }
+      };
+
+      this.workpackageStore.dispatch(new AddWorkPackageMapViewTransformation(params));
+    }
   }
 
   // Check for any other nodes already occupying a given space

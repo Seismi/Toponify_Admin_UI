@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { WorkPackageDetail, Baseline } from '@app/workpackage/store/models/workpackage.models';
+import {WorkPackageDetail, Baseline, currentArchitecturePackageId} from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-baseline-table',
@@ -9,7 +9,7 @@ import { WorkPackageDetail, Baseline } from '@app/workpackage/store/models/workp
 })
 export class BaselineTableComponent {
   @Input() isEditable = false;
-  public currentState: string = '00000000-0000-0000-0000-000000000000';
+  public currentState = currentArchitecturePackageId;
 
   @Input()
   set data(data: WorkPackageDetail[]) {

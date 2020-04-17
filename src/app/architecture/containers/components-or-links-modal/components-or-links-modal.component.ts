@@ -21,8 +21,6 @@ export class ComponentsOrLinksModalComponent implements OnInit {
   public formGroup: FormGroup;
   public nodes: Node[];
   public nameValue = '';
-  public targetArray: Node[];
-  public sourceArray: Node[];
 
   constructor(
     private fb: FormBuilder,
@@ -53,24 +51,14 @@ export class ComponentsOrLinksModalComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.store.pipe(select(getNodeEntities)).subscribe(data => {
-      this.nodes = data;
-      const target = data.filter(node => node.endPointType === 'target');
-      const source = data.filter(node => node.endPointType === 'source');
-      this.targetArray = (this.data.level.endsWith('map')) ? data.filter(node => node.group === target[0].id) : data;
-      this.sourceArray = (this.data.level.endsWith('map')) ? data.filter(node => node.group === source[0].id) : data;
-    });
+    this.store.pipe(select(getNodeEntities)).subscribe(data => this.nodes = data);
   }
 
   getCategories(): string[] {
     switch (this.data.level) {
       case 'system':
         return (!this.data.link) ? systemCategories : ['master data', 'data'];
-      case 'system map':
-        return (!this.data.link) ? systemCategories : ['master data', 'data'];
       case 'data set':
-        return (!this.data.link) ? dataSetCategories : ['master data', 'data'];
-      case 'data set map':
         return (!this.data.link) ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
         return (!this.data.link) ? dimensionCategories : ['master data'];
