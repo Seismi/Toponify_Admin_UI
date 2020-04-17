@@ -1,8 +1,22 @@
-<ul>
-  <li *ngFor="let notification of notifications" [ngClass]="{ active: !notification.read }">
-    <div>{{ notification.message }}</div>
-    <span *ngIf="!notification.read" (click)="handleMarkAsRead(notification.id)">Mark as read</span>
-    &nbsp;&nbsp;
-    <span *ngIf="notification.read" (click)="handleDelete(notification.id)">Delete</span>
-  </li>
-</ul>
+<div class="search-container">
+  <input placeholder="Search" [(ngModel)]="searchString" (keydown)="$event.stopPropagation()">
+</div>
+<mat-card *ngFor="let notification of (notifications | searchPipe: searchString)" [ngClass]="{ notActive: notification.read }">
+  <mat-card-content>
+    <mat-icon 
+      *ngIf="!notification.read" 
+      (click)="handleMarkAsRead(notification.id)" 
+      class="notification-important"
+    >
+      notification_important
+    </mat-icon>
+    <mat-icon class="info" *ngIf="notification.read">info</mat-icon>
+    <p>
+      {{ notification.message }}
+    </p>
+    <mat-icon (click)="handleDelete(notification.id)">close</mat-icon>
+  </mat-card-content>
+  <mat-card-actions>
+    <small>{{ notification.createdOn | date }}</small>
+  </mat-card-actions>
+</mat-card>
