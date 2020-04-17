@@ -1,0 +1,8 @@
+<ul>
+  <li *ngFor="let notification of notifications" [ngClass]="{ active: !notification.read }">
+    <div>{{ notification.message }}</div>
+    <span *ngIf="!notification.read" (click)="handleMarkAsRead(notification.id)">Mark as read</span>
+    &nbsp;&nbsp;
+    <span *ngIf="notification.read" (click)="handleDelete(notification.id)">Delete</span>
+  </li>
+</ul>
