@@ -49,8 +49,8 @@
         [ngStyle]="{ display: 'none' }"
         formControlName="description"
       ></textarea>
-      <ckeditor [editor]="editor" [config]="config" formControlName="description" [ngClass]="{hidden: !isEditable}"></ckeditor>
-      <div data-qa="radio-detail-description" class="description-content" [innerHTML]="group.controls['description'].value" [ngClass]="{hidden: isEditable}"></div>
+      <ckeditor data-qa="radio-detail-description" [editor]="editor" [config]="config" formControlName="description" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <div class="description-content" [innerHTML]="group.controls['description'].value" [ngClass]="{hidden: isEditable}"></div>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
@@ -150,11 +150,10 @@
         matInput
         [rows]="rows"
         placeholder="Mitigation / Resolution"
-        data-qa="radio-detail-mitigation"
         formControlName="mitigation"
         [ngStyle]="{ display: 'none' }"
       ></textarea>
-      <ckeditor [editor]="editor" [config]="config" formControlName="mitigation" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <ckeditor data-qa="radio-detail-mitigation" [editor]="editor" [config]="config" formControlName="mitigation" [ngClass]="{hidden: !isEditable}"></ckeditor>
       <div class="description-content" [innerHTML]="group.controls['mitigation'].value" [ngClass]="{hidden: isEditable}"></div>
     </mat-form-field>
   </div>
