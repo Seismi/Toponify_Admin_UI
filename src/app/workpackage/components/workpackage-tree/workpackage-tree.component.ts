@@ -46,13 +46,13 @@ export class WorkPackageTreeComponent implements OnInit, OnChanges {
       this.selectWorkpackage.emit(parts.length === 1 ? parts[0].data : null);
     });
 
-    this.layoutFishbone();
+    this.getLayout();
   }
 
-  layoutFishbone(): void {
-    this.diagram.startTransaction('fishbone layout');
-    this.diagram.linkTemplate = this.workPackageDiagramService.getFishboneLink();
-    this.diagram.layout = this.workPackageDiagramService.getFishboneLayout();
-    this.diagram.commitTransaction('fishbone layout');
+  getLayout(): void {
+    this.diagram.startTransaction('layout');
+    this.diagram.linkTemplate = this.workPackageDiagramService.getLink();
+    this.diagram.layout = this.workPackageDiagramService.getLayout();
+    this.diagram.commitTransaction('layout');
   }
 }
