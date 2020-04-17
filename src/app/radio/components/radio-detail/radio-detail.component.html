@@ -50,7 +50,7 @@
         formControlName="description"
       ></textarea>
       <ckeditor [editor]="editor" [config]="config" formControlName="description" [ngClass]="{hidden: !isEditable}"></ckeditor>
-      <div class="description-content" [innerHTML]="group.controls['description'].value" [ngClass]="{hidden: isEditable}"></div>
+      <div data-qa="radio-detail-description" class="description-content" [innerHTML]="group.controls['description'].value" [ngClass]="{hidden: isEditable}"></div>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
