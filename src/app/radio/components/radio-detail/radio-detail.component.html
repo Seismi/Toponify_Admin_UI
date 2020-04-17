@@ -1,7 +1,7 @@
 <form [formGroup]="group">
   <div [ngClass]="{ disabled: !isEditable }">
     <div class="align-in-row">
-      <mat-form-field style="width: 150px;" *ngIf="!modalMode">
+      <mat-form-field style="width: 150px; margin-right: 10px;" *ngIf="!modalMode">
         <mat-label>Ref. Number</mat-label>
         <input
           matInput
@@ -25,7 +25,7 @@
     </div>
 
     <div class="align-in-row">
-      <mat-form-field [ngClass]="{ spaceToRight: modalMode }">
+      <mat-form-field style="width: 100px; margin-right: 10px;">
         <mat-label>Category</mat-label>
         <mat-select data-qa="radio-detail-category" formControlName="category" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let category of categories" [value]="category">
@@ -34,7 +34,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field style="width: 100px; margin-right: 10px;">
         <mat-label>Status</mat-label>
         <mat-select data-qa="radio-detail-status" formControlName="status" [ngClass]="{ editable: isEditable }">
           <mat-option *ngFor="let status of status" [value]="status">
@@ -43,35 +43,37 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field *ngIf="!modalMode">
-        <input 
-          matInput 
-          data-qa="radio-detail-raised-by" 
-          formControlName="raisedBy" 
-          placeholder="Raised By" 
-          readonly
-        />
-      </mat-form-field>
+      <span *ngIf="!modalMode">
+        <mat-form-field style="width: 260px; margin-right: 10px;">
+          <input 
+            matInput 
+            data-qa="radio-detail-raised-by" 
+            formControlName="raisedBy" 
+            placeholder="Raised By" 
+            readonly
+          />
+        </mat-form-field>
 
-      <mat-form-field *ngIf="!modalMode">
-        <input 
-          matInput 
-          data-qa="radio-detail-created-on" 
-          formControlName="createdOn" 
-          placeholder="Created on" 
-          readonly
-        />
-      </mat-form-field>
+        <mat-form-field style="width: 100px; margin-right: 10px;">
+          <input 
+            matInput 
+            data-qa="radio-detail-created-on" 
+            formControlName="createdOn" 
+            placeholder="Created on" 
+            readonly
+          />
+        </mat-form-field>
 
-      <mat-form-field *ngIf="!modalMode">
-        <input 
-          matInput 
-          data-qa="radio-detail-last-updated-by" 
-          formControlName="lastUpdatedOn" 
-          placeholder="Last Updated on" 
-          readonly
-        />
-      </mat-form-field>
+        <mat-form-field style="width: 100px;">
+          <input 
+            matInput 
+            data-qa="radio-detail-last-updated-by" 
+            formControlName="lastUpdatedOn" 
+            placeholder="Last Updated on" 
+            readonly
+          />
+        </mat-form-field>
+      </span>
     </div>
 
     <mat-form-field floatLabel="always">
@@ -100,7 +102,7 @@
 
     <div class="align-in-row">
       <!-- SEVERIRY -->
-      <div style="width: 100%;">
+      <div class="slider-wrapper">
         <span
           style="width: 60px;"
           class="slider-title"
@@ -109,7 +111,6 @@
         >
           {{ getSeverityLabel() }}
         </span>
-        <mat-checkbox class="checkbox"></mat-checkbox>
         <mat-slider
           [max]="5"
           [min]="1"
@@ -127,7 +128,7 @@
       </div>
 
       <!-- FREQUENCY -->
-      <div style="width: 100%;">
+      <div class="slider-wrapper">
         <span
           style="width: 80px;"
           class="slider-title"
@@ -136,7 +137,6 @@
         >
           {{ getFrequencyLabel() }}
         </span>
-        <mat-checkbox class="checkbox"></mat-checkbox>
         <mat-slider
           [max]="5"
           [min]="1"

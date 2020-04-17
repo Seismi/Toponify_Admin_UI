@@ -38,6 +38,7 @@ button {
 
 .align-in-row {
   display: flex;
+  align-items: stretch;
 }
 
 .hidden {
@@ -59,28 +60,11 @@ p {
   font-size: 20px;
 }
 
-.align-in-row {
-  .mat-form-field {
-    margin-right: 10px;
-  }
-  &:nth-child(2) {
-    .mat-form-field {
-      width: 150px;
-    }
-  }
-}
-
 .slider-title {
   display: inline-block; 
   pointer-events: auto;
   color: rgba(0,0,0,.54);
   font-size: 12px !important;
-}
-
-.checkbox {
-  position: relative;
-  top: 3px;
-  margin-right: 10px;
 }
 
 .slider-value {
@@ -98,4 +82,11 @@ p {
 
 .mat-chip {
   color: #fff;
+}
+
+.slider-wrapper {
+  width: 100%;
+  &:first-of-type {
+    margin-right: 35px;
+  }
 }

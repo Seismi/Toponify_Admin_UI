@@ -13,9 +13,9 @@ interface Scores {
 }
 
 enum TrafficLightColour {
-  green = '#99c140',
+  red = '#CC3232',
   yellow = '#e7b416',
-  red = '#cc3232'
+  green = '#2dc937'
 }
 
 @Component({
@@ -134,8 +134,6 @@ export class RadioDetailComponent {
       case radioCategories.dependency:
       case radioCategories.issue:
         return 'Impact';
-      default:
-        return 'Severity';
     }
   }
 
@@ -164,8 +162,6 @@ export class RadioDetailComponent {
       case radioCategories.issue:
       case radioCategories.opportunity:
         return 'Frequency';
-      default:
-        return 'Frequency / Probability';
     }
   }
 
@@ -185,22 +181,30 @@ export class RadioDetailComponent {
   }
 
   getSliderValue(sliderValue: number): string {
-    if ([1, 2].includes(sliderValue)) {
-      return 'Low';
-    } else if (sliderValue === 3) {
-      return 'Medium';
-    } else {
-      return 'High';
+    switch (sliderValue) {
+      case 1:
+        return 'Very Low';
+      case 2:
+        return 'Low';
+      case 3:
+        return 'Medium';
+      case 4:
+        return 'High';
+      case 5:
+        return 'Very High';
     }
   }
 
   getChipColour(sliderValue: number): string {
-    if ([1, 2].includes(sliderValue)) {
-      return TrafficLightColour.red;
-    } else if (sliderValue === 3) {
-      return TrafficLightColour.yellow;
-    } else {
-      return TrafficLightColour.green;
+    switch (sliderValue) {
+      case 1:
+      case 2:
+        return TrafficLightColour.red;
+      case 3:
+        return TrafficLightColour.yellow;
+      case 4:
+      case 5:
+        return TrafficLightColour.green;
     }
   }
 
