@@ -3,6 +3,7 @@ import { MatCheckboxChange } from '@angular/material';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { FormGroup } from '@angular/forms';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import {autoLayoutId} from '@app/architecture/store/models/layout.model';
 
 const SeverityFilter = [
   {
@@ -33,7 +34,7 @@ const SeverityFilter = [
   styleUrls: ['./analysis-tab.component.scss']
 })
 export class AnalysisTabComponent implements OnChanges {
-  public defaultLayout: string = '00000000-0000-0000-0000-000000000000';
+  public defaultLayout = autoLayoutId;
 
   @Input() viewLevel: Level;
   @Input() checked: boolean;

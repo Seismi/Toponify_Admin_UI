@@ -114,7 +114,11 @@ export enum WorkPackageActionTypes {
 
   DeleteWorkPackageBaseline = '[WorkPackage] Delete WorkPackage Baseline',
   DeleteWorkPackageBaselineSuccess = '[WorkPackage] Delete WorkPackage Baseline Success',
-  DeleteWorkPackageBaselineFailure = '[WorkPackage] Delete WorkPackage Baseline Failure'
+  DeleteWorkPackageBaselineFailure = '[WorkPackage] Delete WorkPackage Baseline Failure',
+
+  AddWorkPackageMapViewTransformation = '[WorkPackage] Add Transformation in Map View',
+  AddWorkPackageMapViewTransformationSuccess = '[WorkPackage] Add Transformation in Map View Success',
+  AddWorkPackageMapViewTransformationFailure = '[WorkPackage] Add Transformation in Map View Failure'
 }
 
 export class LoadWorkPackages implements Action {
@@ -497,6 +501,21 @@ export class DeleteWorkPackageBaselineFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddWorkPackageMapViewTransformation implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformation;
+  constructor(public payload: { workpackageId: string, scope: string, nodeData: any, linkData: any, mapViewParams: any}) {}
+}
+
+export class AddWorkPackageMapViewTransformationSuccess implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformationSuccess;
+  constructor(public payload: any) {}
+}
+
+export class AddWorkPackageMapViewTransformationFailure implements Action {
+  readonly type = WorkPackageActionTypes.AddWorkPackageMapViewTransformationFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
@@ -573,4 +592,7 @@ export type WorkPackageActionsUnion =
   | AddWorkPackageBaselineFailure
   | DeleteWorkPackageBaseline
   | DeleteWorkPackageBaselineSuccess
-  | DeleteWorkPackageBaselineFailure;
+  | DeleteWorkPackageBaselineFailure
+  | AddWorkPackageMapViewTransformation
+  | AddWorkPackageMapViewTransformationSuccess
+  | AddWorkPackageMapViewTransformationFailure;
