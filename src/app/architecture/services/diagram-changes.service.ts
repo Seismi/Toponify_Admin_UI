@@ -739,7 +739,7 @@ export class DiagramChangesService {
       }
     });
 
-    if ([Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentLevel)) {
+    if ([Level.systemMap, Level.dataSetMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
       // Update node's layout in map view or usage view
       node.invalidateLayout();
     } else {
@@ -869,7 +869,7 @@ export class DiagramChangesService {
     });
 
     if (this.currentLevel === Level.usage) {
-      // Update node's layout in map view or usage view
+      // Update node's layout in usage view
       node.invalidateLayout();
     }
 
@@ -963,7 +963,7 @@ export class DiagramChangesService {
     });
 
     if (this.currentLevel === Level.usage) {
-      // Update node's layout in map view or usage view
+      // Update node's layout in usage view
       member.invalidateLayout();
     }
 

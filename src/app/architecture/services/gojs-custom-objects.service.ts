@@ -764,7 +764,7 @@ export class GojsCustomObjectsService {
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             const level = thisService.currentLevel;
-            return (level !== Level.systemMap && level !== Level.dataSetMap);
+            return !level.endsWith('map');
           }
         ),
         makeSubMenuButton(

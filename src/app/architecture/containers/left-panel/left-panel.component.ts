@@ -36,5 +36,4 @@ export class LeftPanelComponent {
   onSelectColour(event: { colour: string; id: string }) {
     this.selectColour.emit(event);
   }
-
 }

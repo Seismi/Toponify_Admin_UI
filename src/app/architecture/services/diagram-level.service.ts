@@ -22,6 +22,7 @@ export enum Level {
   reportingConcept = 'reporting concept',
   systemMap = 'system map',
   dataSetMap = 'data set map',
+  dimensionMap = 'dimension map',
   attribute = 'attribute',
   usage = 'usage analysis'
 }
@@ -43,6 +44,7 @@ export const lessDetailOrderMapping = {
   [Level.dimension]: Level.dataSet,
   [Level.systemMap]: Level.system,
   [Level.dataSetMap]: Level.dataSet,
+  [Level.dimensionMap]: Level.dimension,
   [Level.dataSet]: Level.system
 };
 
@@ -50,6 +52,12 @@ export const moreDetailOrderMapping = {
   [Level.system]: Level.dataSet,
   [Level.dataSet]: Level.dimension,
   [Level.dimension]: Level.reportingConcept
+};
+
+const mapViewLinkLayers = {
+  [Level.systemMap]: layers.dataSet,
+  [Level.dataSetMap]: layers.dimension,
+  [Level.dimensionMap]: layers.reportingConcept
 };
 
 // Define custom layout for top level nodes in map view
@@ -324,7 +332,7 @@ export class DiagramLevelService {
       tooltip = NodeToolTips[10].Tooltip;
     } else if (level === Level.dimension || level === Level.dataSetMap) {
       tooltip = NodeToolTips[13].Tooltip;
-    } else if (level === Level.reportingConcept) {
+    } else if (level === Level.reportingConcept || level === Level.dimensionMap) {
       tooltip = NodeToolTips[17].Tooltip;
     }
     return tooltip;
@@ -354,8 +362,7 @@ export class DiagramLevelService {
     // Array of links to be used in the palette
     const paletteViewLinks = [];
 
-    const linkLayer =
-      level === Level.systemMap ? layers.dataSet : level === Level.dataSetMap ? layers.dimension : level.toLowerCase();
+    const linkLayer = level.endsWith('map') ? mapViewLinkLayers[level] : level.toLowerCase();
 
     if (level !== Level.usage) {
       paletteViewLinks.push({
@@ -379,6 +386,8 @@ export class DiagramLevelService {
         transformationLayer = layers.dataSet;
       } else if (level === Level.dataSetMap) {
         transformationLayer = layers.dimension;
+      } else if (level === Level.dimensionMap) {
+        transformationLayer = layers.reportingConcept;
       } else {
         transformationLayer = level;
       }

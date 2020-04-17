@@ -9,7 +9,6 @@ import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
-import {NodeLink} from '@app/architecture/store/models/node-link.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -1394,7 +1393,7 @@ export class DiagramTemplatesService {
             return;
           }
 
-          if ([layers.system, layers.dataSet].includes(object.data.layer)) {
+          if (object.data.layer !== layers.reportingConcept) {
             this.diagramChangesService.getMapViewForLink.call(this.diagramChangesService, event, object);
           }
         }.bind(this)
@@ -1489,8 +1488,8 @@ export class DiagramTemplatesService {
     );
   }
 
-  getDataSetGroupTemplate(): go.Group {
-    // Template for data set groups in mapping view
+  getMapViewGroupTemplate(): go.Group {
+    // Template for groups in mapping view
     return $(
       go.Group,
       'Vertical',

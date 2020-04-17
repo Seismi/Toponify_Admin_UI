@@ -1223,7 +1223,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (
             this.currentFilterLevel &&
-            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel)
+            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
           ) {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
@@ -1276,7 +1276,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (
             this.currentFilterLevel &&
-            [Level.systemMap, Level.dataSetMap, Level.usage].includes(this.currentFilterLevel as Level)
+            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
           ) {
             return links;
           }
@@ -2062,39 +2062,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   onDownloadImage(): void {
     this.diagramComponent.getDiagramImage();
-  }
-
-  onAddComponentOrLink(): void {
-    const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        workPackageId: this.workpackageId,
-        link: this.selectedView === ArchitectureView.Links,
-        level: this.currentFilterLevel.toLowerCase()
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.node) {
-        if (this.selectedView !== ArchitectureView.Links) {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageNode({
-              workpackageId: this.workpackageId,
-              node: { ...data.node, layer: this.currentFilterLevel.toLowerCase() },
-              scope: this.scope.id
-            })
-          );
-        } else {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageLink({
-              workpackageId: this.workpackageId,
-              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
-            })
-          );
-        }
-      }
-    });
   }
 
   onUpdateAvailableTags() {
