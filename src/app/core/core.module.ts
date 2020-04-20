@@ -39,8 +39,10 @@ import { RelatedRadioTableComponent } from './layout/components/related-radio-ta
 import { NotificationService } from './services/notification.service';
 import { NotificationEffects } from './store/effects/notification.effects';
 import { NotificationPaneComponent } from './components/notification-pane/notification-pane.component';
-import { MatSidenavModule } from '@angular/material';
+import { MatSidenavModule, MatCardModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { RelatedWorkPackageTableComponent } from './layout/components/related-work-package-table/related-work-package-table.component';
+import { SearchPipe } from '@app/pipes/search.pipe';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -48,6 +50,10 @@ import { RelatedWorkPackageTableComponent } from './layout/components/related-wo
     MatSidenavModule,
     CoreLayoutModule,
     CommonModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    FormsModule,
     StoreModule.forFeature('searchFeature', reducer),
     EffectsModule.forFeature([SearchEffects, RouteEffects, NotificationEffects])
   ],
@@ -81,7 +87,8 @@ import { RelatedWorkPackageTableComponent } from './layout/components/related-wo
     LeftHandPaneContentComponent,
     RelatedRadioTableComponent,
     NotificationPaneComponent,
-    RelatedWorkPackageTableComponent
+    RelatedWorkPackageTableComponent,
+    SearchPipe
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
@@ -93,6 +100,6 @@ import { RelatedWorkPackageTableComponent } from './layout/components/related-wo
       multi: true
     }
   ],
-  declarations: [NotificationPaneComponent]
+  declarations: [NotificationPaneComponent, SearchPipe]
 })
 export class CoreModule {}
