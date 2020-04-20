@@ -46,7 +46,8 @@
   }
   .mark-as-read {
     display: block;
-    margin-top: 2px;
     text-decoration: underline;
+    position: absolute;
+    bottom: 4.5px;
   }
 }
