@@ -177,13 +177,11 @@ export class WorkPackageDiagramService {
       );
   }
 
-  // Get link template for links in workpackage tree diagram
-  getLinkTemplate() {
-    return $(
-      go.Link,
+  getLink(): go.Link {
+    return $(go.Link,
       {
         routing: go.Link.AvoidsNodes,
-        isLayoutPositioned: true,
+        corner: 4,
         selectable: false
       },
       $(go.Shape, {
@@ -191,16 +189,6 @@ export class WorkPackageDiagramService {
         stroke: 'black',
         strokeWidth: 1.5
       })
-    );
-  }
-
-  getLink(): go.Link {
-    return $(go.Link,
-      {
-        routing: go.Link.AvoidsNodes,
-        corner: 4
-      },
-      $(go.Shape)
     );
   }
 
