@@ -3,22 +3,18 @@
     <mat-tab-group mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
       <mat-tab data-qa="radio-details-tab">
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">info</mat-icon>
-          Details
+          <mat-icon matTooltip="Details">info</mat-icon>
         </ng-template>
         <p class="detailsTab">
           <smi-radio-detail
             data-qa="radio-detail-form"
             [data]="users$ | async"
-            [relatesTo]="radio?.relatesTo"
             [group]="radioDetailsForm"
             [isEditable]="isEditable"
             [modalMode]="modalMode"
             [radioStatus]="radio?.status"
             (archiveRadio)="onArchiveRadio()"
             (saveRadio)="onSaveRadio()"
-            (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
-            (addRelatesTo)="onAddRelatesTo()"
             (deleteRadio)="onDeleteRadio()"
             [tags]="radio?.tags"
             [availableTags]="availableTags$ | async"
@@ -30,10 +26,20 @@
           </smi-radio-detail>
         </p>
       </mat-tab>
+      <mat-tab data-qa="radio-relates-to-tab">
+        <ng-template mat-tab-label>
+          <mat-icon matTooltip="Relates To">device_hub</mat-icon>
+        </ng-template>
+        <smi-relates-to-table
+          data-qa="radio-relates-to-table"
+          [data]="radio?.relatesTo"
+          (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
+          (addRelatesTo)="onAddRelatesTo()"
+      ></smi-relates-to-table>
+      </mat-tab>
       <mat-tab data-qa="radio-discussions-tab">
         <ng-template mat-tab-label>
-          <mat-icon>comment</mat-icon>
-          Discussions
+          <mat-icon matTooltip="Discussions">comment</mat-icon>
         </ng-template>
         <p class="discussion-tab">
           <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies" data-qa="radio-chatbox"></smi-chatbox>
@@ -44,8 +50,7 @@
       </mat-tab>
       <mat-tab data-qa="radio-documentation-standards-tab">
         <ng-template mat-tab-label>
-          <mat-icon>insert_drive_file</mat-icon>
-          Documentation Standards
+          <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
         <smi-edit-documentation-standards-table
           data-qa="radio-documentation-standards-table"
