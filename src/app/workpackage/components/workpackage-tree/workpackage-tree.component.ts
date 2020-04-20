@@ -39,13 +39,20 @@ export class WorkPackageTreeComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.diagram.div = this.diagramRef.nativeElement;
     this.diagram.nodeTemplate = this.workPackageDiagramService.getNodeTemplate();
-    this.diagram.linkTemplate = this.workPackageDiagramService.getLinkTemplate();
-    this.diagram.layout = this.workPackageDiagramService.getLayout();
     this.diagram.model = this.workPackageDiagramService.getModel(this.workpackages$);
 
     this.diagram.addDiagramListener('ChangedSelection', ev => {
       const parts = ev.diagram.selection.toArray();
       this.selectWorkpackage.emit(parts.length === 1 ? parts[0].data : null);
     });
+
+    this.getLayout();
+  }
+
+  getLayout(): void {
+    this.diagram.startTransaction('layout');
+    this.diagram.linkTemplate = this.workPackageDiagramService.getLink();
+    this.diagram.layout = this.workPackageDiagramService.getLayout();
+    this.diagram.commitTransaction('layout');
   }
 }

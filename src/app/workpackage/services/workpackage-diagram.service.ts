@@ -30,14 +30,6 @@ function textFont(style?: string): Object {
 export class WorkPackageDiagramService {
   constructor(private router: Router, private workpackageStore: Store<WorkPackageState>) {}
 
-  // Get layout for workpackage tree diagram
-  getLayout() {
-    return $(go.LayeredDigraphLayout, {
-      direction: 90,
-      isRouting: true
-    });
-  }
-
   // Get model for workpackage tree diagram
   getModel(workPackages) {
     return $(go.GraphLinksModel, {
@@ -185,13 +177,11 @@ export class WorkPackageDiagramService {
       );
   }
 
-  // Get link template for links in workpackage tree diagram
-  getLinkTemplate() {
-    return $(
-      go.Link,
+  getLink(): go.Link {
+    return $(go.Link,
       {
         routing: go.Link.AvoidsNodes,
-        isLayoutPositioned: true,
+        corner: 4,
         selectable: false
       },
       $(go.Shape, {
@@ -201,4 +191,15 @@ export class WorkPackageDiagramService {
       })
     );
   }
+
+  getLayout(): go.TreeLayout {
+    return $(
+      go.TreeLayout,
+      {
+        nodeSpacing: 40,
+        layerSpacing: 60
+      }
+    );
+  }
+
 }
