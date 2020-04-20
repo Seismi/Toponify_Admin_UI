@@ -1,6 +1,6 @@
 <div class="wrapper">
   <div class="search-container">
-    <input placeholder="Search" (keyup)="onSearch($event.target.value)">
+    <input placeholder="Search" data-qa="work-packages-radio-table-quick-search" (keyup)="onSearch($event.target.value)">
   </div>
   <table mat-table [dataSource]="dataSource">
     <!-- Ref Number Column -->
