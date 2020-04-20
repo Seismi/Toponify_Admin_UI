@@ -24,13 +24,9 @@
       <mat-icon matTooltip="Edit">edit</mat-icon>
     </ng-template>
     <ng-template matTabContent>
-      <p class="palette" *ngIf="!mapView">
-        <app-architecture-palette data-qa="topology-palette"></app-architecture-palette>
+      <p class="palette">
+        <app-architecture-palette></app-architecture-palette>
       </p>
-      <div class="edit-tab-mapView" *ngIf="mapView">
-        <button data-qa="left-hand-pane-create-direct-interface" mat-raised-button color="primary" (click)="addInterface.emit('link')">Create direct interface</button>
-        <button data-qa="left-hand-pane-create-interface-with-transformation" mat-raised-button color="primary" (click)="addLinkWithTransformation.emit()">Create interface with transformation</button>
-      </div>
     </ng-template>
   </mat-tab>
 </mat-tab-group>

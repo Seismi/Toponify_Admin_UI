@@ -5,6 +5,11 @@ import { State } from '@app/core/store';
 import { getErrorMessage } from '@app/core/store/selectors/error.selectors';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { NotificationState } from './core/store/reducers/notification.reducer';
+import { NotificationGetAll } from './core/store/actions/notification.actions';
+import { debounce } from 'rxjs/operators';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +20,9 @@ export class AppComponent implements AfterViewInit {
     private snackBar: MatSnackBar,
     private store: Store<State>,
     private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private router: Router,
+    private notificationStore: Store<NotificationState>
   ) {
     const customIcons = [
       'data_set-master-data',
@@ -49,6 +56,10 @@ export class AppComponent implements AfterViewInit {
         icon,
         this.domSanitizer.bypassSecurityTrustResourceUrl(`/assets/tag-icons/${icon}.svg`)
       );
+    });
+
+    this.router.events.pipe(debounce(() => timer(5000))).subscribe(_ => {
+      this.notificationStore.dispatch(new NotificationGetAll());
     });
   }
 

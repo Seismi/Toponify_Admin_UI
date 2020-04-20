@@ -1,5 +1,6 @@
 import * as fromLayout from '../store/reducers/layout.reducer';
 import * as fromError from '../store/reducers/error.reducer';
+import * as fromNotifications from '../store/reducers/notification.reducer';
 
 /**
  * Every reducer module's default export is the reducer function itself. In
@@ -26,6 +27,7 @@ export interface State {
   layout: fromLayout.LayoutState;
   router: RouterReducerState<RouterStateUrl>;
   error: fromError.ErrorState;
+  notifications: fromNotifications.NotificationState;
 }
 
 export interface RouterStateUrl {
@@ -42,7 +44,8 @@ export interface RouterStateUrl {
 export const reducers: ActionReducerMap<State> = {
   layout: fromLayout.reducer,
   router: routerReducer,
-  error: fromError.reducer
+  error: fromError.reducer,
+  notifications: fromNotifications.reducer
 };
 
 // console.log all actions
