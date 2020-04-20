@@ -719,7 +719,8 @@ export class GojsCustomObjectsService {
           5,
           'Add data set',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
-            thisService.addDataSetSource.next();
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            thisService.addDataSetSource.next(node.data);
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             return thisService.diagramEditable;

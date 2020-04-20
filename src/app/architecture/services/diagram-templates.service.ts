@@ -9,6 +9,8 @@ import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
+import {linkCategories} from '@app/architecture/store/models/node-link.model';
+import {Subject} from 'rxjs';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -43,6 +45,11 @@ const nodeWidth = 300;
 export class DiagramTemplatesService {
   private currentFilterLevel: Level;
   public forPalette = false;
+
+  // Observable to indicate that a child is to be added to a node
+  private addChildSource = new Subject();
+  public addChild$ = this.addChildSource.asObservable();
+
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
     public diagramLevelService: DiagramLevelService,
@@ -1568,7 +1575,32 @@ export class DiagramTemplatesService {
             },
             new go.Binding('text', 'name')
           ),
-          $(go.Placeholder, { alignment: go.Spot.TopCenter })
+          $(go.Placeholder, { alignment: go.Spot.TopCenter }),
+          $('Button',
+            {
+              name: 'addChildButton',
+              alignment: go.Spot.BottomCenter,
+              margin: new go.Margin(15, 5, 0, 5),
+              click: function(event: go.InputEvent, button: go.Panel): void {
+                this.addChildSource.next(button.part.data);
+              }.bind(this)
+            },
+            // Disable button if moves not allowed in diagram
+            new go.Binding('isEnabled', '', function(node) {
+              return this.gojsCustomObjectsService.diagramEditable;
+            }.bind(this)),
+            $(go.TextBlock, textFont('bold 22px'), '+',
+              {
+                alignment: go.Spot.Center,
+                desiredSize: new go.Size(300, 30),
+                textAlign: 'center',
+                verticalAlignment: go.Spot.Center
+              },
+              new go.Binding('stroke', 'isEnabled', function(enabled) {
+                return enabled ? 'black' : '#AAAFB4';
+              }).ofObject('addChildButton')
+            ),
+          )
         )
       )
     );
