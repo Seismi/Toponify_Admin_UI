@@ -128,6 +128,7 @@ import {
   AddWorkPackageNode,
   AddWorkPackageNodeAttribute,
   AddWorkPackageNodeDescendant,
+  AddWorkPackageMapViewNodeDescendant,
   AddWorkPackageNodeGroup,
   AddWorkpackageNodeOwner,
   AddWorkPackageNodeRadio,
@@ -837,6 +838,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.linksSubscription) {
       this.linksSubscription.unsubscribe();
     }
+    this.addChildSubscription.unsubscribe();
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
@@ -1740,15 +1742,43 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+    let addDescendantAction;
+    if (this.currentFilterLevel.endsWith('map')) {
+      addDescendantAction = AddWorkPackageMapViewNodeDescendant;
+    } else {
+      addDescendantAction = AddWorkPackageNodeDescendant;
+    }
+
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeDescendant({
-            workPackageId: this.workpackageId,
-            nodeId: parentData.id,
-            data: data.value
-          })
-        );
+        if (this.currentFilterLevel.endsWith('map')) {
+
+          const mapViewParams = {
+            id: this.params.id,
+            queryParams: {
+              workPackageQuery: [this.params.workpackages],
+              scope: [this.params.scope],
+              isTransformation: this.params.isTransformation
+            }
+          };
+
+          this.workpackageStore.dispatch(
+            new AddWorkPackageMapViewNodeDescendant({
+              workPackageId: this.workpackageId,
+              nodeId: parentData.id,
+              data: data.value,
+              mapViewParams: mapViewParams
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeDescendant({
+              workPackageId: this.workpackageId,
+              nodeId: parentData.id,
+              data: data.value
+            })
+          );
+        }
       }
     });
   }
