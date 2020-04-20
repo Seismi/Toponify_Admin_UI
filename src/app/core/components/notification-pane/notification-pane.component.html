@@ -3,16 +3,15 @@
 </div>
 <mat-card *ngFor="let notification of (notifications | searchPipe: searchString)" [ngClass]="{ notActive: notification.read }">
   <mat-card-content>
-    <mat-icon 
-      *ngIf="!notification.read" 
-      (click)="handleMarkAsRead(notification.id)" 
-      class="notification-important"
-    >
+    <mat-icon *ngIf="notification.important; else elseBlock" class="notification-important">
       notification_important
     </mat-icon>
-    <mat-icon class="info" *ngIf="notification.read">info</mat-icon>
+    <ng-template #elseBlock>
+      <mat-icon class="info">info</mat-icon>
+    </ng-template>
     <p>
       {{ notification.message }}
+      <a class="mark-as-read" *ngIf="!notification.read" (click)="handleMarkAsRead(notification.id)">Mark as read</a>
     </p>
     <mat-icon (click)="handleDelete(notification.id)">close</mat-icon>
   </mat-card-content>
