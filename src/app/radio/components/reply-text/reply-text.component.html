@@ -9,7 +9,7 @@
       formControlName="replyText"
       [ngStyle]="{ display: 'none' }"
     ></textarea>
-    <ckeditor [editor]="editor" [config]="config" formControlName="replyText"></ckeditor>
+    <ckeditor data-qa="radio-discussions-tab-your-message" [editor]="editor" [config]="config" formControlName="replyText"></ckeditor>
   </mat-form-field>
   <button
     data-qa="radio-discussions-tab-send"
