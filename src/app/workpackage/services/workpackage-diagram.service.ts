@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { Store } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { FishboneLayout, FishboneLink } from 'gojs/extensionsTS/FishboneLayout';
 
 const $ = go.GraphObject.make;
 
