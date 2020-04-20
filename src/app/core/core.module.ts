@@ -36,15 +36,26 @@ import { LeftHandPaneComponent } from './layout/left-hand-pane/left-hand-pane.co
 import { MenuComponent } from './layout/menu/menu.component';
 import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/left-hand-pane-content.component';
 import { RelatedRadioTableComponent } from './layout/components/related-radio-table/related-radio-table.component';
+import { NotificationService } from './services/notification.service';
+import { NotificationEffects } from './store/effects/notification.effects';
+import { NotificationPaneComponent } from './components/notification-pane/notification-pane.component';
+import { MatSidenavModule, MatCardModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { RelatedWorkPackageTableComponent } from './layout/components/related-work-package-table/related-work-package-table.component';
+import { SearchPipe } from '@app/pipes/search.pipe';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     RouterModule,
+    MatSidenavModule,
     CoreLayoutModule,
     CommonModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    FormsModule,
     StoreModule.forFeature('searchFeature', reducer),
-    EffectsModule.forFeature([SearchEffects, RouteEffects])
+    EffectsModule.forFeature([SearchEffects, RouteEffects, NotificationEffects])
   ],
   exports: [
     MainLayoutComponent,
@@ -75,19 +86,20 @@ import { RelatedWorkPackageTableComponent } from './layout/components/related-wo
     MenuComponent,
     LeftHandPaneContentComponent,
     RelatedRadioTableComponent,
-    RelatedWorkPackageTableComponent
+    NotificationPaneComponent,
+    RelatedWorkPackageTableComponent,
+    SearchPipe
   ],
-  entryComponents: [
-    DeleteModalComponent,
-    SelectModalComponent
-  ],
+  entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
     SearchService,
+    NotificationService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
       multi: true
     }
-  ]
+  ],
+  declarations: [NotificationPaneComponent, SearchPipe]
 })
 export class CoreModule {}

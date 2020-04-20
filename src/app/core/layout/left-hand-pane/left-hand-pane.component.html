@@ -6,17 +6,43 @@
     </mat-icon>
   </button>
   <button
-    data-qa="left-hand-pane-edit" 
-    mat-icon-button *ngIf="workPackageIsEditable && architecturePage" [ngClass]="{ selected: selectedLeftTab === 1 }">
+    data-qa="left-hand-pane-edit"
+    mat-icon-button
+    *ngIf="workPackageIsEditable && architecturePage"
+    [ngClass]="{ selected: selectedLeftTab === 1 }"
+  >
     <mat-icon title="Edit" (click)="openSideBar.emit(1)">
       edit
     </mat-icon>
   </button>
 </div>
 <div class="shortcuts">
-  <mat-icon data-qa="left-hand-pane-shortcut-topology" routerLink="/topology" queryParamsHandling="preserve" title="Topology">device_hub</mat-icon>
-  <mat-icon data-qa="left-hand-pane-shortcut-work-packages" routerLink="/work-packages" queryParamsHandling="preserve" title="Work Packages">business_center</mat-icon>
-  <mat-icon data-qa="left-hand-pane-shortcut-radio" routerLink="/radio" queryParamsHandling="preserve" title="RADIO Log">track_changes</mat-icon>
-  <mat-icon data-qa="left-hand-pane-shortcut-scopes-and-layouts" routerLink="/scopes-and-layouts" queryParamsHandling="preserve" title="Scopes and Layouts">pages</mat-icon>
-  <a href="https://support.toponify.com" target="_blank" data-qa="left-hand-pane-shortcut-help"><mat-icon title="Help">help_outline</mat-icon></a>
+  <smi-notification-indicator title="Notifications"> </smi-notification-indicator>
+  <mat-icon
+    data-qa="left-hand-pane-shortcut-topology"
+    routerLink="/topology"
+    queryParamsHandling="preserve"
+    title="Topology"
+    >device_hub</mat-icon
+  >
+  <mat-icon
+    data-qa="left-hand-pane-shortcut-work-packages"
+    routerLink="/work-packages"
+    queryParamsHandling="preserve"
+    title="Work Packages"
+    >business_center</mat-icon
+  >
+  <mat-icon data-qa="left-hand-pane-shortcut-radio" routerLink="/radio" queryParamsHandling="preserve" title="RADIO Log"
+    >track_changes</mat-icon
+  >
+  <mat-icon
+    data-qa="left-hand-pane-shortcut-scopes-and-layouts"
+    routerLink="/scopes-and-layouts"
+    queryParamsHandling="preserve"
+    title="Scopes and Layouts"
+    >pages</mat-icon
+  >
+  <a href="https://support.toponify.com" target="_blank" data-qa="left-hand-pane-shortcut-help"
+    ><mat-icon title="Help">help_outline</mat-icon></a
+  >
 </div>

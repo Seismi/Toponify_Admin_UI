@@ -8,11 +8,19 @@ import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selec
 import { NewChildrenService } from './services/new-children-form.service';
 import { NewChildrenValidatorService } from './services/new-children-form-validator.service';
 import { FormGroup } from '@angular/forms';
+import {layers, nodeCategories} from '@app/architecture/store/models/node.model';
+import {Level} from '@app/architecture/services/diagram-level.service';
 
-const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
-const dataSetCategories = ['physical', 'virtual', 'master data'];
-const dimensionCategories = ['dimension'];
-const reportingConceptCategories = ['structure', 'list', 'key'];
+const systemCategories = [
+  nodeCategories.transactional,
+  nodeCategories.analytical,
+  nodeCategories.reporting,
+  nodeCategories.masterData,
+  nodeCategories.file
+];
+const dataSetCategories = [nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData];
+const dimensionCategories = [nodeCategories.dimension];
+const reportingConceptCategories = [nodeCategories.structure, nodeCategories.list, nodeCategories.key];
 
 @Component({
   selector: 'smi-new-children-modal',
@@ -58,27 +66,33 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     if (this.addSystem) {
       return systemCategories;
     }
-    switch(filterLevel) {
-      case 'system':
+    switch (filterLevel) {
+      case Level.system:
+      case Level.systemMap:
         return dataSetCategories;
-      case 'data set':
+      case Level.dataSet:
+      case Level.dataSetMap:
         return dimensionCategories;
-      case 'dimension':
+      case Level.dimension:
+      case Level.dimensionMap:
         return reportingConceptCategories;
     }
   }
 
   getLayer(filterLevel: string): string {
     if (this.addSystem) {
-      return 'system';
+      return layers.system;
     }
-    switch(filterLevel) {
-      case 'system':
-        return 'data set';
-      case 'data set':
-        return 'dimension';
-      case 'dimension':
-        return 'reporting concept';
+    switch (filterLevel) {
+      case Level.system:
+      case Level.systemMap:
+        return layers.dataSet;
+      case Level.dataSet:
+      case Level.dataSetMap:
+        return layers.dimension;
+      case Level.dimension:
+      case Level.dimensionMap:
+        return layers.reportingConcept;
     }
   }
 
