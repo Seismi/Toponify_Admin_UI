@@ -1,5 +1,7 @@
-<h6 style="color: #555">Relates to</h6>
 <div class="mat-elevation-z8">
+  <div class="search-container">
+    <input placeholder="Search" data-qa="radio-relates-to-table-quick-search" (keyup)="onSearch($event.target.value)">
+  </div>
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="workPackage">
       <th mat-header-cell *matHeaderCellDef>Work Package</th>

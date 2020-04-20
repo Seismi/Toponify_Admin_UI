@@ -8,6 +8,7 @@
         </ng-template>
         <p class="detailsTab">
           <smi-radio-detail
+            [style.height.%]="100"
             [data]="users$ | async"
             [group]="radioDetailsForm"
             [isEditable]="false"
@@ -15,9 +16,6 @@
             (archiveRadio)="onArchiveRadio($event)"
             (saveRadio)="onSaveRadio()"
             [rows]="5"
-            [relatesTo]="radio?.relatesTo"
-            (addRelatesTo)="onAddRelatesTo()"
-            (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
           >
           </smi-radio-detail>
         </p>
@@ -37,7 +35,7 @@
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon>insert_drive_file</mat-icon>
-          Properties
+          Documentation Standards
         </ng-template>
         <p class="properties-tab">
           <smi-edit-documentation-standards-table

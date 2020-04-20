@@ -1,8 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, DoCheck } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 import { User } from '@app/settings/store/models/user.model';
-import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import { Tag, NodeDetail } from '@app/architecture/store/models/node.model';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
@@ -13,24 +12,30 @@ interface Scores {
   text: string;
 }
 
+enum TrafficLightColour {
+  red = '#CC3232',
+  yellow = '#e7b416',
+  green = '#2dc937'
+}
+
 @Component({
   selector: 'smi-radio-detail',
   templateUrl: './radio-detail.component.html',
   styleUrls: ['./radio-detail.component.scss']
 })
-export class RadioDetailComponent {
+export class RadioDetailComponent implements DoCheck {
   public users: User[];
   @Input() group: FormGroup;
   @Input() isEditable = false;
   @Input() modalMode = false;
   @Input() radioStatus: string;
   @Input() rows = 8;
-  @Input() relatesTo: RadioDetail;
   @Input() tags: Tag[];
   @Input() availableTags: Tag[];
   @Input() selectedNode: NodeDetail;
   @Input() workpackages: WorkPackageEntity[];
   @Input() radioCategory: string;
+  @Input() disabled: boolean;
   public selectedOptions = [];
   public severityTooltip: string;
   public frequencyTooltip: string;
@@ -86,25 +91,17 @@ export class RadioDetailComponent {
     removePlugins: ['MediaEmbed', 'ImageUpload', 'ImageToolbar', 'ImageStyle', 'ImageCaption', 'Image', 'EasyImage']
   };
 
-  @Output()
-  archiveRadio = new EventEmitter<void>();
-
-  @Output()
-  saveRadio = new EventEmitter<void>();
-
-  @Output()
-  unlinkRelatesTo = new EventEmitter<RelatesTo>();
-
-  @Output()
-  addRelatesTo = new EventEmitter<void>();
-
-  @Output()
-  deleteRadio = new EventEmitter<void>();
-
+  @Output() archiveRadio = new EventEmitter<void>();
+  @Output() saveRadio = new EventEmitter<void>();
+  @Output() deleteRadio = new EventEmitter<void>();
   @Output() addTag = new EventEmitter<string>();
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() selectWorkPackage = new EventEmitter<any>();
+
+  ngDoCheck(): void {
+    this.radioCategory = this.group.value.category;
+  }
 
   compareUsers(u1: any, u2: any): boolean {
     return u1.name === u2.name && u1.id === u2.id;
@@ -141,8 +138,6 @@ export class RadioDetailComponent {
       case radioCategories.dependency:
       case radioCategories.issue:
         return 'Impact';
-      default:
-        return 'Severity';
     }
   }
 
@@ -171,8 +166,6 @@ export class RadioDetailComponent {
       case radioCategories.issue:
       case radioCategories.opportunity:
         return 'Frequency';
-      default:
-        return 'Frequency / Probability';
     }
   }
 
@@ -188,6 +181,47 @@ export class RadioDetailComponent {
         return this.frequencyTooltip = 'Frequency at which the issue occurs';
       case radioCategories.opportunity:
         return this.frequencyTooltip = 'Frequency of the opportunity';
+    }
+  }
+
+  getSliderValue(sliderValue: number): string {
+    switch (sliderValue) {
+      case 1:
+        return 'Very Low';
+      case 2:
+        return 'Low';
+      case 3:
+        return 'Medium';
+      case 4:
+        return 'High';
+      case 5:
+        return 'Very High';
+    }
+  }
+
+  getChipColour(sliderValue: number): string {
+    switch (sliderValue) {
+      case 1:
+      case 2:
+        return TrafficLightColour.red;
+      case 3:
+        return TrafficLightColour.yellow;
+      case 4:
+      case 5:
+        return TrafficLightColour.green;
+    }
+  }
+
+  getMitigationLabel(): string {
+    switch (this.radioCategory) {
+      case radioCategories.risk:
+      case radioCategories.assumption:
+      case radioCategories.dependency:
+        return 'Mitigation';
+      case radioCategories.issue:
+        return 'Resolution';
+      case radioCategories.opportunity:
+        return 'Action plan';
     }
   }
 
