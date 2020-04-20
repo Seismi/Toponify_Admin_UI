@@ -16,7 +16,8 @@ import {
   MatProgressSpinnerModule,
   MatInputModule,
   MatIconModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatTabsModule
 } from '@angular/material';
 import { ScopesAndLayoutsTableComponent } from './components/scopes-and-layouts-table/scopes-and-layouts-table.component';
 import { ScopeModule } from '@app/scope/scope.module';
@@ -28,6 +29,7 @@ import { DeleteScopesAndLayoutsModalComponent } from './containers/delete-modal/
 import { ScopesAndLayoutsDetailComponent } from './components/scopes-and-layouts-detail/scopes-and-layouts-detail.component';
 import { ScopeDetailsComponent } from './containers/scope-details/scope-details.component';
 import { LayoutDetailsComponent } from './containers/layout-details/layout-details.component';
+import { ScopesAndLayoutsComponentsTableComponent } from './components/scopes-and-layouts-components-table/scopes-and-layouts-components-table.component';
 
 @NgModule({
   imports: [
@@ -50,7 +52,8 @@ import { LayoutDetailsComponent } from './containers/layout-details/layout-detai
     ScopeModule,
     LayoutModule,
     SettingsModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatTabsModule
   ],
   exports: [],
   declarations: [
@@ -61,7 +64,8 @@ import { LayoutDetailsComponent } from './containers/layout-details/layout-detai
     ScopeAndLayoutModalComponent,
     DeleteScopesAndLayoutsModalComponent,
     ScopeDetailsComponent,
-    LayoutDetailsComponent
+    LayoutDetailsComponent,
+    ScopesAndLayoutsComponentsTableComponent
   ],
   providers: [],
   entryComponents: [ScopeAndLayoutModalComponent, DeleteScopesAndLayoutsModalComponent]
