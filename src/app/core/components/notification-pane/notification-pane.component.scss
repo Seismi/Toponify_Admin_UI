@@ -1,0 +1,21 @@
+:host {
+  ul {
+    max-width: 400px;
+    padding: 0;
+    margin-left: 30px;
+    font-size: 12px;
+    color: #5d5b5b;
+    li {
+      padding: 10px;
+      &.active {
+        font-weight: bold;
+        color: black;
+      }
+      span {
+        color: blue;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+  }
+}

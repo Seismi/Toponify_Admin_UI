@@ -36,7 +36,7 @@ import {
   TeamEntityOrOwnersEntityOrApproversEntity,
   WorkPackageDetail,
   WorkPackageEntity,
-  Baseline
+  Baseline, currentArchitecturePackageId
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -71,7 +71,7 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
   providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
-  public currentState = '00000000-0000-0000-0000-000000000000';
+  public currentState = currentArchitecturePackageId;
   public workpackage: WorkPackageDetail;
   public subscriptions: Subscription[] = [];
   public workpackageId: string;
@@ -187,7 +187,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         selectedIds: []
       }
     });
-    
+
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
         this.store.dispatch(

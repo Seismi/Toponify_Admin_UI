@@ -36,14 +36,20 @@ import { LeftHandPaneComponent } from './layout/left-hand-pane/left-hand-pane.co
 import { MenuComponent } from './layout/menu/menu.component';
 import { LeftHandPaneContentComponent } from './layout/left-hand-pane-content/left-hand-pane-content.component';
 import { RelatedRadioTableComponent } from './layout/components/related-radio-table/related-radio-table.component';
+import { NotificationService } from './services/notification.service';
+import { NotificationEffects } from './store/effects/notification.effects';
+import { NotificationPaneComponent } from './components/notification-pane/notification-pane.component';
+import { MatSidenavModule } from '@angular/material';
+import { RelatedWorkPackageTableComponent } from './layout/components/related-work-package-table/related-work-package-table.component';
 
 @NgModule({
   imports: [
     RouterModule,
+    MatSidenavModule,
     CoreLayoutModule,
     CommonModule,
     StoreModule.forFeature('searchFeature', reducer),
-    EffectsModule.forFeature([SearchEffects, RouteEffects])
+    EffectsModule.forFeature([SearchEffects, RouteEffects, NotificationEffects])
   ],
   exports: [
     MainLayoutComponent,
@@ -73,19 +79,20 @@ import { RelatedRadioTableComponent } from './layout/components/related-radio-ta
     LeftHandPaneComponent,
     MenuComponent,
     LeftHandPaneContentComponent,
-    RelatedRadioTableComponent
+    RelatedRadioTableComponent,
+    NotificationPaneComponent,
+    RelatedWorkPackageTableComponent
   ],
-  entryComponents: [
-    DeleteModalComponent,
-    SelectModalComponent
-  ],
+  entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
     SearchService,
+    NotificationService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
       multi: true
     }
-  ]
+  ],
+  declarations: [NotificationPaneComponent]
 })
 export class CoreModule {}

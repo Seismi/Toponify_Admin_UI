@@ -46,7 +46,6 @@ import { DiagramLevelService } from './services/diagram-level.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
-import { WorkPackageTabComponent } from './components/workpackage-tab/workpackage-tab.component';
 import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
 import { ScopeModule } from '@app/scope/scope.module';
 import { LayoutModule } from '@app/layout/layout.module';
@@ -82,7 +81,6 @@ import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.c
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';
-import { LinkWithTransformationModalComponent } from './containers/link-with-transformation-modal/link-with-transformation-modal.component';
 import { SaveLayoutModalComponent } from './components/save-layout-modal/save-layout-modal.component';
 import { LayoutSettingsModalComponent } from './containers/layout-settings-modal/layout-settings-modal.component';
 import { DiagramActionsComponent } from './components/diagram-actions/diagram-actions.component';
@@ -141,7 +139,6 @@ import { SearchPipe } from '@app/pipes/search.pipe';
     LeftPanelComponent,
     AnalysisTabComponent,
     DeleteNodeModalComponent,
-    WorkPackageTabComponent,
     AttributesTabComponent,
     DeleteLinkModalComponent,
     WorkPackageTabTableComponent,
@@ -175,7 +172,6 @@ import { SearchPipe } from '@app/pipes/search.pipe';
     LayoutSettingsModalComponent,
     DiagramActionsComponent,
     LayoutsDropdownComponent,
-    LinkWithTransformationModalComponent,
     SearchPipe
   ],
   entryComponents: [
@@ -193,7 +189,6 @@ import { SearchPipe } from '@app/pipes/search.pipe';
     RadioConfirmModalComponent,
     ComponentsOrLinksModalComponent,
     LayoutSettingsModalComponent,
-    LinkWithTransformationModalComponent
   ],
   providers: [
     GojsCustomObjectsService,

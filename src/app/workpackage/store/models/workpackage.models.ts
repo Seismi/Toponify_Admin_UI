@@ -1,3 +1,5 @@
+export const currentArchitecturePackageId = '00000000-0000-0000-0000-000000000000';
+
 export interface WorkPackageEntitiesResponse {
   data?: (WorkPackageEntity)[] | null;
   links: Links;

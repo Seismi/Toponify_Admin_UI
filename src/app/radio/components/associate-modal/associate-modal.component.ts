@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatSelectChange } from '@angular/material';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import {currentArchitecturePackageId, WorkPackageEntity} from '@app/workpackage/store/models/workpackage.models';
 import { Observable } from 'rxjs';
 import { Node } from '@app/architecture/store/models/node.model';
 import { select, Store } from '@ngrx/store';
@@ -17,7 +17,7 @@ export class AssociateModalComponent implements OnInit {
   public title: string;
   public workpackages$: Observable<WorkPackageEntity[]>;
   public nodes$: Observable<Node[]>;
-  public selectedWorkpackageId = '00000000-0000-0000-0000-000000000000';
+  public selectedWorkpackageId = currentArchitecturePackageId;
   public selectedNodeId: string;
 
   @ViewChild('searchInput') searchInput: ElementRef;

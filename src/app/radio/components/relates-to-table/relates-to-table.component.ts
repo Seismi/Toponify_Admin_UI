@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
+import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-relates-to-table',
@@ -57,7 +58,7 @@ export class RelatesToTableComponent {
         selectedType: selectedType
       };
 
-      if (element.workPackage.id !== '00000000-0000-0000-0000-000000000000') {
+      if (element.workPackage.id !== currentArchitecturePackageId) {
         quesryParams['workpackages'] = element.workPackage.id;
       }
       this.router.navigate(['/topology'], { queryParams: quesryParams});

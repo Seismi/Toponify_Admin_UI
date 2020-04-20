@@ -18,14 +18,14 @@ export class ReportsTabComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  public dataSource: MatTableDataSource<NodeReports>;
+  public displayedColumns: string[] = ['name', 'owners', 'dataSet', 'navigate'];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {}
-
-  public dataSource: MatTableDataSource<NodeReports>;
-  public displayedColumns: string[] = ['name', 'owners', 'dataSet', 'navigate'];
 
   getOwners(data: NodeReports): string {
     return data.owners.map(owner => owner.name).join('; ');
@@ -33,5 +33,9 @@ export class ReportsTabComponent implements OnInit {
 
   onOpen(report: NodeReports): void {
     this.router.navigate([`/report-library/${report.id}`], { queryParamsHandling: 'preserve' });
+  }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
