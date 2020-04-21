@@ -12,6 +12,7 @@ import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model'
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'app-all-users-details',
@@ -24,8 +25,9 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
   public user: UserDetails;
-  public isEditable: boolean = false;
+  public isEditable = false;
   public userStatus: string;
+  public Roles = Roles;
 
   constructor(
     private actions: Actions,

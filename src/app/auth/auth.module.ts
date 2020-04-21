@@ -13,6 +13,7 @@ import { AuthEffects } from './store/effects/auth.effects';
 import { JWTInterceptor } from './services/jwt-interceptor.service';
 import { AuthenticationInterceptor } from './services/authentication-interceptor.service';
 import { AuthGuard } from './guards/auth.guard';
+import { ByRoleGuard } from '@app/core/guards/by-role.guard';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { AuthGuard } from './guards/auth.guard';
   exports: [LoginComponent],
   declarations: [LoginComponent],
   providers: [
+    ByRoleGuard,
     AuthGuard,
     AuthService,
     {

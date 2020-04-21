@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-settings-tabs',
@@ -8,6 +9,8 @@ import { MatTabChangeEvent } from '@angular/material';
 })
 export class SettingsTabsComponent {
   @Input() selectedTabIndex: number;
+
+  public Roles = Roles;
 
   constructor() {}
 

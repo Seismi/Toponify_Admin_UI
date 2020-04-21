@@ -1,6 +1,6 @@
 <mat-tab-group [@.disabled]="true" [selectedIndex]="selectedTabIndex" (selectedTabChange)="onTabClick($event)">
   <mat-tab label="My User"></mat-tab>
   <mat-tab label="Teams"></mat-tab>
-  <mat-tab label="All Users"></mat-tab>
+  <mat-tab *appByRole="[Roles.ADMIN, Roles.ARCHITECT]" label="All Users"></mat-tab>
   <mat-tab label="Organisation"></mat-tab>
 </mat-tab-group>

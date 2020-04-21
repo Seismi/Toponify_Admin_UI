@@ -8,6 +8,7 @@ import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { MatDialog } from '@angular/material';
 import { UserModalComponent } from '../user-modal/user-modal.component';
 import { Router } from '@angular/router';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-all-users',
@@ -16,6 +17,8 @@ import { Router } from '@angular/router';
 })
 export class AllUsersComponent implements OnInit {
   public users$: Observable<User[]>;
+
+  public Roles = Roles;
 
   constructor(private router: Router, private store: Store<UserState>, private dialog: MatDialog) {}
 
