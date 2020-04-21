@@ -41,13 +41,11 @@ import {
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { OwnersModalComponent } from '../owners-modal/owners-modal.component';
 import { RadioListModalComponent } from '../radio-list-modal/radio-list-modal.component';
 import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { RadioEffects } from '@app/radio/store/effects/radio.effects';
 import { Actions, ofType } from '@ngrx/effects';
-import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { RadioEntity, RadioDetail } from '@app/radio/store/models/radio.model';
 import { RadioDetailModalComponent } from '@app/workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
@@ -84,7 +82,6 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
     private router: Router,
     private actions: Actions,
-    private radioEffects: RadioEffects,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private teamStore: Store<TeamState>,
@@ -250,7 +247,10 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     dialogRef.componentInstance.addNewRadio.subscribe(() => {
       const dialogRef2 = this.dialog.open(RadioModalComponent, {
         disableClose: false,
-        width: '800px'
+        width: '800px',
+        data: {
+          selectedNode: null
+        }
       });
 
       dialogRef2.afterClosed().subscribe(data => {
@@ -270,29 +270,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
               }
             })
           );
-
-          // Add objective or radio to workpackage after new radio is created
-          this.subscriptions.push(
-            this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe(() => {
-              if (value.objective) {
-                this.store.dispatch(
-                  new AddObjective({
-                    workPackageId: this.workpackageId,
-                    objectiveId: this.radioEffects.radioId,
-                    data: data.radio
-                  })
-                );
-              } else {
-                this.store.dispatch(
-                  new AddRadio({
-                    workPackageId: this.workpackageId,
-                    radioId: this.radioEffects.radioId,
-                    data: data.radio
-                  })
-                );
-              }
-            })
-          );
+          this.store.dispatch(new LoadWorkPackage(this.workpackageId));
         }
       });
     });
