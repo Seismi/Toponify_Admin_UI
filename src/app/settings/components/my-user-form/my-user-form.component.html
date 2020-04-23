@@ -25,13 +25,13 @@
     </mat-form-field>
 
     <!-- My Teams -->
-    <mat-form-field>
+    <mat-form-field [ngClass]="{ readonly: myUserPage }">
       <mat-select
         placeholder="My Teams"
         multiple
         formControlName="team"
         [compareWith]="compareFn"
-        [ngClass]="{ editable: isEditable }"
+        [ngClass]="{ editable: isEditable && !myUserPage }"
         data-qa="settings-user-teams"
       >
         <mat-option *ngFor="let team of teams" [value]="team">
