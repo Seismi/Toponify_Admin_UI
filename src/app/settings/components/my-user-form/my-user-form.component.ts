@@ -16,7 +16,6 @@ enum Roles {
   styleUrls: ['my-user-form.component.scss']
 })
 export class MyUserFormComponent {
-  @Input() administrator: boolean;
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
   @Input() userStatus: string;
