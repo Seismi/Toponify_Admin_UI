@@ -13,6 +13,10 @@ export enum WorkPackageNodeActionTypes {
   AddWorkPackageNodeDescendantSuccess = '[WorkPackage] Add node descendant success',
   AddWorkPackageNodeDescendantFailure = '[WorkPackage] Add node descendant failure',
 
+  AddWorkPackageMapViewNodeDescendant = '[WorkPackage] Add map view node descendant',
+  AddWorkPackageMapViewNodeDescendantSuccess = '[WorkPackage] Add map view  node descendant success',
+  AddWorkPackageMapViewNodeDescendantFailure = '[WorkPackage] Add map view node descendant failure',
+
   DeleteWorkPackageNodeDescendant = '[WorkPackage] Delete node descendant',
   DeleteWorkPackageNodeDescendantSuccess = '[WorkPackage] Delete node descendant success',
   DeleteWorkPackageNodeDescendantFailure = '[WorkPackage] Delete node descendant failure',
@@ -113,6 +117,21 @@ export class AddWorkPackageNodeDescendantSuccess implements Action {
 
 export class AddWorkPackageNodeDescendantFailure implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeDescendantFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddWorkPackageMapViewNodeDescendant implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageMapViewNodeDescendant;
+  constructor(public payload: { workPackageId: string; nodeId: string; data: DescendantsEntity, mapViewParams: any }) {}
+}
+
+export class AddWorkPackageMapViewNodeDescendantSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageMapViewNodeDescendantSuccess;
+  constructor(public payload: DescendantsEntity) {}
+}
+
+export class AddWorkPackageMapViewNodeDescendantFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.AddWorkPackageMapViewNodeDescendantFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -394,6 +413,9 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNodeDescendant
   | AddWorkPackageNodeDescendantSuccess
   | AddWorkPackageNodeDescendantFailure
+  | AddWorkPackageMapViewNodeDescendant
+  | AddWorkPackageMapViewNodeDescendantSuccess
+  | AddWorkPackageMapViewNodeDescendantFailure
   | UpdateWorkPackageNode
   | UpdateWorkPackageNodeSuccess
   | UpdateWorkPackageNodeFailure

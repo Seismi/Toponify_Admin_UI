@@ -1,16 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { MatSidenavModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatIconModule, MatSidenavModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
 import { CoreLayoutModule } from '@app/core/layout/core-layout.module';
 import { RouteEffects } from '@app/core/store/effects/route.effects';
+import { SearchPipe } from '@app/pipes/search.pipe';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { reducer } from '../core/store/reducers/search.reducer';
 import { NotificationPaneComponent } from './components/notification-pane/notification-pane.component';
 import { ByRoleDirective } from './directives/by-role.directive';
+import { CanEditDirective } from './directives/can-edit.directive';
 import { AuthLayoutComponent } from './layout/app-layouts/auth-layout.component';
 import { MainLayoutComponent } from './layout/app-layouts/main-layout.component';
 import { DeleteModalComponent } from './layout/components/delete-modal/delete-modal.component';
@@ -42,7 +45,6 @@ import { NotificationService } from './services/notification.service';
 import { SearchService } from './services/search.service';
 import { NotificationEffects } from './store/effects/notification.effects';
 import { SearchEffects } from './store/effects/search.effects';
-import { CanEditDirective } from './directives/can-edit.directive';
 
 @NgModule({
   imports: [
@@ -50,6 +52,10 @@ import { CanEditDirective } from './directives/can-edit.directive';
     MatSidenavModule,
     CoreLayoutModule,
     CommonModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    FormsModule,
     StoreModule.forFeature('searchFeature', reducer),
     EffectsModule.forFeature([SearchEffects, RouteEffects, NotificationEffects])
   ],
@@ -85,7 +91,8 @@ import { CanEditDirective } from './directives/can-edit.directive';
     NotificationPaneComponent,
     RelatedWorkPackageTableComponent,
     ByRoleDirective,
-    CanEditDirective
+    CanEditDirective,
+    SearchPipe
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
@@ -97,6 +104,6 @@ import { CanEditDirective } from './directives/can-edit.directive';
       multi: true
     }
   ],
-  declarations: [NotificationPaneComponent, ByRoleDirective, CanEditDirective]
+  declarations: [NotificationPaneComponent, ByRoleDirective, CanEditDirective, SearchPipe]
 })
 export class CoreModule {}

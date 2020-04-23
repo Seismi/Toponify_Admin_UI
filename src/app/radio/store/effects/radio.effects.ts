@@ -60,9 +60,6 @@ import { Tag } from '@app/architecture/store/models/node.model';
 export class RadioEffects {
   constructor(private actions$: Actions, private radioService: RadioService) {}
 
-  // Newly created radio id
-  public radioId: string;
-
   @Effect()
   loadRadioEntities$ = this.actions$.pipe(
     ofType<LoadRadios>(RadioActionTypes.LoadRadios),
@@ -94,9 +91,6 @@ export class RadioEffects {
     mergeMap((payload: RadioApiRequest) => {
       return this.radioService.addRadioEntity(payload).pipe(
         mergeMap((radio: RadioApiResponse) => [new AddRadioEntitySuccess(radio.data)]),
-        tap(data => {
-          this.radioId = data.payload.id;
-        }),
         catchError((error: HttpErrorResponse) => of(new AddRadioEntityFailure(error)))
       );
     })

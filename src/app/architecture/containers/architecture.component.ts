@@ -127,6 +127,7 @@ import {
   AddWorkPackageNode,
   AddWorkPackageNodeAttribute,
   AddWorkPackageNodeDescendant,
+  AddWorkPackageMapViewNodeDescendant,
   AddWorkPackageNodeGroup,
   AddWorkpackageNodeOwner,
   AddWorkPackageNodeRadio,
@@ -175,7 +176,7 @@ import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
 import { go } from 'gojs/release/go-module';
 import isEqual from 'lodash.isequal';
-import { BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip } from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip, merge} from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFrom, delay } from 'rxjs/operators';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
@@ -204,6 +205,7 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
+import {DiagramTemplatesService} from '@app/architecture/services/diagram-templates.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -292,6 +294,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private currentFilterLevel: Level;
   private filterLevelSubscription: Subscription;
   private addDataSetSubscription: Subscription;
+  private addChildSubscription: Subscription;
   public params: Params;
   public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
@@ -352,6 +355,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private nodeService: NodeService,
     private attributeStore: Store<AttributeState>,
     private actions$: Actions,
+    private diagramTemplatesService: DiagramTemplatesService,
     private notificationStore: Store<NotificationState>
   ) {}
 
@@ -421,9 +425,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.currentFilterLevel = filterLevel;
     });
 
-    this.addDataSetSubscription = this.gojsCustomObjectsService.addDataSet$.subscribe(() => {
-      this.onAddDescendant();
+    this.addChildSubscription = merge(
+      this.gojsCustomObjectsService.addDataSet$,
+      this.diagramTemplatesService.addChild$
+    ).subscribe((parentData) => {
+      this.onAddDescendant(parentData);
     });
+
     // Scopes
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
@@ -851,6 +859,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.linksSubscription) {
       this.linksSubscription.unsubscribe();
     }
+    this.addChildSubscription.unsubscribe();
     this.layoutStoreSubscription.unsubscribe();
     this.editedWorkpackageSubscription.unsubscribe();
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
@@ -1736,11 +1745,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant() {
+  onAddDescendant(parentData) {
+
     this.store.dispatch(
       new FindPotentialWorkpackageNodes({
         workPackageId: this.workpackageId,
-        nodeId: this.nodeId,
+        nodeId: parentData.id,
         data: {}
       })
     );
@@ -1748,10 +1758,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title: `Add Children to "${this.selectedNode.name}"`,
+        title: `Add Children to "${parentData.name}"`,
         placeholder: 'Components',
         descendants: true,
-        nodeId: this.nodeId,
+        nodeId: parentData.id,
         workPackageId: this.workpackageId,
         scopeId: this.scope.id,
         options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
@@ -1760,15 +1770,43 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
+    let addDescendantAction;
+    if (this.currentFilterLevel.endsWith('map')) {
+      addDescendantAction = AddWorkPackageMapViewNodeDescendant;
+    } else {
+      addDescendantAction = AddWorkPackageNodeDescendant;
+    }
+
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeDescendant({
-            workPackageId: this.workpackageId,
-            nodeId: this.nodeId,
-            data: data.value
-          })
-        );
+        if (this.currentFilterLevel.endsWith('map')) {
+
+          const mapViewParams = {
+            id: this.params.id,
+            queryParams: {
+              workPackageQuery: [this.params.workpackages],
+              scope: [this.params.scope],
+              isTransformation: this.params.isTransformation
+            }
+          };
+
+          this.workpackageStore.dispatch(
+            new AddWorkPackageMapViewNodeDescendant({
+              workPackageId: this.workpackageId,
+              nodeId: parentData.id,
+              data: data.value,
+              mapViewParams: mapViewParams
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeDescendant({
+              workPackageId: this.workpackageId,
+              nodeId: parentData.id,
+              data: data.value
+            })
+          );
+        }
       }
     });
   }
