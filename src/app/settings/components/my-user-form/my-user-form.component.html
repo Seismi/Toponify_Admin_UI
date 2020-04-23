@@ -41,13 +41,13 @@
     </mat-form-field>
 
     <!-- My Roles -->
-    <mat-form-field>
+    <mat-form-field [ngClass]="{ readonly: myUserPage }">
       <mat-select
         placeholder="My Roles"
         multiple
         formControlName="roles"
         [compareWith]="compareFn"
-        [ngClass]="{ editable: isEditable }"
+        [ngClass]="{ editable: isEditable && !myUserPage }"
         data-qa="settings-user-roles"
       >
         <mat-option *ngFor="let role of roles" [value]="role">
