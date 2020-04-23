@@ -50,7 +50,11 @@
         [ngClass]="{ editable: isEditable }"
         data-qa="settings-user-roles"
       >
-        <mat-option *ngFor="let role of roles" [value]="role">
+        <mat-option 
+          *ngFor="let role of roles" 
+          [value]="role" 
+          [disabled]="disabledRole(role)"
+        >
           {{ role.name }}
         </mat-option>
       </mat-select>

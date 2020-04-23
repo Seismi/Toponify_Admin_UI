@@ -7,11 +7,17 @@ import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes } from '@app/setti
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
-import { getUserSelected, getUserRolesEntities } from '@app/settings/store/selectors/user.selector';
+import { getUserSelected, getUserRolesEntities, getUsers } from '@app/settings/store/selectors/user.selector';
 import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
+
+enum Roles {
+  ADMIN = 'Administrator',
+  ARCHITECT = 'Architect',
+  MEMBER = 'Team Member'
+}
 
 @Component({
   selector: 'app-all-users-details',
@@ -24,8 +30,10 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
   public user: UserDetails;
-  public isEditable: boolean = false;
+  public isEditable = false;
   public userStatus: string;
+  public administrators: string[];
+  public userRoles: string[];
 
   constructor(
     private actions: Actions,
@@ -35,6 +43,17 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.store.pipe(select(getUsers)).subscribe(users => {
+      if (users) {
+        const userRoles = [];
+        users.forEach(user => {
+          const roles = user.roles.map(role => role.name).join(' ');
+          userRoles.push(roles);
+        });
+        this.administrators = userRoles.filter(userRole => userRole.indexOf(Roles.ADMIN) === 0);
+      }
+    });
+
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         const userId = params['userId'];
@@ -51,6 +70,7 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
       this.store.pipe(select(getUserSelected)).subscribe(data => {
         this.user = data;
         if (data) {
+          this.userRoles = data.roles.map(role => role.name);
           this.myUserFormService.myUserForm.patchValue({ ...data });
           this.isEditable = false;
           data.userStatus === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');

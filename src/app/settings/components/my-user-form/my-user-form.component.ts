@@ -4,15 +4,24 @@ import { MatDialog } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { RolesEntity } from '@app/settings/store/models/user.model';
 
+enum Roles {
+  ADMIN = 'Administrator',
+  ARCHITECT = 'Architect',
+  MEMBER = 'Team Member'
+}
+
 @Component({
   selector: 'smi-my-user-form',
   templateUrl: 'my-user-form.component.html',
   styleUrls: ['my-user-form.component.scss']
 })
 export class MyUserFormComponent {
+  @Input() administrator: boolean;
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
   @Input() userStatus: string;
+  @Input() administrators: string[];
+  @Input() userRoles: string[];
 
   @Input() set team(team: any) {
     this.teams = team;
@@ -22,10 +31,10 @@ export class MyUserFormComponent {
   }
 
   @Input() group: FormGroup;
-  @Input() disableEmailInput: boolean = true;
-  @Input() modalMode: boolean = false;
-  @Input() isEditable: boolean = false;
-  @Input() myUserPage: boolean = false;
+  @Input() disableEmailInput = true;
+  @Input() modalMode = false;
+  @Input() isEditable = false;
+  @Input() myUserPage = false;
 
   constructor(public dialog: MatDialog) {}
 
@@ -57,5 +66,11 @@ export class MyUserFormComponent {
 
   onDelete(): void {
     this.deleteUser.emit();
+  }
+
+  disabledRole(role: RolesEntity): boolean {
+    if (this.administrators.length === 1 && this.userRoles.includes(Roles.ADMIN)) {
+      return role.name === Roles.ADMIN;
+    }
   }
 }
