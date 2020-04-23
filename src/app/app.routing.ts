@@ -60,6 +60,10 @@ const routes: Routes = [
     ]
   },
   {
+    path: 'error/:type',
+    loadChildren: './core/error/error.module#ErrorModule'
+  },
+  {
     path: 'error',
     loadChildren: './core/error/error.module#ErrorModule'
   },

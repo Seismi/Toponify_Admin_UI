@@ -6,6 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { Roles } from '../directives/by-role.directive';
+import { ErrorTypes } from '../error/error.component';
 
 @Injectable()
 export class ByRoleGuard implements CanActivate {
@@ -25,7 +26,7 @@ export class ByRoleGuard implements CanActivate {
           return true;
         }
 
-        this.router.navigate(['error']);
+        this.router.navigate(['error', ErrorTypes.NO_ACCESS]);
         return false;
       })
     );
