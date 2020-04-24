@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
@@ -22,10 +22,13 @@ export class MyUserFormComponent {
   }
 
   @Input() group: FormGroup;
-  @Input() disableEmailInput: boolean = true;
-  @Input() modalMode: boolean = false;
-  @Input() isEditable: boolean = false;
-  @Input() myUserPage: boolean = false;
+  @Input() disableEmailInput = true;
+  @Input() modalMode = false;
+  @Input() isEditable = false;
+  @Input() myUserPage = false;
+
+  @ViewChild('searchTeams') searchTeams: ElementRef;
+  @ViewChild('searchRoles') searchRoles: ElementRef;
 
   constructor(public dialog: MatDialog) {}
 
@@ -57,5 +60,10 @@ export class MyUserFormComponent {
 
   onDelete(): void {
     this.deleteUser.emit();
+  }
+
+  filter(value: { name: string }): boolean {
+    const searchValue = this.searchTeams.nativeElement.value || this.searchRoles.nativeElement.value;
+    return searchValue !== '' && value.name.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;
   }
 }
