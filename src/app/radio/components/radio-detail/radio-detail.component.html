@@ -119,6 +119,7 @@
           #severity
           color="primary"
           [disabled]="!isEditable"
+          data-qa="radio-detail-severity"
         >
         </mat-slider>
         <span class="slider-value">{{ severity.value }}</span>
@@ -145,6 +146,7 @@
           #frequency
           color="primary"
           [disabled]="!isEditable"
+          data-qa="radio-detail-frequency"
         >
         </mat-slider>
         <span class="slider-value">{{ frequency.value }}</span>
@@ -240,10 +242,12 @@
     <mat-list-option 
       [value]="{ id: '00000000-0000-0000-0000-000000000000', name: 'Current State' }"
       selected
+      data-qa="radio-detail-work-packages"
     >
       Current State
     </mat-list-option>
-    <mat-list-option 
+    <mat-list-option
+      data-qa="radio-detail-work-packages"
       *ngFor="let workpackage of workpackages" 
       [value]="workpackage"
       selected
