@@ -7,6 +7,8 @@ import { AllUsersComponent } from './containers/all-users/all-users.component';
 import { OrganisationsComponent } from './containers/organisations/organisations.component';
 import { TeamsDetailsComponent } from './containers/teams-details/teams-details.component';
 import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
+import { ByRoleGuard } from '@app/core/guards/by-role.guard';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 export const settingsRoutes: Routes = [
   {
@@ -30,6 +32,10 @@ export const settingsRoutes: Routes = [
       {
         path: 'all-users',
         component: AllUsersComponent,
+        canActivate: [ByRoleGuard],
+        data: {
+          roles: [Roles.ADMIN, Roles.ARCHITECT]
+        },
         children: [
           {
             path: ':userId',
