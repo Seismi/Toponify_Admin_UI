@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { Store } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpackage.models';
 
 const $ = go.GraphObject.make;
 
@@ -28,14 +29,6 @@ function textFont(style?: string): Object {
 })
 export class WorkPackageDiagramService {
   constructor(private router: Router, private workpackageStore: Store<WorkPackageState>) {}
-
-  // Get layout for workpackage tree diagram
-  getLayout() {
-    return $(go.LayeredDigraphLayout, {
-      direction: 90,
-      isRouting: true
-    });
-  }
 
   // Get model for workpackage tree diagram
   getModel(workPackages) {
@@ -132,7 +125,7 @@ export class WorkPackageDiagramService {
     const links = [];
 
     workPackages.forEach(function(workPackage) {
-      if (workPackage.id === '00000000-0000-0000-0000-000000000000') {
+      if (workPackage.id === currentArchitecturePackageId) {
         return;
       }
 
@@ -184,13 +177,11 @@ export class WorkPackageDiagramService {
       );
   }
 
-  // Get link template for links in workpackage tree diagram
-  getLinkTemplate() {
-    return $(
-      go.Link,
+  getLink(): go.Link {
+    return $(go.Link,
       {
         routing: go.Link.AvoidsNodes,
-        isLayoutPositioned: true,
+        corner: 4,
         selectable: false
       },
       $(go.Shape, {
@@ -200,4 +191,15 @@ export class WorkPackageDiagramService {
       })
     );
   }
+
+  getLayout(): go.TreeLayout {
+    return $(
+      go.TreeLayout,
+      {
+        nodeSpacing: 40,
+        layerSpacing: 60
+      }
+    );
+  }
+
 }

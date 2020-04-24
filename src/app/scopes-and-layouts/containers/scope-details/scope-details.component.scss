@@ -1,9 +1,7 @@
+
+
 .scope-details-form {
   margin-top: 44px;
-}
-
-.layouts-table {
-  margin: 20px 0px;
 }
 
 .col-md-6 {
@@ -17,6 +15,19 @@
 .details-form {
   padding: 25px;
   background-color: #eee;
-  border-radius: 5px;
+  border-radius: 5px 5px 0px 0px;
   margin-top: 54px;
+}
+
+.mat-tab-group {
+  margin: 0px 15px;
+  border-right: solid 5px #eee;
+  border-left: solid 5px #eee;
+  border-bottom: solid 5px #eee;
+  border-radius: 0px 0px 5px 5px;
+  background-color: #fff;
+}
+
+::ng-deep .mat-tab-header{
+  background-color: #eee;
 }

@@ -178,10 +178,10 @@ export class CustomLink extends go.Link {
 
     // Leave link route as it is if no tools active and link is not temporary
     if (
+      !this.data.isTemporary &&
       !tools.some(function(tool) {
         return tool.isActive;
-      }) &&
-      !this.data.isTemporary
+      })
     ) {
       return true;
     }
@@ -719,7 +719,8 @@ export class GojsCustomObjectsService {
           5,
           'Add data set',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
-            thisService.addDataSetSource.next();
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            thisService.addDataSetSource.next(node.data);
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             return thisService.diagramEditable;
@@ -764,7 +765,7 @@ export class GojsCustomObjectsService {
           },
           function(object: NodeDetail, event: go.DiagramEvent): boolean {
             const level = thisService.currentLevel;
-            return (level !== Level.systemMap && level !== Level.dataSetMap);
+            return !level.endsWith('map');
           }
         ),
         makeSubMenuButton(

@@ -46,6 +46,9 @@ button {
     &:hover {
       color: #fff;
     }
+    &:first-of-type {
+      margin-top: 20px;
+    }
   }
 }
 

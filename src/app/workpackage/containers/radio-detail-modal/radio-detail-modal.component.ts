@@ -63,7 +63,9 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
             status: radio.status,
             reference: radio.reference,
             mitigation: radio.mitigation,
-            description: radio.description
+            description: radio.description,
+            severity: radio.severity,
+            frequency: radio.frequency
           });
         }
       })

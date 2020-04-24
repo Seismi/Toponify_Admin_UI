@@ -26,6 +26,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     { level: Level.dataSet, name: 'data set' },
     { level: Level.dataSetMap, name: 'data set map' },
     { level: Level.dimension, name: 'dimension' },
+    { level: Level.dimensionMap, name: 'dimension map' },
     { level: Level.reportingConcept, name: 'reporting concept' },
     { level: Level.usage, name: 'usage analysis' }
   ];
@@ -56,7 +57,7 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   }
 
   getMapLevel(level: Level): boolean {
-    if ([Level.systemMap, Level.dataSetMap, Level.usage].indexOf(level) !== -1) {
+    if (level.endsWith('map') || level === Level.usage) {
       return true;
     }
   }

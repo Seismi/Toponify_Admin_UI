@@ -1,0 +1,21 @@
+<div class="search-container">
+  <input placeholder="Search" [(ngModel)]="searchString" (keydown)="$event.stopPropagation()">
+</div>
+<mat-card *ngFor="let notification of (notifications | searchPipe: searchString)" [ngClass]="{ notActive: notification.read }">
+  <mat-card-content>
+    <mat-icon *ngIf="notification.important; else elseBlock" class="notification-important">
+      notification_important
+    </mat-icon>
+    <ng-template #elseBlock>
+      <mat-icon class="info">info</mat-icon>
+    </ng-template>
+    <p>
+      {{ notification.message }}
+      <a class="mark-as-read" *ngIf="!notification.read" (click)="handleMarkAsRead(notification.id)">Mark as read</a>
+    </p>
+    <mat-icon (click)="handleDelete(notification.id)">close</mat-icon>
+  </mat-card-content>
+  <mat-card-actions>
+    <small>{{ notification.createdOn | date }}</small>
+  </mat-card-actions>
+</mat-card>

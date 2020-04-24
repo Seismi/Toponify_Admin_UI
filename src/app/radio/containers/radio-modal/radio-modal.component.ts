@@ -9,7 +9,6 @@ import { User } from '@app/settings/store/models/user.model';
 import { Store, select } from '@ngrx/store';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
-import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -20,7 +19,7 @@ import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpa
   styleUrls: ['./radio-modal.component.scss'],
   providers: [RadioDetailService, RadioValidatorService]
 })
-export class RadioModalComponent implements OnInit, OnDestroy, DoCheck {
+export class RadioModalComponent implements OnInit, OnDestroy {
   public users$: Observable<User[]>;
   public isEditable = true;
   public modalMode = true;
@@ -28,7 +27,6 @@ export class RadioModalComponent implements OnInit, OnDestroy, DoCheck {
   public selectedNode = null;
   public workpackages$: Observable<WorkPackageEntity[]>;
   public selectedOption: any;
-  public radioCategory: string;
 
   constructor(
     private store: Store<UserState>,
@@ -40,12 +38,7 @@ export class RadioModalComponent implements OnInit, OnDestroy, DoCheck {
       }
     ) { }
 
-  ngDoCheck(): void {
-    this.radioCategory = this.radioDetailsForm.value.category;
-  }
-
   ngOnInit() {
-    this.store.dispatch(new LoadUsers({}));
     this.users$ = this.store.pipe(select(getUsers));
     if (this.data.selectedNode) {
       this.workpackages$ = this.store.pipe(select(getSelectedWorkpackages));
