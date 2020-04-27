@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { User } from '@app/settings/store/models/user.model';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-users-table',
@@ -9,6 +10,7 @@ import { User } from '@app/settings/store/models/user.model';
 })
 export class UsersTableComponent implements OnInit {
   public selectedUserIndex: string | number = -1;
+  public Roles = Roles;
 
   @Input()
   set data(data: User[]) {

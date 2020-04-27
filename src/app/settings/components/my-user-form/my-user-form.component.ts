@@ -26,6 +26,7 @@ export class MyUserFormComponent {
   @Input() modalMode = false;
   @Input() isEditable = false;
   @Input() myUserPage = false;
+  @Input() canEdit = true;
 
   constructor(public dialog: MatDialog) {}
 
