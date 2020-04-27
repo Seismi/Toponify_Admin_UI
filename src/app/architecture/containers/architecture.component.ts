@@ -2026,6 +2026,40 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Create new node or link in table view
+  onAddComponentOrLink(): void {
+    const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        workPackageId: this.workpackageId,
+        link: this.selectedView === ArchitectureView.Links,
+        level: this.currentFilterLevel.toLowerCase()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.node) {
+        if (this.selectedView !== ArchitectureView.Links) {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNode({
+              workpackageId: this.workpackageId,
+              node: { ...data.node, layer: this.currentFilterLevel.toLowerCase() },
+              scope: this.scope.id
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageLink({
+              workpackageId: this.workpackageId,
+              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+            })
+          );
+        }
+      }
+    });
+  }
+
   onDeleteScope(scope: WorkPackageNodeScopes): void {
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,

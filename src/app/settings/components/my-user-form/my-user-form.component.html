@@ -2,25 +2,49 @@
   <div [ngClass]="{ disabled: !isEditable }">
     <!-- Email -->
     <mat-form-field>
-      <input matInput placeholder="Email" [readonly]="disableEmailInput" formControlName="email" data-qa="settings-user-email" />
+      <input
+        matInput
+        placeholder="Email"
+        [readonly]="disableEmailInput"
+        formControlName="email"
+        data-qa="settings-user-email"
+      />
       <mat-error>Invalid email address</mat-error>
     </mat-form-field>
 
     <!-- First Name -->
     <mat-form-field>
-      <input matInput placeholder="First Name" formControlName="firstName" [ngClass]="{ editable: isEditable }" data-qa="settings-user-first-name" />
+      <input
+        matInput
+        placeholder="First Name"
+        formControlName="firstName"
+        [ngClass]="{ editable: isEditable }"
+        data-qa="settings-user-first-name"
+      />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <!-- Last Name -->
     <mat-form-field>
-      <input matInput placeholder="Last Name" formControlName="lastName" [ngClass]="{ editable: isEditable }" data-qa="settings-user-last-name" />
+      <input
+        matInput
+        placeholder="Last Name"
+        formControlName="lastName"
+        [ngClass]="{ editable: isEditable }"
+        data-qa="settings-user-last-name"
+      />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <!-- Phone Number -->
     <mat-form-field>
-      <input matInput placeholder="Phone Number" formControlName="phone" [ngClass]="{ editable: isEditable }" data-qa="settings-user-phone-number" />
+      <input
+        matInput
+        placeholder="Phone Number"
+        formControlName="phone"
+        [ngClass]="{ editable: isEditable }"
+        data-qa="settings-user-phone-number"
+      />
       <mat-error>Invalid phone number</mat-error>
     </mat-form-field>
 
@@ -64,11 +88,35 @@
   </div>
 
   <div class="form-actions" *ngIf="!modalMode">
-    <button mat-raised-button color="primary" *ngIf="!isEditable; else elseBlock" (click)="onEdit()" data-qa="settings-user-edit">Edit</button>
-    <button mat-raised-button class="status-btn" *ngIf="!myUserPage && !isEditable" (click)="onDelete()" data-qa="settings-user-activate-or-deactivate">
-      {{ userStatus }}
+    <ng-container *ngIf="canEdit">
+      <button
+        mat-raised-button
+        color="primary"
+        *ngIf="!isEditable; else elseBlock"
+        (click)="onEdit()"
+        data-qa="settings-user-edit"
+      >
+        Edit
+      </button>
+      <button
+        mat-raised-button
+        class="status-btn"
+        *ngIf="!myUserPage && !isEditable"
+        (click)="onDelete()"
+        data-qa="settings-user-activate-or-deactivate"
+      >
+        {{ userStatus }}
+      </button>
+    </ng-container>
+    <button
+      mat-button
+      color="primary"
+      *ngIf="myUserPage && !isEditable"
+      (click)="onChangePassword()"
+      data-qa="settings-user-change-password"
+    >
+      Change Password
     </button>
-    <button mat-button color="primary" *ngIf="myUserPage && !isEditable" (click)="onChangePassword()" data-qa="settings-user-change-password">Change Password</button>
     <ng-template #elseBlock>
       <button mat-raised-button color="primary" (click)="onSave()" data-qa="settings-user-save">Save</button>
       <button mat-raised-button (click)="onCancel()" data-qa="settings-user-cancel">Cancel</button>
