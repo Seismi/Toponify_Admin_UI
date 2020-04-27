@@ -68,8 +68,16 @@ export class MyUserFormComponent {
   }
 
   disabledRole(role: RolesEntity): boolean {
-    if (this.administrators.length === 1 && this.userRoles.includes(Roles.ADMIN)) {
+    if (this.administrators && this.administrators.length === 1 && this.userRoles.includes(Roles.ADMIN)) {
       return role.name === Roles.ADMIN;
+    }
+  }
+
+  getTooltip(role: RolesEntity): string {
+    if (this.administrators && this.administrators.length === 1 && role.name === Roles.ADMIN) {
+      return 'This is the only administrator in the organisation. There must be at least one administrator.';
+    } else {
+      return;
     }
   }
 }

@@ -54,6 +54,7 @@
           *ngFor="let role of roles" 
           [value]="role" 
           [disabled]="disabledRole(role)"
+          matTooltip="{{ getTooltip(role) }}"
         >
           {{ role.name }}
         </mat-option>
