@@ -12,6 +12,8 @@ import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model'
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
+import isEqual from 'lodash.isequal';
+import { MatSnackBar } from '@angular/material';
 import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
@@ -33,7 +35,8 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
     private actions: Actions,
     private myUserFormService: MyUserFormService,
     private route: ActivatedRoute,
-    private store: Store<UserState>
+    private store: Store<UserState>,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -62,8 +65,14 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.actions.pipe(ofType(UserActionTypes.UpdateUserSuccess)).subscribe((action: any) => {
+        const userRoles = this.user.roles.map(role => role.name);
+        const roles = action.payload.roles.map(role => role.name);
         const status = action.payload.userStatus;
         status === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');
+        const rolesHasChanged = isEqual(roles, userRoles);
+        if (!rolesHasChanged) {
+          this.snackBar.open('To see changes to roles, the user must refresh the page in his local browser');
+        }
       })
     );
   }
