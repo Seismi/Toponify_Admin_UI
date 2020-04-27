@@ -34,16 +34,7 @@
         [ngClass]="{ editable: isEditable }"
         data-qa="settings-user-teams"
       >
-      <div class="search-container">
-        <input 
-          class="search-input"
-          #searchTeams 
-          placeholder="Search" 
-          (keydown)="$event.stopPropagation()" 
-          data-qa="radio-associate-modal-components-search" 
-        />
-      </div>
-        <mat-option *ngFor="let team of teams" [value]="team" [class.hide]="filter(team)">
+        <mat-option *ngFor="let team of teams" [value]="team">
           {{ team.name }}
         </mat-option>
       </mat-select>
@@ -59,16 +50,7 @@
         [ngClass]="{ editable: isEditable }"
         data-qa="settings-user-roles"
       >
-      <div class="search-container">
-        <input 
-          class="search-input"
-          #searchRoles 
-          placeholder="Search" 
-          (keydown)="$event.stopPropagation()" 
-          data-qa="radio-associate-modal-components-search" 
-        />
-      </div>
-        <mat-option *ngFor="let role of roles" [value]="role" [class.hide]="filter(role)">
+        <mat-option *ngFor="let role of roles" [value]="role">
           {{ role.name }}
         </mat-option>
       </mat-select>

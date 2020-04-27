@@ -27,9 +27,6 @@ export class MyUserFormComponent {
   @Input() isEditable = false;
   @Input() myUserPage = false;
 
-  @ViewChild('searchTeams') searchTeams: ElementRef;
-  @ViewChild('searchRoles') searchRoles: ElementRef;
-
   constructor(public dialog: MatDialog) {}
 
   @Output() saveUser = new EventEmitter<void>();
@@ -60,10 +57,5 @@ export class MyUserFormComponent {
 
   onDelete(): void {
     this.deleteUser.emit();
-  }
-
-  filter(value: { name: string }): boolean {
-    const searchValue = this.searchTeams.nativeElement.value || this.searchRoles.nativeElement.value;
-    return searchValue !== '' && value.name.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;
   }
 }
