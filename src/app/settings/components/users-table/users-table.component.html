@@ -18,25 +18,13 @@
     <!-- Roles Column -->
     <ng-container matColumnDef="roles">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Roles</th>
-      <td mat-cell *matCellDef="let element">
-        <ng-container *ngFor="let role of element.roles">
-          <ul class="list">
-            <li>{{ role.name }}</li>
-          </ul>
-        </ng-container>
-      </td>
+      <td mat-cell *matCellDef="let element">{{ getRoles(element) }}</td>
     </ng-container>
 
     <!-- Teams Column -->
     <ng-container matColumnDef="team">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Teams</th>
-      <td mat-cell *matCellDef="let element">
-        <ng-container *ngFor="let team of element.team">
-          <ul class="list">
-            <li>{{ team.name }}</li>
-          </ul>
-        </ng-container>
-      </td>
+      <td mat-cell *matCellDef="let element">{{ getTeams(element) }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
