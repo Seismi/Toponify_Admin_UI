@@ -14,6 +14,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
 import isEqual from 'lodash.isequal';
 import { MatSnackBar } from '@angular/material';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'app-all-users-details',
@@ -28,6 +29,7 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   public user: UserDetails;
   public isEditable = false;
   public userStatus: string;
+  public Roles = Roles;
 
   constructor(
     private actions: Actions,
