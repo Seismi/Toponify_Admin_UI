@@ -3,12 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { RolesEntity } from '@app/settings/store/models/user.model';
-
-enum Roles {
-  ADMIN = 'Administrator',
-  ARCHITECT = 'Architect',
-  MEMBER = 'Team Member'
-}
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-my-user-form',
@@ -34,6 +29,7 @@ export class MyUserFormComponent {
   @Input() modalMode = false;
   @Input() isEditable = false;
   @Input() myUserPage = false;
+  @Input() canEdit = true;
 
   constructor(public dialog: MatDialog) {}
 
@@ -74,7 +70,7 @@ export class MyUserFormComponent {
   }
 
   getTooltip(role: RolesEntity): string {
-    if (this.administrators && this.administrators.length === 1 && role.name === Roles.ADMIN) {
+    if (this.administrators && this.administrators.length === 1 && role.name === Roles.ADMIN && this.disabledRole(role)) {
       return 'This is the only administrator in the organisation. There must be at least one administrator.';
     } else {
       return;
