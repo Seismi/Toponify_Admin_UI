@@ -24,38 +24,44 @@
       <mat-error>Invalid phone number</mat-error>
     </mat-form-field>
 
-    <!-- My Teams -->
-    <mat-form-field [ngClass]="{ readonly: myUserPage }">
-      <mat-select
-        placeholder="My Teams"
-        multiple
-        formControlName="team"
-        [compareWith]="compareFn"
-        [ngClass]="{ editable: isEditable && !myUserPage }"
-        data-qa="settings-user-teams"
-      >
-        <mat-option *ngFor="let team of teams" [value]="team">
-          {{ team.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div *ngIf="myUserPage; else elseBlock" style="margin-bottom: 20px;">
+      <div>
+        <span class="label">My Teams</span>
+        <ul *ngFor="let team of userTeams">
+          <li>{{ team.name }}</li>
+        </ul>
+      </div>
 
-    <!-- My Roles -->
-    <mat-form-field [ngClass]="{ readonly: myUserPage }">
-      <mat-select
-        placeholder="My Roles"
-        multiple
-        formControlName="roles"
-        [compareWith]="compareFn"
-        [ngClass]="{ editable: isEditable && !myUserPage }"
-        data-qa="settings-user-roles"
-      >
-        <mat-option *ngFor="let role of roles" [value]="role">
-          {{ role.name }}
-        </mat-option>
-      </mat-select>
-      <mat-error>Role is required</mat-error>
-    </mat-form-field>
+      <div>
+        <span class="label">My Roles</span>
+        <ul *ngFor="let role of userRoles">
+          <li>{{ role.name }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <ng-template #elseBlock>
+      <!-- My Teams -->
+      <mat-form-field>
+        <mat-select placeholder="My Teams" multiple formControlName="team" [compareWith]="compareFn"
+          [ngClass]="{ editable: isEditable }" data-qa="settings-user-teams">
+          <mat-option *ngFor="let team of teams" [value]="team">
+            {{ team.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    
+      <!-- My Roles -->
+      <mat-form-field>
+        <mat-select placeholder="My Roles" multiple formControlName="roles" [compareWith]="compareFn"
+          [ngClass]="{ editable: isEditable }" data-qa="settings-user-roles">
+          <mat-option *ngFor="let role of roles" [value]="role">
+            {{ role.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error>Role is required</mat-error>
+      </mat-form-field>
+    </ng-template>
   </div>
 
   <div class="form-actions" *ngIf="!modalMode">

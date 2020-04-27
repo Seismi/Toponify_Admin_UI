@@ -26,3 +26,21 @@ button {
 .readonly {
   pointer-events: none;
 }
+
+.label {
+  color: rgba(0,0,0,.58);
+  font: inherit;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px !important;
+  padding-bottom: 20px;
+}
+
+ul {
+  margin-bottom: 5px;
+  li {
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
+  }
+}
