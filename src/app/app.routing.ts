@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/layout/app-layouts/main-layout.component';
 import { AuthGuard } from './auth/guards/auth.guard';
+import { ByRoleGuard } from './core/guards/by-role.guard';
+import { Roles } from './core/directives/by-role.directive';
 
 const routes: Routes = [
   {
@@ -41,7 +43,11 @@ const routes: Routes = [
       },
       {
         path: 'settings',
-        loadChildren: './settings/settings.module#SettingsModule'
+        loadChildren: './settings/settings.module#SettingsModule',
+        canActivate: [ByRoleGuard],
+        data: {
+          roles: [Roles.ADMIN, Roles.ARCHITECT, Roles.MEMBER]
+        }
       },
       {
         path: 'radio',
@@ -52,6 +58,10 @@ const routes: Routes = [
         loadChildren: './attributes/attributes.module#AttributesModule'
       }
     ]
+  },
+  {
+    path: 'error/:type',
+    loadChildren: './core/error/error.module#ErrorModule'
   },
   {
     path: 'error',
@@ -73,7 +83,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       // enableTracing: true,
-      paramsInheritanceStrategy: 'always',
+      paramsInheritanceStrategy: 'always'
       /*preloadingStrategy: PreloadAllModules*/
     })
   ],

@@ -24,10 +24,11 @@ export class MyUserFormComponent {
   }
 
   @Input() group: FormGroup;
-  @Input() disableEmailInput: boolean = true;
-  @Input() modalMode: boolean = false;
-  @Input() isEditable: boolean = false;
-  @Input() myUserPage: boolean = false;
+  @Input() disableEmailInput = true;
+  @Input() modalMode = false;
+  @Input() isEditable = false;
+  @Input() myUserPage = false;
+  @Input() canEdit = true;
 
   constructor(public dialog: MatDialog) {}
 
