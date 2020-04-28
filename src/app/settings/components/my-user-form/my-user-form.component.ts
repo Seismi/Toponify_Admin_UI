@@ -16,6 +16,8 @@ export class MyUserFormComponent {
   @Input() userStatus: string;
   @Input() administrators: string[];
   @Input() userRoles: string[];
+  @Input() userTeams: TeamEntity[];
+  @Input() userRole: RolesEntity[];
 
   @Input() set team(team: any) {
     this.teams = team;
