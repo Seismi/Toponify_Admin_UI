@@ -24,3 +24,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.mat-dialog-content {
+  max-height: 90vh !important;
+}

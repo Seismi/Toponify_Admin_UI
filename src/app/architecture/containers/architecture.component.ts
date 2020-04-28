@@ -1950,7 +1950,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onOpenRadio(radio: RadioDetail) {
     this.dialog.open(RadioDetailModalComponent, {
       disableClose: false,
-      width: '800px',
+      width: '900px',
+      height: '97vh',
       data: {
         radio: radio
       }
