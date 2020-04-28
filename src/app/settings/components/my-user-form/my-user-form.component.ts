@@ -13,6 +13,8 @@ export class MyUserFormComponent {
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
   @Input() userStatus: string;
+  @Input() userTeams: TeamEntity[];
+  @Input() userRoles: RolesEntity[];
 
   @Input() set team(team: any) {
     this.teams = team;
