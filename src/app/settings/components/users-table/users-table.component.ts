@@ -18,6 +18,10 @@ export class UsersTableComponent implements OnInit {
       this.dataSource = new MatTableDataSource<User>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.dataSource.filterPredicate = (user: User, filter) => {
+        const dataStr = JSON.stringify(user).toLowerCase();
+        return dataStr.indexOf(filter) !== -1;
+      };
     }
   }
 
@@ -45,5 +49,13 @@ export class UsersTableComponent implements OnInit {
 
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  getRoles(data: User): string {
+    return data.roles.map(role => role.name).join('; ');
+  }
+
+  getTeams(data: User): string {
+    return data.team.map(team => team.name).join('; ');
   }
 }
