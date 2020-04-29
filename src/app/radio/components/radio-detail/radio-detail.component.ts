@@ -205,12 +205,12 @@ export class RadioDetailComponent implements DoCheck {
     switch (sliderValue) {
       case 1:
       case 2:
-        return TrafficLightColour.red;
+        return TrafficLightColour.green;
       case 3:
         return TrafficLightColour.yellow;
       case 4:
       case 5:
-        return TrafficLightColour.green;
+        return TrafficLightColour.red;
     }
   }
 
