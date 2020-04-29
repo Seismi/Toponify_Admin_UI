@@ -22,3 +22,8 @@ export const getMyProfile = createSelector(
   getHomePageState,
   state => state.profile
 );
+
+export const getMyRoles = createSelector(
+  getHomePageState,
+  state => (state.profile ? state.profile.roles : null)
+);

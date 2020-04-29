@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog } from '@angular/material';
 import { User } from '@app/settings/store/models/user.model';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-users-table',
@@ -9,6 +10,7 @@ import { User } from '@app/settings/store/models/user.model';
 })
 export class UsersTableComponent implements OnInit {
   public selectedUserIndex: string | number = -1;
+  public Roles = Roles;
 
   @Input()
   set data(data: User[]) {
@@ -16,6 +18,10 @@ export class UsersTableComponent implements OnInit {
       this.dataSource = new MatTableDataSource<User>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.dataSource.filterPredicate = (user: User, filter) => {
+        const dataStr = JSON.stringify(user).toLowerCase();
+        return dataStr.indexOf(filter) !== -1;
+      };
     }
   }
 
@@ -43,5 +49,13 @@ export class UsersTableComponent implements OnInit {
 
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  getRoles(data: User): string {
+    return data.roles.map(role => role.name).join('; ');
+  }
+
+  getTeams(data: User): string {
+    return data.team.map(team => team.name).join('; ');
   }
 }

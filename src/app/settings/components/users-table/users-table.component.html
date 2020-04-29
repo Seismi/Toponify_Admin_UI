@@ -1,6 +1,6 @@
 <div class="wrapper">
   <div class="search-container">
-    <input placeholder="Search" data-qa="settings-all-users-quick-search" (keyup)="onSearch($event.target.value)">
+    <input placeholder="Search" data-qa="settings-all-users-quick-search" (keyup)="onSearch($event.target.value)" />
   </div>
   <table mat-table [dataSource]="dataSource" matSort>
     <!-- First Name Column -->
@@ -18,25 +18,13 @@
     <!-- Roles Column -->
     <ng-container matColumnDef="roles">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Roles</th>
-      <td mat-cell *matCellDef="let element">
-        <ng-container *ngFor="let role of element.roles">
-          <ul class="list">
-            <li>{{ role.name }}</li>
-          </ul>
-        </ng-container>
-      </td>
+      <td mat-cell *matCellDef="let element">{{ getRoles(element) }}</td>
     </ng-container>
 
     <!-- Teams Column -->
     <ng-container matColumnDef="team">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Teams</th>
-      <td mat-cell *matCellDef="let element">
-        <ng-container *ngFor="let team of element.team">
-          <ul class="list">
-            <li>{{ team.name }}</li>
-          </ul>
-        </ng-container>
-      </td>
+      <td mat-cell *matCellDef="let element">{{ getTeams(element) }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -49,8 +37,10 @@
   </table>
 
   <div class="table-actions">
-    <div style="flex-grow: 1;">
-      <button mat-raised-button color="primary" (click)="onAdd()" data-qa="settings-all-users-create-new"><mat-icon>add</mat-icon>Create New</button>
+    <div *appByRole="[Roles.ADMIN]" style="flex-grow: 1;">
+      <button mat-raised-button color="primary" (click)="onAdd()" data-qa="settings-all-users-create-new">
+        <mat-icon>add</mat-icon>Create New
+      </button>
     </div>
     <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 75, 100]"></mat-paginator>
   </div>

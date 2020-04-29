@@ -7,11 +7,14 @@ import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes } from '@app/setti
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
-import { getUserSelected, getUserRolesEntities } from '@app/settings/store/selectors/user.selector';
+import { getUserSelected, getUserRolesEntities, getUsers } from '@app/settings/store/selectors/user.selector';
 import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
+import isEqual from 'lodash.isequal';
+import { MatSnackBar } from '@angular/material';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'app-all-users-details',
@@ -24,17 +27,32 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
   public user: UserDetails;
-  public isEditable: boolean = false;
+  public isEditable = false;
   public userStatus: string;
+  public administrators: string[];
+  public userRoles: string[];
+  public Roles = Roles;
 
   constructor(
     private actions: Actions,
     private myUserFormService: MyUserFormService,
     private route: ActivatedRoute,
-    private store: Store<UserState>
+    private store: Store<UserState>,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
+    this.store.pipe(select(getUsers)).subscribe(users => {
+      if (users) {
+        const userRoles = [];
+        users.forEach(user => {
+          const roles = user.roles.map(role => role.name).join(' ');
+          userRoles.push(roles);
+        });
+        this.administrators = userRoles.filter(userRole => userRole.indexOf(Roles.ADMIN) === 0);
+      }
+    });
+
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         const userId = params['userId'];
@@ -51,6 +69,7 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
       this.store.pipe(select(getUserSelected)).subscribe(data => {
         this.user = data;
         if (data) {
+          this.userRoles = data.roles.map(role => role.name);
           this.myUserFormService.myUserForm.patchValue({ ...data });
           this.isEditable = false;
           data.userStatus === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');
@@ -60,8 +79,14 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.actions.pipe(ofType(UserActionTypes.UpdateUserSuccess)).subscribe((action: any) => {
+        const userRoles = this.user.roles.map(role => role.name);
+        const roles = action.payload.roles.map(role => role.name);
         const status = action.payload.userStatus;
         status === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');
+        const rolesHasChanged = isEqual(roles, userRoles);
+        if (!rolesHasChanged) {
+          this.snackBar.open('To see changes to roles, the user must refresh the page in his local browser');
+        }
       })
     );
   }

@@ -176,7 +176,7 @@ import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
 import { go } from 'gojs/release/go-module';
 import isEqual from 'lodash.isequal';
-import {BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip, merge} from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip, merge } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFrom, delay } from 'rxjs/operators';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
@@ -205,7 +205,7 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
-import {DiagramTemplatesService} from '@app/architecture/services/diagram-templates.service';
+import { DiagramTemplatesService } from '@app/architecture/services/diagram-templates.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -428,7 +428,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.addChildSubscription = merge(
       this.gojsCustomObjectsService.addDataSet$,
       this.diagramTemplatesService.addChild$
-    ).subscribe((parentData) => {
+    ).subscribe(parentData => {
       this.onAddDescendant(parentData);
     });
 
@@ -1746,7 +1746,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddDescendant(parentData) {
-
     this.store.dispatch(
       new FindPotentialWorkpackageNodes({
         workPackageId: this.workpackageId,
@@ -1780,7 +1779,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
         if (this.currentFilterLevel.endsWith('map')) {
-
           const mapViewParams = {
             id: this.params.id,
             queryParams: {
@@ -2022,6 +2020,40 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             }
           })
         );
+      }
+    });
+  }
+
+  // Create new node or link in table view
+  onAddComponentOrLink(): void {
+    const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        workPackageId: this.workpackageId,
+        link: this.selectedView === ArchitectureView.Links,
+        level: this.currentFilterLevel.toLowerCase()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.node) {
+        if (this.selectedView !== ArchitectureView.Links) {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNode({
+              workpackageId: this.workpackageId,
+              node: { ...data.node, layer: this.currentFilterLevel.toLowerCase() },
+              scope: this.scope.id
+            })
+          );
+        } else {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageLink({
+              workpackageId: this.workpackageId,
+              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+            })
+          );
+        }
       }
     });
   }
