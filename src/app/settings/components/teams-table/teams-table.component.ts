@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-teams-table',
@@ -9,6 +10,7 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
 })
 export class TeamsTableComponent {
   public selectedRowIndex: string | number = -1;
+  public Roles = Roles;
 
   @Input()
   set data(data: TeamEntity[]) {

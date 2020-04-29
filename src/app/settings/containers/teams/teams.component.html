@@ -4,13 +4,18 @@
       <div class="col mat-elevation-z8">
         <smi-teams-table
           data-qa="settings-teams-table"
-          [data]="teams$ | async" 
-          (selectTeam)="onSelectTeam($event)" 
-          (addTeam)="onAddTeam()">
+          [data]="teams$ | async"
+          (selectTeam)="onSelectTeam($event)"
+          (addTeam)="onAddTeam()"
+        >
         </smi-teams-table>
       </div>
       <div class="col">
-        <smi-right-hand-side (add)="onAddTeam()" [title]="'Team'"></smi-right-hand-side>
+        <smi-right-hand-side
+          *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+          (add)="onAddTeam()"
+          [title]="'Team'"
+        ></smi-right-hand-side>
         <router-outlet></router-outlet>
       </div>
     </div>

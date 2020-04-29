@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Objective } from '@app/workpackage/store/models/workpackage.models';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-objectives-table',
@@ -8,6 +9,7 @@ import { Objective } from '@app/workpackage/store/models/workpackage.models';
   styleUrls: ['./objectives-table.component.scss']
 })
 export class ObjectivesTableComponent {
+  public Roles = Roles;
   @Input()
   set data(data: Objective[]) {
     if (data) {

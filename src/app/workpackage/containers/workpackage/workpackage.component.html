@@ -54,7 +54,11 @@
             </mat-tab-group>
           </div>
           <div class="col">
-            <smi-right-hand-side [title]="'Work Package'" (add)="onAddWorkPackage()"></smi-right-hand-side>
+            <smi-right-hand-side
+              *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+              [title]="'Work Package'"
+              (add)="onAddWorkPackage()"
+            ></smi-right-hand-side>
             <router-outlet></router-outlet>
           </div>
         </div>
