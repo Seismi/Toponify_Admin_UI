@@ -176,7 +176,7 @@ import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
 import { go } from 'gojs/release/go-module';
 import isEqual from 'lodash.isequal';
-import {BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip, merge} from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription, Subject, concat, zip, merge } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFrom, delay } from 'rxjs/operators';
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
@@ -205,7 +205,7 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
-import {DiagramTemplatesService} from '@app/architecture/services/diagram-templates.service';
+import { DiagramTemplatesService } from '@app/architecture/services/diagram-templates.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -428,7 +428,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.addChildSubscription = merge(
       this.gojsCustomObjectsService.addDataSet$,
       this.diagramTemplatesService.addChild$
-    ).subscribe((parentData) => {
+    ).subscribe(parentData => {
       this.onAddDescendant(parentData);
     });
 
@@ -1746,7 +1746,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddDescendant(parentData) {
-
     this.store.dispatch(
       new FindPotentialWorkpackageNodes({
         workPackageId: this.workpackageId,
@@ -1780,7 +1779,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
         if (this.currentFilterLevel.endsWith('map')) {
-
           const mapViewParams = {
             id: this.params.id,
             queryParams: {

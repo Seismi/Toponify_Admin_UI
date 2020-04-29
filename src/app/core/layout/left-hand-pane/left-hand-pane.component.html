@@ -1,20 +1,25 @@
-<mat-icon (click)="openSideBar.emit('menu')" data-qa="main-menu-open">menu</mat-icon>
+<mat-icon (click)="onOpenSideBar('menu')" data-qa="main-menu-open">menu</mat-icon>
 <div class="open-tab" *ngIf="sideNavActions">
-  <button mat-icon-button data-qa="left-hand-pane-work-packages" [ngClass]="{ selected: selectedLeftTab === 0 }">
-    <mat-icon title="Work Packages" (click)="openSideBar.emit(0)">
+  <button
+    mat-icon-button
+    data-qa="left-hand-pane-work-packages"
+    [ngClass]="{ selected: selectedTab === 'workpackages' }"
+  >
+    <mat-icon title="Work Packages" (click)="onOpenSideBar('workpackages')">
       business_center
     </mat-icon>
   </button>
-  <button
+  <!-- FIXME: not sure if how top handle this for now -->
+  <!-- <button
     data-qa="left-hand-pane-edit"
     mat-icon-button
     *ngIf="workPackageIsEditable && architecturePage"
     [ngClass]="{ selected: selectedLeftTab === 1 }"
   >
-    <mat-icon title="Edit" (click)="openSideBar.emit(1)">
+    <mat-icon title="Edit" (click)="onOpenSideBar(1)">
       edit
     </mat-icon>
-  </button>
+  </button> -->
 </div>
 <div class="shortcuts">
   <smi-notification-indicator title="Notifications"> </smi-notification-indicator>
