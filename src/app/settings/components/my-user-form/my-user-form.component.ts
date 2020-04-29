@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { RolesEntity } from '@app/settings/store/models/user.model';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-my-user-form',
@@ -13,6 +14,10 @@ export class MyUserFormComponent {
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
   @Input() userStatus: string;
+  @Input() administrators: string[];
+  @Input() userRoles: string[];
+  @Input() userTeams: TeamEntity[];
+  @Input() userRole: RolesEntity[];
 
   @Input() set team(team: any) {
     this.teams = team;
@@ -58,5 +63,19 @@ export class MyUserFormComponent {
 
   onDelete(): void {
     this.deleteUser.emit();
+  }
+
+  disabledRole(role: RolesEntity): boolean {
+    if (this.administrators && this.administrators.length === 1 && this.userRoles.includes(Roles.ADMIN)) {
+      return role.name === Roles.ADMIN;
+    }
+  }
+
+  getTooltip(role: RolesEntity): string {
+    if (this.administrators && this.administrators.length === 1 && role.name === Roles.ADMIN && this.disabledRole(role)) {
+      return 'This is the only administrator in the organisation. There must be at least one administrator.';
+    } else {
+      return;
+    }
   }
 }

@@ -12,7 +12,7 @@ export interface State {
 
 export const initialState: State = {
   loading: false,
-  entities: null,
+  entities: [],
   selected: null,
   error: null,
   roles: []
