@@ -6,7 +6,9 @@
           data-qa="settings-teams-table"
           [data]="teams$ | async" 
           (selectTeam)="onSelectTeam($event)" 
-          (addTeam)="onAddTeam()">
+          (addTeam)="onAddTeam()"
+          (showDisabledTeams)="onShowDisabledTeams($event)"
+        >
         </smi-teams-table>
       </div>
       <div class="col">
