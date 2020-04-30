@@ -36,6 +36,7 @@ export class RadioDetailComponent implements DoCheck {
   @Input() workpackages: WorkPackageEntity[];
   @Input() radioCategory: string;
   @Input() disabled: boolean;
+  @Input() editModal = false;
   public selectedOptions = [];
   public severityTooltip: string;
   public frequencyTooltip: string;
@@ -98,6 +99,7 @@ export class RadioDetailComponent implements DoCheck {
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() selectWorkPackage = new EventEmitter<any>();
+  @Output() closeModal = new EventEmitter<void>();
 
   ngDoCheck(): void {
     this.radioCategory = this.group.value.category;
@@ -203,12 +205,12 @@ export class RadioDetailComponent implements DoCheck {
     switch (sliderValue) {
       case 1:
       case 2:
-        return TrafficLightColour.red;
+        return TrafficLightColour.green;
       case 3:
         return TrafficLightColour.yellow;
       case 4:
       case 5:
-        return TrafficLightColour.green;
+        return TrafficLightColour.red;
     }
   }
 

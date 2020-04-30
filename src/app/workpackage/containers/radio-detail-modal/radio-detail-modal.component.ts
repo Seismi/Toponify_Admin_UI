@@ -65,7 +65,10 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
             mitigation: radio.mitigation,
             description: radio.description,
             severity: radio.severity,
-            frequency: radio.frequency
+            frequency: radio.frequency,
+            raisedBy: `${radio.author.firstName} ${radio.author.lastName}`,
+            createdOn: new Date(radio.createdOn).toLocaleDateString(),
+            lastUpdatedOn: new Date(radio.lastUpdatedOn).toLocaleDateString()
           });
         }
       })
