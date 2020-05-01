@@ -45,6 +45,7 @@ import { NotificationService } from './services/notification.service';
 import { SearchService } from './services/search.service';
 import { NotificationEffects } from './store/effects/notification.effects';
 import { SearchEffects } from './store/effects/search.effects';
+import { HostComponent } from './components/host/host.component';
 
 @NgModule({
   imports: [
@@ -88,11 +89,11 @@ import { SearchEffects } from './store/effects/search.effects';
     MenuComponent,
     LeftHandPaneContentComponent,
     RelatedRadioTableComponent,
-    NotificationPaneComponent,
     RelatedWorkPackageTableComponent,
     ByRoleDirective,
     CanEditDirective,
-    SearchPipe
+    CoreLayoutModule,
+    HostComponent
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
@@ -104,6 +105,6 @@ import { SearchEffects } from './store/effects/search.effects';
       multi: true
     }
   ],
-  declarations: [NotificationPaneComponent, ByRoleDirective, CanEditDirective, SearchPipe]
+  declarations: [ByRoleDirective, CanEditDirective, HostComponent]
 })
 export class CoreModule {}

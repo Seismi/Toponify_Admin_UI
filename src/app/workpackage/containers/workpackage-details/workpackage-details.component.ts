@@ -300,7 +300,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onEditRadio(radio: WorkPackageDetail): void {
     this.dialog.open(RadioDetailModalComponent, {
       disableClose: false,
-      width: '850px',
+      width: '900px',
+      height: 'auto',
       data: {
         radio: radio
       }

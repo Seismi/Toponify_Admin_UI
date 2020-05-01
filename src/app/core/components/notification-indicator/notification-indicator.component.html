@@ -1,1 +1,3 @@
-<mat-icon (click)="handleClick($event)" [matBadge]="count" matBadgeColor="warn">notifications</mat-icon>
+<button mat-icon-button (click)="handleClick($event)" [ngClass]="{ selected: selectedTab === 'notifications' }">
+  <mat-icon [matBadge]="count" matBadgeColor="warn">notifications</mat-icon>
+</button>

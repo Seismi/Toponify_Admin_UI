@@ -220,8 +220,16 @@
         class="archive-btn"
         [disabled]="radioStatus === 'closed'"
         (click)="onArchive()"
+        *ngIf="!editModal"
       >
         Close
+      </button>
+      <button 
+        class="exit-btn" 
+        *ngIf="editModal" 
+        (click)="closeModal.emit()"
+      >
+        Exit
       </button>
     </div>
     <div *ngIf="isEditable">

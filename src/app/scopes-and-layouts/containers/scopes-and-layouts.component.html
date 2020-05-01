@@ -1,16 +1,7 @@
 <app-model-container>
-  <smi-left-hand-pane
-    [workPackageIsEditable]="workPackageIsEditable"
-    [selectedLeftTab]="selectedLeftTab"
-    (openSideBar)="openLeftTab($event)"
-  >
+  <smi-left-hand-pane [workPackageIsEditable]="workPackageIsEditable" [selectedLeftTab]="selectedLeftTab">
   </smi-left-hand-pane>
-  <mat-drawer-container class="drawer-container" autosize>
-    <mat-drawer #drawer mode="side" class="left-sidebar">
-      <smi-left-hand-pane-content (close)="drawer.close()">
-        <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
-      </smi-left-hand-pane-content>
-    </mat-drawer>
+  <app-drawer>
     <app-base-header>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
       <app-search></app-search>
@@ -27,7 +18,7 @@
               [data]="scopes$ | async"
               (select)="onScopeSelect($event)"
               (add)="onAddScope()"
-              >
+            >
             </smi-scopes-and-layouts-table>
           </div>
           <div class="col-xl-8">
@@ -37,5 +28,5 @@
         </div>
       </div>
     </app-model-container>
-  </mat-drawer-container>
+  </app-drawer>
 </app-model-container>

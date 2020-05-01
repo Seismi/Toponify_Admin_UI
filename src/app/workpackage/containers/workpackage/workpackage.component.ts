@@ -17,6 +17,7 @@ import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.sel
 import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
 import { Actions, ofType } from '@ngrx/effects';
 import { Roles } from '@app/core/directives/by-role.directive';
+import { LoadUsers } from '@app/settings/store/actions/user.actions';
 
 @Component({
   selector: 'app-workpackage',
@@ -43,6 +44,7 @@ export class WorkPackageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadWorkPackages({}));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
 
