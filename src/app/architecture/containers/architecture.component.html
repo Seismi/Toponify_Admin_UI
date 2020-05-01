@@ -3,33 +3,27 @@
     data-qa="topology-left-hand-pane"
     [workPackageIsEditable]="workPackageIsEditable"
     [selectedLeftTab]="selectedLeftTab"
-    (openSideBar)="openLeftTab($event)"
     [sideNavActions]="true"
     [architecturePage]="true"
   >
   </smi-left-hand-pane>
-  <mat-drawer-container class="drawer-container" autosize fixedInViewport="true">
-    <mat-drawer #drawer mode="side" class="left-sidebar">
-      <smi-left-hand-pane-content (close)="handleCloseDrawer()">
-        <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
-        <smi-left-panel
-          *ngIf="selectedLeftTab !== 'menu' && selectedLeftTab !== 'notifications'"
-          data-qa="topology-left-panel"
-          (tabClick)="onTabClick($event)"
-          [workpackages]="workpackage$ | async"
-          [workPackageIsEditable]="workPackageIsEditable"
-          (selectWorkPackage)="onSelectWorkPackage($event)"
-          (selectColour)="selectColourForWorkPackage($event)"
-          (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-          [selectedLeftTab]="selectedLeftTab"
-          [canSelectWorkpackages]="canSelectWorkpackages"
-          [group]="layoutSettingsForm"
-          [layout]="layout"
-        >
-        </smi-left-panel>
-        <smi-notification-pane *ngIf="selectedLeftTab === 'notifications'"></smi-notification-pane>
-      </smi-left-hand-pane-content>
-    </mat-drawer>
+  <app-drawer [tabTpls]="{ workpackages: workpackages }">
+    <ng-template #workpackages>
+      <smi-left-panel
+        data-qa="topology-left-panel"
+        (tabClick)="onTabClick($event)"
+        [workpackages]="workpackage$ | async"
+        [workPackageIsEditable]="workPackageIsEditable"
+        (selectWorkPackage)="onSelectWorkPackage($event)"
+        (selectColour)="selectColourForWorkPackage($event)"
+        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+        [selectedLeftTab]="selectedLeftTab"
+        [canSelectWorkpackages]="canSelectWorkpackages"
+        [group]="layoutSettingsForm"
+        [layout]="layout"
+      >
+      </smi-left-panel>
+    </ng-template>
     <app-base-header>
       <smi-node-name data-qa="header-node-name" *ngIf="parentName" [parentName]="parentName"></smi-node-name>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
@@ -250,7 +244,6 @@
           </smi-right-panel></p
       ></app-model-sidebar>
     </app-model-container>
-  </mat-drawer-container>
+  </app-drawer>
 </app-model-container>
-
 <smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>

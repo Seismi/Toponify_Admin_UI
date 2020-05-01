@@ -3,32 +3,29 @@
     data-qa="rules-and-attributes-left-hand-pane"
     [workPackageIsEditable]="workPackageIsEditable"
     [selectedLeftTab]="selectedLeftTab"
-    (openSideBar)="openLeftTab($event)"
     [sideNavActions]="true"
   >
   </smi-left-hand-pane>
-  <mat-drawer-container class="drawer-container" autosize>
-    <mat-drawer #drawer mode="side" class="left-sidebar">
-      <smi-left-hand-pane-content (close)="drawer.close(selectedLeftTab = 'menu')">
-        <smi-menu *ngIf="selectedLeftTab === 'menu'"></smi-menu>
-        <smi-workpackage-tab-table
-          data-qa="rules-and-attributes-work-package-table"
-          *ngIf="selectedLeftTab !== 'menu'"
-          [data]="workpackage$ | async"
-          (selectWorkPackage)="onSelectWorkPackage($event)"
-          (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-          [canSelectWorkpackage]="canSelectWorkpackage"
-        >
-        </smi-workpackage-tab-table>
-      </smi-left-hand-pane-content>
-    </mat-drawer>
+  <app-drawer [tabTpls]="{ workpackages: workpackages }">
+    <ng-template #workpackages>
+      <smi-workpackage-tab-table
+        data-qa="rules-and-attributes-work-package-table"
+        *ngIf="selectedLeftTab !== 'menu'"
+        [data]="workpackage$ | async"
+        (selectWorkPackage)="onSelectWorkPackage($event)"
+        (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+        [canSelectWorkpackage]="canSelectWorkpackage"
+      >
+      </smi-workpackage-tab-table>
+    </ng-template>
     <app-base-header>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
       <smi-workpackage-name
         [selectedWorkPackageEntities]="selectedWorkPackageEntities"
         [workPackageIsEditable]="!workPackageIsEditable"
         (exitWorkPackageEditMode)="onExitWorkPackageEditMode()"
-        (editWorkPackage)="onSelectEditWorkpackage($event)">
+        (editWorkPackage)="onSelectEditWorkpackage($event)"
+      >
       </smi-workpackage-name>
       <smi-scopes-dropdown
         data-qa="rules-and-attributes-scopes"
@@ -68,5 +65,5 @@
         </div>
       </div>
     </app-model-container>
-  </mat-drawer-container>
+  </app-drawer>
 </app-model-container>

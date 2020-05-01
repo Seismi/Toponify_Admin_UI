@@ -4,6 +4,9 @@ import { getNewNotificationCount, getNotificationOpen } from '@app/core/store/se
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { NotificationPanelOpen } from '@app/core/store/actions/notification.actions';
+import { LayoutState } from '@app/core/store/reducers/layout.reducer';
+import { getSelectedLeftDrawerTab } from '@app/core/store/selectors/layout.selectors';
+import { SelectLeftDrawerTab } from '@app/core/store/actions/layout.actions';
 
 @Component({
   selector: 'smi-notification-indicator',
@@ -14,9 +17,13 @@ import { NotificationPanelOpen } from '@app/core/store/actions/notification.acti
 export class NotificationIndicatorComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   count: null | number = null;
-  open = false;
+  selectedTab: null | string = null;
 
-  constructor(private notificationStore: Store<NotificationState>, private ref: ChangeDetectorRef) {}
+  constructor(
+    private notificationStore: Store<NotificationState>,
+    private layoutStore: Store<LayoutState>,
+    private ref: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.subscriptions.push(
@@ -26,8 +33,9 @@ export class NotificationIndicatorComponent implements OnInit, OnDestroy {
       })
     );
     this.subscriptions.push(
-      this.notificationStore.pipe(select(getNotificationOpen)).subscribe(open => {
-        this.open = open;
+      this.layoutStore.pipe(select(getSelectedLeftDrawerTab)).subscribe(tab => {
+        this.selectedTab = tab;
+        this.ref.detectChanges();
       })
     );
   }
@@ -37,6 +45,10 @@ export class NotificationIndicatorComponent implements OnInit, OnDestroy {
   }
 
   handleClick(): void {
-    this.notificationStore.dispatch(new NotificationPanelOpen(!this.open));
+    if (this.selectedTab === 'notifications') {
+      this.layoutStore.dispatch(new SelectLeftDrawerTab(null));
+    } else {
+      this.layoutStore.dispatch(new SelectLeftDrawerTab('notifications'));
+    }
   }
 }

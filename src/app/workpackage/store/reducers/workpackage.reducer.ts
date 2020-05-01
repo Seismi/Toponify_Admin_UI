@@ -302,28 +302,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
-    case WorkPackageActionTypes.AddObjective: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case WorkPackageActionTypes.AddObjectiveSuccess: {
-      return {
-        ...state,
-        selectedWorkPackage: action.payload
-      };
-    }
-
-    case WorkPackageActionTypes.AddObjectiveFailure: {
-      return {
-        ...state,
-        error: action.payload,
-        loading: false
-      };
-    }
-
     case WorkPackageActionTypes.DeleteObjective: {
       return {
         ...state,
