@@ -8,6 +8,7 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { MatDialog, MatSlideToggleChange } from '@angular/material';
 import { TeamModalComponent } from '../team-modal/team-modal.component';
 import { Router } from '@angular/router';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-teams',
@@ -16,6 +17,8 @@ import { Router } from '@angular/router';
 })
 export class TeamsComponent implements OnInit {
   public teams$: Observable<TeamEntity[]>;
+
+  public Roles = Roles;
 
   constructor(private router: Router, private store: Store<TeamState>, private dialog: MatDialog) {}
 

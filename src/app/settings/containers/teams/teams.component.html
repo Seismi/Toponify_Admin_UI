@@ -12,7 +12,11 @@
         </smi-teams-table>
       </div>
       <div class="col">
-        <smi-right-hand-side (add)="onAddTeam()" [title]="'Team'"></smi-right-hand-side>
+        <smi-right-hand-side
+          *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+          (add)="onAddTeam()"
+          [title]="'Team'"
+        ></smi-right-hand-side>
         <router-outlet></router-outlet>
       </div>
     </div>
