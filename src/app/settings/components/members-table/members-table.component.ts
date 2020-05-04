@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { TeamDetails } from '@app/settings/store/models/team.model';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-members-table',
@@ -8,6 +9,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
   styleUrls: ['members-table.component.scss']
 })
 export class MembersTableComponent {
+  public Roles = Roles;
   @Input()
   set members(data: TeamDetails[]) {
     if (data) {

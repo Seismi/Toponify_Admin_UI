@@ -1,5 +1,6 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-team-detail',
@@ -7,9 +8,10 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['team-detail.component.scss']
 })
 export class TeamDetailComponent {
+  public Roles = Roles;
   @Input() group: FormGroup;
-  @Input() modalMode: boolean = false;
-  @Input() isEditable: boolean = false;
+  @Input() modalMode = false;
+  @Input() isEditable = false;
 
   @Output() editTeam = new EventEmitter<void>();
   @Output() deleteTeam = new EventEmitter<void>();

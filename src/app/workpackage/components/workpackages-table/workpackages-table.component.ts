@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-workpackages-table',
@@ -8,6 +9,7 @@ import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/mod
   styleUrls: ['./workpackages-table.component.scss']
 })
 export class WorkPackagesTableComponent implements OnInit {
+  public Roles = Roles;
   public filterValue: string;
   @Input() selectedRowIndex: string | number = -1;
   @Input()

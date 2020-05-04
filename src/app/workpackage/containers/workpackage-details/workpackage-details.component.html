@@ -50,11 +50,13 @@
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
         <smi-edit-documentation-standards-table
+          [appCanEdit]="[Roles.ADMIN]"
           data-qa="work-packages-documentation-standards-table"
           [data]="workpackage?.customPropertyValues"
           [isEditable]="workpackage?.status === 'draft'"
           (saveProperty)="onSaveProperties($event)"
-          (deleteProperty)="onDeleteProperties($event)">
+          (deleteProperty)="onDeleteProperties($event)"
+        >
         </smi-edit-documentation-standards-table>
       </mat-tab>
       <mat-tab>
