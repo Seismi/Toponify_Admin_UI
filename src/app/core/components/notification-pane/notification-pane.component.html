@@ -1,7 +1,10 @@
 <div class="search-container">
-  <input placeholder="Search" [(ngModel)]="searchString" (keydown)="$event.stopPropagation()">
+  <input placeholder="Search" [(ngModel)]="searchString" (keydown)="$event.stopPropagation()" />
 </div>
-<mat-card *ngFor="let notification of (notifications | searchPipe: searchString)" [ngClass]="{ notActive: notification.read }">
+<mat-card
+  *ngFor="let notification of notifications | searchPipe: searchString"
+  [ngClass]="{ notActive: notification.read }"
+>
   <mat-card-content>
     <mat-icon *ngIf="notification.important; else elseBlock" class="notification-important">
       notification_important

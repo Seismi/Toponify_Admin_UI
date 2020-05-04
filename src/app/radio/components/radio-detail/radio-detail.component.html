@@ -83,7 +83,7 @@
         [ngStyle]="{ display: 'none' }"
         formControlName="description"
       ></textarea>
-      <ckeditor [editor]="editor" [config]="config" formControlName="description" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <ckeditor data-qa="radio-detail-description" [editor]="editor" [config]="config" formControlName="description" [ngClass]="{hidden: !isEditable}"></ckeditor>
       <div class="description-content" [innerHTML]="group.controls['description'].value" [ngClass]="{hidden: isEditable}"></div>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
@@ -119,6 +119,7 @@
           #severity
           color="primary"
           [disabled]="!isEditable"
+          data-qa="radio-detail-severity"
         >
         </mat-slider>
         <span class="slider-value">{{ severity.value }}</span>
@@ -145,6 +146,7 @@
           #frequency
           color="primary"
           [disabled]="!isEditable"
+          data-qa="radio-detail-frequency"
         >
         </mat-slider>
         <span class="slider-value">{{ frequency.value }}</span>
@@ -190,7 +192,7 @@
         formControlName="mitigation"
         [ngStyle]="{ display: 'none' }"
       ></textarea>
-      <ckeditor [editor]="editor" [config]="config" formControlName="mitigation" [ngClass]="{hidden: !isEditable}"></ckeditor>
+      <ckeditor data-qa="radio-detail-mitigation" [editor]="editor" [config]="config" formControlName="mitigation" [ngClass]="{hidden: !isEditable}"></ckeditor>
       <div class="description-content" [innerHTML]="group.controls['mitigation'].value" [ngClass]="{hidden: isEditable}"></div>
     </mat-form-field>
   </div>
@@ -220,8 +222,16 @@
         class="archive-btn"
         [disabled]="radioStatus === 'closed'"
         (click)="onArchive()"
+        *ngIf="!editModal"
       >
         Close
+      </button>
+      <button 
+        class="exit-btn" 
+        *ngIf="editModal" 
+        (click)="closeModal.emit()"
+      >
+        Exit
       </button>
     </div>
     <div *ngIf="isEditable">
@@ -240,10 +250,12 @@
     <mat-list-option 
       [value]="{ id: '00000000-0000-0000-0000-000000000000', name: 'Current State' }"
       selected
+      data-qa="radio-detail-work-packages"
     >
       Current State
     </mat-list-option>
-    <mat-list-option 
+    <mat-list-option
+      data-qa="radio-detail-work-packages"
       *ngFor="let workpackage of workpackages" 
       [value]="workpackage"
       selected

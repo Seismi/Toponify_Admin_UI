@@ -312,7 +312,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.AddObjectiveSuccess: {
       return {
         ...state,
-        selectedWorkPackage: action.payload
+        selectedWorkPackage: action.payload,
       };
     }
 
