@@ -58,7 +58,7 @@ export class ComponentsOrLinksModalComponent implements OnInit {
     switch (this.data.level) {
       case 'system':
         return (!this.data.link) ? systemCategories : ['master data', 'data'];
-      case 'data set':
+      case 'data':
         return (!this.data.link) ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
         return (!this.data.link) ? dimensionCategories : ['master data'];
