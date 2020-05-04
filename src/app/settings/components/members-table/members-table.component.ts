@@ -17,6 +17,7 @@ export class MembersTableComponent {
       this.dataSource.paginator = this.paginator;
     }
   }
+  @Input() disabled: boolean;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 

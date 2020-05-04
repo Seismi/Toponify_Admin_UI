@@ -12,9 +12,10 @@ export class TeamDetailComponent {
   @Input() group: FormGroup;
   @Input() modalMode = false;
   @Input() isEditable = false;
+  @Input() disabled: boolean;
 
   @Output() editTeam = new EventEmitter<void>();
-  @Output() deleteTeam = new EventEmitter<void>();
+  @Output() disableTeam = new EventEmitter<void>();
   @Output() saveTeam = new EventEmitter<void>();
   @Output() cancelEdit = new EventEmitter<void>();
 }
