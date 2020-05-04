@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, MatSlideToggleChange } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { Roles } from '@app/core/directives/by-role.directive';
 
@@ -10,6 +10,7 @@ import { Roles } from '@app/core/directives/by-role.directive';
 })
 export class TeamsTableComponent {
   public selectedRowIndex: string | number = -1;
+  private filterValue: string;
   public Roles = Roles;
 
   @Input()
@@ -18,6 +19,7 @@ export class TeamsTableComponent {
       this.dataSource = new MatTableDataSource<TeamEntity>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.dataSource.filter = this.filterValue;
     }
   }
 
@@ -29,6 +31,7 @@ export class TeamsTableComponent {
 
   @Output() selectTeam = new EventEmitter<TeamEntity>();
   @Output() addTeam = new EventEmitter<void>();
+  @Output() showDisabledTeams = new EventEmitter<MatSlideToggleChange>();
 
   onSelectRow(team: TeamEntity): void {
     this.selectedRowIndex = team.id;
@@ -40,6 +43,7 @@ export class TeamsTableComponent {
   }
 
   onSearch(filterValue: string): void {
+    this.filterValue = filterValue;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

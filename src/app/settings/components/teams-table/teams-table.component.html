@@ -2,6 +2,13 @@
   <div class="search-container">
     <input placeholder="Search" data-qa="settings-teams-quick-search" (keyup)="onSearch($event.target.value)" />
   </div>
+  <mat-slide-toggle
+    data-qa="settings-teams-disabled-toggle"
+    color="primary"
+    (change)="showDisabledTeams.emit($event)"
+  >
+    Show disabled
+  </mat-slide-toggle>
   <table mat-table [dataSource]="dataSource" matSort>
     <!-- Name Column -->
     <ng-container matColumnDef="name">

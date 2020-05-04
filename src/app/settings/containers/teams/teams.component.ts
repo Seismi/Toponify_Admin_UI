@@ -5,7 +5,7 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '../../store/reducers/team.reducer';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSlideToggleChange } from '@angular/material';
 import { TeamModalComponent } from '../team-modal/team-modal.component';
 import { Router } from '@angular/router';
 import { Roles } from '@app/core/directives/by-role.directive';
@@ -23,7 +23,7 @@ export class TeamsComponent implements OnInit {
   constructor(private router: Router, private store: Store<TeamState>, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new LoadTeams({}));
+    this.getDisabledTeams(false);
     this.teams$ = this.store.pipe(select(getTeamEntities));
   }
 
@@ -42,5 +42,16 @@ export class TeamsComponent implements OnInit {
         this.store.dispatch(new AddTeam(data.team));
       }
     });
+  }
+
+  getDisabledTeams(checked: boolean): void {
+    const queryParams = {
+      includeDisabled: checked
+    };
+    this.store.dispatch(new LoadTeams(queryParams));
+  }
+
+  onShowDisabledTeams($event: MatSlideToggleChange): void {
+    this.getDisabledTeams($event.checked);
   }
 }

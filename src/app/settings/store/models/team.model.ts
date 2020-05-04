@@ -23,6 +23,7 @@ export interface TeamEntity {
 }
 
 export interface TeamEntitiesHttpParams {
+  includeDisabled?: boolean;
   ownerQuery?: string;
   TeamQuery?: string;
   page?: number;
