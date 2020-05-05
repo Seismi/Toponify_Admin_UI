@@ -26,9 +26,9 @@ const Levels = {
     'System - Files': null
   },
   'Data - All': {
-    'Data - Physical': null,
-    'Data - Virtual': null,
-    'Data - MasterData': null
+    'Data - Data Structure': null,
+    'Data - Data Set': null,
+    'Data - Master Data Set': null
   },
   'Dimensions - All': null,
   'Reporting Concepts - All': {
