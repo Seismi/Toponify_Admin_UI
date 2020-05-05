@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-const layers = ['system', 'data set', 'dimension', 'reporting concept'];
+const layers = ['system', 'data', 'dimension', 'reporting concept'];
 
 @Component({
   selector: 'smi-scopes-and-layouts-detail',

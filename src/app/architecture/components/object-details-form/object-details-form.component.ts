@@ -7,7 +7,7 @@ import { Node } from 'gojs';
 
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file', 'transformation'];
-const dataSetCategories = ['data structure', 'data set', 'master data'];
+const dataSetCategories = ['data structure', 'data set', 'master data set'];
 const dimensionCategories = ['dimension', 'transformation'];
 const reportingCategories = ['list', 'structure', 'key', 'transformation'];
 

@@ -25,10 +25,10 @@ const Levels = {
     'System - MasterData': null,
     'System - Files': null
   },
-  'Data Sets - All': {
-    'Data Sets - Physical': null,
-    'Data Sets - Virtual': null,
-    'Data Sets - MasterData': null
+  'Data - All': {
+    'Data - Physical': null,
+    'Data - Virtual': null,
+    'Data - MasterData': null
   },
   'Dimensions - All': null,
   'Reporting Concepts - All': {
@@ -41,9 +41,9 @@ const Levels = {
       'System Links - MasterData': null,
       'System Links - Data': null
     },
-    'Data Set Links - All': {
-      'Data Set Links - Master Data': null,
-      'Data Set Links - Data': null
+    'Data Links - All': {
+      'Data Links - Master Data': null,
+      'Data Links - Data': null
     },
     'Dimension Links': null,
     'Reporting Concept Links': null

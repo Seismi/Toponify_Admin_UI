@@ -27,7 +27,7 @@ export class SwitchViewTabsComponent {
       case Level.system:
         return 'Systems';
       case Level.data:
-        return 'Data';
+        return 'Data Node';
       case Level.dimension:
         return 'Dimensions';
       case Level.reportingConcept:
