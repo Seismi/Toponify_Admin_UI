@@ -22,7 +22,7 @@
             </smi-documentation-standards-table>
           </div>
           <div class="col">
-            <smi-right-hand-side [title]="'Document Standard'" (add)="onAddDocument()"></smi-right-hand-side>
+            <smi-right-hand-side [title]="'Document Standard'" [appCanEdit]="[Roles.ADMIN, Roles.ARCHITECT]" (add)="onAddDocument()"></smi-right-hand-side>
             <router-outlet></router-outlet>
           </div>
         </div>
