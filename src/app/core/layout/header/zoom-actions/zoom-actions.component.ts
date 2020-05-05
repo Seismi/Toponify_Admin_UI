@@ -8,6 +8,11 @@ import { getViewLevel } from '@app/architecture/store/selectors/view.selector';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { getFilterLevelQueryParams } from '@app/core/store/selectors/route.selectors';
 
+interface Layers {
+  level: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-zoom-actions',
   templateUrl: './zoom-actions.component.html',
@@ -20,11 +25,11 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   private filterLevel: Level;
   private viewLevelSubscription: Subscription;
 
-  layers = [
+  layers: Layers[] = [
     { level: Level.system, name: 'system' },
     { level: Level.systemMap, name: 'system map' },
-    { level: Level.dataSet, name: 'data set' },
-    { level: Level.dataSetMap, name: 'data set map' },
+    { level: Level.data, name: 'data' },
+    { level: Level.dataMap, name: 'data map' },
     { level: Level.dimension, name: 'dimension' },
     { level: Level.dimensionMap, name: 'dimension map' },
     { level: Level.reportingConcept, name: 'reporting concept' },

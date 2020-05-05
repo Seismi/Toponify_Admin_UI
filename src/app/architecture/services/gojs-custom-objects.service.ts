@@ -323,7 +323,7 @@ export class GojsCustomObjectsService {
         },
         new go.Binding('visible', 'layer', function(layer) {
             // Can only expand link if layer is system or data set
-            return layer === layers.system || layer === layers.dataSet;
+            return layer === layers.system || layer === layers.data;
         })
       ),
       // View detail for the link in the right hand panel
