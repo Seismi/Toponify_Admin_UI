@@ -6,12 +6,11 @@ import { MatDialog } from '@angular/material';
 import { MemberModalComponent } from '../member-modal/member-modal.component';
 import { Store, select } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
-import { UpdateTeam, AddMember, DeleteMember, DeleteTeam, LoadTeam } from '@app/settings/store/actions/team.actions';
+import { UpdateTeam, AddMember, DeleteMember, LoadTeam, DisableTeam, EnableTeam } from '@app/settings/store/actions/team.actions';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getTeamSelected } from '@app/settings/store/selectors/team.selector';
-import { TeamEntity } from '@app/settings/store/models/user.model';
-import { MembersEntity } from '@app/settings/store/models/team.model';
+import { MembersEntity, TeamDetails } from '@app/settings/store/models/team.model';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
@@ -22,11 +21,10 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
 })
 export class TeamsDetailsComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription[] = [];
-  public team: TeamEntity;
-  public isEditable: boolean = false;
+  public team: TeamDetails;
+  public isEditable = false;
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
     private store: Store<TeamState>,
     private teamDetailService: TeamDetailService,
@@ -43,8 +41,8 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.store.pipe(select(getTeamSelected)).subscribe(data => {
-        this.team = data;
         if (data) {
+          this.team = data;
           this.teamDetailService.teamDetailForm.patchValue({ ...data });
           this.isEditable = false;
         }
@@ -78,21 +76,12 @@ export class TeamsDetailsComponent implements OnInit, OnDestroy {
     this.isEditable = false;
   }
 
-  onDeleteTeam(): void {
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
-      disableClose: false,
-      width: 'auto',
-      data: {
-        title: `Are you sure you want to disable user "${this.team.name}"?`
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data) {
-        this.store.dispatch(new DeleteTeam(this.team.id));
-        this.router.navigate(['/settings/teams']);
-      }
-    });
+  onDisableTeam(): void {
+    if (!this.team.disabled) {
+      this.store.dispatch(new DisableTeam({ teamId: this.team.id }));
+    } else {
+      this.store.dispatch(new EnableTeam({ teamId: this.team.id }));
+    }
   }
 
   onAddMember(): void {

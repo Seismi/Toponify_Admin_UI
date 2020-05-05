@@ -14,6 +14,7 @@
 
     <!-- Slide toggle -->
     <mat-slide-toggle
+      *ngIf="!disabled"
       color="primary"
       formControlName="designAuthority"
       matTooltip="Groups flagged as design authorities are asked to approve all work packages regardless of the systems they impact."
@@ -37,11 +38,22 @@
   <ng-container *appByRole="[Roles.ADMIN, Roles.ARCHITECT]">
     <div *ngIf="!modalMode">
       <div *ngIf="!isEditable; else elseBlock">
-        <button mat-raised-button color="primary" (click)="editTeam.emit()" data-qa="settings-teams-details-edit">
+        <button
+          *ngIf="!disabled"
+          mat-raised-button 
+          color="primary" 
+          (click)="editTeam.emit()" 
+          data-qa="settings-teams-details-edit"
+        >
           Edit
         </button>
-        <button mat-raised-button color="warn" (click)="deleteTeam.emit()" data-qa="settings-teams-details-delete">
-          Delete
+        <button
+          data-qa="settings-teams-details-disabled"
+          mat-raised-button 
+          class="disableButton"
+          (click)="disableTeam.emit()"
+        >
+          {{ disabled ? 'Enable' : 'Disable' }}
         </button>
       </div>
       <ng-template #elseBlock>

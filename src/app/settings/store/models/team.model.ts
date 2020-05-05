@@ -20,6 +20,7 @@ export interface TeamEntity {
   id: string;
   name: string;
   type: string;
+  disabled?: boolean;
 }
 
 export interface TeamEntitiesHttpParams {
@@ -37,6 +38,7 @@ export interface TeamDetails {
   type: string;
   members?: (MembersEntity)[] | null;
   designAuthority: boolean;
+  disabled?: boolean;
 }
 
 export interface MembersEntity {
