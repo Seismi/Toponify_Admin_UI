@@ -8,7 +8,7 @@ import { getNodeEntities } from '@app/architecture/store/selectors/node.selector
 import { Node } from '@app/architecture/store/models/node.model';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
-const dataSetCategories = ['physical', 'virtual', 'master data'];
+const dataSetCategories = ['data structure', 'data set', 'master data set'];
 const dimensionCategories = ['dimension'];
 const reportingConceptCategories = ['structure', 'list', 'key'];
 
