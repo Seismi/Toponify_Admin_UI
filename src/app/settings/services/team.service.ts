@@ -48,6 +48,14 @@ export class TeamService {
     return this.http.delete<any>(`/teams/${teamId}/members/${userId}`);
   }
 
+  disableTeam(teamId: string): Observable<UpdateTeamApiResponse> {
+    return this.http.post<UpdateTeamApiResponse>(`/teams/${teamId}/disable`, httpOptions);
+  }
+
+  enableTeam(teamId: string): Observable<UpdateTeamApiResponse> {
+    return this.http.post<UpdateTeamApiResponse>(`/teams/${teamId}/enable`, httpOptions);
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());

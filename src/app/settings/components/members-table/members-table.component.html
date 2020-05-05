@@ -25,13 +25,17 @@
       <ng-container matColumnDef="delete">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-          <mat-icon
-            *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
-            style="color: #CF3030"
-            (click)="onDelete(element)"
-            data-qa="settings-teams-members-table-delete"
-            >delete</mat-icon
+          <span *ngIf="!disabled">
+            <mat-icon
+              *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+              style="color: #CF3030"
+              (click)="onDelete(element)"
+              data-qa="settings-teams-members-table-delete"
+              >
+                delete
+              </mat-icon
           >
+          </span>
         </td>
       </ng-container>
 
@@ -41,15 +45,17 @@
 
     <div style="display: flex;">
       <div style="flex-grow: 1; background-color: #fff;">
-        <button
-          *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
-          mat-raised-button
-          color="primary"
-          (click)="onAdd()"
-          data-qa="settings-teams-members-table-add"
-        >
-          Add
-        </button>
+        <span *ngIf="!disabled">
+          <button
+            *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+            mat-raised-button
+            color="primary"
+            (click)="onAdd()"
+            data-qa="settings-teams-members-table-add"
+          >
+            Add
+          </button>
+        </span>
       </div>
       <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 50, 75, 100]"></mat-paginator>
     </div>

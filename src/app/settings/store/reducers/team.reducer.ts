@@ -127,6 +127,20 @@ export function reducer(state = initialState, action: TeamActionsUnion): State {
       };
     }
 
+    case TeamActionTypes.EnableTeamSuccess:
+    case TeamActionTypes.DisableTeamSuccess: {
+      return {
+        ...state,
+        selected: action.payload,
+        entities: state.entities.filter(entity => {
+          if (!entity.disabled) {
+            return entity.id !== action.payload.id;
+          }
+          return entity;
+        }),
+      };
+    }
+
     default: {
       return state;
     }
