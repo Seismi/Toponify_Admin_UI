@@ -1,11 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { Store, select } from '@ngrx/store';
-import { LoadWorkPackageNodeScopesAvailability } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { getNodeScopesAvailability } from '@app/architecture/store/selectors/workpackage.selector';
+import { getNodeScopes } from '@app/architecture/store/selectors/workpackage.selector';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
+import { getScopeEntities } from '@app/scope/store/selectors/scope.selector';
+import { map } from 'rxjs/operators';
+import { ScopeEntity } from '@app/scope/store/models/scope.model';
+
+const everything: Readonly<string> = '00000000-0000-0000-0000-000000000000';
 
 @Component({
   selector: 'smi-add-scope-modal',
@@ -13,7 +17,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
   styleUrls: ['./add-scope-modal.component.scss']
 })
 export class NodeScopeModalComponent implements OnInit {
-  public scopes$: Observable<WorkPackageNodeScopes[]>;
+  public scopes$: Observable<ScopeEntity[]>;
   public nodeId: string;
   public scope: string;
 
@@ -26,13 +30,14 @@ export class NodeScopeModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.setScopeQueryParams();
-    this.scopes$ = this.store.pipe(select(getNodeScopesAvailability));
-  }
-
-  setScopeQueryParams(): void {
-    const queryParams = { availableForAddition: true };
-    this.store.dispatch(new LoadWorkPackageNodeScopesAvailability({ nodeId: this.nodeId, queryParams: queryParams }));
+    this.scopes$ = combineLatest(
+      this.store.pipe(select(getNodeScopes)),
+      this.store.pipe(select(getScopeEntities))
+    ).pipe(
+      map(([nodeScopes, scopeEntities]) => {
+        return scopeEntities.filter(scope => scope.id !== everything && !nodeScopes.some(nscope => scope.id === nscope.id));
+      })
+    );
   }
 
   onSubmit(): void {
