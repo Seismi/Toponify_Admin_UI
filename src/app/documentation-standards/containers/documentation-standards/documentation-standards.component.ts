@@ -11,6 +11,7 @@ import { DocumentStandard } from '../../store/models/documentation-standards.mod
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { DocumentModalComponent } from '../document-modal/document-modal.component';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-documentation-standards-component',
@@ -21,6 +22,7 @@ export class DocumentationStandardsComponent implements OnInit {
   public documentStandards$: Observable<DocumentStandard[]>;
   public documentStandard: DocumentStandard;
   public selectedLeftTab: number | string;
+  public Roles = Roles;
 
   @ViewChild('drawer') drawer;
 

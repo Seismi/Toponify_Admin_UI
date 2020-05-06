@@ -739,7 +739,7 @@ export class DiagramChangesService {
       }
     });
 
-    if ([Level.systemMap, Level.dataSetMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
+    if ([Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
       // Update node's layout in map view or usage view
       node.invalidateLayout();
     } else {
@@ -1052,7 +1052,7 @@ export class DiagramChangesService {
       // Variable to hold the areas that are taken up by nodes in each layer
       const areas = {
         [layers.system]: null,
-        [layers.dataSet]: null,
+        [layers.data]: null,
         [layers.dimension]: null,
         [layers.reportingConcept]: null,
         // Also include a property for the area of all nodes
@@ -1086,7 +1086,7 @@ export class DiagramChangesService {
       // Minimum distance to leave between the edge of a lane and the nodes
       const sideMargin = 25;
 
-      const layerOrder = [layers.system, layers.dataSet, layers.dimension, layers.reportingConcept];
+      const layerOrder = [layers.system, layers.data, layers.dimension, layers.reportingConcept];
 
       // Adjust location and size of the lane for each layer
       layerOrder.forEach(function(layer, index) {
