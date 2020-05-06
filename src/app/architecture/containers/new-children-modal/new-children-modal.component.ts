@@ -70,8 +70,8 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
       case Level.system:
       case Level.systemMap:
         return dataSetCategories;
-      case Level.dataSet:
-      case Level.dataSetMap:
+      case Level.data:
+      case Level.dataMap:
         return dimensionCategories;
       case Level.dimension:
       case Level.dimensionMap:
@@ -86,9 +86,9 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     switch (filterLevel) {
       case Level.system:
       case Level.systemMap:
-        return layers.dataSet;
-      case Level.dataSet:
-      case Level.dataSetMap:
+        return layers.data;
+      case Level.data:
+      case Level.dataMap:
         return layers.dimension;
       case Level.dimension:
       case Level.dimensionMap:

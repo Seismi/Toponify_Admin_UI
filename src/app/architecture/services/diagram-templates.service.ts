@@ -635,7 +635,7 @@ export class DiagramTemplatesService {
             // Section of the image name determined by layer
             const layerImagePrefix = {
               [layers.system]: 'sys',
-              [layers.dataSet]: 'data_set',
+              [layers.data]: 'data',
               [layers.dimension]: 'dim',
               [layers.reportingConcept]: 'rc'
             };

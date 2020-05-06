@@ -4,11 +4,10 @@ import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/sto
 import { Tag, TagApplicableTo, NodeDetail } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
-import { Level } from '@app/architecture/services/diagram-level.service';
 
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file', 'transformation'];
-const dataSetCategories = ['physical', 'virtual', 'master data', 'transformation'];
+const dataSetCategories = ['data structure', 'data set', 'master data set'];
 const dimensionCategories = ['dimension', 'transformation'];
 const reportingCategories = ['list', 'structure', 'key', 'transformation'];
 
@@ -105,7 +104,7 @@ export class ObjectDetailsFormComponent {
     switch (this.part.data.layer) {
       case 'system':
         return this.part instanceof Node ? systemCategories : ['master data', 'data'];
-      case 'data set':
+      case 'data':
         return this.part instanceof Node ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
         return this.part instanceof Node ? dimensionCategories : ['master data'];
