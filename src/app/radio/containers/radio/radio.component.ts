@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { MatDialog } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { RadioEntity, RadiosAdvancedSearch, RadioDetail } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
@@ -35,6 +35,7 @@ export class RadioComponent implements OnInit, OnDestroy {
   public status: string | any;
   public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
+  private subscriptions: Subscription[] = [];
 
   @ViewChild('drawer') drawer;
 
@@ -60,20 +61,25 @@ export class RadioComponent implements OnInit, OnDestroy {
       this.filterData = data;
     });
 
-    this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
-      if (action) {
-        this.selectedRadioIndex = action.id;
-      }
-    });
+    this.subscriptions.push(
+      this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
+        if (action) {
+          this.selectedRadioIndex = action.id;
+        }
+      })
+    );
 
-    this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
-      this.selectedRadioIndex = action.payload.id;
-      this.store.dispatch(new LoadRadios({}));
-      this.onSelectRadio(action.payload);
-    });
+    this.subscriptions.push(
+      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
+        this.selectedRadioIndex = action.payload.id;
+        this.store.dispatch(new LoadRadios({}));
+        this.onSelectRadio(action.payload);
+      })
+    );
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.forEach(subs => subs.unsubscribe());
     this.store.dispatch(new RadioFilter(null));
   }
 
