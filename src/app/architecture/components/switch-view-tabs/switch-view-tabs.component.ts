@@ -26,8 +26,8 @@ export class SwitchViewTabsComponent {
     switch (this.viewLevel) {
       case Level.system:
         return 'Systems';
-      case Level.dataSet:
-        return 'Data sets';
+      case Level.data:
+        return 'Data Node';
       case Level.dimension:
         return 'Dimensions';
       case Level.reportingConcept:
@@ -38,7 +38,7 @@ export class SwitchViewTabsComponent {
   }
 
   getLinkLabel(): string {
-    if (this.viewLevel === Level.system || this.viewLevel === Level.dataSet) {
+    if (this.viewLevel === Level.system || this.viewLevel === Level.data) {
       return 'Interfaces';
     } else {
       return 'Links';

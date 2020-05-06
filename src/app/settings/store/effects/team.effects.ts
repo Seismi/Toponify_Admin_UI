@@ -103,4 +103,28 @@ export class TeamEffects {
       );
     })
   );
+
+  @Effect()
+  disableTeam$ = this.actions$.pipe(
+    ofType<TeamActions.DisableTeam>(TeamActionTypes.DisableTeam),
+    map(action => action.payload),
+    switchMap((payload: { teamId: string }) => {
+      return this.teamService.disableTeam(payload.teamId).pipe(
+        switchMap((response: UpdateTeamApiResponse) => [new TeamActions.DisableTeamSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new TeamActions.DisableTeamFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  enableTeam$ = this.actions$.pipe(
+    ofType<TeamActions.EnableTeam>(TeamActionTypes.EnableTeam),
+    map(action => action.payload),
+    switchMap((payload: { teamId: string }) => {
+      return this.teamService.enableTeam(payload.teamId).pipe(
+        switchMap((response: UpdateTeamApiResponse) => [new TeamActions.EnableTeamSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new TeamActions.EnableTeamFailure(error)))
+      );
+    })
+  );
 }
