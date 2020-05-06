@@ -1,28 +1,41 @@
-import { NativeDateAdapter } from '@angular/material';
-import { MatDateFormats } from '@angular/material/core';
+import { NativeDateAdapter } from '@angular/material/core';
 
 export class AppDateAdapter extends NativeDateAdapter {
   format(date: Date, displayFormat: Object): string {
-    // if (displayFormat === 'input') {
-    //   let day: string = date.getDate().toString();
-    //   day = +day < 10 ? '0' + day : day;
-    //   let month: string = (date.getMonth() + 1).toString();
-    //   month = +month < 10 ? '0' + month : month;
-    //   const year = date.getFullYear();
-    //   return `${day}/${month}/${year}`;
-    // }
-    return date.toLocaleDateString();
+    let result = date.toDateString();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    switch (displayFormat) {
+      case 'DD/MM/YYYY':
+        // Return the format as per your requirement
+        result = `${day}/${month}/${year}`;
+        break;
+      default:
+      case 'MMM YYYY':
+        // Return the format as per your requirement
+        result = `${month}-${year}`;
+        break;
+    }
+    return result;
+  }
+  parse(value: string): any {
+    const parts = value.split('/');
+    if (parts.length === 3) {
+      return new Date(+parts[2], +parts[1] - 1, +parts[0]);
+    }
   }
 }
 
-export const APP_DATE_FORMATS: MatDateFormats = {
+export const APP_DATE_FORMATS = {
   parse: {
-    dateInput: { month: 'short', year: 'numeric', day: 'numeric' }
+    dateInput: 'DD/MM/YYYY'
   },
   display: {
-    dateInput: 'input',
-    monthYearLabel: { year: 'numeric', month: 'numeric' },
-    dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
-    monthYearA11yLabel: { year: 'numeric', month: 'long' }
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY'
   }
 };
