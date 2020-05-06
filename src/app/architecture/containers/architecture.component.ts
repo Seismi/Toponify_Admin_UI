@@ -181,7 +181,6 @@ import { distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFr
 import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
 import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
 import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
-import { ArchitectureTableViewComponent } from '../components/architecture-table-view/architecture-table-view.component';
 import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
 import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
 import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
@@ -316,8 +315,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
-  @ViewChild(ArchitectureTableViewComponent)
-  private tableView: ArchitectureTableViewComponent;
   @ViewChild('drawer') drawer;
 
   get nodeComponentLayer(): TagApplicableTo {
@@ -1977,8 +1974,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
         }, 0);
       }
-
-      this.tableViewFilterValue = null;
     }
   }
 
@@ -2112,12 +2107,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
     });
-  }
-
-  onSearchTableView(filterValue: string): void {
-    const dataSource = this.tableView.dataSource;
-    dataSource.filter = filterValue.toLowerCase().toUpperCase();
-    this.tableViewFilterValue = filterValue;
   }
 
   onDownload(type: 'node' | 'links') {

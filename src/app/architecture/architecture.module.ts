@@ -66,7 +66,6 @@ import { ArchitectureTableViewComponent } from './components/architecture-table-
 import { ScopeTableComponent } from './components/scope-table/scope-table.component';
 import { NodeScopeModalComponent } from './containers/add-scope-modal/add-scope-modal.component';
 import { NewChildrenModalComponent } from './containers/new-children-modal/new-children-modal.component';
-import { SearchTableViewComponent } from './components/search-table-view/search-table-view.component';
 import { ReportsTabComponent } from './components/reports-tab/reports-tab.component';
 import { AddExistingAttributeModalComponent } from './containers/add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
@@ -156,7 +155,6 @@ import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-d
     ScopeTableComponent,
     NodeScopeModalComponent,
     NewChildrenModalComponent,
-    SearchTableViewComponent,
     ReportsTabComponent,
     AddExistingAttributeModalComponent,
     AttributesListComponent,
