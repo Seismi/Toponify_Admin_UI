@@ -64,7 +64,6 @@ export class RadioViewNameDialogComponent implements OnInit, OnDestroy {
         .subscribe(filters => {
           this.store.dispatch(
             new CreateRadioView({
-              // id: 'string',
               name: radioViewName,
               favourite: false,
               type: 'Simple Table',

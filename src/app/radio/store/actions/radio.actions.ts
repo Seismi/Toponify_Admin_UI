@@ -85,7 +85,45 @@ export enum RadioActionTypes {
 
   GetRadioView = '[Radio] get radio view',
   GetRadioViewSuccess = '[Radio] get radio view success',
-  GetRadioViewFail = '[Radio] get radio view Fail'
+  GetRadioViewFail = '[Radio] get radio view Fail',
+
+  SetRadioViewAsFavourite = '[Radio] set radio view as favourite',
+  SetRadioViewAsFavouriteSuccess = '[Radio] set radio view as favourite success',
+  SetRadioViewAsFavouriteFail = '[Radio] set radio view as favourite fail',
+
+  UnsetRadioViewAsFavourite = '[Radio] unset radio view as favourite',
+  UnsetRadioViewAsFavouriteSuccess = '[Radio] unset radio view as favourite success',
+  UnsetRadioViewAsFavouriteFail = '[Radio] unset radio view as favourite fail'
+}
+
+export class SetRadioViewAsFavourite implements Action {
+  readonly type = RadioActionTypes.SetRadioViewAsFavourite;
+  constructor(public payload: string) {}
+}
+
+export class SetRadioViewAsFavouriteSuccess implements Action {
+  readonly type = RadioActionTypes.SetRadioViewAsFavouriteSuccess;
+  constructor(public payload: string) {}
+}
+
+export class SetRadioViewAsFavouriteFail implements Action {
+  readonly type = RadioActionTypes.SetRadioViewAsFavouriteFail;
+  constructor(public payload: any) {}
+}
+
+export class UnsetRadioViewAsFavourite implements Action {
+  readonly type = RadioActionTypes.UnsetRadioViewAsFavourite;
+  constructor(public payload: string) {}
+}
+
+export class UnsetRadioViewAsFavouriteSuccess implements Action {
+  readonly type = RadioActionTypes.UnsetRadioViewAsFavouriteSuccess;
+  constructor(public payload: string) {}
+}
+
+export class UnsetRadioViewAsFavouriteFail implements Action {
+  readonly type = RadioActionTypes.UnsetRadioViewAsFavouriteFail;
+  constructor(public payload: any) {}
 }
 
 export class CreateRadioView implements Action {
@@ -417,4 +455,10 @@ export type RadioActionsUnion =
   | GetRadioViewsFail
   | GetRadioView
   | GetRadioViewSuccess
-  | GetRadioViewFail;
+  | GetRadioViewFail
+  | SetRadioViewAsFavourite
+  | SetRadioViewAsFavouriteSuccess
+  | SetRadioViewAsFavouriteFail
+  | UnsetRadioViewAsFavourite
+  | UnsetRadioViewAsFavouriteSuccess
+  | UnsetRadioViewAsFavouriteFail;

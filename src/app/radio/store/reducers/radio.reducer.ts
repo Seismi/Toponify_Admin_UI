@@ -11,7 +11,7 @@ export interface State {
   loading: boolean;
   selectedRadio: RadioDetail;
   reply: Reply[];
-  radioFilter: RadiosAdvancedSearch;
+  radioFilter: any; // RadiosAdvancedSearch;
   radioViews: any[] | null;
   error?: HttpErrorResponse | { message: string };
 }
@@ -31,6 +31,36 @@ export const initialState: State = {
 
 export function reducer(state = initialState, action: RadioActionsUnion): State {
   switch (action.type) {
+    case RadioActionTypes.SetRadioViewAsFavouriteSuccess: {
+      return {
+        ...state,
+        radioViews: state.radioViews.map(view => {
+          if (view.id === action.payload) {
+            return {
+              ...view,
+              favourite: true
+            };
+          }
+          return view;
+        })
+      };
+    }
+
+    case RadioActionTypes.UnsetRadioViewAsFavouriteSuccess: {
+      return {
+        ...state,
+        radioViews: state.radioViews.map(view => {
+          if (view.id === action.payload) {
+            return {
+              ...view,
+              favourite: false
+            };
+          }
+          return view;
+        })
+      };
+    }
+
     case RadioActionTypes.GetRadioViewSuccess: {
       return {
         ...state,

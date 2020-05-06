@@ -58,7 +58,11 @@ import {
   GetRadioViewSuccess,
   GetRadioViewsSuccess,
   GetRadioViewsFail,
-  GetRadioViewFail
+  GetRadioViewFail,
+  SetRadioViewAsFavouriteSuccess,
+  SetRadioViewAsFavouriteFail,
+  UnsetRadioViewAsFavouriteSuccess,
+  UnsetRadioViewAsFavouriteFail
 } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -292,6 +296,30 @@ export class RadioEffects {
       return this.radioService.deleteRadioView(payload).pipe(
         map(response => new DeleteRadioViewSuccess(payload)),
         catchError((error: HttpErrorResponse) => of(new DeleteRadioViewFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  setRadioViewFavourite$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.SetRadioViewAsFavourite),
+    map(action => action.payload),
+    mergeMap((id: string) => {
+      return this.radioService.setRadioViewAsFavourite(id).pipe(
+        map(_ => new SetRadioViewAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new SetRadioViewAsFavouriteFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  unsetRadioViewFavourite$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.UnsetRadioViewAsFavourite),
+    map(action => action.payload),
+    mergeMap((id: string) => {
+      return this.radioService.unsetRadioViewAsFavourite(id).pipe(
+        map(_ => new UnsetRadioViewAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new UnsetRadioViewAsFavouriteFail(error)))
       );
     })
   );

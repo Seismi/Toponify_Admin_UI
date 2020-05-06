@@ -9,7 +9,9 @@ import {
   GetRadioView,
   RadioFilter,
   UpdateRadioView,
-  CreateRadioViewSuccess
+  CreateRadioViewSuccess,
+  SetRadioViewAsFavourite,
+  UnsetRadioViewAsFavourite
 } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioFilter, getRadioViews } from '@app/radio/store/selectors/radio.selector';
@@ -103,29 +105,11 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
   }
 
   onRemoveFavourite(): void {
-    this.store.dispatch(
-      new UpdateRadioView({
-        radioViewId: this.selectedRadioView.id,
-        radioViewData: {
-          ...this.selectedRadioView,
-          favourite: false,
-          filterSet: this.activeFilters
-        }
-      })
-    );
+    this.store.dispatch(new UnsetRadioViewAsFavourite(this.selectedRadioView.id));
   }
 
   onAddFavourite(): void {
-    this.store.dispatch(
-      new UpdateRadioView({
-        radioViewId: this.selectedRadioView.id,
-        radioViewData: {
-          ...this.selectedRadioView,
-          favourite: true,
-          filterSet: this.activeFilters
-        }
-      })
-    );
+    this.store.dispatch(new SetRadioViewAsFavourite(this.selectedRadioView.id));
   }
 
   onRadioViewReset(): void {

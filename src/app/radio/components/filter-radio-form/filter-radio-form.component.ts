@@ -16,4 +16,12 @@ export class FilterRadioFormComponent {
 
   public status: string[] = Constants.RADIO_STATUS;
   public types: string[] = Constants.RADIO_CATEGORIES;
+
+  assignedToComparison(option: any, value: any): boolean {
+    return option && value ? option.id === value.id : false;
+  }
+
+  relatesToComparison(option: any, value: any): boolean {
+    return option && value ? option.id === value.id : false;
+  }
 }

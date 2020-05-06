@@ -106,4 +106,12 @@ export class RadioService {
   getRadioViews(): Observable<any> {
     return this.http.get<any>(`/radioViews`);
   }
+
+  setRadioViewAsFavourite(radioViewId: string): Observable<any> {
+    return this.http.post<any>(`/radioViews/${radioViewId}/favourites`, {});
+  }
+
+  unsetRadioViewAsFavourite(radioViewId: string): Observable<any> {
+    return this.http.delete<any>(`/radioViews/${radioViewId}/favourites`);
+  }
 }
