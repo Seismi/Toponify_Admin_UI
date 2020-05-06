@@ -18,6 +18,11 @@ export const getRadioFilter = createSelector(
   state => state.radioFilter
 );
 
+export const getRadioViews = createSelector(
+  getRadioFeatureState,
+  state => (state.radioViews ? state.radioViews : [])
+);
+
 export const getRadioAvailableTags = createSelector(
   getRadioFeatureState,
   state => state.availableTags

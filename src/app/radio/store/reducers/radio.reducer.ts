@@ -12,6 +12,7 @@ export interface State {
   selectedRadio: RadioDetail;
   reply: Reply[];
   radioFilter: RadiosAdvancedSearch;
+  radioViews: any[] | null;
   error?: HttpErrorResponse | { message: string };
 }
 
@@ -24,11 +25,73 @@ export const initialState: State = {
   selectedRadio: null,
   reply: [],
   radioFilter: null,
-  error: null
+  error: null,
+  radioViews: null
 };
 
 export function reducer(state = initialState, action: RadioActionsUnion): State {
   switch (action.type) {
+    case RadioActionTypes.GetRadioViewSuccess: {
+      return {
+        ...state,
+        radioFilter: { ...action.payload }
+      };
+    }
+
+    case RadioActionTypes.GetRadioViewsSuccess: {
+      return {
+        ...state,
+        radioViews: action.payload
+      };
+    }
+
+    case RadioActionTypes.CreateRadioViewSuccess: {
+      return {
+        ...state,
+        radioViews: [
+          ...state.radioViews,
+          {
+            name: action.payload.name,
+            id: action.payload.id,
+            favourite: action.payload.favourite
+          }
+        ]
+      };
+    }
+
+    case RadioActionTypes.CreateRadioViewFail: {
+      // TODO:
+      return {
+        ...state
+      };
+    }
+
+    case RadioActionTypes.UpdateRadioViewSuccess: {
+      // TODO: dont do anything there
+      return {
+        ...state
+      };
+    }
+
+    case RadioActionTypes.UpdateRadioViewFail: {
+      return {
+        ...state
+      };
+    }
+
+    case RadioActionTypes.DeleteRadioViewSuccess: {
+      return {
+        ...state,
+        radioViews: state.radioViews.filter(radioView => radioView.id !== action.payload)
+      };
+    }
+
+    case RadioActionTypes.DeleteRadioViewFail: {
+      return {
+        ...state
+      };
+    }
+
     case RadioActionTypes.LoadRadios: {
       return {
         ...state,
