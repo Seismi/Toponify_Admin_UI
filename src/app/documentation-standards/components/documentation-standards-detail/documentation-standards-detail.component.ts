@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-documentation-standards-detail',
@@ -14,6 +15,7 @@ export class DocumentationStandardsDetailComponent {
   @Input() modalMode: boolean = false;
 
   public types = Constants.PROPERTY_TYPES;
+  public Roles = Roles;
 
   @Output() saveDocument = new EventEmitter<void>();
   @Output() deleteDocument = new EventEmitter<void>();

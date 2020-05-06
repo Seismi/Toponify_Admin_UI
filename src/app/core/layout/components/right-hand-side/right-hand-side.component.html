@@ -1,6 +1,7 @@
 <div class="container">
   <h4>Select a {{title}} in the table to the left or</h4>
-  <button 
+  <button
+    *ngIf="canEdit"
     mat-raised-button 
     color="primary" 
     (click)="onAdd()" 
