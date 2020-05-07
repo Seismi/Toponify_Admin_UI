@@ -1,7 +1,7 @@
 <div class="wrapper">
-  <table>
+  <table *ngIf="groupInfo?.name; else elseBlock">
     <tr>
-      <th class="title">{{ groupInfo?.name ? 'Grouped in' : 'Has no group' }}</th>
+      <th class="title">Grouped in</th>
       <th>
         <div *ngIf="workPackageIsEditable">
           <mat-icon data-qa="grouped-in-table-delete" *ngIf="groupInfo?.name" (click)="deleteNodeGroup.emit()">delete</mat-icon>
@@ -14,4 +14,7 @@
       <td>{{groupInfo?.name}}</td>
     </tr>
   </table>
+  <ng-template #elseBlock>
+    <button mat-raised-button (click)="editGroup.emit()">Add to a group</button>
+  </ng-template>
 </div>
