@@ -27,7 +27,11 @@ import {
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
-import { getSelectedWorkPackage, getWorkPackageBaselineAvailability, getAllWorkPackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {
+  getSelectedWorkPackage,
+  getWorkPackageBaselineAvailability,
+  getAllWorkPackages
+} from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
 import {
@@ -36,7 +40,8 @@ import {
   TeamEntityOrOwnersEntityOrApproversEntity,
   WorkPackageDetail,
   WorkPackageEntity,
-  Baseline, currentArchitecturePackageId
+  Baseline,
+  currentArchitecturePackageId
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -61,6 +66,7 @@ import { SelectModalComponent } from '@app/core/layout/components/select-modal/s
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -69,6 +75,7 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
   providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
+  public Roles = Roles;
   public currentState = currentArchitecturePackageId;
   public workpackage: WorkPackageDetail;
   public subscriptions: Subscription[] = [];
@@ -176,11 +183,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       data: {
         title: 'Select owner to add to owners',
         placeholder: 'Owners',
-        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
-          map(data =>
-            data.filter(({ id }) => !ids.has(id))
-          )
-        ),
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(map(data => data.filter(({ id }) => !ids.has(id)))),
         selectedIds: []
       }
     });
@@ -193,7 +196,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
             ownerId: data.value[0].id,
             owners: data.value[0]
           })
-        )
+        );
       }
     });
   }
@@ -266,6 +269,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
                 assignedTo: data.radio.assignedTo,
                 actionBy: data.radio.actionBy,
                 mitigation: data.radio.mitigation,
+                frequency: data.radio.frequency,
+                severity: data.radio.severity,
                 relatesTo: [{ workPackage: { id: this.workpackageId } }]
               }
             })
@@ -305,7 +310,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSaveProperties(data: { propertyId: string, value: string }): void {
+  onSaveProperties(data: { propertyId: string; value: string }): void {
     this.store.dispatch(
       new UpdateCustomProperty({
         workPackageId: this.workpackageId,
@@ -434,18 +439,17 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-
   onArchiveWorkPackage(): void {
     this.store.dispatch(
       new ArchiveWorkPackage({
         workPackageId: this.workpackageId,
-        archived: (this.workpackage.archived) ? false : true
+        archived: this.workpackage.archived ? false : true
       })
-    )
+    );
   }
 
   onAddBaseline(): void {
-    this.store.dispatch(new LoadWorkPackageBaselineAvailability({workPackageId: this.workpackageId}));
+    this.store.dispatch(new LoadWorkPackageBaselineAvailability({ workPackageId: this.workpackageId }));
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: true,
       width: 'auto',
@@ -459,10 +463,12 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        this.store.dispatch(new AddWorkPackageBaseline({
-          workPackageId: this.workpackageId,
-          baselineId: data.value[0].id
-        }))
+        this.store.dispatch(
+          new AddWorkPackageBaseline({
+            workPackageId: this.workpackageId,
+            baselineId: data.value[0].id
+          })
+        );
       }
     });
   }
@@ -477,12 +483,14 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    dialogRef.afterClosed().subscribe((data) => {
+    dialogRef.afterClosed().subscribe(data => {
       if (data) {
-        this.store.dispatch(new DeleteWorkPackageBaseline({
-          workPackageId: this.workpackageId,
-          baselineId: baseline.id
-        }));
+        this.store.dispatch(
+          new DeleteWorkPackageBaseline({
+            workPackageId: this.workpackageId,
+            baselineId: baseline.id
+          })
+        );
       }
     });
   }

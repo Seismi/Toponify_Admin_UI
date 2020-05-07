@@ -7,6 +7,7 @@ import {
   Baseline
 } from '@app/workpackage/store/models/workpackage.models';
 import { TeamEntity } from '@app/settings/store/models/user.model';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-workpackage-detail',
@@ -14,6 +15,7 @@ import { TeamEntity } from '@app/settings/store/models/user.model';
   styleUrls: ['./workpackage-detail.component.scss']
 })
 export class WorkPackageDetailComponent {
+  public Roles = Roles;
   public disableStatusInput = true;
 
   @Input() group: FormGroup;
@@ -82,10 +84,10 @@ export class WorkPackageDetailComponent {
   archiveWorkPackage = new EventEmitter<void>();
 
   @Output()
-  addBaseline = new EventEmitter<void>()
+  addBaseline = new EventEmitter<void>();
 
   @Output()
-  deleteBaseline = new EventEmitter<Baseline>()
+  deleteBaseline = new EventEmitter<Baseline>();
 
   onSave(): void {
     this.saveWorkpackage.emit();

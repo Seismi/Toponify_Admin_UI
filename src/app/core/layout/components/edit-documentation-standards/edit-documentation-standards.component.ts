@@ -6,6 +6,7 @@ import { FormGroup, Validators } from '@angular/forms';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 import { EditDocumentationStandardsFormService } from './form/services/form.service';
 import { EditDocumentationStandardsFormValidatorService } from './form/services/form-validator.service';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 const columns: string[] = ['name', 'value', 'edit', 'delete'];
 
@@ -16,10 +17,13 @@ const columns: string[] = ['name', 'value', 'edit', 'delete'];
   providers: [EditDocumentationStandardsFormService, EditDocumentationStandardsFormValidatorService]
 })
 export class EditDocumentationStandardsTableComponent {
+  public Roles = Roles;
   @Input() group: FormGroup;
-  @Input() isEditable: boolean = true;
+  @Input() isEditable = true;
   @Input() nodeCategory: string;
   public index: number;
+
+  @Input() canEdit = true;
 
   @Input()
   set data(data: NodeDetail[]) {
@@ -34,9 +38,9 @@ export class EditDocumentationStandardsTableComponent {
   public dataSource: MatTableDataSource<NodeDetail>;
   public displayedColumns: string[] = columns;
 
-  constructor(private editDocumentationStandardsFormService: EditDocumentationStandardsFormService) { }
+  constructor(private editDocumentationStandardsFormService: EditDocumentationStandardsFormService) {}
 
-  @Output() saveProperty = new EventEmitter<{propertyId: string, value: string}>();
+  @Output() saveProperty = new EventEmitter<{ propertyId: string; value: string }>();
   @Output() deleteProperty = new EventEmitter<CustomPropertiesEntity>();
 
   get editDocumentationStandardsForm(): FormGroup {
@@ -47,7 +51,9 @@ export class EditDocumentationStandardsTableComponent {
     this.index = index;
     const reg = this.editDocumentationStandardsFormService.getValueValidation(documentStandard.type);
     this.editDocumentationStandardsForm.get('value').setValidators([Validators.pattern(reg)]);
-    this.editDocumentationStandardsFormService.editDocumentationStandardsForm.patchValue({value: documentStandard.value});
+    this.editDocumentationStandardsFormService.editDocumentationStandardsForm.patchValue({
+      value: documentStandard.value
+    });
   }
 
   onSave(propertyId: string): void {
@@ -55,7 +61,7 @@ export class EditDocumentationStandardsTableComponent {
       return;
     }
     this.index = -1;
-    this.saveProperty.emit({propertyId: propertyId, value: this.editDocumentationStandardsForm.value});
+    this.saveProperty.emit({ propertyId: propertyId, value: this.editDocumentationStandardsForm.value });
   }
 
   onCancel(): void {
@@ -77,5 +83,4 @@ export class EditDocumentationStandardsTableComponent {
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
 }

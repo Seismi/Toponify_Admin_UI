@@ -25,11 +25,11 @@ import {DiagramImageService} from '@app/architecture/services/diagram-image.serv
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
   [1]: Level.system,
-  [2]: Level.dataSet,
+  [2]: Level.data,
   [3]: Level.dimension,
   [4]: Level.reportingConcept,
   [8]: Level.systemMap,
-  [9]: Level.dataSetMap,
+  [9]: Level.dataMap,
   [10]: Level.usage
 };
 

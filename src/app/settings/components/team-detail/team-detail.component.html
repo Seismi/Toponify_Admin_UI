@@ -2,13 +2,20 @@
   <div [ngClass]="{ disabled: !isEditable }">
     <!-- Name -->
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name" [ngClass]="{ editable: isEditable }" data-qa="settings-teams-details-name" />
+      <input
+        matInput
+        placeholder="Name"
+        formControlName="name"
+        [ngClass]="{ editable: isEditable }"
+        data-qa="settings-teams-details-name"
+      />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <!-- Slide toggle -->
     <mat-slide-toggle
-      color="primary" 
+      *ngIf="!disabled"
+      color="primary"
       formControlName="designAuthority"
       matTooltip="Groups flagged as design authorities are asked to approve all work packages regardless of the systems they impact."
       data-qa="settings-teams-details-design-authority"
@@ -28,15 +35,39 @@
       ></textarea>
     </mat-form-field>
   </div>
-
-  <div *ngIf="!modalMode">
-    <div *ngIf="!isEditable; else elseBlock">
-      <button mat-raised-button color="primary" (click)="editTeam.emit()" data-qa="settings-teams-details-edit">Edit</button>
-      <button mat-raised-button color="warn" (click)="deleteTeam.emit()" data-qa="settings-teams-details-delete">Delete</button>
+  <ng-container *appByRole="[Roles.ADMIN, Roles.ARCHITECT]">
+    <div *ngIf="!modalMode">
+      <div *ngIf="!isEditable; else elseBlock">
+        <button
+          *ngIf="!disabled"
+          mat-raised-button 
+          color="primary" 
+          (click)="editTeam.emit()" 
+          data-qa="settings-teams-details-edit"
+        >
+          Edit
+        </button>
+        <button
+          data-qa="settings-teams-details-disabled"
+          mat-raised-button 
+          class="disableButton"
+          (click)="disableTeam.emit()"
+        >
+          {{ disabled ? 'Enable' : 'Disable' }}
+        </button>
+      </div>
+      <ng-template #elseBlock>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="saveTeam.emit()"
+          [disabled]="group.invalid"
+          data-qa="settings-teams-details-save"
+        >
+          Save
+        </button>
+        <button mat-raised-button (click)="cancelEdit.emit()" data-qa="settings-teams-details-cancel">Cancel</button>
+      </ng-template>
     </div>
-    <ng-template #elseBlock>
-      <button mat-raised-button color="primary" (click)="saveTeam.emit()" [disabled]="group.invalid" data-qa="settings-teams-details-save">Save</button>
-      <button mat-raised-button (click)="cancelEdit.emit()" data-qa="settings-teams-details-cancel">Cancel</button>
-    </ng-template>
-  </div>
+  </ng-container>
 </form>

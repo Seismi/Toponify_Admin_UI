@@ -86,20 +86,25 @@ export class RadioComponent implements OnInit, OnDestroy {
         })
     );
 
-    this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
-      if (action) {
-        this.selectedRadioIndex = action.id;
-      }
-    });
+    this.subscriptions.push(
+      this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
+        if (action) {
+          this.selectedRadioIndex = action.id;
+        }
+      })
+    );
 
-    this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
-      this.selectedRadioIndex = action.payload.id;
-      this.store.dispatch(new LoadRadios({}));
-      this.onSelectRadio(action.payload);
-    });
+    this.subscriptions.push(
+      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
+        this.selectedRadioIndex = action.payload.id;
+        this.store.dispatch(new LoadRadios({}));
+        this.onSelectRadio(action.payload);
+      })
+    );
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.forEach(subs => subs.unsubscribe());
     this.store.dispatch(new RadioFilter(null));
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }

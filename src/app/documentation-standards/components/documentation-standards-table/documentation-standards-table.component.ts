@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, Input, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
+import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
   selector: 'smi-documentation-standards-table',
@@ -9,6 +10,7 @@ import { DocumentStandard } from '@app/documentation-standards/store/models/docu
 })
 export class DocumentationStandardsTableComponent {
   public selectedRowIndex: string | number = -1;
+  public Roles = Roles;
 
   @Input()
   set data(data: DocumentStandard[]) {

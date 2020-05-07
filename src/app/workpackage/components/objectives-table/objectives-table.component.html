@@ -1,10 +1,13 @@
 <div class="wrapper">
   <div class="search-container">
-    <input placeholder="Search" data-qa="work-packages-objectives-table-quick-search" (keyup)="onSearch($event.target.value)">
+    <input
+      placeholder="Search"
+      data-qa="work-packages-objectives-table-quick-search"
+      (keyup)="onSearch($event.target.value)"
+    />
   </div>
   <div class="table-wrapper">
     <table mat-table [dataSource]="dataSource">
-
       <!-- Name Column -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -16,23 +19,38 @@
         <th mat-header-cell *matHeaderCellDef>
           <span class="description-header">
             Description
-            <button mat-icon-button (click)="onAdd()" data-qa="work-packages-objectives-table-add">
+            <button
+              *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+              mat-icon-button
+              (click)="onAdd()"
+              data-qa="work-packages-objectives-table-add"
+            >
               <mat-icon>add_circle_outline</mat-icon>
             </button>
           </span>
         </th>
         <td mat-cell *matCellDef="let element">
-        <span class="description-cell">
-          {{ element.description }}
-          <span>
-            <button mat-icon-button (click)="onMove(element)" data-qa="work-packages-objectives-table-move">
-               <mat-icon>menu_open</mat-icon>
-            </button>
-            <button mat-icon-button (click)="onDelete(element)" data-qa="work-packages-objectives-table-delete">
-               <mat-icon>delete</mat-icon>
-            </button>
+          <span class="description-cell">
+            {{ element.description }}
+            <span>
+              <button
+                mat-icon-button
+                *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+                (click)="onMove(element)"
+                data-qa="work-packages-objectives-table-move"
+              >
+                <mat-icon>menu_open</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
+                (click)="onDelete(element)"
+                data-qa="work-packages-objectives-table-delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </span>
           </span>
-        </span>
         </td>
       </ng-container>
 

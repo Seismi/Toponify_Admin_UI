@@ -79,11 +79,11 @@ export class ReportService {
   }
 
   getDataSets(workPackageId: string, reportId: string): Observable<{ data: ReportDataSet[] }> {
-    return this.http.get<{ data: ReportDataSet[] }>(`/workpackages/${workPackageId}/reports/${reportId}/dataSets`);
+    return this.http.get<{ data: ReportDataSet[] }>(`/workpackages/${workPackageId}/reports/${reportId}/dataNodes`);
   }
 
   addDataSets(workPackageId: string, reportId: string, ids: { id: string }[]): Observable<ReportDetailApiRespoonse> {
-    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/dataSets`, {
+    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/dataNodes`, {
       data: ids
     });
   }
