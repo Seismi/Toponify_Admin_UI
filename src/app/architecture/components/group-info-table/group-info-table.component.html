@@ -1,7 +1,7 @@
 <div class="wrapper">
   <table>
     <tr>
-      <th class="title">Grouped in</th>
+      <th class="title">{{ groupInfo?.name ? 'Grouped in' : 'Has no group' }}</th>
       <th>
         <div *ngIf="workPackageIsEditable">
           <mat-icon data-qa="grouped-in-table-delete" *ngIf="groupInfo?.name" (click)="deleteNodeGroup.emit()">delete</mat-icon>
