@@ -2,7 +2,13 @@
   <div [ngClass]="{ disabled: !isEditable }">
     <!-- Name -->
     <mat-form-field>
-      <input matInput placeholder="Name" [ngClass]="{ editable: isEditable }" formControlName="name" />
+      <input 
+        matInput 
+        placeholder="Name" 
+        [ngClass]="{ editable: isEditable }" 
+        formControlName="name"
+        data-qa="scopes-and-layouts-details-name"
+      />
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
