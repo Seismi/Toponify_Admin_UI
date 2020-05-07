@@ -33,10 +33,10 @@ export class RadioModalComponent implements OnInit, OnDestroy {
     private radioDetailService: RadioDetailService,
     public dialogRef: MatDialogRef<RadioModalComponent>,
     @Inject(MAT_DIALOG_DATA)
-      public data: {
-        selectedNode: NodeDetail;
-      }
-    ) { }
+    public data: {
+      selectedNode: NodeDetail;
+    }
+  ) {}
 
   ngOnInit() {
     this.users$ = this.store.pipe(select(getUsers));
