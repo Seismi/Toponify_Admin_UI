@@ -296,7 +296,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private addDataSetSubscription: Subscription;
   private addChildSubscription: Subscription;
   public params: Params;
-  public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
   public groupMemberIds: Observable<string[]>;
@@ -1977,8 +1976,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
         }, 0);
       }
-
-      this.tableViewFilterValue = null;
     }
   }
 
@@ -2112,12 +2109,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
     });
-  }
-
-  onSearchTableView(filterValue: string): void {
-    const dataSource = this.tableView.dataSource;
-    dataSource.filter = filterValue.toLowerCase().toUpperCase();
-    this.tableViewFilterValue = filterValue;
   }
 
   onDownload(type: 'node' | 'links') {
