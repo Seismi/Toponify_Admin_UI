@@ -53,6 +53,7 @@ import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delet
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
+import { RadioViewNameDialogComponent } from './components/radio-view-name-dialog/radio-view-name-dialog.component';
 
 @NgModule({
   imports: [
@@ -89,13 +90,7 @@ import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
     EffectsModule.forFeature([RadioEffects]),
     CKEditorModule
   ],
-  exports: [
-    RadioTableComponent,
-    RadioDetailsComponent,
-    ReplyTextComponent,
-    ChatBoxComponent,
-    RadioDetailComponent
-  ],
+  exports: [RadioTableComponent, RadioDetailsComponent, ReplyTextComponent, ChatBoxComponent, RadioDetailComponent],
   declarations: [
     RadioComponent,
     RadioRoutingComponent,
@@ -114,7 +109,8 @@ import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
     ConfirmModalComponent,
     AssociateModalComponent,
     DeleteRadioModalComponent,
-    AlphabeticalOrderPipe
+    AlphabeticalOrderPipe,
+    RadioViewNameDialogComponent
   ],
   entryComponents: [
     RadioModalComponent,
@@ -123,7 +119,8 @@ import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
     DeleteRadioPropertyModalComponent,
     ConfirmModalComponent,
     AssociateModalComponent,
-    DeleteRadioModalComponent
+    DeleteRadioModalComponent,
+    RadioViewNameDialogComponent
   ],
   providers: [RadioService, { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }]
 })
