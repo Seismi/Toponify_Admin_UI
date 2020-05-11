@@ -17,11 +17,11 @@ const $ = go.GraphObject.make;
 // Levels in the diagram
 export enum Level {
   system = 'system',
-  dataSet = 'data set',
+  data = 'data',
   dimension = 'dimension',
   reportingConcept = 'reporting concept',
   systemMap = 'system map',
-  dataSetMap = 'data set map',
+  dataMap = 'data map',
   dimensionMap = 'dimension map',
   attribute = 'attribute',
   usage = 'usage analysis'
@@ -30,33 +30,33 @@ export enum Level {
 // Numbers associated to each level in the data store
 export const viewLevelNum = {
   [Level.system]: 1,
-  [Level.dataSet]: 2,
+  [Level.data]: 2,
   [Level.dimension]: 3,
   [Level.reportingConcept]: 4,
   [Level.attribute]: 5,
   [Level.systemMap]: 8,
-  [Level.dataSetMap]: 9,
+  [Level.dataMap]: 9,
   [Level.usage]: 10
 };
 
 export const lessDetailOrderMapping = {
   [Level.reportingConcept]: Level.dimension,
-  [Level.dimension]: Level.dataSet,
+  [Level.dimension]: Level.data,
   [Level.systemMap]: Level.system,
-  [Level.dataSetMap]: Level.dataSet,
+  [Level.dataMap]: Level.data,
   [Level.dimensionMap]: Level.dimension,
-  [Level.dataSet]: Level.system
+  [Level.data]: Level.system
 };
 
 export const moreDetailOrderMapping = {
-  [Level.system]: Level.dataSet,
-  [Level.dataSet]: Level.dimension,
+  [Level.system]: Level.data,
+  [Level.data]: Level.dimension,
   [Level.dimension]: Level.reportingConcept
 };
 
 const mapViewLinkLayers = {
-  [Level.systemMap]: layers.dataSet,
-  [Level.dataSetMap]: layers.dimension,
+  [Level.systemMap]: layers.data,
+  [Level.dataMap]: layers.dimension,
   [Level.dimensionMap]: layers.reportingConcept
 };
 
@@ -261,8 +261,8 @@ export class DiagramLevelService {
   changeLevelWithFilter(_event: any, object: go.Node): void {
     let newLevel: Level;
     if (object.data.layer === layers.system) {
-      newLevel = Level.dataSet;
-    } else if (object.data.layer === layers.dataSet) {
+      newLevel = Level.data;
+    } else if (object.data.layer === layers.data) {
       newLevel = Level.dimension;
     } else if (object.data.layer === layers.dimension) {
       newLevel = Level.reportingConcept;
@@ -328,9 +328,9 @@ export class DiagramLevelService {
     let tooltip: string;
     if (level === Level.system) {
       tooltip = NodeToolTips[5].Tooltip;
-    } else if (level === Level.dataSet || level === Level.systemMap) {
+    } else if (level === Level.data || level === Level.systemMap) {
       tooltip = NodeToolTips[10].Tooltip;
-    } else if (level === Level.dimension || level === Level.dataSetMap) {
+    } else if (level === Level.dimension || level === Level.dataMap) {
       tooltip = NodeToolTips[13].Tooltip;
     } else if (level === Level.reportingConcept || level === Level.dimensionMap) {
       tooltip = NodeToolTips[17].Tooltip;
@@ -342,7 +342,7 @@ export class DiagramLevelService {
     let tooltip: string;
     if (level === Level.system) {
       tooltip = NodeToolTips[6].Tooltip;
-    } else if (level === Level.dataSet || level === Level.systemMap) {
+    } else if (level === Level.data || level === Level.systemMap) {
       tooltip = NodeToolTips[11].Tooltip;
     }
     return tooltip;
@@ -383,8 +383,8 @@ export class DiagramLevelService {
       let transformationLayer;
 
       if (level === Level.systemMap) {
-        transformationLayer = layers.dataSet;
-      } else if (level === Level.dataSetMap) {
+        transformationLayer = layers.data;
+      } else if (level === Level.dataMap) {
         transformationLayer = layers.dimension;
       } else if (level === Level.dimensionMap) {
         transformationLayer = layers.reportingConcept;
@@ -442,26 +442,26 @@ export class DiagramLevelService {
           tooltip: NodeToolTips[4].Tooltip
         })
       );
-    } else if (level === Level.dataSet) {
+    } else if (level === Level.data) {
       paletteViewNodes.splice(0, 0,
         new Node({
           id: 'New Physical Data Set',
           name: 'New Physical Data Set',
-          layer: layers.dataSet,
+          layer: layers.data,
           category: nodeCategories.physical,
           tooltip: NodeToolTips[7].Tooltip
         }),
         new Node({
           id: 'New Virtual Data Set',
           name: 'New Virtual Data Set',
-          layer: layers.dataSet,
+          layer: layers.data,
           category: nodeCategories.virtual,
           tooltip: NodeToolTips[8].Tooltip
         }),
         new Node({
           id: 'New Master Data Data Set',
           name: 'New Master Data Data Set',
-          layer: layers.dataSet,
+          layer: layers.data,
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[9].Tooltip
         })
@@ -502,7 +502,7 @@ export class DiagramLevelService {
       );
     }
 
-    if ([Level.system, Level.dataSet, Level.systemMap].includes(level)) {
+    if ([Level.system, Level.data, Level.systemMap].includes(level)) {
       paletteViewLinks.push({
         category: linkCategories.data,
         id: 'New data link',
@@ -613,7 +613,7 @@ export class DiagramLevelService {
   createNodeUsageLanes(diagram: go.Diagram): void {
 
     [layers.system,
-     layers.dataSet,
+     layers.data,
      layers.dimension,
      layers.reportingConcept ].forEach(
        function(layer) {

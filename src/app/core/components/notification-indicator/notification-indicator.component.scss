@@ -1,12 +1,13 @@
 :host {
   display: block;
   mat-icon {
-    width: auto;
-    display: block;
     cursor: pointer;
     color: rgb(222, 235, 255);
   }
   button {
+    &:focus {
+      outline: none;
+    }
     &.selected {
       color: #fff;
       background-color: #1c63ce;

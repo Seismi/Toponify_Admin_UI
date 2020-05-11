@@ -20,7 +20,7 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   @Input() selectedItem: NodeDetail | NodeLinkDetail;
   @Input() view: 'system' | 'link';
   @Input() find: (id: string) => Observable<string>;
-  public filterValue: string;
+  private filterValue: string;
 
   @Input()
   set data(data: Node[] | NodeLink[]) {

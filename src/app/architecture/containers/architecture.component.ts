@@ -295,7 +295,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private addDataSetSubscription: Subscription;
   private addChildSubscription: Subscription;
   public params: Params;
-  public tableViewFilterValue: string;
   public selectedWorkPackageEntities: WorkPackageEntity[];
   public parentDescendantIds: Observable<string[]>;
   public groupMemberIds: Observable<string[]>;
