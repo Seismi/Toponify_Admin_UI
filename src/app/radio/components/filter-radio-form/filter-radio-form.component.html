@@ -22,7 +22,12 @@
   <!-- Assigned To -->
   <mat-form-field>
     <mat-label>Assigned To</mat-label>
-    <mat-select formControlName="assignedTo" multiple data-qa="radio-filter-assigned-to">
+    <mat-select
+      formControlName="assignedTo"
+      [compareWith]="assignedToComparison"
+      multiple
+      data-qa="radio-filter-assigned-to"
+    >
       <mat-option *ngFor="let user of users" [value]="user"> {{ user.firstName }} {{ user.lastName }} </mat-option>
     </mat-select>
   </mat-form-field>
@@ -30,7 +35,12 @@
   <!-- Relates To -->
   <mat-form-field>
     <mat-label>Relates To</mat-label>
-    <mat-select formControlName="relatesTo" multiple data-qa="radio-filter-relates-to">
+    <mat-select
+      formControlName="relatesTo"
+      [compareWith]="relatesToComparison"
+      multiple
+      data-qa="radio-filter-relates-to"
+    >
       <mat-option *ngFor="let node of nodes" [value]="node">
         {{ node.name }}
       </mat-option>
@@ -69,13 +79,7 @@
 
   <!-- Text -->
   <mat-form-field>
-    <textarea
-      data-qa="radio-filter-text"
-      matInput 
-      rows="4" 
-      placeholder="Text Contains" 
-      formControlName="text"
-    >
+    <textarea data-qa="radio-filter-text" matInput rows="4" placeholder="Text Contains" formControlName="text">
     </textarea>
   </mat-form-field>
 </form>

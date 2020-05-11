@@ -27,6 +27,7 @@
   <div style="display: flex;">
     <div style="flex-grow: 1;">
       <button 
+        *appByRole="[Roles.ADMIN, Roles.ARCHITECT]"
         mat-raised-button 
         color="primary" 
         (click)="onAdd()"

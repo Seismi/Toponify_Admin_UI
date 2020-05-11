@@ -37,7 +37,15 @@ export enum TeamActionTypes {
 
   DeleteMember = '[Team] Delete Member',
   DeleteMemberSuccess = '[Team] Delete Member Success',
-  DeleteMemberFailure = '[Team] Delete Member Failure'
+  DeleteMemberFailure = '[Team] Delete Member Failure',
+
+  DisableTeam = '[Team] Disable Team',
+  DisableTeamSuccess = '[Team] Disable Team Success',
+  DisableTeamFailure = '[Team] Disable Team Failure',
+
+  EnableTeam = '[Team] Enable Team',
+  EnableTeamSuccess = '[Team] Enable Team Success',
+  EnableTeamFailure = '[Team] Enable Team Failure'
 }
 
 export class LoadTeams implements Action {
@@ -145,6 +153,36 @@ export class DeleteMemberFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class DisableTeam implements Action {
+  readonly type = TeamActionTypes.DisableTeam;
+  constructor(public payload: { teamId: string }) {}
+}
+
+export class DisableTeamSuccess implements Action {
+  readonly type = TeamActionTypes.DisableTeamSuccess;
+  constructor(public payload: TeamDetails) {}
+}
+
+export class DisableTeamFailure implements Action {
+  readonly type = TeamActionTypes.DisableTeamFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class EnableTeam implements Action {
+  readonly type = TeamActionTypes.EnableTeam;
+  constructor(public payload: { teamId: string }) {}
+}
+
+export class EnableTeamSuccess implements Action {
+  readonly type = TeamActionTypes.EnableTeamSuccess;
+  constructor(public payload: TeamDetails) {}
+}
+
+export class EnableTeamFailure implements Action {
+  readonly type = TeamActionTypes.EnableTeamFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type TeamActionsUnion =
   | LoadTeams
   | LoadTeamsSuccess
@@ -166,4 +204,10 @@ export type TeamActionsUnion =
   | AddMemberFailure
   | DeleteMember
   | DeleteMemberSuccess
-  | DeleteMemberFailure;
+  | DeleteMemberFailure
+  | DisableTeam
+  | DisableTeamSuccess
+  | DisableTeamFailure
+  | EnableTeam
+  | EnableTeamSuccess
+  | EnableTeamFailure;

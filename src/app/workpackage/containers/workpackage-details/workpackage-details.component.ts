@@ -269,6 +269,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
                 assignedTo: data.radio.assignedTo,
                 actionBy: data.radio.actionBy,
                 mitigation: data.radio.mitigation,
+                frequency: data.radio.frequency,
+                severity: data.radio.severity,
                 relatesTo: [{ workPackage: { id: this.workpackageId } }]
               }
             })

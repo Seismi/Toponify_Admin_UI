@@ -20,9 +20,11 @@ export interface TeamEntity {
   id: string;
   name: string;
   type: string;
+  disabled?: boolean;
 }
 
 export interface TeamEntitiesHttpParams {
+  includeDisabled?: boolean;
   ownerQuery?: string;
   TeamQuery?: string;
   page?: number;
@@ -36,6 +38,7 @@ export interface TeamDetails {
   type: string;
   members?: (MembersEntity)[] | null;
   designAuthority: boolean;
+  disabled?: boolean;
 }
 
 export interface MembersEntity {
