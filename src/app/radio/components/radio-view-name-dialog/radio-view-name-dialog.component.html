@@ -1,0 +1,11 @@
+<form [formGroup]="nameForm" (ngSubmit)="onSubmit()">
+  <div>
+    <mat-form-field>
+      <mat-label>Radio view name</mat-label>
+      <input matInput placeholder="View Name" formControlName="name" />
+    </mat-form-field>
+    <div mat-dialog-actions>
+      <button [disabled]="!isValid" mat-button>Create</button>
+    </div>
+  </div>
+</form>

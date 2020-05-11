@@ -48,7 +48,21 @@ import {
   AddRadioTagsFail,
   DeleteRadioTags,
   DeleteRadioTagsSuccess,
-  DeleteRadioTagsFail
+  DeleteRadioTagsFail,
+  CreateRadioViewSuccess,
+  CreateRadioViewFail,
+  UpdateRadioViewSuccess,
+  UpdateRadioViewFail,
+  DeleteRadioViewSuccess,
+  DeleteRadioViewFail,
+  GetRadioViewSuccess,
+  GetRadioViewsSuccess,
+  GetRadioViewsFail,
+  GetRadioViewFail,
+  SetRadioViewAsFavouriteSuccess,
+  SetRadioViewAsFavouriteFail,
+  UnsetRadioViewAsFavouriteSuccess,
+  UnsetRadioViewAsFavouriteFail
 } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -206,7 +220,7 @@ export class RadioEffects {
   addRadioTags$ = this.actions$.pipe(
     ofType<AddRadioTags>(RadioActionTypes.AddRadioTags),
     map(action => action.payload),
-    switchMap((payload: { radioId: string, tagIds: { id: string }[] }) => {
+    switchMap((payload: { radioId: string; tagIds: { id: string }[] }) => {
       return this.radioService.addRadioTags(payload.radioId, payload.tagIds).pipe(
         switchMap((response: RadioDetailApiResponse) => [new AddRadioTagsSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new AddRadioTagsFail(error)))
@@ -218,10 +232,94 @@ export class RadioEffects {
   deleteRadioTags$ = this.actions$.pipe(
     ofType<DeleteRadioTags>(RadioActionTypes.DeleteRadioTags),
     map(action => action.payload),
-    mergeMap((payload: { radioId: string, tagId: string }) => {
+    mergeMap((payload: { radioId: string; tagId: string }) => {
       return this.radioService.deleteRadioTags(payload.radioId, payload.tagId).pipe(
         map(response => new DeleteRadioTagsSuccess(response.data)),
         catchError((error: HttpErrorResponse) => of(new DeleteRadioTagsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  getRadioViews$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.GetRadioViews),
+    map(action => action.payload),
+    mergeMap(() => {
+      return this.radioService.getRadioViews().pipe(
+        map(response => new GetRadioViewsSuccess(response.data)),
+        catchError((error: HttpErrorResponse) => of(new GetRadioViewsFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  getRadioView$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.GetRadioView),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.radioService.getRadioView(payload).pipe(
+        map(response => new GetRadioViewSuccess(response.data.filterSet)),
+        catchError((error: HttpErrorResponse) => of(new GetRadioViewFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  createRadioView$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.CreateRadioView),
+    map(action => action.payload),
+    mergeMap((payload: any) => {
+      return this.radioService.createRadioView(payload).pipe(
+        map(response => new CreateRadioViewSuccess(response.data)),
+        catchError((error: HttpErrorResponse) => of(new CreateRadioViewFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  updateRadioView$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.UpdateRadioView),
+    map(action => action.payload),
+    mergeMap((payload: { radioViewId: string; radioViewData: any }) => {
+      return this.radioService.updateRadioView(payload.radioViewId, payload.radioViewData).pipe(
+        map(response => new UpdateRadioViewSuccess(response.data)),
+        catchError((error: HttpErrorResponse) => of(new UpdateRadioViewFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteRadioView$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.DeleteRadioView),
+    map(action => action.payload),
+    mergeMap((payload: string) => {
+      return this.radioService.deleteRadioView(payload).pipe(
+        map(response => new DeleteRadioViewSuccess(payload)),
+        catchError((error: HttpErrorResponse) => of(new DeleteRadioViewFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  setRadioViewFavourite$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.SetRadioViewAsFavourite),
+    map(action => action.payload),
+    mergeMap((id: string) => {
+      return this.radioService.setRadioViewAsFavourite(id).pipe(
+        map(_ => new SetRadioViewAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new SetRadioViewAsFavouriteFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  unsetRadioViewFavourite$ = this.actions$.pipe(
+    ofType<any>(RadioActionTypes.UnsetRadioViewAsFavourite),
+    map(action => action.payload),
+    mergeMap((id: string) => {
+      return this.radioService.unsetRadioViewAsFavourite(id).pipe(
+        map(_ => new UnsetRadioViewAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new UnsetRadioViewAsFavouriteFail(error)))
       );
     })
   );
