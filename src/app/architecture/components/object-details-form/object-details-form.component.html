@@ -73,23 +73,13 @@
     <smi-source-or-target-table
       data-qa="object-details-source-table"
       *ngIf="clickedOnLink"
-      [title]="'Source'"
-      [data]="sourceObject"
-      (edit)="editSourceOrTarget.emit('source')"
+      [sourceObject]="sourceObject"
+      [targetObject]="targetObject"
+      (edit)="editSourceOrTarget.emit($event)"
+      (switchSourceAndTarget)="switchSourceAndTarget.emit()"
       [workPackageIsEditable]="workPackageIsEditable"
     >
     </smi-source-or-target-table>
-
-    <smi-source-or-target-table
-      data-qa="object-details-target-table"
-      *ngIf="clickedOnLink"
-      [title]="'Target'"
-      [data]="targetObject"
-      (edit)="editSourceOrTarget.emit('target')"
-      [workPackageIsEditable]="workPackageIsEditable"
-    >
-    </smi-source-or-target-table>
-
 
     <smi-group-info-table
       data-qa="object-details-grouped-in-table"
