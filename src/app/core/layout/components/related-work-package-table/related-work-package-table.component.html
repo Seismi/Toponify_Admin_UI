@@ -1,6 +1,6 @@
 <div class="mat-elevation-z8">
   <div class="search-container">
-    <input placeholder="Search" (keyup)="onSearch($event.target.value)">
+    <input placeholder="Search" data-qa="related-work-package-table-quick-search" (keyup)="onSearch($event.target.value)">
   </div>
   <table mat-table [dataSource]="dataSource">
     <!-- Name Column -->
