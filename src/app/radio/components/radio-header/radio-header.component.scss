@@ -1,16 +1,10 @@
 .container {
   display: flex;
-  padding: 15px 15px;
+  padding: 0px 15px;
 }
 
-.filter {
+.content {
   flex-grow: 1;
-}
-
-span {
-  padding-top: 5px;
-  margin-left: 20px;
-  font-size: 12px;
 }
 
 button {
@@ -20,17 +14,32 @@ button {
 }
 
 .mat-icon {
+  cursor: pointer;
   font-size: 18px;
   margin-right: 5px;
   margin-top: 4px;
   padding: 0;
 }
 
-.radio-view-save-icon {
-  cursor: pointer;
+.mat-form-field {
+  font-size: 12px;
+  margin-top: 8px;
+  width: 170px;
+  opacity: 1;
+  margin-left: 5px;
 }
 
-.filterViewContainer {
-  padding: 5px;
-  border: 1px solid grey;
+.mat-select {
+  background-color: #ddd;
+  padding: 10px 8px;
+  border-radius: 5px;
+}
+
+.actions {
+  position: relative;
+  top: 5px;
+  left: 10px;
+  .mat-icon {
+    color: #555;
+  }
 }
