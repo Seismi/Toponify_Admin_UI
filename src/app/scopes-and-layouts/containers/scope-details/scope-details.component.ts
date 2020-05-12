@@ -9,12 +9,12 @@ import { ScopeDetails } from '@app/scope/store/models/scope.model';
 import { ScopesAndLayoutsDetailService } from '@app/scopes-and-layouts/components/scopes-and-layouts-detail/services/scopes-and-layouts-detail.service';
 import { ScopesAndLayoutsValidatorService } from '@app/scopes-and-layouts/components/scopes-and-layouts-detail/services/scopes-and-layouts-detail-validator.service';
 import { FormGroup } from '@angular/forms';
-import { DeleteScopesAndLayoutsModalComponent } from '../delete-modal/delete-scopes-and-layouts.component';
 import { MatDialog } from '@angular/material';
 import { AddLayout } from '@app/layout/store/actions/layout.actions';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { ScopeAndLayoutModalComponent } from '../scope-and-layout-modal/scope-and-layout-modal.component';
 import { LayoutEntity } from '@app/layout/store/models/layout.model';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-scope-details',
@@ -84,16 +84,16 @@ export class ScopeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteScope(): void {
-    const dialogRef = this.dialog.open(DeleteScopesAndLayoutsModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        title: 'Are you sure you want to delete this?'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteScope(this.scope.id));
         this.store.dispatch(new UpdateQueryParams({ scope: null }));
         this.router.navigate(['/scopes-and-layouts']);
