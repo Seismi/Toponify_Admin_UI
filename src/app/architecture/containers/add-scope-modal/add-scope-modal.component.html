@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>Scopes</mat-label>
-    <mat-select>
+    <mat-select data-qa="add-scope-modal-name">
       <mat-option *ngFor="let scope of scopes$ | async" [value]="scope.name" (click)="onSelect(scope)">
         {{ scope.name }}
       </mat-option>

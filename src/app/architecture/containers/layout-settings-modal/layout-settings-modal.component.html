@@ -3,13 +3,13 @@
   <form [formGroup]="layoutSettingsForm">
     <div formGroupName="links">
       <mat-list-item role="listitem">
-        <mat-checkbox (change)="checkboxClicked($event, 'dataLinks')" formControlName="showDataLinks">
+        <mat-checkbox data-qa="topology-layout-settings-modal-show-data-links" (change)="checkboxClicked($event, 'dataLinks')" formControlName="showDataLinks">
           Show Data Links
         </mat-checkbox>
       </mat-list-item>
     
       <mat-list-item role="listitem">
-        <mat-checkbox (change)="checkboxClicked($event, 'masterDataLinks')" formControlName="showMasterDataLinks">
+        <mat-checkbox data-qa="topology-layout-settings-modal-show-master-data-links" (change)="checkboxClicked($event, 'masterDataLinks')" formControlName="showMasterDataLinks">
           Show Master Data Links
         </mat-checkbox>
       </mat-list-item>
@@ -17,6 +17,6 @@
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSubmit()" data-qa="topology-layout-settings-modal-save">Save</button>
+  <button mat-button (click)="onCancel()" data-qa="topology-layout-settings-modal-cancel">Cancel</button>
 </div>

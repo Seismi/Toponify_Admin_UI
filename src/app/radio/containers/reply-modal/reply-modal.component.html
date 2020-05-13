@@ -3,6 +3,6 @@
   <smi-reply-text [group]="radioDetailsForm" [replyMode]="replyMode"></smi-reply-text>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button (click)="onSubmit()" data-qa="radio-reply-modal-save">Save</button>
+  <button mat-button (click)="onCancelClick()" data-qa="radio-reply-modal-cancel">Cancel</button>
 </div>

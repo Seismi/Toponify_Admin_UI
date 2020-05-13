@@ -1,5 +1,5 @@
 <div class="search-container">
-  <input placeholder="Search" (keyup)="onSearch($event.target.value)">
+  <input placeholder="Search" data-qa="topology-scopes-table-quick-search" (keyup)="onSearch($event.target.value)">
 </div>
 <table mat-table [dataSource]="dataSource">
   <ng-container matColumnDef="name">

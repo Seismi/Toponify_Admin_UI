@@ -78,9 +78,9 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
       changes.selectedItem &&
       changes.selectedItem.currentValue && (!changes.selectedItem.previousValue ||
       changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id)) {
-        if (!this.filterValue) {
-          return;
-        }
+      if (!this.filterValue) {
+        return;
+      }
       setTimeout(() => this.navigateToSelectedItem());
     }
   }
