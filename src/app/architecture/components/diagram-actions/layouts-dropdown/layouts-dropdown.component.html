@@ -6,7 +6,7 @@
   <mat-select 
     [value]="selectedLayout?.id" 
     (selectionChange)="onSelect($event)"
-    data-qa="topology-layout-actions-layout"
+    data-qa="topology-layout-actions-layout-dropdown"
   >
     <mat-option *ngFor="let layout of layouts?.layouts" [value]="layout.id">
       {{ layout.name }}
