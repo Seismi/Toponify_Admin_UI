@@ -91,7 +91,14 @@ import { RadioViewNameDialogComponent } from './components/radio-view-name-dialo
     EffectsModule.forFeature([RadioEffects]),
     CKEditorModule
   ],
-  exports: [RadioTableComponent, RadioDetailsComponent, ReplyTextComponent, ChatBoxComponent, RadioDetailComponent],
+  exports: [
+    RadioTableComponent,
+    RadioDetailsComponent,
+    ReplyTextComponent,
+    ChatBoxComponent,
+    RadioDetailComponent,
+    RiskMatrixChartComponent
+  ],
   declarations: [
     RadioComponent,
     RadioRoutingComponent,

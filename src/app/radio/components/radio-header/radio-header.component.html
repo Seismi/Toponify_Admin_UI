@@ -34,5 +34,7 @@
       <mat-icon>close</mat-icon>Reset
     </button>
   </div>
-  <!-- <risk-matrix-cart></risk-matrix-cart> -->
+  <div>
+    <smi-risk-matrix-chart [matrix]="radioRiskMatrix" (clicked)="handleMatrixClick($event)"></smi-risk-matrix-chart>
+  </div>
 </div>

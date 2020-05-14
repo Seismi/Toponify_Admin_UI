@@ -14,7 +14,7 @@ import {
   UnsetRadioViewAsFavourite
 } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioFilter, getRadioViews } from '@app/radio/store/selectors/radio.selector';
+import { getRadioFilter, getRadioViews, getRadioEntities } from '@app/radio/store/selectors/radio.selector';
 import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
@@ -33,6 +33,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
   public activeFilters = null;
   public radioViews = [];
   public selectedRadioView = null;
+  public radios = [];
 
   @Input() status: string;
   @Output() filter = new EventEmitter<void>();
@@ -52,6 +53,10 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
     return !!this.activeFilters;
   }
 
+  get radioRiskMatrix(): number[][] {
+    return this.generateRadioRiskMatric(this.radios, 5);
+  }
+
   ngOnInit() {
     this.store.dispatch(new GetRadioViews());
 
@@ -62,6 +67,8 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.store.pipe(select(getRadioViews)).subscribe(radioViews => (this.radioViews = radioViews))
     );
+
+    this.subscriptions.push(this.store.pipe(select(getRadioEntities)).subscribe(radios => (this.radios = radios)));
 
     this.subscriptions.push(
       combineLatest(
@@ -146,5 +153,19 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
 
   onReset(): void {
     this.resetFilter.emit();
+  }
+
+  handleMatrixClick(data: any): void {
+    console.info(data);
+  }
+
+  generateRadioRiskMatric(entities: any[], size: number): number[][] {
+    const matrix = [...Array.from({ length: size })].map(x => [...Array.from({ length: size })].map(y => 0));
+    for (const entity of entities) {
+      const rowIndex = entity.severity - 1;
+      const colIndex = entity.frequency - 1;
+      matrix[rowIndex][colIndex]++;
+    }
+    return matrix;
   }
 }
