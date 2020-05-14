@@ -17,18 +17,18 @@
     </mat-form-field>
     <ng-container *ngIf="hasActiveFilters">
       <span class="actions">
-        <mat-icon *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onUpdateRadioView()">save</mat-icon>
-        <mat-icon (click)="onCreateRadioView()">file_copy</mat-icon>
-        <mat-icon *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onRadioViewReset()">clear</mat-icon>
+        <mat-icon matTooltip="Save" *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onUpdateRadioView()">save</mat-icon>
+        <mat-icon matTooltip="Create New" (click)="onCreateRadioView()">file_copy</mat-icon>
+        <mat-icon matTooltip="Reset" *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onRadioViewReset()">clear</mat-icon>
       </span>
     </ng-container>
     <ng-container *ngIf="selectedRadioViewId">
       <span class="actions">
-        <mat-icon class="radio-view-save-icon" (click)="onRadioViewDelete()">delete</mat-icon>
-        <mat-icon *ngIf="selectedRadioView.favourite" class="radio-view-save-icon" (click)="onRemoveFavourite()"
+        <mat-icon matTooltip="Delete" class="radio-view-save-icon" (click)="onRadioViewDelete()">delete</mat-icon>
+        <mat-icon matTooltip="Set as Favourite" *ngIf="selectedRadioView.favourite" class="radio-view-save-icon" (click)="onRemoveFavourite()"
           >star</mat-icon
         >
-        <mat-icon *ngIf="!selectedRadioView.favourite" class="radio-view-save-icon" (click)="onAddFavourite()"
+        <mat-icon matTooltip="Set as Favourite" *ngIf="!selectedRadioView.favourite" class="radio-view-save-icon" (click)="onAddFavourite()"
           >star_border</mat-icon
         >
       </span>
