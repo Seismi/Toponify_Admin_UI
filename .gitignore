@@ -1,5 +1,10 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# Ignoe work in  progress
+*.wip
+/cypress/integrations/wip
+/modularise-it-doc-ui
+
 # compiled output
 /dist
 /tmp
