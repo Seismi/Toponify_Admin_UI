@@ -45,7 +45,11 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'organisation',
-        component: OrganisationsComponent
+        component: OrganisationsComponent,
+        canActivate: [ByRoleGuard],
+        data: {
+          roles: [Roles.ADMIN]
+        }
       }
     ]
   }

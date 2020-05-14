@@ -54,6 +54,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
 import { RiskMatrixChartComponent } from './components/risk-matrix-chart/risk-matrix-chart.component';
+import { RadioViewNameDialogComponent } from './components/radio-view-name-dialog/radio-view-name-dialog.component';
 
 @NgModule({
   imports: [
@@ -110,7 +111,8 @@ import { RiskMatrixChartComponent } from './components/risk-matrix-chart/risk-ma
     AssociateModalComponent,
     DeleteRadioModalComponent,
     AlphabeticalOrderPipe,
-    RiskMatrixChartComponent
+    RiskMatrixChartComponent,
+    RadioViewNameDialogComponent
   ],
   entryComponents: [
     RadioModalComponent,
@@ -119,7 +121,8 @@ import { RiskMatrixChartComponent } from './components/risk-matrix-chart/risk-ma
     DeleteRadioPropertyModalComponent,
     ConfirmModalComponent,
     AssociateModalComponent,
-    DeleteRadioModalComponent
+    DeleteRadioModalComponent,
+    RadioViewNameDialogComponent
   ],
   providers: [RadioService, { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }]
 })

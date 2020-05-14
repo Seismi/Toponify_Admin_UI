@@ -38,7 +38,7 @@ export interface WorkPackageNodeDescendantsApiResponse {
 
 export enum layers {
   system = 'system',
-  dataSet = 'data set',
+  data = 'data',
   dimension = 'dimension',
   reportingConcept = 'reporting concept'
 }

@@ -192,6 +192,8 @@ export interface AdvancedSearchApiRequest {
 }
 
 export interface RadiosAdvancedSearch {
+  from?: string;
+  to?: string;
   raisedByMe?: RaisedByMe;
   assignedToMe?: AssignedToMe;
   status?: Status;

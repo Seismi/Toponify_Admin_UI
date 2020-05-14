@@ -43,6 +43,7 @@
     </smi-document-standards-levels>
   </div>
 
+ <div *appByRole="[Roles.ADMIN, Roles.ARCHITECT]">
   <div *ngIf="!modalMode">
     <div *ngIf="!isEditable">
       <button
@@ -80,4 +81,5 @@
       </button>
     </div>
   </div>
+ </div>
 </form>

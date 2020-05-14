@@ -38,8 +38,8 @@
   </mat-form-field>
 
   <!-- Baseline Table -->
-  <smi-baseline-table 
-    data-qa="work-packages-baseline-table" 
+  <smi-baseline-table
+    data-qa="work-packages-baseline-table"
     *ngIf="!modalMode"
     [data]="baselineTableData"
     [isEditable]="isEditable"
@@ -64,10 +64,9 @@
   <smi-approvers-table data-qa="work-packages-approvers-table" *ngIf="!modalMode" [data]="approversTableData">
   </smi-approvers-table>
 
-
   <mat-form-field *ngIf="modalMode">
-    <mat-select 
-      placeholder="Baseline" 
+    <mat-select
+      placeholder="Baseline"
       formControlName="baseline"
       multiple
       data-qa="work-packages-details-baseline-selection"
@@ -79,12 +78,7 @@
   </mat-form-field>
 
   <mat-form-field *ngIf="modalMode">
-    <mat-select 
-      placeholder="Owners" 
-      formControlName="owners" 
-      multiple 
-      data-qa="work-packages-details-owners-selection"
-    >
+    <mat-select placeholder="Owners" formControlName="owners" multiple data-qa="work-packages-details-owners-selection">
       <mat-option *ngFor="let owner of owners" [value]="owner">
         {{ owner.name }}
       </mat-option>
@@ -96,118 +90,119 @@
   <mat-form-field [ngClass]="{ disabled: disableStatusInput }" *ngIf="modalMode">
     <input matInput placeholder="Status" formControlName="status" data-qa="work-packages-details-status" />
   </mat-form-field>
-
-  <div class="form-group" *ngIf="!modalMode">
-    <div *ngIf="!isEditable">
-      <button
-        type="button"
-        mat-flat-button
-        color="primary"
-        *ngIf="statusDraft"
-        (click)="onEdit()"
-        data-qa="work-packages-edit"
-      >
-        Edit
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        (click)="onOpen()"
-        data-qa="work-packages-open"
-        *ngIf="getWorkPackageStatus()"
-      >
-        Open
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        *ngIf="workpackageActionSubmit"
-        (click)="submitWorkpackage()"
-        data-qa="work-packages-submit"
-        [disabled]="approversTableData?.length === 0"
-      >
-        Submit
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        *ngIf="workpackageActionApprove"
-        (click)="approveWorkpackage()"
-        data-qa="work-packages-approve"
-      >
-        Approve
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        *ngIf="workpackageActionReject"
-        (click)="rejectWorkpackage()"
-        data-qa="work-packages-reject"
-      >
-        Reject
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        *ngIf="workpackageActionMerge"
-        (click)="mergeWorkpackage()"
-        data-qa="work-packages-merge"
-      >
-        Merge
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        *ngIf="workpackageActionReset && !statusDraft"
-        (click)="resetWorkpackage()"
-        data-qa="work-packages-reset"
-      >
-        Reset to draft
-      </button>
-      <button
-        type="button"
-        mat-raised-button
-        color="primary"
-        *ngIf="workpackageActionSupersede"
-        (click)="supersedeWorkpackage()"
-        data-qa="work-packages-supersede"
-      >
-        Supersede
-      </button>
-      <button
-        type="button" 
-        mat-flat-button 
-        color="primary" 
-        (click)="onArchive()" 
-        data-qa="work-packages-archive"
-        *ngIf="currentState"
-      >
-        {{ archived ? 'Unarchive' : 'Archive' }}
-      </button>
-      <button
-        type="button"
-        mat-flat-button
-        color="warn"
-        *ngIf="['superseded', 'draft'].includes(workPackageStatus)"
-        (click)="onDelete()"
-        data-qa="work-packages-delete"
-      >
-        Delete
-      </button>
+  <ng-container *appByRole="[Roles.ADMIN, Roles.ARCHITECT]">
+    <div class="form-group" *ngIf="!modalMode">
+      <div *ngIf="!isEditable">
+        <button
+          type="button"
+          mat-flat-button
+          color="primary"
+          *ngIf="statusDraft"
+          (click)="onEdit()"
+          data-qa="work-packages-edit"
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          (click)="onOpen()"
+          data-qa="work-packages-open"
+          *ngIf="getWorkPackageStatus()"
+        >
+          Open
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          *ngIf="workpackageActionSubmit"
+          (click)="submitWorkpackage()"
+          data-qa="work-packages-submit"
+          [disabled]="approversTableData?.length === 0"
+        >
+          Submit
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          *ngIf="workpackageActionApprove"
+          (click)="approveWorkpackage()"
+          data-qa="work-packages-approve"
+        >
+          Approve
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          *ngIf="workpackageActionReject"
+          (click)="rejectWorkpackage()"
+          data-qa="work-packages-reject"
+        >
+          Reject
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          *ngIf="workpackageActionMerge"
+          (click)="mergeWorkpackage()"
+          data-qa="work-packages-merge"
+        >
+          Merge
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          *ngIf="workpackageActionReset && !statusDraft"
+          (click)="resetWorkpackage()"
+          data-qa="work-packages-reset"
+        >
+          Reset to draft
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          *ngIf="workpackageActionSupersede"
+          (click)="supersedeWorkpackage()"
+          data-qa="work-packages-supersede"
+        >
+          Supersede
+        </button>
+        <button
+          type="button"
+          mat-flat-button
+          color="primary"
+          (click)="onArchive()"
+          data-qa="work-packages-archive"
+          *ngIf="currentState"
+        >
+          {{ archived ? 'Unarchive' : 'Archive' }}
+        </button>
+        <button
+          type="button"
+          mat-flat-button
+          color="warn"
+          *ngIf="['superseded', 'draft'].includes(workPackageStatus)"
+          (click)="onDelete()"
+          data-qa="work-packages-delete"
+        >
+          Delete
+        </button>
+      </div>
+      <div *ngIf="isEditable">
+        <button mat-flat-button color="primary" (click)="onSave()" data-qa="work-packages-save">Save</button>
+        <button mat-flat-button (click)="onCancel()" data-qa="work-packages-cancel">Cancel</button>
+      </div>
     </div>
-    <div *ngIf="isEditable">
-      <button mat-flat-button color="primary" (click)="onSave()" data-qa="work-packages-save">Save</button>
-      <button mat-flat-button (click)="onCancel()" data-qa="work-packages-cancel">Cancel</button>
-    </div>
-  </div>
+  </ng-container>
 </form>
 
-
 <div *ngIf="approversTableData?.length === 0 && workpackageActionSubmit" class="alert alert-danger">
-  No approvers identified. None of the components you are adding or updating have owners. Please assign owners to be able to submit
+  No approvers identified. None of the components you are adding or updating have owners. Please assign owners to be
+  able to submit
 </div>

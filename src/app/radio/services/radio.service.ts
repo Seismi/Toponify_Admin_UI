@@ -86,4 +86,32 @@ export class RadioService {
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());
   }
+
+  createRadioView(data: any): Observable<any> {
+    return this.http.post<any>(`/radioViews`, { data: data }, httpOptions);
+  }
+
+  updateRadioView(radioViewId: string, data: any): Observable<any> {
+    return this.http.put<any>(`/radioViews/${radioViewId}`, { data: data }, httpOptions);
+  }
+
+  deleteRadioView(radioViewId: string): Observable<any> {
+    return this.http.delete<any>(`/radioViews/${radioViewId}`);
+  }
+
+  getRadioView(radioViewId: string): Observable<any> {
+    return this.http.get<any>(`/radioViews/${radioViewId}`);
+  }
+
+  getRadioViews(): Observable<any> {
+    return this.http.get<any>(`/radioViews`);
+  }
+
+  setRadioViewAsFavourite(radioViewId: string): Observable<any> {
+    return this.http.post<any>(`/radioViews/${radioViewId}/favourites`, {});
+  }
+
+  unsetRadioViewAsFavourite(radioViewId: string): Observable<any> {
+    return this.http.delete<any>(`/radioViews/${radioViewId}/favourites`);
+  }
 }

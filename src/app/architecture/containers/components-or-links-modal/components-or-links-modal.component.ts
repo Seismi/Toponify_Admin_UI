@@ -8,7 +8,7 @@ import { getNodeEntities } from '@app/architecture/store/selectors/node.selector
 import { Node } from '@app/architecture/store/models/node.model';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
-const dataSetCategories = ['physical', 'virtual', 'master data'];
+const dataSetCategories = ['data structure', 'data set', 'master data set'];
 const dimensionCategories = ['dimension'];
 const reportingConceptCategories = ['structure', 'list', 'key'];
 
@@ -58,7 +58,7 @@ export class ComponentsOrLinksModalComponent implements OnInit {
     switch (this.data.level) {
       case 'system':
         return (!this.data.link) ? systemCategories : ['master data', 'data'];
-      case 'data set':
+      case 'data':
         return (!this.data.link) ? dataSetCategories : ['master data', 'data'];
       case 'dimension':
         return (!this.data.link) ? dimensionCategories : ['master data'];

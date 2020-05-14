@@ -11,7 +11,7 @@
     </smi-scopes-and-layouts-detail>
   </div>
 </div>
-<mat-tab-group mat-stretch-tabs [@.disabled]="true">
+<mat-tab-group data-qa="scopes-and-layouts-tabs" mat-stretch-tabs [@.disabled]="true">
   <mat-tab label="Layouts">
     <div class="col-xl">
       <div style="display: flex;">
@@ -34,6 +34,6 @@
     </div>
   </mat-tab>
   <mat-tab label="Components">
-    <smi-scopes-and-layouts-components-table [data]="scope?.include"></smi-scopes-and-layouts-components-table>
+    <smi-scopes-and-layouts-components-table data-qa="scopes-and-layouts-components-table" [data]="scope?.include"></smi-scopes-and-layouts-components-table>
   </mat-tab>
 </mat-tab-group>

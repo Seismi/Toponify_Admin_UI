@@ -20,7 +20,7 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   @Input() selectedItem: NodeDetail | NodeLinkDetail;
   @Input() view: 'system' | 'link';
   @Input() find: (id: string) => Observable<string>;
-  @Input() filterValue: string;
+  private filterValue: string;
 
   @Input()
   set data(data: Node[] | NodeLink[]) {
@@ -78,6 +78,9 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
       changes.selectedItem &&
       changes.selectedItem.currentValue && (!changes.selectedItem.previousValue ||
       changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id)) {
+      if (!this.filterValue) {
+        return;
+      }
       setTimeout(() => this.navigateToSelectedItem());
     }
   }
@@ -114,5 +117,9 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
 
   onAdd(): void {
     this.add.emit();
+  }
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

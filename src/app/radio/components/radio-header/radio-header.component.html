@@ -4,6 +4,30 @@
       <mat-icon>filter_list</mat-icon>Filters
     </button>
     <span>All Filter on Status in {{ status }}</span>
+    <div class="filterViewContainer">
+      <mat-form-field floatLabel="never" appearance="none" matTooltip="Select radio view">
+        <mat-label>Select radio view</mat-label>
+        <mat-select [(value)]="selectedRadioViewId" data-qa="header-layer">
+          <mat-option *ngFor="let view of radioViews" (click)="onRadioViewSelect(view)" [value]="view.id">
+            {{ view.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <ng-container *ngIf="hasActiveFilters">
+        <mat-icon *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onUpdateRadioView()">save</mat-icon>
+        <mat-icon class="radio-view-save-icon" (click)="onCreateRadioView()">file_copy</mat-icon>
+        <mat-icon *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onRadioViewReset()">clear</mat-icon>
+      </ng-container>
+      <ng-container *ngIf="selectedRadioViewId">
+        <mat-icon class="radio-view-save-icon" (click)="onRadioViewDelete()">delete</mat-icon>
+        <mat-icon *ngIf="selectedRadioView.favourite" class="radio-view-save-icon" (click)="onRemoveFavourite()"
+          >star</mat-icon
+        >
+        <mat-icon *ngIf="!selectedRadioView.favourite" class="radio-view-save-icon" (click)="onAddFavourite()"
+          >star_border</mat-icon
+        >
+      </ng-container>
+    </div>
   </div>
   <div>
     <button mat-raised-button color="primary" class="reset" (click)="onReset()" data-qa="radio-reset">
