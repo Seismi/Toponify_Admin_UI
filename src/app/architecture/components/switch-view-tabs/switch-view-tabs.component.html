@@ -4,6 +4,7 @@
   [@.disabled]="true"
   [selectedIndex]="selectedView"
   (selectedTabChange)="onTabClick($event)"
+  data-qa="topology-tabs"
 >
   <mat-tab label="Canvas" [style.width.px]="100"> </mat-tab>
   <mat-tab [label]="getLabel()" [style.width.px]="100"> </mat-tab>

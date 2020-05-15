@@ -6,6 +6,8 @@ import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 import { Tag, NodeDetail } from '@app/architecture/store/models/node.model';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { radioCategories } from '../../store/models/radio.model';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
+import { AppDateAdapter, APP_DATE_FORMATS } from '@app/format-datepicker';
 
 interface Scores {
   level: number;
@@ -21,7 +23,11 @@ enum TrafficLightColour {
 @Component({
   selector: 'smi-radio-detail',
   templateUrl: './radio-detail.component.html',
-  styleUrls: ['./radio-detail.component.scss']
+  styleUrls: ['./radio-detail.component.scss'],
+  providers: [
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS }
+  ]
 })
 export class RadioDetailComponent implements DoCheck {
   public users: User[];
@@ -146,15 +152,15 @@ export class RadioDetailComponent implements DoCheck {
   getSeverityTooltip(): string {
     switch (this.radioCategory) {
       case radioCategories.risk:
-        return this.severityTooltip = 'Severity of the risk';
+        return (this.severityTooltip = 'Severity of the risk');
       case radioCategories.assumption:
-        return this.severityTooltip = 'Impact of the assumption if it is revealed to be incorrect';
+        return (this.severityTooltip = 'Impact of the assumption if it is revealed to be incorrect');
       case radioCategories.dependency:
-        return this.severityTooltip = 'Impact of the dependency if it is not met';
+        return (this.severityTooltip = 'Impact of the dependency if it is not met');
       case radioCategories.issue:
-        return this.severityTooltip = 'Impact of the issue';
+        return (this.severityTooltip = 'Impact of the issue');
       case radioCategories.opportunity:
-        return this.severityTooltip = 'Potential of the opportunity';
+        return (this.severityTooltip = 'Potential of the opportunity');
     }
   }
 
@@ -174,15 +180,15 @@ export class RadioDetailComponent implements DoCheck {
   getFrequencyTooltip(): string {
     switch (this.radioCategory) {
       case radioCategories.risk:
-        return this.frequencyTooltip = 'Probability of the risk';
+        return (this.frequencyTooltip = 'Probability of the risk');
       case radioCategories.assumption:
-        return this.frequencyTooltip = 'Probability that the assumption is incorrect';
+        return (this.frequencyTooltip = 'Probability that the assumption is incorrect');
       case radioCategories.dependency:
-        return this.frequencyTooltip = 'Probability that the dependency is not met';
+        return (this.frequencyTooltip = 'Probability that the dependency is not met');
       case radioCategories.issue:
-        return this.frequencyTooltip = 'Frequency at which the issue occurs';
+        return (this.frequencyTooltip = 'Frequency at which the issue occurs');
       case radioCategories.opportunity:
-        return this.frequencyTooltip = 'Frequency of the opportunity';
+        return (this.frequencyTooltip = 'Frequency of the opportunity');
     }
   }
 
@@ -226,5 +232,4 @@ export class RadioDetailComponent implements DoCheck {
         return 'Action plan';
     }
   }
-
 }
