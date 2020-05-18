@@ -2301,4 +2301,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+  onSwitchSourceAndTarget(): void {
+    this.workpackageStore.dispatch(
+      new UpdateWorkPackageLink({
+        workpackageId: this.workpackageId,
+        linkId: this.nodeId,
+        link: {
+          ...this.part.data,
+          sourceId: this.part.data.targetId,
+          targetId: this.part.data.sourceId
+        }
+      })
+    );
+  }
+
 }

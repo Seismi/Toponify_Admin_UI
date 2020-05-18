@@ -64,6 +64,7 @@ export class ObjectDetailsFormComponent {
   @Output() seeDependencies = new EventEmitter<void>();
   @Output() viewStructure = new EventEmitter<void>();
   @Output() editSourceOrTarget = new EventEmitter<string>();
+  @Output() switchSourceAndTarget = new EventEmitter<void>();
 
   onSave(): void {
     this.save.emit();
