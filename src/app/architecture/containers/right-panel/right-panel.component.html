@@ -1,4 +1,10 @@
-<mat-tab-group [(selectedIndex)]="selectedRightTab" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
+<mat-tab-group 
+  data-qa="topology-right-hand-side-tabs" 
+  [(selectedIndex)]="selectedRightTab" 
+  mat-stretch-tabs 
+  class="stretched-tabs" 
+  [@.disabled]="true"
+>
   <!-- Details TAB -->
   <mat-tab *ngIf="part?.isSelected && !multipleSelected">
     <ng-template mat-tab-label>
@@ -98,7 +104,7 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Reports">bookmarks</mat-icon>
     </ng-template>
-    <smi-reports-tab [data]="nodeReports"></smi-reports-tab>
+    <smi-reports-tab data-qa="topology-reports-table"[data]="nodeReports"></smi-reports-tab>
   </mat-tab>
 
   <!-- Attributes and Rules TAB -->
@@ -202,7 +208,7 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Work Packages">business_center</mat-icon>
     </ng-template>
-    <smi-related-work-package-table [data]="workpackages"></smi-related-work-package-table>
+    <smi-related-work-package-table data-qa="topology-related-work-package-table" [data]="workpackages"></smi-related-work-package-table>
   </mat-tab>
 </mat-tab-group>
 

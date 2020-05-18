@@ -3,7 +3,7 @@
   <form [formGroup]="formGroup">
     <mat-form-field>
       <mat-label>Category</mat-label>
-      <mat-select formControlName="category">
+      <mat-select formControlName="category" data-qa="topology-components-or-link-modal-category">
         <mat-option *ngFor="let category of getCategories()" [value]="category">{{ category }}</mat-option>
       </mat-select>
       <mat-error>This field is required</mat-error>
@@ -11,7 +11,7 @@
 
     <mat-form-field *ngIf="data.link">
       <mat-label>Source</mat-label>
-      <mat-select formControlName="sourceId">
+      <mat-select formControlName="sourceId" data-qa="topology-components-or-link-modal-source">
         <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
       <mat-error>This field is required</mat-error>
@@ -19,19 +19,19 @@
 
     <mat-form-field *ngIf="data.link">
       <mat-label>Target</mat-label>
-      <mat-select formControlName="targetId">
+      <mat-select formControlName="targetId" data-qa="topology-components-or-link-modal-target">
         <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
       </mat-select>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name" [value]="nameValue">
+      <input matInput placeholder="Name" formControlName="name" [value]="nameValue" data-qa="topology-components-or-link-modal-name">
       <mat-error>This field is required</mat-error>
     </mat-form-field>
   </form>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSubmit()">Save</button>
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSubmit()" data-qa="topology-components-or-link-modal-save">Save</button>
+  <button mat-button (click)="onCancel()" data-qa="topology-components-or-link-modal-cancel">Cancel</button>
 </div>

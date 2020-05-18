@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <table>
+  <table *ngIf="groupInfo?.name; else elseBlock">
     <tr>
       <th class="title">Grouped in</th>
       <th>
@@ -14,4 +14,7 @@
       <td>{{groupInfo?.name}}</td>
     </tr>
   </table>
+  <ng-template #elseBlock>
+    <button mat-raised-button [disabled]="!workPackageIsEditable" (click)="editGroup.emit()">Add to a group</button>
+  </ng-template>
 </div>

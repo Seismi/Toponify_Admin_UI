@@ -1,18 +1,18 @@
 <div class="sidebar">
   <div *ngIf="objectSelected && !multipleSelected; else elseBlock">
-    <span (click)="openRightTab(0)" matTooltip="Details"><mat-icon>info</mat-icon></span>
-    <span (click)="openRightTab(1)" matTooltip="Components" [ngClass]="{ disabled: clickedOnLink || nodeCategory === 'transformation' }"><mat-icon>device_hub</mat-icon></span>
-    <span (click)="openRightTab(2)" matTooltip="Reports" *ngIf="filterLevel"><mat-icon>bookmarks</mat-icon></span>
-    <span (click)="openRightTab(3)" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
-    <span (click)="openRightTab(4)" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
-    <span (click)="openRightTab(5)" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
-    <span (click)="openRightTab(6)" matTooltip="Scopes"><mat-icon>pages</mat-icon></span>
-    <span (click)="openRightTab(7)" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
+    <span (click)="openRightTab(0)" data-qa="right-hand-side-details" matTooltip="Details"><mat-icon>info</mat-icon></span>
+    <span (click)="openRightTab(1)" data-qa="right-hand-side-components" matTooltip="Components" [ngClass]="{ disabled: clickedOnLink || nodeCategory === 'transformation' }"><mat-icon>device_hub</mat-icon></span>
+    <span (click)="openRightTab(2)" data-qa="right-hand-side-reports" matTooltip="Reports" *ngIf="filterLevel"><mat-icon>bookmarks</mat-icon></span>
+    <span (click)="openRightTab(3)" data-qa="right-hand-side-attributes-and-rules" matTooltip="Attributes & Rules"><mat-icon>ballot</mat-icon></span>
+    <span (click)="openRightTab(4)" data-qa="right-hand-side-documentation-standards" matTooltip="Documentation Standards"><mat-icon>insert_drive_file</mat-icon></span>
+    <span (click)="openRightTab(5)" data-qa="right-hand-side-radio" matTooltip="RADIO"><mat-icon>track_changes</mat-icon></span>
+    <span (click)="openRightTab(6)" data-qa="right-hand-side-scopes" matTooltip="Scopes"><mat-icon>pages</mat-icon></span>
+    <span (click)="openRightTab(7)" data-qa="right-hand-side-work-packages" matTooltip="Work Packages"><mat-icon>business_center</mat-icon></span>
   </div>
 
   <ng-template #elseBlock>
-    <span data-qa="right-hand-pane-radio" (click)="openRightTab(0)" matTooltip="RADIO" *ngIf="!multipleSelected"><mat-icon>track_changes</mat-icon></span>
+    <span data-qa="right-hand-pane-radio" data-qa="right-hand-side-radio" (click)="openRightTab(0)" matTooltip="RADIO" *ngIf="!multipleSelected"><mat-icon>track_changes</mat-icon></span>
   </ng-template>
 
-  <span data-qa="right-hand-pane-scopes" (click)="openRightTab(0)" matTooltip="Scopes" *ngIf="multipleSelected"><mat-icon>pages</mat-icon></span>
+  <span data-qa="right-hand-pane-scopes" data-qa="right-hand-side-scope"(click)="openRightTab(0)" matTooltip="Scopes" *ngIf="multipleSelected"><mat-icon>pages</mat-icon></span>
 </div>
