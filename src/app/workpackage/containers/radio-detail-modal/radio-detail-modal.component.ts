@@ -90,7 +90,7 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
   onSaveRadio() {
     const dialogRef = this.dialog.open(ReplyModalComponent, {
       disableClose: false,
-      width: '400px'
+      width: '590px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
