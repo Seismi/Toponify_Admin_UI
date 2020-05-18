@@ -1,11 +1,13 @@
+<h1 mat-dialog-title>Create new radio view</h1>
 <form [formGroup]="nameForm" (ngSubmit)="onSubmit()">
   <div>
     <mat-form-field>
-      <mat-label>Radio view name</mat-label>
-      <input matInput placeholder="View Name" formControlName="name" />
+      <mat-label>View name</mat-label>
+      <input matInput formControlName="name" />
     </mat-form-field>
     <div mat-dialog-actions>
       <button [disabled]="!isValid" mat-button>Create</button>
+      <button mat-button [mat-dialog-close]="true">Cancel</button>
     </div>
   </div>
 </form>
