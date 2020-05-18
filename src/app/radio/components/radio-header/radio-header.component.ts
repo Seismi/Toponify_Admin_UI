@@ -205,15 +205,22 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         severity: data[1] + 1
       })
     );
+  }
 
-    // console.info(data);
+  clearSelection(): void {
+    const { frequency, severity, ...rest } = this.activeFilters;
+    this.store.dispatch(
+      new RadioFilter({
+        ...rest
+      })
+    );
   }
 
   generateRadioRiskMatric(entities: any[], size: number): number[][] {
     const matrix = [...Array.from({ length: size })].map(x => [...Array.from({ length: size })].map(y => 0));
     for (const entity of entities) {
-      const rowIndex = entity.severity - 1;
-      const colIndex = entity.frequency - 1;
+      const colIndex = entity.severity - 1;
+      const rowIndex = entity.frequency - 1;
       matrix[rowIndex][colIndex]++;
     }
     return matrix;

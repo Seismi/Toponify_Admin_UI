@@ -53,5 +53,10 @@
       [matrix]="radioRiskMatrix"
       (clicked)="handleMatrixClick($event)"
     ></smi-risk-matrix-chart>
+    <ng-container *ngIf="selectedRiskMatrixCol">
+      <hr />
+      <span style="float: right; cursor: pointer" (click)="clearSelection($event)">Clear selection</span>
+      <hr />
+    </ng-container>
   </div>
 </div>
