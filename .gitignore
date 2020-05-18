@@ -41,3 +41,9 @@ logs
 .DS_Store
 Thumbs.db
 proxy.conf.json
+
+# Cypress
+*.wip
+/cypress/integrations/wip
+/cypress/videos/
+/cypress/screenshots/
