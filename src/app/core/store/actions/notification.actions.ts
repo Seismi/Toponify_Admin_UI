@@ -11,7 +11,11 @@ export enum NotificationActionTypes {
   MarkAsReadSuccess = '[Notification] mark as read success',
   SetError = '[Notification] set error',
   SetOpen = '[Notification] set open',
-  DeleteApiError = '[Notification] delete api error'
+  DeleteApiError = '[Notification] delete api error',
+  MarkAllAsRead = '[Notification] mark all as read',
+  MarkAllAsReadSuccess = '[Notification] mark all as read success',
+  DeleteAll = '[Notification] delete all',
+  DeleteAllSuccess = '[Notification] delete all success',
 }
 
 export class NotificationGetAll implements Action {
@@ -59,6 +63,26 @@ export class NotificationPanelOpen implements Action {
   constructor(public payload: boolean) {}
 }
 
+export class NotificationMarkAllAsRead implements Action {
+  readonly type = NotificationActionTypes.MarkAllAsRead;
+  constructor() {}
+}
+
+export class NotificationMarkAllAsReadSuccess implements Action {
+  readonly type = NotificationActionTypes.MarkAllAsReadSuccess;
+  constructor(payload: Notification[]) {}
+}
+
+export class NotificationDeleteAll implements Action {
+  readonly type = NotificationActionTypes.DeleteAll;
+  constructor() {}
+}
+
+export class NotificationDeleteAllSuccess implements Action {
+  readonly type = NotificationActionTypes.DeleteAllSuccess;
+  constructor() {}
+}
+
 export type NotificationActionsUnion =
   | NotificationGetAll
   | NotificationGetAllSuccess
@@ -68,4 +92,8 @@ export type NotificationActionsUnion =
   | NotificationDeleteSuccess
   | NotificationDeleteApiError
   | NotificationSetError
-  | NotificationPanelOpen;
+  | NotificationPanelOpen
+  | NotificationMarkAllAsRead
+  | NotificationMarkAllAsReadSuccess
+  | NotificationDeleteAll
+  | NotificationDeleteAllSuccess;

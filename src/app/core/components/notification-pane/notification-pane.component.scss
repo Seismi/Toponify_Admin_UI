@@ -53,4 +53,14 @@
   p {
     width: 350px;
   }
+  .actions {
+    display: flex; 
+    justify-content: space-between;
+    padding: 10px 12px 0px 12px;
+    a {
+      text-decoration: underline;
+      color: #222;
+      font-size: 14px;
+    }
+  }
 }
