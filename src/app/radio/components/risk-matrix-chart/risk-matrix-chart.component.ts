@@ -8,10 +8,12 @@ export type RiskMatrixData = number[][];
   styleUrls: ['./risk-matrix-chart.component.scss']
 })
 export class RiskMatrixChartComponent {
+  // Colors to the matrix will be defined accordingly
+  // x + y = colours array index
   public colours = ['#00ce00', '#00ce00', '#6c9712', '#6c9712', '#f1b301', '#e97600', '#e97600', '#df1627', '#df1627'];
 
   @Input()
-  selected: { x: number; y: number } | null = null;
+  selected: number[] | null = null;
 
   @Input()
   matrix: RiskMatrixData = [];
@@ -23,6 +25,13 @@ export class RiskMatrixChartComponent {
 
   @Output('clicked')
   clicked = new EventEmitter<number[]>();
+
+  isSelected(x: number, y: number): boolean {
+    if (!this.selected) {
+      return false;
+    }
+    return this.selected[0] === x && this.selected[1] === y;
+  }
 
   getColorAccordingIndex(index: number): string {
     return this.colours[index] ? this.colours[index] : 'transparent';

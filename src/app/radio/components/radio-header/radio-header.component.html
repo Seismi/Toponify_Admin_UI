@@ -6,6 +6,19 @@
     <span>All Filter on Status in {{ status }}</span>
     <div class="filterViewContainer">
       <mat-form-field floatLabel="never" appearance="none" matTooltip="Select radio view">
+        <mat-label>Select radio table style</mat-label>
+        <mat-select [(value)]="selectedTableStyle" data-qa="header-layer">
+          <mat-option
+            *ngFor="let style of tableStyleOptions"
+            (click)="onRadioTableStyleSelect(style.value)"
+            [value]="style.value"
+          >
+            {{ style.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field floatLabel="never" appearance="none" matTooltip="Select radio view">
         <mat-label>Select radio view</mat-label>
         <mat-select [(value)]="selectedRadioViewId" data-qa="header-layer">
           <mat-option *ngFor="let view of radioViews" (click)="onRadioViewSelect(view)" [value]="view.id">
@@ -34,7 +47,11 @@
       <mat-icon>close</mat-icon>Reset
     </button>
   </div>
-  <div>
-    <smi-risk-matrix-chart [matrix]="radioRiskMatrix" (clicked)="handleMatrixClick($event)"></smi-risk-matrix-chart>
+  <div *ngIf="tableStyles.MANAGEMENT === selectedTableStyle">
+    <smi-risk-matrix-chart
+      [selected]="selectedRiskMatrixCol"
+      [matrix]="radioRiskMatrix"
+      (clicked)="handleMatrixClick($event)"
+    ></smi-risk-matrix-chart>
   </div>
 </div>

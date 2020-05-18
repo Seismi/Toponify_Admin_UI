@@ -13,9 +13,10 @@
         *ngFor="let col of row; let colIndex = index"
         class="col"
         (click)="handleColClick(rowIndex, colIndex)"
-        [ngStyle]="{'background-color': getColorAccordingIndex(rowIndex + colIndex)}"
+        [ngStyle]="{ 'background-color': getColorAccordingIndex(rowIndex + colIndex) }"
+        [ngClass]="{ selected: isSelected(rowIndex, colIndex) }"
       >
-        {{col}}
+        {{ col }}
       </div>
     </div>
     <div class="xAxis">

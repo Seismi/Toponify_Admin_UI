@@ -6,7 +6,6 @@
     display: flex;
     align-items: stretch;
     justify-content: center;
-    // border: 1px solid red;
     .yAxis {
       display: flex;
       flex-direction: column;
@@ -22,7 +21,6 @@
       }
     }
     .xAxisContainer {
-      // border: 1px solid red;
       flex-wrap: wrap;
       display: flex;
       flex-direction: column-reverse;
@@ -30,7 +28,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        padding:0px 0px;
+        padding: 0px 0px;
         span {
           padding: 10px 0;
           text-align: center;
@@ -42,18 +40,41 @@
         height: 100px;
         display: flex;
         .col {
+          position: relative;
           cursor: pointer;
-          margin-right: -1px;
-          margin-bottom: -1px;
-          border: 1px solid #71776a;
+          margin-right: 0;
+          margin-bottom: 0;
+          border-left: 1px solid #71776a;
+          border-bottom: 1px solid #71776a;
           height: 100px;
           width: 100px;
           display: flex;
           align-items: center;
           justify-content: center;
-          opacity: 0.95;
+          opacity: 1;
           &:hover {
-            opacity: 1;
+            &:after {
+              content: '';
+              position: absolute;
+              top: -2px;
+              left: -2px;
+              bottom: -2px;
+              right: -2px;
+              border: 3px solid lightblue;
+            }
+            // opacity: 1;
+          }
+          &.selected {
+            &:after {
+              content: '';
+              position: absolute;
+              top: -2px;
+              left: -2px;
+              bottom: -2px;
+              right: -2px;
+              border: 3px solid darkblue;
+            }
+            // opacity: 1;
           }
         }
       }

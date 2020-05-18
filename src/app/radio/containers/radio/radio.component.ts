@@ -185,9 +185,12 @@ export class RadioComponent implements OnInit, OnDestroy {
     }
   }
 
-  isFilterEnabled(filter: string | boolean | []): boolean {
+  isFilterEnabled(filter: string | boolean | [] | number): boolean {
     if (Array.isArray(filter) && filter.length === 0) {
       return false;
+    }
+    if (Number.isInteger(filter as any)) {
+      return true;
     }
     return !!filter;
   }
@@ -220,6 +223,16 @@ export class RadioComponent implements OnInit, OnDestroy {
       text: {
         enabled: this.isFilterEnabled(data.text),
         value: data.text
+      },
+      severityRange: {
+        enabled: this.isFilterEnabled(data.severity),
+        from: data.severity - 1,
+        to: data.severity + 1
+      },
+      frequencyRange: {
+        enabled: this.isFilterEnabled(data.frequency),
+        from: data.frequency - 1,
+        to: data.frequency + 1
       }
     };
   }

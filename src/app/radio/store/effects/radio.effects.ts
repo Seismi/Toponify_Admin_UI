@@ -258,7 +258,7 @@ export class RadioEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.radioService.getRadioView(payload).pipe(
-        map(response => new GetRadioViewSuccess(response.data.filterSet)),
+        map(response => new GetRadioViewSuccess(response.data)),
         catchError((error: HttpErrorResponse) => of(new GetRadioViewFail(error)))
       );
     })
