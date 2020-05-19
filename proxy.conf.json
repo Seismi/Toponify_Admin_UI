@@ -1,8 +1,0 @@
-{
-  "/api": {
-    "target": "https://dev1.toponify.com:4003",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  }
-}
