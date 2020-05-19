@@ -11,7 +11,11 @@ import {
   NotificationGetAllSuccess,
   NotificationMarkAsRead,
   NotificationMarkAsReadSuccess,
-  NotificationSetError
+  NotificationSetError,
+  NotificationMarkAllAsRead,
+  NotificationMarkAllAsReadSuccess,
+  NotificationDeleteAll,
+  NotificationDeleteAllSuccess
 } from '../actions/notification.actions';
 import {
   NotificationDeleteResponseSuccess,
@@ -57,6 +61,32 @@ export class NotificationEffects {
     switchMap((id: string) => {
       return this.notificationService.delete(id).pipe(
         switchMap((response: NotificationDeleteResponseSuccess) => [new NotificationDeleteSuccess(id)]),
+        catchError((error: HttpErrorResponse) => of(new NotificationSetError(error)))
+      );
+    })
+  );
+
+  @Effect()
+  markAllAsRead$ = this.actions$.pipe(
+    ofType<NotificationMarkAllAsRead>(NotificationActionTypes.MarkAllAsRead),
+    switchMap(_ => {
+      return this.notificationService.markAllAsRead().pipe(
+        switchMap((payload: NotificationGetAllResponseSuccess) => [
+          new NotificationMarkAllAsReadSuccess(payload.data),
+          new NotificationGetAllSuccess(payload.data)
+        ]),
+        catchError((error: HttpErrorResponse) => of(new NotificationSetError(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteAll$ = this.actions$.pipe(
+    ofType<NotificationDeleteAll>(NotificationActionTypes.DeleteAll),
+    map(action => action),
+    switchMap(_ => {
+      return this.notificationService.deleteAll().pipe(
+        switchMap(() => [new NotificationDeleteAllSuccess()]),
         catchError((error: HttpErrorResponse) => of(new NotificationSetError(error)))
       );
     })

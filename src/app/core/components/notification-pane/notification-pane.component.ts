@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRe
 import { Store, select } from '@ngrx/store';
 import { NotificationState } from '@app/core/store/reducers/notification.reducer';
 import { getNotifications } from '@app/core/store/selectors/notification.selectors';
-import { NotificationMarkAsRead, NotificationDelete } from '@app/core/store/actions/notification.actions';
+import { NotificationMarkAsRead, NotificationDelete, NotificationMarkAllAsRead, NotificationDeleteAll } from '@app/core/store/actions/notification.actions';
 import { Subscription } from 'rxjs';
 import { Notification } from '@app/core/store/models/notification.models';
 
@@ -36,5 +36,13 @@ export class NotificationPaneComponent implements OnInit, OnDestroy {
 
   handleDelete(id: string): void {
     this.notificationStore.dispatch(new NotificationDelete(id));
+  }
+
+  markAllAsRead(): void {
+    this.notificationStore.dispatch(new NotificationMarkAllAsRead());
+  }
+
+  deleteAll(): void {
+    this.notificationStore.dispatch(new NotificationDeleteAll());
   }
 }
