@@ -56,6 +56,12 @@ export function reducer(state = initialState, action: NotificationActionsUnion):
         open: action.payload
       };
 
+    case NotificationActionTypes.DeleteAll:
+      return {
+        ...state,
+        notifications: []
+      };
+
     default: {
       return state;
     }
