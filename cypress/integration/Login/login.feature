@@ -3,7 +3,7 @@ Feature: login
   Scenario: Successful Login
     Given I am on the login page
     When  I ask to log in as usertype 'validuser'
-    Then toponify should display the 'Home' page
+    Then toponify should display the Home page
 
   Scenario: Login Failure
     Given I am on the login page

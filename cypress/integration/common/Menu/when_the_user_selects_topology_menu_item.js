@@ -9,15 +9,21 @@ When('the user selects Topology menu item', function() {
       cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
         .click()
         .then(() => {
-          let wait = ['@GETScopes', '@GETLayouts', '@GETWorkPackages', '@GETTeams', '@GETRadios', '@GETScope'];
-          wait = wait.concat([
-            '@GETLayout',
+          let wait = [
+            '@GETScopes',
+            '@GETLayouts',
+            '@GETWorkPackages',
+            '@GETTeams',
+            '@GETRadios',
+            '@GETScope',
             '@GETNodesScopeQuery',
             '@GETNodeLinksScopeQuery',
-            '@GETSelectorAvailabilityQuery'
-          ]);
-          wait = wait.concat(['@GETNodesScopeQuery.1', '@GETNodeLinksScopeQuery.1']);
-          wait = wait.concat(['@GETNodesScopeQuery.2', '@GETNodeLinksScopeQuery.2']);
+            '@GETSelectorAvailabilityQuery',
+            '@GETNodesScopeQuery.1',
+            '@GETNodeLinksScopeQuery.1',
+            '@GETNodesScopeQuery.2',
+            '@GETNodeLinksScopeQuery.2'
+          ];
           cy.wait(wait); // wait for API Calls
         });
     });

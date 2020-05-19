@@ -1,5 +1,5 @@
 import { When, Given, Then } from 'cypress-cucumber-preprocessor/steps';
-const pages = require('../../../../DEPRECATE_current_pane_set_up').website_structure.pages;
+//const pages = require('../../../../DEPRECATE_current_pane_set_up').website_structure.pages;
 
 Given('DEPRECATE the user creates a new {string} called {string} with description {string}', function(
   attRule,
