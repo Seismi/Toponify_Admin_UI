@@ -6,6 +6,8 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --port 4202",
     "build": "ng build",
+    "cypress-open": ".\\node_modules\\.bin\\cypress open -e BRANCH=changeMe",
+    "cypress-test-core": ".\\node_modules\\.bin\\cypress-tags run -e BRANCH=changeMe TAGS=@core",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

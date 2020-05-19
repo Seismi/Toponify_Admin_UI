@@ -44,6 +44,6 @@ proxy.conf.json
 
 # Cypress
 *.wip
-./cypress/integrations/wip
-./cypress/videos/
-./cypress/screenshots/
+/cypress/integrations/wip
+/cypress/videos
+/cypress/screenshots
