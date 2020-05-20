@@ -7,11 +7,11 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import { LoadLayout, DeleteLayout, UpdateLayout } from '@app/layout/store/actions/layout.actions';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { FormGroup } from '@angular/forms';
-import { DeleteScopesAndLayoutsModalComponent } from '../delete-modal/delete-scopes-and-layouts.component';
 import { MatDialog } from '@angular/material';
 import { ScopesAndLayoutsDetailService } from '@app/scopes-and-layouts/components/scopes-and-layouts-detail/services/scopes-and-layouts-detail.service';
 import { ScopesAndLayoutsValidatorService } from '@app/scopes-and-layouts/components/scopes-and-layouts-detail/services/scopes-and-layouts-detail-validator.service';
 import { UpdateScope } from '@app/scope/store/actions/scope.actions';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-layout-details',
@@ -72,16 +72,16 @@ export class LayoutDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteLayout(): void {
-    const dialogRef = this.dialog.open(DeleteScopesAndLayoutsModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        title: 'Are you sure you want to delete this?'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteLayout(this.layout.id));
         this.store.dispatch(
           new UpdateScope({

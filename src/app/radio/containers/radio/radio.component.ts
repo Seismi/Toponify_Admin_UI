@@ -38,7 +38,6 @@ export class RadioComponent implements OnInit, OnDestroy {
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
-  public status: string | any;
   public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
@@ -63,8 +62,9 @@ export class RadioComponent implements OnInit, OnDestroy {
       .pipe(map(radios => radios.filter(radio => (this.filterData === null ? radio.status !== 'closed' : radio))));
 
     this.store.pipe(select(getRadioFilter)).subscribe(data => {
-      data && data.status ? (this.status = data.status) : (this.status = 'new,open');
-      this.filterData = data;
+      if (data) {
+        this.filterData = data;
+      }
     });
 
     this.subscriptions.push(
@@ -167,11 +167,6 @@ export class RadioComponent implements OnInit, OnDestroy {
         this.store.dispatch(new RadioFilter(data.radio));
       }
     });
-  }
-
-  onResetFilter(): void {
-    this.store.dispatch(new LoadRadios({}));
-    this.store.dispatch(new RadioFilter(null));
   }
 
   downloadCSV(): void {

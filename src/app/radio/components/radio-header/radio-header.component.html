@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="filter">
+  <div class="content">
     <button mat-raised-button color="primary" (click)="onFilter()" data-qa="radio-filter">
       <mat-icon>filter_list</mat-icon>Filters
     </button>
@@ -19,44 +19,62 @@
       </mat-form-field>
 
       <mat-form-field floatLabel="never" appearance="none" matTooltip="Select radio view">
-        <mat-label>Select radio view</mat-label>
-        <mat-select [(value)]="selectedRadioViewId" data-qa="header-layer">
+        <mat-select placeholder="Select radio view" [(value)]="selectedRadioViewId" data-qa="header-layer">
           <mat-option *ngFor="let view of radioViews" (click)="onRadioViewSelect(view)" [value]="view.id">
             {{ view.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <ng-container *ngIf="hasActiveFilters">
-        <mat-icon *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onUpdateRadioView()">save</mat-icon>
-        <mat-icon class="radio-view-save-icon" (click)="onCreateRadioView()">file_copy</mat-icon>
-        <mat-icon *ngIf="selectedRadioViewId" class="radio-view-save-icon" (click)="onRadioViewReset()">clear</mat-icon>
+        <span class="actions">
+          <mat-icon
+            matTooltip="Save"
+            *ngIf="selectedRadioViewId"
+            class="radio-view-save-icon"
+            (click)="onUpdateRadioView()"
+            >save</mat-icon
+          >
+          <mat-icon matTooltip="Create New" (click)="onCreateRadioView()">file_copy</mat-icon>
+          <mat-icon
+            matTooltip="Reset"
+            *ngIf="selectedRadioViewId"
+            class="radio-view-save-icon"
+            (click)="onRadioViewReset()"
+            >clear</mat-icon
+          >
+        </span>
       </ng-container>
       <ng-container *ngIf="selectedRadioViewId">
-        <mat-icon class="radio-view-save-icon" (click)="onRadioViewDelete()">delete</mat-icon>
-        <mat-icon *ngIf="selectedRadioView.favourite" class="radio-view-save-icon" (click)="onRemoveFavourite()"
-          >star</mat-icon
-        >
-        <mat-icon *ngIf="!selectedRadioView.favourite" class="radio-view-save-icon" (click)="onAddFavourite()"
-          >star_border</mat-icon
-        >
+        <span class="actions">
+          <mat-icon matTooltip="Delete" class="radio-view-save-icon" (click)="onRadioViewDelete()">delete</mat-icon>
+          <mat-icon
+            matTooltip="Set as Favourite"
+            *ngIf="selectedRadioView.favourite"
+            class="radio-view-save-icon"
+            (click)="onRemoveFavourite()"
+            >star</mat-icon
+          >
+          <mat-icon
+            matTooltip="Set as Favourite"
+            *ngIf="!selectedRadioView.favourite"
+            class="radio-view-save-icon"
+            (click)="onAddFavourite()"
+            >star_border</mat-icon
+          >
+        </span>
       </ng-container>
     </div>
-  </div>
-  <div>
-    <button mat-raised-button color="primary" class="reset" (click)="onReset()" data-qa="radio-reset">
-      <mat-icon>close</mat-icon>Reset
-    </button>
-  </div>
-  <div *ngIf="tableStyles.MANAGEMENT === selectedTableStyle">
-    <smi-risk-matrix-chart
-      [selected]="selectedRiskMatrixCol"
-      [matrix]="radioRiskMatrix"
-      (clicked)="handleMatrixClick($event)"
-    ></smi-risk-matrix-chart>
-    <ng-container *ngIf="selectedRiskMatrixCol">
-      <hr />
-      <span style="float: right; cursor: pointer" (click)="clearSelection($event)">Clear selection</span>
-      <hr />
-    </ng-container>
+    <div *ngIf="tableStyles.MANAGEMENT === selectedTableStyle">
+      <smi-risk-matrix-chart
+        [selected]="selectedRiskMatrixCol"
+        [matrix]="radioRiskMatrix"
+        (clicked)="handleMatrixClick($event)"
+      ></smi-risk-matrix-chart>
+      <ng-container *ngIf="selectedRiskMatrixCol">
+        <hr />
+        <span style="float: right; cursor: pointer" (click)="clearSelection($event)">Clear selection</span>
+        <hr />
+      </ng-container>
+    </div>
   </div>
 </div>

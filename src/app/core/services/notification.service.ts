@@ -15,4 +15,10 @@ export class NotificationService {
   markAsRead(id: string): Observable<any> {
     return this.http.post<any>(`/notifications/${id}/markRead`, {});
   }
+  markAllAsRead(): Observable<any> {
+    return this.http.post<any>(`/notifications/markRead/all`, {});
+  }
+  deleteAll(): Observable<any> {
+    return this.http.delete<any>(`/notifications`);
+  }
 }

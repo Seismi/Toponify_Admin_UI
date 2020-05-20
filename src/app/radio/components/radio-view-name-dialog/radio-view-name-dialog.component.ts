@@ -12,7 +12,7 @@ import { ofType, Actions } from '@ngrx/effects';
 @Component({
   selector: 'app-radio-view-name-dialog',
   templateUrl: './radio-view-name-dialog.component.html',
-  styleUrls: ['./radio-view-name-dialog.component.css']
+  styleUrls: ['./radio-view-name-dialog.component.scss']
 })
 export class RadioViewNameDialogComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];

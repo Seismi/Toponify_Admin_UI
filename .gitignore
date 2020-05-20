@@ -40,4 +40,10 @@ logs
 # System Files
 .DS_Store
 Thumbs.db
-proxy.conf.json
+# proxy.conf.json
+
+# Cypress
+*.wip
+/cypress/integrations/wip/
+/cypress/videos/
+/cypress/screenshots/

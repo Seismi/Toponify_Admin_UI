@@ -25,7 +25,6 @@ import { LayoutModule } from '@app/layout/layout.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ScopeAndLayoutModalComponent } from './containers/scope-and-layout-modal/scope-and-layout-modal.component';
 import { SettingsModule } from '@app/settings/settings.module';
-import { DeleteScopesAndLayoutsModalComponent } from './containers/delete-modal/delete-scopes-and-layouts.component';
 import { ScopesAndLayoutsDetailComponent } from './components/scopes-and-layouts-detail/scopes-and-layouts-detail.component';
 import { ScopeDetailsComponent } from './containers/scope-details/scope-details.component';
 import { LayoutDetailsComponent } from './containers/layout-details/layout-details.component';
@@ -62,12 +61,11 @@ import { ScopesAndLayoutsComponentsTableComponent } from './components/scopes-an
     ScopesAndLayoutsTableComponent,
     ScopesAndLayoutsDetailComponent,
     ScopeAndLayoutModalComponent,
-    DeleteScopesAndLayoutsModalComponent,
     ScopeDetailsComponent,
     LayoutDetailsComponent,
     ScopesAndLayoutsComponentsTableComponent
   ],
   providers: [],
-  entryComponents: [ScopeAndLayoutModalComponent, DeleteScopesAndLayoutsModalComponent]
+  entryComponents: [ScopeAndLayoutModalComponent]
 })
 export class ScopesAndLayoutsModule {}

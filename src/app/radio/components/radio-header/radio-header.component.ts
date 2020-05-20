@@ -51,9 +51,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
     }
   ];
 
-  @Input() status: string;
   @Output() filter = new EventEmitter<void>();
-  @Output() resetFilter = new EventEmitter<void>();
 
   constructor(
     public dialog: MatDialog,
@@ -191,10 +189,6 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
 
   onFilter(): void {
     this.filter.emit();
-  }
-
-  onReset(): void {
-    this.resetFilter.emit();
   }
 
   handleMatrixClick(data: any): void {

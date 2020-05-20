@@ -424,8 +424,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.addChildSubscription = merge(
       this.gojsCustomObjectsService.addDataSet$,
       this.diagramTemplatesService.addChild$
-    ).subscribe(parentData => {
-      this.onAddDescendant(parentData);
+    ).subscribe(_ => {
+      this.onAddDescendant();
     });
 
     // Scopes
@@ -1741,11 +1741,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant(parentData) {
+  onAddDescendant() {
     this.store.dispatch(
       new FindPotentialWorkpackageNodes({
         workPackageId: this.workpackageId,
-        nodeId: parentData.id,
+        nodeId: this.nodeId,
         data: {}
       })
     );
@@ -1753,10 +1753,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title: `Add Children to "${parentData.name}"`,
+        title: `Add Children to "${this.selectedNode.name}"`,
         placeholder: 'Components',
         descendants: true,
-        nodeId: parentData.id,
+        nodeId: this.nodeId,
         workPackageId: this.workpackageId,
         scopeId: this.scope.id,
         options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
@@ -1787,7 +1787,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(
             new AddWorkPackageMapViewNodeDescendant({
               workPackageId: this.workpackageId,
-              nodeId: parentData.id,
+              nodeId: this.nodeId,
               data: data.value,
               mapViewParams: mapViewParams
             })
@@ -1796,7 +1796,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(
             new AddWorkPackageNodeDescendant({
               workPackageId: this.workpackageId,
-              nodeId: parentData.id,
+              nodeId: this.nodeId,
               data: data.value
             })
           );
@@ -2301,4 +2301,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+  onSwitchSourceAndTarget(): void {
+    this.workpackageStore.dispatch(
+      new UpdateWorkPackageLink({
+        workpackageId: this.workpackageId,
+        linkId: this.nodeId,
+        link: {
+          ...this.part.data,
+          sourceId: this.part.data.targetId,
+          targetId: this.part.data.sourceId
+        }
+      })
+    );
+  }
+
 }

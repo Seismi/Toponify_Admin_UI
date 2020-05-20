@@ -1,4 +1,26 @@
-<div>
-  <b>{{ title }}:</b> {{ data?.name }}
-  <mat-icon data-qa="source-or-target-table-add" (click)="edit.emit()" *ngIf="workPackageIsEditable">edit</mat-icon>
-</div>
+<table>
+  <tr>
+    <th>Source: <span>{{ sourceObject.name }}</span></th>
+    <td *ngIf="workPackageIsEditable">
+      <mat-icon data-qa="source-or-target-table-add" (click)="edit.emit('source')">edit</mat-icon>
+    </td>
+  </tr>
+  <tr>
+    <th></th>
+    <td *ngIf="workPackageIsEditable">
+      <mat-icon 
+        (click)="switchSourceAndTarget.emit()" 
+        data-qa="source-or-target-table-switch" 
+        matTooltip="switch source and target"
+      >
+        refresh
+      </mat-icon>
+    </td>
+  </tr>
+  <tr>
+    <th>Target: <span>{{ targetObject.name }}</span></th>
+    <td *ngIf="workPackageIsEditable">
+      <mat-icon data-qa="source-or-target-table-add" (click)="edit.emit('target')">edit</mat-icon>
+    </td>
+  </tr>
+</table>
