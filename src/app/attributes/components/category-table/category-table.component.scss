@@ -73,3 +73,16 @@ td {
     }
   }
 }
+
+button {
+  border-radius: 15px;
+  font-weight: lighter;
+  padding-right: 30px;
+  margin: 10px 0px 10px 20px;
+  .mat-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    margin-top: 4px;
+    padding: 0;
+  }
+}
