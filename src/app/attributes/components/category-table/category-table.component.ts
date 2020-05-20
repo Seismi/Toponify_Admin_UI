@@ -9,6 +9,7 @@ export class CategoryTableComponent implements OnInit {
   @Input() attributesPage: boolean;
   selectedRowIndex = -1;
   _data: any[] = [];
+  @Input() workPackageIsEditable: boolean;
 
   @Input()
   set data(data: any[]) {
@@ -29,6 +30,9 @@ export class CategoryTableComponent implements OnInit {
 
   @Output()
   addRule = new EventEmitter();
+
+  @Output()
+  add = new EventEmitter<void>();
 
   constructor() {}
 
