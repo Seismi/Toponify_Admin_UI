@@ -19,6 +19,15 @@
       </tbody>
     </ng-container>
   </table>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="add.emit()"
+    data-qa="rules-and-attributes-create-new"
+    [disabled]="workPackageIsEditable"
+  >
+  <mat-icon>add</mat-icon>Create New
+</button>
 </div>
 
 <!-- Templates -->
