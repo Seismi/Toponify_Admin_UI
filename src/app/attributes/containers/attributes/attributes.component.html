@@ -49,6 +49,8 @@
               [data]="categoryTableData"
               [categories]="['attribute', 'rule']"
               (selectRow)="onSelectAttribute($event)"
+              [workPackageIsEditable]="workPackageIsEditable"
+              (add)="onAdd()"
             >
             </app-category-table>
           </div>

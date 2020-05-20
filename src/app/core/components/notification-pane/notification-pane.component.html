@@ -1,6 +1,10 @@
 <div class="search-container">
   <input placeholder="Search" [(ngModel)]="searchString" (keydown)="$event.stopPropagation()" />
 </div>
+<div class="actions" *ngIf="notifications.length">
+  <a (click)="markAllAsRead()">Mark all as read</a>
+  <a (click)="deleteAll()">Delete all</a>
+</div>
 <mat-card
   *ngFor="let notification of notifications | searchPipe: searchString"
   [ngClass]="{ notActive: notification.read }"
