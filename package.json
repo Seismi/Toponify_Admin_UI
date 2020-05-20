@@ -6,6 +6,8 @@
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --port 4202",
     "build": "ng build",
+    "cypress-open": ".\\node_modules\\.bin\\cypress open -e BRANCH=changeMe",
+    "cypress-test-core": ".\\node_modules\\.bin\\cypress-tags run -e BRANCH=changeMe TAGS=@core",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -60,6 +62,9 @@
     "@types/node": "~8.9.4",
     "@types/parse": "^1.11.0",
     "codelyzer": "~4.2.1",
+    "cucumber": "^6.0.5",
+    "cypress": "^4.5.0",
+    "cypress-cucumber-preprocessor": "^2.3.1",
     "husky": "^3.1.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -88,5 +93,8 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
   }
 }
