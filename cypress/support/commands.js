@@ -189,6 +189,17 @@ Cypress.Commands.add('findWorkPackage', name => {
     });
 });
 
+Cypress.Commands.add('findDocumentationStandard', name => {
+  cy.get(`[data-qa=documentation-standards-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name) // type the name
+    .then(() => {
+      return cy
+        .get(`[data-qa=documentation-standards-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
 Cypress.Commands.add('findScope', name => {
   cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
     .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
@@ -267,7 +278,6 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
 });
 
 Cypress.Commands.add('deleteScope', scope => {
-  console.log(scope);
   cy.selectRow('scopes-and-layouts-scope-table', scope)
     //.wait('@GETWorkPackage')
     .then(() => {
@@ -284,8 +294,23 @@ Cypress.Commands.add('deleteScope', scope => {
     });
 });
 
+Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
+  cy.selectRow('documentation-standards-table', doc_standard) // select the documentation standard
+    .wait('@GETCustomProperties*')
+    .then(() => {
+      cy.get(`[data-qa=documentation-standards-delete]`) //get the delete button
+        .click() // click it
+        .then(() => {
+          cy.get('[data-qa=delete-modal-yes]') // get the delete modal button
+            .click()
+            .then(() => {
+              cy.wait('@DELETECustomProperties'); // delete the documentation standard
+            });
+        });
+    });
+});
+
 Cypress.Commands.add('deleteWorkPackage', name => {
-  console.log(name);
   cy.selectRow('work-packages-table', name)
     .wait('@GETWorkPackage')
     .then(() => {
@@ -316,6 +341,26 @@ Cypress.Commands.add('deleteWorkPackage', name => {
           });
       });
     });
+});
+
+Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
+  // Creates a documentation standard
+  cy.get('[data-qa=documentation-standards-create-new]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-details-name]').type(doc_standard); // enter the name
+      cy.get('[data-qa=documentation-standards-details-description]').type(doc_standard); //enter the description
+      cy.root(); // return to root
+      cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
+        .click()
+        .get('mat-option')
+        .contains(type) // get the mat-option that contains type
+        .click({ force: true }); // click
+      cy.get('smi-document-standards-levels') // get the levels
+        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
+        .contains(component) // which contains the component
+        .click();
+    }); //click the create new documentations standard button
 });
 
 //
