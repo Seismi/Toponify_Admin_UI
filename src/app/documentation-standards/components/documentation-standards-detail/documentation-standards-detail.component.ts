@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Constants } from '@app/core/constants';
 import { Roles } from '@app/core/directives/by-role.directive';
+import { DocumentStandardsService } from './services/document-standards.service';
+import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 
 @Component({
   selector: 'smi-documentation-standards-detail',
@@ -9,16 +11,24 @@ import { Roles } from '@app/core/directives/by-role.directive';
   styleUrls: ['documentation-standards-detail.component.scss']
 })
 export class DocumentationStandardsDetailComponent {
+  private values: DocumentStandard;
   @Input() group: FormGroup;
-  @Input() isEditable: boolean = false;
-  @Input() isDisabled: boolean = true;
-  @Input() modalMode: boolean = false;
+  @Input() isEditable = false;
+  @Input() isDisabled = true;
+  @Input() modalMode = false;
+
+  @Input('group') set setGroup(group) {
+    this.group = group;
+    this.values = group.value;
+  }
 
   public types = Constants.PROPERTY_TYPES;
   public Roles = Roles;
 
   @Output() saveDocument = new EventEmitter<void>();
   @Output() deleteDocument = new EventEmitter<void>();
+
+  constructor(private documentStandardsService: DocumentStandardsService) { }
 
   onEdit(): void {
     this.isEditable = true;
@@ -32,6 +42,7 @@ export class DocumentationStandardsDetailComponent {
   }
 
   onCancel(): void {
+    this.documentStandardsService.updateForm(this.values);
     this.isDisabled = true;
     this.isEditable = false;
   }
