@@ -1,0 +1,31 @@
+<div class="yAxisContainer">
+  <div class="yAxis">
+    <span class="left">Major</span>
+    <span class="left">Minor</span>
+  </div>
+  <div class="xAxisContainer">
+    <div class="xAxis">
+      <span>Low</span>
+      <span>High</span>
+    </div>
+    <div *ngFor="let row of matrix; let rowIndex = index" class="row">
+      <div
+        *ngFor="let col of row; let colIndex = index"
+        class="col"
+        (click)="handleColClick(rowIndex, colIndex)"
+        [ngStyle]="{ 'background-color': getColorAccordingIndex(rowIndex + colIndex) }"
+        [ngClass]="{ selected: isSelected(rowIndex, colIndex) }"
+      >
+        {{ col }}
+      </div>
+    </div>
+    <div class="xAxis">
+      <span>Low</span>
+      <span>High</span>
+    </div>
+  </div>
+  <div class="yAxis">
+    <span class="right">Major</span>
+    <span class="right">Minor</span>
+  </div>
+</div>
