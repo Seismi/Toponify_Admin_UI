@@ -318,6 +318,10 @@ Cypress.Commands.add('deleteWorkPackage', name => {
     });
 });
 
+Cypress.Commands.add('findRadio', () => {
+  cy.get(`[data-qa=radio-table]`).find('table>tbody');
+});
+
 //
 //
 // -- This is a child command --
