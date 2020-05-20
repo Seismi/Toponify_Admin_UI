@@ -43,7 +43,7 @@
   </div>
 
   <div class="form-group" *ngIf="!nodeIsEditable()">
-    <button data-qa="object-details-save" mat-flat-button color="primary" [disabled]="!group.valid" (click)="onSave()">Save</button>
+    <button data-qa="object-details-save" mat-flat-button color="primary" [disabled]="!group.valid || !group.dirty" (click)="onSave()">Save</button>
     <button data-qa="object-details-cancel" mat-flat-button (click)="onCancel()">Cancel</button>
     <button data-qa="object-details-delete" mat-flat-button color="warn" (click)="onDelete()">Delete</button>
   </div>
