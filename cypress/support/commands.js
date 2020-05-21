@@ -322,6 +322,94 @@ Cypress.Commands.add('findRadio', () => {
   cy.get(`[data-qa=radio-table]`).find('table>tbody');
 });
 
+Cypress.Commands.add(
+  'writeRadioDetails',
+  (title, category, status, assigned, severity, probability, actioned, description, mitigation) => {
+    //TODO - Undo when bug fixed (https://toponify.atlassian.net/browse/TOP-567)
+    //selectDropDown('radio-detail-assigned-to', assigned)
+
+    cy.get('[data-qa=radio-detail-title]')
+      .scrollIntoView()
+      .clear()
+      .type(title)
+      .then(() => {
+        cy.selectDropDownNoClick('radio-detail-category', category);
+      })
+      .then(() => {
+        cy.selectDropDownNoClick('radio-detail-status', status);
+      })
+      .then(() => {
+        cy.get('[data-qa=radio-detail-severity]')
+          .type('{home}')
+          .then(() => {
+            if (severity - 1 > 0) {
+              //scaled from 1 to 5. home commands takes to 1 therefore setting to 1 needs zero right arrows
+              cy.get('[data-qa=radio-detail-severity]').type('{rightarrow}'.repeat(severity - 1));
+            }
+          });
+      })
+      .then(() => {
+        cy.get('[data-qa=radio-detail-frequency]')
+          .type('{home}')
+          .then(() => {
+            if (probability - 1 > 0) {
+              cy.get('[data-qa=radio-detail-frequency]').type('{rightarrow}'.repeat(probability - 1));
+            }
+          });
+      })
+      .then(() => {
+        if (actioned.length > 0) {
+          cy.get('[data-qa=radio-detail-action-by')
+            .clear()
+            .type(actioned);
+        }
+      })
+      .then(() => {
+        if (description.length > 0) {
+          cy.type_ckeditor('[data-qa=radio-detail-description]', description);
+        }
+      })
+      .then(() => {
+        if (mitigation.length > 0) {
+          cy.type_ckeditor('[data-qa=radio-detail-mitigation]', mitigation);
+        }
+      });
+  }
+);
+
+Cypress.Commands.add(
+  'assertRadioDetails',
+  (title, category, status, assigned, severity, probability, actioned, description, mitigation) => {
+    // Asserts the value of the form are as expected
+    cy.get(`[data-qa='radio-detail-category']`).then(input => {
+      expect(input[0].textContent).to.equal(category);
+    });
+    cy.get(`[data-qa='radio-detail-status']`).then(input => {
+      expect(input[0].textContent).to.equal(status);
+    });
+    cy.get(`[data-qa='radio-detail-action-by']`).then(input => {
+      expect(input[0].value).to.equal(actioned);
+    });
+    cy.get(`[data-qa='radio-detail-description']`).then(input => {
+      console.log(input);
+      expect(input[0].textContent).to.equal(description);
+    });
+    cy.get('[data-qa=radio-detail-title]').then(input => {
+      expect(input[0].value).to.equal(title);
+    });
+    //TODO uncomment when bug fixed (https://toponify.atlassian.net/browse/TOP-567)
+    /*cy.get(`[data-qa='radio-detail-assigned-to']`).then((input)=>{
+        expect(input[0].textContent).to.equal(assigned)
+    })*/
+    cy.get(`[data-qa='radio-detail-mitigation']`).then(input => {
+      console.log(input);
+      expect(input[0].textContent).to.equal(mitigation);
+    });
+    cy.get('[data-qa=radio-detail-severity]').should('have.attr', 'aria-valuenow', severity.toString());
+    cy.get('[data-qa=radio-detail-frequency]').should('have.attr', 'aria-valuenow', probability.toString());
+  }
+);
+
 //
 //
 // -- This is a child command --

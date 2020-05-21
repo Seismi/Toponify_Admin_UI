@@ -6,12 +6,13 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
     And the user selects Radios menu item
     And the radio 'Automatic Regression Test Risk 1' does not exist
 
+    @focus
   Scenario: Start creating radio then cancel
     When the user clicks on create new radio at the buttom of the radio table
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution ''
     And the user cancels the creation of the radio
     And the radio with title 'Automatic Regression Test Risk 1' should not be immediately visible in the radio table
-  
+
   Scenario: Create simple radio
     When the user clicks on create new radio at the bottom of the radio table
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2  # No Assigned To, Action By or Mitigation on purpose - Please make sure the code does not fill in anything rather than tries to fill in a blank string
