@@ -10,7 +10,7 @@ import { currentArchitecturePackageId } from '@app/workpackage/store/models/work
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
@@ -97,7 +97,15 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
         this.selectedRadioIndex = action.payload.id;
-        this.store.dispatch(new LoadRadios({}));
+        if (this.filterData) {
+          this.store.dispatch(
+            new SearchRadio({
+              data: this.transformFilterIntoAdvancedSearchData(this.filterData)
+            })
+          );
+        } else {
+          this.store.dispatch(new LoadRadios({}));
+        }
         this.onSelectRadio(action.payload);
       })
     );
@@ -180,9 +188,12 @@ export class RadioComponent implements OnInit, OnDestroy {
     }
   }
 
-  isFilterEnabled(filter: string | boolean | []): boolean {
+  isFilterEnabled(filter: string | boolean | [] | number): boolean {
     if (Array.isArray(filter) && filter.length === 0) {
       return false;
+    }
+    if (Number.isInteger(filter as any)) {
+      return true;
     }
     return !!filter;
   }
@@ -215,6 +226,16 @@ export class RadioComponent implements OnInit, OnDestroy {
       text: {
         enabled: this.isFilterEnabled(data.text),
         value: data.text
+      },
+      severityRange: {
+        enabled: this.isFilterEnabled(data.severity),
+        from: data.severity,
+        to: data.severity
+      },
+      frequencyRange: {
+        enabled: this.isFilterEnabled(data.frequency),
+        from: data.frequency,
+        to: data.frequency
       }
     };
   }
