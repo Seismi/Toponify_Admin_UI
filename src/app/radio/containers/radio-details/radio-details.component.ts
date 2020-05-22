@@ -36,6 +36,7 @@ import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.act
 import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { Tag } from '@app/architecture/store/models/node.model';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-radio-details',
@@ -245,16 +246,16 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteRadio(): void {
-    const dialogRef = this.dialog.open(DeleteRadioModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        title: 'Are you sure you want to delete?'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(new DeleteRadioEntity(this.radioId));
         this.router.navigate(['/radio'], { queryParamsHandling: 'preserve' });
       }
