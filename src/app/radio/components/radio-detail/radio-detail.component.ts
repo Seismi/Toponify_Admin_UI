@@ -106,6 +106,7 @@ export class RadioDetailComponent implements DoCheck {
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() selectWorkPackage = new EventEmitter<any>();
   @Output() closeModal = new EventEmitter<void>();
+  @Output() cancel = new EventEmitter<void>();
 
   ngDoCheck(): void {
     this.radioCategory = this.group.value.category;
@@ -129,6 +130,7 @@ export class RadioDetailComponent implements DoCheck {
   }
 
   onCancel() {
+    this.cancel.emit();
     this.isEditable = false;
   }
 

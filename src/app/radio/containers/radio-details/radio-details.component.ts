@@ -104,6 +104,10 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     return this.radioDetailService.radioDetailsForm;
   }
 
+  onCancel(): void {
+    this.radioDetailService.radioDetailsForm.patchValue({...this.radio});
+  }
+
   onSaveRadio(): void {
     const dialogRef = this.dialog.open(ReplyModalComponent, {
       disableClose: false,
@@ -111,7 +115,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data) {
+      if (data && data.radio) {
         this.store.dispatch(
           new AddReply({
             id: this.radioId,
@@ -123,6 +127,8 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
             }
           })
         );
+      } else {
+        this.onCancel();
       }
     });
   }
