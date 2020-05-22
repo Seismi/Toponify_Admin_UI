@@ -33,6 +33,11 @@ module.exports = {
       api: `${api_version}/radios`,
       method: 'GET',
       name: 'Radios'
+    },
+    GetRadio: {
+      api: `${api_version}/radios/*`,
+      method: 'GET',
+      name: 'Radio'
     }
   }
 };
