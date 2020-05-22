@@ -8,17 +8,17 @@
             Changes
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <table *ngFor="let changes of data.changes.listChanges">
+        <table *ngFor="let changes of data.changes.listChanges" data-qa="radio-chatbox-table">
           <tr>
-            <th colspan="2" class="property-name">{{ changes.changedProperty }}</th>
+            <th data-qa="radio-chatbox-title" colspan="2" class="property-name">{{ changes.changedProperty }}</th>
           </tr>
           <tr>
             <th style="width: 130px">SET FROM:</th>
-            <td [innerHTML]="changes.changedFrom">{{ changedFrom(changes) }}</td>
+            <td [innerHTML]="changes.changedFrom" data-qa="radio-chatbox-set">{{ changedFrom(changes) }}</td>
           </tr>
           <tr>
             <th style="width: 130px">TO:</th>
-            <td [innerHTML]="changes.changedTo">{{ changedTo(changes) }}</td>
+            <td [innerHTML]="changes.changedTo" data-qa="radio-chatbox-to">{{ changedTo(changes) }}</td>
           </tr>
         </table>
       </mat-expansion-panel>
