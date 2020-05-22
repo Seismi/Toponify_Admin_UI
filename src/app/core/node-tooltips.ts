@@ -40,34 +40,22 @@ export const NodeToolTips = [
       'An integration sharing data across systems. For example, to show data from the ERP is published to the EPM application.'
   },
   {
-    Layer: 'Data Set',
-    Object: 'New Physical Data Set',
+    Layer: 'Data',
+    Object: 'New Data Structure',
     Tooltip:
-      'A set of data stored in the system in a given format. A data set also implicitly includes some control master data used to validate the content of the table. For example, the monthly balance in the general ledger is a stored physical data set.'
+      'Add a new data structure - these represent a table or location in which data is stored in a set structure. You can then add data sets to the structure to describe the data contained within it.'
   },
   {
-    Layer: 'Data Set',
-    Object: 'New Virtual Data Set',
-    Tooltip:
-      'A set of data calculated or transformed on the fly into a given format. It is not stored and changes as soon as its underlying components change. For example, a weekly performance view of sales calculated on the fly based on transactions is a virtual data set.'
-  },
-  {
-    Layer: 'Data Set',
-    Object: 'New Master Data Data Set',
-    Tooltip:
-      'A set of master data. For example, it can be used to represent a collection of valid financial codes (account codes, cost centres, company codes) maintained in the ERP and shared across multiple ledgers and sub-ledgers.'
-  },
-  {
-    Layer: 'Data Set',
+    Layer: 'Data',
     Object: 'Master Data Link',
     Tooltip:
-      'An integration transfering master data from one data or master data set to another. For example, a physical data set in an analytical system may be receiving the master data from the master data set in the master data application'
+      'Add a new master data link - these represent a transfer of master data (definitions or mappings).'
   },
   {
-    Layer: 'Data Set',
+    Layer: 'Data',
     Object: 'Data Link',
     Tooltip:
-      'An integration transfering data from one data set to another. For example, a data read from a physical to virtual data set.'
+      'Add a new data link - these represent a transfer of data between two data structures or describe which data set(s) are being transferred.'
   },
   {
     Layer: 'Dimension',

@@ -761,8 +761,8 @@ export class DiagramChangesService {
   }
 
   // Ensure group members and any connected links are positioned correctly
-  //  when a system group is expanded
-  systemSubGraphExpandChanged(group: go.Group): void {
+  //  when a system/data group is expanded
+  groupSubGraphExpandChanged(group: go.Group): void {
 
     if (group.isSubGraphExpanded) {
 
@@ -799,9 +799,9 @@ export class DiagramChangesService {
                 part.move(newLocation, true);
               } else {
                 /*
-                  For nodes that are already located in the group, change member system location back and
+                  For nodes that are already located in the group, change member node location back and
                   forth between the current location and another point.
-                  This is to force GoJS to update the position of the system, as this does not appear to be
+                  This is to force GoJS to update the position of the node, as this does not appear to be
                   done correctly when the parent group is moved.
                 */
                 const location = part.location.copy();
@@ -886,7 +886,7 @@ export class DiagramChangesService {
     this.groupMemberSizeChanged(node);
   }
 
-  // Ensures that all system groups that have the given member as part of
+  // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
   groupMemberSizeChanged(member: go.Node): void {
     const nestedGroups = new go.Set();

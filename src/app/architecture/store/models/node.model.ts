@@ -49,8 +49,9 @@ export enum nodeCategories {
   file = 'file',
   reporting = 'reporting',
   masterData = 'master data',
-  physical = 'physical',
-  virtual = 'virtual',
+  dataStructure = 'data structure',
+  dataSet = 'data set',
+  masterDataSet = 'master data set',
   dimension = 'dimension',
   list = 'list',
   structure = 'structure',
@@ -90,13 +91,15 @@ export class Node {
   sortOrder?: number;
   endPointType?: endPointTypes;
   isTemporary: boolean;
+  isShared: boolean;
 
   constructor(options: { id: string;
     name: string;
     layer: layers;
     category: nodeCategories;
     tooltip: string;
-    isTemporary?: boolean }) {
+    isTemporary?: boolean;
+    isShared?: boolean; }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;
@@ -105,6 +108,7 @@ export class Node {
       this.isGroup = options.layer === layers.system && options.category !== nodeCategories.transformation;
       this.tooltip = options.tooltip;
       this.isTemporary = options.isTemporary || false;
+      this.isShared = options.isShared || false;
       this.owners = [];
       this.impactedByWorkPackages = [];
     }
@@ -160,6 +164,7 @@ export interface NodeDetail {
   isGroup?: boolean;
   group?: string;
   tags: Tag[];
+  isShared: boolean;
   groupinfo?: GroupInfo;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   systems?: (GroupInfo)[] | null;
@@ -172,6 +177,7 @@ export interface NodeDetail {
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
   members?: (GroupInfo[]) | null;
+  master?: GroupInfo;
 }
 export interface GroupInfo {
   id: string;
