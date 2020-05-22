@@ -21,11 +21,11 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
     And the radio with the title 'Automatic Regression Test Risk 1' should have the category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description', assigned to '', be actioned by '', with mitigation resolution '' and have severity 1 and probability 2
 
   Scenario: Update RADIO
-	  Given the RADIO 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  Given the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
     When the user edits the description to 'Automatic regression test description change'
     And saves the change
     And provides the reason 'Automated regression test description change'
-    Then the RADIO with title 'Automatic Regression Test Risk 1' should be immediately visible in the RADIO table
-    And the RADIO with the title 'Automatic Regression Test Risk 1' should have the category 'risk', status 'new', description 'Automatic regression test description change', assigned to '', be actioned by '', with mitigation resolution '' and have severity 1 and probability 2
+    Then the radio with title 'Automatic Regression Test Risk 1' should be immediately visible in the radio table
+    And the radio with the title 'Automatic Regression Test Risk 1' should have the category 'risk', status 'new', description 'Automatic regression test description change', assigned to '', be actioned by '', with mitigation resolution '' and have severity 1 and probability 2
     And in the dialogue tab, a new entry appears with today's date, the user's name, the message 'Automated regression test description change'
     And on expanding the entry, the user can see a change applied on the description with the value set from 'Automatic Regression Test Risk 1 Description' to 'Automatic regression test description change'

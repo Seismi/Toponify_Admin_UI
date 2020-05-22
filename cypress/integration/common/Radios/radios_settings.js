@@ -4,26 +4,27 @@ module.exports = {
   menu_selector: 'main-menu-radios',
   page_check: 'radio',
   wait_for: {
-    GetWorkPackage: {
-      api: `${api_version}/users`,
-      method: 'GET',
-      name: 'Users'
-    },
-    GetArchiveWorkPackages: {
-      api: `${api_version}/radios`,
-      method: 'GET',
-      name: 'Radios'
-    },
-    PostWorkPackage: {
-      api: `${api_version}/nodes`,
-      method: 'GET',
-      name: 'Nodes'
-    },
-    PostRadioWorkPackage: {
-      api: `${api_version}/workpackages/*/radios/*`,
-      method: 'POST',
-      name: ' RadioWorkPackage'
-    },
+    // Not sure about those
+    // GetWorkPackage: {
+    //   api: `${api_version}/users`,
+    //   method: 'GET',
+    //   name: 'Users'
+    // },
+    // GetArchiveWorkPackages: {
+    //   api: `${api_version}/radios`,
+    //   method: 'GET',
+    //   name: 'Radios'
+    // },
+    // PostWorkPackage: {
+    //   api: `${api_version}/nodes`,
+    //   method: 'GET',
+    //   name: 'Nodes'
+    // },
+    // PostRadioWorkPackage: {
+    //   api: `${api_version}/workpackages/*/radios/*`,
+    //   method: 'POST',
+    //   name: ' RadioWorkPackage'
+    // },
     PostRadios: {
       api: `${api_version}/radios`,
       method: 'POST',
@@ -38,6 +39,11 @@ module.exports = {
       api: `${api_version}/radios/*`,
       method: 'GET',
       name: 'Radio'
+    },
+    PostReply: {
+      api: `${api_version}/radios/*/reply`,
+      method: 'POST',
+      name: 'RadioReply'
     }
   }
 };

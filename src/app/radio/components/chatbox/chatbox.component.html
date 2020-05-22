@@ -3,7 +3,7 @@
     <div class="reply-text" [innerHTML]="data.replyText"></div>
     <mat-accordion *ngIf="data.changes.hasChanges">
       <mat-expansion-panel>
-        <mat-expansion-panel-header>
+        <mat-expansion-panel-header data-qa="radio-chatbox-expand">
           <mat-panel-description>
             Changes
           </mat-panel-description>
