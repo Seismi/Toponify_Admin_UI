@@ -204,6 +204,9 @@ export interface RadiosAdvancedSearch {
   relatesTo?: RelatesToValues;
   dueDate?: DueDate;
   text?: Text;
+  tableStyle?: string;
+  severityRange?: any;
+  frequencyRange?: any;
 }
 
 interface Text {

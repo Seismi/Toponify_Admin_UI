@@ -1,0 +1,83 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .yAxisContainer {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    .yAxis {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 70px 0px;
+      span {
+        &.left {
+          transform: translateY(0px) rotate(-90deg);
+        }
+        &.right {
+          transform: translateY(0px) rotate(90deg);
+        }
+      }
+    }
+    .xAxisContainer {
+      flex-wrap: wrap;
+      display: flex;
+      flex-direction: column-reverse;
+      .xAxis {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0px 0px;
+        span {
+          padding: 10px 0;
+          text-align: center;
+          width: 100px;
+        }
+      }
+      .row {
+        width: 100%;
+        height: 100px;
+        display: flex;
+        .col {
+          position: relative;
+          cursor: pointer;
+          margin-right: 0;
+          margin-bottom: 0;
+          border-left: 1px solid #71776a;
+          border-bottom: 1px solid #71776a;
+          height: 100px;
+          width: 100px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 1;
+          &:hover {
+            &:after {
+              content: '';
+              position: absolute;
+              top: -2px;
+              left: -2px;
+              bottom: -2px;
+              right: -2px;
+              border: 3px solid lightblue;
+            }
+            // opacity: 1;
+          }
+          &.selected {
+            &:after {
+              content: '';
+              position: absolute;
+              top: -2px;
+              left: -2px;
+              bottom: -2px;
+              right: -2px;
+              border: 3px solid darkblue;
+            }
+            // opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}

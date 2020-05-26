@@ -1,3 +1,4 @@
+@core
 Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   As a user, I want to be able to create, read, update and delete RADIOs directly in the RADIO screen.
 
