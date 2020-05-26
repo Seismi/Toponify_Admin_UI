@@ -3,14 +3,16 @@
     <th mat-header-cell *matHeaderCellDef>{{ title }}</th>
     <td mat-cell *matCellDef="let element" [ngSwitch]="element.category">
       <div style="display: flex;">
-        <mat-icon *ngSwitchCase="'master data'" svgIcon="data_set-master-data"></mat-icon>
-        <mat-icon *ngSwitchCase="'physical'" svgIcon="data_set-physical"></mat-icon>
-        <mat-icon *ngSwitchCase="'virtual'" svgIcon="data_set-virtual"></mat-icon>
+        <mat-icon *ngIf="element.category === 'data set' && element.isShared" svgIcon="data-data-set-shared"></mat-icon>
+        <mat-icon *ngIf="element.category === 'data set' && !element.isShared" svgIcon="data-data-set-master"></mat-icon>
+        <mat-icon *ngIf="element.category === 'master data set' && element.isShared" svgIcon="data-master-data-set-shared"></mat-icon>
+        <mat-icon *ngIf="element.category === 'master data set' && !element.isShared" svgIcon="data-master-data-set-master"></mat-icon>
         <mat-icon *ngSwitchCase="'dimension'" svgIcon="dim"></mat-icon>
         <mat-icon *ngSwitchCase="'key'" svgIcon="rc-keyrc"></mat-icon>
         <mat-icon *ngSwitchCase="'list'" svgIcon="rc-list"></mat-icon>
         <mat-icon *ngSwitchCase="'structure'" svgIcon="rc-structure"></mat-icon>
         <mat-icon *ngSwitchCase="'analytical'" svgIcon="sys-analytical"></mat-icon>
+        <mat-icon *ngSwitchCase="'master data'" svgIcon="sys-master-data"></mat-icon>
         <mat-icon *ngSwitchCase="'file'" svgIcon="sys-files"></mat-icon>
         <mat-icon *ngSwitchCase="'reporting'" svgIcon="sys-reporting"></mat-icon>
         <mat-icon *ngSwitchCase="'transactional'" svgIcon="sys-transactional"></mat-icon>

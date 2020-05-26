@@ -28,7 +28,7 @@ export interface GetWorkPackageNodeScopesQueryParams {
 })
 export class WorkPackageNodesService extends WorkPackageService {
   /**
-   * Create new architecture node (system, data set, dimensions, reporting concept)
+   * Create new architecture node (system, data node, dimensions, reporting concept)
    * FIXME: missing types
    */
   addNode(workPackageId: string, data: WorkpackageNode, scope?: string): Observable<any> {
@@ -199,7 +199,7 @@ export class WorkPackageNodesService extends WorkPackageService {
   addWorkPackageNodeGroup(workPackageId: string, systemId: string, groupId: string): Observable<NodeDetailApiResponse> {
     return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${systemId}/group/set/${groupId}`, this.httpOptions);
   }
-  
+
   deleteWorkPackageNodeGroup(workPackageId: string, systemId: string): Observable<NodeDetailApiResponse> {
     return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${systemId}/group/deleteRequest`, {});
   }

@@ -219,7 +219,7 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a new scope should be created for the selected node
   private createScopeWithNodeSource = new Subject();
   public createScopeWithNode$ = this.createScopeWithNodeSource.asObservable();
-  // Observable to indicate that a new data set is to be added to a system
+  // Observable to indicate that a new data node is to be added to a system
   private addDataSetSource = new Subject();
   public addDataSet$ = this.addDataSetSource.asObservable();
   // Observable to indicate that the grid display should be toggled
@@ -322,7 +322,7 @@ export class GojsCustomObjectsService {
           }
         },
         new go.Binding('visible', 'layer', function(layer) {
-            // Can only expand link if layer is system or data set
+            // Can only expand link if layer is system or data
             return layer === layers.system || layer === layers.data;
         })
       ),
@@ -411,7 +411,7 @@ export class GojsCustomObjectsService {
             }).ofObject()
           : {},
         enabled_predicate
-          ? new go.Binding('isEnabled', '', enabled_predicate)
+          ? new go.Binding('isEnabled', '', enabled_predicate).ofObject()
           : {}
       );
     }
@@ -448,7 +448,7 @@ export class GojsCustomObjectsService {
         row: row
       },
         enabled_predicate
-          ? new go.Binding('isEnabled', '', enabled_predicate)
+          ? new go.Binding('isEnabled', '', enabled_predicate).ofObject()
           : {}
       );
     }
@@ -637,7 +637,11 @@ export class GojsCustomObjectsService {
 
           }.bind(this),
           function(object: go.GraphObject, event: go.DiagramEvent) {
-            return thisService.diagramEditable && thisService.currentLevel !== Level.usage;
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+
+            return thisService.diagramEditable &&
+              thisService.currentLevel !== Level.usage &&
+              !node.data.isShared;
           }
         ),
         makeSubMenuButton(
@@ -664,9 +668,9 @@ export class GojsCustomObjectsService {
           3,
           'Data Nodes',
             [
-              'Show as List (data sets)',
-              'Display (data sets)',
-              'Add data set',
+              'Show as List (data nodes)',
+              'Display (data nodes)',
+              'Add data node',
             ],
           function(object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
@@ -684,10 +688,10 @@ export class GojsCustomObjectsService {
             }
           }
         ),
-        // --Data set submenu buttons--
+        // --Data node submenu buttons--
         makeSubMenuButton(
           3,
-          'Show as List (data sets)',
+          'Show as List (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -709,7 +713,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(4,
-          'Display (data sets)',
+          'Display (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -721,27 +725,29 @@ export class GojsCustomObjectsService {
         ),
         makeSubMenuButton(
           5,
-          'Add data set',
+          'Add data node',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             thisService.addDataSetSource.next(node.data);
           },
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
-            return thisService.diagramEditable;
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return thisService.diagramEditable &&
+              ![nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category);
           },
           function(object: go.GraphObject): string {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             switch (node.data.layer) {
-              case 'data set':
+              case layers.data:
                 return 'Add dimension';
-              case 'dimension':
+              case layers.dimension:
                 return 'Add reporting concept';
               default:
-                return 'Add data set';
+                return 'Add data node';
             }
           }
         ),
-        // --End of data set submenu buttons--
+        // --End of data node submenu buttons--
         makeMenuButton(
           4,
           'Analyse',

@@ -646,7 +646,7 @@ export class DiagramTemplatesService {
               [nodeCategories.reporting]: 'reporting',
               [nodeCategories.masterData]: 'master-data',
               [nodeCategories.file]: 'files',
-              [nodeCategories.dataStructure]: 'structure',
+              [nodeCategories.dataStructure]: 'data-structure',
               [nodeCategories.dataSet]: 'data-set',
               [nodeCategories.masterDataSet]: 'master-data-set',
               [nodeCategories.masterData]: 'master-data',

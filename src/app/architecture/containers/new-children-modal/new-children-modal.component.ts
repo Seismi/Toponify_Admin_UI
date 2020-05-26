@@ -18,7 +18,7 @@ const systemCategories = [
   nodeCategories.masterData,
   nodeCategories.file
 ];
-const dataSetCategories = [nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData];
+const dataSetCategories = [nodeCategories.dataSet, nodeCategories.masterDataSet, nodeCategories.dataStructure];
 const dimensionCategories = [nodeCategories.dimension];
 const reportingConceptCategories = [nodeCategories.structure, nodeCategories.list, nodeCategories.key];
 

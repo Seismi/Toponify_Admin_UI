@@ -42,7 +42,7 @@ import {
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
   AttributesEntity,
-  DescendantsEntity,
+  DescendantsEntity, layers,
   LoadingStatus,
   middleOptions,
   Node,
@@ -323,7 +323,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.selectedNode.hasOwnProperty('sourceId')) {
       return (this.selectedNode.layer + ' links') as TagApplicableTo;
     } else {
-      return (this.selectedNode.layer + 's') as TagApplicableTo;
+      let tagAppliesTo = this.selectedNode.layer;
+      if (this.selectedNode.layer === layers.data) {
+        tagAppliesTo += ' node';
+      }
+      tagAppliesTo += 's';
+      return tagAppliesTo as TagApplicableTo;
     }
   }
 
