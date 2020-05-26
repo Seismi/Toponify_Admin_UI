@@ -90,7 +90,7 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
+import { AddRadioEntity, LoadRadios, RadioActionTypes, SearchRadio } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
@@ -561,7 +561,54 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .subscribe(canSelect => (this.canSelectWorkpackages = canSelect));
 
     // RADIO
-    this.radioStore.dispatch(new LoadRadios({}));
+    this.radioStore.dispatch(
+      new SearchRadio({
+        data: {
+          raisedByMe: {
+            enabled: false
+          },
+          assignedToMe: {
+            enabled: false
+          },
+          status: {
+            enabled: false
+          },
+          type: {
+            enabled: false
+          },
+          raisedBy: {
+            enabled: false
+          },
+          assignedTo: {
+            enabled: false
+          },
+          workpackages: {
+            enabled: true,
+            includeBaseline: true,
+            values: [
+              {
+                id: '00000000-0000-0000-0000-000000000000'
+              }
+            ]
+          },
+          relatesTo: {
+            enabled: false
+          },
+          dueDate: {
+            enabled: false
+          },
+          severityRange: {
+            enabled: false
+          },
+          frequencyRange: {
+            enabled: false
+          },
+          text: {
+            enabled: false
+          }
+        }
+      })
+    );
     this.radio$ = this.radioStore.pipe(select(getRadioEntities));
 
     // View Level
@@ -2314,6 +2361,19 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  onRaiseNewRadio(): void {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '800px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.radio) {
+        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio }}));
+      }
+    });
   }
 
 }

@@ -27,12 +27,8 @@ export class RadioTableInArchitectureComponent {
   public dataSource: MatTableDataSource<NodeDetail>;
   public displayedColumns: string[] = Constants.RADIO_TABLE_COLUMNS;
 
-  @Output() addRadio = new EventEmitter<void>();
+  @Output() raiseNew = new EventEmitter<void>();
   @Output() openRadio = new EventEmitter<RadioDetail>();
-
-  onAdd() {
-    this.addRadio.emit();
-  }
 
   onOpen(radio: RadioDetail) {
     this.openRadio.emit(radio);

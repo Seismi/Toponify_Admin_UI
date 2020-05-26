@@ -62,7 +62,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() addAttribute = new EventEmitter();
   @Output() deleteAttribute = new EventEmitter<AttributesEntity>();
   @Output() hideRightPane = new EventEmitter<void>();
-  @Output() addRadio = new EventEmitter<void>();
+  @Output() raiseNew = new EventEmitter<void>();
   @Output() addScope = new EventEmitter<void>();
   @Output() addOwner = new EventEmitter<void>();
   @Output() deleteOwner = new EventEmitter<string>();
@@ -136,10 +136,6 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onDeleteAttribute(attribute: AttributesEntity): void {
     this.deleteAttribute.emit(attribute);
-  }
-
-  onAddRadio(): void {
-    this.addRadio.emit();
   }
 
   onAddScope(): void {

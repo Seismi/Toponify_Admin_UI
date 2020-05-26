@@ -158,7 +158,7 @@
       data-qa="topology-radio-table"
       *ngIf="!part?.isSelected"
       [data]="radio"
-      (addRadio)="onAddRadio()"
+      (raiseNew)="raiseNew.emit()"
       (openRadio)="onOpenRadio($event)"
     >
     </smi-radio-table-in-architecture>
