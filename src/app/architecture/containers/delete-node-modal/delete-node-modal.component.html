@@ -23,8 +23,8 @@
 </mat-dialog-content>
 <div mat-dialog-actions>
   <ng-container *ngIf="!error">
-    <button mat-button (click)="onYes()">Yes</button>
-    <button mat-button (click)="onNo()">No</button>
+    <button data-qa="delete-node-modal-yes" mat-button (click)="onYes()">Yes</button>
+    <button data-qa="delete-node-modal-no" mat-button (click)="onNo()">No</button>
   </ng-container>
   <ng-container *ngIf="error">
     <button mat-button (click)="onNo()">Ok</button>
