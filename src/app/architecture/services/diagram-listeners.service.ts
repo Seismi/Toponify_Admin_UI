@@ -280,6 +280,21 @@ export class DiagramListenersService {
       }
     );
 
+    diagram.addDiagramListener('ViewportBoundsChanged', function(event) {
+      let guide;
+      diagram.parts.each(function(part) {
+        if (part.name === 'Guide') {
+          guide = part;
+        }
+      });
+
+      if (guide) {
+        guide.position = diagram.transformViewToDoc(new go.Point(0, 0));
+        guide.scale = 1 / diagram.scale;
+      }
+
+    });
+
     // In node usage view, highlight the originating node with a blue shadow
     diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
       if (event.modelChange === 'nodeDataArray') {
@@ -293,6 +308,11 @@ export class DiagramListenersService {
           }
         }
       }
+    }.bind(this));
+
+    // Update guide
+    diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
+      this.diagramChangesService.updateGuide(diagram);
     }.bind(this));
   }
 

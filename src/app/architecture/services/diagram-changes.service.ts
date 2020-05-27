@@ -23,6 +23,7 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
 import {autoLayoutId} from '@app/architecture/store/models/layout.model';
+import {defaultScopeId} from '@app/scope/store/models/scope.model';
 
 const $ = go.GraphObject.make;
 
@@ -32,6 +33,7 @@ export class DiagramChangesService {
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
+  public diagramEditable: boolean;
   private currentLevel: Level;
   private currentScope: string;
   private currentNodeId: string;
@@ -1199,5 +1201,39 @@ export class DiagramChangesService {
       if (layer.findObjectsIn(rectangle, navigate, null, true).count > 0) { return false; }
     }
     return true;
+  }
+
+  updateGuide(diagram: go.Diagram): void {
+    const thisService = this;
+
+    let guide;
+    diagram.parts.each(function(part: go.Part): void {
+      if (part.name === 'Guide') {
+        guide = part;
+      }
+    });
+
+    guide.visible = (diagram.nodes.count + diagram.nodes.count === 0);
+
+    const instructions = guide.findObject('instructions');
+
+    if (thisService.currentScope === defaultScopeId) {
+      if (thisService.workpackages.length === 0) {
+        instructions.text =  'Your topology is empty. Select or create a work package to get started';
+      } else if (thisService.workpackages.length === 1) {
+        if (thisService.diagramEditable) {
+          instructions.text = 'Go to edit pane [edit icon] and start dragging and dropping objects';
+        } else {
+          instructions.text = 'Your work package is empty. Enter edit mode to start documenting your topology';
+        }
+      }
+    } else {
+      if (thisService.currentNodeId) {
+        instructions.text = 'No detail to display. Start documenting or click back button to go to previous view';
+      } else {
+        instructions.text = 'There is no detail to display. Review scope definition or start documenting with a work package';
+      }
+    }
+
   }
 }

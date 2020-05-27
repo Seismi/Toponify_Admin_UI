@@ -8,7 +8,8 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
-import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
+import {getFilterLevelQueryParams, getQueryParams} from '@app/core/store/selectors/route.selectors';
+import {defaultScopeId} from '@app/scope/store/models/scope.model';
 
 const $ = go.GraphObject.make;
 
@@ -240,6 +241,9 @@ export class GojsCustomObjectsService {
 
   public diagramEditable: boolean;
   private currentLevel;
+  private currentScope;
+  private workpackageQuery;
+  private filterNode;
 
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
@@ -251,7 +255,13 @@ export class GojsCustomObjectsService {
     )
     public diagramLevelService: DiagramLevelService
   ) {
-    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+
+    this.store.select(getQueryParams).subscribe(params => {
+      this.currentLevel = params.filterLevel;
+      this.currentScope = params.scope;
+      this.filterNode = params.nodeId;
+      this.workpackageQuery = params.workpackageQuery;
+    });
   }
 
   // Context menu for when the background is right-clicked
@@ -853,5 +863,24 @@ export class GojsCustomObjectsService {
     }
     if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
     return loc;  // give up -- don't allow the node to be moved to the new location
+  }
+
+  getInstructions(): go.Part {
+
+    const thisService = this;
+
+    return $(go.Part,
+      'Horizontal',
+      {
+        name: 'Guide',
+        selectable: false,
+        layerName: 'Grid'
+      },
+      $(go.TextBlock,
+        {
+          name: 'instructions'
+        }
+      )
+    );
   }
 }

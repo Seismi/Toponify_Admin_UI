@@ -8,9 +8,10 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
-import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
+import {getFilterLevelQueryParams, getQueryParams} from '@app/core/store/selectors/route.selectors';
 import {linkCategories} from '@app/architecture/store/models/node-link.model';
 import {Subject} from 'rxjs';
+import {defaultScopeId} from '@app/scope/store/models/scope.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -45,6 +46,9 @@ const nodeWidth = 300;
 export class DiagramTemplatesService {
   private currentFilterLevel: Level;
   public forPalette = false;
+  private currentScope;
+  private workpackageQuery;
+  private filterNode;
 
   // Observable to indicate that a child is to be added to a node
   private addChildSource = new Subject();
@@ -57,6 +61,12 @@ export class DiagramTemplatesService {
     public diagramChangesService: DiagramChangesService
   ) {
     this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => (this.currentFilterLevel = filterLevel));
+
+    this.store.select(getQueryParams).subscribe(params => {
+      this.currentScope = params.scope;
+      this.filterNode = params.nodeId;
+      this.workpackageQuery = params.workpackageQuery;
+    });
   }
 
   // Get standard options used for nodes
