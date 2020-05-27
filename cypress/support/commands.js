@@ -278,6 +278,38 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
     });
 });
 
+Cypress.Commands.add('editWorkPackage', (work_package, table) => {
+  cy.get('[data-qa=left-hand-pane-work-packages]').click();
+  cy.get(`[data-qa=${table}]`)
+    .within(() => {
+      cy.get('div>div>input')
+        .clear()
+        .type(work_package)
+        .then(() => {
+          cy.get('table>tbody')
+            .find('tr:first>td>div>div>mat-icon')
+            .then(wp => {
+              console.log(wp[0].textContent);
+              if (wp[0].textContent === 'edit') {
+                cy.get('table>tbody')
+                  .find('tr:first>td>div>div>mat-icon')
+                  .click()
+                  .wait([
+                    '@GETNodesWorkPackageQuery',
+                    '@GETNodeLinksWorkPackageQuery',
+                    '@GETSelectorAvailabilityQuery'
+                  ]);
+              }
+            });
+        });
+    })
+    .then(result => {
+      cy.root()
+        .get('[data-qa=left-hand-pane-work-packages]')
+        .click();
+    });
+});
+
 Cypress.Commands.add('deleteScope', scope => {
   cy.selectRow('scopes-and-layouts-scope-table', scope)
     //.wait('@GETWorkPackage')

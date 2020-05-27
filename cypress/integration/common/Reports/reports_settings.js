@@ -23,6 +23,11 @@ module.exports = {
       api: `${api_version}/layouts/*`,
       method: 'GET',
       name: 'Layout'
+    },
+    ReportsScopeQuery: {
+      api: `${api_version}/reports?scopeQuery=*`,
+      method: 'GET',
+      name: 'ReportsScopeQuery'
     }
   }
 };

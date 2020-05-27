@@ -20,7 +20,10 @@ When('the user selects Topology menu item', function() {
             '@GETNodeLinksScopeQuery',
             '@GETSelectorAvailabilityQuery',
             '@GETNodesScopeQuery.1',
-            '@GETNodeLinksScopeQuery.1'
+            '@GETNodeLinksScopeQuery.1',
+            '@GETNodesWorkPackageQuery',
+            '@GETNodeLinksWorkPackageQuery',
+            '@GETSelectorAvailabilityQuery.1'
           ];
           cy.wait(wait); // wait for API Calls
         });
