@@ -15,6 +15,6 @@
     </tr>
   </table>
   <ng-template #elseBlock>
-    <button mat-raised-button [disabled]="!workPackageIsEditable" (click)="editGroup.emit()">Add to a group</button>
+    <button data-qa="grouped-in-table-add-to-group" mat-raised-button [disabled]="!workPackageIsEditable" (click)="editGroup.emit()">Add to a group</button>
   </ng-template>
 </div>
