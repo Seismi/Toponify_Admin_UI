@@ -54,7 +54,7 @@ Feature: Topology Systems Layer Feature
     Examples:
       |name|type|new_reference|new_name|new_type|new_description|new_owner|
       |Automated Regression Test Transaction System|transactional|test1|Automated Updated Regression Test Reporting System|reporting|Updated to test the write to details pane|Automated Regression Test Update Team (DO NOT DELETE)|
-@focus
+
   Scenario Outline: Delete System Component via table and check system is correctly deleted
     Given the user selects Topology menu item
     And the "System View" layer is selected
