@@ -133,6 +133,36 @@ module.exports = {
       api: `${api_version}/workpackages/*/nodes/*/deleteRequest`,
       method: 'POST',
       name: 'WorkPackagesDeleteNode'
+    },
+    nodeLinksWorkPackageQuery: {
+      api: `${api_version}/nodelinks/*?workPackageQuery[]=*`,
+      method: 'GET',
+      name: 'nodeLinksWorkPackageQuery'
+    },
+    workPackageNodeLinksQuery: {
+      api: `${api_version}/workpackages/*/nodelinks/*/tags`,
+      method: 'GET',
+      name: 'WorkPackageNodeLinksQuery'
+    },
+    workPackagesNodeLinksDescendants: {
+      api: `${api_version}/workpackages/*/nodelinks/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodeLinksDescendants'
+    },
+    workPackagesNodeLinksDeleteRequest: {
+      api: `${api_version}/workpackages/*/nodelinks/*/deleteRequest`,
+      method: 'POST',
+      name: 'workPackagesNodeLinksDeleteRequest'
+    },
+    workPackagesNodeDescendants: {
+      api: `${api_version}/workpackages/*/node/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodeDescendants'
+    },
+    workPackagesNodesDescendants: {
+      api: `${api_version}/workpackages/*/nodes/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodesDescendants'
     }
   }
 };
