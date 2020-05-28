@@ -45,10 +45,30 @@ module.exports = {
       method: 'POST',
       name: 'RadioReply'
     },
-    POSTRadiosAdvancedSearch: {
+    radiosAdvancedSearch: {
       api: `${api_version}/radios/advanced/search`,
       method: 'POST',
-      name: 'RadiosAdvancedSearch'
+      name: 'radiosAdvancedSearch'
+    },
+    deleteRadios: {
+      api: `${api_version}/radios/*`,
+      method: 'DELETE',
+      name: 'Radios'
+    },
+    RadioViews: {
+      api: `${api_version}/radioViews`,
+      method: 'GET',
+      name: 'RadioViews'
+    },
+    Notifications: {
+      api: `${api_version}/notifications`,
+      method: 'GET',
+      name: 'Notifications'
+    },
+    Nodes: {
+      api: `${api_version}/nodes`,
+      method: 'GET',
+      name: 'Nodes'
     }
   }
 };

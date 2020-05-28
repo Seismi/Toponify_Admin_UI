@@ -5,7 +5,7 @@ When('the user updates the filter to show closed radios', () => {
   cy.selectDropDown('radio-filter-status', 'closed');
   cy.get(`[data-qa=radio-filter-modal-apply]`)
     .click({ force: true })
-    .wait('@POSTRadiosAdvancedSearch');
+    .wait('@POSTradiosAdvancedSearch');
   cy.get('smi-filter-modal').should('not.exist');
 });
 

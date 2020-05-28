@@ -1,15 +1,15 @@
 const { When } = require('cypress-cucumber-preprocessor/steps');
 const settings = require('../Radios/radios_settings');
 
-When('the user selects Radios menu item', function() {
+When('the user selects Radios menu item', () => {
   cy.setUpRoutes('Radios', settings).then(() => {
-    cy.get(`[data-qa=main-menu-open]`) // get the main menu
+    cy.get(`[data-qa=main-menu-open]`)
       .click()
       .then(() => {
-        cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
+        cy.get(`[data-qa=${settings['menu_selector']}]`)
           .click()
           .then(() => {
-            cy.wait(['@GETRadios']); // wait for API Calls
+            cy.wait(['@GETRadios', '@POSTradiosAdvancedSearch', '@GETNodes', '@GETRadioViews']);
           });
       });
   });

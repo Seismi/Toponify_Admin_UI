@@ -318,8 +318,42 @@ Cypress.Commands.add('deleteWorkPackage', name => {
     });
 });
 
-Cypress.Commands.add('findRadio', () => {
-  cy.get(`[data-qa=radio-table]`).find('table>tbody');
+Cypress.Commands.add('findRadio', radio => {
+  cy.get('[data-qa=radio-filter]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=radio-filter-text]')
+        .clear()
+        .type(radio);
+      cy.get('[data-qa=radio-filter-modal-apply]')
+        .click({ force: true })
+        .wait(['@POSTradiosAdvancedSearch'])
+        .then(() => {
+          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
+        });
+    });
+});
+
+Cypress.Commands.add('deleteRadio', radio => {
+  cy.selectRow('radio-table', radio)
+    .wait('@GETRadio')
+    .then(() => {
+      cy.get('[data-qa=radio-detail-archive]')
+        .click()
+        .then(() => {
+          cy.type_ckeditor('[data-qa=radio-discussions-tab-your-message]', 'Closing RADIO');
+          cy.get('[data-qa=radio-reply-modal-save]')
+            .click()
+            .wait('@POSTRadioReply');
+        });
+      cy.get('[data-qa=radio-detail-delete]').click();
+      cy.get('[data-qa=delete-modal-yes]')
+        .click({ force: true })
+        .wait('@DELETERadios')
+        .then(() => {
+          cy.get('smi-delete-modal').should('not.be.visible');
+        });
+    });
 });
 
 Cypress.Commands.add(
@@ -380,6 +414,9 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'assertRadioDetails',
   (title, category, status, assigned, severity, probability, actioned, description, mitigation) => {
+    title = Cypress.env('BRANCH')
+      .concat(' | ')
+      .concat(title);
     // Asserts the value of the form are as expected
     cy.get(`[data-qa='radio-detail-category']`).then(input => {
       expect(input[0].textContent).to.equal(category);
