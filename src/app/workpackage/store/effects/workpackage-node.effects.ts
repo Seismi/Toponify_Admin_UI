@@ -38,6 +38,9 @@ import {
   FindPotentialWorkpackageNodes,
   FindPotentialWorkpackageNodesFailure,
   FindPotentialWorkpackageNodesSuccess,
+  FindPotentialGroupMemberNodes,
+  FindPotentialGroupMemberNodesFailure,
+  FindPotentialGroupMemberNodesSuccess,
   LoadWorkPackageNodeDescendants,
   LoadWorkPackageNodeDescendantsFailure,
   LoadWorkPackageNodeDescendantsSuccess,
@@ -256,6 +259,22 @@ export class WorkPackageNodeEffects {
             new FindPotentialWorkpackageNodesSuccess(response.data)
           ]),
           catchError((error: HttpErrorResponse) => of(new FindPotentialWorkpackageNodesFailure(error)))
+        );
+    })
+  );
+
+  @Effect()
+  findPotentialGroupMemberNodes$ = this.actions$.pipe(
+    ofType<FindPotentialGroupMemberNodes>(WorkPackageNodeActionTypes.FindPotentialGroupMemberNodes),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; nodeId: string; scope: string; asShared: boolean }) => {
+      return this.workpackageNodeService
+        .findPotentialGroupMemberNodes(payload.workPackageId, payload.nodeId, payload.scope, payload.asShared)
+        .pipe(
+          switchMap((response: any) => [
+            new FindPotentialGroupMemberNodesSuccess(response.data)
+          ]),
+          catchError((error: HttpErrorResponse) => of(new FindPotentialGroupMemberNodesFailure(error)))
         );
     })
   );

@@ -237,6 +237,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a new node should be added to the group as a new member
   private addNewSubItemSource = new Subject();
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
+  // Observable to indicate that a shared copy of an existing node should be added to the group as a new member
+  private addNewSharedSubItemSource = new Subject();
+  public addNewSharedSubItem$ = this.addNewSharedSubItemSource.asObservable();
 
   public diagramEditable: boolean;
   private currentLevel;
@@ -633,7 +636,11 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            this.addNewSubItemSource.next(node.data);
+            if (node.data.layer === layers.data) {
+              thisService.addNewSharedSubItemSource.next(node.data);
+            } else {
+              thisService.addNewSubItemSource.next(node.data);
+            }
 
           }.bind(this),
           function(object: go.GraphObject, event: go.DiagramEvent) {
@@ -833,6 +840,11 @@ export class GojsCustomObjectsService {
 
   // Set node dragComputation to this to prevent dragging one node to overlap another
   avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
+
+    // Do not run when resizing nodes
+    if (node.diagram.currentTool instanceof go.ResizingTool) {
+      return newLoc;
+    }
 
     // Allow overlap for grouped nodes in map view so user can drag nodes to rearrange the order.
     // Group layout will ensure there is ultimately no overlap.

@@ -61,6 +61,10 @@ export enum WorkPackageNodeActionTypes {
   FindPotentialWorkpackageNodesSuccess = '[WorkPackage] Find Potential Workpackage Nodes Success',
   FindPotentialWorkpackageNodesFailure = '[WorkPackage] Find Potential Workpackage Nodes Failure',
 
+  FindPotentialGroupMemberNodes = '[WorkPackage] Find Potential Group Member Nodes',
+  FindPotentialGroupMemberNodesSuccess = '[WorkPackage] Find Potential Group Member Nodes Success',
+  FindPotentialGroupMemberNodesFailure = '[WorkPackage] Find Potential Group Member Nodes Failure',
+
   AddWorkPackageNodeRadio = '[WorkPackage] Add Node Radio',
   AddWorkPackageNodeRadioSuccess = '[WorkPackage] Add Node Radio Success',
   AddWorkPackageNodeRadioFailure = '[WorkPackage] Add Node Radio Failure',
@@ -300,6 +304,21 @@ export class FindPotentialWorkpackageNodesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class FindPotentialGroupMemberNodes implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialGroupMemberNodes;
+  constructor(public payload: { workPackageId: string; nodeId: string; scope: string; asShared: boolean }) {}
+}
+
+export class FindPotentialGroupMemberNodesSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesSuccess;
+  constructor(public payload: DescendantsEntity[]) {}
+}
+
+export class FindPotentialGroupMemberNodesFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class AddWorkPackageNodeRadio implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadio;
   constructor(public payload: { workPackageId: string; nodeId: string; radioId: string }) {}
@@ -449,6 +468,9 @@ export type WorkPackageNodeActionsUnion =
   | FindPotentialWorkpackageNodes
   | FindPotentialWorkpackageNodesSuccess
   | FindPotentialWorkpackageNodesFailure
+  | FindPotentialGroupMemberNodes
+  | FindPotentialGroupMemberNodesSuccess
+  | FindPotentialGroupMemberNodesFailure
   | AddWorkPackageNodeRadio
   | AddWorkPackageNodeRadioSuccess
   | AddWorkPackageNodeRadioFailure

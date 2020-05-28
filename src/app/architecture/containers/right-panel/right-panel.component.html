@@ -58,7 +58,7 @@
         [title]="'Systems'"
         [data]="systems"
         [workPackageIsEditable]="workPackageIsEditable"
-        (add)="addNewSystem.emit()"
+        (add)="addNewGroupMember.emit()"
         (delete)="deleteNodeGroup.emit($event)"
         [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
       >

@@ -75,6 +75,24 @@ export class WorkPackageNodesService extends WorkPackageService {
     );
   }
 
+  /**
+   * Get the potential group members of an architecture node
+   */
+  findPotentialGroupMemberNodes(
+    workPackageId: string,
+    nodeId: string,
+    scope: string,
+    asShared: boolean
+  ): Observable<any> {
+
+    const params = this.toHttpParams({ scopeQuery: scope, asShared: asShared });
+
+    return this.http.get<any>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/groupMembers/find/potential/`,
+      { params: params }
+    );
+  }
+
   getNodeDescendants(workPackageId: string, nodeId: string): Observable<any> {
     return this.http.get<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/descendants`);
   }

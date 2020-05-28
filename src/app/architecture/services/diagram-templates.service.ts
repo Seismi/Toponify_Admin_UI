@@ -1204,7 +1204,7 @@ export class DiagramTemplatesService {
           p2.offset(loc.x - b.x, loc.y - b.y);
 
           // now limit the location appropriately
-          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1)) ;
+          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1));
           const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
           const newPoint = new go.Point(x, y);
 

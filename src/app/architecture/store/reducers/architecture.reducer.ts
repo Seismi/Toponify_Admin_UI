@@ -31,6 +31,7 @@ export interface State {
   };
   entities: Node[];
   descendants: DescendantsEntity[];
+  members: DescendantsEntity[];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
@@ -60,6 +61,7 @@ export const initialState: State = {
   selectedNodeLink: null,
   links: [],
   descendants: [],
+  members: [],
   nodeScopes: [],
   availableScopes: [],
   error: null,
@@ -701,6 +703,26 @@ export function reducer(
     }
 
     case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialGroupMemberNodes: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesSuccess: {
+      return {
+        ...state,
+        members: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesFailure: {
       return {
         ...state,
         error: <Error>action.payload
