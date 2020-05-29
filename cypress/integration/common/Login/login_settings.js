@@ -23,6 +23,12 @@ module.exports = {
       api: `${api_version}/users/login`,
       method: 'POST',
       name: 'login'
+    },
+    GetNotfications: {
+      api: `${api_version}/notifications`,
+      method: 'GET',
+      name: 'Notifications',
+      stub: []
     }
   }
 };

@@ -79,11 +79,6 @@ module.exports = {
       method: 'GET',
       name: 'SelectorAvailabilityQuery'
     },
-    GetNotfications: {
-      api: `${api_version}/notifications`,
-      method: 'GET',
-      name: 'Notifications'
-    },
     GETWorkPackageNodesScopeQuery: {
       api: `${api_version}/workpackages/*/nodes?scopeQuery=*`,
       method: 'POST',
