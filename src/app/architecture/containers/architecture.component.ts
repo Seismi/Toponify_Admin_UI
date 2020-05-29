@@ -562,7 +562,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // RADIO table on the right hand pane
     this.store.dispatch(new SearchRadio({data: this.searchRadioData(), page: '0', size: '5'}));
-    this.store.dispatch(new LoadRadios({page: String(0), size: String(5)}));
     this.radio$ = this.store.pipe(select(getRadioTableData));
 
     // View Level
@@ -2337,7 +2336,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   handleRadioPageChange(nextPage: { previousPageIndex: number; pageIndex: number; pageSize: number; length: number }): void {
     this.store.dispatch(
-      new LoadRadios({
+      new SearchRadio({
+        data: this.searchRadioData(),
         page: String(nextPage.pageIndex),
         size: String(nextPage.pageSize)
       })
