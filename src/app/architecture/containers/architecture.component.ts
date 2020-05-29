@@ -1475,7 +1475,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '800px',
       data: {
-        selectedNode: this.selectedNode
+        selectWorkPackages: true,
+        message: `“This RADIO will be associated to "${this.selectedNode.name}" in the context of the following work packages”`
       }
     });
 
@@ -2366,12 +2367,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onRaiseNewRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
-      width: '800px'
+      width: '800px',
+      data: {
+        selectWorkPackages: true,
+        message: `This RADIO will be associated to no component and to the following work packages:`
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio) {
-        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio }}));
+      if ((data && data.radio) || data.selectedWorkPackages) {
+        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio, relatesTo: data.selectedWorkPackages }}));
       }
     });
   }
