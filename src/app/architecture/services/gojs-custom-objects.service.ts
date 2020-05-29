@@ -871,7 +871,7 @@ export class GojsCustomObjectsService {
       }
       rectangle.inflate(0.5, 0.5);  // restore to actual size
       // return the proposed new location point
-      return new go.Point(rectangle.x - (loc.x - bnds.x), rectangle.y - (loc.y - bnds.y));
+      return new go.Point(rectangle.x + (loc.x - bnds.x), rectangle.y + (loc.y - bnds.y));
     }
     if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
     return loc;  // give up -- don't allow the node to be moved to the new location

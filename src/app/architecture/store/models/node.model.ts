@@ -105,7 +105,7 @@ export class Node {
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
-      this.isGroup = options.layer === layers.system && options.category !== nodeCategories.transformation;
+      this.isGroup = [layers.system, layers.data].includes(options.layer) && options.category !== nodeCategories.transformation;
       this.tooltip = options.tooltip;
       this.isTemporary = options.isTemporary || false;
       this.isShared = options.isShared || false;

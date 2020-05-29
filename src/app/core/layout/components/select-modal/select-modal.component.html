@@ -17,8 +17,6 @@
 <div mat-dialog-actions>
   <div style="flex-grow: 1">
     <button mat-raised-button color="primary" data-qa="select-modal-new" (click)="onAddComponent()" *ngIf="data.descendants">New</button>
-  </div>
-  <div style="flex-grow: 1">
     <button mat-raised-button color="primary" data-qa="select-modal-new" (click)="onAddGroupMember()" *ngIf="data.groupMembers">New</button>
   </div>
   <button

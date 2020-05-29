@@ -2209,7 +2209,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             node: {
               layer: layers.data,
               isShared: true,
-              masterId: data.value.id
+              group: this.nodeId,
+              masterId: data.value[0].id
             },
             scope: this.scope.id
           })
