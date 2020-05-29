@@ -30,7 +30,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns" (dblclick)="onOpen(row)"></tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
+  <mat-paginator [length]="totalEntities" [pageSize]="5" [pageSizeOptions]="[5, 10]"></mat-paginator>
 </div>
 <br />
 
