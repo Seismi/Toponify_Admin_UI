@@ -251,12 +251,54 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
   cy.get('[data-qa=left-hand-pane-work-package-table]')
     .within(() => {
       cy.get('div>div>input')
+        .clear()
+        .type(work_package)
+        .then(() => {
+          cy.get('table>tbody')
+            .find('tr:first>td>div>div>mat-icon')
+            .then(wp => {
+              console.log(wp[0].textContent);
+              if (wp[0].textContent === 'edit') {
+                cy.get('table>tbody')
+                  .find('tr:first>td>div>div>mat-icon')
+                  .click()
+                  .wait([
+                    '@GETNodesWorkPackageQuery',
+                    '@GETNodeLinksWorkPackageQuery',
+                    '@GETSelectorAvailabilityQuery'
+                  ]);
+              }
+            });
+        });
+    })
+    .then(result => {
+      cy.root()
+        .get('[data-qa=left-hand-pane-work-packages]')
+        .click();
+    });
+});
+
+Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_for) => {
+  cy.get('[data-qa=left-hand-pane-work-packages]').click();
+  cy.get(`[data-qa=${work_package_menu}]`)
+    .within(() => {
+      cy.get('div>div>input')
+        .clear()
         .type(work_package)
         .then(() => {
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
             .click()
-            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
+            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
+            .then(wp => {
+              console.log(wp[0].textContent);
+              if (wp[0].textContent === 'edit') {
+                cy.get('table>tbody')
+                  .find('tr:first>td>div>div>mat-icon')
+                  .click()
+                  .wait(wait_for);
+              }
+            });
         });
     })
     .then(result => {
