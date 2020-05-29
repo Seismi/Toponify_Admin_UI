@@ -13,7 +13,7 @@ Given('the user creates a new {string} system with name {string}', function(comp
           .then(() => {
             cy.get('[data-qa=topology-components-or-link-modal-save]')
               .click()
-              .wait('@POSTWorkPackageNodesScopeQuery');
+              .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery']);
           });
       });
     });
