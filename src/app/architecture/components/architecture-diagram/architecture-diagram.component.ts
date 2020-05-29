@@ -149,6 +149,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
+    this.diagram.toolManager.relinkingTool.portGravity = 40;
     this.diagram.toolManager.relinkingTool.linkValidation =
       diagramChangesService.linkingValidation.bind(diagramChangesService);
     this.diagram.toolManager.resizingTool = new CustomNodeResize();
