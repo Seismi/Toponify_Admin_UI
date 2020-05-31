@@ -98,8 +98,8 @@ export class ChecklistDatabase {
 export class DocumentStandardsLevelsComponent implements AfterViewInit, OnChanges {
   @ViewChild('tree') tree;
   @Input() control: FormControl;
-  @Input() isDisabled: boolean = true;
-  @Input() modalMode: boolean = false;
+  @Input() isDisabled = true;
+  @Input() modalMode = false;
   private flatNodeMap = new Map<string, FlatNode>();
   private nestedNodeMap = new Map<Node, FlatNode>();
   private treeControl: FlatTreeControl<FlatNode>;
@@ -227,5 +227,18 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit, OnChange
       });
     }
     this.control.setValue(this.checklistSelection.selected.map(node => node.item));
+  }
+
+  isEveryNodeSelected(): boolean {
+    let selected = 0;
+    this.flatNodeMap.forEach(node => {
+      if (this.checklistSelection.isSelected(node)) {
+        selected++;
+      }
+    });
+    if (selected === this.flatNodeMap.size) {
+      return true;
+    }
+    return false;
   }
 }
