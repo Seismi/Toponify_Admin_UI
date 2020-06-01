@@ -31,7 +31,7 @@ module.exports = {
       name: 'Radios'
     },
     GetRadios: {
-      api: `${api_version}/radios`,
+      api: `${api_version}/radios?*`,
       method: 'GET',
       name: 'Radios'
     },
@@ -46,7 +46,7 @@ module.exports = {
       name: 'RadioReply'
     },
     radiosAdvancedSearch: {
-      api: `${api_version}/radios/advanced/search`,
+      api: `${api_version}/radios/advanced/search?*`,
       method: 'POST',
       name: 'radiosAdvancedSearch'
     },

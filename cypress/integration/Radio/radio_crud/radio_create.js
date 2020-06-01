@@ -1,4 +1,4 @@
-const { When } = require('cypress-cucumber-preprocessor/steps');
+const { Given, When } = require('cypress-cucumber-preprocessor/steps');
 
 When('the user cancels the creation of the radio', () => {
   cy.get(`[data-qa=radio-modal-cancel]`)
@@ -7,7 +7,7 @@ When('the user cancels the creation of the radio', () => {
     .wait(['@GETRadios', '@POSTradiosAdvancedSearch', '@GETNodes', '@GETRadioViews']);
 });
 
-When('the user clicks on create new radio at the button of the radio table', () => {
+Given('the user clicks on create new radio at the button of the radio table', () => {
   cy.get(`[data-qa=radio-create-new]`).click();
 });
 
@@ -26,5 +26,6 @@ When('confirms the creation of the radio', () => {
     .click()
     .then(() => {
       cy.wait(['@POSTRadios', '@GETRadios', '@GETRadio']);
+      cy.reload();
     });
 });
