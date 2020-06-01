@@ -90,10 +90,10 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
-import { AddRadioEntity, LoadRadios, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
-import { RadioDetail, RadioEntity } from '@app/radio/store/models/radio.model';
+import { AddRadioEntity, LoadRadios, RadioActionTypes, SearchRadio } from '@app/radio/store/actions/radio.actions';
+import { RadioDetail, RadioEntity, TableData, RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioEntities } from '@app/radio/store/selectors/radio.selector';
+import { getRadioEntities, getRadioTableData } from '@app/radio/store/selectors/radio.selector';
 import {
   AddScope,
   AddScopeNodes,
@@ -249,7 +249,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   owners$: Observable<TeamEntity[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
   scopes$: Observable<ScopeEntity[]>;
-  radio$: Observable<RadioEntity[]>;
+  radio$: Observable<TableData<RadioEntity>>;
   scopeDetails$: Observable<ScopeDetails>;
   nodeReports$: Observable<NodeReports[]>;
   mapView: boolean;
@@ -560,9 +560,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       .pipe(select(workpackageSelectAllowed))
       .subscribe(canSelect => (this.canSelectWorkpackages = canSelect));
 
-    // RADIO
-    this.radioStore.dispatch(new LoadRadios({}));
-    this.radio$ = this.radioStore.pipe(select(getRadioEntities));
+    // RADIO table on the right hand pane
+    this.store.dispatch(new SearchRadio({data: this.searchRadioData(), page: '0', size: '5'}));
+    this.radio$ = this.store.pipe(select(getRadioTableData));
 
     // View Level
     this.viewLevel$ = this.store.pipe(
@@ -1428,7 +1428,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '800px',
       data: {
-        selectedNode: this.selectedNode
+        selectWorkPackages: true,
+        message: `“This RADIO will be associated to "${this.selectedNode.name}" in the context of the following work packages”`
       }
     });
 
@@ -2314,6 +2315,80 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  onRaiseNewRadio(): void {
+    const dialogRef = this.dialog.open(RadioModalComponent, {
+      disableClose: false,
+      width: '800px',
+      data: {
+        selectWorkPackages: true,
+        message: `This RADIO will be associated to no component and to the following work packages:`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if ((data && data.radio) || data.selectedWorkPackages) {
+        this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio, relatesTo: data.selectedWorkPackages }}));
+      }
+    });
+  }
+
+  handleRadioPageChange(nextPage: { previousPageIndex: number; pageIndex: number; pageSize: number; length: number }): void {
+    this.store.dispatch(
+      new SearchRadio({
+        data: this.searchRadioData(),
+        page: String(nextPage.pageIndex),
+        size: String(nextPage.pageSize)
+      })
+    );
+  }
+
+  searchRadioData(): RadiosAdvancedSearch {
+    return {
+      raisedByMe: {
+        enabled: false
+      },
+      assignedToMe: {
+        enabled: false
+      },
+      status: {
+        enabled: false
+      },
+      type: {
+        enabled: false
+      },
+      raisedBy: {
+        enabled: false
+      },
+      assignedTo: {
+        enabled: false
+      },
+      workpackages: {
+        enabled: true,
+        includeBaseline: true,
+        values: [
+          {
+            id: '00000000-0000-0000-0000-000000000000'
+          }
+        ]
+      },
+      relatesTo: {
+        enabled: false
+      },
+      dueDate: {
+        enabled: false
+      },
+      severityRange: {
+        enabled: false
+      },
+      frequencyRange: {
+        enabled: false
+      },
+      text: {
+        enabled: false
+      }
+    };
   }
 
 }
