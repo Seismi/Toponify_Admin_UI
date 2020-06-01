@@ -97,7 +97,8 @@ import { RadioViewNameDialogComponent } from './components/radio-view-name-dialo
     ReplyTextComponent,
     ChatBoxComponent,
     RadioDetailComponent,
-    RiskMatrixChartComponent
+    RiskMatrixChartComponent,
+    RelatesToTableComponent
   ],
   declarations: [
     RadioComponent,
