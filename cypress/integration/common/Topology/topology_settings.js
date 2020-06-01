@@ -128,6 +128,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/nodes/*/customPropertyValues/*`,
       method: 'PUT',
       name: 'WorkPackagesNodesCustomPropertyValues'
+    },
+    WorkPackagesDeleteNode: {
+      api: `${api_version}/workpackages/*/nodes/*/deleteRequest`,
+      method: 'POST',
+      name: 'WorkPackagesDeleteNode'
     }
   }
 };

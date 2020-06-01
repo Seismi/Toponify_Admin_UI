@@ -26,6 +26,12 @@ export interface Links {
   next: string;
   last: string;
 }
+
+export interface TableData<T> {
+  entities: T[];
+  page: Page;
+}
+
 export interface Page {
   size: number;
   totalObjects: number;
@@ -189,6 +195,8 @@ interface AddRadioOrReplyChanges {
 // RADIO advanced search
 export interface AdvancedSearchApiRequest {
   data: RadiosAdvancedSearch;
+  page?: string;
+  size?: string;
 }
 
 export interface RadiosAdvancedSearch {
