@@ -92,6 +92,6 @@ export const NodeToolTips = [
   {
     Layer: 'Any',
     Object: 'Transformation',
-    Tooltip: 'A transformation - use to indicate of data or master data is manipulated, enriched or summarised in an interface between two or more systems.'
+    Tooltip: 'Add a transformation to document changes in data between a source and a target. Transformations can have multiple sources or targets.'
   }
 ];

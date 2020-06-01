@@ -15,7 +15,8 @@ import {
   DescendantsEntity,
   NodesApiResponse,
   WorkPackageNodeDescendantsApiResponse,
-  NodeDetailApiResponse
+  NodeDetailApiResponse,
+  WorkPackageGroupMembersApiResponse
 } from '@app/architecture/store/models/node.model';
 
 export interface GetWorkPackageNodeScopesQueryParams {
@@ -83,11 +84,11 @@ export class WorkPackageNodesService extends WorkPackageService {
     nodeId: string,
     scope: string,
     asShared: boolean
-  ): Observable<any> {
+  ): Observable<WorkPackageGroupMembersApiResponse> {
 
     const params = this.toHttpParams({ scopeQuery: scope, asShared: asShared });
 
-    return this.http.get<any>(
+    return this.http.get<WorkPackageGroupMembersApiResponse>(
       `/workpackages/${workPackageId}/nodes/${nodeId}/groupMembers/find/potential/`,
       { params: params }
     );
@@ -220,6 +221,10 @@ export class WorkPackageNodesService extends WorkPackageService {
 
   deleteWorkPackageNodeGroup(workPackageId: string, systemId: string): Observable<NodeDetailApiResponse> {
     return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${systemId}/group/deleteRequest`, {});
+  }
+
+  SetWorkPackageNodeAsMaster(workPackageId: string, nodeId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/setAsMaster`, {});
   }
 
   // TODO: move into sharable service

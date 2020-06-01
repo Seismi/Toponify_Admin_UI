@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { WorkPackageNodeFindPotential, WorkPackageNodeScopes } from '../models/workpackage.models';
 import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
-import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
+import {DescendantsEntity, layers, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
 
 export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
@@ -91,7 +91,11 @@ export enum WorkPackageNodeActionTypes {
 
   DeleteWorkPackageNodeGroup = '[WorkPackage] Delete Node Group',
   DeleteWorkPackageNodeGroupSuccess = '[WorkPackage] Delete Node Group Success',
-  DeleteWorkPackageNodeGroupFailure = '[WorkPackage] Delete Node Group Failure'
+  DeleteWorkPackageNodeGroupFailure = '[WorkPackage] Delete Node Group Failure',
+
+  SetWorkPackageNodeAsMaster = '[WorkPackage] Set Node As Master',
+  SetWorkPackageNodeAsMasterSuccess = '[WorkPackage] Set Node As Master Success',
+  SetWorkPackageNodeAsMasterFailure = '[WorkPackage] Set Node As Master Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -311,7 +315,8 @@ export class FindPotentialGroupMemberNodes implements Action {
 
 export class FindPotentialGroupMemberNodesSuccess implements Action {
   readonly type = WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesSuccess;
-  constructor(public payload: DescendantsEntity[]) {}
+
+  constructor(public payload: { id: string; layer: layers; category: nodeCategories; name: string; tags: string }[]) {}
 }
 
 export class FindPotentialGroupMemberNodesFailure implements Action {
@@ -425,6 +430,21 @@ export class DeleteWorkPackageNodeGroupFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class SetWorkPackageNodeAsMaster implements Action {
+  readonly type = WorkPackageNodeActionTypes.SetWorkPackageNodeAsMaster;
+  constructor(public payload: { workPackageId: string; nodeId: string }) {}
+}
+
+export class SetWorkPackageNodeAsMasterSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.SetWorkPackageNodeAsMasterSuccess;
+  constructor() {}
+}
+
+export class SetWorkPackageNodeAsMasterFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.SetWorkPackageNodeAsMasterFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
@@ -491,4 +511,7 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNodeGroupFailure
   | DeleteWorkPackageNodeGroup
   | DeleteWorkPackageNodeGroupSuccess
-  | DeleteWorkPackageNodeGroupFailure;
+  | DeleteWorkPackageNodeGroupFailure
+  | SetWorkPackageNodeAsMaster
+  | SetWorkPackageNodeAsMasterSuccess
+  | SetWorkPackageNodeAsMasterFailure;

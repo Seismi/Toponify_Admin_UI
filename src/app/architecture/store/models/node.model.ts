@@ -36,6 +36,16 @@ export interface WorkPackageNodeDescendantsApiResponse {
   data: (DescendantsEntity)[] | null;
 }
 
+export interface WorkPackageGroupMembersApiResponse {
+  data: {
+    id: string,
+    layer: layers,
+    category: nodeCategories,
+    name: string,
+    tags: string
+  }[];
+}
+
 export enum layers {
   system = 'system',
   data = 'data',

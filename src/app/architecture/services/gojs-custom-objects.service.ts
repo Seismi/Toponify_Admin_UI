@@ -240,6 +240,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a shared copy of an existing node should be added to the group as a new member
   private addNewSharedSubItemSource = new Subject();
   public addNewSharedSubItem$ = this.addNewSharedSubItemSource.asObservable();
+  // Observable to indicate that a shared copy of an existing node should be made into the master
+  private setAsMasterSource = new Subject();
+  public setAsMaster$ = this.setAsMasterSource.asObservable();
 
   public diagramEditable: boolean;
   private currentLevel;
@@ -792,8 +795,26 @@ export class GojsCustomObjectsService {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             diagramLevelService.displayUsageView(event, node);
           }
-        )
+        ),
         // --End analysis submenu buttons--
+        makeButton(5,
+          'Set as Master',
+          function(event: object, object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            thisService.setAsMasterSource.next(node.data);
+          },
+          function(object: go.GraphObject, event: object) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return node.data.layer === layers.data;
+          },
+          function(object: go.GraphObject, event: object) {
+            const node = (object.part as go.Adornment).adornedObject as go.Group;
+
+            return node.data.category !== nodeCategories.dataStructure &&
+              node.data.isShared &&
+              !node.containingGroup.data.isShared;
+          }
+        )
       )
     );
   }

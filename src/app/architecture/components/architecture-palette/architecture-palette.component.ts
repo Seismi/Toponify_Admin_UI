@@ -60,8 +60,8 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.nodeTemplateMap.add('transformation', diagramTemplatesService.getTransformationNodeTemplate(true));
 
     // Set group template
-    this.palette.groupTemplateMap.add('system', diagramTemplatesService.getStandardGroupTemplate());
-    this.palette.groupTemplateMap.add('data', diagramTemplatesService.getStandardGroupTemplate());
+    this.palette.groupTemplateMap.add('system', diagramTemplatesService.getStandardGroupTemplate(true));
+    this.palette.groupTemplateMap.add('data', diagramTemplatesService.getStandardGroupTemplate(true));
 
     // Set links templates
     this.palette.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate(true));

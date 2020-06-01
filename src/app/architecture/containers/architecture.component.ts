@@ -122,7 +122,7 @@ import {
   DeleteWorkpackageNodeSuccess,
   FindPotentialGroupMemberNodes,
   FindPotentialWorkpackageNodes,
-  LoadWorkPackageNodeScopes,
+  LoadWorkPackageNodeScopes, SetWorkPackageNodeAsMaster,
   UpdateWorkPackageNodeProperty,
   WorkPackageNodeActionTypes
 } from '@app/workpackage/store/actions/workpackage-node.actions';
@@ -207,6 +207,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private addSystemToGroupRef;
   private addNewSubItemRef;
   private addNewSharedSubItemRef;
+  private setAsMasterRef;
   private dependenciesView;
 
   @Input() attributesView = false;
@@ -703,6 +704,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
       function() {
         this.onAddToGroup();
+      }.bind(this)
+    );
+
+    this.setAsMasterRef = this.gojsCustomObjectsService.setAsMaster$.subscribe(
+      function() {
+        this.onSetAsMaster();
       }.bind(this)
     );
 
@@ -1854,6 +1861,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         );
       }
     });
+  }
+
+  onSetAsMaster() {
+    this.workpackageStore.dispatch(
+      new SetWorkPackageNodeAsMaster({
+        workPackageId: this.workpackageId,
+        nodeId: this.selectedNode.id
+      })
+    );
   }
 
   onDeleteNodeGroup(node: Node) {
