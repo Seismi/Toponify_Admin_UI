@@ -337,22 +337,27 @@ Cypress.Commands.add('findRadio', radio => {
 Cypress.Commands.add('deleteRadio', radio => {
   cy.selectRow('radio-table', radio)
     .wait('@GETRadio')
-    .then(() => {
-      cy.get('[data-qa=radio-detail-archive]')
-        .click()
-        .then(() => {
-          cy.type_ckeditor('[data-qa=radio-discussions-tab-your-message]', 'Closing RADIO');
-          cy.get('[data-qa=radio-reply-modal-save]')
-            .click()
-            .wait('@POSTRadioReply');
-        });
-      cy.get('[data-qa=radio-detail-delete]').click();
-      cy.get('[data-qa=delete-modal-yes]')
-        .click({ force: true })
-        .wait('@DELETERadios')
-        .then(() => {
-          cy.get('smi-delete-modal').should('not.be.visible');
-        });
+    .then($radio => {
+      const status = $radio.response.body.data.status;
+      if (status === 'closed') {
+        cy.get('[data-qa=radio-detail-delete]').click();
+        cy.get('[data-qa=delete-modal-yes]')
+          .click()
+          .wait('@DELETERadios');
+      } else {
+        cy.get('[data-qa=radio-detail-archive]')
+          .click()
+          .then(() => {
+            cy.type_ckeditor('[data-qa=radio-discussions-tab-your-message]', 'Closing RADIO');
+            cy.get('[data-qa=radio-reply-modal-save]')
+              .click()
+              .wait('@POSTRadioReply');
+          });
+        cy.get('[data-qa=radio-detail-delete]').click();
+        cy.get('[data-qa=delete-modal-yes]')
+          .click()
+          .wait('@DELETERadios');
+      }
     });
 });
 
