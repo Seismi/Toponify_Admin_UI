@@ -120,7 +120,7 @@ Cypress.Commands.add('selectRow', (table, contents) => {
     .get(`[data-qa=${table}]`)
     .find('table>tbody')
     .contains('td', contents)
-    .click();
+    .click({ force: true });
 });
 
 Cypress.Commands.add('type_ckeditor', (element, content) => {

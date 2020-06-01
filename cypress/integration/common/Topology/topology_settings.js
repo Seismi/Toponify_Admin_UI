@@ -158,6 +158,16 @@ module.exports = {
       api: `${api_version}/workpackages/*/nodes/*/descendants`,
       method: 'GET',
       name: 'workPackagesNodesDescendants'
+    },
+    WorkPackagesNodeLinks: {
+      api: `${api_version}//workpackages/*/nodelinks`,
+      method: 'POST',
+      name: 'WorkPackagesNodeLinks'
+    },
+    WorkPackagesNodesGroupSet: {
+      api: `${api_version}/workpackages/nodes/*/group/set/*`,
+      method: 'POST',
+      name: 'WorkPackagesNodesGroupSet'
     }
   }
 };
