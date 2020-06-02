@@ -48,6 +48,34 @@
       <mat-error>Invalid phone number</mat-error>
     </mat-form-field>
 
+    <mat-form-field *ngIf="myUserPage">
+      <mat-label>Summary Email Frequency</mat-label>
+      <mat-select 
+        formControlName="emailFrequency"
+        [ngClass]="{ editable: isEditable }" 
+        data-qa="settings-user-emailFrequency"
+      >
+        <mat-option *ngFor="let frequency of emailFrequency" [value]="frequency">
+          {{ frequency }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="myUserPage && [Frequency.Weekly, Frequency.Monthly].includes(formValue.emailFrequency)">
+      <mat-label>Day of the week</mat-label>
+      <mat-select 
+        formControlName="days"
+        [ngClass]="{ editable: isEditable }"
+        data-qa="settings-user-dayOfTheWeek"
+      >
+        <mat-option *ngFor="let day of days; let i = index" [value]="day">
+          <span *ngIf="formValue.emailFrequency === Frequency.Weekly">Every</span>
+          <span *ngIf="formValue.emailFrequency === Frequency.Monthly">First</span>
+          {{ day }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <div *ngIf="myUserPage; else elseBlock" style="margin-bottom: 20px;">
       <div>
         <span class="label">My Teams</span>

@@ -23,19 +23,22 @@ import { getUserRolesEntities } from '@app/settings/store/selectors/user.selecto
 })
 export class MyUserComponent implements OnInit {
   public user: UserDetails;
-  public showButtons: boolean = true;
-  public isEditable: boolean = false;
-  public modalMode: boolean = false;
+  public showButtons = true;
+  public isEditable = false;
+  public modalMode = false;
   public subscriptions: Subscription[] = [];
   public team: TeamEntity[];
   public role: RolesEntity[];
+  public formValue: any;
 
   constructor(
     private store: Store<HomeState>,
     private userStore: Store<UserState>,
     private myUserFormService: MyUserFormService,
     private dialog: MatDialog
-  ) {}
+  ) {
+    this.myUserForm.valueChanges.subscribe(value => this.formValue = value);
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadMyProfile());

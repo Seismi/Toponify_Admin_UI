@@ -16,7 +16,9 @@ export class MyUserFormService {
       phone: [null, phoneNumberValidator],
       team: [null],
       roles: [null, Validators.required],
-      userStatus: ['active']
+      userStatus: ['active'],
+      emailFrequency: [null],
+      days: [null]
     });
   }
 
