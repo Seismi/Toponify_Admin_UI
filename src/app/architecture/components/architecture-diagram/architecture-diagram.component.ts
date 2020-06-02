@@ -232,6 +232,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       }
 
       if (deletedPart instanceof go.Node) {
+
+        // Disallow deleting group member of shared node
+        if (deletedPart.containingGroup && deletedPart.containingGroup.data.isShared) {
+          return;
+        }
+
         this.nodeDeleteRequested.emit(deletedPart.data);
       } else {
         // part to be deleted is a link

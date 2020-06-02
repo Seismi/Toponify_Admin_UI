@@ -13,7 +13,7 @@ import {
   GroupAreaSizesEntity,
   OwnersEntity,
   Tag,
-  NodeLayoutSettingsEntity
+  NodeLayoutSettingsEntity, WorkPackageGroupMembersApiResponse
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
@@ -31,7 +31,7 @@ export interface State {
   };
   entities: Node[];
   descendants: DescendantsEntity[];
-  members: DescendantsEntity[];
+  members: WorkPackageGroupMembersApiResponse['data'];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
