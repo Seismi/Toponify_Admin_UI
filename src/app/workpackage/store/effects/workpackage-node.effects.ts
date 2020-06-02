@@ -89,9 +89,11 @@ import {
   DescendantsEntity,
   WorkPackageNodeDescendantsApiResponse,
   NodeDetailApiResponse,
-  WorkPackageGroupMembersApiResponse
+  WorkPackageGroupMembersApiResponse,
+  layers
 } from '@app/architecture/store/models/node.model';
 import {NodeService} from '@app/architecture/services/node.service';
+import {Action} from '@ngrx/store';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -170,12 +172,18 @@ export class WorkPackageNodeEffects {
   );
 
   @Effect()
-  updateWorkpackageLink$ = this.actions$.pipe(
+  updateWorkpackageNode$ = this.actions$.pipe(
     ofType<UpdateWorkPackageNode>(WorkPackageNodeActionTypes.UpdateWorkPackageNode),
     map(action => action.payload),
     mergeMap((payload: { workpackageId: string; nodeId: string; node: any }) => {
       return this.workpackageNodeService.updateNode(payload.workpackageId, payload.nodeId, payload.node).pipe(
-        switchMap((data: any) => [new UpdateWorkPackageNodeSuccess(data)]),
+        switchMap((response: NodeDetailApiResponse) => {
+          const actions: Action[] = [new UpdateWorkPackageNodePropertySuccess(response.data)];
+          if (response.data.layer === layers.data && !response.data.isShared) {
+            actions.push(new ReloadNodesData());
+          }
+          return actions;
+        }),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageNodeFailure(error)))
       );
     })
