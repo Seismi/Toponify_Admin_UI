@@ -7,7 +7,7 @@ When('the user clicks the {string} button on the work package', function(action_
     .then(() => {
       if (action_button === 'archive') {
         // if archiving
-        cy.wait('@PUTWorkPackage'); // wait for work package put
+        cy.wait(['@PUTWorkPackage', '@GETArchiveWorkPackages']); // wait for work package put
       } else {
         cy.wait(`@POST${action_button}WorkPackage`); // wait for the relevant post action
       }

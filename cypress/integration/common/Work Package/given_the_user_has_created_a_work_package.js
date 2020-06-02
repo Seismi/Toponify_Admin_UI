@@ -60,7 +60,7 @@ function createWorkPackage(name, description, baseline, owner) {
                 cy.get(`[data-qa=work-packages-modal-save]`)
                   .click()
                   .then(() => {
-                    cy.wait(['@POSTWorkPackage', '@GETWorkPackage'], { requestTimeout: 20000, reponseTimeout: 40000 });
+                    cy.wait(['@POSTWorkPackage', '@GETWorkPackage'], { requestTimeout: 20000, responseTimeout: 40000 });
                   });
               });
             });

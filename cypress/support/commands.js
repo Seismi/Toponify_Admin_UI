@@ -66,7 +66,7 @@ Cypress.Commands.add('login', usertype => {
           .wait('@POSTlogin')
           .then(response => {
             if (response.status === 200)
-              cy.wait(['@GETnavigateMyWorkPackages', '@GETnavigateMyRadios', '@GETnavigateMyLayouts']);
+              cy.wait(['@GETnavigateMyWorkPackages', '@GETnavigateMyRadios', '@GETnavigateMyLayouts', '@GETMyProfile']);
           });
       });
   });
@@ -174,18 +174,19 @@ Cypress.Commands.add('selectDetailsPaneTab', posinset => {
 Cypress.Commands.add('findWorkPackage', name => {
   cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
     .find('label>div>input')
-    .uncheck({ force: true })
-    .check({ force: true })
-    .wait('@GETArchiveWorkPackages') // wait for the return of the archive work packages
+    .check({ force: true });
+  cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+    .find('label>div>input')
+    .uncheck({ force: true });
+
+  cy.wait('@GETArchiveWorkPackages'); // wait for the return of the archive work packages
+  cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name) // type the name
     .then(() => {
-      cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
-        .clear() //clear the box
-        .type(name) // type the name
-        .then(() => {
-          return cy
-            .get(`[data-qa=work-packages-table]`) // get the work packages table
-            .find('table>tbody'); // find the table
-        });
+      return cy
+        .get(`[data-qa=work-packages-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
     });
 });
 
@@ -243,7 +244,6 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
   Object.keys(settings.wait_for).forEach(r => {
     route = settings.wait_for[r];
     if (route.hasOwnProperty('stub')) {
-      console.log(route);
       cy.route(route.method, route.api, route.stub).as(`${route.method}${route.name}`);
     } else {
       cy.route(route.method, route.api).as(`${route.method}${route.name}`);
@@ -266,12 +266,12 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
               if (wp[0].textContent === 'edit') {
                 cy.get('table>tbody')
                   .find('tr:first>td>div>div>mat-icon')
-                  .click()
-                  .wait([
-                    '@GETNodesWorkPackageQuery',
-                    '@GETNodeLinksWorkPackageQuery',
-                    '@GETSelectorAvailabilityQuery'
-                  ]);
+                  .click();
+                cy.wait([
+                  '@GETNodesWorkPackageQuery',
+                  '@GETNodeLinksWorkPackageQuery',
+                  '@GETSelectorAvailabilityQuery'
+                ]);
               }
             });
         });

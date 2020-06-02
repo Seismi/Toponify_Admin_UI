@@ -9,18 +9,24 @@ Then('the work package called {string} should not exist in the work packages tab
 
   cy.get('[data-qa=work-packages-archive-toggle]')
     .find('label>div>input')
-    .check({ force: true })
-    .uncheck({ force: true })
-    .wait(['@GETArchiveWorkPackages']);
+    .check({ force: true });
 
-  cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
-    .clear() // clear the search
-    .type(name) // type the name
-    .then(() => {
-      cy.get(`[data-qa=work-packages-table]`) // get the table
-        .find('table>tbody') //find the table body
-        .then($table => {
-          expect($table[0].rows.length).to.equal(0); // expect the number of rows to equal 0
+  cy.get('[data-qa=work-packages-archive-toggle]')
+    .find('label>div>input')
+    .uncheck({ force: true });
+
+  cy.wait('@GETArchiveWorkPackages', { responseTimeout: 20000 }) //.its('status').should('eq', 200)
+    .then(xhr => {
+      console.log(xhr);
+      cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
+        .clear() // clear the search
+        .type(name) // type the name
+        .then(() => {
+          cy.get(`[data-qa=work-packages-table]`) // get the table
+            .find('table>tbody') //find the table body
+            .then($table => {
+              expect($table[0].rows.length).to.equal(0); // expect the number of rows to equal 0
+            });
         });
     });
 });
@@ -34,18 +40,23 @@ Then('the work package called {string} should not exist in the work packages tab
 
   cy.get('[data-qa=work-packages-archive-toggle]')
     .find('label>div>input')
-    .uncheck({ force: true })
-    .check({ force: true })
-    .wait(['@GETArchiveWorkPackages']);
+    .uncheck({ force: true });
 
-  cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
-    .clear() // clear the search
-    .type(name) // type the name
-    .then(() => {
-      cy.get(`[data-qa=work-packages-table]`) // get the table
-        .find('table>tbody') //find the table body
-        .then($table => {
-          expect($table[0].rows.length).to.equal(0); // expect the number of rows to equal 0
-        });
-    });
+  cy.get('[data-qa=work-packages-archive-toggle]')
+    .find('label>div>input')
+    .check({ force: true });
+
+  cy.wait('@GETArchiveWorkPackages', { responseTimeout: 20000 }).then(xhr => {
+    console.log(xhr);
+    cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
+      .clear() // clear the search
+      .type(name) // type the name
+      .then(() => {
+        cy.get(`[data-qa=work-packages-table]`) // get the table
+          .find('table>tbody') //find the table body
+          .then($table => {
+            expect($table[0].rows.length).to.equal(0); // expect the number of rows to equal 0
+          });
+      });
+  });
 });
