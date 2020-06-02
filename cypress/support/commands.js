@@ -466,11 +466,12 @@ Cypress.Commands.add(
       expect(input[0].textContent).to.equal(status);
     });
     cy.get(`[data-qa='radio-detail-action-by']`).then(input => {
-      const newDate = new Date(actioned).toDateString();
-      expect(input[0].value).to.equal(newDate);
+      const newDate = actioned !== '' ? new Date(actioned).toDateString() : actioned;
+      cy.log(`${input[0].value} to equal ${newDate}`).then(() => {
+        expect(input[0].value).to.equal(newDate);
+      });
     });
     cy.get(`[data-qa='radio-detail-description']`).then(input => {
-      console.log(input);
       expect(input[0].textContent).to.equal(description);
     });
     cy.get('[data-qa=radio-detail-title]').then(input => {
@@ -481,7 +482,6 @@ Cypress.Commands.add(
         expect(input[0].textContent).to.equal(assigned)
     })*/
     cy.get(`[data-qa='radio-detail-mitigation']`).then(input => {
-      console.log(input);
       expect(input[0].textContent).to.equal(mitigation);
     });
     cy.get('[data-qa=radio-detail-severity]').should('have.attr', 'aria-valuenow', severity.toString());

@@ -28,7 +28,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   Scenario: Start updating radio then cancel
     Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
-	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And the user edits the description to 'Automatic regression test description change'
     And cancels the change
     Then the radio with title 'Automatic Regression Test Risk 1' should be immediately visible in the radio table
@@ -37,7 +37,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   Scenario: Start updating RADIO then cancel on reply
     Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
-	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And the user edits the description to 'Automatic regression test description change'
     And saves the change
     And cancels when asked to provide the reason for the change
@@ -47,7 +47,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   Scenario: Update RADIO
     Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
-	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And the user edits the description to 'Automatic regression test description change'
     And saves the change
     And provides the reason 'Automated regression test description change'
@@ -59,7 +59,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   Scenario: Cancel Closing RADIO
     Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
-	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
 	  And the user closes the radio 'Automatic Regression Test Risk 1'
     And cancels when asked to provide the reason for the change
     Then the radio with title 'Automatic Regression Test Risk 1' should be immediately visible in the radio table
@@ -68,7 +68,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   Scenario: Closing RADIO
     Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
-	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
 	  And the user closes the radio 'Automatic Regression Test Risk 1'
 	  And provides the reason 'Automated regression test closing'
     Then the radio with title 'Automatic Regression Test Risk 1' should be immediately visible in the radio table
@@ -80,7 +80,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   Scenario: Cancel Delete RADIO
     Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'closed', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
-	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'closed', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'closed', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
 	  And the user updates the filter to show closed radios
 	  And the user clicks on delete
 	  And the user cancels the delete
@@ -90,7 +90,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   Scenario: Delete RADIO
     Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'closed', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
-	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'closed', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2 
+	  And the radio 'Automatic Regression Test Risk 1' exists with title 'Automatic Regression Test Risk 1', category 'risk', status 'closed', description 'Automatic regression test description change' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
 	  And the user updates the filter to show closed radios
 	  And the user clicks on delete
 	  And the user confirms the delete
