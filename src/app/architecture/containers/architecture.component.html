@@ -182,7 +182,7 @@
             (deleteAttribute)="onDeleteAttribute($event)"
             (addRelatedRadio)="onAddRelatedRadio()"
             (hideRightPane)="onHideRightPane()"
-            (addRadio)="onAddRadio()"
+            (raiseNew)="onRaiseNewRadio()"
             [multipleSelected]="multipleSelected"
             (addScope)="onAddScope()"
             (addToScope)="onAddToScope()"
@@ -237,6 +237,7 @@
             [targetObject]="selectedNode?.targetObject"
             (editSourceOrTarget)="onEditSourceOrTarget($event)"
             (switchSourceAndTarget)="onSwitchSourceAndTarget()"
+            (handleRadioPageChange)="handleRadioPageChange($event)"
           >
           </smi-right-panel></p
       ></app-model-sidebar>

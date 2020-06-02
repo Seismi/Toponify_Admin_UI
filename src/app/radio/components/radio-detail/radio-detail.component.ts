@@ -38,11 +38,12 @@ export class RadioDetailComponent implements DoCheck {
   @Input() rows = 8;
   @Input() tags: Tag[];
   @Input() availableTags: Tag[];
-  @Input() selectedNode: NodeDetail;
   @Input() workpackages: WorkPackageEntity[];
   @Input() radioCategory: string;
   @Input() disabled: boolean;
   @Input() editModal = false;
+  @Input() selectWorkPackages = false;
+  @Input() message: string;
   public selectedOptions = [];
   public severityTooltip: string;
   public frequencyTooltip: string;

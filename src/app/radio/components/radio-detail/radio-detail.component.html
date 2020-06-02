@@ -240,10 +240,8 @@
   </div>
 </form>
 
-<div *ngIf="modalMode && selectedNode">
-  <p>
-    “This RADIO will be associated to "{{ selectedNode.name }}" in the context of the following work packages”
-  </p>
+<div *ngIf="selectWorkPackages">
+  <p>{{ message }}</p>
 
   <mat-selection-list [(ngModel)]="selectedOptions" (ngModelChange)="selectWorkPackage.emit($event)">
     <mat-list-option 

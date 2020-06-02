@@ -251,12 +251,24 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
   cy.get('[data-qa=left-hand-pane-work-package-table]')
     .within(() => {
       cy.get('div>div>input')
+        .clear()
         .type(work_package)
         .then(() => {
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
-            .click()
-            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
+            .then(wp => {
+              console.log(wp[0].textContent);
+              if (wp[0].textContent === 'edit') {
+                cy.get('table>tbody')
+                  .find('tr:first>td>div>div>mat-icon')
+                  .click()
+                  .wait([
+                    '@GETNodesWorkPackageQuery',
+                    '@GETNodeLinksWorkPackageQuery',
+                    '@GETSelectorAvailabilityQuery'
+                  ]);
+              }
+            });
         });
     })
     .then(result => {
@@ -267,7 +279,6 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
 });
 
 Cypress.Commands.add('deleteScope', scope => {
-  console.log(scope);
   cy.selectRow('scopes-and-layouts-scope-table', scope)
     //.wait('@GETWorkPackage')
     .then(() => {
@@ -285,7 +296,6 @@ Cypress.Commands.add('deleteScope', scope => {
 });
 
 Cypress.Commands.add('deleteWorkPackage', name => {
-  console.log(name);
   cy.selectRow('work-packages-table', name)
     .wait('@GETWorkPackage')
     .then(() => {
@@ -295,7 +305,6 @@ Cypress.Commands.add('deleteWorkPackage', name => {
           .get('td') // get the second td
           .eq(2)
           .then(status => {
-            console.log(status);
             switch (
               status[0].textContent // depending on status
             ) {
@@ -318,6 +327,44 @@ Cypress.Commands.add('deleteWorkPackage', name => {
     });
 });
 
+Cypress.Commands.add('assertDetailsForm', (reference, name, description, category) => {
+  if (reference.length > 0) cy.get('[data-qa=object-details-reference]').should('have.value', reference);
+  cy.get('[data-qa=object-details-name]').should('have.value', name);
+  if (reference.description > 0) cy.get('[data-qa=object-details-description]').should('have.value', description);
+  if (reference.category > 0)
+    cy.get('[data-qa=object-details-category]')
+      .find('.mat-select-value>span>span')
+      .should('have.text', category);
+});
+
+Cypress.Commands.add('checkTopologyTable', (component, component_type, test) => {
+  component = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(component); // add the branch to the name
+  let table = component_type === 'system' ? 'components' : 'links';
+  cy.get('[data-qa=topology-table-quick-search]')
+    .clear()
+    .type(component);
+  cy.get(`[data-qa=topology-table-${table}]`)
+    .find('table>tbody')
+    .contains(component)
+    .should(test);
+});
+
+Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component) => {
+  component = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(component); // add the branch to the name
+  let result;
+  let component_array = component_type === 'system' ? 'nodeDataArray' : 'linkDataArray';
+  cy.window().then(window => {
+    let dataArray = window.MyRobot.diagram.model[component_array];
+    result = dataArray.filter(components => {
+      return components.name === component;
+    });
+    expect(result.length).to.be.greaterThan(0);
+  });
+});
 //
 //
 // -- This is a child command --

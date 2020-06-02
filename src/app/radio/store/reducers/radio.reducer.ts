@@ -282,6 +282,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       return {
         ...state,
         entities: action.payload.data,
+        links: action.payload.links,
+        page: action.payload.page,
         loading: false
       };
     }
