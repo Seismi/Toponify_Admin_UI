@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import {getFilterLevelQueryParams, getNodeIdQueryParams, getQueryParams} from '@app/core/store/selectors/route.selectors';
+import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
 import {layers} from '@app/architecture/store/models/node.model';
 

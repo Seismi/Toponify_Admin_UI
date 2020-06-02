@@ -16,7 +16,12 @@ import { MatDialog } from '@angular/material';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
+import {
+  getFilterLevelQueryParams,
+  getMapViewQueryParams,
+  getNodeIdQueryParams,
+  getScopeQueryParams
+} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
 import {endPointTypes, layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
@@ -54,15 +59,18 @@ export class DiagramChangesService {
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
-    this.store.select(getQueryParams).subscribe(params => {
-      this.currentLevel = params.filterLevel;
-      this.currentScope = params.scope;
-      this.currentNodeId = params.nodeId;
-      this.currentMapViewSource = {
-        id: params.id,
-        isTransformation: params.isTransformation
-      };
+    this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.currentLevel = filterLevel;
       this.dependenciesView = false;
+    });
+    this.store.select(getScopeQueryParams).subscribe(scope => {
+      this.currentScope = scope;
+    });
+    this.store.select(getNodeIdQueryParams).subscribe(nodeId => {
+      this.currentNodeId = nodeId;
+    });
+    this.store.select(getMapViewQueryParams).subscribe(mapViewParams => {
+      this.currentMapViewSource = mapViewParams;
     });
   }
 
