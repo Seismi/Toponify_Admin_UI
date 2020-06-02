@@ -1,0 +1,12 @@
+:host {
+  border: 1px solid red;
+  display: block;
+  ul {
+    li {
+      cursor: pointer;
+      & > span {
+        text-transform: capitalize;
+      }
+    }
+  }
+}

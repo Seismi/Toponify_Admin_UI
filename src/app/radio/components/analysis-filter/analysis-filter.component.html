@@ -1,0 +1,14 @@
+<ul *ngFor="let section of sections">
+  <li *ngIf="analysis[section].length > 0">
+    <span>{{ section }}</span>
+    <ul>
+      <li
+        *ngFor="let filter of analysis[section]"
+        [ngClass]="{ selected: false }"
+        (click)="selectFilter(filter.filterValue)"
+      >
+        <span>{{ filter.label }}&nbsp;({{ filter.count }})</span>
+      </li>
+    </ul>
+  </li>
+</ul>

@@ -14,6 +14,8 @@ export interface State {
   radioFilter: any; // RadiosAdvancedSearch;
   radioViews: any[] | null;
   error?: HttpErrorResponse | { message: string };
+  analysisData: any;
+  matrixData: any;
 }
 
 export const initialState: State = {
@@ -26,7 +28,9 @@ export const initialState: State = {
   reply: [],
   radioFilter: null,
   error: null,
-  radioViews: null
+  radioViews: null,
+  analysisData: null,
+  matrixData: null
 };
 
 export function reducer(state = initialState, action: RadioActionsUnion): State {
@@ -285,6 +289,20 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         links: action.payload.links,
         page: action.payload.page,
         loading: false
+      };
+    }
+
+    case RadioActionTypes.GetRadioMatrixSuccess: {
+      return {
+        ...state,
+        matrixData: action.payload
+      };
+    }
+
+    case RadioActionTypes.GetRadioAnalysisSuccess: {
+      return {
+        ...state,
+        analysisData: action.payload
       };
     }
 

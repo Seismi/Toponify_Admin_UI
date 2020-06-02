@@ -93,7 +93,15 @@ export enum RadioActionTypes {
 
   UnsetRadioViewAsFavourite = '[Radio] unset radio view as favourite',
   UnsetRadioViewAsFavouriteSuccess = '[Radio] unset radio view as favourite success',
-  UnsetRadioViewAsFavouriteFail = '[Radio] unset radio view as favourite fail'
+  UnsetRadioViewAsFavouriteFail = '[Radio] unset radio view as favourite fail',
+
+  GetRadioMatrix = '[Radio] Get matrix',
+  GetRadioMatrixSuccess = '[Radio] Get matrix success',
+  GetRadioMatrixFailure = '[Radio] Get matrix failure',
+
+  GetRadioAnalysis = '[Radio] Get analysis',
+  GetRadioAnalysisSuccess = '[Radio] Get analysis success',
+  GetRadioAnalysisFailure = '[Radio] Get analysis failure'
 }
 
 export class SetRadioViewAsFavourite implements Action {
@@ -305,6 +313,36 @@ export class SearchRadioFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class GetRadioMatrix implements Action {
+  readonly type = RadioActionTypes.GetRadioMatrix;
+  constructor(public payload: AdvancedSearchApiRequest) {}
+}
+
+export class GetRadioMatrixSuccess implements Action {
+  readonly type = RadioActionTypes.GetRadioMatrixSuccess;
+  constructor(public payload: any) {}
+}
+
+export class GetRadioMatrixFailure implements Action {
+  readonly type = RadioActionTypes.GetRadioMatrixFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class GetRadioAnalysis implements Action {
+  readonly type = RadioActionTypes.GetRadioAnalysis;
+  constructor(public payload: AdvancedSearchApiRequest) {}
+}
+
+export class GetRadioAnalysisSuccess implements Action {
+  readonly type = RadioActionTypes.GetRadioAnalysisSuccess;
+  constructor(public payload: any) {}
+}
+
+export class GetRadioAnalysisFailure implements Action {
+  readonly type = RadioActionTypes.GetRadioAnalysisFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class RadioFilter implements Action {
   readonly type = RadioActionTypes.RadioFilter;
   constructor(public payload: RadiosAdvancedSearch) {}
@@ -461,4 +499,10 @@ export type RadioActionsUnion =
   | SetRadioViewAsFavouriteFail
   | UnsetRadioViewAsFavourite
   | UnsetRadioViewAsFavouriteSuccess
-  | UnsetRadioViewAsFavouriteFail;
+  | UnsetRadioViewAsFavouriteFail
+  | GetRadioMatrix
+  | GetRadioMatrixSuccess
+  | GetRadioMatrixFailure
+  | GetRadioAnalysis
+  | GetRadioAnalysisSuccess
+  | GetRadioAnalysisFailure;

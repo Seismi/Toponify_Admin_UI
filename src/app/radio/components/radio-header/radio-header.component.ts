@@ -1,25 +1,34 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { getQueryParams } from '@app/core/store/selectors/route.selectors';
 import {
-  DeleteRadioView,
-  GetRadioViews,
-  GetRadioView,
-  RadioFilter,
-  UpdateRadioView,
   CreateRadioViewSuccess,
+  DeleteRadioView,
+  GetRadioAnalysis,
+  GetRadioMatrix,
+  GetRadioView,
+  GetRadioViews,
+  RadioFilter,
   SetRadioViewAsFavourite,
-  UnsetRadioViewAsFavourite
+  UnsetRadioViewAsFavourite,
+  UpdateRadioView
 } from '@app/radio/store/actions/radio.actions';
+import { AdvancedSearchApiRequest, RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioFilter, getRadioViews, getRadioEntities } from '@app/radio/store/selectors/radio.selector';
+import {
+  getRadioAnalysis,
+  getRadioEntities,
+  getRadioFilter,
+  getRadioMatrix,
+  getRadioViews
+} from '@app/radio/store/selectors/radio.selector';
 import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
-import { combineLatest, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Subscription, Observable } from 'rxjs';
+import { distinctUntilChanged, map, filter } from 'rxjs/operators';
 import { RadioViewNameDialogComponent } from '../radio-view-name-dialog/radio-view-name-dialog.component';
 
 enum TableStyles {
@@ -35,7 +44,7 @@ enum TableStyles {
 export class RadioHeaderComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public tableStyles = TableStyles;
-  public selectedTableStyle = TableStyles.SIMPLE;
+  public selectedTableStyle: BehaviorSubject<TableStyles> = new BehaviorSubject(TableStyles.SIMPLE);
   public activeFilters = null;
   public radioViews = [];
   public selectedRadioView = null;
@@ -50,6 +59,11 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
       name: 'Management table style'
     }
   ];
+
+  private matrixRange = [];
+
+  public matrix$: Observable<any>;
+  public analysis$: Observable<any>;
 
   @Output() filter = new EventEmitter<void>();
 
@@ -72,24 +86,20 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
   }
 
   get selectedRiskMatrixCol(): number[] | null {
-    if (
-      this.activeFilters &&
-      Number.isInteger(this.activeFilters.severity) &&
-      Number.isInteger(this.activeFilters.frequency)
-    ) {
-      return [this.activeFilters.frequency - 1, this.activeFilters.severity - 1];
+    if (this.activeFilters && this.activeFilters.severityRange && this.activeFilters.frequencyRange) {
+      const cords = [this.activeFilters.severityRange.from, this.activeFilters.frequencyRange.from];
+      return cords;
     }
     return null;
   }
 
   ngOnInit() {
     this.store.dispatch(new GetRadioViews());
-
     this.subscriptions.push(
       this.store.pipe(select(getRadioFilter)).subscribe(filters => {
         this.activeFilters = filters;
         if (filters && filters.tableStyle) {
-          this.selectedTableStyle = filters.tableStyle;
+          this.selectedTableStyle.next(filters.tableStyle);
         }
       })
     );
@@ -122,6 +132,48 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
             this.store.dispatch(new RadioFilter(null));
           }
         })
+    );
+
+    this.subscriptions.push(
+      this.selectedTableStyle.subscribe(style => {
+        if (style === TableStyles.MANAGEMENT) {
+          this.store.dispatch(
+            new GetRadioMatrix({
+              data: this.transformFilterIntoAdvancedSearchData(this.activeFilters)
+            } as AdvancedSearchApiRequest)
+          );
+          this.store.dispatch(
+            new GetRadioAnalysis({
+              data: this.transformFilterIntoAdvancedSearchData(this.activeFilters)
+            } as AdvancedSearchApiRequest)
+          );
+        }
+      })
+    );
+
+    this.matrix$ = this.store.pipe(select(getRadioMatrix)).pipe(
+      filter(data => data && data.managementMatrix),
+      map(data => {
+        const matrix = [...Array.from({ length: 5 })].map(x => [...Array.from({ length: 5 })].map(y => 0));
+        this.matrixRange = [...Array.from({ length: 5 })].map(x => [...Array.from({ length: 5 })].map(y => 0));
+        data.managementMatrix.forEach(r => {
+          r.items.forEach(c => {
+            const value = c.count;
+            matrix[r.severity - 1][c.frequency - 1] = value;
+            this.matrixRange[r.severity - 1][c.frequency - 1] = {
+              severityRange: r.severityRange,
+              frequencyRange: c.frequencyRange
+            };
+          });
+        });
+        return matrix;
+      })
+    );
+
+    this.analysis$ = this.store.pipe(
+      select(getRadioAnalysis),
+      filter(data => data && data.analysis),
+      map(data => data.analysis)
     );
   }
 
@@ -195,14 +247,13 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       new RadioFilter({
         ...(!!this.activeFilters && this.activeFilters),
-        frequency: data[0] + 1,
-        severity: data[1] + 1
+        ...this.matrixRange[data[0]][data[1]]
       })
     );
   }
 
   clearSelection(): void {
-    const { frequency, severity, ...rest } = this.activeFilters;
+    const { frequencyRange, severityRange, ...rest } = this.activeFilters;
     this.store.dispatch(
       new RadioFilter({
         ...rest
@@ -218,5 +269,61 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
       matrix[rowIndex][colIndex]++;
     }
     return matrix;
+  }
+
+  analysisFilterSelected(data: any): void {
+    console.info(data);
+  }
+
+  transformFilterIntoAdvancedSearchData(data: any): RadiosAdvancedSearch {
+    return {
+      status: {
+        enabled: this.isFilterEnabled(data.status),
+        values: data.status
+      },
+      type: {
+        enabled: this.isFilterEnabled(data.type),
+        values: data.type
+      },
+      assignedTo: {
+        enabled: this.isFilterEnabled(data.assignedTo),
+        values: data.assignedTo
+      },
+      relatesTo: {
+        enabled: this.isFilterEnabled(data.relatesTo),
+        includeDescendants: this.isFilterEnabled(data.relatesTo),
+        includeLinks: this.isFilterEnabled(data.relatesTo),
+        values: data.relatesTo
+      },
+      dueDate: {
+        enabled: this.isFilterEnabled(data.from) || this.isFilterEnabled(data.to),
+        from: data.from,
+        to: data.to
+      },
+      text: {
+        enabled: this.isFilterEnabled(data.text),
+        value: data.text
+      }
+      // severityRange: {
+      //   enabled: this.isFilterEnabled(data.severityRange),
+      //   from: data.severityRange && data.severityRange.from ? data.severityRange.from : 0,
+      //   to: data.severityRange && data.severityRange.to ? data.severityRange.to : 0
+      // },
+      // frequencyRange: {
+      //   enabled: this.isFilterEnabled(data.frequencyRange),
+      //   from: data.frequencyRange && data.frequencyRange.from ? data.frequencyRange.from : 0,
+      //   to: data.frequencyRange && data.frequencyRange.to ? data.frequencyRange.to : 0
+      // }
+    };
+  }
+
+  isFilterEnabled(filter: string | boolean | [] | number): boolean {
+    if (Array.isArray(filter) && filter.length === 0) {
+      return false;
+    }
+    if (Number.isInteger(filter as any)) {
+      return true;
+    }
+    return !!filter;
   }
 }

@@ -25,6 +25,16 @@ export const getRadioFilter = createSelector(
   state => state.radioFilter
 );
 
+export const getRadioMatrix = createSelector(
+  getRadioFeatureState,
+  state => state.matrixData
+);
+
+export const getRadioAnalysis = createSelector(
+  getRadioFeatureState,
+  state => state.analysisData
+);
+
 export const getRadioViews = createSelector(
   getRadioFeatureState,
   state => (state.radioViews ? state.radioViews : [])

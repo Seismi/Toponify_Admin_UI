@@ -62,6 +62,14 @@ export class RadioService {
     });
   }
 
+  getRadioMatrixData(data: AdvancedSearchApiRequest): Observable<any> {
+    return this.http.post<any>(`/radios/advanced/matrix`, data, httpOptions);
+  }
+
+  getRadioAnalysisData(data: AdvancedSearchApiRequest): Observable<any> {
+    return this.http.post<any>(`/radios/advanced/analysis`, data, httpOptions);
+  }
+
   associateRadio({ workPackageId, nodeId, radio }: { workPackageId: string; nodeId: string; radio: RadioDetail }) {
     return this.http.post(`/workpackages/${workPackageId}/nodes/${nodeId}/radios/${radio.id}`, { data: radio });
   }

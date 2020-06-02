@@ -55,6 +55,7 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
 import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
 import { RiskMatrixChartComponent } from './components/risk-matrix-chart/risk-matrix-chart.component';
 import { RadioViewNameDialogComponent } from './components/radio-view-name-dialog/radio-view-name-dialog.component';
+import { AnalysisFilterComponent } from './components/analysis-filter/analysis-filter.component';
 
 @NgModule({
   imports: [
@@ -120,7 +121,8 @@ import { RadioViewNameDialogComponent } from './components/radio-view-name-dialo
     DeleteRadioModalComponent,
     AlphabeticalOrderPipe,
     RiskMatrixChartComponent,
-    RadioViewNameDialogComponent
+    RadioViewNameDialogComponent,
+    AnalysisFilterComponent
   ],
   entryComponents: [
     RadioModalComponent,

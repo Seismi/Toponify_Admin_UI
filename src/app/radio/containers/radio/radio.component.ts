@@ -270,14 +270,14 @@ export class RadioComponent implements OnInit, OnDestroy {
         value: data.text
       },
       severityRange: {
-        enabled: this.isFilterEnabled(data.severity),
-        from: data.severity,
-        to: data.severity
+        enabled: this.isFilterEnabled(data.severityRange),
+        from: data.severityRange && data.severityRange.from ? data.severityRange.from : 0,
+        to: data.severityRange && data.severityRange.to ? data.severityRange.to : 0
       },
       frequencyRange: {
-        enabled: this.isFilterEnabled(data.frequency),
-        from: data.frequency,
-        to: data.frequency
+        enabled: this.isFilterEnabled(data.frequencyRange),
+        from: data.frequencyRange && data.frequencyRange.from ? data.frequencyRange.from : 0,
+        to: data.frequencyRange && data.frequencyRange.to ? data.frequencyRange.to : 0
       }
     };
   }
