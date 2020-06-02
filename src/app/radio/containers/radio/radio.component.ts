@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { LoadNodes, LoadTags } from '@app/architecture/store/actions/node.actions';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
@@ -31,6 +31,7 @@ import {
 } from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 
 @Component({
   selector: 'smi-radio',
@@ -59,6 +60,8 @@ export class RadioComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(new LoadTags());
+    this.store.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
     this.store.dispatch(
       new LoadRadios({
@@ -254,12 +257,17 @@ export class RadioComponent implements OnInit, OnDestroy {
         enabled: this.isFilterEnabled(data.assignedTo),
         values: data.assignedTo
       },
-      relatesTo: {
-        enabled: this.isFilterEnabled(data.relatesTo),
-        includeDescendants: this.isFilterEnabled(data.relatesTo),
-        includeLinks: this.isFilterEnabled(data.relatesTo),
-        values: data.relatesTo
+      workpackages: {
+        enabled: this.isFilterEnabled(data.relatesToWorkPackages),
+        includeBaseline: this.isFilterEnabled(data.relatesToWorkPackages),
+        values: data.relatesToWorkPackages
       },
+      relatesTo: {
+          enabled: this.isFilterEnabled(data.relatesTo),
+          includeDescendants: this.isFilterEnabled(data.relatesTo),
+          includeLinks: this.isFilterEnabled(data.relatesTo),
+          values: data.relatesTo
+        },
       dueDate: {
         enabled: this.isFilterEnabled(data.from) || this.isFilterEnabled(data.to),
         from: data.from,
@@ -270,14 +278,18 @@ export class RadioComponent implements OnInit, OnDestroy {
         value: data.text
       },
       severityRange: {
-        enabled: this.isFilterEnabled(data.severity),
-        from: data.severity,
-        to: data.severity
+        enabled: this.isFilterEnabled(data.severityRangeFrom) || this.isFilterEnabled(data.severityRangeTo),
+        from: data.severityRangeFrom,
+        to: data.severityRangeTo
       },
       frequencyRange: {
-        enabled: this.isFilterEnabled(data.frequency),
-        from: data.frequency,
-        to: data.frequency
+        enabled: this.isFilterEnabled(data.frequencyRangeFrom) || this.isFilterEnabled(data.frequencyRangeTo),
+        from: data.frequencyRangeFrom,
+        to: data.frequencyRangeTo
+      },
+      tags: {
+        enabled: this.isFilterEnabled(data.hasTag),
+        values: data.hasTag
       }
     };
   }

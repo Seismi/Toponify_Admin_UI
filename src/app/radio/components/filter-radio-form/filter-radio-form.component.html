@@ -19,6 +19,16 @@
     </mat-form-field>
   </div>
 
+  <!-- Relates To Work Packages -->
+  <mat-form-field>
+    <mat-label>Relates to work packages</mat-label>
+    <mat-select formControlName="relatesToWorkPackages" multiple data-qa="radio-filter-relates-to-work-packages">
+      <mat-option *ngFor="let workpackage of workpackages" [value]="workpackage">
+        {{ workpackage.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <!-- Assigned To -->
   <mat-form-field>
     <mat-label>Assigned To</mat-label>
@@ -34,7 +44,7 @@
 
   <!-- Relates To -->
   <mat-form-field>
-    <mat-label>Relates To</mat-label>
+    <mat-label>Relates to components</mat-label>
     <mat-select
       formControlName="relatesTo"
       [compareWith]="relatesToComparison"
@@ -43,6 +53,48 @@
     >
       <mat-option *ngFor="let node of nodes" [value]="node">
         {{ node.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Severity -->
+  <div style="display: flex;">
+    <mat-form-field>
+      <mat-label>Severity Between</mat-label>
+      <mat-select formControlName="severityRangeFrom" data-qa="radio-filter-severityRange-from">
+        <mat-option *ngFor="let severity of numbers" [value]="severity">{{ severity }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span class="and-title">and</span>
+    <mat-form-field>
+      <mat-select formControlName="severityRangeTo" data-qa="radio-filter-severityRange-to">
+        <mat-option *ngFor="let severity of numbers" [value]="severity">{{ severity }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Frequency  -->
+  <div style="display: flex;">
+    <mat-form-field>
+      <mat-label>Frequency Between</mat-label>
+      <mat-select formControlName="frequencyRangeFrom" data-qa="radio-filter-frequencyRange-from">
+        <mat-option *ngFor="let frequency of numbers" [value]="frequency">{{ frequency }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span class="and-title">and</span>
+    <mat-form-field>
+      <mat-select formControlName="frequencyRangeTo" data-qa="radio-filter-frequencyRange-to">
+        <mat-option *ngFor="let frequency of numbers" [value]="frequency">{{ frequency }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Tags To -->
+  <mat-form-field>
+    <mat-label>Has Tag</mat-label>
+    <mat-select formControlName="hasTag" multiple data-qa="radio-filter-has-tag">
+      <mat-option *ngFor="let tag of tags" [value]="tag">
+        {{ tag.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>

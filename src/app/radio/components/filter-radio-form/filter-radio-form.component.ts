@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { User } from '@app/settings/store/models/user.model';
 import { Constants } from '@app/core/constants';
-import { Node } from '@app/architecture/store/models/node.model';
+import { Node, Tag } from '@app/architecture/store/models/node.model';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material';
 import { AppDateAdapter, APP_DATE_FORMATS } from '@app/format-datepicker';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-filter-radio-form',
@@ -18,8 +19,11 @@ import { AppDateAdapter, APP_DATE_FORMATS } from '@app/format-datepicker';
 export class FilterRadioFormComponent {
   @Input() users: User[];
   @Input() nodes: Node[];
+  @Input() workpackages: WorkPackageEntity[];
+  @Input() tags: Tag[];
   @Input() group: FormGroup;
 
+  public numbers: number[] = [1, 2, 3, 4, 5];
   public status: string[] = Constants.RADIO_STATUS;
   public types: string[] = Constants.RADIO_CATEGORIES;
 
