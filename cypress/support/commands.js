@@ -458,9 +458,6 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'assertRadioDetails',
   (title, category, status, assigned, severity, probability, actioned, description, mitigation) => {
-    title = Cypress.env('BRANCH')
-      .concat(' | ')
-      .concat(title);
     // Asserts the value of the form are as expected
     cy.get(`[data-qa='radio-detail-category']`).then(input => {
       expect(input[0].textContent).to.equal(category);
@@ -469,7 +466,8 @@ Cypress.Commands.add(
       expect(input[0].textContent).to.equal(status);
     });
     cy.get(`[data-qa='radio-detail-action-by']`).then(input => {
-      expect(input[0].value).to.equal(actioned);
+      const newDate = new Date(actioned).toDateString();
+      expect(input[0].value).to.equal(newDate);
     });
     cy.get(`[data-qa='radio-detail-description']`).then(input => {
       console.log(input);
