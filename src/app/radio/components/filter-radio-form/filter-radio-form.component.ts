@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { User } from '@app/settings/store/models/user.model';
 import { Constants } from '@app/core/constants';
@@ -27,11 +27,24 @@ export class FilterRadioFormComponent {
   public status: string[] = Constants.RADIO_STATUS;
   public types: string[] = Constants.RADIO_CATEGORIES;
 
+  @ViewChild('searchComponents') searchComponents: ElementRef;
+  @ViewChild('searchUsers') searchUsers: ElementRef;
+
   assignedToComparison(option: any, value: any): boolean {
     return option && value ? option.id === value.id : false;
   }
 
   relatesToComparison(option: any, value: any): boolean {
     return option && value ? option.id === value.id : false;
+  }
+
+  filterComponents(node: Node): boolean {
+    const searchValue = this.searchComponents.nativeElement.value;
+    return searchValue !== '' && node.name.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;
+  }
+
+  filterUsers(user: User): string | boolean {
+    const searchValue = this.searchUsers.nativeElement.value;
+    return searchValue !== '' && user.firstName.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;
   }
 }
