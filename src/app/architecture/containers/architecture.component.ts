@@ -67,6 +67,8 @@ import {RouterStateUrl} from '@app/core/store';
 import {UpdateQueryParams} from '@app/core/store/actions/route.actions';
 import {
   getFilterLevelQueryParams,
+  getMapViewQueryParams,
+  getNodeIdQueryParams,
   getQueryParams,
   getScopeQueryParams,
   getWorkPackagesQueryParams
@@ -287,6 +289,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public selectedId: string;
   public scope: ScopeDetails;
   private currentFilterLevel: Level;
+  private filterId: string;
+  private mapViewSource: { id: string, isTransformation: string} | null;
   private filterLevelSubscription: Subscription;
   private addDataSetSubscription: Subscription;
   private addChildSubscription: Subscription;
@@ -403,7 +407,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
     );
-    this.subscriptions.push(this.routerStore.select(getQueryParams).subscribe(params => (this.params = params)));
 
     this.subscriptions.push(
       this.routerStore
@@ -413,6 +416,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           return this.workpackageStore.dispatch(new SetSelectedWorkPackages({ workPackages: workpackages }));
         })
     );
+
+    this.store.select(getNodeIdQueryParams).subscribe(nodeId => {
+      this.filterId = nodeId;
+    });
+    this.store.select(getMapViewQueryParams).subscribe(mapViewParams => {
+      this.mapViewSource = mapViewParams;
+    });
 
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       this.removeAllDraft();
@@ -1790,11 +1800,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       if (data && data.value) {
         if (this.currentFilterLevel.endsWith('map')) {
           const mapViewParams = {
-            id: this.params.id,
+            id: this.mapViewSource.id,
             queryParams: {
-              workPackageQuery: [this.params.workpackages],
-              scope: [this.params.scope],
-              isTransformation: this.params.isTransformation
+              workPackageQuery: this.selectedWorkpackages,
+              scope: [this.scope.id],
+              isTransformation: this.mapViewSource.isTransformation
             }
           };
 
@@ -2220,6 +2230,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       data: {
         title: `Add Group member to "${this.selectedNode.name}"`,
         placeholder: 'Components',
+        parentId: !this.mapView ? this.filterId : null,
         nodeId: this.nodeId,
         workPackageId: this.workpackageId,
         scopeId: this.scope.id,
@@ -2239,6 +2250,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               layer: layers.data,
               isShared: true,
               group: this.nodeId,
+              parentId: !this.mapView ? this.filterId : null,
               masterId: data.value[0].id
             },
             scope: this.scope.id

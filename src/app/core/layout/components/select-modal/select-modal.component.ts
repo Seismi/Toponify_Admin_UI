@@ -39,6 +39,7 @@ export class SelectModalComponent implements OnInit {
       placeholder: string;
       descendants: boolean;
       groupMembers: boolean;
+      parentId?: string;
       nodeId: string,
       workPackageId: string,
       scopeId: string
@@ -155,6 +156,9 @@ export class SelectModalComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.data) {
+
+        data.data.parentId = this.data.parentId;
+
         this.store.dispatch(
           new AddWorkPackageNode({
             workpackageId: this.data.workPackageId,
