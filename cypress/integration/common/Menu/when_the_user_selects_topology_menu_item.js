@@ -15,16 +15,13 @@ When('the user selects Topology menu item', function() {
             '@GETWorkPackages',
             '@GETTeams',
             '@GETSelectorAvailabilityQuery',
-            '@GETRadios',
+            '@POSTradiosAdvancedSearch',
             '@GETScope',
             '@GETLayout',
             '@GETNodesScopeQuery',
             '@GETNodeLinksScopeQuery',
             '@GETSelectorAvailabilityQuery.1',
-            '@GETNodesScopeQuery.1',
-            '@GETNodeLinksScopeQuery.1',
-            '@GETNodesScopeQuery.2',
-            '@GETNodeLinksScopeQuery.2'
+            '@GETNodeLinksScopeQuery.1'
           ];
           cy.wait(wait); // wait for API Calls
         });

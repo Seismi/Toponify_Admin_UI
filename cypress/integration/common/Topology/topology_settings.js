@@ -168,6 +168,11 @@ module.exports = {
       api: `${api_version}/workpackages/nodes/*/group/set/*`,
       method: 'POST',
       name: 'WorkPackagesNodesGroupSet'
+    },
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
     }
   }
 };
