@@ -50,30 +50,31 @@
 
     <mat-form-field *ngIf="myUserPage">
       <mat-label>Summary Email Frequency</mat-label>
-      <mat-select 
-        formControlName="emailFrequency"
-        [ngClass]="{ editable: isEditable }" 
-        data-qa="settings-user-emailFrequency"
-      >
-        <mat-option *ngFor="let frequency of emailFrequency" [value]="frequency">
-          {{ frequency }}
-        </mat-option>
-      </mat-select>
+      <div formGroupName="settings">
+        <div formGroupName="summarySettings">
+          <mat-select formControlName="frequency" [ngClass]="{ editable: isEditable }"
+            data-qa="settings-user-emailFrequency">
+            <mat-option *ngFor="let frequency of frequencies" [value]="frequency">
+              {{ frequency }}
+            </mat-option>
+          </mat-select>
+        </div>
+      </div>
     </mat-form-field>
 
-    <mat-form-field *ngIf="myUserPage && [Frequency.Weekly, Frequency.Monthly].includes(formValue.emailFrequency)">
+    <mat-form-field *ngIf="myUserPage && [Frequency.Weekly, Frequency.Monthly].includes(value)">
       <mat-label>Day of the week</mat-label>
-      <mat-select 
-        formControlName="days"
-        [ngClass]="{ editable: isEditable }"
-        data-qa="settings-user-dayOfTheWeek"
-      >
-        <mat-option *ngFor="let day of days; let i = index" [value]="day">
-          <span *ngIf="formValue.emailFrequency === Frequency.Weekly">Every</span>
-          <span *ngIf="formValue.emailFrequency === Frequency.Monthly">First</span>
-          {{ day }}
-        </mat-option>
-      </mat-select>
+      <div formGroupName="settings">
+        <div formGroupName="summarySettings">
+          <mat-select formControlName="day" [ngClass]="{ editable: isEditable }" data-qa="settings-user-dayOfTheWeek">
+            <mat-option 
+              *ngFor="let day of days; let i = index" [value]="i">
+              <span>{{ value === Frequency.Weekly ? 'Every' : 'First' }}</span>
+              {{ day }}
+            </mat-option>
+          </mat-select>
+        </div>
+      </div>
     </mat-form-field>
 
     <div *ngIf="myUserPage; else elseBlock" style="margin-bottom: 20px;">

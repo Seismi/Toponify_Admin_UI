@@ -13,7 +13,7 @@
     (cancelEdit)="onCancelEdit($event)"
     (changePassword)="onChangePassword($event)"
     data-qa="settings-my-user-my-user-form"
-    [formValue]="formValue"
+    [value]="formValue?.settings?.summarySettings?.frequency"
   >
   </smi-my-user-form>
 </div>

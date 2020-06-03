@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MyUserFormValidatorService, phoneNumberValidator, emailValidator } from './my-user-form-validator.service';
 
 @Injectable()
@@ -17,8 +17,12 @@ export class MyUserFormService {
       team: [null],
       roles: [null, Validators.required],
       userStatus: ['active'],
-      emailFrequency: [null],
-      days: [null]
+      settings: new FormGroup({
+        summarySettings: new FormGroup({
+          frequency: new FormControl(),
+          day: new FormControl()
+        })
+      })
     });
   }
 

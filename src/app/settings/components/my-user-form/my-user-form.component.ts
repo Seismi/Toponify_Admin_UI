@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
@@ -28,9 +28,8 @@ enum Days {
   styleUrls: ['my-user-form.component.scss']
 })
 export class MyUserFormComponent {
-  private values;
   public Frequency = Frequency;
-  public emailFrequency: string[] = [
+  public frequencies: string[] = [
     Frequency.None,
     Frequency.Daily,
     Frequency.Weekly,
@@ -47,7 +46,8 @@ export class MyUserFormComponent {
   ];
 
   constructor(public dialog: MatDialog) {}
-  @Input() formValue: any;
+
+  @Input() value: UserDetails;
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
   @Input() userStatus: string;
@@ -70,11 +70,6 @@ export class MyUserFormComponent {
   @Input() myUserPage = false;
   @Input() canEdit = true;
 
-  @Input('group') set setGroup(group) {
-    this.group = group;
-    this.values = group.value;
-  }
-
   @Output() saveUser = new EventEmitter<void>();
   @Output() editUser = new EventEmitter<void>();
   @Output() cancelEdit = new EventEmitter<void>();
@@ -90,7 +85,6 @@ export class MyUserFormComponent {
   }
 
   onCancel(): void {
-    this.group.reset(this.values);
     this.cancelEdit.emit();
   }
 
