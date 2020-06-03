@@ -30,8 +30,8 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns" (dblclick)="onOpen(row)"></tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 8]"></mat-paginator>
+  <mat-paginator [length]="totalEntities" [pageSize]="5" [pageSizeOptions]="[5, 10]"></mat-paginator>
 </div>
 <br />
 
-<button mat-raised-button color="primary" data-qa="topology-radio-table-create-new" (click)="onAdd()">Create New</button>
+<button mat-raised-button color="primary" data-qa="topology-radio-table-create-new" (click)="raiseNew.emit()">Raise New</button>

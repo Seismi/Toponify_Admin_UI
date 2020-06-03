@@ -8,6 +8,13 @@ export const getRadioEntities = createSelector(
   state => state.entities
 );
 
+// NOTE: should return all necessary data
+// for organizing table with pagination
+export const getRadioTableData = createSelector(
+  getRadioFeatureState,
+  state => ({ entities: state.entities, page: state.page })
+);
+
 export const getSelectedRadio = createSelector(
   getRadioFeatureState,
   state => state.selectedRadio

@@ -21,6 +21,7 @@
               (addRadio)="onAddRadio($event)"
               (download)="downloadCSV()"
               [selectedRadioIndex]="selectedRadioIndex"
+              (pageChange)="handlePageChange($event)"
             >
             </smi-radio-table>
           </div>

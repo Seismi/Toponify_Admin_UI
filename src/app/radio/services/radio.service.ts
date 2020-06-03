@@ -54,8 +54,12 @@ export class RadioService {
     return this.http.delete<RadioDetailApiResponse>(`/radios/${radioId}/customPropertyValues/${customPropertyId}`);
   }
 
-  searchRadio(data: AdvancedSearchApiRequest): Observable<RadioEntitiesResponse> {
-    return this.http.post<RadioEntitiesResponse>(`/radios/advanced/search`, data, httpOptions);
+  searchRadio(data: AdvancedSearchApiRequest, queryParams: RadioEntitiesHttpParams): Observable<RadioEntitiesResponse> {
+    const params = queryParams ? toHttpParams(queryParams) : new HttpParams();
+    return this.http.post<RadioEntitiesResponse>(`/radios/advanced/search`, data, {
+      params: params,
+      ...httpOptions
+    });
   }
 
   associateRadio({ workPackageId, nodeId, radio }: { workPackageId: string; nodeId: string; radio: RadioDetail }) {

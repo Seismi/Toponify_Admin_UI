@@ -26,6 +26,12 @@ export interface Links {
   next: string;
   last: string;
 }
+
+export interface TableData<T> {
+  entities: T[];
+  page: Page;
+}
+
 export interface Page {
   size: number;
   totalObjects: number;
@@ -189,6 +195,8 @@ interface AddRadioOrReplyChanges {
 // RADIO advanced search
 export interface AdvancedSearchApiRequest {
   data: RadiosAdvancedSearch;
+  page?: string;
+  size?: string;
 }
 
 export interface RadiosAdvancedSearch {
@@ -211,7 +219,7 @@ export interface RadiosAdvancedSearch {
 
 interface Text {
   enabled: boolean;
-  value: string;
+  value?: string;
 }
 
 interface DueDate {
@@ -222,25 +230,25 @@ interface DueDate {
 
 interface RelatesToValues {
   enabled: boolean;
-  includeDescendants: boolean;
-  includeLinks: boolean;
-  values: (Values)[] | null;
+  includeDescendants?: boolean;
+  includeLinks?: boolean;
+  values?: (Values)[] | null;
 }
 
 interface WorkPackages {
   enabled: boolean;
   includeBaseline: boolean;
-  values: (Values)[] | null;
+  values?: (Values)[] | null;
 }
 
 interface AssignedToValues {
   enabled: boolean;
-  values: (Values)[] | null;
+  values?: (Values)[] | null;
 }
 
 interface RaisedBy {
   enabled: boolean;
-  values: (Values)[] | null;
+  values?: (Values)[] | null;
 }
 
 interface Values {
@@ -251,12 +259,12 @@ interface Values {
 
 interface Type {
   enabled?: boolean;
-  values: (string)[] | null;
+  values?: (string)[] | null;
 }
 
 interface Status {
   enabled?: boolean;
-  values: (string)[] | null;
+  values?: (string)[] | null;
 }
 
 interface AssignedToMe {
