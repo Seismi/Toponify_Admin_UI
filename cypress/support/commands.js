@@ -13,33 +13,6 @@
 const login = require('../integration/common/Login/login_settings');
 const workPackage = require('../integration/common/Work Package/work_package_settings');
 
-/*
-const attributeAndRules = require("../integration/common/Attribute and Rules/attribute_and_rules_settings")
-const documentationStandards = require("../integration/common/Documentation Standards/documentation_standards_settings")
-const logout = require("../integration/common/Logout/logout_settings")
-const myProfile = require("../integration/common/My Profile/my_profile_settings")
-const radios = require("../integration/common/Radios/radios_settings")
-const reports = require("../integration/common/Reports/reports_settings")
-const scopesAndLayouts = require("../integration/common/Scope and Layouts/scope_and_layouts_settings")
-const topology = require("../integration/common/Topology/topology_settings")
-const settings = require("../integration/common/Settings/settings_settings")
-const home = require("../integration/common/Home/home_settings")
-
-const pages = {
-        'Home':home,
-        'Topology': topology,
-        'Reports': reports,
-        'Attributes and Rules': attributeAndRules,
-        'Work Package': workPackage,
-        'Radios': radios,
-        'Scopes and Layouts': scopesAndLayouts,
-        'Documentation Standard': documentationStandards,
-        'My Profile': myProfile,
-        'Settings': settings,
-        'Logout': logout,
-        'Login': login
-}*/
-
 Cypress.Commands.add('login', usertype => {
   cy.setUpRoutes('Login', login);
   const usertypes = {

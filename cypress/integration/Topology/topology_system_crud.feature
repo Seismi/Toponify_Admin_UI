@@ -100,7 +100,7 @@ Feature: Topology Systems Layer Feature
   Scenario Outline: Add interfaces to the System View and check that they save to the table and canvas
     Given the user selects Topology menu item
     And the "System View" layer is selected
-    And the work package 'Automated Regression Test Work Package' is editable
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<source_type>' system with name '<source_name>'
     And the user creates a new '<target_type>' system with name '<target_name>'
@@ -108,7 +108,7 @@ Feature: Topology Systems Layer Feature
     When the user creates a new '<interface_type>' interface with name '<name>' between '<source_name>' and '<target_name>'
     Then the 'interface' '<name>' should exist in the table immediately
     And the user reloads the Topology page
-    And the work package 'Automated Regression Test Work Package' is editable
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Interfaces" Tab is selected
     And the user selects the 'interface' '<name>' in the 'interfaces' table
     And the 'interface' '<name>' should exist in 'Interfaces' table in the 'Automated Regression Test Work Package' work package after reload
@@ -120,7 +120,7 @@ Feature: Topology Systems Layer Feature
   Scenario Outline: Update interface via table and check results are correctly saved
     Given the user selects Topology menu item
     And the "System View" layer is selected
-    And the work package 'Automated Regression Test Work Package' is editable
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<source_type>' system with name '<source_name>'
     And the user creates a new '<target_type>' system with name '<target_name>'
@@ -131,7 +131,7 @@ Feature: Topology Systems Layer Feature
     When the user changes the 'link' reference number: '<new_reference>', name: '<new_name>', category: '<new_type>', description: '<new_description>', owners '<new_owner>'
     Then the details panel should reflect the reference number: '<new_reference>', name: '<new_name>', category: '<new_type>', description: '<new_description>', owners '<new_owner>' immediately
     And the user reloads the Topology page
-    And the work package 'Automated Regression Test Work Package' is editable
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Interfaces" Tab is selected
     And the user selects the 'interface' '<new_name>' in the 'interfaces' table
     And the user clicks on the link's right hand side details button
@@ -143,7 +143,7 @@ Feature: Topology Systems Layer Feature
   Scenario Outline: Delete interface via table and check results are correctly saved
     Given the user selects Topology menu item
     And the "System View" layer is selected
-    And the work package 'Automated Regression Test Work Package' is editable
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<source_type>' system with name '<source_name>'
     And the user creates a new '<target_type>' system with name '<target_name>'
@@ -154,7 +154,7 @@ Feature: Topology Systems Layer Feature
     When the user deletes the interface '<name>'
     Then the 'interface' '<name>' should not exist in the table immediately
     And the user reloads the Topology page
-    And the work package 'Automated Regression Test Work Package' is editable
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Interfaces" Tab is selected
     And the 'interface' '<name>' should not exist in 'Interfaces' table in the 'Automated Regression Test Work Package' work package after reload
 
