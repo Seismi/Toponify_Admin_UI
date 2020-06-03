@@ -8,19 +8,20 @@ Feature: Create new report
     And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user selects Topology menu item
     And the "System View" layer is selected
-    And the work package 'Automated Regression Test Work Package' is editable
+    And the work package 'Automated Regression Test Work Package' is editable on the 'work packages' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test System'
     And the user selects Reports menu item
+    And the work package 'Automated Regression Test Work Package' is editable on the 'reports' menu
+
     #TODO - You need to create the system that is going to be used within the reports
 
   @focus
   Scenario: Create Report and then cancel
     #TODO - this and all subsequent tests should use the system that you created above
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
-    And the user cancels the creation of the report
-    Then the new report 'Automated Regression Test Report' should not be created
-
+    #And the user cancels the creation of the report
+    #Then the new report 'Automated Regression Test Report' should not be created
 
   Scenario: Complete creating a new report
   Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'

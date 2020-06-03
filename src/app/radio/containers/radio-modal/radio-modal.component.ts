@@ -24,23 +24,23 @@ export class RadioModalComponent implements OnInit, OnDestroy {
   public isEditable = true;
   public modalMode = true;
   public radio: RadioDetail;
-  public selectedNode = null;
   public workpackages$: Observable<WorkPackageEntity[]>;
   public selectedOption: any;
+  public selectWorkPackages = false;
+  public message: string;
 
   constructor(
     private store: Store<UserState>,
     private radioDetailService: RadioDetailService,
     public dialogRef: MatDialogRef<RadioModalComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      selectedNode: NodeDetail;
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.selectWorkPackages = data.selectWorkPackages;
+      this.message = data.message;
     }
-  ) {}
 
   ngOnInit() {
     this.users$ = this.store.pipe(select(getUsers));
-    if (this.data.selectedNode) {
+    if (this.data.selectWorkPackages) {
       this.workpackages$ = this.store.pipe(select(getSelectedWorkpackages));
     }
     this.radioDetailsForm.patchValue({

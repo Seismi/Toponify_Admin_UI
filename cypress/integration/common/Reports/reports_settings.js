@@ -28,6 +28,11 @@ module.exports = {
       api: `${api_version}/reports?scopeQuery=*`,
       method: 'GET',
       name: 'ReportsScopeQuery'
+    },
+    ReportsWorkPackageQuery: {
+      api: `${api_version}/reports?workPackageQuery[]=*&scopeQuery=*`,
+      method: 'GET',
+      name: 'ReportsWorkPackageQuery'
     }
   }
 };

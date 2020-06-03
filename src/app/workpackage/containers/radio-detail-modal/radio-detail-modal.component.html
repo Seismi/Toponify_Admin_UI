@@ -22,6 +22,22 @@
           </smi-radio-detail>
         </p>
       </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon matTooltip="Relates To">device_hub</mat-icon>
+          Relates To
+        </ng-template>
+        <p class="properties-tab">
+          <smi-relates-to-table
+            data-qa="radio-relates-to-table"
+            [data]="radio?.relatesTo"
+            (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
+            (addRelatesTo)="onAddRelatesTo()"
+          ></smi-relates-to-table>
+        </p>
+      </mat-tab>
+
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon>comment</mat-icon>
@@ -45,7 +61,7 @@
             (saveProperty)="onSaveProperty($event)"
             (deleteProperty)="onDeleteProperty($event)"
           >
-        </smi-edit-documentation-standards-table>
+          </smi-edit-documentation-standards-table>
         </p>
       </mat-tab>
     </mat-tab-group>
