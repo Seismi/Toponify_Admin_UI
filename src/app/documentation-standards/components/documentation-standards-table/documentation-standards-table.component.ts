@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, ViewChild } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ViewChild, ElementRef } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 import { Roles } from '@app/core/directives/by-role.directive';
@@ -12,12 +12,17 @@ export class DocumentationStandardsTableComponent {
   public selectedRowIndex: string | number = -1;
   public Roles = Roles;
 
+  @ViewChild('searchField') input: ElementRef;
+
   @Input()
   set data(data: DocumentStandard[]) {
     if (data) {
       this.dataSource = new MatTableDataSource<DocumentStandard>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      if (this.input) {
+        this.dataSource.filter = this.input.nativeElement.value;
+      }
     }
   }
 

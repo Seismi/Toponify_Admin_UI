@@ -151,7 +151,15 @@ export class RadioEffects {
     ofType<SearchRadio>(RadioActionTypes.SearchRadio),
     map(action => action.payload),
     mergeMap((payload: AdvancedSearchApiRequest) => {
-      return this.radioService.searchRadio(payload).pipe(
+      const data = payload.data;
+      const queryParams: { size?: string; page?: string } = {};
+
+      if (payload.page && payload.size) {
+        queryParams.size = payload.size;
+        queryParams.page = payload.page;
+      }
+
+      return this.radioService.searchRadio({ data }, queryParams).pipe(
         mergeMap((response: RadioEntitiesResponse) => [new SearchRadioSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new SearchRadioFailure(error)))
       );
@@ -258,7 +266,7 @@ export class RadioEffects {
     map(action => action.payload),
     mergeMap((payload: string) => {
       return this.radioService.getRadioView(payload).pipe(
-        map(response => new GetRadioViewSuccess(response.data.filterSet)),
+        map(response => new GetRadioViewSuccess(response.data)),
         catchError((error: HttpErrorResponse) => of(new GetRadioViewFail(error)))
       );
     })

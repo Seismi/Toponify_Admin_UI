@@ -18,7 +18,7 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETNotifications'
   ]);
   wait = wait.concat([
-    '@GETNodesWorkPackageQuery',
+    '@GETNodesWorkPackageQuery.2',
     '@GETNodeLinksWorkPackageQuery.2',
     '@GETSelectorAvailabilityQuery.2'
   ]);

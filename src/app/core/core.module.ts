@@ -2,7 +2,15 @@ import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatIconModule, MatSidenavModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatIconModule,
+  MatSidenavModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule
+} from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { ErrorInterceptor } from '@app/core/interceptors/error.interceptor';
 import { CoreLayoutModule } from '@app/core/layout/core-layout.module';
@@ -46,9 +54,13 @@ import { SearchService } from './services/search.service';
 import { NotificationEffects } from './store/effects/notification.effects';
 import { SearchEffects } from './store/effects/search.effects';
 import { HostComponent } from './components/host/host.component';
+import { TableComponent } from './components/table/table.component';
 
 @NgModule({
   imports: [
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
     RouterModule,
     MatSidenavModule,
     CoreLayoutModule,
@@ -93,7 +105,8 @@ import { HostComponent } from './components/host/host.component';
     ByRoleDirective,
     CanEditDirective,
     CoreLayoutModule,
-    HostComponent
+    HostComponent,
+    TableComponent
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
@@ -105,6 +118,6 @@ import { HostComponent } from './components/host/host.component';
       multi: true
     }
   ],
-  declarations: [ByRoleDirective, CanEditDirective, HostComponent]
+  declarations: [ByRoleDirective, CanEditDirective, HostComponent, TableComponent]
 })
 export class CoreModule {}

@@ -191,10 +191,10 @@ function assertRadioDetails(
     expect(input[0].textContent).to.equal(status);
   });
   cy.get(`[data-qa='radio-detail-action-by']`).then(input => {
-    expect(input[0].value).to.equal(actioned);
+    const newDate = new Date(actioned).toDateString();
+    expect(input[0].value).to.equal(newDate);
   });
   cy.get(`[data-qa='radio-detail-description']`).then(input => {
-    console.log(input);
     expect(input[0].textContent).to.equal(description);
   });
   cy.get('[data-qa=radio-detail-title]').then(input => {
@@ -205,7 +205,6 @@ function assertRadioDetails(
         expect(input[0].textContent).to.equal(assigned)
     })*/
   cy.get(`[data-qa='radio-detail-mitigation']`).then(input => {
-    console.log(input);
     expect(input[0].textContent).to.equal(mitigation);
   });
   cy.get('[data-qa=radio-detail-severity]').should('have.attr', 'aria-valuenow', severity.toString());

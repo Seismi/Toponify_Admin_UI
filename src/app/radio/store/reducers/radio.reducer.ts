@@ -62,9 +62,10 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
     }
 
     case RadioActionTypes.GetRadioViewSuccess: {
+      const filterSet = action.payload.filterSet;
       return {
         ...state,
-        radioFilter: { ...action.payload }
+        radioFilter: { ...filterSet, tableStyle: action.payload.type }
       };
     }
 
@@ -281,6 +282,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       return {
         ...state,
         entities: action.payload.data,
+        links: action.payload.links,
+        page: action.payload.page,
         loading: false
       };
     }
@@ -294,9 +297,10 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
     }
 
     case RadioActionTypes.RadioFilter: {
+      const tableStyle = action.payload ? action.payload.tableStyle || state.radioFilter.tableStyle : null;
       return {
         ...state,
-        radioFilter: action.payload
+        radioFilter: { ...action.payload, tableStyle }
       };
     }
 

@@ -10,7 +10,7 @@ import { currentArchitecturePackageId } from '@app/workpackage/store/models/work
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
@@ -21,9 +21,14 @@ import {
   RadioFilter,
   SearchRadio
 } from '../../store/actions/radio.actions';
-import { RadioDetail, RadioEntity, RadiosAdvancedSearch } from '../../store/models/radio.model';
+import { RadioDetail, RadioEntity, RadiosAdvancedSearch, TableData } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { getRadioEntities, getRadioFilter, getSelectedRadio } from '../../store/selectors/radio.selector';
+import {
+  getRadioEntities,
+  getRadioFilter,
+  getSelectedRadio,
+  getRadioTableData
+} from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 
@@ -34,7 +39,7 @@ import { RadioModalComponent } from '../radio-modal/radio-modal.component';
   providers: [RadioDetailService, RadioValidatorService]
 })
 export class RadioComponent implements OnInit, OnDestroy {
-  public radio$: Observable<RadioEntity[]>;
+  public radio$: Observable<TableData<RadioEntity>>;
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
@@ -55,11 +60,17 @@ export class RadioComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userStore.dispatch(new LoadUsers({}));
-    this.store.dispatch(new LoadRadios({}));
+    this.store.dispatch(
+      new LoadRadios({
+        page: String(0),
+        size: String(10)
+      })
+    );
     this.nodeStore.dispatch(new LoadNodes());
-    this.radio$ = this.store
-      .pipe(select(getRadioEntities))
-      .pipe(map(radios => radios.filter(radio => (this.filterData === null ? radio.status !== 'closed' : radio))));
+    this.radio$ = this.store.pipe(select(getRadioTableData));
+    // .pipe(
+    //   map(radios => radios.entities.filter(radio => (this.filterData === null ? radio.status !== 'closed' : radio)))
+    // );
 
     this.store.pipe(select(getRadioFilter)).subscribe(data => {
       if (data) {
@@ -77,11 +88,18 @@ export class RadioComponent implements OnInit, OnDestroy {
           if (data) {
             this.store.dispatch(
               new SearchRadio({
-                data: this.transformFilterIntoAdvancedSearchData(data)
+                data: this.transformFilterIntoAdvancedSearchData(data),
+                page: '0',
+                size: '10'
               })
             );
           } else {
-            this.store.dispatch(new LoadRadios({}));
+            this.store.dispatch(
+              new LoadRadios({
+                page: '0',
+                size: '10'
+              })
+            );
           }
         })
     );
@@ -97,7 +115,20 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
         this.selectedRadioIndex = action.payload.id;
-        this.store.dispatch(new LoadRadios({}));
+        if (this.filterData) {
+          this.store.dispatch(
+            new SearchRadio({
+              data: this.transformFilterIntoAdvancedSearchData(this.filterData)
+            })
+          );
+        } else {
+          this.store.dispatch(
+            new LoadRadios({
+              page: '0',
+              size: '10'
+            })
+          );
+        }
         this.onSelectRadio(action.payload);
       })
     );
@@ -161,6 +192,25 @@ export class RadioComponent implements OnInit, OnDestroy {
     });
   }
 
+  handlePageChange(nextPage: { previousPageIndex: number; pageIndex: number; pageSize: number; length: number }): void {
+    if (this.filterData) {
+      this.store.dispatch(
+        new SearchRadio({
+          data: this.transformFilterIntoAdvancedSearchData(this.filterData),
+          page: String(nextPage.pageIndex),
+          size: String(nextPage.pageSize)
+        })
+      );
+    } else {
+      this.store.dispatch(
+        new LoadRadios({
+          page: String(nextPage.pageIndex),
+          size: String(nextPage.pageSize)
+        })
+      );
+    }
+  }
+
   downloadCSV(): void {
     this.dialog.open(DownloadCSVModalComponent, {
       width: '250px',
@@ -180,9 +230,12 @@ export class RadioComponent implements OnInit, OnDestroy {
     }
   }
 
-  isFilterEnabled(filter: string | boolean | []): boolean {
+  isFilterEnabled(filter: string | boolean | [] | number): boolean {
     if (Array.isArray(filter) && filter.length === 0) {
       return false;
+    }
+    if (Number.isInteger(filter as any)) {
+      return true;
     }
     return !!filter;
   }
@@ -215,6 +268,16 @@ export class RadioComponent implements OnInit, OnDestroy {
       text: {
         enabled: this.isFilterEnabled(data.text),
         value: data.text
+      },
+      severityRange: {
+        enabled: this.isFilterEnabled(data.severity),
+        from: data.severity,
+        to: data.severity
+      },
+      frequencyRange: {
+        enabled: this.isFilterEnabled(data.frequency),
+        from: data.frequency,
+        to: data.frequency
       }
     };
   }

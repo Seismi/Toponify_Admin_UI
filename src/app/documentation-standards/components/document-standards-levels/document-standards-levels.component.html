@@ -1,5 +1,12 @@
 <div>
-  <mat-checkbox data-qa="documentation-standards-level-everywhere" class="select-all" (change)="checkAll($event)" [disabled]="isDisabled">Everywhere</mat-checkbox>
+  <mat-checkbox
+    data-qa="documentation-standards-level-everywhere"
+    [checked]="isEveryNodeSelected()"
+    class="select-all"
+    (change)="checkAll($event)"
+    [disabled]="isDisabled"
+    >Everywhere</mat-checkbox
+  >
 </div>
 <mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl" [ngClass]="{ editable: modalMode }">
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>

@@ -262,12 +262,54 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
   cy.get('[data-qa=left-hand-pane-work-package-table]')
     .within(() => {
       cy.get('div>div>input')
+        .clear()
+        .type(work_package)
+        .then(() => {
+          cy.get('table>tbody')
+            .find('tr:first>td>div>div>mat-icon')
+            .then(wp => {
+              console.log(wp[0].textContent);
+              if (wp[0].textContent === 'edit') {
+                cy.get('table>tbody')
+                  .find('tr:first>td>div>div>mat-icon')
+                  .click()
+                  .wait([
+                    '@GETNodesWorkPackageQuery',
+                    '@GETNodeLinksWorkPackageQuery',
+                    '@GETSelectorAvailabilityQuery'
+                  ]);
+              }
+            });
+        });
+    })
+    .then(result => {
+      cy.root()
+        .get('[data-qa=left-hand-pane-work-packages]')
+        .click();
+    });
+});
+
+Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_for) => {
+  cy.get('[data-qa=left-hand-pane-work-packages]').click();
+  cy.get(`[data-qa=${work_package_menu}]`)
+    .within(() => {
+      cy.get('div>div>input')
+        .clear()
         .type(work_package)
         .then(() => {
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
             .click()
-            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
+            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
+            .then(wp => {
+              console.log(wp[0].textContent);
+              if (wp[0].textContent === 'edit') {
+                cy.get('table>tbody')
+                  .find('tr:first>td>div>div>mat-icon')
+                  .click()
+                  .wait(wait_for);
+              }
+            });
         });
     })
     .then(result => {
@@ -320,7 +362,6 @@ Cypress.Commands.add('deleteWorkPackage', name => {
           .get('td') // get the second td
           .eq(2)
           .then(status => {
-            console.log(status);
             switch (
               status[0].textContent // depending on status
             ) {
@@ -361,6 +402,177 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
         .contains(component) // which contains the component
         .click();
     }); //click the create new documentations standard button
+});
+
+Cypress.Commands.add('findRadio', radio => {
+  cy.get('[data-qa=radio-filter]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=radio-filter-text]')
+        .clear()
+        .type(radio);
+      cy.get('[data-qa=radio-filter-modal-apply]')
+        .click({ force: true })
+        .wait(['@POSTradiosAdvancedSearch'])
+        .then(() => {
+          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
+        });
+    });
+});
+
+Cypress.Commands.add('deleteRadio', radio => {
+  cy.selectRow('radio-table', radio)
+    .wait('@GETRadio')
+    .then($radio => {
+      const status = $radio.response.body.data.status;
+      if (status === 'closed') {
+        cy.get('[data-qa=radio-detail-delete]').click();
+        cy.get('[data-qa=delete-modal-yes]')
+          .click()
+          .wait('@DELETERadios');
+      } else {
+        cy.get('[data-qa=radio-detail-archive]')
+          .click()
+          .then(() => {
+            cy.type_ckeditor('[data-qa=radio-discussions-tab-your-message]', 'Closing RADIO');
+            cy.get('[data-qa=radio-reply-modal-save]')
+              .click()
+              .wait('@POSTRadioReply');
+          });
+        cy.get('[data-qa=radio-detail-delete]').click();
+        cy.get('[data-qa=delete-modal-yes]')
+          .click()
+          .wait('@DELETERadios');
+      }
+    });
+});
+
+Cypress.Commands.add(
+  'writeRadioDetails',
+  (title, category, status, assigned, severity, probability, actioned, description, mitigation) => {
+    //TODO - Undo when bug fixed (https://toponify.atlassian.net/browse/TOP-567)
+    //selectDropDown('radio-detail-assigned-to', assigned)
+
+    cy.get('[data-qa=radio-detail-title]')
+      .scrollIntoView()
+      .clear()
+      .type(title)
+      .then(() => {
+        cy.selectDropDownNoClick('radio-detail-category', category);
+      })
+      .then(() => {
+        cy.selectDropDownNoClick('radio-detail-status', status);
+      })
+      .then(() => {
+        cy.get('[data-qa=radio-detail-severity]')
+          .type('{home}')
+          .then(() => {
+            if (severity - 1 > 0) {
+              //scaled from 1 to 5. home commands takes to 1 therefore setting to 1 needs zero right arrows
+              cy.get('[data-qa=radio-detail-severity]').type('{rightarrow}'.repeat(severity - 1));
+            }
+          });
+      })
+      .then(() => {
+        cy.get('[data-qa=radio-detail-frequency]')
+          .type('{home}')
+          .then(() => {
+            if (probability - 1 > 0) {
+              cy.get('[data-qa=radio-detail-frequency]').type('{rightarrow}'.repeat(probability - 1));
+            }
+          });
+      })
+      .then(() => {
+        if (actioned.length > 0) {
+          cy.get('[data-qa=radio-detail-action-by')
+            .clear()
+            .type(actioned);
+        }
+      })
+      .then(() => {
+        if (description.length > 0) {
+          cy.type_ckeditor('[data-qa=radio-detail-description]', description);
+        }
+      })
+      .then(() => {
+        if (mitigation.length > 0) {
+          cy.type_ckeditor('[data-qa=radio-detail-mitigation]', mitigation);
+        }
+      });
+  }
+);
+
+Cypress.Commands.add(
+  'assertRadioDetails',
+  (title, category, status, assigned, severity, probability, actioned, description, mitigation) => {
+    // Asserts the value of the form are as expected
+    cy.get(`[data-qa='radio-detail-category']`).then(input => {
+      expect(input[0].textContent).to.equal(category);
+    });
+    cy.get(`[data-qa='radio-detail-status']`).then(input => {
+      expect(input[0].textContent).to.equal(status);
+    });
+    cy.get(`[data-qa='radio-detail-action-by']`).then(input => {
+      const newDate = actioned !== '' ? new Date(actioned).toDateString() : actioned;
+      cy.log(`${input[0].value} to equal ${newDate}`).then(() => {
+        expect(input[0].value).to.equal(newDate);
+      });
+    });
+    cy.get(`[data-qa='radio-detail-description']`).then(input => {
+      expect(input[0].textContent).to.equal(description);
+    });
+    cy.get('[data-qa=radio-detail-title]').then(input => {
+      expect(input[0].value).to.equal(title);
+    });
+    //TODO uncomment when bug fixed (https://toponify.atlassian.net/browse/TOP-567)
+    /*cy.get(`[data-qa='radio-detail-assigned-to']`).then((input)=>{
+        expect(input[0].textContent).to.equal(assigned)
+    })*/
+    cy.get(`[data-qa='radio-detail-mitigation']`).then(input => {
+      expect(input[0].textContent).to.equal(mitigation);
+    });
+    cy.get('[data-qa=radio-detail-severity]').should('have.attr', 'aria-valuenow', severity.toString());
+    cy.get('[data-qa=radio-detail-frequency]').should('have.attr', 'aria-valuenow', probability.toString());
+  }
+);
+
+Cypress.Commands.add('assertDetailsForm', (reference, name, description, category) => {
+  if (reference.length > 0) cy.get('[data-qa=object-details-reference]').should('have.value', reference);
+  cy.get('[data-qa=object-details-name]').should('have.value', name);
+  if (reference.description > 0) cy.get('[data-qa=object-details-description]').should('have.value', description);
+  if (reference.category > 0)
+    cy.get('[data-qa=object-details-category]')
+      .find('.mat-select-value>span>span')
+      .should('have.text', category);
+});
+
+Cypress.Commands.add('checkTopologyTable', (component, component_type, test) => {
+  component = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(component); // add the branch to the name
+  let table = component_type === 'system' ? 'components' : 'links';
+  cy.get('[data-qa=topology-table-quick-search]')
+    .clear()
+    .type(component);
+  cy.get(`[data-qa=topology-table-${table}]`)
+    .find('table>tbody')
+    .contains(component)
+    .should(test);
+});
+
+Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component) => {
+  component = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(component); // add the branch to the name
+  let result;
+  let component_array = component_type === 'system' ? 'nodeDataArray' : 'linkDataArray';
+  cy.window().then(window => {
+    let dataArray = window.MyRobot.diagram.model[component_array];
+    result = dataArray.filter(components => {
+      return components.name === component;
+    });
+    expect(result.length).to.be.greaterThan(0);
+  });
 });
 
 //
