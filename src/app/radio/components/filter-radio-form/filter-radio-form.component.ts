@@ -23,7 +23,7 @@ export class FilterRadioFormComponent {
   @Input() tags: Tag[];
   @Input() group: FormGroup;
 
-  public numbers: number[] = [1, 2, 3, 4, 5];
+  public numbers: number[] = [0, 1, 2, 3, 4, 5, 6];
   public status: string[] = Constants.RADIO_STATUS;
   public types: string[] = Constants.RADIO_CATEGORIES;
 
