@@ -64,12 +64,8 @@
         </span>
       </ng-container>
     </div>
-    <div *ngIf="tableStyles.MANAGEMENT === selectedTableStyle.getValue()">
-      <app-analysis-filter
-        *ngIf="false"
-        (select)="analysisFilterSelected($event)"
-        [analysis]="analysis$ | async"
-      ></app-analysis-filter>
+    <div class="additional-filters-container" *ngIf="tableStyles.MANAGEMENT === selectedTableStyle.getValue()">
+      <app-analysis-filter></app-analysis-filter>
       <smi-risk-matrix-chart
         [selected]="selectedRiskMatrixCol"
         [matrix]="matrix$ | async"

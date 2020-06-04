@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { getQueryParams } from '@app/core/store/selectors/route.selectors';
+import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 import {
   CreateRadioViewSuccess,
   DeleteRadioView,
@@ -15,7 +16,7 @@ import {
   UnsetRadioViewAsFavourite,
   UpdateRadioView
 } from '@app/radio/store/actions/radio.actions';
-import { AdvancedSearchApiRequest, RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
+import { AdvancedSearchApiRequest } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import {
   getRadioAnalysis,
@@ -27,8 +28,8 @@ import {
 import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
-import { BehaviorSubject, combineLatest, Subscription, Observable } from 'rxjs';
-import { distinctUntilChanged, map, filter } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { RadioViewNameDialogComponent } from '../radio-view-name-dialog/radio-view-name-dialog.component';
 
 enum TableStyles {
@@ -70,7 +71,8 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private store: Store<RadioState>,
-    private routerStore: Store<RouterReducerState<RouterStateUrl>>
+    private routerStore: Store<RouterReducerState<RouterStateUrl>>,
+    private radioFilterService: RadioFilterService
   ) {}
 
   get selectedRadioViewId(): string | null {
@@ -100,6 +102,8 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         this.activeFilters = filters;
         if (filters && filters.tableStyle) {
           this.selectedTableStyle.next(filters.tableStyle);
+        } else {
+          this.selectedTableStyle.next(TableStyles.SIMPLE);
         }
       })
     );
@@ -139,12 +143,10 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         if (style === TableStyles.MANAGEMENT) {
           this.store.dispatch(
             new GetRadioMatrix({
-              data: this.transformFilterIntoAdvancedSearchData(this.activeFilters)
-            } as AdvancedSearchApiRequest)
-          );
-          this.store.dispatch(
-            new GetRadioAnalysis({
-              data: this.transformFilterIntoAdvancedSearchData(this.activeFilters)
+              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters, [
+                'severityRange',
+                'frequencyRange'
+              ])
             } as AdvancedSearchApiRequest)
           );
         }
@@ -168,12 +170,6 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         });
         return matrix;
       })
-    );
-
-    this.analysis$ = this.store.pipe(
-      select(getRadioAnalysis),
-      filter(data => data && data.analysis),
-      map(data => data.analysis)
     );
   }
 
@@ -269,61 +265,5 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
       matrix[rowIndex][colIndex]++;
     }
     return matrix;
-  }
-
-  analysisFilterSelected(data: any): void {
-    console.info(data);
-  }
-
-  transformFilterIntoAdvancedSearchData(data: any): RadiosAdvancedSearch {
-    return {
-      status: {
-        enabled: this.isFilterEnabled(data.status),
-        values: data.status
-      },
-      type: {
-        enabled: this.isFilterEnabled(data.type),
-        values: data.type
-      },
-      assignedTo: {
-        enabled: this.isFilterEnabled(data.assignedTo),
-        values: data.assignedTo
-      },
-      relatesTo: {
-        enabled: this.isFilterEnabled(data.relatesTo),
-        includeDescendants: this.isFilterEnabled(data.relatesTo),
-        includeLinks: this.isFilterEnabled(data.relatesTo),
-        values: data.relatesTo
-      },
-      dueDate: {
-        enabled: this.isFilterEnabled(data.from) || this.isFilterEnabled(data.to),
-        from: data.from,
-        to: data.to
-      },
-      text: {
-        enabled: this.isFilterEnabled(data.text),
-        value: data.text
-      }
-      // severityRange: {
-      //   enabled: this.isFilterEnabled(data.severityRange),
-      //   from: data.severityRange && data.severityRange.from ? data.severityRange.from : 0,
-      //   to: data.severityRange && data.severityRange.to ? data.severityRange.to : 0
-      // },
-      // frequencyRange: {
-      //   enabled: this.isFilterEnabled(data.frequencyRange),
-      //   from: data.frequencyRange && data.frequencyRange.from ? data.frequencyRange.from : 0,
-      //   to: data.frequencyRange && data.frequencyRange.to ? data.frequencyRange.to : 0
-      // }
-    };
-  }
-
-  isFilterEnabled(filter: string | boolean | [] | number): boolean {
-    if (Array.isArray(filter) && filter.length === 0) {
-      return false;
-    }
-    if (Number.isInteger(filter as any)) {
-      return true;
-    }
-    return !!filter;
   }
 }

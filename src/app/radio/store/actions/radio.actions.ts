@@ -42,6 +42,8 @@ export enum RadioActionTypes {
   SearchRadioFailure = '[Radio] Search Radio Failure',
 
   RadioFilter = '[Radio] Load Radio Filter Data',
+  SetRadioAnalysisFilter = '[Radio] Set Radio analysis filter',
+  SetRadioMatrixFilter = '[Radio] Set Radio matrix filter',
 
   AssociateRadio = '[Radio] Associate Radio entity',
   AssociateRadioSuccess = '[Radio] Associate Radio entity Success',
@@ -348,6 +350,16 @@ export class RadioFilter implements Action {
   constructor(public payload: RadiosAdvancedSearch) {}
 }
 
+export class SetRadioAnalysisFilter implements Action {
+  readonly type = RadioActionTypes.SetRadioAnalysisFilter;
+  constructor(public payload: any) {}
+}
+
+export class SetRadioMatrixFilter implements Action {
+  readonly type = RadioActionTypes.SetRadioMatrixFilter;
+  constructor(public payload: any) {}
+}
+
 export class AssociateRadio implements Action {
   readonly type = RadioActionTypes.AssociateRadio;
   constructor(public payload: { workpackageId: string; nodeId: string; radio: RadioDetail }) {}
@@ -505,4 +517,6 @@ export type RadioActionsUnion =
   | GetRadioMatrixFailure
   | GetRadioAnalysis
   | GetRadioAnalysisSuccess
-  | GetRadioAnalysisFailure;
+  | GetRadioAnalysisFailure
+  | SetRadioAnalysisFilter
+  | SetRadioMatrixFilter;

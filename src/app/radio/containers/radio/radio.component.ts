@@ -31,6 +31,7 @@ import {
 } from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
+import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 
 @Component({
   selector: 'smi-radio',
@@ -55,7 +56,8 @@ export class RadioComponent implements OnInit, OnDestroy {
     private userStore: Store<UserState>,
     private store: Store<RadioState>,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private radioFilterService: RadioFilterService
   ) {}
 
   ngOnInit(): void {
@@ -88,7 +90,7 @@ export class RadioComponent implements OnInit, OnDestroy {
           if (data) {
             this.store.dispatch(
               new SearchRadio({
-                data: this.transformFilterIntoAdvancedSearchData(data),
+                data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data),
                 page: '0',
                 size: '10'
               })
@@ -118,7 +120,7 @@ export class RadioComponent implements OnInit, OnDestroy {
         if (this.filterData) {
           this.store.dispatch(
             new SearchRadio({
-              data: this.transformFilterIntoAdvancedSearchData(this.filterData)
+              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData)
             })
           );
         } else {
@@ -196,7 +198,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     if (this.filterData) {
       this.store.dispatch(
         new SearchRadio({
-          data: this.transformFilterIntoAdvancedSearchData(this.filterData),
+          data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
           page: String(nextPage.pageIndex),
           size: String(nextPage.pageSize)
         })
@@ -228,57 +230,5 @@ export class RadioComponent implements OnInit, OnDestroy {
     if (!this.drawer.opened) {
       this.selectedLeftTab = 'menu';
     }
-  }
-
-  isFilterEnabled(filter: string | boolean | [] | number): boolean {
-    if (Array.isArray(filter) && filter.length === 0) {
-      return false;
-    }
-    if (Number.isInteger(filter as any)) {
-      return true;
-    }
-    return !!filter;
-  }
-
-  transformFilterIntoAdvancedSearchData(data: any): RadiosAdvancedSearch {
-    return {
-      status: {
-        enabled: this.isFilterEnabled(data.status),
-        values: data.status
-      },
-      type: {
-        enabled: this.isFilterEnabled(data.type),
-        values: data.type
-      },
-      assignedTo: {
-        enabled: this.isFilterEnabled(data.assignedTo),
-        values: data.assignedTo
-      },
-      relatesTo: {
-        enabled: this.isFilterEnabled(data.relatesTo),
-        includeDescendants: this.isFilterEnabled(data.relatesTo),
-        includeLinks: this.isFilterEnabled(data.relatesTo),
-        values: data.relatesTo
-      },
-      dueDate: {
-        enabled: this.isFilterEnabled(data.from) || this.isFilterEnabled(data.to),
-        from: data.from,
-        to: data.to
-      },
-      text: {
-        enabled: this.isFilterEnabled(data.text),
-        value: data.text
-      },
-      severityRange: {
-        enabled: this.isFilterEnabled(data.severityRange),
-        from: data.severityRange && data.severityRange.from ? data.severityRange.from : 0,
-        to: data.severityRange && data.severityRange.to ? data.severityRange.to : 0
-      },
-      frequencyRange: {
-        enabled: this.isFilterEnabled(data.frequencyRange),
-        from: data.frequencyRange && data.frequencyRange.from ? data.frequencyRange.from : 0,
-        to: data.frequencyRange && data.frequencyRange.to ? data.frequencyRange.to : 0
-      }
-    };
   }
 }

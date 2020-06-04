@@ -1,4 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RadioFilterService } from '@app/radio/services/radio-filter.service';
+import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
+import { select, Store } from '@ngrx/store';
 
 export type RiskMatrixData = number[][];
 
@@ -25,6 +28,8 @@ export class RiskMatrixChartComponent {
 
   @Output('clicked')
   clicked = new EventEmitter<number[]>();
+
+  constructor(private store: Store<RadioState>, private radioFilterService: RadioFilterService) {}
 
   isSelected(x: number, y: number): boolean {
     if (!this.selected) {

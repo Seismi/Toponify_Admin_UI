@@ -14,7 +14,6 @@ export class RadioTableComponent implements AfterViewInit {
   set data(data: TableData<RadioEntity>) {
     this.dataSource = new MatTableDataSource<RadioEntity>(data.entities);
     this.page = data.page;
-    console.info('page: ', this.page);
     this.dataSource.sort = this.sort;
   }
 
