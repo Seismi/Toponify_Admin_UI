@@ -56,8 +56,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  @ViewChild('drawer') drawer;
-
   constructor(
     private scopeStore: Store<ScopeState>,
     private store: Store<ReportState>,
@@ -149,14 +147,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   onSelectReport(row: ReportLibrary) {
     this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {

@@ -1403,26 +1403,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.layoutStore.dispatch(new LoadLayout(id));
   }
 
-  onTabClick(index: number | string): void {
-    this.selectedLeftTab = index;
-    setTimeout(() => {
-      this.diagramComponent.updateDiagramArea();
-      this.realignTabUnderline();
-    }, 250);
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
-    setTimeout(() => {
-      this.diagramComponent.updateDiagramArea();
-      this.realignTabUnderline();
-    }, 250);
-  }
-
   onAddRelatedRadio(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,

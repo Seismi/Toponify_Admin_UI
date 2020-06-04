@@ -11,7 +11,6 @@
     <ng-template #workpackages>
       <smi-left-panel
         data-qa="topology-left-panel"
-        (tabClick)="onTabClick($event)"
         [workpackages]="workpackage$ | async"
         [workPackageIsEditable]="workPackageIsEditable"
         (selectWorkPackage)="onSelectWorkPackage($event)"
