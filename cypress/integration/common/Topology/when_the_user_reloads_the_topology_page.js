@@ -11,12 +11,7 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETRadios',
     '@GETNodesScopeQuery'
   ];
-  wait = wait.concat([
-    '@GETNodeLinksScopeQuery',
-    '@GETNodeLinksWorkPackageQuery',
-    '@GETSelectorAvailabilityQuery',
-    '@GETNotifications'
-  ]);
+  wait = wait.concat(['@GETNodeLinksScopeQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
   wait = wait.concat([
     '@GETNodesWorkPackageQuery.2',
     '@GETNodeLinksWorkPackageQuery.2',

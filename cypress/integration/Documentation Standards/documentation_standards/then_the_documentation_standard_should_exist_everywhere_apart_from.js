@@ -26,14 +26,15 @@ Then('the documentation standard {string} should exist with type {string} everyw
       cy.log(`Check that the ${components} (${components.split(',').length}) are unchecked`);
       cy.get('[data-qa=documentation-standards-details-form]')
         .find('[aria-checked=false]')
-        .should('have.length', components.split(',').length);
+        .should('have.length', components.split(',').length + 1);
     })
     .then(() => {
       components.split(',').forEach(component => {
         cy.log(component);
         cy.get('mat-tree-node')
           .contains(component)
-          .should('have.attr', 'aria-checked', false);
+          .find('input')
+          .should('have.attr', 'aria-checked', 'false');
       });
     });
 });

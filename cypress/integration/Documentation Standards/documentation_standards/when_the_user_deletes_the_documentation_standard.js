@@ -9,10 +9,5 @@ Given('the user deletes the documentation standard {string}', function(doc_stand
     .click()
     .wait('@GETCustomProperties*')
     .get('[data-qa=documentation-standards-delete]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=delete-modal-yes]')
-        .click()
-        .wait('@DELETECustomProperties');
-    });
+    .click();
 });

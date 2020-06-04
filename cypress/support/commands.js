@@ -253,7 +253,11 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
   cy.server();
   Object.keys(settings.wait_for).forEach(r => {
     route = settings.wait_for[r];
-    cy.route(route.method, route.api).as(`${route.method}${route.name}`);
+    if (route.hasOwnProperty('stub')) {
+      cy.route(route.method, route.api, route.stub).as(`${route.method}${route.name}`);
+    } else {
+      cy.route(route.method, route.api).as(`${route.method}${route.name}`);
+    }
   });
 });
 
