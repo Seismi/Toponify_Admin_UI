@@ -242,7 +242,11 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
   cy.server();
   Object.keys(settings.wait_for).forEach(r => {
     route = settings.wait_for[r];
-    cy.route(route.method, route.api).as(`${route.method}${route.name}`);
+    if (route.hasOwnProperty('stub')) {
+      cy.route(route.method, route.api, route.stub).as(`${route.method}${route.name}`);
+    } else {
+      cy.route(route.method, route.api).as(`${route.method}${route.name}`);
+    }
   });
 });
 
@@ -289,7 +293,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
             .click()
-            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
+            .wait(wait_for)
             .then(wp => {
               console.log(wp[0].textContent);
               if (wp[0].textContent === 'edit') {

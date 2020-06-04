@@ -12,7 +12,6 @@ Feature: Create new report
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test System'
     And the user selects Reports menu item
-    And the work package 'Automated Regression Test Work Package' is editable on the 'reports' menu
 
     #TODO - You need to create the system that is going to be used within the reports
 

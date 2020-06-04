@@ -137,11 +137,6 @@ module.exports = {
       method: 'GET',
       name: 'Radio'
     },
-    GetNotfications: {
-      api: `${api_version}/notifications`,
-      method: 'GET',
-      name: 'Notifications'
-    },
     PostRadioReply: {
       api: `${api_version}/radios/*/reply`,
       method: 'POST',

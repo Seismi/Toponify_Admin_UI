@@ -60,11 +60,7 @@ module.exports = {
       method: 'GET',
       name: 'RadioViews'
     },
-    Notifications: {
-      api: `${api_version}/notifications`,
-      method: 'GET',
-      name: 'Notifications'
-    },
+
     Nodes: {
       api: `${api_version}/nodes`,
       method: 'GET',
