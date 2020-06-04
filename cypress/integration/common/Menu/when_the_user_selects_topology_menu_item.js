@@ -18,12 +18,11 @@ When('the user selects Topology menu item', function() {
             '@POSTradiosAdvancedSearch',
             '@GETScope',
             '@GETLayout',
-            '@GETNodesScopeQuery',
-            '@GETNodeLinksScopeQuery',
-            '@GETSelectorAvailabilityQuery.1',
-            '@GETNodeLinksScopeQuery.1'
+            '@GETNodesScopeQuery.all',
+            '@GETNodeLinksScopeQuery.all',
+            '@GETSelectorAvailabilityQuery.all'
           ];
-          cy.wait(wait); // wait for API Calls
+          cy.wait(10000).wait(wait); // wait for API Calls
         });
     });
 });

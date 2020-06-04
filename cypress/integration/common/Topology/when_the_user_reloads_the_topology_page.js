@@ -9,13 +9,14 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETWorkPackages',
     '@GETTeams',
     '@POSTradiosAdvancedSearch',
-    '@GETNodesScopeQuery'
+    '@GETNodesScopeQuery',
+    '@GETNodeLinksWorkPackageQuery',
+    '@GETSelectorAvailabilityQuery.all',
+    '@GETNodesWorkPackageQuery.all',
+    '@GETNodeLinksWorkPackageQuery.all',
+    '@GETSelectorAvailabilityQuery.all'
   ];
-  wait = wait.concat(['@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery', '@GETNotifications']);
-  wait = wait.concat([
-    '@GETNodesWorkPackageQuery.2',
-    '@GETNodeLinksWorkPackageQuery.2',
-    '@GETSelectorAvailabilityQuery.2'
-  ]);
-  cy.reload().wait(wait);
+  cy.reload()
+    .wait(10000)
+    .wait(wait);
 });
