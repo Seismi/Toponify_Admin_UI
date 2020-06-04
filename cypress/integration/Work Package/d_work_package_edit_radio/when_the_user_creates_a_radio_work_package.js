@@ -11,7 +11,7 @@ When(
 
     cy.get('[data-qa=work-packages-radio-table-add')
       .click()
-      .wait('@GETRadios')
+      .wait('@POSTradiosAdvancedSearch')
       .then(() => {
         cy.get('[data-qa=work-packages-radio-modal-new]')
           .click()

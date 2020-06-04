@@ -97,10 +97,10 @@ module.exports = {
       method: 'DELETE',
       name: 'workPackageObjectives'
     },
-    GetRadios: {
-      api: `${api_version}/radios`,
-      method: 'GET',
-      name: 'Radios'
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
     },
     GetUsers: {
       api: `${api_version}/users`,

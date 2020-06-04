@@ -14,7 +14,7 @@ When('the user selects Topology menu item', function() {
             '@GETLayouts',
             '@GETWorkPackages',
             '@GETTeams',
-            '@GETRadios',
+            '@POSTradiosAdvancedSearch',
             '@GETScope',
             '@GETNodesScopeQuery',
             '@GETNodeLinksScopeQuery',

@@ -8,7 +8,7 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETLayout',
     '@GETWorkPackages',
     '@GETTeams',
-    '@GETRadios',
+    '@POSTradiosAdvancedSearch',
     '@GETNodesScopeQuery'
   ];
   wait = wait.concat(['@GETNodeLinksScopeQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
