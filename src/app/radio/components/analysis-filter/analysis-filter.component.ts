@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RadioFilterService } from '@app/radio/services/radio-filter.service';
-import { GetRadioAnalysis, RadioFilter } from '@app/radio/store/actions/radio.actions';
+import { GetRadioAnalysis, SetRadioAnalysisFilter } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioAnalysis, getRadioFilter } from '@app/radio/store/selectors/radio.selector';
+import { getRadioAnalysis, getRadioAnalysisFilter, getRadioFilter } from '@app/radio/store/selectors/radio.selector';
 import { select, Store } from '@ngrx/store';
-import { filter, map } from 'rxjs/operators';
 import isEqual from 'lodash.isequal';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 interface AnalysisProp {
   [key: string]: {
@@ -24,20 +25,16 @@ const mappedFilterKeys = {
   templateUrl: './analysis-filter.component.html',
   styleUrls: ['./analysis-filter.component.scss']
 })
-export class AnalysisFilterComponent implements OnInit {
-  activeFilters = null;
+export class AnalysisFilterComponent implements OnInit, OnDestroy {
+  activeFilters: any = {};
+  analysisFilters: any = {};
   test = {};
-  @Input() set data(data: AnalysisProp) {
-    this.analysis = data;
-    this.sections.forEach(filterKey => {
-      if (!this.test[filterKey]) {
-        this.test[filterKey] = true;
-      }
-    });
-  }
+
+  excludeMatrixFilter = false;
+
   analysis: AnalysisProp;
-  @Input() selected: any;
-  @Output() select = new EventEmitter();
+
+  private subscriptions: Subscription[] = [];
 
   get sections(): string[] {
     return this.analysis ? Object.keys(this.analysis) : [];
@@ -46,45 +43,62 @@ export class AnalysisFilterComponent implements OnInit {
   constructor(private store: Store<RadioState>, private radioFilterService: RadioFilterService) {}
 
   ngOnInit() {
-    this.store.pipe(select(getRadioFilter)).subscribe(filters => {
-      this.activeFilters = filters;
-      this.store.dispatch(
-        new GetRadioAnalysis({
-          data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters)
-        })
-      );
-    });
+    this.subscriptions.push(
+      this.store.pipe(select(getRadioFilter)).subscribe(filters => {
+        if (
+          filters.severityRange &&
+          !this.activeFilters.severityRange &&
+          Object.keys(this.analysisFilters).length > 0
+        ) {
+          const { severityRange, frequencyRange, ...rest } = filters;
+          this.activeFilters = rest;
+        } else {
+          this.activeFilters = filters;
+        }
+        this.store.dispatch(
+          new GetRadioAnalysis({
+            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters)
+          })
+        );
+      })
+    );
 
-    this.store
-      .pipe(
-        select(getRadioAnalysis),
-        filter(data => data && data.analysis),
-        map(data => data.analysis)
-      )
-      .subscribe(data => {
-        this.analysis = data;
-        this.sections.forEach(filterKey => {
-          if (!this.test[filterKey]) {
-            this.test[filterKey] = true;
-          }
-        });
-      });
+    this.subscriptions.push(
+      this.store
+        .pipe(select(getRadioAnalysisFilter))
+        .subscribe(analysisFilters => (this.analysisFilters = analysisFilters || {}))
+    );
+
+    this.subscriptions.push(
+      this.store
+        .pipe(
+          select(getRadioAnalysis),
+          filter(data => data && data.analysis),
+          map(data => data.analysis)
+        )
+        .subscribe(data => {
+          this.analysis = data;
+          this.sections.forEach(filterKey => {
+            if (!this.test[filterKey]) {
+              this.test[filterKey] = true;
+            }
+          });
+        })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   selectFilter(filterKey: string, filterValue: any): void {
     filterKey = mappedFilterKeys[filterKey] || filterKey;
     const filters = {
-      ...(!!this.activeFilters && this.activeFilters)
+      ...(!!this.analysisFilters && this.analysisFilters)
     };
 
     if (this.isSelected(filterKey, filterValue)) {
-      filters[filterKey] = filters[filterKey].filter(value => {
-        if (typeof value === 'object' && value.id) {
-          return value.id !== filterValue.id;
-        } else {
-          return value !== filterValue;
-        }
-      });
+      filters[filterKey] = filters[filterKey].filter(value => !isEqual(value, filterValue));
     } else {
       if (filters[filterKey]) {
         filters[filterKey] = [...filters[filterKey], filterValue];
@@ -92,17 +106,13 @@ export class AnalysisFilterComponent implements OnInit {
         filters[filterKey] = [filterValue];
       }
     }
-    this.store.dispatch(new RadioFilter(filters));
+    this.store.dispatch(new SetRadioAnalysisFilter(filters));
   }
 
   isSelected(filterKey: string, filterValue: any): boolean {
     filterKey = mappedFilterKeys[filterKey] || filterKey;
-    if (this.activeFilters && this.activeFilters[filterKey]) {
-      if (typeof filterValue === 'object' && filterValue.id) {
-        return !!this.activeFilters[filterKey].find(val => val.id === filterValue.id);
-      } else {
-        return !!this.activeFilters[filterKey].find(val => val === filterValue);
-      }
+    if (this.analysisFilters && this.analysisFilters[filterKey]) {
+      return !!this.analysisFilters[filterKey].find(value => isEqual(value, filterValue));
     }
     return false;
   }
@@ -116,11 +126,6 @@ export class AnalysisFilterComponent implements OnInit {
   }
 
   clearSelection(): void {
-    const filters = { ...this.activeFilters } || {};
-    this.sections.forEach(filterKey => {
-      filterKey = mappedFilterKeys[filterKey];
-      filters[filterKey] = null;
-    });
-    this.store.dispatch(new RadioFilter(filters));
+    this.store.dispatch(new SetRadioAnalysisFilter({}));
   }
 }

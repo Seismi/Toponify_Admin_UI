@@ -27,7 +27,8 @@ import {
   getRadioEntities,
   getRadioFilter,
   getSelectedRadio,
-  getRadioTableData
+  getRadioTableData,
+  getMergedRadioFilters
 } from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
@@ -83,7 +84,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.store
         .pipe(
-          select(getRadioFilter),
+          select(getMergedRadioFilters),
           distinctUntilChanged(isEqual)
         )
         .subscribe(data => {

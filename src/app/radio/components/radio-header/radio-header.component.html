@@ -66,16 +66,7 @@
     </div>
     <div class="additional-filters-container" *ngIf="tableStyles.MANAGEMENT === selectedTableStyle.getValue()">
       <app-analysis-filter></app-analysis-filter>
-      <smi-risk-matrix-chart
-        [selected]="selectedRiskMatrixCol"
-        [matrix]="matrix$ | async"
-        (clicked)="handleMatrixClick($event)"
-      ></smi-risk-matrix-chart>
-      <ng-container *ngIf="selectedRiskMatrixCol">
-        <hr />
-        <span style="float: right; cursor: pointer" (click)="clearSelection($event)">Clear selection</span>
-        <hr />
-      </ng-container>
+      <smi-risk-matrix-chart></smi-risk-matrix-chart>
     </div>
   </div>
 </div>

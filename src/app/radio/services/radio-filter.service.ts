@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { RadiosAdvancedSearch } from '../store/models/radio.model';
 
+const defaultFilter = {
+  status: {
+    enabled: true,
+    values: ['new', 'open']
+  }
+};
+
 interface FilterData {
   [key: string]: any;
 }
@@ -21,7 +28,7 @@ export class RadioFilterService {
 
   transformFilterIntoAdvancedSearchData(data: FilterData, disabled: string[] = []): RadiosAdvancedSearch {
     return {
-      status: {
+      status: this.replaceWithDefaultFilterIfDisabled(data.status, 'status') || {
         enabled: this.isFilterEnabled(data.status),
         values: data.status
       },
@@ -59,5 +66,12 @@ export class RadioFilterService {
         to: data.frequencyRange && data.frequencyRange.to ? data.frequencyRange.to : 0
       }
     };
+  }
+
+  replaceWithDefaultFilterIfDisabled(filter: any, filterKey: string): boolean | any | null {
+    if (this.isFilterEnabled(filter)) {
+      return false;
+    }
+    return defaultFilter[filterKey] || null;
   }
 }

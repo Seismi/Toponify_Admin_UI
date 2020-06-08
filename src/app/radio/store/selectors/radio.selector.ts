@@ -1,5 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { State } from '../reducers/radio.reducer';
+import { mergeWith, isArray } from 'lodash';
 
 export const getRadioFeatureState = createFeatureSelector<State>('radioFeature');
 
@@ -23,6 +24,16 @@ export const getSelectedRadio = createSelector(
 export const getRadioFilter = createSelector(
   getRadioFeatureState,
   state => state.radioFilter
+);
+
+export const getMergedRadioFilters = createSelector(
+  getRadioFeatureState,
+  state => {
+    const filter = mergeWith({ ...state.radioFilter }, { ...state.analysisFilter }, (a, b) =>
+      isArray(a) ? a.concat(b) : undefined
+    );
+    return filter;
+  }
 );
 
 export const getRadioMatrixFilter = createSelector(

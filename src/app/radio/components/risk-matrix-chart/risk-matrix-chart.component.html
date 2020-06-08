@@ -8,7 +8,7 @@
       <span>Low</span>
       <span>High</span>
     </div>
-    <div *ngFor="let row of matrix; let rowIndex = index" class="row">
+    <div *ngFor="let row of matrix$ | async; let rowIndex = index" class="row">
       <div
         *ngFor="let col of row; let colIndex = index"
         class="col"
@@ -29,3 +29,8 @@
     <span class="right">Minor</span>
   </div>
 </div>
+<ng-container>
+  <hr />
+  <span style="float: right; cursor: pointer" (click)="clearSelection($event)">Clear selection</span>
+  <hr />
+</ng-container>
