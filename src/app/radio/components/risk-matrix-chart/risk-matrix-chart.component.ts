@@ -67,12 +67,13 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       combineLatest(this.store.pipe(select(getRadioFilter)), this.store.pipe(select(getRadioAnalysisFilter))).subscribe(
         ([defaultFilters, analysisFilters]) => {
-          this.activeFilters = mergeWith({ ...defaultFilters }, { ...analysisFilters }, (a, b) =>
+          this.activeFilters = defaultFilters;
+          const mergedFilters = mergeWith({ ...defaultFilters }, { ...analysisFilters }, (a, b) =>
             isArray(a) ? a.concat(b) : undefined
           );
           this.store.dispatch(
             new GetRadioMatrix({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters, [
+              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(mergedFilters, [
                 'severityRange',
                 'frequencyRange'
               ])
