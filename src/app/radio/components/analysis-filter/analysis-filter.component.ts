@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RadioFilterService } from '@app/radio/services/radio-filter.service';
-import { GetRadioAnalysis, SetRadioAnalysisFilter } from '@app/radio/store/actions/radio.actions';
+import { GetRadioAnalysis, SetRadioAnalysisFilter, RadioFilter } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioAnalysis, getRadioAnalysisFilter, getRadioFilter } from '@app/radio/store/selectors/radio.selector';
 import { select, Store } from '@ngrx/store';
@@ -26,7 +26,7 @@ const mappedFilterKeys = {
   styleUrls: ['./analysis-filter.component.scss']
 })
 export class AnalysisFilterComponent implements OnInit, OnDestroy {
-  activeFilters: any = {};
+  defaultFilters: any = {};
   analysisFilters: any = {};
   test = {};
 
@@ -40,6 +40,10 @@ export class AnalysisFilterComponent implements OnInit, OnDestroy {
     return this.analysis ? Object.keys(this.analysis) : [];
   }
 
+  hasSetFilters(): boolean {
+    return this.analysisFilters && Object.keys(this.analysisFilters).length > 0;
+  }
+
   constructor(private store: Store<RadioState>, private radioFilterService: RadioFilterService) {}
 
   ngOnInit() {
@@ -47,17 +51,17 @@ export class AnalysisFilterComponent implements OnInit, OnDestroy {
       this.store.pipe(select(getRadioFilter)).subscribe(filters => {
         if (
           filters.severityRange &&
-          !this.activeFilters.severityRange &&
+          !this.defaultFilters.severityRange &&
           Object.keys(this.analysisFilters).length > 0
         ) {
           const { severityRange, frequencyRange, ...rest } = filters;
-          this.activeFilters = rest;
+          this.defaultFilters = rest;
         } else {
-          this.activeFilters = filters;
+          this.defaultFilters = filters;
         }
         this.store.dispatch(
           new GetRadioAnalysis({
-            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters)
+            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.defaultFilters)
           })
         );
       })
@@ -97,8 +101,21 @@ export class AnalysisFilterComponent implements OnInit, OnDestroy {
       ...(!!this.analysisFilters && this.analysisFilters)
     };
 
+    if (this.isSelectedAsDefault(filterKey, filterValue)) {
+      this.store.dispatch(
+        new RadioFilter({
+          ...this.defaultFilters,
+          [filterKey]: this.defaultFilters[filterKey].filter(value => !isEqual(value, filterValue))
+        })
+      );
+      return;
+    }
+
     if (this.isSelected(filterKey, filterValue)) {
       filters[filterKey] = filters[filterKey].filter(value => !isEqual(value, filterValue));
+      if (filters[filterKey].length === 0) {
+        delete filters[filterKey];
+      }
     } else {
       if (filters[filterKey]) {
         filters[filterKey] = [...filters[filterKey], filterValue];
@@ -111,8 +128,22 @@ export class AnalysisFilterComponent implements OnInit, OnDestroy {
 
   isSelected(filterKey: string, filterValue: any): boolean {
     filterKey = mappedFilterKeys[filterKey] || filterKey;
+    if (this.isSelectedAsDefault(filterKey, filterValue)) {
+      return true;
+    }
+    return this.isSelectedAsAnalysis(filterKey, filterValue);
+  }
+
+  isSelectedAsAnalysis(filterKey: string, filterValue: any): boolean {
     if (this.analysisFilters && this.analysisFilters[filterKey]) {
       return !!this.analysisFilters[filterKey].find(value => isEqual(value, filterValue));
+    }
+    return false;
+  }
+
+  isSelectedAsDefault(filterKey: string, filterValue: any): boolean {
+    if (this.defaultFilters && this.defaultFilters[filterKey]) {
+      return !!this.defaultFilters[filterKey].find(value => isEqual(value, filterValue));
     }
     return false;
   }

@@ -17,4 +17,4 @@
     </ul>
   </li>
 </ul>
-<a (click)="clearSelection()">Clear selection</a>
+<a *ngIf="hasSetFilters()" (click)="clearSelection()">Clear selection</a>
