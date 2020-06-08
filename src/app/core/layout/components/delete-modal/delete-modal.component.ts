@@ -9,12 +9,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export class DeleteModalComponent {
   constructor(
     public dialogRef: MatDialogRef<DeleteModalComponent>,
-    @Inject(MAT_DIALOG_DATA) 
+    @Inject(MAT_DIALOG_DATA)
     public data: {
       title: string,
       text: string,
       confirmBtn: string,
-      cancelBtn: string
+      cancelBtn: string,
+      warningMessage: string
     }
   ) {}
 
