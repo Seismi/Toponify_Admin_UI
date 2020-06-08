@@ -6,11 +6,12 @@ Then('the scopes header drop down should contain {string}', function(scope) {
     .concat(scope); // prefix the branch to scope
   cy.get('[data-qa=header-scopes-dropdown]') // get the scopes table
     .click()
-    //.wait(['@GETScope','@GETLayout','@GETNodesWorkPackageQuery','@GETNodesLinksWorkPackageQuery'])
     .then(() => {
       cy.root()
         .contains('mat-option', scope)
         .should('exist')
-        .type('{esc}');
+        .type('{esc}')
+        .wait(5000)
+        .wait(['@GETLayout.all', '@GETNodesScopeQuery.all', '@GETNodeLinksScopeQuery.all']);
     });
 });
