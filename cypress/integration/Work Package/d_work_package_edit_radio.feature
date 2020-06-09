@@ -9,7 +9,6 @@ Feature: Work Package Edit Radio Feature
     And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Radio" pane is open
 
-
   Scenario: Create a risk against a work package and save
     When the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'open', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '12/30/2020' and mitigation resolution 'Automatic Regression Test Risk 1 Mitigation' and have severity 1 and probability 2 against work package 'Automated Regression Test Work Package'
     Then the radio with title 'Automatic Regression Test Risk 1' should be immediately visible in the work package radio table

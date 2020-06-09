@@ -22,11 +22,6 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETNodeLinksWorkPackageQuery.2',
     '@GETSelectorAvailabilityQuery.2'
   ]);
-  wait = wait.concat([
-    '@GETNodesWorkPackageQuery.3',
-    '@GETNodeLinksWorkPackageQuery.3',
-    '@GETSelectorAvailabilityQuery.3'
-  ]);
   wait = wait.concat(['@GETSelectorAvailabilityQuery.3', '@GETNodesWorkPackageQuery.3']);
   cy.reload().wait(wait);
 });
