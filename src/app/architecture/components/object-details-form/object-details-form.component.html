@@ -1,4 +1,4 @@
-<div class="alert alert-warning" *ngIf="node.isShared">
+<div class="alert alert-warning" *ngIf="node?.isShared">
   Shared
 </div>
 <form [formGroup]="group">
@@ -91,6 +91,7 @@
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"
       [workPackageIsEditable]="workPackageIsEditable"
+      [layer]="node?.layer"
     >
     </smi-group-info-table>
 
