@@ -166,6 +166,7 @@
         <p class="rightPane">
           <smi-right-panel
             data-qa="topology-right-panel"
+            [node]="selectedNode"
             (itemClick)="itemClick($event)"
             [owners]="selectedNode?.owners"
             [selectedRightTab]="selectedRightTab"

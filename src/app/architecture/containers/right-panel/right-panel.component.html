@@ -13,6 +13,7 @@
     <p class="detailsTab">
       <smi-object-details-form
         data-qa="topology-object-details-form"
+        [node]="node"
         [owners]="owners"
         [group]="group"
         (save)="onSaveNode()"

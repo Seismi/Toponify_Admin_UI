@@ -19,6 +19,7 @@ const reportingCategories = ['list', 'structure', 'key', 'transformation'];
 export class ObjectDetailsFormComponent {
   public group: FormGroup;
   private values;
+  @Input() node: NodeDetail;
   @Input() nodeCategory: string;
   @Input() owners: OwnersEntityOrTeamEntityOrApproversEntity[];
   @Input('group') set setGroup(group) {

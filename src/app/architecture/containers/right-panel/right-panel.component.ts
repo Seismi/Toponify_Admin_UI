@@ -9,7 +9,8 @@ import {
   Tag,
   TagApplicableTo,
   GroupInfo,
-  DescendantsEntity
+  DescendantsEntity,
+  NodeDetail
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
@@ -24,6 +25,7 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
+  @Input() node: NodeDetail;
   @Input() sourceObject: any;
   @Input() targetObject: any;
   @Input() nodeCategory: string;
