@@ -45,7 +45,7 @@ function addDocStandardBoolean(value, doc_standard) {
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear()
     .type(doc_standard)
-    .should('have.value', doc_Standard); //enter the documentation standard
+    .should('have.value', doc_standard); //enter the documentation standard
   cy.get(`[data-qa=work-packages-documentation-standards-table]`) // get the documentation standards table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
