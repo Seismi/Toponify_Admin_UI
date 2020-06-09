@@ -118,6 +118,8 @@ export class ObjectDetailsFormComponent {
   nodeIsEditable(): boolean {
     if (!this.workPackageIsEditable || this.nodeCategory === 'copy') {
       return true;
+    } else if (this.node.isShared) {
+      return true;
     }
     return false;
   }
