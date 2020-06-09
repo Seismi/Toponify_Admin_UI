@@ -19,13 +19,16 @@ When(
     }
     cy.get('[data-qa=object-details-reference]')
       .clear()
-      .type(reference);
+      .type(reference)
+      .should('have.value', reference);
     cy.get('[data-qa=object-details-name]')
       .clear()
-      .type(name);
+      .type(name)
+      .should('have.value', name);
     cy.get('[data-qa=object-details-description]')
       .clear()
-      .type(description);
+      .type(description)
+      .should('have.value', description);
     cy.selectDropDown('object-details-category', category).then(() => {
       cy.get('[data-qa=object-details-save]')
         .click()

@@ -12,9 +12,11 @@ When(
       .within(() => {
         //within it
         cy.get(`[data-qa=work-packages-details-name]`) //get the name input
-          .type(name); //enter the name
+          .type(name)
+          .should('have.value', name); //enter the name
         cy.get(`[data-qa=work-packages-details-description]`) // get the description input
-          .type(description); // enter the description
+          .type(description)
+          .should('have.value', description); // enter the description
       });
   }
 );

@@ -144,18 +144,23 @@ Cypress.Commands.add('selectDetailsPaneTab', posinset => {
     });
 });
 
-Cypress.Commands.add('findWorkPackage', name => {
-  cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
-    .find('label>div>input')
-    .check({ force: true });
-  cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
-    .find('label>div>input')
-    .uncheck({ force: true });
-
-  cy.wait('@GETArchiveWorkPackages'); // wait for the return of the archive work packages
+Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
+  if (includeArchived) {
+    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+      .find('label>div>input')
+      .uncheck({ force: true })
+      .check({ force: true });
+  } else {
+    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+      .find('label>div>input')
+      .check({ force: true })
+      .uncheck({ force: true });
+  }
+  cy.wait('@GETArchiveWorkPackages.all'); // wait for the return of the archive work packages
   cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
     .clear() //clear the box
-    .type(name) // type the name
+    .type(name)
+    .should('have.value', name) // type the name
     .then(() => {
       return cy
         .get(`[data-qa=work-packages-table]`) // get the work packages table
@@ -167,7 +172,8 @@ Cypress.Commands.add('findScope', name => {
   cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
     .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
     .clear() //clear the box
-    .type(name) // type the name
+    .type(name)
+    .should('have.value', name) // type the name
     .then(() => {
       return cy
         .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
@@ -179,6 +185,7 @@ Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
   cy.get(`[data-qa=${search}]`)
     .clear()
     .type(search_term)
+    .should('have.value', search_term)
     .then(() => {
       cy.get(`[data-qa=${table}]`).find('table>tbody>tr :first');
     });
@@ -187,7 +194,8 @@ Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
 Cypress.Commands.add('findWorkPackageRadio', name => {
   cy.get(`[data-qa=work-packages-radio-table-quick-search]`) // get the quick packages search
     .clear() //clear the box
-    .type(name); //type the name
+    .type(name)
+    .should('have.value', name); //type the name
   return cy
     .get(`[data-qa=work-packages-radio-table]`) // get the work packages table
     .find('table>tbody'); // find the table
@@ -197,6 +205,7 @@ Cypress.Commands.add('selectUser', email => {
   cy.get('[data-qa=settings-all-users-quick-search]')
     .clear()
     .type(email)
+    .should('have.value', email)
     .then(() => {
       cy.get(`[data-qa=all-users-table]`).find('table>tbody>tr :first');
     });
@@ -206,6 +215,7 @@ Cypress.Commands.add('selectTeam', team => {
   cy.get('[data-qa=settings-teams-quick-search]')
     .clear()
     .type(team)
+    .should('have.value', team)
     .then(() => {
       cy.get(`[data-qa=settings-teams-table]`).find('table>tbody>tr :first');
     });
@@ -231,6 +241,7 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
       cy.get('div>div>input')
         .clear()
         .type(work_package)
+        .should('have.value', work_package)
         .then(() => {
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
@@ -263,6 +274,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
       cy.get('div>div>input')
         .clear()
         .type(work_package)
+        .should('have.value', work_package)
         .then(() => {
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
@@ -388,6 +400,7 @@ Cypress.Commands.add(
       .scrollIntoView()
       .clear()
       .type(title)
+      .should('have.value', title)
       .then(() => {
         cy.selectDropDownNoClick('radio-detail-category', category);
       })
@@ -417,7 +430,8 @@ Cypress.Commands.add(
         if (actioned.length > 0) {
           cy.get('[data-qa=radio-detail-action-by')
             .clear()
-            .type(actioned);
+            .type(actioned)
+            .should('have.value', actioned);
         }
       })
       .then(() => {
@@ -484,7 +498,8 @@ Cypress.Commands.add('checkTopologyTable', (component, component_type, test) => 
   let table = component_type === 'system' ? 'components' : 'links';
   cy.get('[data-qa=topology-table-quick-search]')
     .clear()
-    .type(component);
+    .type(component)
+    .should('have.value', component);
   cy.get(`[data-qa=topology-table-${table}]`)
     .find('table>tbody')
     .contains(component)

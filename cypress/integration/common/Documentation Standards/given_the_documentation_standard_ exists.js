@@ -39,8 +39,12 @@ function createDocumentationStandard(doc_standard, type, component) {
   cy.get('[data-qa=documentation-standards-create-new]')
     .click()
     .then(() => {
-      cy.get('[data-qa=documentation-standards-details-name]').type(doc_standard); // enter the name
-      cy.get('[data-qa=documentation-standards-details-description]').type(doc_standard); //enter the description
+      cy.get('[data-qa=documentation-standards-details-name]')
+        .type(doc_standard)
+        .should('have.value', doc_standard); // enter the name
+      cy.get('[data-qa=documentation-standards-details-description]')
+        .type(doc_standard)
+        .should('have.value', doc_standard); //enter the description
       cy.root(); // return to root
       cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
         .click()
