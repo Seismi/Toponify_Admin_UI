@@ -18,7 +18,8 @@ const systemCategories = [
   nodeCategories.masterData,
   nodeCategories.file
 ];
-const dataSetCategories = [nodeCategories.physical, nodeCategories.virtual, nodeCategories.masterData];
+const dataCategories = [nodeCategories.dataSet, nodeCategories.masterDataSet, nodeCategories.dataStructure];
+const groupableDataCategories = [nodeCategories.dataSet, nodeCategories.masterDataSet];
 const dimensionCategories = [nodeCategories.dimension];
 const reportingConceptCategories = [nodeCategories.structure, nodeCategories.list, nodeCategories.key];
 
@@ -33,7 +34,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
   public group: string;
   public parentId: string;
   public layer: string;
-  public addSystem: boolean;
+  public addGroupMember: boolean;
   public filterLevel: string;
 
   constructor(
@@ -44,7 +45,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
   ) {
     this.parentId = data.parentId;
     this.group = data.group;
-    this.addSystem = data.addSystem;
+    this.addGroupMember = data.addGroupMember;
   }
 
   ngOnInit(): void {
@@ -63,13 +64,20 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
   }
 
   getCategories(filterLevel: string): string[] {
-    if (this.addSystem) {
-      return systemCategories;
+    if (this.addGroupMember) {
+      switch (filterLevel) {
+        case Level.system:
+        case Level.systemMap:
+          return systemCategories;
+        case Level.data:
+        case Level.dataMap:
+          return groupableDataCategories;
+      }
     }
     switch (filterLevel) {
       case Level.system:
       case Level.systemMap:
-        return dataSetCategories;
+        return dataCategories;
       case Level.data:
       case Level.dataMap:
         return dimensionCategories;
@@ -80,8 +88,15 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
   }
 
   getLayer(filterLevel: string): string {
-    if (this.addSystem) {
-      return layers.system;
+    if (this.addGroupMember) {
+      switch (filterLevel) {
+        case Level.system:
+        case Level.systemMap:
+          return layers.system;
+        case Level.data:
+        case Level.dataMap:
+          return layers.data;
+      }
     }
     switch (filterLevel) {
       case Level.system:

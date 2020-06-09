@@ -329,11 +329,11 @@ export class DiagramLevelService {
     if (level === Level.system) {
       tooltip = NodeToolTips[5].Tooltip;
     } else if (level === Level.data || level === Level.systemMap) {
-      tooltip = NodeToolTips[10].Tooltip;
+      tooltip = NodeToolTips[8].Tooltip;
     } else if (level === Level.dimension || level === Level.dataMap) {
-      tooltip = NodeToolTips[13].Tooltip;
+      tooltip = NodeToolTips[11].Tooltip;
     } else if (level === Level.reportingConcept || level === Level.dimensionMap) {
-      tooltip = NodeToolTips[17].Tooltip;
+      tooltip = NodeToolTips[15].Tooltip;
     }
     return tooltip;
   }
@@ -343,7 +343,7 @@ export class DiagramLevelService {
     if (level === Level.system) {
       tooltip = NodeToolTips[6].Tooltip;
     } else if (level === Level.data || level === Level.systemMap) {
-      tooltip = NodeToolTips[11].Tooltip;
+      tooltip = NodeToolTips[9].Tooltip;
     }
     return tooltip;
   }
@@ -398,7 +398,7 @@ export class DiagramLevelService {
           name: 'New transformation',
           layer: transformationLayer,
           category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip,
+          tooltip: NodeToolTips[16].Tooltip,
           isTemporary: level.endsWith('map')
         })
       );
@@ -445,25 +445,11 @@ export class DiagramLevelService {
     } else if (level === Level.data) {
       paletteViewNodes.splice(0, 0,
         new Node({
-          id: 'New Physical Data Set',
-          name: 'New Physical Data Set',
+          id: 'New Data Structure',
+          name: 'New Data Structure',
           layer: layers.data,
-          category: nodeCategories.physical,
+          category: nodeCategories.dataStructure,
           tooltip: NodeToolTips[7].Tooltip
-        }),
-        new Node({
-          id: 'New Virtual Data Set',
-          name: 'New Virtual Data Set',
-          layer: layers.data,
-          category: nodeCategories.virtual,
-          tooltip: NodeToolTips[8].Tooltip
-        }),
-        new Node({
-          id: 'New Master Data Data Set',
-          name: 'New Master Data Data Set',
-          layer: layers.data,
-          category: nodeCategories.masterData,
-          tooltip: NodeToolTips[9].Tooltip
         })
       );
     } else if (level === Level.dimension) {
@@ -473,7 +459,7 @@ export class DiagramLevelService {
           name: 'New Dimension',
           layer: layers.dimension,
           category: nodeCategories.dimension,
-          tooltip: NodeToolTips[12].Tooltip
+          tooltip: NodeToolTips[10].Tooltip
         })
       );
     } else if (level === Level.reportingConcept) {
@@ -483,21 +469,21 @@ export class DiagramLevelService {
           name: 'New List Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.list,
-          tooltip: NodeToolTips[14].Tooltip
+          tooltip: NodeToolTips[12].Tooltip
         }),
         new Node({
           id: 'New Structural Reporting Concept',
           name: 'New Structural Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.structure,
-          tooltip: NodeToolTips[15].Tooltip
+          tooltip: NodeToolTips[13].Tooltip
         }),
         new Node({
           id: 'New Key Reporting Concept',
           name: 'New Key Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.key,
-          tooltip: NodeToolTips[16].Tooltip
+          tooltip: NodeToolTips[14].Tooltip
         })
       );
     }
