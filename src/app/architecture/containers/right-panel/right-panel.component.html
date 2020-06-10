@@ -69,9 +69,9 @@
         [title]="'Data'"
         [data]="dataSets"
         [workPackageIsEditable]="workPackageIsEditable"
-        (add)="addDescendants.emit()"
+        (add)="addDescendants.emit('data')"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
+        [currentFilterLevel]="!['system', 'data'].includes(currentFilterLevel)"
       >
       </smi-components-table>
       <smi-components-table

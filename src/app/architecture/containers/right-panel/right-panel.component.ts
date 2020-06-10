@@ -78,7 +78,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() addExistingAttribute = new EventEmitter<void>();
   @Output() editGroup = new EventEmitter<void>();
   @Output() addNewGroupMember = new EventEmitter<void>();
-  @Output() addDescendants = new EventEmitter<void>();
+  @Output() addDescendants = new EventEmitter<string>();
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
   @Output() deleteNodeGroup = new EventEmitter<Node>();
   @Output() updateAvailableTags = new EventEmitter<void>();
