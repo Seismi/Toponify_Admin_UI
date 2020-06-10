@@ -1,3 +1,4 @@
+@core
 Feature: Documentation Standards CRUD
   As a user, I want to manage all available documentation standards via the documentation standards page.
 

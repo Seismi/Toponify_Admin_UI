@@ -20,7 +20,6 @@ Feature: Work Package Edit Documentation Standards Feature
     Then the 'Regression Test Documentation Standard Number' should display the error message 'Not valid! Please make sure that your value matches property type'
 
   #NOTE: THis test will fail as the number type only accepts integers at present
-  @focus
   Scenario: Check that entering a valid float into a number type documentation standard will save (known failure at present)
     Given the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'Work Package' component
     And the user selects Work Package menu item
@@ -30,7 +29,6 @@ Feature: Work Package Edit Documentation Standards Feature
     And the user clicks to "save" the valid change
     Then the value of 'Regression Test Documentation Standard Number' should be 12314.14
 
-  @focus
   Scenario: Check that entering a valid integer into a number type documentation standard will save
     Given the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'Work Package' component
     And the user selects Work Package menu item
