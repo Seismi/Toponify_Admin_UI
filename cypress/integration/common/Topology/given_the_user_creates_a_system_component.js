@@ -15,7 +15,7 @@ Given('the user creates a new {string} system with name {string}', function(comp
             cy.get('[data-qa=topology-components-or-link-modal-save]')
               .click()
               .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery']);
-            cy.get('[data-qa=object-details-delete]').should('not.be.visible');
+            cy.get('[data-qa=spinner]').should('not.be.visible');
           });
       });
     });

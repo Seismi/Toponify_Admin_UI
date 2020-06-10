@@ -12,6 +12,7 @@ When('the user deletes the interface {string}', function(component) {
           '@GETNodesWorkPackageQuery',
           '@GETNodeLinksWorkPackageQuery'
         ]);
+      cy.get('[data-qa=spinner]').should('not.be.visible');
       cy.get('[data-qa=object-details-delete]').should('not.be.visible');
     });
 });
