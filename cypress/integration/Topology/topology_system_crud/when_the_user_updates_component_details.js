@@ -1,24 +1,38 @@
 const { When } = require('cypress-cucumber-preprocessor/steps');
 
 When(
-  'the user changes the reference number: {string}, name: {string}, category: {string}, description: {string}, owners {string}',
-  function(reference, name, category, description, owners) {
+  'the user changes the {string} reference number: {string}, name: {string}, category: {string}, description: {string}, owners {string}',
+  function(type, reference, name, category, description, owners) {
+    let wait_for;
     name = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(name); // prefix the name with branch
+    if (type === 'system') {
+      wait_for = ['@PUTWorkPackagesNodes', '@GETNodesScopes'];
+    } else {
+      wait_for = [
+        '@GETNodesScopes',
+        '@GETnodeLinksWorkPackageQuery',
+        '@GETNodesReportWorkPackageQuery',
+        '@GETWorkPackageNodeLinksQuery'
+      ];
+    }
     cy.get('[data-qa=object-details-reference]')
       .clear()
-      .type(reference);
+      .type(reference)
+      .should('have.value', reference);
     cy.get('[data-qa=object-details-name]')
       .clear()
-      .type(name);
+      .type(name)
+      .should('have.value', name);
     cy.get('[data-qa=object-details-description]')
       .clear()
-      .type(description);
+      .type(description)
+      .should('have.value', description);
     cy.selectDropDown('object-details-category', category).then(() => {
       cy.get('[data-qa=object-details-save]')
         .click()
-        .wait(['@PUTWorkPackagesNodes', '@GETNodesScopes']);
+        .wait(wait_for);
     });
   }
 );

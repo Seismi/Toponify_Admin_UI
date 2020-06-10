@@ -20,6 +20,7 @@ Then(
             .click()
             .wait(['@GETNodesWorkPackageQuery2', '@GETNodesReportWorkPackageQuery', '@GETNodesScopes'])
             .then(() => {
+              cy.get('[data-qa=spinner]').should('not.be.visible');
               cy.selectDetailsPaneTab(workPackage['tabs']['Details']).wait('@GETWorkPackageNodeTags');
               cy.assertDetailsForm(reference, system, description, category);
             });
