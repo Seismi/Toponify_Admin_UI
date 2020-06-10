@@ -94,6 +94,7 @@
       <input
         placeholder="Search"
         data-qa="radio-filter-relates-to-quick-search"
+        (keydown)="$event.stopPropagation()"
         #searchComponents
       />
       <button 
