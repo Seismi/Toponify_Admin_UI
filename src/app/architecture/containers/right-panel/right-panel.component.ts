@@ -25,7 +25,6 @@ import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom
 export class RightPanelComponent implements OnInit, OnDestroy {
   private showDetailTabRef;
 
-  @Input() node: NodeDetail;
   @Input() sourceObject: any;
   @Input() targetObject: any;
   @Input() nodeCategory: string;

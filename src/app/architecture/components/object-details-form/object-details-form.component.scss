@@ -4,6 +4,9 @@
 
 .disabled {
   pointer-events: none;
+  mat-select {
+    background-color: #eee;
+  }
 }
 
 button {

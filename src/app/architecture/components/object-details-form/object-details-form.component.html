@@ -17,15 +17,15 @@
       </div>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field [ngClass]="{ disabled: getDisable() }">
       <div class="input-wrapper">
         <label>Category</label>
-        <mat-select 
+        <mat-select
           formControlName="category" 
-          [ngClass]="{ editable: !nodeIsEditable() }" 
+          [ngClass]="{ editable: !nodeIsEditable() }"
           data-qa="object-details-category"
         >
-          <mat-option *ngFor="let category of getCategories()" [value]="category">
+          <mat-option *ngFor="let category of getCategories()" [disabled]="getDisable(category)" [value]="category">
             {{ category }}
           </mat-option>
         </mat-select>
