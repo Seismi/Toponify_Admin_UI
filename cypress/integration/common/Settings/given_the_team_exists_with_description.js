@@ -4,6 +4,7 @@ Given('the team {string} exists with name {string}', function(name, description)
   cy.get('[data-qa=settings-teams-quick-search]') //grab the teams search
     .clear() //clear contents
     .type(name)
+    .should('have.value', name)
     .then(() => {
       // type the team name
       cy.get(`[data-qa=settings-teams-table]`)
@@ -35,10 +36,12 @@ function teamDetails(editButton, name, description, design_authority, saveButton
       // grab the correct edit button
       cy.get(`[data-qa=settings-teams-details-name]`)
         .clear()
-        .type(name); //clear and type team name
+        .type(name)
+        .should('have.value', name); //clear and type team name
       cy.get(`[data-qa=settings-teams-details-description]`)
         .clear()
-        .type(description); //clear and type description
+        .type(description)
+        .should('have.value', description); //clear and type description
       cy.get('[data-qa=settings-teams-details-design-authority]')
         .find('label>div>input')
         .uncheck({ force: true }); // do not make design authority

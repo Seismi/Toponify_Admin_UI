@@ -23,7 +23,8 @@ function documentationStandardTest(doc_standard, value) {
     .concat(doc_standard); // prefix the name with branch
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // search for the documentation standard
     .clear()
-    .type(doc_standard);
+    .type(doc_standard)
+    .should('have.value', doc_standard);
   cy.get(`[data-qa=topology-documentation-standards-table]`) //get the table
     .find('table>tbody') // find the table body
     .contains('tr', doc_standard) // row that contains documentation standard

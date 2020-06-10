@@ -43,6 +43,7 @@ Feature:Main Menu
     Then toponify should display the My Profile page
     And the menu should not be visible
 
+
   Scenario: Settings Menu Select
     When the user selects Settings menu item
     Then toponify should display the Settings page
