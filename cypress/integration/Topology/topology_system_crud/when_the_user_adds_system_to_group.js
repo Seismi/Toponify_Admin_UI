@@ -15,6 +15,7 @@ when('the user adds system {string} to group {string}', function(system, group) 
             '@GETNodesReportWorkPackageQuery',
             '@GETWorkPackageNodeTags'
           ]);
+        cy.get('[data-qa=spinner]').should('not.be.visible');
       });
     });
 });

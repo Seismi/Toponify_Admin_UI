@@ -6,7 +6,4 @@ Given('the user selects the {string} {string} in the {string} table', function(t
     .concat(' | ')
     .concat(system); // prefix name with branch
   cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`).click();
-
-  //.wait(['@GETNodesReportWorkPackageQuery','@GETNodesWorkPackageQuery2','@GETNodesScopes'])
-  //.wait(['@GETNodesReportWorkPackageQuery'])
 });

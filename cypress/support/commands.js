@@ -282,7 +282,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
             .click()
             .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
             .then(wp => {
-              console.log(wp[0].textContent);
+              cy.get('[data-qa=object-details-delete]').should('not.be.visible');
               if (wp[0].textContent === 'edit') {
                 cy.get('table>tbody')
                   .find('tr:first>td>div>div>mat-icon')

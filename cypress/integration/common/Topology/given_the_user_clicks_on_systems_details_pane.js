@@ -9,4 +9,5 @@ Given("the user clicks on the system's right hand side details button", function
       '@GETNodesReportWorkPackageQuery',
       '@GETNodesWorkPackageQuery2'
     ]);
+  cy.get('[data-qa=object-details-delete]').should('not.be.visible');
 });

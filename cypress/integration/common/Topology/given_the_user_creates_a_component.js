@@ -16,6 +16,7 @@ Given('the user creates a new {string} system with name {string}', function(comp
               .click()
               .wait(2000)
               .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery']);
+            cy.get('[data-qa=spinner]').should('not.be.visible');
           });
       });
     });
@@ -49,6 +50,7 @@ When('the user creates a new {string} interface with name {string} between {stri
             .then(() => {
               cy.get('[data-qa=topology-components-or-link-modal-save]').click();
               cy.wait(['@GETNodeLinksWorkPackageQuery', '@GETNodesWorkPackageQuery', '@POSTWorkPackagesNodeLinks']);
+              cy.get('[data-qa=spinner]').should('not.be.visible');
             });
         });
       });
