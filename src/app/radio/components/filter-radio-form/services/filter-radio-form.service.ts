@@ -16,10 +16,6 @@ export class FilterRadioFormService {
       to: [null],
       text: [null],
       relatesToWorkPackages: [null],
-      severityRangeFrom: [null],
-      severityRangeTo: [null],
-      frequencyRangeFrom: [null],
-      frequencyRangeTo: [null],
       hasTag: [null]
     });
   }

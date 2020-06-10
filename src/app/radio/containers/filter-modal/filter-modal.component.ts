@@ -59,10 +59,6 @@ export class FilterModalComponent implements OnInit {
       from: this.filterData.from,
       to: this.filterData.to,
       text: this.filterData.text,
-      severityRangeFrom: (this.filterData.severityRangeFrom) ? (this.filterData.severityRangeFrom) : 1,
-      severityRangeTo: (this.filterData.severityRangeTo) ? this.filterData.severityRangeTo : 5,
-      frequencyRangeFrom: (this.filterData.frequencyRangeFrom) ? this.filterData.frequencyRangeFrom : 1,
-      frequencyRangeTo: (this.filterData.frequencyRangeTo) ? this.filterData.frequencyRangeTo : 5,
       hasTag: this.filterData.hasTag
     });
   }
