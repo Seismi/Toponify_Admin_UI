@@ -17,6 +17,7 @@ Feature: Create new report
 
   @focus
   Scenario: Create Report and then cancel
+    Check the API CALLS...
     #TODO - this and all subsequent tests should use the system that you created above
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
     #And the user cancels the creation of the report
