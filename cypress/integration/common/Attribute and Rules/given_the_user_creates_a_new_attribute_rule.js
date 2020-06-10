@@ -20,12 +20,14 @@ function createAttributeAndRule(name, description, category) {
     .then(() => {
       cy.get('[data-qa=rule-and-attribute-details-name]')
         .should('be.visible')
-        .type(name);
+        .type(name)
+        .should('have.value', name);
     })
     .then(() => {
       cy.get('[data-qa=rule-and-attribute-details-description]')
         .should('be.visible')
-        .type(description);
+        .type(description)
+        .should('have.value', description);
     })
     .then(() => {
       cy.get('[data-qa=rule-and-attribute-modal-save]')
