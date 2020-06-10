@@ -7,22 +7,21 @@
     [architecturePage]="true"
   >
   </smi-left-hand-pane>
-  <app-drawer [tabTpls]="{ workpackages: workpackages }">
+  <app-drawer [tabTpls]="{ workpackages: workpackages, edit: edit }">
     <ng-template #workpackages>
-      <smi-left-panel
-        data-qa="topology-left-panel"
-        (tabClick)="onTabClick($event)"
-        [workpackages]="workpackage$ | async"
-        [workPackageIsEditable]="workPackageIsEditable"
+      <smi-workpackage-tab-table
+        [canSelectWorkpackage]="canSelectWorkpackages"
+        [data]="workpackage$ | async"
         (selectWorkPackage)="onSelectWorkPackage($event)"
         (selectColour)="selectColourForWorkPackage($event)"
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
-        [selectedLeftTab]="selectedLeftTab"
-        [canSelectWorkpackages]="canSelectWorkpackages"
-        [group]="layoutSettingsForm"
-        [layout]="layout"
       >
-      </smi-left-panel>
+      </smi-workpackage-tab-table>
+    </ng-template>
+    <ng-template #edit>
+      <p class="palette">
+        <app-architecture-palette></app-architecture-palette>
+      </p>
     </ng-template>
     <app-base-header>
       <smi-node-name data-qa="header-node-name" *ngIf="parentName" [parentName]="parentName"></smi-node-name>
