@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { WorkPackageNodeFindPotential, WorkPackageNodeScopes } from '../models/workpackage.models';
 import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
-import { DescendantsEntity, NodeDetail } from '@app/architecture/store/models/node.model';
+import {DescendantsEntity, layers, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
 
 export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
@@ -61,6 +61,10 @@ export enum WorkPackageNodeActionTypes {
   FindPotentialWorkpackageNodesSuccess = '[WorkPackage] Find Potential Workpackage Nodes Success',
   FindPotentialWorkpackageNodesFailure = '[WorkPackage] Find Potential Workpackage Nodes Failure',
 
+  FindPotentialGroupMemberNodes = '[WorkPackage] Find Potential Group Member Nodes',
+  FindPotentialGroupMemberNodesSuccess = '[WorkPackage] Find Potential Group Member Nodes Success',
+  FindPotentialGroupMemberNodesFailure = '[WorkPackage] Find Potential Group Member Nodes Failure',
+
   AddWorkPackageNodeRadio = '[WorkPackage] Add Node Radio',
   AddWorkPackageNodeRadioSuccess = '[WorkPackage] Add Node Radio Success',
   AddWorkPackageNodeRadioFailure = '[WorkPackage] Add Node Radio Failure',
@@ -87,7 +91,11 @@ export enum WorkPackageNodeActionTypes {
 
   DeleteWorkPackageNodeGroup = '[WorkPackage] Delete Node Group',
   DeleteWorkPackageNodeGroupSuccess = '[WorkPackage] Delete Node Group Success',
-  DeleteWorkPackageNodeGroupFailure = '[WorkPackage] Delete Node Group Failure'
+  DeleteWorkPackageNodeGroupFailure = '[WorkPackage] Delete Node Group Failure',
+
+  SetWorkPackageNodeAsMaster = '[WorkPackage] Set Node As Master',
+  SetWorkPackageNodeAsMasterSuccess = '[WorkPackage] Set Node As Master Success',
+  SetWorkPackageNodeAsMasterFailure = '[WorkPackage] Set Node As Master Failure'
 }
 
 export class AddWorkPackageNode implements Action {
@@ -300,6 +308,22 @@ export class FindPotentialWorkpackageNodesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class FindPotentialGroupMemberNodes implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialGroupMemberNodes;
+  constructor(public payload: { workPackageId: string; nodeId: string; scope: string; asShared: boolean }) {}
+}
+
+export class FindPotentialGroupMemberNodesSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesSuccess;
+
+  constructor(public payload: { id: string; layer: layers; category: nodeCategories; name: string; tags: string }[]) {}
+}
+
+export class FindPotentialGroupMemberNodesFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export class AddWorkPackageNodeRadio implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNodeRadio;
   constructor(public payload: { workPackageId: string; nodeId: string; radioId: string }) {}
@@ -406,6 +430,21 @@ export class DeleteWorkPackageNodeGroupFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class SetWorkPackageNodeAsMaster implements Action {
+  readonly type = WorkPackageNodeActionTypes.SetWorkPackageNodeAsMaster;
+  constructor(public payload: { workPackageId: string; nodeId: string }) {}
+}
+
+export class SetWorkPackageNodeAsMasterSuccess implements Action {
+  readonly type = WorkPackageNodeActionTypes.SetWorkPackageNodeAsMasterSuccess;
+  constructor() {}
+}
+
+export class SetWorkPackageNodeAsMasterFailure implements Action {
+  readonly type = WorkPackageNodeActionTypes.SetWorkPackageNodeAsMasterFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNode
   | AddWorkPackageNodeSuccess
@@ -449,6 +488,9 @@ export type WorkPackageNodeActionsUnion =
   | FindPotentialWorkpackageNodes
   | FindPotentialWorkpackageNodesSuccess
   | FindPotentialWorkpackageNodesFailure
+  | FindPotentialGroupMemberNodes
+  | FindPotentialGroupMemberNodesSuccess
+  | FindPotentialGroupMemberNodesFailure
   | AddWorkPackageNodeRadio
   | AddWorkPackageNodeRadioSuccess
   | AddWorkPackageNodeRadioFailure
@@ -469,4 +511,7 @@ export type WorkPackageNodeActionsUnion =
   | AddWorkPackageNodeGroupFailure
   | DeleteWorkPackageNodeGroup
   | DeleteWorkPackageNodeGroupSuccess
-  | DeleteWorkPackageNodeGroupFailure;
+  | DeleteWorkPackageNodeGroupFailure
+  | SetWorkPackageNodeAsMaster
+  | SetWorkPackageNodeAsMasterSuccess
+  | SetWorkPackageNodeAsMasterFailure;

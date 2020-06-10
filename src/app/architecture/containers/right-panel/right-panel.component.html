@@ -1,8 +1,8 @@
-<mat-tab-group 
-  data-qa="topology-right-hand-side-tabs" 
-  [(selectedIndex)]="selectedRightTab" 
-  mat-stretch-tabs 
-  class="stretched-tabs" 
+<mat-tab-group
+  data-qa="topology-right-hand-side-tabs"
+  [(selectedIndex)]="selectedRightTab"
+  mat-stretch-tabs
+  class="stretched-tabs"
   [@.disabled]="true"
 >
   <!-- Details TAB -->
@@ -58,7 +58,7 @@
         [title]="'Systems'"
         [data]="systems"
         [workPackageIsEditable]="workPackageIsEditable"
-        (add)="addNewSystem.emit()"
+        (add)="addNewGroupMember.emit()"
         (delete)="deleteNodeGroup.emit($event)"
         [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
       >
@@ -82,7 +82,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addDescendants.emit()"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['data set'].includes(currentFilterLevel)"
+        [currentFilterLevel]="!['data'].includes(currentFilterLevel)"
       >
       </smi-components-table>
       <smi-components-table
@@ -181,22 +181,22 @@
     >
     </smi-scope-table>
     <!-- Add Scope Button -->
-    <button 
-      *ngIf="multipleSelected" 
-      mat-raised-button 
-      color="primary" 
-      id="add-scope-button" 
+    <button
+      *ngIf="multipleSelected"
+      mat-raised-button
+      color="primary"
+      id="add-scope-button"
       (click)="onAddScope()"
       data-qa="topology-scopes-tab-new-scope"
     >
       New Scope
     </button>
 
-    <button 
-      *ngIf="multipleSelected" 
-      mat-raised-button 
-      color="primary" 
-      id="add-scope-button" 
+    <button
+      *ngIf="multipleSelected"
+      mat-raised-button
+      color="primary"
+      id="add-scope-button"
       (click)="addToScope.emit()"
       data-qa="topology-scopes-tab-add-to-existing"
     >

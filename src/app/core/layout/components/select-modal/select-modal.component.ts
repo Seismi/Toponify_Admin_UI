@@ -38,6 +38,8 @@ export class SelectModalComponent implements OnInit {
       selectedIds: string[];
       placeholder: string;
       descendants: boolean;
+      groupMembers: boolean;
+      parentId?: string;
       nodeId: string,
       workPackageId: string,
       scopeId: string
@@ -116,18 +118,47 @@ export class SelectModalComponent implements OnInit {
   }
 
   onAddComponent(): void {
+
     this.dialogRef.close();
     const dialogRef = this.dialog.open(NewChildrenModalComponent, {
       disableClose: false,
       width: '450px',
       data: {
         parentId: this.data.nodeId,
-        addSystem: false
+        addGroupMember: false
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.data) {
+        this.store.dispatch(
+          new AddWorkPackageNode({
+            workpackageId: this.data.workPackageId,
+            node: data.data,
+            scope: this.data.scopeId
+          })
+        );
+      }
+    });
+  }
+
+  onAddGroupMember(): void {
+
+    this.dialogRef.close();
+    const dialogRef = this.dialog.open(NewChildrenModalComponent, {
+      disableClose: false,
+      width: '450px',
+      data: {
+        group: this.data.nodeId,
+        addGroupMember: true
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.data) {
+
+        data.data.parentId = this.data.parentId;
+
         this.store.dispatch(
           new AddWorkPackageNode({
             workpackageId: this.data.workPackageId,
