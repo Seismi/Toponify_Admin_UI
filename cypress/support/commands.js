@@ -256,6 +256,7 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
                   '@GETNodeLinksWorkPackageQuery',
                   '@GETSelectorAvailabilityQuery'
                 ]);
+                cy.get('[data-qa=spinner]').should('not.be.visible');
               }
             });
         });

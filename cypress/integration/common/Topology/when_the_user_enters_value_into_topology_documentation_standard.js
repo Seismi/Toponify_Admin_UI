@@ -35,7 +35,6 @@ function addDocStandard(value, doc_standard) {
     .click()
     .get('[data-qa=documentation-standards-table-value]') // get the value field
     .type(value)
-    .should('have.value', value) // type the value
     .then(() => {
       cy.get('[data-qa=documentation-standards-table-save]')
         .click()
