@@ -47,8 +47,6 @@ export class RadioComponent implements OnInit, OnDestroy {
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
 
-  @ViewChild('drawer') drawer;
-
   constructor(
     private actions: Actions,
     private nodeStore: Store<NodeState>,
@@ -220,14 +218,6 @@ export class RadioComponent implements OnInit, OnDestroy {
         fileName: 'RADIO'
       }
     });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 
   isFilterEnabled(filter: string | boolean | [] | number): boolean {

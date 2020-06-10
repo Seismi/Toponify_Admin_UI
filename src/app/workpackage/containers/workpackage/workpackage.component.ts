@@ -34,8 +34,6 @@ export class WorkPackageComponent implements OnInit {
   public checked: boolean;
   public selectedLeftTab: number | string;
 
-  @ViewChild('drawer') drawer;
-
   constructor(
     private actions: Actions,
     private store: Store<WorkPackageState>,
@@ -132,13 +130,5 @@ export class WorkPackageComponent implements OnInit {
       includeArchived: checked ? true : false
     };
     this.store.dispatch(new LoadWorkPackages(queryParams));
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 }
