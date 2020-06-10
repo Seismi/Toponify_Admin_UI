@@ -27,7 +27,7 @@ module.exports = {
       name: 'WorkPackage'
     },
     GetArchiveWorkPackages: {
-      api: `${api_version}/workpackages?includeArchived=true`,
+      api: `${api_version}/workpackages?includeArchived=*`,
       //                        api: `${api_version}/workpackages*`,
       method: 'GET',
       name: 'ArchiveWorkPackages'
