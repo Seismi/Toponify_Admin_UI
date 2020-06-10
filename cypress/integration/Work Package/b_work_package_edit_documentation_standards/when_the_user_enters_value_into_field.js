@@ -26,16 +26,14 @@ function addDocStandard(value, doc_standard) {
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear()
-    .type(doc_standard)
-    .should('have.value', doc_standard); //enter the documentation standard
+    .type(doc_standard);
   cy.get(`[data-qa=work-packages-documentation-standards-table]`) //get the doc standard table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
     .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
     .click()
     .get('[data-qa=documentation-standards-table-value]') // get the value field
-    .type(value)
-    .should('have.value', value); // type the value
+    .type(value);
 }
 
 function addDocStandardBoolean(value, doc_standard) {
@@ -44,8 +42,7 @@ function addDocStandardBoolean(value, doc_standard) {
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear()
-    .type(doc_standard)
-    .should('have.value', doc_standard); //enter the documentation standard
+    .type(doc_standard);
   cy.get(`[data-qa=work-packages-documentation-standards-table]`) // get the documentation standards table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
@@ -60,16 +57,12 @@ function addDocStandardDate(value, doc_standard) {
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear()
-    .type(doc_standard)
-    .should('have.value', doc_standard); //enter the documentation standard
+    .type(doc_standard);
   cy.get(`[data-qa=work-packages-documentation-standards-table]`) // get the documentation standards table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
     .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
     .click()
     .get('[data-qa=documentation-standards-table-date]') // type the value
-    .type(value)
-    .should('have.value', value);
+    .type(value);
 }
-
-//
