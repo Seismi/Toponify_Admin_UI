@@ -748,8 +748,9 @@ export class DiagramChangesService {
     });
 
     if ([Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
+      this.groupMemberSizeChanged(node);
       // Update node's layout in map view or usage view
-      node.invalidateLayout();
+      node.findTopLevelPart().invalidateLayout();
     } else {
 
       this.groupMemberSizeChanged(node);
@@ -878,7 +879,7 @@ export class DiagramChangesService {
 
     if (this.currentLevel === Level.usage) {
       // Update node's layout in usage view
-      node.invalidateLayout();
+      node.findTopLevelPart().invalidateLayout();
     }
 
     // Update group area of node in the back end
@@ -1074,6 +1075,11 @@ export class DiagramChangesService {
         const area = areas[node.data.layer];
         const nodeBounds = node.getDocumentBounds();
 
+        // Do not attempt to include area of nodes that are not visible
+        if (!node.isVisible()) {
+          return;
+        }
+
         // If area property has not yet been set then set it equal to the node's bounds
         if (!area) {
           areas[node.data.layer] = nodeBounds.copy();
@@ -1116,9 +1122,9 @@ export class DiagramChangesService {
           // Lane must be tall enough to enclose its layer...
           shape.height = currentLayerArea.height
             // ...plus half the distance to the previous layer (if present)...
-            + (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin)
+            + Math.max(0, (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin))
             // ...plus half the distance to the next layer (if present).
-            + (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin);
+            + Math.max(0, (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin));
 
           lane.location = new go.Point(
             // Position the left side of all lanes to the left of the diagram's nodes
