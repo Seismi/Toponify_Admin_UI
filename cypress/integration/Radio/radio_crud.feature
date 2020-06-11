@@ -102,6 +102,6 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
     Then the user selects Documentation Standard menu item
     And the document standard 'Automatic Regression Test' does not exist
     And the user creates a documentation standard with title 'Automatic Regression Test', type 'Text' and component type 'RADIO'
-    And the user goes back to radio page
+    And the user selects Radios menu item
     And the user updates the filter to find radio with title 'Automatic Regression Test Risk 1'
     And the user checks if documentation standards exist with title 'Automatic Regression Test'

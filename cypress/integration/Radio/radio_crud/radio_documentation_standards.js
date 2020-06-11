@@ -1,15 +1,5 @@
 import { Then, And } from 'cypress-cucumber-preprocessor/steps';
 
-Then('the user goes to Documentation Standards pages', () => {
-  cy.get('[data-qa=main-menu-open]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=main-menu-documentation-standards]')
-        .click()
-        .wait('@GETCustomProperties');
-    });
-});
-
 And(
   'the user creates a documentation standard with title {string}, type {string} and component type {string}',
   (title, type, componentType) => {
@@ -19,16 +9,6 @@ And(
     cy.createDocumentationStandard(title, type, componentType);
   }
 );
-
-And('the user goes back to radio page', () => {
-  cy.get('[data-qa=main-menu-open]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=main-menu-radios]')
-        .click()
-        .wait(['@GETRadios', '@GETNodes', '@GETRadioViews']);
-    });
-});
 
 And('the user checks if documentation standards exist with title {string}', title => {
   cy.selectDetailsPaneTab(4).then(() => {
