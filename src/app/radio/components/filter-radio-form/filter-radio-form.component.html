@@ -47,40 +47,6 @@
     </mat-select>
   </mat-form-field>
 
-  <!-- Assigned To -->
-  <mat-form-field>
-    <mat-label>Assigned To</mat-label>
-    <mat-select
-      formControlName="assignedTo"
-      [compareWith]="assignedToComparison"
-      multiple
-      data-qa="radio-filter-assigned-to"
-    >
-    <div class="search-container">
-      <input
-        placeholder="Search"
-        data-qa="radio-filter-assigned-to-quick-search"
-        (keydown)="$event.stopPropagation()"
-        #searchUsers
-      />
-      <button 
-        mat-icon-button 
-        class="clear" 
-        (click)="this.searchUsers.value = ''"
-        >
-          <mat-icon>close</mat-icon>
-      </button>
-    </div>
-      <mat-option 
-        *ngFor="let user of users" 
-        [value]="user"
-        [class.hide]="filterUsers(user)"
-      > 
-        {{ user.firstName }} {{ user.lastName }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
   <!-- Relates To -->
   <mat-form-field>
     <mat-label>Relates to components</mat-label>
@@ -132,6 +98,24 @@
       </div>
       <mat-option *ngFor="let tag of tags | searchPipe: searchTags.value" [value]="tag">
         {{ tag.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Assigned To -->
+  <mat-form-field>
+    <mat-label>Assigned To</mat-label>
+    <mat-select formControlName="assignedTo" [compareWith]="assignedToComparison" multiple
+      data-qa="radio-filter-assigned-to">
+      <div class="search-container">
+        <input placeholder="Search" data-qa="radio-filter-assigned-to-quick-search" (keydown)="$event.stopPropagation()"
+          #searchUsers />
+        <button mat-icon-button class="clear" (click)="this.searchUsers.value = ''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <mat-option *ngFor="let user of users" [value]="user" [class.hide]="filterUsers(user)">
+        {{ user.firstName }} {{ user.lastName }}
       </mat-option>
     </mat-select>
   </mat-form-field>
