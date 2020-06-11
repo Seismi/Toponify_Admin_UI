@@ -8,7 +8,7 @@ When(
       .concat(' | ')
       .concat(name); // prefix the name with branch
     if (type === 'system') {
-      wait_for = ['@PUTWorkPackagesNodes', '@GETNodesScopes'];
+      wait_for = '@PUTWorkPackagesNodes';
     } else {
       wait_for = [
         '@GETNodesScopes',
