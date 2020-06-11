@@ -4,7 +4,7 @@
 
 .disabled {
   pointer-events: none;
-  mat-select {
+  mat-select, input, textarea {
     background-color: #eee;
   }
 }

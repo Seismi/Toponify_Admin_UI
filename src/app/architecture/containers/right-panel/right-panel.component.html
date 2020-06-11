@@ -60,7 +60,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addNewGroupMember.emit()"
         (delete)="deleteNodeGroup.emit($event)"
-        [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
+        [disabled]="!['system'].includes(currentFilterLevel)"
       >
       </smi-components-table>
       <smi-components-table
@@ -71,7 +71,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addDescendants.emit('data')"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['system', 'data'].includes(currentFilterLevel)"
+        [disabled]="getDisableDataTable()"
       >
       </smi-components-table>
       <smi-components-table
@@ -82,7 +82,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addDescendants.emit()"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['data'].includes(currentFilterLevel)"
+        [disabled]="getDisableDimensionsTable()"
       >
       </smi-components-table>
       <smi-components-table
@@ -93,7 +93,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addDescendants.emit()"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['dimension'].includes(currentFilterLevel)"
+        [disabled]="!['dimension'].includes(currentFilterLevel)"
       >
       </smi-components-table>
     </p>

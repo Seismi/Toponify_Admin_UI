@@ -115,12 +115,7 @@ export class ObjectDetailsFormComponent {
   }
 
   nodeIsEditable(): boolean {
-    if (!this.workPackageIsEditable || this.nodeCategory === 'copy') {
-      return true;
-    } else if (this.part.data.isShared) {
-      return true;
-    }
-    return false;
+    return (!this.workPackageIsEditable || this.nodeCategory === 'copy') ? true : false;
   }
 
   onUpdateAvailableTags() {
@@ -168,6 +163,10 @@ export class ObjectDetailsFormComponent {
   getDisable(category?: nodeCategories): boolean {
     return this.part.data.layer === layers.data
       && [nodeCategories.dataStructure, nodeCategories.transformation].includes(category || this.part.data.category) ? true : false;
+  }
+
+  disableIfShared(): boolean {
+    return this.part.data.isShared ? true : false;
   }
 
 }
