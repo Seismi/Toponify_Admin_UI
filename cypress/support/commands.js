@@ -522,6 +522,31 @@ Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component
   });
 });
 
+Cypress.Commands.add('findDocumentStandard', title => {
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title);
+  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('deleteDocumentStandard', title => {
+  cy.selectRow('documentation-standards-table', doc_standard).then(() => {
+    cy.get(`[data-qa=documentation-standards-delete]`)
+      .click()
+      .then(() => {
+        cy.get('[data-qa=delete-modal-yes]')
+          .click()
+          .then(() => {
+            cy.wait('@DELETECustomProperties');
+            createDocumentationStandard(doc_standard, type, component);
+          });
+      });
+  });
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title);
+});
+
 //
 //
 // -- This is a child command --
