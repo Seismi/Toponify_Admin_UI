@@ -9,12 +9,13 @@ import { Store, select } from '@ngrx/store';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
-import { Node, Tag } from '@app/architecture/store/models/node.model';
+import { Node, Tag, TagApplicableTo } from '@app/architecture/store/models/node.model';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntities, getTags } from '@app/architecture/store/selectors/node.selector';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { getAllWorkPackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'smi-filter-modal',
@@ -45,7 +46,13 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tags$ = this.nodeStore.pipe(select(getTags));
+    this.tags$ = this.nodeStore.pipe(select(getTags))
+    .pipe(
+      map(tags =>
+        tags.filter(tag => tag.applicableTo.indexOf(TagApplicableTo.everywhere || TagApplicableTo.RADIO) > -1)
+      )
+    );
+
     this.workpackages$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
     this.users$ = this.userStore.pipe(select(getUsers));
