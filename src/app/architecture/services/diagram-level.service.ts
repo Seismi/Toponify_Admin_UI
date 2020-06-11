@@ -535,19 +535,16 @@ export class DiagramLevelService {
     diagram.model = $(go.GraphLinksModel, {
       nodeKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
       linkKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
-      nodeCategoryProperty: level.endsWith('map') ?
-        function(data) {
-          // Ensure systems are represented by map view groups in map view
-          return data.layer === layers.system ? '' :
-            data.category === nodeCategories.transformation ? nodeCategories.transformation :
-              data.layer;
-        } :
-        function(data) {
-          // Ensure that transformation nodes use their own category, separate from the layer
-          return data.category === nodeCategories.transformation
-            ? nodeCategories.transformation
-            : data.layer;
-        },
+      nodeCategoryProperty: function(data) {
+        if (data.category === nodeCategories.transformation) {
+          return nodeCategories.transformation;
+        // Ensure systems/data nodes are represented by map view groups in system/data map view
+        } else if (data.layer + ' map' === level) {
+          return '';
+        } else {
+          return data.layer;
+        }
+      },
       linkFromKeyProperty: level.endsWith('map') ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
       linkToKeyProperty: level.endsWith('map') ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,

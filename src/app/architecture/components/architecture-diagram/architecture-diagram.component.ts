@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
 import {dummyLinkId, linkCategories} from '@app/architecture/store/models/node-link.model';
-import { layers } from '@app/architecture/store/models/node.model';
+import {layers, nodeCategories} from '@app/architecture/store/models/node.model';
 import { DiagramTemplatesService } from '../../services/diagram-templates.service';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
 import { DiagramChangesService } from '../../services/diagram-changes.service';
@@ -196,7 +196,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Set node templates
     this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
-    this.diagram.nodeTemplateMap.add('transformation', diagramTemplatesService.getTransformationNodeTemplate());
+    this.diagram.nodeTemplateMap.add(nodeCategories.transformation, diagramTemplatesService.getTransformationNodeTemplate());
 
     // Set links templates
     this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());
@@ -208,8 +208,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
     // Set group templates
-    this.diagram.groupTemplateMap.add('system', diagramTemplatesService.getStandardGroupTemplate());
-    this.diagram.groupTemplateMap.add('data', diagramTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add(layers.system, diagramTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add(layers.data, diagramTemplatesService.getStandardGroupTemplate());
     this.diagram.groupTemplateMap.add('', diagramTemplatesService.getMapViewGroupTemplate());
 
     // Override command handler delete method to emit delete event to angular
