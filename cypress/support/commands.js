@@ -538,7 +538,6 @@ Cypress.Commands.add('deleteDocumentStandard', title => {
           .click()
           .then(() => {
             cy.wait('@DELETECustomProperties');
-            createDocumentationStandard(doc_standard, type, component);
           });
       });
   });
