@@ -14,10 +14,20 @@ When('the user creates a new report with the name {string}, description {string}
   cy.get('[data-qa=reports-create-new]')
     .click()
     .then(() => {
-      cy.wait('@GETNodesWorkPackageQuery');
-      cy.wait(['@GETTeams', '@GETReportsScopeQuery', '@GETReportsWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
-      cy.get('[data-qa=reports-details-name]').type(name);
-      cy.get('[data-qa=reports-details-description]').type(description);
+      cy.wait([
+        '@GETNodesWorkPackageQuery',
+        '@GETTeams',
+        '@GETReportsScopeQuery',
+        '@GETReportsWorkPackageQuery',
+        '@GETSelectorAvailabilityQuery'
+      ]);
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.get('[data-qa=reports-details-name]')
+        .type(name)
+        .should('have.value', name);
+      cy.get('[data-qa=reports-details-description]')
+        .type(description)
+        .should('have.value', description);
       cy.selectDropDownNoClick('reports-details-system', system);
     });
 });
