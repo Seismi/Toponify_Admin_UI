@@ -15,7 +15,7 @@ Given('the documentation standard {string} exists with type {string} against {st
     .then(rows => {
       if (rows.indexOf(doc_standard) === -1) {
         // if the row does not contain the documentation standard
-        createDocumentationStandard(doc_standard, type, component); // create the documentation standard
+        cy.createDocumentationStandard(doc_standard, type, component); // create the documentation standard
       } else {
         cy.selectRow('documentation-standards-table', doc_standard) // select the documentation standard
           .then(() => {
@@ -26,39 +26,10 @@ Given('the documentation standard {string} exists with type {string} against {st
                   .click()
                   .then(() => {
                     cy.wait('@DELETECustomProperties'); // delete the documentation standard
-                    createDocumentationStandard(doc_standard, type, component); //create the documentation standard
+                    cy.createDocumentationStandard(doc_standard, type, component); //create the documentation standard
                   });
               });
           });
       }
     });
 });
-
-function createDocumentationStandard(doc_standard, type, component) {
-  // Creates a documentation standard
-  cy.get('[data-qa=documentation-standards-create-new]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=documentation-standards-details-name]')
-        .type(doc_standard)
-        .should('have.value', doc_standard); // enter the name
-      cy.get('[data-qa=documentation-standards-details-description]')
-        .type(doc_standard)
-        .should('have.value', doc_standard); //enter the description
-      cy.root(); // return to root
-      cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
-        .click()
-        .get('mat-option')
-        .contains(type) // get the mat-option that contains type
-        .click({ force: true }); // click
-      cy.get('smi-document-standards-levels') // get the levels
-        .get('mat-tree-node') // get the tree node
-        .contains(component) // which contains the component
-        .click();
-      cy.get('[data-qa=documentation-standards-modal-save]') // save the documentation standard
-        .click()
-        .then(() => {
-          cy.wait('@POSTCustomProperties'); //wait for the API
-        });
-    }); //click the create new documentations standard button
-}

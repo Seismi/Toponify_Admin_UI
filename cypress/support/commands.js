@@ -12,6 +12,7 @@
 // -- This is a parent command --
 const login = require('../integration/common/Login/login_settings');
 const workPackage = require('../integration/common/Work Package/work_package_settings');
+const documentationStandards = require('../integration/common/Documentation Standards/documentation_standards_settings');
 
 Cypress.Commands.add('login', usertype => {
   cy.setUpRoutes('Login', login);
@@ -520,6 +521,57 @@ Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component
     });
     expect(result.length).to.be.greaterThan(0);
   });
+});
+
+Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
+  cy.get('[data-qa=documentation-standards-create-new]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-details-name]').type(doc_standard);
+      cy.get('[data-qa=documentation-standards-details-description]').type(doc_standard);
+      cy.root();
+      cy.get(`[data-qa=documentation-standards-details-type]`)
+        .click()
+        .get('mat-option')
+        .contains(type)
+        .click({ force: true });
+      cy.get('smi-document-standards-levels')
+        .get('mat-tree-node')
+        .contains(component)
+        .click();
+      cy.get('[data-qa=documentation-standards-modal-save]')
+        .click()
+        .then(() => {
+          cy.route('POST', `${documentationStandards}`).as('POSTCustomProperties');
+        });
+    });
+});
+
+Cypress.Commands.add('findDocumentStandard', title => {
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title);
+  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('deleteDocumentStandard', title => {
+  cy.selectRow('documentation-standards-table', title);
+  cy.route('GET', `${documentationStandards}`)
+    .as('GETCustomProperties')
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-delete]')
+        .click()
+        .then(() => {
+          cy.get('[data-qa=delete-modal-yes]')
+            .click()
+            .then(() => {
+              cy.route('DELETE', `${documentationStandards}`).as('DELETECustomProperties');
+            });
+        });
+    });
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title);
 });
 
 //
