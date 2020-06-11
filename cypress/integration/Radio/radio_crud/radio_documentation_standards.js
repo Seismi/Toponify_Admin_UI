@@ -10,16 +10,6 @@ Then('the user goes to Documentation Standards pages', () => {
     });
 });
 
-And('the document standard {string} does not exist', title => {
-  cy.findDocumentStandard(title).then($table => {
-    if ($table[0].rows.length > 0) {
-      Object.keys($table[0].rows).forEach(_ => {
-        cy.deleteDocumentStandard(title);
-      });
-    }
-  });
-});
-
 And(
   'the user creates a documentation standard with title {string}, type {string} and component type {string}',
   (title, type, componentType) => {
