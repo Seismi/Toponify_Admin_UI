@@ -293,7 +293,6 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
             .click()
             .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
             .then(wp => {
-              cy.get('[data-qa=spinner]').should('not.be.visible');
               if (wp[0].textContent === 'edit') {
                 cy.get('table>tbody')
                   .find('tr:first>td>div>div>mat-icon')
@@ -304,6 +303,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
         });
     })
     .then(result => {
+      cy.get('[data-qa=spinner]').should('not.be.visible');
       cy.root()
         .get('[data-qa=left-hand-pane-work-packages]')
         .click();
