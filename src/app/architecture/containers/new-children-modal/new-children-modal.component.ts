@@ -18,7 +18,8 @@ const systemCategories = [
   nodeCategories.masterData,
   nodeCategories.file
 ];
-const dataCategories = [nodeCategories.dataSet, nodeCategories.masterDataSet, nodeCategories.dataStructure];
+
+const childDataCategories = [nodeCategories.dataStructure];
 const groupableDataCategories = [nodeCategories.dataSet, nodeCategories.masterDataSet];
 const dimensionCategories = [nodeCategories.dimension];
 const reportingConceptCategories = [nodeCategories.structure, nodeCategories.list, nodeCategories.key];
@@ -33,7 +34,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
   public filterLevelSubscription: Subscription;
   public group: string;
   public parentId: string;
-  public layer: string;
+  public addingToMapGroup: boolean;
   public addGroupMember: boolean;
   public filterLevel: string;
 
@@ -46,6 +47,7 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     this.parentId = data.parentId;
     this.group = data.group;
     this.addGroupMember = data.addGroupMember;
+    this.addingToMapGroup = data.addingToMapGroup;
   }
 
   ngOnInit(): void {
@@ -67,20 +69,21 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     if (this.addGroupMember) {
       switch (filterLevel) {
         case Level.system:
-        case Level.systemMap:
           return systemCategories;
         case Level.data:
-        case Level.dataMap:
+        case Level.systemMap:
           return groupableDataCategories;
       }
     }
     switch (filterLevel) {
       case Level.system:
+        return childDataCategories;
       case Level.systemMap:
-        return dataCategories;
+        return this.addingToMapGroup ? childDataCategories : dimensionCategories;
       case Level.data:
-      case Level.dataMap:
         return dimensionCategories;
+      case Level.dataMap:
+        return this.addingToMapGroup ? dimensionCategories : reportingConceptCategories;
       case Level.dimension:
       case Level.dimensionMap:
         return reportingConceptCategories;
@@ -100,11 +103,13 @@ export class NewChildrenModalComponent implements OnInit, OnDestroy {
     }
     switch (filterLevel) {
       case Level.system:
-      case Level.systemMap:
         return layers.data;
+      case Level.systemMap:
+        return this.addingToMapGroup ? layers.data : layers.dimension;
       case Level.data:
-      case Level.dataMap:
         return layers.dimension;
+      case Level.dataMap:
+        return this.addingToMapGroup ? layers.dimension : layers.reportingConcept;
       case Level.dimension:
       case Level.dimensionMap:
         return layers.reportingConcept;

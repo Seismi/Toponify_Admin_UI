@@ -435,8 +435,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.addChildSubscription = merge(
       this.gojsCustomObjectsService.addDataSet$,
       this.diagramTemplatesService.addChild$
-    ).subscribe(_ => {
-      this.onAddDescendant();
+    ).subscribe(data => {
+      this.onAddDescendant(data);
     });
 
     // Scopes
@@ -1745,11 +1745,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant() {
+  onAddDescendant(descData?) {
     this.store.dispatch(
       new FindPotentialWorkpackageNodes({
         workPackageId: this.workpackageId,
-        nodeId: this.nodeId,
+        nodeId: descData ? descData.id : this.nodeId,
         data: {}
       })
     );
@@ -1757,15 +1757,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title: `Add Children to "${this.selectedNode.name}"`,
+        title: `Add Children to "${descData ? descData.name : this.selectedNode.name}"`,
         placeholder: 'Components',
         descendants: true,
-        nodeId: this.nodeId,
+        nodeId: descData ? descData.id : this.nodeId,
         workPackageId: this.workpackageId,
         scopeId: this.scope.id,
         options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
         selectedIds: [],
-        multi: true
+        multi: true,
+        addingToMapGroup: !!descData
       }
     });
 

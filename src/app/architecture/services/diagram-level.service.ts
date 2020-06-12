@@ -74,6 +74,9 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
   const targetGroups = new go.List<go.Group>();
   const transformationNodes = new go.List<go.Node>();
 
+  let greatestSourceWidth = 0;
+  let greatestTargetWidth = 0;
+
   // Populate node lists
   allParts.each(function(part: go.Part) {
     if (part.data.endPointType === endPointTypes.source) {
@@ -155,9 +158,17 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
     return 0;
   });
 
+  sourceGroups.each(function(group: go.Group) {
+    greatestSourceWidth = Math.max(group.actualBounds.width, greatestSourceWidth);
+  });
+
+  targetGroups.each(function(group: go.Group) {
+    greatestTargetWidth = Math.max(group.actualBounds.width, greatestTargetWidth);
+  });
+
   // Set initial location for target groups.
   // Place to the right of source groups.
-  nextLocation.setTo(600, 0);
+  nextLocation.setTo(greatestSourceWidth / 2 + greatestTargetWidth / 2 + 300, 0);
 
   // Place target groups in a descending list
   targetGroups.each(function(target: go.Group): void {
@@ -199,7 +210,7 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
 
   // Set initial location for transformation nodes.
   // Place in between source and target groups.
-  nextLocation.setTo(300, step - 27);
+  nextLocation.setTo(greatestSourceWidth / 2 + 150, step - 27);
 
   transformationNodes.each(function(trans: go.Node): void {
     trans.move(nextLocation.copy(), true);

@@ -897,7 +897,7 @@ export class DiagramChangesService {
 
   // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
-  groupMemberSizeChanged(member: go.Node): void {
+  groupMemberSizeChanged(member: go.Group): void {
     const nestedGroups = new go.Set();
     const linksToUpdate = new go.Set();
 
@@ -910,8 +910,11 @@ export class DiagramChangesService {
 
       currentGroup = currentGroup.containingGroup;
 
-      // Exit if current group is a map view group (as these are resized automatically)
+      // If current group is a map view group then:
+      //  - redo layout to ensure member nodes do not overlap
+      //  - Exit (as map view groups are resized automatically)
       if (currentGroup.category === '') {
+        currentGroup.layout.invalidateLayout();
         break;
       }
 
