@@ -229,6 +229,7 @@ function writeRadioDetails(
     .scrollIntoView()
     .clear()
     .type(title)
+    .should('have.value', title)
     .then(() => {
       selectDropDown('radio-detail-category', category);
     })
@@ -257,7 +258,8 @@ function writeRadioDetails(
     .then(() => {
       cy.get('[data-qa=radio-detail-action-by')
         .clear()
-        .type(actioned);
+        .type(actioned)
+        .should('have.value', actioned);
     })
     .then(() => {
       cy.type_ckeditor('[data-qa=radio-detail-description]', description);

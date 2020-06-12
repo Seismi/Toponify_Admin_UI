@@ -23,6 +23,19 @@ module.exports = {
       api: `${api_version}/users/login`,
       method: 'POST',
       name: 'login'
+    },
+    GetNotifications: {
+      api: `${api_version}/notifications`,
+      method: 'GET',
+      name: 'Notifications',
+      stub: {
+        data: []
+      }
+    },
+    GetMyProfile: {
+      api: `${api_version}/navigate/myprofile`,
+      method: 'GET',
+      name: 'MyProfile'
     }
   }
 };

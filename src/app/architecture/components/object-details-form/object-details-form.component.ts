@@ -7,7 +7,7 @@ import { Node } from 'gojs';
 
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file', 'transformation'];
-const dataSetCategories = ['data structure', 'data set', 'master data set'];
+const dataNodeCategories = ['data structure', 'data set', 'master data set', 'transformation'];
 const dimensionCategories = ['dimension', 'transformation'];
 const reportingCategories = ['list', 'structure', 'key', 'transformation'];
 
@@ -106,7 +106,7 @@ export class ObjectDetailsFormComponent {
       case 'system':
         return this.part instanceof Node ? systemCategories : ['master data', 'data'];
       case 'data':
-        return this.part instanceof Node ? dataSetCategories : ['master data', 'data'];
+        return this.part instanceof Node ? dataNodeCategories : ['master data', 'data'];
       case 'dimension':
         return this.part instanceof Node ? dimensionCategories : ['master data'];
       case 'reporting concept':

@@ -56,8 +56,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  @ViewChild('drawer') drawer;
-
   constructor(
     private scopeStore: Store<ScopeState>,
     private store: Store<ReportState>,
@@ -151,14 +149,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
   }
 
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
-  }
-
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {
     this.routerStore
       .select(getWorkPackagesQueryParams)
@@ -201,11 +191,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onAddReport() {
     const dialogRef = this.dialog.open(ReportModalComponent, {
       disableClose: false,
-      width: '500px',
-      data: {
-        workPackageId: this.workpackageId,
-        scopeId: this.scopeId
-      }
+      width: '500px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

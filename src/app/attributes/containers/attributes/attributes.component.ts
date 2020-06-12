@@ -52,7 +52,6 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public workPackageIsEditable: boolean;
   public scopeId = defaultScopeId;
   public selectedWorkPackageEntities: WorkPackageEntity[];
-  @ViewChild('drawer') drawer;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -179,14 +178,6 @@ export class AttributesComponent implements OnInit, OnDestroy {
         }
         this.routerStore.dispatch(new UpdateQueryParams(params));
       });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 
   onSelectEditWorkpackage(workpackage: any): void {

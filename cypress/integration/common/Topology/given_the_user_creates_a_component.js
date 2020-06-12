@@ -10,10 +10,13 @@ Given('the user creates a new {string} system with name {string}', function(comp
       cy.selectDropDownNoClick('topology-components-or-link-modal-category', component_type).then(() => {
         cy.get('[data-qa=topology-components-or-link-modal-name]')
           .type(name)
+          .should('have.value', name)
           .then(() => {
             cy.get('[data-qa=topology-components-or-link-modal-save]')
               .click()
-              .wait('@POSTWorkPackageNodesScopeQuery');
+              .wait(2000)
+              .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery']);
+            cy.get('[data-qa=spinner]').should('not.be.visible');
           });
       });
     });
@@ -40,12 +43,14 @@ When('the user creates a new {string} interface with name {string} between {stri
       cy.selectDropDownNoClick('topology-components-or-link-modal-category', interface_type).then(() => {
         cy.selectDropDownNoClick('topology-components-or-link-modal-source', source).then(() => {
           cy.selectDropDownNoClick('topology-components-or-link-modal-target', target);
-          cy.wait('@GETNotifications');
           cy.get('[data-qa=topology-components-or-link-modal-name]')
             .clear()
             .type(name)
+            .should('have.value', name)
             .then(() => {
               cy.get('[data-qa=topology-components-or-link-modal-save]').click();
+              cy.wait(['@GETNodeLinksWorkPackageQuery', '@GETNodesWorkPackageQuery', '@POSTWorkPackagesNodeLinks']);
+              cy.get('[data-qa=spinner]').should('not.be.visible');
             });
         });
       });

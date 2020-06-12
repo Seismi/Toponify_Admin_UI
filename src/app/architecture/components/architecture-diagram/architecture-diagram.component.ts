@@ -208,7 +208,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
     // Set group templates
-    this.diagram.groupTemplateMap.add('system', diagramTemplatesService.getSystemGroupTemplate());
+    this.diagram.groupTemplateMap.add('system', diagramTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add('data', diagramTemplatesService.getStandardGroupTemplate());
     this.diagram.groupTemplateMap.add('', diagramTemplatesService.getMapViewGroupTemplate());
 
     // Override command handler delete method to emit delete event to angular
@@ -232,6 +233,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       }
 
       if (deletedPart instanceof go.Node) {
+
+        // Disallow deleting group member of shared node
+        if (deletedPart.containingGroup && deletedPart.containingGroup.data.isShared) {
+          return;
+        }
+
         this.nodeDeleteRequested.emit(deletedPart.data);
       } else {
         // part to be deleted is a link
