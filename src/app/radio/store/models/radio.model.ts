@@ -215,6 +215,7 @@ export interface RadiosAdvancedSearch {
   tableStyle?: string;
   severityRange?: any;
   frequencyRange?: any;
+  tags?: any;
 }
 
 interface Text {
