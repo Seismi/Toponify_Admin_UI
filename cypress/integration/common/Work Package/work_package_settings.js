@@ -143,7 +143,7 @@ module.exports = {
       name: 'RadioReply'
     },
     GetRadios: {
-      api: `${api_version}/radios?*`,
+      api: `${api_version}/radios`,
       method: 'GET',
       name: 'Radios'
     }
