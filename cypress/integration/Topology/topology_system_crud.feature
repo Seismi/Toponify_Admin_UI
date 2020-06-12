@@ -34,21 +34,6 @@ Feature: Topology Systems Layer Feature
       |Automated Regression Test Analytical System|analytical|
       |Automated Regression Test File System|file|
       |Automated Regression Test Master Data System|master data|
-      |Automated Regression Test Transaction System|transactional|
-      |Automated Regression Test Reporting System|reporting|
-      |Automated Regression Test Analytical System|analytical|
-      |Automated Regression Test File System|file|
-      |Automated Regression Test Master Data System|master data|
-      |Automated Regression Test Transaction System|transactional|
-      |Automated Regression Test Reporting System|reporting|
-      |Automated Regression Test Analytical System|analytical|
-      |Automated Regression Test File System|file|
-      |Automated Regression Test Master Data System|master data|
-      |Automated Regression Test Transaction System|transactional|
-      |Automated Regression Test Reporting System|reporting|
-      |Automated Regression Test Analytical System|analytical|
-      |Automated Regression Test File System|file|
-      |Automated Regression Test Master Data System|master data|
 
   Scenario Outline: Update System Component via table and check results are correctly saved
     Given the user selects Topology menu item
