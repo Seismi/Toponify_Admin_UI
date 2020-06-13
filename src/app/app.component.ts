@@ -25,9 +25,11 @@ export class AppComponent implements AfterViewInit {
     private notificationStore: Store<NotificationState>
   ) {
     const customIcons = [
-      'data_set-master-data',
-      'data_set-physical',
-      'data_set-virtual',
+      'data-data-set-master',
+      'data-data-set-shared',
+      'data-master-data-set-master',
+      'data-master-data-set-shared',
+      'data-data-structure',
       'dim',
       'rc-keyrc',
       'rc-list',
