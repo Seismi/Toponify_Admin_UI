@@ -13,6 +13,7 @@ import { Node } from '@app/architecture/store/models/node.model';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntitiesBy } from '@app/architecture/store/selectors/node.selector';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 
 @Component({
   selector: 'smi-report-modal',
@@ -36,6 +37,7 @@ export class ReportModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.nodeStore.dispatch(new LoadNodes());
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
     this.systems$ = this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.system }));

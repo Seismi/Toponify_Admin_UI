@@ -56,8 +56,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  @ViewChild('drawer') drawer;
-
   constructor(
     private scopeStore: Store<ScopeState>,
     private store: Store<ReportState>,
