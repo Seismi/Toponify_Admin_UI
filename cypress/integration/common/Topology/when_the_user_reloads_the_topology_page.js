@@ -2,21 +2,21 @@ const { When } = require('cypress-cucumber-preprocessor/steps');
 
 When('the user reloads the Topology page', function(usertype) {
   let wait = [
-    '@GETScopes',
-    '@GETScope',
-    '@GETLayouts',
-    '@GETLayout',
-    '@GETWorkPackages',
-    '@GETTeams',
-    '@GETRadios',
-    '@GETNodesScopeQuery'
+    '@GETScopes.all',
+    '@GETScope.all',
+    '@GETLayouts.all',
+    '@GETLayout.all',
+    '@GETWorkPackages.all',
+    '@GETTeams.all',
+    '@POSTradiosAdvancedSearch.all',
+    '@GETNodesScopeQuery.all',
+    '@GETNodeLinksWorkPackageQuery.all',
+    '@GETSelectorAvailabilityQuery.all',
+    '@GETNodesWorkPackageQuery.all',
+    '@GETNodeLinksWorkPackageQuery.all',
+    '@GETSelectorAvailabilityQuery.all'
   ];
-  wait = wait.concat(['@GETNodeLinksScopeQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
-  wait = wait.concat([
-    '@GETNodesWorkPackageQuery.2',
-    '@GETNodeLinksWorkPackageQuery.2',
-    '@GETSelectorAvailabilityQuery.2'
-  ]);
-  wait = wait.concat(['@GETSelectorAvailabilityQuery.3', '@GETNodesWorkPackageQuery.3']);
-  cy.reload().wait(wait);
+  cy.reload();
+  cy.wait(wait);
+  cy.get('[data-qa=spinner]').should('not.be.visible');
 });
