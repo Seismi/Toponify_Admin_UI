@@ -201,6 +201,17 @@ Cypress.Commands.add('findScope', name => {
     });
 });
 
+Cypress.Commands.add('findReport', name => {
+  cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name) // type the name
+    .then(() => {
+      return cy
+        .get(`[data-qa="reports-table"]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
 Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
   cy.get(`[data-qa=${search}]`)
     .clear()
