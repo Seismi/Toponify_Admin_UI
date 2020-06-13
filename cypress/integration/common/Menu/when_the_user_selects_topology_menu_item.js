@@ -10,20 +10,21 @@ When('the user selects Topology menu item', function() {
         .click()
         .then(() => {
           let wait = [
-            '@GETScopes',
-            '@GETLayouts',
-            '@GETWorkPackages',
-            '@GETTeams',
-            '@POSTradiosAdvancedSearch',
-            '@GETScope',
-            '@GETNodesScopeQuery',
-            '@GETNodeLinksScopeQuery',
-            '@GETSelectorAvailabilityQuery',
-            '@GETNodesScopeQuery.1',
-            '@GETNodeLinksScopeQuery.1',
-            '@GETSelectorAvailabilityQuery.1'
+            '@GETScopes.all',
+            '@GETLayouts.all',
+            '@GETWorkPackages.all',
+            '@GETTeams.all',
+            '@GETSelectorAvailabilityQuery.all',
+            '@POSTradiosAdvancedSearch.all',
+            '@GETScope.all',
+            '@GETLayout.all',
+            '@GETNodesScopeQuery.all',
+            '@GETNodeLinksScopeQuery.all',
+            '@GETSelectorAvailabilityQuery.all'
           ];
-          cy.wait(wait); // wait for API Calls
+          cy.get(['data-qa=spinner'])
+            .should('not.be.visible')
+            .wait(wait); // wait for API Calls
         });
     });
 });
