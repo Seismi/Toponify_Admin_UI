@@ -22,7 +22,6 @@ Feature: Create new report
     And the user cancels the creation of the report
     Then the new report 'Automated Regression Test Report' should not exist in the reports table
 
-  @focus
   Scenario: Create Report and then confirm
     #TODO - this and all subsequent tests should use the system that you created above
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
