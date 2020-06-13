@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State as DocumentationStandardState } from '../../store/reducers/documentation-standards.reducer';
 import {
@@ -24,8 +24,6 @@ export class DocumentationStandardsComponent implements OnInit {
   public selectedLeftTab: number | string;
   public Roles = Roles;
 
-  @ViewChild('drawer') drawer;
-
   constructor(private store: Store<DocumentationStandardState>, private router: Router, public dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -48,13 +46,5 @@ export class DocumentationStandardsComponent implements OnInit {
         this.store.dispatch(new AddDocumentationStandard({ data: data.documentStandard }));
       }
     });
-  }
-
-  openLeftTab(tab: number | string): void {
-    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
-    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 }
