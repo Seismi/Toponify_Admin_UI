@@ -6,7 +6,7 @@ import {
   UpdateWorkPackageLink
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
 import { BehaviorSubject } from 'rxjs';
@@ -46,6 +46,7 @@ export class DiagramChangesService {
   public dependenciesView = false;
 
   workpackages = [];
+  selectedWorkpackages = [];
   layout;
 
   constructor(
@@ -58,6 +59,9 @@ export class DiagramChangesService {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
+    this.workpackageStore
+      .pipe(select(getSelectedWorkpackages))
+      .subscribe(workpackages => (this.selectedWorkpackages = workpackages));
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
@@ -1217,6 +1221,7 @@ export class DiagramChangesService {
     return true;
   }
 
+  // Update guide with instructions for current diagram state
   updateGuide(diagram: go.Diagram): void {
     const thisService = this;
 
@@ -1230,24 +1235,33 @@ export class DiagramChangesService {
     guide.visible = (diagram.nodes.count + diagram.nodes.count === 0);
 
     const instructions = guide.findObject('instructions');
+    const arrow = guide.findObject('arrow');
+
+    // Hide arrow by default
+    arrow.visible = false;
 
     if (thisService.currentScope === defaultScopeId) {
-      if (thisService.workpackages.length === 0) {
-        instructions.text =  'Your topology is empty. Select or create a work package to get started';
-      } else if (thisService.workpackages.length === 1) {
+      if (thisService.selectedWorkpackages.length === 0) {
+        instructions.text =  'Your topology is empty. Select or create a work package to get started.';
+        arrow.visible = true;
+      } else if (thisService.selectedWorkpackages.length === 1) {
         if (thisService.diagramEditable) {
-          instructions.text = 'Go to edit pane [edit icon] and start dragging and dropping objects';
+          instructions.text = 'Go to edit pane and start dragging and dropping objects';
         } else {
           instructions.text = 'Your work package is empty. Enter edit mode to start documenting your topology';
+          arrow.visible = true;
         }
       }
     } else {
       if (thisService.currentNodeId) {
-        instructions.text = 'No detail to display. Start documenting or click back button to go to previous view';
+        instructions.text = 'No detail to display. Start documenting or click back button to go to previous view.';
       } else {
         instructions.text = 'There is no detail to display. Review scope definition or start documenting with a work package';
       }
     }
 
+    // Ensure instructions do not exceed screen space avialable
+    const arrowWidth = arrow.visible ? arrow.actualBounds.width + 10 : 0;
+    instructions.width = Math.max(100, diagram.viewportBounds.width - arrowWidth - 10);
   }
 }

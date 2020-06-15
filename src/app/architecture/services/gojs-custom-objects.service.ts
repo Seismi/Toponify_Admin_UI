@@ -1,4 +1,5 @@
 import * as go from 'gojs';
+import * as shapes from 'gojs/extensionsTS/Figures';
 import {LinkShiftingTool} from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from './diagram-level.service';
@@ -8,10 +9,18 @@ import {DiagramChangesService} from '@app/architecture/services/diagram-changes.
 import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
-import {getFilterLevelQueryParams, getQueryParams} from '@app/core/store/selectors/route.selectors';
-import {defaultScopeId} from '@app/scope/store/models/scope.model';
+import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 
 const $ = go.GraphObject.make;
+
+function textFont(style?: string): Object {
+  const font = getComputedStyle(document.body).getPropertyValue('--default-font');
+  return {
+    font: `${style} ${font}`
+  };
+}
+
+(function() { return shapes; })();
 
 export const customIcons = {
   tree: go.Geometry.parse('M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z', true),
@@ -247,9 +256,6 @@ export class GojsCustomObjectsService {
 
   public diagramEditable: boolean;
   private currentLevel;
-  private currentScope;
-  private workpackageQuery;
-  private filterNode;
 
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
@@ -261,13 +267,7 @@ export class GojsCustomObjectsService {
     )
     public diagramLevelService: DiagramLevelService
   ) {
-
-    this.store.select(getQueryParams).subscribe(params => {
-      this.currentLevel = params.filterLevel;
-      this.currentScope = params.scope;
-      this.filterNode = params.nodeId;
-      this.workpackageQuery = params.workpackageQuery;
-    });
+    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
   }
 
   // Context menu for when the background is right-clicked
@@ -908,6 +908,7 @@ export class GojsCustomObjectsService {
     return loc;  // give up -- don't allow the node to be moved to the new location
   }
 
+  // returns the gojs object containing a guide with instructions for users
   getInstructions(): go.Part {
 
     const thisService = this;
@@ -917,9 +918,21 @@ export class GojsCustomObjectsService {
       {
         name: 'Guide',
         selectable: false,
-        layerName: 'Grid'
+        layerName: 'Grid',
+        padding: 10
       },
+      $(go.Shape,
+        'Arrow2',
+        {
+          name: 'arrow',
+          fill: 'black',
+          angle: 180,
+          height: 40,
+          margin: new go.Margin(0, 10, 0, 0)
+        }
+      ),
       $(go.TextBlock,
+        textFont('30px'),
         {
           name: 'instructions'
         }
