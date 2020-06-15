@@ -30,14 +30,22 @@ export class ReportModalComponent implements OnInit {
     private reportLibraryDetailService: ReportLibraryDetailService,
     public dialogRef: MatDialogRef<ReportModalComponent>,
     private teamStore: Store<TeamState>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA)
+      public data: {
+        workPackageId: string;
+      }
+    ) { }
 
   get reportDetailForm(): FormGroup {
     return this.reportLibraryDetailService.reportDetailForm;
   }
 
   ngOnInit() {
-    this.nodeStore.dispatch(new LoadNodes());
+    this.nodeStore.dispatch(
+      new LoadNodes({
+        workPackageQuery: [this.data.workPackageId]
+      })
+    );
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
     this.systems$ = this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.system }));

@@ -191,7 +191,10 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onAddReport() {
     const dialogRef = this.dialog.open(ReportModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        workPackageId: this.selectedWorkPackageEntities[0].id
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
