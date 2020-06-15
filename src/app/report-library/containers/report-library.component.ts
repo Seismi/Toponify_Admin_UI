@@ -10,26 +10,29 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
+  GetWorkpackageAvailability
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   getEditWorkpackages,
   getSelectedWorkpackages,
-  getWorkPackageEntities
+  getWorkPackageEntities,
+  getSelectedWorkpackageIds
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Params, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ReportModalComponent } from './report-modal/report-modal.component';
 import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
-import { take } from 'rxjs/operators';
+import { take, distinctUntilChanged, withLatestFrom } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { RouterStateUrl } from '@app/core/store';
 import { RouterReducerState } from '@ngrx/router-store';
-import {defaultScopeId, ScopeEntity} from '@app/scope/store/models/scope.model';
+import { defaultScopeId, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
+import isEqual from 'lodash.isequal';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -52,8 +55,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public selectedWorkPackageEntities: WorkPackageEntity[];
 
   private subscriptions: Subscription[] = [];
-
-  @ViewChild('drawer') drawer;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -114,6 +115,21 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
         !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
       })
     );
+
+    this.subscriptions.push(
+      this.workPackageStore
+        .pipe(
+          select(getSelectedWorkpackageIds),
+          distinctUntilChanged(isEqual)
+        )
+        .subscribe(selectedWorkpackageIds => {
+          this.workPackageStore.dispatch(
+            new GetWorkpackageAvailability({
+              workPackageQuery: selectedWorkpackageIds
+            })
+          );
+        })
+    );
   }
 
   ngOnDestroy(): void {
@@ -131,14 +147,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   onSelectReport(row: ReportLibrary) {
     this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {
@@ -183,11 +191,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onAddReport() {
     const dialogRef = this.dialog.open(ReportModalComponent, {
       disableClose: false,
-      width: '500px',
-      data: {
-        workPackageId: this.workpackageId,
-        scopeId: this.scopeId
-      }
+      width: '500px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

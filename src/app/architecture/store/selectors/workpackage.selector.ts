@@ -22,3 +22,8 @@ export const getPotentialWorkPackageNodes = createSelector(
   getWorkpackageFeatureState,
   state => state.descendants
 );
+
+export const getPotentialGroupMembers = createSelector(
+  getWorkpackageFeatureState,
+  state => state.members
+);

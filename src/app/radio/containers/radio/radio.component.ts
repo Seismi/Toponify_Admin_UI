@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { LoadNodes, LoadTags } from '@app/architecture/store/actions/node.actions';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
@@ -21,11 +21,17 @@ import {
   RadioFilter,
   SearchRadio
 } from '../../store/actions/radio.actions';
-import { RadioDetail, RadioEntity, RadiosAdvancedSearch } from '../../store/models/radio.model';
+import { RadioDetail, RadioEntity, RadiosAdvancedSearch, TableData } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { getRadioEntities, getRadioFilter, getSelectedRadio } from '../../store/selectors/radio.selector';
+import {
+  getRadioEntities,
+  getRadioFilter,
+  getSelectedRadio,
+  getRadioTableData
+} from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 
 @Component({
   selector: 'smi-radio',
@@ -34,15 +40,13 @@ import { RadioModalComponent } from '../radio-modal/radio-modal.component';
   providers: [RadioDetailService, RadioValidatorService]
 })
 export class RadioComponent implements OnInit, OnDestroy {
-  public radio$: Observable<RadioEntity[]>;
+  public radio$: Observable<TableData<RadioEntity>>;
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
   public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
-
-  @ViewChild('drawer') drawer;
 
   constructor(
     private actions: Actions,
@@ -54,12 +58,20 @@ export class RadioComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(new LoadTags());
+    this.store.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
-    this.store.dispatch(new LoadRadios({}));
+    this.store.dispatch(
+      new LoadRadios({
+        page: String(0),
+        size: String(10)
+      })
+    );
     this.nodeStore.dispatch(new LoadNodes());
-    this.radio$ = this.store
-      .pipe(select(getRadioEntities))
-      .pipe(map(radios => radios.filter(radio => (this.filterData === null ? radio.status !== 'closed' : radio))));
+    this.radio$ = this.store.pipe(select(getRadioTableData));
+    // .pipe(
+    //   map(radios => radios.entities.filter(radio => (this.filterData === null ? radio.status !== 'closed' : radio)))
+    // );
 
     this.store.pipe(select(getRadioFilter)).subscribe(data => {
       if (data) {
@@ -77,11 +89,18 @@ export class RadioComponent implements OnInit, OnDestroy {
           if (data) {
             this.store.dispatch(
               new SearchRadio({
-                data: this.transformFilterIntoAdvancedSearchData(data)
+                data: this.transformFilterIntoAdvancedSearchData(data),
+                page: '0',
+                size: '10'
               })
             );
           } else {
-            this.store.dispatch(new LoadRadios({}));
+            this.store.dispatch(
+              new LoadRadios({
+                page: '0',
+                size: '10'
+              })
+            );
           }
         })
     );
@@ -104,7 +123,12 @@ export class RadioComponent implements OnInit, OnDestroy {
             })
           );
         } else {
-          this.store.dispatch(new LoadRadios({}));
+          this.store.dispatch(
+            new LoadRadios({
+              page: '0',
+              size: '10'
+            })
+          );
         }
         this.onSelectRadio(action.payload);
       })
@@ -169,6 +193,25 @@ export class RadioComponent implements OnInit, OnDestroy {
     });
   }
 
+  handlePageChange(nextPage: { previousPageIndex: number; pageIndex: number; pageSize: number; length: number }): void {
+    if (this.filterData) {
+      this.store.dispatch(
+        new SearchRadio({
+          data: this.transformFilterIntoAdvancedSearchData(this.filterData),
+          page: String(nextPage.pageIndex),
+          size: String(nextPage.pageSize)
+        })
+      );
+    } else {
+      this.store.dispatch(
+        new LoadRadios({
+          page: String(nextPage.pageIndex),
+          size: String(nextPage.pageSize)
+        })
+      );
+    }
+  }
+
   downloadCSV(): void {
     this.dialog.open(DownloadCSVModalComponent, {
       width: '250px',
@@ -178,14 +221,6 @@ export class RadioComponent implements OnInit, OnDestroy {
         fileName: 'RADIO'
       }
     });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 
   isFilterEnabled(filter: string | boolean | [] | number): boolean {
@@ -212,12 +247,17 @@ export class RadioComponent implements OnInit, OnDestroy {
         enabled: this.isFilterEnabled(data.assignedTo),
         values: data.assignedTo
       },
-      relatesTo: {
-        enabled: this.isFilterEnabled(data.relatesTo),
-        includeDescendants: this.isFilterEnabled(data.relatesTo),
-        includeLinks: this.isFilterEnabled(data.relatesTo),
-        values: data.relatesTo
+      workpackages: {
+        enabled: this.isFilterEnabled(data.relatesToWorkPackages),
+        includeBaseline: this.isFilterEnabled(data.relatesToWorkPackages),
+        values: data.relatesToWorkPackages
       },
+      relatesTo: {
+          enabled: this.isFilterEnabled(data.relatesTo),
+          includeDescendants: this.isFilterEnabled(data.relatesTo),
+          includeLinks: this.isFilterEnabled(data.relatesTo),
+          values: data.relatesTo
+        },
       dueDate: {
         enabled: this.isFilterEnabled(data.from) || this.isFilterEnabled(data.to),
         from: data.from,
@@ -228,14 +268,18 @@ export class RadioComponent implements OnInit, OnDestroy {
         value: data.text
       },
       severityRange: {
-        enabled: this.isFilterEnabled(data.severity),
-        from: data.severity,
-        to: data.severity
+        enabled: this.isFilterEnabled(data.severityRangeFrom) || this.isFilterEnabled(data.severityRangeTo),
+        from: data.severityRangeFrom,
+        to: data.severityRangeTo
       },
       frequencyRange: {
-        enabled: this.isFilterEnabled(data.frequency),
-        from: data.frequency,
-        to: data.frequency
+        enabled: this.isFilterEnabled(data.frequencyRangeFrom) || this.isFilterEnabled(data.frequencyRangeTo),
+        from: data.frequencyRangeFrom,
+        to: data.frequencyRangeTo
+      },
+      tags: {
+        enabled: this.isFilterEnabled(data.hasTag),
+        values: data.hasTag
       }
     };
   }

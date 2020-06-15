@@ -14,7 +14,9 @@ export class FilterRadioFormService {
       relatesTo: [null],
       from: [null],
       to: [null],
-      text: [null]
+      text: [null],
+      relatesToWorkPackages: [null],
+      hasTag: [null]
     });
   }
 

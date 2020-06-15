@@ -38,11 +38,12 @@ export class RadioDetailComponent implements DoCheck {
   @Input() rows = 8;
   @Input() tags: Tag[];
   @Input() availableTags: Tag[];
-  @Input() selectedNode: NodeDetail;
   @Input() workpackages: WorkPackageEntity[];
   @Input() radioCategory: string;
   @Input() disabled: boolean;
   @Input() editModal = false;
+  @Input() selectWorkPackages = false;
+  @Input() message: string;
   public selectedOptions = [];
   public severityTooltip: string;
   public frequencyTooltip: string;
@@ -106,6 +107,7 @@ export class RadioDetailComponent implements DoCheck {
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() selectWorkPackage = new EventEmitter<any>();
   @Output() closeModal = new EventEmitter<void>();
+  @Output() cancel = new EventEmitter<void>();
 
   ngDoCheck(): void {
     this.radioCategory = this.group.value.category;
@@ -129,6 +131,7 @@ export class RadioDetailComponent implements DoCheck {
   }
 
   onCancel() {
+    this.cancel.emit();
     this.isEditable = false;
   }
 

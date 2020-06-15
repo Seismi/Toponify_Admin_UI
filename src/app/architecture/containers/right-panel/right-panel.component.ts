@@ -62,7 +62,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() addAttribute = new EventEmitter();
   @Output() deleteAttribute = new EventEmitter<AttributesEntity>();
   @Output() hideRightPane = new EventEmitter<void>();
-  @Output() addRadio = new EventEmitter<void>();
+  @Output() raiseNew = new EventEmitter<void>();
   @Output() addScope = new EventEmitter<void>();
   @Output() addOwner = new EventEmitter<void>();
   @Output() deleteOwner = new EventEmitter<string>();
@@ -76,7 +76,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() assignRadio = new EventEmitter<void>();
   @Output() addExistingAttribute = new EventEmitter<void>();
   @Output() editGroup = new EventEmitter<void>();
-  @Output() addNewSystem = new EventEmitter<void>();
+  @Output() addNewGroupMember = new EventEmitter<void>();
   @Output() addDescendants = new EventEmitter<void>();
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
   @Output() deleteNodeGroup = new EventEmitter<Node>();
@@ -93,6 +93,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() addToScope = new EventEmitter<void>();
   @Output() editSourceOrTarget = new EventEmitter<string>();
   @Output() switchSourceAndTarget = new EventEmitter<void>();
+  @Output() handleRadioPageChange = new EventEmitter<any>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -136,10 +137,6 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onDeleteAttribute(attribute: AttributesEntity): void {
     this.deleteAttribute.emit(attribute);
-  }
-
-  onAddRadio(): void {
-    this.addRadio.emit();
   }
 
   onAddScope(): void {

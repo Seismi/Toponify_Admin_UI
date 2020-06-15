@@ -5,9 +5,10 @@
     [group]="radioDetailsForm" 
     [isEditable]="isEditable" 
     [modalMode]="modalMode"
-    [selectedNode]="data?.selectedNode"
     [workpackages]="workpackages$ | async"
     (selectWorkPackage)="onSelectWorkPackage($event)"
+    [selectWorkPackages]="selectWorkPackages"
+    [message]="message"
   >
   </smi-radio-detail>
 </div>

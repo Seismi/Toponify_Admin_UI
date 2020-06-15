@@ -84,7 +84,8 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
       disableClose: false,
       width: 'auto',
       data: {
-        title: 'Are you sure you want to delete?'
+        title: 'Are you sure you want to delete?',
+        warningMessage: 'Warning - deleting the documentation standards will delete any associated data.'
       }
     });
 

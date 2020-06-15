@@ -9,7 +9,7 @@ When('the user selects Work Package menu item', function() {
         cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
           .click()
           .then(() => {
-            cy.wait('@GETUsers'); // wait for API Calls
+            cy.wait(['@GETUsers', '@GETWorkPackages']); // wait for API Calls
           });
       });
   });

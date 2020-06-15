@@ -27,7 +27,7 @@ module.exports = {
       name: 'WorkPackage'
     },
     GetArchiveWorkPackages: {
-      api: `${api_version}/workpackages?includeArchived=true`,
+      api: `${api_version}/workpackages?includeArchived=*`,
       //                        api: `${api_version}/workpackages*`,
       method: 'GET',
       name: 'ArchiveWorkPackages'
@@ -136,11 +136,6 @@ module.exports = {
       api: `${api_version}/radios/*`,
       method: 'GET',
       name: 'Radio'
-    },
-    GetNotfications: {
-      api: `${api_version}/notifications`,
-      method: 'GET',
-      name: 'Notifications'
     },
     PostRadioReply: {
       api: `${api_version}/radios/*/reply`,

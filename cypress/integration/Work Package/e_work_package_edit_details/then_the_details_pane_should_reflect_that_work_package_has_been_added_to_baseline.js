@@ -12,7 +12,8 @@ Then('the details pane should reflect that {string} has been added to baseline o
     .concat(baseline); // prefix baseline with branch
   cy.get(`[data-qa=work-packages-quick-search]`) // find work packages quick search
     .clear() // clear
-    .type(name) // type the name
+    .type(name)
+    .should('have.value', name) // type the name
     .then(() => {
       cy.get(`[data-qa=work-packages-table]`) // get the work packages table
         .find('table>tbody') // get the table body

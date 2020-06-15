@@ -10,25 +10,28 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import {
   LoadWorkPackages,
   SetSelectedWorkPackages,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
+  GetWorkpackageAvailability
 } from '@app/workpackage/store/actions/workpackage.actions';
 import {
   getSelectedWorkpackages,
   getWorkPackageEntities,
-  getEditWorkpackages
+  getEditWorkpackages,
+  getSelectedWorkpackageIds
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Params, Router } from '@angular/router';
 import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
 import { RouterStateUrl } from '@app/core/store';
 import { RouterReducerState } from '@ngrx/router-store';
-import { take } from 'rxjs/operators';
+import { take, distinctUntilChanged } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { MatDialog } from '@angular/material';
 import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import {defaultScopeId, ScopeEntity} from '@app/scope/store/models/scope.model';
+import { defaultScopeId, ScopeEntity } from '@app/scope/store/models/scope.model';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
+import isEqual from 'lodash.isequal';
 
 @Component({
   selector: 'smi-attributes',
@@ -49,7 +52,6 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public workPackageIsEditable: boolean;
   public scopeId = defaultScopeId;
   public selectedWorkPackageEntities: WorkPackageEntity[];
-  @ViewChild('drawer') drawer;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -109,6 +111,21 @@ export class AttributesComponent implements OnInit, OnDestroy {
         !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
       })
     );
+
+    this.subscriptions.push(
+      this.workPackageStore
+        .pipe(
+          select(getSelectedWorkpackageIds),
+          distinctUntilChanged(isEqual)
+        )
+        .subscribe(selectedWorkpackageIds => {
+          this.workPackageStore.dispatch(
+            new GetWorkpackageAvailability({
+              workPackageQuery: selectedWorkpackageIds
+            })
+          );
+        })
+    );
   }
 
   ngOnDestroy(): void {
@@ -161,14 +178,6 @@ export class AttributesComponent implements OnInit, OnDestroy {
         }
         this.routerStore.dispatch(new UpdateQueryParams(params));
       });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 
   onSelectEditWorkpackage(workpackage: any): void {

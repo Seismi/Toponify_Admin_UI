@@ -12,6 +12,7 @@ When('the user creates a new layout called {string} against the scope called {st
       cy.get('smi-scope-and-layout-modal')
         .find('[data-qa=scopes-and-layouts-details-name]')
         .type(layout)
+        .should('have.value', layout)
         .then(() => {
           cy.get('[data-qa=scopes-and-layouts-modal-save]')
             .click()

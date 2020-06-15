@@ -7,6 +7,7 @@ Given(
     cy.get('[data-qa=settings-all-users-quick-search]') // get the all users search
       .clear() //clear contents
       .type(email)
+      .should('have.value', email)
       .then(() => {
         //type email address
         cy.get(`[data-qa=all-users-table]`)
@@ -117,16 +118,20 @@ function createUser(editButton, saveButton, action, email, first, last, phone, t
         // constrain commands to the modal form
         cy.get(`[data-qa=settings-user-email]`)
           .clear()
-          .type(email); // clear and type email
+          .type(email)
+          .should('have.value', email); // clear and type email
         cy.get(`[data-qa=settings-user-first-name]`)
           .clear()
-          .type(first); // clear and type first name
+          .type(first)
+          .should('have.value', first); // clear and type first name
         cy.get(`[data-qa=settings-user-last-name]`)
           .clear()
-          .type(last); // clear and type last name
+          .type(last)
+          .should('have.value', last); // clear and type last name
         cy.get(`[data-qa=settings-user-phone-number]`)
           .clear()
-          .type(phone); // clear and type phone number
+          .type(phone)
+          .should('have.value', phone); // clear and type phone number
       });
       team.forEach(t => {
         // fpr each team
@@ -153,13 +158,16 @@ function updateUser(editButton, saveButton, action, email, first, last, phone, t
     .then(() => {
       cy.get(`[data-qa=settings-user-first-name]`)
         .clear()
-        .type(first); // clear and type the first name
+        .type(first)
+        .should('have.value', first); // clear and type the first name
       cy.get(`[data-qa=settings-user-last-name]`)
         .clear()
-        .type(last); // clear and type the last name
+        .type(last)
+        .should('have.value', last); // clear and type the last name
       cy.get(`[data-qa=settings-user-phone-number]`)
         .clear()
-        .type(phone); // clear and type the phone number
+        .type(phone)
+        .should('have.value', phone); // clear and type the phone number
       resetDropDown('settings-user-teams'); //reset the drop down to have remove all currently selected teams
       teams.forEach(team => {
         // for each team in the feature file

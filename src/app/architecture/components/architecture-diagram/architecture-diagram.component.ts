@@ -149,6 +149,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
+    this.diagram.toolManager.relinkingTool.portGravity = 40;
     this.diagram.toolManager.relinkingTool.linkValidation =
       diagramChangesService.linkingValidation.bind(diagramChangesService);
     this.diagram.toolManager.resizingTool = new CustomNodeResize();
@@ -207,7 +208,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
     // Set group templates
-    this.diagram.groupTemplateMap.add('system', diagramTemplatesService.getSystemGroupTemplate());
+    this.diagram.groupTemplateMap.add('system', diagramTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add('data', diagramTemplatesService.getStandardGroupTemplate());
     this.diagram.groupTemplateMap.add('', diagramTemplatesService.getMapViewGroupTemplate());
 
     this.diagram.add(gojsCustomObjectsService.getInstructions());
@@ -233,6 +235,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       }
 
       if (deletedPart instanceof go.Node) {
+
+        // Disallow deleting group member of shared node
+        if (deletedPart.containingGroup && deletedPart.containingGroup.data.isShared) {
+          return;
+        }
+
         this.nodeDeleteRequested.emit(deletedPart.data);
       } else {
         // part to be deleted is a link
