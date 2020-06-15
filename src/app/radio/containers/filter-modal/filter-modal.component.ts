@@ -9,9 +9,13 @@ import { Store, select } from '@ngrx/store';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
-import { Node } from '@app/architecture/store/models/node.model';
+import { Node, Tag, TagApplicableTo } from '@app/architecture/store/models/node.model';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
-import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
+import { getNodeEntities, getTags } from '@app/architecture/store/selectors/node.selector';
+import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { getAllWorkPackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'smi-filter-modal',
@@ -22,12 +26,14 @@ import { getNodeEntities } from '@app/architecture/store/selectors/node.selector
 export class FilterModalComponent implements OnInit {
   public users$: Observable<User[]>;
   public nodes$: Observable<Node[]>;
+  public workpackages$: Observable<WorkPackageEntity[]>;
+  public tags$: Observable<Tag[]>;
   public radio: RadiosAdvancedSearch;
   public filterData: RadiosAdvancedSearch | any;
-  public filterApplied: boolean;
   public mode: string;
 
   constructor(
+    private workPackageStore: Store<WorkPackageState>,
     private nodeStore: Store<NodeState>,
     private userStore: Store<UserState>,
     private filterRadioService: FilterRadioFormService,
@@ -37,24 +43,31 @@ export class FilterModalComponent implements OnInit {
     this.radio = data.radio;
     this.filterData = data.filterData;
     this.mode = data.mode;
-    this.mode === 'filter' ? (this.filterApplied = true) : (this.filterApplied = false);
   }
 
   ngOnInit(): void {
+    this.tags$ = this.nodeStore.pipe(select(getTags))
+    .pipe(
+      map(tags =>
+        tags.filter(tag => tag.applicableTo.indexOf(TagApplicableTo.everywhere || TagApplicableTo.RADIO) > -1)
+      )
+    );
+
+    this.workpackages$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
     this.users$ = this.userStore.pipe(select(getUsers));
 
-    if (this.filterApplied) {
-      this.filterRadioService.filterRadioForm.patchValue({
-        status: this.filterData.status,
-        type: this.filterData.type,
-        assignedTo: this.filterData.assignedTo,
-        relatesTo: this.filterData.relatesTo,
-        from: this.filterData.from,
-        to: this.filterData.to,
-        text: this.filterData.text
-      });
-    }
+    this.filterRadioService.filterRadioForm.patchValue({
+      status: this.filterData.status,
+      type: this.filterData.type,
+      assignedTo: this.filterData.assignedTo,
+      relatesToWorkPackages: this.filterData.relatesToWorkPackages,
+      relatesTo: this.filterData.relatesTo,
+      from: this.filterData.from,
+      to: this.filterData.to,
+      text: this.filterData.text,
+      hasTag: this.filterData.hasTag
+    });
   }
 
   get filterRadioForm(): FormGroup {
