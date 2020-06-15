@@ -104,6 +104,7 @@ Cypress.Commands.add('type_ckeditor', (element, content) => {
 });
 
 Cypress.Commands.add('assertRowExists', (table, contents) => {
+  console.log(contents);
   return cy
     .get(`[data-qa=${table}]`)
     .find('table>tbody')

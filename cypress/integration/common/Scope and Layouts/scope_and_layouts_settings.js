@@ -43,6 +43,11 @@ module.exports = {
       api: `${api_version}/layouts/*`,
       method: 'GET',
       name: 'Layout'
+    },
+    ScopesNodes: {
+      api: `${api_version}/scopes/*/nodes`,
+      method: 'POST',
+      name: 'ScopesNodes'
     }
   }
 };
