@@ -4,14 +4,15 @@ import { Router } from '@angular/router';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
+import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
 import {
@@ -24,15 +25,13 @@ import {
 import { RadioDetail, RadioEntity, RadiosAdvancedSearch, TableData } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
 import {
-  getRadioEntities,
+  getMergedRadioFilters,
   getRadioFilter,
-  getSelectedRadio,
   getRadioTableData,
-  getMergedRadioFilters
+  getSelectedRadio
 } from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
-import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 
 @Component({
   selector: 'smi-radio',

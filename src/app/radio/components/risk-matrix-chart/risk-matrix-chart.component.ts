@@ -2,11 +2,15 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 import { GetRadioMatrix, RadioFilter } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioFilter, getRadioMatrix, getRadioAnalysisFilter } from '@app/radio/store/selectors/radio.selector';
+import {
+  getMergedRadioFilters,
+  getRadioDefaultFilter,
+  getRadioMatrix
+} from '@app/radio/store/selectors/radio.selector';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { mergeWith, isArray } from 'lodash';
+import isEqual from 'lodash.isequal';
+import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 export type RiskMatrixData = number[][];
 
@@ -24,7 +28,7 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
 
   private matrixRange = [];
 
-  public activeFilters: any = {};
+  public defaultFilters: any = {};
   public analysisFilters: any = {};
 
   subscriptions: Subscription[] = [];
@@ -35,8 +39,8 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
   }
 
   get selectedRiskMatrixCol(): number[] | null {
-    if (this.activeFilters && this.activeFilters.severityRange && this.activeFilters.frequencyRange) {
-      const cords = [this.activeFilters.severityRange.from, this.activeFilters.frequencyRange.from];
+    if (this.defaultFilters && this.defaultFilters.severityRange && this.defaultFilters.frequencyRange) {
+      const cords = [this.defaultFilters.severityRange.from, this.defaultFilters.frequencyRange.from];
       return cords;
     }
     return null;
@@ -65,22 +69,27 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      combineLatest(this.store.pipe(select(getRadioFilter)), this.store.pipe(select(getRadioAnalysisFilter))).subscribe(
-        ([defaultFilters, analysisFilters]) => {
-          this.activeFilters = defaultFilters;
-          const mergedFilters = mergeWith({ ...defaultFilters }, { ...analysisFilters }, (a, b) =>
-            isArray(a) ? a.concat(b) : undefined
-          );
+      this.store.pipe(select(getRadioDefaultFilter)).subscribe(defaultFilters => {
+        this.defaultFilters = defaultFilters;
+      })
+    );
+
+    this.subscriptions.push(
+      this.store
+        .pipe(
+          select(getMergedRadioFilters),
+          distinctUntilChanged(isEqual)
+        )
+        .subscribe(filters => {
           this.store.dispatch(
             new GetRadioMatrix({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(mergedFilters, [
+              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(filters, [
                 'severityRange',
                 'frequencyRange'
               ])
             })
           );
-        }
-      )
+        })
     );
   }
 
@@ -102,14 +111,14 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
   handleColClick(x: number, y: number): void {
     this.store.dispatch(
       new RadioFilter({
-        ...(!!this.activeFilters && this.activeFilters),
+        ...(!!this.defaultFilters && this.defaultFilters),
         ...this.matrixRange[x][y]
       })
     );
   }
 
   clearSelection(): void {
-    const { frequencyRange, severityRange, ...rest } = this.activeFilters;
+    const { frequencyRange, severityRange, ...rest } = this.defaultFilters;
     this.store.dispatch(
       new RadioFilter({
         ...rest

@@ -36,6 +36,10 @@ export class RadioFilterService {
         enabled: this.isFilterEnabled(data.type),
         values: data.type
       },
+      tags: {
+        enabled: this.isFilterEnabled(data.tags),
+        values: data.tags
+      },
       assignedTo: {
         enabled: this.isFilterEnabled(data.assignedTo),
         values: data.assignedTo

@@ -29,11 +29,18 @@ export const getRadioFilter = createSelector(
 export const getMergedRadioFilters = createSelector(
   getRadioFeatureState,
   state => {
-    const filter = mergeWith({ ...state.radioFilter }, { ...state.analysisFilter }, (a, b) =>
-      isArray(a) ? a.concat(b) : undefined
+    const filter = mergeWith(
+      { ...state.radioFilter },
+      { ...state.analysisFilter },
+      (objValue, srcValue, key, object, source, stack) => (isArray(objValue) ? srcValue : undefined)
     );
     return filter;
   }
+);
+
+export const getRadioDefaultFilter = createSelector(
+  getRadioFeatureState,
+  state => state.radioFilter
 );
 
 export const getRadioMatrixFilter = createSelector(
