@@ -26,7 +26,7 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   public team: TeamEntity[];
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
-  public user: UserDetails;
+  public user: any;
   public isEditable = false;
   public userStatus: string;
   public administrators: string[];
@@ -67,10 +67,10 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.store.pipe(select(getUserSelected)).subscribe(data => {
-        this.user = data;
         if (data) {
+          this.user = data;
           this.userRoles = data.roles.map(role => role.name);
-          this.myUserFormService.myUserForm.patchValue({ ...data });
+          this.myUserFormService.myUserForm.patchValue({ ...data, settings: {} });
           this.isEditable = false;
           data.userStatus === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');
         }

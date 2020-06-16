@@ -1594,7 +1594,14 @@ export class DiagramTemplatesService {
               }.bind(this)
             },
             // Disable button if moves not allowed in diagram
-            new go.Binding('isEnabled', '', function(node) {
+            new go.Binding('isEnabled', '', function(data) {
+
+              // Disallow adding children to nodes that inherit their children
+              if (data.category === nodeCategories.dataSet ||
+                data.category === nodeCategories.masterDataSet) {
+                return false;
+              }
+
               return this.gojsCustomObjectsService.diagramEditable;
             }.bind(this)),
             $(go.TextBlock, textFont('bold 22px'), '+',

@@ -52,6 +52,16 @@ export class CustomNodeResize extends go.ResizingTool {
     super();
   }
 
+  doActivate() {
+    go.ResizingTool.prototype.doActivate.call(this);
+
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        node.data.tempSavedPosition = node.position.copy();
+      }
+    );
+  }
+
   // Constrain minimum size to encompass all system/data group members
   public computeMinSize(): go.Size {
 
@@ -126,26 +136,27 @@ export class CustomNodeResize extends go.ResizingTool {
   public resize(newr: go.Rect): void {
     const memberLocations = [];
 
-    // Save grouped node's positions
-    (this.adornedObject.part as go.Group).findSubGraphParts().each(
-      function(member: go.Part) {
-        if (member instanceof go.Node) {
-          memberLocations.push({
-            node: member,
-            PrevPosition: member.position.copy()
-          });
-        }
-      }
-    );
-
     // Perform standard resizing
     go.ResizingTool.prototype.resize.call(this, newr);
 
     // Restore grouped node's positions from before the resizing
-    memberLocations.forEach(function(nodeLocation) {
-      nodeLocation.node.position = nodeLocation.PrevPosition;
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        node.position = node.data.tempSavedPosition;
     });
 
+  }
+
+  doDeactivate() {
+
+    // Remove temporary saved position from node data
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        delete node.data.tempSavedPosition;
+      }
+    );
+
+    return go.ResizingTool.prototype.doDeactivate.call(this);
   }
 }
 
@@ -748,7 +759,7 @@ export class GojsCustomObjectsService {
           'Add data node',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            thisService.addDataSetSource.next(node.data);
+            thisService.addDataSetSource.next();
           },
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
