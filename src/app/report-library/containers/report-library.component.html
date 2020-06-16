@@ -49,6 +49,8 @@
               (addReport)="onAddReport()"
               [workPackageIsEditable]="workPackageIsEditable"
               (download)="downloadCSV()"
+              (pageChange)="handlePageChange($event)"
+              (filter)="handleFilter($event)"
             >
             </smi-report-library-table>
           </div>
