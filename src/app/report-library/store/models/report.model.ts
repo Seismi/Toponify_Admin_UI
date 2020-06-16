@@ -13,6 +13,11 @@ export interface ReportEntityApiResponse {
   data: ReportLibrary;
 }
 
+export interface TableData<T> {
+  entities: T[];
+  page: Page;
+}
+
 export interface ReportLibrary {
   id: string;
   name: string;

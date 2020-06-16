@@ -22,6 +22,9 @@ export interface GetReportLibraryRequestQueryParams {
   workPackageQuery?: string[];
   scopeQuery?: string;
   format?: string;
+  page?: number;
+  size?: number;
+  textFilter?: string;
 }
 
 @Injectable()
@@ -30,7 +33,7 @@ export class ReportService {
 
   getReports(queryParams?: GetReportLibraryRequestQueryParams): Observable<any> {
     const params = queryParams ? toHttpParams(queryParams) : new HttpParams();
-    return this.http.get<any>(`/reports`, { 
+    return this.http.get<any>(`/reports`, {
       params: params,
       responseType: queryParams && queryParams.format ? ('text' as 'json') : 'json'
     });
@@ -139,20 +142,22 @@ export class ReportService {
   }
 
   updateCustomProperty(
-    workPackageId: string, 
-    reportId: string, 
-    customPropertyId: string, 
+    workPackageId: string,
+    reportId: string,
+    customPropertyId: string,
     data: string
   ): Observable<Object> {
     return this.http.put(
-      `/workpackages/${workPackageId}/reports/${reportId}/customPropertyValues/${customPropertyId}`, { data }, httpOptions
+      `/workpackages/${workPackageId}/reports/${reportId}/customPropertyValues/${customPropertyId}`,
+      { data },
+      httpOptions
     );
   }
 
   deleteCustomProperty(
     workPackageId: string,
     reportId: string,
-    customPropertyId: string,
+    customPropertyId: string
   ): Observable<ReportDetailApiRespoonse> {
     return this.http.post<ReportDetailApiRespoonse>(
       `/workpackages/${workPackageId}/reports/${reportId}/customPropertyValues/${customPropertyId}/deleteRequest`,
@@ -164,20 +169,31 @@ export class ReportService {
     return this.http.get<{ data: Tag[] }>(`/workpackages/${workPackageId}/reports/${reportId}/tags`);
   }
 
-  addReportTags(workPackageId: string, reportId: string, tagIds: { id: string }[]): Observable<ReportDetailApiRespoonse> {
-    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/tags`, { data: tagIds });
+  addReportTags(
+    workPackageId: string,
+    reportId: string,
+    tagIds: { id: string }[]
+  ): Observable<ReportDetailApiRespoonse> {
+    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/tags`, {
+      data: tagIds
+    });
   }
 
   deleteReportTags(workPackageId: string, reportId: string, tagId: string): Observable<ReportDetailApiRespoonse> {
-    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/tags/${tagId}/deleteRequest`, {});
+    return this.http.post<ReportDetailApiRespoonse>(
+      `/workpackages/${workPackageId}/reports/${reportId}/tags/${tagId}/deleteRequest`,
+      {}
+    );
   }
 
   addReportRadio(workPackageId: string, reportId: string, radioId: string): Observable<ReportDetailApiRespoonse> {
-    return this.http.post<ReportDetailApiRespoonse>(`/workpackages/${workPackageId}/reports/${reportId}/radios/${radioId}`, {});
+    return this.http.post<ReportDetailApiRespoonse>(
+      `/workpackages/${workPackageId}/reports/${reportId}/radios/${radioId}`,
+      {}
+    );
   }
 
   deleteReportRadio(workPackageId: string, reportId: string, radioId: string) {
     return this.http.delete(`/workpackages/${workPackageId}/reports/${reportId}/radios/${radioId}`);
   }
-
 }

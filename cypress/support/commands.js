@@ -523,12 +523,40 @@ Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component
   });
 });
 
+Cypress.Commands.add('findDocumentStandard', title => {
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title);
+  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('deleteDocumentStandard', doc_standard => {
+  cy.selectRow('documentation-standards-table', doc_standard).then(() => {
+    cy.get(`[data-qa=documentation-standards-delete]`)
+      .click()
+      .then(() => {
+        cy.get('[data-qa=delete-modal-yes]')
+          .click()
+          .then(() => {
+            cy.wait('@DELETECustomProperties');
+          });
+      });
+  });
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(doc_standard);
+});
+
 Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
   cy.get('[data-qa=documentation-standards-create-new]')
     .click()
     .then(() => {
-      cy.get('[data-qa=documentation-standards-details-name]').type(doc_standard);
-      cy.get('[data-qa=documentation-standards-details-description]').type(doc_standard);
+      cy.get('[data-qa=documentation-standards-details-name]')
+        .type(doc_standard)
+        .should('have.value', doc_standard);
+      cy.get('[data-qa=documentation-standards-details-description]')
+        .type(doc_standard)
+        .should('have.value', doc_standard);
       cy.root();
       cy.get(`[data-qa=documentation-standards-details-type]`)
         .click()
