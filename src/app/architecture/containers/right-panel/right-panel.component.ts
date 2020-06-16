@@ -9,12 +9,15 @@ import {
   Tag,
   TagApplicableTo,
   GroupInfo,
-  DescendantsEntity
+  DescendantsEntity,
+  NodeDetail,
+  nodeCategories
 } from '@app/architecture/store/models/node.model';
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Component({
   selector: 'smi-right-panel',
@@ -77,7 +80,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() addExistingAttribute = new EventEmitter<void>();
   @Output() editGroup = new EventEmitter<void>();
   @Output() addNewGroupMember = new EventEmitter<void>();
-  @Output() addDescendants = new EventEmitter<void>();
+  @Output() addDescendants = new EventEmitter<string>();
   @Output() deleteDescendants = new EventEmitter<DescendantsEntity>();
   @Output() deleteNodeGroup = new EventEmitter<Node>();
   @Output() updateAvailableTags = new EventEmitter<void>();
@@ -265,5 +268,13 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onSeeDependencies() {
     this.seeDependencies.emit();
+  }
+
+  getDisableDataTable(): boolean {
+    return ![Level.system, Level.data].includes(this.currentFilterLevel as Level) || this.part.data.isShared ? true : false;
+  }
+
+  getDisableDimensionsTable(): boolean {
+    return ![Level.data].includes(this.currentFilterLevel as Level) || this.part.data.category !== nodeCategories.dataStructure;
   }
 }
