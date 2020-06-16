@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State as HomePageState } from '../store/reducers/home.reducers';
 import { LoadMyLayouts, LoadMyRadios, LoadMyWorkPackages, LoadMyProfile, HomePageActionTypes } from '../store/actions/home.actions';
@@ -10,7 +10,6 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { Actions, ofType } from '@ngrx/effects';
 import { UpdateUser } from '@app/settings/store/actions/user.actions';
-import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 
 @Component({
   selector: 'smi-home-component',
@@ -24,14 +23,11 @@ export class HomeComponent implements OnInit {
   public selectedLeftTab: number | string;
   public subscriptions: Subscription[] = [];
 
-  @ViewChild('drawer') drawer;
-
   constructor(
     private router: Router,
     private store: Store<HomePageState>,
-    private actions: Actions,
-    private userStore: Store<UserState>
-  ) {}
+    private actions: Actions
+  ) { }
 
   ngOnInit() {
     this.store.dispatch(new LoadMyWorkPackages({}));
@@ -72,10 +68,5 @@ export class HomeComponent implements OnInit {
 
   onOpenLayout() {
     this.router.navigate(['/architecture'], { queryParamsHandling: 'preserve' });
-  }
-
-  openLeftTab(tab: number | string): void {
-    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
-    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
   }
 }
