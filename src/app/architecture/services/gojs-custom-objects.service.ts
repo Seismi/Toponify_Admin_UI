@@ -925,16 +925,18 @@ export class GojsCustomObjectsService {
         'Arrow2',
         {
           name: 'arrow',
-          fill: 'black',
+          fill: '#D6D6D6',
           angle: 180,
           height: 40,
           margin: new go.Margin(0, 10, 0, 0)
         }
       ),
       $(go.TextBlock,
-        textFont('30px'),
+        textFont('italic 30px'),
         {
-          name: 'instructions'
+          name: 'instructions',
+          stroke: '#D6D6D6',
+          textAlign: 'center'
         }
       )
     );

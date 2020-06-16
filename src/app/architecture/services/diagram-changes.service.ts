@@ -1260,8 +1260,8 @@ export class DiagramChangesService {
       }
     }
 
-    // Ensure instructions do not exceed screen space avialable
-    const arrowWidth = arrow.visible ? arrow.actualBounds.width + 10 : 0;
+    // Ensure instructions do not exceed screen space available and remain centered
+    const arrowWidth = arrow.visible ? 2 * arrow.actualBounds.width + 10 : 0;
     instructions.width = Math.max(100, diagram.viewportBounds.width - arrowWidth - 10);
   }
 }
