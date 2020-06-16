@@ -375,9 +375,10 @@ Cypress.Commands.add('deleteWorkPackage', name => {
       });
     });
 });
-
+/*
 Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
   // Creates a documentation standard
+  cy.log(component)
   cy.get('[data-qa=documentation-standards-create-new]')
     .click()
     .then(() => {
@@ -394,7 +395,7 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
         .contains(component) // which contains the component
         .click();
     }); //click the create new documentations standard button
-});
+});*/
 
 Cypress.Commands.add('findRadio', radio => {
   cy.get('[data-qa=radio-filter]')
@@ -611,14 +612,14 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
         .contains(type)
         .click({ force: true });
       cy.get('smi-document-standards-levels')
-        .get('mat-tree-node')
+        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
         .contains(component)
         .click();
-      cy.get('[data-qa=documentation-standards-modal-save]')
+      /*      cy.get('[data-qa=documentation-standards-modal-save]')
         .click()
         .then(() => {
           cy.route('POST', `${documentationStandards}`).as('POSTCustomProperties');
-        });
+        });*/
     });
 });
 
