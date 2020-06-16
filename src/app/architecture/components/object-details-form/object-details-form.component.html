@@ -1,5 +1,9 @@
+<div class="alert alert-warning" *ngIf="part?.data?.isShared">
+  Shared
+</div>
 <form [formGroup]="group">
   <div [ngClass]="{ disabled: nodeIsEditable() }">
+    <div [ngClass]="{ disabled: disableIfShared() }">
     <mat-form-field>
       <div class="input-wrapper">
         <label>Ref.</label>
@@ -14,15 +18,15 @@
       </div>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field [ngClass]="{ disabled: getDisable() }">
       <div class="input-wrapper">
         <label>Category</label>
-        <mat-select 
+        <mat-select
           formControlName="category" 
-          [ngClass]="{ editable: !nodeIsEditable() }" 
+          [ngClass]="{ editable: !nodeIsEditable() }"
           data-qa="object-details-category"
         >
-          <mat-option *ngFor="let category of getCategories()" [value]="category">
+          <mat-option *ngFor="let category of getCategories()" [disabled]="getDisable(category)" [value]="category">
             {{ category }}
           </mat-option>
         </mat-select>
@@ -40,6 +44,7 @@
         data-qa="object-details-description"
       ></textarea>
     </mat-form-field>
+    </div>
   </div>
 
   <div class="form-group" *ngIf="!nodeIsEditable()">
@@ -88,6 +93,7 @@
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"
       [workPackageIsEditable]="workPackageIsEditable"
+      [layer]="part?.data?.layer"
     >
     </smi-group-info-table>
 
@@ -113,6 +119,8 @@
       <div *ngIf="isLink()">
         <button data-qa="object-details-view-structure" class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
       </div>
+      <br>
+      <button mat-flat-button color="primary">Make Master</button>
     </div>
   </div>
 </form>

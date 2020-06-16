@@ -47,7 +47,7 @@
         mat-icon-button
         (click)="add.emit()"
         *ngIf="workPackageIsEditable"
-        [disabled]="currentFilterLevel"
+        [disabled]="disabled"
         data-qa="topology-components-table-add">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
