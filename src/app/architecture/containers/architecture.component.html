@@ -226,7 +226,7 @@
             (editGroup)="onAddToGroup()"
             [clickedOnLink]="clickedOnLink"
             (addNewGroupMember)="onAddNewGroupMember()"
-            (addDescendants)="onAddDescendant()"
+            (addDescendants)="onAddDescendant($event)"
             (deleteDescendants)="onDeleteDescendant($event)"
             (deleteNodeGroup)="onDeleteNodeGroup($event)"
             [currentFilterLevel]="currentFilterLevel"

@@ -1,9 +1,26 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { TeamEntity } from '@app/settings/store/models/team.model';
-import { RolesEntity } from '@app/settings/store/models/user.model';
+import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model';
 import { Roles } from '@app/core/directives/by-role.directive';
+
+enum Frequency {
+  None = 'None',
+  Daily = 'Daily',
+  Weekly = 'Weekly',
+  Monthly = 'Monthly'
+}
+
+enum Days {
+  Sunday = 'Sunday',
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday'
+}
 
 @Component({
   selector: 'smi-my-user-form',
@@ -11,6 +28,26 @@ import { Roles } from '@app/core/directives/by-role.directive';
   styleUrls: ['my-user-form.component.scss']
 })
 export class MyUserFormComponent {
+  public Frequency = Frequency;
+  public frequencies: string[] = [
+    Frequency.None,
+    Frequency.Daily,
+    Frequency.Weekly,
+    Frequency.Monthly
+  ];
+  public days: string[] = [
+    Days.Sunday,
+    Days.Monday,
+    Days.Tuesday,
+    Days.Wednesday,
+    Days.Thursday,
+    Days.Friday,
+    Days.Saturday
+  ];
+
+  constructor(public dialog: MatDialog) {}
+
+  @Input() value: UserDetails;
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
   @Input() userStatus: string;
@@ -32,8 +69,6 @@ export class MyUserFormComponent {
   @Input() isEditable = false;
   @Input() myUserPage = false;
   @Input() canEdit = true;
-
-  constructor(public dialog: MatDialog) {}
 
   @Output() saveUser = new EventEmitter<void>();
   @Output() editUser = new EventEmitter<void>();

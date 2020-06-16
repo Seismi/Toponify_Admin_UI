@@ -73,7 +73,7 @@
     "karma-coverage-istanbul-reporter": "^2.1.1",
     "karma-jasmine": "~1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "lint-staged": "^9.5.0",
+    "lint-staged": "^8.2.1",
     "ngrx-store-freeze": "^0.2.4",
     "parse-dashboard": "^1.4.3",
     "parse-server": "^3.10.0",

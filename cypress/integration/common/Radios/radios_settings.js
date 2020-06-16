@@ -60,11 +60,15 @@ module.exports = {
       method: 'GET',
       name: 'RadioViews'
     },
-
     Nodes: {
       api: `${api_version}/nodes`,
       method: 'GET',
       name: 'Nodes'
+    },
+    CustomProperties: {
+      api: `${api_version}/customProperties`,
+      method: 'GET',
+      name: 'CustomProperties'
     }
   }
 };

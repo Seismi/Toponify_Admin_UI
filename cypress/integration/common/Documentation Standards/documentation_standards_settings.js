@@ -19,10 +19,10 @@ module.exports = {
       method: 'DELETE',
       name: 'CustomProperties'
     },
-    CustomProperties3: {
+    CustomPropertiess: {
       api: `${api_version}/customProperties/*`,
       method: 'GET',
-      name: 'CustomProperties'
+      name: 'CustomProperties*'
     }
   }
 };

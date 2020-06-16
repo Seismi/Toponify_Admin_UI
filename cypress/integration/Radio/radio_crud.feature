@@ -95,3 +95,15 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
 	  And the user clicks on delete
 	  And the user confirms the delete
     Then the radio with title 'Automatic Regression Test Risk 1' should not be immediately visible in the radio table
+
+  @focus
+  Scenario: Create new documentation standard, assign to radio and check it is visible and editable against a radio
+    Given the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
+    And confirms the creation of the radio
+    Then the user selects Documentation Standard menu item
+    And the document standard 'Automatic Regression Test' does not exist
+    And the user creates a documentation standard with title 'Automatic Regression Test', type 'Text' and component type 'RADIO'
+    And the user confirms the creation of the documentation standard
+    And the user selects Radios menu item
+    And the user updates the filter to find radio with title 'Automatic Regression Test Risk 1'
+    And the user checks if documentation standards exist with title 'Automatic Regression Test'

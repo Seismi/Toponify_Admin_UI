@@ -74,6 +74,9 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
   const targetGroups = new go.List<go.Group>();
   const transformationNodes = new go.List<go.Node>();
 
+  let greatestSourceWidth = 0;
+  let greatestTargetWidth = 0;
+
   // Populate node lists
   allParts.each(function(part: go.Part) {
     if (part.data.endPointType === endPointTypes.source) {
@@ -155,9 +158,17 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
     return 0;
   });
 
+  sourceGroups.each(function(group: go.Group) {
+    greatestSourceWidth = Math.max(group.actualBounds.width, greatestSourceWidth);
+  });
+
+  targetGroups.each(function(group: go.Group) {
+    greatestTargetWidth = Math.max(group.actualBounds.width, greatestTargetWidth);
+  });
+
   // Set initial location for target groups.
   // Place to the right of source groups.
-  nextLocation.setTo(600, 0);
+  nextLocation.setTo(greatestSourceWidth / 2 + greatestTargetWidth / 2 + 300, 0);
 
   // Place target groups in a descending list
   targetGroups.each(function(target: go.Group): void {
@@ -199,7 +210,7 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
 
   // Set initial location for transformation nodes.
   // Place in between source and target groups.
-  nextLocation.setTo(300, step - 27);
+  nextLocation.setTo(greatestSourceWidth / 2 + 150, step - 27);
 
   transformationNodes.each(function(trans: go.Node): void {
     trans.move(nextLocation.copy(), true);
@@ -535,19 +546,16 @@ export class DiagramLevelService {
     diagram.model = $(go.GraphLinksModel, {
       nodeKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
       linkKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
-      nodeCategoryProperty: level.endsWith('map') ?
-        function(data) {
-          // Ensure systems are represented by map view groups in map view
-          return data.layer === layers.system ? '' :
-            data.category === nodeCategories.transformation ? nodeCategories.transformation :
-              data.layer;
-        } :
-        function(data) {
-          // Ensure that transformation nodes use their own category, separate from the layer
-          return data.category === nodeCategories.transformation
-            ? nodeCategories.transformation
-            : data.layer;
-        },
+      nodeCategoryProperty: function(data) {
+        if (data.category === nodeCategories.transformation) {
+          return nodeCategories.transformation;
+        // Ensure systems/data nodes are represented by map view groups in system/data map view
+        } else if (data.layer + ' map' === level) {
+          return '';
+        } else {
+          return data.layer;
+        }
+      },
       linkFromKeyProperty: level.endsWith('map') ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
       linkToKeyProperty: level.endsWith('map') ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,
