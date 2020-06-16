@@ -23,6 +23,7 @@ export class SelectModalComponent implements OnInit {
   @ViewChild('searchInput') searchInput: ElementRef;
   public searchActive: boolean;
   private multi: boolean;
+  private addingToMapGroup: boolean;
   private options: { id: string; name: string; selected?: boolean }[];
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
@@ -39,6 +40,7 @@ export class SelectModalComponent implements OnInit {
       placeholder: string;
       descendants: boolean;
       groupMembers: boolean;
+      addingToMapGroup?: boolean;
       parentId?: string;
       nodeId: string,
       workPackageId: string,
@@ -57,6 +59,7 @@ export class SelectModalComponent implements OnInit {
       })
     );
     this.multi = !!data.multi;
+    this.addingToMapGroup = !!data.addingToMapGroup;
   }
 
   ngOnInit() {
@@ -125,7 +128,8 @@ export class SelectModalComponent implements OnInit {
       width: '450px',
       data: {
         parentId: this.data.nodeId,
-        addGroupMember: false
+        addGroupMember: false,
+        addingToMapGroup: this.addingToMapGroup
       }
     });
 

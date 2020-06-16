@@ -877,27 +877,27 @@ export class DiagramChangesService {
       }
     });
 
-    if (this.currentLevel === Level.usage) {
+    if (this.currentLevel === Level.usage || this.currentLevel === Level.systemMap) {
       // Update node's layout in usage view
       node.findTopLevelPart().invalidateLayout();
+    } else {
+      // Update group area of node in the back end
+      this.onUpdateGroupsAreaState.next({
+        groups: [{
+          id: node.data.id,
+          areaSize: node.data.areaSize,
+          locationCoordinates: node.data.location
+        }],
+        links: linkData
+      });
     }
-
-    // Update group area of node in the back end
-    this.onUpdateGroupsAreaState.next({
-      groups: [{
-        id: node.data.id,
-        areaSize: node.data.areaSize,
-        locationCoordinates: node.data.location
-      }],
-      links: linkData
-    });
 
     this.groupMemberSizeChanged(node);
   }
 
   // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
-  groupMemberSizeChanged(member: go.Node): void {
+  groupMemberSizeChanged(member: go.Group): void {
     const nestedGroups = new go.Set();
     const linksToUpdate = new go.Set();
 
@@ -907,7 +907,16 @@ export class DiagramChangesService {
     // Loop through containing groups until reaching a top level group,
     //  ensuring each is big enough
     while (currentGroup.containingGroup !== null) {
+
       currentGroup = currentGroup.containingGroup;
+
+      // If current group is a map view group then:
+      //  - redo layout to ensure member nodes do not overlap
+      //  - Exit (as map view groups are resized automatically)
+      if (currentGroup.category === '') {
+        currentGroup.layout.invalidateLayout();
+        break;
+      }
 
       const memberArea = currentGroup.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
@@ -965,19 +974,18 @@ export class DiagramChangesService {
       });
     });
 
-    // Update back end with new layout info for updated groups and links
-    this.onUpdateGroupsAreaState.next({
-      groups: groupData,
-      links: linkData
-    });
-
-    if (this.currentLevel === Level.usage) {
-      // Update node's layout in usage view
+    if (this.currentLevel === Level.usage || this.currentLevel === Level.systemMap) {
+      // Update node's layout in usage or map view
       member.invalidateLayout();
+    } else {
+      // Update back end with new layout info for updated groups and links
+      this.onUpdateGroupsAreaState.next({
+        groups: groupData,
+        links: linkData
+      });
     }
 
     this.onUpdateDiagramLayout.next({});
-
   }
 
   // Display map view for a link
