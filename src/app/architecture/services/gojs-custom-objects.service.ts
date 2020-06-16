@@ -1,5 +1,4 @@
 import * as go from 'gojs';
-import * as shapes from 'gojs/extensionsTS/Figures';
 import {LinkShiftingTool} from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from './diagram-level.service';
@@ -19,8 +18,6 @@ function textFont(style?: string): Object {
     font: `${style} ${font}`
   };
 }
-
-(function() { return shapes; })();
 
 export const customIcons = {
   tree: go.Geometry.parse('M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z', true),
@@ -932,16 +929,6 @@ export class GojsCustomObjectsService {
         layerName: 'Grid',
         padding: 10
       },
-      $(go.Shape,
-        'Arrow2',
-        {
-          name: 'arrow',
-          fill: '#D6D6D6',
-          angle: 180,
-          height: 40,
-          margin: new go.Margin(0, 10, 0, 0)
-        }
-      ),
       $(go.TextBlock,
         textFont('italic 30px'),
         {

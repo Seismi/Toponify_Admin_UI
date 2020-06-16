@@ -295,11 +295,9 @@ export class DiagramListenersService {
       }
 
       const instructions = guide.findObject('instructions');
-      const arrow = guide.findObject('arrow');
 
-      // Ensure instructions do not exceed screen space available and remain centered
-      const arrowWidth = arrow.visible ? 2 * arrow.actualBounds.width + 10 : 0;
-      instructions.width = Math.max(100, diagram.viewportBounds.width - arrowWidth - 10);
+      // Ensure instructions do not exceed screen space available
+      instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
     });
 
     // In node usage view, highlight the originating node with a blue shadow.

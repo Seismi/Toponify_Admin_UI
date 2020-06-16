@@ -1243,21 +1243,15 @@ export class DiagramChangesService {
     guide.visible = (diagram.nodes.count + diagram.nodes.count === 0);
 
     const instructions = guide.findObject('instructions');
-    const arrow = guide.findObject('arrow');
-
-    // Hide arrow by default
-    arrow.visible = false;
 
     if (thisService.currentScope === defaultScopeId) {
       if (thisService.selectedWorkpackages.length === 0) {
         instructions.text =  'Your topology is empty. Select or create a work package to get started.';
-        arrow.visible = true;
       } else if (thisService.selectedWorkpackages.length === 1) {
         if (thisService.diagramEditable) {
           instructions.text = 'Go to edit pane and start dragging and dropping objects';
         } else {
           instructions.text = 'Your work package is empty. Enter edit mode to start documenting your topology';
-          arrow.visible = true;
         }
       }
     } else {
@@ -1268,8 +1262,7 @@ export class DiagramChangesService {
       }
     }
 
-    // Ensure instructions do not exceed screen space available and remain centered
-    const arrowWidth = arrow.visible ? 2 * arrow.actualBounds.width + 10 : 0;
-    instructions.width = Math.max(100, diagram.viewportBounds.width - arrowWidth - 10);
+    // Ensure instructions do not exceed screen space available
+    instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
   }
 }
