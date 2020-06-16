@@ -38,6 +38,9 @@ import {
   FindPotentialWorkpackageNodes,
   FindPotentialWorkpackageNodesFailure,
   FindPotentialWorkpackageNodesSuccess,
+  FindPotentialGroupMemberNodes,
+  FindPotentialGroupMemberNodesFailure,
+  FindPotentialGroupMemberNodesSuccess,
   LoadWorkPackageNodeDescendants,
   LoadWorkPackageNodeDescendantsFailure,
   LoadWorkPackageNodeDescendantsSuccess,
@@ -71,7 +74,10 @@ import {
   AddWorkPackageNodeGroupFailure,
   DeleteWorkPackageNodeGroup,
   DeleteWorkPackageNodeGroupSuccess,
-  DeleteWorkPackageNodeGroupFailure
+  DeleteWorkPackageNodeGroupFailure,
+  SetWorkPackageNodeAsMaster,
+  SetWorkPackageNodeAsMasterSuccess,
+  SetWorkPackageNodeAsMasterFailure
 } from '../actions/workpackage-node.actions';
 import {UpdateNodeDescendants, UpdateNodeOwners, ReloadNodesData, LoadMapView} from '@app/architecture/store/actions/node.actions';
 import {
@@ -82,9 +88,12 @@ import {
 import {
   DescendantsEntity,
   WorkPackageNodeDescendantsApiResponse,
-  NodeDetailApiResponse
+  NodeDetailApiResponse,
+  WorkPackageGroupMembersApiResponse,
+  layers
 } from '@app/architecture/store/models/node.model';
 import {NodeService} from '@app/architecture/services/node.service';
+import {Action} from '@ngrx/store';
 
 @Injectable()
 export class WorkPackageNodeEffects {
@@ -123,7 +132,7 @@ export class WorkPackageNodeEffects {
       return this.workpackageNodeService.addNodeDescendant(payload.workPackageId, payload.nodeId, payload.data).pipe(
         switchMap((response: any) => [
           new AddWorkPackageNodeDescendantSuccess(response),
-          new UpdateNodeDescendants({ descendants: response.data, nodeId: payload.nodeId })
+          new ReloadNodesData()
         ]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageNodeDescendantFailure(error)))
       );
@@ -155,7 +164,7 @@ export class WorkPackageNodeEffects {
         .pipe(
           switchMap((data: any) => [
             new DeleteWorkPackageNodeDescendantSuccess(data),
-            new UpdateNodeDescendants({ descendants: data.data, nodeId: payload.nodeId })
+            new ReloadNodesData()
           ]),
           catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodeDescendantFailure(error)))
         );
@@ -163,12 +172,18 @@ export class WorkPackageNodeEffects {
   );
 
   @Effect()
-  updateWorkpackageLink$ = this.actions$.pipe(
+  updateWorkpackageNode$ = this.actions$.pipe(
     ofType<UpdateWorkPackageNode>(WorkPackageNodeActionTypes.UpdateWorkPackageNode),
     map(action => action.payload),
     mergeMap((payload: { workpackageId: string; nodeId: string; node: any }) => {
       return this.workpackageNodeService.updateNode(payload.workpackageId, payload.nodeId, payload.node).pipe(
-        switchMap((data: any) => [new UpdateWorkPackageNodeSuccess(data)]),
+        switchMap((response: NodeDetailApiResponse) => {
+          const actions: Action[] = [new UpdateWorkPackageNodePropertySuccess(response.data)];
+          if (response.data.layer === layers.data && !response.data.isShared) {
+            actions.push(new ReloadNodesData());
+          }
+          return actions;
+        }),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageNodeFailure(error)))
       );
     })
@@ -256,6 +271,22 @@ export class WorkPackageNodeEffects {
             new FindPotentialWorkpackageNodesSuccess(response.data)
           ]),
           catchError((error: HttpErrorResponse) => of(new FindPotentialWorkpackageNodesFailure(error)))
+        );
+    })
+  );
+
+  @Effect()
+  findPotentialGroupMemberNodes$ = this.actions$.pipe(
+    ofType<FindPotentialGroupMemberNodes>(WorkPackageNodeActionTypes.FindPotentialGroupMemberNodes),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; nodeId: string; scope: string; asShared: boolean }) => {
+      return this.workpackageNodeService
+        .findPotentialGroupMemberNodes(payload.workPackageId, payload.nodeId, payload.scope, payload.asShared)
+        .pipe(
+          switchMap((response: WorkPackageGroupMembersApiResponse) => [
+            new FindPotentialGroupMemberNodesSuccess(response.data)
+          ]),
+          catchError((error: HttpErrorResponse) => of(new FindPotentialGroupMemberNodesFailure(error)))
         );
     })
   );
@@ -386,6 +417,21 @@ export class WorkPackageNodeEffects {
           new ReloadNodesData()
         ]),
         catchError((error: HttpErrorResponse) => of(new DeleteWorkPackageNodeGroupFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  SetWorkPackageNodeAsMaster = this.actions$.pipe(
+    ofType<SetWorkPackageNodeAsMaster>(WorkPackageNodeActionTypes.SetWorkPackageNodeAsMaster),
+    map(action => action.payload),
+    switchMap((payload: { workPackageId: string; nodeId: string; }) => {
+      return this.workpackageNodeService.SetWorkPackageNodeAsMaster(payload.workPackageId, payload.nodeId).pipe(
+        switchMap(response => [
+          new SetWorkPackageNodeAsMasterSuccess(),
+          new ReloadNodesData()
+        ]),
+        catchError((error: HttpErrorResponse) => of(new SetWorkPackageNodeAsMasterFailure(error)))
       );
     })
   );

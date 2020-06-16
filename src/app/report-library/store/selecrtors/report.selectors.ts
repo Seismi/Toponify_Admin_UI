@@ -1,11 +1,11 @@
-import { State as ReportState } from '../reducers/report.reducer';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { State as ReportState } from '../reducers/report.reducer';
 
 export const getReportFeatureState = createFeatureSelector<ReportState>('reportLibraryFeature');
 
 export const getReportEntities = createSelector(
   getReportFeatureState,
-  state => state.entities
+  state => ({ entities: state.entities, page: state.page })
 );
 
 export const getReportSelected = createSelector(

@@ -13,7 +13,7 @@ import {
   GroupAreaSizesEntity,
   OwnersEntity,
   Tag,
-  NodeLayoutSettingsEntity
+  NodeLayoutSettingsEntity, WorkPackageGroupMembersApiResponse
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
@@ -31,6 +31,7 @@ export interface State {
   };
   entities: Node[];
   descendants: DescendantsEntity[];
+  members: WorkPackageGroupMembersApiResponse['data'];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
@@ -60,6 +61,7 @@ export const initialState: State = {
   selectedNodeLink: null,
   links: [],
   descendants: [],
+  members: [],
   nodeScopes: [],
   availableScopes: [],
   error: null,
@@ -701,6 +703,26 @@ export function reducer(
     }
 
     case WorkPackageNodeActionTypes.FindPotentialWorkpackageNodesFailure: {
+      return {
+        ...state,
+        error: <Error>action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialGroupMemberNodes: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesSuccess: {
+      return {
+        ...state,
+        members: action.payload
+      };
+    }
+
+    case WorkPackageNodeActionTypes.FindPotentialGroupMemberNodesFailure: {
       return {
         ...state,
         error: <Error>action.payload

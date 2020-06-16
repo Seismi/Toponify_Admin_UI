@@ -13,7 +13,8 @@ Then('the details pane should reflect that {string} has not been added to baseli
 
   cy.get(`[data-qa=work-packages-quick-search]`) // get the search bar
     .clear() //clear value
-    .type(name) //type name
+    .type(name)
+    .should('have.value', name) //type name
     .then(() => {
       cy.get(`[data-qa=work-packages-table]`)
         .find('table>tbody')

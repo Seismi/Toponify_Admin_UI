@@ -55,12 +55,16 @@ function createWorkPackage(name, description, baseline, owner) {
           if (owner.length > 0) {
             cy.selectDropDown('work-packages-details-owners-selection', owner).then(() => {
               cy.get('smi-workpackage-modal').within(() => {
-                cy.get(`[data-qa=work-packages-details-name]`).type(name);
-                cy.get(`[data-qa=work-packages-details-description]`).type(description);
+                cy.get(`[data-qa=work-packages-details-name]`)
+                  .type(name)
+                  .should('have.value', name);
+                cy.get(`[data-qa=work-packages-details-description]`)
+                  .type(description)
+                  .should('have.value', description);
                 cy.get(`[data-qa=work-packages-modal-save]`)
                   .click()
                   .then(() => {
-                    cy.wait(['@POSTWorkPackage', '@GETWorkPackage'], { requestTimeout: 20000, reponseTimeout: 40000 });
+                    cy.wait(['@POSTWorkPackage', '@GETWorkPackage'], { requestTimeout: 20000, responseTimeout: 40000 });
                   });
               });
             });

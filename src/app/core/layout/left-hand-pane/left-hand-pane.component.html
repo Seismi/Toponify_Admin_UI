@@ -10,16 +10,16 @@
     </mat-icon>
   </button>
   <!-- FIXME: not sure if how top handle this for now -->
-  <!-- <button
+  <button
     data-qa="left-hand-pane-edit"
     mat-icon-button
     *ngIf="workPackageIsEditable && architecturePage"
-    [ngClass]="{ selected: selectedLeftTab === 1 }"
+    [ngClass]="{ selected: selectedTab === 'edit' }"
   >
-    <mat-icon title="Edit" (click)="onOpenSideBar(1)">
+    <mat-icon title="Edit" (click)="onOpenSideBar('edit')">
       edit
     </mat-icon>
-  </button> -->
+  </button>
 </div>
 <div class="shortcuts">
   <smi-notification-indicator title="Notifications"> </smi-notification-indicator>

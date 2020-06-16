@@ -5,7 +5,8 @@ Given('the work package {string} does not exist', function(name) {
   name = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(name); // append the branch to the name
-  cy.findWorkPackage(name) //find the work packages
+
+  cy.findWorkPackage(name, true) //find the work packages
     .then($table => {
       if ($table[0].rows.length > 0) {
         //if rows are found

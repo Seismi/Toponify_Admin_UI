@@ -2,7 +2,7 @@ import { When, Then } from 'cypress-cucumber-preprocessor/steps';
 const work_package_settings = require('../../common/Work Package/work_package_settings');
 
 When(
-  'the user creates a radio with title {string}, category {string}, status {string}, description {string} which is assigned to {string} and should be actioned by {string} and mitigation resolution {string} and have severity {int} and probability {int} against work package {string}',
+  'DEPRECATE the user creates a radio with title {string}, category {string}, status {string}, description {string} which is assigned to {string} and should be actioned by {string} and mitigation resolution {string} and have severity {int} and probability {int} against work package {string}',
   function(title, category, status, description, assigned, actioned, mitigation, severity, probability, work_package) {
     // and have severity {string} and probability (string)
     title = Cypress.env('BRANCH')
@@ -37,7 +37,7 @@ When(
 );
 
 When(
-  'the user updates the radio with title {string} to have new title {string}, category {string}, status {string}, description {string} which is assigned to {string} and should be action by {string} and mitigation resolution {string} and have severity {int} and probability {int} against work package {string}',
+  'DEPRECATE the user updates the radio with title {string} to have new title {string}, category {string}, status {string}, description {string} which is assigned to {string} and should be action by {string} and mitigation resolution {string} and have severity {int} and probability {int} against work package {string}',
   function(
     title,
     newTitle,
@@ -99,7 +99,7 @@ When(
 );
 
 Then(
-  'the radio with title {string} should have category {string}, status {string}, description {string} be assigned to {string}, should be actioned by {string}, with mitigation resolution {string}, severity {int} and probability {int} against work package {string}',
+  'DEPRECATE the radio with title {string} should have category {string}, status {string}, description {string} be assigned to {string}, should be actioned by {string}, with mitigation resolution {string}, severity {int} and probability {int} against work package {string}',
   function(title, category, status, description, assigned, actioned, mitigation, severity, probability, work_package) {
     work_package = Cypress.env('BRANCH')
       .concat(' | ')
@@ -140,14 +140,18 @@ Then(
   }
 );
 
-Then('the radio with title {string} should be immediately visible in the work package radio table', function(title) {
+Then('DEPRECATE the radio with title {string} should be immediately visible in the work package radio table', function(
+  title
+) {
   title = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(title); // prefix the branch to objective
   cy.assertRowExists('work-packages-radio-table', title); // assert row exists
 });
 
-Then('the radio with title {string} should be visible after reload in the work package radio table', function(title) {
+Then('DEPRECATE the radio with title {string} should be visible after reload in the work package radio table', function(
+  title
+) {
   title = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(title); // prefix the branch to objective
@@ -229,6 +233,7 @@ function writeRadioDetails(
     .scrollIntoView()
     .clear()
     .type(title)
+    .should('have.value', title)
     .then(() => {
       selectDropDown('radio-detail-category', category);
     })
@@ -257,7 +262,8 @@ function writeRadioDetails(
     .then(() => {
       cy.get('[data-qa=radio-detail-action-by')
         .clear()
-        .type(actioned);
+        .type(actioned)
+        .should('have.value', actioned);
     })
     .then(() => {
       cy.type_ckeditor('[data-qa=radio-detail-description]', description);

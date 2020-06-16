@@ -18,8 +18,8 @@ export interface WorkPackage {
 export enum ObjectType {
   system = 'system',
   system_link= 'system link',
-  data_set = 'data set',
-  data_set_link = 'data set link',
+  data_node = 'data node',
+  data_link = 'data link',
   dimension = 'dimension',
   dimension_link = 'dimension link',
   reporting_concept = 'reporting concept',
