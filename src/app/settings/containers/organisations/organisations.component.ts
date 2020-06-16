@@ -9,4 +9,8 @@ export class OrganisationsComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  emailSupport(): string {
+    return location.href = 'mailto:accounts@toponify.com';
+  }
 }

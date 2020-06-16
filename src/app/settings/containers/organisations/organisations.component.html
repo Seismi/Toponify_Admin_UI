@@ -1,1 +1,16 @@
-organisation component
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>Organisation Name - </mat-card-title>
+    <mat-card-title>Organisation Domain - </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <h1>Licencing Information</h1>
+    <h2>Profesional Licence</h2>
+    <h3>Active Users - </h3>
+    <button mat-raised-button color="primary" (click)="emailSupport()">Contact us to expand</button>
+  </mat-card-content>
+  <div style="display: flex; justify-content: space-between;">
+    <smi-organisation-table [title]="'Account Administrators'"></smi-organisation-table>
+    <smi-organisation-table [title]="'Valid Email Domains'"></smi-organisation-table>
+  </div>
+</mat-card>

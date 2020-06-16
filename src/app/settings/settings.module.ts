@@ -50,6 +50,7 @@ import { OrganisationsComponent } from './containers/organisations/organisations
 import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
 import { TeamsDetailsComponent } from './containers/teams-details/teams-details.component';
 import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
+import { OrganisationTableComponent } from './components/organisation-table/organisation-table.component';
 
 @NgModule({
   imports: [
@@ -100,7 +101,8 @@ import { AllUsersDetailsComponent } from './containers/all-users-details/all-use
     OrganisationsComponent,
     SettingsTabsComponent,
     TeamsDetailsComponent,
-    AllUsersDetailsComponent
+    AllUsersDetailsComponent,
+    OrganisationTableComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,
