@@ -9,6 +9,7 @@ import {
   GetRadioView,
   GetRadioViews,
   RadioFilter,
+  SetRadioAnalysisFilter,
   SetRadioViewAsFavourite,
   UnsetRadioViewAsFavourite,
   UpdateRadioView
@@ -36,7 +37,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public tableStyles = TableStyles;
   public selectedTableStyle: BehaviorSubject<TableStyles> = new BehaviorSubject(TableStyles.SIMPLE);
-  public activeFilters = null;
+  public activeFilters: any = {};
   public radioViews = [];
   public selectedRadioView = null;
   public radios = [];
@@ -81,6 +82,15 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
+      this.selectedTableStyle.pipe(distinctUntilChanged(isEqual)).subscribe(tableStyle => {
+        if (TableStyles.SIMPLE === tableStyle) {
+          this.store.dispatch(new SetRadioAnalysisFilter(null));
+          this.store.dispatch(new RadioFilter(this.getFilteredActiveFilters()));
+        }
+      })
+    );
+
+    this.subscriptions.push(
       this.store.pipe(select(getRadioViews)).subscribe(radioViews => (this.radioViews = radioViews))
     );
 
@@ -106,6 +116,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
             this.store.dispatch(new GetRadioView(selectedRadioView.id));
           } else {
             this.store.dispatch(new RadioFilter(null));
+            this.store.dispatch(new SetRadioAnalysisFilter(null));
           }
         })
     );
@@ -122,7 +133,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         radioViewData: {
           ...this.selectedRadioView,
           type: this.activeFilters.tableStyle,
-          filterSet: this.activeFilters
+          filterSet: this.getFilteredActiveFilters()
         }
       })
     );
@@ -156,6 +167,14 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         tableStyle: tableStyle
       })
     );
+  }
+
+  getFilteredActiveFilters() {
+    if (!this.activeFilters) {
+      return null;
+    }
+    const { frequencyRange, severityRange, ...filtered } = this.activeFilters;
+    return filtered;
   }
 
   onCreateRadioView(): void {
