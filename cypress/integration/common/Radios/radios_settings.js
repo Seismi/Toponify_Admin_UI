@@ -69,6 +69,11 @@ module.exports = {
       api: `${api_version}/nodes`,
       method: 'GET',
       name: 'Nodes'
+    },
+    CustomProperties: {
+      api: `${api_version}/customProperties`,
+      method: 'GET',
+      name: 'CustomProperties'
     }
   }
 };

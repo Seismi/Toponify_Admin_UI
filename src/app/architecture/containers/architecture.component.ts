@@ -436,7 +436,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.gojsCustomObjectsService.addDataSet$,
       this.diagramTemplatesService.addChild$
     ).subscribe(data => {
-      this.onAddDescendant(data);
+      this.onAddDescendant(null, data);
     });
 
     // Scopes
@@ -1745,69 +1745,73 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddDescendant(descData?) {
-    this.store.dispatch(
-      new FindPotentialWorkpackageNodes({
-        workPackageId: this.workpackageId,
-        nodeId: descData ? descData.id : this.nodeId,
-        data: {}
-      })
-    );
-    const dialogRef = this.dialog.open(SelectModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        title: `Add Children to "${descData ? descData.name : this.selectedNode.name}"`,
-        placeholder: 'Components',
-        descendants: true,
-        nodeId: descData ? descData.id : this.nodeId,
-        workPackageId: this.workpackageId,
-        scopeId: this.scope.id,
-        options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
-        selectedIds: [],
-        multi: true,
-        addingToMapGroup: !!descData
-      }
-    });
-
-    let addDescendantAction;
-    if (this.currentFilterLevel.endsWith('map')) {
-      addDescendantAction = AddWorkPackageMapViewNodeDescendant;
+  onAddDescendant(type?: layers, parentData?) {
+    if (this.currentFilterLevel.startsWith('data') && type === layers.data) {
+      this.onAddNewSharedGroupMember();
     } else {
-      addDescendantAction = AddWorkPackageNodeDescendant;
-    }
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.value) {
-        if (this.currentFilterLevel.endsWith('map')) {
-          const mapViewParams = {
-            id: this.mapViewSource.id,
-            queryParams: {
-              workPackageQuery: this.selectedWorkpackages,
-              scope: [this.scope.id],
-              isTransformation: this.mapViewSource.isTransformation
-            }
-          };
-
-          this.workpackageStore.dispatch(
-            new AddWorkPackageMapViewNodeDescendant({
-              workPackageId: this.workpackageId,
-              nodeId: this.nodeId,
-              data: data.value,
-              mapViewParams: mapViewParams
-            })
-          );
-        } else {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageNodeDescendant({
-              workPackageId: this.workpackageId,
-              nodeId: this.nodeId,
-              data: data.value
-            })
-          );
+      this.store.dispatch(
+        new FindPotentialWorkpackageNodes({
+          workPackageId: this.workpackageId,
+          nodeId: parentData ? parentData.id : this.nodeId,
+          data: {}
+        })
+      );
+      const dialogRef = this.dialog.open(SelectModalComponent, {
+        disableClose: false,
+        width: '500px',
+        data: {
+          title: `Add Children to "${parentData ? parentData.name : this.selectedNode.name}"`,
+          placeholder: 'Components',
+          descendants: true,
+          nodeId: parentData ? parentData.id : this.nodeId,
+          workPackageId: this.workpackageId,
+          scopeId: this.scope.id,
+          options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
+          selectedIds: [],
+          multi: true,
+          addingToMapGroup: !!parentData
         }
+      });
+
+      let addDescendantAction;
+      if (this.currentFilterLevel.endsWith('map')) {
+        addDescendantAction = AddWorkPackageMapViewNodeDescendant;
+      } else {
+        addDescendantAction = AddWorkPackageNodeDescendant;
       }
-    });
+
+      dialogRef.afterClosed().subscribe(data => {
+        if (data && data.value) {
+          if (this.currentFilterLevel.endsWith('map')) {
+            const mapViewParams = {
+              id: this.mapViewSource.id,
+              queryParams: {
+                workPackageQuery: this.selectedWorkpackages,
+                scope: [this.scope.id],
+                isTransformation: this.mapViewSource.isTransformation
+              }
+            };
+
+            this.workpackageStore.dispatch(
+              new AddWorkPackageMapViewNodeDescendant({
+                workPackageId: this.workpackageId,
+                nodeId: this.nodeId,
+                data: data.value,
+                mapViewParams: mapViewParams
+              })
+            );
+          } else {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNodeDescendant({
+                workPackageId: this.workpackageId,
+                nodeId: this.nodeId,
+                data: data.value
+              })
+            );
+          }
+        }
+      });
+    }
   }
 
   onDeleteDescendant(descendant: DescendantsEntity): void {

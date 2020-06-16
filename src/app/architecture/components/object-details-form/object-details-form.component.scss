@@ -4,6 +4,9 @@
 
 .disabled {
   pointer-events: none;
+  mat-select, input, textarea {
+    background-color: #eee;
+  }
 }
 
 button {
@@ -27,4 +30,9 @@ label {
 
 .view-structure {
   margin-top: 7px;
+}
+
+.alert {
+  margin-top: 5px;
+  text-align: center;
 }

@@ -1,22 +1,23 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ReportLibrary } from '@app/report-library/store/models/report.model';
+import { TableData, Page } from '@app/radio/store/models/radio.model';
 
 @Component({
   selector: 'smi-report-library-table',
   templateUrl: 'report-library-table.component.html',
   styleUrls: ['report-library-table.component.scss']
 })
-export class ReportLibraryTableComponent implements OnInit {
-  private filterValue: string;
+export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
   @Input()
-  set reports(reports: ReportLibrary[]) {
-    if (reports) {
-      this.dataSource = new MatTableDataSource<ReportLibrary>(reports);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-      this.dataSource.filter = this.filterValue;
-    }
+  set reports(data: TableData<ReportLibrary[]>) {
+    this.dataSource = new MatTableDataSource<ReportLibrary>(data.entities as any);
+    this.page = data.page;
+    this.dataSource.sort = this.sort;
+  }
+
+  get totalEntities(): number {
+    return this.page ? this.page.totalObjects : 0;
   }
 
   @Input() workPackageIsEditable: boolean;
@@ -24,6 +25,17 @@ export class ReportLibraryTableComponent implements OnInit {
   @Output() reportSelected = new EventEmitter<ReportLibrary>();
   @Output() addReport = new EventEmitter<void>();
   @Output() download = new EventEmitter<void>();
+
+  @Output() pageChange = new EventEmitter<{
+    previousPageIndex: number;
+    pageIndex: number;
+    pageSize: number;
+    length: number;
+  }>();
+
+  public page: Page;
+
+  @Output() filter = new EventEmitter<string>();
 
   public dataSource: MatTableDataSource<ReportLibrary>;
   public displayedColumns: string[] = ['name', 'description', 'tags'];
@@ -44,11 +56,16 @@ export class ReportLibraryTableComponent implements OnInit {
   }
 
   onSearch(filterValue: string): void {
-    this.filterValue = filterValue;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.filter.emit(filterValue);
   }
 
   downloadCSV(): void {
     this.download.emit();
+  }
+
+  ngAfterViewInit() {
+    this.paginator.page.subscribe(nextPage => {
+      this.pageChange.emit(nextPage);
+    });
   }
 }
