@@ -10,10 +10,12 @@ Given('the user creates a new {string} system with name {string}', function(comp
       cy.selectDropDownNoClick('topology-components-or-link-modal-category', component_type).then(() => {
         cy.get('[data-qa=topology-components-or-link-modal-name]')
           .type(name)
+          .should('have.value', name)
           .then(() => {
             cy.get('[data-qa=topology-components-or-link-modal-save]')
               .click()
               .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery']);
+            cy.get('[data-qa=spinner]').should('not.be.visible');
           });
       });
     });

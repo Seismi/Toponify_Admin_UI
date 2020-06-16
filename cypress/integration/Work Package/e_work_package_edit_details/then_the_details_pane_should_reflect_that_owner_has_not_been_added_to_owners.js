@@ -9,7 +9,8 @@ Then('the details pane should reflect that {string} has not been added as an own
     .concat(name); // prefix name with branch
   cy.get(`[data-qa=work-packages-quick-search]`) // get the work packages quick search
     .clear() // clear
-    .type(name) // type the name
+    .type(name)
+    .should('have.value', name) // type the name
     .then(() => {
       cy.get(`[data-qa=work-packages-table]`) // get the table
         .find('table>tbody') // find the table body

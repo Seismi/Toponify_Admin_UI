@@ -26,6 +26,7 @@ When('the user creates a new {string} interface with name {string} between {stri
           cy.get('[data-qa=topology-components-or-link-modal-name]')
             .clear()
             .type(name)
+            .should('have.value', name)
             .then(() => {
               cy.get('[data-qa=topology-components-or-link-modal-save]').click();
             });

@@ -16,7 +16,6 @@ export class LeftPanelComponent {
   @Input() selectedLeftTab: number;
   @Input() canSelectWorkpackages: boolean;
   @Output() setWorkpackageEditMode = new EventEmitter<object>();
-  @Output() tabClick = new EventEmitter<number>();
   @Input() layout: LayoutDetails;
   @Input() group: FormGroup;
   @Output() addLayout = new EventEmitter<void>();

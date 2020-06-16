@@ -8,7 +8,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {layers} from '@app/architecture/store/models/node.model';
+import {layers, middleOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -280,7 +280,8 @@ export class DiagramListenersService {
       }
     );
 
-    // In node usage view, highlight the originating node with a blue shadow
+    // In node usage view, highlight the originating node with a blue shadow.
+    // Also, ensure originating node is visible by expanding the chain of containing nodes.
     diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
       if (event.modelChange === 'nodeDataArray') {
         const currentLevel = this.currentLevel;
@@ -290,6 +291,24 @@ export class DiagramListenersService {
           const usageNode = diagram.findNodeForKey(nodeId);
           if (usageNode) {
             this.diagramChangesService.setBlueShadowHighlight(usageNode, true);
+
+            // Get nested containing nodes
+            const containingNodes = [];
+            let containingNode = usageNode.containingGroup;
+            while (containingNode) {
+              containingNodes.splice(0, 0, containingNode);
+              containingNode = containingNode.containingGroup;
+            }
+
+            // Expand all containing nodes
+            containingNodes.forEach(function(node: go.Group, index: number): void {
+              // Add delay to ensure each group expanded before expanding the next
+              setTimeout(function() {
+                diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
+                diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.group);
+                this.diagramChangesService.nodeExpandChanged(node);
+              }.bind(this), 150 * (index + 1));
+            }.bind(this));
           }
         }
       }
