@@ -22,7 +22,6 @@ When('the user creates a new {string} interface with name {string} between {stri
       cy.selectDropDownNoClick('topology-components-or-link-modal-category', interface_type).then(() => {
         cy.selectDropDownNoClick('topology-components-or-link-modal-source', source).then(() => {
           cy.selectDropDownNoClick('topology-components-or-link-modal-target', target);
-          cy.wait('@GETNotifications');
           cy.get('[data-qa=topology-components-or-link-modal-name]')
             .clear()
             .type(name)

@@ -169,6 +169,17 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
     });
 });
 
+Cypress.Commands.add('findDocumentationStandard', name => {
+  cy.get(`[data-qa=documentation-standards-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name) // type the name
+    .then(() => {
+      return cy
+        .get(`[data-qa=documentation-standards-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
 Cypress.Commands.add('findScope', name => {
   cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
     .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
@@ -283,7 +294,6 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
             .click()
             .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
             .then(wp => {
-              cy.get('[data-qa=spinner]').should('not.be.visible');
               if (wp[0].textContent === 'edit') {
                 cy.get('table>tbody')
                   .find('tr:first>td>div>div>mat-icon')
@@ -294,6 +304,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
         });
     })
     .then(result => {
+      cy.get('[data-qa=spinner]').should('not.be.visible');
       cy.root()
         .get('[data-qa=left-hand-pane-work-packages]')
         .click();
@@ -312,6 +323,22 @@ Cypress.Commands.add('deleteScope', scope => {
             .click()
             .then(() => {
               cy.get('[data-qa=delete-modal-yes]').click();
+            });
+        });
+    });
+});
+
+Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
+  cy.selectRow('documentation-standards-table', doc_standard) // select the documentation standard
+    .wait('@GETCustomProperties*')
+    .then(() => {
+      cy.get(`[data-qa=documentation-standards-delete]`) //get the delete button
+        .click() // click it
+        .then(() => {
+          cy.get('[data-qa=delete-modal-yes]') // get the delete modal button
+            .click()
+            .then(() => {
+              cy.wait('@DELETECustomProperties'); // delete the documentation standard
             });
         });
     });
@@ -348,6 +375,27 @@ Cypress.Commands.add('deleteWorkPackage', name => {
       });
     });
 });
+/*
+Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
+  // Creates a documentation standard
+  cy.log(component)
+  cy.get('[data-qa=documentation-standards-create-new]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-details-name]').type(doc_standard); // enter the name
+      cy.get('[data-qa=documentation-standards-details-description]').type(doc_standard); //enter the description
+      cy.root(); // return to root
+      cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
+        .click()
+        .get('mat-option')
+        .contains(type) // get the mat-option that contains type
+        .click({ force: true }); // click
+      cy.get('smi-document-standards-levels') // get the levels
+        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
+        .contains(component) // which contains the component
+        .click();
+    }); //click the create new documentations standard button
+});*/
 
 Cypress.Commands.add('findRadio', radio => {
   cy.get('[data-qa=radio-filter]')
@@ -564,14 +612,14 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
         .contains(type)
         .click({ force: true });
       cy.get('smi-document-standards-levels')
-        .get('mat-tree-node')
+        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
         .contains(component)
         .click();
-      cy.get('[data-qa=documentation-standards-modal-save]')
+      /*      cy.get('[data-qa=documentation-standards-modal-save]')
         .click()
         .then(() => {
           cy.route('POST', `${documentationStandards}`).as('POSTCustomProperties');
-        });
+        });*/
     });
 });
 
