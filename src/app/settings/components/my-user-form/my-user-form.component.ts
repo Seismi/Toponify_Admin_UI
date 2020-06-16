@@ -38,7 +38,7 @@ export class MyUserFormComponent {
   public days: string[] = [
     Days.Sunday,
     Days.Monday,
-    Days.Thursday,
+    Days.Tuesday,
     Days.Wednesday,
     Days.Thursday,
     Days.Friday,
