@@ -13,17 +13,13 @@ Feature: Create new report
     And the user creates a new 'transactional' system with name 'Automated Regression Test System'
     And the user selects Reports menu item
 
-    #TODO - You need to create the system that is going to be used within the reports
-
-  @focus
   Scenario: Create Report and then cancel
-    #TODO - this and all subsequent tests should use the system that you created above
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
     And the user cancels the creation of the report
     Then the new report 'Automated Regression Test Report' should not exist in the reports table
 
+  @focus
   Scenario: Create Report and then confirm
-    #TODO - this and all subsequent tests should use the system that you created above
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
     And the user confirms the creation of the report
     Then the new report 'Automated Regression Test Report' should exist in the reports table
