@@ -27,7 +27,7 @@ module.exports = {
       name: 'WorkPackage'
     },
     GetArchiveWorkPackages: {
-      api: `${api_version}/workpackages?includeArchived=true`,
+      api: `${api_version}/workpackages?includeArchived=*`,
       //                        api: `${api_version}/workpackages*`,
       method: 'GET',
       name: 'ArchiveWorkPackages'
@@ -97,10 +97,10 @@ module.exports = {
       method: 'DELETE',
       name: 'workPackageObjectives'
     },
-    GetRadios: {
-      api: `${api_version}/radios`,
-      method: 'GET',
-      name: 'Radios'
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
     },
     GetUsers: {
       api: `${api_version}/users`,
@@ -141,6 +141,11 @@ module.exports = {
       api: `${api_version}/radios/*/reply`,
       method: 'POST',
       name: 'RadioReply'
+    },
+    GetRadios: {
+      api: `${api_version}/radios`,
+      method: 'GET',
+      name: 'Radios'
     }
   }
 };

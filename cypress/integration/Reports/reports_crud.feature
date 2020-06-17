@@ -13,24 +13,19 @@ Feature: Create new report
     And the user creates a new 'transactional' system with name 'Automated Regression Test System'
     And the user selects Reports menu item
 
-    #TODO - You need to create the system that is going to be used within the reports
-
   @focus
   Scenario: Create Report and then cancel
-    Check the API CALLS...
-    #TODO - this and all subsequent tests should use the system that you created above
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
-    #And the user cancels the creation of the report
-    #Then the new report 'Automated Regression Test Report' should not be created
+    And the user cancels the creation of the report
+    Then the new report 'Automated Regression Test Report' should not exist in the reports table
+    And the user reloads the Reports page
 
-  Scenario: Complete creating a new report
-  Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
-   When clicks on create a new report
-    And sets a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'ERP'
-    And user 'confirms' the creation of the report
-   Then the report 'Automated Regression Test Report' should be created
-    #TODO -- Is there a second check required against the ERP system
-    #TODO -- Need to check immediately and after reload
+
+  Scenario: Create Report and then confirm
+    When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
+    And the user confirms the creation of the report
+    Then the new report 'Automated Regression Test Report' should exist in the reports table
+
 
   Scenario: Cancel updating a report
   Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
