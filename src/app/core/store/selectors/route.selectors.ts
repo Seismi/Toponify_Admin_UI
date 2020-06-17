@@ -52,3 +52,16 @@ export const getNodeIdQueryParams: MemoizedSelector<Params, any> = createSelecto
     return state['id'];
   }
 );
+
+export const getMapViewQueryParams: MemoizedSelector<Params, any> = createSelector(
+  getQueryParams,
+  state => {
+    if (!state) {
+      return null;
+    }
+    return {
+      id: state['id'],
+      isTransformation: state['isTransformation']
+    };
+  }
+);

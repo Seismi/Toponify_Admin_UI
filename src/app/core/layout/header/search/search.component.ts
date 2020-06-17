@@ -87,11 +87,11 @@ export class SearchComponent implements OnInit {
         this.goToTopology(queryParams);
         break;
       }
-      case ObjectType.data_set_link:
-      case ObjectType.data_set: {
-        queryParams.filterLevel = 'data set';
+      case ObjectType.data_link:
+      case ObjectType.data_node: {
+        queryParams.filterLevel = 'data';
         queryParams.selectedItem = selectedSearch.id;
-        queryParams.selectedType = selectedSearch.objectType === ObjectType.data_set_link ? 'link' : 'node';
+        queryParams.selectedType = selectedSearch.objectType === ObjectType.data_link ? 'link' : 'node';
         this.goToTopology(queryParams);
         break;
       }

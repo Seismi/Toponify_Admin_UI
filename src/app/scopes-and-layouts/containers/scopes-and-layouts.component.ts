@@ -18,8 +18,6 @@ export class ScopesAndLayoutsComponent implements OnInit {
   public scopes$: Observable<ScopeEntity[]>;
   public selectedLeftTab: number | string;
 
-  @ViewChild('drawer') drawer;
-
   constructor(private store: Store<ScopeState>, private router: Router, private dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -51,13 +49,5 @@ export class ScopesAndLayoutsComponent implements OnInit {
         );
       }
     });
-  }
-
-  openLeftTab(tab: number | string): void {
-    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
-    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 }

@@ -49,10 +49,10 @@ module.exports = {
       method: 'GET',
       name: 'Teams'
     },
-    GetRadios: {
-      api: `${api_version}/radios`,
-      method: 'GET',
-      name: 'Radios'
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
     },
     GetNodesScopeQuery: {
       api: `${api_version}/nodes?scopeQuery*`,
@@ -78,11 +78,6 @@ module.exports = {
       api: `${api_version}/workpackages/selector/availability*`,
       method: 'GET',
       name: 'SelectorAvailabilityQuery'
-    },
-    GetNotfications: {
-      api: `${api_version}/notifications`,
-      method: 'GET',
-      name: 'Notifications'
     },
     GETWorkPackageNodesScopeQuery: {
       api: `${api_version}/workpackages/*/nodes?scopeQuery=*`,
@@ -133,6 +128,51 @@ module.exports = {
       api: `${api_version}/workpackages/*/nodes/*/deleteRequest`,
       method: 'POST',
       name: 'WorkPackagesDeleteNode'
+    },
+    nodeLinksWorkPackageQuery: {
+      api: `${api_version}/nodelinks/*?workPackageQuery[]=*`,
+      method: 'GET',
+      name: 'nodeLinksWorkPackageQuery'
+    },
+    workPackageNodeLinksQuery: {
+      api: `${api_version}/workpackages/*/nodelinks/*/tags`,
+      method: 'GET',
+      name: 'WorkPackageNodeLinksQuery'
+    },
+    workPackagesNodeLinksDescendants: {
+      api: `${api_version}/workpackages/*/nodelinks/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodeLinksDescendants'
+    },
+    workPackagesNodeLinksDeleteRequest: {
+      api: `${api_version}/workpackages/*/nodelinks/*/deleteRequest`,
+      method: 'POST',
+      name: 'workPackagesNodeLinksDeleteRequest'
+    },
+    workPackagesNodeDescendants: {
+      api: `${api_version}/workpackages/*/node/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodeDescendants'
+    },
+    workPackagesNodesDescendants: {
+      api: `${api_version}/workpackages/*/nodes/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodesDescendants'
+    },
+    WorkPackagesNodeLinks: {
+      api: `${api_version}//workpackages/*/nodelinks`,
+      method: 'POST',
+      name: 'WorkPackagesNodeLinks'
+    },
+    WorkPackagesNodesGroupSet: {
+      api: `${api_version}/workpackages/nodes/*/group/set/*`,
+      method: 'POST',
+      name: 'WorkPackagesNodesGroupSet'
+    },
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
     }
   }
 };

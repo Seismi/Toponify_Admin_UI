@@ -12,6 +12,13 @@ import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selecto
 
 const $ = go.GraphObject.make;
 
+function textFont(style?: string): Object {
+  const font = getComputedStyle(document.body).getPropertyValue('--default-font');
+  return {
+    font: `${style} ${font}`
+  };
+}
+
 export const customIcons = {
   tree: go.Geometry.parse('M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z', true),
   flag: go.Geometry.parse('M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z', true),
@@ -36,13 +43,23 @@ export class CustomLinkShift extends LinkShiftingTool {
   }
 }
 
-// Custom resizing tool to resize system groups
+// Custom resizing tool to resize system/data groups
 export class CustomNodeResize extends go.ResizingTool {
   constructor() {
     super();
   }
 
-  // Constrain minimum size to encompass all system group members
+  doActivate() {
+    go.ResizingTool.prototype.doActivate.call(this);
+
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        node.data.tempSavedPosition = node.position.copy();
+      }
+    );
+  }
+
+  // Constrain minimum size to encompass all system/data group members
   public computeMinSize(): go.Size {
 
     // Default minimum size irrespective of group members
@@ -62,27 +79,27 @@ export class CustomNodeResize extends go.ResizingTool {
     const memberArea = this.adornedObject.getDocumentBounds();
 
     // For each direction the group is being enlarged in,
-    //  ensure that no grouped system would be left outside the group member area
+    //  ensure that no grouped node would be left outside the group member area
     group.memberParts.each(
-      function(system: go.Part) {
+      function(node: go.Part) {
         // Ignore links between nodes in the group
-        if (system instanceof go.Node) {
+        if (node instanceof go.Node) {
 
           // Prevent the top side of the group being dragged too low
           if (draggedSides.top) {
-            minSize.height = Math.max(minSize.height, memberArea.bottom - system.actualBounds.top);
+            minSize.height = Math.max(minSize.height, memberArea.bottom - node.actualBounds.top);
           }
           // Prevent the right side of the group being dragged too far left
           if (draggedSides.right) {
-            minSize.width = Math.max(minSize.width, system.actualBounds.right - memberArea.left);
+            minSize.width = Math.max(minSize.width, node.actualBounds.right - memberArea.left);
           }
           // Prevent the bottom side of the group being dragged too high
           if (draggedSides.bottom) {
-            minSize.height = Math.max(minSize.height, system.actualBounds.bottom - memberArea.top);
+            minSize.height = Math.max(minSize.height, node.actualBounds.bottom - memberArea.top);
           }
           // Prevent the left side of the group being dragged too far right
           if (draggedSides.left) {
-            minSize.width = Math.max(minSize.width, memberArea.right - system.actualBounds.left);
+            minSize.width = Math.max(minSize.width, memberArea.right - node.actualBounds.left);
           }
         }
       }
@@ -112,30 +129,31 @@ export class CustomNodeResize extends go.ResizingTool {
     return maxSize;
   }
 
-  // Override standard resize in order to prevent grouped systems from shifting position
+  // Override standard resize in order to prevent grouped nodes from shifting position
   public resize(newr: go.Rect): void {
     const memberLocations = [];
-
-    // Save grouped system's positions
-    (this.adornedObject.part as go.Group).findSubGraphParts().each(
-      function(member: go.Part) {
-        if (member instanceof go.Node) {
-          memberLocations.push({
-            node: member,
-            PrevPosition: member.position.copy()
-          });
-        }
-      }
-    );
 
     // Perform standard resizing
     go.ResizingTool.prototype.resize.call(this, newr);
 
-    // Restore grouped system's positions from before the resizing
-    memberLocations.forEach(function(nodeLocation) {
-      nodeLocation.node.position = nodeLocation.PrevPosition;
+    // Restore grouped node's positions from before the resizing
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        node.position = node.data.tempSavedPosition;
     });
 
+  }
+
+  doDeactivate() {
+
+    // Remove temporary saved position from node data
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        delete node.data.tempSavedPosition;
+      }
+    );
+
+    return go.ResizingTool.prototype.doDeactivate.call(this);
   }
 }
 
@@ -219,7 +237,7 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a new scope should be created for the selected node
   private createScopeWithNodeSource = new Subject();
   public createScopeWithNode$ = this.createScopeWithNodeSource.asObservable();
-  // Observable to indicate that a new data set is to be added to a system
+  // Observable to indicate that a new data node is to be added to a system
   private addDataSetSource = new Subject();
   public addDataSet$ = this.addDataSetSource.asObservable();
   // Observable to indicate that the grid display should be toggled
@@ -234,9 +252,15 @@ export class GojsCustomObjectsService {
   // Observable to indicate that the system should be assigned to a new group
   private addSystemToGroupSource = new Subject();
   public addSystemToGroup$ = this.addSystemToGroupSource.asObservable();
-  // Observable to indicate that a new system should be added to the group as a new member
+  // Observable to indicate that a new node should be added to the group as a new member
   private addNewSubItemSource = new Subject();
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
+  // Observable to indicate that a shared copy of an existing node should be added to the group as a new member
+  private addNewSharedSubItemSource = new Subject();
+  public addNewSharedSubItem$ = this.addNewSharedSubItemSource.asObservable();
+  // Observable to indicate that a shared copy of an existing node should be made into the master
+  private setAsMasterSource = new Subject();
+  public setAsMaster$ = this.setAsMasterSource.asObservable();
 
   public diagramEditable: boolean;
   private currentLevel;
@@ -322,7 +346,7 @@ export class GojsCustomObjectsService {
           }
         },
         new go.Binding('visible', 'layer', function(layer) {
-            // Can only expand link if layer is system or data set
+            // Can only expand link if layer is system or data
             return layer === layers.system || layer === layers.data;
         })
       ),
@@ -336,7 +360,7 @@ export class GojsCustomObjectsService {
   }
 
 
-  // Context menu for when a system group button is clicked
+  // Context menu for when a group button is clicked
   getPartButtonMenu(fixedPosition = true): go.Adornment {
 
     const disabledTextColour = '#707070';
@@ -411,7 +435,7 @@ export class GojsCustomObjectsService {
             }).ofObject()
           : {},
         enabled_predicate
-          ? new go.Binding('isEnabled', '', enabled_predicate)
+          ? new go.Binding('isEnabled', '', enabled_predicate).ofObject()
           : {}
       );
     }
@@ -421,7 +445,7 @@ export class GojsCustomObjectsService {
       row: number,
       name: string,
       action: (event: object, object?: go.GraphObject) => void,
-      enabled_predicate?: (object: NodeDetail, event: object) => boolean,
+      enabled_predicate?: (object: go.GraphObject, event: object) => boolean,
       text_predicate?: (object: go.GraphObject, event: object) => string
     ): go.Part {
       return $('ContextMenuButton',
@@ -448,7 +472,7 @@ export class GojsCustomObjectsService {
         row: row
       },
         enabled_predicate
-          ? new go.Binding('isEnabled', '', enabled_predicate)
+          ? new go.Binding('isEnabled', '', enabled_predicate).ofObject()
           : {}
       );
     }
@@ -571,7 +595,7 @@ export class GojsCustomObjectsService {
             ],
           function(object: go.GraphObject): boolean {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            return node.data.layer === 'system' ? true : false;
+            return [layers.system, layers.data].includes(node.data.layer);
           }.bind(this)
         ),
         // --Grouped components submenu buttons--
@@ -589,7 +613,7 @@ export class GojsCustomObjectsService {
             diagramChangesService.nodeExpandChanged(node);
 
           }.bind(this),
-          function(object: NodeDetail, event: go.DiagramEvent) {
+          function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
           function(object: go.GraphObject) {
@@ -610,7 +634,7 @@ export class GojsCustomObjectsService {
             diagramChangesService.nodeExpandChanged(node);
 
           }.bind(this),
-          function(object: NodeDetail, event: go.DiagramEvent) {
+          function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
           function() {return 'Show as List'; }
@@ -633,11 +657,19 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            this.addNewSubItemSource.next(node.data);
+            if (node.data.layer === layers.data) {
+              thisService.addNewSharedSubItemSource.next(node.data);
+            } else {
+              thisService.addNewSubItemSource.next(node.data);
+            }
 
           }.bind(this),
-          function(object: NodeDetail, event: go.DiagramEvent) {
-            return thisService.diagramEditable && thisService.currentLevel !== Level.usage;
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+
+            return thisService.diagramEditable &&
+              thisService.currentLevel !== Level.usage &&
+              !node.data.isShared;
           }
         ),
         makeSubMenuButton(
@@ -647,8 +679,12 @@ export class GojsCustomObjectsService {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             this.addSystemToGroupSource.next(node.data);
           }.bind(this),
-          function(object: NodeDetail, event: go.DiagramEvent): boolean {
-            return thisService.diagramEditable && thisService.currentLevel !== Level.usage;
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+
+            return thisService.diagramEditable &&
+              thisService.currentLevel !== Level.usage &&
+              node.data.layer !== layers.data;
           },
           function(object: go.GraphObject): string {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
@@ -658,32 +694,32 @@ export class GojsCustomObjectsService {
         // --End of group submenu buttons--
         makeMenuButton(
           3,
-          'Data Sets',
+          'Data Nodes',
             [
-              'Show as List (data sets)',
-              'Display (data sets)',
-              'Add data set',
+              'Show as List (data nodes)',
+              'Display (data nodes)',
+              'Add data node',
             ],
           function(object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            return node.data.layer === 'reporting concept' ? false : true;
+            return node.data.layer !== 'reporting concept';
           }.bind(this),
           function(object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             switch (node.data.layer) {
-              case 'data set':
+              case layers.data:
                 return 'Dimensions';
-              case 'dimension':
+              case layers.dimension:
                 return 'Reporting Layer';
               default:
-                return 'Data Sets';
+                return 'Data Nodes';
             }
           }
         ),
-        // --Data set submenu buttons--
+        // --Data node submenu buttons--
         makeSubMenuButton(
           3,
-          'Show as List (data sets)',
+          'Show as List (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -695,7 +731,7 @@ export class GojsCustomObjectsService {
 
             diagramChangesService.nodeExpandChanged(node);
           },
-          function(object: NodeDetail, event: go.DiagramEvent) {
+          function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
@@ -705,7 +741,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(4,
-          'Display (data sets)',
+          'Display (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -717,27 +753,29 @@ export class GojsCustomObjectsService {
         ),
         makeSubMenuButton(
           5,
-          'Add data set',
+          'Add data node',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            thisService.addDataSetSource.next(node.data);
+            thisService.addDataSetSource.next();
           },
-          function(object: NodeDetail, event: go.DiagramEvent): boolean {
-            return thisService.diagramEditable;
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return thisService.diagramEditable &&
+              ![nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category);
           },
           function(object: go.GraphObject): string {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             switch (node.data.layer) {
-              case 'data set':
+              case layers.data:
                 return 'Add dimension';
-              case 'dimension':
+              case layers.dimension:
                 return 'Add reporting concept';
               default:
-                return 'Add data set';
+                return 'Add data node';
             }
           }
         ),
-        // --End of data set submenu buttons--
+        // --End of data node submenu buttons--
         makeMenuButton(
           4,
           'Analyse',
@@ -763,7 +801,7 @@ export class GojsCustomObjectsService {
               diagramChangesService.hideNonDependencies(menuNode);
             }
           },
-          function(object: NodeDetail, event: go.DiagramEvent): boolean {
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
             const level = thisService.currentLevel;
             return !level.endsWith('map');
           }
@@ -775,8 +813,26 @@ export class GojsCustomObjectsService {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             diagramLevelService.displayUsageView(event, node);
           }
-        )
+        ),
         // --End analysis submenu buttons--
+        makeButton(5,
+          'Set as Master',
+          function(event: object, object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            thisService.setAsMasterSource.next(node.data);
+          },
+          function(object: go.GraphObject, event: object) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return node.data.layer === layers.data;
+          },
+          function(object: go.GraphObject, event: object) {
+            const node = (object.part as go.Adornment).adornedObject as go.Group;
+
+            return node.data.category !== nodeCategories.dataStructure &&
+              node.data.isShared &&
+              !node.containingGroup.data.isShared;
+          }
+        )
       )
     );
   }
@@ -824,6 +880,11 @@ export class GojsCustomObjectsService {
   // Set node dragComputation to this to prevent dragging one node to overlap another
   avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
 
+    // Do not run when resizing nodes
+    if (node.diagram.currentTool instanceof go.ResizingTool) {
+      return newLoc;
+    }
+
     // Allow overlap for grouped nodes in map view so user can drag nodes to rearrange the order.
     // Group layout will ensure there is ultimately no overlap.
     if (this.currentLevel.endsWith('map') && node.data.category !== nodeCategories.transformation) {
@@ -849,9 +910,33 @@ export class GojsCustomObjectsService {
       }
       rectangle.inflate(0.5, 0.5);  // restore to actual size
       // return the proposed new location point
-      return new go.Point(rectangle.x - (loc.x - bnds.x), rectangle.y - (loc.y - bnds.y));
+      return new go.Point(rectangle.x + (loc.x - bnds.x), rectangle.y + (loc.y - bnds.y));
     }
     if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
     return loc;  // give up -- don't allow the node to be moved to the new location
+  }
+
+  // returns the gojs object containing a guide with instructions for users
+  getInstructions(): go.Part {
+
+    const thisService = this;
+
+    return $(go.Part,
+      'Horizontal',
+      {
+        name: 'Guide',
+        selectable: false,
+        layerName: 'Grid',
+        padding: 10
+      },
+      $(go.TextBlock,
+        textFont('italic 30px'),
+        {
+          name: 'instructions',
+          stroke: '#D6D6D6',
+          textAlign: 'center'
+        }
+      )
+    );
   }
 }

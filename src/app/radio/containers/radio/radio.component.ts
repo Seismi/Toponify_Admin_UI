@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { LoadNodes, LoadTags } from '@app/architecture/store/actions/node.actions';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { RadioFilterService } from '@app/radio/services/radio-filter.service';
@@ -32,6 +32,7 @@ import {
 } from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
+import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 
 @Component({
   selector: 'smi-radio',
@@ -48,8 +49,6 @@ export class RadioComponent implements OnInit, OnDestroy {
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
 
-  @ViewChild('drawer') drawer;
-
   constructor(
     private actions: Actions,
     private nodeStore: Store<NodeState>,
@@ -61,6 +60,8 @@ export class RadioComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(new LoadTags());
+    this.store.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
     this.store.dispatch(
       new LoadRadios({
@@ -222,13 +223,5 @@ export class RadioComponent implements OnInit, OnDestroy {
         fileName: 'RADIO'
       }
     });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 }

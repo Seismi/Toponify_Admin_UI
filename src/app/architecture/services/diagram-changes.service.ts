@@ -6,7 +6,7 @@ import {
   UpdateWorkPackageLink
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
 import { BehaviorSubject } from 'rxjs';
@@ -16,13 +16,19 @@ import { MatDialog } from '@angular/material';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import { getFilterLevelQueryParams, getQueryParams } from '@app/core/store/selectors/route.selectors';
+import {
+  getFilterLevelQueryParams,
+  getMapViewQueryParams,
+  getNodeIdQueryParams,
+  getScopeQueryParams
+} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
 import {endPointTypes, layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
 import {autoLayoutId} from '@app/architecture/store/models/layout.model';
+import {defaultScopeId} from '@app/scope/store/models/scope.model';
 
 const $ = go.GraphObject.make;
 
@@ -32,6 +38,7 @@ export class DiagramChangesService {
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
+  public diagramEditable: boolean;
   private currentLevel: Level;
   private currentScope: string;
   private currentNodeId: string;
@@ -39,6 +46,7 @@ export class DiagramChangesService {
   public dependenciesView = false;
 
   workpackages = [];
+  selectedWorkpackages = [];
   layout;
 
   constructor(
@@ -51,18 +59,24 @@ export class DiagramChangesService {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
+    this.workpackageStore
+      .pipe(select(getSelectedWorkpackages))
+      .subscribe(workpackages => (this.selectedWorkpackages = workpackages));
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
-    this.store.select(getQueryParams).subscribe(params => {
-      this.currentLevel = params.filterLevel;
-      this.currentScope = params.scope;
-      this.currentNodeId = params.nodeId;
-      this.currentMapViewSource = {
-        id: params.id,
-        isTransformation: params.isTransformation
-      };
+    this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      this.currentLevel = filterLevel;
       this.dependenciesView = false;
+    });
+    this.store.select(getScopeQueryParams).subscribe(scope => {
+      this.currentScope = scope;
+    });
+    this.store.select(getNodeIdQueryParams).subscribe(nodeId => {
+      this.currentNodeId = nodeId;
+    });
+    this.store.select(getMapViewQueryParams).subscribe(mapViewParams => {
+      this.currentMapViewSource = mapViewParams;
     });
   }
 
@@ -740,8 +754,9 @@ export class DiagramChangesService {
     });
 
     if ([Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
+      this.groupMemberSizeChanged(node);
       // Update node's layout in map view or usage view
-      node.invalidateLayout();
+      node.findTopLevelPart().invalidateLayout();
     } else {
 
       this.groupMemberSizeChanged(node);
@@ -761,8 +776,8 @@ export class DiagramChangesService {
   }
 
   // Ensure group members and any connected links are positioned correctly
-  //  when a system group is expanded
-  systemSubGraphExpandChanged(group: go.Group): void {
+  //  when a system/data group is expanded
+  groupSubGraphExpandChanged(group: go.Group): void {
 
     if (group.isSubGraphExpanded) {
 
@@ -799,9 +814,9 @@ export class DiagramChangesService {
                 part.move(newLocation, true);
               } else {
                 /*
-                  For nodes that are already located in the group, change member system location back and
+                  For nodes that are already located in the group, change member node location back and
                   forth between the current location and another point.
-                  This is to force GoJS to update the position of the system, as this does not appear to be
+                  This is to force GoJS to update the position of the node, as this does not appear to be
                   done correctly when the parent group is moved.
                 */
                 const location = part.location.copy();
@@ -868,27 +883,27 @@ export class DiagramChangesService {
       }
     });
 
-    if (this.currentLevel === Level.usage) {
+    if (this.currentLevel === Level.usage || this.currentLevel === Level.systemMap) {
       // Update node's layout in usage view
-      node.invalidateLayout();
+      node.findTopLevelPart().invalidateLayout();
+    } else {
+      // Update group area of node in the back end
+      this.onUpdateGroupsAreaState.next({
+        groups: [{
+          id: node.data.id,
+          areaSize: node.data.areaSize,
+          locationCoordinates: node.data.location
+        }],
+        links: linkData
+      });
     }
-
-    // Update group area of node in the back end
-    this.onUpdateGroupsAreaState.next({
-      groups: [{
-        id: node.data.id,
-        areaSize: node.data.areaSize,
-        locationCoordinates: node.data.location
-      }],
-      links: linkData
-    });
 
     this.groupMemberSizeChanged(node);
   }
 
-  // Ensures that all system groups that have the given member as part of
+  // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
-  groupMemberSizeChanged(member: go.Node): void {
+  groupMemberSizeChanged(member: go.Group): void {
     const nestedGroups = new go.Set();
     const linksToUpdate = new go.Set();
 
@@ -898,7 +913,16 @@ export class DiagramChangesService {
     // Loop through containing groups until reaching a top level group,
     //  ensuring each is big enough
     while (currentGroup.containingGroup !== null) {
+
       currentGroup = currentGroup.containingGroup;
+
+      // If current group is a map view group then:
+      //  - redo layout to ensure member nodes do not overlap
+      //  - Exit (as map view groups are resized automatically)
+      if (currentGroup.category === '') {
+        currentGroup.layout.invalidateLayout();
+        break;
+      }
 
       const memberArea = currentGroup.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
@@ -956,19 +980,18 @@ export class DiagramChangesService {
       });
     });
 
-    // Update back end with new layout info for updated groups and links
-    this.onUpdateGroupsAreaState.next({
-      groups: groupData,
-      links: linkData
-    });
-
-    if (this.currentLevel === Level.usage) {
-      // Update node's layout in usage view
+    if (this.currentLevel === Level.usage || this.currentLevel === Level.systemMap) {
+      // Update node's layout in usage or map view
       member.invalidateLayout();
+    } else {
+      // Update back end with new layout info for updated groups and links
+      this.onUpdateGroupsAreaState.next({
+        groups: groupData,
+        links: linkData
+      });
     }
 
     this.onUpdateDiagramLayout.next({});
-
   }
 
   // Display map view for a link
@@ -1066,6 +1089,11 @@ export class DiagramChangesService {
         const area = areas[node.data.layer];
         const nodeBounds = node.getDocumentBounds();
 
+        // Do not attempt to include area of nodes that are not visible
+        if (!node.isVisible()) {
+          return;
+        }
+
         // If area property has not yet been set then set it equal to the node's bounds
         if (!area) {
           areas[node.data.layer] = nodeBounds.copy();
@@ -1108,9 +1136,9 @@ export class DiagramChangesService {
           // Lane must be tall enough to enclose its layer...
           shape.height = currentLayerArea.height
             // ...plus half the distance to the previous layer (if present)...
-            + (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin)
+            + Math.max(0, (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin))
             // ...plus half the distance to the next layer (if present).
-            + (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin);
+            + Math.max(0, (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin));
 
           lane.location = new go.Point(
             // Position the left side of all lanes to the left of the diagram's nodes
@@ -1199,5 +1227,42 @@ export class DiagramChangesService {
       if (layer.findObjectsIn(rectangle, navigate, null, true).count > 0) { return false; }
     }
     return true;
+  }
+
+  // Update guide with instructions for current diagram state
+  updateGuide(diagram: go.Diagram): void {
+    const thisService = this;
+
+    let guide;
+    diagram.parts.each(function(part: go.Part): void {
+      if (part.name === 'Guide') {
+        guide = part;
+      }
+    });
+
+    guide.visible = (diagram.nodes.count + diagram.nodes.count === 0);
+
+    const instructions = guide.findObject('instructions');
+
+    if (thisService.currentScope === defaultScopeId) {
+      if (thisService.selectedWorkpackages.length === 0) {
+        instructions.text =  'Your topology is empty. Select or create a work package to get started.';
+      } else if (thisService.selectedWorkpackages.length === 1) {
+        if (thisService.diagramEditable) {
+          instructions.text = 'Go to edit pane and start dragging and dropping objects';
+        } else {
+          instructions.text = 'Your work package is empty. Enter edit mode to start documenting your topology';
+        }
+      }
+    } else {
+      if (thisService.currentNodeId) {
+        instructions.text = 'No detail to display. Start documenting or click back button to go to previous view.';
+      } else {
+        instructions.text = 'There is no detail to display. Review scope definition or start documenting with a work package';
+      }
+    }
+
+    // Ensure instructions do not exceed screen space available
+    instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
   }
 }
