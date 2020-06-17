@@ -19,30 +19,103 @@
     </mat-form-field>
   </div>
 
-  <!-- Assigned To -->
+  <!-- Relates To Work Packages -->
   <mat-form-field>
-    <mat-label>Assigned To</mat-label>
-    <mat-select
-      formControlName="assignedTo"
-      [compareWith]="assignedToComparison"
-      multiple
-      data-qa="radio-filter-assigned-to"
-    >
-      <mat-option *ngFor="let user of users" [value]="user"> {{ user.firstName }} {{ user.lastName }} </mat-option>
+    <mat-label>Relates to work packages</mat-label>
+    <mat-select formControlName="relatesToWorkPackages" multiple data-qa="radio-filter-relates-to-work-packages">
+      <div class="search-container">
+        <input
+          placeholder="Search"
+          data-qa="radio-filter-relates-to-work-packages-quick-search"
+          (keydown)="$event.stopPropagation()"
+          #searchWorkPackages
+        />
+        <button 
+          mat-icon-button 
+          class="clear" 
+          (click)="this.searchWorkPackages.value = ''"
+          >
+            <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <mat-option 
+        *ngFor="let workpackage of workpackages | searchPipe: searchWorkPackages.value" 
+        [value]="workpackage"
+      >
+        {{ workpackage.name }}
+      </mat-option>
     </mat-select>
   </mat-form-field>
 
   <!-- Relates To -->
   <mat-form-field>
-    <mat-label>Relates To</mat-label>
+    <mat-label>Relates to components</mat-label>
     <mat-select
       formControlName="relatesTo"
       [compareWith]="relatesToComparison"
       multiple
       data-qa="radio-filter-relates-to"
     >
-      <mat-option *ngFor="let node of nodes" [value]="node">
+    <div class="search-container">
+      <input
+        placeholder="Search"
+        data-qa="radio-filter-relates-to-quick-search"
+        (keydown)="$event.stopPropagation()"
+        #searchComponents
+      />
+      <button 
+        mat-icon-button 
+        class="clear" 
+        (click)="this.searchComponents.value = ''"
+        >
+          <mat-icon>close</mat-icon>
+      </button>
+    </div>
+      <mat-option *ngFor="let node of nodes" [value]="node" [class.hide]="filterComponents(node)">
         {{ node.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Tags To -->
+  <mat-form-field>
+    <mat-label>Has Tag</mat-label>
+    <mat-select formControlName="hasTag" multiple data-qa="radio-filter-has-tag">
+      <div class="search-container">
+        <input
+          placeholder="Search"
+          data-qa="radio-filter-has-tag-quick-search"
+          (keydown)="$event.stopPropagation()"
+          #searchTags
+        />
+        <button 
+          mat-icon-button 
+          class="clear" 
+          (click)="this.searchTags.value = ''"
+          >
+            <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <mat-option *ngFor="let tag of tags | searchPipe: searchTags.value" [value]="tag">
+        {{ tag.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Assigned To -->
+  <mat-form-field>
+    <mat-label>Assigned To</mat-label>
+    <mat-select formControlName="assignedTo" [compareWith]="assignedToComparison" multiple
+      data-qa="radio-filter-assigned-to">
+      <div class="search-container">
+        <input placeholder="Search" data-qa="radio-filter-assigned-to-quick-search" (keydown)="$event.stopPropagation()"
+          #searchUsers />
+        <button mat-icon-button class="clear" (click)="this.searchUsers.value = ''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <mat-option *ngFor="let user of users" [value]="user" [class.hide]="filterUsers(user)">
+        {{ user.firstName }} {{ user.lastName }}
       </mat-option>
     </mat-select>
   </mat-form-field>
