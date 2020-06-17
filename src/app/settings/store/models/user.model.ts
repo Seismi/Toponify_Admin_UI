@@ -54,6 +54,7 @@ export interface UserDetails {
   layerFilter?: string;
   include?: Include;
   layouts?: Layout;
+  settings?: Settings;
 }
 
 export interface TeamEntity {
@@ -69,11 +70,17 @@ export interface RolesEntity {
 }
 
 export interface Settings {
-  interfaceSettings: InterfaceSettings;
+  interfaceSettings?: InterfaceSettings;
+  summarySettings?: SummarySettings;
 }
 
 export interface InterfaceSettings {
   settingName: string;
+}
+
+export interface SummarySettings {
+  frequency?: string;
+  day?: number;
 }
 
 export interface UserLoginData {
