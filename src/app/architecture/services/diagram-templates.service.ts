@@ -24,20 +24,20 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
-// Custom layout for system groups.
+// Custom layout for system/data groups.
 //   Based on GridLayout but with custom initialOrigin method.
-function SystemGroupLayout() {
+function StandardGroupLayout() {
   go.GridLayout.call(this);
 }
 
-go.Diagram.inherit(SystemGroupLayout, go.GridLayout);
+go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
 
-SystemGroupLayout.prototype.initialOrigin = function(): go.Point {
+StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
   const memberArea = this.group.resizeObject;
   const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
-// End system group layout
+// End system/data group layout
 
 const nodeWidth = 300;
 
@@ -343,7 +343,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get menu button for system nodes.
+  // Get menu button for system/data nodes.
   //  When clicked, provides a menu with actions to take, relating to the node.
   getTopMenuButton(): go.Panel {
     return $(
@@ -355,7 +355,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: (this.forPalette) ? false : true,
+        visible: (!this.forPalette),
         click: function(event, button) {
           const menu = this.gojsCustomObjectsService.getPartButtonMenu(true);
           event.diagram.select(button.part);
@@ -592,7 +592,7 @@ export class DiagramTemplatesService {
   }
 
   // Get top section of nodes, containing icons and name
-  getTopSection(isSystem = false): go.Panel {
+  getTopSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Table',
@@ -626,8 +626,7 @@ export class DiagramTemplatesService {
         $(
           go.Picture,
           {
-            desiredSize: new go.Size(25, 25),
-            source: '/assets/node-icons/data_set-master-data.svg'
+            desiredSize: new go.Size(25, 25)
           },
           new go.Binding('source', '', function(data): string {
             const imageFolderPath = '/assets/node-icons/';
@@ -647,8 +646,9 @@ export class DiagramTemplatesService {
               [nodeCategories.reporting]: 'reporting',
               [nodeCategories.masterData]: 'master-data',
               [nodeCategories.file]: 'files',
-              [nodeCategories.physical]: 'physical',
-              [nodeCategories.virtual]: 'virtual',
+              [nodeCategories.dataStructure]: 'data-structure',
+              [nodeCategories.dataSet]: 'data-set',
+              [nodeCategories.masterDataSet]: 'master-data-set',
               [nodeCategories.masterData]: 'master-data',
               [nodeCategories.dimension]: '',
               [nodeCategories.list]: 'list',
@@ -658,17 +658,23 @@ export class DiagramTemplatesService {
 
             const separator = data.layer !== layers.dimension ? '-' : '';
 
+            const sharedStatusImageSuffix =
+              [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(data.category)
+                ? (data.isShared ? '-shared' : '-master')
+                : '';
+
             return [
               imageFolderPath,
               layerImagePrefix[data.layer],
               separator,
               categoryImageSuffix[data.category],
+              sharedStatusImageSuffix,
               '.svg'
             ].join('');
           })
         ),
-        // Icon to indicate that the system group contains group members
-        isSystem ? $(go.Picture,
+        // Icon to indicate that the group contains group members
+        isGroup ? $(go.Picture,
           {
             desiredSize: new go.Size(25, 25),
             source: '/assets/node-icons/group.svg',
@@ -748,12 +754,12 @@ export class DiagramTemplatesService {
           return name ? 1 : 0;
         }).ofModel()
       ),
-      isSystem ? this.getTopMenuButton() : this.getTopExpandButton()
+      isGroup ? this.getTopMenuButton() : this.getTopExpandButton()
     );
   }
 
   // Get middle section of nodes, containing description, owners and descendants
-  getMiddleSection(isSystem = false): go.Panel {
+  getMiddleSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -769,8 +775,8 @@ export class DiagramTemplatesService {
           return middleExpanded !== middleOptions.none;
         }
       ),
-      // Do not show description for systems
-      !isSystem ? $(
+      // Do not show description for systems or data nodes
+      !isGroup ? $(
         go.TextBlock,
         textFont('16px'),
         {
@@ -821,13 +827,15 @@ export class DiagramTemplatesService {
             alignment: go.Spot.TopLeft,
             stretch: go.GraphObject.Horizontal
           },
-          isSystem ? $(go.TextBlock, textFont('italic 18px'),
-            'Data sets',
+          isGroup ? $(go.TextBlock, textFont('italic 18px'),
             {
               textAlign: 'center',
               stretch: go.GraphObject.Horizontal,
               margin: new go.Margin(0, 0, 2, 0)
-            }
+            },
+            new go.Binding('text', 'layer', function(layer) {
+              return layer === layers.system ? 'Data Sets' : 'Dimensions';
+            })
           ) : {},
           $(
             go.Panel,
@@ -885,7 +893,7 @@ export class DiagramTemplatesService {
             }
           )
         ),
-        // Area for grouped systems to appear in
+        // Area for grouped nodes to appear in
         $(go.Shape,
           {
             name: 'Group member area',
@@ -908,7 +916,7 @@ export class DiagramTemplatesService {
   }
 
   // Get bottom section of nodes, containing tags and RADIO Alert indicators
-  getBottomSection(isSystem = false): go.Panel {
+  getBottomSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -952,7 +960,7 @@ export class DiagramTemplatesService {
           desiredSize: new go.Size(nodeWidth - 10, 30)
         }),
         this.getRadioAlertIndicators(),
-        isSystem ? {} : this.getBottomExpandButton()
+        isGroup ? {} : this.getBottomExpandButton()
       )
     );
   }
@@ -1152,15 +1160,14 @@ export class DiagramTemplatesService {
     );
   }
 
-  getSystemGroupTemplate(forPalette: boolean = false): go.Group {
+  getStandardGroupTemplate(forPalette: boolean = false): go.Group {
     return $(
-
       go.Group,
       'Auto',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        layout: $(SystemGroupLayout as any,
+        layout: $(StandardGroupLayout as any,
           {
             wrappingColumn: 1,
             isOngoing: false,
@@ -1169,7 +1176,7 @@ export class DiagramTemplatesService {
             spacing: new go.Size(NaN, 12)
           },
         ),
-        subGraphExpandedChanged: this.diagramChangesService.systemSubGraphExpandChanged.bind(this.diagramChangesService),
+        subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
         resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 
@@ -1197,7 +1204,7 @@ export class DiagramTemplatesService {
           p2.offset(loc.x - b.x, loc.y - b.y);
 
           // now limit the location appropriately
-          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1)) ;
+          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1));
           const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
           const newPoint = new go.Point(x, y);
 
@@ -1586,7 +1593,14 @@ export class DiagramTemplatesService {
               }.bind(this)
             },
             // Disable button if moves not allowed in diagram
-            new go.Binding('isEnabled', '', function(node) {
+            new go.Binding('isEnabled', '', function(data) {
+
+              // Disallow adding children to nodes that inherit their children
+              if (data.category === nodeCategories.dataSet ||
+                data.category === nodeCategories.masterDataSet) {
+                return false;
+              }
+
               return this.gojsCustomObjectsService.diagramEditable;
             }.bind(this)),
             $(go.TextBlock, textFont('bold 22px'), '+',
