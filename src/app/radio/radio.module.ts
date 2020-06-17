@@ -55,6 +55,8 @@ import { TagListModule } from '@app/architecture/components/tag-list/tag-list.mo
 import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
 import { RiskMatrixChartComponent } from './components/risk-matrix-chart/risk-matrix-chart.component';
 import { RadioViewNameDialogComponent } from './components/radio-view-name-dialog/radio-view-name-dialog.component';
+import { AnalysisFilterComponent } from './components/analysis-filter/analysis-filter.component';
+import { RadioFilterService } from './services/radio-filter.service';
 
 @NgModule({
   imports: [
@@ -120,7 +122,8 @@ import { RadioViewNameDialogComponent } from './components/radio-view-name-dialo
     DeleteRadioModalComponent,
     AlphabeticalOrderPipe,
     RiskMatrixChartComponent,
-    RadioViewNameDialogComponent
+    RadioViewNameDialogComponent,
+    AnalysisFilterComponent
   ],
   entryComponents: [
     RadioModalComponent,
@@ -132,6 +135,10 @@ import { RadioViewNameDialogComponent } from './components/radio-view-name-dialo
     DeleteRadioModalComponent,
     RadioViewNameDialogComponent
   ],
-  providers: [RadioService, { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }]
+  providers: [
+    RadioService,
+    RadioFilterService,
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ]
 })
 export class RadioModule {}
