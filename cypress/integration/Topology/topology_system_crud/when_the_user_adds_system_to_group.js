@@ -1,7 +1,21 @@
-const { Then } = require('cypress-cucumber-preprocessor/steps');
+const { when } = require('cypress-cucumber-preprocessor/steps');
 
-Then('the grouped info table should contain {string}', function(group) {
-  cy.get('[data-qa=object-details-grouped-in-table]')
-    .contains(group)
-    .should('exist');
+when('the user adds system {string} to group {string}', function(system, group) {
+  cy.get('[data-qa=grouped-in-table-add-to-group]')
+    .click()
+    .then(() => {
+      cy.selectDropDownNoClick('select-modal-search', group).then(() => {
+        cy.get('[data-qa=select-modal-confirm')
+          .click()
+          .wait([
+            '@GETNodesWorkPackageQuery',
+            '@GETNodeLinksWorkPackageQuery',
+            '@GETNodesScopes',
+            '@GETNodesWorkPackageQuery2',
+            '@GETNodesReportWorkPackageQuery',
+            '@GETWorkPackageNodeTags'
+          ]);
+        cy.get('[data-qa=spinner]').should('not.be.visible');
+      });
+    });
 });
