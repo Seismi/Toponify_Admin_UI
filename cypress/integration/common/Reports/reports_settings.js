@@ -33,6 +33,16 @@ module.exports = {
       api: `${api_version}/reports?workPackageQuery[]=*&scopeQuery=*`,
       method: 'GET',
       name: 'ReportsWorkPackageQuery'
+    },
+    WorkPackagesReports: {
+      api: `${api_version}/workpackages/*/reports`,
+      method: 'POST',
+      name: 'WorkPackageReports'
+    },
+    GetNodes: {
+      api: `${api_version}/nodes`,
+      method: 'GET',
+      name: 'Nodes'
     }
   }
 };

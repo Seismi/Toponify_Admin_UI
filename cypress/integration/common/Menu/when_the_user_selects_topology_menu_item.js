@@ -2,28 +2,25 @@ const { When } = require('cypress-cucumber-preprocessor/steps');
 const settings = require('../Topology/topology_settings');
 
 When('the user selects Topology menu item', function() {
+  let wait = [
+    '@GETScopes.all',
+    '@GETLayouts.all',
+    '@GETWorkPackages.all',
+    '@GETTeams.all',
+    '@GETSelectorAvailabilityQuery.all',
+    '@POSTradiosAdvancedSearch.all',
+    '@GETScope.all',
+    '@GETLayout.all',
+    '@GETNodesScopeQuery.all',
+    '@GETNodeLinksScopeQuery.all',
+    '@GETSelectorAvailabilityQuery.all'
+  ];
+
   cy.setUpRoutes('Topology', settings);
   cy.get(`[data-qa=main-menu-open]`) // get the main menu
+    .click();
+  cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
     .click()
-    .then(() => {
-      cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
-        .click()
-        .then(() => {
-          let wait = [
-            '@GETScopes',
-            '@GETLayouts',
-            '@GETWorkPackages',
-            '@GETTeams',
-            '@POSTradiosAdvancedSearch',
-            '@GETScope',
-            '@GETNodesScopeQuery',
-            '@GETNodeLinksScopeQuery',
-            '@GETSelectorAvailabilityQuery',
-            '@GETNodesScopeQuery.1',
-            '@GETNodeLinksScopeQuery.1',
-            '@GETSelectorAvailabilityQuery.1'
-          ];
-          cy.wait(wait); // wait for API Calls
-        });
-    });
+    .wait(wait); // wait for API Calls
+  cy.get(['data-qa=spinner']).should('not.be.visible');
 });

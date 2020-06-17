@@ -10,15 +10,15 @@ When('the user selects Reports menu item', function() {
         .click()
         .then(() => {
           cy.wait([
-            '@GETLayout',
-            '@GETScopes',
-            '@GETScope',
-            '@GETWorkPackages',
-            '@GETNodesWorkPackageQuery',
-            '@GETSelectorAvailabilityQuery',
-            '@GETNodeLinksWorkPackageQuery',
-            '@GETReportsWorkPackageQuery'
+            '@GETLayout.all',
+            '@GETScopes.all',
+            '@GETScope.all',
+            '@GETWorkPackages.all',
+            '@GETNodesWorkPackageQuery.all',
+            '@GETNodeLinksWorkPackageQuery.all',
+            '@GETSelectorAvailabilityQuery.all'
           ]); // wait for API Calls
         });
+      cy.get('[data-qa=spinner]').should('not.be.visible');
     });
 });
