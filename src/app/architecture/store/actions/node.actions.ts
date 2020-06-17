@@ -419,6 +419,7 @@ export class DissociateTagFailure implements Action {
 
 export class LoadTags implements Action {
   readonly type = NodeActionTypes.LoadTags;
+  constructor(public payload: {filterText: string}) {}
 }
 
 export class LoadTagsSuccess implements Action {

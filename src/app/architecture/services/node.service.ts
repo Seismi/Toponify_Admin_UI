@@ -122,8 +122,8 @@ export class NodeService {
     );
   }
 
-  loadTags(): Observable<{ data: Tag[] }> {
-    return this.http.get<{ data: Tag[] }>(`/tags`);
+  loadTags(filterText: string): Observable<{ data: Tag[] }> {
+    return this.http.get<{ data: Tag[] }>(`/tags/?textFilter=${filterText}`);
   }
 
   deleteTag(tagId: string): Observable<{}> {

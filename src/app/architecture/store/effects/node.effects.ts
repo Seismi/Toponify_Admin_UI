@@ -312,8 +312,9 @@ export class NodeEffects {
   @Effect()
   loadTags$ = this.actions$.pipe(
     ofType<NodeActions.LoadTags>(NodeActionTypes.LoadTags),
-    switchMap(() => {
-      return this.nodeService.loadTags().pipe(
+    map(action => action.payload),
+    switchMap((payload: {filterText: string}) => {
+      return this.nodeService.loadTags(payload.filterText).pipe(
         switchMap(response => [new NodeActions.LoadTagsSuccess({ tags: response.data })]),
         catchError((error: Error) => {
           return of(new NodeActions.LoadTagsFailure(error));
