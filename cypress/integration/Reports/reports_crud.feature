@@ -55,23 +55,31 @@ Feature: Create new report
     When the user selects the report 'Automated Updated Regression Test Report' in the reports table
     And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
 
+  Scenario: Delete report and then cancel
+    Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    And the user selects the report 'Automated Regression Test Report' in the reports table
+    When the user deletes the report
+    And the user cancels the delete of the report
+    Then the new report 'Automated Regression Test Report' should exist in the reports table
+    When the user reloads the Reports page
+    And the user selects the report 'Automated Regression Test Report' in the reports table
+    Then the new report 'Automated Regression Test Report' should exist in the reports table
+
+  Scenario: Delete report and then confirm
+    Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    And the user selects the report 'Automated Regression Test Report' in the reports table
+    And the user deletes the report
+    And the user confirms the delete of the report
+    Then the new report 'Automated Regression Test Report' should not exist in the reports table
+    When the user reloads the Reports page
+    Then the new report 'Automated Regression Test Report' should not exist in the reports table
+
   @focus
   Scenario: Create a new report then switch to current architecture and test if still visible
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
     Then the new report 'Automated Regression Test Report' should exist in the reports table
-    And the work package 'Automated Regression Test Work Package' is not displayed on the 'reports' menu
+    And the work package 'Automated Regression Test Work Package' is 'not displayed' on the 'reports' menu
     Then the new report 'Automated Regression Test Report' should not exist in the reports table
-
-  # TODO - is this testing the delete of a work package or a report?
-  Scenario: Delete a report and cancel
-    Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
-   When deletes the 'Automated Regression Testing Report'
-    And confirms deletion
-    Then the report 'Automated Regression Test Report' can be found in the report table
-
-  # TODO - is this testing the delete of a work package or a report?
-  Scenario: Delete a work package and confirm
-   When deletes the 'Automated Regression Testing Report'
-    And cancels deletion
-    Then the report 'Automated Regression Test Report' cannot be found in the report table

@@ -197,6 +197,7 @@ Cypress.Commands.add('findReport', name => {
   cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name) // type the name
+    .wait('@GETReportsFilterQuery')
     .then(() => {
       return cy
         .get(`[data-qa="reports-table"]`) // get the work packages table
@@ -322,7 +323,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
     });
 });
 
-Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wait_for) => {
+Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wait_for, action) => {
   cy.get('[data-qa=left-hand-pane-work-packages]').click();
   cy.get(`[data-qa=${work_package_menu}]`)
     .within(() => {
@@ -333,9 +334,8 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
         .then(() => {
           cy.get('table>tbody')
             .find('.mat-checkbox-layout > .mat-checkbox-inner-container > input')
-            //.find('tr:first>td>div>div>mat-icon')
-            .check();
-          //.wait(wait_for)
+            [action]({ force: true })
+            .wait(wait_for);
         });
     })
     .then(result => {

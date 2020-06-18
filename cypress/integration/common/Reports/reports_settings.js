@@ -53,6 +53,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/reports/*/tags`,
       method: 'GET',
       name: 'WorkPackageReportsTags'
+    },
+    PUTWorkPackageDeleteRequest: {
+      api: `${api_version}/workpackages/*/reports/*/deleteRequest`,
+      method: 'POST',
+      name: 'WorkPackageDeleteRequest'
     }
   }
 };
