@@ -6,7 +6,7 @@ import {
   UpdateWorkPackageLink
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
 import { BehaviorSubject } from 'rxjs';
@@ -28,6 +28,7 @@ import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer'
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
 import {autoLayoutId} from '@app/architecture/store/models/layout.model';
+import {defaultScopeId} from '@app/scope/store/models/scope.model';
 
 const $ = go.GraphObject.make;
 
@@ -37,6 +38,7 @@ export class DiagramChangesService {
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
+  public diagramEditable: boolean;
   private currentLevel: Level;
   private currentScope: string;
   private currentNodeId: string;
@@ -44,6 +46,7 @@ export class DiagramChangesService {
   public dependenciesView = false;
 
   workpackages = [];
+  selectedWorkpackages = [];
   layout;
 
   constructor(
@@ -56,6 +59,9 @@ export class DiagramChangesService {
     this.workpackageStore
       .pipe(select(getEditWorkpackages))
       .subscribe(workpackages => (this.workpackages = workpackages));
+    this.workpackageStore
+      .pipe(select(getSelectedWorkpackages))
+      .subscribe(workpackages => (this.selectedWorkpackages = workpackages));
     this.layoutStore
       .pipe(select(getLayoutSelected))
       .subscribe(layout => (this.layout = layout));
@@ -1221,5 +1227,42 @@ export class DiagramChangesService {
       if (layer.findObjectsIn(rectangle, navigate, null, true).count > 0) { return false; }
     }
     return true;
+  }
+
+  // Update guide with instructions for current diagram state
+  updateGuide(diagram: go.Diagram): void {
+    const thisService = this;
+
+    let guide;
+    diagram.parts.each(function(part: go.Part): void {
+      if (part.name === 'Guide') {
+        guide = part;
+      }
+    });
+
+    guide.visible = (diagram.nodes.count + diagram.nodes.count === 0);
+
+    const instructions = guide.findObject('instructions');
+
+    if (thisService.currentScope === defaultScopeId) {
+      if (thisService.selectedWorkpackages.length === 0) {
+        instructions.text =  'Your topology is empty. Select or create a work package to get started.';
+      } else if (thisService.selectedWorkpackages.length === 1) {
+        if (thisService.diagramEditable) {
+          instructions.text = 'Go to edit pane and start dragging and dropping objects';
+        } else {
+          instructions.text = 'Your work package is empty. Enter edit mode to start documenting your topology';
+        }
+      }
+    } else {
+      if (thisService.currentNodeId) {
+        instructions.text = 'No detail to display. Start documenting or click back button to go to previous view.';
+      } else {
+        instructions.text = 'There is no detail to display. Review scope definition or start documenting with a work package';
+      }
+    }
+
+    // Ensure instructions do not exceed screen space available
+    instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
   }
 }
