@@ -1,16 +1,28 @@
-<mat-card class="card">
-  <mat-card-header>
-    <mat-card-title>Organisation Name - </mat-card-title>
-    <mat-card-title>Organisation Domain - </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <h1>Licencing Information</h1>
-    <h2>Profesional Licence</h2>
-    <h3>Active Users - </h3>
-    <button mat-raised-button color="primary" (click)="emailSupport()">Contact us to expand</button>
-  </mat-card-content>
-  <div style="display: flex; justify-content: space-between;">
-    <smi-organisation-table [title]="'Account Administrators'"></smi-organisation-table>
-    <smi-organisation-table [title]="'Valid Email Domains'"></smi-organisation-table>
+<div class="container">
+  <div *ngIf="organisationName && organisationDomain">
+    <b>Organisation Name - </b>{{ organisationName.name }}
+    <br>
+    <b>Organisation Domain - </b>{{ organisationDomain.domain }}
   </div>
-</mat-card>
+  <mat-card class="mat-elevation-z8">
+    <mat-card-content *ngIf="licenceInfo">
+      <h2>Licencing Information</h2>
+      <h3>{{ licenceInfo.licenceType }}</h3>
+      <h6>Active Users - {{ licenceInfo.activeUsers }} / {{ licenceInfo.maxUsers }}</h6>
+      <button mat-raised-button color="primary" (click)="emailSupport()">Contact us to expand</button>
+    </mat-card-content>
+  </mat-card>
+  <smi-organisation-table
+    [title]="'Account Administrators'"
+    [data]="accountAdmins$ | async"
+    (add)="onAddAdmins()"
+    (delete)="onDelete($event, 'admin')"
+  >
+  </smi-organisation-table>
+  <smi-organisation-table 
+    [title]="'Valid Email Domains'"
+    [data]="emailDomains$ | async"
+    (add)="onAddEmail()"
+    (delete)="onDelete($event)"
+  ></smi-organisation-table>
+</div>

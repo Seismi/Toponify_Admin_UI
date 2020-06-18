@@ -1,0 +1,17 @@
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 0px;
+}
+
+button:nth-child(1) {
+  background-color: #ddd;
+}
+
+button:focus {
+  outline: none;
+}
+
+.mat-form-field {
+  width: 100%;
+}

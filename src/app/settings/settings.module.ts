@@ -54,6 +54,7 @@ import { AllUsersDetailsComponent } from './containers/all-users-details/all-use
 import { OrganisationTableComponent } from './components/organisation-table/organisation-table.component';
 import { OrganisationService } from './services/organisation.service';
 import { OrganisationEffects } from './store/effects/organisation.effects';
+import { EmailModalComponent } from './containers/email-modal/email-modal.component';
 
 @NgModule({
   imports: [
@@ -106,13 +107,15 @@ import { OrganisationEffects } from './store/effects/organisation.effects';
     SettingsTabsComponent,
     TeamsDetailsComponent,
     AllUsersDetailsComponent,
-    OrganisationTableComponent
+    OrganisationTableComponent,
+    EmailModalComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,
     UserModalComponent,
     TeamModalComponent,
-    MemberModalComponent
+    MemberModalComponent,
+    EmailModalComponent
   ],
   providers: [UserService, TeamService, OrganisationService]
 })

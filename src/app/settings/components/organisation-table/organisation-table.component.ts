@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import { OrganisationAccountAdmins } from '@app/settings/store/models/organisation.model';
 
 @Component({
   selector: 'smi-organisation-table',
@@ -9,12 +10,15 @@ import { MatTableDataSource } from '@angular/material';
 export class OrganisationTableComponent {
   @Input() title: string;
   @Input()
-  set data(data: any[]) {
+  set data(data: OrganisationAccountAdmins[]) {
     if (data) {
-      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource = new MatTableDataSource<OrganisationAccountAdmins>(data);
     }
   }
 
+  @Output() add = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<OrganisationAccountAdmins>();
+
   public displayedColumns: string[] = ['name', 'delete'];
-  public dataSource: MatTableDataSource<any>;
+  public dataSource: MatTableDataSource<OrganisationAccountAdmins>;
 }
