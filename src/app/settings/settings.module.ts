@@ -51,10 +51,11 @@ import { OrganisationsComponent } from './containers/organisations/organisations
 import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
 import { TeamsDetailsComponent } from './containers/teams-details/teams-details.component';
 import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
-import { OrganisationTableComponent } from './components/organisation-table/organisation-table.component';
+import { AccountsTableComponent } from './components/accounts-table/accounts-table.component';
 import { OrganisationService } from './services/organisation.service';
 import { OrganisationEffects } from './store/effects/organisation.effects';
 import { EmailModalComponent } from './containers/email-modal/email-modal.component';
+import { DomainsTableComponent } from './components/domains-table/domains-table.component';
 
 @NgModule({
   imports: [
@@ -107,8 +108,9 @@ import { EmailModalComponent } from './containers/email-modal/email-modal.compon
     SettingsTabsComponent,
     TeamsDetailsComponent,
     AllUsersDetailsComponent,
-    OrganisationTableComponent,
-    EmailModalComponent
+    AccountsTableComponent,
+    EmailModalComponent,
+    DomainsTableComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,

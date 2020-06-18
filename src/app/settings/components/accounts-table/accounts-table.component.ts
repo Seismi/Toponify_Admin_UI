@@ -3,12 +3,11 @@ import { MatTableDataSource } from '@angular/material';
 import { OrganisationAccountAdmins } from '@app/settings/store/models/organisation.model';
 
 @Component({
-  selector: 'smi-organisation-table',
-  templateUrl: 'organisation-table.component.html',
-  styleUrls: ['organisation-table.component.scss']
+  selector: 'smi-accounts-table',
+  templateUrl: 'accounts-table.component.html',
+  styleUrls: ['accounts-table.component.scss']
 })
-export class OrganisationTableComponent {
-  @Input() title: string;
+export class AccountsTableComponent {
   @Input()
   set data(data: OrganisationAccountAdmins[]) {
     if (data) {

@@ -34,7 +34,7 @@ export class OrganisationService {
   }
 
   updateEmailDomains(data: OrganisationEmailDomains): Observable<{ data: OrganisationEmailDomains }> {
-    return this.http.put<{ data: OrganisationEmailDomains }>(`/organisation/emailDomains`, { data }, httpOptions);
+    return this.http.put<{ data: OrganisationEmailDomains }>(`/organisation/emailDomains`, { data: data }, httpOptions);
   }
 
   getAccountAdmins(): Observable<{ data: OrganisationAccountAdmins[] }> {

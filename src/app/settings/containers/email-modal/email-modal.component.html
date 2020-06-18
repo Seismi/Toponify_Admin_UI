@@ -1,7 +1,9 @@
-<h1 mat-dialog-title>Add Email Domain</h1>
+<div class="alert alert-warning">
+  Users with email addresses that aren’t from one of the domains in the list will not be allowed. Please enter the domain after the @. For example, to allow users with emails like <b>user1@mydomain.com</b>, enter <b>mydomain.com</b>
+</div>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput #input placeholder="Email Domain">
+    <input matInput #input [value]="domains.join(', ')" placeholder="Email Domains">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>

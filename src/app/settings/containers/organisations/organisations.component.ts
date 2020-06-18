@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State as OrganisationState } from '@app/settings/store/reducers/organisation.reducer';
 import { getOrganisationName, getOrganisationDomain, getOrganisationLicenceInfo, getOrganisationAccountAdmins, getOrganisationEmailDomains } from '@app/settings/store/selectors/organisation.selector';
-import { LoadOrganisationName, LoadOrganisationDomain, LoadOrganisationLicenceInfo, LoadOrganisationAccountAdmins, AddOrganisationAccountAdmins, DeleteOrganisationAccountAdmins, UpdateOrganisationEmailDomains } from '@app/settings/store/actions/organisation.actions';
+import { LoadOrganisationName, LoadOrganisationDomain, LoadOrganisationLicenceInfo, LoadOrganisationAccountAdmins, AddOrganisationAccountAdmins, DeleteOrganisationAccountAdmins, UpdateOrganisationEmailDomains, LoadOrganisationEmailDomains } from '@app/settings/store/actions/organisation.actions';
 import { OrganisationLicenceInfo, OrganisationName, OrganisationDomain, OrganisationAccountAdmins, OrganisationEmailDomains } from '@app/settings/store/models/organisation.model';
 import { Subscription, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
@@ -38,6 +38,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new LoadOrganisationDomain());
     this.store.dispatch(new LoadOrganisationLicenceInfo());
     this.store.dispatch(new LoadOrganisationAccountAdmins());
+    this.store.dispatch(new LoadOrganisationEmailDomains());
 
     this.accountAdmins$ = this.store.pipe(select(getOrganisationAccountAdmins));
     this.emailDomains$ = this.store.pipe(select(getOrganisationEmailDomains));
@@ -45,7 +46,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.store.pipe(select(getOrganisationName)).subscribe(organisation => (this.organisationName = organisation)),
       this.store.pipe(select(getOrganisationDomain)).subscribe(organisation => (this.organisationDomain = organisation)),
-      this.store.pipe(select(getOrganisationLicenceInfo)).subscribe(info => (this.licenceInfo = info))
+      this.store.pipe(select(getOrganisationLicenceInfo)).subscribe(info => (this.licenceInfo = info)),
     );
   }
 
@@ -84,24 +85,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddEmail(): void {
-    const dialogRef = this.dialog.open(EmailModalComponent, {
-      disableClose: false,
-      width: '500px',
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.value) {
-        this.store.dispatch(
-          new UpdateOrganisationEmailDomains({
-            emailDomains: [data.value]
-          })
-        );
-      }
-    });
-  }
-
-  onDelete(account: OrganisationAccountAdmins, type: string): void {
+  onDeleteAdmins(admin: OrganisationAccountAdmins): void {
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       data: {
@@ -110,8 +94,21 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && type === 'admin') {
-        this.store.dispatch(new DeleteOrganisationAccountAdmins({ userId: account.id }));
+      if (data) {
+        this.store.dispatch(new DeleteOrganisationAccountAdmins({ userId: admin.id }));
+      }
+    });
+  }
+
+  onEditEmailDomain(): void {
+    const dialogRef = this.dialog.open(EmailModalComponent, {
+      disableClose: false,
+      width: '700px'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.emailDomains) {
+        this.store.dispatch(new UpdateOrganisationEmailDomains({emailDomains: data.emailDomains.split(', ')}));
       }
     });
   }

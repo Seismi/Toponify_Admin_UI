@@ -12,17 +12,11 @@
       <button mat-raised-button color="primary" (click)="emailSupport()">Contact us to expand</button>
     </mat-card-content>
   </mat-card>
-  <smi-organisation-table
-    [title]="'Account Administrators'"
+  <smi-accounts-table
     [data]="accountAdmins$ | async"
     (add)="onAddAdmins()"
-    (delete)="onDelete($event, 'admin')"
+    (delete)="onDeleteAdmins($event)"
   >
-  </smi-organisation-table>
-  <smi-organisation-table 
-    [title]="'Valid Email Domains'"
-    [data]="emailDomains$ | async"
-    (add)="onAddEmail()"
-    (delete)="onDelete($event)"
-  ></smi-organisation-table>
+  </smi-accounts-table>
+  <smi-domains-table [data]="emailDomains$ | async" (edit)="onEditEmailDomain()"></smi-domains-table>
 </div>

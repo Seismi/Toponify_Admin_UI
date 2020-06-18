@@ -69,8 +69,8 @@ export class OrganisationEffects {
   @Effect()
   updateOrganisationEmailDomains$ = this.actions$.pipe(
     ofType<OrganisationActions.UpdateOrganisationEmailDomains>(OrganisationActionTypes.UpdateOrganisationEmailDomains),
-    map(actions => actions),
-    switchMap((payload: any) => {
+    map(action => action.payload),
+    switchMap((payload: OrganisationEmailDomains) => {
       return this.organisationService.updateEmailDomains(payload).pipe(
         switchMap((response: { data: OrganisationEmailDomains }) => [
           new OrganisationActions.UpdateOrganisationEmailDomainsSuccess(response.data)
