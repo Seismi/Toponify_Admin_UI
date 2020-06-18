@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
-import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes } from '@app/settings/store/actions/user.actions';
+import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, AddUserTeam, DeleteUserTeam, DeleteUserRole, AddUserRole } from '@app/settings/store/actions/user.actions';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
@@ -13,8 +13,12 @@ import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
 import isEqual from 'lodash.isequal';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Roles } from '@app/core/directives/by-role.directive';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { map } from 'rxjs/operators';
+import { AddTeam } from '@app/settings/store/actions/team.actions';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-all-users-details',
@@ -38,7 +42,8 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
     private myUserFormService: MyUserFormService,
     private route: ActivatedRoute,
     private store: Store<UserState>,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -129,5 +134,82 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
 
   setUserStatus(status: string): string {
     return status === 'Deactivate' ? 'disabled' : 'active';
+  }
+
+  onAddTeam(): void {
+    const ids = new Set(this.user.team.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: 'Add Teams',
+        options$: this.store.pipe(select(getTeamEntities)).pipe(map(data => data.filter(({ id }) => !ids.has(id)))),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(
+          new AddUserTeam({
+            userId: this.user.id,
+            teamId: data.value[0].id
+          })
+        );
+      }
+    });
+  }
+
+  onAddRole(): void {
+    const ids = new Set(this.user.roles.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: 'Add Roles',
+        options$: this.store.pipe(select(getUserRolesEntities)).pipe(map(data => data.filter(({ id }) => !ids.has(id)))),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(
+          new AddUserRole({
+            userId: this.user.id,
+            roleId: data.value[0].id
+          })
+        );
+      }
+    });
+  }
+
+  onRemoveTeamOrRole(entity: { id: string, type: string }): void {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      data: {
+        title: 'Are you sure you want to un-associate?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        if (entity.type === 'team') {
+          this.store.dispatch(
+            new DeleteUserTeam({
+              userId: this.user.id,
+              teamId: entity.id
+            })
+          );
+        } else {
+          this.store.dispatch(
+            new DeleteUserRole({
+              userId: this.user.id,
+              roleId: entity.id
+            })
+          );
+        }
+      }
+    });
   }
 }
