@@ -4,7 +4,7 @@ Then('the new report {string} should not exist in the reports table', function(n
   name = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(name); // prefix name with branch
-  cy.findReport(name).then(table => {
-    console.log(table);
-  });
+  cy.findReport(name)
+    .contains(name)
+    .should('not.exist');
 });

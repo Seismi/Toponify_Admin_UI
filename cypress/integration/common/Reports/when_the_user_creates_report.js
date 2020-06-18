@@ -12,17 +12,5 @@ When('the user creates a new report with the name {string}, description {string}
     .concat(' | ')
     .concat(system); // prefix name with branch
 
-  cy.get('[data-qa=reports-create-new]')
-    .click()
-    .then(() => {
-      cy.wait('@GETTeams');
-      cy.get('[data-qa=spinner]').should('not.be.visible');
-      cy.get('[data-qa=reports-details-name]')
-        .type(name)
-        .should('have.value', name);
-      cy.get('[data-qa=reports-details-description]')
-        .type(description)
-        .should('have.value', description);
-      cy.selectDropDownNoClick('reports-details-system', system);
-    });
+  cy.createReport(name, description, system);
 });

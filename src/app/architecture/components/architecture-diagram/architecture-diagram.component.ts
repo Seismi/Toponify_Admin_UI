@@ -212,6 +212,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.groupTemplateMap.add(layers.data, diagramTemplatesService.getStandardGroupTemplate());
     this.diagram.groupTemplateMap.add('', diagramTemplatesService.getMapViewGroupTemplate());
 
+    this.diagram.add(gojsCustomObjectsService.getInstructions());
+
     // Override command handler delete method to emit delete event to angular
     this.diagram.commandHandler.deleteSelection = function(): void {
       // TEMP - no deletes for multiple parts for now
@@ -431,6 +433,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       });
 
       this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable;
+      this.diagramChangesService.diagramEditable = this.workPackageIsEditable;
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {

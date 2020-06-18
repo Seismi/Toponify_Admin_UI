@@ -11,6 +11,7 @@ import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {linkCategories} from '@app/architecture/store/models/node-link.model';
 import {Subject} from 'rxjs';
+import {defaultScopeId} from '@app/scope/store/models/scope.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');

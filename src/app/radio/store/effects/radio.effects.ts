@@ -62,7 +62,13 @@ import {
   SetRadioViewAsFavouriteSuccess,
   SetRadioViewAsFavouriteFail,
   UnsetRadioViewAsFavouriteSuccess,
-  UnsetRadioViewAsFavouriteFail
+  UnsetRadioViewAsFavouriteFail,
+  GetRadioMatrixSuccess,
+  GetRadioMatrixFailure,
+  GetRadioAnalysisSuccess,
+  GetRadioAnalysisFailure,
+  GetRadioAnalysis,
+  GetRadioMatrix
 } from '../actions/radio.actions';
 import { RadioService } from '../../services/radio.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -162,6 +168,30 @@ export class RadioEffects {
       return this.radioService.searchRadio({ data }, queryParams).pipe(
         mergeMap((response: RadioEntitiesResponse) => [new SearchRadioSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new SearchRadioFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  getRadioMatrix$ = this.actions$.pipe(
+    ofType<GetRadioMatrix>(RadioActionTypes.GetRadioMatrix),
+    map(action => action.payload),
+    switchMap((payload: AdvancedSearchApiRequest) => {
+      return this.radioService.getRadioMatrixData(payload).pipe(
+        mergeMap((response: any) => [new GetRadioMatrixSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new GetRadioMatrixFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  getRadioAnalysis$ = this.actions$.pipe(
+    ofType<GetRadioAnalysis>(RadioActionTypes.GetRadioAnalysis),
+    map(action => action.payload),
+    switchMap((payload: AdvancedSearchApiRequest) => {
+      return this.radioService.getRadioAnalysisData(payload).pipe(
+        mergeMap((response: any) => [new GetRadioAnalysisSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new GetRadioAnalysisFailure(error)))
       );
     })
   );
