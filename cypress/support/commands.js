@@ -322,6 +322,30 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
     });
 });
 
+Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wait_for) => {
+  cy.get('[data-qa=left-hand-pane-work-packages]').click();
+  cy.get(`[data-qa=${work_package_menu}]`)
+    .within(() => {
+      cy.get('div>div>input')
+        .clear()
+        .type(work_package)
+        .should('have.value', work_package)
+        .then(() => {
+          cy.get('table>tbody')
+            .find('.mat-checkbox-layout > .mat-checkbox-inner-container > input')
+            //.find('tr:first>td>div>div>mat-icon')
+            .check();
+          //.wait(wait_for)
+        });
+    })
+    .then(result => {
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.root()
+        .get('[data-qa=left-hand-pane-work-packages]')
+        .click();
+    });
+});
+
 Cypress.Commands.add('deleteScope', scope => {
   cy.selectRow('scopes-and-layouts-scope-table', scope)
     //.wait('@GETWorkPackage')
@@ -626,11 +650,22 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
         .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
         .contains(component)
         .click();
-      /*      cy.get('[data-qa=documentation-standards-modal-save]')
-        .click()
-        .then(() => {
-          cy.route('POST', `${documentationStandards}`).as('POSTCustomProperties');
-        });*/
+    });
+});
+
+Cypress.Commands.add('createReport', (name, description, system) => {
+  cy.get('[data-qa=reports-create-new]')
+    .click()
+    .then(() => {
+      cy.wait(['@GETTeams', '@GETReportsFilterQuery', '@GETNodesWorkPackageQuery']);
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.get('[data-qa=reports-details-name]')
+        .type(name)
+        .should('have.value', name);
+      cy.get('[data-qa=reports-details-description]')
+        .type(description)
+        .should('have.value', description);
+      cy.selectDropDownNoClick('reports-details-system', system);
     });
 });
 
