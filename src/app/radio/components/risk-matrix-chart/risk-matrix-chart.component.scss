@@ -2,6 +2,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 40px;
+  .clear-selection {
+    position: absolute;
+    bottom: 0;
+    color: #3f51b5;
+    span {
+      cursor: pointer;
+    }
+  }
+  .probability {
+    position: relative;
+    bottom: -35px;
+    font-size: 13px;
+    color: #555;
+  }
+  .impact {
+    position: relative;
+    border-right: solid 1px #555;
+    height: 500px;
+    margin: auto;
+    margin-right: 15px;
+    span {
+      font-size: 13px;
+      color: #555;
+      top: 50%;
+      right: 50%;
+      position: absolute;
+      transform: scale(-1) translate(8%, 50%);
+      writing-mode: vertical-lr;
+    }
+  }
   .yAxisContainer {
     display: flex;
     align-items: stretch;
@@ -10,7 +41,9 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 70px 0px;
+      padding: 80px 0px;
+      position: relative;
+      left: -15px;
       span {
         &.left {
           transform: translateY(0px) rotate(-90deg);
@@ -29,8 +62,13 @@
         flex-direction: row;
         justify-content: space-between;
         padding: 0px 0px;
+        position: relative;
+        right: 15px;
+        &:first-of-type {
+          border-bottom: solid 1px;
+        }
         span {
-          padding: 10px 0;
+          padding: 10px 0px;
           text-align: center;
           width: 100px;
         }
