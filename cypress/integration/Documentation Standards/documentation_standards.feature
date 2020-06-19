@@ -11,6 +11,7 @@ Feature: Documentation Standards CRUD
     And the documentation standard 'Automated Regression Test Doc Std UT1' does not exist
     And the documentation standard 'Automated Updated Regression Test Doc Std UT1' does not exist
 
+  @DocumentationStandards
   Scenario: Cancel Create Documentation Standard
     When the user creates the documentation standard 'Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user cancels the creation of the documentation standard
@@ -20,6 +21,7 @@ Feature: Documentation Standards CRUD
     And the 'Work Package' 'Documentation Standards' pane is open
     And the documentation standard 'Automated Regression Test Doc Std UT1' should not be visible
 
+  @DocumentationStandards
   Scenario: Create Documentation Standard
     When the user creates the documentation standard 'Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
@@ -29,6 +31,7 @@ Feature: Documentation Standards CRUD
     And the 'Work Package' 'Documentation Standards' pane is open
     And the documentation standard 'Automated Regression Test Doc Std UT1' should be visible
 
+  @DocumentationStandards
   Scenario: Update documentation standard but cancel
     Given the user creates the documentation standard 'Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
@@ -38,6 +41,7 @@ Feature: Documentation Standards CRUD
     And the user reloads the Documentation Standards page
     And the documentation standard 'Automated Regression Test Doc Std UT1' should exist with type 'Boolean' everywhere
 
+  @DocumentationStandards
   Scenario: Update documentation standard and save
     Given the user creates the documentation standard 'Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
@@ -57,6 +61,7 @@ Feature: Documentation Standards CRUD
     And the documentation standard 'Automated Regression Test Doc Std UT1' should not be visible
     And the documentation standard 'Automated Updated Regression Test Doc Std UT1' should not be visible
 
+  @DocumentationStandards
   Scenario: Delete documentation standard and confirm
     Given the user creates the documentation standard 'Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
@@ -71,6 +76,7 @@ Feature: Documentation Standards CRUD
     And the user selects Documentation Standard menu item
     And the document standard 'Automated Regression Test Doc Std UT1' should not exist in the documentation standards table
 
+  @DocumentationStandards
   Scenario: Delete documentation standard and cancel
     Given the user creates the documentation standard 'Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard

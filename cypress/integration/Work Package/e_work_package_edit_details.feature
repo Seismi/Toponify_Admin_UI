@@ -9,6 +9,7 @@ Feature: Work Package Edit Core Details Feature
     And the work package 'Automated Updated Regression Test Work Package' does not exist
     And the work package 'Automated Regression Test Second Work Package' does not exist
 
+  @WorkPackage
   Scenario: Edit the work package name and description and cancel
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -17,6 +18,7 @@ Feature: Work Package Edit Core Details Feature
     And the user reloads the page and searches for 'Automated Regression Test Work Package' work package
     Then the details pane should reflect the new work package name 'Automated Regression Test Work Package' and description 'Automated Regression Test Work Package Description'
 
+  @WorkPackage
   Scenario: Edit the work package name and description and save
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -25,6 +27,7 @@ Feature: Work Package Edit Core Details Feature
     And the user reloads the page and searches for 'Automated Updated Regression Test Work Package' work package
     Then the details pane should reflect the new work package name 'Automated Updated Regression Test Work Package' and description 'Updated Automated Regression Test Work Package Description'
 
+  @WorkPackage
   Scenario: Add a work package to baseline and cancel
     Given the user has created and selected a work package called 'Automated Regression Test Second Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
@@ -32,6 +35,7 @@ Feature: Work Package Edit Core Details Feature
     When the user adds work package 'Automated Regression Test Second Work Package' to baseline of work package 'Automated Regression Test Work Package' and clicks to 'cancel'
     Then the details pane should reflect that 'Automated Regression Test Second Work Package' has not been added to baseline of work package 'Automated Regression Test Work Package'
 
+  @WorkPackage
   Scenario: Add a work package to baseline and confirm
     Given the user has created and selected a work package called 'Automated Regression Test Second Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
@@ -39,6 +43,7 @@ Feature: Work Package Edit Core Details Feature
     When the user adds work package 'Automated Regression Test Second Work Package' to baseline of work package 'Automated Regression Test Work Package' and clicks to 'confirm'
     Then the details pane should reflect that 'Automated Regression Test Second Work Package' has been added to baseline of work package 'Automated Regression Test Work Package'
 
+  @WorkPackage
   Scenario: Remove a work package from baseline and cancel
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user has created and selected a work package called 'Automated Regression Test Second Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
@@ -48,18 +53,21 @@ Feature: Work Package Edit Core Details Feature
     And the user removes work package 'Automated Regression Test Second Work Package' from baseline of work package 'Automated Regression Test Work Package' and clicks to 'confirm'
     Then the details pane should reflect that 'Automated Regression Test Second Work Package' has not been added to baseline of work package 'Automated Regression Test Work Package'
 
+  @WorkPackage
   Scenario: Edit the work package owner and cancel
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
     When the user adds owner 'Automated Regression Test Update Team (DO NOT DELETE)' to owners of work package 'Automated Regression Test Work Package' and clicks to 'cancel'
     Then the details pane should reflect that 'Automated Regression Test Update Team (DO NOT DELETE)' has not been added as an owner of work package 'Automated Regression Test Work Package'
 
+  @WorkPackage
   Scenario: Edit the work package owner and confirm
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
     When the user adds owner 'Automated Regression Test Update Team (DO NOT DELETE)' to owners of work package 'Automated Regression Test Work Package' and clicks to 'confirm'
     Then the details pane should reflect that 'Automated Regression Test Update Team (DO NOT DELETE)' has been added as an owner of work package 'Automated Regression Test Work Package'
 
+  @WorkPackage
   Scenario: Submit the work package
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -74,7 +82,7 @@ Feature: Work Package Edit Core Details Feature
 #    And the user reloads the page and searches for 'Automated Regression Test Work Package' work package
 #    Then the work package status should change to 'submitted'
 #    And the visible buttons in the detail pane should change to be 'Approve,Reject,Reset,Supersede,Archive'
-
+  @WorkPackage
   Scenario: Submit and Reset the work package
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -84,6 +92,7 @@ Feature: Work Package Edit Core Details Feature
     Then the work package status should change to 'draft'
     And the visible buttons in the detail pane should change to be 'Edit, Open, Submit, Supersede, Archive, Delete'
 
+  @WorkPackage
   Scenario: Submit and approve the work package
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -93,6 +102,7 @@ Feature: Work Package Edit Core Details Feature
     Then the work package status should change to 'approved'
     And the visible buttons in the detail pane should change to be 'Open, Merge, Reset, Supersede, Archive'
 
+  @WorkPackage
   Scenario: Submit, approve and supersede the work package
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -103,6 +113,7 @@ Feature: Work Package Edit Core Details Feature
     Then the work package status should change to 'superseded'
     And the visible buttons in the detail pane should change to be 'Archive, Delete'
 
+  @WorkPackage
   Scenario: Submit, approve and supersede, archive the work package
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -112,6 +123,7 @@ Feature: Work Package Edit Core Details Feature
     And the user clicks the 'archive' button on the work package
     Then the work package called 'Automated Regression Test Work Package' should not exist in the work packages table if archived unchecked
 
+  @WorkPackage
   Scenario: Submit, approve and supersede, archive and then unarchive the work package
     Given the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
@@ -122,6 +134,7 @@ Feature: Work Package Edit Core Details Feature
     And the user clicks the 'unarchive' button on the work package
     Then the work package called 'Automated Regression Test Work Package' should exist in the work packages table
 
+  @WorkPackage
   Scenario: Delete a work package
     Given the user has created and selected a work package called 'Automated Updated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
