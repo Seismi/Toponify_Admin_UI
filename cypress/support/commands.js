@@ -332,9 +332,8 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
         .type(work_package)
         .should('have.value', work_package)
         .then(() => {
-          cy.get('table>tbody')
-            .find('.mat-checkbox-layout > .mat-checkbox-inner-container > input')
-            [action]({ force: true })
+          cy.get('[data-qa=topology-work-packages-select-work-package]')
+            .click({ force: true })
             .wait(wait_for);
         });
     })
