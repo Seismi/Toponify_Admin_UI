@@ -65,5 +65,5 @@
     Add new
   </button>
   <button mat-raised-button (click)="onClose()" data-hook="radio-delete-modal-no">Close</button>
-  <mat-paginator [length]="10" [pageSize]="5" [pageSizeOptions]="[5, 10]"></mat-paginator>
+  <mat-paginator [length]="(page$ | async).totalObjects" [pageSize]="5" [pageSizeOptions]="[5, 10]" (page)="onPageChange($event)"></mat-paginator>
 </div>

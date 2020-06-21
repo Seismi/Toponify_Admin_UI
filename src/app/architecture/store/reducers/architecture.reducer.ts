@@ -13,7 +13,7 @@ import {
   GroupAreaSizesEntity,
   OwnersEntity,
   Tag,
-  NodeLayoutSettingsEntity, WorkPackageGroupMembersApiResponse
+  NodeLayoutSettingsEntity, WorkPackageGroupMembersApiResponse, TagsHttpParams
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
 import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
@@ -21,6 +21,8 @@ import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { WorkPackageLinkActionsUnion, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import { Page } from '@app/radio/store/models/radio.model';
+import { TagListComponent } from '@app/architecture/components/tag-list/tag-list.component';
 
 export interface State {
   reports: NodeReports[];
@@ -45,7 +47,10 @@ export interface State {
     tags: Tag[];
     id: string;
   };
-  tags: Tag[];
+  tags: {
+    data: Tag[],
+    page: TagsHttpParams
+  }
   loadingLinks: LoadingStatus;
   loadingNodes: LoadingStatus;
   loadingNode: LoadingStatus;
@@ -72,7 +77,14 @@ export const initialState: State = {
     tags: [],
     id: null
   },
-  tags: [],
+  tags: {
+    data: [],
+    page: {
+      textFilter: '',
+      size: null,
+      page: null
+    }
+  },
   loadingLinks: null,
   loadingNodes: null,
   draft: {},
@@ -820,31 +832,43 @@ export function reducer(
     case NodeActionTypes.LoadTagsSuccess: {
       return {
         ...state,
-        tags: action.payload.tags
+        tags: {
+          data: action.payload.tags,
+          page: action.payload.page
+        }
       };
     }
 
     case NodeActionTypes.DeleteTagSuccess: {
       return {
         ...state,
-        tags: [...state.tags.filter(tag => tag.id !== action.payload.tagId)]
+        tags: {
+          data: [...state.tags.data.filter(tag => tag.id !== action.payload.tagId)],
+          page: state.tags.page
+        }
       };
     }
 
     case NodeActionTypes.UpdateTagSuccess: {
-      const index = state.tags.findIndex(tag => tag.id === action.payload.tag.id);
-      const newTags = [...state.tags];
+      const index = state.tags.data.findIndex(tag => tag.id === action.payload.tag.id);
+      const newTags = [...state.tags.data];
       newTags[index] = action.payload.tag;
       return {
         ...state,
-        tags: newTags
+        tags: {
+          data: newTags,
+          page: state.tags.page
+        }
       };
     }
 
     case NodeActionTypes.CreateTagSuccess: {
       return {
         ...state,
-        tags: [...state.tags, action.payload.tag]
+        tags: {
+          data: [...state.tags.data, action.payload.tag],
+          page: state.tags.page
+        }
       };
     }
 

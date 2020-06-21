@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { Tag } from '@app/architecture/store/models/node.model';
+import { Tag, TagsHttpParams } from '@app/architecture/store/models/node.model';
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from '@angular/material';
 import { TagDetailModalComponent } from '@app/architecture/components/tag-list/tag-detail-modal/tag-detail-modal.component';
 import { select, Store } from '@ngrx/store';
@@ -8,6 +8,7 @@ import { CreateTag, DeleteTag, LoadTags, UpdateTag } from '@app/architecture/sto
 import { getTags } from '@app/architecture/store/selectors/node.selector';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, debounceTime, switchMap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
+import { getTagPage } from '../../../store/selectors/node.selector';
 
 const autocomplete = (time, selector) => (source$) =>
   source$.pipe(
@@ -35,8 +36,14 @@ export class ManageTagsModalComponent implements OnInit {
   public dataSource$: Observable<MatTableDataSource<Tag>>;
   public displayedColumns: string[] = ['name', 'colour', 'icon', 'type', 'actions'];
   search$ = new BehaviorSubject<string>('');
-
+  private tagsParams: TagsHttpParams = {
+    textFilter: '',
+    page: 0,
+    size: 5
+  }
+  
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  page$: Observable<TagsHttpParams>;
 
   constructor(
     private dialog: MatDialog,
@@ -45,7 +52,8 @@ export class ManageTagsModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new LoadTags({filterText: ''}));
+    
+    this.store.dispatch(new LoadTags(this.tagsParams));
     this.dataSource$ = this.store.pipe(
       select(getTags),
       map(tags => new MatTableDataSource<Tag>(tags))
@@ -56,8 +64,26 @@ export class ManageTagsModalComponent implements OnInit {
       distinctUntilChanged()
     )
     .subscribe(term => {
-      this.store.dispatch(new LoadTags({filterText: term}))
+      this.tagsParams = {
+        textFilter: term,
+        page: 0,
+        size: this.tagsParams.size
+      }
+      this.store.dispatch(new LoadTags(this.tagsParams))
     });
+    this.page$ = this.store.pipe(
+      select(getTagPage)
+    )
+  }
+
+  onPageChange(page){
+    console.log(page);
+    this.tagsParams= {
+      textFilter: this.tagsParams.textFilter,
+      page: page.pageIndex,
+      size: page.pageSize
+    } 
+    this.store.dispatch(new LoadTags(this.tagsParams))
   }
 
 

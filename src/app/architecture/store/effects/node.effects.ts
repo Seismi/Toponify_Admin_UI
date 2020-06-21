@@ -18,7 +18,8 @@ import {
   NodeReportsApiResponse,
   GroupAreaSizeApiRequest,
   Tag,
-  NodeDetail
+  NodeDetail,
+  TagsHttpParams
 } from '../models/node.model';
 import {
   LinkUpdatePayload,
@@ -313,9 +314,9 @@ export class NodeEffects {
   loadTags$ = this.actions$.pipe(
     ofType<NodeActions.LoadTags>(NodeActionTypes.LoadTags),
     map(action => action.payload),
-    switchMap((payload: {filterText: string}) => {
-      return this.nodeService.loadTags(payload.filterText).pipe(
-        switchMap(response => [new NodeActions.LoadTagsSuccess({ tags: response.data })]),
+    switchMap((payload: TagsHttpParams) => {
+      return this.nodeService.loadTags(payload).pipe(
+        switchMap((response: any) => [new NodeActions.LoadTagsSuccess({ tags: response.data, page: response.page })]),
         catchError((error: Error) => {
           return of(new NodeActions.LoadTagsFailure(error));
         })

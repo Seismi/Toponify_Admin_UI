@@ -32,6 +32,7 @@ import {
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { TagsHttpParams } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-radio',
@@ -47,6 +48,12 @@ export class RadioComponent implements OnInit, OnDestroy {
   public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
+  // TODO
+  private tags: TagsHttpParams = {
+    textFilter: '',
+    page: 1,
+    size: 100
+  }
 
   constructor(
     private actions: Actions,
@@ -58,7 +65,7 @@ export class RadioComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new LoadTags());
+    this.store.dispatch(new LoadTags(this.tags));
     this.store.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
     this.store.dispatch(

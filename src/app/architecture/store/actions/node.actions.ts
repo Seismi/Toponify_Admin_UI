@@ -7,7 +7,8 @@ import {
   OwnersEntity,
   NodeReports,
   GroupAreaSizeApiRequest,
-  Tag
+  Tag,
+  TagsHttpParams
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
@@ -419,12 +420,12 @@ export class DissociateTagFailure implements Action {
 
 export class LoadTags implements Action {
   readonly type = NodeActionTypes.LoadTags;
-  constructor(public payload: {filterText: string}) {}
+  constructor(public payload: TagsHttpParams) {}
 }
 
 export class LoadTagsSuccess implements Action {
   readonly type = NodeActionTypes.LoadTagsSuccess;
-  constructor(public payload: { tags: Tag[] }) {}
+  constructor(public payload: { tags: Tag[], page: TagsHttpParams }) {}
 }
 
 export class LoadTagsFailure implements Action {
