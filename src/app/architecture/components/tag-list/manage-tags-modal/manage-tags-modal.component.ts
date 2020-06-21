@@ -10,22 +10,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { map, debounceTime, switchMap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { getTagPage } from '../../../store/selectors/node.selector';
 
-const autocomplete = (time, selector) => (source$) =>
-  source$.pipe(
-    debounceTime(time),
-    switchMap((...args: any[]) => 
-      selector(...args)
-        .pipe(
-            takeUntil(
-                source$
-                    .pipe(
-                        skip(1)
-                    )
-            )
-        )
-    )
-  )
-
 @Component({
   selector: 'smi-manage-tags',
   templateUrl: 'manage-tags-modal.component.html',
@@ -77,7 +61,6 @@ export class ManageTagsModalComponent implements OnInit {
   }
 
   onPageChange(page){
-    console.log(page);
     this.tagsParams= {
       textFilter: this.tagsParams.textFilter,
       page: page.pageIndex,
