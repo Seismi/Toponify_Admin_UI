@@ -8,6 +8,7 @@ Feature: Topology Systems Layer Feature
     And the work package 'Automated Regression Test Work Package' does not exist
     And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
 
+  @topology
   Scenario Outline: Add system to the System View and check that they save to the table
     Given the user selects Topology menu item
     And the "System View" layer is selected
@@ -35,6 +36,7 @@ Feature: Topology Systems Layer Feature
       |Automated Regression Test File System|file|
       |Automated Regression Test Master Data System|master data|
 
+  @topology
   Scenario Outline: Update System Component via table and check results are correctly saved
     Given the user selects Topology menu item
     And the "System View" layer is selected
@@ -55,6 +57,7 @@ Feature: Topology Systems Layer Feature
       |name|type|new_reference|new_name|new_type|new_description|new_owner|
       |Automated Regression Test Transaction System|transactional|test1|Automated Updated Regression Test Reporting System|reporting|Updated to test the write to details pane|Automated Regression Test Update Team (DO NOT DELETE)|
 
+  @topology
   Scenario Outline: Delete System Component via table and check system is correctly deleted
     Given the user selects Topology menu item
     And the "System View" layer is selected
@@ -71,6 +74,7 @@ Feature: Topology Systems Layer Feature
       |name|type|
       |Automated Regression Test Transaction System|transactional|
 
+  @topology
   Scenario Outline: Add group and system to the System View and check that they save to the grouped systems table
     Given the user selects Topology menu item
     And the "System View" layer is selected
@@ -97,6 +101,7 @@ Feature: Topology Systems Layer Feature
 #                                           INTERFACES                                                                    #
 ###########################################################################################################################
 
+  @topology
   Scenario Outline: Add interfaces to the System View and check that they save to the table and canvas
     Given the user selects Topology menu item
     And the "System View" layer is selected
@@ -117,6 +122,7 @@ Feature: Topology Systems Layer Feature
       |Automated Regression Test (Transaction to Reporting)|data|Automated Regression Test Transaction System|transactional|Automate Regression Test Reporting System|reporting|
 #    |Automate Regression Test (Transaction to Reporting)|master data|Automate Regression Test Transaction System|transactional|Automate Regression Test Reporting System|reporting|
 
+  @topology
   Scenario Outline: Update interface via table and check results are correctly saved
     Given the user selects Topology menu item
     And the "System View" layer is selected
@@ -140,6 +146,7 @@ Feature: Topology Systems Layer Feature
       |name|interface_type|source_name|source_type|target_name|target_type|new_reference|new_name|new_type|new_description|new_owner|
       |Automated Regression Test (Transaction to Reporting)|data|Automated Regression Test Transaction System|transactional|Automate Regression Test Reporting System|reporting|test1|Automated Updated Regression Test Reporting System|master data|Updated to test the write to details pane|Automated Regression Test Update Team (DO NOT DELETE)|
 
+  @topology
   Scenario Outline: Delete interface via table and check results are correctly saved
     Given the user selects Topology menu item
     And the "System View" layer is selected

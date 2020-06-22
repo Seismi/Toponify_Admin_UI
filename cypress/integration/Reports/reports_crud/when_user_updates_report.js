@@ -21,8 +21,12 @@ When('the user updates the name to {string}, the description to {string}, the so
     .clear()
     .type(description)
     .should('have.value', description);
-  cy.get('[data-qa=reports-source-system-edit]').click();
+  cy.get('[data-qa=reports-source-system-edit]')
+    .click()
+    .wait('@GETNodesWorkPackageQuery');
   cy.selectDropDownNoClick('select-modal-search', system);
 
-  cy.get('[data-qa=select-modal-confirm]').click();
+  cy.get('[data-qa=select-modal-confirm]')
+    .click()
+    .wait(['@PUTWorkPackageReports', '@GETReportsQuery']);
 });

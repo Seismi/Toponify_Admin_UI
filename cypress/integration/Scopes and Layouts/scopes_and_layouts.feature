@@ -8,7 +8,7 @@ Feature: Scopes and Layouts
     And the scope called 'Automated Regression Test Scope' does not exist
     And the scope called 'Automated Updated Regression Test Scope' does not exist
 
-  @ScopesAndLayouts
+  @scopes_layouts
   Scenario:  Creates a scope and check it appears in table and topology dropdown
     When the user creates a new scope called 'Automated Regression Test Scope'
     Then the scope called 'Automated Regression Test Scope' should appear in the scopes table with filtering component 'system'
@@ -20,7 +20,7 @@ Feature: Scopes and Layouts
     And the user selects Topology menu item
     And the scopes header drop down should contain 'Automated Regression Test Scope'
 
-  @ScopesAndLayouts
+  @scopes_layouts
   Scenario:  Creates a layout and check it appears in table and topology dropdown
     Given the user creates a new scope called 'Automated Regression Test Scope'
     And the user selects the scope called 'Automated Regression Test Scope'
@@ -33,13 +33,13 @@ Feature: Scopes and Layouts
     And the user selects Topology menu item
     And the layouts canvas drop down should contain 'Automated Regression Test Scope Layout' against scope 'Automated Regression Test Scope'
 
-  @ScopesAndLayouts
+  @scopes_layouts
   Scenario:  Update a scope and check it appears in table and topology dropdown
     And the user creates a new scope called 'Automated Regression Test Scope'
     When the user updates the scope called 'Automated Regression Test Scope' to have name 'Automated Updated Regression Test Scope' and filtering components 'data'
     Then the scope called 'Automated Updated Regression Test Scope' should appear in the scopes table with filtering component 'data'
 
-  @ScopesAndLayouts
+  @scopes_layouts
   Scenario:  Update a Layout and check it appears in table and topology dropdown
     Given the user creates a new scope called 'Automated Regression Test Scope'
     And the user selects the scope called 'Automated Regression Test Scope'
@@ -54,7 +54,7 @@ Feature: Scopes and Layouts
     And the user selects Topology menu item
     And the layouts canvas drop down should contain 'Automated Updated Regression Test Scope Layout' against scope 'Automated Regression Test Scope'
 
-  @ScopesAndLayouts
+  @scopes_layouts
   Scenario:  Delete a Layout from a scope and check it disappears from the table and topology dropdown
     Given the user creates a new scope called 'Automated Regression Test Scope'
     And the user selects the scope called 'Automated Regression Test Scope'
@@ -69,7 +69,7 @@ Feature: Scopes and Layouts
     And the user selects Topology menu item
     And the layouts canvas drop down should not contain 'Automated Updated Regression Test Scope Layout' against scope 'Automated Regression Test Scope'
 
-  @ScopesAndLayouts
+  @scopes_layouts
   Scenario:  Delete a scope and check it disappears from the table and topology dropdown
     Given the user creates a new scope called 'Automated Regression Test Scope'
     When the scope called 'Automated Regression Test Scope' is deleted
