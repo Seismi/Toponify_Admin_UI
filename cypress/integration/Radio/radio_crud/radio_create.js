@@ -22,18 +22,10 @@ When(
 );
 
 When('confirms the creation of the radio', () => {
-  cy.get(`[data-qa=radio-modal-save]`).click();
-  cy.wait(['@POSTRadios', '@GETRadio']);
-  cy.reload();
-  cy.wait([
-    '@GETUsers.all',
-    '@GETMyProfile',
-    '@GETTags',
-    '@GETWorkPackages',
-    '@GETRadios',
-    '@GETNodes',
-    '@POSTradiosAdvancedSearch.all',
-    '@GETRadioViews',
-    '@GETRadio'
-  ]);
+  cy.get(`[data-qa=radio-modal-save]`)
+    .click()
+    .then(() => {
+      cy.wait(['@POSTRadios', '@GETRadios', '@GETRadio']);
+      cy.reload();
+    });
 });

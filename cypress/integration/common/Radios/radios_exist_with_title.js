@@ -6,8 +6,6 @@ When(
     radio = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(radio);
-    cy.findRadio(radio).then(() => {
-      cy.selectRow('radio-table', radio);
-    });
+    cy.selectRow('radio-table', radio);
   }
 );

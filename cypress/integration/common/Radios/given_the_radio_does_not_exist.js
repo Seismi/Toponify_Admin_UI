@@ -5,15 +5,10 @@ Given('the radio {string} does not exist', radio => {
     .concat(' | ')
     .concat(radio);
   cy.findRadio(radio).then($table => {
-    cy.wait(['@POSTradiosAdvancedSearch.all'])
-      .its('status')
-      .should('eq', 200)
-      .then(xhr => {
-        if ($table[0].rows.length > 0) {
-          Object.keys($table[0].rows).forEach(_ => {
-            cy.deleteRadio(radio);
-          });
-        }
+    if ($table[0].rows.length > 0) {
+      Object.keys($table[0].rows).forEach(_ => {
+        cy.deleteRadio(radio);
       });
+    }
   });
 });
