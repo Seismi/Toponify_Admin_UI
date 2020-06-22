@@ -440,7 +440,8 @@ Cypress.Commands.add('findRadio', radio => {
         .type(radio);
       cy.get('[data-qa=radio-filter-modal-apply]')
         .click({ force: true })
-        .wait(['@POSTradiosAdvancedSearch'])
+        .wait(2000)
+        .wait('@POSTradiosAdvancedSearch')
         .then(() => {
           return cy.get(`[data-qa=radio-table]`).find('table>tbody');
         });
@@ -469,6 +470,7 @@ Cypress.Commands.add('deleteRadio', radio => {
         cy.get('[data-qa=radio-detail-delete]').click();
         cy.get('[data-qa=delete-modal-yes]')
           .click()
+          .wait(2000)
           .wait('@DELETERadios');
       }
     });
