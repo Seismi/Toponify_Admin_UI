@@ -51,7 +51,7 @@ export class RadioComponent implements OnInit, OnDestroy {
   // TODO
   private tags: TagsHttpParams = {
     textFilter: '',
-    page: 1,
+    page: 0,
     size: 100
   }
 
