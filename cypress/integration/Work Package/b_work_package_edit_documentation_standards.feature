@@ -56,7 +56,7 @@ Feature: Work Package Edit Documentation Standards Feature
     And the user clicks to "save" the invalid change
     Then the 'Regression Test Documentation Standard Date' should display the error message 'Not valid! Please make sure that your value matches property type'
 
-  @documentation_standards @work_package
+  @focus @documentation_standards @work_package
   Scenario: Check that entering a valid value into a date type documentation standard will save
     Given the documentation standard 'Regression Test Documentation Standard Date' exists with type 'Date' against 'Work Package' component
     And the user confirms the creation of the documentation standard

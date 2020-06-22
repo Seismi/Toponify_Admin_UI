@@ -615,22 +615,26 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
   cy.get('[data-qa=documentation-standards-create-new]')
     .click()
     .then(() => {
-      cy.get('[data-qa=documentation-standards-details-name]')
-        .type(doc_standard)
-        .should('have.value', doc_standard);
-      cy.get('[data-qa=documentation-standards-details-description]')
-        .type(doc_standard)
-        .should('have.value', doc_standard);
-      cy.root();
-      cy.get(`[data-qa=documentation-standards-details-type]`)
-        .click()
-        .get('mat-option')
-        .contains(type)
-        .click({ force: true });
-      cy.get('smi-document-standards-levels')
-        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
-        .contains(component)
-        .click();
+      cy.get('[data-qa=documentation-standards-modal-form]')
+        .within(() => {
+          cy.get('[data-qa=documentation-standards-details-name]')
+            .type(doc_standard)
+            .should('have.value', doc_standard);
+          cy.get('[data-qa=documentation-standards-details-description]')
+            .type(doc_standard)
+            .should('have.value', doc_standard);
+        })
+        .then(() => {
+          cy.get(`[data-qa=documentation-standards-details-type]`)
+            .click()
+            .get('mat-option')
+            .contains(type)
+            .click({ force: true });
+          cy.get('smi-document-standards-levels')
+            .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
+            .contains(component)
+            .click();
+        });
     });
 });
 
