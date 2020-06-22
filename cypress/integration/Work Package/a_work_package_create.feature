@@ -7,7 +7,7 @@ Feature: Work Package Create Feature
     And the user selects Work Package menu item
     And the work package 'Automated Regression Test Work Package' does not exist
 
-  @WorkPackage
+  @work_package
   Scenario: Create a work package in the work packages but cancel
     When the user clicks the create work package button in the work packages table
     And the user creates a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
@@ -15,7 +15,7 @@ Feature: Work Package Create Feature
     Then the create package pop-up should close
     And the work package 'Automated Regression Test Work Package' should not be created
 
-  @WorkPackage
+  @work_package
   Scenario: Create a work package in the work packages and save
     When the user clicks the create work package button in the work packages table
     And the user creates a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
@@ -23,7 +23,7 @@ Feature: Work Package Create Feature
     Then the create package pop-up should close
     And the work package 'Automated Regression Test Work Package' should be created
 
-  @WorkPackage
+  @work_package
   Scenario: Create a work package in the details pane but cancel
     When the user clicks the create work package button in the work packages details pane
     And the user creates a work package called 'Automated Regression Test Work Package', with a description 'Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
@@ -31,7 +31,7 @@ Feature: Work Package Create Feature
     Then the create package pop-up should close
     And the work package 'Automated Regression Test Work Package' should not be created
 
-  @WorkPackage
+  @work_package
   Scenario: Create a work package in the details pane and save
     When the user clicks the create work package button in the work packages details pane
     And the user creates a work package called 'Automated Regression Test Work Package', with a description 'Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'

@@ -197,7 +197,8 @@ Cypress.Commands.add('findReport', name => {
   cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name) // type the name
-    .wait('@GETReportsFilterQuery')
+    .wait(2000)
+    .wait('@GETReportsFilterQuery.all')
     .then(() => {
       return cy
         .get(`[data-qa="reports-table"]`) // get the work packages table
@@ -409,27 +410,6 @@ Cypress.Commands.add('deleteWorkPackage', name => {
       });
     });
 });
-/*
-Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
-  // Creates a documentation standard
-  cy.log(component)
-  cy.get('[data-qa=documentation-standards-create-new]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=documentation-standards-details-name]').type(doc_standard); // enter the name
-      cy.get('[data-qa=documentation-standards-details-description]').type(doc_standard); //enter the description
-      cy.root(); // return to root
-      cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
-        .click()
-        .get('mat-option')
-        .contains(type) // get the mat-option that contains type
-        .click({ force: true }); // click
-      cy.get('smi-document-standards-levels') // get the levels
-        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
-        .contains(component) // which contains the component
-        .click();
-    }); //click the create new documentations standard button
-});*/
 
 Cypress.Commands.add('findRadio', radio => {
   cy.get('[data-qa=radio-filter]')

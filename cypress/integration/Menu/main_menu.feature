@@ -3,61 +3,61 @@ Feature:Main Menu
   Background:
     Given a valid user is logged in
 
-  @Menu
+  @menu
   Scenario: Topology Menu Select
     When the user selects Topology menu item
     Then toponify should display the Topology page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Reports Menu Select
     When the user selects Reports menu item
     Then toponify should display the Reports page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Attributes and Rules Menu Select
     When the user selects Attributes and Rules menu item
     Then toponify should display the Attributes and Rules page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Work Packages Menu Select
     When the user selects Work Package menu item
     Then toponify should display the Work Package page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Radios Menu Select
     When the user selects Radios menu item
     Then toponify should display the Radios page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Scopes and Layouts Menu Select
     When the user selects Scopes and Layouts menu item
     Then toponify should display the Scopes and Layouts page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Documentation Standard Menu Select
     When the user selects Documentation Standard menu item
     Then toponify should display the Documentation Standard page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: My Profile Menu Select
     When the user selects My Profile menu item
     Then toponify should display the My Profile page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Settings Menu Select
     When the user selects Settings menu item
     Then toponify should display the Settings page
     And the menu should not be visible
 
-  @Menu
+  @menu
   Scenario: Logout Menu Select
     Then toponify should display the Logout page
     And the menu should not be visible

@@ -15,7 +15,7 @@ Feature: Create new report
     And the user creates a new 'reporting' system with name 'Automated Regression Test Reporting System'
     And the user selects Reports menu item
 
-  @Reports
+  @reports
   Scenario: Create Report and then cancel
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user cancels the creation of the report
@@ -23,7 +23,7 @@ Feature: Create new report
     When the user reloads the Reports page
     Then the new report 'Automated Regression Test Report' should not exist in the reports table
 
-  @Reports
+  @reports
   Scenario: Create Report and then confirm
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
@@ -35,7 +35,7 @@ Feature: Create new report
     Then the new report 'Automated Regression Test Report' should exist in the reports table
     And the details pane should reflect the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
 
-  @Reports
+  @reports
   Scenario: Update report and then cancel
     Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
@@ -46,7 +46,7 @@ Feature: Create new report
     When the user selects the report 'Automated Regression Test Report' in the reports table
     Then the details pane should reflect the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
 
-  @Reports
+  @reports
     Scenario: Update report and then confirm
     Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
@@ -59,7 +59,7 @@ Feature: Create new report
     When the user selects the report 'Automated Updated Regression Test Report' in the reports table
     And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
 
-  @Reports
+  @reports
   Scenario: Delete report and then cancel
     Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
@@ -71,7 +71,7 @@ Feature: Create new report
     And the user selects the report 'Automated Regression Test Report' in the reports table
     Then the new report 'Automated Regression Test Report' should exist in the reports table
 
-  @Reports
+  @reports
   Scenario: Delete report and then confirm
     Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
@@ -82,7 +82,7 @@ Feature: Create new report
     When the user reloads the Reports page
     Then the new report 'Automated Regression Test Report' should not exist in the reports table
 
-  @Reports
+  @reports
   Scenario: Create a new report then switch to current architecture and test if still visible
     When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
