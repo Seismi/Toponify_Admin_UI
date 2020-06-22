@@ -9,7 +9,7 @@ When('the user selects Radios menu item', () => {
         cy.get(`[data-qa=${settings['menu_selector']}]`)
           .click()
           .then(() => {
-            cy.wait(['@GETRadios', '@POSTradiosAdvancedSearch', '@GETNodes', '@GETRadioViews']);
+            cy.wait(['@GETRadios', '@POSTradiosAdvancedSearch.all', '@GETNodes', '@GETRadioViews']);
           });
       });
   });
