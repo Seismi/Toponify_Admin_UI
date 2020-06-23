@@ -3,20 +3,20 @@
     <div [ngClass]="{ disabled: !workPackageIsEditable }">
       <mat-form-field>
         <input
-          data-qa="reports-details-name" 
-          matInput 
-          placeholder="Name" 
-          formControlName="name" 
+          data-qa="reports-details-name"
+          matInput
+          placeholder="Name"
+          formControlName="name"
           [ngClass]="{ editable: workPackageIsEditable }"
         />
         <mat-error>This field is required</mat-error>
       </mat-form-field>
-  
+
       <mat-form-field>
         <textarea
-          data-qa="reports-details-description" 
-          matInput 
-          placeholder="Description" 
+          data-qa="reports-details-description"
+          matInput
+          placeholder="Description"
           formControlName="description"
           [ngClass]="{ editable: workPackageIsEditable }"
         >
@@ -24,7 +24,7 @@
       </mat-form-field>
 
       <mat-form-field *ngIf="modalMode">
-        <mat-select formControlName="system" placeholder="Systems">
+        <mat-select data-qa="reports-details-system" formControlName="system" placeholder="Systems">
           <mat-option *ngFor="let system of systems" [value]="system">
             {{ system.name }}
           </mat-option>
@@ -53,8 +53,8 @@
 
     <!-- Owners -->
     <smi-report-owners-table
-      data-qa="reports-owners-table" 
-      *ngIf="!modalMode" 
+      data-qa="reports-owners-table"
+      *ngIf="!modalMode"
       [data]="owners"
       [workPackageIsEditable]="workPackageIsEditable"
       (add)="addOwner.emit()"

@@ -193,6 +193,19 @@ Cypress.Commands.add('findScope', name => {
     });
 });
 
+Cypress.Commands.add('findReport', name => {
+  cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name) // type the name
+    .wait(2000)
+    .wait('@GETReportsFilterQuery.all')
+    .then(() => {
+      return cy
+        .get(`[data-qa="reports-table"]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
 Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
   cy.get(`[data-qa=${search}]`)
     .clear()
@@ -292,7 +305,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
             .click()
-            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
+            .wait(wait_for)
             .then(wp => {
               if (wp[0].textContent === 'edit') {
                 cy.get('table>tbody')
@@ -301,6 +314,28 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
                   .wait(wait_for);
               }
             });
+        });
+    })
+    .then(result => {
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.root()
+        .get('[data-qa=left-hand-pane-work-packages]')
+        .click();
+    });
+});
+
+Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wait_for, action) => {
+  cy.get('[data-qa=left-hand-pane-work-packages]').click();
+  cy.get(`[data-qa=${work_package_menu}]`)
+    .within(() => {
+      cy.get('div>div>input')
+        .clear()
+        .type(work_package)
+        .should('have.value', work_package)
+        .then(() => {
+          cy.get('[data-qa=topology-work-packages-select-work-package]')
+            .click({ force: true })
+            .wait(wait_for);
         });
     })
     .then(result => {
@@ -375,27 +410,6 @@ Cypress.Commands.add('deleteWorkPackage', name => {
       });
     });
 });
-/*
-Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
-  // Creates a documentation standard
-  cy.log(component)
-  cy.get('[data-qa=documentation-standards-create-new]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=documentation-standards-details-name]').type(doc_standard); // enter the name
-      cy.get('[data-qa=documentation-standards-details-description]').type(doc_standard); //enter the description
-      cy.root(); // return to root
-      cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
-        .click()
-        .get('mat-option')
-        .contains(type) // get the mat-option that contains type
-        .click({ force: true }); // click
-      cy.get('smi-document-standards-levels') // get the levels
-        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
-        .contains(component) // which contains the component
-        .click();
-    }); //click the create new documentations standard button
-});*/
 
 Cypress.Commands.add('findRadio', radio => {
   cy.get('[data-qa=radio-filter]')
@@ -406,7 +420,8 @@ Cypress.Commands.add('findRadio', radio => {
         .type(radio);
       cy.get('[data-qa=radio-filter-modal-apply]')
         .click({ force: true })
-        .wait(['@POSTradiosAdvancedSearch'])
+        .wait(2000)
+        .wait('@POSTradiosAdvancedSearch')
         .then(() => {
           return cy.get(`[data-qa=radio-table]`).find('table>tbody');
         });
@@ -435,6 +450,7 @@ Cypress.Commands.add('deleteRadio', radio => {
         cy.get('[data-qa=radio-detail-delete]').click();
         cy.get('[data-qa=delete-modal-yes]')
           .click()
+          .wait(2000)
           .wait('@DELETERadios');
       }
     });
@@ -599,27 +615,42 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
   cy.get('[data-qa=documentation-standards-create-new]')
     .click()
     .then(() => {
-      cy.get('[data-qa=documentation-standards-details-name]')
-        .type(doc_standard)
-        .should('have.value', doc_standard);
-      cy.get('[data-qa=documentation-standards-details-description]')
-        .type(doc_standard)
-        .should('have.value', doc_standard);
-      cy.root();
-      cy.get(`[data-qa=documentation-standards-details-type]`)
-        .click()
-        .get('mat-option')
-        .contains(type)
-        .click({ force: true });
-      cy.get('smi-document-standards-levels')
-        .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
-        .contains(component)
-        .click();
-      /*      cy.get('[data-qa=documentation-standards-modal-save]')
-        .click()
+      cy.get('[data-qa=documentation-standards-modal-form]')
+        .within(() => {
+          cy.get('[data-qa=documentation-standards-details-name]')
+            .type(doc_standard)
+            .should('have.value', doc_standard);
+          cy.get('[data-qa=documentation-standards-details-description]')
+            .type(doc_standard)
+            .should('have.value', doc_standard);
+        })
         .then(() => {
-          cy.route('POST', `${documentationStandards}`).as('POSTCustomProperties');
-        });*/
+          cy.get(`[data-qa=documentation-standards-details-type]`)
+            .click()
+            .get('mat-option')
+            .contains(type)
+            .click({ force: true });
+          cy.get('smi-document-standards-levels')
+            .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
+            .contains(component)
+            .click();
+        });
+    });
+});
+
+Cypress.Commands.add('createReport', (name, description, system) => {
+  cy.get('[data-qa=reports-create-new]')
+    .click()
+    .then(() => {
+      cy.wait(['@GETTeams', '@GETReportsFilterQuery', '@GETNodesWorkPackageQuery']);
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.get('[data-qa=reports-details-name]')
+        .type(name)
+        .should('have.value', name);
+      cy.get('[data-qa=reports-details-description]')
+        .type(description)
+        .should('have.value', description);
+      cy.selectDropDownNoClick('reports-details-system', system);
     });
 });
 

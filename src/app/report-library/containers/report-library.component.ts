@@ -248,7 +248,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
       if (data && data.report) {
         this.store.dispatch(
           new AddReport({
-            workPackageId: this.workpackageId,
+            workPackageId: this.selectedWorkPackageEntities[0].id,
             request: {
               data: { ...data.report }
             }
