@@ -14,6 +14,10 @@ export interface State {
   radioFilter: any; // RadiosAdvancedSearch;
   radioViews: any[] | null;
   error?: HttpErrorResponse | { message: string };
+  analysisData: any;
+  analysisFilter: any;
+  matrixData: any;
+  matrixFilter: any;
 }
 
 export const initialState: State = {
@@ -24,9 +28,13 @@ export const initialState: State = {
   loading: false,
   selectedRadio: null,
   reply: [],
-  radioFilter: null,
   error: null,
-  radioViews: null
+  radioViews: null,
+  radioFilter: null,
+  analysisData: null,
+  matrixData: null,
+  matrixFilter: null,
+  analysisFilter: null
 };
 
 export function reducer(state = initialState, action: RadioActionsUnion): State {
@@ -288,6 +296,20 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       };
     }
 
+    case RadioActionTypes.GetRadioMatrixSuccess: {
+      return {
+        ...state,
+        matrixData: action.payload
+      };
+    }
+
+    case RadioActionTypes.GetRadioAnalysisSuccess: {
+      return {
+        ...state,
+        analysisData: action.payload
+      };
+    }
+
     case RadioActionTypes.SearchRadioFailure: {
       return {
         ...state,
@@ -301,6 +323,20 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       return {
         ...state,
         radioFilter: { ...action.payload, tableStyle }
+      };
+    }
+
+    case RadioActionTypes.SetRadioAnalysisFilter: {
+      return {
+        ...state,
+        analysisFilter: { ...action.payload }
+      };
+    }
+
+    case RadioActionTypes.SetRadioMatrixFilter: {
+      return {
+        ...state,
+        matrixFilter: { ...action.payload }
       };
     }
 

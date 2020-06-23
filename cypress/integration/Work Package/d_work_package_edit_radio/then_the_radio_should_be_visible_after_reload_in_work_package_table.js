@@ -6,6 +6,7 @@ Then('the radio with title {string} should be visible after reload in the work p
     .concat(' | ')
     .concat(title); // prefix the branch to objective
   cy.reload()
+    .wait(2000)
     .wait(['@GETWorkPackages', '@GETWorkPackage', '@GETUsers'])
     .then(() => {
       cy.findWorkPackage(title).then(() => {

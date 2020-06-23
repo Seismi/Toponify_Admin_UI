@@ -12,6 +12,13 @@ import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selecto
 
 const $ = go.GraphObject.make;
 
+function textFont(style?: string): Object {
+  const font = getComputedStyle(document.body).getPropertyValue('--default-font');
+  return {
+    font: `${style} ${font}`
+  };
+}
+
 export const customIcons = {
   tree: go.Geometry.parse('M22 11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z', true),
   flag: go.Geometry.parse('M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z', true),
@@ -40,6 +47,16 @@ export class CustomLinkShift extends LinkShiftingTool {
 export class CustomNodeResize extends go.ResizingTool {
   constructor() {
     super();
+  }
+
+  doActivate() {
+    go.ResizingTool.prototype.doActivate.call(this);
+
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        node.data.tempSavedPosition = node.position.copy();
+      }
+    );
   }
 
   // Constrain minimum size to encompass all system/data group members
@@ -116,26 +133,27 @@ export class CustomNodeResize extends go.ResizingTool {
   public resize(newr: go.Rect): void {
     const memberLocations = [];
 
-    // Save grouped node's positions
-    (this.adornedObject.part as go.Group).findSubGraphParts().each(
-      function(member: go.Part) {
-        if (member instanceof go.Node) {
-          memberLocations.push({
-            node: member,
-            PrevPosition: member.position.copy()
-          });
-        }
-      }
-    );
-
     // Perform standard resizing
     go.ResizingTool.prototype.resize.call(this, newr);
 
     // Restore grouped node's positions from before the resizing
-    memberLocations.forEach(function(nodeLocation) {
-      nodeLocation.node.position = nodeLocation.PrevPosition;
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        node.position = node.data.tempSavedPosition;
     });
 
+  }
+
+  doDeactivate() {
+
+    // Remove temporary saved position from node data
+    (this.adornedObject.part as go.Group).findSubGraphParts().each(
+      function(node) {
+        delete node.data.tempSavedPosition;
+      }
+    );
+
+    return go.ResizingTool.prototype.doDeactivate.call(this);
   }
 }
 
@@ -738,7 +756,7 @@ export class GojsCustomObjectsService {
           'Add data node',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            thisService.addDataSetSource.next(node.data);
+            thisService.addDataSetSource.next();
           },
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -896,5 +914,29 @@ export class GojsCustomObjectsService {
     }
     if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
     return loc;  // give up -- don't allow the node to be moved to the new location
+  }
+
+  // returns the gojs object containing a guide with instructions for users
+  getInstructions(): go.Part {
+
+    const thisService = this;
+
+    return $(go.Part,
+      'Horizontal',
+      {
+        name: 'Guide',
+        selectable: false,
+        layerName: 'Grid',
+        padding: 10
+      },
+      $(go.TextBlock,
+        textFont('italic 30px'),
+        {
+          name: 'instructions',
+          stroke: '#D6D6D6',
+          textAlign: 'center'
+        }
+      )
+    );
   }
 }

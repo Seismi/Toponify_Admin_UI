@@ -10,7 +10,7 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 export class ComponentsTableComponent {
   @Input() title: string;
   @Input() workPackageIsEditable: boolean;
-  @Input() currentFilterLevel: string;
+  @Input() disabled: boolean;
   @Input()
   set data(data: NodeDetail[]) {
     if (!data) {

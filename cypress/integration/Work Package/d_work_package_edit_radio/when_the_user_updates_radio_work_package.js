@@ -37,7 +37,7 @@ When(
                   .contains('td', title)
                   .get('[data-qa=work-packages-radio-table-open]')
                   .click()
-                  .wait(['@GETNotifications', '@GETUsers', '@GETRadio'])
+                  .wait(['@GETUsers', '@GETRadio'])
                   .then(() => {
                     cy.get('[data-qa=radio-detail-edit]')
                       .click()

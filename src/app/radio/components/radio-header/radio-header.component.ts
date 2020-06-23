@@ -1,24 +1,25 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { getQueryParams } from '@app/core/store/selectors/route.selectors';
 import {
-  DeleteRadioView,
-  GetRadioViews,
-  GetRadioView,
-  RadioFilter,
-  UpdateRadioView,
   CreateRadioViewSuccess,
+  DeleteRadioView,
+  GetRadioView,
+  GetRadioViews,
+  RadioFilter,
+  SetRadioAnalysisFilter,
   SetRadioViewAsFavourite,
-  UnsetRadioViewAsFavourite
+  UnsetRadioViewAsFavourite,
+  UpdateRadioView
 } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioFilter, getRadioViews, getRadioEntities } from '@app/radio/store/selectors/radio.selector';
+import { getRadioEntities, getRadioFilter, getRadioViews } from '@app/radio/store/selectors/radio.selector';
 import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
-import { combineLatest, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { RadioViewNameDialogComponent } from '../radio-view-name-dialog/radio-view-name-dialog.component';
 
@@ -35,8 +36,8 @@ enum TableStyles {
 export class RadioHeaderComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public tableStyles = TableStyles;
-  public selectedTableStyle = TableStyles.SIMPLE;
-  public activeFilters = null;
+  public selectedTableStyle: BehaviorSubject<TableStyles> = new BehaviorSubject(TableStyles.SIMPLE);
+  public activeFilters: any = {};
   public radioViews = [];
   public selectedRadioView = null;
   public radios = [];
@@ -67,29 +68,24 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
     return !!this.activeFilters;
   }
 
-  get radioRiskMatrix(): number[][] {
-    return this.generateRadioRiskMatric(this.radios, 5);
-  }
-
-  get selectedRiskMatrixCol(): number[] | null {
-    if (
-      this.activeFilters &&
-      Number.isInteger(this.activeFilters.severity) &&
-      Number.isInteger(this.activeFilters.frequency)
-    ) {
-      return [this.activeFilters.frequency - 1, this.activeFilters.severity - 1];
-    }
-    return null;
-  }
-
   ngOnInit() {
     this.store.dispatch(new GetRadioViews());
-
     this.subscriptions.push(
       this.store.pipe(select(getRadioFilter)).subscribe(filters => {
         this.activeFilters = filters;
         if (filters && filters.tableStyle) {
-          this.selectedTableStyle = filters.tableStyle;
+          this.selectedTableStyle.next(filters.tableStyle);
+        } else {
+          this.selectedTableStyle.next(TableStyles.SIMPLE);
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.selectedTableStyle.pipe(distinctUntilChanged(isEqual)).subscribe(tableStyle => {
+        if (TableStyles.SIMPLE === tableStyle) {
+          this.store.dispatch(new SetRadioAnalysisFilter(null));
+          this.store.dispatch(new RadioFilter(this.getFilteredActiveFilters()));
         }
       })
     );
@@ -120,6 +116,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
             this.store.dispatch(new GetRadioView(selectedRadioView.id));
           } else {
             this.store.dispatch(new RadioFilter(null));
+            this.store.dispatch(new SetRadioAnalysisFilter(null));
           }
         })
     );
@@ -136,7 +133,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         radioViewData: {
           ...this.selectedRadioView,
           type: this.activeFilters.tableStyle,
-          filterSet: this.activeFilters
+          filterSet: this.getFilteredActiveFilters()
         }
       })
     );
@@ -172,6 +169,14 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
     );
   }
 
+  getFilteredActiveFilters() {
+    if (!this.activeFilters) {
+      return null;
+    }
+    const { frequencyRange, severityRange, ...filtered } = this.activeFilters;
+    return filtered;
+  }
+
   onCreateRadioView(): void {
     this.dialog
       .open(RadioViewNameDialogComponent, {
@@ -189,34 +194,5 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
 
   onFilter(): void {
     this.filter.emit();
-  }
-
-  handleMatrixClick(data: any): void {
-    this.store.dispatch(
-      new RadioFilter({
-        ...(!!this.activeFilters && this.activeFilters),
-        frequency: data[0] + 1,
-        severity: data[1] + 1
-      })
-    );
-  }
-
-  clearSelection(): void {
-    const { frequency, severity, ...rest } = this.activeFilters;
-    this.store.dispatch(
-      new RadioFilter({
-        ...rest
-      })
-    );
-  }
-
-  generateRadioRiskMatric(entities: any[], size: number): number[][] {
-    const matrix = [...Array.from({ length: size })].map(x => [...Array.from({ length: size })].map(y => 0));
-    for (const entity of entities) {
-      const colIndex = entity.severity - 1;
-      const rowIndex = entity.frequency - 1;
-      matrix[rowIndex][colIndex]++;
-    }
-    return matrix;
   }
 }

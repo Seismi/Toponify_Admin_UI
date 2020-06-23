@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
-import { Tag, TagApplicableTo, NodeDetail } from '@app/architecture/store/models/node.model';
+import { Tag, TagApplicableTo, NodeDetail, layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 
@@ -115,10 +115,7 @@ export class ObjectDetailsFormComponent {
   }
 
   nodeIsEditable(): boolean {
-    if (!this.workPackageIsEditable || this.nodeCategory === 'copy') {
-      return true;
-    }
-    return false;
+    return (!this.workPackageIsEditable || this.nodeCategory === 'copy') ? true : false;
   }
 
   onUpdateAvailableTags() {
@@ -162,4 +159,14 @@ export class ObjectDetailsFormComponent {
       return false;
     }
   }
+
+  getDisable(category?: nodeCategories): boolean {
+    return this.part.data.layer === layers.data
+      && [nodeCategories.dataStructure, nodeCategories.transformation].includes(category || this.part.data.category) ? true : false;
+  }
+
+  disableIfShared(): boolean {
+    return this.part.data.isShared ? true : false;
+  }
+
 }
