@@ -13,6 +13,7 @@ Feature: Filtering by scope
     And the "System View" layer is selected
     And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
 
+  @scopes_layouts
   Scenario:  Create a new scope and add an existing system to it. Check that on selecting that scope in /topology, only that system appears. Also check it is in the list of items in scope in the /scopes-and-layouts page.
     Given the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
@@ -35,7 +36,7 @@ Feature: Filtering by scope
     And the user clicks on the system's right hand side scope button
     Then the scope 'Automated Regression Test Scope' should be visible in the scope table
 
-@focus
+  @scopes_layouts @focus
   Scenario:  Add a system to an existing scope, check on selecting that scope in /topology that the new system appears including systems that were already in scope and links that go from the new system to the system previously in scope. Also check it is in the list of items in scope in the /scopes-and-layouts page.
     Given the user selects Scopes and Layouts menu item
     And the user creates a new scope called 'Automated Regression Test Scope'

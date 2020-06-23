@@ -9,7 +9,9 @@ Given('the user selects the {string} {string} in the {string} table', function(t
   cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
 
-  cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`).click();
+  cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`)
+    .click()
+    .wait(['@GETNodesReportWorkPackageQuery', '@GETNodesScopes', '@GETNodesWorkPackageQuery2']);
 
   cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
