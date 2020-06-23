@@ -379,7 +379,8 @@ export function reducer(
 
     case NodeActionTypes.LoadNodeReportsSuccess: {
       return {
-        ...state
+        ...state,
+        reports: action.payload
       };
     }
 

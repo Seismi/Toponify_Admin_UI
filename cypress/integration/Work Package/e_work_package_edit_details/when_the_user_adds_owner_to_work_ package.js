@@ -10,6 +10,7 @@ When('the user adds owner {string} to owners of work package {string} and clicks
     .then(() => {
       cy.get('[data-qa=work-packages-owners-table-add]') // add an owner
         .click()
+        .wait('@GETTeams')
         .then(() => {
           cy.selectDropDownSearchable('select-modal-search', owner); // select the owner
           cy.get(`[data-qa=select-modal-${button_action}]`).click(); // confirm the selection
