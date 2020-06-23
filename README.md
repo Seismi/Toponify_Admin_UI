@@ -64,6 +64,17 @@ Or to run on specific tags:
 
 Where <user> is a name to identify yourself (to avoid conflict between test data) and <tags> is one of the tags valid tags. Note that by using this command, cypress will run all the tests flagged with the selected tag. Results will be summarised in the terminal. Videos will be saved in ./cypress/videos. Screenshots of any error will be saved in ./cypress/screenshots
 
+List of available tags:
+@core: run all core features
+@documentation_standard: run all documentation standard test scenarios
+@report: run all report scenarios
+@scopes_layouts: run all scopes and layouts scenarios
+@radio: run all radio scenarios
+@topology: run all topology scenarios
+@objectives: run all objective scenarios
+@work_package: run all work package related scenarios
+@menu: run all menu scenarios
+
 ####TODO - update project code
 ####TODO - include a simpler npm script to run code.
 
