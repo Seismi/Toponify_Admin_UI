@@ -17,6 +17,6 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETSelectorAvailabilityQuery.all'
   ];
   cy.reload();
-  cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.wait(wait);
+  cy.get('[data-qa=spinner]').should('not.be.visible');
 });

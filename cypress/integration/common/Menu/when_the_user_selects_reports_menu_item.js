@@ -9,7 +9,16 @@ When('the user selects Reports menu item', function() {
       cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
         .click()
         .then(() => {
-          cy.wait(['@GETLayout', '@GETScopes', '@GETScope', '@GETWorkPackages', '@GETReportsScopeQuery']); // wait for API Calls
+          cy.wait([
+            '@GETLayout.all',
+            '@GETScopes.all',
+            '@GETScope.all',
+            '@GETWorkPackages.all',
+            '@GETNodesWorkPackageQuery.all',
+            '@GETNodeLinksWorkPackageQuery.all',
+            '@GETSelectorAvailabilityQuery.all'
+          ]); // wait for API Calls
         });
+      cy.get('[data-qa=spinner]').should('not.be.visible');
     });
 });

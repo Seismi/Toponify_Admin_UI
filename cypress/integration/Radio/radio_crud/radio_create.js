@@ -25,7 +25,7 @@ When('confirms the creation of the radio', () => {
   cy.get(`[data-qa=radio-modal-save]`)
     .click()
     .then(() => {
-      cy.wait(['@POSTRadios', '@GETRadios', '@GETRadio']);
+      cy.wait(['@POSTRadios', '@POSTradiosAdvancedSearch', '@GETRadio']);
       cy.reload();
     });
 });
