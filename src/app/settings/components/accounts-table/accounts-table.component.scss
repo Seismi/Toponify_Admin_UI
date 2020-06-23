@@ -1,0 +1,16 @@
+table {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+tr.mat-row, tr.mat-header-row {
+  height: 40px;
+}
+
+th.mat-column-delete, td:last-of-type {
+  text-align: right;
+}
+
+.mat-icon {
+  font-size: 15px;
+}

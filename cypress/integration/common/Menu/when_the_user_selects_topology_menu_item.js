@@ -20,8 +20,7 @@ When('the user selects Topology menu item', function() {
   cy.get(`[data-qa=main-menu-open]`) // get the main menu
     .click();
   cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
-    .click();
-  cy.get(['data-qa=spinner'])
-    .should('not.be.visible')
+    .click()
     .wait(wait); // wait for API Calls
+  cy.get(['data-qa=spinner']).should('not.be.visible');
 });
