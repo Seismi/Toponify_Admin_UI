@@ -280,6 +280,26 @@ export class DiagramListenersService {
       }
     );
 
+    // When viewport changes size, update size/scale of guide
+    diagram.addDiagramListener('ViewportBoundsChanged', function(event) {
+      let guide;
+      diagram.parts.each(function(part) {
+        if (part.name === 'Guide') {
+          guide = part;
+        }
+      });
+
+      if (guide) {
+        guide.position = diagram.transformViewToDoc(new go.Point(0, 0));
+        guide.scale = 1 / diagram.scale;
+      }
+
+      const instructions = guide.findObject('instructions');
+
+      // Ensure instructions do not exceed screen space available
+      instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
+    });
+
     // In node usage view, highlight the originating node with a blue shadow.
     // Also, ensure originating node is visible by expanding the chain of containing nodes.
     diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
@@ -312,6 +332,11 @@ export class DiagramListenersService {
           }
         }
       }
+    }.bind(this));
+
+    // Update guide
+    diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
+      this.diagramChangesService.updateGuide(diagram);
     }.bind(this));
   }
 

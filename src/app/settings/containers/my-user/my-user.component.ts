@@ -10,10 +10,11 @@ import { UpdateUser, UpdateUserPassword, LoadUserRoles } from '@app/settings/sto
 import { ChangePasswordModalComponent } from '../change-password-modal/change-password.component';
 import { MatDialog } from '@angular/material';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
-import { LoadMyProfile } from '@app/home/store/actions/home.actions';
+import { LoadMyProfile, HomePageActionTypes } from '@app/home/store/actions/home.actions';
 import { Subscription } from 'rxjs';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { getUserRolesEntities } from '@app/settings/store/selectors/user.selector';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'smi-my-user',
@@ -23,27 +24,36 @@ import { getUserRolesEntities } from '@app/settings/store/selectors/user.selecto
 })
 export class MyUserComponent implements OnInit {
   public user: UserDetails;
-  public showButtons: boolean = true;
-  public isEditable: boolean = false;
-  public modalMode: boolean = false;
+  public showButtons = true;
+  public isEditable = false;
+  public modalMode = false;
   public subscriptions: Subscription[] = [];
   public team: TeamEntity[];
   public role: RolesEntity[];
+  public formValue: UserDetails;
 
   constructor(
     private store: Store<HomeState>,
     private userStore: Store<UserState>,
     private myUserFormService: MyUserFormService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private actions: Actions
+  ) {
+    this.myUserForm.valueChanges.subscribe(value => this.formValue = value);
+  }
 
   ngOnInit() {
     this.store.dispatch(new LoadMyProfile());
     this.store.dispatch(new LoadUserRoles());
     this.store.pipe(select(getMyProfile)).subscribe(data => {
-      this.user = data;
       if (data) {
-        this.myUserFormService.myUserForm.patchValue({ ...data });
+        this.user = data;
+      }
+    });
+
+    this.actions.pipe(ofType(HomePageActionTypes.LoadMyProfileSuccess)).subscribe((action: any) => {
+      if (action.payload) {
+        this.myUserFormService.myUserForm.patchValue({ ...action.payload.data });
       }
     });
 
@@ -69,6 +79,7 @@ export class MyUserComponent implements OnInit {
   }
 
   onCancelEdit(): void {
+    this.myUserFormService.myUserForm.patchValue({ ...this.user });
     this.isEditable = false;
   }
 

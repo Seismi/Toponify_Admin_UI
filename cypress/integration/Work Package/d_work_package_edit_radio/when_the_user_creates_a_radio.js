@@ -11,11 +11,10 @@ When(
 
     cy.get('[data-qa=work-packages-radio-table-add')
       .click()
-      .wait('@GETRadios')
+      .wait('@POSTradiosAdvancedSearch')
       .then(() => {
         cy.get('[data-qa=work-packages-radio-modal-new]')
           .click()
-          .wait('@GETNotifications')
           .then(() => {
             writeRadioDetails(
               title,
@@ -72,7 +71,7 @@ When(
                   .contains('td', title)
                   .get('[data-qa=work-packages-radio-table-open]')
                   .click()
-                  .wait(['@GETNotifications', '@GETUsers', '@GETRadio'])
+                  .wait(['@GETUsers', '@GETRadio'])
                   .then(() => {
                     cy.get('[data-qa=radio-detail-edit]')
                       .click()
@@ -119,7 +118,7 @@ Then(
                   .contains('td', title)
                   .get('[data-qa=work-packages-radio-table-open]')
                   .click()
-                  .wait(['@GETNotifications', '@GETUsers', '@GETRadio'])
+                  .wait(['@GETUsers', '@GETRadio'])
                   .then(() => {
                     assertRadioDetails(
                       title,

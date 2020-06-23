@@ -35,7 +35,7 @@ function addDocStandard(value, doc_standard) {
     .click()
     .get('[data-qa=documentation-standards-table-value]') // get the value field
     .type(value)
-    .should('have.value', value); // type the value
+    .should('have.value', value.toString()); // type the value
 }
 
 function addDocStandardBoolean(value, doc_standard) {

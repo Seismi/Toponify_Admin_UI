@@ -23,10 +23,10 @@ export class DownloadCSVModalComponent implements OnInit {
     public dialogRef: MatDialogRef<DownloadCSVModalComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      GET: string,
-      fileName: string
+      GET: string;
+      fileName: string;
     }
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.routerStore
@@ -62,7 +62,7 @@ export class DownloadCSVModalComponent implements OnInit {
           this.dialogRef.close();
         },
         () => this.dialogRef.close()
-      )
+      );
   }
 
   getData(queryParams) {
@@ -77,5 +77,4 @@ export class DownloadCSVModalComponent implements OnInit {
         return this.radioService.getRadioEntities(queryParams);
     }
   }
-
 }

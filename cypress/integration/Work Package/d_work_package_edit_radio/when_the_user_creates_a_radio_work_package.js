@@ -15,7 +15,6 @@ When(
       .then(() => {
         cy.get('[data-qa=work-packages-radio-modal-new]')
           .click()
-          .wait('@GETNotifications')
           .then(() => {
             cy.writeRadioDetails(
               title,
