@@ -66,7 +66,9 @@ export enum nodeCategories {
   list = 'list',
   structure = 'structure',
   key = 'key',
-  transformation = 'transformation'
+  transformation = 'transformation',
+  data = 'data',
+  copy = 'copy'
 }
 
 export enum endPointTypes {
