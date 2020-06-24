@@ -173,6 +173,16 @@ module.exports = {
       api: `${api_version}/radios/advanced/search?*`,
       method: 'POST',
       name: 'radiosAdvancedSearch'
+    },
+    GetRadios: {
+      api: `${api_version}/radios?*`,
+      method: 'GET',
+      name: 'Radios'
+    },
+    POSTWorkPackageNodeRadios: {
+      api: `${api_version}/workpackages/*/nodes/*/radios/*`,
+      method: 'POST',
+      name: 'WorkPackageNodeRadios'
     }
   }
 };
