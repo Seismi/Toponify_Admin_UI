@@ -4,7 +4,8 @@ Feature: Topology Radio Feature
 
   Background:
     Given a valid user is logged in
-
+  
+  @topology @radio
   Scenario: Create new RADIO and cancel
     When the user selects Radios menu item
     And the radio 'Automatic Regression Test Radio' does not exist
@@ -12,6 +13,7 @@ Feature: Topology Radio Feature
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And the user cancels the creation of the radio
 
+  @topology @radio
   Scenario: Create new RADIO and confirm
     When the user selects Radios menu item
     And the radio 'Automatic Regression Test Radio' does not exist
@@ -19,6 +21,7 @@ Feature: Topology Radio Feature
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
 
+  @topology @work_package
   Scenario: Create new Work Package and cancel
     When the user selects Work Package menu item
     And the work package 'Automated Regression Test Work Package' does not exist
@@ -26,11 +29,13 @@ Feature: Topology Radio Feature
     And the user creates a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user cancels the work package create
 
+  @topology @work_package
   Scenario: Create new Work Package and confirm
     When the user selects Work Package menu item
     And the work package 'Automated Regression Test Work Package' does not exist
     And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
 
+  @topology
   Scenario: Assign RADIO to component
     When the user selects Topology menu item
     And the "System View" layer is selected
