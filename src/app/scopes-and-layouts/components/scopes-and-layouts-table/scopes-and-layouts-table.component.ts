@@ -12,6 +12,7 @@ export class ScopesAndLayoutsTableComponent implements AfterViewInit {
 
   @Input() title: string;
   @Input() defaultLayoutId: string;
+  @Input() showPagination: boolean;
 
   @Input()
   set data(data: ScopeEntity[]) {
