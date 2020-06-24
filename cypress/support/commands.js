@@ -623,10 +623,10 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
           cy.get('[data-qa=documentation-standards-details-description]')
             .type(doc_standard)
             .should('have.value', doc_standard);
+          cy.get(`[data-qa=documentation-standards-details-type]`).click();
         })
         .then(() => {
           cy.get(`[data-qa=documentation-standards-details-type]`)
-            .click()
             .get('mat-option')
             .contains(type)
             .click({ force: true });
@@ -668,12 +668,11 @@ Cypress.Commands.add('deleteDocumentStandard', title => {
     .then(() => {
       cy.get('[data-qa=documentation-standards-delete]')
         .click()
+        .wait('@GETCustomProperties*')
         .then(() => {
           cy.get('[data-qa=delete-modal-yes]')
             .click()
-            .then(() => {
-              cy.route('DELETE', `${documentationStandards}`).as('DELETECustomProperties');
-            });
+            .wait('@DELETECustomProperties');
         });
     });
   cy.get('[data-qa=documentation-standards-quick-search]')
