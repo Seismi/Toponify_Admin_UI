@@ -62,6 +62,7 @@ export class ObjectDetailsFormComponent {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() findSources = new EventEmitter<void>();
   @Output() viewStructure = new EventEmitter<void>();
   @Output() editSourceOrTarget = new EventEmitter<string>();
   @Output() switchSourceAndTarget = new EventEmitter<void>();
@@ -144,6 +145,10 @@ export class ObjectDetailsFormComponent {
 
   onSeeUsage() {
     this.seeUsage.emit();
+  }
+
+  onFindSources() {
+    this.findSources.emit();
   }
 
   get isNode(): boolean {

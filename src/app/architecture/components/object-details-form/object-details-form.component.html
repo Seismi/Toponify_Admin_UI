@@ -10,7 +10,7 @@
         <input data-qa="object-details-reference" matInput formControlName="reference" [ngClass]="{ editable: !nodeIsEditable() }" />
       </div>
     </mat-form-field>
-    
+
     <mat-form-field>
       <div class="input-wrapper">
         <label>Name</label>
@@ -22,7 +22,7 @@
       <div class="input-wrapper">
         <label>Category</label>
         <mat-select
-          formControlName="category" 
+          formControlName="category"
           [ngClass]="{ editable: !nodeIsEditable() }"
           data-qa="object-details-category"
         >
@@ -89,7 +89,7 @@
     <smi-group-info-table
       data-qa="object-details-grouped-in-table"
       *ngIf="!clickedOnLink && !attributesPage"
-      [groupInfo]="groupInfo" 
+      [groupInfo]="groupInfo"
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"
       [workPackageIsEditable]="workPackageIsEditable"
@@ -98,7 +98,7 @@
     </smi-group-info-table>
 
     <hr>
-    
+
     <smi-related-attribute-table
       data-qa="object-details-related-attributes-table"
       *ngIf="attributesPage"
@@ -121,6 +121,7 @@
       </div>
       <br>
       <button mat-flat-button color="primary">Make Master</button>
+      <button data-qa="object-details-see-sources" mat-flat-button color="primary" *ngIf="['master data set','data set'].includes(nodeCategory)" (click)="onFindSources()">Find Sources</button>
     </div>
   </div>
 </form>

@@ -24,7 +24,8 @@ export enum Level {
   dataMap = 'data map',
   dimensionMap = 'dimension map',
   attribute = 'attribute',
-  usage = 'usage analysis'
+  usage = 'usage analysis',
+  sources = 'sources'
 }
 
 // Numbers associated to each level in the data store
@@ -590,7 +591,8 @@ export class DiagramLevelService {
     } else {
       diagram.layout = $(go.LayeredDigraphLayout, {
         setsPortSpots: level === Level.usage,
-        isOngoing: level === Level.usage, // Prevent rearranging diagram automatically unless in usage view
+        // Prevent rearranging diagram automatically unless in usage view or sources view
+        isOngoing: [Level.usage, Level.sources].includes(level),
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
         isRouting: true,

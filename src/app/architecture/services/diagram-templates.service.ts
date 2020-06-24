@@ -774,7 +774,8 @@ export class DiagramTemplatesService {
       new go.Binding('visible', 'middleExpanded',
         function(middleExpanded) {
           return middleExpanded !== middleOptions.none;
-        }
+            // || this.currentFilterLevel === Level.sources;
+        }.bind(this)
       ),
       // Do not show description for systems or data nodes
       !isGroup ? $(
@@ -1021,7 +1022,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.currentFilterLevel !== Level.usage;
+          return ![Level.usage, Level.sources].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       forPalette ? {
@@ -1091,7 +1092,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.currentFilterLevel !== Level.usage;
+          return ![Level.usage, Level.sources].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       !forPalette
@@ -1111,9 +1112,9 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set or in node usage view
+      // Have the diagram position the node if no location set or in node usage view or sources view
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        return locationMissing || this.currentFilterLevel === Level.usage;
+        return locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel);
       }.bind(this)),
       $(
         go.Shape,
@@ -1221,7 +1222,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.currentFilterLevel !== Level.usage;
+          return ![Level.usage, Level.sources].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       new go.Binding('resizable', 'middleExpanded', function(middleExpanded) {
@@ -1246,7 +1247,7 @@ export class DiagramTemplatesService {
           },
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        return locationMissing || this.currentFilterLevel === Level.usage;
+        return locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel);
       }.bind(this)),
       $(
         go.Shape,
@@ -1314,10 +1315,12 @@ export class DiagramTemplatesService {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
       new go.Binding('relinkableFrom', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+          || !!linkData.isTemporary;
       }.bind(this)),
       new go.Binding('relinkableTo', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+          || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
@@ -1392,10 +1395,12 @@ export class DiagramTemplatesService {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
       new go.Binding('relinkableFrom', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+          || !!linkData.isTemporary;
       }.bind(this)),
       new go.Binding('relinkableTo', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+          || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
