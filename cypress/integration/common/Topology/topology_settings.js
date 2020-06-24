@@ -183,6 +183,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/nodes/*/radios/*`,
       method: 'POST',
       name: 'WorkPackageNodeRadios'
+    },
+    PostReply: {
+      api: `${api_version}/radios/*/reply`,
+      method: 'POST',
+      name: 'RadioReply'
     }
   }
 };
