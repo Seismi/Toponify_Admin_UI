@@ -19,6 +19,9 @@
               [data]="scopes$ | async"
               (select)="onScopeSelect($event)"
               (add)="onAddScope()"
+              (search)="onSearch($event)"
+              [pagination]="page$ | async"
+              (pageChange)="onPageChange($event)"
             >
             </smi-scopes-and-layouts-table>
           </div>
