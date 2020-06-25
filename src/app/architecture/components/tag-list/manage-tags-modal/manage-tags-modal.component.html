@@ -1,4 +1,10 @@
+
 <div class="wrapper">
+    <mat-form-field>
+      <mat-label>Search</mat-label>
+      <input matInput data-qa="reports-quick-search" placeholder="Search" (keyup)="onSearch($event.target.value)">
+    </mat-form-field>
+  </div>
   <table mat-table [dataSource]="dataSource$ | async">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
@@ -49,7 +55,6 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-</div>
 
 <div mat-dialog-actions class="mat-dialog-actions">
   <button
@@ -60,4 +65,5 @@
     Add new
   </button>
   <button mat-raised-button (click)="onClose()" data-hook="radio-delete-modal-no">Close</button>
+  <mat-paginator [length]="(page$ | async).totalObjects" [pageSize]="5" [pageSizeOptions]="[5, 10]" (page)="onPageChange($event)"></mat-paginator>
 </div>

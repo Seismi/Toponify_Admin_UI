@@ -1795,7 +1795,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             this.workpackageStore.dispatch(
               new AddWorkPackageMapViewNodeDescendant({
                 workPackageId: this.workpackageId,
-                nodeId: this.nodeId,
+                nodeId: parentData.id,
                 data: data.value,
                 mapViewParams: mapViewParams
               })
