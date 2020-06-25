@@ -102,4 +102,58 @@ export class UserEffects {
       );
     })
   );
+
+  @Effect()
+  addUserTeam$ = this.actions$.pipe(
+    ofType<UserActions.AddUserTeam>(UserActionTypes.AddUserTeam),
+    map(action => action.payload),
+    switchMap((payload: { userId: string, teamId: string }) => {
+      return this.userService.addUserTeam(payload.userId, payload.teamId).pipe(
+        switchMap((resp: UserDetailResponse) => [new UserActions.AddUserTeamSuccess(resp.data)]),
+        catchError((error: HttpErrorResponse) => of(new UserActions.AddUserTeamFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteUserTeam$ = this.actions$.pipe(
+    ofType<UserActions.DeleteUserTeam>(UserActionTypes.DeleteUserTeam),
+    map(action => action.payload),
+    switchMap((payload: { userId: string, teamId: string }) => {
+      return this.userService.deleteUserTeam(payload.userId, payload.teamId).pipe(
+        switchMap(_ => [
+          new UserActions.DeleteUserTeamSuccess(payload.teamId),
+          new UserActions.LoadUser(payload.userId)
+        ]),
+        catchError((error: HttpErrorResponse) => of(new UserActions.DeleteUserTeamFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  addUserRole$ = this.actions$.pipe(
+    ofType<UserActions.AddUserRole>(UserActionTypes.AddUserRole),
+    map(action => action.payload),
+    switchMap((payload: { userId: string, roleId: string }) => {
+      return this.userService.addUserRole(payload.userId, payload.roleId).pipe(
+        switchMap((resp: UserDetailResponse) => [new UserActions.AddUserRoleSuccess(resp.data)]),
+        catchError((error: HttpErrorResponse) => of(new UserActions.AddUserRoleFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  deleteUserRole$ = this.actions$.pipe(
+    ofType<UserActions.DeleteUserRole>(UserActionTypes.DeleteUserRole),
+    map(action => action.payload),
+    switchMap((payload: { userId: string, roleId: string }) => {
+      return this.userService.deleteUserRole(payload.userId, payload.roleId).pipe(
+        switchMap(_ => [
+          new UserActions.DeleteUserRoleSuccess(payload.roleId),
+          new UserActions.LoadUser(payload.userId)
+        ]),
+        catchError((error: HttpErrorResponse) => of(new UserActions.DeleteUserRoleFailure(error)))
+      );
+    })
+  );
 }
