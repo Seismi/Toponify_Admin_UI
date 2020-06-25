@@ -1545,6 +1545,7 @@ export class DiagramTemplatesService {
             return 0;
           }.bind(this)
         }),
+        background: '#F8C195',
         computesBoundsAfterDrag: true,
         computesBoundsIncludingLocation: false,
         computesBoundsIncludingLinks: false,
@@ -1553,70 +1554,135 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard,
         selectable: false,
         avoidable: false,
-        minSize: new go.Size(250, 0)
+        padding: 0
       },
       new go.Binding('location', 'location', go.Point.parse),
+      // No padding when containing data structure is not shown.
+      //  Ensures that data structure panel is not shown.
+      new go.Binding('padding', 'dataStructure', function(dataStructure) {
+        return dataStructure ? 7 : 0;
+      }),
+      $(go.TextBlock,
+        textFont('bold 25px'),
+        {
+          textAlign: 'center',
+          stroke: 'black',
+          alignment: go.Spot.TopCenter,
+          stretch: go.GraphObject.Horizontal,
+          overflow: go.TextBlock.OverflowEllipsis,
+          wrap: go.TextBlock.None,
+          visible: false,
+          margin: 10
+        },
+        new go.Binding('text', 'dataStructure', function(dataStructure) {
+          return dataStructure ? dataStructure.name : '';
+        }),
+        // Invisible when no data structure
+        new go.Binding('visible', 'dataStructure', function(dataStructure) {
+          return !!dataStructure;
+        })
+      ),
       $(
         go.Panel,
-        'Auto',
-        { stretch: go.GraphObject.Fill },
-        $(go.Shape, {
-          fill: '#ebe9ea',
-          stroke: 'transparent',
-          strokeWidth: 2,
-          name: 'shape'
-        }),
+        'Vertical',
+        {
+          minSize: new go.Size(300, 0)
+        },
         $(
           go.Panel,
-          'Vertical',
-          { margin: 10 },
+          'Auto',
+          { stretch: go.GraphObject.Fill },
+          $(go.Shape, {
+            fill: '#ebe9ea',
+            strokeWidth: 0,
+            name: 'shape'
+          }),
           $(
-            go.TextBlock,
-            textFont('bold 20px'),
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              alignment: go.Spot.TopCenter,
-              stretch: go.GraphObject.Horizontal,
-              overflow: go.TextBlock.OverflowEllipsis,
-              wrap: go.TextBlock.None
-            },
-            new go.Binding('text', 'name')
-          ),
-          $(go.Placeholder, { alignment: go.Spot.TopCenter }),
-          $('Button',
-            {
-              name: 'addChildButton',
-              alignment: go.Spot.BottomCenter,
-              margin: new go.Margin(15, 5, 0, 5),
-              click: function(event: go.InputEvent, button: go.Panel): void {
-                this.addChildSource.next(button.part.data);
-              }.bind(this)
-            },
-            // Disable button if moves not allowed in diagram
-            new go.Binding('isEnabled', '', function(data) {
-
-              // Disallow adding children to nodes that inherit their children
-              if (data.category === nodeCategories.dataSet ||
-                data.category === nodeCategories.masterDataSet) {
-                return false;
-              }
-
-              return this.gojsCustomObjectsService.diagramEditable;
-            }.bind(this)),
-            $(go.TextBlock, textFont('bold 22px'), '+',
+            go.Panel,
+            'Vertical',
+            { margin: 10 },
+            $(
+              go.TextBlock,
+              textFont('bold 20px'),
               {
-                alignment: go.Spot.Center,
-                desiredSize: new go.Size(300, 30),
                 textAlign: 'center',
-                verticalAlignment: go.Spot.Center
+                stroke: 'black',
+                alignment: go.Spot.TopCenter,
+                stretch: go.GraphObject.Horizontal,
+                overflow: go.TextBlock.OverflowEllipsis,
+                wrap: go.TextBlock.None
               },
-              new go.Binding('stroke', 'isEnabled', function(enabled) {
-                return enabled ? 'black' : '#AAAFB4';
-              }).ofObject('addChildButton')
+              new go.Binding('text', 'name')
             ),
+            $(go.Placeholder, { alignment: go.Spot.TopCenter }),
+            $('Button',
+              {
+                name: 'addChildButton',
+                alignment: go.Spot.BottomCenter,
+                margin: new go.Margin(15, 5, 0, 5),
+                click: function(event: go.InputEvent, button: go.Panel): void {
+                  this.addChildSource.next(button.part.data);
+                }.bind(this)
+              },
+              // Disable button if moves not allowed in diagram
+              new go.Binding('isEnabled', '', function(data) {
+
+                // Disallow adding children to nodes that inherit their children
+                if (data.category === nodeCategories.dataSet ||
+                  data.category === nodeCategories.masterDataSet) {
+                  return false;
+                }
+
+                return this.gojsCustomObjectsService.diagramEditable;
+              }.bind(this)),
+              // Hide child button for grouped data nodes
+              new go.Binding('visible', 'dataStructure', function(dataStructure) {
+                return !dataStructure;
+              }),
+              $(go.TextBlock, textFont('bold 22px'), '+',
+                {
+                  alignment: go.Spot.Center,
+                  desiredSize: new go.Size(300, 30),
+                  textAlign: 'center',
+                  verticalAlignment: go.Spot.Center
+                },
+                new go.Binding('stroke', 'isEnabled', function(enabled) {
+                  return enabled ? 'black' : '#AAAFB4';
+                }).ofObject('addChildButton')
+              ),
+            )
           )
         )
+      ),
+      $('Button',
+        {
+          name: 'addDataStructureChildButton',
+          alignment: go.Spot.BottomCenter,
+          margin: new go.Margin(15, 5, 10, 5),
+          visible: false,
+          click: function(event: go.InputEvent, button: go.Panel): void {
+            this.addChildSource.next(button.part.data.dataStructure);
+          }.bind(this)
+        },
+        // Disable button if moves not allowed in diagram
+        new go.Binding('isEnabled', '', function(data) {
+          return this.gojsCustomObjectsService.diagramEditable;
+        }.bind(this)),
+        // Invisible when no data structure
+        new go.Binding('visible', 'dataStructure', function(dataStructure) {
+          return !!dataStructure;
+        }),
+        $(go.TextBlock, textFont('bold 26px'), '+',
+          {
+            alignment: go.Spot.Center,
+            desiredSize: new go.Size(310, 40),
+            textAlign: 'center',
+            verticalAlignment: go.Spot.Center,
+          },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : '#AAAFB4';
+          }).ofObject('addDataStructureChildButton')
+        ),
       )
     );
   }

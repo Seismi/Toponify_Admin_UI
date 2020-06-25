@@ -624,10 +624,10 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
           cy.get('[data-qa=documentation-standards-details-description]')
             .type(doc_standard)
             .should('have.value', doc_standard);
+          cy.get(`[data-qa=documentation-standards-details-type]`).click();
         })
         .then(() => {
           cy.get(`[data-qa=documentation-standards-details-type]`)
-            .click()
             .get('mat-option')
             .contains(type)
             .click({ force: true });
@@ -669,12 +669,11 @@ Cypress.Commands.add('deleteDocumentStandard', title => {
     .then(() => {
       cy.get('[data-qa=documentation-standards-delete]')
         .click()
+        .wait('@GETCustomProperties*')
         .then(() => {
           cy.get('[data-qa=delete-modal-yes]')
             .click()
-            .then(() => {
-              cy.route('DELETE', `${documentationStandards}`).as('DELETECustomProperties');
-            });
+            .wait('@DELETECustomProperties');
         });
     });
   cy.get('[data-qa=documentation-standards-quick-search]')
@@ -682,6 +681,74 @@ Cypress.Commands.add('deleteDocumentStandard', title => {
     .type(title);
 });
 
+Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix branch to doc standard name
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard); //enter the documentation standard
+  cy.get(`[data-qa=${table}]`) //get the doc standard table
+    .find('table>tbody') //find the body
+    .contains('tr', doc_standard) // and the row which contains
+    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
+    .click()
+    .get(`[data-qa=documentation-standards-table-value]`) // get the value field
+    .type(value)
+    .should('have.value', value.toString()); // type the value
+});
+
+Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard, table) => {
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix branch to doc standard name
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard); //enter the documentation standard
+  cy.get(`[data-qa=${table}]`) //get the doc standard table
+    .find('table>tbody') //find the body
+    .contains('tr', doc_standard) // and the row which contains
+    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
+    .click();
+  cy.selectDropDown('documentation-standards-table-type', value); // select the value
+});
+
+Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix branch to doc standard name
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard); //enter the documentation standard
+  cy.get(`[data-qa=${table}]`) //get the doc standard table
+    .find('table>tbody') //find the body
+    .contains('tr', doc_standard) // and the row which contains
+    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
+    .click()
+    .get(`[data-qa=documentation-standards-table-date]`) // get the value field
+    .type(value)
+    .should('have.value', value.toString()); // type the value
+});
+
+Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) => {
+  //Tests the value in a documentation standard test
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix the name with branch
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // search for the documentation standard
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard);
+  cy.get(`[data-qa=${table}]`) //get the table
+    .find('table>tbody') // find the table body
+    .contains('tr', doc_standard) // row that contains documentation standard
+    .find(`td`) //check if a cell has value
+    .eq(1)
+    .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
+});
 //
 //
 // -- This is a child command --

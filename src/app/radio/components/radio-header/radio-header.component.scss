@@ -1,7 +1,7 @@
 .container {
   // FIXME: temp disabled
   // display: flex;
-  padding: 15px 15px;
+  padding: 0px 15px;
 }
 
 .content {
@@ -45,6 +45,7 @@ button {
   }
 }
 
-// .additional-filters-container {
-//   display: flex;
-// }
+.additional-filters-container {
+  position: relative;
+  display: flex;
+}
