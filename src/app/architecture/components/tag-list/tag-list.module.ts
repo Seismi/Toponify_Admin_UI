@@ -7,7 +7,7 @@ import {
   MatChipsModule,
   MatFormFieldModule,
   MatIconModule,
-  MatInputModule, MatSelectModule, MatTableModule, MatTooltipModule
+  MatInputModule, MatSelectModule, MatTableModule, MatTooltipModule, MatPaginatorModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
@@ -27,6 +27,7 @@ import { ManageTagsModalComponent } from '@app/architecture/components/tag-list/
     MatSelectModule,
     MatTooltipModule,
     MatTableModule,
+    MatPaginatorModule,
     TagModule
   ],
   declarations: [TagListComponent, TagDetailModalComponent, ManageTagsModalComponent],
