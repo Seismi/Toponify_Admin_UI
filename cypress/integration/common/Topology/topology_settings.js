@@ -179,6 +179,11 @@ module.exports = {
       method: 'GET',
       name: 'Radios'
     },
+    POSTRadios: {
+      api: `${api_version}/radios`,
+      method: 'POST',
+      name: 'Radios'
+    },
     POSTWorkPackageNodeRadios: {
       api: `${api_version}/workpackages/*/nodes/*/radios/*`,
       method: 'POST',

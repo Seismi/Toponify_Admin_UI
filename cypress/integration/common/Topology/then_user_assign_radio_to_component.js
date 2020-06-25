@@ -28,3 +28,20 @@ And('the user assign radio {string} to component with work package selected {str
         });
     });
 });
+
+And(
+  'the user assign radio {string} to component with work package selected {string} and cancel',
+  (radio, work_package) => {
+    cy.get('[data-qa=related-radio-table-assign-radio]').click();
+    cy.get('[data-qa=work-packages-radio-list-quick-search]')
+      .clear()
+      .type(radio);
+    cy.get('[data-qa=work-packages-radio-modal-list]')
+      .find('table>tbody')
+      .find('tr :first')
+      .click()
+      .then(() => {
+        cy.get('[data-qa=work-packages-radio-modal-cancel]').click();
+      });
+  }
+);
