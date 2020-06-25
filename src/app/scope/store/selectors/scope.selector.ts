@@ -8,6 +8,11 @@ export const getScopeEntities = createSelector(
   state => state.entities
 );
 
+export const getScopePage = createSelector(
+  getScopeFeatureState,
+  state => state.page
+);
+
 export const getScopeSelected = createSelector(
   getScopeFeatureState,
   state => state.selected

@@ -9,7 +9,8 @@ import {
   UserRolesApiResponse,
   UpdateUserApiRequest,
   UpdateUserApiResponse,
-  UserPassword
+  UserPassword,
+  UserDetailResponse
 } from '../store/models/user.model';
 
 const httpOptions = {
@@ -55,6 +56,22 @@ export class UserService {
 
   logoutUser(): Observable<any> {
     return this.http.post<any>(`/users/logout`, {}, httpOptions);
+  }
+
+  addUserTeam(userId: string, teamId: string): Observable<UserDetailResponse> {
+    return this.http.post<UserDetailResponse>(`/users/${userId}/teams/${teamId}`, httpOptions);
+  }
+
+  deleteUserTeam(userId: string, teamId: string): Observable<UserDetailResponse> {
+    return this.http.delete<UserDetailResponse>(`/users/${userId}/teams/${teamId}`);
+  }
+
+  addUserRole(userId: string, roleId: string): Observable<UserDetailResponse> {
+    return this.http.post<UserDetailResponse>(`/users/${userId}/roles/${roleId}`, httpOptions);
+  }
+
+  deleteUserRole(userId: string, roleId: string): Observable<UserDetailResponse> {
+    return this.http.delete<UserDetailResponse>(`/users/${userId}/roles/${roleId}`);
   }
 
   // TODO: move into sharable service
