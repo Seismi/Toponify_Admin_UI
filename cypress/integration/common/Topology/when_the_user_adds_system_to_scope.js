@@ -5,7 +5,9 @@ When('the user adds the system {string} to the scope {string}', function(system,
     .concat(' | ')
     .concat(scope); // add the branch to the name
 
-  cy.get('[data-qa=topology-scopes-table-add-to-existing]').click();
+  cy.get('[data-qa=topology-scopes-table-add-to-existing]')
+    .click()
+    .wait(5000);
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
   cy.selectDropDownNoClick('add-scope-modal-name', scope);
   cy.get('[data-qa=add-scope-modal-save]')

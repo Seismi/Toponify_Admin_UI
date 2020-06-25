@@ -51,6 +51,7 @@ Cypress.Commands.add('selectDropDownNoClick', (dropdown, element) => {
     .click()
     .get('mat-option')
     .contains(element)
+    .should('exist')
     .click({ force: true });
 });
 
@@ -185,8 +186,12 @@ Cypress.Commands.add('findScope', name => {
   cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
     .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
     .clear() //clear the box
+    .wait('@GETScopes');
+  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
+    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
     .type(name)
     .should('have.value', name) // type the name
+    .wait('@GETScopes')
     .then(() => {
       return cy
         .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table

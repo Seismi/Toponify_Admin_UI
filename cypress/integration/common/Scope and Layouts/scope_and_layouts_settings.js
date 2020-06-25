@@ -34,6 +34,11 @@ module.exports = {
       method: 'DELETE',
       name: 'Layout'
     },
+    GetScopes: {
+      api: `${api_version}/scopes*`,
+      method: 'GET',
+      name: 'Scopes'
+    },
     GetScope: {
       api: `${api_version}/scopes/*`,
       method: 'GET',

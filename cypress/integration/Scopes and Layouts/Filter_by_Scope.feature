@@ -57,31 +57,31 @@ Feature: Filtering by scope
     And the user selects the 'system' 'Automated Regression Test Master Data System' in the 'systems' table
     And the user adds the system 'Automated Regression Test Master Data System' to the scope 'Automated Regression Test Scope'
 
-    #And the "Topology" "Interfaces" Tab is selected
+    And the "Topology" "Interfaces" Tab is selected
 
-    #And the user creates a new 'data' interface with name 'Automated Regression Test link' between 'Automated Regression Test Transaction System' and 'Automated Regression Test Reporting System'
-    #And the user selects the 'interface' 'Automated Regression Test link' in the 'interfaces' table
-    #And the user adds the interface 'Automated Regression Test link' to the scope 'Automated Regression Test Scope'
+    And the user creates a new 'data' interface with name 'Automated Regression Test link' between 'Automated Regression Test Transaction System' and 'Automated Regression Test Reporting System'
+    And the user selects the 'interface' 'Automated Regression Test link' in the 'interfaces' table
+    And the user adds the interface 'Automated Regression Test link' to the scope 'Automated Regression Test Scope'
 
-    #And the user creates a new 'master data' interface with name 'Automated Regression Test link 1' between 'Automated Regression Test Master Data System' and 'Automated Regression Test Transaction System'
-    #And the user selects the 'interface' 'Automated Regression Test link 1' in the 'interfaces' table
-    #And the user adds the interface 'Automated Regression Test link 1' to the scope 'Automated Regression Test Scope'
+    And the user creates a new 'master data' interface with name 'Automated Regression Test link 1' between 'Automated Regression Test Master Data System' and 'Automated Regression Test Transaction System'
+    And the user selects the 'interface' 'Automated Regression Test link 1' in the 'interfaces' table
+    And the user adds the interface 'Automated Regression Test link 1' to the scope 'Automated Regression Test Scope'
 
-    #And the user creates a new 'master data' interface with name 'Automated Regression Test link 2' between 'Automated Regression Test Master Data System' and 'Automated Regression Test Reporting System'
-    #And the user selects the 'interface' 'Automated Regression Test link 2' in the 'interfaces' table
-    #And the user adds the interface 'Automated Regression Test link 2' to the scope 'Automated Regression Test Scope'
+    And the user creates a new 'master data' interface with name 'Automated Regression Test link 2' between 'Automated Regression Test Master Data System' and 'Automated Regression Test Reporting System'
+    And the user selects the 'interface' 'Automated Regression Test link 2' in the 'interfaces' table
+    And the user adds the interface 'Automated Regression Test link 2' to the scope 'Automated Regression Test Scope'
 
-    #And the user selects Topology menu item
-    #And the "System View" layer is selected
-    #And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
-    #And the "Topology" "Systems" Tab is selected
-    #And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
-    #And the user clicks on the system's right hand side scope button
-    #When the user adds the system 'Automated Regression Test Transaction System' to the scope 'Automated Regression Test Scope'
-    #Then the scope 'Automated Regression Test Scope' should be visible in the scope table
-    #And the user reloads the Topology page
-    #And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
-    #And the "Topology" "Systems" Tab is selected
-    #And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
-    #And the user clicks on the system's right hand side scope button
-    #Then the scope 'Automated Regression Test Scope' should be visible in the scope table
+    And the user selects Topology menu item
+    And the "System View" layer is selected
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
+    And the "Topology" "Systems" Tab is selected
+    And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
+    And the user clicks on the system's right hand side scope button
+    When the user adds the system 'Automated Regression Test Transaction System' to the scope 'Automated Regression Test Scope'
+    Then the scope 'Automated Regression Test Scope' should be visible in the scope table
+    And the user reloads the Topology page
+    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
+    And the "Topology" "Systems" Tab is selected
+    And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
+    And the user clicks on the system's right hand side scope button
+    Then the scope 'Automated Regression Test Scope' should be visible in the scope table
