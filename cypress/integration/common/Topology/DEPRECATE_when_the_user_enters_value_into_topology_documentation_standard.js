@@ -1,22 +1,22 @@
 import { When } from 'cypress-cucumber-preprocessor/steps';
 
-When('the user enters number {float} into field {string}', function(value, doc_standard) {
+When('DEPRECATE the user enters number {float} into field {string}', function(value, doc_standard) {
   addDocStandard(value, doc_standard);
 });
 
-When('the user enters number {int} into field {string}', function(value, doc_standard) {
+When('DEPRECATE the user enters number {int} into field {string}', function(value, doc_standard) {
   addDocStandard(value, doc_standard);
 });
 
-When('the user enters string {string} into field {string}', function(value, doc_standard) {
+When('DEPRECATE the user enters string {string} into field {string}', function(value, doc_standard) {
   addDocStandard(value, doc_standard);
 });
 
-When('the user enters date {} into field {string}', function(value, doc_standard) {
+When('DEPRECATE the user enters date {} into field {string}', function(value, doc_standard) {
   addDocStandardDate(value, doc_standard);
 });
 
-When('the user enters boolean {} into field {string}', function(value, doc_standard) {
+When('DEPRECATE the user enters boolean {} into field {string}', function(value, doc_standard) {
   addDocStandardBoolean(value, doc_standard);
 });
 

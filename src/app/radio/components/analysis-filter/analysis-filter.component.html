@@ -1,6 +1,6 @@
 <ul *ngFor="let filterKey of sections">
   <li *ngIf="analysis[filterKey].length > 0">
-    <span (click)="toggleSection(filterKey)">
+    <span (click)="toggleSection(filterKey)" class="arrows">
       <mat-icon *ngIf="!isSectionOpen(filterKey)">chevron_right</mat-icon>
       <mat-icon *ngIf="isSectionOpen(filterKey)">expand_more</mat-icon>
       &nbsp;{{ filterKey }}</span
@@ -17,4 +17,4 @@
     </ul>
   </li>
 </ul>
-<a *ngIf="hasSetFilters()" (click)="clearSelection()">Clear selection</a>
+<span class="clear-selection" *ngIf="hasSetFilters()" (click)="clearSelection()">Clear selection</span>

@@ -2300,10 +2300,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
   }
 
-  exitUsageView() {
-    this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system, id: null }));
-  }
-
   onSeeDependencies() {
     this.allowMove = false;
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);

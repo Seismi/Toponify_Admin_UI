@@ -63,7 +63,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     GetReportLibraryRequestQueryParams
   >({
     page: 0,
-    size: 1
+    size: 10
   });
 
   private subscriptions: Subscription[] = [];
