@@ -1,0 +1,25 @@
+.mat-form-field {
+  width: 100%;
+}
+
+.input-wrapper{
+  display: flex;
+  align-items: center;
+  label {
+    width: 110px;
+    margin-bottom: 0px;
+    font-weight: 500;
+  }
+}
+
+button {
+  margin-right: 5px;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.editable {
+  background-color: #fff;
+}

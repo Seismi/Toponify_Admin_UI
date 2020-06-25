@@ -2,16 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { ObjectDetailsService } from '@app/architecture/components/object-details-form/services/object-details-form.service';
-import { ObjectDetailsValidatorService } from '@app/architecture/components/object-details-form/services/object-details-form-validator.service';
 import { Store, select } from '@ngrx/store';
 import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
 import {
   LoadAttribute,
   UpdateAttribute,
   DeleteAttribute,
-  AddOwner,
-  DeleteOwner,
   UpdateProperty,
   DeleteProperty,
   AddRelated,
@@ -21,48 +17,44 @@ import {
   DeleteAttributeTags,
   AddAttributeRadio
 } from '@app/attributes/store/actions/attributes.actions';
-import { getSelectedAttribute, getAttributeAvailableTags } from '@app/attributes/store/selectors/attributes.selector';
+import { getSelectedAttribute, getAttributeAvailableTags, getAttributeEntities } from '@app/attributes/store/selectors/attributes.selector';
 import { AttributeDetail } from '@app/attributes/store/models/attributes.model';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { MatDialog } from '@angular/material';
-import { OwnersModalComponent } from '@app/workpackage/containers/owners-modal/owners-modal.component';
-import { DeleteModalComponent } from '@app/architecture/containers/delete-modal/delete-modal.component';
-import {currentArchitecturePackageId, CustomPropertiesEntity} from '@app/workpackage/store/models/workpackage.models';
-import { DeleteRadioPropertyModalComponent } from '@app/radio/containers/delete-property-modal/delete-property-modal.component';
-import { RelatedAttributesModalComponent } from '../related-attributes-modal/related-attributes-modal.component';
-import { OwnersEntityOrTeamEntityOrApproversEntity, Tag } from '@app/architecture/store/models/node.model';
+import { currentArchitecturePackageId, CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Tag } from '@app/architecture/store/models/node.model';
 import { take } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
+import { AttributeDetailsFormService } from '@app/attributes/components/attribute-details-form/services/attribute-details-form.service';
+import { AttributeDetailsFormValidationService } from '@app/attributes/components/attribute-details-form/services/attribute-details-form-validator.service';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 
 @Component({
   selector: 'app-attribute-details',
   templateUrl: './attribute-details.component.html',
   styleUrls: ['./attribute-details.component.scss'],
-  providers: [ObjectDetailsService, ObjectDetailsValidatorService]
+  providers: [AttributeDetailsFormService, AttributeDetailsFormValidationService]
 })
 export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription[] = [];
   public attribute: AttributeDetail;
   public attributeId: string;
   public workpackageId: string;
-  public selectedOwner = false;
   public workPackageIsEditable: boolean;
-  public selectedRelatedIndex: string | null;
-  public selectAttribute = false;
-  public relatedAttributeId: string;
   public availableTags$: Observable<Tag[]>;
 
   constructor(
+    private attributeDetailsFormService: AttributeDetailsFormService,
     private actions: Actions,
     private dialog: MatDialog,
     private workPackageStore: Store<WorkPackageState>,
     private route: ActivatedRoute,
     private router: Router,
-    private objectDetailsService: ObjectDetailsService,
     private store: Store<AttributeState>
   ) {}
 
@@ -73,7 +65,6 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         this.attributeId = params['attributeId'];
         this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
-          this.workpackageId = workPackageIds[0];
           this.setWorkPackage(workPackageIds);
         });
       })
@@ -83,7 +74,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
       this.store.pipe(select(getSelectedAttribute)).subscribe(attribute => {
         this.attribute = attribute;
         if (attribute) {
-          this.objectDetailsService.updateForm({...attribute});
+          this.attributeDetailsFormService.updateForm({...attribute});
         }
       })
     );
@@ -91,6 +82,8 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
         const edit = workpackages.map(item => item.edit);
+        const workPackageId = workpackages.map(item => item.id);
+        this.workpackageId = workPackageId[0];
         edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
       })
     );
@@ -107,8 +100,8 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  get objectDetailsForm(): FormGroup {
-    return this.objectDetailsService.objectDetailsForm;
+  get attributeDetailsForm(): FormGroup {
+    return this.attributeDetailsFormService.attributeDetailsForm;
   }
 
   onSaveAttribute(): void {
@@ -118,7 +111,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         attributeId: this.attributeId,
         entity: {
           data: {
-            id: this.attributeId, ...this.objectDetailsForm.value
+            id: this.attributeId, ...this.attributeDetailsForm.value
           }
         }
       })
@@ -142,48 +135,6 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddOwner(): void {
-    const dialogRef = this.dialog.open(OwnersModalComponent, {
-      disableClose: false,
-      width: '500px'
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.owner) {
-        this.store.dispatch(
-          new AddOwner({
-            workPackageId: this.workpackageId,
-            attributeId: this.attributeId,
-            ownerId: data.owner.id,
-            entity: data.owner
-          })
-        );
-      }
-    });
-  }
-
-  onDeleteOwner(owner: OwnersEntityOrTeamEntityOrApproversEntity): void {
-    const dialogRef = this.dialog.open(DeleteModalComponent, {
-      disableClose: false,
-      width: 'auto',
-      data: {
-        mode: 'delete'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
-        this.store.dispatch(
-          new DeleteOwner({
-            workPackageId: this.workpackageId,
-            attributeId: this.attributeId,
-            ownerId: owner.id
-          })
-        );
-      }
-    });
-  }
-
   onSaveProperties(data: { propertyId: string, value: string }): void {
     this.store.dispatch(
       new UpdateProperty({
@@ -196,17 +147,16 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onDeleteProperties(property: CustomPropertiesEntity): void {
-    const dialogRef = this.dialog.open(DeleteRadioPropertyModalComponent, {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete',
-        name: property.name
+        title: 'Are you sure you want to delete?'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(
           new DeleteProperty({
             workPackageId: this.workpackageId,
@@ -218,51 +168,51 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSelectRelatedAttribute(relatedAttributeId: string): void {
-    this.relatedAttributeId = relatedAttributeId;
-    this.selectedRelatedIndex = relatedAttributeId;
-    this.selectAttribute = true;
-  }
-
   onAddRelatedAttribute(): void {
-    const dialogRef = this.dialog.open(RelatedAttributesModalComponent, {
+    const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        title: 'Add Attribute or Rule',
+        placeholder: 'Attributes and Rules',
+        options$: this.store.pipe(select(getAttributeEntities)),
+        selectedIds: [],
+        multi: false,
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.attribute) {
+      if (data && data.value) {
         this.store.dispatch(
           new AddRelated({
             workPackageId: this.workpackageId,
             attributeId: this.attributeId,
-            relatedAttributeId: data.attribute.id
+            relatedAttributeId: data.value[0].id
           })
         );
       }
     });
   }
 
-  onDeleteRelatedAttribute(): void {
+  onDeleteRelatedAttribute(relatedId: string): void {
     const dialogRef = this.dialog.open(DeleteModalComponent, {
       disableClose: false,
       width: 'auto',
       data: {
-        mode: 'delete'
+        title: 'Are you sure you want to delete?'
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.mode === 'delete') {
+      if (data) {
         this.store.dispatch(
           new DeleteRelated({
             workPackageId: this.workpackageId,
             attributeId: this.attributeId,
-            relatedAttributeId: this.relatedAttributeId
+            relatedAttributeId: relatedId
           })
         );
       }
-      this.selectAttribute = false;
     });
   }
 
@@ -305,7 +255,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  onRaiseNew() {
+  onRaiseNew(): void {
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '800px',
@@ -335,7 +285,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAssignRadio() {
+  onAssignRadio(): void {
     const dialogRef = this.dialog.open(RadioListModalComponent, {
       disableClose: false,
       width: '650px',
