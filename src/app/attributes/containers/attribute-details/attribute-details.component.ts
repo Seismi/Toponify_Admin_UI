@@ -33,6 +33,8 @@ import { AttributeDetailsFormService } from '@app/attributes/components/attribut
 import { AttributeDetailsFormValidationService } from '@app/attributes/components/attribute-details-form/services/attribute-details-form-validator.service';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { State as UserState } from '@app/settings/store/reducers/user.reducer';
+import { LoadUsers } from '@app/settings/store/actions/user.actions';
 
 @Component({
   selector: 'app-attribute-details',
@@ -49,6 +51,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   public availableTags$: Observable<Tag[]>;
 
   constructor(
+    private userStore: Store<UserState>,
     private attributeDetailsFormService: AttributeDetailsFormService,
     private actions: Actions,
     private dialog: MatDialog,
@@ -256,11 +259,13 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onRaiseNew(): void {
+    this.userStore.dispatch(new LoadUsers({}));
     const dialogRef = this.dialog.open(RadioModalComponent, {
       disableClose: false,
       width: '800px',
       data: {
-        selectedNode: this.attribute
+        selectWorkPackages: true,
+        message: `This RADIO will be associated to the following work packages:`
       }
     });
 
