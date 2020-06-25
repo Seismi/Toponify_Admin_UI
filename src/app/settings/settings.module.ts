@@ -33,6 +33,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { reducer as UserReducer } from './store/reducers/user.reducer';
 import { reducer as TeamReducer } from './store/reducers/team.reducer';
+import { reducer as OrganisationReducer } from './store/reducers/organisation.reducer';
 import { UserEffects } from './store/effects/user.effects';
 import { TeamService } from '@app/settings/services/team.service';
 import { TeamEffects } from './store/effects/team.effects';
@@ -51,6 +52,11 @@ import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.
 import { TeamsDetailsComponent } from './containers/teams-details/teams-details.component';
 import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
 import { RolesOrTeamsTableComponent } from './components/roles-or-teams-table/roles-or-teams-table.component';
+import { AccountsTableComponent } from './components/accounts-table/accounts-table.component';
+import { OrganisationService } from './services/organisation.service';
+import { OrganisationEffects } from './store/effects/organisation.effects';
+import { EmailModalComponent } from './containers/email-modal/email-modal.component';
+import { DomainsTableComponent } from './components/domains-table/domains-table.component';
 
 @NgModule({
   imports: [
@@ -78,7 +84,8 @@ import { RolesOrTeamsTableComponent } from './components/roles-or-teams-table/ro
     MatTooltipModule,
     StoreModule.forFeature('userFeature', UserReducer),
     StoreModule.forFeature('teamFeature', TeamReducer),
-    EffectsModule.forFeature([UserEffects, TeamEffects])
+    StoreModule.forFeature('organisationFeature', OrganisationReducer),
+    EffectsModule.forFeature([UserEffects, TeamEffects, OrganisationEffects])
   ],
   exports: [],
   declarations: [
@@ -102,14 +109,18 @@ import { RolesOrTeamsTableComponent } from './components/roles-or-teams-table/ro
     SettingsTabsComponent,
     TeamsDetailsComponent,
     AllUsersDetailsComponent,
-    RolesOrTeamsTableComponent
+    RolesOrTeamsTableComponent,
+    AccountsTableComponent,
+    EmailModalComponent,
+    DomainsTableComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,
     UserModalComponent,
     TeamModalComponent,
-    MemberModalComponent
+    MemberModalComponent,
+    EmailModalComponent
   ],
-  providers: [UserService, TeamService]
+  providers: [UserService, TeamService, OrganisationService]
 })
 export class SettingsModule {}

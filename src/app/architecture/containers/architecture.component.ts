@@ -1795,7 +1795,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             this.workpackageStore.dispatch(
               new AddWorkPackageMapViewNodeDescendant({
                 workPackageId: this.workpackageId,
-                nodeId: this.nodeId,
+                nodeId: parentData.id,
                 data: data.value,
                 mapViewParams: mapViewParams
               })
@@ -2283,10 +2283,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         id: this.selectedNode.id
       })
     );
-  }
-
-  exitUsageView() {
-    this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system, id: null }));
   }
 
   onSeeDependencies() {

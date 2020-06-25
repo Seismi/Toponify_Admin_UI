@@ -6,9 +6,14 @@
         <mat-icon matChipRemove (click)="exitDependenciesView.emit()">cancel</mat-icon>
       </mat-chip>
       
-      <mat-chip *ngIf="filterLevel === 'usage analysis'" data-qa="topology-showing-usage-across-levels">
+      <mat-chip *ngIf="filterLevel === Level.usage" data-qa="topology-showing-usage-across-levels">
         Showing Usage Across Levels
-        <mat-icon matChipRemove (click)="exitUsageView.emit()">cancel</mat-icon>
+        <mat-icon matChipRemove (click)="exitUsageView()">cancel</mat-icon>
+      </mat-chip>
+
+      <mat-chip *ngIf="getMapView()" data-qa="topology-integration-analysis">
+        Integration Analysis
+        <mat-icon matChipRemove (click)="exitMapView()">cancel</mat-icon>
       </mat-chip>
     </mat-chip-list>
   </div>

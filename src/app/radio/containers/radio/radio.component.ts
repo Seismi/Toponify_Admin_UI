@@ -4,14 +4,15 @@ import { Router } from '@angular/router';
 import { LoadNodes, LoadTags } from '@app/architecture/store/actions/node.actions';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
+import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { RadioValidatorService } from '../../components/radio-detail/services/radio-detail-validator.service';
 import { RadioDetailService } from '../../components/radio-detail/services/radio-detail.service';
 import {
@@ -24,14 +25,15 @@ import {
 import { RadioDetail, RadioEntity, RadiosAdvancedSearch, TableData } from '../../store/models/radio.model';
 import { State as RadioState } from '../../store/reducers/radio.reducer';
 import {
-  getRadioEntities,
+  getMergedRadioFilters,
   getRadioFilter,
-  getSelectedRadio,
-  getRadioTableData
+  getRadioTableData,
+  getSelectedRadio
 } from '../../store/selectors/radio.selector';
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
+import { TagsHttpParams } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-radio',
@@ -47,6 +49,12 @@ export class RadioComponent implements OnInit, OnDestroy {
   public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
+  // TODO
+  private tags: TagsHttpParams = {
+    textFilter: '',
+    page: 0,
+    size: 100
+  }
 
   constructor(
     private actions: Actions,
@@ -54,11 +62,12 @@ export class RadioComponent implements OnInit, OnDestroy {
     private userStore: Store<UserState>,
     private store: Store<RadioState>,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private radioFilterService: RadioFilterService
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new LoadTags());
+    this.store.dispatch(new LoadTags(this.tags));
     this.store.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
     this.store.dispatch(
@@ -82,14 +91,14 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.store
         .pipe(
-          select(getRadioFilter),
+          select(getMergedRadioFilters),
           distinctUntilChanged(isEqual)
         )
         .subscribe(data => {
           if (data) {
             this.store.dispatch(
               new SearchRadio({
-                data: this.transformFilterIntoAdvancedSearchData(data),
+                data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data),
                 page: '0',
                 size: '10'
               })
@@ -119,7 +128,7 @@ export class RadioComponent implements OnInit, OnDestroy {
         if (this.filterData) {
           this.store.dispatch(
             new SearchRadio({
-              data: this.transformFilterIntoAdvancedSearchData(this.filterData)
+              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData)
             })
           );
         } else {
@@ -197,7 +206,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     if (this.filterData) {
       this.store.dispatch(
         new SearchRadio({
-          data: this.transformFilterIntoAdvancedSearchData(this.filterData),
+          data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
           page: String(nextPage.pageIndex),
           size: String(nextPage.pageSize)
         })
@@ -221,66 +230,5 @@ export class RadioComponent implements OnInit, OnDestroy {
         fileName: 'RADIO'
       }
     });
-  }
-
-  isFilterEnabled(filter: string | boolean | [] | number): boolean {
-    if (Array.isArray(filter) && filter.length === 0) {
-      return false;
-    }
-    if (Number.isInteger(filter as any)) {
-      return true;
-    }
-    return !!filter;
-  }
-
-  transformFilterIntoAdvancedSearchData(data: any): RadiosAdvancedSearch {
-    return {
-      status: {
-        enabled: this.isFilterEnabled(data.status),
-        values: data.status
-      },
-      type: {
-        enabled: this.isFilterEnabled(data.type),
-        values: data.type
-      },
-      assignedTo: {
-        enabled: this.isFilterEnabled(data.assignedTo),
-        values: data.assignedTo
-      },
-      workpackages: {
-        enabled: this.isFilterEnabled(data.relatesToWorkPackages),
-        includeBaseline: this.isFilterEnabled(data.relatesToWorkPackages),
-        values: data.relatesToWorkPackages
-      },
-      relatesTo: {
-          enabled: this.isFilterEnabled(data.relatesTo),
-          includeDescendants: this.isFilterEnabled(data.relatesTo),
-          includeLinks: this.isFilterEnabled(data.relatesTo),
-          values: data.relatesTo
-        },
-      dueDate: {
-        enabled: this.isFilterEnabled(data.from) || this.isFilterEnabled(data.to),
-        from: data.from,
-        to: data.to
-      },
-      text: {
-        enabled: this.isFilterEnabled(data.text),
-        value: data.text
-      },
-      severityRange: {
-        enabled: this.isFilterEnabled(data.severityRangeFrom) || this.isFilterEnabled(data.severityRangeTo),
-        from: data.severityRangeFrom,
-        to: data.severityRangeTo
-      },
-      frequencyRange: {
-        enabled: this.isFilterEnabled(data.frequencyRangeFrom) || this.isFilterEnabled(data.frequencyRangeTo),
-        from: data.frequencyRangeFrom,
-        to: data.frequencyRangeTo
-      },
-      tags: {
-        enabled: this.isFilterEnabled(data.hasTag),
-        values: data.hasTag
-      }
-    };
   }
 }

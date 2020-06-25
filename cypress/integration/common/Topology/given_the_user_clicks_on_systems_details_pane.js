@@ -3,11 +3,6 @@ import { Given } from 'cypress-cucumber-preprocessor/steps';
 Given("the user clicks on the system's right hand side details button", function(button) {
   cy.get(`[data-qa=right-hand-side-details]`)
     .click()
-    .wait([
-      '@GETWorkPackageNodeTags',
-      '@GETNodesScopes',
-      '@GETNodesReportWorkPackageQuery',
-      '@GETNodesWorkPackageQuery2'
-    ]);
+    .wait('@GETWorkPackageNodeTags');
   cy.get('[data-qa=spinner]').should('not.be.visible');
 });

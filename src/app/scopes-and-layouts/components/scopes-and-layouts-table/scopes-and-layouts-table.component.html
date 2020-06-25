@@ -42,7 +42,7 @@
         <mat-icon>add</mat-icon> Create New
       </button>
     </div>
-    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+    <mat-paginator *ngIf="showPagination"[length]="totalEntities" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
   </div>
 </div>
 
