@@ -1266,9 +1266,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           } else if (this.currentFilterLevel && this.currentFilterLevel === Level.sources) {
             return nodes.map(function(node) {
               if (nodes.some(function(member) {return member.group === node.id; })) {
-                return { ...node, middleExpanded: middleOptions.group, bottomExpanded: true };
+                return { ...node, middleExpanded: middleOptions.group, bottomExpanded: true};
               }
-              return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
+              return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false, locationMissing: true };
             });
           }
 
@@ -1321,7 +1321,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             (this.currentFilterLevel.endsWith('map') ||
               [Level.sources, Level.usage].includes(this.currentFilterLevel))
           ) {
-            return links;
+            return links.map(function(link) {return {...link, routeMissing: true}; });
           }
 
           return links.map(

@@ -774,7 +774,6 @@ export class DiagramTemplatesService {
       new go.Binding('visible', 'middleExpanded',
         function(middleExpanded) {
           return middleExpanded !== middleOptions.none;
-            // || this.currentFilterLevel === Level.sources;
         }.bind(this)
       ),
       // Do not show description for systems or data nodes
@@ -1038,7 +1037,9 @@ export class DiagramTemplatesService {
         )
       } : {},
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
+        return locationMissing || Level.sources === this.currentFilterLevel;
+      }.bind(this)),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
         {
@@ -1245,8 +1246,9 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set
+      // Have the diagram position the node if no location set or in node usage view or sources view
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
+        console.log(locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel));
         return locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel);
       }.bind(this)),
       $(
@@ -1325,7 +1327,9 @@ export class DiagramTemplatesService {
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
-      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      new go.Binding('isLayoutPositioned', 'routeMissing', function(routeMissing) {
+          return routeMissing || Level.sources === this.currentFilterLevel;
+      }.bind(this)),
       new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       this.getStandardLinkOptions(forPalette),
@@ -1405,7 +1409,9 @@ export class DiagramTemplatesService {
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      new go.Binding('isLayoutPositioned', function(routeMissing) {
+        return routeMissing || Level.sources === this.currentFilterLevel;
+      }.bind(this)),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: function(event: go.InputEvent, object: go.Link): void {
