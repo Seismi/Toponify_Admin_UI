@@ -368,3 +368,11 @@ export enum LoadingStatus {
   loaded,
   error
 }
+
+export interface TagsHttpParams {
+  textFilter: string;
+  page?: number;
+  size?: number;
+  totalObjects?: number;
+  totalPages?: number;
+}
