@@ -3,12 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
-import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, AddUserTeam, DeleteUserTeam, DeleteUserRole, AddUserRole } from '@app/settings/store/actions/user.actions';
+import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, DeleteUserRole, AddUserRole } from '@app/settings/store/actions/user.actions';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { getUserSelected, getUserRolesEntities, getUsers } from '@app/settings/store/selectors/user.selector';
-import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model';
+import { RolesEntity } from '@app/settings/store/models/user.model';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
@@ -17,7 +17,7 @@ import { MatSnackBar, MatDialog } from '@angular/material';
 import { Roles } from '@app/core/directives/by-role.directive';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { map } from 'rxjs/operators';
-import { AddTeam } from '@app/settings/store/actions/team.actions';
+import { AddMember, DeleteMember, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
@@ -47,16 +47,26 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.store.pipe(select(getUsers)).subscribe(users => {
-      if (users) {
-        const userRoles = [];
-        users.forEach(user => {
-          const roles = user.roles.map(role => role.name).join(' ');
-          userRoles.push(roles);
-        });
-        this.administrators = userRoles.filter(userRole => userRole.indexOf(Roles.ADMIN) === 0);
-      }
-    });
+    this.subscriptions.push(
+      this.actions.pipe(ofType(
+        TeamActionTypes.AddMemberSuccess,
+        TeamActionTypes.DeleteMemberSuccess)).subscribe(_ => {
+          this.store.dispatch(new LoadUser(this.user.id));
+        })
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getUsers)).subscribe(users => {
+        if (users) {
+          const userRoles = [];
+          users.forEach(user => {
+            const roles = user.roles.map(role => role.name).join(' ');
+            userRoles.push(roles);
+          });
+          this.administrators = userRoles.filter(userRole => userRole.indexOf(Roles.ADMIN) === 0);
+        }
+      })
+    );
 
     this.subscriptions.push(
       this.route.params.subscribe(params => {
@@ -151,9 +161,10 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
         this.store.dispatch(
-          new AddUserTeam({
-            userId: this.user.id,
-            teamId: data.value[0].id
+          new AddMember({
+            data: data.value,
+            teamId: data.value[0].id,
+            userId: this.user.id
           })
         );
       }
@@ -196,9 +207,9 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
       if (data) {
         if (entity.type === 'team') {
           this.store.dispatch(
-            new DeleteUserTeam({
-              userId: this.user.id,
-              teamId: entity.id
+            new DeleteMember({
+              teamId: entity.id,
+              userId: this.user.id
             })
           );
         } else {
