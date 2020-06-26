@@ -169,10 +169,10 @@ module.exports = {
       method: 'POST',
       name: 'WorkPackagesNodesGroupSet'
     },
-    radiosAdvancedSearch: {
-      api: `${api_version}/radios/advanced/search?*`,
-      method: 'POST',
-      name: 'radiosAdvancedSearch'
+    DELETEScopeNodes: {
+      api: `${api_version}/scopes/*/nodes/*`,
+      method: 'DELETE',
+      name: 'ScopesNodes'
     }
   }
 };
