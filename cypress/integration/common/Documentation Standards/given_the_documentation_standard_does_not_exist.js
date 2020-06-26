@@ -5,7 +5,6 @@ Given('the documentation standard {string} does not exist', function(doc_standar
     .concat(' | ')
     .concat(doc_standard); //add the branch to the work package name
   cy.findDocumentationStandard(doc_standard).then($table => {
-    console.log($table[0].rows.length);
     if ($table[0].rows.length > 0) {
       //if rows are found
       Object.keys($table[0].rows).forEach(work_package => {

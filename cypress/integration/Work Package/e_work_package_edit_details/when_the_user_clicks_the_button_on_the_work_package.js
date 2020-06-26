@@ -8,10 +8,7 @@ When('the user clicks the {string} button on the work package', function(action_
       .click() // click it
       .wait(4000)
       .wait('@PUTWorkPackage')
-      .wait('@GETArchiveWorkPackages')
-      .then(xhr => {
-        console.log(xhr);
-      });
+      .wait('@GETArchiveWorkPackages');
   } else {
     cy.get(`[data-qa=work-packages-${action_button}]`) // get the relevant button
       .click() // click it

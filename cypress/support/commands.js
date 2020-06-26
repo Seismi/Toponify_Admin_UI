@@ -106,7 +106,6 @@ Cypress.Commands.add('type_ckeditor', (element, content) => {
 });
 
 Cypress.Commands.add('assertRowExists', (table, contents) => {
-  console.log(contents);
   return cy
     .get(`[data-qa=${table}]`)
     .find('table>tbody')
@@ -178,23 +177,6 @@ Cypress.Commands.add('findDocumentationStandard', name => {
     .then(() => {
       return cy
         .get(`[data-qa=documentation-standards-table]`) // get the work packages table
-        .find('table>tbody'); // find the table
-    });
-});
-
-Cypress.Commands.add('findScope', name => {
-  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
-    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
-    .clear() //clear the box
-    .wait('@GETScopes');
-  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
-    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
-    .type(name)
-    .should('have.value', name) // type the name
-    .wait('@GETScopes')
-    .then(() => {
-      return cy
-        .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
         .find('table>tbody'); // find the table
     });
 });
@@ -352,21 +334,34 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
     });
 });
 
-Cypress.Commands.add('deleteScope', scope => {
-  cy.selectRow('scopes-and-layouts-scope-table', scope)
-    //.wait('@GETWorkPackage')
+Cypress.Commands.add('findScope', name => {
+  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
+    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name)
+    .should('have.value', name) // type the name
+    .wait(1000)
+    .wait('@GETScopes.all')
     .then(() => {
-      cy.get('table>tbody>tr :first') // get the table body
-        .click()
-        .wait(['@GETScope', '@GETLayout'])
-        .then(() => {
-          cy.get('[data-qa=scopes-and-layouts-delete]')
-            .click()
-            .then(() => {
-              cy.get('[data-qa=delete-modal-yes]').click();
-            });
-        });
+      return cy
+        .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
     });
+});
+
+Cypress.Commands.add('deleteScope', scope => {
+  cy.selectRow('scopes-and-layouts-scope-table', scope).then(() => {
+    cy.get('table>tbody>tr :first') // get the table body
+      .click()
+      .wait(['@GETScope', '@GETLayout'])
+      .then(() => {
+        cy.get('[data-qa=scopes-and-layouts-delete]')
+          .click()
+          .then(() => {
+            cy.get('[data-qa=delete-modal-yes]').click();
+          });
+      });
+  });
 });
 
 Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
