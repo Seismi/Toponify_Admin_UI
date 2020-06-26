@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { HomePageActionsUnion, HomePageActionTypes } from '../actions/home.actions';
-import { Links, Page, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Links, WorkPackageEntity, Page } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { UserDetails } from '@app/settings/store/models/user.model';
@@ -11,7 +11,6 @@ export interface State {
   layouts: LayoutDetails[];
   profile: UserDetails;
   loading: boolean;
-  page: Page;
   links: Links;
   error?: HttpErrorResponse | { message: string };
 }
@@ -21,7 +20,6 @@ export const initialState: State = {
   radios: [],
   layouts: [],
   profile: null,
-  page: null,
   links: null,
   loading: false,
   error: null
@@ -40,7 +38,6 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
         ...state,
         workpackages: action.payload.data,
         links: action.payload.links,
-        page: action.payload.page,
         loading: false
       };
     }
@@ -81,7 +78,6 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
         ...state,
         layouts: action.payload.data,
         links: action.payload.links,
-        page: action.payload.page,
         loading: false
       };
     }
