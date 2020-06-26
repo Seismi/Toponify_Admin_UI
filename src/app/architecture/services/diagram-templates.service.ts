@@ -9,9 +9,7 @@ import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
-import {linkCategories} from '@app/architecture/store/models/node-link.model';
 import {Subject} from 'rxjs';
-import {defaultScopeId} from '@app/scope/store/models/scope.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -1248,7 +1246,6 @@ export class DiagramTemplatesService {
           },
       // Have the diagram position the node if no location set or in node usage view or sources view
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        console.log(locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel));
         return locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel);
       }.bind(this)),
       $(
@@ -1511,6 +1508,61 @@ export class DiagramTemplatesService {
         stroke: 'black',
         strokeWidth: 1.5
       })
+    );
+  }
+
+  // Template for links to unconnected sources in source view
+  getLinkWarningTemplate() {
+    return $(
+      go.Link,
+      {
+        selectable: false,
+        isLayoutPositioned: true
+      },
+      $(go.Shape, {
+        isPanelMain: true,
+        stroke: 'transparent',
+        strokeWidth: 0
+      }),
+      $(go.Panel, 'Vertical',
+        $(go.Panel, 'Auto',
+          {
+            margin: 5
+          },
+          $(go.Shape, {
+            figure: 'triangle',
+            fill: 'yellow',
+            stroke: 'black',
+            desiredSize: new go.Size(40, 40)
+          }),
+          $(go.TextBlock,
+            textFont('bold 30px'),
+            {
+              text: '!',
+              margin: new go.Margin(0, 0, 10, 0)
+            }
+          )
+        ),
+        $(go.Panel, 'Auto',
+          {
+            background: 'black',
+            padding: 1
+          },
+          $(go.Shape,
+            {
+              fill: 'white'
+            }
+          ),
+          $(go.TextBlock,
+            textFont('15px'),
+            {
+              text: 'No link found',
+              textAlign: 'center',
+              margin: 2
+            }
+          )
+        )
+      )
     );
   }
 

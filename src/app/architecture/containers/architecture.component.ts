@@ -431,6 +431,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
       this.currentFilterLevel = filterLevel;
+      this.allowMove = (this.allowMove || this.workPackageIsEditable) && this.currentFilterLevel !== Level.sources;
     });
 
     this.addChildSubscription = merge(
@@ -783,8 +784,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(workpackages => {
-        this.allowMove = workpackages.length > 0;
-        this.workPackageIsEditable = this.allowMove;
+        this.workPackageIsEditable = workpackages.length > 0;
+        this.allowMove = this.workPackageIsEditable && this.currentFilterLevel !== Level.sources;
       });
 
     this.subscriptions.push(
@@ -1073,7 +1074,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   allowEditLayout(): void {
-    this.allowMove = !this.allowMove;
+
+    this.allowMove = !this.allowMove && this.currentFilterLevel !== Level.sources;
     this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 

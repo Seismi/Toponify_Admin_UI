@@ -580,6 +580,10 @@ export class DiagramLevelService {
       this.createNodeUsageLanes(diagram);
     }
 
+    if (level === Level.sources) {
+      diagram.allowMove = false;
+    }
+
     // Settings and layout for map view
     if (level.endsWith('map')) {
       diagram.layout = $(MapViewLayout as any, {
@@ -596,6 +600,7 @@ export class DiagramLevelService {
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
         isRouting: true,
+        layerSpacing: 40,
         // Arrange nodes from top down in node usage view
         direction: level === Level.usage ? 90 : 0
       });

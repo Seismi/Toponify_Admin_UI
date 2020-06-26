@@ -205,6 +205,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     this.diagram.linkTemplateMap.add(linkCategories.copy, diagramTemplatesService.getLinkCopyTemplate());
 
+    this.diagram.linkTemplateMap.add(linkCategories.warning, diagramTemplatesService.getLinkWarningTemplate());
+
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
     // Set group templates
@@ -419,7 +421,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.workPackageIsEditable) {
       const toolManager = this.diagram.toolManager;
-      toolManager.relinkingTool.isEnabled = this.workPackageIsEditable;
+      toolManager.relinkingTool.isEnabled = this.workPackageIsEditable && this.viewLevel !== Level.sources;
 
       this.diagram.selection.each(function(part) {
         // Remove tool-related adornments from selected link (if any) for disabled tools
@@ -432,11 +434,15 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         part.updateAdornments();
       });
 
-      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable;
-      this.diagramChangesService.diagramEditable = this.workPackageIsEditable;
+      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable && this.viewLevel !== Level.sources;
+      this.diagramChangesService.diagramEditable = this.workPackageIsEditable && this.viewLevel !== Level.sources;
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
+
+      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable && this.viewLevel !== Level.sources;
+      this.diagramChangesService.diagramEditable = this.workPackageIsEditable && this.viewLevel !== Level.sources;
+
       this.setLevel();
     }
 

@@ -93,15 +93,15 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
-    // After layout when in system, data or sources view, check for system or data group nodes that are
+    // After layout when in system or data view, check for system or data group nodes that are
     //  too large for their groups and update the size of their containing groups
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
         const currentLevel = this.currentLevel;
 
-        // Check current level is system, data or sources
-        if (currentLevel && [Level.system, Level.data/*, Level.sources*/].includes(currentLevel)) {
+        // Check current level is system or data
+        if (currentLevel && [Level.system, Level.data].includes(currentLevel)) {
           event.diagram.nodes.each(function(node: go.Node): void {
 
             const group = node.containingGroup;
@@ -241,35 +241,28 @@ export class DiagramListenersService {
       }
     }
 
-    //
+    // Ensure groups in sources view are laid out and sized correctly.
+    // Also apply a blue shadow to the node for which sources are being viewed.
     diagram.addDiagramListener(
       'LayoutCompleted',
       function (event: go.DiagramEvent): void {
         const currentLevel = this.currentLevel;
+        const nodeId = this.nodeId;
 
         if (currentLevel === Level.sources) {
           diagram.nodes.each(function(node) {
             if (!node.location.isReal() && node.containingGroup && node.containingGroup.location.isReal()) {
               node.containingGroup.layout.isValidLayout = false;
               node.diagram.layout.isValidLayout = false;
+            } else if (node.location.isReal() && node.containingGroup) {
+              this.diagramChangesService.groupMemberSizeChanged(node);
+              if (nodeId === node.data.id) {
+                this.diagramChangesService.setBlueShadowHighlight(node, true);
+              }
             }
           }.bind(this));
         }
       }.bind(this)
-    );
-
-    diagram.addDiagramListener(
-      'BackgroundDoubleClicked',
-      function (event) {
-        diagram.nodes.each(function(node) {
-          diagram.model.setDataProperty(node.data, 'locationMissing', true);
-        });
-        diagram.links.each(function(link) {
-          diagram.model.setDataProperty(link.data, 'routeMissing', true);
-        });
-        event.diagram.layout.isValidLayout = false;
-        // event.diagram.layoutDiagram(true);
-      }
     );
 
     diagram.addDiagramListener(
