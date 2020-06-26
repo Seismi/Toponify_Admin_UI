@@ -1,8 +1,8 @@
 <app-model-container>
   <smi-my-user-form
+    [userTeam]="user?.team"
+    [userRole]="user?.roles"
     [appCanEdit]="[Roles.ADMIN]"
-    [team]="team"
-    [role]="role"
     [style.width.%]="100"
     [group]="myUserForm"
     [isEditable]="isEditable"
@@ -14,6 +14,9 @@
     [administrators]="administrators"
     [userRoles]="userRoles"
     data-qa="settings-all-users-my-user-form"
+    (addTeam)="onAddTeam()"
+    (addRole)="onAddRole()"
+    (remove)="onRemoveTeamOrRole($event)"
   >
   </smi-my-user-form>
 </app-model-container>

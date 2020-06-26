@@ -51,6 +51,7 @@ import { OrganisationsComponent } from './containers/organisations/organisations
 import { SettingsTabsComponent } from './components/settings-tabs/settings-tabs.component';
 import { TeamsDetailsComponent } from './containers/teams-details/teams-details.component';
 import { AllUsersDetailsComponent } from './containers/all-users-details/all-users-details.component';
+import { RolesOrTeamsTableComponent } from './components/roles-or-teams-table/roles-or-teams-table.component';
 import { AccountsTableComponent } from './components/accounts-table/accounts-table.component';
 import { OrganisationService } from './services/organisation.service';
 import { OrganisationEffects } from './store/effects/organisation.effects';
@@ -108,6 +109,7 @@ import { DomainsTableComponent } from './components/domains-table/domains-table.
     SettingsTabsComponent,
     TeamsDetailsComponent,
     AllUsersDetailsComponent,
+    RolesOrTeamsTableComponent,
     AccountsTableComponent,
     EmailModalComponent,
     DomainsTableComponent
