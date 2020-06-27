@@ -12,6 +12,6 @@ Given('the user selects the {string} {string} in the {string} table', function(t
       : ['@GETNodesScopes.all', '@GETnodeLinksWorkPackageQuery.all', '@GETNodesReportWorkPackageQuery.all'];
   cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`)
     .click()
-    .wait(10000)
+    .wait(15000)
     .wait(wait);
 });

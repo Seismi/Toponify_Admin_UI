@@ -340,13 +340,39 @@ Cypress.Commands.add('findScope', name => {
     .clear() //clear the box
     .type(name)
     .should('have.value', name) // type the name
-    .wait(1000)
+    .wait(3000)
     .wait('@GETScopes.all')
     .then(() => {
       return cy
         .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
         .find('table>tbody'); // find the table
     });
+});
+
+Cypress.Commands.add('findRadio', radio => {
+  cy.get('[data-qa=radio-filter]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=radio-filter-text]')
+        .clear()
+        .type(radio);
+      cy.get('[data-qa=radio-filter-modal-apply]')
+        .click({ force: true })
+        .wait(2000)
+        .wait('@POSTradiosAdvancedSearch')
+        .then(() => {
+          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
+        });
+    });
+});
+
+Cypress.Commands.add('findDocumentStandard', title => {
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title)
+    .should('have.value', title)
+    .wait(1000);
+  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
 });
 
 Cypress.Commands.add('deleteScope', scope => {
@@ -409,23 +435,6 @@ Cypress.Commands.add('deleteWorkPackage', name => {
             }
           });
       });
-    });
-});
-
-Cypress.Commands.add('findRadio', radio => {
-  cy.get('[data-qa=radio-filter]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=radio-filter-text]')
-        .clear()
-        .type(radio);
-      cy.get('[data-qa=radio-filter-modal-apply]')
-        .click({ force: true })
-        .wait(2000)
-        .wait('@POSTradiosAdvancedSearch')
-        .then(() => {
-          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
-        });
     });
 });
 
@@ -586,13 +595,6 @@ Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component
     });
     expect(result.length).to.be.greaterThan(0);
   });
-});
-
-Cypress.Commands.add('findDocumentStandard', title => {
-  cy.get('[data-qa=documentation-standards-quick-search]')
-    .clear()
-    .type(title);
-  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
 });
 
 Cypress.Commands.add('deleteDocumentStandard', doc_standard => {

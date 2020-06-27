@@ -5,11 +5,11 @@ Feature: Topology Systems Layer Reports Feature
   Background:
     Given a valid user is logged in
     And the user selects Work Package menu item
-    And the work package 'Automated Regression Test Work Package' does not exist
-    And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
+    And the work package 'Created Automated Regression Test Work Package' does not exist
+    And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user selects Topology menu item
     And the "System View" layer is selected
-    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
+    And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
     And the user selects Reports menu item
@@ -20,7 +20,7 @@ Feature: Topology Systems Layer Reports Feature
   Scenario: Add system to the System View and check that they save to the table
     When the user selects Topology menu item
     And the "System View" layer is selected
-    And the work package 'Automated Regression Test Work Package' is editable on the 'Work Package' menu
+    And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
     And the user clicks on the system's right hand side reports button
