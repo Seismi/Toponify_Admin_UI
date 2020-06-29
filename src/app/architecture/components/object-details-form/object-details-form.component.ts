@@ -2,14 +2,32 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 import { Tag, TagApplicableTo, NodeDetail, layers, nodeCategories } from '@app/architecture/store/models/node.model';
-import { AttributeEntity } from '@app/attributes/store/models/attributes.model';
 import { Node } from 'gojs';
 
-
-const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file', 'transformation'];
-const dataNodeCategories = ['data structure', 'data set', 'master data set', 'transformation'];
-const dimensionCategories = ['dimension', 'transformation'];
-const reportingCategories = ['list', 'structure', 'key', 'transformation'];
+const systemCategories = [
+  nodeCategories.transactional,
+  nodeCategories.analytical,
+  nodeCategories.reporting,
+  nodeCategories.masterData,
+  nodeCategories.file,
+  nodeCategories.transformation
+];
+const dataNodeCategories = [
+  nodeCategories.dataStructure,
+  nodeCategories.dataSet,
+  nodeCategories.masterDataSet,
+  nodeCategories.transformation
+];
+const dimensionCategories = [
+  nodeCategories.dimension,
+  nodeCategories.transformation
+];
+const reportingCategories = [
+  nodeCategories.list,
+  nodeCategories.structure,
+  nodeCategories.key,
+  nodeCategories.transformation
+];
 
 @Component({
   selector: 'smi-object-details-form',
@@ -28,12 +46,7 @@ export class ObjectDetailsFormComponent {
 
   @Input() sourceObject: any;
   @Input() targetObject: any;
-
   @Input() workPackageIsEditable = false;
-  @Input() attributesPage = false;
-  @Input() relatedAttributes: AttributeEntity[];
-  @Input() selectedRelatedIndex: string | null;
-  @Input() selectAttribute: boolean;
   @Input() part: go.Part;
   @Input() availableTags: Tag[];
   @Input() tags: Tag[];
@@ -49,13 +62,7 @@ export class ObjectDetailsFormComponent {
   @Output() deleteOwner = new EventEmitter<string>();
   @Output() editGroup = new EventEmitter<void>();
   @Output() deleteNodeGroup = new EventEmitter<void>();
-
-  @Output() selectRelatedAttribute = new EventEmitter<string>();
-  @Output() addRelatedAttribute = new EventEmitter<void>();
-  @Output() deleteRelatedAttribute = new EventEmitter<void>();
-
   @Output() updateAvailableTags = new EventEmitter<void>();
-
   @Output() addTag = new EventEmitter<string>();
   @Output() createTag = new EventEmitter<Tag>();
   @Output() removeTag = new EventEmitter<Tag>();
@@ -87,36 +94,21 @@ export class ObjectDetailsFormComponent {
     this.deleteOwner.emit(id);
   }
 
-  onSelectRelatedAttribute(relatedAttributeId: string): void {
-    this.selectRelatedAttribute.emit(relatedAttributeId);
-  }
-
-  onAddRelatedAttribute(): void {
-    this.addRelatedAttribute.emit();
-  }
-
-  onDeleteRelatedAttribute(): void {
-    this.deleteRelatedAttribute.emit();
-  }
-
   getCategories(): string[] {
-    if (this.attributesPage) {
-      return ['attribute', 'rule'];
-    }
-    switch (this.part.data.layer) {
-      case 'system':
-        return this.part instanceof Node ? systemCategories : ['master data', 'data'];
-      case 'data':
-        return this.part instanceof Node ? dataNodeCategories : ['master data', 'data'];
-      case 'dimension':
-        return this.part instanceof Node ? dimensionCategories : ['master data'];
-      case 'reporting concept':
-        return this.part instanceof Node ? reportingCategories : ['master data'];
+    switch (this.part.data.layer as layers) {
+      case layers.system:
+        return this.part instanceof Node ? systemCategories : [nodeCategories.masterData, nodeCategories.data];
+      case layers.data:
+        return this.part instanceof Node ? dataNodeCategories : [nodeCategories.masterData, nodeCategories.data];
+      case layers.dimension:
+        return this.part instanceof Node ? dimensionCategories : [nodeCategories.masterData];
+      case layers.reportingConcept:
+        return this.part instanceof Node ? reportingCategories : [nodeCategories.masterData];
     }
   }
 
   nodeIsEditable(): boolean {
-    return (!this.workPackageIsEditable || this.nodeCategory === 'copy') ? true : false;
+    return (!this.workPackageIsEditable || this.nodeCategory === nodeCategories.copy) ? true : false;
   }
 
   onUpdateAvailableTags() {
@@ -155,14 +147,9 @@ export class ObjectDetailsFormComponent {
     return this.part && this.part.data && !this.part.data.hasOwnProperty('sourceId');
   }
 
-  isLink(): boolean {
-    if (this.part.data.layer === 'reporting concept') {
-      return false;
-    } else if (this.clickedOnLink || this.nodeCategory === 'transformation') {
-      return true;
-    } else {
-      return false;
-    }
+  get isLink(): boolean {
+    return (this.part.data.layer === layers.reportingConcept)
+      ? false : this.clickedOnLink || this.nodeCategory === nodeCategories.transformation ? true : false;
   }
 
   getDisable(category?: nodeCategories): boolean {

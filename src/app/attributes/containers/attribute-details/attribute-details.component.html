@@ -6,29 +6,21 @@
           <mat-icon matTooltip="Details">info</mat-icon>
         </ng-template>
         <p class="detailsTab">
-          <smi-object-details-form
-            data-qa="rules-and-attributes-object-details-form"
-            [owners]="attribute?.owners"
-            [group]="objectDetailsForm"
-            (save)="onSaveAttribute($event)" 
-            (delete)="onDeleteAttribute($event)"
-            [workPackageIsEditable]="workPackageIsEditable" 
-            (addOwner)="onAddOwner($event)"
-            (deleteOwner)="onDeleteOwner($event)"
-            [attributesPage]="true"
-            [relatedAttributes]="attribute?.related"
-            [selectedRelatedIndex]="selectedRelatedIndex"
-            (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
-            [selectAttribute]="selectAttribute"
-            (addRelatedAttribute)="onAddRelatedAttribute()"
-            (deleteRelatedAttribute)="onDeleteRelatedAttribute()"
-            [availableTags]="availableTags$ | async"
+          <smi-attribute-details-form
+            [group]="attributeDetailsForm"
+            [workPackageIsEditable]="workPackageIsEditable"
+            (save)="onSaveAttribute()"
+            (delete)="onDeleteAttribute()"
             [tags]="attribute?.tags"
+            [availableTags]="availableTags$ | async"
             (updateAvailableTags)="onUpdateAvailableTags()"
             (addTag)="onAddTag($event)"
             (removeTag)="onRemoveTag($event)"
+            [relatedAttribute]="attribute?.related"
+            (addRelatedAttribute)="onAddRelatedAttribute()"
+            (deleteRelatedAttribute)="onDeleteRelatedAttribute($event)"
           >
-          </smi-object-details-form>
+          </smi-attribute-details-form>
         </p>
       </mat-tab>
       <mat-tab>

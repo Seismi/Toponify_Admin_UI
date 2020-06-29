@@ -59,7 +59,6 @@ import { TableCollapseComponent } from '@app/attributes/components/category-tabl
 import { ScopesAndLayoutsModule } from '@app/scopes-and-layouts/scopes-and-layouts.module';
 import { OwnersTableComponent } from './components/owners-table/owners-table.component';
 import { EditNameModalComponent } from '@app/architecture/components/edit-name-modal/edit-name-modal.component';
-import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
 import { SettingsModule } from '@app/settings/settings.module';
 import { SwitchViewTabsComponent } from '@app/architecture/components/switch-view-tabs/switch-view-tabs.component';
 import { ArchitectureTableViewComponent } from './components/architecture-table-view/architecture-table-view.component';
@@ -149,7 +148,6 @@ import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-d
     OwnersTableComponent,
     EditNameModalComponent,
     SaveLayoutModalComponent,
-    RelatedAttributeTableComponent,
     SwitchViewTabsComponent,
     ArchitectureTableViewComponent,
     ScopeTableComponent,

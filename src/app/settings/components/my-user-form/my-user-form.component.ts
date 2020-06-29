@@ -47,6 +47,9 @@ export class MyUserFormComponent {
 
   constructor(public dialog: MatDialog) {}
 
+  @Input() userTeam: TeamEntity[];
+  @Input() userRole: RolesEntity[];
+
   @Input() value: UserDetails;
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
@@ -54,7 +57,6 @@ export class MyUserFormComponent {
   @Input() administrators: string[];
   @Input() userRoles: string[];
   @Input() userTeams: TeamEntity[];
-  @Input() userRole: RolesEntity[];
 
   @Input() set team(team: any) {
     this.teams = team;
@@ -75,6 +77,13 @@ export class MyUserFormComponent {
   @Output() cancelEdit = new EventEmitter<void>();
   @Output() changePassword = new EventEmitter<void>();
   @Output() deleteUser = new EventEmitter<void>();
+  @Output() addTeam = new EventEmitter<void>();
+  @Output() addRole = new EventEmitter<void>();
+  @Output() remove = new EventEmitter<{id: string, type: string}>();
+
+  onRemove(id: string, type: string): void {
+    this.remove.emit({id, type});
+  }
 
   onSave(): void {
     this.saveUser.emit();

@@ -36,7 +36,23 @@ export enum UserActionTypes {
 
   UpdateUserPassword = '[User] Update User Password',
   UpdateUserPasswordSuccess = '[User] Update User Password Success',
-  UpdateUserPasswordFailure = '[User] Update User Password Failure'
+  UpdateUserPasswordFailure = '[User] Update User Password Failure',
+
+  AddUserTeam = '[User] Add User Team',
+  AddUserTeamSuccess = '[User] Add User Team Success',
+  AddUserTeamFailure = '[User] Add User Team Failure',
+
+  DeleteUserTeam = '[User] Delete User Team',
+  DeleteUserTeamSuccess = '[User] Delete User Team Success',
+  DeleteUserTeamFailure = '[User] Delete User Team Failure',
+
+  AddUserRole = '[User] Add User Role',
+  AddUserRoleSuccess = '[User] Add User Role Success',
+  AddUserRoleFailure = '[User] Add User Role Failure',
+
+  DeleteUserRole = '[User] Delete User Role',
+  DeleteUserRoleSuccess = '[User] Delete User Role Success',
+  DeleteUserRoleFailure = '[User] Delete User Role Failure'
 }
 
 export class LoadUsers implements Action {
@@ -144,6 +160,66 @@ export class UpdateUserPasswordFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class AddUserTeam implements Action {
+  readonly type = UserActionTypes.AddUserTeam;
+  constructor(public payload: { userId: string, teamId: string }) {}
+}
+
+export class AddUserTeamSuccess implements Action {
+  readonly type = UserActionTypes.AddUserTeamSuccess;
+  constructor(public payload: User) {}
+}
+
+export class AddUserTeamFailure implements Action {
+  readonly type = UserActionTypes.AddUserTeamFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteUserTeam implements Action {
+  readonly type = UserActionTypes.DeleteUserTeam;
+  constructor(public payload: { userId: string, teamId: string }) {}
+}
+
+export class DeleteUserTeamSuccess implements Action {
+  readonly type = UserActionTypes.DeleteUserTeamSuccess;
+  constructor(public payload: string) {}
+}
+
+export class DeleteUserTeamFailure implements Action {
+  readonly type = UserActionTypes.DeleteUserTeamFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class AddUserRole implements Action {
+  readonly type = UserActionTypes.AddUserRole;
+  constructor(public payload: { userId: string, roleId: string }) {}
+}
+
+export class AddUserRoleSuccess implements Action {
+  readonly type = UserActionTypes.AddUserRoleSuccess;
+  constructor(public payload: User) {}
+}
+
+export class AddUserRoleFailure implements Action {
+  readonly type = UserActionTypes.AddUserRoleFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class DeleteUserRole implements Action {
+  readonly type = UserActionTypes.DeleteUserRole;
+  constructor(public payload: { userId: string, roleId: string }) {}
+}
+
+export class DeleteUserRoleSuccess implements Action {
+  readonly type = UserActionTypes.DeleteUserRoleSuccess;
+  constructor(public payload: string) {}
+}
+
+export class DeleteUserRoleFailure implements Action {
+  readonly type = UserActionTypes.DeleteUserRoleFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type UserActionsUnion =
   | LoadUsers
   | LoadUsersSuccess
@@ -165,4 +241,16 @@ export type UserActionsUnion =
   | LoadUserRolesFailure
   | UpdateUserPassword
   | UpdateUserPasswordSuccess
-  | UpdateUserPasswordFailure;
+  | UpdateUserPasswordFailure
+  | AddUserTeam
+  | AddUserTeamSuccess
+  | AddUserTeamFailure
+  | DeleteUserTeam
+  | DeleteUserTeamSuccess
+  | DeleteUserTeamFailure
+  | AddUserRole
+  | AddUserRoleSuccess
+  | AddUserRoleFailure
+  | DeleteUserRole
+  | DeleteUserRoleSuccess
+  | DeleteUserRoleFailure;

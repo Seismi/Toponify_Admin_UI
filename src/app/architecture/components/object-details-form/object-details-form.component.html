@@ -88,7 +88,7 @@
 
     <smi-group-info-table
       data-qa="object-details-grouped-in-table"
-      *ngIf="!clickedOnLink && !attributesPage"
+      *ngIf="!clickedOnLink"
       [groupInfo]="groupInfo"
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"
@@ -96,32 +96,16 @@
       [layer]="part?.data?.layer"
     >
     </smi-group-info-table>
-
     <hr>
-
-    <smi-related-attribute-table
-      data-qa="object-details-related-attributes-table"
-      *ngIf="attributesPage"
-      [data]="relatedAttributes"
-      [isEditable]="workPackageIsEditable"
-      [selectedRelatedIndex]="selectedRelatedIndex"
-      (selectRelatedAttribute)="onSelectRelatedAttribute($event)"
-      [selectAttribute]="selectAttribute"
-      (addRelatedAttribute)="onAddRelatedAttribute()"
-      (deleteRelatedAttribute)="onDeleteRelatedAttribute()"
-    >
-    </smi-related-attribute-table>
-    <div *ngIf="!attributesPage">
-      <div *ngIf="isNode">
-        <button data-qa="object-details-see-dependencies" mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
-        <button data-qa="object-details-see-usage-across-levels" mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
-      </div>
-      <div *ngIf="isLink()">
-        <button data-qa="object-details-view-structure" class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
-      </div>
-      <br>
-      <button mat-flat-button color="primary">Make Master</button>
-      <button data-qa="object-details-see-sources" mat-flat-button color="primary" *ngIf="['master data set','data set'].includes(nodeCategory)" (click)="onFindSources()">Find Sources</button>
+    <div *ngIf="isNode">
+      <button data-qa="object-details-see-dependencies" mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
+      <button data-qa="object-details-see-usage-across-levels" mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
     </div>
+    <div *ngIf="isLink">
+      <button data-qa="object-details-view-structure" class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
+    </div>
+    <br>
+    <button mat-flat-button color="primary">Make Master</button>
+    <button data-qa="object-details-see-sources" mat-flat-button color="primary" *ngIf="['master data set','data set'].includes(nodeCategory)" (click)="onFindSources()">Find Sources</button>
   </div>
 </form>
