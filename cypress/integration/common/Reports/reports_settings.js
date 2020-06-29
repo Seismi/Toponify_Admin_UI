@@ -70,6 +70,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/reports/*/customPropertyValues/*`,
       method: 'PUT',
       name: 'WorkPackagesReportsCustomPropertyValues'
+    },
+    GETSelectorWorkPackage: {
+      api: `${api_version}/workpackages/selector/availability*`,
+      method: 'GET',
+      name: 'SelectorAvailabilityQuery'
     }
   }
 };
