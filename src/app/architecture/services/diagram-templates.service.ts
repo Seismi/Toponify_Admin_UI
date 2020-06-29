@@ -39,6 +39,7 @@ StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
 // End system/data group layout
 
 const nodeWidth = 300;
+const containerColour = '#F8C195';
 
 @Injectable()
 export class DiagramTemplatesService {
@@ -1164,7 +1165,7 @@ export class DiagramTemplatesService {
   getStandardGroupTemplate(forPalette: boolean = false): go.Group {
     return $(
       go.Group,
-      'Auto',
+      'Vertical',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
@@ -1177,7 +1178,9 @@ export class DiagramTemplatesService {
             spacing: new go.Size(NaN, 12)
           },
         ),
+        background: containerColour,
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
+        selectionObjectName: 'main content',
         resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 
@@ -1248,47 +1251,74 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
         return locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel);
       }.bind(this)),
-      $(
-        go.Shape,
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        ),
-        new go.Binding('fromSpot', 'group', function(group) {
-          if (group) {
-            return go.Spot.LeftRightSides;
-          } else {
-            return go.Spot.AllSides;
-          }
-        }),
-        new go.Binding('toSpot', 'group', function(group) {
-          if (group) {return go.Spot.LeftRightSides;
-          } else {
-            return go.Spot.AllSides;
-          }
-        }),
-        this.getStandardNodeShapeOptions()
-      ),
-      // Dummy panel with no size and no contents.
-      // Used to ensure node usage view lays out nodes vertically aligned.
-      $(go.Panel, {
-        alignment: go.Spot.TopCenter,
-        desiredSize: new go.Size(0, 0),
-        name: 'location panel'
-      }),
-      $(
-        go.Panel,
-        'Table',
+      $(go.TextBlock,
+        textFont('bold 20px'),
         {
-          defaultRowSeparatorStroke: 'black'
+          textAlign: 'center',
+          stroke: 'black',
+          alignment: go.Spot.TopCenter,
+          stretch: go.GraphObject.Horizontal,
+          overflow: go.TextBlock.OverflowEllipsis,
+          wrap: go.TextBlock.None,
+          visible: false,
+          margin: new go.Margin(10, 10, 0, 10)
         },
-        this.getTopSection(true),
-        this.getMiddleSection(true),
-        this.getBottomSection(true)
+        new go.Binding('text', 'system', function(system) {
+          return system ? system.name : '';
+        }),
+        // Invisible when no system
+        new go.Binding('visible', 'system', function(system) {
+          return !!system;
+        })
+      ),
+      $(go.Panel, 'Auto',
+        {
+          name: 'main content'
+        },
+        new go.Binding('margin', 'system', function (system) {
+          return system ? 10 : 0;
+        }),
+        $(go.Shape,
+          // Bind stroke to multicoloured brush based on work packages impacted by
+          new go.Binding(
+            'stroke',
+            'impactedByWorkPackages',
+            function(impactedPackages, shape) {
+              return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+            }.bind(this)
+          ),
+          new go.Binding('fromSpot', 'group', function(group) {
+            if (group) {
+              return go.Spot.LeftRightSides;
+            } else {
+              return go.Spot.AllSides;
+            }
+          }),
+          new go.Binding('toSpot', 'group', function(group) {
+            if (group) {return go.Spot.LeftRightSides;
+            } else {
+              return go.Spot.AllSides;
+            }
+          }),
+          this.getStandardNodeShapeOptions()
+        ),
+        // Dummy panel with no size and no contents.
+        // Used to ensure node usage view lays out nodes vertically aligned.
+        $(go.Panel, {
+          alignment: go.Spot.TopCenter,
+          desiredSize: new go.Size(0, 0),
+          name: 'location panel'
+        }),
+        $(
+          go.Panel,
+          'Table',
+          {
+            defaultRowSeparatorStroke: 'black'
+          },
+          this.getTopSection(true),
+          this.getMiddleSection(true),
+          this.getBottomSection(true)
+        )
       )
     );
   }
@@ -1608,7 +1638,7 @@ export class DiagramTemplatesService {
             return 0;
           }.bind(this)
         }),
-        background: '#F8C195',
+        background: containerColour,
         computesBoundsAfterDrag: true,
         computesBoundsIncludingLocation: false,
         computesBoundsIncludingLinks: false,
