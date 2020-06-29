@@ -38,7 +38,7 @@ export class WorkPackageComponent implements OnInit{
   private workPackageParams: WorkPackageEntitiesHttpParams = {
     textFilter: '',
     page: 0,
-    size: 5
+    size: 10
   }
   search$ = new BehaviorSubject<string>('');
   page$: Observable<any>;
