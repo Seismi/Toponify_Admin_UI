@@ -957,7 +957,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
-        this.getNodeReports(workPackageIds);
+        // this.getNodeReports(workPackageIds);
       }
     }
 
@@ -1616,6 +1616,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.diagramComponent.updateDiagramArea();
     this.realignTabUnderline();
+    
+    // Load Node Reports
+    if (index === 2) {
+      const workPackageIds = this.getWorkPackageIds() 
+      this.getNodeReports(workPackageIds);
+    }
+  }
+
+  onSelectedTabChange(index: number) {
+    // Load Node Reports
+    if (index === 2) {
+      const workPackageIds = this.getWorkPackageIds() 
+      this.getNodeReports(workPackageIds);
+    }
+  }
+
+  private getWorkPackageIds() {
+    return this.selectedWorkPackageEntities.map(item => item.id);
   }
 
   onHideRightPane() {

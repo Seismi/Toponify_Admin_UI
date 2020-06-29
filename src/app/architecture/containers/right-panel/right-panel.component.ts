@@ -97,6 +97,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() editSourceOrTarget = new EventEmitter<string>();
   @Output() switchSourceAndTarget = new EventEmitter<void>();
   @Output() handleRadioPageChange = new EventEmitter<any>();
+  @Output() selectedTabChange = new EventEmitter<Number>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -116,6 +117,13 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.showDetailTabRef.unsubscribe();
+  }
+
+  onSelectedTabChange(index: number) {
+    // index 2 represents reports tab
+    if (index === 2) {
+      this.selectedTabChange.emit(2);
+    }
   }
 
   onSaveNode(): void {
