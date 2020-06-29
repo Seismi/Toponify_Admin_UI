@@ -1436,7 +1436,7 @@ export class DiagramTemplatesService {
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', function(routeMissing) {
+      new go.Binding('isLayoutPositioned', 'routeMissing', function(routeMissing) {
         return routeMissing || Level.sources === this.currentFilterLevel;
       }.bind(this)),
       this.getStandardLinkOptions(forPalette),
