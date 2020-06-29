@@ -28,6 +28,7 @@
 
               <ng-container *ngIf="canEdit(element); else elseBlock">
                 <mat-icon
+                  data-qa="topology-work-packages-edit-work-package"
                   *ngIf="!element.edit"
                   (click)="onSetWorkpackageEditMode(element)"
                   matTooltip="Edit content of work package"

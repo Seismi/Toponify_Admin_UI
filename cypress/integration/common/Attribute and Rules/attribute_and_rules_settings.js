@@ -4,17 +4,17 @@ module.exports = {
   menu_selector: 'main-menu-attributes-and-rules',
   page_check: 'attributes-and-rules',
   wait_for: {
-    GetScopes: {
-      api: `${api_version}/scopes`,
+    GetAttributes: {
+      api: `${api_version}/attributes?*`,
       method: 'GET',
-      name: 'Scopes'
+      name: 'Attributes'
     },
-    GetScope: {
-      api: `${api_version}/scopes/*`,
+    GetAttributeAndRule: {
+      api: `${api_version}/attributes/*`,
       method: 'GET',
-      name: 'Scope'
+      name: 'AttributeAndRule'
     },
-    GetWorkPackage: {
+    GetWorkPackages: {
       api: `${api_version}/workpackages`,
       method: 'GET',
       name: 'WorkPackages'
@@ -23,6 +23,26 @@ module.exports = {
       api: `${api_version}/layouts/*`,
       method: 'GET',
       name: 'Layout'
+    },
+    GetScopes: {
+      api: `${api_version}/scopes`,
+      method: 'GET',
+      name: 'Scopes'
+    },
+    GetSelectorWorkPackage: {
+      api: `${api_version}/workpackages/selector/availability*`,
+      method: 'GET',
+      name: 'SelectorAvailabilityQuery'
+    },
+    POSTWorkPackageAttributes: {
+      api: `${api_version}/workpackages/*/attributes`,
+      method: 'POST',
+      name: 'WorkPackageAttributes'
+    },
+    PUTAttributeAndRule: {
+      api: `${api_version}/workpackages/*/attributes/*`,
+      method: 'PUT',
+      name: 'AttributeAndRule'
     }
   }
 };

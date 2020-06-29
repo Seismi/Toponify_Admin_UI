@@ -9,7 +9,7 @@ When('the user selects Attributes and Rules menu item', function() {
         cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
           .click()
           .then(() => {
-            cy.wait(['@GETScopes', '@GETWorkPackages']); // wait for API Calls
+            cy.wait(['@GETScopes', '@GETWorkPackages', '@GETSelectorAvailabilityQuery', '@GETLayout']);
           });
       });
   });

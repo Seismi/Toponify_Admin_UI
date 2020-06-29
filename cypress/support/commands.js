@@ -13,6 +13,7 @@
 const login = require('../integration/common/Login/login_settings');
 const workPackage = require('../integration/common/Work Package/work_package_settings');
 const documentationStandards = require('../integration/common/Documentation Standards/documentation_standards_settings');
+const attributesOrRules = require('../integration/common/Attribute and Rules/attribute_and_rules_settings');
 
 Cypress.Commands.add('login', usertype => {
   cy.setUpRoutes('Login', login);
@@ -297,23 +298,12 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
   cy.get('[data-qa=left-hand-pane-work-packages]').click();
   cy.get(`[data-qa=${work_package_menu}]`)
     .within(() => {
-      cy.get('div>div>input')
+      cy.get('[data-qa=topology-work-packages-quick-search]')
         .clear()
         .type(work_package)
         .should('have.value', work_package)
         .then(() => {
-          cy.get('table>tbody')
-            .find('tr:first>td>div>div>mat-icon')
-            .click()
-            .wait(wait_for)
-            .then(wp => {
-              if (wp[0].textContent === 'edit') {
-                cy.get('table>tbody')
-                  .find('tr:first>td>div>div>mat-icon')
-                  .click()
-                  .wait(wait_for);
-              }
-            });
+          cy.get('[data-qa=topology-work-packages-edit-work-package]').click({ force: true });
         });
     })
     .then(result => {
@@ -748,6 +738,40 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .eq(1)
     .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
 });
+
+Cypress.Commands.add('findAttributeOrRule', attr => {
+  cy.get('[data-qa=rules-and-attributes-quick-search]')
+    .clear()
+    .type(attr);
+  return cy.get(`[data-qa=rules-and-attributes-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('createAttributeAndRule', (name, description, category) => {
+  cy.selectDropDownNoClick('rule-and-attribute-details-category', category)
+    .then(() => {
+      cy.get('[data-qa=rule-and-attribute-details-name]')
+        .should('be.visible')
+        .type(name)
+        .should('have.value', name);
+    })
+    .then(() => {
+      cy.get('[data-qa=rule-and-attribute-details-description]')
+        .should('be.visible')
+        .type(description)
+        .should('have.value', description);
+    });
+});
+
+Cypress.Commands.add('assertAttributesForm', (category, title, description) => {
+  cy.selectDropDownNoClick('attributes-and-rules-details-category', category);
+  cy.get('[data-qa=attributes-and-rules-details-name]')
+    .clear()
+    .type(title);
+  cy.get('[data-qa=attributes-and-rules-details-description]')
+    .clear()
+    .type(description);
+});
+
 //
 //
 // -- This is a child command --
