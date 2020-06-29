@@ -1,6 +1,13 @@
 //This file is used to parameterise the tabs in use across the application.  This is to get around the issues that angular tabs cannot have data hooks
 let api_version = '/api/v0.2';
 module.exports = {
+  tabs: {
+    Details: 1,
+    'Attributes and Rules': 2,
+    'Documentation Standards': 3,
+    Radio: 4,
+    Changes: 5
+  },
   menu_selector: 'main-menu-reports',
   page_check: 'report-library',
   wait_for: {
@@ -58,6 +65,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/reports/*/deleteRequest`,
       method: 'POST',
       name: 'WorkPackageDeleteRequest'
+    },
+    PUTWorkPackagesReportsCustomPropertyValues: {
+      api: `${api_version}/workpackages/*/reports/*/customPropertyValues/*`,
+      method: 'PUT',
+      name: 'WorkPackagesReportsCustomPropertyValues'
     }
   }
 };

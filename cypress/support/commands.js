@@ -691,9 +691,11 @@ Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
   cy.get(`[data-qa=${table}]`) //get the doc standard table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
+    .should('have.length', 1) //confirm there is only one documentation standard
     .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
     .click()
     .get(`[data-qa=documentation-standards-table-value]`) // get the value field
+    .clear()
     .type(value)
     .should('have.value', value.toString()); // type the value
 });
@@ -705,10 +707,11 @@ Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard, table) => {
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear()
     .type(doc_standard)
-    .should('have.value', doc_standard); //enter the documentation standard
+    .should('have.value', doc_standard);
   cy.get(`[data-qa=${table}]`) //get the doc standard table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
+    .should('have.length', 1) //confirm there is only one documentation standard
     .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
     .click();
   cy.selectDropDown('documentation-standards-table-type', value); // select the value
@@ -725,9 +728,11 @@ Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
   cy.get(`[data-qa=${table}]`) //get the doc standard table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
+    .should('have.length', 1) //confirm there is only one documentation standard
     .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
     .click()
     .get(`[data-qa=documentation-standards-table-date]`) // get the value field
+    .clear()
     .type(value)
     .should('have.value', value.toString()); // type the value
 });
@@ -740,6 +745,7 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // search for the documentation standard
     .clear()
     .type(doc_standard)
+    .should('have.length', 1) //enter the documentation standard
     .should('have.value', doc_standard);
   cy.get(`[data-qa=${table}]`) //get the table
     .find('table>tbody') // find the table body
@@ -747,6 +753,27 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .find(`td`) //check if a cell has value
     .eq(1)
     .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
+});
+
+Cypress.Commands.add('selectMenuItem', (dataqa, wait_for) => {
+  cy.get(`[data-qa=main-menu-open]`) // get the main menu
+    .click()
+    .then(() => {
+      cy.get(`[data-qa=${dataqa}]`) //get the menu selector
+        .click()
+        .then(() => {
+          cy.wait(wait_for); // wait for API Calls
+        });
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+    });
+});
+
+Cypress.Commands.add('saveDocumentationChange', (action, wait_for) => {
+  cy.get(`[data-qa=documentation-standards-table-${action}]`) // get the action button
+    .click()
+    .then(() => {
+      cy.wait(wait_for); // wait for the relevant apis
+    });
 });
 //
 //

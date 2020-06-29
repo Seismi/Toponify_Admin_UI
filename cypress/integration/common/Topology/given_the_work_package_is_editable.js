@@ -14,11 +14,9 @@ Given('the work package {string} is editable on the {string} menu', function(wor
       '@GETSelectorAvailabilityQuery',
       '@GETReportsScopeQuery'
     ];
-    //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   } else {
     work_package_menu = 'left-hand-pane-work-package-table';
     wait_for = ['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'];
-    //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   }
   cy.editWorkPackage(work_package, work_package_menu, wait_for);
   //cy.get('[data-qa=object-details-delete]').should('not.be.visible');
