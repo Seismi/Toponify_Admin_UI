@@ -600,7 +600,7 @@ export class DiagramLevelService {
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
         isRouting: true,
-        layerSpacing: 40,
+        layerSpacing: 60,
         // Arrange nodes from top down in node usage view
         direction: level === Level.usage ? 90 : 0
       });

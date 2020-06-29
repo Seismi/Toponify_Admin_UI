@@ -1267,10 +1267,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             });
           } else if (this.currentFilterLevel && this.currentFilterLevel === Level.sources) {
             return nodes.map(function(node) {
-              if (nodes.some(function(member) {return member.group === node.id; })) {
-                return { ...node, middleExpanded: middleOptions.group, bottomExpanded: true};
-              }
-              return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false, locationMissing: true };
+              const hasMembers = nodes.some(function(member) {return member.group === node.id; });
+              return { ...node,
+                middleExpanded: hasMembers ? middleOptions.group : middleOptions.none,
+                bottomExpanded: hasMembers,
+                locationMissing: false
+              };
             });
           }
 
