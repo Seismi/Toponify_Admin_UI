@@ -59,7 +59,7 @@ Feature: Create new report
     When the user selects the report 'Automated Updated Regression Test Report' in the reports table
     And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
 
-  @reports
+  @reports @focus
   Scenario: Delete report and then cancel
     Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
