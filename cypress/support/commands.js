@@ -420,7 +420,7 @@ Cypress.Commands.add('findRadio', radio => {
         .type(radio);
       cy.get('[data-qa=radio-filter-modal-apply]')
         .click({ force: true })
-        .wait(2000)
+        .wait(3000)
         .wait('@POSTradiosAdvancedSearch')
         .then(() => {
           return cy.get(`[data-qa=radio-table]`).find('table>tbody');
