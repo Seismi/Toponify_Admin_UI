@@ -11,6 +11,10 @@ import { Roles } from '@app/core/directives/by-role.directive';
 export class WorkPackagesTableComponent implements AfterViewInit {
   public Roles = Roles;
   public filterValue: string;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
   @Input() selectedRowIndex: string | number = -1;
   @Input()
   set data(data: WorkPackageEntity[]) {
@@ -29,11 +33,11 @@ export class WorkPackagesTableComponent implements AfterViewInit {
     if (pagination) {
       console.log(pagination)
       this.page = pagination;
+      this.paginator.firstPage()
     }
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['archive', 'name', 'status', 'owners', 'approvers'];
