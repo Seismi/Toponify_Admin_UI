@@ -29,3 +29,9 @@ export interface Page {
   totalPages: number;
   number: number;
 }
+
+export interface DocumentStandardsApiRequest {
+  page: number;
+  size: number;
+  textFilter: string;
+}
