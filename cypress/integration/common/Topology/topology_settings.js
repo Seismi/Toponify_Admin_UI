@@ -49,11 +49,6 @@ module.exports = {
       method: 'GET',
       name: 'Teams'
     },
-    radiosAdvancedSearch: {
-      api: `${api_version}/radios/advanced/search?*`,
-      method: 'POST',
-      name: 'radiosAdvancedSearch'
-    },
     GetNodesScopeQuery: {
       api: `${api_version}/nodes?scopeQuery*`,
       method: 'GET',
@@ -173,6 +168,26 @@ module.exports = {
       api: `${api_version}/scopes/*/nodes/*`,
       method: 'DELETE',
       name: 'ScopesNodes'
+    },
+    GetRadios: {
+      api: `${api_version}/radios?*`,
+      method: 'GET',
+      name: 'Radios'
+    },
+    POSTRadios: {
+      api: `${api_version}/radios`,
+      method: 'POST',
+      name: 'Radios'
+    },
+    POSTWorkPackageNodeRadios: {
+      api: `${api_version}/workpackages/*/nodes/*/radios/*`,
+      method: 'POST',
+      name: 'WorkPackageNodeRadios'
+    },
+    PostReply: {
+      api: `${api_version}/radios/*/reply`,
+      method: 'POST',
+      name: 'RadioReply'
     }
   }
 };
