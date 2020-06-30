@@ -57,6 +57,8 @@ export function reducer(state = initialState, action: UserActionsUnion): State {
       };
     }
 
+    case UserActionTypes.AddUserRoleSuccess:
+    case UserActionTypes.AddUserTeamSuccess:
     case UserActionTypes.LoadUserSuccess: {
       return {
         ...state,

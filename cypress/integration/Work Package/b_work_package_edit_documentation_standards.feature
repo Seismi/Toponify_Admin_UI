@@ -100,7 +100,7 @@ Feature: Work Package Edit Documentation Standards Feature
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters boolean true into field 'Regression Test Documentation Standard Boolean'
     And the user clicks to 'save' the valid change
-    And the value of 'Regression Test Documentation Standard Boolean' should be true
+    Then the value of 'Regression Test Documentation Standard Boolean' should be true
 
 #STRING TEST
   @documentation_standards  @work_package
