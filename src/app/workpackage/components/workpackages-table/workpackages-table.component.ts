@@ -33,7 +33,6 @@ export class WorkPackagesTableComponent implements AfterViewInit {
     if (pagination) {
       console.log(pagination)
       this.page = pagination;
-      this.paginator.firstPage()
     }
   }
 
@@ -85,5 +84,6 @@ export class WorkPackagesTableComponent implements AfterViewInit {
 
   onSearch(filterValue: string): void {
     this.search.emit(filterValue.trim().toLowerCase());
+    this.paginator.firstPage();
   }
 }
