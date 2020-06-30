@@ -28,5 +28,5 @@ When('the user updates the name to {string}, the description to {string}, the so
 
   cy.get('[data-qa=select-modal-confirm]')
     .click()
-    .wait(['@PUTWorkPackageReports', '@GETReportsQuery']);
+    .wait(['@PUTWorkPackageReports', '@GETReportsQuery', '@GETWorkPackageReportsTags']);
 });

@@ -2,13 +2,13 @@ const { When } = require('cypress-cucumber-preprocessor/steps');
 
 When('the user reloads the Reports page', function(usertype) {
   let wait = [
-    '@GETLayout.all',
+    '@GETMyProfile',
     '@GETScopes.all',
     '@GETScope.all',
     '@GETWorkPackages.all',
-    '@GETNodesWorkPackageQuery.all',
-    '@GETNodeLinksWorkPackageQuery.all',
-    '@GETSelectorAvailabilityQuery.all'
+    '@GETSelectorAvailabilityQuery.all',
+    '@GETReportsFilterQuery',
+    '@GETLayout.all'
   ];
   cy.reload();
   cy.get('[data-qa=spinner]').should('not.be.visible');
