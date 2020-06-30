@@ -10,6 +10,11 @@ export const getDocumentStandards = createSelector(
   state => state.entities
 );
 
+export const getDocumentStandardPage = createSelector(
+  getDocumentStandardFeatureState,
+  state => state.page
+);
+
 export const getDocumentStandard = createSelector(
   getDocumentStandardFeatureState,
   state => state.selected
