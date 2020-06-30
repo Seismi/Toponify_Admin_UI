@@ -38,7 +38,8 @@ export class WorkPackageComponent implements OnInit{
   private workPackageParams: WorkPackageEntitiesHttpParams = {
     textFilter: '',
     page: 0,
-    size: 10
+    size: 10,
+    includeArchived: false
   }
   search$ = new BehaviorSubject<string>('');
   page$: Observable<any>;
@@ -64,7 +65,8 @@ export class WorkPackageComponent implements OnInit{
       this.workPackageParams = {
         textFilter: textFilter,
         page: 0,
-        size: this.workPackageParams.size
+        size: this.workPackageParams.size,
+        includeArchived: this.workPackageParams.includeArchived
       }
       this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     });
@@ -134,7 +136,8 @@ export class WorkPackageComponent implements OnInit{
     this.workPackageParams= {
       textFilter: this.workPackageParams.textFilter,
       page: page.pageIndex,
-      size: page.pageSize
+      size: page.pageSize,
+      includeArchived: this.workPackageParams.includeArchived
     } 
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams))
   }
@@ -166,9 +169,12 @@ export class WorkPackageComponent implements OnInit{
   }
 
   getArchivedWorkPackages(checked: boolean): void {
-    const queryParams = {
+    this.workPackageParams= {
+      textFilter: this.workPackageParams.textFilter,
+      page: this.workPackageParams.page,
+      size: this.workPackageParams.size,
       includeArchived: checked ? true : false
-    };
-    this.store.dispatch(new LoadWorkPackages(queryParams));
+    } 
+    this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
   }
 }
