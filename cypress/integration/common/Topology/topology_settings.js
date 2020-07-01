@@ -188,6 +188,11 @@ module.exports = {
       api: `${api_version}/radios/*/reply`,
       method: 'POST',
       name: 'RadioReply'
+    },
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
     }
   }
 };
