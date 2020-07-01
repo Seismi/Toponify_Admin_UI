@@ -40,8 +40,10 @@ Feature: Create new report
     Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
     And the user selects the report 'Automated Regression Test Report' in the reports table
-    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description', the source system to 'Automated Regression Test Reporting System'
-    And the user cancels the update of the report
+    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description'
+    And the user cancels the update of the report name and description
+    And the user updates the source system to 'Automated Regression Test Reporting System'
+    And the user cancels the update of source system
     Then the new report 'Automated Regression Test Report' should exist in the reports table
     #When the user selects the report 'Automated Regression Test Report' in the reports table
     Then the details pane should reflect the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
@@ -51,13 +53,15 @@ Feature: Create new report
     Given the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
     And the user selects the report 'Automated Regression Test Report' in the reports table
-    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description', the source system to 'Automated Regression Test Reporting System'
-    And the user confirms the update of the report
+    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description'
+    And the user confirms the update of the report name and description
+    And the user updates the source system to 'Automated Regression Test Reporting System'
+    And the user confirms the update of source system
     Then the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
-    #When the user reloads the Reports page
-    #Then the new report 'Automated Updated Regression Test Report' should exist in the reports table
+    When the user reloads the Reports page
+    Then the new report 'Automated Updated Regression Test Report' should exist in the reports table
     #When the user selects the report 'Automated Updated Regression Test Report' in the reports table
-    #And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
+    And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
 
   @reports
   Scenario: Delete report and then cancel
