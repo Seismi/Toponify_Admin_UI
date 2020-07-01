@@ -1547,7 +1547,10 @@ export class DiagramTemplatesService {
       go.Link,
       {
         selectable: false,
-        isLayoutPositioned: true
+        isLayoutPositioned: true,
+        routing: go.Link.Orthogonal,
+        fromEndSegmentLength: 30 ,
+        toEndSegmentLength: 30
       },
       $(go.Shape, {
         isPanelMain: true,
@@ -1555,6 +1558,13 @@ export class DiagramTemplatesService {
         strokeWidth: 0
       }),
       $(go.Panel, 'Vertical',
+        {
+          alignmentFocus: go.Spot.Center,
+          segmentFraction: 1
+        },
+        new go.Binding('segmentIndex', '', function() {
+          return this.currentFilterLevel === Level.sources ? 1 : -2;
+        }.bind(this)),
         $(go.Panel, 'Auto',
           {
             margin: 5
