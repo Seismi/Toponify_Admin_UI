@@ -83,12 +83,12 @@ export class DocumentationStandardsComponent implements OnInit {
     this.search$.next(textFilter);
   }
 
-  onPageChange(page){
-    this.documentStandardParams= {
+  onPageChange(page) {
+    this.documentStandardParams = {
       textFilter: this.documentStandardParams.textFilter,
       page: page.pageIndex,
       size: page.pageSize,
-    } 
+    }
     this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams))
   }
 }

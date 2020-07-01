@@ -53,7 +53,6 @@ export class DocumentationStandardsTableComponent {
 
   ngAfterViewInit() {
     this.paginator.page.subscribe(nextPage => {
-      // debugger;
       this.pageChange.emit(nextPage);
     });
   }
@@ -68,7 +67,7 @@ export class DocumentationStandardsTableComponent {
   }
 
   onSearch(filterValue: string): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.search.emit(filterValue.trim().toLowerCase());
     this.paginator.firstPage()
   }
 }
