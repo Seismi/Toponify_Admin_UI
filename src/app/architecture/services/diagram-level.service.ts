@@ -25,7 +25,8 @@ export enum Level {
   dimensionMap = 'dimension map',
   attribute = 'attribute',
   usage = 'usage analysis',
-  sources = 'sources'
+  sources = 'sources',
+  targets = 'targets'
 }
 
 // Numbers associated to each level in the data store
@@ -580,7 +581,7 @@ export class DiagramLevelService {
       this.createNodeUsageLanes(diagram);
     }
 
-    if (level === Level.sources) {
+    if ([Level.sources, Level.targets].includes(level)) {
       diagram.allowMove = false;
     }
 
@@ -595,8 +596,8 @@ export class DiagramLevelService {
     } else {
       diagram.layout = $(go.LayeredDigraphLayout, {
         setsPortSpots: level === Level.usage,
-        // Prevent rearranging diagram automatically unless in usage view or sources view
-        isOngoing: [Level.usage, Level.sources].includes(level),
+        // Prevent rearranging diagram automatically unless in usage, sources or targets view
+        isOngoing: [Level.usage, Level.sources, Level.targets].includes(level),
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
         isRouting: true,

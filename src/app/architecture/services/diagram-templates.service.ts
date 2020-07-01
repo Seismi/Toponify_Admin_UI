@@ -1020,7 +1020,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return ![Level.usage, Level.sources].includes(this.currentFilterLevel);
+          return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       forPalette ? {
@@ -1037,7 +1037,7 @@ export class DiagramTemplatesService {
       } : {},
       // Have the diagram position the node if no location set
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        return locationMissing || Level.sources === this.currentFilterLevel;
+        return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
@@ -1092,7 +1092,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return ![Level.usage, Level.sources].includes(this.currentFilterLevel);
+          return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       !forPalette
@@ -1112,9 +1112,9 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set or in node usage view or sources view
+      // Have the diagram position the node if no location set or in node usage, sources or targets view
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        return locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel);
+        return locationMissing || [Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
       $(
         go.Shape,
@@ -1224,7 +1224,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return ![Level.usage, Level.sources].includes(this.currentFilterLevel);
+          return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       new go.Binding('resizable', 'middleExpanded', function(middleExpanded) {
@@ -1247,9 +1247,9 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set or in node usage view or sources view
+      // Have the diagram position the node if no location set or in node usage, sources or targets view
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        return locationMissing || [Level.usage, Level.sources].includes(this.currentFilterLevel);
+        return locationMissing || [Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
       $(go.TextBlock,
         textFont('bold 20px'),
@@ -1344,18 +1344,18 @@ export class DiagramTemplatesService {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
       new go.Binding('relinkableFrom', '', function(linkData): boolean {
-        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
           || !!linkData.isTemporary;
       }.bind(this)),
       new go.Binding('relinkableTo', '', function(linkData): boolean {
-        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
           || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
       new go.Binding('isLayoutPositioned', 'routeMissing', function(routeMissing) {
-          return routeMissing || Level.sources === this.currentFilterLevel;
+          return routeMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
       new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
@@ -1426,18 +1426,18 @@ export class DiagramTemplatesService {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
       new go.Binding('relinkableFrom', '', function(linkData): boolean {
-        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
           || !!linkData.isTemporary;
       }.bind(this)),
       new go.Binding('relinkableTo', '', function(linkData): boolean {
-        return !(this.currentFilterLevel.includes('map') || this.currentFilterLevel === Level.sources)
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
           || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
       new go.Binding('isLayoutPositioned', 'routeMissing', function(routeMissing) {
-        return routeMissing || Level.sources === this.currentFilterLevel;
+        return routeMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
       this.getStandardLinkOptions(forPalette),
       {
@@ -1541,7 +1541,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Template for links to unconnected sources in source view
+  // Template for links to unconnected sources/targets in sources/targets view
   getLinkWarningTemplate() {
     return $(
       go.Link,

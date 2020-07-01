@@ -107,5 +107,6 @@
     <br>
     <button mat-flat-button color="primary">Make Master</button>
     <button data-qa="object-details-see-sources" mat-flat-button color="primary" *ngIf="['master data set','data set'].includes(nodeCategory)" (click)="onFindSources()">Find Sources</button>
+    <button data-qa="object-details-see-targets" mat-flat-button color="primary" *ngIf="['master data set','data set'].includes(nodeCategory)" (click)="onFindTargets()">Find Targets</button>
   </div>
 </form>

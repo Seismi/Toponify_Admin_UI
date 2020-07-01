@@ -159,7 +159,9 @@ export class DiagramListenersService {
 
         const currentLevel = this.currentLevel;
 
-        if (currentLevel && !currentLevel.endsWith('map') && ![Level.usage, Level.sources].includes(currentLevel)) {
+        if (currentLevel && !currentLevel.endsWith('map') &&
+          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
+        ) {
 
           // Check each node for overlap
           event.diagram.nodes.each(function(node: go.Node): void {
@@ -241,15 +243,15 @@ export class DiagramListenersService {
       }
     }
 
-    // Ensure groups in sources view are laid out and sized correctly.
-    // Also apply a blue shadow to the node for which sources are being viewed.
+    // Ensure groups in sources or targets view are laid out and sized correctly.
+    // Also apply a blue shadow to the node for which sources/targets are being viewed.
     diagram.addDiagramListener(
       'LayoutCompleted',
       function (event: go.DiagramEvent): void {
         const currentLevel = this.currentLevel;
         const nodeId = this.nodeId;
 
-        if (currentLevel === Level.sources) {
+        if ([Level.sources, Level.targets].includes(currentLevel)) {
           diagram.nodes.each(function(node) {
             if (!node.location.isReal() && node.containingGroup && node.containingGroup.location.isReal()) {
               node.containingGroup.layout.isValidLayout = false;
