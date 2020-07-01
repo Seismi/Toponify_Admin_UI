@@ -120,10 +120,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   }
 
   onSelectedTabChange(index: number) {
-    // index 2 represents reports tab
-    if (index === 2) {
-      this.selectedTabChange.emit(2);
-    }
+      this.selectedTabChange.emit(index);
   }
 
   onSaveNode(): void {
