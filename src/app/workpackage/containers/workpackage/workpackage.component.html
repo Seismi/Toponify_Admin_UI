@@ -29,6 +29,9 @@
                   (workpackageSelected)="onSelectWorkpackage($event)"
                   (addWorkpackage)="onAddWorkPackage()"
                   [selectedRowIndex]="selectedRowIndex"
+                  (search)="onSearch($event)"
+                  [pagination]="page$ | async"
+                  (pageChange)="onPageChange($event)"
                 >
                 </smi-workpackages-table>
               </mat-tab>
