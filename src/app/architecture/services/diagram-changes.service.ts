@@ -753,7 +753,7 @@ export class DiagramChangesService {
       }
     });
 
-    if ([Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
+    if ([Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage, Level.sources].includes(this.currentLevel)) {
       this.groupMemberSizeChanged(node);
       // Update node's layout in map view or usage view
       node.findTopLevelPart().invalidateLayout();
