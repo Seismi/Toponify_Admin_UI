@@ -16,3 +16,17 @@ And('the user confirm update', () => {
     .click()
     .wait('@PUTAttributeAndRule');
 });
+
+And('the user checks if attribute {string} {string} exist in the table', (attr, exist) => {
+  attr = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(attr);
+  cy.get('[data-qa=rules-and-attributes-quick-search]')
+    .clear()
+    .type(attr);
+  if (exist === 'not') {
+    cy.get('[data-qa=rules-and-attributes-table]').find('table>tbody').length > 0;
+  } else {
+    cy.get('[data-qa=rules-and-attributes-table]').find('table>tbody');
+  }
+});
