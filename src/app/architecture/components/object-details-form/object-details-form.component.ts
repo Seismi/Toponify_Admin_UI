@@ -152,6 +152,10 @@ export class ObjectDetailsFormComponent {
       ? false : this.clickedOnLink || this.nodeCategory === nodeCategories.transformation ? true : false;
   }
 
+  canBeShared(): boolean {
+    return [nodeCategories.masterDataSet, nodeCategories.dataSet].includes(this.nodeCategory as nodeCategories);
+  }
+
   getDisable(category?: nodeCategories): boolean {
     return this.part.data.layer === layers.data
       && [nodeCategories.dataStructure, nodeCategories.transformation].includes(category || this.part.data.category) ? true : false;
