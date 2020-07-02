@@ -8,7 +8,7 @@ Feature: Scopes and Layouts
     And the scope called 'Created Automated Regression Test Scope' does not exist
     And the scope called 'Automated Updated Regression Test Scope' does not exist
 
-  @scopes_layouts
+  @scopes_layouts @focus
   Scenario:  Creates a scope and check it appears in table and topology dropdown
     When the user creates a new scope called 'Created Automated Regression Test Scope'
     Then the scope called 'Created Automated Regression Test Scope' should appear in the scopes table with filtering component 'system'
@@ -20,7 +20,7 @@ Feature: Scopes and Layouts
     And the user selects Topology menu item
     And the scopes header drop down should contain 'Created Automated Regression Test Scope'
 
-  @scopes_layouts
+  @scopes_layouts @focus
   Scenario:  Creates a layout and check it appears in table and topology dropdown
     Given the user creates a new scope called 'Created Automated Regression Test Scope'
     And the user selects the scope called 'Created Automated Regression Test Scope'

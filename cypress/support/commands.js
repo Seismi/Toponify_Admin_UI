@@ -40,7 +40,12 @@ Cypress.Commands.add('login', usertype => {
           .wait('@POSTlogin')
           .then(response => {
             if (response.status === 200)
-              cy.wait(['@GETnavigateMyWorkPackages', '@GETnavigateMyRadios', '@GETnavigateMyLayouts', '@GETMyProfile']);
+              cy.wait([
+                '@GETnavigateMyWorkPackages',
+                '@GETnavigateMyRadios',
+                '@GETnavigateMyLayouts',
+                '@GETMyProfile.all'
+              ]);
           });
       });
   });

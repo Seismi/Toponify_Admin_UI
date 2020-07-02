@@ -49,25 +49,15 @@ module.exports = {
       method: 'GET',
       name: 'Teams'
     },
-    GetNodesScopeQuery: {
-      api: `${api_version}/nodes?scopeQuery*`,
+    GetNodesQuery: {
+      api: `${api_version}/nodes?*`,
       method: 'GET',
-      name: 'NodesScopeQuery'
+      name: 'NodesQuery'
     },
-    GetNodeLinksScopeQuery: {
-      api: `${api_version}/nodelinks?scopeQuery*`,
+    GetNodeLinksQuery: {
+      api: `${api_version}/nodelinks?*`,
       method: 'GET',
-      name: 'NodeLinksScopeQuery'
-    },
-    GetNodesWPQuery: {
-      api: `${api_version}/nodes?workPackageQuery*`,
-      method: 'GET',
-      name: 'NodesWorkPackageQuery'
-    },
-    GetNodeLinksWPQuery: {
-      api: `${api_version}/nodelinks?workPackageQuery*`,
-      method: 'GET',
-      name: 'NodeLinksWorkPackageQuery'
+      name: 'NodeLinksQuery'
     },
     GetSelectorWorkPackage: {
       api: `${api_version}/workpackages/selector/availability*`,
@@ -193,6 +183,11 @@ module.exports = {
       api: `${api_version}/radios/advanced/search?*`,
       method: 'POST',
       name: 'radiosAdvancedSearch'
+    },
+    PUTLayoutNodes: {
+      api: `${api_version}/layouts/*/nodes/groupAreaSize`,
+      method: 'PUT',
+      name: 'LayoutNodes'
     }
   }
 };
