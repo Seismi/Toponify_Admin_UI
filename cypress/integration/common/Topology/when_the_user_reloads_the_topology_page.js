@@ -9,11 +9,11 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETWorkPackages.all',
     '@GETTeams.all',
     '@POSTradiosAdvancedSearch.all',
-    '@GETNodesScopeQuery.all',
-    '@GETNodeLinksWorkPackageQuery.all',
+    '@GETNodesQuery.all',
+    '@GETNodeLinksQuery.all',
     '@GETSelectorAvailabilityQuery.all',
-    '@GETNodesWorkPackageQuery.all',
-    '@GETNodeLinksWorkPackageQuery.all',
+    '@GETNodesQuery.all',
+    '@GETNodeLinksQuery.all',
     '@GETSelectorAvailabilityQuery.all'
   ];
   cy.reload();

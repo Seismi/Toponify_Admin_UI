@@ -40,7 +40,12 @@ Cypress.Commands.add('login', usertype => {
           .wait('@POSTlogin')
           .then(response => {
             if (response.status === 200)
-              cy.wait(['@GETnavigateMyWorkPackages', '@GETnavigateMyRadios', '@GETnavigateMyLayouts', '@GETMyProfile']);
+              cy.wait([
+                '@GETnavigateMyWorkPackages',
+                '@GETnavigateMyRadios',
+                '@GETnavigateMyLayouts',
+                '@GETMyProfile.all'
+              ]);
           });
       });
   });
@@ -51,6 +56,7 @@ Cypress.Commands.add('selectDropDownNoClick', (dropdown, element) => {
     .click()
     .get('mat-option')
     .contains(element)
+    .should('exist')
     .click({ force: true });
 });
 
@@ -157,7 +163,8 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
       .check({ force: true })
       .uncheck({ force: true });
   }
-  cy.wait('@GETArchiveWorkPackages.all'); // wait for the return of the archive work packages
+  //  cy.wait('@GETArchiveWorkPackages.all'); // wait for the return of the archive work packages
+  cy.wait('@GETWorkPackagePaging.all'); // wait for the return of the archive work packages
   cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name)
@@ -176,19 +183,6 @@ Cypress.Commands.add('findDocumentationStandard', name => {
     .then(() => {
       return cy
         .get(`[data-qa=documentation-standards-table]`) // get the work packages table
-        .find('table>tbody'); // find the table
-    });
-});
-
-Cypress.Commands.add('findScope', name => {
-  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
-    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
-    .clear() //clear the box
-    .type(name)
-    .should('have.value', name) // type the name
-    .then(() => {
-      return cy
-        .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
         .find('table>tbody'); // find the table
     });
 });
@@ -346,21 +340,60 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
     });
 });
 
-Cypress.Commands.add('deleteScope', scope => {
-  cy.selectRow('scopes-and-layouts-scope-table', scope)
-    //.wait('@GETWorkPackage')
+Cypress.Commands.add('findScope', name => {
+  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
+    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name)
+    .should('have.value', name) // type the name
+    .wait(3000)
+    .wait('@GETScopes.all')
     .then(() => {
-      cy.get('table>tbody>tr :first') // get the table body
-        .click()
-        .wait(['@GETScope', '@GETLayout'])
+      return cy
+        .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
+Cypress.Commands.add('findRadio', radio => {
+  cy.get('[data-qa=radio-filter]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=radio-filter-text]')
+        .clear()
+        .type(radio);
+      cy.get('[data-qa=radio-filter-modal-apply]')
+        .click({ force: true })
+        .wait(3000)
+        .wait('@POSTradiosAdvancedSearch')
         .then(() => {
-          cy.get('[data-qa=scopes-and-layouts-delete]')
-            .click()
-            .then(() => {
-              cy.get('[data-qa=delete-modal-yes]').click();
-            });
+          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
         });
     });
+});
+
+Cypress.Commands.add('findDocumentStandard', title => {
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title)
+    .should('have.value', title)
+    .wait(1000);
+  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('deleteScope', scope => {
+  cy.selectRow('scopes-and-layouts-scope-table', scope).then(() => {
+    cy.get('table>tbody>tr :first') // get the table body
+      .click()
+      .wait(['@GETScope', '@GETLayout'])
+      .then(() => {
+        cy.get('[data-qa=scopes-and-layouts-delete]')
+          .click()
+          .then(() => {
+            cy.get('[data-qa=delete-modal-yes]').click();
+          });
+      });
+  });
 });
 
 Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
@@ -408,23 +441,6 @@ Cypress.Commands.add('deleteWorkPackage', name => {
             }
           });
       });
-    });
-});
-
-Cypress.Commands.add('findRadio', radio => {
-  cy.get('[data-qa=radio-filter]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=radio-filter-text]')
-        .clear()
-        .type(radio);
-      cy.get('[data-qa=radio-filter-modal-apply]')
-        .click({ force: true })
-        .wait(3000)
-        .wait('@POSTradiosAdvancedSearch')
-        .then(() => {
-          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
-        });
     });
 });
 
@@ -585,13 +601,6 @@ Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component
     });
     expect(result.length).to.be.greaterThan(0);
   });
-});
-
-Cypress.Commands.add('findDocumentStandard', title => {
-  cy.get('[data-qa=documentation-standards-quick-search]')
-    .clear()
-    .type(title);
-  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
 });
 
 Cypress.Commands.add('deleteDocumentStandard', doc_standard => {

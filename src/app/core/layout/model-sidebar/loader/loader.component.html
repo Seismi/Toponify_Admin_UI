@@ -1,5 +1,5 @@
 
-<mat-spinner *ngIf="loadingStatus == status.loading"></mat-spinner>
+<mat-spinner data-qa="details-spinner" *ngIf="loadingStatus == status.loading"></mat-spinner>
 <div [ngClass]="'error'" *ngIf="loadingStatus == status.error">
   <mat-icon>error</mat-icon>&nbsp;Something went wrong. Couldn't load selected element data.
 </div>
