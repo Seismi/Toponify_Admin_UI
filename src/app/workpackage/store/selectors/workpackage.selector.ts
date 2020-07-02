@@ -35,6 +35,11 @@ export const getSelectedWorkPackage = createSelector(
   state => state.selectedWorkPackage
 );
 
+export const getWorkPackagesPage = createSelector(
+  getWorkPackageState,
+  state => state.page
+);
+
 export const getSelectedWorkpackages = createSelector(
   getWorkPackageState,
   state => state.entities.filter(item => state.selectedWorkPackageIds.some(id => id === item.id))
