@@ -965,7 +965,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
-        this.getNodeReports(workPackageIds);
+        //TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
+        debugger;
+        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === 2){
+          this.getNodeReports(workPackageIds); 
+        }
       }
     }
 
@@ -1635,6 +1639,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.diagramComponent.updateDiagramArea();
     this.realignTabUnderline();
+    
+    // Load Node Reports
+    if (index === 2) {
+      const workPackageIds = this.getWorkPackageIds() 
+      this.getNodeReports(workPackageIds);
+    }
+  }
+
+  onSelectedTabChange(index: number) {
+    // Load Node Reports
+    this.selectedRightTab = index;
+    if (index === 2) {
+      const workPackageIds = this.getWorkPackageIds() 
+      this.getNodeReports(workPackageIds);
+    }
+  }
+
+  private getWorkPackageIds() {
+    return this.selectedWorkPackageEntities.map(item => item.id);
   }
 
   onHideRightPane() {

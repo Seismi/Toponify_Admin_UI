@@ -4,6 +4,7 @@
   mat-stretch-tabs
   class="stretched-tabs"
   [@.disabled]="true"
+  (selectedIndexChange)="onSelectedTabChange($event)"
 >
   <!-- Details TAB -->
   <mat-tab *ngIf="part?.isSelected && !multipleSelected">
