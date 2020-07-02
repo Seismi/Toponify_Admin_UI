@@ -431,7 +431,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           new LoadReportTags({
             workPackageId: this.workpackageId,
-            reportId: this.report.id
+            reportId: this.reportId
           })
         );
       });

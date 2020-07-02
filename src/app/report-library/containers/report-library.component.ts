@@ -94,7 +94,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.selectedScope$.subscribe(scope => {
         this.setQueryParams({
-          scopeQuery: scope ? scope.id : null
+          scopeQuery: scope ? scope.id : defaultScopeId
         });
       })
     );
