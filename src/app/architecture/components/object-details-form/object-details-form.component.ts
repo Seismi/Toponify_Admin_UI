@@ -69,6 +69,7 @@ export class ObjectDetailsFormComponent {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() findSources = new EventEmitter<void>();
   @Output() viewStructure = new EventEmitter<void>();
   @Output() editSourceOrTarget = new EventEmitter<string>();
   @Output() switchSourceAndTarget = new EventEmitter<void>();
@@ -138,6 +139,10 @@ export class ObjectDetailsFormComponent {
     this.seeUsage.emit();
   }
 
+  onFindSources() {
+    this.findSources.emit();
+  }
+
   get isNode(): boolean {
     return this.part && this.part.data && !this.part.data.hasOwnProperty('sourceId');
   }
@@ -145,6 +150,10 @@ export class ObjectDetailsFormComponent {
   get isLink(): boolean {
     return (this.part.data.layer === layers.reportingConcept)
       ? false : this.clickedOnLink || this.nodeCategory === nodeCategories.transformation ? true : false;
+  }
+
+  canBeShared(): boolean {
+    return [nodeCategories.masterDataSet, nodeCategories.dataSet].includes(this.nodeCategory as nodeCategories);
   }
 
   getDisable(category?: nodeCategories): boolean {
