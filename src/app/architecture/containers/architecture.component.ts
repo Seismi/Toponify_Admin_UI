@@ -19,6 +19,7 @@ import {
   LoadNodeReports,
   LoadNodes,
   LoadNodeUsageView,
+  LoadSourcesView,
   NodeActionTypes,
   RemoveAllDraft,
   RemoveGroupMemberIds,
@@ -430,6 +431,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
       this.currentFilterLevel = filterLevel;
+      this.allowMove = (this.allowMove || this.workPackageIsEditable) && this.currentFilterLevel !== Level.sources;
     });
 
     this.addChildSubscription = merge(
@@ -702,8 +704,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // Show layout data in settings tab
         this.layoutSettingsService.layoutSettingsForm.patchValue({ ...layout.settings });
         this.layoutSettings = { ...layout.settings };
-        // Reload nodes and links for new layout if not in map view
-        if (this.currentFilterLevel && !this.currentFilterLevel.endsWith('map') && !this.nodesSubscription) {
+        // Reload nodes and links for new layout if not in map view or source view
+        if (this.currentFilterLevel
+          && !this.currentFilterLevel.endsWith('map')
+          && this.currentFilterLevel !== Level.sources
+          && !this.nodesSubscription
+        ) {
           this.subscribeForNodesLinksData();
         }
       }
@@ -778,8 +784,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(workpackages => {
-        this.allowMove = workpackages.length > 0;
-        this.workPackageIsEditable = this.allowMove;
+        this.workPackageIsEditable = workpackages.length > 0;
+        this.allowMove = this.workPackageIsEditable && this.currentFilterLevel !== Level.sources;
       });
 
     this.subscriptions.push(
@@ -917,6 +923,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
+    } else if (layer === Level.sources) {
+      this.nodeStore.dispatch(new LoadSourcesView({ node: id, query: queryParams}));
     } else {
       queryParams.layerQuery = layer;
       this.nodeStore.dispatch(new LoadNodes(queryParams));
@@ -1066,7 +1074,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   allowEditLayout(): void {
-    this.allowMove = !this.allowMove;
+
+    this.allowMove = !this.allowMove && this.currentFilterLevel !== Level.sources;
     this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
@@ -1256,6 +1265,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });
+          } else if (this.currentFilterLevel && this.currentFilterLevel === Level.sources) {
+            return nodes.map(function(node) {
+              const hasMembers = nodes.some(function(member) {return member.group === node.id; });
+              return { ...node,
+                middleExpanded: hasMembers ? middleOptions.group : middleOptions.none,
+                bottomExpanded: hasMembers,
+                locationMissing: false
+              };
+            });
           }
 
           return nodes.map(
@@ -1304,9 +1322,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (
             this.currentFilterLevel &&
-            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
+            (this.currentFilterLevel.endsWith('map') ||
+              [Level.sources, Level.usage].includes(this.currentFilterLevel))
           ) {
-            return links;
+            return links.map(function(link) {return {...link, routeMissing: true}; });
           }
 
           return links.map(
@@ -2293,6 +2312,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   exitDependenciesView() {
     this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
+  }
+
+  onFindSources() {
+    this.routerStore.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.sources,
+        id: this.selectedNode.id
+      })
+    );
   }
 
   onViewStructure() {
