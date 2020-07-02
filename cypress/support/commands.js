@@ -158,7 +158,8 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
       .check({ force: true })
       .uncheck({ force: true });
   }
-  cy.wait('@GETArchiveWorkPackages.all'); // wait for the return of the archive work packages
+  //  cy.wait('@GETArchiveWorkPackages.all'); // wait for the return of the archive work packages
+  cy.wait('@GETWorkPackagePaging.all'); // wait for the return of the archive work packages
   cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name)
