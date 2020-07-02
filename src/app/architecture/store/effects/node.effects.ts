@@ -128,6 +128,18 @@ export class NodeEffects {
     })
   );
 
+  @Effect()
+  loadTargetsView$ = this.actions$.pipe(
+    ofType<NodeActions.LoadTargetsView>(NodeActionTypes.LoadTargetsView),
+    map(action => action.payload),
+    switchMap((payload: { node: string; query: { workPackageQuery: string[] } }) => {
+      return this.nodeService.getTargetsView(payload.node, payload.query).pipe(
+        switchMap((data: any) => [new NodeActions.LoadTargetsViewSuccess(data.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadTargetsViewFailure(error)))
+      );
+    })
+  );
+
   // Could be moved into draft
   @Effect()
   updatePartsLayout$ = this.actions$.pipe(

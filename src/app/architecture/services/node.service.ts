@@ -76,6 +76,11 @@ export class NodeService {
     return this.http.get<any>(`/nodes/${id}/sources`, { params: params });
   }
 
+  getTargetsView(id: string, queryParams?: { workPackageQuery: string[] }): Observable<any> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/nodes/${id}/targets`, { params: params });
+  }
+
   getReports(nodeId: string, queryParams?: GetNodesRequestQueryParams): Observable<NodeReportsApiResponse> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<NodeReportsApiResponse>(`/nodes/${nodeId}/reports`, { params: params });

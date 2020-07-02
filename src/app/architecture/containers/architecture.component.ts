@@ -20,6 +20,7 @@ import {
   LoadNodes,
   LoadNodeUsageView,
   LoadSourcesView,
+  LoadTargetsView,
   NodeActionTypes,
   RemoveAllDraft,
   RemoveGroupMemberIds,
@@ -431,7 +432,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
       this.currentFilterLevel = filterLevel;
-      this.allowMove = (this.allowMove || this.workPackageIsEditable) && this.currentFilterLevel !== Level.sources;
+      this.allowMove = (this.allowMove || this.workPackageIsEditable) &&
+        ![Level.sources, Level.targets].includes(this.currentFilterLevel);
     });
 
     this.addChildSubscription = merge(
@@ -704,10 +706,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // Show layout data in settings tab
         this.layoutSettingsService.layoutSettingsForm.patchValue({ ...layout.settings });
         this.layoutSettings = { ...layout.settings };
-        // Reload nodes and links for new layout if not in map view or source view
+        // Reload nodes and links for new layout if not in map view, source view or target view
         if (this.currentFilterLevel
           && !this.currentFilterLevel.endsWith('map')
-          && this.currentFilterLevel !== Level.sources
+          && ![Level.sources, Level.targets].includes(this.currentFilterLevel)
           && !this.nodesSubscription
         ) {
           this.subscribeForNodesLinksData();
@@ -785,7 +787,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       )
       .subscribe(workpackages => {
         this.workPackageIsEditable = workpackages.length > 0;
-        this.allowMove = this.workPackageIsEditable && this.currentFilterLevel !== Level.sources;
+        this.allowMove = this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.currentFilterLevel);
       });
 
     this.subscriptions.push(
@@ -925,6 +927,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
     } else if (layer === Level.sources) {
       this.nodeStore.dispatch(new LoadSourcesView({ node: id, query: queryParams}));
+    } else if (layer === Level.targets) {
+      this.nodeStore.dispatch(new LoadTargetsView({ node: id, query: queryParams}));
     } else {
       queryParams.layerQuery = layer;
       this.nodeStore.dispatch(new LoadNodes(queryParams));
@@ -1079,7 +1083,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   allowEditLayout(): void {
 
-    this.allowMove = !this.allowMove && this.currentFilterLevel !== Level.sources;
+    this.allowMove = !this.allowMove && ![Level.sources, Level.targets].includes(this.currentFilterLevel);
     this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
@@ -1269,7 +1273,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });
-          } else if (this.currentFilterLevel && this.currentFilterLevel === Level.sources) {
+          } else if (this.currentFilterLevel && [Level.sources, Level.targets].includes(this.currentFilterLevel)) {
             return nodes.map(function(node) {
               const hasMembers = nodes.some(function(member) {return member.group === node.id; });
               return { ...node,
@@ -1327,7 +1331,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           if (
             this.currentFilterLevel &&
             (this.currentFilterLevel.endsWith('map') ||
-              [Level.sources, Level.usage].includes(this.currentFilterLevel))
+              [Level.sources, Level.targets, Level.usage].includes(this.currentFilterLevel))
           ) {
             return links.map(function(link) {return {...link, routeMissing: true}; });
           }
@@ -2341,6 +2345,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.routerStore.dispatch(
       new UpdateQueryParams({
         filterLevel: Level.sources,
+        id: this.selectedNode.id
+      })
+    );
+  }
+
+  onFindTargets() {
+    this.routerStore.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.targets,
         id: this.selectedNode.id
       })
     );

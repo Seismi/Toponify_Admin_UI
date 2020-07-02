@@ -506,6 +506,33 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.LoadTargetsView: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
+      };
+    }
+
+    case NodeActionTypes.LoadTargetsViewSuccess: {
+      return {
+        ...state,
+        entities: [...action.payload.nodes],
+        links: [...action.payload.links],
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
+      };
+    }
+
+    case NodeActionTypes.LoadTargetsViewFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loadingNodes: LoadingStatus.error,
+        loadingLinks: LoadingStatus.error
+      };
+    }
+
     case NodeActionTypes.LoadNodeLinks: {
       return {
         ...state,

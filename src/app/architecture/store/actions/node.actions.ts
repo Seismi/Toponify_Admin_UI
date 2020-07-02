@@ -37,6 +37,9 @@ export enum NodeActionTypes {
   LoadSourcesView = '[Node] Load Node Sources View',
   LoadSourcesViewSuccess = '[Node] Load Node Sources View Success',
   LoadSourcesViewFailure = '[Node] Load Node Sources View Fail',
+  LoadTargetsView = '[Node] Load Node Targets View',
+  LoadTargetsViewSuccess = '[Node] Load Node Targets View Success',
+  LoadTargetsViewFailure = '[Node] Load Node Targets View Fail',
   UpdateNodeLocations = '[Node] Update node locations',
   UpdateNodeLocationsSuccess = '[Node] Update node locations Success',
   UpdateNodeLocationsFailure = '[Node] Update node locations Fail',
@@ -178,6 +181,21 @@ export class LoadSourcesViewSuccess implements Action {
 
 export class LoadSourcesViewFailure implements Action {
   readonly type = NodeActionTypes.LoadSourcesViewFailure;
+  constructor(public payload: Error) {}
+}
+
+export class LoadTargetsView implements Action {
+  readonly type = NodeActionTypes.LoadTargetsView;
+  constructor(public payload: { node: string; query: { workPackageQuery: string[] } }) {}
+}
+
+export class LoadTargetsViewSuccess implements Action {
+  readonly type = NodeActionTypes.LoadTargetsViewSuccess;
+  constructor(public payload: any) {}
+}
+
+export class LoadTargetsViewFailure implements Action {
+  readonly type = NodeActionTypes.LoadTargetsViewFailure;
   constructor(public payload: Error) {}
 }
 
@@ -509,6 +527,9 @@ export type NodeActionsUnion =
   | LoadSourcesView
   | LoadSourcesViewSuccess
   | LoadSourcesViewFailure
+  | LoadTargetsView
+  | LoadTargetsViewSuccess
+  | LoadTargetsViewFailure
   | UpdateNodeLocations
   | UpdateNodeLocationsSuccess
   | UpdateNodeLocationsFailure
