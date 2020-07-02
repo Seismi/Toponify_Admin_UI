@@ -13,11 +13,7 @@ Given('the user creates a new {string} system with name {string}', function(comp
           .should('have.value', name)
           .then(() => {
             cy.get('[data-qa=topology-components-or-link-modal-save]').click();
-            cy.wait([
-              '@POSTWorkPackageNodesScopeQuery.all',
-              '@GETNodesWorkPackageQuery.all',
-              '@GETNodeLinksWorkPackageQuery.all'
-            ]);
+            cy.wait(['@POSTWorkPackageNodesScopeQuery.all', '@GETNodesQuery.all', '@GETNodeLinksQuery.all']);
             cy.get('[data-qa=details-spinner]').should('not.be.visible');
             cy.get('[data-qa=spinner]').should('not.be.visible');
           });

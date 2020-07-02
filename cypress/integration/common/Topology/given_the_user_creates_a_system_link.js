@@ -28,7 +28,7 @@ When('the user creates a new {string} interface with name {string} between {stri
             .then(() => {
               cy.get('[data-qa=topology-components-or-link-modal-save]')
                 .click()
-                .wait(['@POSTWorkPackagesNodeLinks', '@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery']);
+                .wait(['@POSTWorkPackagesNodeLinks', '@GETNodesQuery', '@GETNodeLinksQuery']);
             });
         });
       });
