@@ -25,7 +25,13 @@ export interface Links {
 }
 export interface Page {
   size: number;
-  totalElements: number;
+  totalObjects: number;
   totalPages: number;
   number: number;
+}
+
+export interface DocumentStandardsApiRequest {
+  page: number;
+  size: number;
+  textFilter: string;
 }
