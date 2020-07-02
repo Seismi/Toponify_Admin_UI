@@ -753,9 +753,15 @@ export class DiagramChangesService {
       }
     });
 
-    if ([Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
+    if ([Level.systemMap,
+      Level.dataMap,
+      Level.dimensionMap,
+      Level.usage,
+      Level.sources,
+      Level.targets].includes(this.currentLevel)
+    ) {
       this.groupMemberSizeChanged(node);
-      // Update node's layout in map view or usage view
+      // Update node's layout in map, usage sources or targets views
       node.findTopLevelPart().invalidateLayout();
     } else {
 

@@ -92,11 +92,14 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() updateTag = new EventEmitter<Tag>();
   @Output() seeUsage = new EventEmitter<void>();
   @Output() seeDependencies = new EventEmitter<void>();
+  @Output() findSources = new EventEmitter<void>();
+  @Output() findTargets = new EventEmitter<void>();
   @Output() viewStructure = new EventEmitter<void>();
   @Output() addToScope = new EventEmitter<void>();
   @Output() editSourceOrTarget = new EventEmitter<string>();
   @Output() switchSourceAndTarget = new EventEmitter<void>();
   @Output() handleRadioPageChange = new EventEmitter<any>();
+  @Output() selectedTabChange = new EventEmitter<Number>();
 
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -116,6 +119,10 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.showDetailTabRef.unsubscribe();
+  }
+
+  onSelectedTabChange(index: number) {
+      this.selectedTabChange.emit(index);
   }
 
   onSaveNode(): void {
@@ -268,6 +275,14 @@ export class RightPanelComponent implements OnInit, OnDestroy {
 
   onSeeDependencies() {
     this.seeDependencies.emit();
+  }
+
+  onFindSources() {
+    this.findSources.emit();
+  }
+
+  onFindTargets() {
+    this.findTargets.emit();
   }
 
   getDisableDataTable(): boolean {

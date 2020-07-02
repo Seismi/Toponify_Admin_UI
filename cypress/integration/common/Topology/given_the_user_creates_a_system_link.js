@@ -15,7 +15,6 @@ When('the user creates a new {string} interface with name {string} between {stri
   target = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(target); // add the branch to the name
-  console.log(name);
   cy.get('[data-qa=topology-table-create-new]')
     .click()
     .then(() => {
@@ -27,7 +26,9 @@ When('the user creates a new {string} interface with name {string} between {stri
             .type(name)
             .should('have.value', name)
             .then(() => {
-              cy.get('[data-qa=topology-components-or-link-modal-save]').click();
+              cy.get('[data-qa=topology-components-or-link-modal-save]')
+                .click()
+                .wait(['@POSTWorkPackagesNodeLinks', '@GETNodesQuery', '@GETNodeLinksQuery']);
             });
         });
       });

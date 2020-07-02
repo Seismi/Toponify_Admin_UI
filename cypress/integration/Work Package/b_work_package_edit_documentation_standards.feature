@@ -5,8 +5,8 @@ Feature: Work Package Edit Documentation Standards Feature
   Background:
     Given a valid user is logged in
     And the user selects Work Package menu item
-    And the work package 'Automated Regression Test Work Package' does not exist
-    And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
+    And the work package 'Created Automated Regression Test Work Package' does not exist
+    And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user selects Documentation Standard menu item
 
 # NUMBER TESTS
@@ -15,7 +15,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters string 'this is some text' into field 'Regression Test Documentation Standard Number'
     And the user clicks to 'save' the invalid change
@@ -27,7 +27,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters number 12314.14 into field "Regression Test Documentation Standard Number"
     And the user clicks to "save" the valid change
@@ -38,7 +38,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters number 12314 into field "Regression Test Documentation Standard Number"
     And the user clicks to "save" the valid change
@@ -50,7 +50,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard Date' exists with type 'Date' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters date 30/02/2012 into field 'Regression Test Documentation Standard Date'
     And the user clicks to "save" the invalid change
@@ -61,7 +61,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard Date' exists with type 'Date' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters date 01/01/2020 into field 'Regression Test Documentation Standard Date'
     And the user clicks to 'save' the valid change
@@ -73,7 +73,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard URL' exists with type 'Hyperlink' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters string 'this is some text' into field 'Regression Test Documentation Standard URL'
     And the user clicks to 'save' the invalid change
@@ -84,7 +84,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard URL' exists with type 'Hyperlink' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters string 'https://www.seismi.net' into field 'Regression Test Documentation Standard URL'
     And the user clicks to 'save' the valid change
@@ -96,7 +96,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard Boolean' exists with type 'Boolean' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters boolean true into field 'Regression Test Documentation Standard Boolean'
     And the user clicks to 'save' the valid change
@@ -108,7 +108,7 @@ Feature: Work Package Edit Documentation Standards Feature
     Given the documentation standard 'Regression Test Documentation Standard String' exists with type 'Text' against 'Work Package' component
     And the user confirms the creation of the documentation standard
     And the user selects Work Package menu item
-    And the 'Automated Regression Test Work Package' is selected
+    And the 'Created Automated Regression Test Work Package' is selected
     And the 'Work Package' 'Documentation Standards' pane is open
     When the user enters string 'This is some text' into field "Regression Test Documentation Standard String"
     And the user clicks to 'save' the valid change

@@ -205,6 +205,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     this.diagram.linkTemplateMap.add(linkCategories.copy, diagramTemplatesService.getLinkCopyTemplate());
 
+    this.diagram.linkTemplateMap.add(linkCategories.warning, diagramTemplatesService.getLinkWarningTemplate());
+
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
     // Set group templates
@@ -419,7 +421,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.workPackageIsEditable) {
       const toolManager = this.diagram.toolManager;
-      toolManager.relinkingTool.isEnabled = this.workPackageIsEditable;
+      toolManager.relinkingTool.isEnabled = this.workPackageIsEditable &&
+        ![Level.sources, Level.targets].includes(this.viewLevel);
 
       this.diagram.selection.each(function(part) {
         // Remove tool-related adornments from selected link (if any) for disabled tools
@@ -432,11 +435,19 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         part.updateAdornments();
       });
 
-      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable;
-      this.diagramChangesService.diagramEditable = this.workPackageIsEditable;
+      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable &&
+        ![Level.sources, Level.targets].includes(this.viewLevel);
+      this.diagramChangesService.diagramEditable = this.workPackageIsEditable &&
+        ![Level.sources, Level.targets].includes(this.viewLevel);
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
+
+      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable &&
+        ![Level.sources, Level.targets].includes(this.viewLevel);
+      this.diagramChangesService.diagramEditable = this.workPackageIsEditable &&
+        ![Level.sources, Level.targets].includes(this.viewLevel);
+
       this.setLevel();
     }
 

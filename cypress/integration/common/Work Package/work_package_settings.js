@@ -26,11 +26,10 @@ module.exports = {
       method: 'PUT',
       name: 'WorkPackage'
     },
-    GetArchiveWorkPackages: {
-      api: `${api_version}/workpackages?includeArchived=*`,
-      //                        api: `${api_version}/workpackages*`,
+    GetWorkPackagePaging: {
+      api: `${api_version}/workpackages?*`,
       method: 'GET',
-      name: 'ArchiveWorkPackages'
+      name: 'WorkPackagePaging'
     },
     PostWorkPackage: {
       api: `${api_version}/workpackages`,

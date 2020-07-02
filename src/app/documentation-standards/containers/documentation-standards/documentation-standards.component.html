@@ -18,6 +18,9 @@
               [data]="documentStandards$ | async"
               (documentSelected)="onSelectDocument($event)"
               (addDocument)="onAddDocument($event)"
+              (search)="onSearch($event)"
+              [pagination]="page$ | async"
+              (pageChange)="onPageChange($event)"
             >
             </smi-documentation-standards-table>
           </div>

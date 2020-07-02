@@ -19,6 +19,8 @@ import {
   LoadNodeReports,
   LoadNodes,
   LoadNodeUsageView,
+  LoadSourcesView,
+  LoadTargetsView,
   NodeActionTypes,
   RemoveAllDraft,
   RemoveGroupMemberIds,
@@ -430,6 +432,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.system }));
       }
       this.currentFilterLevel = filterLevel;
+      this.allowMove = (this.allowMove || this.workPackageIsEditable) &&
+        ![Level.sources, Level.targets].includes(this.currentFilterLevel);
     });
 
     this.addChildSubscription = merge(
@@ -702,8 +706,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         // Show layout data in settings tab
         this.layoutSettingsService.layoutSettingsForm.patchValue({ ...layout.settings });
         this.layoutSettings = { ...layout.settings };
-        // Reload nodes and links for new layout if not in map view
-        if (this.currentFilterLevel && !this.currentFilterLevel.endsWith('map') && !this.nodesSubscription) {
+        // Reload nodes and links for new layout if not in map view, source view or target view
+        if (this.currentFilterLevel
+          && !this.currentFilterLevel.endsWith('map')
+          && ![Level.sources, Level.targets].includes(this.currentFilterLevel)
+          && !this.nodesSubscription
+        ) {
           this.subscribeForNodesLinksData();
         }
       }
@@ -778,8 +786,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(workpackages => {
-        this.allowMove = workpackages.length > 0;
-        this.workPackageIsEditable = this.allowMove;
+        this.workPackageIsEditable = workpackages.length > 0;
+        this.allowMove = this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.currentFilterLevel);
       });
 
     this.subscriptions.push(
@@ -917,6 +925,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.nodeStore.dispatch(new LoadMapView({ id, queryParams }));
     } else if (layer === Level.usage) {
       this.nodeStore.dispatch(new LoadNodeUsageView({ node: id, query: queryParams }));
+    } else if (layer === Level.sources) {
+      this.nodeStore.dispatch(new LoadSourcesView({ node: id, query: queryParams}));
+    } else if (layer === Level.targets) {
+      this.nodeStore.dispatch(new LoadTargetsView({ node: id, query: queryParams}));
     } else {
       queryParams.layerQuery = layer;
       this.nodeStore.dispatch(new LoadNodes(queryParams));
@@ -957,7 +969,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
-        this.getNodeReports(workPackageIds);
+        //TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
+        debugger;
+        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === 2){
+          this.getNodeReports(workPackageIds); 
+        }
       }
     }
 
@@ -1066,7 +1082,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   allowEditLayout(): void {
-    this.allowMove = !this.allowMove;
+
+    this.allowMove = !this.allowMove && ![Level.sources, Level.targets].includes(this.currentFilterLevel);
     this.allowMove ? this.layoutSettingsForm.enable() : this.layoutSettingsForm.disable();
   }
 
@@ -1256,6 +1273,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             return nodes.map(function(node) {
               return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
             });
+          } else if (this.currentFilterLevel && [Level.sources, Level.targets].includes(this.currentFilterLevel)) {
+            return nodes.map(function(node) {
+              const hasMembers = nodes.some(function(member) {return member.group === node.id; });
+              return { ...node,
+                middleExpanded: hasMembers ? middleOptions.group : middleOptions.none,
+                bottomExpanded: hasMembers,
+                locationMissing: false
+              };
+            });
           }
 
           return nodes.map(
@@ -1304,9 +1330,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           }
           if (
             this.currentFilterLevel &&
-            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
+            (this.currentFilterLevel.endsWith('map') ||
+              [Level.sources, Level.targets, Level.usage].includes(this.currentFilterLevel))
           ) {
-            return links;
+            return links.map(function(link) {return {...link, routeMissing: true}; });
           }
 
           return links.map(
@@ -1616,6 +1643,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.diagramComponent.updateDiagramArea();
     this.realignTabUnderline();
+    
+    // Load Node Reports
+    if (index === 2) {
+      const workPackageIds = this.getWorkPackageIds() 
+      this.getNodeReports(workPackageIds);
+    }
+  }
+
+  onSelectedTabChange(index: number) {
+    // Load Node Reports
+    this.selectedRightTab = index;
+    if (index === 2) {
+      const workPackageIds = this.getWorkPackageIds() 
+      this.getNodeReports(workPackageIds);
+    }
+  }
+
+  private getWorkPackageIds() {
+    return this.selectedWorkPackageEntities.map(item => item.id);
   }
 
   onHideRightPane() {
@@ -2293,6 +2339,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   exitDependenciesView() {
     this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
+  }
+
+  onFindSources() {
+    this.routerStore.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.sources,
+        id: this.selectedNode.id
+      })
+    );
+  }
+
+  onFindTargets() {
+    this.routerStore.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.targets,
+        id: this.selectedNode.id
+      })
+    );
   }
 
   onViewStructure() {

@@ -10,7 +10,7 @@
         <input data-qa="object-details-reference" matInput formControlName="reference" [ngClass]="{ editable: !nodeIsEditable() }" />
       </div>
     </mat-form-field>
-    
+
     <mat-form-field>
       <div class="input-wrapper">
         <label>Name</label>
@@ -22,7 +22,7 @@
       <div class="input-wrapper">
         <label>Category</label>
         <mat-select
-          formControlName="category" 
+          formControlName="category"
           [ngClass]="{ editable: !nodeIsEditable() }"
           data-qa="object-details-category"
         >
@@ -89,16 +89,14 @@
     <smi-group-info-table
       data-qa="object-details-grouped-in-table"
       *ngIf="!clickedOnLink"
-      [groupInfo]="groupInfo" 
+      [groupInfo]="groupInfo"
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"
       [workPackageIsEditable]="workPackageIsEditable"
       [layer]="part?.data?.layer"
     >
     </smi-group-info-table>
-
     <hr>
-
     <div *ngIf="isNode">
       <button data-qa="object-details-see-dependencies" mat-flat-button color="primary" (click)="onSeeDependencies()">See Dependencies</button>
       <button data-qa="object-details-see-usage-across-levels" mat-flat-button color="primary" *ngIf="nodeCategory !== 'transformation'" (click)="onSeeUsage()">See Usage Across Levels</button>
@@ -108,5 +106,7 @@
     </div>
     <br>
     <button mat-flat-button color="primary">Make Master</button>
+    <button data-qa="object-details-see-sources" mat-flat-button color="primary" *ngIf="canBeShared()" (click)="onFindSources()">Find Sources</button>
+    <button data-qa="object-details-see-targets" mat-flat-button color="primary" *ngIf="canBeShared()" (click)="onFindTargets()">Find Targets</button>
   </div>
 </form>
