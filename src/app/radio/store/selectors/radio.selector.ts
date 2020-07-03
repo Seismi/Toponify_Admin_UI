@@ -1,6 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { State } from '../reducers/radio.reducer';
 import { mergeWith, isArray } from 'lodash';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 export const getRadioFeatureState = createFeatureSelector<State>('radioFeature');
 
@@ -81,3 +82,23 @@ export const getRadioById = (id: string) => {
     }
   );
 };
+
+export const getRadiosLoadingStatus = createSelector(
+  getRadioFeatureState,
+  state => {
+    if (state.loadingRadios === LoadingStatus.loaded) {
+      return LoadingStatus.loaded;
+    }
+    return LoadingStatus.loading;
+  }
+);
+
+export const getRadioLoadingStatus = createSelector(
+  getRadioFeatureState,
+  state => {
+    if (state.loadingRadio === LoadingStatus.loaded) {
+      return LoadingStatus.loaded;
+    }
+    return LoadingStatus.loading;
+  }
+);

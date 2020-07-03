@@ -42,8 +42,10 @@ td.mat-cell {
   margin-top: 7px;
 }
 
-.no-data-found {
+.spinner-container {
   border-bottom: solid 1px #ddd;
-  text-align: center;
-  padding: 15px 0px;
+  padding: 20px 0px;
+  mat-spinner {
+    margin: auto;
+  }
 }
