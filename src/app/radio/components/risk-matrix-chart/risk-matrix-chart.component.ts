@@ -19,8 +19,15 @@ enum MatrixColours {
   High = '#F99118',
   Medium = '#FFEE00',
   Low = '#9BEE11',
-  Minor = '#00C444',
-  Zero = '#919191'
+  Minor = '#00C444'
+}
+
+enum MatrixColoursForZeroValue {
+  Critical = '#EDB7B3',
+  High = '#FCD6AA',
+  Medium = '#FFF8A1',
+  Low = '#DAF8A7',
+  Minor = '#A1E9BA'
 }
 
 @Component({
@@ -41,6 +48,18 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
     MatrixColours.High,
     MatrixColours.Critical,
     MatrixColours.Critical
+  ];
+
+  public coloursForZeroValue = [
+    MatrixColoursForZeroValue.Minor,
+    MatrixColoursForZeroValue.Minor,
+    MatrixColoursForZeroValue.Low,
+    MatrixColoursForZeroValue.Low,
+    MatrixColoursForZeroValue.Medium,
+    MatrixColoursForZeroValue.High,
+    MatrixColoursForZeroValue.High,
+    MatrixColoursForZeroValue.Critical,
+    MatrixColoursForZeroValue.Critical
   ];
 
   matrix$: Observable<RiskMatrixData>;
@@ -125,7 +144,7 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
 
   getColorAccordingIndex(index: number, col: number): string {
     if (col === 0) {
-      return MatrixColours.Zero;
+      return this.coloursForZeroValue[index];
     }
     return this.colours[index] ? this.colours[index] : 'transparent';
   }
