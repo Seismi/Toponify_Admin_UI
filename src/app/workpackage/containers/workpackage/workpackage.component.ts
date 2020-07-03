@@ -19,7 +19,7 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Roles } from '@app/core/directives/by-role.directive';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { getWorkPackagesPage } from '../../store/selectors/workpackage.selector';
+import { getWorkPackagesPage, workpackageLoading } from '../../store/selectors/workpackage.selector';
 
 @Component({
   selector: 'app-workpackage',
@@ -43,6 +43,7 @@ export class WorkPackageComponent implements OnInit{
   }
   search$ = new Subject<string>();
   page$: Observable<any>;
+  loading$: Observable<boolean>;
 
   constructor(
     private actions: Actions,
@@ -55,6 +56,7 @@ export class WorkPackageComponent implements OnInit{
     this.store.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
+    this.loading$ = this.store.pipe(select(workpackageLoading))
 
     this.search$
     .pipe(

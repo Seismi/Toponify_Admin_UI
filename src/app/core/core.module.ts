@@ -55,6 +55,7 @@ import { NotificationEffects } from './store/effects/notification.effects';
 import { SearchEffects } from './store/effects/search.effects';
 import { HostComponent } from './components/host/host.component';
 import { TableComponent } from './components/table/table.component';
+import { SpinnerModule } from '@app/core/components/spinner/spinner.module';
 
 @NgModule({
   imports: [
@@ -68,6 +69,7 @@ import { TableComponent } from './components/table/table.component';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
+    SpinnerModule,
     FormsModule,
     StoreModule.forFeature('searchFeature', reducer),
     EffectsModule.forFeature([SearchEffects, RouteEffects, NotificationEffects])
@@ -106,7 +108,8 @@ import { TableComponent } from './components/table/table.component';
     CanEditDirective,
     CoreLayoutModule,
     HostComponent,
-    TableComponent
+    TableComponent,
+    SpinnerModule
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
