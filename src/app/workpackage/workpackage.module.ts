@@ -52,7 +52,7 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
 
 @NgModule({
   imports: [
-    WorkPackageRoutingModule,
+  WorkPackageRoutingModule,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,

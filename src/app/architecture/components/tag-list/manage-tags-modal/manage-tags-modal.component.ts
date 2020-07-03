@@ -6,7 +6,7 @@ import { select, Store } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { CreateTag, DeleteTag, LoadTags, UpdateTag } from '@app/architecture/store/actions/node.actions';
 import { getTags } from '@app/architecture/store/selectors/node.selector';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { map, debounceTime, switchMap, takeUntil, skip, distinctUntilChanged } from 'rxjs/operators';
 import { getTagPage } from '../../../store/selectors/node.selector';
 
@@ -19,7 +19,7 @@ import { getTagPage } from '../../../store/selectors/node.selector';
 export class ManageTagsModalComponent implements OnInit {
   public dataSource$: Observable<MatTableDataSource<Tag>>;
   public displayedColumns: string[] = ['name', 'colour', 'icon', 'type', 'actions'];
-  search$ = new BehaviorSubject<string>('');
+  search$ = new Subject<string>();
   private tagsParams: TagsHttpParams = {
     textFilter: '',
     page: 0,
