@@ -12,8 +12,12 @@ Given(
     cy.get('[data-qa=work-packages-objectives-table-add]') // add the objective
       .click()
       .then(() => {
-        cy.get('[data-qa=work-packages-objectives-modal-name]').type(name); // enter the name
-        cy.get('[data-qa=work-packages-objectives-modal-description]').type(description); // enter the description
+        cy.get('[data-qa=work-packages-objectives-modal-name]')
+          .type(name)
+          .should('have.value', name); // enter the name
+        cy.get('[data-qa=work-packages-objectives-modal-description]')
+          .type(description)
+          .should('have.value', description); // enter the description
       });
   }
 );

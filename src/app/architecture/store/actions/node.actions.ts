@@ -7,7 +7,8 @@ import {
   OwnersEntity,
   NodeReports,
   GroupAreaSizeApiRequest,
-  Tag
+  Tag,
+  TagsHttpParams
 } from '../models/node.model';
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
@@ -33,6 +34,12 @@ export enum NodeActionTypes {
   LoadNodeUsageView = '[Node] Load Node Usage View',
   LoadNodeUsageViewSuccess = '[Node] Load Node Usage View Success',
   LoadNodeUsageViewFailure = '[Node] Load Node Usage View Fail',
+  LoadSourcesView = '[Node] Load Node Sources View',
+  LoadSourcesViewSuccess = '[Node] Load Node Sources View Success',
+  LoadSourcesViewFailure = '[Node] Load Node Sources View Fail',
+  LoadTargetsView = '[Node] Load Node Targets View',
+  LoadTargetsViewSuccess = '[Node] Load Node Targets View Success',
+  LoadTargetsViewFailure = '[Node] Load Node Targets View Fail',
   UpdateNodeLocations = '[Node] Update node locations',
   UpdateNodeLocationsSuccess = '[Node] Update node locations Success',
   UpdateNodeLocationsFailure = '[Node] Update node locations Fail',
@@ -159,6 +166,36 @@ export class LoadNodeUsageViewSuccess implements Action {
 
 export class LoadNodeUsageViewFailure implements Action {
   readonly type = NodeActionTypes.LoadNodeUsageViewFailure;
+  constructor(public payload: Error) {}
+}
+
+export class LoadSourcesView implements Action {
+  readonly type = NodeActionTypes.LoadSourcesView;
+  constructor(public payload: { node: string; query: { workPackageQuery: string[] } }) {}
+}
+
+export class LoadSourcesViewSuccess implements Action {
+  readonly type = NodeActionTypes.LoadSourcesViewSuccess;
+  constructor(public payload: any) {}
+}
+
+export class LoadSourcesViewFailure implements Action {
+  readonly type = NodeActionTypes.LoadSourcesViewFailure;
+  constructor(public payload: Error) {}
+}
+
+export class LoadTargetsView implements Action {
+  readonly type = NodeActionTypes.LoadTargetsView;
+  constructor(public payload: { node: string; query: { workPackageQuery: string[] } }) {}
+}
+
+export class LoadTargetsViewSuccess implements Action {
+  readonly type = NodeActionTypes.LoadTargetsViewSuccess;
+  constructor(public payload: any) {}
+}
+
+export class LoadTargetsViewFailure implements Action {
+  readonly type = NodeActionTypes.LoadTargetsViewFailure;
   constructor(public payload: Error) {}
 }
 
@@ -419,11 +456,12 @@ export class DissociateTagFailure implements Action {
 
 export class LoadTags implements Action {
   readonly type = NodeActionTypes.LoadTags;
+  constructor(public payload: TagsHttpParams) {}
 }
 
 export class LoadTagsSuccess implements Action {
   readonly type = NodeActionTypes.LoadTagsSuccess;
-  constructor(public payload: { tags: Tag[] }) {}
+  constructor(public payload: { tags: Tag[], page: TagsHttpParams }) {}
 }
 
 export class LoadTagsFailure implements Action {
@@ -486,6 +524,12 @@ export type NodeActionsUnion =
   | LoadNodeUsageView
   | LoadNodeUsageViewSuccess
   | LoadNodeUsageViewFailure
+  | LoadSourcesView
+  | LoadSourcesViewSuccess
+  | LoadSourcesViewFailure
+  | LoadTargetsView
+  | LoadTargetsViewSuccess
+  | LoadTargetsViewFailure
   | UpdateNodeLocations
   | UpdateNodeLocationsSuccess
   | UpdateNodeLocationsFailure

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { AttributeEntity } from '../../store/models/attributes.model';
 import { State as AttributeState } from '../../store/reducers/attributes.reducer';
@@ -41,7 +41,6 @@ import isEqual from 'lodash.isequal';
 export class AttributesComponent implements OnInit, OnDestroy {
   public scopes$: Observable<ScopeEntity[]>;
   public selectedScope$: Observable<ScopeEntity>;
-  public attributes: Subscription;
   public attribute: AttributeEntity[];
   public workpackage$: Observable<WorkPackageEntity[]>;
   public selectedLeftTab: number | string;
@@ -52,7 +51,6 @@ export class AttributesComponent implements OnInit, OnDestroy {
   public workPackageIsEditable: boolean;
   public scopeId = defaultScopeId;
   public selectedWorkPackageEntities: WorkPackageEntity[];
-  @ViewChild('drawer') drawer;
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -64,25 +62,33 @@ export class AttributesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => (this.attribute = data))
+    );
+
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
-    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
-      if (scope) {
-        this.scopeId = scope.id;
-        this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
-      }
-    });
-    this.routerStore
-      .select(getScopeQueryParams)
-      .pipe(take(1))
-      .subscribe(scope => {
+    this.subscriptions.push(
+      this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
         if (scope) {
-          this.scopeStore.dispatch(new LoadScope(scope));
-        } else {
-          this.scopeStore.dispatch(new LoadScope(scope.id));
+          this.scopeId = scope.id;
+          this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
         }
-      });
+      })
+    );
+    this.subscriptions.push(
+      this.routerStore
+        .select(getScopeQueryParams)
+        .pipe(take(1))
+        .subscribe(scope => {
+          if (scope) {
+            this.scopeStore.dispatch(new LoadScope(scope));
+          } else {
+            this.scopeStore.dispatch(new LoadScope(defaultScopeId));
+          }
+        })
+    );
 
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
@@ -98,11 +104,12 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
+
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
         this.selectedWorkPackageEntities = workpackages;
         const workPackageIds = workpackages.map(item => item.id);
-        this.setWorkPackage(workPackageIds);
+        this.getAttributesWithQueryParams(workPackageIds);
       })
     );
 
@@ -129,19 +136,16 @@ export class AttributesComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
-  setWorkPackage(workpackageIds: string[] = []): void {
+  getAttributesWithQueryParams(workPackageIds: string[]): void {
     const queryParams = {
-      workPackageQuery: workpackageIds,
+      workPackageQuery: workPackageIds,
       scopeQuery: this.scopeId
     };
     this.store.dispatch(new LoadAttributes(queryParams));
-    this.attributes = this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
-      this.attribute = data;
-    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   get categoryTableData(): AttributeEntity[] {
@@ -181,18 +185,10 @@ export class AttributesComponent implements OnInit, OnDestroy {
       });
   }
 
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
-  }
-
   onSelectEditWorkpackage(workpackage: any): void {
     this.workpackageId = workpackage.id;
     if (!workpackage.edit) {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
+      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: workpackage.id }));
     } else {
       this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
     }

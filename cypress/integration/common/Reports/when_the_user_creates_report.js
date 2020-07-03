@@ -11,13 +11,6 @@ When('the user creates a new report with the name {string}, description {string}
   system = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(system); // prefix name with branch
-  cy.get('[data-qa=reports-create-new]')
-    .click()
-    .then(() => {
-      cy.wait('@GETNodesWorkPackageQuery');
-      cy.wait(['@GETTeams', '@GETReportsScopeQuery', '@GETReportsWorkPackageQuery', '@GETSelectorAvailabilityQuery']);
-      cy.get('[data-qa=reports-details-name]').type(name);
-      cy.get('[data-qa=reports-details-description]').type(description);
-      cy.selectDropDownNoClick('reports-details-system', system);
-    });
+
+  cy.createReport(name, description, system);
 });

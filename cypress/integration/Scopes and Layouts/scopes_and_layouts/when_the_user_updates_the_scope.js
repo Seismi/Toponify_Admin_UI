@@ -13,6 +13,7 @@ When('the user updates the scope called {string} to have name {string} and filte
     .concat(newScope); // prefix the branch to scope
   cy.findScope(scope)
     .click()
+    .wait(['@GETScope', '@GETLayout'])
     .then(() => {
       cy.get('[data-qa=scopes-and-layouts-edit]')
         .click()
@@ -20,6 +21,7 @@ When('the user updates the scope called {string} to have name {string} and filte
           cy.get('[data-qa=scopes-and-layouts-details-name]')
             .clear()
             .type(newScope)
+            .should('have.value', newScope)
             .then(() => {
               cy.selectDropDown('scopes-and-layouts-details-filtering-components', component);
             });

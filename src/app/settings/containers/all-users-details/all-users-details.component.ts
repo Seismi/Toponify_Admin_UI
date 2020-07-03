@@ -3,18 +3,22 @@ import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
-import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes } from '@app/settings/store/actions/user.actions';
+import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, DeleteUserRole, AddUserRole } from '@app/settings/store/actions/user.actions';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { getUserSelected, getUserRolesEntities, getUsers } from '@app/settings/store/selectors/user.selector';
-import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model';
+import { RolesEntity } from '@app/settings/store/models/user.model';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
 import isEqual from 'lodash.isequal';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Roles } from '@app/core/directives/by-role.directive';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { map } from 'rxjs/operators';
+import { AddMember, DeleteMember, TeamActionTypes } from '@app/settings/store/actions/team.actions';
+import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'app-all-users-details',
@@ -26,7 +30,7 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
   public team: TeamEntity[];
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
-  public user: UserDetails;
+  public user: any;
   public isEditable = false;
   public userStatus: string;
   public administrators: string[];
@@ -38,20 +42,31 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
     private myUserFormService: MyUserFormService,
     private route: ActivatedRoute,
     private store: Store<UserState>,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    this.store.pipe(select(getUsers)).subscribe(users => {
-      if (users) {
-        const userRoles = [];
-        users.forEach(user => {
-          const roles = user.roles.map(role => role.name).join(' ');
-          userRoles.push(roles);
-        });
-        this.administrators = userRoles.filter(userRole => userRole.indexOf(Roles.ADMIN) === 0);
-      }
-    });
+    this.subscriptions.push(
+      this.actions.pipe(ofType(
+        TeamActionTypes.AddMemberSuccess,
+        TeamActionTypes.DeleteMemberSuccess)).subscribe(_ => {
+          this.store.dispatch(new LoadUser(this.user.id));
+        })
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getUsers)).subscribe(users => {
+        if (users) {
+          const userRoles = [];
+          users.forEach(user => {
+            const roles = user.roles.map(role => role.name).join(' ');
+            userRoles.push(roles);
+          });
+          this.administrators = userRoles.filter(userRole => userRole.indexOf(Roles.ADMIN) === 0);
+        }
+      })
+    );
 
     this.subscriptions.push(
       this.route.params.subscribe(params => {
@@ -67,10 +82,10 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.store.pipe(select(getUserSelected)).subscribe(data => {
-        this.user = data;
         if (data) {
+          this.user = data;
           this.userRoles = data.roles.map(role => role.name);
-          this.myUserFormService.myUserForm.patchValue({ ...data });
+          this.myUserFormService.myUserForm.patchValue({ ...data, settings: {} });
           this.isEditable = false;
           data.userStatus === 'active' ? (this.userStatus = 'Deactivate') : (this.userStatus = 'Activate');
         }
@@ -129,5 +144,83 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
 
   setUserStatus(status: string): string {
     return status === 'Deactivate' ? 'disabled' : 'active';
+  }
+
+  onAddTeam(): void {
+    const ids = new Set(this.user.team.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: 'Add Teams',
+        options$: this.store.pipe(select(getTeamEntities)).pipe(map(data => data.filter(({ id }) => !ids.has(id)))),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(
+          new AddMember({
+            data: data.value,
+            teamId: data.value[0].id,
+            userId: this.user.id
+          })
+        );
+      }
+    });
+  }
+
+  onAddRole(): void {
+    const ids = new Set(this.user.roles.map(({ id }) => id));
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        title: 'Add Roles',
+        options$: this.store.pipe(select(getUserRolesEntities)).pipe(map(data => data.filter(({ id }) => !ids.has(id)))),
+        selectedIds: []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.store.dispatch(
+          new AddUserRole({
+            userId: this.user.id,
+            roleId: data.value[0].id
+          })
+        );
+      }
+    });
+  }
+
+  onRemoveTeamOrRole(entity: { id: string, type: string }): void {
+    const dialogRef = this.dialog.open(DeleteModalComponent, {
+      disableClose: false,
+      data: {
+        title: 'Are you sure you want to un-associate?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        if (entity.type === 'team') {
+          this.store.dispatch(
+            new DeleteMember({
+              teamId: entity.id,
+              userId: this.user.id
+            })
+          );
+        } else {
+          this.store.dispatch(
+            new DeleteUserRole({
+              userId: this.user.id,
+              roleId: entity.id
+            })
+          );
+        }
+      }
+    });
   }
 }

@@ -6,9 +6,7 @@ import {
   AttributeApiResponse,
   AttributeDetailApiResponse,
   AttributeApiRequest,
-  AttributeDetailApiRequest,
-  CustomPropertyValues,
-  CustomPropertiesApiRequest
+  AttributeDetailApiRequest
 } from '../store/models/attributes.model';
 import { OwnersEntityOrApproversEntity } from '@app/workpackage/store/models/workpackage.models';
 import { Tag } from '@app/architecture/store/models/node.model';
@@ -27,7 +25,7 @@ export class AttributeService {
   constructor(private http: HttpClient) {}
 
   getAttributeEntities(queryParams?: GetAttributeRequestQueryParams): Observable<AttributeEntitiesResponse> {
-    const params = this.toHttpParams(queryParams);
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<any>(`/attributes`, { params: params });
   }
 

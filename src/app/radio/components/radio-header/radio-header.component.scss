@@ -1,7 +1,7 @@
 .container {
   // FIXME: temp disabled
   // display: flex;
-  padding: 15px 15px;
+  padding: 0px 15px;
 }
 
 .content {
@@ -43,4 +43,9 @@ button {
   .mat-icon {
     color: #555;
   }
+}
+
+.additional-filters-container {
+  position: relative;
+  display: flex;
 }

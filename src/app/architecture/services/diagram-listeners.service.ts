@@ -6,9 +6,9 @@ import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import {getFilterLevelQueryParams, getNodeIdQueryParams, getQueryParams} from '@app/core/store/selectors/route.selectors';
+import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {layers} from '@app/architecture/store/models/node.model';
+import {layers, middleOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -93,15 +93,15 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
-    // After layout when in system view, check for system group nodes that are
+    // After layout when in system or data view, check for system or data group nodes that are
     //  too large for their groups and update the size of their containing groups
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
         const currentLevel = this.currentLevel;
 
-        // Check current level is system
-        if (currentLevel && currentLevel === Level.system) {
+        // Check current level is system or data
+        if (currentLevel && [Level.system, Level.data].includes(currentLevel)) {
           event.diagram.nodes.each(function(node: go.Node): void {
 
             const group = node.containingGroup;
@@ -159,7 +159,9 @@ export class DiagramListenersService {
 
         const currentLevel = this.currentLevel;
 
-        if (currentLevel && !currentLevel.endsWith('map') && currentLevel !== Level.usage) {
+        if (currentLevel && !currentLevel.endsWith('map') &&
+          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
+        ) {
 
           // Check each node for overlap
           event.diagram.nodes.each(function(node: go.Node): void {
@@ -187,7 +189,7 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
-    // After a system group is automatically laid out, ensure that links to
+    // After a system or data group is automatically laid out, ensure that links to
     //  any grouped nodes are updated.
     diagram.addDiagramListener(
       'LayoutCompleted',
@@ -195,7 +197,7 @@ export class DiagramListenersService {
 
         const linksToUpdate = new go.Set();
         event.diagram.nodes.each(function(node: go.Node): void {
-          if (node.canLayout() && node.containingGroup && node.category === layers.system) {
+          if (node.canLayout() && node.containingGroup && [layers.system, layers.data].includes(node.data.layer)) {
             linksToUpdate.addAll(node.linksConnected);
           }
         });
@@ -241,6 +243,30 @@ export class DiagramListenersService {
       }
     }
 
+    // Ensure groups in sources or targets view are laid out and sized correctly.
+    // Also apply a blue shadow to the node for which sources/targets are being viewed.
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function (event: go.DiagramEvent): void {
+        const currentLevel = this.currentLevel;
+        const nodeId = this.nodeId;
+
+        if ([Level.sources, Level.targets].includes(currentLevel)) {
+          diagram.nodes.each(function(node) {
+            if (!node.location.isReal() && node.containingGroup && node.containingGroup.location.isReal()) {
+              node.containingGroup.layout.isValidLayout = false;
+              node.diagram.layout.isValidLayout = false;
+            } else if (node.location.isReal() && node.containingGroup) {
+              this.diagramChangesService.groupMemberSizeChanged(node);
+              if (nodeId === node.data.id) {
+                this.diagramChangesService.setBlueShadowHighlight(node, true);
+              }
+            }
+          }.bind(this));
+        }
+      }.bind(this)
+    );
+
     diagram.addDiagramListener(
       'LinkRelinked',
       this.diagramChangesService.updateLinkConnections.bind(this.diagramChangesService)
@@ -248,7 +274,7 @@ export class DiagramListenersService {
 
     diagram.addDiagramListener(
       'LinkReshaped',
-      function(event: any) {
+      function(event: go.DiagramEvent) {
         event.subject = new go.Set([event.subject]);
 
         this.updatePosition(event);
@@ -262,7 +288,7 @@ export class DiagramListenersService {
 
     diagram.addModelChangedListener(this.handleModelChange.bind(this));
 
-    // Listeners to hide button menu on system nodes when user clicks outside menu
+    // Listeners to hide button menu on system and data nodes when user clicks outside menu
     diagram.addDiagramListener(
       'ChangedSelection',
       function(event: go.DiagramEvent): void {
@@ -280,7 +306,28 @@ export class DiagramListenersService {
       }
     );
 
-    // In node usage view, highlight the originating node with a blue shadow
+    // When viewport changes size, update size/scale of guide
+    diagram.addDiagramListener('ViewportBoundsChanged', function(event) {
+      let guide;
+      diagram.parts.each(function(part) {
+        if (part.name === 'Guide') {
+          guide = part;
+        }
+      });
+
+      if (guide) {
+        guide.position = diagram.transformViewToDoc(new go.Point(0, 0));
+        guide.scale = 1 / diagram.scale;
+      }
+
+      const instructions = guide.findObject('instructions');
+
+      // Ensure instructions do not exceed screen space available
+      instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
+    });
+
+    // In node usage view, highlight the originating node with a blue shadow.
+    // Also, ensure originating node is visible by expanding the chain of containing nodes.
     diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
       if (event.modelChange === 'nodeDataArray') {
         const currentLevel = this.currentLevel;
@@ -290,9 +337,32 @@ export class DiagramListenersService {
           const usageNode = diagram.findNodeForKey(nodeId);
           if (usageNode) {
             this.diagramChangesService.setBlueShadowHighlight(usageNode, true);
+
+            // Get nested containing nodes
+            const containingNodes = [];
+            let containingNode = usageNode.containingGroup;
+            while (containingNode) {
+              containingNodes.splice(0, 0, containingNode);
+              containingNode = containingNode.containingGroup;
+            }
+
+            // Expand all containing nodes
+            containingNodes.forEach(function(node: go.Group, index: number): void {
+              // Add delay to ensure each group expanded before expanding the next
+              setTimeout(function() {
+                diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
+                diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.group);
+                this.diagramChangesService.nodeExpandChanged(node);
+              }.bind(this), 150 * (index + 1));
+            }.bind(this));
           }
         }
       }
+    }.bind(this));
+
+    // Update guide
+    diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
+      this.diagramChangesService.updateGuide(diagram);
     }.bind(this));
   }
 

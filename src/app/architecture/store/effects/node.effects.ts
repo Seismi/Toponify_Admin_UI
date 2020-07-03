@@ -18,7 +18,8 @@ import {
   NodeReportsApiResponse,
   GroupAreaSizeApiRequest,
   Tag,
-  NodeDetail
+  NodeDetail,
+  TagsHttpParams
 } from '../models/node.model';
 import {
   LinkUpdatePayload,
@@ -111,6 +112,30 @@ export class NodeEffects {
       return this.nodeService.getNodeUsageView(payload.node, payload.query).pipe(
         switchMap((data: any) => [new NodeActions.LoadNodeUsageViewSuccess(data.data)]),
         catchError((error: Error) => of(new NodeActions.LoadNodeUsageViewFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadSourcesView$ = this.actions$.pipe(
+    ofType<NodeActions.LoadSourcesView>(NodeActionTypes.LoadSourcesView),
+    map(action => action.payload),
+    switchMap((payload: { node: string; query: { workPackageQuery: string[] } }) => {
+      return this.nodeService.getSourcesView(payload.node, payload.query).pipe(
+        switchMap((data: any) => [new NodeActions.LoadSourcesViewSuccess(data.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadSourcesViewFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadTargetsView$ = this.actions$.pipe(
+    ofType<NodeActions.LoadTargetsView>(NodeActionTypes.LoadTargetsView),
+    map(action => action.payload),
+    switchMap((payload: { node: string; query: { workPackageQuery: string[] } }) => {
+      return this.nodeService.getTargetsView(payload.node, payload.query).pipe(
+        switchMap((data: any) => [new NodeActions.LoadTargetsViewSuccess(data.data)]),
+        catchError((error: Error) => of(new NodeActions.LoadTargetsViewFailure(error)))
       );
     })
   );
@@ -312,9 +337,10 @@ export class NodeEffects {
   @Effect()
   loadTags$ = this.actions$.pipe(
     ofType<NodeActions.LoadTags>(NodeActionTypes.LoadTags),
-    switchMap(() => {
-      return this.nodeService.loadTags().pipe(
-        switchMap(response => [new NodeActions.LoadTagsSuccess({ tags: response.data })]),
+    map(action => action.payload),
+    switchMap((payload: TagsHttpParams) => {
+      return this.nodeService.loadTags(payload).pipe(
+        switchMap((response: any) => [new NodeActions.LoadTagsSuccess({ tags: response.data, page: response.page })]),
         catchError((error: Error) => {
           return of(new NodeActions.LoadTagsFailure(error));
         })

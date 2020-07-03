@@ -36,6 +36,16 @@ export interface WorkPackageNodeDescendantsApiResponse {
   data: (DescendantsEntity)[] | null;
 }
 
+export interface WorkPackageGroupMembersApiResponse {
+  data: {
+    id: string,
+    layer: layers,
+    category: nodeCategories,
+    name: string,
+    tags: string
+  }[];
+}
+
 export enum layers {
   system = 'system',
   data = 'data',
@@ -49,13 +59,16 @@ export enum nodeCategories {
   file = 'file',
   reporting = 'reporting',
   masterData = 'master data',
-  physical = 'physical',
-  virtual = 'virtual',
+  dataStructure = 'data structure',
+  dataSet = 'data set',
+  masterDataSet = 'master data set',
   dimension = 'dimension',
   list = 'list',
   structure = 'structure',
   key = 'key',
-  transformation = 'transformation'
+  transformation = 'transformation',
+  data = 'data',
+  copy = 'copy'
 }
 
 export enum endPointTypes {
@@ -90,21 +103,24 @@ export class Node {
   sortOrder?: number;
   endPointType?: endPointTypes;
   isTemporary: boolean;
+  isShared: boolean;
 
   constructor(options: { id: string;
     name: string;
     layer: layers;
     category: nodeCategories;
     tooltip: string;
-    isTemporary?: boolean }) {
+    isTemporary?: boolean;
+    isShared?: boolean; }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
-      this.isGroup = options.layer === layers.system && options.category !== nodeCategories.transformation;
+      this.isGroup = [layers.system, layers.data].includes(options.layer) && options.category !== nodeCategories.transformation;
       this.tooltip = options.tooltip;
       this.isTemporary = options.isTemporary || false;
+      this.isShared = options.isShared || false;
       this.owners = [];
       this.impactedByWorkPackages = [];
     }
@@ -160,6 +176,7 @@ export interface NodeDetail {
   isGroup?: boolean;
   group?: string;
   tags: Tag[];
+  isShared: boolean;
   groupinfo?: GroupInfo;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   systems?: (GroupInfo)[] | null;
@@ -172,6 +189,7 @@ export interface NodeDetail {
   relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
   customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
   members?: (GroupInfo[]) | null;
+  master?: GroupInfo;
 }
 export interface GroupInfo {
   id: string;
@@ -307,8 +325,8 @@ export enum TagApplicableTo {
   everywhere = 'everywhere',
   systems = 'systems',
   system_links = 'system links',
-  data_sets = 'data sets',
-  data_set_links = 'data set links',
+  data_nodes = 'data nodes',
+  data_links = 'data links',
   dimensions = 'dimensions',
   dimension_links = 'dimension links',
   reporting_concepts = 'reporting concepts',
@@ -351,4 +369,12 @@ export enum LoadingStatus {
   loading,
   loaded,
   error
+}
+
+export interface TagsHttpParams {
+  textFilter: string;
+  page?: number;
+  size?: number;
+  totalObjects?: number;
+  totalPages?: number;
 }

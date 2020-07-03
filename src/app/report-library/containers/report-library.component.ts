@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State as ReportState } from '../store/reducers/report.reducer';
 import { AddReport, LoadReports } from '../store/actions/report.actions';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { ReportLibrary } from '../store/models/report.model';
 import { getReportEntities } from '../store/selecrtors/report.selectors';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
@@ -23,7 +23,7 @@ import { Params, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ReportModalComponent } from './report-modal/report-modal.component';
 import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
-import { take, distinctUntilChanged, withLatestFrom } from 'rxjs/operators';
+import { take, distinctUntilChanged, withLatestFrom, debounceTime } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { RouterStateUrl } from '@app/core/store';
 import { RouterReducerState } from '@ngrx/router-store';
@@ -33,6 +33,8 @@ import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import isEqual from 'lodash.isequal';
+import { TableData } from '@app/radio/store/models/radio.model';
+import { GetReportLibraryRequestQueryParams } from '../services/report.service';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -42,7 +44,10 @@ import isEqual from 'lodash.isequal';
 export class ReportLibraryComponent implements OnInit, OnDestroy {
   public scopes$: Observable<ScopeEntity[]>;
   public selectedScope$: Observable<ScopeEntity>;
-  public reportEntities$: Observable<ReportLibrary[]>;
+
+  // FIXME: replace any with TableData<ReportLibrary>
+  public reportEntities$: Observable<any>;
+
   public workpackage$: Observable<WorkPackageEntity[]>;
   public selectedLeftTab: number | string;
   public showOrHidePane = false;
@@ -54,9 +59,14 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public workPackageIds: string[];
   public selectedWorkPackageEntities: WorkPackageEntity[];
 
-  private subscriptions: Subscription[] = [];
+  private queryParams: BehaviorSubject<GetReportLibraryRequestQueryParams> = new BehaviorSubject<
+    GetReportLibraryRequestQueryParams
+  >({
+    page: 0,
+    size: 10
+  });
 
-  @ViewChild('drawer') drawer;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private scopeStore: Store<ScopeState>,
@@ -68,25 +78,47 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.reportEntities$ = this.store.pipe(select(getReportEntities));
+
+    this.subscriptions.push(
+      this.queryParams.pipe(debounceTime(500)).subscribe(params => {
+        this.store.dispatch(new LoadReports(params));
+      })
+    );
+
     this.scopeStore.dispatch(new LoadScopes({}));
+
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
-    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
-      if (scope) {
-        this.scopeId = scope.id;
-        this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
-      }
-    });
-    this.routerStore
-      .select(getScopeQueryParams)
-      .pipe(take(1))
-      .subscribe(scope => {
+
+    this.subscriptions.push(
+      this.selectedScope$.subscribe(scope => {
+        this.setQueryParams({
+          scopeQuery: scope ? scope.id : defaultScopeId
+        });
+      })
+    );
+
+    this.subscriptions.push(
+      this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
         if (scope) {
-          this.scopeStore.dispatch(new LoadScope(scope));
-        } else {
-          this.scopeStore.dispatch(new LoadScope(this.scopeId));
+          this.scopeId = scope.id;
+          this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
         }
-      });
+      })
+    );
+    this.subscriptions.push(
+      this.routerStore
+        .select(getScopeQueryParams)
+        .pipe(take(1))
+        .subscribe(scope => {
+          if (scope) {
+            this.scopeStore.dispatch(new LoadScope(scope));
+          } else {
+            this.scopeStore.dispatch(new LoadScope(this.scopeId));
+          }
+        })
+    );
 
     this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
@@ -95,7 +127,10 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
         this.selectedWorkPackageEntities = workpackages;
         const wpIds = workpackages.map(item => item.id);
         this.workPackageIds = wpIds;
-        this.getReports(wpIds);
+
+        this.setQueryParams({
+          workPackageQuery: wpIds
+        });
       })
     );
 
@@ -134,29 +169,31 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     );
   }
 
+  setQueryParams(params: any): void {
+    const oldParams = this.queryParams.getValue();
+    this.queryParams.next({
+      ...oldParams,
+      ...params
+    });
+  }
+
+  handleFilter(term: string): void {
+    this.setQueryParams({ textFilter: term });
+  }
+
+  handlePageChange(nextPage: { previousPageIndex: number; pageIndex: number; pageSize: number; length: number }): void {
+    this.setQueryParams({
+      page: nextPage.pageIndex,
+      size: nextPage.pageSize
+    });
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  getReports(workpackageIds: string[] = []) {
-    const queryParams = {
-      workPackageQuery: workpackageIds,
-      scopeQuery: this.scopeId
-    };
-    this.store.dispatch(new LoadReports(queryParams));
-    this.reportEntities$ = this.store.pipe(select(getReportEntities));
-  }
-
   onSelectReport(row: ReportLibrary) {
     this.router.navigate(['report-library', row.id], { queryParamsHandling: 'preserve' });
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {
@@ -203,8 +240,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        workPackageId: this.workpackageId,
-        scopeId: this.scopeId
+        workPackageId: this.selectedWorkPackageEntities[0].id
       }
     });
 
@@ -212,7 +248,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
       if (data && data.report) {
         this.store.dispatch(
           new AddReport({
-            workPackageId: this.workpackageId,
+            workPackageId: this.selectedWorkPackageEntities[0].id,
             request: {
               data: { ...data.report }
             }
@@ -224,15 +260,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   onSelectScope(scopeId: string): void {
     this.scopeStore.dispatch(new LoadScope(scopeId));
-    this.getReportsWithScopeQuery(scopeId);
-  }
-
-  getReportsWithScopeQuery(scopeId: string): void {
-    const queryParams = {
-      workPackageQuery: this.workPackageIds,
-      scopeQuery: scopeId
-    };
-    this.store.dispatch(new LoadReports(queryParams));
   }
 
   downloadCSV() {

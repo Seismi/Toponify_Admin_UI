@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackageEntity, TableData, Page } from '@app/workpackage/store/models/workpackage.models';
 import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
@@ -8,25 +8,39 @@ import { Roles } from '@app/core/directives/by-role.directive';
   templateUrl: './workpackages-table.component.html',
   styleUrls: ['./workpackages-table.component.scss']
 })
-export class WorkPackagesTableComponent implements OnInit {
+export class WorkPackagesTableComponent implements AfterViewInit {
   public Roles = Roles;
   public filterValue: string;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
   @Input() selectedRowIndex: string | number = -1;
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
       this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
-      this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-      this.dataSource.filter = this.filterValue;
     }
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  get totalEntities(): number {
+    return this.page ? this.page.totalObjects : 0;
+  }
+
+  @Input()
+  set pagination(pagination: Page) {
+    if (pagination) {
+      console.log(pagination)
+      this.page = pagination;
+    }
+  }
+
+
 
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['archive', 'name', 'status', 'owners', 'approvers'];
+  public page: Page;
 
   @Output()
   workpackageSelected = new EventEmitter<WorkPackageDetail>();
@@ -34,7 +48,22 @@ export class WorkPackagesTableComponent implements OnInit {
   @Output()
   addWorkpackage = new EventEmitter<void>();
 
-  ngOnInit(): void {}
+  @Output() pageChange = new EventEmitter<{
+    previousPageIndex: number;
+    pageIndex: number;
+    pageSize: number;
+    length: number;
+  }>();
+
+  @Output() search = new EventEmitter<string>();
+
+
+  ngAfterViewInit() {
+    this.paginator.page.subscribe(nextPage => {
+      // debugger;
+      this.pageChange.emit(nextPage);
+    });
+  }
 
   onSelectRow(row: WorkPackageDetail): void {
     this.workpackageSelected.emit(row);
@@ -52,8 +81,9 @@ export class WorkPackagesTableComponent implements OnInit {
     return data.approvers.map(approver => approver.name).join('; ');
   }
 
+
   onSearch(filterValue: string): void {
-    this.filterValue = filterValue;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.search.emit(filterValue.trim().toLowerCase());
+    this.paginator.firstPage();
   }
 }

@@ -378,7 +378,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       width: 'auto',
       minWidth: '600px',
       data: {
-        title: 'Select source data sets',
+        title: 'Select source data nodes',
         workpackageId: this.workpackageId,
         dimension,
         reportId
@@ -431,7 +431,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           new LoadReportTags({
             workPackageId: this.workpackageId,
-            reportId: this.report.id
+            reportId: this.reportId
           })
         );
       });

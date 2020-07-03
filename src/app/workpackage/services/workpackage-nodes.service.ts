@@ -15,7 +15,8 @@ import {
   DescendantsEntity,
   NodesApiResponse,
   WorkPackageNodeDescendantsApiResponse,
-  NodeDetailApiResponse
+  NodeDetailApiResponse,
+  WorkPackageGroupMembersApiResponse
 } from '@app/architecture/store/models/node.model';
 
 export interface GetWorkPackageNodeScopesQueryParams {
@@ -28,7 +29,7 @@ export interface GetWorkPackageNodeScopesQueryParams {
 })
 export class WorkPackageNodesService extends WorkPackageService {
   /**
-   * Create new architecture node (system, data set, dimensions, reporting concept)
+   * Create new architecture node (system, data node, dimensions, reporting concept)
    * FIXME: missing types
    */
   addNode(workPackageId: string, data: WorkpackageNode, scope?: string): Observable<any> {
@@ -72,6 +73,24 @@ export class WorkPackageNodesService extends WorkPackageService {
       `/workpackages/${workPackageId}/nodes/${nodeId}/children/find/potential/`,
       { data: data },
       this.httpOptions
+    );
+  }
+
+  /**
+   * Get the potential group members of an architecture node
+   */
+  findPotentialGroupMemberNodes(
+    workPackageId: string,
+    nodeId: string,
+    scope: string,
+    asShared: boolean
+  ): Observable<WorkPackageGroupMembersApiResponse> {
+
+    const params = this.toHttpParams({ scopeQuery: scope, asShared: asShared });
+
+    return this.http.get<WorkPackageGroupMembersApiResponse>(
+      `/workpackages/${workPackageId}/nodes/${nodeId}/groupMembers/find/potential/`,
+      { params: params }
     );
   }
 
@@ -199,9 +218,13 @@ export class WorkPackageNodesService extends WorkPackageService {
   addWorkPackageNodeGroup(workPackageId: string, systemId: string, groupId: string): Observable<NodeDetailApiResponse> {
     return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${systemId}/group/set/${groupId}`, this.httpOptions);
   }
-  
+
   deleteWorkPackageNodeGroup(workPackageId: string, systemId: string): Observable<NodeDetailApiResponse> {
     return this.http.post<NodeDetailApiResponse>(`/workpackages/${workPackageId}/nodes/${systemId}/group/deleteRequest`, {});
+  }
+
+  SetWorkPackageNodeAsMaster(workPackageId: string, nodeId: string): Observable<any> {
+    return this.http.post<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/setAsMaster`, {});
   }
 
   // TODO: move into sharable service

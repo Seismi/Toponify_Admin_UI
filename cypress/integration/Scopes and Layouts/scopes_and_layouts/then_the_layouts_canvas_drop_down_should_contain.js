@@ -10,8 +10,8 @@ Then('the layouts canvas drop down should contain {string} against scope {string
     cy.get('smi-layout-actions')
       .find('[data-qa=topology-layout-actions-layout-dropdown]') // get the scopes table
       .click()
-      //.wait()[]
       .then(() => {
+        cy.get('[data-qa=spinner]').should('not.be.visible');
         cy.root()
           .contains('mat-option', layout)
           .should('exist')

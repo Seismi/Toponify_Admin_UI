@@ -49,40 +49,20 @@ module.exports = {
       method: 'GET',
       name: 'Teams'
     },
-    GetRadios: {
-      api: `${api_version}/radios`,
+    GetNodesQuery: {
+      api: `${api_version}/nodes?*`,
       method: 'GET',
-      name: 'Radios'
+      name: 'NodesQuery'
     },
-    GetNodesScopeQuery: {
-      api: `${api_version}/nodes?scopeQuery*`,
+    GetNodeLinksQuery: {
+      api: `${api_version}/nodelinks?*`,
       method: 'GET',
-      name: 'NodesScopeQuery'
-    },
-    GetNodeLinksScopeQuery: {
-      api: `${api_version}/nodelinks?scopeQuery*`,
-      method: 'GET',
-      name: 'NodeLinksScopeQuery'
-    },
-    GetNodesWPQuery: {
-      api: `${api_version}/nodes?workPackageQuery*`,
-      method: 'GET',
-      name: 'NodesWorkPackageQuery'
-    },
-    GetNodeLinksWPQuery: {
-      api: `${api_version}/nodelinks?workPackageQuery*`,
-      method: 'GET',
-      name: 'NodeLinksWorkPackageQuery'
+      name: 'NodeLinksQuery'
     },
     GetSelectorWorkPackage: {
       api: `${api_version}/workpackages/selector/availability*`,
       method: 'GET',
       name: 'SelectorAvailabilityQuery'
-    },
-    GetNotfications: {
-      api: `${api_version}/notifications`,
-      method: 'GET',
-      name: 'Notifications'
     },
     GETWorkPackageNodesScopeQuery: {
       api: `${api_version}/workpackages/*/nodes?scopeQuery=*`,
@@ -133,6 +113,81 @@ module.exports = {
       api: `${api_version}/workpackages/*/nodes/*/deleteRequest`,
       method: 'POST',
       name: 'WorkPackagesDeleteNode'
+    },
+    nodeLinksWorkPackageQuery: {
+      api: `${api_version}/nodelinks/*?workPackageQuery[]=*`,
+      method: 'GET',
+      name: 'nodeLinksWorkPackageQuery'
+    },
+    workPackageNodeLinksQuery: {
+      api: `${api_version}/workpackages/*/nodelinks/*/tags`,
+      method: 'GET',
+      name: 'WorkPackageNodeLinksQuery'
+    },
+    workPackagesNodeLinksDescendants: {
+      api: `${api_version}/workpackages/*/nodelinks/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodeLinksDescendants'
+    },
+    workPackagesNodeLinksDeleteRequest: {
+      api: `${api_version}/workpackages/*/nodelinks/*/deleteRequest`,
+      method: 'POST',
+      name: 'workPackagesNodeLinksDeleteRequest'
+    },
+    workPackagesNodeDescendants: {
+      api: `${api_version}/workpackages/*/node/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodeDescendants'
+    },
+    workPackagesNodesDescendants: {
+      api: `${api_version}/workpackages/*/nodes/*/descendants`,
+      method: 'GET',
+      name: 'workPackagesNodesDescendants'
+    },
+    WorkPackagesNodeLinks: {
+      api: `${api_version}//workpackages/*/nodelinks`,
+      method: 'POST',
+      name: 'WorkPackagesNodeLinks'
+    },
+    WorkPackagesNodesGroupSet: {
+      api: `${api_version}/workpackages/nodes/*/group/set/*`,
+      method: 'POST',
+      name: 'WorkPackagesNodesGroupSet'
+    },
+    DELETEScopeNodes: {
+      api: `${api_version}/scopes/*/nodes/*`,
+      method: 'DELETE',
+      name: 'ScopesNodes'
+    },
+    GetRadios: {
+      api: `${api_version}/radios?*`,
+      method: 'GET',
+      name: 'Radios'
+    },
+    POSTRadios: {
+      api: `${api_version}/radios`,
+      method: 'POST',
+      name: 'Radios'
+    },
+    POSTWorkPackageNodeRadios: {
+      api: `${api_version}/workpackages/*/nodes/*/radios/*`,
+      method: 'POST',
+      name: 'WorkPackageNodeRadios'
+    },
+    PostReply: {
+      api: `${api_version}/radios/*/reply`,
+      method: 'POST',
+      name: 'RadioReply'
+    },
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
+    },
+    PUTLayoutNodes: {
+      api: `${api_version}/layouts/*/nodes/groupAreaSize`,
+      method: 'PUT',
+      name: 'LayoutNodes'
     }
   }
 };

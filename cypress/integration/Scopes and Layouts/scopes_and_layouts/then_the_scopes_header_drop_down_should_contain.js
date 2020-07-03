@@ -10,6 +10,8 @@ Then('the scopes header drop down should contain {string}', function(scope) {
       cy.root()
         .contains('mat-option', scope)
         .should('exist')
-        .type('{esc}');
+        .type('{esc}')
+        .wait(['@GETLayout.all', '@GETNodesQuery.all', '@GETNodeLinksQuery.all']);
+      cy.get('[data-qa=spinner]').should('not.be.visible');
     });
 });

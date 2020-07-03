@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { NodeDetail, NodeDetailApiResponse, NodeReportsApiResponse, Tag } from '../store/models/node.model';
+import { NodeDetail, NodeDetailApiResponse, NodeReportsApiResponse, Tag, TagsHttpParams } from '../store/models/node.model';
 import { NodeLinkDetail, NodeLinkDetailApiResponse } from '../store/models/node-link.model';
 import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
+import { toHttpParams } from '@app/services/utils';
 
 export interface GetNodesRequestQueryParams {
   layerQuery?: string;
@@ -70,6 +71,16 @@ export class NodeService {
     return this.http.get<any>(`/nodes/${id}/usage`, { params: params });
   }
 
+  getSourcesView(id: string, queryParams?: { workPackageQuery: string[] }): Observable<any> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/nodes/${id}/sources`, { params: params });
+  }
+
+  getTargetsView(id: string, queryParams?: { workPackageQuery: string[] }): Observable<any> {
+    const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/nodes/${id}/targets`, { params: params });
+  }
+
   getReports(nodeId: string, queryParams?: GetNodesRequestQueryParams): Observable<NodeReportsApiResponse> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<NodeReportsApiResponse>(`/nodes/${nodeId}/reports`, { params: params });
@@ -122,8 +133,11 @@ export class NodeService {
     );
   }
 
-  loadTags(): Observable<{ data: Tag[] }> {
-    return this.http.get<{ data: Tag[] }>(`/tags`);
+  loadTags(queryParams: TagsHttpParams): Observable<{ data: Tag[] }> {
+    const params = queryParams ? toHttpParams(queryParams) : new HttpParams();
+    return this.http.get<any>(`/tags`, {
+      params: params,
+    });
   }
 
   deleteTag(tagId: string): Observable<{}> {

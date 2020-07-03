@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog, MatSlideToggleChange } from '@angular/material';
 import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
@@ -9,15 +9,17 @@ import {
   UpdateWorkPackageEntity,
   AddWorkPackageEntity
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackageEntity, WorkPackageEntitiesHttpParams } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
 import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
 import { Actions, ofType } from '@ngrx/effects';
 import { Roles } from '@app/core/directives/by-role.directive';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { getWorkPackagesPage } from '../../store/selectors/workpackage.selector';
 
 @Component({
   selector: 'app-workpackage',
@@ -26,15 +28,21 @@ import { LoadUsers } from '@app/settings/store/actions/user.actions';
   providers: [WorkPackageDetailService, WorkPackageValidatorService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkPackageComponent implements OnInit {
+export class WorkPackageComponent implements OnInit{
   public Roles = Roles;
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;
   public selectedLeftTab: number | string;
-
-  @ViewChild('drawer') drawer;
+  private workPackageParams: WorkPackageEntitiesHttpParams = {
+    textFilter: '',
+    page: 0,
+    size: 10,
+    includeArchived: false
+  }
+  search$ = new BehaviorSubject<string>('');
+  page$: Observable<any>;
 
   constructor(
     private actions: Actions,
@@ -45,8 +53,27 @@ export class WorkPackageComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(new LoadUsers({}));
-    this.store.dispatch(new LoadWorkPackages({}));
+    this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
+
+    this.search$
+    .pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    )
+    .subscribe(textFilter => {
+      this.workPackageParams = {
+        textFilter: textFilter,
+        page: 0,
+        size: this.workPackageParams.size,
+        includeArchived: this.workPackageParams.includeArchived
+      }
+      this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
+    });
+
+    this.page$ = this.store.pipe(
+      select(getWorkPackagesPage)
+    )
 
     this.store
       .pipe(select(fromWorkPackagesEntities.getSelectedWorkPackage))
@@ -101,6 +128,20 @@ export class WorkPackageComponent implements OnInit {
     }
   }
 
+  onSearch(textFilter: string): void {
+    this.search$.next(textFilter);
+  }
+
+  onPageChange(page){
+    this.workPackageParams= {
+      textFilter: this.workPackageParams.textFilter,
+      page: page.pageIndex,
+      size: page.pageSize,
+      includeArchived: this.workPackageParams.includeArchived
+    } 
+    this.store.dispatch(new LoadWorkPackages(this.workPackageParams))
+  }
+
   onAddWorkPackage(): void {
     const dialogRef = this.dialog.open(WorkPackageModalComponent, {
       disableClose: false,
@@ -128,17 +169,12 @@ export class WorkPackageComponent implements OnInit {
   }
 
   getArchivedWorkPackages(checked: boolean): void {
-    const queryParams = {
+    this.workPackageParams= {
+      textFilter: this.workPackageParams.textFilter,
+      page: this.workPackageParams.page,
+      size: this.workPackageParams.size,
       includeArchived: checked ? true : false
-    };
-    this.store.dispatch(new LoadWorkPackages(queryParams));
-  }
-
-  openLeftTab(tab: number | string): void {
-    this.drawer.opened && this.selectedLeftTab === tab ? this.drawer.close() : this.drawer.open();
-    typeof tab !== 'string' ? (this.selectedLeftTab = tab) : (this.selectedLeftTab = 'menu');
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
+    } 
+    this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
   }
 }

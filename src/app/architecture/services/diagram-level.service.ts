@@ -24,7 +24,9 @@ export enum Level {
   dataMap = 'data map',
   dimensionMap = 'dimension map',
   attribute = 'attribute',
-  usage = 'usage analysis'
+  usage = 'usage analysis',
+  sources = 'sources',
+  targets = 'targets'
 }
 
 // Numbers associated to each level in the data store
@@ -73,6 +75,9 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
   const sourceGroups = new go.List<go.Group>();
   const targetGroups = new go.List<go.Group>();
   const transformationNodes = new go.List<go.Node>();
+
+  let greatestSourceWidth = 0;
+  let greatestTargetWidth = 0;
 
   // Populate node lists
   allParts.each(function(part: go.Part) {
@@ -155,9 +160,17 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
     return 0;
   });
 
+  sourceGroups.each(function(group: go.Group) {
+    greatestSourceWidth = Math.max(group.actualBounds.width, greatestSourceWidth);
+  });
+
+  targetGroups.each(function(group: go.Group) {
+    greatestTargetWidth = Math.max(group.actualBounds.width, greatestTargetWidth);
+  });
+
   // Set initial location for target groups.
   // Place to the right of source groups.
-  nextLocation.setTo(600, 0);
+  nextLocation.setTo(greatestSourceWidth / 2 + greatestTargetWidth / 2 + 300, 0);
 
   // Place target groups in a descending list
   targetGroups.each(function(target: go.Group): void {
@@ -199,7 +212,7 @@ MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Ite
 
   // Set initial location for transformation nodes.
   // Place in between source and target groups.
-  nextLocation.setTo(300, step - 27);
+  nextLocation.setTo(greatestSourceWidth / 2 + 150, step - 27);
 
   transformationNodes.each(function(trans: go.Node): void {
     trans.move(nextLocation.copy(), true);
@@ -329,11 +342,11 @@ export class DiagramLevelService {
     if (level === Level.system) {
       tooltip = NodeToolTips[5].Tooltip;
     } else if (level === Level.data || level === Level.systemMap) {
-      tooltip = NodeToolTips[10].Tooltip;
+      tooltip = NodeToolTips[8].Tooltip;
     } else if (level === Level.dimension || level === Level.dataMap) {
-      tooltip = NodeToolTips[13].Tooltip;
+      tooltip = NodeToolTips[11].Tooltip;
     } else if (level === Level.reportingConcept || level === Level.dimensionMap) {
-      tooltip = NodeToolTips[17].Tooltip;
+      tooltip = NodeToolTips[15].Tooltip;
     }
     return tooltip;
   }
@@ -343,7 +356,7 @@ export class DiagramLevelService {
     if (level === Level.system) {
       tooltip = NodeToolTips[6].Tooltip;
     } else if (level === Level.data || level === Level.systemMap) {
-      tooltip = NodeToolTips[11].Tooltip;
+      tooltip = NodeToolTips[9].Tooltip;
     }
     return tooltip;
   }
@@ -398,7 +411,7 @@ export class DiagramLevelService {
           name: 'New transformation',
           layer: transformationLayer,
           category: nodeCategories.transformation,
-          tooltip: NodeToolTips[18].Tooltip,
+          tooltip: NodeToolTips[16].Tooltip,
           isTemporary: level.endsWith('map')
         })
       );
@@ -445,25 +458,11 @@ export class DiagramLevelService {
     } else if (level === Level.data) {
       paletteViewNodes.splice(0, 0,
         new Node({
-          id: 'New Physical Data Set',
-          name: 'New Physical Data Set',
+          id: 'New Data Structure',
+          name: 'New Data Structure',
           layer: layers.data,
-          category: nodeCategories.physical,
+          category: nodeCategories.dataStructure,
           tooltip: NodeToolTips[7].Tooltip
-        }),
-        new Node({
-          id: 'New Virtual Data Set',
-          name: 'New Virtual Data Set',
-          layer: layers.data,
-          category: nodeCategories.virtual,
-          tooltip: NodeToolTips[8].Tooltip
-        }),
-        new Node({
-          id: 'New Master Data Data Set',
-          name: 'New Master Data Data Set',
-          layer: layers.data,
-          category: nodeCategories.masterData,
-          tooltip: NodeToolTips[9].Tooltip
         })
       );
     } else if (level === Level.dimension) {
@@ -473,7 +472,7 @@ export class DiagramLevelService {
           name: 'New Dimension',
           layer: layers.dimension,
           category: nodeCategories.dimension,
-          tooltip: NodeToolTips[12].Tooltip
+          tooltip: NodeToolTips[10].Tooltip
         })
       );
     } else if (level === Level.reportingConcept) {
@@ -483,21 +482,21 @@ export class DiagramLevelService {
           name: 'New List Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.list,
-          tooltip: NodeToolTips[14].Tooltip
+          tooltip: NodeToolTips[12].Tooltip
         }),
         new Node({
           id: 'New Structural Reporting Concept',
           name: 'New Structural Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.structure,
-          tooltip: NodeToolTips[15].Tooltip
+          tooltip: NodeToolTips[13].Tooltip
         }),
         new Node({
           id: 'New Key Reporting Concept',
           name: 'New Key Reporting Concept',
           layer: layers.reportingConcept,
           category: nodeCategories.key,
-          tooltip: NodeToolTips[16].Tooltip
+          tooltip: NodeToolTips[14].Tooltip
         })
       );
     }
@@ -549,19 +548,16 @@ export class DiagramLevelService {
     diagram.model = $(go.GraphLinksModel, {
       nodeKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
       linkKeyProperty: level.endsWith('map') ? 'displayId' : 'id',
-      nodeCategoryProperty: level.endsWith('map') ?
-        function(data) {
-          // Ensure systems are represented by map view groups in map view
-          return data.layer === layers.system ? '' :
-            data.category === nodeCategories.transformation ? nodeCategories.transformation :
-              data.layer;
-        } :
-        function(data) {
-          // Ensure that transformation nodes use their own category, separate from the layer
-          return data.category === nodeCategories.transformation
-            ? nodeCategories.transformation
-            : data.layer;
-        },
+      nodeCategoryProperty: function(data) {
+        if (data.category === nodeCategories.transformation) {
+          return nodeCategories.transformation;
+        // Ensure systems/data nodes are represented by map view groups in system/data map view
+        } else if (data.layer + ' map' === level) {
+          return '';
+        } else {
+          return data.layer;
+        }
+      },
       linkFromKeyProperty: level.endsWith('map') ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
       linkToKeyProperty: level.endsWith('map') ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,
@@ -585,6 +581,10 @@ export class DiagramLevelService {
       this.createNodeUsageLanes(diagram);
     }
 
+    if ([Level.sources, Level.targets].includes(level)) {
+      diagram.allowMove = false;
+    }
+
     // Settings and layout for map view
     if (level.endsWith('map')) {
       diagram.layout = $(MapViewLayout as any, {
@@ -596,10 +596,12 @@ export class DiagramLevelService {
     } else {
       diagram.layout = $(go.LayeredDigraphLayout, {
         setsPortSpots: level === Level.usage,
-        isOngoing: level === Level.usage, // Prevent rearranging diagram automatically unless in usage view
+        // Prevent rearranging diagram automatically unless in usage, sources or targets view
+        isOngoing: [Level.usage, Level.sources, Level.targets].includes(level),
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
         isRouting: true,
+        layerSpacing: 60,
         // Arrange nodes from top down in node usage view
         direction: level === Level.usage ? 90 : 0
       });

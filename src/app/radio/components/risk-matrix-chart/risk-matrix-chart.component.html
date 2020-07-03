@@ -1,4 +1,7 @@
 <div class="yAxisContainer">
+  <div class="impact">
+    <span>Impact</span>
+  </div>
   <div class="yAxis">
     <span class="left">Major</span>
     <span class="left">Minor</span>
@@ -6,9 +9,10 @@
   <div class="xAxisContainer">
     <div class="xAxis">
       <span>Low</span>
+      <span class="probability">Probability</span>
       <span>High</span>
     </div>
-    <div *ngFor="let row of matrix; let rowIndex = index" class="row">
+    <div *ngFor="let row of matrix$ | async; let rowIndex = index" class="row">
       <div
         *ngFor="let col of row; let colIndex = index"
         class="col"
@@ -28,4 +32,8 @@
     <span class="right">Major</span>
     <span class="right">Minor</span>
   </div>
+</div>
+<br><br>
+<div class="clear-selection" *ngIf="selectedRiskMatrixCol">
+  <span (click)="clearSelection($event)">Clear selection</span>
 </div>

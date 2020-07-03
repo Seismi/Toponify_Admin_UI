@@ -1,70 +1,91 @@
+@core
 Feature: Create new report
   As a user, I want to be able to create new reports within a work package
 
   Background:
     Given a valid user is logged in
     And the user selects Work Package menu item
-    And the work package 'Automated Regression Test Work Package' does not exist
-    And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
+    And the work package 'Created Automated Regression Test Work Package' does not exist
+    And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user selects Topology menu item
     And the "System View" layer is selected
-    And the work package 'Automated Regression Test Work Package' is editable on the 'work packages' menu
+    And the work package 'Created Automated Regression Test Work Package' is editable on the 'work packages' menu
     And the "Topology" "Systems" Tab is selected
-    And the user creates a new 'transactional' system with name 'Automated Regression Test System'
+    And the user creates a new 'transactional' system with name 'Automated Regression Test Transactional System'
+    And the user creates a new 'reporting' system with name 'Automated Regression Test Reporting System'
     And the user selects Reports menu item
-    #TODO - You need to create the system that is going to be used within the reports
 
-  @focus
+  @reports
   Scenario: Create Report and then cancel
-    #TODO - this and all subsequent tests should use the system that you created above
-    Given the work package 'Automated Regression Test Work Package' is editable on the 'reports' menu
-    When the user creates a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test System'
-    #And the user cancels the creation of the report
-    #Then the new report 'Automated Regression Test Report' should not be created
+    When the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user cancels the creation of the report
+    Then the new report 'Created Automated Regression Test Report' should not exist in the reports table
+    When the user reloads the Reports page
+    Then the new report 'Created Automated Regression Test Report' should not exist in the reports table
 
+  @reports
+  Scenario: Create Report and then confirm
+    When the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
+    And the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
+    When the user reloads the Reports page
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
+    And the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
 
-  Scenario: Complete creating a new report
-  Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
-   When clicks on create a new report
-    And sets a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'ERP'
-    And user 'confirms' the creation of the report
-   Then the report 'Automated Regression Test Report' should be created
-    #TODO -- Is there a second check required against the ERP system
-    #TODO -- Need to check immediately and after reload
+  @reports
+  Scenario: Update report and then cancel
+    Given the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
+    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description', the source system to 'Automated Regression Test Reporting System'
+    And the user cancels the update of the report
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
+    When the user selects the report 'Created Automated Regression Test Report' in the reports table
+    Then the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
 
-  Scenario: Cancel updating a report
-  Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
-   When finds the 'Automated Regression Testing Report'
-    And edits the description to 'Automated testing description change'
-    And cancels the change
-   Then the description of the report 'Automated Regression Test Report' in the details pane is reverts to 'Base'
+  @reports
+    Scenario: Update report and then confirm
+    Given the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
+    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description', the source system to 'Automated Regression Test Reporting System'
+    And the user confirms the update of the report
+    And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
+    When the user reloads the Reports page
+    Then the new report 'Automated Updated Regression Test Report' should exist in the reports table
+    When the user selects the report 'Automated Updated Regression Test Report' in the reports table
+    And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
 
-  Scenario: Update a report
-  Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
-   When finds the 'Automated Regression Testing Report'
-    And edits the description to 'Automated testing description change'
-    And confirms the update of the report 'Automated Regression Testing Report'
-    Then the description of the report 'Automated Regression Test Report' in the report table is updated to 'Automated testing description change'
-    #TODO -- Is there a second check required against the ERP system
-    #TODO -- Need to check immediately and after reload
+  @reports
+  Scenario: Delete report and then cancel
+    Given the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
+    When the user deletes the report
+    And the user cancels the delete of the report
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
+    When the user reloads the Reports page
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
 
-  Scenario: Create a new report then switch to current architecture
-    Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
-   When clicks on the Create New button in the Reports table
-    And sets a new report with the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'ERP'
-    And user saves the report
-    And user de-selects the Display option of the 'Automated Regression Test Work Package'
-    Then the report 'Automated Regression Test Report 2' cannot be found in the report table
+  @reports
+  Scenario: Delete report and then confirm
+    Given the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
+    And the user deletes the report
+    And the user confirms the delete of the report
+    Then the new report 'Created Automated Regression Test Report' should not exist in the reports table
+    When the user reloads the Reports page
+    Then the new report 'Created Automated Regression Test Report' should not exist in the reports table
 
-  # TODO - is this testing the delete of a work package or a report?
-  Scenario: Delete a report and cancel
-    Given the report 'Automated Regression Testing Report' does exist with description 'Base' in the 'Automated Regression Test Work Package'
-   When deletes the 'Automated Regression Testing Report'
-    And confirms deletion
-    Then the report 'Automated Regression Test Report' can be found in the report table
-
-  # TODO - is this testing the delete of a work package or a report?
-  Scenario: Delete a work package and confirm
-   When deletes the 'Automated Regression Testing Report'
-    And cancels deletion
-    Then the report 'Automated Regression Test Report' cannot be found in the report table
+  @reports
+  Scenario: Create a new report then switch to current architecture and test if still visible
+    When the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
+    And the user confirms the creation of the report
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
+    And the work package 'Created Automated Regression Test Work Package' is 'not displayed' on the 'reports' menu
+    Then the new report 'Created Automated Regression Test Report' should not exist in the reports table

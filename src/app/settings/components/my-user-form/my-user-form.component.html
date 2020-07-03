@@ -48,24 +48,36 @@
       <mat-error>Invalid phone number</mat-error>
     </mat-form-field>
 
-    <div *ngIf="myUserPage; else elseBlock" style="margin-bottom: 20px;">
-      <div>
-        <span class="label">My Teams</span>
-        <ul *ngFor="let team of userTeams">
-          <li>{{ team.name }}</li>
-        </ul>
+    <mat-form-field *ngIf="myUserPage">
+      <mat-label>Summary Email Frequency</mat-label>
+      <div formGroupName="settings">
+        <div formGroupName="summarySettings">
+          <mat-select formControlName="frequency" [ngClass]="{ editable: isEditable }"
+            data-qa="settings-user-emailFrequency">
+            <mat-option *ngFor="let frequency of frequencies" [value]="frequency">
+              {{ frequency }}
+            </mat-option>
+          </mat-select>
+        </div>
       </div>
+    </mat-form-field>
 
-      <div>
-        <span class="label">My Roles</span>
-        <ul *ngFor="let role of userRole">
-          <li>{{ role.name }}</li>
-        </ul>
+    <mat-form-field *ngIf="myUserPage && [Frequency.Weekly, Frequency.Monthly].includes(value)">
+      <mat-label>Day of the week</mat-label>
+      <div formGroupName="settings">
+        <div formGroupName="summarySettings">
+          <mat-select formControlName="day" [ngClass]="{ editable: isEditable }" data-qa="settings-user-dayOfTheWeek">
+            <mat-option 
+              *ngFor="let day of days; let i = index" [value]="i">
+              <span>{{ value === Frequency.Weekly ? 'Every' : 'First' }}</span>
+              {{ day }}
+            </mat-option>
+          </mat-select>
+        </div>
       </div>
-    </div>
+    </mat-form-field>
 
-    <ng-template #elseBlock>
-      <!-- My Teams -->
+    <div *ngIf="modalMode">
       <mat-form-field>
         <mat-select placeholder="My Teams" multiple formControlName="team" [compareWith]="compareFn"
           [ngClass]="{ editable: isEditable }" data-qa="settings-user-teams">
@@ -74,8 +86,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-    
-      <!-- My Roles -->
+
       <mat-form-field>
         <mat-select placeholder="My Roles" multiple formControlName="roles" [compareWith]="compareFn"
           [ngClass]="{ editable: isEditable }" data-qa="settings-user-roles">
@@ -85,7 +96,7 @@
         </mat-select>
         <mat-error>Role is required</mat-error>
       </mat-form-field>
-    </ng-template>
+    </div>
   </div>
 
   <div class="form-actions" *ngIf="!modalMode">
@@ -122,5 +133,24 @@
       <button mat-raised-button color="primary" (click)="onSave()" data-qa="settings-user-save">Save</button>
       <button mat-raised-button (click)="onCancel()" data-qa="settings-user-cancel">Cancel</button>
     </ng-template>
+
+    <div style="margin-top: 20px;" *ngIf="!modalMode">
+      <smi-roles-or-teams-table 
+        [title]="'Teams'"
+        [data]="userTeam"
+        (add)="addTeam.emit()"
+        (delete)="onRemove($event, 'team')"
+        [myUserPage]="myUserPage"
+      >
+      </smi-roles-or-teams-table>
+      <smi-roles-or-teams-table 
+        [title]="'Roles'"
+        [data]="userRole"
+        (add)="addRole.emit()"
+        (delete)="onRemove($event, 'role')"
+        [myUserPage]="myUserPage"
+      >
+      </smi-roles-or-teams-table>
+    </div>
   </div>
 </form>

@@ -24,15 +24,40 @@ module.exports = {
       method: 'GET',
       name: 'Layout'
     },
-    ReportsScopeQuery: {
-      api: `${api_version}/reports?scopeQuery=*`,
+    ReportsFilterQuery: {
+      api: `${api_version}/reports*`,
       method: 'GET',
-      name: 'ReportsScopeQuery'
+      name: 'ReportsFilterQuery'
     },
-    ReportsWorkPackageQuery: {
-      api: `${api_version}/reports?workPackageQuery[]=*&scopeQuery=*`,
+    ReportsQuery: {
+      api: `${api_version}/reports/*`,
       method: 'GET',
-      name: 'ReportsWorkPackageQuery'
+      name: 'ReportsQuery'
+    },
+    WorkPackagesReports: {
+      api: `${api_version}/workpackages/*/reports`,
+      method: 'POST',
+      name: 'WorkPackageReports'
+    },
+    GetNodes: {
+      api: `${api_version}/nodes`,
+      method: 'GET',
+      name: 'Nodes'
+    },
+    GetWorkPackageReports: {
+      api: `${api_version}/workpackages/*/reports/*`,
+      method: 'PUT',
+      name: 'WorkPackageReports'
+    },
+    GetWorkPackageReportsTags: {
+      api: `${api_version}/workpackages/*/reports/*/tags`,
+      method: 'GET',
+      name: 'WorkPackageReportsTags'
+    },
+    PUTWorkPackageDeleteRequest: {
+      api: `${api_version}/workpackages/*/reports/*/deleteRequest`,
+      method: 'POST',
+      name: 'WorkPackageDeleteRequest'
     }
   }
 };

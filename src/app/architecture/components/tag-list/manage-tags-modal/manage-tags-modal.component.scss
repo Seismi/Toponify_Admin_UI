@@ -4,6 +4,10 @@
   overflow: auto;
 }
 
+mat-form-field {
+  width: 100%;
+}
+
 tr.mat-header-row {
   height: 35px;
 }
@@ -35,9 +39,14 @@ th, td {
 
 .mat-dialog-actions {
   display: flex;
-  justify-content: space-between;
   padding-bottom: 17px;
 }
+
+mat-paginator {
+  margin-left: auto;
+}
+
+
 
 .mat-column-actions.mat-column-actions {
   width: 94px;

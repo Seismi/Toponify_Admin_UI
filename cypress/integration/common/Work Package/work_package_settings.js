@@ -26,11 +26,10 @@ module.exports = {
       method: 'PUT',
       name: 'WorkPackage'
     },
-    GetArchiveWorkPackages: {
-      api: `${api_version}/workpackages?includeArchived=true`,
-      //                        api: `${api_version}/workpackages*`,
+    GetWorkPackagePaging: {
+      api: `${api_version}/workpackages?*`,
       method: 'GET',
-      name: 'ArchiveWorkPackages'
+      name: 'WorkPackagePaging'
     },
     PostWorkPackage: {
       api: `${api_version}/workpackages`,
@@ -97,10 +96,10 @@ module.exports = {
       method: 'DELETE',
       name: 'workPackageObjectives'
     },
-    GetRadios: {
-      api: `${api_version}/radios`,
-      method: 'GET',
-      name: 'Radios'
+    radiosAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search?*`,
+      method: 'POST',
+      name: 'radiosAdvancedSearch'
     },
     GetUsers: {
       api: `${api_version}/users`,
@@ -137,15 +136,15 @@ module.exports = {
       method: 'GET',
       name: 'Radio'
     },
-    GetNotfications: {
-      api: `${api_version}/notifications`,
-      method: 'GET',
-      name: 'Notifications'
-    },
     PostRadioReply: {
       api: `${api_version}/radios/*/reply`,
       method: 'POST',
       name: 'RadioReply'
+    },
+    GetRadios: {
+      api: `${api_version}/radios`,
+      method: 'GET',
+      name: 'Radios'
     }
   }
 };

@@ -9,8 +9,8 @@ When('the user selects Scopes and Layouts menu item', function() {
         cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
           .click()
           .then(() => {
-            //cy.wait(['@GETScopes','@GETSelectorAvailabilityQuery','@GETNodesScopeQuery','@GETNodeLinksScopeQuery','@GETLayout','@GETNodesScopeQuery.1','@GETNodeLinksScopeQuery.1', '@GETNodeLinksScopeQuery.2'])// wait for API Calls
-            cy.wait('@GETScopes'); // wait for API Calls
+            cy.wait(['@GETScopes.all']); // wait for API Calls
+            cy.get('[data-qa=spinner]').should('not.be.visible');
           });
       });
   });

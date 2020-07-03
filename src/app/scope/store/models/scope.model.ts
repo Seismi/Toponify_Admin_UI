@@ -25,7 +25,7 @@ export interface ScopeEntity {
 
 export interface ScopeEntitiesHttpParams {
   ownerQuery?: string;
-  scopeQuery?: string;
+  textFilter?: string;
   page?: number;
   size?: number;
 }
@@ -92,7 +92,7 @@ export interface Links {
 
 export interface Page {
   size: number;
-  totalElements: number;
+  totalObjects: number;
   totalPages: number;
   number: number;
 }

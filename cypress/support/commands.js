@@ -12,33 +12,7 @@
 // -- This is a parent command --
 const login = require('../integration/common/Login/login_settings');
 const workPackage = require('../integration/common/Work Package/work_package_settings');
-
-/*
-const attributeAndRules = require("../integration/common/Attribute and Rules/attribute_and_rules_settings")
-const documentationStandards = require("../integration/common/Documentation Standards/documentation_standards_settings")
-const logout = require("../integration/common/Logout/logout_settings")
-const myProfile = require("../integration/common/My Profile/my_profile_settings")
-const radios = require("../integration/common/Radios/radios_settings")
-const reports = require("../integration/common/Reports/reports_settings")
-const scopesAndLayouts = require("../integration/common/Scope and Layouts/scope_and_layouts_settings")
-const topology = require("../integration/common/Topology/topology_settings")
-const settings = require("../integration/common/Settings/settings_settings")
-const home = require("../integration/common/Home/home_settings")
-
-const pages = {
-        'Home':home,
-        'Topology': topology,
-        'Reports': reports,
-        'Attributes and Rules': attributeAndRules,
-        'Work Package': workPackage,
-        'Radios': radios,
-        'Scopes and Layouts': scopesAndLayouts,
-        'Documentation Standard': documentationStandards,
-        'My Profile': myProfile,
-        'Settings': settings,
-        'Logout': logout,
-        'Login': login
-}*/
+const documentationStandards = require('../integration/common/Documentation Standards/documentation_standards_settings');
 
 Cypress.Commands.add('login', usertype => {
   cy.setUpRoutes('Login', login);
@@ -66,7 +40,12 @@ Cypress.Commands.add('login', usertype => {
           .wait('@POSTlogin')
           .then(response => {
             if (response.status === 200)
-              cy.wait(['@GETnavigateMyWorkPackages', '@GETnavigateMyRadios', '@GETnavigateMyLayouts']);
+              cy.wait([
+                '@GETnavigateMyWorkPackages',
+                '@GETnavigateMyRadios',
+                '@GETnavigateMyLayouts',
+                '@GETMyProfile.all'
+              ]);
           });
       });
   });
@@ -77,6 +56,7 @@ Cypress.Commands.add('selectDropDownNoClick', (dropdown, element) => {
     .click()
     .get('mat-option')
     .contains(element)
+    .should('exist')
     .click({ force: true });
 });
 
@@ -120,7 +100,7 @@ Cypress.Commands.add('selectRow', (table, contents) => {
     .get(`[data-qa=${table}]`)
     .find('table>tbody')
     .contains('td', contents)
-    .click();
+    .click({ force: true });
 });
 
 Cypress.Commands.add('type_ckeditor', (element, content) => {
@@ -171,32 +151,51 @@ Cypress.Commands.add('selectDetailsPaneTab', posinset => {
     });
 });
 
-Cypress.Commands.add('findWorkPackage', name => {
-  cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
-    .find('label>div>input')
-    .uncheck({ force: true })
-    .check({ force: true })
-    .wait('@GETArchiveWorkPackages') // wait for the return of the archive work packages
+Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
+  if (includeArchived) {
+    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+      .find('label>div>input')
+      .uncheck({ force: true })
+      .check({ force: true });
+  } else {
+    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+      .find('label>div>input')
+      .check({ force: true })
+      .uncheck({ force: true });
+  }
+  //  cy.wait('@GETArchiveWorkPackages.all'); // wait for the return of the archive work packages
+  cy.wait('@GETWorkPackagePaging.all'); // wait for the return of the archive work packages
+  cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name)
+    .should('have.value', name) // type the name
     .then(() => {
-      cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
-        .clear() //clear the box
-        .type(name) // type the name
-        .then(() => {
-          return cy
-            .get(`[data-qa=work-packages-table]`) // get the work packages table
-            .find('table>tbody'); // find the table
-        });
+      return cy
+        .get(`[data-qa=work-packages-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
     });
 });
 
-Cypress.Commands.add('findScope', name => {
-  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
-    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
+Cypress.Commands.add('findDocumentationStandard', name => {
+  cy.get(`[data-qa=documentation-standards-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name) // type the name
     .then(() => {
       return cy
-        .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
+        .get(`[data-qa=documentation-standards-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
+Cypress.Commands.add('findReport', name => {
+  cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name) // type the name
+    .wait(2000)
+    .wait('@GETReportsFilterQuery.all')
+    .then(() => {
+      return cy
+        .get(`[data-qa="reports-table"]`) // get the work packages table
         .find('table>tbody'); // find the table
     });
 });
@@ -205,6 +204,7 @@ Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
   cy.get(`[data-qa=${search}]`)
     .clear()
     .type(search_term)
+    .should('have.value', search_term)
     .then(() => {
       cy.get(`[data-qa=${table}]`).find('table>tbody>tr :first');
     });
@@ -213,7 +213,8 @@ Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
 Cypress.Commands.add('findWorkPackageRadio', name => {
   cy.get(`[data-qa=work-packages-radio-table-quick-search]`) // get the quick packages search
     .clear() //clear the box
-    .type(name); //type the name
+    .type(name)
+    .should('have.value', name); //type the name
   return cy
     .get(`[data-qa=work-packages-radio-table]`) // get the work packages table
     .find('table>tbody'); // find the table
@@ -223,6 +224,7 @@ Cypress.Commands.add('selectUser', email => {
   cy.get('[data-qa=settings-all-users-quick-search]')
     .clear()
     .type(email)
+    .should('have.value', email)
     .then(() => {
       cy.get(`[data-qa=all-users-table]`).find('table>tbody>tr :first');
     });
@@ -232,6 +234,7 @@ Cypress.Commands.add('selectTeam', team => {
   cy.get('[data-qa=settings-teams-quick-search]')
     .clear()
     .type(team)
+    .should('have.value', team)
     .then(() => {
       cy.get(`[data-qa=settings-teams-table]`).find('table>tbody>tr :first');
     });
@@ -242,7 +245,11 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
   cy.server();
   Object.keys(settings.wait_for).forEach(r => {
     route = settings.wait_for[r];
-    cy.route(route.method, route.api).as(`${route.method}${route.name}`);
+    if (route.hasOwnProperty('stub')) {
+      cy.route(route.method, route.api, route.stub).as(`${route.method}${route.name}`);
+    } else {
+      cy.route(route.method, route.api).as(`${route.method}${route.name}`);
+    }
   });
 });
 
@@ -253,6 +260,7 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
       cy.get('div>div>input')
         .clear()
         .type(work_package)
+        .should('have.value', work_package)
         .then(() => {
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
@@ -261,12 +269,13 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
               if (wp[0].textContent === 'edit') {
                 cy.get('table>tbody')
                   .find('tr:first>td>div>div>mat-icon')
-                  .click()
-                  .wait([
-                    '@GETNodesWorkPackageQuery',
-                    '@GETNodeLinksWorkPackageQuery',
-                    '@GETSelectorAvailabilityQuery'
-                  ]);
+                  .click();
+                cy.wait([
+                  '@GETNodesWorkPackageQuery',
+                  '@GETNodeLinksWorkPackageQuery',
+                  '@GETSelectorAvailabilityQuery'
+                ]);
+                cy.get('[data-qa=spinner]').should('not.be.visible');
               }
             });
         });
@@ -285,13 +294,13 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
       cy.get('div>div>input')
         .clear()
         .type(work_package)
+        .should('have.value', work_package)
         .then(() => {
           cy.get('table>tbody')
             .find('tr:first>td>div>div>mat-icon')
             .click()
-            .wait(['@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery', '@GETSelectorAvailabilityQuery'])
+            .wait(wait_for)
             .then(wp => {
-              console.log(wp[0].textContent);
               if (wp[0].textContent === 'edit') {
                 cy.get('table>tbody')
                   .find('tr:first>td>div>div>mat-icon')
@@ -302,24 +311,102 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
         });
     })
     .then(result => {
+      cy.get('[data-qa=spinner]').should('not.be.visible');
       cy.root()
         .get('[data-qa=left-hand-pane-work-packages]')
         .click();
     });
 });
 
-Cypress.Commands.add('deleteScope', scope => {
-  cy.selectRow('scopes-and-layouts-scope-table', scope)
-    //.wait('@GETWorkPackage')
-    .then(() => {
-      cy.get('table>tbody>tr :first') // get the table body
-        .click()
-        .wait(['@GETScope', '@GETLayout'])
+Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wait_for, action) => {
+  cy.get('[data-qa=left-hand-pane-work-packages]').click();
+  cy.get(`[data-qa=${work_package_menu}]`)
+    .within(() => {
+      cy.get('div>div>input')
+        .clear()
+        .type(work_package)
+        .should('have.value', work_package)
         .then(() => {
-          cy.get('[data-qa=scopes-and-layouts-delete]')
+          cy.get('[data-qa=topology-work-packages-select-work-package]')
+            .click({ force: true })
+            .wait(wait_for);
+        });
+    })
+    .then(result => {
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.root()
+        .get('[data-qa=left-hand-pane-work-packages]')
+        .click();
+    });
+});
+
+Cypress.Commands.add('findScope', name => {
+  cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
+    .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
+    .clear() //clear the box
+    .type(name)
+    .should('have.value', name) // type the name
+    .wait(3000)
+    .wait('@GETScopes.all')
+    .then(() => {
+      return cy
+        .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
+Cypress.Commands.add('findRadio', radio => {
+  cy.get('[data-qa=radio-filter]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=radio-filter-text]')
+        .clear()
+        .type(radio);
+      cy.get('[data-qa=radio-filter-modal-apply]')
+        .click({ force: true })
+        .wait(3000)
+        .wait('@POSTradiosAdvancedSearch')
+        .then(() => {
+          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
+        });
+    });
+});
+
+Cypress.Commands.add('findDocumentStandard', title => {
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title)
+    .should('have.value', title)
+    .wait(1000);
+  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('deleteScope', scope => {
+  cy.selectRow('scopes-and-layouts-scope-table', scope).then(() => {
+    cy.get('table>tbody>tr :first') // get the table body
+      .click()
+      .wait(['@GETScope', '@GETLayout'])
+      .then(() => {
+        cy.get('[data-qa=scopes-and-layouts-delete]')
+          .click()
+          .then(() => {
+            cy.get('[data-qa=delete-modal-yes]').click();
+          });
+      });
+  });
+});
+
+Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
+  cy.selectRow('documentation-standards-table', doc_standard) // select the documentation standard
+    .wait('@GETCustomProperties*')
+    .then(() => {
+      cy.get(`[data-qa=documentation-standards-delete]`) //get the delete button
+        .click() // click it
+        .then(() => {
+          cy.get('[data-qa=delete-modal-yes]') // get the delete modal button
             .click()
             .then(() => {
-              cy.get('[data-qa=delete-modal-yes]').click();
+              cy.wait('@DELETECustomProperties'); // delete the documentation standard
             });
         });
     });
@@ -357,22 +444,6 @@ Cypress.Commands.add('deleteWorkPackage', name => {
     });
 });
 
-Cypress.Commands.add('findRadio', radio => {
-  cy.get('[data-qa=radio-filter]')
-    .click()
-    .then(() => {
-      cy.get('[data-qa=radio-filter-text]')
-        .clear()
-        .type(radio);
-      cy.get('[data-qa=radio-filter-modal-apply]')
-        .click({ force: true })
-        .wait(['@POSTradiosAdvancedSearch'])
-        .then(() => {
-          return cy.get(`[data-qa=radio-table]`).find('table>tbody');
-        });
-    });
-});
-
 Cypress.Commands.add('deleteRadio', radio => {
   cy.selectRow('radio-table', radio)
     .wait('@GETRadio')
@@ -395,6 +466,7 @@ Cypress.Commands.add('deleteRadio', radio => {
         cy.get('[data-qa=radio-detail-delete]').click();
         cy.get('[data-qa=delete-modal-yes]')
           .click()
+          .wait(2000)
           .wait('@DELETERadios');
       }
     });
@@ -410,6 +482,7 @@ Cypress.Commands.add(
       .scrollIntoView()
       .clear()
       .type(title)
+      .should('have.value', title)
       .then(() => {
         cy.selectDropDownNoClick('radio-detail-category', category);
       })
@@ -439,7 +512,8 @@ Cypress.Commands.add(
         if (actioned.length > 0) {
           cy.get('[data-qa=radio-detail-action-by')
             .clear()
-            .type(actioned);
+            .type(actioned)
+            .should('have.value', actioned);
         }
       })
       .then(() => {
@@ -506,7 +580,8 @@ Cypress.Commands.add('checkTopologyTable', (component, component_type, test) => 
   let table = component_type === 'system' ? 'components' : 'links';
   cy.get('[data-qa=topology-table-quick-search]')
     .clear()
-    .type(component);
+    .type(component)
+    .should('have.value', component);
   cy.get(`[data-qa=topology-table-${table}]`)
     .find('table>tbody')
     .contains(component)
@@ -528,6 +603,160 @@ Cypress.Commands.add('assertComponentExistsOnCanvas', (component_type, component
   });
 });
 
+Cypress.Commands.add('deleteDocumentStandard', doc_standard => {
+  cy.selectRow('documentation-standards-table', doc_standard).then(() => {
+    cy.get(`[data-qa=documentation-standards-delete]`)
+      .click()
+      .then(() => {
+        cy.get('[data-qa=delete-modal-yes]')
+          .click()
+          .then(() => {
+            cy.wait('@DELETECustomProperties');
+          });
+      });
+  });
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(doc_standard);
+});
+
+Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, component) => {
+  cy.get('[data-qa=documentation-standards-create-new]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-modal-form]')
+        .within(() => {
+          cy.get('[data-qa=documentation-standards-details-name]')
+            .type(doc_standard)
+            .should('have.value', doc_standard);
+          cy.get('[data-qa=documentation-standards-details-description]')
+            .type(doc_standard)
+            .should('have.value', doc_standard);
+          cy.get(`[data-qa=documentation-standards-details-type]`).click();
+        })
+        .then(() => {
+          cy.get(`[data-qa=documentation-standards-details-type]`)
+            .get('mat-option')
+            .contains(type)
+            .click({ force: true });
+          cy.get('smi-document-standards-levels')
+            .get(component === 'Everywhere' ? 'mat-checkbox' : 'mat-tree-node') // get the tree node.  Everywhere is a special case and is a mat-check-box
+            .contains(component)
+            .click();
+        });
+    });
+});
+
+Cypress.Commands.add('createReport', (name, description, system) => {
+  cy.get('[data-qa=reports-create-new]')
+    .click()
+    .then(() => {
+      cy.wait(['@GETTeams', '@GETReportsFilterQuery', '@GETNodesWorkPackageQuery']);
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.get('[data-qa=reports-details-name]')
+        .type(name)
+        .should('have.value', name);
+      cy.get('[data-qa=reports-details-description]')
+        .type(description)
+        .should('have.value', description);
+      cy.selectDropDownNoClick('reports-details-system', system);
+    });
+});
+
+Cypress.Commands.add('findDocumentStandard', title => {
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title);
+  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('deleteDocumentStandard', title => {
+  cy.selectRow('documentation-standards-table', title);
+  cy.route('GET', `${documentationStandards}`)
+    .as('GETCustomProperties')
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-delete]')
+        .click()
+        .wait('@GETCustomProperties*')
+        .then(() => {
+          cy.get('[data-qa=delete-modal-yes]')
+            .click()
+            .wait('@DELETECustomProperties');
+        });
+    });
+  cy.get('[data-qa=documentation-standards-quick-search]')
+    .clear()
+    .type(title);
+});
+
+Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix branch to doc standard name
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard); //enter the documentation standard
+  cy.get(`[data-qa=${table}]`) //get the doc standard table
+    .find('table>tbody') //find the body
+    .contains('tr', doc_standard) // and the row which contains
+    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
+    .click()
+    .get(`[data-qa=documentation-standards-table-value]`) // get the value field
+    .type(value)
+    .should('have.value', value.toString()); // type the value
+});
+
+Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard, table) => {
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix branch to doc standard name
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard); //enter the documentation standard
+  cy.get(`[data-qa=${table}]`) //get the doc standard table
+    .find('table>tbody') //find the body
+    .contains('tr', doc_standard) // and the row which contains
+    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
+    .click();
+  cy.selectDropDown('documentation-standards-table-type', value); // select the value
+});
+
+Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix branch to doc standard name
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard); //enter the documentation standard
+  cy.get(`[data-qa=${table}]`) //get the doc standard table
+    .find('table>tbody') //find the body
+    .contains('tr', doc_standard) // and the row which contains
+    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
+    .click()
+    .get(`[data-qa=documentation-standards-table-date]`) // get the value field
+    .type(value)
+    .should('have.value', value.toString()); // type the value
+});
+
+Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) => {
+  //Tests the value in a documentation standard test
+  doc_standard = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(doc_standard); // prefix the name with branch
+  cy.get(`[data-qa=documentation-standards-table-quick-search]`) // search for the documentation standard
+    .clear()
+    .type(doc_standard)
+    .should('have.value', doc_standard);
+  cy.get(`[data-qa=${table}]`) //get the table
+    .find('table>tbody') // find the table body
+    .contains('tr', doc_standard) // row that contains documentation standard
+    .find(`td`) //check if a cell has value
+    .eq(1)
+    .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
+});
 //
 //
 // -- This is a child command --

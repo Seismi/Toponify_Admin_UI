@@ -6,8 +6,6 @@ import { RouterModule } from '@angular/router';
 import { AttributesRoutingModule } from './attributes-router.module';
 import { AttributesComponent } from './containers/attributes/attributes.component';
 import { AttributesRoutingComponent } from './containers/attributes-router.component';
-import { CategoryTableComponent } from './components/category-table/category-table.component';
-import { TableCollapseComponent } from './components/category-table/table-collapse/table-collapse.component';
 import {
   MatButtonModule,
   MatCardModule,
@@ -37,9 +35,10 @@ import { reducer } from './store/reducers/attributes.reducer';
 import { ArchitectureModule } from '@app/architecture/architecture.module';
 import { AttributeModalComponent } from './containers/attribute-modal/attribute-modal.component';
 import { AttributeDetailsComponent } from './containers/attribute-details/attribute-details.component';
-import { PropertiesTableInAttributesPageComponent } from './components/properties-table/properties-table.component';
-import { AttributesListComponent } from './components/attributes-list/attributes-list.component';
-import { RelatedAttributesModalComponent } from './containers/related-attributes-modal/related-attributes-modal.component';
+import { AttributeDetailsFormComponent } from './components/attribute-details-form/attribute-details-form.component';
+import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
+import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
+import { RelatedAttributeTableComponent } from './components/related-attribute-table/related-attribute-table.component';
 
 @NgModule({
   imports: [
@@ -69,6 +68,8 @@ import { RelatedAttributesModalComponent } from './containers/related-attributes
     MatSelectModule,
     MatTooltipModule,
     MatSidenavModule,
+    TagListModule,
+    TagModule,
     StoreModule.forFeature('attributesFeature', reducer),
     EffectsModule.forFeature([AttributeEffects])
   ],
@@ -78,11 +79,10 @@ import { RelatedAttributesModalComponent } from './containers/related-attributes
     AttributesRoutingComponent,
     AttributeDetailsComponent,
     AttributesRoutingComponent,
-    PropertiesTableInAttributesPageComponent,
-    AttributesListComponent,
-    RelatedAttributesModalComponent
+    AttributeDetailsFormComponent,
+    RelatedAttributeTableComponent
   ],
-  entryComponents: [AttributeModalComponent, RelatedAttributesModalComponent],
+  entryComponents: [AttributeModalComponent],
   providers: [AttributeService]
 })
 export class AttributesModule {}

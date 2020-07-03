@@ -1,9 +1,10 @@
-<mat-tab-group 
-  data-qa="topology-right-hand-side-tabs" 
-  [(selectedIndex)]="selectedRightTab" 
-  mat-stretch-tabs 
-  class="stretched-tabs" 
+<mat-tab-group
+  data-qa="topology-right-hand-side-tabs"
+  [(selectedIndex)]="selectedRightTab"
+  mat-stretch-tabs
+  class="stretched-tabs"
   [@.disabled]="true"
+  (selectedIndexChange)="onSelectedTabChange($event)"
 >
   <!-- Details TAB -->
   <mat-tab *ngIf="part?.isSelected && !multipleSelected">
@@ -35,6 +36,8 @@
         (deleteNodeGroup)="deleteNodeGroup.emit()"
         [clickedOnLink]="clickedOnLink"
         (seeUsage)="onSeeUsage()"
+        (findSources)="onFindSources()"
+        (findTargets)="onFindTargets()"
         (seeDependencies)="onSeeDependencies()"
         (viewStructure)="viewStructure.emit()"
         [sourceObject]="sourceObject"
@@ -58,9 +61,9 @@
         [title]="'Systems'"
         [data]="systems"
         [workPackageIsEditable]="workPackageIsEditable"
-        (add)="addNewSystem.emit()"
+        (add)="addNewGroupMember.emit()"
         (delete)="deleteNodeGroup.emit($event)"
-        [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
+        [disabled]="!['system'].includes(currentFilterLevel)"
       >
       </smi-components-table>
       <smi-components-table
@@ -69,9 +72,9 @@
         [title]="'Data'"
         [data]="dataSets"
         [workPackageIsEditable]="workPackageIsEditable"
-        (add)="addDescendants.emit()"
+        (add)="addDescendants.emit('data')"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['system'].includes(currentFilterLevel)"
+        [disabled]="getDisableDataTable()"
       >
       </smi-components-table>
       <smi-components-table
@@ -82,7 +85,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addDescendants.emit()"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['data set'].includes(currentFilterLevel)"
+        [disabled]="getDisableDimensionsTable()"
       >
       </smi-components-table>
       <smi-components-table
@@ -93,7 +96,7 @@
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addDescendants.emit()"
         (delete)="deleteDescendants.emit($event)"
-        [currentFilterLevel]="!['dimension'].includes(currentFilterLevel)"
+        [disabled]="!['dimension'].includes(currentFilterLevel)"
       >
       </smi-components-table>
     </p>
@@ -181,22 +184,22 @@
     >
     </smi-scope-table>
     <!-- Add Scope Button -->
-    <button 
-      *ngIf="multipleSelected" 
-      mat-raised-button 
-      color="primary" 
-      id="add-scope-button" 
+    <button
+      *ngIf="multipleSelected"
+      mat-raised-button
+      color="primary"
+      id="add-scope-button"
       (click)="onAddScope()"
       data-qa="topology-scopes-tab-new-scope"
     >
       New Scope
     </button>
 
-    <button 
-      *ngIf="multipleSelected" 
-      mat-raised-button 
-      color="primary" 
-      id="add-scope-button" 
+    <button
+      *ngIf="multipleSelected"
+      mat-raised-button
+      color="primary"
+      id="add-scope-button"
       (click)="addToScope.emit()"
       data-qa="topology-scopes-tab-add-to-existing"
     >

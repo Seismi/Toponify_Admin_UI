@@ -1,3 +1,5 @@
+import { Tag } from '@app/architecture/store/models/node.model';
+
 export interface AttributeEntitiesHttpParams {
   ownerQuery?: string;
   scopeQuery?: string;
@@ -38,7 +40,7 @@ export interface AttributeEntity {
   category: string;
   name: string;
   description: string;
-  tags: string;
+  tags: Tag[];
   related?: (RelatedEntity)[] | null;
 }
 
@@ -63,7 +65,7 @@ export interface AttributeDetail {
   name: string;
   category: string;
   description: string;
-  tags: string;
+  tags: Tag[];
   owners?: (Owners)[] | null;
   customProperties?: (CustomProperties)[] | null;
   related?: (RelatedEntity)[] | null;

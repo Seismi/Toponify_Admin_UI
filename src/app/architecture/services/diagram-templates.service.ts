@@ -9,7 +9,6 @@ import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
-import {linkCategories} from '@app/architecture/store/models/node-link.model';
 import {Subject} from 'rxjs';
 
 function textFont(style?: string): Object {
@@ -24,22 +23,23 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
-// Custom layout for system groups.
+// Custom layout for system/data groups.
 //   Based on GridLayout but with custom initialOrigin method.
-function SystemGroupLayout() {
+function StandardGroupLayout() {
   go.GridLayout.call(this);
 }
 
-go.Diagram.inherit(SystemGroupLayout, go.GridLayout);
+go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
 
-SystemGroupLayout.prototype.initialOrigin = function(): go.Point {
+StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
   const memberArea = this.group.resizeObject;
   const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
-// End system group layout
+// End system/data group layout
 
 const nodeWidth = 300;
+const containerColour = '#F8C195';
 
 @Injectable()
 export class DiagramTemplatesService {
@@ -343,7 +343,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get menu button for system nodes.
+  // Get menu button for system/data nodes.
   //  When clicked, provides a menu with actions to take, relating to the node.
   getTopMenuButton(): go.Panel {
     return $(
@@ -355,7 +355,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: (this.forPalette) ? false : true,
+        visible: (!this.forPalette),
         click: function(event, button) {
           const menu = this.gojsCustomObjectsService.getPartButtonMenu(true);
           event.diagram.select(button.part);
@@ -592,7 +592,7 @@ export class DiagramTemplatesService {
   }
 
   // Get top section of nodes, containing icons and name
-  getTopSection(isSystem = false): go.Panel {
+  getTopSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Table',
@@ -626,8 +626,7 @@ export class DiagramTemplatesService {
         $(
           go.Picture,
           {
-            desiredSize: new go.Size(25, 25),
-            source: '/assets/node-icons/data_set-master-data.svg'
+            desiredSize: new go.Size(25, 25)
           },
           new go.Binding('source', '', function(data): string {
             const imageFolderPath = '/assets/node-icons/';
@@ -647,8 +646,9 @@ export class DiagramTemplatesService {
               [nodeCategories.reporting]: 'reporting',
               [nodeCategories.masterData]: 'master-data',
               [nodeCategories.file]: 'files',
-              [nodeCategories.physical]: 'physical',
-              [nodeCategories.virtual]: 'virtual',
+              [nodeCategories.dataStructure]: 'data-structure',
+              [nodeCategories.dataSet]: 'data-set',
+              [nodeCategories.masterDataSet]: 'master-data-set',
               [nodeCategories.masterData]: 'master-data',
               [nodeCategories.dimension]: '',
               [nodeCategories.list]: 'list',
@@ -658,17 +658,23 @@ export class DiagramTemplatesService {
 
             const separator = data.layer !== layers.dimension ? '-' : '';
 
+            const sharedStatusImageSuffix =
+              [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(data.category)
+                ? (data.isShared ? '-shared' : '-master')
+                : '';
+
             return [
               imageFolderPath,
               layerImagePrefix[data.layer],
               separator,
               categoryImageSuffix[data.category],
+              sharedStatusImageSuffix,
               '.svg'
             ].join('');
           })
         ),
-        // Icon to indicate that the system group contains group members
-        isSystem ? $(go.Picture,
+        // Icon to indicate that the group contains group members
+        isGroup ? $(go.Picture,
           {
             desiredSize: new go.Size(25, 25),
             source: '/assets/node-icons/group.svg',
@@ -748,12 +754,12 @@ export class DiagramTemplatesService {
           return name ? 1 : 0;
         }).ofModel()
       ),
-      isSystem ? this.getTopMenuButton() : this.getTopExpandButton()
+      isGroup ? this.getTopMenuButton() : this.getTopExpandButton()
     );
   }
 
   // Get middle section of nodes, containing description, owners and descendants
-  getMiddleSection(isSystem = false): go.Panel {
+  getMiddleSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -767,10 +773,10 @@ export class DiagramTemplatesService {
       new go.Binding('visible', 'middleExpanded',
         function(middleExpanded) {
           return middleExpanded !== middleOptions.none;
-        }
+        }.bind(this)
       ),
-      // Do not show description for systems
-      !isSystem ? $(
+      // Do not show description for systems or data nodes
+      !isGroup ? $(
         go.TextBlock,
         textFont('16px'),
         {
@@ -821,13 +827,15 @@ export class DiagramTemplatesService {
             alignment: go.Spot.TopLeft,
             stretch: go.GraphObject.Horizontal
           },
-          isSystem ? $(go.TextBlock, textFont('italic 18px'),
-            'Data sets',
+          isGroup ? $(go.TextBlock, textFont('italic 18px'),
             {
               textAlign: 'center',
               stretch: go.GraphObject.Horizontal,
               margin: new go.Margin(0, 0, 2, 0)
-            }
+            },
+            new go.Binding('text', 'layer', function(layer) {
+              return layer === layers.system ? 'Data Sets' : 'Dimensions';
+            })
           ) : {},
           $(
             go.Panel,
@@ -885,7 +893,7 @@ export class DiagramTemplatesService {
             }
           )
         ),
-        // Area for grouped systems to appear in
+        // Area for grouped nodes to appear in
         $(go.Shape,
           {
             name: 'Group member area',
@@ -908,7 +916,7 @@ export class DiagramTemplatesService {
   }
 
   // Get bottom section of nodes, containing tags and RADIO Alert indicators
-  getBottomSection(isSystem = false): go.Panel {
+  getBottomSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -952,7 +960,7 @@ export class DiagramTemplatesService {
           desiredSize: new go.Size(nodeWidth - 10, 30)
         }),
         this.getRadioAlertIndicators(),
-        isSystem ? {} : this.getBottomExpandButton()
+        isGroup ? {} : this.getBottomExpandButton()
       )
     );
   }
@@ -1012,7 +1020,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.currentFilterLevel !== Level.usage;
+          return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       forPalette ? {
@@ -1028,7 +1036,9 @@ export class DiagramTemplatesService {
         )
       } : {},
       // Have the diagram position the node if no location set
-      new go.Binding('isLayoutPositioned', 'locationMissing'),
+      new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
+        return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
+      }.bind(this)),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
         {
@@ -1082,7 +1092,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.currentFilterLevel !== Level.usage;
+          return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       !forPalette
@@ -1102,9 +1112,9 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set or in node usage view
+      // Have the diagram position the node if no location set or in node usage, sources or targets view
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        return locationMissing || this.currentFilterLevel === Level.usage;
+        return locationMissing || [Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
       $(
         go.Shape,
@@ -1152,15 +1162,14 @@ export class DiagramTemplatesService {
     );
   }
 
-  getSystemGroupTemplate(forPalette: boolean = false): go.Group {
+  getStandardGroupTemplate(forPalette: boolean = false): go.Group {
     return $(
-
       go.Group,
-      'Auto',
+      'Vertical',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        layout: $(SystemGroupLayout as any,
+        layout: $(StandardGroupLayout as any,
           {
             wrappingColumn: 1,
             isOngoing: false,
@@ -1169,7 +1178,9 @@ export class DiagramTemplatesService {
             spacing: new go.Size(NaN, 12)
           },
         ),
-        subGraphExpandedChanged: this.diagramChangesService.systemSubGraphExpandChanged.bind(this.diagramChangesService),
+        background: containerColour,
+        subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
+        selectionObjectName: 'main content',
         resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
 
@@ -1197,7 +1208,7 @@ export class DiagramTemplatesService {
           p2.offset(loc.x - b.x, loc.y - b.y);
 
           // now limit the location appropriately
-          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1)) ;
+          const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1));
           const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
           const newPoint = new go.Point(x, y);
 
@@ -1213,7 +1224,7 @@ export class DiagramTemplatesService {
         'movable',
         '',
         function() {
-          return this.currentFilterLevel !== Level.usage;
+          return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
       new go.Binding('resizable', 'middleExpanded', function(middleExpanded) {
@@ -1236,51 +1247,78 @@ export class DiagramTemplatesService {
               )
             )
           },
-      // Have the diagram position the node if no location set
+      // Have the diagram position the node if no location set or in node usage, sources or targets view
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
-        return locationMissing || this.currentFilterLevel === Level.usage;
+        return locationMissing || [Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
-      $(
-        go.Shape,
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        ),
-        new go.Binding('fromSpot', 'group', function(group) {
-          if (group) {
-            return go.Spot.LeftRightSides;
-          } else {
-            return go.Spot.AllSides;
-          }
-        }),
-        new go.Binding('toSpot', 'group', function(group) {
-          if (group) {return go.Spot.LeftRightSides;
-          } else {
-            return go.Spot.AllSides;
-          }
-        }),
-        this.getStandardNodeShapeOptions()
-      ),
-      // Dummy panel with no size and no contents.
-      // Used to ensure node usage view lays out nodes vertically aligned.
-      $(go.Panel, {
-        alignment: go.Spot.TopCenter,
-        desiredSize: new go.Size(0, 0),
-        name: 'location panel'
-      }),
-      $(
-        go.Panel,
-        'Table',
+      $(go.TextBlock,
+        textFont('bold 20px'),
         {
-          defaultRowSeparatorStroke: 'black'
+          textAlign: 'center',
+          stroke: 'black',
+          alignment: go.Spot.TopCenter,
+          stretch: go.GraphObject.Horizontal,
+          overflow: go.TextBlock.OverflowEllipsis,
+          wrap: go.TextBlock.None,
+          visible: false,
+          margin: new go.Margin(10, 10, 0, 10)
         },
-        this.getTopSection(true),
-        this.getMiddleSection(true),
-        this.getBottomSection(true)
+        new go.Binding('text', 'system', function(system) {
+          return system ? system.name : '';
+        }),
+        // Invisible when no system
+        new go.Binding('visible', 'system', function(system) {
+          return !!system;
+        })
+      ),
+      $(go.Panel, 'Auto',
+        {
+          name: 'main content'
+        },
+        new go.Binding('margin', 'system', function (system) {
+          return system ? 10 : 0;
+        }),
+        $(go.Shape,
+          // Bind stroke to multicoloured brush based on work packages impacted by
+          new go.Binding(
+            'stroke',
+            'impactedByWorkPackages',
+            function(impactedPackages, shape) {
+              return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+            }.bind(this)
+          ),
+          new go.Binding('fromSpot', 'group', function(group) {
+            if (group) {
+              return go.Spot.LeftRightSides;
+            } else {
+              return go.Spot.AllSides;
+            }
+          }),
+          new go.Binding('toSpot', 'group', function(group) {
+            if (group) {return go.Spot.LeftRightSides;
+            } else {
+              return go.Spot.AllSides;
+            }
+          }),
+          this.getStandardNodeShapeOptions()
+        ),
+        // Dummy panel with no size and no contents.
+        // Used to ensure node usage view lays out nodes vertically aligned.
+        $(go.Panel, {
+          alignment: go.Spot.TopCenter,
+          desiredSize: new go.Size(0, 0),
+          name: 'location panel'
+        }),
+        $(
+          go.Panel,
+          'Table',
+          {
+            defaultRowSeparatorStroke: 'black'
+          },
+          this.getTopSection(true),
+          this.getMiddleSection(true),
+          this.getBottomSection(true)
+        )
       )
     );
   }
@@ -1306,15 +1344,19 @@ export class DiagramTemplatesService {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
       new go.Binding('relinkableFrom', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
+          || !!linkData.isTemporary;
       }.bind(this)),
       new go.Binding('relinkableTo', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
+          || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'dataLinks').ofModel(),
       // Have the diagram position the link if no route set
-      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      new go.Binding('isLayoutPositioned', 'routeMissing', function(routeMissing) {
+          return routeMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
+      }.bind(this)),
       new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       this.getStandardLinkOptions(forPalette),
@@ -1384,15 +1426,19 @@ export class DiagramTemplatesService {
           return (linkData.from || linkData.to) ? go.Spot.TopLeft : go.Spot.TopCenter;
         }) : {},
       new go.Binding('relinkableFrom', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
+          || !!linkData.isTemporary;
       }.bind(this)),
       new go.Binding('relinkableTo', '', function(linkData): boolean {
-        return !this.currentFilterLevel.includes('map') || !!linkData.isTemporary;
+        return !(this.currentFilterLevel.includes('map') || [Level.sources, Level.targets].includes(this.currentFilterLevel))
+          || !!linkData.isTemporary;
       }.bind(this)),
       // Disable select for links that are set to not be shown
       new go.Binding('selectable', 'masterDataLinks').ofModel(),
       // Have the diagram position the link if no route set or if not using standard display options
-      new go.Binding('isLayoutPositioned', 'routeMissing'),
+      new go.Binding('isLayoutPositioned', 'routeMissing', function(routeMissing) {
+        return routeMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
+      }.bind(this)),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: function(event: go.InputEvent, object: go.Link): void {
@@ -1495,6 +1541,71 @@ export class DiagramTemplatesService {
     );
   }
 
+  // Template for links to unconnected sources/targets in sources/targets view
+  getLinkWarningTemplate() {
+    return $(
+      go.Link,
+      {
+        selectable: false,
+        isLayoutPositioned: true,
+        routing: go.Link.Orthogonal,
+        fromEndSegmentLength: 30 ,
+        toEndSegmentLength: 30
+      },
+      $(go.Shape, {
+        isPanelMain: true,
+        stroke: 'transparent',
+        strokeWidth: 0
+      }),
+      $(go.Panel, 'Vertical',
+        {
+          alignmentFocus: go.Spot.Center,
+          segmentFraction: 1
+        },
+        new go.Binding('segmentIndex', '', function() {
+          return this.currentFilterLevel === Level.sources ? 1 : -2;
+        }.bind(this)),
+        $(go.Panel, 'Auto',
+          {
+            margin: 5
+          },
+          $(go.Shape, {
+            figure: 'triangle',
+            fill: 'yellow',
+            stroke: 'black',
+            desiredSize: new go.Size(40, 40)
+          }),
+          $(go.TextBlock,
+            textFont('bold 30px'),
+            {
+              text: '!',
+              margin: new go.Margin(0, 0, 10, 0)
+            }
+          )
+        ),
+        $(go.Panel, 'Auto',
+          {
+            background: 'black',
+            padding: 1
+          },
+          $(go.Shape,
+            {
+              fill: 'white'
+            }
+          ),
+          $(go.TextBlock,
+            textFont('15px'),
+            {
+              text: 'No link found',
+              textAlign: 'center',
+              margin: 2
+            }
+          )
+        )
+      )
+    );
+  }
+
   getMapViewGroupTemplate(): go.Group {
     // Template for groups in mapping view
     return $(
@@ -1537,6 +1648,7 @@ export class DiagramTemplatesService {
             return 0;
           }.bind(this)
         }),
+        background: containerColour,
         computesBoundsAfterDrag: true,
         computesBoundsIncludingLocation: false,
         computesBoundsIncludingLinks: false,
@@ -1545,63 +1657,135 @@ export class DiagramTemplatesService {
         layoutConditions: go.Part.LayoutStandard,
         selectable: false,
         avoidable: false,
-        minSize: new go.Size(250, 0)
+        padding: 0
       },
       new go.Binding('location', 'location', go.Point.parse),
+      // No padding when containing data structure is not shown.
+      //  Ensures that data structure panel is not shown.
+      new go.Binding('padding', 'dataStructure', function(dataStructure) {
+        return dataStructure ? 7 : 0;
+      }),
+      $(go.TextBlock,
+        textFont('bold 25px'),
+        {
+          textAlign: 'center',
+          stroke: 'black',
+          alignment: go.Spot.TopCenter,
+          stretch: go.GraphObject.Horizontal,
+          overflow: go.TextBlock.OverflowEllipsis,
+          wrap: go.TextBlock.None,
+          visible: false,
+          margin: 10
+        },
+        new go.Binding('text', 'dataStructure', function(dataStructure) {
+          return dataStructure ? dataStructure.name : '';
+        }),
+        // Invisible when no data structure
+        new go.Binding('visible', 'dataStructure', function(dataStructure) {
+          return !!dataStructure;
+        })
+      ),
       $(
         go.Panel,
-        'Auto',
-        { stretch: go.GraphObject.Fill },
-        $(go.Shape, {
-          fill: '#ebe9ea',
-          stroke: 'transparent',
-          strokeWidth: 2,
-          name: 'shape'
-        }),
+        'Vertical',
+        {
+          minSize: new go.Size(300, 0)
+        },
         $(
           go.Panel,
-          'Vertical',
-          { margin: 10 },
+          'Auto',
+          { stretch: go.GraphObject.Fill },
+          $(go.Shape, {
+            fill: '#ebe9ea',
+            strokeWidth: 0,
+            name: 'shape'
+          }),
           $(
-            go.TextBlock,
-            textFont('bold 20px'),
-            {
-              textAlign: 'center',
-              stroke: 'black',
-              alignment: go.Spot.TopCenter,
-              stretch: go.GraphObject.Horizontal,
-              overflow: go.TextBlock.OverflowEllipsis,
-              wrap: go.TextBlock.None
-            },
-            new go.Binding('text', 'name')
-          ),
-          $(go.Placeholder, { alignment: go.Spot.TopCenter }),
-          $('Button',
-            {
-              name: 'addChildButton',
-              alignment: go.Spot.BottomCenter,
-              margin: new go.Margin(15, 5, 0, 5),
-              click: function(event: go.InputEvent, button: go.Panel): void {
-                this.addChildSource.next(button.part.data);
-              }.bind(this)
-            },
-            // Disable button if moves not allowed in diagram
-            new go.Binding('isEnabled', '', function(node) {
-              return this.gojsCustomObjectsService.diagramEditable;
-            }.bind(this)),
-            $(go.TextBlock, textFont('bold 22px'), '+',
+            go.Panel,
+            'Vertical',
+            { margin: 10 },
+            $(
+              go.TextBlock,
+              textFont('bold 20px'),
               {
-                alignment: go.Spot.Center,
-                desiredSize: new go.Size(300, 30),
                 textAlign: 'center',
-                verticalAlignment: go.Spot.Center
+                stroke: 'black',
+                alignment: go.Spot.TopCenter,
+                stretch: go.GraphObject.Horizontal,
+                overflow: go.TextBlock.OverflowEllipsis,
+                wrap: go.TextBlock.None
               },
-              new go.Binding('stroke', 'isEnabled', function(enabled) {
-                return enabled ? 'black' : '#AAAFB4';
-              }).ofObject('addChildButton')
+              new go.Binding('text', 'name')
             ),
+            $(go.Placeholder, { alignment: go.Spot.TopCenter }),
+            $('Button',
+              {
+                name: 'addChildButton',
+                alignment: go.Spot.BottomCenter,
+                margin: new go.Margin(15, 5, 0, 5),
+                click: function(event: go.InputEvent, button: go.Panel): void {
+                  this.addChildSource.next(button.part.data);
+                }.bind(this)
+              },
+              // Disable button if moves not allowed in diagram
+              new go.Binding('isEnabled', '', function(data) {
+
+                // Disallow adding children to nodes that inherit their children
+                if (data.category === nodeCategories.dataSet ||
+                  data.category === nodeCategories.masterDataSet) {
+                  return false;
+                }
+
+                return this.gojsCustomObjectsService.diagramEditable;
+              }.bind(this)),
+              // Hide child button for grouped data nodes
+              new go.Binding('visible', 'dataStructure', function(dataStructure) {
+                return !dataStructure;
+              }),
+              $(go.TextBlock, textFont('bold 22px'), '+',
+                {
+                  alignment: go.Spot.Center,
+                  desiredSize: new go.Size(300, 30),
+                  textAlign: 'center',
+                  verticalAlignment: go.Spot.Center
+                },
+                new go.Binding('stroke', 'isEnabled', function(enabled) {
+                  return enabled ? 'black' : '#AAAFB4';
+                }).ofObject('addChildButton')
+              ),
+            )
           )
         )
+      ),
+      $('Button',
+        {
+          name: 'addDataStructureChildButton',
+          alignment: go.Spot.BottomCenter,
+          margin: new go.Margin(15, 5, 10, 5),
+          visible: false,
+          click: function(event: go.InputEvent, button: go.Panel): void {
+            this.addChildSource.next(button.part.data.dataStructure);
+          }.bind(this)
+        },
+        // Disable button if moves not allowed in diagram
+        new go.Binding('isEnabled', '', function(data) {
+          return this.gojsCustomObjectsService.diagramEditable;
+        }.bind(this)),
+        // Invisible when no data structure
+        new go.Binding('visible', 'dataStructure', function(dataStructure) {
+          return !!dataStructure;
+        }),
+        $(go.TextBlock, textFont('bold 26px'), '+',
+          {
+            alignment: go.Spot.Center,
+            desiredSize: new go.Size(310, 40),
+            textAlign: 'center',
+            verticalAlignment: go.Spot.Center,
+          },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : '#AAAFB4';
+          }).ofObject('addDataStructureChildButton')
+        ),
       )
     );
   }

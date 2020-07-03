@@ -1,0 +1,58 @@
+<form [formGroup]="group">
+  <div [ngClass]="{ disabled: !workPackageIsEditable }">
+    <mat-form-field>
+      <div class="input-wrapper">
+        <label>Ref.</label>
+        <input matInput formControlName="reference" [ngClass]="{ editable: workPackageIsEditable }" />
+      </div>
+    </mat-form-field>
+
+    <mat-form-field>
+      <div class="input-wrapper">
+        <label>Name</label>
+        <input matInput formControlName="name" [ngClass]="{ editable: workPackageIsEditable }" />
+      </div>
+    </mat-form-field>
+
+    <mat-form-field>
+      <div class="input-wrapper">
+        <label>Category</label>
+        <mat-select formControlName="category" [ngClass]="{ editable: workPackageIsEditable }">
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </div>
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea matInput placeholder="Description" rows="4" formControlName="description"
+        [ngClass]="{ editable: workPackageIsEditable }"></textarea>
+    </mat-form-field>
+
+    <div *ngIf="workPackageIsEditable" style="margin-bottom: 15px;">
+      <button mat-flat-button color="primary" (click)="save.emit()">Save</button>
+      <button mat-flat-button (click)="onCancel()">Cancel</button>
+      <button mat-flat-button color="warn" (click)="delete.emit()">Delete</button>
+    </div>
+
+    <smi-tag-list
+      [tags]="tags"
+      [availableTags]="availableTags"
+      [editMode]="workPackageIsEditable"
+      (addTag)="addTag.emit($event)"
+      (removeTag)="removeTag.emit($event)"
+      (updateAvailableTags)="updateAvailableTags.emit()"
+      [workPackageIsEditable]="workPackageIsEditable"
+    >
+    </smi-tag-list>
+
+    <smi-related-attribute-table
+      [data]="relatedAttribute"
+      [workPackageIsEditable]="workPackageIsEditable"
+      (add)="addRelatedAttribute.emit()"
+      (delete)="deleteRelatedAttribute.emit($event)"
+    >
+    </smi-related-attribute-table>
+  </div>
+</form>

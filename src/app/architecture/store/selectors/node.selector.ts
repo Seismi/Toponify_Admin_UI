@@ -111,8 +111,13 @@ export const getAvailableTags = createSelector(
 
 export const getTags = createSelector(
   getNodeFeatureState,
-  state => state.tags
+  state => state.tags.data
 );
+
+export const getTagPage = createSelector(
+  getNodeFeatureState,
+  state => state.tags.page
+)
 
 export const getDraft = createSelector(
   getNodeFeatureState,
