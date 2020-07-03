@@ -11,7 +11,7 @@ import {
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity, WorkPackageEntitiesHttpParams } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
 import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
@@ -41,7 +41,7 @@ export class WorkPackageComponent implements OnInit{
     size: 10,
     includeArchived: false
   }
-  search$ = new BehaviorSubject<string>('');
+  search$ = new Subject<string>();
   page$: Observable<any>;
 
   constructor(
