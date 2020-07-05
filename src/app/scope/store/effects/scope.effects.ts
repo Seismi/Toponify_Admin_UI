@@ -90,7 +90,7 @@ export class ScopeEffects {
   addScopeNodes$ = this.actions$.pipe(
     ofType<ScopeActions.AddScopeNodes>(ScopeActionTypes.AddScopeNodes),
     map(action => action.payload),
-    switchMap((payload: { scopeId: string, data: string[] }) => {
+    switchMap((payload: { scopeId: string; data: string[] }) => {
       return this.scopeService.addScopeNodes(payload.scopeId, payload.data).pipe(
         switchMap((resp: any) => [new ScopeActions.AddScopeNodesSuccess(resp)]),
         catchError((error: HttpErrorResponse) => of(new ScopeActions.AddScopeNodesFailure(error)))
