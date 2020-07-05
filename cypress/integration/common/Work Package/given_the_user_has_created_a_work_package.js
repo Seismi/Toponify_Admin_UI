@@ -6,13 +6,13 @@ When(
     name = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(name); // append the branch name to the test work package to differentiate between branch test
-    cy.findWorkPackage(name).then($table => {
+    cy.findWorkPackage(name, false, false).then($table => {
       if ($table[0].rows.length === 0) {
         // check if the search returned a result
         createWorkPackage(name, description, baseline, owner); // create work package as it has not yet been created
       } else {
         cy.selectRow('work-packages-table', name)
-          .wait('@GETWorkPackage')
+          .wait('@GETWorkPackage.all')
           .then(() => {
             cy.get('tbody>tr')
               .filter('.highlight')

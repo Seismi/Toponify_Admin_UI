@@ -7,7 +7,7 @@ When('the user updates the source system to {string}', function(system) {
 
   cy.get('[data-qa=reports-source-system-edit]')
     .click()
-    .wait('@GETNodesWorkPackageQuery');
+    .wait('@GETNodesQuery');
 
   cy.selectDropDownNoClick('select-modal-search', system);
 

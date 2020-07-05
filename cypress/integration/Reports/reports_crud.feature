@@ -31,58 +31,33 @@ Feature: Create new report
     And the user selects the report 'Created Automated Regression Test Report' in the reports table
     And the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
     When the user reloads the Reports page
-#<<<<<<< HEAD
-    #And the user selects the report 'Automated Regression Test Report' in the reports table
-    Then the new report 'Automated Regression Test Report' should exist in the reports table
-    And the details pane should reflect the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
-#=======
-#    And the user selects the report 'Created Automated Regression Test Report' in the reports table
-#    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
-#    And the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
-#>>>>>>> master
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
+    And the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
 
   @reports
   Scenario: Update report and then cancel
     Given the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
-#<<<<<<< HEAD
-    And the user selects the report 'Automated Regression Test Report' in the reports table
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
     When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description'
     And the user cancels the update of the report name and description
     And the user updates the source system to 'Automated Regression Test Reporting System'
     And the user cancels the update of source system
-    Then the new report 'Automated Regression Test Report' should exist in the reports table
-    #When the user selects the report 'Automated Regression Test Report' in the reports table
-    Then the details pane should reflect the name 'Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
-#=======
-#    And the user selects the report 'Created Automated Regression Test Report' in the reports table
-#    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description', the source system to 'Automated Regression Test Reporting System'
-#    And the user cancels the update of the report
-#    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
-#    When the user selects the report 'Created Automated Regression Test Report' in the reports table
-#    Then the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
-#>>>>>>> master
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
+    Then the details pane should reflect the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and and the system 'Automated Regression Test Transactional System'
 
   @reports
     Scenario: Update report and then confirm
     Given the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report
-#<<<<<<< HEAD
-    And the user selects the report 'Automated Regression Test Report' in the reports table
+    And the user selects the report 'Created Automated Regression Test Report' in the reports table
     When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description'
     And the user confirms the update of the report name and description
     And the user updates the source system to 'Automated Regression Test Reporting System'
     And the user confirms the update of source system
     Then the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
-#=======
-#    And the user selects the report 'Created Automated Regression Test Report' in the reports table
-#    When the user updates the name to 'Automated Updated Regression Test Report', the description to 'Automated Updated Regression Test Report Description', the source system to 'Automated Regression Test Reporting System'
-#    And the user confirms the update of the report
-#    And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
-#>>>>>>> master
     When the user reloads the Reports page
     Then the new report 'Automated Updated Regression Test Report' should exist in the reports table
-    #When the user selects the report 'Automated Updated Regression Test Report' in the reports table
     And the details pane should reflect the name 'Automated Updated Regression Test Report', description 'Automated Updated Regression Test Report Description' and and the system 'Automated Regression Test Reporting System'
 
   @reports
@@ -94,13 +69,7 @@ Feature: Create new report
     And the user cancels the delete of the report
     Then the new report 'Created Automated Regression Test Report' should exist in the reports table
     When the user reloads the Reports page
-#<<<<<<< HEAD
-    #And the user selects the report 'Automated Regression Test Report' in the reports table
-    Then the new report 'Automated Regression Test Report' should exist in the reports table
-#=======
-#    And the user selects the report 'Created Automated Regression Test Report' in the reports table
-#    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
-#>>>>>>> master
+    Then the new report 'Created Automated Regression Test Report' should exist in the reports table
 
   @reports
   Scenario: Delete report and then confirm

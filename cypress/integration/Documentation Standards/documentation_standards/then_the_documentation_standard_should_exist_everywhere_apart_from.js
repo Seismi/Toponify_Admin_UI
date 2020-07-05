@@ -8,7 +8,7 @@ Then('the documentation standard {string} should exist with type {string} everyw
   doc_standard = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(doc_standard); //add the branch to the work package name
-  cy.findDocumentationStandard(doc_standard)
+  cy.findDocumentationStandard(doc_standard, false)
     .contains(doc_standard)
     .should('exist');
   cy.get(`[data-qa=documentation-standards-table]`) // get the work packages table

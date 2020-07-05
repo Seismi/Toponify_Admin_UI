@@ -9,7 +9,7 @@ When(
     doc_standard_new = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(doc_standard_new); //add the branch to the work package name
-    cy.findDocumentationStandard(doc_standard)
+    cy.findDocumentationStandard(doc_standard, true)
       .click()
       .wait('@GETCustomProperties*')
       .then(() => {

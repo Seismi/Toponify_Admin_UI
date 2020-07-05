@@ -69,6 +69,11 @@ module.exports = {
       api: `${api_version}/customProperties`,
       method: 'GET',
       name: 'CustomProperties'
+    },
+    RadioTags: {
+      api: `${api_version}/radios/*/tags`,
+      method: 'GET',
+      name: 'RadioTags'
     }
   }
 };

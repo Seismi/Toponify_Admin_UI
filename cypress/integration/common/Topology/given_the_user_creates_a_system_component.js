@@ -12,8 +12,12 @@ Given('the user creates a new {string} system with name {string}', function(comp
           .type(name)
           .should('have.value', name)
           .then(() => {
-            cy.get('[data-qa=topology-components-or-link-modal-save]').click();
-            cy.wait(['@POSTWorkPackageNodesScopeQuery.all', '@GETNodesQuery.all', '@GETNodeLinksQuery.all']);
+            cy.get('[data-qa=topology-components-or-link-modal-save]')
+              .click()
+              .wait(3000)
+              .wait(['@PUTLayoutNodes.all', '@POSTWorkPackageNodesScopeQuery.all', '@GETNodesQuery.all'], {
+                responseTimeout: 25000
+              });
             cy.get('[data-qa=details-spinner]').should('not.be.visible');
             cy.get('[data-qa=spinner]').should('not.be.visible');
           });

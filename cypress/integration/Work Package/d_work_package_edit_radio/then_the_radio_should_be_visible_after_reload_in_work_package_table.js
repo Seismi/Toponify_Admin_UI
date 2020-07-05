@@ -9,7 +9,7 @@ Then('the radio with title {string} should be visible after reload in the work p
     .wait(2000)
     .wait(['@GETWorkPackages', '@GETWorkPackage', '@GETUsers'])
     .then(() => {
-      cy.findWorkPackage(title).then(() => {
+      cy.findWorkPackage(title, false).then(() => {
         cy.selectDetailsPaneTab(workPackage['tabs']['Radio']).then(() => {
           cy.assertRowExists('work-packages-radio-table', title); // assert row exists
         });

@@ -7,7 +7,7 @@ When('the user reloads the page and searches for {string} work package', functio
       name = Cypress.env('BRANCH')
         .concat(' | ')
         .concat(name);
-      cy.findWorkPackage(name).then(() => {
+      cy.findWorkPackage(name, false).then(() => {
         cy.selectRow('work-packages-table', name); // select the correct row
       });
     });
