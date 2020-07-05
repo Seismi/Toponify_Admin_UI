@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ScopeEntity, ScopeEntitiesHttpParams, Page } from '@app/scope/store/models/scope.model';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, AddScope } from '@app/scope/store/actions/scope.actions';
@@ -24,7 +24,7 @@ export class ScopesAndLayoutsComponent implements OnInit {
     page: 0,
     size: 5
   }
-  search$ = new BehaviorSubject<string>('');
+  search$ = new Subject<string>();
   page$: Observable<Page>;
 
   constructor(private store: Store<ScopeState>, private router: Router, private dialog: MatDialog) { }
