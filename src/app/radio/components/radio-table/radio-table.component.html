@@ -47,10 +47,6 @@
     ></tr>
   </table>
 
-  <div class="spinner-container" *ngIf="(isLoading$ | async) === loadingStatus.loading">
-    <mat-spinner></mat-spinner>
-  </div>
-
   <div style="display: flex;">
     <div style="flex-grow: 1;">
       <button mat-raised-button color="primary" class="add-btn" (click)="onAdd()" data-qa="radio-create-new">

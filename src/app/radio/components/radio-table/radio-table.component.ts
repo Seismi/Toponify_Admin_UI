@@ -1,11 +1,6 @@
 import { Component, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { RadioEntity, TableData, Page } from '@app/radio/store/models/radio.model';
-import { Observable } from 'rxjs';
-import { LoadingStatus } from '@app/architecture/store/models/node.model';
-import { Store } from '@ngrx/store';
-import { State as RadioState } from '../../store/reducers/radio.reducer';
-import { getRadiosLoadingStatus } from '@app/radio/store/selectors/radio.selector';
 
 @Component({
   selector: 'smi-radio-table',
@@ -13,7 +8,6 @@ import { getRadiosLoadingStatus } from '@app/radio/store/selectors/radio.selecto
   styleUrls: ['./radio-table.component.scss']
 })
 export class RadioTableComponent implements AfterViewInit {
-  public loadingStatus = LoadingStatus;
   @Input() selectedRadioIndex: string | number = -1;
 
   @Input()
@@ -23,14 +17,8 @@ export class RadioTableComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  constructor(private store: Store<RadioState>) { }
-
   get totalEntities(): number {
     return this.page ? this.page.totalObjects : 0;
-  }
-
-  get isLoading$(): Observable<LoadingStatus> {
-    return this.store.select(getRadiosLoadingStatus);
   }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

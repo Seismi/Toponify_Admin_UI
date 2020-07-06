@@ -58,6 +58,7 @@ import { RiskMatrixChartComponent } from './components/risk-matrix-chart/risk-ma
 import { RadioViewNameDialogComponent } from './components/radio-view-name-dialog/radio-view-name-dialog.component';
 import { AnalysisFilterComponent } from './components/analysis-filter/analysis-filter.component';
 import { RadioFilterService } from './services/radio-filter.service';
+import { SpinnerComponent } from '@app/architecture/components/spinner/spinner.component';
 
 @NgModule({
   imports: [
@@ -102,7 +103,8 @@ import { RadioFilterService } from './services/radio-filter.service';
     ChatBoxComponent,
     RadioDetailComponent,
     RiskMatrixChartComponent,
-    RelatesToTableComponent
+    RelatesToTableComponent,
+    SpinnerComponent
   ],
   declarations: [
     RadioComponent,
@@ -125,7 +127,8 @@ import { RadioFilterService } from './services/radio-filter.service';
     AlphabeticalOrderPipe,
     RiskMatrixChartComponent,
     RadioViewNameDialogComponent,
-    AnalysisFilterComponent
+    AnalysisFilterComponent,
+    SpinnerComponent
   ],
   entryComponents: [
     RadioModalComponent,

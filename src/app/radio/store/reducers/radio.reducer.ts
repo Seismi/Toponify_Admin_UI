@@ -300,7 +300,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
     case RadioActionTypes.SearchRadio: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingRadios: LoadingStatus.loading
       };
     }
 
@@ -310,14 +311,23 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         entities: action.payload.data,
         links: action.payload.links,
         page: action.payload.page,
-        loading: false
+        loading: false,
+        loadingRadios: LoadingStatus.loaded
+      };
+    }
+
+    case RadioActionTypes.GetRadioMatrix: {
+      return {
+        ...state,
+        loadingRadios: LoadingStatus.loading
       };
     }
 
     case RadioActionTypes.GetRadioMatrixSuccess: {
       return {
         ...state,
-        matrixData: action.payload
+        matrixData: action.payload,
+        loadingRadios: LoadingStatus.loaded
       };
     }
 
