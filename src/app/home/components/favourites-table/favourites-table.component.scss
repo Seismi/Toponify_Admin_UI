@@ -16,6 +16,10 @@ tr {
   cursor: pointer;
 }
 
+td.mat-cell {
+  padding: 10px;
+}
+
 .search-container {
   width: 100%;
   padding: 10px;
@@ -31,3 +35,25 @@ tr {
     }
   }
 }
+
+.actions {
+  text-align: center;
+  button {
+    border-radius: 5px;
+    font-weight: lighter;
+    padding-right: 25px;
+    margin-top: 10px;
+    margin-left: 15px;
+    mat-icon {
+      font-size: 18px;
+      margin-right: 5px;
+      margin-top: 4px;
+      padding: 0;
+    }
+  }
+}
+
+.chips {
+  margin-top: 8px;
+}
+

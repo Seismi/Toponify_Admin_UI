@@ -10,6 +10,9 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { Actions, ofType } from '@ngrx/effects';
 import { UpdateUser } from '@app/settings/store/actions/user.actions';
+import { HomeTabs } from '../components/home-tabs/home-tabs.model';
+import { NotificationState } from '@app/core/store/reducers/notification.reducer';
+import { getNewNotificationCount } from '@app/core/store/selectors/notification.selectors';
 
 @Component({
   selector: 'smi-home-component',
@@ -22,14 +25,20 @@ export class HomeComponent implements OnInit {
   public myLayouts$: Observable<LayoutDetails[]>;
   public selectedLeftTab: number | string;
   public subscriptions: Subscription[] = [];
+  public selectedTab: HomeTabs = HomeTabs.Favourites;
+  public HomeTabs = HomeTabs;
+  public notificationsLength: number;
 
   constructor(
     private router: Router,
     private store: Store<HomePageState>,
-    private actions: Actions
+    private actions: Actions,
+    private notificationStore: Store<NotificationState>,
   ) { }
 
   ngOnInit() {
+    this.notificationStore.pipe(select(getNewNotificationCount)).subscribe(count => (this.notificationsLength = count));
+
     this.store.dispatch(new LoadMyWorkPackages({}));
     this.myWorkPackages$ = this.store.pipe(select(getMyWorkPackages));
 
@@ -62,11 +71,19 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onOpenWorkPackage(id) {
-    this.router.navigate(['/architecture'], { queryParamsHandling: 'preserve' });
+  onOpenWorkPackage(workPackageId: string): void {
+    this.router.navigate(['/topology']);
   }
 
   onOpenLayout() {
     this.router.navigate(['/architecture'], { queryParamsHandling: 'preserve' });
+  }
+
+  onTabChange(index: HomeTabs): void {
+    this.selectedTab = index;
+  }
+
+  onOpenRadio(radio: RadioEntity): void {
+    this.router.navigate([`/radio/${radio.id}`]);
   }
 }

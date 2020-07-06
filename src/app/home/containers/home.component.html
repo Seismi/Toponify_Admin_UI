@@ -9,14 +9,36 @@
         <smi-quicklinks-actions></smi-quicklinks-actions>
       </app-toolbar-column>
     </app-base-header>
-    <smi-my-radio-table data-hook="radio-table" [data]="myRadios$ | async"> </smi-my-radio-table>
-    <smi-my-layouts-table data-hook="layouts-table" [data]="myLayouts$ | async" (openLayout)="onOpenLayout()">
-    </smi-my-layouts-table>
-    <smi-my-workpackages-table
-      data-hook="package-table"
-      [data]="myWorkPackages$ | async"
-      (openWorkPackage)="onOpenWorkPackage($event)"
-    >
-    </smi-my-workpackages-table>
+    <div class="container">
+      <h3>Your Work</h3>
+      <smi-home-tabs 
+        (homeTabChange)="onTabChange($event)" 
+        [selectedTab]="selectedTab"
+        [favouritesLength]="0"
+        [notificationsLength]="notificationsLength"
+        [radiosLength]="(myRadios$ | async).length"
+        [workPackagesLength]="(myWorkPackages$ | async).length"
+      >
+      </smi-home-tabs>
+      <smi-favourites-table
+        *ngIf="selectedTab === HomeTabs.Favourites"
+      >
+      </smi-favourites-table>
+      <div *ngIf="selectedTab === HomeTabs.Notifications" class="notifications-container">
+        <smi-notification-pane></smi-notification-pane>
+      </div>
+      <smi-my-radio-table
+        *ngIf="selectedTab === HomeTabs.RADIO"
+        [data]="myRadios$ | async"
+        (openRadio)="onOpenRadio($event)"
+      >
+      </smi-my-radio-table>
+      <smi-my-workpackages-table
+        *ngIf="selectedTab === HomeTabs.WorkPackages"
+        [data]="myWorkPackages$ | async" 
+        (openWorkPackage)="onOpenWorkPackage($event)"
+      >
+      </smi-my-workpackages-table>
+    </div>
   </app-drawer>
 </app-model-container>

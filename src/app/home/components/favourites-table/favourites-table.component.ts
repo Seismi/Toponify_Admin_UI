@@ -1,13 +1,12 @@
-import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
-  selector: 'smi-my-workpackages-table',
-  templateUrl: './my-workpackages-table.component.html',
-  styleUrls: ['./my-workpackages-table.component.scss']
+  selector: 'smi-favourites-table',
+  templateUrl: './favourites-table.component.html',
+  styleUrls: ['./favourites-table.component.scss']
 })
-export class MyWorkpackagesTableComponent {
+export class FavouritesTableComponent {
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
@@ -17,7 +16,7 @@ export class MyWorkpackagesTableComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public displayedColumns: string[] = ['name'];
-  public dataSource: MatTableDataSource<WorkPackageEntity>;
+  public dataSource: MatTableDataSource<any>;
 
   @Output() openWorkPackage = new EventEmitter<string>();
 
