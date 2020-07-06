@@ -17,3 +17,14 @@ export interface UpdateDiagramLayoutApiRequest {
     }
   };
 }
+
+export enum NodeDetailTab {
+  'Details' = 0,
+  'Components' = 1,
+  'Reports' = 2,
+  'AttributesAndRules' = 3,
+  'DocumentationStandards' = 4,
+  'Radio' = 5,
+  'Scopes' = 6,
+  'WorkPackages' = 7
+}
