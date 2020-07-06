@@ -42,13 +42,9 @@ Feature: Filtering by scope
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
     And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
     And the user adds the system 'Automated Regression Test Transaction System' to the scope 'Created Automated Regression Test Scope'
-    #And the user reloads the Topology page
-    #And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
-    #And the user adds the system 'Automated Regression Test Transaction System' to the scope 'Created Automated Regression Test Scope'
-
-    #And the user creates a new 'master data' system with name 'Automated Regression Test Master Data System'
-    #And the user selects the 'system' 'Automated Regression Test Master Data System' in the 'systems' table
-    #And the user adds the system 'Automated Regression Test Master Data System' to the scope 'Created Automated Regression Test Scope'
+    And the user creates a new 'master data' system with name 'Automated Regression Test Master Data System'
+    And the user selects the 'system' 'Automated Regression Test Master Data System' in the 'systems' table
+    And the user adds the system 'Automated Regression Test Master Data System' to the scope 'Created Automated Regression Test Scope'
     #And the "Topology" "Interfaces" Tab is selected
     #And the user creates a new 'data' interface with name 'Automated Regression Test link' between 'Automated Regression Test Transaction System' and 'Automated Regression Test Reporting System'
     #And the user creates a new 'master data' interface with name 'Automated Regression Test link 1' between 'Automated Regression Test Master Data System' and 'Automated Regression Test Transaction System'
