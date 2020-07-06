@@ -17,7 +17,7 @@ function assertLayout(scope, layout, operator) {
     .concat(scope); // prefix the branch to scope
   cy.findScope(scope)
     .click()
-    .wait('@GETScope')
+    //    .wait('@GETScope')
     .then(() => {
       cy.get('[data-qa=scopes-and-layouts-layout-table]') // get the members table
         .find('table>tbody') // find the table body

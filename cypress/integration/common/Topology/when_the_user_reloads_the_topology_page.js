@@ -14,7 +14,8 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETSelectorAvailabilityQuery.all',
     '@GETNodesQuery.all',
     '@GETNodeLinksQuery.all',
-    '@GETSelectorAvailabilityQuery.all'
+    '@GETSelectorAvailabilityQuery.all',
+    '@PUTLayoutNodes.all'
   ];
   cy.reload();
   cy.wait(wait);

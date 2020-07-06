@@ -39,7 +39,7 @@ Feature: Scopes and Layouts
     When the user updates the scope called 'Created Automated Regression Test Scope' to have name 'Automated Updated Regression Test Scope' and filtering components 'data'
     Then the scope called 'Automated Updated Regression Test Scope' should appear in the scopes table with filtering component 'data'
 
-  @scopes_layouts
+  @scopes_layouts @focus
   Scenario:  Update a Layout and check it appears in table and topology dropdown
     Given the user creates a new scope called 'Created Automated Regression Test Scope'
     And the user selects the scope called 'Created Automated Regression Test Scope'

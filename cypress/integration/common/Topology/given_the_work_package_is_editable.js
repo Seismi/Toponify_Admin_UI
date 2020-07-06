@@ -17,7 +17,7 @@ Given('the work package {string} is editable on the {string} menu', function(wor
     //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   } else {
     work_package_menu = 'left-hand-pane-work-package-table';
-    wait_for = ['@GETNodesQuery', '@GETNodeLinksQuery.all', '@GETSelectorAvailabilityQuery'];
+    wait_for = ['@GETNodesQuery', '@GETNodeLinksQuery.all', '@GETSelectorAvailabilityQuery', '@PUTLayoutNodes'];
     //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   }
   cy.editWorkPackage(work_package, work_package_menu, wait_for);

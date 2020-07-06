@@ -8,15 +8,14 @@ When('the user adds the system {string} to the scope {string}', function(system,
   cy.get('[data-qa=topology-scopes-table-add-to-existing]').click();
 
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
+
   cy.get(`[data-qa=add-scope-modal-name]`)
     .click()
     .get('mat-option')
     .contains(scope)
     .should('exist')
-    .click({ force: true });
-
-  //  cy.selectDropDownNoClick('add-scope-modal-name', scope)
-  cy.get('[data-qa=add-scope-modal-save]')
+    .click({ force: true })
+    .get('[data-qa=add-scope-modal-save]')
     .click()
-    .wait(['@POSTScopesNodes', '@GETNodesScopes.all']);
+    .wait(['@POSTScopesNodes', '@GETNodesScopes.all'], { requestTimeout: 25000, responseTimeout: 25000 });
 });

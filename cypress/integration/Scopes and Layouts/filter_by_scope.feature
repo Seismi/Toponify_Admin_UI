@@ -27,9 +27,9 @@ Feature: Filtering by scope
     When the user reloads the Topology page
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
-    And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
-    And the user clicks on the system's right hand side scope button
-    Then the scope 'Created Automated Regression Test Scope' should be visible in the scope table
+    #And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
+    #And the user clicks on the system's right hand side scope button
+    #Then the scope 'Created Automated Regression Test Scope' should be visible in the scope table
 
   @scopes_layout @focus
   Scenario:  Add a system to an existing scope, check on selecting that scope in /topology that the new system appears including systems that were already in scope and links that go from the new system to the system previously in scope. Also check it is in the list of items in scope in the /scopes-and-layouts page.
@@ -41,8 +41,11 @@ Feature: Filtering by scope
     And the user adds the system 'Automated Regression Test Reporting System' to the scope 'Created Automated Regression Test Scope'
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
     And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
-    And the user clicks on the system's right hand side scope button
     And the user adds the system 'Automated Regression Test Transaction System' to the scope 'Created Automated Regression Test Scope'
+    #And the user reloads the Topology page
+    #And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
+    #And the user adds the system 'Automated Regression Test Transaction System' to the scope 'Created Automated Regression Test Scope'
+
     #And the user creates a new 'master data' system with name 'Automated Regression Test Master Data System'
     #And the user selects the 'system' 'Automated Regression Test Master Data System' in the 'systems' table
     #And the user adds the system 'Automated Regression Test Master Data System' to the scope 'Created Automated Regression Test Scope'
