@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Tag, TagApplicableTo, TagColour, TagIcon } from '@app/architecture/store/models/node.model';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange } from '@angular/material';
@@ -23,6 +23,8 @@ export class TagDetailModalComponent {
   get isEverywhereSelected(): boolean {
     return this.selectedApplicableTo.includes(TagApplicableTo.everywhere);
   }
+
+  @ViewChild('search') search: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -69,9 +71,9 @@ export class TagDetailModalComponent {
     if (tag.applicableTo.includes(TagApplicableTo.everywhere)) {
       tag.applicableTo = Object.values(TagApplicableTo);
     }
-    ([TagColour.white, TagColour.yellow].includes(tag.backgroundColour)) 
+    ([TagColour.white, TagColour.yellow].includes(tag.backgroundColour))
       ?  tag.textColour = TagColour.black
-      :  tag.textColour = TagColour.white
+      :  tag.textColour = TagColour.white;
     this.dialogRef.close({
       tag
     });
@@ -89,6 +91,11 @@ export class TagDetailModalComponent {
         this.selectedApplicableTo.filter(val => val !== TagApplicableTo.everywhere)
       );
     }
+  }
+
+  filter(option: TagApplicableTo) {
+    const searchValue = this.search.nativeElement.value;
+    return searchValue !== '' && option.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;
   }
 }
 

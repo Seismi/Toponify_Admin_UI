@@ -6,7 +6,7 @@ import {
   AddDocumentationStandard
 } from '../../store/actions/documentation-standards.actions';
 import { getDocumentStandards, getDocumentStandardPage } from '../../store/selectors/documentation-standards.selector';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { DocumentStandard, DocumentStandardsApiRequest } from '../../store/models/documentation-standards.model';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
@@ -31,7 +31,7 @@ export class DocumentationStandardsComponent implements OnInit {
     page: 0,
     size: 10,
   }
-  search$ = new BehaviorSubject<string>('');
+  search$ = new Subject<string>();
   page$: Observable<any>;
 
   constructor(private store: Store<DocumentationStandardState>, private router: Router, public dialog: MatDialog) { }
