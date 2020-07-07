@@ -58,9 +58,7 @@ export class DiagramActionsComponent {
     );
   }
 
-  getDataSetSourceOrTarget(): boolean {
-    return this.selectedPart && !this.clickedOnLink && this.selectedNode.layer === Level.data
-      && [Level.data].includes(this.filterLevel as Level) ? true : false;
+  exitSourceOrTargetView(): void {
+    this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.data, id: null }));
   }
-
 }
