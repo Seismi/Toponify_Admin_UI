@@ -5,6 +5,8 @@ When('the user adds the system {string} to the scope {string}', function(system,
     .concat(' | ')
     .concat(scope); // add the branch to the name
 
+  cy.wait(10000);
+
   cy.get('[data-qa=topology-scopes-table-add-to-existing]').click();
 
   cy.get('[data-qa=details-spinner]').should('not.be.visible');

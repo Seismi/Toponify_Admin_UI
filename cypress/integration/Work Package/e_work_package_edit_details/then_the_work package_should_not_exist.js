@@ -9,10 +9,10 @@ Then('the work package called {string} should not exist in the work packages tab
 
   cy.get('[data-qa=work-packages-archive-toggle]')
     .find('label>div>input')
-    //.check({ force: true })
+    .check({ force: true })
     .uncheck({ force: true })
     .then(() => {
-      cy.wait('@GETArchiveWorkPackages.all');
+      cy.wait('@GETWorkPackagePaging.all');
       cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
         .clear() // clear the search
         .type(name)
@@ -36,10 +36,10 @@ Then('the work package called {string} should not exist in the work packages tab
 
   cy.get('[data-qa=work-packages-archive-toggle]')
     .find('label>div>input')
-    // .uncheck({ force: true })
+    .uncheck({ force: true })
     .check({ force: true })
     .then(() => {
-      cy.wait('@GETArchiveWorkPackages.all');
+      cy.wait('@GETWorkPackagePaging.all');
 
       cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
         .clear() // clear the search

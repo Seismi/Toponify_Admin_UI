@@ -2,7 +2,7 @@ const { When } = require('cypress-cucumber-preprocessor/steps');
 
 When('the user reloads the page and searches for {string} work package', function(name) {
   cy.reload()
-    .wait(['@GETWorkPackage', '@GETWorkPackages', '@GETUsers'])
+    .wait(['@GETWorkPackage', '@GETWorkPackagePaging', '@GETUsers'])
     .then(() => {
       name = Cypress.env('BRANCH')
         .concat(' | ')

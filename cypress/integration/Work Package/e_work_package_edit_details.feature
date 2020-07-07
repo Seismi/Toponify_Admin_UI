@@ -134,7 +134,7 @@ Feature: Work Package Edit Core Details Feature
     And the user clicks the 'unarchive' button on the work package
     Then the work package called 'Created Automated Regression Test Work Package' should exist in the work packages table
 
-  @work_package @workflow
+  @work_package @workflow @focus
   Scenario: Delete a work package
     Given the user has created and selected a work package called 'Automated Updated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open

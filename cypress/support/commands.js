@@ -64,6 +64,7 @@ Cypress.Commands.add('selectDropDown', (dropdown, element) => {
   cy.get(`[data-qa=${dropdown}]`)
     .click()
     .get('mat-option')
+    .should('be.visible')
     .contains(element)
     .click({ force: true })
     .then(() => {
@@ -164,14 +165,17 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived, wait) => {
       .uncheck({ force: true });
   }
 
-  cy.wait('@GETWorkPackagePaging')
-    .its('status', { log: true, defaultCommandTimeout: 25000 })
-    .should('eq', 200); // wait for the return of the archive work packages
+  cy.wait('@GETWorkPackagePaging.all');
+  cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name)
-    .should('have.value', name); // type the name
-  if (wait) cy.wait('@GETWorkPackagePaging.all');
+    .should('have.value', name) // type the name
+    .wait(1000)
+    .then(() => {
+      if (wait) cy.wait('@GETWorkPackagePaging.all');
+    });
+
   return cy
     .get(`[data-qa=work-packages-table]`) // get the work packages table
     .find('table>tbody'); // find the table

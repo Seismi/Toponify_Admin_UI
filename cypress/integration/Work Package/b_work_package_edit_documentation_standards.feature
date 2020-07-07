@@ -10,7 +10,7 @@ Feature: Work Package Edit Documentation Standards Feature
     And the user selects Documentation Standard menu item
 
 # NUMBER TESTS
-  @documentation_standards @work_package
+  @documentation_standards @work_package @focus
   Scenario: Check that entering an invalid value into a number type documentation standard will not save
     Given the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'Work Package' component
     And the user confirms the creation of the documentation standard
