@@ -6,9 +6,8 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon class="open-work-package" (click)="openWorkPackage.emit(element.id)">open_in_new</mat-icon>
-        <div class="title">{{ element.name }}</div>
-        <div>{{ element.status }}</div>
+        <mat-icon style="float: right;" (click)="openWorkPackage.emit(element.id)">open_in_new</mat-icon>
+        <div class="title">{{ element.name }} <sup>{{ element.status }}</sup></div>
         <div class="chips">
           <!-- FIXME: waiting for the API's -->
           <mat-chip-list>
@@ -25,7 +24,6 @@
           <button mat-raised-button color="primary"><mat-icon>bookmarks</mat-icon>Reports</button>
           <button mat-raised-button color="primary"><mat-icon>track_changes</mat-icon>RADIOs</button>
         </div>
-        <i>Last Update Date</i>
       </td>
     </ng-container>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>

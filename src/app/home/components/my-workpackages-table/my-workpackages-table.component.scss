@@ -53,14 +53,19 @@ td.mat-cell {
   }
 }
 
-i, .open-work-package {
-  float: right;
-}
-
 .title {
   font-size: 18px;
+  display: inline-block;
 }
 
 .chips {
-  margin-top: 8px;
+  width: 100%;
+  position: relative;
+  top: -15px;
+  mat-chip-list {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
