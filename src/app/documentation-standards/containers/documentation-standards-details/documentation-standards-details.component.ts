@@ -17,7 +17,6 @@ import { getDocumentStandard, getDocumentStandardLoadingStatus } from '@app/docu
 import { MatDialog } from '@angular/material';
 import { Actions, ofType } from '@ngrx/effects';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
-import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'app-documentation-standards-details',
@@ -59,7 +58,7 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
     return this.documentStandardsService.documentStandardsForm;
   }
 
-  get isLoading$(): Observable<LoadingStatus> {
+  get isLoading$(): Observable<boolean> {
     return this.store.select(getDocumentStandardLoadingStatus);
   }
 

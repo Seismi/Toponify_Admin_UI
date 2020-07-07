@@ -32,20 +32,10 @@ export const getDocumentStandardById = (id: string) => {
 
 export const getDocumentStandardsLoadingStatus = createSelector(
   getDocumentStandardFeatureState,
-  state => {
-    if (state.loadingDocumentStandards === LoadingStatus.loaded) {
-      return LoadingStatus.loaded;
-    }
-    return LoadingStatus.loading;
-  }
+  state => state.loadingDocumentStandards === LoadingStatus.loaded
 );
 
 export const getDocumentStandardLoadingStatus = createSelector(
   getDocumentStandardFeatureState,
-  state => {
-    if (state.loadingDocumentStandard === LoadingStatus.loaded) {
-      return LoadingStatus.loaded;
-    }
-    return LoadingStatus.loading;
-  }
+  state => state.loadingDocumentStandard === LoadingStatus.loaded
 );

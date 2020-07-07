@@ -6,15 +6,13 @@ import {
   AddDocumentationStandard
 } from '../../store/actions/documentation-standards.actions';
 import { getDocumentStandards, getDocumentStandardPage, getDocumentStandardsLoadingStatus } from '../../store/selectors/documentation-standards.selector';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DocumentStandard, DocumentStandardsApiRequest } from '../../store/models/documentation-standards.model';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { DocumentModalComponent } from '../document-modal/document-modal.component';
 import { Roles } from '@app/core/directives/by-role.directive';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-documentation-standards-component',
@@ -26,17 +24,17 @@ export class DocumentationStandardsComponent implements OnInit {
   public documentStandard: DocumentStandard;
   public selectedLeftTab: number | string;
   public Roles = Roles;
-  public loadingStatus = LoadingStatus;
 
   private documentStandardParams: DocumentStandardsApiRequest = {
     textFilter: '',
     page: 0,
     size: 10,
-  }
+  };
+
   search$ = new Subject<string>();
   page$: Observable<any>;
 
-  get isLoading$(): Observable<LoadingStatus> {
+  get isLoading$(): Observable<boolean> {
     return this.store.select(getDocumentStandardsLoadingStatus);
   }
 
