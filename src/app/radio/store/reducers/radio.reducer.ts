@@ -1,7 +1,7 @@
 import { RadioActionsUnion, RadioActionTypes } from '../actions/radio.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RadioEntity, Page, Links, RadioDetail, Reply, RadiosAdvancedSearch } from '../models/radio.model';
-import { Tag } from '@app/architecture/store/models/node.model';
+import { Tag, LoadingStatus } from '@app/architecture/store/models/node.model';
 
 export interface State {
   entities: RadioEntity[];
@@ -18,6 +18,8 @@ export interface State {
   analysisFilter: any;
   matrixData: any;
   matrixFilter: any;
+  loadingRadios: LoadingStatus;
+  loadingRadio: LoadingStatus;
 }
 
 export const initialState: State = {
@@ -34,7 +36,9 @@ export const initialState: State = {
   analysisData: null,
   matrixData: null,
   matrixFilter: null,
-  analysisFilter: null
+  analysisFilter: null,
+  loadingRadios: null,
+  loadingRadio: null
 };
 
 export function reducer(state = initialState, action: RadioActionsUnion): State {
@@ -134,7 +138,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
     case RadioActionTypes.LoadRadios: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingRadios: LoadingStatus.loading
       };
     }
 
@@ -144,7 +149,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         entities: action.payload.data,
         links: action.payload.links,
         page: action.payload.page,
-        loading: false
+        loading: false,
+        loadingRadios: LoadingStatus.loaded
       };
     }
 
@@ -152,20 +158,31 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error: action.payload,
+        loadingRadios: LoadingStatus.error
       };
     }
 
     case RadioActionTypes.LoadRadio: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingRadio: LoadingStatus.loading
       };
     }
 
-    case RadioActionTypes.AddRadioTagsSuccess:
-    case RadioActionTypes.DeleteRadioTagsSuccess:
     case RadioActionTypes.LoadRadioSuccess: {
+      return {
+        ...state,
+        loading: false,
+        selectedRadio: action.payload,
+        loadingRadio: LoadingStatus.loaded
+      };
+    }
+
+
+    case RadioActionTypes.AddRadioTagsSuccess:
+    case RadioActionTypes.DeleteRadioTagsSuccess: {
       return {
         ...state,
         loading: false,
@@ -179,7 +196,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error: action.payload,
+        loadingRadio: LoadingStatus.error
       };
     }
 
@@ -282,7 +300,8 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
     case RadioActionTypes.SearchRadio: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingRadios: LoadingStatus.loading
       };
     }
 
@@ -292,14 +311,23 @@ export function reducer(state = initialState, action: RadioActionsUnion): State 
         entities: action.payload.data,
         links: action.payload.links,
         page: action.payload.page,
-        loading: false
+        loading: false,
+        loadingRadios: LoadingStatus.loaded
+      };
+    }
+
+    case RadioActionTypes.GetRadioMatrix: {
+      return {
+        ...state,
+        loadingRadios: LoadingStatus.loading
       };
     }
 
     case RadioActionTypes.GetRadioMatrixSuccess: {
       return {
         ...state,
-        matrixData: action.payload
+        matrixData: action.payload,
+        loadingRadios: LoadingStatus.loaded
       };
     }
 

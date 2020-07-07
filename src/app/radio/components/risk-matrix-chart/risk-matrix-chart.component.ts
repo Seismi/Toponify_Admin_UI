@@ -14,6 +14,22 @@ import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 export type RiskMatrixData = number[][];
 
+enum MatrixColours {
+  Critical = '#CE3C31',
+  High = '#F99118',
+  Medium = '#FFEE00',
+  Low = '#9BEE11',
+  Minor = '#00C444'
+}
+
+enum MatrixColoursForZeroValue {
+  Critical = '#EDB7B3',
+  High = '#FCD6AA',
+  Medium = '#FFF8A1',
+  Low = '#DAF8A7',
+  Minor = '#A1E9BA'
+}
+
 @Component({
   selector: 'smi-risk-matrix-chart',
   templateUrl: './risk-matrix-chart.component.html',
@@ -22,7 +38,29 @@ export type RiskMatrixData = number[][];
 export class RiskMatrixChartComponent implements OnInit, OnDestroy {
   // Colors to the matrix will be defined accordingly
   // x + y = colours array index
-  public colours = ['#00ce00', '#00ce00', '#6c9712', '#6c9712', '#f1b301', '#e97600', '#e97600', '#df1627', '#df1627'];
+  public colours = [
+    MatrixColours.Minor,
+    MatrixColours.Minor,
+    MatrixColours.Low,
+    MatrixColours.Low,
+    MatrixColours.Medium,
+    MatrixColours.High,
+    MatrixColours.High,
+    MatrixColours.Critical,
+    MatrixColours.Critical
+  ];
+
+  public coloursForZeroValue = [
+    MatrixColoursForZeroValue.Minor,
+    MatrixColoursForZeroValue.Minor,
+    MatrixColoursForZeroValue.Low,
+    MatrixColoursForZeroValue.Low,
+    MatrixColoursForZeroValue.Medium,
+    MatrixColoursForZeroValue.High,
+    MatrixColoursForZeroValue.High,
+    MatrixColoursForZeroValue.Critical,
+    MatrixColoursForZeroValue.Critical
+  ];
 
   matrix$: Observable<RiskMatrixData>;
 
@@ -35,7 +73,7 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
 
   @Input('colours')
   set setColours(colours: string[]) {
-    this.colours = colours;
+    this.colours = colours as MatrixColours[];
   }
 
   get selectedRiskMatrixCol(): number[] | null {
@@ -104,7 +142,10 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
     return this.selectedRiskMatrixCol[0] === x && this.selectedRiskMatrixCol[1] === y;
   }
 
-  getColorAccordingIndex(index: number): string {
+  getColorAccordingIndex(index: number, col: number): string {
+    if (col === 0) {
+      return this.coloursForZeroValue[index];
+    }
     return this.colours[index] ? this.colours[index] : 'transparent';
   }
 
