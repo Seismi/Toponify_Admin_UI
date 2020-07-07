@@ -75,7 +75,6 @@ import { ComponentsOrLinksModalComponent } from './containers/components-or-link
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
 import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module';
 import { LayoutActionsComponent } from './components/diagram-actions/layout-actions/layout-actions.component';
-
 import { ComponentsTableComponent } from './components/components-table/components-table.component';
 import { GroupInfoTableComponent } from './components/group-info-table/group-info-table.component';
 import { SourceOrTargetTableComponent } from './components/source-or-target-table/source-or-target-table.component';

@@ -192,7 +192,7 @@ import {getNodeScopes, getPotentialGroupMembers, getPotentialWorkPackageNodes} f
 import {AddExistingAttributeModalComponent} from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import {NodeScopeModalComponent} from './add-scope-modal/add-scope-modal.component';
 import {ComponentsOrLinksModalComponent} from './components-or-links-modal/components-or-links-modal.component';
-import {autoLayoutId} from '@app/architecture/store/models/layout.model';
+import {autoLayoutId, NodeDetailTab} from '@app/architecture/store/models/layout.model';
 import {DeleteAttributeModalComponent} from './delete-attribute-modal/delete-attribute-modal.component';
 import {LayoutSettingsModalComponent} from './layout-settings-modal/layout-settings-modal.component';
 import {NotificationState} from '@app/core/store/reducers/notification.reducer';
@@ -448,6 +448,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
     this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
+    
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
@@ -875,6 +876,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     /*this.attributeSubscription = this.store.pipe(select(fromNode.getAttributes)).subscribe((data) => {
       this.attributes = data.attributes;
     });*/
+
+    this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
+
+    
   }
 
   ngOnDestroy() {
@@ -962,16 +967,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       if (part) {
         // Load node scopes
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-        this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
+        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === NodeDetailTab.Scopes && this.showOrHideRightPane ) {
+          this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
+        }
 
         this.clickedOnLink = part instanceof Link;
 
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
         //TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
-        debugger;
-        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === 2){
+        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === NodeDetailTab.Reports && this.showOrHideRightPane){
           this.getNodeReports(workPackageIds); 
         }
       }
@@ -1644,19 +1649,24 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.diagramComponent.updateDiagramArea();
     this.realignTabUnderline();
     
-    // Load Node Reports
-    if (index === 2) {
+    if (index === NodeDetailTab.Reports) {
       const workPackageIds = this.getWorkPackageIds() 
       this.getNodeReports(workPackageIds);
+    }
+
+    if (index === NodeDetailTab.Scopes) {
+      this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
     }
   }
 
   onSelectedTabChange(index: number) {
-    // Load Node Reports
     this.selectedRightTab = index;
-    if (index === 2) {
+    if (index === NodeDetailTab.Reports) {
       const workPackageIds = this.getWorkPackageIds() 
       this.getNodeReports(workPackageIds);
+    }
+    if (index === NodeDetailTab.Scopes) {
+      this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
     }
   }
 
@@ -2332,12 +2342,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSeeDependencies() {
+    this.dependenciesView = true;
     this.allowMove = false;
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
     this.diagramChangesService.hideNonDependencies(part);
   }
 
   exitDependenciesView() {
+    this.dependenciesView = false;
     this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
   }
 

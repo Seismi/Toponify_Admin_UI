@@ -23,6 +23,7 @@
             <mat-tab-group [@.disabled]="true">
               <mat-tab>
                 <ng-template mat-tab-label> <mat-icon>list</mat-icon> List </ng-template>
+                <smi-spinner *ngIf="(loading$ | async) === true"></smi-spinner>
                 <smi-workpackages-table
                   data-qa="work-packages-table"
                   [data]="workpackageEntities$ | async"
