@@ -36,7 +36,6 @@ export class WorkPackageModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
     this.baseline$ = this.workPackageStore.pipe(select(getAllWorkPackages));
