@@ -17,7 +17,8 @@ import {
   MatSortModule,
   MatTableModule,
   MatTreeModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { DocumentationStandardsTableComponent } from './components/documentation-standards-table/documentation-standards-table.component';
 import { DocumentationStandardsDetailComponent } from './components/documentation-standards-detail/documentation-standards-detail.component';
@@ -52,6 +53,7 @@ import { DocumentModalComponent } from './containers/document-modal/document-mod
     MatInputModule,
     MatDatepickerModule,
     MatSidenavModule,
+    MatProgressSpinnerModule,
     StoreModule.forFeature('documentationStandardFeature', reducer),
     EffectsModule.forFeature([DocumentationStandardEffects])
   ],

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { State as DocumentStandardsState } from '../../store/reducers/documentation-standards.reducer';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { DocumentStandardsService } from '@app/documentation-standards/components/documentation-standards-detail/services/document-standards.service';
 import { FormGroup } from '@angular/forms';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
@@ -13,7 +13,7 @@ import {
   DeleteDocumentationStandard,
   DocumentationStandardActionTypes
 } from '@app/documentation-standards/store/actions/documentation-standards.actions';
-import { getDocumentStandard } from '@app/documentation-standards/store/selectors/documentation-standards.selector';
+import { getDocumentStandard, getDocumentStandardLoadingStatus } from '@app/documentation-standards/store/selectors/documentation-standards.selector';
 import { MatDialog } from '@angular/material';
 import { Actions, ofType } from '@ngrx/effects';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
@@ -56,6 +56,10 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
 
   get documentStandardsForm(): FormGroup {
     return this.documentStandardsService.documentStandardsForm;
+  }
+
+  get isLoading$(): Observable<boolean> {
+    return this.store.select(getDocumentStandardLoadingStatus);
   }
 
   ngOnDestroy(): void {

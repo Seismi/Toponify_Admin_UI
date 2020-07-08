@@ -183,49 +183,35 @@ import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
 import { go } from 'gojs/release/go-module';
 import isEqual from 'lodash.isequal';
-import { BehaviorSubject, combineLatest, merge, Observable, Subject, Subscription, timer } from 'rxjs';
-import {
-  delay,
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  take,
-  tap,
-  withLatestFrom,
-  debounce
-} from 'rxjs/operators';
-import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
-import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
-import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
-import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
-import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
-import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
-import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
-import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
-import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
-import { DiagramLevelService, Level } from '../services/diagram-level.service';
-import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
-import { getViewLevel } from '../store/selectors/view.selector';
-import {
-  getNodeScopes,
-  getPotentialGroupMembers,
-  getPotentialWorkPackageNodes
-} from '../store/selectors/workpackage.selector';
-import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
-import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
-import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
-import { autoLayoutId } from '@app/architecture/store/models/layout.model';
-import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
-import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
-import { NotificationState } from '@app/core/store/reducers/notification.reducer';
-import { getNotificationOpen } from '@app/core/store/selectors/notification.selectors';
-import { NotificationPanelOpen } from '@app/core/store/actions/notification.actions';
-import { LeftPanelComponent } from './left-panel/left-panel.component';
-import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
-import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
-import { MatCheckboxChange, MatDialog } from '@angular/material';
-import { DiagramTemplatesService } from '@app/architecture/services/diagram-templates.service';
+import {BehaviorSubject, combineLatest, merge, Observable, Subject, Subscription, timer} from 'rxjs';
+import {delay, distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFrom, debounce} from 'rxjs/operators';
+import {RadioDetailModalComponent} from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
+import {LayoutSettingsService} from '../components/analysis-tab/services/layout-settings.service';
+import {ArchitectureDiagramComponent} from '../components/architecture-diagram/architecture-diagram.component';
+import {ObjectDetailsValidatorService} from '../components/object-details-form/services/object-details-form-validator.service';
+import {ObjectDetailsService} from '../components/object-details-form/services/object-details-form.service';
+import {SaveLayoutModalComponent} from '../components/save-layout-modal/save-layout-modal.component';
+import {SwitchViewTabsComponent} from '../components/switch-view-tabs/switch-view-tabs.component';
+import {DeleteLinkModalComponent} from '../containers/delete-link-modal/delete-link-modal.component';
+import {DeleteNodeModalComponent} from '../containers/delete-node-modal/delete-node-modal.component';
+import {DiagramLevelService, Level} from '../services/diagram-level.service';
+import {State as NodeState, State as ViewState} from '../store/reducers/architecture.reducer';
+import {getViewLevel} from '../store/selectors/view.selector';
+import {getNodeScopes, getPotentialGroupMembers, getPotentialWorkPackageNodes} from '../store/selectors/workpackage.selector';
+import {AddExistingAttributeModalComponent} from './add-existing-attribute-modal/add-existing-attribute-modal.component';
+import {NodeScopeModalComponent} from './add-scope-modal/add-scope-modal.component';
+import {ComponentsOrLinksModalComponent} from './components-or-links-modal/components-or-links-modal.component';
+import {autoLayoutId, NodeDetailTab} from '@app/architecture/store/models/layout.model';
+import {DeleteAttributeModalComponent} from './delete-attribute-modal/delete-attribute-modal.component';
+import {LayoutSettingsModalComponent} from './layout-settings-modal/layout-settings-modal.component';
+import {NotificationState} from '@app/core/store/reducers/notification.reducer';
+import {getNotificationOpen} from '@app/core/store/selectors/notification.selectors';
+import {NotificationPanelOpen} from '@app/core/store/actions/notification.actions';
+import {LeftPanelComponent} from './left-panel/left-panel.component';
+import {NewChildrenModalComponent} from './new-children-modal/new-children-modal.component';
+import {RadioConfirmModalComponent} from './radio-confirm-modal/radio-confirm-modal.component';
+import {MatCheckboxChange, MatDialog} from '@angular/material';
+import {DiagramTemplatesService} from '@app/architecture/services/diagram-templates.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -472,6 +458,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
     this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
+    
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
@@ -901,6 +888,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     /*this.attributeSubscription = this.store.pipe(select(fromNode.getAttributes)).subscribe((data) => {
       this.attributes = data.attributes;
     });*/
+
+    this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
+
+    
   }
 
   ngOnDestroy() {
@@ -988,16 +979,17 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       if (part) {
         // Load node scopes
-        this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
-        this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
+        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === NodeDetailTab.Scopes && this.showOrHideRightPane ) {
+          this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
+        }
 
         this.clickedOnLink = part instanceof Link;
 
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
-        // TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
-        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === 2) {
-          this.getNodeReports(workPackageIds);
+        //TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
+        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === NodeDetailTab.Reports && this.showOrHideRightPane){
+          this.getNodeReports(workPackageIds); 
         }
       }
     }
@@ -1672,20 +1664,25 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.diagramComponent.updateDiagramArea();
     this.realignTabUnderline();
-
-    // Load Node Reports
-    if (index === 2) {
-      const workPackageIds = this.getWorkPackageIds();
+    
+    if (index === NodeDetailTab.Reports) {
+      const workPackageIds = this.getWorkPackageIds() 
       this.getNodeReports(workPackageIds);
+    }
+
+    if (index === NodeDetailTab.Scopes) {
+      this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
     }
   }
 
   onSelectedTabChange(index: number) {
-    // Load Node Reports
     this.selectedRightTab = index;
-    if (index === 2) {
-      const workPackageIds = this.getWorkPackageIds();
+    if (index === NodeDetailTab.Reports) {
+      const workPackageIds = this.getWorkPackageIds() 
       this.getNodeReports(workPackageIds);
+    }
+    if (index === NodeDetailTab.Scopes) {
+      this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
     }
   }
 
@@ -2359,12 +2356,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSeeDependencies() {
+    this.dependenciesView = true;
     this.allowMove = false;
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
     this.diagramChangesService.hideNonDependencies(part);
   }
 
   exitDependenciesView() {
+    this.dependenciesView = false;
     this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
   }
 
