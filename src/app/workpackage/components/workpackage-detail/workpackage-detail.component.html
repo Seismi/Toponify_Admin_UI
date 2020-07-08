@@ -61,21 +61,24 @@
   </smi-owners-table>
 
   <!-- Approvers Table -->
-  <smi-approvers-table data-qa="work-packages-approvers-table" *ngIf="!modalMode" [data]="approversTableData">
+  <smi-approvers-table 
+    data-qa="work-packages-approvers-table" 
+    *ngIf="!modalMode" 
+    [data]="approversTableData"
+  >
   </smi-approvers-table>
 
-  <mat-form-field *ngIf="modalMode">
-    <mat-select
-      placeholder="Baseline"
-      formControlName="baseline"
-      multiple
-      data-qa="work-packages-details-baseline-selection"
-    >
-      <mat-option *ngFor="let baseline of baseline" [value]="baseline">
-        {{ baseline.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <!-- Selection table -->
+  <smi-selection-table
+    data-qa="work-packages-selection-table"
+    *ngIf="modalMode" 
+    [data]="baseline"
+    (search)="search.emit($event)"
+    [pagination]="pagination"
+    (pageChange)="pageChange.emit($event)"
+    [loading]="loading"
+  >
+  </smi-selection-table>
 
   <mat-form-field *ngIf="modalMode">
     <mat-select placeholder="Owners" formControlName="owners" multiple data-qa="work-packages-details-owners-selection">

@@ -147,16 +147,16 @@ export class WorkPackageComponent implements OnInit{
   onAddWorkPackage(): void {
     const dialogRef = this.dialog.open(WorkPackageModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '700px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.workpackage) {
+      if ((data && data.workpackage) || data.baseline) {
         this.store.dispatch(
           new AddWorkPackageEntity({
             data: {
               ...data.workpackage,
-              baseline: data.workpackage.baseline ? data.workpackage.baseline : [],
+              baseline: data.baseline ? data.baseline : [],
               owners: data.workpackage.owners ? data.workpackage.owners : []
             }
           })
