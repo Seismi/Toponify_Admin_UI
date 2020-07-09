@@ -4,6 +4,7 @@ import { Links, WorkPackageEntity, Page } from '@app/workpackage/store/models/wo
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { UserDetails } from '@app/settings/store/models/user.model';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 export interface State {
   workpackages: WorkPackageEntity[];
@@ -13,6 +14,7 @@ export interface State {
   loading: boolean;
   links: Links;
   error?: HttpErrorResponse | { message: string };
+  loadingHomePage: LoadingStatus;
 }
 
 export const initialState: State = {
@@ -22,14 +24,16 @@ export const initialState: State = {
   profile: null,
   links: null,
   loading: false,
-  error: null
+  error: null,
+  loadingHomePage: null
 };
 
 export function reducer(state = initialState, action: HomePageActionsUnion): State {
   switch (action.type) {
     case HomePageActionTypes.LoadMyWorkPackages: {
       return {
-        ...state
+        ...state,
+        loadingHomePage: LoadingStatus.loading
       };
     }
 
@@ -38,7 +42,8 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
         ...state,
         workpackages: action.payload.data,
         links: action.payload.links,
-        loading: false
+        loading: false,
+        loadingHomePage: LoadingStatus.loaded
       };
     }
 
@@ -52,7 +57,8 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
 
     case HomePageActionTypes.LoadMyRadios: {
       return {
-        ...state
+        ...state,
+        loadingHomePage: LoadingStatus.loading
       };
     }
 
@@ -61,7 +67,8 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
         ...state,
         radios: action.payload.data,
         links: action.payload.links,
-        loading: false
+        loading: false,
+        loadingHomePage: LoadingStatus.loaded
       };
     }
 
@@ -73,12 +80,20 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
       };
     }
 
+    case HomePageActionTypes.LoadMyLayouts: {
+      return {
+        ...state,
+        loadingHomePage: LoadingStatus.loading
+      };
+    }
+
     case HomePageActionTypes.LoadMyLayoutsSuccess: {
       return {
         ...state,
         layouts: action.payload.data,
         links: action.payload.links,
-        loading: false
+        loading: false,
+        loadingHomePage: LoadingStatus.loaded
       };
     }
 
@@ -92,14 +107,16 @@ export function reducer(state = initialState, action: HomePageActionsUnion): Sta
 
     case HomePageActionTypes.LoadMyProfile: {
       return {
-        ...state
+        ...state,
+        loadingHomePage: LoadingStatus.loading
       };
     }
 
     case HomePageActionTypes.LoadMyProfileSuccess: {
       return {
         ...state,
-        profile: action.payload.data
+        profile: action.payload.data,
+        loadingHomePage: LoadingStatus.loaded
       };
     }
 

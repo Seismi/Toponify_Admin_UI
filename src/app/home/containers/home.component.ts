@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { State as HomePageState } from '../store/reducers/home.reducers';
 import { LoadMyLayouts, LoadMyRadios, LoadMyWorkPackages, LoadMyProfile, HomePageActionTypes } from '../store/actions/home.actions';
 import { Observable, Subscription } from 'rxjs';
-import { getMyLayouts, getMyRadios, getMyWorkPackages } from '../store/selectors/home.selectors';
+import { getMyLayouts, getMyRadios, getMyWorkPackages, getHomePageLoadingStatus } from '../store/selectors/home.selectors';
 import { Router } from '@angular/router';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
@@ -13,6 +13,7 @@ import { UpdateUser } from '@app/settings/store/actions/user.actions';
 import { HomeTabs } from '../components/home-tabs/home-tabs.model';
 import { NotificationState } from '@app/core/store/reducers/notification.reducer';
 import { getNewNotificationCount } from '@app/core/store/selectors/notification.selectors';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-home-component',
@@ -28,6 +29,7 @@ export class HomeComponent implements OnInit {
   public selectedTab: HomeTabs = HomeTabs.Favourites;
   public HomeTabs = HomeTabs;
   public notificationsLength: number;
+  public loadingStatus: LoadingStatus;
 
   constructor(
     private router: Router,
@@ -35,6 +37,10 @@ export class HomeComponent implements OnInit {
     private actions: Actions,
     private notificationStore: Store<NotificationState>,
   ) { }
+
+  get isLoading$(): Observable<boolean> {
+    return this.store.select(getHomePageLoadingStatus);
+  }
 
   ngOnInit() {
     this.notificationStore.pipe(select(getNewNotificationCount)).subscribe(count => (this.notificationsLength = count));

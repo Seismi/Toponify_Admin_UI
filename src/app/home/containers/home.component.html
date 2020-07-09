@@ -40,5 +40,6 @@
       >
       </smi-my-workpackages-table>
     </div>
+    <smi-spinner *ngIf="!(isLoading$ | async)"></smi-spinner>
   </app-drawer>
 </app-model-container>
