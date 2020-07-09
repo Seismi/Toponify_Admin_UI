@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Add Layout</h1>
 <ng-container *ngIf="processing">
   <div ngClass="spinner-container">
-    <mat-spinner></mat-spinner>
+    <mat-spinner data-qa="topology-layout-modal-spinner"></mat-spinner>
   </div>
 </ng-container>
 <form (ngSubmit)="onSubmit()" [formGroup]="nameForm">
