@@ -171,9 +171,12 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived, wait) => {
     .clear() //clear the box
     .type(name)
     .should('have.value', name) // type the name
-    .wait(3000)
+    .wait(1000)
     .then(() => {
-      if (wait) cy.wait('@GETWorkPackagePaging.all');
+      if (wait) {
+        cy.wait('@GETWorkPackagePaging.all');
+        cy.get('[data-qa=spinner]').should('not.be.visible');
+      }
     });
 
   return cy
@@ -373,8 +376,8 @@ Cypress.Commands.add('findDocumentationStandard', (name, wait) => {
   cy.get(`[data-qa=documentation-standards-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name) // type the name
-    .should('have.value', name);
-  cy.log(wait);
+    .should('have.value', name)
+    .wait(2000);
   if (wait) cy.wait('@GETCustomProperties');
   return cy
     .get(`[data-qa=documentation-standards-table]`) // get the work packages table
@@ -750,8 +753,49 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .eq(1)
     .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
 });
-//
-//
+
+Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) => {
+  cy.get(`[data-qa=work-packages-create-new]`)
+    .click()
+    .wait(['@GETTeams', '@GETWorkPackagePaging'])
+    .then(() => {
+      cy.populateWorkPackageDetails(name, description, baseline, owner);
+    })
+    .then(() => {
+      cy.get(`[data-qa=work-packages-modal-save]`)
+        .click()
+        .wait(['@POSTWorkPackage', '@GETWorkPackage'], { requestTimeout: 20000, responseTimeout: 40000 });
+    });
+});
+
+Cypress.Commands.add('populateWorkPackageDetails', (name, description, baseline, owner) => {
+  /*
+            if (baseline.length > 0) {
+              cy.get(`[data-qa=selection-table-quick-search]`) // get the quick packages search
+                .clear() //clear the box
+                .type(baseline)
+                .should('have.value', baseline) // type the name
+                .wait(1000)
+                .wait('@GETWorkPackagePaging')
+                .get(`[data-qa=work-packages-selection-table]`) // get the work packages table
+                .find('table>tbody') // find the table
+                .find('td',baseline)
+                .check()
+              //cy.selectDropDown('work-packages-details-baseline-selection', baseline);
+            }*/
+  if (owner.length > 0) {
+    cy.selectDropDown('work-packages-details-owners-selection', owner);
+  }
+  cy.get('smi-workpackage-modal').within(() => {
+    cy.get(`[data-qa=work-packages-details-name]`)
+      .type(name)
+      .should('have.value', name)
+      .get(`[data-qa=work-packages-details-description]`)
+      .type(description)
+      .should('have.value', description);
+  });
+});
+
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
 //
