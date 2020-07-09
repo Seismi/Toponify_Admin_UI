@@ -3,7 +3,9 @@
     <smi-left-hand-pane-content (close)="handleCloseDrawer()">
       <ng-container *ngIf="tabTpls" [ngTemplateOutlet]="tabTpls[selectedTab]"></ng-container>
       <smi-menu *ngIf="selectedTab === 'menu'"></smi-menu>
-      <smi-notification-pane *ngIf="selectedTab === 'notifications'"></smi-notification-pane>
+      <div class="notifications-container">
+        <smi-notification-pane *ngIf="selectedTab === 'notifications'"></smi-notification-pane>
+      </div>
     </smi-left-hand-pane-content>
   </mat-drawer>
   <ng-content></ng-content>

@@ -24,9 +24,7 @@
         *ngIf="selectedTab === HomeTabs.Favourites"
       >
       </smi-favourites-table>
-      <div *ngIf="selectedTab === HomeTabs.Notifications" class="notifications-container">
-        <smi-notification-pane></smi-notification-pane>
-      </div>
+      <smi-notification-pane *ngIf="selectedTab === HomeTabs.Notifications"></smi-notification-pane>
       <smi-my-radio-table
         *ngIf="selectedTab === HomeTabs.RADIO"
         [data]="myRadios$ | async"
