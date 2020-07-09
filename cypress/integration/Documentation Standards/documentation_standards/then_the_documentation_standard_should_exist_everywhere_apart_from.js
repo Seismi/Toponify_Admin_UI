@@ -13,7 +13,7 @@ Then('the documentation standard {string} should exist with type {string} everyw
     .should('exist');
   cy.get(`[data-qa=documentation-standards-table]`) // get the work packages table
     .find('table>tbody')
-    .find('tr :first')
+    .get('tr :first')
     .click()
     .then(() => {
       cy.get('[data-qa=documentation-standards-details-name]').should('have.value', doc_standard);

@@ -5,14 +5,12 @@ Feature: Topology Radio Feature
   Background:
     Given a valid user is logged in
     And the user selects Work Package menu item
-    And the work package 'Created Automated Regression Test Work Package' does not exist
-    And the work package 'Inlcuded to make next step work' does not exist
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
+    And the user selects Radios menu item
+    And the radio 'Automatic Regression Test Risk 1' does not exist
 
   @topology @radio
   Scenario: Assign RADIO to component and cancel
-    When the user selects Radios menu item
-    And the radio 'Automatic Regression Test Radio' does not exist
     And the user clicks on create new radio at the button of the radio table
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
@@ -27,8 +25,6 @@ Feature: Topology Radio Feature
 
   @topology @radio
   Scenario: Assign RADIO to component and confirm
-    When the user selects Radios menu item
-    And the radio 'Automatic Regression Test Radio' does not exist
     And the user clicks on create new radio at the button of the radio table
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And the user cancels the creation of the radio

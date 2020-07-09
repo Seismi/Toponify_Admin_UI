@@ -5,8 +5,6 @@ Feature: Documentation Standards CRUD
   Background:
     Given a valid user is logged in
     And the user selects Work Package menu item
-    And the work package 'Created Automated Regression Test Work Package' does not exist
-    And the work package 'Included to make next step work' does not exist
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user selects Documentation Standard menu item
     And the documentation standard 'Created Automated Regression Test Doc Std UT1' does not exist
@@ -42,7 +40,7 @@ Feature: Documentation Standards CRUD
     And the user reloads the Documentation Standards page
     And the documentation standard 'Created Automated Regression Test Doc Std UT1' should exist with type 'Boolean' everywhere
 
-  @documentation_standards
+  @documentation_standards @focus
   Scenario: Update documentation standard and save
     Given the user creates the documentation standard 'Created Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
