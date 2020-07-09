@@ -17,7 +17,7 @@
         *ngFor="let col of row; let colIndex = index"
         class="col"
         (click)="handleColClick(rowIndex, colIndex)"
-        [ngStyle]="{ 'background-color': getColorAccordingIndex(rowIndex + colIndex) }"
+        [ngStyle]="{ 'background-color': getColorAccordingIndex(rowIndex + colIndex, col) }"
         [ngClass]="{ selected: isSelected(rowIndex, colIndex) }"
       >
         {{ col }}

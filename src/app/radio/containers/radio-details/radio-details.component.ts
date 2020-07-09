@@ -16,7 +16,7 @@ import {
   AddRadioTags,
   DeleteRadioTags
 } from '@app/radio/store/actions/radio.actions';
-import { getSelectedRadio, getRadioAvailableTags } from '@app/radio/store/selectors/radio.selector';
+import { getSelectedRadio, getRadioAvailableTags, getRadioLoadingStatus } from '@app/radio/store/selectors/radio.selector';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
@@ -35,7 +35,7 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
 import { LoadNodes } from '@app/architecture/store/actions/node.actions';
-import { Tag } from '@app/architecture/store/models/node.model';
+import { Tag, LoadingStatus } from '@app/architecture/store/models/node.model';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
 @Component({
@@ -45,6 +45,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
   providers: [RadioDetailService, RadioValidatorService]
 })
 export class RadioDetailsComponent implements OnInit, OnDestroy {
+  public loadingStatus = LoadingStatus;
   public users$: Observable<User[]>;
   public radio: RadioDetail;
   public radioId: string;
@@ -103,6 +104,10 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
 
   get radioDetailsForm(): FormGroup {
     return this.radioDetailService.radioDetailsForm;
+  }
+
+  get isLoading$(): Observable<LoadingStatus> {
+    return this.store.select(getRadioLoadingStatus);
   }
 
   onCancel(): void {

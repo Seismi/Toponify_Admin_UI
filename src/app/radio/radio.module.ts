@@ -25,7 +25,8 @@ import {
   MatSliderModule,
   MatBadgeModule,
   MatChipsModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
 import { RadioModalComponent } from './containers/radio-modal/radio-modal.component';
@@ -89,6 +90,7 @@ import { RadioFilterService } from './services/radio-filter.service';
     MatBadgeModule,
     MatChipsModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
     StoreModule.forFeature('radioFeature', reducer),
     EffectsModule.forFeature([RadioEffects]),
     CKEditorModule
