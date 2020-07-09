@@ -40,7 +40,7 @@ Feature: Documentation Standards CRUD
     And the user reloads the Documentation Standards page
     And the documentation standard 'Created Automated Regression Test Doc Std UT1' should exist with type 'Boolean' everywhere
 
-  @documentation_standards @focus
+  @documentation_standards
   Scenario: Update documentation standard and save
     Given the user creates the documentation standard 'Created Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
