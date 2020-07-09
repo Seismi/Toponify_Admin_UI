@@ -5,9 +5,6 @@ Feature: Work Package Edit Core Details Feature
   Background:
     Given a valid user is logged in
     And the user selects Work Package menu item
-    And the work package 'Created Automated Regression Test Work Package' does not exist
-    And the work package 'Automated Updated Regression Test Work Package' does not exist
-    And the work package 'Automated Regression Test Second Work Package' does not exist
 
   @work_package
   Scenario: Edit the work package name and description and cancel
@@ -134,7 +131,7 @@ Feature: Work Package Edit Core Details Feature
     And the user clicks the 'unarchive' button on the work package
     Then the work package called 'Created Automated Regression Test Work Package' should exist in the work packages table
 
-  @work_package @workflow @focus
+  @work_package @workflow
   Scenario: Delete a work package
     Given the user has created and selected a work package called 'Automated Updated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open

@@ -6,6 +6,7 @@ Feature: Work Package Edit Radio Feature
     Given a valid user is logged in
     And the user selects Work Package menu item
     And the radio 'Created Automatic Regression Test Risk 1' does not exist against work package 'Created Automated Regression Test Work Package'
+    And the radio 'Included to make next step work' does not exist against work package 'Created Automated Regression Test Work Package'
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Radio" pane is open
 

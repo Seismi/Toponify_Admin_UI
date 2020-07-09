@@ -8,10 +8,7 @@ Given('the user selects the {string} {string} in the {string} table', function(t
 
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
 
-  let wait =
-    type === 'system'
-      ? ['@GETNodesWorkPackageQuery2']
-      : ['@GETNodesScopes.all', '@GETnodeLinksWorkPackageQuery.all', '@GETNodesReportWorkPackageQuery.all'];
+  let wait = type === 'system' ? ['@GETNodesWorkPackageQuery2'] : ['@GETnodeLinksWorkPackageQuery.all'];
 
   cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`)
     .click()

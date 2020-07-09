@@ -6,6 +6,7 @@ Feature: Documentation Standards CRUD
     Given a valid user is logged in
     And the user selects Work Package menu item
     And the work package 'Created Automated Regression Test Work Package' does not exist
+    And the work package 'Included to make next step work' does not exist
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user selects Documentation Standard menu item
     And the documentation standard 'Created Automated Regression Test Doc Std UT1' does not exist

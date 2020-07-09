@@ -5,12 +5,11 @@ Feature: Work Package Edit Documentation Standards Feature
   Background:
     Given a valid user is logged in
     And the user selects Work Package menu item
-    And the work package 'Created Automated Regression Test Work Package' does not exist
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user selects Documentation Standard menu item
 
 # NUMBER TESTS
-  @documentation_standards @work_package @focus
+  @documentation_standards @work_package
   Scenario: Check that entering an invalid value into a number type documentation standard will not save
     Given the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'Work Package' component
     And the user confirms the creation of the documentation standard

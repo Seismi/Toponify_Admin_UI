@@ -171,7 +171,7 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived, wait) => {
     .clear() //clear the box
     .type(name)
     .should('have.value', name) // type the name
-    .wait(1000)
+    .wait(3000)
     .then(() => {
       if (wait) cy.wait('@GETWorkPackagePaging.all');
     });
@@ -247,7 +247,7 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
   });
 });
 
-/*Cypress.Commands.add('editWorkPackageTopology', work_package => {
+Cypress.Commands.add('editWorkPackageTopology', work_package => {
   cy.get('[data-qa=left-hand-pane-work-packages]').click();
   cy.get('[data-qa=left-hand-pane-work-package-table]')
     .within(() => {
@@ -264,11 +264,7 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
                 cy.get('table>tbody')
                   .find('tr:first>td>div>div>mat-icon')
                   .click();
-                cy.wait([
-                  '@GETNodesWorkPackageQuery',
-                  '@GETNodeLinksWorkPackageQuery',
-                  '@GETSelectorAvailabilityQuery'
-                ]);
+                cy.wait(['@GETNodesQuery', '@GETNodeLinksQuery', '@GETSelectorAvailabilityQuery']);
                 cy.get('[data-qa=spinner]').should('not.be.visible');
               }
             });
@@ -279,7 +275,7 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
         .get('[data-qa=left-hand-pane-work-packages]')
         .click();
     });
-});*/
+});
 
 Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_for) => {
   cy.get('[data-qa=left-hand-pane-work-packages]')
@@ -305,8 +301,8 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
       cy.get('[data-qa=spinner]').should('not.be.visible');
       cy.root()
         .get('[data-qa=left-hand-pane-work-packages]')
-        .click()
-        .wait('@PUTLayoutNodes');
+        .click();
+      //  .wait('@PUTLayoutNodes');
     });
 });
 

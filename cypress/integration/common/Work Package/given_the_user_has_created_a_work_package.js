@@ -10,39 +10,13 @@ When(
       if ($table[0].rows.length === 0) {
         // check if the search returned a result
         cy.wait(2000);
-
         createWorkPackage(name, description, baseline, owner); // create work package as it has not yet been created
       } else {
-        cy.selectRow('work-packages-table', name)
-          .wait('@GETWorkPackage.all')
-          .then(() => {
-            cy.get('tbody>tr')
-              .filter('.highlight')
-              .get('td')
-              .eq(2)
-              .then(status => {
-                switch (status[0].textContent) {
-                  case 'submitted':
-                    cy.get(`[data-qa=work-packages-reset]`).click();
-                  case 'draft':
-                  case 'superseded':
-                    cy.get(`[data-qa=work-packages-delete]`)
-                      .click()
-                      .then(() => {
-                        cy.get('[data-qa=delete-modal-yes]')
-                          .click()
-                          .wait('@DELETEWorkPackage')
-                          .then(() => {
-                            cy.wait(2000);
-                            createWorkPackage(name, description, baseline, owner);
-                          });
-                      });
-                    break;
-                  default:
-                    cy.get(`[data-qa=work-packages-reset]`).click();
-                }
-              });
-          });
+        Object.keys($table[0].rows).forEach(work_package => {
+          //loop through the rows
+          cy.deleteWorkPackage(name); //delete the work packages
+        });
+        createWorkPackage(name, description, baseline, owner); // create work package as it has not yet been created
       }
     });
   }
@@ -51,8 +25,8 @@ When(
 function createWorkPackage(name, description, baseline, owner) {
   cy.get(`[data-qa=work-packages-create-new]`)
     .click()
-    .get('[data-qa=spinner]')
-    .should('not.be.visible')
+    //.get('[data-qa=spinner]')
+    //.should('not.be.visible')
     .wait(['@GETTeams', '@GETWorkPackages', '@GETWorkPackagePaging'])
     .then(() => {
       if (baseline.length > 0) {

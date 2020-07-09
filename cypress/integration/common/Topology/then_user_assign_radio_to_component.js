@@ -16,7 +16,7 @@ And('the user assign radio {string} to component with work package selected {str
           cy.selectDropDown('topology-radio-confirm-modal-name', work_package);
           cy.get('[data-qa=topology-radio-confirm-modal-save]')
             .click()
-            .wait(['@POSTWorkPackageNodeRadios', '@GETNodesWorkPackageQuery.all', '@GETNodeLinksWorkPackageQuery.all'])
+            .wait(['@POSTWorkPackageNodeRadios', '@GETNodesQuery.all', '@GETNodeLinksQuery.all'])
             .then(() => {
               cy.get('[data-qa=related-radio-table-quick-search]')
                 .clear()
