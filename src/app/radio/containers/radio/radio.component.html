@@ -24,6 +24,7 @@
               (pageChange)="handlePageChange($event)"
             >
             </smi-radio-table>
+            <smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>
           </div>
           <div class="col">
             <smi-right-hand-side [title]="'Radio'" (add)="onAddRadio()"></smi-right-hand-side>

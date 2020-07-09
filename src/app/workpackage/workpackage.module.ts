@@ -19,7 +19,8 @@ import {
   MatSlideToggleModule,
   MatAutocompleteModule,
   MatCheckboxModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { ObjectivesTableComponent } from './components/objectives-table/objectives-table.component';
@@ -49,10 +50,11 @@ import { RadioDetailModalComponent } from './containers/radio-detail-modal/radio
 import { WorkPackageColorComponent } from './components/color-picker/color-picker.component';
 import { AddObjectiveModalComponent } from '@app/workpackage/components/add-objective-modal/add-objective-modal.component';
 import { MoveObjectiveModalComponent } from './components/move-objective-modal/move-objective-modal.component';
+import { SelectionTableComponent } from './components/selection-table/selection-table.component';
 
 @NgModule({
   imports: [
-    WorkPackageRoutingModule,
+  WorkPackageRoutingModule,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
@@ -76,7 +78,8 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     MatSlideToggleModule,
     MatAutocompleteModule,
     MatCheckboxModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatProgressSpinnerModule
   ],
   exports: [WorkPackagesTableComponent, RadioDetailModalComponent, WorkPackageColorComponent],
   declarations: [
@@ -101,7 +104,8 @@ import { MoveObjectiveModalComponent } from './components/move-objective-modal/m
     RadioDetailModalComponent,
     WorkPackageColorComponent,
     AddObjectiveModalComponent,
-    MoveObjectiveModalComponent
+    MoveObjectiveModalComponent,
+    SelectionTableComponent
   ],
   entryComponents: [
     WorkPackageModalComponent,
