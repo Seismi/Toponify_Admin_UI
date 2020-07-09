@@ -64,8 +64,6 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   }
 
   getMapLevel(level: Level): boolean {
-    if (level.endsWith('map') || level === Level.usage) {
-      return true;
-    }
+    return level.endsWith('map') || [Level.usage, Level.sources, Level.targets].includes(level);
   }
 }
