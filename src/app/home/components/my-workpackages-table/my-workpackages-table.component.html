@@ -7,7 +7,8 @@
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
         <mat-icon style="float: right;" (click)="openWorkPackage.emit(element.id)">open_in_new</mat-icon>
-        <div class="title">{{ element.name }} <sup>{{ element.status }}</sup></div>
+        <div class="title">{{ element.name }} </div>
+        <div class="status-title">{{ element.status }}</div>
         <div class="chips">
           <!-- FIXME: waiting for the API's -->
           <mat-chip-list>

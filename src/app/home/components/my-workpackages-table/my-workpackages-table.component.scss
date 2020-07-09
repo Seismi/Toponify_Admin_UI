@@ -54,18 +54,23 @@ td.mat-cell {
 }
 
 .title {
-  font-size: 18px;
+  font-size: 17px;
   display: inline-block;
 }
 
 .chips {
   width: 100%;
   position: relative;
-  top: -15px;
+  top: -5px;
   mat-chip-list {
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
     justify-content: center;
   }
+}
+
+.status-title {
+  float: right;
+  margin-right: 10px;
 }
