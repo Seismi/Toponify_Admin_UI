@@ -211,11 +211,7 @@ export class DiagramTemplatesService {
           },
           new go.Binding('source', 'iconName',
             function(iconName) {
-              if (iconName) {
-                return `/assets/tag-icons/${iconName}.svg`;
-              } else {
-                return '';
-              }
+              return iconName && iconName !== 'none' ? `assets/tag-icons/${iconName}.svg` : '';
             }
           ),
           new go.Binding('visible', 'iconName',
@@ -247,7 +243,7 @@ export class DiagramTemplatesService {
         },
         new go.Binding('source', 'iconName',
           function(iconName: string): string {
-            return `assets/tag-icons/${iconName}.svg`;
+            return iconName && iconName !== 'none' ? `assets/tag-icons/${iconName}.svg` : '';
           }
         )
       )
