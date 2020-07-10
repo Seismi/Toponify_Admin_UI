@@ -5,6 +5,7 @@ import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
 import { UserDetails } from '@app/settings/store/models/user.model';
 import { LoadingStatus } from '@app/architecture/store/models/node.model';
+import { NotificationActionsUnion, NotificationActionTypes } from '@app/core/store/actions/notification.actions';
 
 export interface State {
   workpackages: WorkPackageEntity[];
@@ -28,8 +29,22 @@ export const initialState: State = {
   loadingHomePage: null
 };
 
-export function reducer(state = initialState, action: HomePageActionsUnion): State {
+export function reducer(state = initialState, action: HomePageActionsUnion | NotificationActionsUnion): State {
   switch (action.type) {
+    case NotificationActionTypes.GetAll: {
+      return {
+        ...state,
+        loadingHomePage: LoadingStatus.loading
+      };
+    }
+
+    case NotificationActionTypes.GetAllSuccess: {
+      return {
+        ...state,
+        loadingHomePage: LoadingStatus.loaded
+      };
+    }
+
     case HomePageActionTypes.LoadMyWorkPackages: {
       return {
         ...state,
