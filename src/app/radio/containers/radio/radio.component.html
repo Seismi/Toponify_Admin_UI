@@ -18,7 +18,7 @@
               data-qa="radio-table"
               [data]="radio$ | async"
               (selectRadio)="onSelectRadio($event)"
-              (addRadio)="onAddRadio($event)"
+              (addRadio)="onAddRadio()"
               (download)="downloadCSV()"
               [selectedRadioIndex]="selectedRadioIndex"
               (pageChange)="handlePageChange($event)"

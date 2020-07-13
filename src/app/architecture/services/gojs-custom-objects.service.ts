@@ -268,11 +268,11 @@ export class GojsCustomObjectsService {
   constructor(
     private store: Store<RouterReducerState<RouterStateUrl>>,
     public diagramChangesService: DiagramChangesService,
-    @Inject(
-      forwardRef(function() {
-        return DiagramLevelService;
-      })
-    )
+    // @Inject(
+    //   forwardRef(function() {
+    //     return DiagramLevelService;
+    //   })
+    // )
     public diagramLevelService: DiagramLevelService
   ) {
     this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));

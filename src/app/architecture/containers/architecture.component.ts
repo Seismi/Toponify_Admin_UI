@@ -233,7 +233,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private addNewSubItemRef;
   private addNewSharedSubItemRef;
   private setAsMasterRef;
-  private dependenciesView;
+  public dependenciesView;
 
   @Input() attributesView = false;
   @Input() allowMove = false;

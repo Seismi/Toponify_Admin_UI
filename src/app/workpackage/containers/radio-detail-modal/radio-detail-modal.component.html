@@ -13,7 +13,7 @@
             [group]="radioDetailsForm"
             [isEditable]="false"
             [modalMode]="false"
-            (archiveRadio)="onArchiveRadio($event)"
+            (archiveRadio)="onArchiveRadio()"
             (saveRadio)="onSaveRadio()"
             [rows]="5"
             [editModal]="true"
@@ -47,7 +47,7 @@
           <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies"> </smi-chatbox>
         </p>
         <p>
-          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply($event)"> </smi-reply-text>
+          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply()"> </smi-reply-text>
         </p>
       </mat-tab>
       <mat-tab>

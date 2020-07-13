@@ -5,6 +5,7 @@ interface TableCollapseEntry {
   related: any[];
   collapsed: boolean;
   category: string;
+  name: string;
 }
 
 enum Icons {

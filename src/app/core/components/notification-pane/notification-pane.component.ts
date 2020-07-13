@@ -13,6 +13,7 @@ import { Notification } from '@app/core/store/models/notification.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationPaneComponent implements OnInit, OnDestroy {
+  searchString: string
   subscriptions: Subscription[] = [];
   notifications: Notification[] = [];
   constructor(private notificationStore: Store<NotificationState>, private ref: ChangeDetectorRef) {}
