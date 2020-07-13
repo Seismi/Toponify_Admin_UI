@@ -446,7 +446,8 @@ export class GojsCustomObjectsService {
       name: string,
       action: (event: object, object?: go.GraphObject) => void,
       enabled_predicate?: (object: go.GraphObject, event: object) => boolean,
-      text_predicate?: (object: go.GraphObject, event: object) => string
+      text_predicate?: (object: go.GraphObject, event: object) => string,
+      visibleCondition?: (object: go.GraphObject, event: object) => boolean
     ): go.Part {
       return $('ContextMenuButton',
         {
@@ -473,6 +474,11 @@ export class GojsCustomObjectsService {
       },
         enabled_predicate
           ? new go.Binding('isEnabled', '', enabled_predicate).ofObject()
+          : {},
+        visibleCondition
+          ? new go.Binding('height', '', function(object: go.GraphObject, event: object) {
+            return visibleCondition(object, event) ? 20 : 0;
+          }).ofObject()
           : {}
       );
     }
@@ -781,7 +787,9 @@ export class GojsCustomObjectsService {
           'Analyse',
           [
             'Dependencies',
-            'Use across Levels'
+            'Use across Levels',
+            'View Sources',
+            'View Targets'
           ]
         ),
         // --Analysis submenu buttons--
@@ -812,6 +820,39 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             diagramLevelService.displayUsageView(event, node);
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            const level = thisService.currentLevel;
+            return !level.endsWith('map');
+          }
+        ),
+        makeSubMenuButton(
+          6,
+          'View Sources',
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            diagramLevelService.displaySourcesView(event, node);
+          },
+          null,
+          null,
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category)
+              && node.data.isShared;
+          }
+        ),
+        makeSubMenuButton(
+          7,
+          'View Targets',
+          function(event: go.DiagramEvent, object: go.GraphObject): void {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            diagramLevelService.displayTargetsView(event, node);
+          },
+          null,
+          null,
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category);
           }
         ),
         // --End analysis submenu buttons--
