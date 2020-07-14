@@ -114,6 +114,7 @@ Cypress.Commands.add('type_ckeditor', (element, content) => {
 Cypress.Commands.add('assertRowExists', (table, contents) => {
   return cy
     .get(`[data-qa=${table}]`)
+    .should('exist')
     .find('table>tbody')
     .contains('td', contents)
     .should('exist');
@@ -171,17 +172,18 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived, wait) => {
     .clear() //clear the box
     .type(name)
     .should('have.value', name) // type the name
-    .wait(1000)
+    .wait(1500)
     .then(() => {
       if (wait) {
-        cy.wait('@GETWorkPackagePaging.all');
+        cy.wait('@GETWorkPackagePaging');
         cy.get('[data-qa=spinner]').should('not.be.visible');
       }
+    })
+    .then(() => {
+      return cy
+        .get(`[data-qa=work-packages-table]`) // get the work packages table
+        .find('table>tbody'); // find the table
     });
-
-  return cy
-    .get(`[data-qa=work-packages-table]`) // get the work packages table
-    .find('table>tbody'); // find the table
 });
 
 Cypress.Commands.add('findReport', name => {
@@ -795,6 +797,10 @@ Cypress.Commands.add('populateWorkPackageDetails', (name, description, baseline,
       .should('have.value', description);
   });
 });
+
+Cypress.Commands.overwrite('type', (originalFn, subject, string, options) =>
+  originalFn(subject, string, Object.assign({}, options, { delay: 100 }))
+);
 
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
