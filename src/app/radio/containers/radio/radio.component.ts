@@ -48,7 +48,6 @@ export class RadioComponent implements OnInit, OnDestroy {
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
-  public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
   public loadingStatus = LoadingStatus;

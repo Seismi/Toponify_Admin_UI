@@ -299,7 +299,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public ArchitectureView = ArchitectureView;
   public selectedId: string;
   public scope: ScopeDetails;
-  private currentFilterLevel: Level;
+  public currentFilterLevel: Level;
   private filterId: string;
   private mapViewSource: { id: string; isTransformation: string } | null;
   private filterLevelSubscription: Subscription;
