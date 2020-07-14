@@ -10,20 +10,19 @@
         <div class="title">{{ element.name }} </div>
         <div class="status-title">{{ element.status }}</div>
         <div class="chips">
-          <!-- FIXME: waiting for the API's -->
           <mat-chip-list>
-            <mat-chip style="background-color: #CE3C31; color: #fff">R</mat-chip>
-            <mat-chip style="background-color: #F99118; color: #fff">A</mat-chip>
-            <mat-chip style="background-color: #FFEE00; color: #fff">D</mat-chip>
-            <mat-chip style="background-color: #9BEE11; color: #fff; padding: 0px 14px">I</mat-chip>
-            <mat-chip style="background-color: #00C444; color: #fff">O</mat-chip>
+            <mat-chip *ngIf="getRadioChip(element.radioSummary.risks)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.risks) }">R</mat-chip>
+            <mat-chip *ngIf="getRadioChip(element.radioSummary.assumptions)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.assumptions) }">A</mat-chip>
+            <mat-chip *ngIf="getRadioChip(element.radioSummary.dependencies)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.dependencies) }">D</mat-chip>
+            <mat-chip *ngIf="getRadioChip(element.radioSummary.issues)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.issues), 'padding': '0px 14px' }">I</mat-chip>
+            <mat-chip *ngIf="getRadioChip(element.radioSummary.opportunities)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.opportunities) }">O</mat-chip>
           </mat-chip-list>
         </div>
         <div class="actions">
-          <button mat-raised-button color="primary"><mat-icon>device_hub</mat-icon>Systems</button>
-          <button mat-raised-button color="primary"><mat-icon>device_hub</mat-icon>Data</button>
-          <button mat-raised-button color="primary"><mat-icon>bookmarks</mat-icon>Reports</button>
-          <button mat-raised-button color="primary"><mat-icon>track_changes</mat-icon>RADIOs</button>
+          <button mat-raised-button color="primary" (click)="onOpen(element, 'systems')"><mat-icon>device_hub</mat-icon>Systems</button>
+          <button mat-raised-button color="primary" (click)="onOpen(element, 'data')"><mat-icon>device_hub</mat-icon>Data</button>
+          <button mat-raised-button color="primary" (click)="onOpen(element, 'reports')"><mat-icon>bookmarks</mat-icon>Reports</button>
+          <button mat-raised-button color="primary" (click)="onOpen(element, 'radios')"><mat-icon>track_changes</mat-icon>RADIOs</button>
         </div>
       </td>
     </ng-container>

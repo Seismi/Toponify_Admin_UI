@@ -1,6 +1,13 @@
 import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Favourites } from '@app/settings/store/models/user.model';
+import { Level } from '@app/architecture/services/diagram-level.service';
+import { RadioTokenColours } from '@app/radio/store/models/radio.model';
+import { Router } from '@angular/router';
+import { defaultScopeId } from '@app/scope/store/models/scope.model';
+
+type Button = 'systems' | 'data' | 'reports' | 'radios';
 
 @Component({
   selector: 'smi-my-workpackages-table',
@@ -16,6 +23,8 @@ export class MyWorkpackagesTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  constructor(private router: Router) { }
+
   public displayedColumns: string[] = ['name'];
   public dataSource: MatTableDataSource<WorkPackageEntity>;
 
@@ -23,5 +32,48 @@ export class MyWorkpackagesTableComponent {
 
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  getRadioChip(radioSummary: { count: number, state: string }): boolean {
+    return radioSummary.count > 0;
+  }
+
+  getChipColour(radioSummary: { count: number, state: string }): string {
+    switch (radioSummary.state) {
+      case 'critical':
+        return RadioTokenColours.critical;
+      case 'high':
+        return RadioTokenColours.high;
+      case 'medium':
+        return RadioTokenColours.medium;
+      case 'low':
+        return RadioTokenColours.low;
+      case 'minor':
+        return RadioTokenColours.minor;
+    }
+  }
+
+  onOpen(favourite: Favourites, button: Button): void {
+    const queryParams: { [key: string]: any } = {
+      scope: defaultScopeId,
+      workpackages: [favourite.id]
+    };
+    switch (button) {
+      case 'systems':
+        queryParams.filterLevel = Level.system;
+        this.goToTopology(queryParams);
+        break;
+      case 'data':
+        queryParams.filterLevel = Level.data;
+        this.goToTopology(queryParams);
+        break;
+      case 'reports':
+        this.router.navigate(['/report-library', favourite.id], { queryParams });
+        break;
+    }
+  }
+
+  goToTopology(queryParams: { [key: string]: any }): void {
+    this.router.navigate(['/topology'], { queryParams });
   }
 }

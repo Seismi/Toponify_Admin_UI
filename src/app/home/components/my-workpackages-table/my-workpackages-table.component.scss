@@ -67,6 +67,9 @@ td.mat-cell {
     flex-flow: row;
     flex-wrap: wrap;
     justify-content: center;
+    mat-chip {
+      color: #fff;
+    }
   }
 }
 
