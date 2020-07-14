@@ -181,7 +181,6 @@ import { Actions, ofType } from '@ngrx/effects';
 import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
-import { go } from 'gojs/release/go-module';
 import isEqual from 'lodash.isequal';
 import {BehaviorSubject, combineLatest, merge, Observable, Subject, Subscription, timer} from 'rxjs';
 import {delay, distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFrom, debounce} from 'rxjs/operators';
@@ -212,6 +211,7 @@ import {NewChildrenModalComponent} from './new-children-modal/new-children-modal
 import {RadioConfirmModalComponent} from './radio-confirm-modal/radio-confirm-modal.component';
 import {MatCheckboxChange, MatDialog} from '@angular/material';
 import {DiagramTemplatesService} from '@app/architecture/services/diagram-templates.service';
+import * as go from 'gojs';
 
 enum Events {
   NodesLinksReload = 0
