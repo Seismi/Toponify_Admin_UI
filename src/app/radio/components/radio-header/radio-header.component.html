@@ -17,7 +17,7 @@
     </mat-form-field>
 
     <mat-form-field floatLabel="never" appearance="none" matTooltip="Select radio view">
-      <mat-select placeholder="Select radio view" [(value)]="selectedRadioView.id" data-qa="header-layer">
+      <mat-select placeholder="Select radio view" [(value)]="selectedRadioViewId" data-qa="header-layer">
         <mat-option *ngFor="let view of radioViews" (click)="onRadioViewSelect(view)" [value]="view.id">
           {{ view.name }}
         </mat-option>
@@ -28,7 +28,7 @@
       <span class="actions">
         <mat-icon
           matTooltip="Save"
-          *ngIf="selectedRadioView.id"
+          *ngIf="selectedRadioViewId"
           class="radio-view-save-icon"
           (click)="onUpdateRadioView()"
           >save</mat-icon
@@ -36,7 +36,7 @@
         <mat-icon matTooltip="Create New" (click)="onCreateRadioView()">file_copy</mat-icon>
         <mat-icon
           matTooltip="Reset"
-          *ngIf="selectedRadioView.id"
+          *ngIf="selectedRadioViewId"
           class="radio-view-save-icon"
           (click)="onRadioViewReset()"
           >clear</mat-icon
@@ -44,7 +44,7 @@
       </span>
     </ng-container>
 
-    <ng-container *ngIf="selectedRadioView.id">
+    <ng-container *ngIf="selectedRadioViewId">
       <span class="actions">
         <mat-icon matTooltip="Delete" class="radio-view-save-icon" (click)="onRadioViewDelete()">delete</mat-icon>
         <mat-icon
