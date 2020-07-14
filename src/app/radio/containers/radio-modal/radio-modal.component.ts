@@ -57,7 +57,7 @@ export class RadioModalComponent implements OnInit, OnDestroy {
     return this.radioDetailService.radioDetailsForm;
   }
 
-  onSubmit(data: any) {
+  onSubmit() {
     if (!this.radioDetailService.isValid) {
       return;
     }

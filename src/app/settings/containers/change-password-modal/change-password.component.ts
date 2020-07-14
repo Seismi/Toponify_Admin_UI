@@ -30,7 +30,7 @@ export class ChangePasswordModalComponent {
     return this.changeUserPasswordService.changeUserPasswordForm;
   }
 
-  onConfirm(data: any) {
+  onConfirm() {
     if (!this.changeUserPasswordService.isValid) {
       return;
     }

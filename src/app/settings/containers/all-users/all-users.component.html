@@ -4,8 +4,8 @@
       <div class="col mat-elevation-z8">
         <smi-users-table
           [data]="users$ | async"
-          (editUser)="onEditUser($event)"
-          (addUser)="onAddUser($event)"
+          (editUser)="onEditUser()"
+          (addUser)="onAddUser()"
           (selectUser)="onSelectUser($event)"
           data-qa="all-users-table"
         >

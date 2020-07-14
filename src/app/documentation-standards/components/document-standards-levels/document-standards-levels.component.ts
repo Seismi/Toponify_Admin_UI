@@ -102,9 +102,9 @@ export class DocumentStandardsLevelsComponent implements AfterViewInit, OnChange
   @Input() modalMode = false;
   private flatNodeMap = new Map<string, FlatNode>();
   private nestedNodeMap = new Map<Node, FlatNode>();
-  private treeControl: FlatTreeControl<FlatNode>;
+  public treeControl: FlatTreeControl<FlatNode>;
   private treeFlattener: MatTreeFlattener<Node, FlatNode>;
-  private dataSource: MatTreeFlatDataSource<Node, FlatNode>;
+  public dataSource: MatTreeFlatDataSource<Node, FlatNode>;
   private checklistSelection = new SelectionModel<FlatNode>(true /* multiple */);
 
   constructor(private _database: ChecklistDatabase) {
