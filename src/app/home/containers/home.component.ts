@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State as HomePageState } from '../store/reducers/home.reducers';
-import { LoadMyLayouts, LoadMyRadios, LoadMyWorkPackages, LoadMyProfile, HomePageActionTypes } from '../store/actions/home.actions';
+import { LoadMyLayouts, LoadMyRadios, LoadMyWorkPackages, LoadMyProfile, HomePageActionTypes, LoadMyFavourites } from '../store/actions/home.actions';
 import { Observable, Subscription } from 'rxjs';
-import { getMyLayouts, getMyRadios, getMyWorkPackages, getHomePageLoadingStatus } from '../store/selectors/home.selectors';
+import { getMyLayouts, getMyRadios, getMyWorkPackages, getHomePageLoadingStatus, getMyFavourites } from '../store/selectors/home.selectors';
 import { Router } from '@angular/router';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
@@ -14,6 +14,7 @@ import { HomeTabs } from '../components/home-tabs/home-tabs.model';
 import { NotificationState } from '@app/core/store/reducers/notification.reducer';
 import { getNewNotificationCount } from '@app/core/store/selectors/notification.selectors';
 import { LoadingStatus } from '@app/architecture/store/models/node.model';
+import { Favourites } from '@app/settings/store/models/user.model';
 
 @Component({
   selector: 'smi-home-component',
@@ -24,6 +25,7 @@ export class HomeComponent implements OnInit {
   public myWorkPackages$: Observable<WorkPackageEntity[]>;
   public myRadios$: Observable<RadioEntity[]>;
   public myLayouts$: Observable<LayoutDetails[]>;
+  public favourites$: Observable<Favourites[]>;
   public selectedLeftTab: number | string;
   public subscriptions: Subscription[] = [];
   public selectedTab: HomeTabs = HomeTabs.Favourites;
@@ -44,6 +46,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.notificationStore.pipe(select(getNewNotificationCount)).subscribe(count => (this.notificationsLength = count));
+
+    this.store.dispatch(new LoadMyFavourites());
+    this.favourites$ = this.store.pipe(select(getMyFavourites));
 
     this.store.dispatch(new LoadMyWorkPackages({}));
     this.myWorkPackages$ = this.store.pipe(select(getMyWorkPackages));

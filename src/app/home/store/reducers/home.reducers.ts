@@ -3,7 +3,7 @@ import { HomePageActionsUnion, HomePageActionTypes } from '../actions/home.actio
 import { Links, WorkPackageEntity, Page } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 import { LayoutDetails } from '@app/layout/store/models/layout.model';
-import { UserDetails } from '@app/settings/store/models/user.model';
+import { UserDetails, Favourites } from '@app/settings/store/models/user.model';
 import { LoadingStatus } from '@app/architecture/store/models/node.model';
 import { NotificationActionsUnion, NotificationActionTypes } from '@app/core/store/actions/notification.actions';
 
@@ -11,6 +11,7 @@ export interface State {
   workpackages: WorkPackageEntity[];
   radios: RadioEntity[];
   layouts: LayoutDetails[];
+  favourites: Favourites[];
   profile: UserDetails;
   loading: boolean;
   links: Links;
@@ -22,6 +23,7 @@ export const initialState: State = {
   workpackages: [],
   radios: [],
   layouts: [],
+  favourites: [],
   profile: null,
   links: null,
   loading: false,
@@ -140,6 +142,28 @@ export function reducer(state = initialState, action: HomePageActionsUnion | Not
         ...state,
         error: action.payload,
         loading: false
+      };
+    }
+
+    case HomePageActionTypes.LoadMyFavourites: {
+      return {
+        ...state,
+        loadingHomePage: LoadingStatus.loading
+      };
+    }
+
+    case HomePageActionTypes.LoadMyFavouritesSuccess: {
+      return {
+        ...state,
+        favourites: action.payload.data,
+        loadingHomePage: LoadingStatus.loaded
+      };
+    }
+
+    case HomePageActionTypes.LoadMyFavouritesFailure: {
+      return {
+        ...state,
+        error: action.payload
       };
     }
 

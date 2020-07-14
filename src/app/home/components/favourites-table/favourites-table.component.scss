@@ -53,7 +53,25 @@ td.mat-cell {
   }
 }
 
-.chips {
-  margin-top: 8px;
+.title {
+  font-size: 17px;
+  display: inline-block;
+  position: relative;
+  top: -6px;
+  left: 10px;
 }
 
+.chips {
+  width: 100%;
+  position: relative;
+  top: -5px;
+  mat-chip-list {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    mat-chip {
+      color: #fff;
+    }
+  }
+}

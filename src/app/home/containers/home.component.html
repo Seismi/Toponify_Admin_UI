@@ -14,7 +14,7 @@
       <smi-home-tabs 
         (homeTabChange)="onTabChange($event)" 
         [selectedTab]="selectedTab"
-        [favouritesLength]="0"
+        [favouritesLength]="(favourites$ | async).length"
         [notificationsLength]="notificationsLength"
         [radiosLength]="(myRadios$ | async).length"
         [workPackagesLength]="(myWorkPackages$ | async).length"
@@ -22,6 +22,7 @@
       </smi-home-tabs>
       <smi-favourites-table
         *ngIf="selectedTab === HomeTabs.Favourites"
+        [data]="favourites$ | async"
       >
       </smi-favourites-table>
       <smi-notification-pane *ngIf="selectedTab === HomeTabs.Notifications"></smi-notification-pane>

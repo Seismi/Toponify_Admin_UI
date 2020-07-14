@@ -1,5 +1,16 @@
 import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { RadioTokenColours } from '@app/radio/store/models/radio.model';
+import { Favourites } from '@app/settings/store/models/user.model';
+import { Router } from '@angular/router';
+import { Level } from '@app/architecture/services/diagram-level.service';
+
+enum FavouriteType {
+  RADIOVIEW = 'radioView',
+  SCOPE = 'scope'
+}
+
+type Button = 'systems' | 'data' | 'reports' | 'radios';
 
 @Component({
   selector: 'smi-favourites-table',
@@ -7,6 +18,7 @@ import { MatPaginator, MatTableDataSource } from '@angular/material';
   styleUrls: ['./favourites-table.component.scss']
 })
 export class FavouritesTableComponent {
+  public FavouriteType = FavouriteType;
   @Input()
   set data(data: any[]) {
     this.dataSource = new MatTableDataSource<any>(data);
@@ -15,6 +27,8 @@ export class FavouritesTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  constructor(private router: Router) { }
+
   public displayedColumns: string[] = ['name'];
   public dataSource: MatTableDataSource<any>;
 
@@ -22,5 +36,49 @@ export class FavouritesTableComponent {
 
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  getButtons(favouriteType: FavouriteType): boolean {
+    return favouriteType !== FavouriteType.RADIOVIEW;
+  }
+
+  getRadioChip(radioSummary: { count: number, state: string }): boolean {
+    return radioSummary.count > 0;
+  }
+
+  getChipColour(radioSummary: { count: number, state: string }): string {
+    switch (radioSummary.state) {
+      case 'critical':
+        return RadioTokenColours.critical;
+      case 'high':
+        return RadioTokenColours.high;
+      case 'medium':
+        return RadioTokenColours.medium;
+      case 'low':
+        return RadioTokenColours.low;
+      case 'minor':
+        return RadioTokenColours.minor;
+    }
+  }
+
+  onOpen(favourite: Favourites, button: Button): void {
+    const queryParams: { [key: string]: any } = { scope: favourite.id };
+    switch (button) {
+      case 'systems':
+        queryParams.filterLevel = Level.system;
+        this.goToTopology(queryParams);
+        break;
+      case 'data':
+        queryParams.filterLevel = Level.data;
+        this.goToTopology(queryParams);
+        break;
+      case 'reports':
+        this.router.navigate(['/report-library', favourite.id], { queryParams });
+        break;
+    }
+  }
+
+  goToTopology(queryParams: { [key: string]: any }): void {
+    this.router.navigate(['/topology'], { queryParams });
   }
 }

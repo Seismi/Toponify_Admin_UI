@@ -24,6 +24,11 @@ export const getMyProfile = createSelector(
   state => state.profile
 );
 
+export const getMyFavourites = createSelector(
+  getHomePageState,
+  state => state.favourites
+);
+
 export const getMyRoles = createSelector(
   getHomePageState,
   state => (state.profile ? state.profile.roles : null)
