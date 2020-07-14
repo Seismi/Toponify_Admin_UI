@@ -211,11 +211,7 @@ export class DiagramTemplatesService {
           },
           new go.Binding('source', 'iconName',
             function(iconName) {
-              if (iconName) {
-                return `/assets/tag-icons/${iconName}.svg`;
-              } else {
-                return '';
-              }
+              return iconName && iconName !== 'none' ? `assets/tag-icons/${iconName}.svg` : '';
             }
           ),
           new go.Binding('visible', 'iconName',
@@ -247,7 +243,7 @@ export class DiagramTemplatesService {
         },
         new go.Binding('source', 'iconName',
           function(iconName: string): string {
-            return `assets/tag-icons/${iconName}.svg`;
+            return iconName && iconName !== 'none' ? `assets/tag-icons/${iconName}.svg` : '';
           }
         )
       )
@@ -607,13 +603,15 @@ export class DiagramTemplatesService {
       },
       new go.Binding('maxSize', 'middleExpanded', function(middleExpanded) {
         return middleExpanded !== middleOptions.group ?
-          new go.Size(nodeWidth, 30) : new go.Size(NaN, 30);
+          new go.Size(nodeWidth, 30) : new go.Size(NaN, 60);
       }),
+      $(go.RowColumnDefinition, { row: 0, height: 30}),
       $(go.RowColumnDefinition, { column: 0, maximum: 50}),
       $(go.RowColumnDefinition, { column: 1 }),
       $(go.RowColumnDefinition, { column: 2 }),
       $(go.RowColumnDefinition, { column: 3, width: 25 }),
       $(go.RowColumnDefinition, { column: 4 }),
+      $(go.RowColumnDefinition, { row: 1, height: 30}),
       this.getDependencyExpandButton(),
       $(go.Panel,
         'Horizontal',
@@ -754,7 +752,19 @@ export class DiagramTemplatesService {
           return name ? 1 : 0;
         }).ofModel()
       ),
-      isGroup ? this.getTopMenuButton() : this.getTopExpandButton()
+      isGroup ? this.getTopMenuButton() : this.getTopExpandButton(),
+      isGroup ? $(go.Panel,
+        'Auto',
+        {
+          row : 1,
+          columnSpan: 5,
+          alignment: go.Spot.Left
+        },
+        this.getRadioAlertIndicators(),
+        new go.Binding('visible', 'middleExpanded', function(expandedState) {
+          return expandedState === middleOptions.group;
+        })
+      ) : {},
     );
   }
 
@@ -1178,7 +1188,6 @@ export class DiagramTemplatesService {
             spacing: new go.Size(NaN, 12)
           },
         ),
-        background: containerColour,
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
         selectionObjectName: 'main content',
         resizeObjectName: 'Group member area',
@@ -1251,6 +1260,9 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
         return locationMissing || [Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
+      new go.Binding('background', 'system', function(system) {
+        return system ? containerColour : null;
+      }),
       $(go.TextBlock,
         textFont('bold 20px'),
         {

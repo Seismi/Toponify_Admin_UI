@@ -328,6 +328,24 @@ export class DiagramLevelService {
     );
   }
 
+  displaySourcesView(event, object) {
+    this.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.sources,
+        id: object.data.id
+      })
+    );
+  }
+
+  displayTargetsView(event, object) {
+    this.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.targets,
+        id: object.data.id
+      })
+    );
+  }
+
   public destroyUrlFiltering() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
