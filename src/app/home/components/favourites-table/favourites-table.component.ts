@@ -74,6 +74,10 @@ export class FavouritesTableComponent {
       case 'reports':
         this.router.navigate(['/report-library', favourite.id], { queryParams });
         break;
+      case 'radios':
+        queryParams.radioViewId = favourite.id;
+        this.router.navigate(['/radio'], { queryParams });
+        break;
     }
   }
 
