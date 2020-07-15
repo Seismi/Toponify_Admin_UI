@@ -34,8 +34,12 @@ export class MyWorkpackagesTableComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  getRadioChip(radioSummary: { count: number, state: string }): boolean {
-    return radioSummary.count > 0;
+  getTooltip(radioSummary: { count: number, state: string }, importance: string): string {
+    if (radioSummary.count === 0) {
+      return 'No item reported';
+    } else {
+      return `${radioSummary.count} items with at least one with ${importance} importance`;
+    }
   }
 
   getChipColour(radioSummary: { count: number, state: string }): string {

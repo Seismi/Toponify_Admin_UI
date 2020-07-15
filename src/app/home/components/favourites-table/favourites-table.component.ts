@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 import { Level } from '@app/architecture/services/diagram-level.service';
 
 enum FavouriteType {
-  RADIOVIEW = 'radioView',
-  SCOPE = 'scope'
+  radioView = 'radioView',
+  scope = 'scope'
 }
 
 type Button = 'systems' | 'data' | 'reports' | 'radios';
@@ -38,8 +38,12 @@ export class FavouritesTableComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  getButtons(favouriteType: FavouriteType): boolean {
-    return favouriteType !== FavouriteType.RADIOVIEW;
+  getTooltip(radioSummary: { count: number, state: string }, importance: string): string {
+    if (radioSummary.count === 0) {
+      return 'No item reported';
+    } else {
+      return `${radioSummary.count} items with at least one with ${importance} importance`;
+    }
   }
 
   getChipColour(radioSummary: { count: number, state: string }): string {
