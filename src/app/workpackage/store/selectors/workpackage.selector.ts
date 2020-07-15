@@ -35,6 +35,11 @@ export const workpackageLoading = createSelector(
   state => state.loading
 )
 
+export const workpackageDetailsLoading = createSelector(
+  getWorkPackageState,
+  state => state.loadingDetails
+)
+
 export const getSelectedWorkPackage = createSelector(
   getWorkPackageState,
   state => state.selectedWorkPackage
