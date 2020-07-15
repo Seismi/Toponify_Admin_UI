@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatDialog, MatSlideToggleChange } from '@angular/material';
 import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
@@ -11,7 +11,7 @@ import {
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { WorkPackageDetail, WorkPackageEntity, WorkPackageEntitiesHttpParams } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
 import * as fromWorkPackagesEntities from '../../store/selectors/workpackage.selector';
 import { WorkPackageModalComponent } from '../workpackage-modal/workpackage.component';
@@ -28,13 +28,12 @@ import { getWorkPackagesPage, workpackageLoading } from '../../store/selectors/w
   providers: [WorkPackageDetailService, WorkPackageValidatorService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkPackageComponent implements OnInit{
+export class WorkPackageComponent implements OnInit, OnDestroy{
   public Roles = Roles;
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;
-  public selectedLeftTab: number | string;
   private workPackageParams: WorkPackageEntitiesHttpParams = {
     textFilter: '',
     page: 0,
@@ -43,7 +42,8 @@ export class WorkPackageComponent implements OnInit{
   }
   search$ = new Subject<string>();
   page$: Observable<any>;
-  loading$: Observable<boolean>;
+  loading$: Subscription;
+  isLoading: boolean;
 
   constructor(
     private actions: Actions,
@@ -56,7 +56,9 @@ export class WorkPackageComponent implements OnInit{
     this.store.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
-    this.loading$ = this.store.pipe(select(workpackageLoading))
+    this.loading$ = this.store.pipe(select(workpackageLoading)).subscribe((loading) => {
+      this.isLoading = loading
+    })
 
     this.search$
     .pipe(
@@ -122,6 +124,10 @@ export class WorkPackageComponent implements OnInit{
     });
   }
 
+  ngOnDestroy(): void {
+    this.loading$.unsubscribe();
+  }
+
   onSelectWorkpackage(row: WorkPackageDetail): void {
     if (!row) {
       this.router.navigate(['work-packages'], { queryParamsHandling: 'preserve' });
@@ -147,16 +153,16 @@ export class WorkPackageComponent implements OnInit{
   onAddWorkPackage(): void {
     const dialogRef = this.dialog.open(WorkPackageModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '700px'
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.workpackage) {
+      if ((data && data.workpackage) || data && data.baseline) {
         this.store.dispatch(
           new AddWorkPackageEntity({
             data: {
               ...data.workpackage,
-              baseline: data.workpackage.baseline ? data.workpackage.baseline : [],
+              baseline: data.baseline ? data.baseline : [],
               owners: data.workpackage.owners ? data.workpackage.owners : []
             }
           })

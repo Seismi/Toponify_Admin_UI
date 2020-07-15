@@ -26,7 +26,6 @@ export class HomeComponent implements OnInit {
   public myRadios$: Observable<RadioEntity[]>;
   public myLayouts$: Observable<LayoutDetails[]>;
   public favourites$: Observable<Favourites[]>;
-  public selectedLeftTab: number | string;
   public subscriptions: Subscription[] = [];
   public selectedTab: HomeTabs = HomeTabs.Favourites;
   public HomeTabs = HomeTabs;

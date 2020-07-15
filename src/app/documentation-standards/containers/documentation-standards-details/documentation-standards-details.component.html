@@ -3,8 +3,9 @@
     data-qa="documentation-standards-details-form"
     [style.width.%]="100"
     [group]="documentStandardsForm"
-    (saveDocument)="onSaveDocument($event)"
-    (deleteDocument)="onDeleteDocument($event)"
+    (saveDocument)="onSaveDocument()"
+    (deleteDocument)="onDeleteDocument()"
   >
   </smi-documentation-standards-detail>
 </app-model-container>
+<smi-spinner *ngIf="!(isLoading$ | async)"></smi-spinner>

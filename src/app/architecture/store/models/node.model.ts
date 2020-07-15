@@ -332,7 +332,7 @@ export enum TagApplicableTo {
   reporting_concepts = 'reporting concepts',
   reporting_concept_links = 'reporting concept links',
   reports = 'reports',
-  RADIO = 'radio'
+  RADIO = 'radios'
 }
 
 export enum TagIcon {

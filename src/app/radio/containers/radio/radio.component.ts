@@ -34,6 +34,8 @@ import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { TagsHttpParams } from '@app/architecture/store/models/node.model';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
+import { getRadiosLoadingStatus } from '@app/radio/store/selectors/radio.selector';
 
 @Component({
   selector: 'smi-radio',
@@ -46,14 +48,18 @@ export class RadioComponent implements OnInit, OnDestroy {
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
-  public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
+  public loadingStatus = LoadingStatus;
   // TODO
   private tags: TagsHttpParams = {
     textFilter: '',
     page: 0,
     size: 100
+  }
+
+  get isLoading$(): Observable<LoadingStatus> {
+    return this.store.select(getRadiosLoadingStatus);
   }
 
   constructor(

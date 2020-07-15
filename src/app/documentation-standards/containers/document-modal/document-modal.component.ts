@@ -15,9 +15,9 @@ import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.
 export class DocumentModalComponent implements OnInit {
   public documentStandard: DocumentStandard;
   public customProperties: CustomPropertyValuesEntity;
-  public modalMode: boolean = true;
-  public isEditable: boolean = true;
-  public isDisabled: boolean = false;
+  public modalMode = true;
+  public isEditable = true;
+  public isDisabled = false;
 
   constructor(
     private documentStandardsService: DocumentStandardsService,

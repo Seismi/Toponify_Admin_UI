@@ -1,6 +1,5 @@
 <app-model-container>
-  <smi-left-hand-pane [workPackageIsEditable]="workPackageIsEditable" [selectedLeftTab]="selectedLeftTab">
-  </smi-left-hand-pane>
+  <smi-left-hand-pane></smi-left-hand-pane>
   <app-drawer>
     <app-base-header>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
@@ -23,7 +22,7 @@
             <mat-tab-group [@.disabled]="true">
               <mat-tab>
                 <ng-template mat-tab-label> <mat-icon>list</mat-icon> List </ng-template>
-                <smi-spinner *ngIf="(loading$ | async) === true"></smi-spinner>
+                <smi-spinner *ngIf="isLoading"></smi-spinner>
                 <smi-workpackages-table
                   data-qa="work-packages-table"
                   [data]="workpackageEntities$ | async"

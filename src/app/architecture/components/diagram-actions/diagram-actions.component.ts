@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-diagram-actions',
@@ -21,6 +22,9 @@ export class DiagramActionsComponent {
   @Input() filterLevel: string;
   @Input() selectedLayout: ScopeDetails;
   @Input() layouts: ScopeDetails[];
+  @Input() selectedPart;
+  @Input() clickedOnLink: boolean;
+  @Input() selectedNode: NodeDetail;
 
   constructor(private routerStore: Store<RouterReducerState<RouterStateUrl>>) { }
 
@@ -54,4 +58,7 @@ export class DiagramActionsComponent {
     );
   }
 
+  exitSourceOrTargetView(): void {
+    this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.data, id: null }));
+  }
 }

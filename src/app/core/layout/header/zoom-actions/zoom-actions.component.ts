@@ -33,7 +33,9 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
     { level: Level.dimension, name: 'dimension' },
     { level: Level.dimensionMap, name: 'dimension map' },
     { level: Level.reportingConcept, name: 'reporting concept' },
-    { level: Level.usage, name: 'usage analysis' }
+    { level: Level.usage, name: 'usage analysis' },
+    { level: Level.sources, name: 'sources' },
+    { level: Level.targets, name: 'targets' }
   ];
 
   constructor(private store: Store<ViewState>) {}
@@ -62,8 +64,6 @@ export class ZoomActionsComponent implements OnInit, OnDestroy {
   }
 
   getMapLevel(level: Level): boolean {
-    if (level.endsWith('map') || level === Level.usage) {
-      return true;
-    }
+    return level.endsWith('map') || [Level.usage, Level.sources, Level.targets].includes(level);
   }
 }

@@ -18,7 +18,6 @@ import { LoadTags } from '@app/architecture/store/actions/node.actions';
 })
 export class ScopesAndLayoutsComponent implements OnInit {
   public scopes$: Observable<ScopeEntity[]>;
-  public selectedLeftTab: number | string;
   private scopeParams: ScopeEntitiesHttpParams = {
     textFilter: '',
     page: 0,
