@@ -23,7 +23,7 @@
           <button mat-raised-button color="primary" (click)="onOpen(element, 'systems')" *ngIf="getButtons(element.favouriteType)"><mat-icon>device_hub</mat-icon>Systems</button>
           <button mat-raised-button color="primary" (click)="onOpen(element, 'data')" *ngIf="getButtons(element.favouriteType)"><mat-icon>device_hub</mat-icon>Data</button>
           <button mat-raised-button color="primary" (click)="onOpen(element, 'reports')" *ngIf="getButtons(element.favouriteType)"><mat-icon>bookmarks</mat-icon>Reports</button>
-          <button mat-raised-button color="primary" (click)="onOpen(element, 'radios')"><mat-icon>track_changes</mat-icon>RADIOs</button>
+          <button mat-raised-button color="primary" *ngIf="element.favouriteType === FavouriteType.RADIOVIEW" (click)="onOpen(element, 'radios')"><mat-icon>track_changes</mat-icon>RADIOs</button>
         </div>
       </td>
     </ng-container>
