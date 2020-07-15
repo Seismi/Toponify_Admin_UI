@@ -30,7 +30,8 @@ import { State as WorkPackageState } from '../../../workpackage/store/reducers/w
 import {
   getSelectedWorkPackage,
   getWorkPackageBaselineAvailability,
-  getAllWorkPackages
+  getAllWorkPackages,
+  workpackageDetailsLoading
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
@@ -84,6 +85,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   public isEditable = false;
   public workPackageColour: string;
   public workPackageStatus: string;
+  public isLoading: boolean;
 
   constructor(
     private routerStore: Store<RouterReducerState<RouterStateUrl>>,
@@ -97,6 +99,9 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.store.pipe(select(workpackageDetailsLoading)).subscribe((loading) => this.isLoading = loading)
+    );
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         const workpackageId = params['workpackageId'];

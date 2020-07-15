@@ -10,6 +10,7 @@ export interface State {
   page: Page;
   links: Links;
   loading: boolean;
+  loadingDetails: boolean;
   selectedWorkPackage: WorkPackageDetail;
   selectedWorkPackageIds: string[];
   error?: HttpErrorResponse | { message: string };
@@ -23,6 +24,7 @@ export const initialState: State = {
   page: null,
   links: null,
   loading: false,
+  loadingDetails: false,
   selectedWorkPackage: null,
   selectedWorkPackageIds: [],
   error: null
@@ -142,14 +144,14 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.LoadWorkPackage: {
       return {
         ...state,
-        loading: true
+        loadingDetails: true
       };
     }
 
     case WorkPackageActionTypes.LoadWorkPackageSuccess: {
       return {
         ...state,
-        loading: false,
+        loadingDetails: false,
         selectedWorkPackage: action.payload
       };
     }
@@ -189,7 +191,8 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.UpdateWorkPackage: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingDetails: true
       };
     }
 
@@ -203,7 +206,8 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
           }
           return entity;
         }),
-        loading: false
+        loading: false,
+        loadingDetails: false
       };
     }
 
@@ -242,7 +246,8 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.AddOwner: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingDetails: true
       };
     }
 
@@ -257,7 +262,8 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
           }
           return entity;
         }),
-        loading: false
+        loading: false,
+        loadingDetails: false
       };
     }
 
@@ -305,7 +311,8 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.AddObjective: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingDetails: true
       };
     }
 
@@ -313,6 +320,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         selectedWorkPackage: action.payload,
+        loadingDetails: false
       };
     }
 
@@ -327,7 +335,8 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.DeleteObjective: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingDetails: true
       };
     }
 
@@ -335,6 +344,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         loading: false,
+        loadingDetails: false,
         selectedWorkPackage: action.payload
       };
     }
@@ -350,14 +360,16 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.AddRadio: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        loadingDetails: true
       };
     }
 
     case WorkPackageActionTypes.AddRadioSuccess: {
       return {
         ...state,
-        selectedWorkPackage: action.payload
+        selectedWorkPackage: action.payload,
+        loadingDetails: false
       };
     }
 
@@ -394,14 +406,16 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
 
     case WorkPackageActionTypes.UpdateCustomProperty: {
       return {
-        ...state
+        ...state,
+        loadingDetails: true
       };
     }
 
     case WorkPackageActionTypes.UpdateCustomPropertySuccess: {
       return {
         ...state,
-        selectedWorkPackage: action.payload
+        selectedWorkPackage: action.payload,
+        loadingDetails: false
       };
     }
 
@@ -414,14 +428,16 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
 
     case WorkPackageActionTypes.DeleteCustomProperty: {
       return {
-        ...state
+        ...state,
+        loadingDetails: true
       };
     }
 
     case WorkPackageActionTypes.DeleteCustomPropertySuccess: {
       return {
         ...state,
-        selectedWorkPackage: action.payload
+        selectedWorkPackage: action.payload,
+        loadingDetails: false
       };
     }
 
