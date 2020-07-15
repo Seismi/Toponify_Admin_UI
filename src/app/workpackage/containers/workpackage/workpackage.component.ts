@@ -34,7 +34,6 @@ export class WorkPackageComponent implements OnInit, OnDestroy{
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;
-  public selectedLeftTab: number | string;
   private workPackageParams: WorkPackageEntitiesHttpParams = {
     textFilter: '',
     page: 0,

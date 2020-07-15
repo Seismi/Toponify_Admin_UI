@@ -107,6 +107,8 @@ export interface RadioDetail {
   relatesTo: (RelatesTo)[] | null;
   severity: number;
   frequency: number;
+  customPropertyValues: any;
+  tags: any;
 }
 
 export interface RelatesTo {

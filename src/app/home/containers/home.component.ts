@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
   public myWorkPackages$: Observable<WorkPackageEntity[]>;
   public myRadios$: Observable<RadioEntity[]>;
   public myLayouts$: Observable<LayoutDetails[]>;
-  public selectedLeftTab: number | string;
   public subscriptions: Subscription[] = [];
 
   constructor(

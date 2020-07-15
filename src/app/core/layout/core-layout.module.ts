@@ -60,6 +60,7 @@ import { RelatedWorkPackageTableComponent } from './components/related-work-pack
 import { AppDrawerComponent } from './app-drawer/app-drawer.component';
 import { NotificationPaneComponent } from '../components/notification-pane/notification-pane.component';
 import { SearchPipe } from '@app/pipes/search.pipe';
+import { ProfileActionsComponent } from './header/profile-actions/profile-actions.component';
 
 @NgModule({
   imports: [
@@ -160,7 +161,8 @@ import { SearchPipe } from '@app/pipes/search.pipe';
     RelatedWorkPackageTableComponent,
     AppDrawerComponent,
     NotificationPaneComponent,
-    SearchPipe
+    SearchPipe,
+    ProfileActionsComponent
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent, DownloadCSVModalComponent, SelectModalComponent],
   providers: [ReportService]

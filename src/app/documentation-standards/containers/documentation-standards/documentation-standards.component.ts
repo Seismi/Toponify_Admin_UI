@@ -22,7 +22,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class DocumentationStandardsComponent implements OnInit {
   public documentStandards$: Observable<DocumentStandard[]>;
   public documentStandard: DocumentStandard;
-  public selectedLeftTab: number | string;
   public Roles = Roles;
 
   private documentStandardParams: DocumentStandardsApiRequest = {

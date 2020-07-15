@@ -54,4 +54,8 @@ export class AllUsersComponent implements OnInit {
   onSelectUser(user: User): void {
     this.router.navigate([`/settings/all-users/${user.id}`]);
   }
+
+  onEditUser() {
+    console.info('Not Implemented');
+  }
 }

@@ -8,7 +8,7 @@ import { MatSelectChange } from '@angular/material';
   styleUrls: ['./layouts-dropdown.component.scss']
 })
 export class LayoutsDropdownComponent {
-  public layouts: ScopeDetails[];
+  public layouts;
   @Input() selectedLayout: ScopeDetails;
 
   @Input()

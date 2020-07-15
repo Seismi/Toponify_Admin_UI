@@ -17,7 +17,7 @@
     </mat-form-field>
 
     <mat-form-field floatLabel="never" appearance="none" matTooltip="Select radio view">
-      <mat-select placeholder="Select radio view" [(value)]="selectedRadioViewId" data-qa="header-layer">
+      <mat-select placeholder="Select radio view" [value]="selectedRadioViewId" data-qa="header-layer">
         <mat-option *ngFor="let view of radioViews" (click)="onRadioViewSelect(view)" [value]="view.id">
           {{ view.name }}
         </mat-option>
