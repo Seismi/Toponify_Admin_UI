@@ -12,8 +12,8 @@ Given('the user creates a new {string} system with name {string}', function(comp
     .should('have.value', name)
     .get('[data-qa=topology-components-or-link-modal-save]')
     .click()
-    .wait(10000)
-    .wait(['@POSTWorkPackageNodesScopeQuery.all', '@GETNodesQuery.all', '@GETNodeLinksQuery.all'], {
+    //.wait(10000)
+    .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesQuery', '@GETNodeLinksQuery'], {
       requestTimeout: 25000,
       responseTimeout: 25000
     })

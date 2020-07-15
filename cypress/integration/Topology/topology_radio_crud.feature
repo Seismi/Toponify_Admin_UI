@@ -23,7 +23,7 @@ Feature: Topology Radio Feature
     And the user clicks on the system's right hand side radio button
     And the user assign radio 'Automatic Regression Test Risk 1' to component with work package selected 'Created Automated Regression Test Work Package' and cancel
 
-  @topology @radio
+  @topology @radio @focus
   Scenario: Assign RADIO to component and confirm
     And the user clicks on create new radio at the button of the radio table
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2

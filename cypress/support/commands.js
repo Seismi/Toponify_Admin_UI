@@ -158,21 +158,27 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived, wait) => {
     cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
       .find('label>div>input')
       .uncheck({ force: true })
-      .check({ force: true });
+      .wait('@GETWorkPackagePaging');
+    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+      .find('label>div>input')
+      .check({ force: true })
+      .wait('@GETWorkPackagePaging');
   } else {
     cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
       .find('label>div>input')
       .check({ force: true })
-      .uncheck({ force: true });
+      .wait('@GETWorkPackagePaging');
+    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+      .find('label>div>input')
+      .uncheck({ force: true })
+      .wait('@GETWorkPackagePaging');
   }
-
-  cy.wait('@GETWorkPackagePaging.all');
   cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
     .clear() //clear the box
     .type(name)
     .should('have.value', name) // type the name
-    .wait(1500)
+    .wait(2000)
     .then(() => {
       if (wait) {
         cy.wait('@GETWorkPackagePaging');
@@ -361,6 +367,23 @@ Cypress.Commands.add('findRadio', radio => {
         .wait('@POSTradiosAdvancedSearch')
         .then(() => {
           return cy.get(`[data-qa=radio-table]`).find('table>tbody');
+        });
+    });
+});
+
+Cypress.Commands.add('findRadioAPI', radio => {
+  cy.get('[data-qa=radio-filter]')
+    .click()
+    .then(() => {
+      cy.get('[data-qa=radio-filter-text]')
+        .clear()
+        .type(radio);
+      cy.get('[data-qa=radio-filter-modal-apply]')
+        .click({ force: true })
+        .wait(3000)
+        .wait('@POSTradiosAdvancedSearch')
+        .then(xhr => {
+          return xhr.response.body.data;
         });
     });
 });
@@ -759,7 +782,7 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
 Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) => {
   cy.get(`[data-qa=work-packages-create-new]`)
     .click()
-    .wait(['@GETTeams', '@GETWorkPackagePaging'])
+    .wait(['@GETWorkPackagePaging', '@GETTeams'])
     .then(() => {
       cy.populateWorkPackageDetails(name, description, baseline, owner);
     })

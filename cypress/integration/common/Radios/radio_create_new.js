@@ -4,14 +4,14 @@ When('the user cancels the creation of the radio', () => {
   cy.get(`[data-qa=radio-modal-cancel]`)
     .click({ force: true })
     .reload()
-    .wait(['@GETRadios', '@POSTradiosAdvancedSearch', '@GETNodes', '@GETRadioViews']);
+    .wait(['@GETRadios', '@GETNodes', '@GETRadioViews']);
 });
 
 When('confirms the creation of the radio', () => {
   cy.get(`[data-qa=radio-modal-save]`)
     .click()
     .then(() => {
-      cy.wait(['@POSTRadios', '@POSTradiosAdvancedSearch', '@GETRadio']);
+      cy.wait(['@POSTRadios', '@GETRadio']);
       cy.reload();
     });
 });

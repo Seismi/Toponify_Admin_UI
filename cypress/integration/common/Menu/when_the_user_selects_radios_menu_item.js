@@ -11,7 +11,8 @@ When('the user selects Radios menu item', () => {
           .then(() => {
             cy.wait([
               '@GETRadios',
-              '@POSTradiosAdvancedSearch',
+              '@POSTradiosAdvancedSearch.1',
+              '@POSTradiosAdvancedSearch.2',
               '@GETNodes',
               '@GETRadioViews',
               '@GETWorkPackages',
