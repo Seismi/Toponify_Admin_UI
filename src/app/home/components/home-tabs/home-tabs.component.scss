@@ -13,3 +13,9 @@ mat-icon {
   position: relative;
   top: 2px;
 }
+
+mat-chip-list {
+  mat-chip {
+    z-index: -1;
+  }
+}
