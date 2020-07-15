@@ -42,11 +42,10 @@ export class FavouritesTableComponent {
     return favouriteType !== FavouriteType.RADIOVIEW;
   }
 
-  getRadioChip(radioSummary: { count: number, state: string }): boolean {
-    return radioSummary.count > 0;
-  }
-
   getChipColour(radioSummary: { count: number, state: string }): string {
+    if (radioSummary.count === 0) {
+      return RadioTokenColours.none;
+    }
     switch (radioSummary.state) {
       case 'critical':
         return RadioTokenColours.critical;

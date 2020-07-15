@@ -39,6 +39,9 @@ export class MyWorkpackagesTableComponent {
   }
 
   getChipColour(radioSummary: { count: number, state: string }): string {
+    if (radioSummary.count === 0) {
+      return RadioTokenColours.none;
+    }
     switch (radioSummary.state) {
       case 'critical':
         return RadioTokenColours.critical;

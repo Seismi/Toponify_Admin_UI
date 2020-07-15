@@ -11,11 +11,11 @@
         <div class="status-title">{{ element.status }}</div>
         <div class="chips">
           <mat-chip-list>
-            <mat-chip *ngIf="getRadioChip(element.radioSummary.risks)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.risks) }">R</mat-chip>
-            <mat-chip *ngIf="getRadioChip(element.radioSummary.assumptions)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.assumptions) }">A</mat-chip>
-            <mat-chip *ngIf="getRadioChip(element.radioSummary.dependencies)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.dependencies) }">D</mat-chip>
-            <mat-chip *ngIf="getRadioChip(element.radioSummary.issues)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.issues), 'padding': '0px 14px' }">I</mat-chip>
-            <mat-chip *ngIf="getRadioChip(element.radioSummary.opportunities)" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.opportunities) }">O</mat-chip>
+            <mat-chip matTooltip="{{ element.radioSummary.risks.count }}" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.risks) }">R</mat-chip>
+            <mat-chip matTooltip="{{ element.radioSummary.assumptions.count }}" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.assumptions) }">A</mat-chip>
+            <mat-chip matTooltip="{{ element.radioSummary.dependencies.count }}" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.dependencies) }">D</mat-chip>
+            <mat-chip matTooltip="{{ element.radioSummary.issues.count }}" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.issues), 'padding': '0px 14px' }">I</mat-chip>
+            <mat-chip matTooltip="{{ element.radioSummary.opportunities.count }}" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.opportunities) }">O</mat-chip>
           </mat-chip-list>
         </div>
         <div class="actions">
