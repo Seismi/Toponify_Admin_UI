@@ -129,7 +129,11 @@ export class RadioComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
+      this.actions.pipe(ofType(
+        RadioActionTypes.AddRadioSuccess,
+        RadioActionTypes.DeleteRadioEntitySuccess,
+        RadioActionTypes.AddReplySuccess
+      )).subscribe((action: { payload: RadioDetail }) => {
         this.selectedRadioIndex = action.payload.id;
         if (this.filterData) {
           this.store.dispatch(
