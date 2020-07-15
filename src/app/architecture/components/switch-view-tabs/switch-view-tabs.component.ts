@@ -22,21 +22,6 @@ export class SwitchViewTabsComponent {
     this.viewChange.emit(event.index);
   }
 
-  getLabel(): string {
-    switch (this.viewLevel) {
-      case Level.system:
-        return 'Systems';
-      case Level.data:
-        return 'Data Node';
-      case Level.dimension:
-        return 'Dimensions';
-      case Level.reportingConcept:
-        return 'Reporting Concepts';
-      default:
-        return 'Systems';
-    }
-  }
-
   getLinkLabel(): string {
     if (this.viewLevel === Level.system || this.viewLevel === Level.data) {
       return 'Interfaces';
