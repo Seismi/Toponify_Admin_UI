@@ -56,7 +56,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     textFilter: '',
     page: 0,
     size: 100
-  }
+  };
 
   get isLoading$(): Observable<LoadingStatus> {
     return this.store.select(getRadiosLoadingStatus);
@@ -95,29 +95,24 @@ export class RadioComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      this.store
-        .pipe(
-          select(getMergedRadioFilters),
-          distinctUntilChanged(isEqual)
-        )
-        .subscribe(data => {
-          if (data) {
-            this.store.dispatch(
-              new SearchRadio({
-                data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data),
-                page: '0',
-                size: '10'
-              })
-            );
-          } else {
-            this.store.dispatch(
-              new LoadRadios({
-                page: '0',
-                size: '10'
-              })
-            );
-          }
-        })
+      this.store.pipe(select(getMergedRadioFilters), distinctUntilChanged(isEqual)).subscribe(data => {
+        if (data) {
+          this.store.dispatch(
+            new SearchRadio({
+              data: data,
+              page: '0',
+              size: '10'
+            })
+          );
+        } else {
+          this.store.dispatch(
+            new LoadRadios({
+              page: '0',
+              size: '10'
+            })
+          );
+        }
+      })
     );
 
     this.subscriptions.push(
@@ -134,7 +129,7 @@ export class RadioComponent implements OnInit, OnDestroy {
         if (this.filterData) {
           this.store.dispatch(
             new SearchRadio({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData)
+              data: this.filterData
             })
           );
         } else {
@@ -203,7 +198,8 @@ export class RadioComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.store.dispatch(new RadioFilter(data.radio));
+        // debugger;
+        this.store.dispatch(new RadioFilter(this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio)));
       }
     });
   }
@@ -212,7 +208,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     if (this.filterData) {
       this.store.dispatch(
         new SearchRadio({
-          data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
+          data: this.filterData,
           page: String(nextPage.pageIndex),
           size: String(nextPage.pageSize)
         })

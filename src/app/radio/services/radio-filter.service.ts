@@ -72,6 +72,17 @@ export class RadioFilterService {
     };
   }
 
+  disableFilters(data: RadiosAdvancedSearch, disable: string[] = []): RadiosAdvancedSearch {
+    // debugger;
+    const copyOfData = JSON.parse(JSON.stringify(data));
+    disable.forEach(filterKey => {
+      if (copyOfData[filterKey]) {
+        copyOfData[filterKey].enabled = false;
+      }
+    });
+    return copyOfData;
+  }
+
   replaceWithDefaultFilterIfDisabled(filter: any, filterKey: string): boolean | any | null {
     if (this.isFilterEnabled(filter)) {
       return false;

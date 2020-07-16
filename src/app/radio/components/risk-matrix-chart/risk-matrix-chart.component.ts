@@ -113,21 +113,13 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.store
-        .pipe(
-          select(getMergedRadioFilters),
-          distinctUntilChanged(isEqual)
-        )
-        .subscribe(filters => {
-          this.store.dispatch(
-            new GetRadioMatrix({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(filters, [
-                'severityRange',
-                'frequencyRange'
-              ])
-            })
-          );
-        })
+      this.store.pipe(select(getMergedRadioFilters), distinctUntilChanged(isEqual)).subscribe(filters => {
+        this.store.dispatch(
+          new GetRadioMatrix({
+            data: this.radioFilterService.disableFilters(filters, ['severityRange', 'frequencyRange'])
+          })
+        );
+      })
     );
   }
 
@@ -150,12 +142,13 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
   }
 
   handleColClick(x: number, y: number): void {
-    this.store.dispatch(
-      new RadioFilter({
-        ...(!!this.defaultFilters && this.defaultFilters),
-        ...this.matrixRange[x][y]
-      })
-    );
+    const { severityRange, frequencyRange } = this.matrixRange[x][y];
+    const mergedFilter = {
+      ...(!!this.defaultFilters && this.defaultFilters),
+      severityRange: { ...severityRange, enabled: true },
+      frequencyRange: { ...frequencyRange, enabled: true }
+    };
+    this.store.dispatch(new RadioFilter(mergedFilter));
   }
 
   clearSelection(): void {

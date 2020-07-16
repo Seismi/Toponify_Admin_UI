@@ -8,6 +8,7 @@ import { take } from 'rxjs/operators';
 import { CreateRadioView, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { Subscription } from 'rxjs';
 import { ofType, Actions } from '@ngrx/effects';
+import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 
 @Component({
   selector: 'app-radio-view-name-dialog',
@@ -23,7 +24,8 @@ export class RadioViewNameDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<RadioViewNameDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {},
     private fb: FormBuilder,
-    private store: Store<RadioState>
+    private store: Store<RadioState>,
+    private radioService: RadioFilterService
   ) {
     this.nameForm = this.fb.group({
       name: ['', Validators.required]
@@ -56,22 +58,17 @@ export class RadioViewNameDialogComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.isValid) {
       const radioViewName = this.nameForm.controls.name.value;
-      this.store
-        .pipe(
-          select(getRadioFilter),
-          take(1)
-        )
-        .subscribe(filters => {
-          const { tableStyle } = filters;
-          this.store.dispatch(
-            new CreateRadioView({
-              name: radioViewName,
-              favourite: false,
-              type: tableStyle ? tableStyle : 'Simple Table',
-              filterSet: filters
-            })
-          );
-        });
+      this.store.pipe(select(getRadioFilter), take(1)).subscribe(filters => {
+        const { tableStyle } = filters;
+        this.store.dispatch(
+          new CreateRadioView({
+            name: radioViewName,
+            favourite: false,
+            type: tableStyle ? tableStyle : 'Simple Table',
+            filterSet: this.radioService.transformFilterIntoAdvancedSearchData(filters)
+          })
+        );
+      });
     }
   }
 }
