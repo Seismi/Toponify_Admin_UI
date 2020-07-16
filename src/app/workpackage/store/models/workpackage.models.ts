@@ -71,7 +71,7 @@ export interface WorkPackageDetail {
   description?: string;
   objectives?: (ObjectivesEntityOrRadiosEntity)[] | null;
   radios?: (ObjectivesEntityOrRadiosEntity)[] | null;
-  customProperties?: (CustomPropertiesEntity)[] | null;
+  customPropertyValues?: (CustomPropertiesEntity)[] | null;
   owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
   baseline?: (Baseline)[] | null;
   approvers?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;

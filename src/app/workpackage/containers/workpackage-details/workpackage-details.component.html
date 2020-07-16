@@ -52,7 +52,7 @@
         <smi-edit-documentation-standards-table
           [appCanEdit]="[Roles.ADMIN, Roles.ARCHITECT]"
           data-qa="work-packages-documentation-standards-table"
-          [data]="workpackage?.customProperties"
+          [data]="workpackage?.customPropertyValues"
           [isEditable]="workpackage?.status === 'draft'"
           (saveProperty)="onSaveProperties($event)"
           (deleteProperty)="onDeleteProperties($event)"
