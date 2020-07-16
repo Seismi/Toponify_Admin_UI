@@ -41,6 +41,7 @@ export class DocumentationStandardsTableComponent {
     }
   }
 
+  @Output() refresh = new EventEmitter<string>();
   @Output() documentSelected = new EventEmitter<DocumentStandard>();
   @Output() addDocument = new EventEmitter<void>();
   @Output() search = new EventEmitter<string>();
