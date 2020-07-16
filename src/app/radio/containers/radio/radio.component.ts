@@ -138,7 +138,9 @@ export class RadioComponent implements OnInit, OnDestroy {
         if (this.filterData) {
           this.store.dispatch(
             new SearchRadio({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData)
+              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
+              page: '0',
+              size: '10'
             })
           );
         } else {
