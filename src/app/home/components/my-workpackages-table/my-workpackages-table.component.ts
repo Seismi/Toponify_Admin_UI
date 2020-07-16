@@ -34,11 +34,11 @@ export class MyWorkpackagesTableComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  getTooltip(radioSummary: { count: number, state: string }, importance: string): string {
+  getTooltip(radioSummary: { count: number, state: string }): string {
     if (radioSummary.count === 0) {
       return 'No item reported';
     } else {
-      return `${radioSummary.count} items with at least one with ${importance} importance`;
+      return `${radioSummary.count} items with at least one with ${radioSummary.state} importance`;
     }
   }
 
