@@ -52,7 +52,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Input() tags: Tag[];
   @Input() componentLayer: TagApplicableTo;
   @Input() systems: GroupInfo[];
-  @Input() dataSets: GroupInfo[];
+  @Input() dataNodes: GroupInfo[];
   @Input() dimensions: GroupInfo[];
   @Input() reportingConcepts: GroupInfo[];
   @Input() groupInfo: GroupInfo;
