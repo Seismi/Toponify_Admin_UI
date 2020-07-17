@@ -56,6 +56,9 @@ td.mat-cell {
 .title {
   font-size: 17px;
   display: inline-block;
+  position: relative;
+  top: -6px;
+  left: 10px;
 }
 
 .chips {
@@ -69,16 +72,11 @@ td.mat-cell {
     justify-content: center;
     mat-chip {
       color: #fff;
-      z-index: 1
+      z-index: 1;
     }
   }
 }
 
-.status-title {
-  float: right;
-  margin-right: 10px;
-}
-
-.open-icon {
+.favourite-icon {
   float: right;
 }

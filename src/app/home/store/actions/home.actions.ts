@@ -6,7 +6,7 @@ import {
 } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
 import { GetLayoutEntitiesApiResponse, LayoutEntitiesHttpParams } from '@app/layout/store/models/layout.model';
-import { UserApiResponse } from '@app/settings/store/models/user.model';
+import { UserApiResponse, Favourites } from '@app/settings/store/models/user.model';
 
 export enum HomePageActionTypes {
   LoadMyWorkPackages = '[HomePage] Load My WorkPackages',
@@ -23,7 +23,11 @@ export enum HomePageActionTypes {
 
   LoadMyProfile = '[HomePage] Load My Profile',
   LoadMyProfileSuccess = '[HomePage] Load My Profile Success',
-  LoadMyProfileFailure = '[HomePage] Load My Profile Failure'
+  LoadMyProfileFailure = '[HomePage] Load My Profile Failure',
+
+  LoadMyFavourites = '[HomePage] Load My Favourites',
+  LoadMyFavouritesSuccess = '[HomePage] Load My Favourites Success',
+  LoadMyFavouritesFailure = '[HomePage] Load My Favourites Failure'
 }
 
 export class LoadMyWorkPackages implements Action {
@@ -86,6 +90,21 @@ export class LoadMyProfileFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadMyFavourites implements Action {
+  readonly type = HomePageActionTypes.LoadMyFavourites;
+  constructor() {}
+}
+
+export class LoadMyFavouritesSuccess implements Action {
+  readonly type = HomePageActionTypes.LoadMyFavouritesSuccess;
+  constructor(public payload: { data: Favourites[] }) {}
+}
+
+export class LoadMyFavouritesFailure implements Action {
+  readonly type = HomePageActionTypes.LoadMyFavouritesFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type HomePageActionsUnion =
   | LoadMyWorkPackages
   | LoadMyWorkPackagesSuccess
@@ -98,4 +117,7 @@ export type HomePageActionsUnion =
   | LoadMyLayoutsFailure
   | LoadMyProfile
   | LoadMyProfileSuccess
-  | LoadMyProfileFailure;
+  | LoadMyProfileFailure
+  | LoadMyFavourites
+  | LoadMyFavouritesSuccess
+  | LoadMyFavouritesFailure;

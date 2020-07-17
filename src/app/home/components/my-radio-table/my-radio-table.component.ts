@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 
@@ -16,6 +16,12 @@ export class MyRadioTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public displayedColumns: string[] = ['date', 'type', 'name', 'navigate'];
+  public displayedColumns: string[] = ['ref', 'category', 'status', 'title', 'lastUpdateDate', 'lastUpdatedBy'];
   public dataSource: MatTableDataSource<RadioEntity>;
+
+  @Output() openRadio = new EventEmitter<RadioEntity>();
+
+  onSearch(filterValue: string): void {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }
