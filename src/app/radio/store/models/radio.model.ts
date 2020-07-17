@@ -14,6 +14,15 @@ export enum radioCategories {
   opportunity = 'opportunity'
 }
 
+export enum RadioTokenColours {
+  critical = '#CE3C31',
+  high = '#F99118',
+  medium = '#FFEE00',
+  low = '#9BEE11',
+  minor = '#00C444',
+  none = '#88E6B6'
+}
+
 export interface RadioEntitiesResponse {
   data?: (RadioEntity)[] | null;
   links: Links;
