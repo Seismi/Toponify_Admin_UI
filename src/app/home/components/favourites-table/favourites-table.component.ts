@@ -1,23 +1,27 @@
-import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, EventEmitter, Output } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { Favourites } from '@app/settings/store/models/user.model';
-import { Level } from '@app/architecture/services/diagram-level.service';
 import { RadioTokenColours } from '@app/radio/store/models/radio.model';
+import { Favourites } from '@app/settings/store/models/user.model';
 import { Router } from '@angular/router';
-import { defaultScopeId } from '@app/scope/store/models/scope.model';
+import { Level } from '@app/architecture/services/diagram-level.service';
+
+enum FavouriteType {
+  radioView = 'radioView',
+  scope = 'scope'
+}
 
 type Button = 'systems' | 'data' | 'reports' | 'radios';
 
 @Component({
-  selector: 'smi-my-workpackages-table',
-  templateUrl: './my-workpackages-table.component.html',
-  styleUrls: ['./my-workpackages-table.component.scss']
+  selector: 'smi-favourites-table',
+  templateUrl: './favourites-table.component.html',
+  styleUrls: ['./favourites-table.component.scss']
 })
-export class MyWorkpackagesTableComponent {
+export class FavouritesTableComponent {
+  public FavouriteType = FavouriteType;
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: Favourites[]) {
+    this.dataSource = new MatTableDataSource<Favourites>(data);
     this.dataSource.paginator = this.paginator;
   }
 
@@ -26,7 +30,7 @@ export class MyWorkpackagesTableComponent {
   constructor(private router: Router) { }
 
   public displayedColumns: string[] = ['name'];
-  public dataSource: MatTableDataSource<WorkPackageEntity>;
+  public dataSource: MatTableDataSource<Favourites>;
 
   @Output() openWorkPackage = new EventEmitter<string>();
 
@@ -61,10 +65,7 @@ export class MyWorkpackagesTableComponent {
   }
 
   onOpen(favourite: Favourites, button: Button): void {
-    const queryParams: { [key: string]: any } = {
-      scope: defaultScopeId,
-      workpackages: [favourite.id]
-    };
+    const queryParams: { [key: string]: any } = { scope: favourite.id };
     switch (button) {
       case 'systems':
         queryParams.filterLevel = Level.system;
@@ -76,6 +77,10 @@ export class MyWorkpackagesTableComponent {
         break;
       case 'reports':
         this.router.navigate(['/report-library', favourite.id], { queryParams });
+        break;
+      case 'radios':
+        queryParams.radioViewId = favourite.id;
+        this.router.navigate(['/radio'], { queryParams });
         break;
     }
   }

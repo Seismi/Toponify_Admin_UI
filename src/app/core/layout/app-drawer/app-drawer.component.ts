@@ -6,12 +6,18 @@ import { Subscription } from 'rxjs';
 import { MatDrawer } from '@angular/material';
 import { SelectLeftDrawerTab } from '@app/core/store/actions/layout.actions';
 
+enum LeftHandPaneTab {
+  notifications = 'notifications',
+  home = 'home'
+}
+
 @Component({
   selector: 'app-drawer',
   templateUrl: './app-drawer.component.html',
   styleUrls: ['./app-drawer.component.scss']
 })
 export class AppDrawerComponent implements OnInit, OnDestroy {
+  public LeftHandPaneTab = LeftHandPaneTab;
   public selectedTab = null;
   private subscription: Subscription | null = null;
   @ViewChild('drawer') drawer: MatDrawer;
