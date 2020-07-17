@@ -6,6 +6,13 @@
       data-qa="documentation-standards-quick-search"
       (keyup)="onSearch($event.target.value)"
     />
+    <button 
+      mat-icon-button 
+      (click)="refresh.emit(searchField.value)"
+      data-qa="documentation-standards-refresh-search"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
   <table mat-table [dataSource]="dataSource" matSort>
     <!-- Name Column -->
@@ -37,6 +44,7 @@
         color="primary"
         (click)="onAdd()"
         data-qa="documentation-standards-create-new"
+        class="create-new-btn"
       >
         <mat-icon>add</mat-icon>
         Create New

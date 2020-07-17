@@ -1,7 +1,19 @@
 <div class="wrapper">
-  <mat-form-field>
-    <input matInput placeholder="Search" data-qa="work-packages-quick-search" (keyup)="onSearch($event.target.value)" />
-  </mat-form-field>
+  <div class="search-container">
+    <input
+      placeholder="Search"
+      #searchField
+      data-qa="work-packages-quick-search"
+      (keyup)="onSearch($event.target.value)"
+    />
+    <button 
+      mat-icon-button 
+      (click)="refresh.emit(searchField.value)"
+      data-qa="work-packages-refresh-search"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
 
   <table mat-table [dataSource]="dataSource" matSort>
     <!-- archive Column -->
@@ -55,6 +67,7 @@
         color="primary"
         (click)="onAdd()"
         data-qa="work-packages-create-new"
+        class="create-new-btn"
       >
         <mat-icon>add</mat-icon>Create New
       </button>

@@ -32,6 +32,7 @@
                   (search)="onSearch($event)"
                   [pagination]="page$ | async"
                   (pageChange)="onPageChange($event)"
+                  (refresh)="refreshSearch($event)"
                 >
                 </smi-workpackages-table>
               </mat-tab>

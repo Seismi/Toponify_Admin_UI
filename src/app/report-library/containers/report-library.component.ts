@@ -276,4 +276,9 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onExitWorkPackageEditMode(): void {
     this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
   }
+
+  refreshSearch(textFilter: string): void {
+    this.setQueryParams({ textFilter });
+  }
+
 }

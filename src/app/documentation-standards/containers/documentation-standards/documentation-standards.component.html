@@ -20,6 +20,7 @@
               (search)="onSearch($event)"
               [pagination]="page$ | async"
               (pageChange)="onPageChange($event)"
+              (refresh)="refreshSearch($event)"
             >
             </smi-documentation-standards-table>
             <smi-spinner *ngIf="!(isLoading$ | async)"></smi-spinner>

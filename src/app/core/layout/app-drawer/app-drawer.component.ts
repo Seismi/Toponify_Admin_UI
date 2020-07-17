@@ -8,7 +8,7 @@ import { SelectLeftDrawerTab } from '@app/core/store/actions/layout.actions';
 
 enum LeftHandPaneTab {
   notifications = 'notifications',
-  home = 'home'
+  menu = 'menu'
 }
 
 @Component({

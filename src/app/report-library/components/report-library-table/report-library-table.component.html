@@ -1,5 +1,19 @@
-<smi-table-header (search)="onSearch($event)"></smi-table-header>
 <div class="wrapper">
+  <div class="search-container">
+    <input
+      placeholder="Search"
+      #searchField
+      data-qa="reports-quick-search"
+      (keyup)="onSearch($event.target.value)"
+    />
+    <button 
+      mat-icon-button 
+      (click)="refresh.emit(searchField.value)"
+      data-qa="reports-refresh-search"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
   <table mat-table [dataSource]="dataSource" matSort>
     <!-- Name Column -->
     <ng-container matColumnDef="name">

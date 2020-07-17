@@ -185,4 +185,14 @@ export class WorkPackageComponent implements OnInit, OnDestroy{
     } 
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
   }
+
+  refreshSearch(textFilter: string): void {
+    this.workPackageParams = {
+      textFilter: textFilter,
+      page: 0,
+      size: this.workPackageParams.size,
+      includeArchived: this.workPackageParams.includeArchived
+    };
+    this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
+  }
 }
