@@ -6,7 +6,7 @@
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon style="float: right;" (click)="openWorkPackage.emit(element.id)">open_in_new</mat-icon>
+        <mat-icon class="open-icon" (click)="openWorkPackage.emit(element.id)">open_in_new</mat-icon>
         <div class="title">{{ element.name }} </div>
         <div class="status-title">{{ element.status }}</div>
         <div class="chips">

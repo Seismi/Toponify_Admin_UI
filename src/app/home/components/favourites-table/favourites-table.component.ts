@@ -20,8 +20,8 @@ type Button = 'systems' | 'data' | 'reports' | 'radios';
 export class FavouritesTableComponent {
   public FavouriteType = FavouriteType;
   @Input()
-  set data(data: any[]) {
-    this.dataSource = new MatTableDataSource<any>(data);
+  set data(data: Favourites[]) {
+    this.dataSource = new MatTableDataSource<Favourites>(data);
     this.dataSource.paginator = this.paginator;
   }
 
@@ -30,7 +30,7 @@ export class FavouritesTableComponent {
   constructor(private router: Router) { }
 
   public displayedColumns: string[] = ['name'];
-  public dataSource: MatTableDataSource<any>;
+  public dataSource: MatTableDataSource<Favourites>;
 
   @Output() openWorkPackage = new EventEmitter<string>();
 
