@@ -84,6 +84,11 @@ module.exports = {
       api: `${api_version}/workpackages`,
       method: 'GET',
       name: 'WorkPackages'
+    },
+    radioAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search`,
+      method: 'POST',
+      name: 'radioAdvancedSearch'
     }
   }
 };

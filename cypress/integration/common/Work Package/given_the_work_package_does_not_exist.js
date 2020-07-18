@@ -6,7 +6,7 @@ Given('the work package {string} does not exist', function(name) {
     .concat(' | ')
     .concat(name); // append the branch to the name
 
-  cy.findWorkPackage(name, true, true) //find the work packages
+  cy.findWorkPackage(name, true) //find the work packages
     .then($table => {
       if ($table[0].rows.length > 0) {
         //if rows are found

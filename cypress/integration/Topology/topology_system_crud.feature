@@ -6,7 +6,6 @@ Feature: Topology Systems Layer Feature
     Given a valid user is logged in
     And the user selects Work Package menu item
     And the work package 'Created Automated Regression Test Work Package' does not exist
-    And the work package 'Only Included to make the next step work' does not exist
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
 
   @topology

@@ -6,7 +6,7 @@ When(
     name = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(name); // append the branch name to the test work package to differentiate between branch test
-    cy.findWorkPackage(name, false, true).then($table => {
+    cy.findWorkPackage(name, false).then($table => {
       cy.log($table[0].rows.length);
       if ($table[0].rows.length === 0) {
         // check if the search returned a result

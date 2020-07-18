@@ -61,15 +61,19 @@ Cypress.Commands.add('selectDropDownNoClick', (dropdown, element) => {
 });
 
 Cypress.Commands.add('selectDropDown', (dropdown, element) => {
-  cy.get(`[data-qa=${dropdown}]`)
-    .click()
-    .get('mat-option')
-    .should('be.visible')
-    .contains(element)
-    .click({ force: true })
-    .then(() => {
-      cy.get(`[data-qa=${dropdown}]`).type('{esc}');
-    });
+  cy.get(`[data-qa=${dropdown}]`).then(result => {
+    if (result[0].innerText.indexOf(element) === -1) {
+      cy.get(`[data-qa=${dropdown}]`)
+        .click()
+        .get('mat-option')
+        .should('be.visible')
+        .contains(element)
+        .click({ force: true })
+        .then(() => {
+          cy.get(`[data-qa=${dropdown}]`).type('{esc}');
+        });
+    }
+  });
 });
 
 Cypress.Commands.add('selectDropDownWaitFor', (dropdown, element, wait) => {
@@ -153,25 +157,36 @@ Cypress.Commands.add('selectDetailsPaneTab', posinset => {
     });
 });
 
-Cypress.Commands.add('findWorkPackage', (name, includeArchived, wait) => {
+Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
+  let currentSetting, currentSearchTerm, wait;
+  cy.get('[data-qa=work-packages-archive-toggle]')
+    .find('label>div>input')
+    .then(result => {
+      currentSetting = result[0].checked;
+    });
+  cy.get('[data-qa=work-packages-quick-search]').then(result => {
+    currentSearchTerm = result[0].value;
+    wait = currentSearchTerm === name ? false : true;
+  });
+
   if (includeArchived) {
-    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
-      .find('label>div>input')
-      .uncheck({ force: true })
-      .wait('@GETWorkPackagePaging');
-    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
-      .find('label>div>input')
-      .check({ force: true })
-      .wait('@GETWorkPackagePaging');
+    // if we want archived work packages
+    if (!currentSetting) {
+      // if we don't currently have archived package selected
+      cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+        .find('label>div>input')
+        .check({ force: true })
+        .wait('@GETWorkPackagePaging');
+    }
   } else {
-    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
-      .find('label>div>input')
-      .check({ force: true })
-      .wait('@GETWorkPackagePaging');
-    cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
-      .find('label>div>input')
-      .uncheck({ force: true })
-      .wait('@GETWorkPackagePaging');
+    //we don't want archived packages
+    if (currentSetting) {
+      // if we currently have archived package selected
+      cy.get('[data-qa=work-packages-archive-toggle]') // get the archive toggle
+        .find('label>div>input')
+        .uncheck({ force: true })
+        .wait('@GETWorkPackagePaging');
+    }
   }
   cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
@@ -360,12 +375,16 @@ Cypress.Commands.add('findRadio', radio => {
     .then(() => {
       cy.get('[data-qa=radio-filter-text]')
         .clear()
-        .type(radio);
+        .type(radio, { delay: 300 });
+      cy.selectDropDown('radio-filter-status', 'open');
+      cy.selectDropDown('radio-filter-status', 'closed');
+      cy.selectDropDown('radio-filter-status', 'new');
       cy.get('[data-qa=radio-filter-modal-apply]')
         .click({ force: true })
         .wait(3000)
         .wait('@POSTradiosAdvancedSearch')
         .then(() => {
+          cy.get('[data-qa=spinner]').should('not.be.visible');
           return cy.get(`[data-qa=radio-table]`).find('table>tbody');
         });
     });
@@ -388,22 +407,16 @@ Cypress.Commands.add('findRadioAPI', radio => {
     });
 });
 
-/*Cypress.Commands.add('findDocumentStandard', title => {
-  cy.get('[data-qa=documentation-standards-quick-search]')
-    .clear()
-    .type(title)
-    .should('have.value', title)
-    .wait('@GETCustomProperties')
-  return cy.get(`[data-qa=documentation-standards-table]`).find('table>tbody');
-});*/
-
 Cypress.Commands.add('findDocumentationStandard', (name, wait) => {
   cy.get(`[data-qa=documentation-standards-quick-search]`) // get the quick packages search
-    .clear() //clear the box
+    .scrollIntoView()
+    .clear()
     .type(name) // type the name
-    .should('have.value', name)
-    .wait(2000);
-  if (wait) cy.wait('@GETCustomProperties');
+    .should('have.value', name);
+  if (wait) {
+    cy.wait('@GETCustomProperties');
+  }
+  cy.get('[data-qa=details-spinner]').should('not.be.visible');
   return cy
     .get(`[data-qa=documentation-standards-table]`) // get the work packages table
     .find('table>tbody'); // find the table
@@ -822,7 +835,7 @@ Cypress.Commands.add('populateWorkPackageDetails', (name, description, baseline,
 });
 
 Cypress.Commands.overwrite('type', (originalFn, subject, string, options) =>
-  originalFn(subject, string, Object.assign({}, options, { delay: 100 }))
+  originalFn(subject, string, Object.assign({}, { delay: 100 }, options))
 );
 
 // -- This is a child command --

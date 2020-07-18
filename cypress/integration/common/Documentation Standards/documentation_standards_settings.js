@@ -23,6 +23,11 @@ module.exports = {
       api: `${api_version}/customProperties/*`,
       method: 'GET',
       name: 'CustomProperties*'
+    },
+    PUTCustomProperties: {
+      api: `${api_version}/customProperties/*`,
+      method: 'PUT',
+      name: 'CustomProperties'
     }
   }
 };

@@ -9,8 +9,8 @@ Then('the documentation standard {string} should exist with type {string} everyw
     .concat(' | ')
     .concat(doc_standard); //add the branch to the work package name
   cy.findDocumentationStandard(doc_standard, false)
-    .find('tr :first')
-    .click()
+    .contains('td', doc_standard)
+    .click({ force: true })
     .then(() => {
       cy.get('[data-qa=documentation-standards-details-name]').should('have.value', doc_standard);
       cy.get('[data-qa=documentation-standards-details-description]').should('have.value', doc_standard);
