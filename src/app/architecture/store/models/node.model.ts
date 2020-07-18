@@ -180,7 +180,7 @@ export interface NodeDetail {
   groupinfo?: GroupInfo;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   systems?: (GroupInfo)[] | null;
-  dataSets?: (GroupInfo)[] | null;
+  dataNodes?: (GroupInfo)[] | null;
   dimensions?: (GroupInfo)[] | null;
   reportingConcepts?: (GroupInfo)[] | null;
   descendants?: (DescendantsEntity)[] | null;

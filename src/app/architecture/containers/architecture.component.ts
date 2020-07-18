@@ -2049,7 +2049,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       // If the diagram's width and height have not been correctly set
       //  then update the diagram area and fit the diagram to the screen
-      if (diagramComponent) {
+      if (diagramComponent && diagramComponent.diagram.div) {
         const diagramCanvas = diagramComponent.diagram.div.getElementsByTagName('CANVAS')[0] as HTMLCanvasElement;
 
         const initialWidth = diagramCanvas.width;

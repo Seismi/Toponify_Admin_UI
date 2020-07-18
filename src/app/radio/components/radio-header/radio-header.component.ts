@@ -12,7 +12,8 @@ import {
   SetRadioAnalysisFilter,
   SetRadioViewAsFavourite,
   UnsetRadioViewAsFavourite,
-  UpdateRadioView
+  UpdateRadioView,
+  SearchRadio
 } from '@app/radio/store/actions/radio.actions';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { getRadioEntities, getRadioFilter, getRadioViews } from '@app/radio/store/selectors/radio.selector';
@@ -22,6 +23,7 @@ import isEqual from 'lodash.isequal';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { RadioViewNameDialogComponent } from '../radio-view-name-dialog/radio-view-name-dialog.component';
+import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 
 enum TableStyles {
   SIMPLE = 'Simple Table',
@@ -55,6 +57,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
   @Output() filter = new EventEmitter<void>();
 
   constructor(
+    private radioFilterService: RadioFilterService,
     public dialog: MatDialog,
     private store: Store<RadioState>,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>
@@ -194,5 +197,15 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
 
   onFilter(): void {
     this.filter.emit();
+  }
+
+  refresh(): void {
+    this.store.dispatch(
+      new SearchRadio({
+        data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters),
+        page: String(0),
+        size: String(10)
+      })
+    );
   }
 }

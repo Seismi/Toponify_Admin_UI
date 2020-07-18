@@ -68,6 +68,15 @@ export class ScopesAndLayoutsComponent implements OnInit {
     this.store.dispatch(new LoadScopes(this.scopeParams))
   }
 
+  refreshSearch(textFilter: string): void {
+    this.scopeParams = {
+      textFilter: textFilter,
+      page: 0,
+      size: this.scopeParams.size
+    };
+    this.store.dispatch(new LoadScopes(this.scopeParams));
+  }
+
   onAddScope(): void {
     const dialogRef = this.dialog.open(ScopeAndLayoutModalComponent, {
       disableClose: false,

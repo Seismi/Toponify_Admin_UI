@@ -42,12 +42,9 @@ export class WorkPackagesTableComponent implements AfterViewInit {
   public displayedColumns: string[] = ['archive', 'name', 'status', 'owners', 'approvers'];
   public page: Page;
 
-  @Output()
-  workpackageSelected = new EventEmitter<WorkPackageDetail>();
-
-  @Output()
-  addWorkpackage = new EventEmitter<void>();
-
+  @Output() refresh = new EventEmitter<string>();
+  @Output() workpackageSelected = new EventEmitter<WorkPackageDetail>();
+  @Output() addWorkpackage = new EventEmitter<void>();
   @Output() pageChange = new EventEmitter<{
     previousPageIndex: number;
     pageIndex: number;
