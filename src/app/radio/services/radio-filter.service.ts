@@ -72,8 +72,17 @@ export class RadioFilterService {
     };
   }
 
+  transformFiltersIntoFormValues(filters: RadiosAdvancedSearch): FilterData {
+    const values = {};
+    Object.keys(filters).forEach(key => {
+      if (filters[key] && filters[key].enabled) {
+        values[key] = filters[key].values;
+      }
+    });
+    return values;
+  }
+
   disableFilters(data: RadiosAdvancedSearch, disable: string[] = []): RadiosAdvancedSearch {
-    // debugger;
     const copyOfData = JSON.parse(JSON.stringify(data));
     disable.forEach(filterKey => {
       if (copyOfData[filterKey]) {

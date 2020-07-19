@@ -191,7 +191,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(FilterModalComponent, {
       disableClose: false,
       data: {
-        filterData: this.filterData,
+        filterData: this.radioFilterService.transformFiltersIntoFormValues(this.filterData),
         mode: this.filterData ? 'filter' : null
       }
     });

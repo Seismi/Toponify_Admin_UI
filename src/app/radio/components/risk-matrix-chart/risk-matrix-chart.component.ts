@@ -77,7 +77,13 @@ export class RiskMatrixChartComponent implements OnInit, OnDestroy {
   }
 
   get selectedRiskMatrixCol(): number[] | null {
-    if (this.defaultFilters && this.defaultFilters.severityRange && this.defaultFilters.frequencyRange) {
+    if (
+      this.defaultFilters &&
+      this.defaultFilters.severityRange &&
+      this.defaultFilters.severityRange.enabled &&
+      this.defaultFilters.frequencyRange &&
+      this.defaultFilters.frequencyRange.enabled
+    ) {
       const cords = [this.defaultFilters.severityRange.from, this.defaultFilters.frequencyRange.from];
       return cords;
     }

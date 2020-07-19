@@ -65,7 +65,7 @@ export class RadioViewNameDialogComponent implements OnInit, OnDestroy {
             name: radioViewName,
             favourite: false,
             type: tableStyle ? tableStyle : 'Simple Table',
-            filterSet: this.radioService.transformFilterIntoAdvancedSearchData(filters)
+            filterSet: filters
           })
         );
       });
