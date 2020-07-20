@@ -157,14 +157,18 @@ export function reducer(
 
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopes: {
       return {
-        ...state
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
       };
     }
 
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesSuccess: {
       return {
         ...state,
-        nodeScopes: action.payload
+        nodeScopes: action.payload,
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
       };
     }
 
