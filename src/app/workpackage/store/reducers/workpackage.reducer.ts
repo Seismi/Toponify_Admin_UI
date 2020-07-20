@@ -1,10 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { WorkPackageActionsUnion, WorkPackageActionTypes } from '../actions/workpackage.actions';
-import { Links, Page, WorkPackageDetail, WorkPackageEntity } from '../models/workpackage.models';
+import { Links, Page, WorkPackageDetail, WorkPackageEntity, WorkPackagesActive } from '../models/workpackage.models';
 
 export interface State {
   editId: string;
   entities: WorkPackageEntity[];
+  active: WorkPackagesActive[];
   avaialabilities: any[] | null;
   baseline: any[];
   page: Page;
@@ -19,6 +20,7 @@ export interface State {
 export const initialState: State = {
   editId: null,
   entities: [],
+  active: [],
   avaialabilities: null,
   baseline: [],
   page: null,
@@ -129,6 +131,29 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
         entities: action.payload.data,
         links: action.payload.links,
         page: action.payload.page,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackagesFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackagesActive: {
+      return {
+        ...state,
+        loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackagesActiveSuccess: {
+      return {
+        ...state,
+        active: action.payload.data,
         loading: false
       };
     }

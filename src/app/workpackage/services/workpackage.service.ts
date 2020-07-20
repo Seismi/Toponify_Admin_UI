@@ -8,7 +8,8 @@ import {
   WorkPackageEntitiesResponse,
   WorkPackageDetailApiResponse,
   CustomPropertiesEntity,
-  Baseline
+  Baseline,
+  WorkPackagesActive
 } from '../store/models/workpackage.models';
 import 'rxjs/add/observable/of';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
@@ -36,6 +37,10 @@ export class WorkPackageService {
   getWorkPackageAvailability(queryParams: WorkpackageAvailabilityQuery): Observable<any> {
     const params = queryParams ? this.toHttpParams(queryParams) : new HttpParams();
     return this.http.get<any>(`/workpackages/selector/availability`, { params: params });
+  }
+
+  getWorkPackagesActive(): Observable<{ data: WorkPackagesActive[] }> {
+    return this.http.get<{ data: WorkPackagesActive[] }>(`/workpackages/active`);
   }
 
   getWorkPackageEntities(queryParams: WorkPackageEntitiesHttpParams): Observable<WorkPackageEntitiesResponse> {
