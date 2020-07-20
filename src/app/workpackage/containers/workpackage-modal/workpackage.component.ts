@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormGroup } from '@angular/forms';
-import { WorkPackageEntity, WorkPackageEntitiesHttpParams } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageEntity, WorkPackageEntitiesHttpParams, WorkPackagesActive } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageDetailService } from '../../components/workpackage-detail/services/workpackage-detail.service';
 import { WorkPackageValidatorService } from '../../components/workpackage-detail/services/workpackage-detail-validator.service';
 import { Observable, Subject } from 'rxjs';
@@ -11,10 +11,10 @@ import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as WorkPackageState } from '../../store/reducers/workpackage.reducer';
-import { getAllWorkPackages, getWorkPackagesPage, workpackageLoading } from '@app/workpackage/store/selectors/workpackage.selector';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetailComponent } from '@app/workpackage/components/workpackage-detail/workpackage-detail.component';
+import { getAllWorkPackages, getWorkPackagesPage, workpackageLoading, getWorkPackagesActive } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackages, LoadWorkPackagesActive } from '@app/workpackage/store/actions/workpackage.actions';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 
 @Component({
   selector: 'smi-workpackage-modal',
@@ -23,6 +23,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
 export class WorkPackageModalComponent implements OnInit {
+  public baselineData: WorkPackagesActive[];
   public owners$: Observable<TeamEntity[]>;
   public baseline$: Observable<WorkPackageEntity[]>;
   public workpackage: WorkPackageEntity;
@@ -38,9 +39,8 @@ export class WorkPackageModalComponent implements OnInit {
     includeArchived: false
   };
 
-  @ViewChild(WorkPackageDetailComponent) wpComponent: WorkPackageDetailComponent;
-
   constructor(
+    private dialog: MatDialog,
     private teamStore: Store<TeamState>,
     private workPackageStore: Store<WorkPackageState>,
     private workPackageDetailService: WorkPackageDetailService,
@@ -78,7 +78,7 @@ export class WorkPackageModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const baseline = this.wpComponent.selectionTable.selection.selected;
+    const baseline = this.baselineData;
     if (!this.workPackageDetailService.isValid) {
       return;
     }
@@ -102,4 +102,32 @@ export class WorkPackageModalComponent implements OnInit {
     };
     this.workPackageStore.dispatch(new LoadWorkPackages(this.workPackageParams));
   }
+
+  onAddBaseline(): void {
+    this.workPackageStore.dispatch(new LoadWorkPackagesActive());
+    const dialogRef = this.dialog.open(SelectModalComponent, {
+      disableClose: true,
+      width: 'auto',
+      minWidth: '400px',
+      data: {
+        title: 'Select work package to add to baseline',
+        placeholder: 'Work Packages',
+        options$: this.workPackageStore.pipe(select(getWorkPackagesActive)),
+        selectedIds: this.baselineData ? this.baselineData.map(baseline => baseline.id) : [],
+        multi: true
+      }
+    });
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.value) {
+        this.baselineData = data.value;
+      }
+    });
+  }
+
+  onDeleteBaseline(baseline: WorkPackagesActive): WorkPackagesActive[] {
+    const index = this.baselineData.findIndex(obj => obj.id === baseline.id);
+    const newData = [...this.baselineData.slice(0, index), ...this.baselineData.slice(index + 1)];
+    return this.baselineData = newData;
+  }
+
 }
