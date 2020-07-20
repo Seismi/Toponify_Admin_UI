@@ -18,7 +18,6 @@ import { LoadTags } from '@app/architecture/store/actions/node.actions';
 })
 export class ScopesAndLayoutsComponent implements OnInit {
   public scopes$: Observable<ScopeEntity[]>;
-  public selectedLeftTab: number | string;
   private scopeParams: ScopeEntitiesHttpParams = {
     textFilter: '',
     page: 0,
@@ -67,6 +66,15 @@ export class ScopesAndLayoutsComponent implements OnInit {
       size: page.pageSize
     } 
     this.store.dispatch(new LoadScopes(this.scopeParams))
+  }
+
+  refreshSearch(textFilter: string): void {
+    this.scopeParams = {
+      textFilter: textFilter,
+      page: 0,
+      size: this.scopeParams.size
+    };
+    this.store.dispatch(new LoadScopes(this.scopeParams));
   }
 
   onAddScope(): void {

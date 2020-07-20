@@ -81,6 +81,9 @@
             (selectLayout)="onSelectLayout($event)"
             [filterLevel]="filterLevel"
             (exitDependenciesView)="exitDependenciesView()"
+            [selectedPart]="selectedPart"
+            [clickedOnLink]="clickedOnLink"
+            [selectedNode]="selectedNode"
           >
           </smi-diagram-actions>
           <app-architecture-diagram
@@ -89,7 +92,6 @@
             [showGrid]="showGrid"
             [allowMove]="allowMove"
             [workPackageIsEditable]="workPackageIsEditable"
-            *ngIf="!showTable"
             [nodes]="
               nodes
                 | layer
@@ -219,7 +221,7 @@
             [componentLayer]="nodeComponentLayer"
             [availableTags]="availableTags$ | async"
             [systems]="selectedNode?.systems"
-            [dataSets]="selectedNode?.dataSets"
+            [dataNodes]="selectedNode?.dataNodes"
             [dimensions]="selectedNode?.dimensions"
             [reportingConcepts]="selectedNode?.reportingConcepts"
             [groupInfo]="selectedNode?.groupinfo"

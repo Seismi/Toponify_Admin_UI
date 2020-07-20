@@ -48,7 +48,6 @@ export class RadioComponent implements OnInit, OnDestroy {
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
-  public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
   public loadingStatus = LoadingStatus;
@@ -130,12 +129,18 @@ export class RadioComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
+      this.actions.pipe(ofType(
+        RadioActionTypes.AddRadioSuccess,
+        RadioActionTypes.DeleteRadioEntitySuccess,
+        RadioActionTypes.AddReplySuccess
+      )).subscribe((action: { payload: RadioDetail }) => {
         this.selectedRadioIndex = action.payload.id;
         if (this.filterData) {
           this.store.dispatch(
             new SearchRadio({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData)
+              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
+              page: '0',
+              size: '10'
             })
           );
         } else {
@@ -205,6 +210,13 @@ export class RadioComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
         this.store.dispatch(new RadioFilter(data.radio));
+        this.store.dispatch(
+          new SearchRadio({
+            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
+            page: String(0),
+            size: String(10)
+          })
+        );
       }
     });
   }

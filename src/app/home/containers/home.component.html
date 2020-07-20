@@ -1,6 +1,5 @@
 <app-model-container>
-  <smi-left-hand-pane [workPackageIsEditable]="workPackageIsEditable" [selectedLeftTab]="selectedLeftTab">
-  </smi-left-hand-pane>
+  <smi-left-hand-pane></smi-left-hand-pane>
   <app-drawer>
     <app-base-header>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
@@ -9,14 +8,36 @@
         <smi-quicklinks-actions></smi-quicklinks-actions>
       </app-toolbar-column>
     </app-base-header>
-    <smi-my-radio-table data-hook="radio-table" [data]="myRadios$ | async"> </smi-my-radio-table>
-    <smi-my-layouts-table data-hook="layouts-table" [data]="myLayouts$ | async" (openLayout)="onOpenLayout()">
-    </smi-my-layouts-table>
-    <smi-my-workpackages-table
-      data-hook="package-table"
-      [data]="myWorkPackages$ | async"
-      (openWorkPackage)="onOpenWorkPackage($event)"
-    >
-    </smi-my-workpackages-table>
+    <div class="container">
+      <h3>Your Work</h3>
+      <smi-home-tabs 
+        (homeTabChange)="onTabChange($event)" 
+        [selectedTab]="selectedTab"
+        [favouritesLength]="(favourites$ | async).length"
+        [notificationsLength]="notificationsLength"
+        [radiosLength]="(myRadios$ | async).length"
+        [workPackagesLength]="(myWorkPackages$ | async).length"
+      >
+      </smi-home-tabs>
+      <smi-favourites-table
+        *ngIf="selectedTab === HomeTabs.Favourites"
+        [data]="favourites$ | async"
+      >
+      </smi-favourites-table>
+      <smi-notification-pane *ngIf="selectedTab === HomeTabs.Notifications"></smi-notification-pane>
+      <smi-my-radio-table
+        *ngIf="selectedTab === HomeTabs.RADIO"
+        [data]="myRadios$ | async"
+        (openRadio)="onOpenRadio($event)"
+      >
+      </smi-my-radio-table>
+      <smi-my-workpackages-table
+        *ngIf="selectedTab === HomeTabs.WorkPackages"
+        [data]="myWorkPackages$ | async" 
+        (openWorkPackage)="onOpenWorkPackage($event)"
+      >
+      </smi-my-workpackages-table>
+    </div>
+    <smi-spinner *ngIf="!(isLoading$ | async)"></smi-spinner>
   </app-drawer>
 </app-model-container>

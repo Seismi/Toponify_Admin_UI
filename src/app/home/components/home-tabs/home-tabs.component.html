@@ -1,0 +1,43 @@
+<mat-tab-group
+  mat-stretch-tabs
+  [@.disabled]="true"
+  [selectedIndex]="selectedTab"
+  (selectedTabChange)="onTabClick($event)"
+>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>grade</mat-icon> 
+      <span>Favourites</span>
+      <mat-chip-list>
+        <mat-chip>{{ favouritesLength }}</mat-chip>
+      </mat-chip-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>notification_important</mat-icon>
+      <span>Notifications</span>
+      <mat-chip-list>
+        <mat-chip>{{ notificationsLength }}</mat-chip>
+      </mat-chip-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>track_changes</mat-icon>
+      <span>RADIO</span>
+      <mat-chip-list>
+        <mat-chip>{{ radiosLength }}</mat-chip>
+      </mat-chip-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>business_center</mat-icon>
+      <span>Work Packages</span>
+      <mat-chip-list>
+        <mat-chip>{{ workPackagesLength }}</mat-chip>
+      </mat-chip-list>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

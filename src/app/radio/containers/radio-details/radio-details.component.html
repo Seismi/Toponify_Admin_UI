@@ -46,7 +46,7 @@
           <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies" data-qa="radio-chatbox"></smi-chatbox>
         </p>
         <p class="reply-input">
-          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply($event)" data-qa="radio-message-form"></smi-reply-text>
+          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply()" data-qa="radio-message-form"></smi-reply-text>
         </p>
       </mat-tab>
       <mat-tab data-qa="radio-documentation-standards-tab">

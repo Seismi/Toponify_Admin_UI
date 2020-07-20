@@ -70,7 +70,7 @@
         data-qa="topology-components-table-data-sets"
         (itemClick)="itemClick.emit($event)"
         [title]="'Data'"
-        [data]="dataSets"
+        [data]="dataNodes"
         [workPackageIsEditable]="workPackageIsEditable"
         (add)="addDescendants.emit('data')"
         (delete)="deleteDescendants.emit($event)"
@@ -181,6 +181,7 @@
       (addExistingScope)="onAddExistingScope()"
       (newScope)="onAddNewScope()"
       [nodeCategory]="nodeCategory"
+      [clickedOnLink]="clickedOnLink"
     >
     </smi-scope-table>
     <!-- Add Scope Button -->

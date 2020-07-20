@@ -15,6 +15,16 @@
         Integration Analysis
         <mat-icon matChipRemove (click)="exitMapView()">cancel</mat-icon>
       </mat-chip>
+
+      <mat-chip *ngIf="filterLevel === Level.sources" data-qa="topology-data-set-source">
+        Data Set Source
+        <mat-icon matChipRemove (click)="exitSourceOrTargetView()">cancel</mat-icon>
+      </mat-chip>
+
+      <mat-chip *ngIf="filterLevel === Level.targets" data-qa="topology-data-set-targets">
+        Data Set Targets
+        <mat-icon matChipRemove (click)="exitSourceOrTargetView()">cancel</mat-icon>
+      </mat-chip>
     </mat-chip-list>
   </div>
 

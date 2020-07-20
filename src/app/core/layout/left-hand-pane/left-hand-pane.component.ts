@@ -17,7 +17,7 @@ export class LeftHandPaneComponent implements OnInit, OnDestroy {
   @Input() architecturePage = false;
 
   private subscription: Subscription | null = null;
-  private selectedTab = null;
+  public selectedTab = null;
 
   constructor(private layoutStore: Store<LayoutState>) {}
 

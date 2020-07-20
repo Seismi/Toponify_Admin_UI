@@ -22,7 +22,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class DocumentationStandardsComponent implements OnInit {
   public documentStandards$: Observable<DocumentStandard[]>;
   public documentStandard: DocumentStandard;
-  public selectedLeftTab: number | string;
   public Roles = Roles;
 
   private documentStandardParams: DocumentStandardsApiRequest = {
@@ -85,6 +84,15 @@ export class DocumentationStandardsComponent implements OnInit {
 
   onSearch(textFilter: string): void {
     this.search$.next(textFilter);
+  }
+
+  refreshSearch(textFilter: string): void {
+    this.documentStandardParams = {
+      textFilter: textFilter,
+      page: 0,
+      size: this.documentStandardParams.size,
+    };
+    this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
   }
 
   onPageChange(page) {

@@ -4,8 +4,8 @@
       [defaultId]="scope?.id"
       data-qa="scopes-and-layouts-scope-details-form"
       [group]="scopesAndLayoutsDetailForm"
-      (save)="onSaveScope($event)"
-      (delete)="onDeleteScope($event)"
+      (save)="onSaveScope()"
+      (delete)="onDeleteScope()"
       (open)="onOpen()"
       >
     </smi-scopes-and-layouts-detail>
@@ -22,7 +22,7 @@
             [defaultLayoutId]="scope?.defaultLayout"
             (setFavoriteLayout)="onSetFavoriteLayout($event)" 
             (select)="onLayoutSelect($event)" 
-            (add)="onAddLayout($event)"
+            (add)="onAddLayout()"
             [showPagination]=false
           >
           </smi-scopes-and-layouts-table>
