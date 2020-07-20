@@ -145,24 +145,21 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
 
     case WorkPackageActionTypes.LoadWorkPackagesActive: {
       return {
-        ...state,
-        loading: false
+        ...state
       };
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesActiveSuccess: {
       return {
         ...state,
-        active: action.payload.data,
-        loading: false
+        active: action.payload.data
       };
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesFailure: {
       return {
         ...state,
-        error: action.payload,
-        loading: false
+        error: action.payload
       };
     }
 
