@@ -13,13 +13,18 @@
         <div class="row">
           <div class="col mat-elevation-z8">
             <mat-slide-toggle
+              *ngIf="selectedView === WorkPackageView.Table"
               data-qa="work-packages-archive-toggle"
               color="primary"
               (change)="showArchivedWorkPackages($event)"
             >
               Show archived
             </mat-slide-toggle>
-            <mat-tab-group [@.disabled]="true">
+            <mat-tab-group 
+              [@.disabled]="true" 
+              [selectedIndex]="selectedView" 
+              (selectedIndexChange)="onSelectedTabChange($event)"
+            >
               <mat-tab>
                 <ng-template mat-tab-label> <mat-icon>list</mat-icon> List </ng-template>
                 <smi-spinner *ngIf="isLoading"></smi-spinner>
@@ -40,9 +45,8 @@
                 <ng-template mat-tab-label> <mat-icon>device_hub</mat-icon> Diagram </ng-template>
                 <ng-template matTabContent>
                   <smi-workpackage-tree
-                    [checked]="checked"
                     (selectWorkpackage)="onSelectWorkpackage($event)"
-                    [workpackages$]="workpackageEntities$ | async"
+                    [workpackages$]="workpackageActive$ | async"
                   ></smi-workpackage-tree>
                 </ng-template>
               </mat-tab>
