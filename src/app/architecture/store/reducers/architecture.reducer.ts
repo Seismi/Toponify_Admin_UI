@@ -158,8 +158,7 @@ export function reducer(
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopes: {
       return {
         ...state,
-        loadingNodes: LoadingStatus.loading,
-        loadingLinks: LoadingStatus.loading
+        loadingNode: LoadingStatus.loading
       };
     }
 
@@ -167,8 +166,7 @@ export function reducer(
       return {
         ...state,
         nodeScopes: action.payload,
-        loadingNodes: LoadingStatus.loaded,
-        loadingLinks: LoadingStatus.loaded
+        loadingNode: LoadingStatus.loaded
       };
     }
 
@@ -180,14 +178,16 @@ export function reducer(
 
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScope: {
       return {
-        ...state
+        ...state,
+        loadingNode: LoadingStatus.loading
       };
     }
 
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeSuccess: {
       return {
         ...state,
-        nodeScopes: state.nodeScopes.filter(scope => scope.id !== action.payload.id)
+        nodeScopes: state.nodeScopes.filter(scope => scope.id !== action.payload.id),
+        loadingNode: LoadingStatus.loaded
       };
     }
 
@@ -237,10 +237,18 @@ export function reducer(
       };
     }
 
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailability: {
+      return {
+        ...state,
+        loadingNode: LoadingStatus.loading
+      };
+    }
+
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilitySuccess: {
       return {
         ...state,
-        availableScopes: action.payload
+        availableScopes: action.payload,
+        loadingNode: LoadingStatus.loaded
       };
     }
 
