@@ -46,8 +46,8 @@ export interface WorkPackageEntity {
 export interface WorkPackagesActive {
   id: string;
   name: string;
-  status: string;
-  baseline: (Baseline)[] | null;
+  status?: string;
+  baseline?: (Baseline)[] | null;
 }
 
 export interface OwnersEntityOrApproversEntity {
