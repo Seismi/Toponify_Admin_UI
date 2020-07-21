@@ -24,7 +24,7 @@ Feature: Work Package Edit Core Details Feature
     And the user reloads the page and searches for 'Automated Updated Regression Test Work Package' work package
     Then the details pane should reflect the new work package name 'Automated Updated Regression Test Work Package' and description 'Updated Automated Regression Test Work Package Description'
 
-  @work_package
+  @work_package @TOP-860 @known_failure
   Scenario: Add a work package to baseline and cancel
     Given the user has created and selected a work package called 'Automated Regression Test Second Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
@@ -73,12 +73,6 @@ Feature: Work Package Edit Core Details Feature
     Then the work package status should change to 'submitted'
     And the visible buttons in the detail pane should change to be 'Approve,Reject,Reset,Supersede,Archive'
 
-#  Scenario: Submit the work package without an approver
-#    Given the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
-#    When the user clicks the 'submit' button on the work package
-#    And the user reloads the page and searches for 'Created Automated Regression Test Work Package' work package
-#    Then the work package status should change to 'submitted'
-#    And the visible buttons in the detail pane should change to be 'Approve,Reject,Reset,Supersede,Archive'
   @work_package @workflow
   Scenario: Submit and Reset the work package
     Given the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'

@@ -5,7 +5,7 @@ When('the user reloads the Topology page', function(usertype) {
     '@GETScopes',
     '@GETScope',
     '@GETLayouts',
-    '@GETLayout',
+    //'@GETLayout',
     '@GETWorkPackages',
     '@GETTeams',
     '@POSTradiosAdvancedSearch',

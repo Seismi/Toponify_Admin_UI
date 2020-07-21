@@ -20,7 +20,7 @@ Background:
     And the user clicks to 'cancel' the create of the objective
     Then the work package objective tables should not contain the objective called 'Test Objective'
 
-  @objectives @work_package @known_failure
+  @objectives @work_package @known_failure @TOP-861
   Scenario: Move a work package objective and confirm
     Given the user has created and selected a work package called 'Automated Regression Test Second Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the 'Created Automated Regression Test Work Package' is selected
@@ -33,7 +33,7 @@ Background:
     And the 'Automated Regression Test Second Work Package' is selected
     Then the work package objective tables should contain the objective called 'Test Objective'
 
-  @objectives @work_package @known_failure
+  @objectives @work_package @known_failure @TOP-861
   Scenario: Move a work package objective and cancel
     Given the user has created and selected a work package called 'Automated Regression Test Second Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the 'Created Automated Regression Test Work Package' is selected

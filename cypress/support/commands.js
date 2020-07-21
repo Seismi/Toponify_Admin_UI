@@ -226,7 +226,10 @@ Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
     .type(search_term)
     .should('have.value', search_term)
     .then(() => {
-      cy.get(`[data-qa=${table}]`).find('table>tbody>tr :first');
+      return cy
+        .get(`[data-qa=${table}]`)
+        .find('table>tbody')
+        .contains('td', search_term);
     });
 });
 
@@ -370,12 +373,12 @@ Cypress.Commands.add('findScope', name => {
 });
 
 Cypress.Commands.add('findRadio', radio => {
-  cy.get('[data-qa=radio-filter]')
+  cy.get('[data-qa=radio-header-filter]')
     .click()
     .then(() => {
       cy.get('[data-qa=radio-filter-text]')
         .clear()
-        .type(radio, { delay: 300 });
+        .type(radio);
       cy.selectDropDown('radio-filter-status', 'open');
       cy.selectDropDown('radio-filter-status', 'closed');
       cy.selectDropDown('radio-filter-status', 'new');
@@ -391,7 +394,7 @@ Cypress.Commands.add('findRadio', radio => {
 });
 
 Cypress.Commands.add('findRadioAPI', radio => {
-  cy.get('[data-qa=radio-filter]')
+  cy.get('[data-qa=radio-header-filter]')
     .click()
     .then(() => {
       cy.get('[data-qa=radio-filter-text]')
@@ -834,9 +837,9 @@ Cypress.Commands.add('populateWorkPackageDetails', (name, description, baseline,
   });
 });
 
-Cypress.Commands.overwrite('type', (originalFn, subject, string, options) =>
+/*Cypress.Commands.overwrite('type', (originalFn, subject, string, options) =>
   originalFn(subject, string, Object.assign({}, { delay: 100 }, options))
-);
+);*/
 
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })

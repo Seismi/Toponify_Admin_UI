@@ -29,7 +29,7 @@ Feature: Basic create, read, update and delete for RADIOs in the /radio screen
   	Then the radio with title 'Automatic Regression Test Assumption 2' should be immediately visible in the radio table
   	And the radio with the title 'Automatic Regression Test Assumption 2' should have the category 'assumption', status 'open', description 'Automatic Regresssion Test Assumption 2 with full details', assigned to 'Automated (DO NOT DELETE) Regression-Test', be actioned by 'Wed Dec 30 2020', with mitigation resolution 'Automatic Regression Test Assumption 2 Mitigation' and have severity 1 and probability 2
 
-  @radio @focus
+  @radio
   Scenario: Start updating radio then cancel
     Given the user creates a radio with title 'Created Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio

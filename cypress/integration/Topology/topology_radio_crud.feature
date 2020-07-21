@@ -1,5 +1,5 @@
 @core
-Feature: Topology Radio Feature
+Feature: Topology Radio CRUD Feature
   As a user, I want to be able to see the radio assigned to component
 
   Background:
@@ -23,11 +23,11 @@ Feature: Topology Radio Feature
     And the user clicks on the system's right hand side radio button
     And the user assign radio 'Automatic Regression Test Risk 1' to component with work package selected 'Created Automated Regression Test Work Package' and cancel
 
-  @topology @radio @focus
+  @topology @radio
   Scenario: Assign RADIO to component and confirm
     And the user clicks on create new radio at the button of the radio table
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to '' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
-    And the user cancels the creation of the radio
+    And confirms the creation of the radio
     And the user selects Topology menu item
     And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu

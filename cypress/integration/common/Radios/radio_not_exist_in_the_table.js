@@ -15,5 +15,9 @@ Then('the radio with title {string} should be immediately visible in the radio t
     .concat(radio);
   cy.findRadio(radio)
     .contains('tr', radio)
-    .should('exist');
+    .should('exist')
+    .click();
+  cy.url().should('contain', 'http://localhost:4202/radio/');
+  //    .wait(['@GETRadio','@GETRadioTags'])
+  cy.get('[data-qa=details-spinner]').should('not.be.visible');
 });

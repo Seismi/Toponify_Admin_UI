@@ -1,15 +1,13 @@
 const { And } = require('cypress-cucumber-preprocessor/steps');
 
 When('the user cancels the creation of the radio', () => {
-  cy.get(`[data-qa=radio-modal-cancel]`)
-    .click({ force: true })
-    .wait(['@GETRadios', '@GETNodes', '@GETRadioViews']);
+  cy.get(`[data-qa=radio-modal-cancel]`).click({ force: true });
 });
 
 When('confirms the creation of the radio', () => {
   cy.get(`[data-qa=radio-modal-save]`)
     .click()
-    .wait(['@POSTRadios', '@GETRadio', '@GETRadioTags.all', '@POSTradioAdvancedSearch']);
+    .wait(['@POSTRadios', '@GETRadioTags']);
 });
 
 When('the user clicks on create new radio at the button of the radio table', () => {
