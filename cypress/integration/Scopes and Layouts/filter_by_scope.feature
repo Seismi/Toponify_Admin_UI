@@ -1,4 +1,4 @@
-@known_failure
+@core
 Feature: Filtering by scope
   As a user, I want to be able to apply a filter using a scope and check that the results are correct
 
@@ -31,7 +31,7 @@ Feature: Filtering by scope
     And the user clicks on the system's right hand side scope button
     Then the scope 'Created Automated Regression Test Scope' should be visible in the scope table
 
-  @scopes_layout
+  @scopes_layout @known_failure @TOP-862
   Scenario:  Add a system to an existing scope, check on selecting that scope in /topology that the new system appears including systems that were already in scope and links that go from the new system to the system previously in scope. Also check it is in the list of items in scope in the /scopes-and-layouts page.
     Given the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And  the "Topology" "Systems" Tab is selected
