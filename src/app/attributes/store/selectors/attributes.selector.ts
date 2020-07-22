@@ -13,6 +13,11 @@ export const getSelectedAttribute = createSelector(
   state => state.selectedAttribute
 );
 
+export const getAttributesLoading = createSelector(
+  getAttributesFeatureState,
+  state => state.loading
+);
+
 export const getAttributeAvailableTags = createSelector(
   getAttributesFeatureState,
   state => state.availableTags
