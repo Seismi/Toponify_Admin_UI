@@ -20,7 +20,7 @@ Feature: Documentation Standards CRUD
     And the 'Work Package' 'Documentation Standards' pane is open
     And the documentation standard 'Created Automated Regression Test Doc Std UT1' should not be visible
 
-  @documentation_standards @TOP-835
+  @documentation_standards
   Scenario: Create Documentation Standard
     When the user creates the documentation standard 'Created Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
@@ -74,7 +74,7 @@ Feature: Documentation Standards CRUD
     And the user selects Documentation Standard menu item
     And the document standard 'Created Automated Regression Test Doc Std UT1' should not exist in the documentation standards table
 
-  @documentation_standards @TOP-837
+  @documentation_standards
   Scenario: Delete documentation standard and cancel
     Given the user creates the documentation standard 'Created Automated Regression Test Doc Std UT1' with description 'Regression Test 1', type 'Boolean' against 'Everywhere' component
     And the user confirms the creation of the documentation standard
@@ -84,7 +84,6 @@ Feature: Documentation Standards CRUD
     And the user selects Work Package menu item
     And the user selects the work package 'Created Automated Regression Test Work Package'
     And the 'Work Package' 'Documentation Standards' pane is open
-    And the documentation standard 'Created Automated Regression Test Doc Std UT1' should be visible
     And the documentation standard 'Created Automated Regression Test Doc Std UT1' should be visible
     And the user selects Documentation Standard menu item
     And the documentation standard 'Created Automated Regression Test Doc Std UT1' should exist with type 'Boolean' everywhere

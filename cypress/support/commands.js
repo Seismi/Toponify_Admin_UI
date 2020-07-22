@@ -111,7 +111,7 @@ Cypress.Commands.add('selectRow', (table, contents) => {
 Cypress.Commands.add('type_ckeditor', (element, content) => {
   cy.get(element)
     .find('[contenteditable=true]')
-    .clear()
+    .clear({ force: true })
     .type(content);
 });
 
@@ -190,7 +190,7 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
   }
   cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.get(`[data-qa=work-packages-quick-search]`) // get the quick packages search
-    .clear() //clear the box
+    .clear({ force: true }) //clear the box
     .type(name)
     .should('have.value', name) // type the name
     .wait(2000)
@@ -209,7 +209,7 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
 
 Cypress.Commands.add('findReport', name => {
   cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
-    .clear() //clear the box
+    .clear({ force: true }) //clear the box
     .type(name) // type the name
     .wait(2000)
     .wait('@GETReportsFilterQuery.all')
@@ -235,7 +235,7 @@ Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
 
 Cypress.Commands.add('findWorkPackageRadio', name => {
   cy.get(`[data-qa=work-packages-radio-table-quick-search]`) // get the quick packages search
-    .clear() //clear the box
+    .clear({ force: true }) //clear the box
     .type(name)
     .should('have.value', name); //type the name
   return cy
@@ -360,7 +360,7 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
 Cypress.Commands.add('findScope', name => {
   cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
     .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
-    .clear() //clear the box
+    .clear({ force: true }) //clear the box
     .type(name)
     .should('have.value', name) // type the name
     .wait(3000)
@@ -377,7 +377,7 @@ Cypress.Commands.add('findRadio', radio => {
     .click()
     .then(() => {
       cy.get('[data-qa=radio-filter-text]')
-        .clear()
+        .clear({ force: true })
         .type(radio);
       cy.selectDropDown('radio-filter-status', 'open');
       cy.selectDropDown('radio-filter-status', 'closed');
@@ -398,7 +398,7 @@ Cypress.Commands.add('findRadioAPI', radio => {
     .click()
     .then(() => {
       cy.get('[data-qa=radio-filter-text]')
-        .clear()
+        .clear({ force: true })
         .type(radio);
       cy.get('[data-qa=radio-filter-modal-apply]')
         .click({ force: true })
@@ -413,7 +413,7 @@ Cypress.Commands.add('findRadioAPI', radio => {
 Cypress.Commands.add('findDocumentationStandard', (name, wait) => {
   cy.get(`[data-qa=documentation-standards-quick-search]`) // get the quick packages search
     .scrollIntoView()
-    .clear()
+    .clear({ force: true })
     .type(name) // type the name
     .should('have.value', name);
   if (wait) {
@@ -524,7 +524,7 @@ Cypress.Commands.add(
 
     cy.get('[data-qa=radio-detail-title]')
       .scrollIntoView()
-      .clear()
+      .clear({ force: true })
       .type(title)
       .should('have.value', title)
       .then(() => {
@@ -555,7 +555,7 @@ Cypress.Commands.add(
       .then(() => {
         if (actioned.length > 0) {
           cy.get('[data-qa=radio-detail-action-by')
-            .clear()
+            .clear({ force: true })
             .type(actioned)
             .should('have.value', actioned);
         }
@@ -623,7 +623,7 @@ Cypress.Commands.add('checkTopologyTable', (component, component_type, test) => 
     .concat(component); // add the branch to the name
   let table = component_type === 'system' ? 'components' : 'links';
   cy.get('[data-qa=topology-table-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(component)
     .should('have.value', component);
   cy.get(`[data-qa=topology-table-${table}]`)
@@ -660,7 +660,7 @@ Cypress.Commands.add('deleteDocumentStandard', doc_standard => {
       });
   });
   cy.get('[data-qa=documentation-standards-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(doc_standard);
 });
 
@@ -722,7 +722,7 @@ Cypress.Commands.add('deleteDocumentStandard', title => {
         });
     });
   cy.get('[data-qa=documentation-standards-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(title);
 });
 
@@ -731,7 +731,7 @@ Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
-    .clear()
+    .clear({ force: true })
     .type(doc_standard)
     .should('have.value', doc_standard); //enter the documentation standard
   cy.get(`[data-qa=${table}]`) //get the doc standard table
@@ -749,7 +749,7 @@ Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard, table) => {
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
-    .clear()
+    .clear({ force: true })
     .type(doc_standard)
     .should('have.value', doc_standard); //enter the documentation standard
   cy.get(`[data-qa=${table}]`) //get the doc standard table
@@ -765,7 +765,7 @@ Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
-    .clear()
+    .clear({ force: true })
     .type(doc_standard)
     .should('have.value', doc_standard); //enter the documentation standard
   cy.get(`[data-qa=${table}]`) //get the doc standard table
@@ -784,7 +784,7 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .concat(' | ')
     .concat(doc_standard); // prefix the name with branch
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // search for the documentation standard
-    .clear()
+    .clear({ force: true })
     .type(doc_standard)
     .should('have.value', doc_standard);
   cy.get(`[data-qa=${table}]`) //get the table
@@ -810,20 +810,6 @@ Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) =
 });
 
 Cypress.Commands.add('populateWorkPackageDetails', (name, description, baseline, owner) => {
-  /*
-            if (baseline.length > 0) {
-              cy.get(`[data-qa=selection-table-quick-search]`) // get the quick packages search
-                .clear() //clear the box
-                .type(baseline)
-                .should('have.value', baseline) // type the name
-                .wait(1000)
-                .wait('@GETWorkPackagePaging')
-                .get(`[data-qa=work-packages-selection-table]`) // get the work packages table
-                .find('table>tbody') // find the table
-                .find('td',baseline)
-                .check()
-              //cy.selectDropDown('work-packages-details-baseline-selection', baseline);
-            }*/
   if (owner.length > 0) {
     cy.selectDropDown('work-packages-details-owners-selection', owner);
   }

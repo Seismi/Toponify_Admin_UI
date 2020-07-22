@@ -1,3 +1,4 @@
+@core
 Feature: Work Package Edit Objectives Feature
 As a user, I want to be able to modify the objectives of work packages and save the changes
 
