@@ -7,5 +7,5 @@ And('the user cancels the radio creation', () => {
 And('the user confirm the radio creation', () => {
   cy.get('[data-qa=radio-modal-save]')
     .click()
-    .wait(['@POSTRadios', '@GETNodesWorkPackageQuery.all', '@GETNodeLinksWorkPackageQuery.all']);
+    .wait(['@POSTRadios', '@GETNodesQuery.all', '@GETNodeLinksQuery.all']);
 });

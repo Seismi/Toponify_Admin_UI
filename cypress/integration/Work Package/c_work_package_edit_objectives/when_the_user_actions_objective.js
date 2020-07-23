@@ -4,7 +4,11 @@ When('the user clicks to {string} the create of the objective', function(button)
   cy.get(`[data-qa=work-packages-objectives-modal-${button}]`) // get the correct button
     .click()
     .then(() => {
-      if (button === 'confirm') cy.wait(['@POSTworkPackageObjectives', '@POSTobjectives']); // if the create objective is confirmed wait for the required routes
+      if (button === 'confirm') {
+        // if the create objective is confirmed wait for the required routes
+        cy.wait(['@POSTworkPackageObjectives', '@POSTobjectives']);
+        //cy.get('[data-qa=spinner]').should('not.be.visible')
+      }
     });
 });
 

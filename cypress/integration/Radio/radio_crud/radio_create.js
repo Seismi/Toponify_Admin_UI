@@ -7,11 +7,11 @@ When('the user cancels the creation of the radio', () => {
     .wait(['@GETRadios', '@POSTradiosAdvancedSearch', '@GETNodes', '@GETRadioViews']);
 });
 
-When('confirms the creation of the radio', () => {
+/*When('DEPRECATE confirms the creation of the radio', () => {
   cy.get(`[data-qa=radio-modal-save]`)
     .click()
     .then(() => {
       cy.wait(['@POSTRadios', '@POSTradiosAdvancedSearch', '@GETRadio']);
       cy.reload();
     });
-});
+});*/

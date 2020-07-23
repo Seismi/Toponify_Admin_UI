@@ -62,7 +62,7 @@ When(
     cy.reload()
       .wait(['@GETWorkPackages', '@GETWorkPackage', '@GETUsers'])
       .then(() => {
-        cy.findWorkPackage(work_package).then(() => {
+        cy.findWorkPackage(work_package, false).then(() => {
           cy.selectRow('work-packages-table', work_package) // select the correct row
             .then(() => {
               cy.selectDetailsPaneTab(work_package_settings['tabs']['Radio']).then(() => {
@@ -109,7 +109,7 @@ Then(
     cy.reload()
       .wait(['@GETWorkPackages', '@GETWorkPackage', '@GETUsers'])
       .then(() => {
-        cy.findWorkPackage(work_package).then(() => {
+        cy.findWorkPackage(work_package, false).then(() => {
           cy.selectRow('work-packages-table', work_package) // select the correct row
             .then(() => {
               cy.selectDetailsPaneTab(work_package_settings['tabs']['Radio']).then(() => {
@@ -157,7 +157,7 @@ Then('DEPRECATE the radio with title {string} should be visible after reload in 
   cy.reload()
     .wait(['@GETWorkPackages', '@GETWorkPackage', '@GETUsers'])
     .then(() => {
-      cy.findWorkPackage(title).then(() => {
+      cy.findWorkPackage(title, false).then(() => {
         cy.selectDetailsPaneTab(work_package_settings['tabs']['Radio']).then(() => {
           cy.assertRowExists('work-packages-radio-table', title); // assert row exists
         });

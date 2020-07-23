@@ -9,7 +9,7 @@ Given('the radio {string} does not exist against work package {string}', functio
     .concat(' | ')
     .concat(work_package); // append the branch to the name
 
-  cy.findWorkPackage(work_package) //find the work packages
+  cy.findWorkPackage(work_package, false) //find the work packages
     .then($table => {
       if ($table[0].rows.length > 0) {
         //if rows are found
