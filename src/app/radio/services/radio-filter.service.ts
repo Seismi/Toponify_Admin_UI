@@ -44,6 +44,10 @@ export class RadioFilterService {
         enabled: this.isFilterEnabled(data.assignedTo),
         values: data.assignedTo
       },
+      relatesToWorkPackages: {
+        enabled: this.isFilterEnabled(data.relatesToWorkPackages),
+        values: data.relatesToWorkPackages
+      },
       relatesTo: {
         enabled: this.isFilterEnabled(data.relatesTo),
         includeDescendants: this.isFilterEnabled(data.relatesTo),

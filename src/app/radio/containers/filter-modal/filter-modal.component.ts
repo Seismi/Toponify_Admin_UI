@@ -66,7 +66,7 @@ export class FilterModalComponent implements OnInit {
       from: this.filterData.from,
       to: this.filterData.to,
       text: this.filterData.text,
-      hasTag: this.filterData.hasTag
+      tags: this.filterData.tags
     });
   }
 
