@@ -7,5 +7,5 @@ When('the user selects the report {string} in the reports table', function(repor
   cy.findReport(report)
     .contains('td', report)
     .click()
-    .wait(2000);
+    .wait(['@GETWorkPackageReportsTags', '@GETReportsQuery', '@GETReportsFilterQuery']);
 });

@@ -65,7 +65,7 @@
     "@types/parse": "^1.11.0",
     "codelyzer": "~4.2.1",
     "cucumber": "^6.0.5",
-    "cypress": "^4.7.0",
+    "cypress": "^4.11.0",
     "cypress-cucumber-preprocessor": "^2.3.1",
     "husky": "^3.1.0",
     "jasmine-core": "~2.99.1",

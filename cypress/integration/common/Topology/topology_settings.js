@@ -188,6 +188,11 @@ module.exports = {
       api: `${api_version}/layouts/*/nodes/groupAreaSize`,
       method: 'PUT',
       name: 'LayoutNodes'
+    },
+    WorkPackageNodesGroupSet: {
+      api: `${api_version}/workpackages/*/nodes/*/group/set/*`,
+      method: 'POST',
+      name: 'WorkPackageNodesGroupSet'
     }
   }
 };
