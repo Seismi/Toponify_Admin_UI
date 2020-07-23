@@ -5,9 +5,10 @@ Given('the user deletes the documentation standard {string}', function(doc_stand
     .concat(' | ')
     .concat(doc_standard); //add the branch to the work package name
 
-  cy.selectTableFirstRow(doc_standard, 'documentation-standards-quick-search', 'documentation-standards-table')
+  cy.findDocumentationStandard(doc_standard, false)
+    .contains('td', doc_standard)
     .click()
-    .wait('@GETCustomProperties*')
     .get('[data-qa=documentation-standards-delete]')
-    .click();
+    .click()
+    .wait('@GETCustomProperties*');
 });

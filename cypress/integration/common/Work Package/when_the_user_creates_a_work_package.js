@@ -6,7 +6,7 @@ When(
     name = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(name); // add the branch to the name
-    if (baseline.length > 0) cy.selectDropDown('work-packages-details-baseline-selection', baseline); //if a baseline is specified then select
+    /*    if (baseline.length > 0) cy.selectDropDown('work-packages-details-baseline-selection', baseline); //if a baseline is specified then select
     if (owner.length > 0) cy.selectDropDown('work-packages-details-owners-selection', owner); // if an owner is specified then select
     cy.get('smi-workpackage-modal') // get the form
       .within(() => {
@@ -17,6 +17,7 @@ When(
         cy.get(`[data-qa=work-packages-details-description]`) // get the description input
           .type(description)
           .should('have.value', description); // enter the description
-      });
+      });*/
+    cy.populateWorkPackageDetails(name, description, baseline, owner);
   }
 );

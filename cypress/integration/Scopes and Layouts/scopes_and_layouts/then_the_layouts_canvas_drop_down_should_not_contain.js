@@ -7,7 +7,7 @@ Then('the layouts canvas drop down should not contain {string} against scope {st
   layout = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(layout); // prefix the branch to scope
-  let wait = ['@GETScope', '@GETLayout', '@GETNodesQuery'];
+  let wait = ['@GETScope', '@GETLayout'];
   cy.selectDropDownWaitFor('header-scopes-dropdown', scope, wait).then(() => {
     cy.get('[data-qa=spinner]').should('not.be.visible');
     cy.get('smi-layout-actions')

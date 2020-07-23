@@ -8,13 +8,9 @@ Then('the documentation standard {string} should exist with type {string} everyw
   doc_standard = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(doc_standard); //add the branch to the work package name
-  cy.findDocumentationStandard(doc_standard)
-    .contains(doc_standard)
-    .should('exist');
-  cy.get(`[data-qa=documentation-standards-table]`) // get the work packages table
-    .find('table>tbody')
-    .find('tr :first')
-    .click()
+  cy.findDocumentationStandard(doc_standard, false)
+    .contains('td', doc_standard)
+    .click({ force: true })
     .then(() => {
       cy.get('[data-qa=documentation-standards-details-name]').should('have.value', doc_standard);
       cy.get('[data-qa=documentation-standards-details-description]').should('have.value', doc_standard);
