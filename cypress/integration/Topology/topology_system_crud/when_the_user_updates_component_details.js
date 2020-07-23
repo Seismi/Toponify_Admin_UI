@@ -10,12 +10,7 @@ When(
     if (type === 'system') {
       wait_for = '@PUTWorkPackagesNodes';
     } else {
-      wait_for = [
-        '@GETNodesScopes',
-        '@GETnodeLinksWorkPackageQuery',
-        '@GETNodesReportWorkPackageQuery',
-        '@GETWorkPackageNodeLinksQuery'
-      ];
+      wait_for = ['@GETnodeLinksWorkPackageQuery', '@GETWorkPackageNodeLinksQuery'];
     }
     cy.get('[data-qa=object-details-reference]')
       .clear()

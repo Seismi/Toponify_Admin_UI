@@ -1,5 +1,5 @@
 @core
-Feature: Topology Systems Layer Feature
+Feature: Topology Systems CRUD Feature
   As a user, I want to be able to add and modify the components of the systems layer in the topology area of the application
 
   Background:
@@ -31,10 +31,10 @@ Feature: Topology Systems Layer Feature
     Examples:
       |name|component_type|
       |Automated Regression Test Transaction System|transactional|
-      |Automated Regression Test Reporting System|reporting|
-      |Automated Regression Test Analytical System|analytical|
-      |Automated Regression Test File System|file|
-      |Automated Regression Test Master Data System|master data|
+      #|Automated Regression Test Reporting System|reporting|
+      #|Automated Regression Test Analytical System|analytical|
+      #|Automated Regression Test File System|file|
+      #|Automated Regression Test Master Data System|master data|
 
   @topology
   Scenario Outline: Update System Component via table and check results are correctly saved
@@ -57,7 +57,7 @@ Feature: Topology Systems Layer Feature
       |name|type|new_reference|new_name|new_type|new_description|new_owner|
       |Automated Regression Test Transaction System|transactional|test1|Automated Updated Regression Test Reporting System|reporting|Updated to test the write to details pane|Automated Regression Test Update Team (DO NOT DELETE)|
 
-  @topology @focus
+  @topology
   Scenario Outline: Delete System Component via table and check system is correctly deleted
     Given the user selects Topology menu item
     And the "System View" layer is selected
@@ -146,7 +146,7 @@ Feature: Topology Systems Layer Feature
       |name|interface_type|source_name|source_type|target_name|target_type|new_reference|new_name|new_type|new_description|new_owner|
       |Automated Regression Test (Transaction to Reporting)|data|Automated Regression Test Transaction System|transactional|Automate Regression Test Reporting System|reporting|test1|Automated Updated Regression Test Reporting System|master data|Updated to test the write to details pane|Automated Regression Test Update Team (DO NOT DELETE)|
 
-  @topology @focus
+  @topology
   Scenario Outline: Delete interface via table and check results are correctly saved
     Given the user selects Topology menu item
     And the "System View" layer is selected

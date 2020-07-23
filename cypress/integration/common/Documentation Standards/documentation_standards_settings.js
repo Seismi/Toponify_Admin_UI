@@ -5,12 +5,12 @@ module.exports = {
   page_check: 'documentation-standards',
   wait_for: {
     CustomProperties: {
-      api: `${api_version}/customProperties`,
+      api: `${api_version}/customProperties*`,
       method: 'POST',
       name: 'CustomProperties'
     },
     CustomProperties1: {
-      api: `${api_version}/customProperties`,
+      api: `${api_version}/customProperties*`,
       method: 'GET',
       name: 'CustomProperties'
     },
@@ -23,6 +23,11 @@ module.exports = {
       api: `${api_version}/customProperties/*`,
       method: 'GET',
       name: 'CustomProperties*'
+    },
+    PUTCustomProperties: {
+      api: `${api_version}/customProperties/*`,
+      method: 'PUT',
+      name: 'CustomProperties'
     }
   }
 };
