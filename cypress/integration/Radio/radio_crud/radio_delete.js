@@ -1,8 +1,9 @@
 import { When, And } from 'cypress-cucumber-preprocessor/steps';
 
 When('the user updates the filter to show closed radios', () => {
-  cy.get('[data-qa=radio-filter]').click();
-  cy.selectDropDown('radio-filter-status', 'closed');
+  cy.get('[data-qa=radio-header-filter]').click();
+  cy.selectDropDown('radio-filter-status', 'open');
+  cy.selectDropDown('radio-filter-status', 'new');
   cy.get(`[data-qa=radio-filter-modal-apply]`)
     .click({ force: true })
     .wait('@POSTradiosAdvancedSearch');
