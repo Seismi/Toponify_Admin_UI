@@ -6,70 +6,19 @@ When(
     name = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(name); // append the branch name to the test work package to differentiate between branch test
-    cy.findWorkPackage(name).then($table => {
+    cy.findWorkPackage(name, false).then($table => {
+      cy.log($table[0].rows.length);
       if ($table[0].rows.length === 0) {
         // check if the search returned a result
-        createWorkPackage(name, description, baseline, owner); // create work package as it has not yet been created
+        cy.wait(2000);
+        cy.createWorkPackage(name, description, baseline, owner); // create work package as it has not yet been created
       } else {
-        cy.selectRow('work-packages-table', name)
-          .wait('@GETWorkPackage')
-          .then(() => {
-            cy.get('tbody>tr')
-              .filter('.highlight')
-              .get('td')
-              .eq(2)
-              .then(status => {
-                switch (status[0].textContent) {
-                  case 'submitted':
-                    cy.get(`[data-qa=work-packages-reset]`).click();
-                  case 'draft':
-                  case 'superseded':
-                    cy.get(`[data-qa=work-packages-delete]`)
-                      .click()
-                      .then(() => {
-                        cy.get('[data-qa=delete-modal-yes]')
-                          .click()
-                          .wait('@DELETEWorkPackage')
-                          .then(() => {
-                            createWorkPackage(name, description, baseline, owner);
-                          });
-                      });
-                    break;
-                  default:
-                    cy.get(`[data-qa=work-packages-reset]`).click();
-                }
-              });
-          });
+        Object.keys($table[0].rows).forEach(work_package => {
+          //loop through the rows
+          cy.deleteWorkPackage(name); //delete the work packages
+        });
+        cy.createWorkPackage(name, description, baseline, owner); // create work package as it has not yet been created
       }
     });
   }
 );
-
-function createWorkPackage(name, description, baseline, owner) {
-  cy.get(`[data-qa=work-packages-create-new]`)
-    .click()
-    .wait(['@GETTeams', '@GETWorkPackages'])
-    .then(() => {
-      if (baseline.length > 0) {
-        cy.selectDropDown('work-packages-details-baseline-selection', baseline).then(() => {
-          if (owner.length > 0) {
-            cy.selectDropDown('work-packages-details-owners-selection', owner).then(() => {
-              cy.get('smi-workpackage-modal').within(() => {
-                cy.get(`[data-qa=work-packages-details-name]`)
-                  .type(name)
-                  .should('have.value', name);
-                cy.get(`[data-qa=work-packages-details-description]`)
-                  .type(description)
-                  .should('have.value', description);
-                cy.get(`[data-qa=work-packages-modal-save]`)
-                  .click()
-                  .then(() => {
-                    cy.wait(['@POSTWorkPackage', '@GETWorkPackage'], { requestTimeout: 20000, responseTimeout: 40000 });
-                  });
-              });
-            });
-          }
-        });
-      }
-    });
-}

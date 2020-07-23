@@ -11,26 +11,25 @@ When(
 
     cy.get('[data-qa=work-packages-radio-table-add')
       .click()
-      .wait('@GETRadios')
+      .wait('@GETRadios');
+    cy.get('[data-qa=work-packages-radio-modal-new]')
+      .click()
       .then(() => {
-        cy.get('[data-qa=work-packages-radio-modal-new]')
+        cy.writeRadioDetails(
+          title,
+          category,
+          status,
+          assigned,
+          severity,
+          probability,
+          actioned,
+          description,
+          mitigation
+        );
+        cy.get('[data-qa=radio-modal-save]')
           .click()
-          .then(() => {
-            cy.writeRadioDetails(
-              title,
-              category,
-              status,
-              assigned,
-              severity,
-              probability,
-              actioned,
-              description,
-              mitigation
-            );
-            cy.get('[data-qa=radio-modal-save]')
-              .click()
-              .wait(['@POSTRadios', '@GETWorkPackage']);
-          });
+          .wait(['@POSTRadios', '@GETWorkPackage']);
       });
+    cy.get('[data-qa=details-spinner]').should('not.be.visible');
   }
 );
