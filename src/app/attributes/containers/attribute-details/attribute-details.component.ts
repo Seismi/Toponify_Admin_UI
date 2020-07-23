@@ -24,7 +24,7 @@ import { getSelectedWorkpackages, getEditWorkpackages } from '@app/workpackage/s
 import { MatDialog } from '@angular/material';
 import { currentArchitecturePackageId, CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 import { Tag } from '@app/architecture/store/models/node.model';
-import { take } from 'rxjs/operators';
+import { take, distinctUntilChanged } from 'rxjs/operators';
 import { Actions, ofType } from '@ngrx/effects';
 import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-modal.component';
 import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
@@ -35,6 +35,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
+import { isEqual } from 'lodash';
 
 @Component({
   selector: 'app-attribute-details',
@@ -66,9 +67,16 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         this.attributeId = params['attributeId'];
-        this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-          const workPackageIds = workpackages.map(item => item.id);
-          this.setWorkPackage(workPackageIds);
+        this.workPackageStore
+          .pipe(
+            select(getSelectedWorkpackages),
+            distinctUntilChanged(isEqual)
+          )
+          .subscribe(workpackages => {
+            if (workpackages) {
+              const workPackageIds = workpackages.map(item => item.id);
+              this.setWorkPackage(workPackageIds ? workPackageIds : []);
+            }
         });
       })
     );
@@ -84,10 +92,12 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
-        const edit = workpackages.map(item => item.edit);
-        const workPackageId = workpackages.map(item => item.id);
-        this.workpackageId = workPackageId[0];
-        edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+        if (workpackages) {
+          const edit = workpackages.map(item => item.edit);
+          const workPackageId = workpackages.map(item => item.id);
+          this.workpackageId = workPackageId[0];
+          edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+        }
       })
     );
   }
