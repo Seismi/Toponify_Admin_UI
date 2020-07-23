@@ -124,24 +124,34 @@ export class RadioComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(
-      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
-        this.selectedRadioIndex = action.payload.id;
-        if (this.filterData) {
-          this.store.dispatch(
-            new SearchRadio({
-              data: this.filterData
-            })
-          );
-        } else {
-          this.store.dispatch(
-            new LoadRadios({
-              page: '0',
-              size: '10'
-            })
-          );
-        }
-        this.onSelectRadio(action.payload);
-      })
+      this.actions
+        .pipe(
+          ofType(
+            RadioActionTypes.AddRadioSuccess,
+            RadioActionTypes.DeleteRadioEntitySuccess,
+            RadioActionTypes.AddReplySuccess
+          )
+        )
+        .subscribe((action: { payload: RadioDetail }) => {
+          this.selectedRadioIndex = action.payload.id;
+          if (this.filterData) {
+            this.store.dispatch(
+              new SearchRadio({
+                data: this.filterData,
+                page: '0',
+                size: '10'
+              })
+            );
+          } else {
+            this.store.dispatch(
+              new LoadRadios({
+                page: '0',
+                size: '10'
+              })
+            );
+          }
+          this.onSelectRadio(action.payload);
+        })
     );
   }
 
@@ -199,6 +209,13 @@ export class RadioComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
         this.store.dispatch(new RadioFilter(this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio)));
+        this.store.dispatch(
+          new SearchRadio({
+            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
+            page: String(0),
+            size: String(10)
+          })
+        );
       }
     });
   }

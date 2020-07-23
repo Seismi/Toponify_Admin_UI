@@ -86,6 +86,15 @@ export class DocumentationStandardsComponent implements OnInit {
     this.search$.next(textFilter);
   }
 
+  refreshSearch(textFilter: string): void {
+    this.documentStandardParams = {
+      textFilter: textFilter,
+      page: 0,
+      size: this.documentStandardParams.size,
+    };
+    this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
+  }
+
   onPageChange(page) {
     this.documentStandardParams = {
       textFilter: this.documentStandardParams.textFilter,

@@ -11,9 +11,9 @@ Then(
       .concat(' | ')
       .concat(title); // append the branch to the name
     cy.reload()
-      .wait(['@GETWorkPackages', '@GETWorkPackage', '@GETUsers'])
+      .wait(['@GETWorkPackagePaging', '@GETWorkPackage', '@GETUsers'])
       .then(() => {
-        cy.findWorkPackage(work_package).then(() => {
+        cy.findWorkPackage(work_package, false).then(() => {
           cy.selectRow('work-packages-table', work_package) // select the correct row
             .then(() => {
               cy.selectDetailsPaneTab(workPackage['tabs']['Radio']).then(() => {
