@@ -69,6 +69,26 @@ module.exports = {
       api: `${api_version}/customProperties`,
       method: 'GET',
       name: 'CustomProperties'
+    },
+    RadioTags: {
+      api: `${api_version}/radios/*/tags`,
+      method: 'GET',
+      name: 'RadioTags'
+    },
+    GetUsers: {
+      api: `${api_version}/users`,
+      method: 'GET',
+      name: 'Users'
+    },
+    GetWorkPackages: {
+      api: `${api_version}/workpackages`,
+      method: 'GET',
+      name: 'WorkPackages'
+    },
+    radioAdvancedSearch: {
+      api: `${api_version}/radios/advanced/search`,
+      method: 'POST',
+      name: 'radioAdvancedSearch'
     }
   }
 };

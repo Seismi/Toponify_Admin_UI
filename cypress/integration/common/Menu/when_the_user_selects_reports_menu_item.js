@@ -14,8 +14,6 @@ When('the user selects Reports menu item', function() {
             '@GETScopes.all',
             '@GETScope.all',
             '@GETWorkPackages.all',
-            '@GETNodesWorkPackageQuery.all',
-            '@GETNodeLinksWorkPackageQuery.all',
             '@GETSelectorAvailabilityQuery.all'
           ]); // wait for API Calls
         });
