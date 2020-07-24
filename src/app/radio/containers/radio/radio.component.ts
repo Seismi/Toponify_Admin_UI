@@ -56,7 +56,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     textFilter: '',
     page: 0,
     size: 100
-  }
+  };
 
   get isLoading$(): Observable<LoadingStatus> {
     return this.store.select(getRadiosLoadingStatus);
@@ -95,50 +95,11 @@ export class RadioComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      this.store
-        .pipe(
-          select(getMergedRadioFilters),
-          distinctUntilChanged(isEqual)
-        )
-        .subscribe(data => {
-          if (data) {
-            this.store.dispatch(
-              new SearchRadio({
-                data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data),
-                page: '0',
-                size: '10'
-              })
-            );
-          } else {
-            this.store.dispatch(
-              new LoadRadios({
-                page: '0',
-                size: '10'
-              })
-            );
-          }
-        })
-    );
-
-    this.subscriptions.push(
-      this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
-        if (action) {
-          this.selectedRadioIndex = action.id;
-        }
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions.pipe(ofType(
-        RadioActionTypes.AddRadioSuccess,
-        RadioActionTypes.DeleteRadioEntitySuccess,
-        RadioActionTypes.AddReplySuccess
-      )).subscribe((action: { payload: RadioDetail }) => {
-        this.selectedRadioIndex = action.payload.id;
-        if (this.filterData) {
+      this.store.pipe(select(getMergedRadioFilters), distinctUntilChanged(isEqual)).subscribe(data => {
+        if (data) {
           this.store.dispatch(
             new SearchRadio({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
+              data: data,
               page: '0',
               size: '10'
             })
@@ -151,8 +112,46 @@ export class RadioComponent implements OnInit, OnDestroy {
             })
           );
         }
-        this.onSelectRadio(action.payload);
       })
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
+        if (action) {
+          this.selectedRadioIndex = action.id;
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions
+        .pipe(
+          ofType(
+            RadioActionTypes.AddRadioSuccess,
+            RadioActionTypes.DeleteRadioEntitySuccess,
+            RadioActionTypes.AddReplySuccess
+          )
+        )
+        .subscribe((action: { payload: RadioDetail }) => {
+          this.selectedRadioIndex = action.payload.id;
+          if (this.filterData) {
+            this.store.dispatch(
+              new SearchRadio({
+                data: this.filterData,
+                page: '0',
+                size: '10'
+              })
+            );
+          } else {
+            this.store.dispatch(
+              new LoadRadios({
+                page: '0',
+                size: '10'
+              })
+            );
+          }
+          this.onSelectRadio(action.payload);
+        })
     );
   }
 
@@ -202,14 +201,14 @@ export class RadioComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(FilterModalComponent, {
       disableClose: false,
       data: {
-        filterData: this.filterData,
+        filterData: this.radioFilterService.transformFiltersIntoFormValues(this.filterData),
         mode: this.filterData ? 'filter' : null
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.store.dispatch(new RadioFilter(data.radio));
+        this.store.dispatch(new RadioFilter(this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio)));
         this.store.dispatch(
           new SearchRadio({
             data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
@@ -225,7 +224,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     if (this.filterData) {
       this.store.dispatch(
         new SearchRadio({
-          data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
+          data: this.filterData,
           page: String(nextPage.pageIndex),
           size: String(nextPage.pageSize)
         })
