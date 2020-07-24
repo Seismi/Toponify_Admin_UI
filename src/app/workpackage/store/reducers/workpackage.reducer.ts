@@ -342,6 +342,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         selectedWorkPackage: action.payload,
+        loading: false,
         loadingDetails: false
       };
     }
