@@ -37,6 +37,14 @@ export class FilterRadioFormComponent {
     return option && value ? option.id === value.id : false;
   }
 
+  tagsToComparison(option: any, value: any): boolean {
+    return option && value ? option.id === value.id : false;
+  }
+
+  relatesWorkpackagesToComparison(option: any, value: any): boolean {
+    return option && value ? option.id === value.id : false;
+  }
+
   filterComponents(node: Node): boolean {
     const searchValue = this.searchComponents.nativeElement.value;
     return searchValue !== '' && node.name.toLowerCase().indexOf(searchValue.toLowerCase()) === -1;

@@ -1,5 +1,5 @@
 <div class="mat-elevation-z8">
-  <mat-spinner *ngIf="loading"></mat-spinner>
+  <mat-spinner data-qa="selection-table-spinner" *ngIf="loading"></mat-spinner>
   <div class="search-container">
     <input placeholder="Search" data-qa="selection-table-quick-search" (keyup)="onSearch($event.target.value)">
   </div>

@@ -24,7 +24,7 @@ export enum RadioTokenColours {
 }
 
 export interface RadioEntitiesResponse {
-  data?: (RadioEntity)[] | null;
+  data?: RadioEntity[] | null;
   links: Links;
   page: Page;
 }
@@ -63,13 +63,13 @@ export interface RadioEntity {
   mitigation: string;
   category: string;
   author: AuthorOrLastUpdatedBy;
-  owners?: (TeamsOrOwners)[] | null;
+  owners?: TeamsOrOwners[] | null;
   assignedTo: AuthorOrLastUpdatedBy;
   actionBy: string;
   status: string;
   createdOn?: string;
   lastUpdatedOn?: string;
-  lastUpdatedBy?: (AuthorOrLastUpdatedBy)[] | null;
+  lastUpdatedBy?: AuthorOrLastUpdatedBy[] | null;
   replyCount?: number;
 }
 
@@ -105,15 +105,15 @@ export interface RadioDetail {
   assignedTo: AssignedTo;
   actionBy: string;
   author: AuthorOrLastUpdatedBy;
-  owners: (TeamsOrOwners)[] | null;
+  owners: TeamsOrOwners[] | null;
   createdOn: string;
   lastUpdatedOn: string;
-  lastUpdatedBy: (AuthorOrLastUpdatedBy)[] | null;
-  target?: (Target)[] | null;
-  link?: (Link)[] | null;
+  lastUpdatedBy: AuthorOrLastUpdatedBy[] | null;
+  target?: Target[] | null;
+  link?: Link[] | null;
   replyCount: number;
-  replies?: (Replies)[] | null;
-  relatesTo: (RelatesTo)[] | null;
+  replies?: Replies[] | null;
+  relatesTo: RelatesTo[] | null;
   severity: number;
   frequency: number;
   customPropertyValues: any;
@@ -156,16 +156,16 @@ export interface Link {
 
 export interface Replies {
   id: string;
-  author?: (AuthorOrLastUpdatedBy)[] | null;
+  author?: AuthorOrLastUpdatedBy[] | null;
   postedOn: string;
   replyText: string;
   changes?: Changes;
-  replies?: (string)[] | null;
+  replies?: string[] | null;
 }
 
 export interface Changes {
   hasChanges?: boolean;
-  listChanges?: (ListChanges)[] | null;
+  listChanges?: ListChanges[] | null;
 }
 
 export interface ListChanges {
@@ -196,7 +196,7 @@ interface AddRadioOrReplyChanges {
   description?: string;
   assignedTo?: AssignedTo;
   author?: AuthorOrLastUpdatedBy;
-  relatesTo?: (RelatesTo)[] | null;
+  relatesTo?: RelatesTo[] | null;
   actionBy?: string;
   mitigation?: string;
   severity?: number;
@@ -219,6 +219,7 @@ export interface RadiosAdvancedSearch {
   type?: Type;
   raisedBy?: RaisedBy;
   assignedTo?: AssignedToValues;
+  relatesToWorkPackages?: AssignedToValues;
   workpackages?: WorkPackages;
   relatesTo?: RelatesToValues;
   dueDate?: DueDate;
@@ -244,23 +245,23 @@ interface RelatesToValues {
   enabled: boolean;
   includeDescendants?: boolean;
   includeLinks?: boolean;
-  values?: (Values)[] | null;
+  values?: Values[] | null;
 }
 
 interface WorkPackages {
   enabled: boolean;
   includeBaseline: boolean;
-  values?: (Values)[] | null;
+  values?: Values[] | null;
 }
 
 interface AssignedToValues {
   enabled: boolean;
-  values?: (Values)[] | null;
+  values?: Values[] | null;
 }
 
 interface RaisedBy {
   enabled: boolean;
-  values?: (Values)[] | null;
+  values?: Values[] | null;
 }
 
 interface Values {
@@ -271,12 +272,12 @@ interface Values {
 
 interface Type {
   enabled?: boolean;
-  values?: (string)[] | null;
+  values?: string[] | null;
 }
 
 interface Status {
   enabled?: boolean;
-  values?: (string)[] | null;
+  values?: string[] | null;
 }
 
 interface AssignedToMe {
