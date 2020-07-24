@@ -5,8 +5,11 @@
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let element">
-        <mat-icon class="favourite-icon">grade</mat-icon>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <mat-icon *ngIf="i === index && unset; else elseBlock" class="favourite-icon" (click)="onSetFavourite(element, i)">star_outline</mat-icon>
+        <ng-template #elseBlock>
+          <mat-icon class="favourite-icon" (click)="onUnsetFavourite(element, i)">grade</mat-icon>
+        </ng-template>
         <mat-icon *ngIf="element.favouriteType === FavouriteType.scope">pages</mat-icon>
         <mat-icon *ngIf="element.favouriteType === FavouriteType.radioView">track_changes</mat-icon>
         <div class="title">{{ element.name }} </div>

@@ -4,6 +4,11 @@ import { RadioTokenColours } from '@app/radio/store/models/radio.model';
 import { Favourites } from '@app/settings/store/models/user.model';
 import { Router } from '@angular/router';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import { Store } from '@ngrx/store';
+import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
+import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
+import { UnsetRadioViewAsFavourite, SetRadioViewAsFavourite } from '@app/radio/store/actions/radio.actions';
+import { UnsetScopeAsFavourite, SetScopeAsFavourite } from '@app/scope/store/actions/scope.actions';
 
 enum FavouriteType {
   radioView = 'radioView',
@@ -18,7 +23,9 @@ type Button = 'systems' | 'data' | 'reports' | 'radios';
   styleUrls: ['./favourites-table.component.scss']
 })
 export class FavouritesTableComponent {
+  public unset: boolean;
   public FavouriteType = FavouriteType;
+  public index: number;
   @Input()
   set data(data: Favourites[]) {
     this.dataSource = new MatTableDataSource<Favourites>(data);
@@ -27,7 +34,11 @@ export class FavouritesTableComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private router: Router) { }
+  constructor(
+    private scopeStore: Store<ScopeState>,
+    private radioStore: Store<RadioState>,
+    private router: Router
+  ) { }
 
   public displayedColumns: string[] = ['name'];
   public dataSource: MatTableDataSource<Favourites>;
@@ -87,5 +98,24 @@ export class FavouritesTableComponent {
 
   goToTopology(queryParams: { [key: string]: any }): void {
     this.router.navigate(['/topology'], { queryParams });
+  }
+
+  onSetFavourite(favourite: Favourites, index: number) {
+    this.unset = false;
+    if (favourite.favouriteType === FavouriteType.radioView) {
+      this.radioStore.dispatch(new SetRadioViewAsFavourite(favourite.id));
+    } else {
+      this.scopeStore.dispatch(new SetScopeAsFavourite(favourite.id));
+    }
+  }
+
+  onUnsetFavourite(favourite: Favourites, index: number) {
+    this.unset = true;
+    this.index = index;
+    if (favourite.favouriteType === FavouriteType.radioView) {
+      this.radioStore.dispatch(new UnsetRadioViewAsFavourite(favourite.id));
+    } else {
+      this.scopeStore.dispatch(new UnsetScopeAsFavourite(favourite.id));
+    }
   }
 }
