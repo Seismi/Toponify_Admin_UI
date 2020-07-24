@@ -99,6 +99,16 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
         }
       });
 
+    this.actions.pipe(ofType(WorkPackageActionTypes.AddObjectiveSuccess)).subscribe((action: any) => {
+      if (action) {
+        if (this.selectedRowIndex === action.payload.id) {
+          this.selectedRowIndex = null;
+        } else {
+          this.selectedRowIndex = this.workpackage.id;
+        }
+      }
+    });
+
     this.actions.pipe(ofType(WorkPackageActionTypes.ArchiveWorkPackage)).subscribe((action: any) => {
       if (action) {
         this.store.dispatch(
