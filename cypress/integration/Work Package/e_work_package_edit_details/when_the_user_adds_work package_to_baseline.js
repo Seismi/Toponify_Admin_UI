@@ -24,5 +24,10 @@ When('the user adds work package {string} to baseline of work package {string} a
                 }); // action the selection
             });
         });
+    })
+    .then(() => {
+      //following spinner does not close
+      cy.get('[data-qa=spinner]').should('not.be.visible');
+      cy.get('[data-qa=details-spinner]').should('not.be.visible');
     });
 });

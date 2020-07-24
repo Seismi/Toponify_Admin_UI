@@ -14,9 +14,11 @@ When(
     cy.get(`[data-qa=radio-chatbox-expand]`).click({ multiple: true });
     cy.get('smi-chatbox')
       .find(`[data-qa=radio-chatbox-set]`)
-      .contains(from);
+      .contains(from)
+      .should('exist');
     cy.get('smi-chatbox')
       .find(`[data-qa=radio-chatbox-to]`)
-      .contains(to);
+      .contains(to)
+      .should('exist');
   }
 );

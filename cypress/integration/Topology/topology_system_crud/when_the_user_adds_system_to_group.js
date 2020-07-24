@@ -8,12 +8,10 @@ when('the user adds system {string} to group {string}', function(system, group) 
         cy.get('[data-qa=select-modal-confirm')
           .click()
           .wait([
-            '@GETNodesWorkPackageQuery',
-            '@GETNodeLinksWorkPackageQuery',
-            '@GETNodesScopes',
+            '@GETNodeLinksQuery',
             '@GETNodesWorkPackageQuery2',
-            '@GETNodesReportWorkPackageQuery',
-            '@GETWorkPackageNodeTags'
+            '@GETWorkPackageNodeTags',
+            '@POSTWorkPackageNodesGroupSet'
           ]);
         cy.get('[data-qa=spinner]').should('not.be.visible');
       });
