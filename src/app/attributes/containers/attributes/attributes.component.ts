@@ -32,6 +32,7 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import isEqual from 'lodash.isequal';
+import { getAttributesLoading } from '../../store/selectors/attributes.selector';
 
 @Component({
   selector: 'smi-attributes',
@@ -63,7 +64,10 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => (this.attribute = data))
+      this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
+        console.log('here');
+        return (this.attribute = data);
+      })
     );
 
     this.scopeStore.dispatch(new LoadScopes({}));
@@ -146,6 +150,10 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  get isLoading$(): Observable<boolean> {
+    return this.store.select(getAttributesLoading);
   }
 
   get categoryTableData(): AttributeEntity[] {
