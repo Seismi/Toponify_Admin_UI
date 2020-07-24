@@ -93,6 +93,6 @@
         <smi-change-table data-qa="work-packages-changes-table" [data]="workpackage?.changes"> </smi-change-table>
       </mat-tab>
     </mat-tab-group>
-    <smi-spinner *ngIf="isLoading"></smi-spinner>
+    <smi-spinner data-qa="work-packages-detail-spinner" *ngIf="isLoading"></smi-spinner>
   </p>
 </app-model-container>
