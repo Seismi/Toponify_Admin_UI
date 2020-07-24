@@ -46,17 +46,17 @@ export class FilterModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.tags$ = this.nodeStore.pipe(select(getTags))
-    .pipe(
-      map(tags =>
-        tags.filter(tag => tag.applicableTo.indexOf(TagApplicableTo.everywhere || TagApplicableTo.RADIO) > -1)
-      )
-    );
+    this.tags$ = this.nodeStore
+      .pipe(select(getTags))
+      .pipe(
+        map(tags =>
+          tags.filter(tag => tag.applicableTo.indexOf(TagApplicableTo.everywhere || TagApplicableTo.RADIO) > -1)
+        )
+      );
 
     this.workpackages$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
     this.users$ = this.userStore.pipe(select(getUsers));
-
     this.filterRadioService.filterRadioForm.patchValue({
       status: this.filterData.status,
       type: this.filterData.type,
@@ -66,7 +66,7 @@ export class FilterModalComponent implements OnInit {
       from: this.filterData.from,
       to: this.filterData.to,
       text: this.filterData.text,
-      hasTag: this.filterData.hasTag
+      tags: this.filterData.tags
     });
   }
 
