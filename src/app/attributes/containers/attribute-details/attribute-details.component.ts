@@ -69,6 +69,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
         this.attributeId = params['attributeId'];
         this.workPackageStore
           .pipe(
+            take(1),
             select(getSelectedWorkpackages),
             distinctUntilChanged(isEqual)
           )
