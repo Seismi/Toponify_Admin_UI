@@ -56,10 +56,7 @@ export class AnalysisFilterComponent implements OnInit, OnDestroy {
         this.defaultFilters = defaultFilters;
         this.store.dispatch(
           new GetRadioAnalysis({
-            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(defaultFilters, [
-              'severityRange',
-              'frequencyRange'
-            ])
+            data: this.radioFilterService.disableFilters(defaultFilters, ['severityRange', 'frequencyRange'])
           })
         );
       })

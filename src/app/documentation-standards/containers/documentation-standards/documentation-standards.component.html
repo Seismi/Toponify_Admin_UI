@@ -23,7 +23,7 @@
               (refresh)="refreshSearch($event)"
             >
             </smi-documentation-standards-table>
-            <smi-spinner *ngIf="!(isLoading$ | async)"></smi-spinner>
+            <smi-spinner data-qa="documentation-standards-spinner" *ngIf="!(isLoading$ | async)"></smi-spinner>
           </div>
           <div class="col">
             <smi-right-hand-side [title]="'Document Standard'" [appCanEdit]="[Roles.ADMIN, Roles.ARCHITECT]" (add)="onAddDocument()"></smi-right-hand-side>
