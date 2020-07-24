@@ -397,14 +397,18 @@ export function reducer(
 
     case NodeActionTypes.LoadNodeReports: {
       return {
-        ...state
+        ...state,
+        loadingNode: LoadingStatus.loading,
+        loadingLink: LoadingStatus.loading
       };
     }
 
     case NodeActionTypes.LoadNodeReportsSuccess: {
       return {
         ...state,
-        reports: action.payload
+        reports: action.payload,
+        loadingNode: LoadingStatus.loaded,
+        loadingLink: LoadingStatus.loaded
       };
     }
 
