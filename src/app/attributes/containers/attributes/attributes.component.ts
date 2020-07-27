@@ -63,6 +63,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // Attributes And Rules
     this.subscriptions.push(
       this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
         console.log('here');
@@ -70,6 +71,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
       })
     );
 
+    // Scope
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
@@ -94,6 +96,11 @@ export class AttributesComponent implements OnInit, OnDestroy {
         })
     );
 
+
+    // Work Packages
+    this.workPackageStore.dispatch(new LoadWorkPackages({}));
+    this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
+
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
         if (typeof workpackages === 'string') {
@@ -106,21 +113,27 @@ export class AttributesComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.workPackageStore.dispatch(new LoadWorkPackages({}));
-    this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
-
     this.subscriptions.push(
-      this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-        this.selectedWorkPackageEntities = workpackages;
-        const workPackageIds = workpackages.map(item => item.id);
-        this.getAttributesWithQueryParams(workPackageIds);
+      this.workPackageStore
+        .pipe(
+          select(getSelectedWorkpackages),
+          distinctUntilChanged(isEqual)
+        )
+        .subscribe(workpackages => {
+          if (workpackages) {
+            this.selectedWorkPackageEntities = workpackages;
+            const workPackageIds = workpackages.map(item => item.id);
+            this.getAttributesWithQueryParams(workPackageIds);
+          }
       })
     );
 
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
-        const edit = workpackages.map(item => item.edit);
-        !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+        if (workpackages) {
+          const edit = workpackages.map(item => item.edit);
+          !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+        }
       })
     );
 
