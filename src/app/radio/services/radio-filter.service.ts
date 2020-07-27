@@ -44,6 +44,10 @@ export class RadioFilterService {
         enabled: this.isFilterEnabled(data.assignedTo),
         values: data.assignedTo
       },
+      relatesToWorkPackages: {
+        enabled: this.isFilterEnabled(data.relatesToWorkPackages),
+        values: data.relatesToWorkPackages
+      },
       relatesTo: {
         enabled: this.isFilterEnabled(data.relatesTo),
         includeDescendants: this.isFilterEnabled(data.relatesTo),
@@ -70,6 +74,26 @@ export class RadioFilterService {
         to: data.frequencyRange && data.frequencyRange.to ? data.frequencyRange.to : 0
       }
     };
+  }
+
+  transformFiltersIntoFormValues(filters: RadiosAdvancedSearch): FilterData {
+    const values = {};
+    Object.keys(filters).forEach(key => {
+      if (filters[key] && filters[key].enabled) {
+        values[key] = filters[key].values;
+      }
+    });
+    return values;
+  }
+
+  disableFilters(data: RadiosAdvancedSearch, disable: string[] = []): RadiosAdvancedSearch {
+    const copyOfData = JSON.parse(JSON.stringify(data));
+    disable.forEach(filterKey => {
+      if (copyOfData[filterKey]) {
+        copyOfData[filterKey].enabled = false;
+      }
+    });
+    return copyOfData;
   }
 
   replaceWithDefaultFilterIfDisabled(filter: any, filterKey: string): boolean | any | null {

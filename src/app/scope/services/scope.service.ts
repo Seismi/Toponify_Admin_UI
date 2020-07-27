@@ -43,6 +43,14 @@ export class ScopeService {
     return this.http.post<{ data: string[] }>(`/scopes/${scopeId}/nodes`, { data: data }, httpOptions);
   }
 
+  setScopeAsFavourite(scopeId: string): Observable<string> {
+    return this.http.post<string>(`/scopes/${scopeId}/favourites`, {});
+  }
+
+  unsetScopeAsFavourite(scopeId: string): Observable<string> {
+    return this.http.delete<string>(`/scopes/${scopeId}/favourites`);
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());
