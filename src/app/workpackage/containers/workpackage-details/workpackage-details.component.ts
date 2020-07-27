@@ -24,7 +24,8 @@ import {
   AddWorkPackageBaseline,
   DeleteWorkPackageBaseline,
   LoadWorkPackages,
-  LoadWorkPackagesActive
+  LoadWorkPackagesActive,
+  LoadWorkPackagesActiveSuccess
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
@@ -102,6 +103,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(new LoadWorkPackagesActive());
     this.subscriptions.push(
       this.store.pipe(select(workpackageDetailsLoading)).subscribe((loading) => this.isLoading = loading)
     );
@@ -477,6 +479,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
             baselineId: data.value[0].id
           })
         );
+      } else {
+        this.isLoading = false;
       }
     });
   }

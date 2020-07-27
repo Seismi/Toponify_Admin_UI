@@ -88,16 +88,14 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.LoadWorkPackageBaselineAvailability:
     case WorkPackageActionTypes.GetWorkpackageAvailability: {
       return {
-        ...state,
-        loading: true
+        ...state
       };
     }
 
     case WorkPackageActionTypes.GetWorkpackageAvailabilitySuccess: {
       return {
         ...state,
-        avaialabilities: action.payload,
-        loading: false
+        avaialabilities: action.payload
       };
     }
 
@@ -105,8 +103,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.GetWorkpackageAvailabilityFailure: {
       return {
         ...state,
-        error: action.payload,
-        loading: false
+        error: action.payload
       };
     }
 
@@ -268,7 +265,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.AddOwner: {
       return {
         ...state,
-        loading: true,
         loadingDetails: true
       };
     }
@@ -284,7 +280,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
           }
           return entity;
         }),
-        loading: false,
         loadingDetails: false
       };
     }
@@ -294,7 +289,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         error: action.payload,
-        loading: false
+        loadingDetails: false
       };
     }
 
@@ -302,7 +297,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.DeleteOwner: {
       return {
         ...state,
-        loading: true
+        loadingDetails: true
       };
     }
 
@@ -310,7 +305,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.DeleteOwnerSuccess: {
       return {
         ...state,
-        loading: false,
+        loadingDetails: false,
         selectedWorkPackage: action.payload,
         entities: state.entities.map(entity => {
           if (entity.id === action.payload.id) {
@@ -326,7 +321,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         error: action.payload,
-        loading: false
+        loadingDetails: false
       };
     }
 
