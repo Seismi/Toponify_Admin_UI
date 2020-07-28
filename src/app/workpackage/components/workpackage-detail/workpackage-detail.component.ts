@@ -1,13 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   TeamEntityOrOwnersEntityOrApproversEntity,
   WorkPackageDetail,
   WorkPackageEntity,
-  Baseline
+  Baseline,
+  Page
 } from '@app/workpackage/store/models/workpackage.models';
 import { TeamEntity } from '@app/settings/store/models/user.model';
 import { Roles } from '@app/core/directives/by-role.directive';
+import { SelectionTableComponent } from '../selection-table/selection-table.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'smi-workpackage-detail',
@@ -37,6 +40,14 @@ export class WorkPackageDetailComponent {
   @Input() workPackageStatus: string;
   @Input() archived: boolean;
   @Input() currentState: string;
+  @Input() pagination: any;
+  @Input() loading: Observable<boolean>;
+
+  @ViewChild(SelectionTableComponent) selectionTable: SelectionTableComponent;
+
+  @Output() pageChange = new EventEmitter<any>();
+
+  @Output() search = new EventEmitter<string>();
 
   @Output()
   deleteWorkpackage = new EventEmitter<void>();

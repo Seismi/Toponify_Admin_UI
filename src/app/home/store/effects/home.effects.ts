@@ -15,7 +15,10 @@ import {
   LoadMyRadiosSuccess,
   LoadMyWorkPackages,
   LoadMyWorkPackagesFailure,
-  LoadMyWorkPackagesSuccess
+  LoadMyWorkPackagesSuccess,
+  LoadMyFavourites,
+  LoadMyFavouritesSuccess,
+  LoadMyFavouritesFailure
 } from '../actions/home.actions';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -25,7 +28,7 @@ import {
 } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
 import { GetLayoutEntitiesApiResponse, LayoutEntitiesHttpParams } from '@app/layout/store/models/layout.model';
-import { UserApiResponse } from '@app/settings/store/models/user.model';
+import { UserApiResponse, Favourites } from '@app/settings/store/models/user.model';
 
 @Injectable()
 export class HomePageEffects {
@@ -74,6 +77,17 @@ export class HomePageEffects {
       return this.homePageService.getMyProfile().pipe(
         switchMap((response: UserApiResponse) => [new LoadMyProfileSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new LoadMyProfileFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadMyFavourites$ = this.actions$.pipe(
+    ofType<LoadMyFavourites>(HomePageActionTypes.LoadMyFavourites),
+    switchMap(_ => {
+      return this.homePageService.getMyFavourites().pipe(
+        switchMap((response: { data: Favourites[] }) => [new LoadMyFavouritesSuccess(response)]),
+        catchError((error: HttpErrorResponse) => of(new LoadMyFavouritesFailure(error)))
       );
     })
   );

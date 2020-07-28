@@ -30,9 +30,24 @@ export const workpackageSelectAllowed = createSelector(
   state => !state.loading
 );
 
+export const workpackageLoading = createSelector(
+  getWorkPackageState,
+  state => state.loading
+)
+
+export const workpackageDetailsLoading = createSelector(
+  getWorkPackageState,
+  state => state.loadingDetails
+)
+
 export const getSelectedWorkPackage = createSelector(
   getWorkPackageState,
   state => state.selectedWorkPackage
+);
+
+export const getWorkPackagesPage = createSelector(
+  getWorkPackageState,
+  state => state.page
 );
 
 export const getSelectedWorkpackages = createSelector(

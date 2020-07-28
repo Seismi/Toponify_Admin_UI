@@ -22,6 +22,7 @@ export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
 
   @Input() workPackageIsEditable: boolean;
 
+  @Output() refresh = new EventEmitter<string>();
   @Output() reportSelected = new EventEmitter<ReportLibrary>();
   @Output() addReport = new EventEmitter<void>();
   @Output() download = new EventEmitter<void>();

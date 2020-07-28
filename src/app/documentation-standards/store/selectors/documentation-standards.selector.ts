@@ -1,5 +1,6 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { State as DocumentationStandardState } from '../reducers/documentation-standards.reducer';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 export const getDocumentStandardFeatureState = createFeatureSelector<DocumentationStandardState>(
   'documentationStandardFeature'
@@ -8,6 +9,11 @@ export const getDocumentStandardFeatureState = createFeatureSelector<Documentati
 export const getDocumentStandards = createSelector(
   getDocumentStandardFeatureState,
   state => state.entities
+);
+
+export const getDocumentStandardPage = createSelector(
+  getDocumentStandardFeatureState,
+  state => state.page
 );
 
 export const getDocumentStandard = createSelector(
@@ -23,3 +29,13 @@ export const getDocumentStandardById = (id: string) => {
     }
   );
 };
+
+export const getDocumentStandardsLoadingStatus = createSelector(
+  getDocumentStandardFeatureState,
+  state => state.loadingDocumentStandards === LoadingStatus.loaded
+);
+
+export const getDocumentStandardLoadingStatus = createSelector(
+  getDocumentStandardFeatureState,
+  state => state.loadingDocumentStandard === LoadingStatus.loaded
+);

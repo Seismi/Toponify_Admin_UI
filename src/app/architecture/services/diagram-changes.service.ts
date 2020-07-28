@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import {linkCategories, LinkLayoutSettingsEntity, NodeLink} from '@app/architecture/store/models/node-link.model';
+import { linkCategories, LinkLayoutSettingsEntity, NodeLink } from '@app/architecture/store/models/node-link.model';
 import {
   AddWorkPackageLink,
   AddWorkPackageMapViewLink,
   UpdateWorkPackageLink
 } from '@app/workpackage/store/actions/workpackage-link.actions';
 import { AddWorkPackageNode, UpdateWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
-import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/store/selectors/workpackage.selector';
+import { getEditWorkpackages, getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
 import { select, Store } from '@ngrx/store';
 import * as go from 'gojs';
 import { BehaviorSubject } from 'rxjs';
@@ -23,12 +23,17 @@ import {
   getScopeQueryParams
 } from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {endPointTypes, layers, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
+import {
+  endPointTypes,
+  layers,
+  nodeCategories,
+  NodeLayoutSettingsEntity
+} from '@app/architecture/store/models/node.model';
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
-import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
-import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
-import {autoLayoutId} from '@app/architecture/store/models/layout.model';
-import {defaultScopeId} from '@app/scope/store/models/scope.model';
+import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
+import { AddWorkPackageMapViewTransformation } from '@app/workpackage/store/actions/workpackage.actions';
+import { autoLayoutId } from '@app/architecture/store/models/layout.model';
+import { defaultScopeId } from '@app/scope/store/models/scope.model';
 
 const $ = go.GraphObject.make;
 
@@ -42,7 +47,7 @@ export class DiagramChangesService {
   private currentLevel: Level;
   private currentScope: string;
   private currentNodeId: string;
-  private currentMapViewSource: { id: string, isTransformation: boolean };
+  private currentMapViewSource: { id: string; isTransformation: boolean };
   public dependenciesView = false;
 
   workpackages = [];
@@ -62,9 +67,7 @@ export class DiagramChangesService {
     this.workpackageStore
       .pipe(select(getSelectedWorkpackages))
       .subscribe(workpackages => (this.selectedWorkpackages = workpackages));
-    this.layoutStore
-      .pipe(select(getLayoutSelected))
-      .subscribe(layout => (this.layout = layout));
+    this.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => (this.layout = layout));
     this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       this.currentLevel = filterLevel;
       this.dependenciesView = false;
@@ -121,11 +124,9 @@ export class DiagramChangesService {
           }
 
           this.workpackages.forEach(workpackage => {
-
-            const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node};
+            const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node };
 
             if (this.layout.id !== autoLayoutId) {
-
               const { nodeLayoutData, linkLayoutData } = this.getCurrentPartsLayoutData(event.diagram);
 
               addWorkPackageNodeParams.newLayoutDetails = {
@@ -147,9 +148,7 @@ export class DiagramChangesService {
             }
 
             if (!node.isTemporary) {
-              this.workpackageStore.dispatch(
-                new AddWorkPackageNode(addWorkPackageNodeParams)
-              );
+              this.workpackageStore.dispatch(new AddWorkPackageNode(addWorkPackageNodeParams));
             }
           });
         });
@@ -277,7 +276,8 @@ export class DiagramChangesService {
         if (part instanceof go.Link) {
           // Ignore disconnected links
           if (part.fromNode && part.toNode) {
-            links.push({ id: part.key,
+            links.push({
+              id: part.key,
               points: part.data.route,
               fromSpot: part.data.fromSpot,
               toSpot: part.data.toSpot
@@ -300,7 +300,6 @@ export class DiagramChangesService {
 
   // Update diagram when display options have been changed
   updateDisplayOptions(event: any, option: string, diagram: go.Diagram): void {
-
     // If option to show master data links disabled then deselect any master data links
     if (option === 'masterDataLinks' && !event.checked) {
       diagram.selection.each(function(part) {
@@ -342,7 +341,6 @@ export class DiagramChangesService {
 
       // Create link if not already in database
       if (link.data.isTemporary) {
-
         link.data.sourceId = link.fromNode.data.id;
         link.data.targetId = link.toNode.data.id;
         link.data.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`;
@@ -566,17 +564,12 @@ export class DiagramChangesService {
     toport: go.GraphObject,
     oldlink: go.Link
   ): boolean {
-
     // Ensure that links in map view go in the right direction
     if (this.currentLevel.endsWith('map')) {
-      if (fromnode &&
-        fromnode.containingGroup &&
-        fromnode.containingGroup.data.endPointType !== endPointTypes.source) {
+      if (fromnode && fromnode.containingGroup && fromnode.containingGroup.data.endPointType !== endPointTypes.source) {
         return false;
       }
-      if (tonode &&
-        tonode.containingGroup &&
-        tonode.containingGroup.data.endPointType !== endPointTypes.target) {
+      if (tonode && tonode.containingGroup && tonode.containingGroup.data.endPointType !== endPointTypes.target) {
         return false;
       }
     }
@@ -587,14 +580,18 @@ export class DiagramChangesService {
     }
 
     // Prevent links between two transformation nodes
-    if (fromnode.data.category === nodeCategories.transformation
-      && tonode.data.category === nodeCategories.transformation) {
+    if (
+      fromnode.data.category === nodeCategories.transformation &&
+      tonode.data.category === nodeCategories.transformation
+    ) {
       return false;
     }
 
     // Prevent links to transformation node in more than one direction
-    if (fromnode.data.category === nodeCategories.transformation
-      || tonode.data.category === nodeCategories.transformation) {
+    if (
+      fromnode.data.category === nodeCategories.transformation ||
+      tonode.data.category === nodeCategories.transformation
+    ) {
       const allLinks = tonode.findLinksTo(fromnode);
       if (allLinks.count > 0) {
         return false;
@@ -666,7 +663,6 @@ export class DiagramChangesService {
 
   // Get a set of all nodes that need to be visible to show dependencies from the given input node
   getNodesToShowDependencies(depNode: go.Node): go.Set<go.Part> {
-
     // Get direct dependencies
     const dependencies = new go.Set<go.Part>([depNode]);
     dependencies.addAll(depNode.findNodesConnected());
@@ -686,8 +682,7 @@ export class DiagramChangesService {
       members.addAll(group.findSubGraphParts());
     });
 
-    return new go.Set<go.Part>(dependencies)
-      .addAll(groups).addAll(members);
+    return new go.Set<go.Part>(dependencies).addAll(groups).addAll(members);
   }
 
   // Set all nodes in the specified diagram to visible
@@ -695,10 +690,12 @@ export class DiagramChangesService {
     diagram.startTransaction('Show All Nodes');
 
     // Set all nodes to visible and reset shadow
-    diagram.nodes.each(function(node) {
-      node.visible = true;
-      this.setBlueShadowHighlight(node, false);
-    }.bind(this));
+    diagram.nodes.each(
+      function(node) {
+        node.visible = true;
+        this.setBlueShadowHighlight(node, false);
+      }.bind(this)
+    );
 
     this.dependenciesView = false;
 
@@ -732,7 +729,7 @@ export class DiagramChangesService {
   }
 
   nodeExpandChanged(node) {
-    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
+    const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
@@ -745,7 +742,8 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id,
+        linkData.push({
+          id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot
@@ -753,12 +751,15 @@ export class DiagramChangesService {
       }
     });
 
-    if ([Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage].includes(this.currentLevel)) {
+    if (
+      [Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage, Level.sources, Level.targets].includes(
+        this.currentLevel
+      )
+    ) {
       this.groupMemberSizeChanged(node);
-      // Update node's layout in map view or usage view
+      // Update node's layout in map, usage sources or targets views
       node.findTopLevelPart().invalidateLayout();
     } else {
-
       this.groupMemberSizeChanged(node);
 
       // Update expanded status of node in the back end
@@ -778,9 +779,7 @@ export class DiagramChangesService {
   // Ensure group members and any connected links are positioned correctly
   //  when a system/data group is expanded
   groupSubGraphExpandChanged(group: go.Group): void {
-
     if (group.isSubGraphExpanded) {
-
       // Run group layout to ensure member nodes are in the correct positions
       group.layout.isValidLayout = false;
       group.layout.invalidateLayout();
@@ -792,42 +791,37 @@ export class DiagramChangesService {
       const memberArea = group.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
 
-      group.findSubGraphParts()
-        .each(
-          function (part: go.Part): void {
-            if (part instanceof go.Node) {
+      group.findSubGraphParts().each(function(part: go.Part): void {
+        if (part instanceof go.Node) {
+          // If member is located outside of the group and is not automatically laid out then reposition member
+          if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
+            const newLocation = new go.Point();
 
-              // If member is located outside of the group and is not automatically laid out then reposition member
-              if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
+            // Place member underneath all correctly positioned members,
+            //  centre aligned and separated by a small gap
+            newLocation.x = memberBounds.centerX;
+            newLocation.y = memberBounds.bottom + 12;
 
-                const newLocation = new go.Point();
+            // Update the area required to contain the members
+            memberBounds.height = memberBounds.height + part.actualBounds.height + 12;
+            memberBounds.width = Math.max(memberBounds.width, part.actualBounds.width);
 
-                // Place member underneath all correctly positioned members,
-                //  centre aligned and separated by a small gap
-                newLocation.x = memberBounds.centerX;
-                newLocation.y = memberBounds.bottom + 12;
-
-                // Update the area required to contain the members
-                memberBounds.height = memberBounds.height + part.actualBounds.height + 12;
-                memberBounds.width = Math.max(memberBounds.width, part.actualBounds.width);
-
-                part.move(newLocation, true);
-              } else {
-                /*
+            part.move(newLocation, true);
+          } else {
+            /*
                   For nodes that are already located in the group, change member node location back and
                   forth between the current location and another point.
                   This is to force GoJS to update the position of the node, as this does not appear to be
                   done correctly when the parent group is moved.
                 */
-                const location = part.location.copy();
-                part.move(location.copy().offset(1, 1));
-                part.move(location, true);
-              }
-              // Try to ensure that each part has correct bounds after being moved
-              part.ensureBounds();
-            }
+            const location = part.location.copy();
+            part.move(location.copy().offset(1, 1));
+            part.move(location, true);
           }
-        );
+          // Try to ensure that each part has correct bounds after being moved
+          part.ensureBounds();
+        }
+      });
 
       // Set height and width of group member area to match the area previously
       //  calculated as necessary to enclose the members.
@@ -842,26 +836,23 @@ export class DiagramChangesService {
     const linksToReroute = new go.Set();
 
     // Get any links that may need rerouting
-    group.findSubGraphParts()
-      .each(
-        function(part: go.Part): void {
-          if (part instanceof go.Node) {
-            // Add links connected to member to set of links to be rerouted
-            linksToReroute.addAll(part.linksConnected);
-          }
-        }
-      );
+    group.findSubGraphParts().each(function(part: go.Part): void {
+      if (part instanceof go.Node) {
+        // Add links connected to member to set of links to be rerouted
+        linksToReroute.addAll(part.linksConnected);
+      }
+    });
 
     // Reroute all necessary links
-    linksToReroute.each(function (link: go.Link): void {
-      link.data = Object.assign(link.data, {updateRoute: true});
+    linksToReroute.each(function(link: go.Link): void {
+      link.data = Object.assign(link.data, { updateRoute: true });
       link.invalidateRoute();
       link.updateRoute();
     });
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
-    const linkData: { id: string; points: number[], fromSpot: string, toSpot: string }[] = [];
+    const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
     const node = event.subject.part;
 
     // Make sure node bounds are up to date so links can route correctly
@@ -875,7 +866,8 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id,
+        linkData.push({
+          id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot
@@ -889,11 +881,13 @@ export class DiagramChangesService {
     } else {
       // Update group area of node in the back end
       this.onUpdateGroupsAreaState.next({
-        groups: [{
-          id: node.data.id,
-          areaSize: node.data.areaSize,
-          locationCoordinates: node.data.location
-        }],
+        groups: [
+          {
+            id: node.data.id,
+            areaSize: node.data.areaSize,
+            locationCoordinates: node.data.location
+          }
+        ],
         links: linkData
       });
     }
@@ -913,7 +907,6 @@ export class DiagramChangesService {
     // Loop through containing groups until reaching a top level group,
     //  ensuring each is big enough
     while (currentGroup.containingGroup !== null) {
-
       currentGroup = currentGroup.containingGroup;
 
       // If current group is a map view group then:
@@ -941,8 +934,8 @@ export class DiagramChangesService {
 
       // Expand group member area width and height to ensure it is large enough to enclose all group members
       memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
-      memberArea.width = Math.max(memberBounds.right, currentMinBounds.right)
-        - Math.min(memberBounds.left, currentMinBounds.left);
+      memberArea.width =
+        Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left);
 
       // Shift group horizontally in order to ensure group member area correctly encloses required bounds
       currentGroup.location = new go.Point(currentMinBounds.centerX, currentGroup.location.y);
@@ -962,7 +955,8 @@ export class DiagramChangesService {
         link.invalidateRoute();
         link.updateRoute();
 
-        linkData.push({ id: link.data.id,
+        linkData.push({
+          id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot
@@ -1000,13 +994,13 @@ export class DiagramChangesService {
 
     // If link connects to a transformation node then use this node as the source of the map view.
     if (object.fromNode && object.fromNode.category === nodeCategories.transformation) {
-        mapViewSource = object.fromNode;
-      } else if (object.toNode && object.toNode.category === nodeCategories.transformation) {
-        mapViewSource = object.toNode;
-        // Otherwise, use the link as the source of the map view.
-      } else {
-        mapViewSource = object;
-      }
+      mapViewSource = object.fromNode;
+    } else if (object.toNode && object.toNode.category === nodeCategories.transformation) {
+      mapViewSource = object.toNode;
+      // Otherwise, use the link as the source of the map view.
+    } else {
+      mapViewSource = object;
+    }
 
     this.diagramLevelService.displayMapView.call(this.diagramLevelService, event, mapViewSource);
   }
@@ -1025,11 +1019,12 @@ export class DiagramChangesService {
   }
 
   // Get current layout data for all parts in the diagram
-  getCurrentPartsLayoutData(diagram: go.Diagram): {
-    nodeLayoutData: NodeLayoutSettingsEntity['layout'][],
-    linkLayoutData: LinkLayoutSettingsEntity['layout'][]
+  getCurrentPartsLayoutData(
+    diagram: go.Diagram
+  ): {
+    nodeLayoutData: NodeLayoutSettingsEntity['layout'][];
+    linkLayoutData: LinkLayoutSettingsEntity['layout'][];
   } {
-
     const nodeLayoutData = diagram.model.nodeDataArray.map(function(node) {
       return {
         id: node.id,
@@ -1058,10 +1053,8 @@ export class DiagramChangesService {
 
   // If in node usage view, place the layer lanes around the displayed nodes
   placeNodeUsageLanes(event: go.DiagramEvent): void {
-
     // Only proceed if in node usage view
     if (this.currentLevel === Level.usage) {
-
       // A map to map each layer to its lane
       const lanes = new go.Map<string, go.Part>();
 
@@ -1084,7 +1077,6 @@ export class DiagramChangesService {
 
       // Calculate areas taken up by nodes from each layer
       event.diagram.nodes.each(function(node) {
-
         // Get current area for the node's layer
         const area = areas[node.data.layer];
         const nodeBounds = node.getDocumentBounds();
@@ -1134,17 +1126,18 @@ export class DiagramChangesService {
           shape.width = areas.all.width + sideMargin * 2;
 
           // Lane must be tall enough to enclose its layer...
-          shape.height = currentLayerArea.height
+          shape.height =
+            currentLayerArea.height +
             // ...plus half the distance to the previous layer (if present)...
-            + Math.max(0, (priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin))
+            Math.max(0, priorLayerArea ? (currentLayerArea.top - priorLayerArea.bottom) / 2 : sideMargin) +
             // ...plus half the distance to the next layer (if present).
-            + Math.max(0, (nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin));
+            Math.max(0, nextLayerArea ? (nextLayerArea.top - currentLayerArea.bottom) / 2 : sideMargin);
 
           lane.location = new go.Point(
             // Position the left side of all lanes to the left of the diagram's nodes
             areas.all.left - sideMargin,
             // Position the top of the lane equidistant between its layer and the previous layer (if present)
-            (priorLayerArea ? (priorLayerArea.bottom + currentLayerArea.top) / 2 : currentLayerArea.top - sideMargin)
+            priorLayerArea ? (priorLayerArea.bottom + currentLayerArea.top) / 2 : currentLayerArea.top - sideMargin
           );
           // If no nodes from the current layer exist in the diagram then hide lane for that layer
         } else {
@@ -1184,7 +1177,6 @@ export class DiagramChangesService {
 
     // Only proceed if at least one fully attached link is connected to the transformation node in both directions
     if (linksIn.length > 0 && linksOut.length > 0) {
-
       const params: any = {
         workpackageId: this.workpackages[0].id,
         scope: this.currentScope,
@@ -1212,10 +1204,18 @@ export class DiagramChangesService {
     // only consider Parts, and ignore the given Node, any Links, and Group members
     function navigate(obj: go.GraphObject): go.Part {
       const part = obj.part;
-      if (part === node) { return null; }
-      if (part instanceof go.Link) { return null; }
-      if (part.isMemberOf(node)) { return null; }
-      if (node.isMemberOf(part)) { return null; }
+      if (part === node) {
+        return null;
+      }
+      if (part instanceof go.Link) {
+        return null;
+      }
+      if (part.isMemberOf(node)) {
+        return null;
+      }
+      if (node.isMemberOf(part)) {
+        return null;
+      }
       return part;
     }
 
@@ -1223,8 +1223,12 @@ export class DiagramChangesService {
     const diagramLayers = diagram.layers;
     while (diagramLayers.next()) {
       const layer = diagramLayers.value;
-      if (layer.isTemporary) { continue; }
-      if (layer.findObjectsIn(rectangle, navigate, null, true).count > 0) { return false; }
+      if (layer.isTemporary) {
+        continue;
+      }
+      if (layer.findObjectsIn(rectangle, navigate, null, true).count > 0) {
+        return false;
+      }
     }
     return true;
   }
@@ -1240,13 +1244,13 @@ export class DiagramChangesService {
       }
     });
 
-    guide.visible = (diagram.nodes.count + diagram.nodes.count === 0);
+    guide.visible = diagram.nodes.count + diagram.nodes.count === 0;
 
     const instructions = guide.findObject('instructions');
 
     if (thisService.currentScope === defaultScopeId) {
       if (thisService.selectedWorkpackages.length === 0) {
-        instructions.text =  'Your topology is empty. Select or create a work package to get started.';
+        instructions.text = 'Your topology is empty. Select or create a work package to get started.';
       } else if (thisService.selectedWorkpackages.length === 1) {
         if (thisService.diagramEditable) {
           instructions.text = 'Go to edit pane and start dragging and dropping objects';
@@ -1258,7 +1262,8 @@ export class DiagramChangesService {
       if (thisService.currentNodeId) {
         instructions.text = 'No detail to display. Start documenting or click back button to go to previous view.';
       } else {
-        instructions.text = 'There is no detail to display. Review scope definition or start documenting with a work package';
+        instructions.text =
+          'There is no detail to display. Review scope definition or start documenting with a work package';
       }
     }
 

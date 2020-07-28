@@ -14,7 +14,6 @@ import { LoadTeams } from '@app/settings/store/actions/team.actions';
 })
 export class SettingsComponent implements OnInit {
   public selectedTabIndex: number;
-  public selectedLeftTab: number | string;
 
   @ViewChild('drawer') drawer;
 
@@ -45,13 +44,5 @@ export class SettingsComponent implements OnInit {
   onTabClick(event: MatTabChangeEvent): Promise<boolean> {
     const url = event.tab.textLabel.toLowerCase().replace(' ', '-');
     return this.router.navigate([`/settings/${url}`]);
-  }
-
-  openLeftTab(tab: number | string): void {
-    (this.drawer.opened && this.selectedLeftTab === tab) ? this.drawer.close() : this.drawer.open();
-    (typeof tab !== 'string') ? this.selectedLeftTab = tab : this.selectedLeftTab = 'menu';
-    if (!this.drawer.opened) {
-      this.selectedLeftTab = 'menu';
-    }
   }
 }

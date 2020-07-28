@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, Input, ViewChild, ElementRef } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
+import { DocumentStandard, Page } from '@app/documentation-standards/store/models/documentation-standards.model';
 import { Roles } from '@app/core/directives/by-role.directive';
 
 @Component({
@@ -11,29 +11,52 @@ import { Roles } from '@app/core/directives/by-role.directive';
 export class DocumentationStandardsTableComponent {
   public selectedRowIndex: string | number = -1;
   public Roles = Roles;
+  public page: Page;
 
   @ViewChild('searchField') input: ElementRef;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   @Input()
   set data(data: DocumentStandard[]) {
     if (data) {
       this.dataSource = new MatTableDataSource<DocumentStandard>(data);
-      this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-      if (this.input) {
-        this.dataSource.filter = this.input.nativeElement.value;
-      }
     }
   }
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
   public dataSource: MatTableDataSource<DocumentStandard>;
   @Input() displayedColumns: string[] = ['name', 'levels'];
 
+  get totalEntities(): number {
+    return this.page ? this.page.totalObjects : 0;
+  }
+
+  @Input()
+  set pagination(pagination: Page) {
+    if (pagination) {
+      console.log(pagination)
+      this.page = pagination;
+    }
+  }
+
+  @Output() refresh = new EventEmitter<string>();
   @Output() documentSelected = new EventEmitter<DocumentStandard>();
   @Output() addDocument = new EventEmitter<void>();
+  @Output() search = new EventEmitter<string>();
+  @Output() pageChange = new EventEmitter<{
+    previousPageIndex: number;
+    pageIndex: number;
+    pageSize: number;
+    length: number;
+  }>();
+
+  ngAfterViewInit() {
+    this.paginator.page.subscribe(nextPage => {
+      this.pageChange.emit(nextPage);
+    });
+  }
 
   onSelectRow(documentStandard: DocumentStandard): void {
     this.selectedRowIndex = documentStandard.id;
@@ -45,6 +68,7 @@ export class DocumentationStandardsTableComponent {
   }
 
   onSearch(filterValue: string): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.search.emit(filterValue.trim().toLowerCase());
+    this.paginator.firstPage()
   }
 }

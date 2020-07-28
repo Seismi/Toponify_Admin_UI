@@ -180,7 +180,7 @@ export interface NodeDetail {
   groupinfo?: GroupInfo;
   owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
   systems?: (GroupInfo)[] | null;
-  dataSets?: (GroupInfo)[] | null;
+  dataNodes?: (GroupInfo)[] | null;
   dimensions?: (GroupInfo)[] | null;
   reportingConcepts?: (GroupInfo)[] | null;
   descendants?: (DescendantsEntity)[] | null;
@@ -332,7 +332,7 @@ export enum TagApplicableTo {
   reporting_concepts = 'reporting concepts',
   reporting_concept_links = 'reporting concept links',
   reports = 'reports',
-  RADIO = 'radio'
+  RADIO = 'radios'
 }
 
 export enum TagIcon {

@@ -1,6 +1,10 @@
 import { Given, When } from 'cypress-cucumber-preprocessor/steps';
 
-Given('the user creates a new {string} system with name {string}', function(component_type, name, description) {
+Given('DEPRECATE the user creates a new {string} system with name {string}', function(
+  component_type,
+  name,
+  description
+) {
   name = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(name); // add the branch to the name
@@ -14,7 +18,6 @@ Given('the user creates a new {string} system with name {string}', function(comp
           .then(() => {
             cy.get('[data-qa=topology-components-or-link-modal-save]')
               .click()
-              .wait(2000)
               .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesWorkPackageQuery', '@GETNodeLinksWorkPackageQuery']);
             cy.get('[data-qa=spinner]').should('not.be.visible');
           });
@@ -22,7 +25,7 @@ Given('the user creates a new {string} system with name {string}', function(comp
     });
 });
 
-When('the user creates a new {string} interface with name {string} between {string} and {string}', function(
+When('DEPRECATE the user creates a new {string} interface with name {string} between {string} and {string}', function(
   interface_type,
   name,
   source,

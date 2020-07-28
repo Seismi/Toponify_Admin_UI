@@ -19,6 +19,7 @@ When('the user updates the layout called {string} to be {string} against the sco
     .then(() => {
       cy.selectRow('scopes-and-layouts-layout-table', layout)
         .click()
+        .wait('@GETLayout')
         .then(() => {
           cy.get('[data-qa=scopes-and-layouts-layout-details-form]').within(() => {
             cy.get('[data-qa=scopes-and-layouts-edit]')

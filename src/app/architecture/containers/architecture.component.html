@@ -81,6 +81,9 @@
             (selectLayout)="onSelectLayout($event)"
             [filterLevel]="filterLevel"
             (exitDependenciesView)="exitDependenciesView()"
+            [selectedPart]="selectedPart"
+            [clickedOnLink]="clickedOnLink"
+            [selectedNode]="selectedNode"
           >
           </smi-diagram-actions>
           <app-architecture-diagram
@@ -89,7 +92,6 @@
             [showGrid]="showGrid"
             [allowMove]="allowMove"
             [workPackageIsEditable]="workPackageIsEditable"
-            *ngIf="!showTable"
             [nodes]="
               nodes
                 | layer
@@ -168,6 +170,7 @@
             (itemClick)="itemClick($event)"
             [owners]="selectedNode?.owners"
             [selectedRightTab]="selectedRightTab"
+            (selectedTabChange)="onSelectedTabChange($event)"
             [group]="objectDetailsForm"
             (saveNode)="onSaveObjectDetails()"
             (deleteNode)="onDeleteNode()"
@@ -218,7 +221,7 @@
             [componentLayer]="nodeComponentLayer"
             [availableTags]="availableTags$ | async"
             [systems]="selectedNode?.systems"
-            [dataSets]="selectedNode?.dataSets"
+            [dataNodes]="selectedNode?.dataNodes"
             [dimensions]="selectedNode?.dimensions"
             [reportingConcepts]="selectedNode?.reportingConcepts"
             [groupInfo]="selectedNode?.groupinfo"
@@ -231,6 +234,8 @@
             [currentFilterLevel]="currentFilterLevel"
             (seeUsage)="onSeeUsage()"
             (seeDependencies)="onSeeDependencies()"
+            (findSources)="onFindSources()"
+            (findTargets)="onFindTargets()"
             (viewStructure)="onViewStructure()"
             [sourceObject]="selectedNode?.sourceObject"
             [targetObject]="selectedNode?.targetObject"
@@ -243,4 +248,4 @@
     </app-model-container>
   </app-drawer>
 </app-model-container>
-<smi-spinner *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>
+<smi-spinner data-qa="topology-spinner" *ngIf="(isLoading$ | async) === loadingStatus.loading"></smi-spinner>

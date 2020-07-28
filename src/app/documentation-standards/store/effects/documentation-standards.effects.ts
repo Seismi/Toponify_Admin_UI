@@ -8,7 +8,8 @@ import { DocumentationStandardsService } from '@app/documentation-standards/serv
 import {
   DocumentStandardsApiResponse,
   DocumentStandardApiResponse,
-  DocumentStandardApiRequest
+  DocumentStandardApiRequest,
+  DocumentStandardsApiRequest
 } from '../models/documentation-standards.model';
 import { DocumentationStandardActionTypes } from '../actions/documentation-standards.actions';
 
@@ -21,8 +22,9 @@ export class DocumentationStandardEffects {
     ofType<DocumentationStandardActions.LoadDocumentationStandards>(
       DocumentationStandardActionTypes.LoadDocumentationStandards
     ),
-    switchMap(_ => {
-      return this.documentationStandardsService.getCustomProperties({}).pipe(
+    map(action => action.payload),
+    switchMap((queryParams: DocumentStandardsApiRequest) => {
+      return this.documentationStandardsService.getCustomProperties(queryParams).pipe(
         switchMap((customProperties: DocumentStandardsApiResponse) => [
           new DocumentationStandardActions.LoadDocumentationStandardsSuccess(customProperties)
         ]),

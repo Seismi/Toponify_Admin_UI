@@ -1,11 +1,7 @@
-.title {
-  font-size: 25px;
-  text-align: center;
-}
-
 .wrapper {
-  width: 60%;
-  margin: 50px auto 60px;
+  border-right: solid 1px #ddd;
+  border-left: solid 1px #ddd;
+  border-bottom: solid 1px #ddd;
 }
 
 table {
@@ -16,22 +12,73 @@ tr.mat-header-row {
   height: 35px;
 }
 
-button:focus {
-  outline: none;
-}
-
-.mat-icon {
+tr {
   cursor: pointer;
 }
 
-th.mat-column-star {
-  width: 5%;
+td.mat-cell {
+  padding: 10px;
 }
 
-.noDataFound {
-  background-color: #fff;
-  border-bottom: solid 1px #ddd;
-  font-size: 15px;
-  padding: 20px 0;
+.search-container {
+  width: 100%;
+  padding: 10px;
+  background-color: #eee;
+  input {
+    width: 100%;
+    height: 40px;
+    padding: 7px 10px;
+    border-radius: 5px;
+    border: solid 1px #eee;
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.actions {
   text-align: center;
+  button {
+    border-radius: 5px;
+    font-weight: lighter;
+    padding-right: 25px;
+    margin-top: 10px;
+    margin-left: 15px;
+    mat-icon {
+      font-size: 18px;
+      margin-right: 5px;
+      margin-top: 4px;
+      padding: 0;
+    }
+  }
+}
+
+.title {
+  font-size: 17px;
+  display: inline-block;
+}
+
+.chips {
+  width: 100%;
+  position: relative;
+  top: -5px;
+  mat-chip-list {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    mat-chip {
+      color: #fff;
+      z-index: 1
+    }
+  }
+}
+
+.status-title {
+  float: right;
+  margin-right: 10px;
+}
+
+.open-icon {
+  float: right;
 }

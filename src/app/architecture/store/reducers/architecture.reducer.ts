@@ -50,7 +50,7 @@ export interface State {
   tags: {
     data: Tag[],
     page: TagsHttpParams
-  }
+  };
   loadingLinks: LoadingStatus;
   loadingNodes: LoadingStatus;
   loadingNode: LoadingStatus;
@@ -157,14 +157,16 @@ export function reducer(
 
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopes: {
       return {
-        ...state
+        ...state,
+        loadingNode: LoadingStatus.loading
       };
     }
 
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesSuccess: {
       return {
         ...state,
-        nodeScopes: action.payload
+        nodeScopes: action.payload,
+        loadingNode: LoadingStatus.loaded
       };
     }
 
@@ -176,14 +178,16 @@ export function reducer(
 
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScope: {
       return {
-        ...state
+        ...state,
+        loadingNode: LoadingStatus.loading
       };
     }
 
     case WorkPackageNodeActionTypes.DeleteWorkPackageNodeScopeSuccess: {
       return {
         ...state,
-        nodeScopes: state.nodeScopes.filter(scope => scope.id !== action.payload.id)
+        nodeScopes: state.nodeScopes.filter(scope => scope.id !== action.payload.id),
+        loadingNode: LoadingStatus.loaded
       };
     }
 
@@ -233,10 +237,18 @@ export function reducer(
       };
     }
 
+    case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailability: {
+      return {
+        ...state,
+        loadingNode: LoadingStatus.loading
+      };
+    }
+
     case WorkPackageNodeActionTypes.LoadWorkPackageNodeScopesAvailabilitySuccess: {
       return {
         ...state,
-        availableScopes: action.payload
+        availableScopes: action.payload,
+        loadingNode: LoadingStatus.loaded
       };
     }
 
@@ -385,14 +397,18 @@ export function reducer(
 
     case NodeActionTypes.LoadNodeReports: {
       return {
-        ...state
+        ...state,
+        loadingNode: LoadingStatus.loading,
+        loadingLink: LoadingStatus.loading
       };
     }
 
     case NodeActionTypes.LoadNodeReportsSuccess: {
       return {
         ...state,
-        reports: action.payload
+        reports: action.payload,
+        loadingNode: LoadingStatus.loaded,
+        loadingLink: LoadingStatus.loaded
       };
     }
 
@@ -417,7 +433,7 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.LoadNodeFailure: {
+    case NodeActionTypes.LoadNodesFailure: {
       return {
         ...state,
         error: action.payload,
@@ -471,6 +487,60 @@ export function reducer(
     }
 
     case NodeActionTypes.LoadNodeUsageViewFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loadingNodes: LoadingStatus.error,
+        loadingLinks: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadSourcesView: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
+      };
+    }
+
+    case NodeActionTypes.LoadSourcesViewSuccess: {
+      return {
+        ...state,
+        entities: [...action.payload.nodes],
+        links: [...action.payload.links],
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
+      };
+    }
+
+    case NodeActionTypes.LoadSourcesViewFailure: {
+      return {
+        ...state,
+        error: action.payload,
+        loadingNodes: LoadingStatus.error,
+        loadingLinks: LoadingStatus.error
+      };
+    }
+
+    case NodeActionTypes.LoadTargetsView: {
+      return {
+        ...state,
+        loadingNodes: LoadingStatus.loading,
+        loadingLinks: LoadingStatus.loading
+      };
+    }
+
+    case NodeActionTypes.LoadTargetsViewSuccess: {
+      return {
+        ...state,
+        entities: [...action.payload.nodes],
+        links: [...action.payload.links],
+        loadingNodes: LoadingStatus.loaded,
+        loadingLinks: LoadingStatus.loaded
+      };
+    }
+
+    case NodeActionTypes.LoadTargetsViewFailure: {
       return {
         ...state,
         error: action.payload,

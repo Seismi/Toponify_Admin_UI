@@ -44,6 +44,7 @@
       <div class="container">
         <div class="row">
           <div class="col">
+            <smi-spinner *ngIf="(isLoading$ | async) === true"></smi-spinner>
             <app-category-table
               data-qa="rules-and-attributes-table"
               [data]="categoryTableData"

@@ -7,6 +7,7 @@ Given('the scope called {string} does not exist', function(scope) {
   //If the work package exists then delete it.
   cy.findScope(scope) //find the work packages
     .then($table => {
+      console.log($table);
       if ($table[0].rows.length > 0) {
         //if rows are found
         Object.keys($table[0].rows).forEach(s => {

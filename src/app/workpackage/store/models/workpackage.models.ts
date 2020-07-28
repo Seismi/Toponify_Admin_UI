@@ -18,9 +18,14 @@ export interface Links {
 }
 export interface Page {
   size: number;
-  totalElements: number;
+  totalObjects: number;
   totalPages: number;
   number: number;
+}
+
+export interface TableData<T> {
+  entities: T[];
+  page: Page;
 }
 
 export interface WorkPackageEntity {
@@ -47,9 +52,9 @@ export interface OwnersEntityOrApproversEntity {
 export interface WorkPackageEntitiesHttpParams {
   includeArchived?: boolean;
   ownerQuery?: string;
-  scopeQuery?: string;
-  page?: string;
-  size?: string;
+  textFilter?: string;
+  page?: number;
+  size?: number;
 }
 
 export interface WorkPackageApiRequest {
@@ -66,7 +71,7 @@ export interface WorkPackageDetail {
   description?: string;
   objectives?: (ObjectivesEntityOrRadiosEntity)[] | null;
   radios?: (ObjectivesEntityOrRadiosEntity)[] | null;
-  customProperties?: (CustomPropertiesEntity)[] | null;
+  customPropertyValues?: (CustomPropertiesEntity)[] | null;
   owners?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;
   baseline?: (Baseline)[] | null;
   approvers?: (TeamEntityOrOwnersEntityOrApproversEntity)[] | null;

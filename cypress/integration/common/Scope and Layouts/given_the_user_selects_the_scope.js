@@ -8,6 +8,6 @@ Given('the user selects the scope called {string}', function(scope) {
     .type(scope)
     .should('have.value', scope)
     .then(() => {
-      cy.selectRow('scopes-and-layouts-scope-table', scope).click();
+      cy.selectRow('scopes-and-layouts-scope-table', scope);
     });
 });

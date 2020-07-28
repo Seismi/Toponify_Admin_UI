@@ -49,30 +49,15 @@ module.exports = {
       method: 'GET',
       name: 'Teams'
     },
-    radiosAdvancedSearch: {
-      api: `${api_version}/radios/advanced/search?*`,
-      method: 'POST',
-      name: 'radiosAdvancedSearch'
-    },
-    GetNodesScopeQuery: {
-      api: `${api_version}/nodes?scopeQuery*`,
+    GetNodesQuery: {
+      api: `${api_version}/nodes?*`,
       method: 'GET',
-      name: 'NodesScopeQuery'
+      name: 'NodesQuery'
     },
-    GetNodeLinksScopeQuery: {
-      api: `${api_version}/nodelinks?scopeQuery*`,
+    GetNodeLinksQuery: {
+      api: `${api_version}/nodelinks?*`,
       method: 'GET',
-      name: 'NodeLinksScopeQuery'
-    },
-    GetNodesWPQuery: {
-      api: `${api_version}/nodes?workPackageQuery*`,
-      method: 'GET',
-      name: 'NodesWorkPackageQuery'
-    },
-    GetNodeLinksWPQuery: {
-      api: `${api_version}/nodelinks?workPackageQuery*`,
-      method: 'GET',
-      name: 'NodeLinksWorkPackageQuery'
+      name: 'NodeLinksQuery'
     },
     GetSelectorWorkPackage: {
       api: `${api_version}/workpackages/selector/availability*`,
@@ -169,10 +154,45 @@ module.exports = {
       method: 'POST',
       name: 'WorkPackagesNodesGroupSet'
     },
+    DELETEScopeNodes: {
+      api: `${api_version}/scopes/*/nodes/*`,
+      method: 'DELETE',
+      name: 'ScopesNodes'
+    },
+    GetRadios: {
+      api: `${api_version}/radios?*`,
+      method: 'GET',
+      name: 'Radios'
+    },
+    POSTRadios: {
+      api: `${api_version}/radios`,
+      method: 'POST',
+      name: 'Radios'
+    },
+    POSTWorkPackageNodeRadios: {
+      api: `${api_version}/workpackages/*/nodes/*/radios/*`,
+      method: 'POST',
+      name: 'WorkPackageNodeRadios'
+    },
+    PostReply: {
+      api: `${api_version}/radios/*/reply`,
+      method: 'POST',
+      name: 'RadioReply'
+    },
     radiosAdvancedSearch: {
       api: `${api_version}/radios/advanced/search?*`,
       method: 'POST',
       name: 'radiosAdvancedSearch'
+    },
+    PUTLayoutNodes: {
+      api: `${api_version}/layouts/*/nodes/groupAreaSize`,
+      method: 'PUT',
+      name: 'LayoutNodes'
+    },
+    WorkPackageNodesGroupSet: {
+      api: `${api_version}/workpackages/*/nodes/*/group/set/*`,
+      method: 'POST',
+      name: 'WorkPackageNodesGroupSet'
     }
   }
 };

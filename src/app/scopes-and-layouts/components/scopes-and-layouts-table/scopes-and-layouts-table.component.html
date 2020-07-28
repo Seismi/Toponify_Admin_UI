@@ -1,7 +1,19 @@
 <h1 class="title">{{ title }}</h1>
 <div class="mat-elevation-z8">
   <div class="search-container">
-    <input placeholder="Search" data-qa="scopes-and-layouts-quick-search" (keyup)="onSearch($event.target.value)">
+    <input
+      #searchField
+      placeholder="Search" 
+      data-qa="scopes-and-layouts-quick-search" 
+      (keyup)="onSearch($event.target.value)"
+    >
+    <button 
+      mat-icon-button 
+      (click)="refresh.emit(searchField.value)"
+      data-qa="scopes-and-layouts-refresh-search"
+    >
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
   <table mat-table [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="name">

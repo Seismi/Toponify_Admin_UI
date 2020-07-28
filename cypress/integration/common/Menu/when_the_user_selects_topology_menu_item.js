@@ -11,9 +11,10 @@ When('the user selects Topology menu item', function() {
     '@POSTradiosAdvancedSearch.all',
     '@GETScope.all',
     '@GETLayout.all',
-    '@GETNodesScopeQuery.all',
-    '@GETNodeLinksScopeQuery.all',
-    '@GETSelectorAvailabilityQuery.all'
+    '@GETNodesQuery.all',
+    '@GETNodeLinksQuery.all',
+    '@GETSelectorAvailabilityQuery.all' //,
+    //'@PUTLayoutNodes'
   ];
 
   cy.setUpRoutes('Topology', settings);

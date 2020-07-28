@@ -34,6 +34,8 @@ import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 import { RadioModalComponent } from '../radio-modal/radio-modal.component';
 import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
 import { TagsHttpParams } from '@app/architecture/store/models/node.model';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
+import { getRadiosLoadingStatus } from '@app/radio/store/selectors/radio.selector';
 
 @Component({
   selector: 'smi-radio',
@@ -46,14 +48,18 @@ export class RadioComponent implements OnInit, OnDestroy {
   public loading$: Observable<boolean>;
   public radioSelected: boolean;
   public filterData: RadiosAdvancedSearch;
-  public selectedLeftTab: number | string;
   public selectedRadioIndex: string | number;
   private subscriptions: Subscription[] = [];
+  public loadingStatus = LoadingStatus;
   // TODO
   private tags: TagsHttpParams = {
     textFilter: '',
     page: 0,
     size: 100
+  };
+
+  get isLoading$(): Observable<LoadingStatus> {
+    return this.store.select(getRadiosLoadingStatus);
   }
 
   constructor(
@@ -89,16 +95,49 @@ export class RadioComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(
-      this.store
+      this.store.pipe(select(getMergedRadioFilters), distinctUntilChanged(isEqual)).subscribe(data => {
+        if (data) {
+          this.store.dispatch(
+            new SearchRadio({
+              data: data,
+              page: '0',
+              size: '10'
+            })
+          );
+        } else {
+          this.store.dispatch(
+            new LoadRadios({
+              page: '0',
+              size: '10'
+            })
+          );
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
+        if (action) {
+          this.selectedRadioIndex = action.id;
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions
         .pipe(
-          select(getMergedRadioFilters),
-          distinctUntilChanged(isEqual)
+          ofType(
+            RadioActionTypes.AddRadioSuccess,
+            RadioActionTypes.DeleteRadioEntitySuccess,
+            RadioActionTypes.AddReplySuccess
+          )
         )
-        .subscribe(data => {
-          if (data) {
+        .subscribe((action: { payload: RadioDetail }) => {
+          this.selectedRadioIndex = action.payload.id;
+          if (this.filterData) {
             this.store.dispatch(
               new SearchRadio({
-                data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data),
+                data: this.filterData,
                 page: '0',
                 size: '10'
               })
@@ -111,36 +150,8 @@ export class RadioComponent implements OnInit, OnDestroy {
               })
             );
           }
+          this.onSelectRadio(action.payload);
         })
-    );
-
-    this.subscriptions.push(
-      this.store.pipe(select(getSelectedRadio)).subscribe((action: RadioDetail) => {
-        if (action) {
-          this.selectedRadioIndex = action.id;
-        }
-      })
-    );
-
-    this.subscriptions.push(
-      this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: { payload: RadioDetail }) => {
-        this.selectedRadioIndex = action.payload.id;
-        if (this.filterData) {
-          this.store.dispatch(
-            new SearchRadio({
-              data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData)
-            })
-          );
-        } else {
-          this.store.dispatch(
-            new LoadRadios({
-              page: '0',
-              size: '10'
-            })
-          );
-        }
-        this.onSelectRadio(action.payload);
-      })
     );
   }
 
@@ -190,14 +201,21 @@ export class RadioComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(FilterModalComponent, {
       disableClose: false,
       data: {
-        filterData: this.filterData,
+        filterData: this.radioFilterService.transformFiltersIntoFormValues(this.filterData),
         mode: this.filterData ? 'filter' : null
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
-        this.store.dispatch(new RadioFilter(data.radio));
+        this.store.dispatch(new RadioFilter(this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio)));
+        this.store.dispatch(
+          new SearchRadio({
+            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
+            page: String(0),
+            size: String(10)
+          })
+        );
       }
     });
   }
@@ -206,7 +224,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     if (this.filterData) {
       this.store.dispatch(
         new SearchRadio({
-          data: this.radioFilterService.transformFilterIntoAdvancedSearchData(this.filterData),
+          data: this.filterData,
           page: String(nextPage.pageIndex),
           size: String(nextPage.pageSize)
         })
