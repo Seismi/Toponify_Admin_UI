@@ -21,6 +21,7 @@ export interface UpdateScopeApiResponse {
 export interface ScopeEntity {
   id: string;
   name: string;
+  favourite: boolean;
 }
 
 export interface ScopeEntitiesHttpParams {
@@ -39,6 +40,7 @@ export interface ScopeDetails {
   include?: (Include)[] | null;
   layouts?: Layout;
   defaultLayout?: string;
+  favourite?: boolean;
 }
 
 export interface OwnersEntityOrViewersEntity {
