@@ -4,7 +4,7 @@ Given('the user selects the scope called {string}', function(scope) {
     .concat(' | ')
     .concat(scope); // prefix the branch to scope
   cy.get('[data-qa=scopes-and-layouts-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(scope)
     .should('have.value', scope)
     .then(() => {

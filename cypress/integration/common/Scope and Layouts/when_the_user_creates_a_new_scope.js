@@ -9,7 +9,7 @@ When('the user creates a new scope called {string}', function(scope) {
     .click()
     .then(() => {
       cy.get('[data-qa=scopes-and-layouts-details-name]')
-        .clear()
+        .clear({ force: true })
         .type(scope)
         .should('have.value', scope)
         .then(() => {

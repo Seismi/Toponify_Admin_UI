@@ -9,7 +9,7 @@ And('the user assign radio {string} to component with work package selected {str
     .click()
     .wait('@GETRadios');
   cy.get('[data-qa=work-packages-radio-list-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(radio);
   cy.get('[data-qa=work-packages-radio-modal-list]')
     .find('table>tbody')
@@ -27,7 +27,7 @@ And('the user assign radio {string} to component with work package selected {str
           cy.get('[data-qa=details-spinner]').should('not.be.visible');
           cy.wait(10000);
           cy.get('[data-qa=related-radio-table-quick-search]')
-            .clear()
+            .clear({ force: true })
             .type(radio);
           cy.get('[data-qa=topology-related-radio-table]')
             .find('table>tbody')
@@ -43,7 +43,7 @@ And('the user assign radio {string} to component with work package selected {str
 
   cy.get('[data-qa=related-radio-table-assign-radio]').click();
   cy.get('[data-qa=work-packages-radio-list-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(radio);
   cy.get('[data-qa=work-packages-radio-modal-list]')
     .find('table>tbody')

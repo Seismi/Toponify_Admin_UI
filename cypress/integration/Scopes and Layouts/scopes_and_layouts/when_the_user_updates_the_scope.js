@@ -19,7 +19,7 @@ When('the user updates the scope called {string} to have name {string} and filte
         .click()
         .then(() => {
           cy.get('[data-qa=scopes-and-layouts-details-name]')
-            .clear()
+            .clear({ force: true })
             .type(newScope)
             .should('have.value', newScope)
             .then(() => {

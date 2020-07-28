@@ -222,7 +222,7 @@ Cypress.Commands.add('findReport', name => {
 
 Cypress.Commands.add('selectTableFirstRow', (search_term, search, table) => {
   cy.get(`[data-qa=${search}]`)
-    .clear()
+    .clear({ force: true })
     .type(search_term)
     .should('have.value', search_term)
     .then(() => {
@@ -245,7 +245,7 @@ Cypress.Commands.add('findWorkPackageRadio', name => {
 
 Cypress.Commands.add('selectUser', email => {
   cy.get('[data-qa=settings-all-users-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(email)
     .should('have.value', email)
     .then(() => {
@@ -255,7 +255,7 @@ Cypress.Commands.add('selectUser', email => {
 
 Cypress.Commands.add('selectTeam', team => {
   cy.get('[data-qa=settings-teams-quick-search]')
-    .clear()
+    .clear({ force: true })
     .type(team)
     .should('have.value', team)
     .then(() => {
@@ -281,7 +281,7 @@ Cypress.Commands.add('editWorkPackageTopology', work_package => {
   cy.get('[data-qa=left-hand-pane-work-package-table]')
     .within(() => {
       cy.get('div>div>input')
-        .clear()
+        .clear({ force: true })
         .type(work_package)
         .should('have.value', work_package)
         .then(() => {
@@ -312,7 +312,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
     .get(`[data-qa=${work_package_menu}]`)
     .within(() => {
       cy.get('div>div>input')
-        .clear()
+        .clear({ force: true })
         .type(work_package)
         .should('have.value', work_package)
         .get('table>tbody')
@@ -340,7 +340,7 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
   cy.get(`[data-qa=${work_package_menu}]`)
     .within(() => {
       cy.get('div>div>input')
-        .clear()
+        .clear({ force: true })
         .type(work_package)
         .should('have.value', work_package)
         .then(() => {
@@ -741,7 +741,7 @@ Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
     .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
     .click()
     .get(`[data-qa=documentation-standards-table-value]`) // get the value field
-    .clear()
+    .clear({ force: true })
     .type(value)
     .should('have.value', value.toString()); // type the value
 });
@@ -778,7 +778,7 @@ Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
     .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
     .click()
     .get(`[data-qa=documentation-standards-table-date]`) // get the value field
-    .clear()
+    .clear({ force: true })
     .type(value)
     .should('have.value', value.toString()); // type the value
 });

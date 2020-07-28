@@ -230,7 +230,7 @@ function writeRadioDetails(
 
   cy.get('[data-qa=radio-detail-title]')
     .scrollIntoView()
-    .clear()
+    .clear({ force: true })
     .type(title)
     .should('have.value', title)
     .then(() => {
@@ -260,7 +260,7 @@ function writeRadioDetails(
     })
     .then(() => {
       cy.get('[data-qa=radio-detail-action-by')
-        .clear()
+        .clear({ force: true })
         .type(actioned)
         .should('have.value', actioned);
     })

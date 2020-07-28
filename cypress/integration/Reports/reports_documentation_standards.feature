@@ -1,5 +1,5 @@
 @core
-Feature: Work Package Edit Documentation Standards Feature
+Feature: Report Edit Documentation Standards Feature
   As a user, I want to be able to add documentation standards to reports
 
 # NUMBER TESTS

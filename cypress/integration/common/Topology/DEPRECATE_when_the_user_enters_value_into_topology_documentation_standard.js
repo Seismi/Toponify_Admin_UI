@@ -25,7 +25,7 @@ function addDocStandard(value, doc_standard) {
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
-    .clear()
+    .clear({ force: true })
     .type(doc_standard)
     .should('have.value', doc_standard); //enter the documentation standard
   cy.get(`[data-qa=topology-documentation-standards-table]`) //get the doc standard table
@@ -47,7 +47,7 @@ function addDocStandardBoolean(value, doc_standard) {
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
-    .clear()
+    .clear({ force: true })
     .type(doc_standard)
     .should('have.value', doc_standard); //enter the documentation standard
   cy.get(`[data-qa=topology-documentation-standards-table]`) // get the documentation standards table
@@ -63,7 +63,7 @@ function addDocStandardDate(value, doc_standard) {
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
-    .clear()
+    .clear({ force: true })
     .type(doc_standard)
     .should('have.value', doc_standard); //enter the documentation standard
   cy.get(`[data-qa=topology-documentation-standards-table]`) // get the documentation standards table

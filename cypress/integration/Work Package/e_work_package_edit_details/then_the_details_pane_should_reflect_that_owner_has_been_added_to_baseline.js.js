@@ -8,7 +8,7 @@ Then('the details pane should reflect that {string} has been added as an owner o
     .concat(' | ')
     .concat(name); // prefix name with branch
   cy.get(`[data-qa=work-packages-quick-search]`) // get the work packages quick search
-    .clear() // clear it
+    .clear({ force: true }) // clear it
     .type(name)
     .should('have.value', name) // type the name
     .then(() => {
