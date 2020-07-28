@@ -17,7 +17,6 @@
             (saveRadio)="onSaveRadio()"
             [rows]="5"
             [editModal]="true"
-            (closeModal)="onClose()"
           >
           </smi-radio-detail>
         </p>
@@ -66,4 +65,5 @@
       </mat-tab>
     </mat-tab-group>
   </p>
+  <button class="exit" (click)="onClose()">Exit</button>
 </div>
