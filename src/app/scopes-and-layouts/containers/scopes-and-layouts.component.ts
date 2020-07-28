@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ScopeEntity, ScopeEntitiesHttpParams, Page } from '@app/scope/store/models/scope.model';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
-import { LoadScopes, AddScope } from '@app/scope/store/actions/scope.actions';
+import { LoadScopes, AddScope, SetScopeAsFavourite, UnsetScopeAsFavourite, ScopeActionTypes, UpdateScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopePage } from '@app/scope/store/selectors/scope.selector';
 import { ScopeAndLayoutModalComponent } from './scope-and-layout-modal/scope-and-layout-modal.component';
 import { MatDialog } from '@angular/material';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { LoadTags } from '@app/architecture/store/actions/node.actions';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'smi-scopes-and-layouts-component',
@@ -22,11 +22,16 @@ export class ScopesAndLayoutsComponent implements OnInit {
     textFilter: '',
     page: 0,
     size: 5
-  }
+  };
   search$ = new Subject<string>();
   page$: Observable<Page>;
 
-  constructor(private store: Store<ScopeState>, private router: Router, private dialog: MatDialog) { }
+  constructor(
+    private actions: Actions,
+    private store: Store<ScopeState>,
+    private router: Router,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.store.dispatch(new LoadScopes(this.scopeParams));
@@ -42,13 +47,26 @@ export class ScopesAndLayoutsComponent implements OnInit {
         textFilter: textFilter,
         page: 0,
         size: this.scopeParams.size
-      }
+      };
       this.store.dispatch(new LoadScopes(this.scopeParams));
     });
 
-    this.page$ = this.store.pipe(
-      select(getScopePage)
-    )
+    this.page$ = this.store.pipe(select(getScopePage));
+
+    this.actions
+      .pipe(
+        ofType(
+          ScopeActionTypes.SetScopeAsFavouriteSuccess,
+          ScopeActionTypes.UnsetScopeAsFavouriteSuccess
+        )
+      )
+      .subscribe(_ => {
+        this.scopeParams = {
+          page: 0,
+          size: this.scopeParams.size
+        };
+        this.store.dispatch(new LoadScopes(this.scopeParams));
+      });
   }
 
   onScopeSelect(row: ScopeEntity): void {
@@ -59,12 +77,12 @@ export class ScopesAndLayoutsComponent implements OnInit {
     this.search$.next(textFilter);
   }
 
-  onPageChange(page){
-    this.scopeParams= {
+  onPageChange(page) {
+    this.scopeParams = {
       textFilter: this.scopeParams.textFilter,
       page: page.pageIndex,
       size: page.pageSize
-    } 
+    };
     this.store.dispatch(new LoadScopes(this.scopeParams))
   }
 
@@ -98,4 +116,13 @@ export class ScopesAndLayoutsComponent implements OnInit {
       }
     });
   }
+
+  setScopeAsFavorite(scopeId: string): void {
+    this.store.dispatch(new SetScopeAsFavourite(scopeId));
+  }
+
+  unsetScopeAsFavorite(scopeId: string): void {
+    this.store.dispatch(new UnsetScopeAsFavourite(scopeId));
+  }
+
 }
