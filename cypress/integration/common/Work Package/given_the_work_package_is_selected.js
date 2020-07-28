@@ -5,7 +5,7 @@ Given('the {string} is selected', function(name) {
     .concat(' | ')
     .concat(name); // Append all created components with the branch number sent in as a parameter
   cy.get(`[data-qa=work-packages-quick-search]`) // get the work package quick search, clear and type the work package name
-    .clear()
+    .clear({ force: true })
     .type(name)
     .should('have.value', name)
     .then(() => {
