@@ -414,8 +414,9 @@ Cypress.Commands.add('findDocumentationStandard', (name, wait) => {
   cy.get(`[data-qa=documentation-standards-quick-search]`) // get the quick packages search
     .scrollIntoView()
     .clear({ force: true })
-    .type(name) // type the name
-    .should('have.value', name);
+    .paste(name);
+  //.type(name) // type the name
+  //.should('have.value', name);
   if (wait) {
     cy.wait('@GETCustomProperties');
   }
@@ -671,10 +672,10 @@ Cypress.Commands.add('createDocumentationStandard', (doc_standard, type, compone
       cy.get('[data-qa=documentation-standards-modal-form]')
         .within(() => {
           cy.get('[data-qa=documentation-standards-details-name]')
-            .type(doc_standard)
+            .paste(doc_standard)
             .should('have.value', doc_standard);
           cy.get('[data-qa=documentation-standards-details-description]')
-            .type(doc_standard)
+            .paste(doc_standard)
             .should('have.value', doc_standard);
           cy.get(`[data-qa=documentation-standards-details-type]`).click();
         })
@@ -732,8 +733,9 @@ Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear({ force: true })
-    .type(doc_standard)
-    .should('have.value', doc_standard); //enter the documentation standard
+    .paste(doc_standard)
+    .should('have.value', doc_standard)
+    .wait(1000); //enter the documentation standard
   cy.get(`[data-qa=${table}]`) //get the doc standard table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
@@ -752,8 +754,9 @@ Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard, table) => {
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear({ force: true })
-    .type(doc_standard)
-    .should('have.value', doc_standard);
+    .paste(doc_standard)
+    .should('have.value', doc_standard)
+    .wait(1000); //enter the documentation standard  ;
   cy.get(`[data-qa=${table}]`) //get the doc standard table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
@@ -769,8 +772,9 @@ Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
     .concat(doc_standard); // prefix branch to doc standard name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // get the quick search
     .clear({ force: true })
-    .type(doc_standard)
-    .should('have.value', doc_standard); //enter the documentation standard
+    .paste(doc_standard)
+    .should('have.value', doc_standard)
+    .wait(2000); //enter the documentation standard
   cy.get(`[data-qa=${table}]`) //get the doc standard table
     .find('table>tbody') //find the body
     .contains('tr', doc_standard) // and the row which contains
@@ -779,7 +783,7 @@ Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
     .click()
     .get(`[data-qa=documentation-standards-table-date]`) // get the value field
     .clear({ force: true })
-    .type(value)
+    .paste(value)
     .should('have.value', value.toString()); // type the value
 });
 
@@ -790,7 +794,7 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .concat(doc_standard); // prefix the name with branch
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // search for the documentation standard
     .clear({ force: true })
-    .type(doc_standard)
+    .paste(doc_standard)
     .should('have.length', 1) //enter the documentation standard
     .should('have.value', doc_standard);
   cy.get(`[data-qa=${table}]`) //get the table
@@ -849,6 +853,22 @@ Cypress.Commands.add('populateWorkPackageDetails', (name, description, baseline,
       .should('have.value', description);
   });
 });
+
+Cypress.Commands.add(
+  'paste',
+  {
+    prevSubject: true,
+    element: true
+  },
+  ($element, text) => {
+    const subString = text.substr(0, text.length - 1);
+    const lastChar = text.slice(-1);
+
+    $element.text(subString);
+    $element.val(subString);
+    cy.get($element).type(lastChar);
+  }
+);
 
 /*Cypress.Commands.overwrite('type', (originalFn, subject, string, options) =>
   originalFn(subject, string, Object.assign({}, { delay: 100 }, options))
