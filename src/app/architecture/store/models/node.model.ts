@@ -378,3 +378,13 @@ export interface TagsHttpParams {
   totalObjects?: number;
   totalPages?: number;
 }
+
+export interface NodeGroupMember {
+  id: string;
+  sortOrder: number
+}
+
+export interface NodeChild {
+  id: string;
+  sortOrder: number
+}

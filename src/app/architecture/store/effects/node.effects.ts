@@ -375,4 +375,35 @@ export class NodeEffects {
       );
     })
   );
+
+
+  @Effect()
+  updateNodeGroupMembers$ = this.actions$.pipe(
+    ofType<NodeActions.UpdateNodeGroupMembersSuccess>(NodeActionTypes.UpdateNodeGroupMembers),
+    map(action => action.payload),
+    switchMap((payload: any) => {
+      return this.nodeService.updateNodeGroupMembers(payload.nodeId, payload.workPackageId, payload.data).pipe(
+        switchMap(response => [new NodeActions.UpdateNodeGroupMembersSuccess({ data: response.data })]),
+        catchError((error: Error) => {
+          return of(new NodeActions.UpdateNodeGroupMembersFailure(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
+  updateNodeChildren$ = this.actions$.pipe(
+    ofType<NodeActions.UpdateNodeChildrenSuccess>(NodeActionTypes.UpdateNodeChildren),
+    map(action => action.payload),
+    switchMap((payload: any) => {
+      return this.nodeService.updateNodeChildren(payload.nodeId, payload.workPackageId, payload.data).pipe(
+        switchMap(response => [new NodeActions.UpdateNodeChildrenSuccess({ data: response.data })]),
+        catchError((error: Error) => {
+          return of(new NodeActions.UpdateNodeChildrenFailure(error));
+        })
+      );
+    })
+  );
+
+
 }
