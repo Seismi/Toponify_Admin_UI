@@ -23,7 +23,7 @@ When('the user creates a new {string} interface with name {string} between {stri
           cy.selectDropDownNoClick('topology-components-or-link-modal-target', target);
           cy.get('[data-qa=topology-components-or-link-modal-name]')
             .clear()
-            .type(name)
+            .paste(name)
             .should('have.value', name)
             .then(() => {
               cy.get('[data-qa=topology-components-or-link-modal-save]')
