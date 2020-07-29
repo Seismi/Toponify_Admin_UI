@@ -97,4 +97,28 @@ export class ScopeEffects {
       );
     })
   );
+
+  @Effect()
+  setScopeAsFavourite$ = this.actions$.pipe(
+    ofType<ScopeActions.SetScopeAsFavourite>(ScopeActionTypes.SetScopeAsFavourite),
+    map(action => action.payload),
+    switchMap((id: string) => {
+      return this.scopeService.setScopeAsFavourite(id).pipe(
+        map(_ => new ScopeActions.SetScopeAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new ScopeActions.SetScopeAsFavouriteFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  unsetScopeAsFavourite$ = this.actions$.pipe(
+    ofType<ScopeActions.UnsetScopeAsFavourite>(ScopeActionTypes.UnsetScopeAsFavourite),
+    map(action => action.payload),
+    switchMap((id: string) => {
+      return this.scopeService.unsetScopeAsFavourite(id).pipe(
+        map(_ => new ScopeActions.UnsetScopeAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new ScopeActions.UnsetScopeAsFavouriteFailure(error)))
+      );
+    })
+  );
 }

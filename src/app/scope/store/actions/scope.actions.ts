@@ -32,7 +32,15 @@ export enum ScopeActionTypes {
 
   AddScopeNodes = '[Scope] Add Scope Nodes',
   AddScopeNodesSuccess = '[Scope] Add Scope Nodes Success',
-  AddScopeNodesFailure = '[Scope] Add Scope Nodes Failure'
+  AddScopeNodesFailure = '[Scope] Add Scope Nodes Failure',
+
+  SetScopeAsFavourite = '[Scope] set scope as favourite',
+  SetScopeAsFavouriteSuccess = '[Scope] set scope as favourite success',
+  SetScopeAsFavouriteFailure = '[Scope] set scope as favourite failure',
+
+  UnsetScopeAsFavourite = '[Scope] unset scope as favourite',
+  UnsetScopeAsFavouriteSuccess = '[Scope] unset scope as favourite success',
+  UnsetScopeAsFavouriteFailure = '[Scope] unset scope as favourite failure'
 }
 
 export class LoadScopes implements Action {
@@ -125,6 +133,36 @@ export class AddScopeNodesFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class SetScopeAsFavourite implements Action {
+  readonly type = ScopeActionTypes.SetScopeAsFavourite;
+  constructor(public payload: string) {}
+}
+
+export class SetScopeAsFavouriteSuccess implements Action {
+  readonly type = ScopeActionTypes.SetScopeAsFavouriteSuccess;
+  constructor(public payload: string) {}
+}
+
+export class SetScopeAsFavouriteFailure implements Action {
+  readonly type = ScopeActionTypes.SetScopeAsFavouriteFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class UnsetScopeAsFavourite implements Action {
+  readonly type = ScopeActionTypes.UnsetScopeAsFavourite;
+  constructor(public payload: string) {}
+}
+
+export class UnsetScopeAsFavouriteSuccess implements Action {
+  readonly type = ScopeActionTypes.UnsetScopeAsFavouriteSuccess;
+  constructor(public payload: string) {}
+}
+
+export class UnsetScopeAsFavouriteFailure implements Action {
+  readonly type = ScopeActionTypes.UnsetScopeAsFavouriteFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ScopeActionsUnion =
   | LoadScopes
   | LoadScopesSuccess
@@ -143,4 +181,7 @@ export type ScopeActionsUnion =
   | DeleteScopeFailure
   | AddScopeNodes
   | AddScopeNodesSuccess
-  | AddScopeNodesFailure;
+  | AddScopeNodesFailure
+  | UnsetScopeAsFavourite
+  | UnsetScopeAsFavouriteSuccess
+  | UnsetScopeAsFavouriteFailure;
