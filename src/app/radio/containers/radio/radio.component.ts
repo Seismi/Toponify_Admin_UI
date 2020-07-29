@@ -209,13 +209,13 @@ export class RadioComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
         this.store.dispatch(new RadioFilter(this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio)));
-        this.store.dispatch(
-          new SearchRadio({
-            data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
-            page: String(0),
-            size: String(10)
-          })
-        );
+        // this.store.dispatch(
+        //   new SearchRadio({
+        //     data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
+        //     page: String(0),
+        //     size: String(10)
+        //   })
+        // );
       }
     });
   }
