@@ -1,7 +1,7 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import * as go from 'gojs';
 import { WorkPackageDiagramService } from '@app/workpackage/services/workpackage-diagram.service';
-import { WorkPackageDetail, WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackagesActive } from '@app/workpackage/store/models/workpackage.models';
 import { Observable } from 'rxjs';
 
 const $ = go.GraphObject.make;
@@ -12,12 +12,11 @@ const $ = go.GraphObject.make;
   styleUrls: ['./workpackage-tree.component.scss'],
   providers: [WorkPackageDiagramService]
 })
-export class WorkPackageTreeComponent implements OnInit, OnChanges {
+export class WorkPackageTreeComponent implements OnInit {
   public diagram: go.Diagram;
 
-  @Input() workpackages$: Observable<WorkPackageEntity[]>;
+  @Input() workpackages$: Observable<WorkPackagesActive[]>;
   @Output() selectWorkpackage = new EventEmitter<WorkPackageDetail>();
-  @Input() checked: boolean;
 
   @ViewChild('workPackageTreeDiv') private diagramRef: ElementRef;
 
@@ -28,12 +27,6 @@ export class WorkPackageTreeComponent implements OnInit, OnChanges {
     this.diagram = new go.Diagram();
     this.diagram.initialContentAlignment = go.Spot.Center;
     this.diagram.allowSelect = true;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.checked) {
-      this.diagram.model = this.workPackageDiagramService.getModel(this.workpackages$);
-    }
   }
 
   ngOnInit() {

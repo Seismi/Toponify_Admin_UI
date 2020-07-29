@@ -40,7 +40,6 @@
   <!-- Baseline Table -->
   <smi-baseline-table
     data-qa="work-packages-baseline-table"
-    *ngIf="!modalMode"
     [data]="baselineTableData"
     [isEditable]="isEditable"
     (add)="onAddBaseline()"
@@ -67,18 +66,6 @@
     [data]="approversTableData"
   >
   </smi-approvers-table>
-
-  <!-- Selection table -->
-  <smi-selection-table
-    data-qa="work-packages-selection-table"
-    *ngIf="modalMode" 
-    [data]="baseline"
-    (search)="search.emit($event)"
-    [pagination]="pagination"
-    (pageChange)="pageChange.emit($event)"
-    [loading]="loading"
-  >
-  </smi-selection-table>
 
   <mat-form-field *ngIf="modalMode">
     <mat-select placeholder="Owners" formControlName="owners" multiple data-qa="work-packages-details-owners-selection">
