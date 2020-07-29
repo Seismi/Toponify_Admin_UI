@@ -376,10 +376,9 @@ export class NodeEffects {
     })
   );
 
-
   @Effect()
   updateNodeGroupMembers$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateNodeGroupMembersSuccess>(NodeActionTypes.UpdateNodeGroupMembers),
+    ofType<NodeActions.UpdateNodeGroupMembers>(NodeActionTypes.UpdateNodeGroupMembers),
     map(action => action.payload),
     switchMap((payload: any) => {
       return this.nodeService.updateNodeGroupMembers(payload.nodeId, payload.workPackageId, payload.data).pipe(
@@ -393,7 +392,7 @@ export class NodeEffects {
 
   @Effect()
   updateNodeChildren$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateNodeChildrenSuccess>(NodeActionTypes.UpdateNodeChildren),
+    ofType<NodeActions.UpdateNodeChildren>(NodeActionTypes.UpdateNodeChildren),
     map(action => action.payload),
     switchMap((payload: any) => {
       return this.nodeService.updateNodeChildren(payload.nodeId, payload.workPackageId, payload.data).pipe(
@@ -404,6 +403,4 @@ export class NodeEffects {
       );
     })
   );
-
-
 }
