@@ -232,4 +232,8 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
   onTabClick($event: MatTabChangeEvent): void {
     this.isEditable = false;
   }
+
+  getTitle(): string {
+    return this.radio ? `${this.radio.reference} - ${this.radio.title}` : null;
+  }
 }

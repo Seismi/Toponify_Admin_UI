@@ -3,7 +3,7 @@
   padding: 15px;
 }
 
-.mat-icon {
+.tab-icon {
   margin-right: 15px;
   font-size: 18px;
   margin-top: 7px;
@@ -23,16 +23,18 @@
   max-height: 100% !important;
 }
 
-.exit {
-  margin-top: 10px;
-  float: right;
-  border-radius: 5px;
-  background-color: #eee;
-}
-
 .edit {
   margin-top: 10px;
   margin-right: 5px;
   border-radius: 15px;
   font-weight: lighter;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  mat-icon {
+    cursor: pointer;
+  }
 }
