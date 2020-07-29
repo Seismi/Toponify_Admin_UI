@@ -21,7 +21,7 @@ export interface UpdateScopeApiResponse {
 export interface ScopeEntity {
   id: string;
   name: string;
-  favourite: boolean;
+  favourite?: boolean;
 }
 
 export interface ScopeEntitiesHttpParams {
