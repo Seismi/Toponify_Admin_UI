@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { MatDialog, MatSlideToggleChange } from '@angular/material';
+import { MatDialog, MatSlideToggleChange, MatTabChangeEvent } from '@angular/material';
 import { Router } from '@angular/router';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
@@ -7,9 +7,10 @@ import {
   LoadWorkPackages,
   WorkPackageActionTypes,
   UpdateWorkPackageEntity,
-  AddWorkPackageEntity
+  AddWorkPackageEntity,
+  LoadWorkPackagesActive
 } from '@app/workpackage/store/actions/workpackage.actions';
-import { WorkPackageDetail, WorkPackageEntity, WorkPackageEntitiesHttpParams } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageDetail, WorkPackageEntity, WorkPackageEntitiesHttpParams, WorkPackagesActive } from '@app/workpackage/store/models/workpackage.models';
 import { select, Store } from '@ngrx/store';
 import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
@@ -21,6 +22,11 @@ import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { getWorkPackagesPage, workpackageLoading } from '../../store/selectors/workpackage.selector';
 
+enum WorkPackageView {
+  Table,
+  Diagram
+}
+
 @Component({
   selector: 'app-workpackage',
   templateUrl: './workpackage.component.html',
@@ -28,9 +34,12 @@ import { getWorkPackagesPage, workpackageLoading } from '../../store/selectors/w
   providers: [WorkPackageDetailService, WorkPackageValidatorService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkPackageComponent implements OnInit, OnDestroy{
+export class WorkPackageComponent implements OnInit, OnDestroy {
+  public WorkPackageView = WorkPackageView;
+  public selectedView: WorkPackageView = WorkPackageView.Table;
   public Roles = Roles;
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
+  public workpackageActive$: Observable<WorkPackagesActive[]>;
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;
@@ -44,6 +53,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy{
   page$: Observable<any>;
   loading$: Subscription;
   isLoading: boolean;
+  selectedTab: number;
 
   constructor(
     private actions: Actions,
@@ -56,9 +66,10 @@ export class WorkPackageComponent implements OnInit, OnDestroy{
     this.store.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
-    this.loading$ = this.store.pipe(select(workpackageLoading)).subscribe((loading) => {
-      this.isLoading = loading
-    })
+    this.loading$ = this.store.pipe(select(workpackageLoading)).subscribe((loading) => this.isLoading = loading);
+
+    this.store.dispatch(new LoadWorkPackagesActive());
+    this.workpackageActive$ = this.store.pipe(select(fromWorkPackagesEntities.getWorkPackagesActive));
 
     this.search$
     .pipe(
@@ -177,12 +188,12 @@ export class WorkPackageComponent implements OnInit, OnDestroy{
   }
 
   getArchivedWorkPackages(checked: boolean): void {
-    this.workPackageParams= {
+    this.workPackageParams = {
       textFilter: this.workPackageParams.textFilter,
       page: this.workPackageParams.page,
       size: this.workPackageParams.size,
       includeArchived: checked ? true : false
-    } 
+    };
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
   }
 
@@ -194,5 +205,9 @@ export class WorkPackageComponent implements OnInit, OnDestroy{
       includeArchived: this.workPackageParams.includeArchived
     };
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
+  }
+
+  onSelectedTabChange(event: WorkPackageView): void {
+    this.selectedView = event;
   }
 }
