@@ -40,7 +40,8 @@ import {
   UpdateNodeExpandedState,
   UpdateNodeLocations,
   UpdatePartsLayout,
-  UpdateNodeGroupMembers
+  UpdateNodeGroupMembers,
+  UpdateNodeChildren
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -2557,12 +2558,31 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   handleOrderChange(data: GroupInfo[]) {
+    const mappedData = data.map(item => ({
+      id: item.id,
+      sortOrder: item.sortOrder
+    }));
+
     if (data[0].layer === this.selectedNode.layer) {
-      debugger;
-      // this.nodeStore.dispatch(new UpdateNodeGroupMembers());
+      this.nodeStore.dispatch(
+        new UpdateNodeGroupMembers({
+          layer: this.selectedNode.layer,
+          nodeId: this.selectedNode.id,
+          workpackageId: this.workpackageId,
+          data: mappedData,
+          members: data
+        })
+      );
     } else {
-      debugger;
-      // this.nodeStore.dispatch(new UpdateNodeChildren());
+      this.nodeStore.dispatch(
+        new UpdateNodeChildren({
+          layer: this.selectedNode.layer,
+          nodeId: this.selectedNode.id,
+          workpackageId: this.workpackageId,
+          data: mappedData,
+          descendants: data
+        })
+      );
     }
   }
 }

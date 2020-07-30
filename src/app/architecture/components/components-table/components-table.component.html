@@ -34,12 +34,12 @@
 
   <ng-container matColumnDef="arrow-up">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
+    <td mat-cell *matCellDef="let element; index as i">
       <button
         (click)="handleMoveUpElement(element)"
         mat-icon-button
         data-qa="topology-components-table-arrow-up"
-        *ngIf="workPackageIsEditable && allowSort"
+        *ngIf="workPackageIsEditable && i !== 0"
       >
         <mat-icon>keyboard_arrow_up</mat-icon>
       </button>
@@ -48,12 +48,12 @@
 
   <ng-container matColumnDef="arrow-down">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element">
+    <td mat-cell *matCellDef="let element; index as i">
       <button
         (click)="handleMoveDownElement(element)"
         mat-icon-button
         data-qa="topology-components-table-arrow-down"
-        *ngIf="workPackageIsEditable && allowSort"
+        *ngIf="workPackageIsEditable && dataSource.data.length !== i + 1"
       >
         <mat-icon>keyboard_arrow_down</mat-icon>
       </button>

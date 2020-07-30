@@ -17,7 +17,7 @@ export class ComponentsTableComponent {
     if (!data) {
       data = [];
     } else {
-      data = [...data];
+      data = JSON.parse(JSON.stringify(data));
     }
 
     data.sort((a: GroupInfo, b: GroupInfo) => {
@@ -38,8 +38,28 @@ export class ComponentsTableComponent {
   public dataSource: MatTableDataSource<GroupInfo>;
   public displayedColumns: string[] = ['name', 'arrow-up', 'arrow-down', 'actions'];
 
+  public allowMoveUp(sortOrder: number): boolean {
+    if (this.dataSource.data.length === 1) {
+      return false;
+    }
+    if (!sortOrder) {
+      return;
+    }
+    return sortOrder === 1 ? false : true;
+  }
+
+  public allowMoveDown(sortOrder: number): boolean {
+    if (this.dataSource.data.length === 1) {
+      return false;
+    }
+    if (!sortOrder) {
+      return;
+    }
+    return this.dataSource.data.length === sortOrder ? false : true;
+  }
+
   public handleMoveUpElement(element: GroupInfo): void {
-    let data = [...this.dataSource.data];
+    let data = JSON.parse(JSON.stringify(this.dataSource.data));
 
     if (!element.sortOrder || element.sortOrder === 0) {
       let order = 1;
@@ -62,11 +82,20 @@ export class ComponentsTableComponent {
         }
       }
     }
+
+    data.sort((a: GroupInfo, b: GroupInfo) => {
+      if (!a.sortOrder || a.sortOrder === 0) {
+        return 1;
+      }
+      return a.sortOrder - b.sortOrder;
+    });
+
+    this.dataSource = new MatTableDataSource<GroupInfo>(data);
     this.changeOrder.emit(data);
   }
 
   public handleMoveDownElement(element: GroupInfo): void {
-    let data = [...this.dataSource.data];
+    let data = JSON.parse(JSON.stringify(this.dataSource.data));
 
     if (!element.sortOrder || element.sortOrder === 0) {
       let order = 1;
@@ -89,6 +118,15 @@ export class ComponentsTableComponent {
         }
       }
     }
+
+    data.sort((a: GroupInfo, b: GroupInfo) => {
+      if (!a.sortOrder || a.sortOrder === 0) {
+        return 1;
+      }
+      return a.sortOrder - b.sortOrder;
+    });
+
+    this.dataSource = new MatTableDataSource<GroupInfo>(data);
     this.changeOrder.emit(data);
   }
 }

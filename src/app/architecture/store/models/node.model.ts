@@ -1,5 +1,5 @@
 export interface NodesApiResponse {
-  data?: (Node)[] | null;
+  data?: Node[] | null;
 }
 
 export interface NodeApiResponse {
@@ -33,16 +33,16 @@ export interface GroupAreaSizeApiRequest {
 }
 
 export interface WorkPackageNodeDescendantsApiResponse {
-  data: (DescendantsEntity)[] | null;
+  data: DescendantsEntity[] | null;
 }
 
 export interface WorkPackageGroupMembersApiResponse {
   data: {
-    id: string,
-    layer: layers,
-    category: nodeCategories,
-    name: string,
-    tags: string
+    id: string;
+    layer: layers;
+    category: nodeCategories;
+    name: string;
+    tags: string;
   }[];
 }
 
@@ -88,8 +88,9 @@ export class Node {
   category: nodeCategories;
   tags: Tag[] = [];
   positionPerLayout: NodeLayoutSettingsEntity[];
-  owners?: (OwnersEntity)[] | null;
+  owners?: OwnersEntity[] | null;
   descendants: DescendantsEntity[] = [];
+  members?: [];
   relatedRadioCount: number;
   relatedRadioCounts: {
     risks: number;
@@ -105,19 +106,22 @@ export class Node {
   isTemporary: boolean;
   isShared: boolean;
 
-  constructor(options: { id: string;
+  constructor(options: {
+    id: string;
     name: string;
     layer: layers;
     category: nodeCategories;
     tooltip: string;
     isTemporary?: boolean;
-    isShared?: boolean; }) {
+    isShared?: boolean;
+  }) {
     if (options) {
       this.id = options.id;
       this.name = options.name;
       this.layer = options.layer;
       this.category = options.category;
-      this.isGroup = [layers.system, layers.data].includes(options.layer) && options.category !== nodeCategories.transformation;
+      this.isGroup =
+        [layers.system, layers.data].includes(options.layer) && options.category !== nodeCategories.transformation;
       this.tooltip = options.tooltip;
       this.isTemporary = options.isTemporary || false;
       this.isShared = options.isShared || false;
@@ -142,13 +146,13 @@ export interface GroupAreaSizesEntity {
 
 export interface NodeLayoutSettingsEntity {
   layout: {
-    id: string
+    id: string;
     positionSettings: {
       locationCoordinates?: string;
-      middleExpanded?: middleOptions,
-      bottomExpanded?: boolean,
-      areaSize?: string
-    }
+      middleExpanded?: middleOptions;
+      bottomExpanded?: boolean;
+      areaSize?: string;
+    };
   };
 }
 
@@ -178,17 +182,17 @@ export interface NodeDetail {
   tags: Tag[];
   isShared: boolean;
   groupinfo?: GroupInfo;
-  owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
-  systems?: (GroupInfo)[] | null;
-  dataNodes?: (GroupInfo)[] | null;
-  dimensions?: (GroupInfo)[] | null;
-  reportingConcepts?: (GroupInfo)[] | null;
-  descendants?: (DescendantsEntity)[] | null;
-  attributes?: (AttributesEntity)[] | null;
-  relatedRadios?: (RelatedRadiosEntity)[] | null;
-  relatedWorkPackages?: (RelatedWorkPackagesEntity)[] | null;
-  customPropertyValues?: (CustomPropertyValuesEntity)[] | null;
-  members?: (GroupInfo[]) | null;
+  owners?: OwnersEntityOrTeamEntityOrApproversEntity[] | null;
+  systems?: GroupInfo[] | null;
+  dataNodes?: GroupInfo[] | null;
+  dimensions?: GroupInfo[] | null;
+  reportingConcepts?: GroupInfo[] | null;
+  descendants?: DescendantsEntity[] | null;
+  attributes?: AttributesEntity[] | null;
+  relatedRadios?: RelatedRadiosEntity[] | null;
+  relatedWorkPackages?: RelatedWorkPackagesEntity[] | null;
+  customPropertyValues?: CustomPropertyValuesEntity[] | null;
+  members?: GroupInfo[] | null;
   master?: GroupInfo;
 }
 export interface GroupInfo {
@@ -198,7 +202,7 @@ export interface GroupInfo {
   reference: string;
   description: string;
   category: string;
-  tags: (Tag)[] | null;
+  tags: Tag[] | null;
   group: string;
   sortOrder: number;
   direct: boolean;
@@ -215,8 +219,8 @@ export interface DescendantsEntity {
   description: string;
   category: string;
   tags: string;
-  locations?: ((LocationsEntityEntity)[] | null)[] | null;
-  owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
+  locations?: (LocationsEntityEntity[] | null)[] | null;
+  owners?: OwnersEntityOrTeamEntityOrApproversEntity[] | null;
 }
 export interface LocationsEntityEntity {
   layout: LayoutOrRolesEntity;
@@ -232,7 +236,7 @@ export interface AttributesEntity {
   name: string;
   description: string;
   tags: string;
-  related?: (null)[] | null;
+  related?: null[] | null;
 }
 export interface RelatedRadiosEntity {
   id: string;
@@ -240,7 +244,7 @@ export interface RelatedRadiosEntity {
   commentText: string;
   category: string;
   author: AuthorOrLastUpdatedBy;
-  owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
+  owners?: OwnersEntityOrTeamEntityOrApproversEntity[] | null;
   status: string;
   createdOn: string;
   lastUpdatedOn: string;
@@ -251,17 +255,17 @@ export interface AuthorOrLastUpdatedBy {
   id: string;
   firstName: string;
   lastName: string;
-  team?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
+  team?: OwnersEntityOrTeamEntityOrApproversEntity[] | null;
   email: string;
   phone: string;
-  roles?: (LayoutOrRolesEntity)[] | null;
+  roles?: LayoutOrRolesEntity[] | null;
 }
 export interface RelatedWorkPackagesEntity {
   id: string;
   name: string;
   description: string;
-  owners?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
-  approvers?: (OwnersEntityOrTeamEntityOrApproversEntity)[] | null;
+  owners?: OwnersEntityOrTeamEntityOrApproversEntity[] | null;
+  approvers?: OwnersEntityOrTeamEntityOrApproversEntity[] | null;
   hasErrors: boolean;
   status: string;
 }
@@ -282,14 +286,14 @@ export interface NodeLocationsUpdatePayload {
 }
 
 export interface NodeReportsApiResponse {
-  data?: (NodeReports)[] | null;
+  data?: NodeReports[] | null;
 }
 
 export interface NodeReports {
   id: string;
   name: string;
   system: System;
-  owners: (OwnersEntity)[] | null;
+  owners: OwnersEntity[] | null;
 }
 
 export interface System {
@@ -317,8 +321,7 @@ export enum TagColour {
   'red' = '#ff0000',
   'green' = '#008000',
   'purple' = '#d37cb1',
-  'blue' = '#0741ad',
-
+  'blue' = '#0741ad'
 }
 
 export enum TagApplicableTo {
@@ -353,7 +356,7 @@ export enum TagIcon {
 // TODO: This may be shared at some point
 
 export interface Error {
-  errors?: (ErrorsEntity)[] | null;
+  errors?: ErrorsEntity[] | null;
 }
 export interface ErrorsEntity {
   status: number;
@@ -381,10 +384,10 @@ export interface TagsHttpParams {
 
 export interface NodeGroupMember {
   id: string;
-  sortOrder: number
+  sortOrder: number;
 }
 
 export interface NodeChild {
   id: string;
-  sortOrder: number
+  sortOrder: number;
 }

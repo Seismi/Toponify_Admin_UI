@@ -940,15 +940,43 @@ export function reducer(
       };
     }
 
-    case NodeActionTypes.UpdateNodeChildren: {
+    case NodeActionTypes.UpdateNodeChildrenSuccess: {
+      const { descendants, nodeId } = action.payload;
       return {
-        ...state
+        ...state,
+        entities: state.entities.map(node => {
+          if (node.id === nodeId) {
+            return {
+              ...node,
+              descendants
+            };
+          }
+          return node;
+        }),
+        selectedNode: {
+          ...state.selectedNode,
+          descendants
+        }
       };
     }
 
-    case NodeActionTypes.UpdateNodeGroupMembers: {
+    case NodeActionTypes.UpdateNodeGroupMembersSuccess: {
+      const { members, nodeId } = action.payload;
       return {
-        ...state
+        ...state,
+        entities: state.entities.map(node => {
+          if (node.id === nodeId) {
+            return {
+              ...node,
+              members
+            };
+          }
+          return node;
+        }),
+        selectedNode: {
+          ...state.selectedNode,
+          members
+        }
       };
     }
 
