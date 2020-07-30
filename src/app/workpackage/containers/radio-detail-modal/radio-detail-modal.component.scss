@@ -3,7 +3,7 @@
   padding: 15px;
 }
 
-.mat-icon {
+.tab-icon {
   margin-right: 15px;
   font-size: 18px;
   margin-top: 7px;
@@ -14,12 +14,6 @@
   background-color: #fff;
 }
 
-.properties-tab {
-  border-left: solid 1px #ddd;
-  border-right: solid 1px #ddd;
-  border-bottom: solid 1px #ddd;
-}
-
 .mat-dialog-actions {
   display: flex;
   justify-content: flex-end;
@@ -27,4 +21,20 @@
 
 .mat-dialog-content {
   max-height: 100% !important;
+}
+
+.edit {
+  margin-top: 10px;
+  margin-right: 5px;
+  border-radius: 15px;
+  font-weight: lighter;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  mat-icon {
+    cursor: pointer;
+  }
 }
