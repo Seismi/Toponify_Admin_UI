@@ -4,12 +4,11 @@ import { ScopeEntity, ScopeEntitiesHttpParams, Page } from '@app/scope/store/mod
 import { Observable, Subject } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
-import { LoadScopes, AddScope, SetScopeAsFavourite, UnsetScopeAsFavourite, ScopeActionTypes, UpdateScope } from '@app/scope/store/actions/scope.actions';
+import { LoadScopes, AddScope, SetScopeAsFavourite, UnsetScopeAsFavourite } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopePage } from '@app/scope/store/selectors/scope.selector';
 import { ScopeAndLayoutModalComponent } from './scope-and-layout-modal/scope-and-layout-modal.component';
 import { MatDialog } from '@angular/material';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'smi-scopes-and-layouts-component',
@@ -27,7 +26,6 @@ export class ScopesAndLayoutsComponent implements OnInit {
   page$: Observable<Page>;
 
   constructor(
-    private actions: Actions,
     private store: Store<ScopeState>,
     private router: Router,
     private dialog: MatDialog
@@ -52,21 +50,6 @@ export class ScopesAndLayoutsComponent implements OnInit {
     });
 
     this.page$ = this.store.pipe(select(getScopePage));
-
-    this.actions
-      .pipe(
-        ofType(
-          ScopeActionTypes.SetScopeAsFavouriteSuccess,
-          ScopeActionTypes.UnsetScopeAsFavouriteSuccess
-        )
-      )
-      .subscribe(_ => {
-        this.scopeParams = {
-          page: 0,
-          size: this.scopeParams.size
-        };
-        this.store.dispatch(new LoadScopes(this.scopeParams));
-      });
   }
 
   onScopeSelect(row: ScopeEntity): void {
