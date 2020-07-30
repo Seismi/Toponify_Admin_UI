@@ -805,7 +805,10 @@ Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) =
     .then(() => {
       cy.get(`[data-qa=work-packages-modal-save]`)
         .click()
-        .wait(['@POSTWorkPackage', '@GETWorkPackage'], { requestTimeout: 20000, responseTimeout: 40000 });
+        .wait(['@POSTWorkPackage', '@GETWorkPackage', '@GETWorkPackageActive'], {
+          requestTimeout: 20000,
+          responseTimeout: 40000
+        });
     });
 });
 
