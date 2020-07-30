@@ -372,6 +372,21 @@ Cypress.Commands.add('findScope', name => {
     });
 });
 
+Cypress.Commands.add('findSystem', (table, name) => {
+  cy.get(`[data-qa=${table}]`)
+    .find(`[data-qa=topology-table-quick-search]`) // get the quick packages search
+    .clear({ force: true }) //clear the box
+    .paste(name)
+    .should('have.value', name) // type the name
+    //    .wait(3000)
+    //.wait(['@GETNodesQuery','@GETNodeLinksQuery'])
+    .then(() => {
+      return cy
+        .get(`[data-qa=${table}]`) // get the work packages table
+        .find('table>tbody'); // find the table
+    });
+});
+
 Cypress.Commands.add('findRadio', radio => {
   cy.get('[data-qa=radio-header-filter]')
     .click()
