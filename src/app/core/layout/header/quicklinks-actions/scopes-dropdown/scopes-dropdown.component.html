@@ -7,8 +7,8 @@
   <mat-select-trigger>{{ getLabel() }}</mat-select-trigger>
     <mat-option *ngFor="let scope of scopes" [value]="scope.id">
       <span *ngIf="scope.id !== defaultScopeId">
-        <mat-icon *ngIf="scope.favourite" (click)="unsetFavourite($event, scope)">grade</mat-icon>
-        <mat-icon *ngIf="!scope.favourite" (click)="setFavourite($event, scope)">star_outline</mat-icon>
+        <mat-icon *ngIf="scope.favourite" (click)="$event.stopPropagation(); unsetFavourite(scope)">grade</mat-icon>
+        <mat-icon *ngIf="!scope.favourite" (click)="$event.stopPropagation(); setFavourite(scope)">star_outline</mat-icon>
       </span>
       {{ scope.name }}
     </mat-option>

@@ -3,8 +3,7 @@ import { ScopeEntity, defaultScopeId } from '@app/scope/store/models/scope.model
 import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
-import { UnsetScopeAsFavourite, SetScopeAsFavourite, LoadScopes, LoadScope, ScopeActionTypes } from '@app/scope/store/actions/scope.actions';
-import { Actions, ofType } from '@ngrx/effects';
+import { SetScopeAsFavourite, UnsetScopeAsFavourite } from '@app/scope/store/actions/scope.actions';
 
 @Component({
   selector: 'smi-scopes-dropdown',
@@ -23,36 +22,19 @@ export class ScopesDropdownComponent implements OnInit {
 
   @Output() selectScope = new EventEmitter<string>();
 
-  constructor(
-    private actions: Actions,
-    private store: Store<ScopeState>
-  ) { }
+  constructor(private store: Store<ScopeState>) { }
 
-  ngOnInit() {
-    this.actions
-      .pipe(
-        ofType(
-          ScopeActionTypes.UnsetScopeAsFavouriteSuccess,
-          ScopeActionTypes.SetScopeAsFavouriteSuccess
-        )
-      )
-      .subscribe(_ => {
-        this.store.dispatch(new LoadScopes({}));
-        this.store.dispatch(new LoadScope(this.selectedScope.id));
-      });
-  }
+  ngOnInit() { }
 
   onSelect(selectChange: MatSelectChange): void {
     this.selectScope.emit(selectChange.value);
   }
 
-  unsetFavourite($event, scope: ScopeEntity): void {
-    $event.stopPropagation();
+  unsetFavourite(scope: ScopeEntity): void {
     this.store.dispatch(new UnsetScopeAsFavourite(scope.id));
   }
 
-  setFavourite($event, scope: ScopeEntity): void {
-    $event.stopPropagation();
+  setFavourite(scope: ScopeEntity): void {
     this.store.dispatch(new SetScopeAsFavourite(scope.id));
   }
 
