@@ -82,7 +82,10 @@ import {
   AddWorkPackageMapViewTransformation,
   AddWorkPackageMapViewTransformationFailure,
   AddWorkPackageMapViewTransformationSuccess,
-  SetWorkpackageEditMode
+  SetWorkpackageEditMode,
+  LoadWorkPackagesActive,
+  LoadWorkPackagesActiveSuccess,
+  LoadWorkPackagesActiveFailure
 } from '../actions/workpackage.actions';
 import {LoadMapView} from '@app/architecture/store/actions/node.actions';
 import {
@@ -92,7 +95,8 @@ import {
   WorkPackageDetailApiResponse,
   WorkPackageEntitiesHttpParams,
   WorkPackageEntitiesResponse,
-  Baseline
+  Baseline,
+  WorkPackagesActive
 } from '../models/workpackage.models';
 import { State as WorkpackageState } from '../reducers/workpackage.reducer';
 import { Store } from '@ngrx/store';
@@ -116,6 +120,17 @@ export class WorkPackageEffects {
       return this.workpackageService.getWorkPackageEntities(payload).pipe(
         switchMap((data: WorkPackageEntitiesResponse) => [new LoadWorkPackagesSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadWorkPackagesActive$ = this.actions$.pipe(
+    ofType<LoadWorkPackagesActive>(WorkPackageActionTypes.LoadWorkPackagesActive),
+    switchMap(_ => {
+      return this.workpackageService.getWorkPackagesActive().pipe(
+        switchMap((response: { data: WorkPackagesActive[] }) => [new LoadWorkPackagesActiveSuccess(response)]),
+        catchError((error: HttpErrorResponse) => of(new LoadWorkPackagesActiveFailure(error)))
       );
     })
   );

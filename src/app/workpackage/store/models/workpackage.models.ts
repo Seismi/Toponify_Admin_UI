@@ -43,6 +43,13 @@ export interface WorkPackageEntity {
   archived?: boolean;
 }
 
+export interface WorkPackagesActive {
+  id: string;
+  name: string;
+  status?: string;
+  baseline?: (Baseline)[] | null;
+}
+
 export interface OwnersEntityOrApproversEntity {
   id: string;
   name: string;

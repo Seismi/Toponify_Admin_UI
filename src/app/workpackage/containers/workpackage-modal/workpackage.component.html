@@ -11,6 +11,9 @@
     [pagination]="page$ | async"
     (pageChange)="onPageChange($event)"
     [loading]="loading$ | async"
+    [baselineTableData]="baselineData"
+    (addBaseline)="onAddBaseline()"
+    (deleteBaseline)="onDeleteBaseline($event)"
   >
   </smi-workpackage-detail>
 </div>

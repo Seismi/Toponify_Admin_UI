@@ -3,7 +3,7 @@ const { Given } = require('cypress-cucumber-preprocessor/steps');
 Given('the team {string} exists with name {string}', function(name, description) {
   cy.get('[data-qa=settings-teams-quick-search]') //grab the teams search
     .clear() //clear contents
-    .type(name)
+    .paste(name)
     .should('have.value', name)
     .then(() => {
       // type the team name
@@ -36,11 +36,11 @@ function teamDetails(editButton, name, description, design_authority, saveButton
       // grab the correct edit button
       cy.get(`[data-qa=settings-teams-details-name]`)
         .clear()
-        .type(name)
+        .paste(name)
         .should('have.value', name); //clear and type team name
       cy.get(`[data-qa=settings-teams-details-description]`)
         .clear()
-        .type(description)
+        .paste(description)
         .should('have.value', description); //clear and type description
       cy.get('[data-qa=settings-teams-details-design-authority]')
         .find('label>div>input')
