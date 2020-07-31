@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { FormControl } from '@angular/forms';
+import { WorkPackagesActive } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-add-objective-modal',
@@ -10,22 +10,19 @@ import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.mod
 })
 export class MoveObjectiveModalComponent {
   control = new FormControl();
-  workPackages: WorkPackageEntity[];
+  workPackages: WorkPackagesActive[];
 
   constructor(
     private dialogRef: MatDialogRef<MoveObjectiveModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: WorkPackageEntity[]
-  ) {
-    this.workPackages = data;
-  }
+    @Inject(MAT_DIALOG_DATA) public data: WorkPackagesActive[]) { this.workPackages = data; }
 
-  onConfirm() {
+  onConfirm(): void {
     if (this.control.valid) {
       this.dialogRef.close(this.control.value);
     }
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close();
   }
 }

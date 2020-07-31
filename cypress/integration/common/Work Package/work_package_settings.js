@@ -145,6 +145,11 @@ module.exports = {
       api: `${api_version}/radios`,
       method: 'GET',
       name: 'Radios'
+    },
+    GetWorkPackageActive: {
+      api: `${api_version}/workpackages/active`,
+      method: 'GET',
+      name: 'WorkPackageActive'
     }
   }
 };

@@ -9,8 +9,9 @@ Given('the user selects the {string} {string} in the {string} table', function(t
     .concat(system); // prefix name with branch
 
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
-
-  cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`)
+  cy.findSystem(`topology-table-${types}`, system)
+    //cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`)
+    .contains('td', system)
     .click()
     .wait(wait)
     .get('[data-qa=details-spinner]')

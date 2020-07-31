@@ -183,8 +183,8 @@ export type ScopeActionsUnion =
   | AddScopeNodesSuccess
   | AddScopeNodesFailure
   | SetScopeAsFavourite
-  | SetScopeAsFavouriteSuccess
   | SetScopeAsFavouriteFailure
+  | SetScopeAsFavouriteSuccess
   | UnsetScopeAsFavourite
   | UnsetScopeAsFavouriteSuccess
   | UnsetScopeAsFavouriteFailure;

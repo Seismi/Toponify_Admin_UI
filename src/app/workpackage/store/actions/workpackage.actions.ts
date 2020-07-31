@@ -8,7 +8,8 @@ import {
   WorkPackageEntitiesResponse,
   WorkPackageEntity,
   Objective,
-  Baseline
+  Baseline,
+  WorkPackagesActive
 } from '../models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
 
@@ -118,7 +119,11 @@ export enum WorkPackageActionTypes {
 
   AddWorkPackageMapViewTransformation = '[WorkPackage] Add Transformation in Map View',
   AddWorkPackageMapViewTransformationSuccess = '[WorkPackage] Add Transformation in Map View Success',
-  AddWorkPackageMapViewTransformationFailure = '[WorkPackage] Add Transformation in Map View Failure'
+  AddWorkPackageMapViewTransformationFailure = '[WorkPackage] Add Transformation in Map View Failure',
+
+  LoadWorkPackagesActive = '[WorkPackage] Load WorkPackages Active',
+  LoadWorkPackagesActiveSuccess = '[WorkPackage] Load WorkPackages Active Success',
+  LoadWorkPackagesActiveFailure = '[WorkPackage] Load WorkPackages Active Failure',
 }
 
 export class LoadWorkPackages implements Action {
@@ -516,6 +521,21 @@ export class AddWorkPackageMapViewTransformationFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadWorkPackagesActive implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackagesActive;
+  constructor() {}
+}
+
+export class LoadWorkPackagesActiveSuccess implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackagesActiveSuccess;
+  constructor(public payload: { data: WorkPackagesActive[] }) {}
+}
+
+export class LoadWorkPackagesActiveFailure implements Action {
+  readonly type = WorkPackageActionTypes.LoadWorkPackagesActiveFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type WorkPackageActionsUnion =
   | LoadWorkPackages
   | LoadWorkPackagesSuccess
@@ -595,4 +615,7 @@ export type WorkPackageActionsUnion =
   | DeleteWorkPackageBaselineFailure
   | AddWorkPackageMapViewTransformation
   | AddWorkPackageMapViewTransformationSuccess
-  | AddWorkPackageMapViewTransformationFailure;
+  | AddWorkPackageMapViewTransformationFailure
+  | LoadWorkPackagesActive
+  | LoadWorkPackagesActiveSuccess
+  | LoadWorkPackagesActiveFailure;

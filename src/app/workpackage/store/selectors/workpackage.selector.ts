@@ -117,3 +117,8 @@ export const getWorkPackageById = createSelector(
     return state.entities.filter(entity => entity.id === props.id);
   }
 );
+
+export const getWorkPackagesActive = createSelector(
+  getWorkPackageState,
+  state => state.active
+);
