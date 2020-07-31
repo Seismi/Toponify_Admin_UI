@@ -5,8 +5,8 @@ Then('the work package called {string} should exist in the work packages table',
     .concat(' | ')
     .concat(name); // prefix name with branch
   cy.get(`[data-qa=work-packages-quick-search]`) //get the quick search
-    .clear({ force: true }) //clear it
-    .type(name)
+    .clear() //clear it
+    .paste(name)
     .should('have.value', name); // type the name
   cy.get(`[data-qa=work-packages-table]`) //get the work package tables
     .find('table>tbody') // get the table body

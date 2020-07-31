@@ -17,7 +17,7 @@
       <th mat-header-cell *matHeaderCellDef>
         <span class="name-cell">
           Name
-          <button mat-icon-button (click)="onAdd()"
+          <button *ngIf="isEditable" mat-icon-button (click)="onAdd()"
             data-qa="radio-relates-to-add">
             <mat-icon>add</mat-icon>
           </button>
@@ -27,10 +27,10 @@
         <div class="name-cell">
           <span>{{ element.item.name }}</span>
           <div>
-            <button mat-icon-button (click)="loadRelateTo(element)">
+            <button *ngIf="isEditable" mat-icon-button (click)="loadRelateTo(element)">
               <mat-icon>launch</mat-icon>
             </button>
-            <button mat-icon-button (click)="onUnLink(element)"
+            <button *ngIf="isEditable" mat-icon-button (click)="onUnLink(element)"
               data-qa="radio-relates-to-disassociate">
               <mat-icon>link_off</mat-icon>
             </button>

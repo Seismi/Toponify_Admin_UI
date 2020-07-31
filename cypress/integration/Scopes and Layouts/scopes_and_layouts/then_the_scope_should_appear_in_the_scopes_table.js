@@ -30,8 +30,8 @@ function assertDelete(scope, operator) {
     .concat(scope); // prefix the branch to scope
   cy.get(`[data-qa=scopes-and-layouts-scope-table]`)
     .find(`[data-qa=scopes-and-layouts-quick-search]`) // get the quick packages search
-    .clear({ force: true }) //clear the box
-    .type(scope)
+    .clear() //clear the box
+    .paste(scope)
     .should('have.value', scope) // type the name
     .get(`[data-qa=scopes-and-layouts-scope-table]`) // get the work packages table
     .find('table>tbody') // find the table

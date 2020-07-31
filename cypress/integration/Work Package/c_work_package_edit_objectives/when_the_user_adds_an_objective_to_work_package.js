@@ -13,10 +13,10 @@ Given(
       .click()
       .then(() => {
         cy.get('[data-qa=work-packages-objectives-modal-name]')
-          .type(name)
+          .paste(name)
           .should('have.value', name); // enter the name
         cy.get('[data-qa=work-packages-objectives-modal-description]')
-          .type(description)
+          .paste(description)
           .should('have.value', description); // enter the description
       });
   }

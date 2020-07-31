@@ -5,8 +5,8 @@ Given(
   'the user with email address {string} exists with first name {string}, last name {string}, phone number {string}, team {string} and role {string}',
   function(email, first, last, phone, teams, roles) {
     cy.get('[data-qa=settings-all-users-quick-search]') // get the all users search
-      .clear({ force: true }) //clear contents
-      .type(email)
+      .clear() //clear contents
+      .paste(email)
       .should('have.value', email)
       .then(() => {
         //type email address
@@ -117,20 +117,20 @@ function createUser(editButton, saveButton, action, email, first, last, phone, t
       cy.get('[data-qa=settings-all-users-modal-form]').within(() => {
         // constrain commands to the modal form
         cy.get(`[data-qa=settings-user-email]`)
-          .clear({ force: true })
-          .type(email)
+          .clear()
+          .paste(email)
           .should('have.value', email); // clear and type email
         cy.get(`[data-qa=settings-user-first-name]`)
-          .clear({ force: true })
-          .type(first)
+          .clear()
+          .paste(first)
           .should('have.value', first); // clear and type first name
         cy.get(`[data-qa=settings-user-last-name]`)
-          .clear({ force: true })
-          .type(last)
+          .clear()
+          .paste(last)
           .should('have.value', last); // clear and type last name
         cy.get(`[data-qa=settings-user-phone-number]`)
-          .clear({ force: true })
-          .type(phone)
+          .clear()
+          .paste(phone)
           .should('have.value', phone); // clear and type phone number
       });
       team.forEach(t => {
@@ -157,16 +157,16 @@ function updateUser(editButton, saveButton, action, email, first, last, phone, t
     .click({ force: true })
     .then(() => {
       cy.get(`[data-qa=settings-user-first-name]`)
-        .clear({ force: true })
-        .type(first)
+        .clear()
+        .paste(first)
         .should('have.value', first); // clear and type the first name
       cy.get(`[data-qa=settings-user-last-name]`)
-        .clear({ force: true })
-        .type(last)
+        .clear()
+        .paste(last)
         .should('have.value', last); // clear and type the last name
       cy.get(`[data-qa=settings-user-phone-number]`)
-        .clear({ force: true })
-        .type(phone)
+        .clear()
+        .paste(phone)
         .should('have.value', phone); // clear and type the phone number
       resetDropDown('settings-user-teams'); //reset the drop down to have remove all currently selected teams
       teams.forEach(team => {

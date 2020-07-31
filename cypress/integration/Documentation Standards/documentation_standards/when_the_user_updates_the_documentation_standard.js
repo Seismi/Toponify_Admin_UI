@@ -18,11 +18,11 @@ When(
           .click()
           .then(() => {
             cy.get('[data-qa=documentation-standards-details-name]')
-              .clear({ force: true })
-              .type(doc_standard_new);
+              .clear()
+              .paste(doc_standard_new);
             cy.get('[data-qa=documentation-standards-details-description]')
-              .clear({ force: true })
-              .type(doc_standard_new);
+              .clear()
+              .paste(doc_standard_new);
             cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
               .click()
               .get('mat-option')

@@ -9,11 +9,11 @@ When('the user updates the work package name to {string} and description to {str
     .then(() => {
       cy.get(`[data-qa=work-packages-details-name]`)
         .clear({ force: true })
-        .type(name)
+        .paste(name)
         .should('have.value', name); // type in the name
       cy.get(`[data-qa=work-packages-details-description]`)
         .clear({ force: true })
-        .type(description)
+        .paste(description)
         .should('have.value', description); // type in the description
     });
 });

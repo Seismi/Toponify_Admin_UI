@@ -14,8 +14,8 @@ Then('the work package called {string} should not exist in the work packages tab
     .then(() => {
       cy.wait('@GETWorkPackagePaging.all');
       cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
-        .clear({ force: true }) // clear the search
-        .type(name)
+        .clear() // clear the search
+        .paste(name)
         .should('have.value', name) // type the name
         .then(() => {
           cy.get(`[data-qa=work-packages-table]`) // get the table
@@ -42,8 +42,8 @@ Then('the work package called {string} should not exist in the work packages tab
       cy.wait('@GETWorkPackagePaging.all');
 
       cy.get(`[data-qa=work-packages-quick-search]`) //get the work packages quick search
-        .clear({ force: true }) // clear the search
-        .type(name)
+        .clear() // clear the search
+        .paste(name)
         .should('have.value', name) // type the name
         .then(() => {
           cy.get(`[data-qa=work-packages-table]`) // get the table

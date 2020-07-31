@@ -12,8 +12,8 @@ Then('the details pane should reflect that {string} has not been added to baseli
     .concat(baseline); // prefix baseline with branch
 
   cy.get(`[data-qa=work-packages-quick-search]`) // get the search bar
-    .clear({ force: true }) //clear value
-    .type(name)
+    .clear() //clear value
+    .paste(name)
     .should('have.value', name) //type name
     .then(() => {
       cy.get(`[data-qa=work-packages-table]`)

@@ -13,16 +13,16 @@ When(
       wait_for = ['@GETnodeLinksWorkPackageQuery', '@GETWorkPackageNodeLinksQuery'];
     }
     cy.get('[data-qa=object-details-reference]')
-      .clear({ force: true })
-      .type(reference)
+      .clear()
+      .paste(reference)
       .should('have.value', reference);
     cy.get('[data-qa=object-details-name]')
-      .clear({ force: true })
-      .type(name)
+      .clear()
+      .paste(name)
       .should('have.value', name);
     cy.get('[data-qa=object-details-description]')
-      .clear({ force: true })
-      .type(description)
+      .clear()
+      .paste(description)
       .should('have.value', description);
     cy.selectDropDown('object-details-category', category).then(() => {
       cy.get('[data-qa=object-details-save]')
