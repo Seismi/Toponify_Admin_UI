@@ -23,7 +23,7 @@ And('the user checks if attribute {string} {string} exist in the table', (attr, 
     .concat(attr);
   cy.get('[data-qa=rules-and-attributes-quick-search]')
     .clear()
-    .type(attr);
+    .paste(attr);
   if (exist === 'not') {
     cy.get('[data-qa=rules-and-attributes-table]').find('table>tbody').length > 0;
   } else {

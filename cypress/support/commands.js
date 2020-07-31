@@ -807,7 +807,7 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
 Cypress.Commands.add('findAttributeOrRule', attr => {
   cy.get('[data-qa=rules-and-attributes-quick-search]')
     .clear()
-    .type(attr);
+    .paste(attr);
   return cy.get(`[data-qa=rules-and-attributes-table]`).find('table>tbody');
 });
 
@@ -816,13 +816,13 @@ Cypress.Commands.add('createAttributeAndRule', (name, description, category) => 
     .then(() => {
       cy.get('[data-qa=rule-and-attribute-details-name]')
         .should('be.visible')
-        .type(name)
+        .paste(name)
         .should('have.value', name);
     })
     .then(() => {
       cy.get('[data-qa=rule-and-attribute-details-description]')
         .should('be.visible')
-        .type(description)
+        .paste(description)
         .should('have.value', description);
     });
 });
@@ -831,10 +831,10 @@ Cypress.Commands.add('assertAttributesForm', (category, title, description) => {
   cy.selectDropDownNoClick('attributes-and-rules-details-category', category);
   cy.get('[data-qa=attributes-and-rules-details-name]')
     .clear()
-    .type(title);
+    .paste(title);
   cy.get('[data-qa=attributes-and-rules-details-description]')
     .clear()
-    .type(description);
+    .paste(description);
 });
 
 Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) => {
