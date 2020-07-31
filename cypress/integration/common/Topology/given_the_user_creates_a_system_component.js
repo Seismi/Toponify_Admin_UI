@@ -8,7 +8,7 @@ Given('the user creates a new {string} system with name {string}', function(comp
     .click()
     .selectDropDownNoClick('topology-components-or-link-modal-category', component_type)
     .get('[data-qa=topology-components-or-link-modal-name]')
-    .type(name)
+    .paste(name)
     .should('have.value', name)
     .get('[data-qa=topology-components-or-link-modal-save]')
     .click()

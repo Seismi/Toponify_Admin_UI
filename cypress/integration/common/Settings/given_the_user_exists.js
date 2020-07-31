@@ -6,7 +6,7 @@ Given(
   function(email, first, last, phone, teams, roles) {
     cy.get('[data-qa=settings-all-users-quick-search]') // get the all users search
       .clear() //clear contents
-      .type(email)
+      .paste(email)
       .should('have.value', email)
       .then(() => {
         //type email address
@@ -118,19 +118,19 @@ function createUser(editButton, saveButton, action, email, first, last, phone, t
         // constrain commands to the modal form
         cy.get(`[data-qa=settings-user-email]`)
           .clear()
-          .type(email)
+          .paste(email)
           .should('have.value', email); // clear and type email
         cy.get(`[data-qa=settings-user-first-name]`)
           .clear()
-          .type(first)
+          .paste(first)
           .should('have.value', first); // clear and type first name
         cy.get(`[data-qa=settings-user-last-name]`)
           .clear()
-          .type(last)
+          .paste(last)
           .should('have.value', last); // clear and type last name
         cy.get(`[data-qa=settings-user-phone-number]`)
           .clear()
-          .type(phone)
+          .paste(phone)
           .should('have.value', phone); // clear and type phone number
       });
       team.forEach(t => {
@@ -158,15 +158,15 @@ function updateUser(editButton, saveButton, action, email, first, last, phone, t
     .then(() => {
       cy.get(`[data-qa=settings-user-first-name]`)
         .clear()
-        .type(first)
+        .paste(first)
         .should('have.value', first); // clear and type the first name
       cy.get(`[data-qa=settings-user-last-name]`)
         .clear()
-        .type(last)
+        .paste(last)
         .should('have.value', last); // clear and type the last name
       cy.get(`[data-qa=settings-user-phone-number]`)
         .clear()
-        .type(phone)
+        .paste(phone)
         .should('have.value', phone); // clear and type the phone number
       resetDropDown('settings-user-teams'); //reset the drop down to have remove all currently selected teams
       teams.forEach(team => {

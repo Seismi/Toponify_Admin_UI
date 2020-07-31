@@ -10,7 +10,7 @@ And('the user assign radio {string} to component with work package selected {str
     .wait('@GETRadios');
   cy.get('[data-qa=work-packages-radio-list-quick-search]')
     .clear()
-    .type(radio);
+    .paste(radio);
   cy.get('[data-qa=work-packages-radio-modal-list]')
     .find('table>tbody')
     .find('tr :first')
@@ -28,7 +28,7 @@ And('the user assign radio {string} to component with work package selected {str
           cy.wait(10000);
           cy.get('[data-qa=related-radio-table-quick-search]')
             .clear()
-            .type(radio);
+            .paste(radio);
           cy.get('[data-qa=topology-related-radio-table]')
             .find('table>tbody')
             .contains(radio);
@@ -44,7 +44,7 @@ And('the user assign radio {string} to component with work package selected {str
   cy.get('[data-qa=related-radio-table-assign-radio]').click();
   cy.get('[data-qa=work-packages-radio-list-quick-search]')
     .clear()
-    .type(radio);
+    .paste(radio);
   cy.get('[data-qa=work-packages-radio-modal-list]')
     .find('table>tbody')
     .find('tr :first')
