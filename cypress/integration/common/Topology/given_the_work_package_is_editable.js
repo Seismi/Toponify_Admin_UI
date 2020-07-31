@@ -8,12 +8,7 @@ Given('the work package {string} is editable on the {string} menu', function(wor
 
   if (work_package_menu === 'reports') {
     work_package_menu = 'reports-work-package-table';
-    wait_for = [
-      '@GETReportsWorkPackageQuery',
-      '@GETReportsScopeQuery',
-      '@GETSelectorAvailabilityQuery',
-      '@GETReportsScopeQuery'
-    ];
+    wait_for = ['@GETReportsQuery', '@GETSelectorAvailabilityQuery'];
   } else {
     work_package_menu = 'left-hand-pane-work-package-table';
     wait_for = ['@GETNodesQuery', '@GETNodeLinksQuery', '@GETSelectorAvailabilityQuery'];

@@ -22,21 +22,7 @@ Feature: Topology Documentation Standards
     And the documentation standard 'Regression Test Documentation Standard String' does not exist
     And the documentation standard 'Regression Test Documentation Standard String' exists with type 'Text' against 'System' component
     And the user confirms the creation of the documentation standard
-    #And the documentation standard 'Regression Test Documentation Standard Date' does not exist
-    #And the documentation standard 'Regression Test Documentation Standard Number' does not exist
-    #And the documentation standard 'Regression Test Documentation Standard URL' does not exist
-    #And the documentation standard 'Regression Test Documentation Standard Boolean' does not exist
-    #And the documentation standard 'Regression Test Documentation Standard String' does not exist
-    #And the documentation standard 'Regression Test Documentation Standard Date' exists with type 'Date' against 'System' component
-    #And the user confirms the creation of the documentation standard
-    #And the documentation standard 'Regression Test Documentation Standard Number' exists with type 'Number' against 'System' component
-    #And the user confirms the creation of the documentation standard
-    #And the documentation standard 'Regression Test Documentation Standard URL' exists with type 'Hyperlink' against 'System' component
-    #And the user confirms the creation of the documentation standard
-    #And the documentation standard 'Regression Test Documentation Standard Boolean' exists with type 'Boolean' against 'System' component
-    #And the user confirms the creation of the documentation standard
-    #And the documentation standard 'Regression Test Documentation Standard String' exists with type 'Text' against 'System' component
-    #And the user confirms the creation of the documentation standard
+
     And the user selects Topology menu item
     And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
