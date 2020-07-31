@@ -147,6 +147,36 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
       };
     }
 
+    case ScopeActionTypes.SetScopeAsFavouriteSuccess: {
+      return {
+        ...state,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload) {
+            return {
+              ...entity,
+              favourite: true
+            };
+          }
+          return entity;
+        })
+      };
+    }
+
+    case ScopeActionTypes.UnsetScopeAsFavouriteSuccess: {
+      return {
+        ...state,
+        entities: state.entities.map(entity => {
+          if (entity.id === action.payload) {
+            return {
+              ...entity,
+              favourite: false
+            };
+          }
+          return entity;
+        })
+      };
+    }
+
     default: {
       return state;
     }
