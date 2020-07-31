@@ -106,7 +106,6 @@ export class RadioDetailComponent implements DoCheck {
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() selectWorkPackage = new EventEmitter<any>();
-  @Output() closeModal = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 
   ngDoCheck(): void {

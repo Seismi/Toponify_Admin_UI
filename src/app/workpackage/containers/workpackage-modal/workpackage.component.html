@@ -1,14 +1,23 @@
 <h1 mat-dialog-title>New Work Package</h1>
-<smi-workpackage-detail
-  data-qa="work-packages-details-form-modal"
-  [owners]="owners$ | async"
-  [baseline]="baseline$ | async"
-  [group]="workPackageDetailForm"
-  [modalMode]="modalMode"
-  [isEditable]="isEditable"
->
-</smi-workpackage-detail>
+<div mat-dialog-content>
+  <smi-workpackage-detail
+    data-qa="work-packages-details-form-modal"
+    [owners]="owners$ | async"
+    [baseline]="baseline$ | async"
+    [group]="workPackageDetailForm"
+    [modalMode]="modalMode"
+    [isEditable]="isEditable"
+    (search)="onSearch($event)"
+    [pagination]="page$ | async"
+    (pageChange)="onPageChange($event)"
+    [loading]="loading$ | async"
+    [baselineTableData]="baselineData"
+    (addBaseline)="onAddBaseline()"
+    (deleteBaseline)="onDeleteBaseline($event)"
+  >
+  </smi-workpackage-detail>
+</div>
 <div mat-dialog-actions>
   <button mat-button (click)="onSubmit()" data-qa="work-packages-modal-save">Save</button>
-  <button mat-button (click)="onCancelClick()" data-qa="work-packages-modal-cancel">Cancel</button>
+  <button mat-button (click)="onCancel()" data-qa="work-packages-modal-cancel">Cancel</button>
 </div>

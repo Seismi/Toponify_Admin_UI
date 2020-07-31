@@ -40,7 +40,6 @@
   <!-- Baseline Table -->
   <smi-baseline-table
     data-qa="work-packages-baseline-table"
-    *ngIf="!modalMode"
     [data]="baselineTableData"
     [isEditable]="isEditable"
     (add)="onAddBaseline()"
@@ -61,21 +60,12 @@
   </smi-owners-table>
 
   <!-- Approvers Table -->
-  <smi-approvers-table data-qa="work-packages-approvers-table" *ngIf="!modalMode" [data]="approversTableData">
+  <smi-approvers-table 
+    data-qa="work-packages-approvers-table" 
+    *ngIf="!modalMode" 
+    [data]="approversTableData"
+  >
   </smi-approvers-table>
-
-  <mat-form-field *ngIf="modalMode">
-    <mat-select
-      placeholder="Baseline"
-      formControlName="baseline"
-      multiple
-      data-qa="work-packages-details-baseline-selection"
-    >
-      <mat-option *ngFor="let baseline of baseline" [value]="baseline">
-        {{ baseline.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 
   <mat-form-field *ngIf="modalMode">
     <mat-select placeholder="Owners" formControlName="owners" multiple data-qa="work-packages-details-owners-selection">
@@ -119,7 +109,7 @@
           *ngIf="workpackageActionSubmit"
           (click)="submitWorkpackage()"
           data-qa="work-packages-submit"
-          [disabled]="approversTableData?.length === 0"
+          [disabled]="!approversTableData"
         >
           Submit
         </button>
@@ -202,7 +192,7 @@
   </ng-container>
 </form>
 
-<div *ngIf="approversTableData?.length === 0 && workpackageActionSubmit" class="alert alert-danger">
+<div *ngIf="!approversTableData && workpackageActionSubmit" class="alert alert-danger">
   No approvers identified. None of the components you are adding or updating have owners. Please assign owners to be
   able to submit
 </div>

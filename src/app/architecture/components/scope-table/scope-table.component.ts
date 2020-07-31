@@ -9,7 +9,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
 })
 export class ScopeTableComponent {
   @Input() nodeCategory: string;
-
+  @Input() clickedOnLink: boolean;
   @Input()
   set data(data: WorkPackageNodeScopes[]) {
     if (!data) {

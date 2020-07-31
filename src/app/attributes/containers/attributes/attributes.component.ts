@@ -32,6 +32,7 @@ import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import isEqual from 'lodash.isequal';
+import { getAttributesLoading } from '../../store/selectors/attributes.selector';
 
 @Component({
   selector: 'smi-attributes',
@@ -62,10 +63,15 @@ export class AttributesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // Attributes And Rules
     this.subscriptions.push(
-      this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => (this.attribute = data))
+      this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
+        console.log('here');
+        return (this.attribute = data);
+      })
     );
 
+    // Scope
     this.scopeStore.dispatch(new LoadScopes({}));
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
@@ -90,6 +96,11 @@ export class AttributesComponent implements OnInit, OnDestroy {
         })
     );
 
+
+    // Work Packages
+    this.workPackageStore.dispatch(new LoadWorkPackages({}));
+    this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
+
     this.subscriptions.push(
       this.routerStore.select(getWorkPackagesQueryParams).subscribe(workpackages => {
         if (typeof workpackages === 'string') {
@@ -102,21 +113,27 @@ export class AttributesComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.workPackageStore.dispatch(new LoadWorkPackages({}));
-    this.workpackage$ = this.workPackageStore.pipe(select(getWorkPackageEntities));
-
     this.subscriptions.push(
-      this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
-        this.selectedWorkPackageEntities = workpackages;
-        const workPackageIds = workpackages.map(item => item.id);
-        this.getAttributesWithQueryParams(workPackageIds);
+      this.workPackageStore
+        .pipe(
+          select(getSelectedWorkpackages),
+          distinctUntilChanged(isEqual)
+        )
+        .subscribe(workpackages => {
+          if (workpackages) {
+            this.selectedWorkPackageEntities = workpackages;
+            const workPackageIds = workpackages.map(item => item.id);
+            this.getAttributesWithQueryParams(workPackageIds);
+          }
       })
     );
 
     this.subscriptions.push(
       this.workPackageStore.pipe(select(getEditWorkpackages)).subscribe(workpackages => {
-        const edit = workpackages.map(item => item.edit);
-        !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+        if (workpackages) {
+          const edit = workpackages.map(item => item.edit);
+          !edit.length ? (this.workPackageIsEditable = true) : (this.workPackageIsEditable = false);
+        }
       })
     );
 
@@ -146,6 +163,10 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  get isLoading$(): Observable<boolean> {
+    return this.store.select(getAttributesLoading);
   }
 
   get categoryTableData(): AttributeEntity[] {

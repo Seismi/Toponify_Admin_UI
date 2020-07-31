@@ -24,7 +24,9 @@ export enum Level {
   dataMap = 'data map',
   dimensionMap = 'dimension map',
   attribute = 'attribute',
-  usage = 'usage analysis'
+  usage = 'usage analysis',
+  sources = 'sources',
+  targets = 'targets'
 }
 
 // Numbers associated to each level in the data store
@@ -326,6 +328,24 @@ export class DiagramLevelService {
     );
   }
 
+  displaySourcesView(event, object) {
+    this.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.sources,
+        id: object.data.id
+      })
+    );
+  }
+
+  displayTargetsView(event, object) {
+    this.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.targets,
+        id: object.data.id
+      })
+    );
+  }
+
   public destroyUrlFiltering() {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
@@ -579,6 +599,10 @@ export class DiagramLevelService {
       this.createNodeUsageLanes(diagram);
     }
 
+    if ([Level.sources, Level.targets].includes(level)) {
+      diagram.allowMove = false;
+    }
+
     // Settings and layout for map view
     if (level.endsWith('map')) {
       diagram.layout = $(MapViewLayout as any, {
@@ -590,10 +614,12 @@ export class DiagramLevelService {
     } else {
       diagram.layout = $(go.LayeredDigraphLayout, {
         setsPortSpots: level === Level.usage,
-        isOngoing: level === Level.usage, // Prevent rearranging diagram automatically unless in usage view
+        // Prevent rearranging diagram automatically unless in usage, sources or targets view
+        isOngoing: [Level.usage, Level.sources, Level.targets].includes(level),
         isInitial: true,
         aggressiveOption: go.LayeredDigraphLayout.AggressiveMore,
         isRouting: true,
+        layerSpacing: 60,
         // Arrange nodes from top down in node usage view
         direction: level === Level.usage ? 90 : 0
       });

@@ -94,7 +94,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.selectedScope$.subscribe(scope => {
         this.setQueryParams({
-          scopeQuery: scope ? scope.id : null
+          scopeQuery: scope ? scope.id : defaultScopeId
         });
       })
     );
@@ -276,4 +276,9 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onExitWorkPackageEditMode(): void {
     this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
   }
+
+  refreshSearch(textFilter: string): void {
+    this.setQueryParams({ textFilter });
+  }
+
 }

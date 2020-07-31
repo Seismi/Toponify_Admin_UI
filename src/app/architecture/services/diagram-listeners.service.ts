@@ -159,7 +159,9 @@ export class DiagramListenersService {
 
         const currentLevel = this.currentLevel;
 
-        if (currentLevel && !currentLevel.endsWith('map') && currentLevel !== Level.usage) {
+        if (currentLevel && !currentLevel.endsWith('map') &&
+          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
+        ) {
 
           // Check each node for overlap
           event.diagram.nodes.each(function(node: go.Node): void {
@@ -240,6 +242,30 @@ export class DiagramListenersService {
         }, 300);
       }
     }
+
+    // Ensure groups in sources or targets view are laid out and sized correctly.
+    // Also apply a blue shadow to the node for which sources/targets are being viewed.
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function (event: go.DiagramEvent): void {
+        const currentLevel = this.currentLevel;
+        const nodeId = this.nodeId;
+
+        if ([Level.sources, Level.targets].includes(currentLevel)) {
+          diagram.nodes.each(function(node) {
+            if (!node.location.isReal() && node.containingGroup && node.containingGroup.location.isReal()) {
+              node.containingGroup.layout.isValidLayout = false;
+              node.diagram.layout.isValidLayout = false;
+            } else if (node.location.isReal() && node.containingGroup) {
+              this.diagramChangesService.groupMemberSizeChanged(node);
+              if (nodeId === node.data.id) {
+                this.diagramChangesService.setBlueShadowHighlight(node, true);
+              }
+            }
+          }.bind(this));
+        }
+      }.bind(this)
+    );
 
     diagram.addDiagramListener(
       'LinkRelinked',

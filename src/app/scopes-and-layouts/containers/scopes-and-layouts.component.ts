@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ScopeEntity, ScopeEntitiesHttpParams, Page } from '@app/scope/store/models/scope.model';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { LoadScopes, AddScope } from '@app/scope/store/actions/scope.actions';
@@ -18,13 +18,12 @@ import { LoadTags } from '@app/architecture/store/actions/node.actions';
 })
 export class ScopesAndLayoutsComponent implements OnInit {
   public scopes$: Observable<ScopeEntity[]>;
-  public selectedLeftTab: number | string;
   private scopeParams: ScopeEntitiesHttpParams = {
     textFilter: '',
     page: 0,
     size: 5
   }
-  search$ = new BehaviorSubject<string>('');
+  search$ = new Subject<string>();
   page$: Observable<Page>;
 
   constructor(private store: Store<ScopeState>, private router: Router, private dialog: MatDialog) { }
@@ -67,6 +66,15 @@ export class ScopesAndLayoutsComponent implements OnInit {
       size: page.pageSize
     } 
     this.store.dispatch(new LoadScopes(this.scopeParams))
+  }
+
+  refreshSearch(textFilter: string): void {
+    this.scopeParams = {
+      textFilter: textFilter,
+      page: 0,
+      size: this.scopeParams.size
+    };
+    this.store.dispatch(new LoadScopes(this.scopeParams));
   }
 
   onAddScope(): void {

@@ -10,24 +10,19 @@ When(
     if (type === 'system') {
       wait_for = '@PUTWorkPackagesNodes';
     } else {
-      wait_for = [
-        '@GETNodesScopes',
-        '@GETnodeLinksWorkPackageQuery',
-        '@GETNodesReportWorkPackageQuery',
-        '@GETWorkPackageNodeLinksQuery'
-      ];
+      wait_for = ['@GETnodeLinksWorkPackageQuery', '@GETWorkPackageNodeLinksQuery'];
     }
     cy.get('[data-qa=object-details-reference]')
       .clear()
-      .type(reference)
+      .paste(reference)
       .should('have.value', reference);
     cy.get('[data-qa=object-details-name]')
       .clear()
-      .type(name)
+      .paste(name)
       .should('have.value', name);
     cy.get('[data-qa=object-details-description]')
       .clear()
-      .type(description)
+      .paste(description)
       .should('have.value', description);
     cy.selectDropDown('object-details-category', category).then(() => {
       cy.get('[data-qa=object-details-save]')

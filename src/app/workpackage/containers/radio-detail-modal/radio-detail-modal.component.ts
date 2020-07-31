@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialog, MatTabChangeEvent } from '@angular/material';
 import { FormGroup } from '@angular/forms';
 import { RadioDetailService } from '@app/radio/components/radio-detail/services/radio-detail.service';
 import { RadioValidatorService } from '@app/radio/components/radio-detail/services/radio-detail-validator.service';
@@ -33,6 +33,7 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
   public users$: Observable<User[]>;
   public radio: RadioDetail;
   public subscriptions: Subscription[] = [];
+  public isEditable = false;
 
   constructor(
     private workPackageStore: Store<WorkPackageState>,
@@ -218,5 +219,21 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
         );
       }
     });
+  }
+
+  onEdit(): void {
+    this.isEditable = true;
+  }
+
+  onCancel(): void {
+    this.isEditable = false;
+  }
+
+  onTabClick($event: MatTabChangeEvent): void {
+    this.isEditable = false;
+  }
+
+  getTitle(): string {
+    return this.radio ? `${this.radio.reference} - ${this.radio.title}` : null;
   }
 }

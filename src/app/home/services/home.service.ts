@@ -8,7 +8,7 @@ import {
 } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
 import { GetLayoutEntitiesApiResponse, LayoutEntitiesHttpParams } from '@app/layout/store/models/layout.model';
-import { UserApiResponse } from '@app/settings/store/models/user.model';
+import { UserApiResponse, Favourites } from '@app/settings/store/models/user.model';
 import { toHttpParams } from '@app/services/utils';
 
 @Injectable()
@@ -32,5 +32,9 @@ export class HomePageService {
 
   getMyProfile(): Observable<UserApiResponse> {
     return this.http.get<UserApiResponse>(`/navigate/myprofile`);
+  }
+
+  getMyFavourites(): Observable<{ data: Favourites[] }> {
+    return this.http.get<{ data: Favourites[] }>(`/navigate/myfavourites`);
   }
 }

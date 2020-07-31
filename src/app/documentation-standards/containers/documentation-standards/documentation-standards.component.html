@@ -1,6 +1,5 @@
 <app-model-container>
-  <smi-left-hand-pane [workPackageIsEditable]="workPackageIsEditable" [selectedLeftTab]="selectedLeftTab">
-  </smi-left-hand-pane>
+  <smi-left-hand-pane></smi-left-hand-pane>
   <app-drawer>
     <app-base-header>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
@@ -17,9 +16,14 @@
               data-qa="documentation-standards-table"
               [data]="documentStandards$ | async"
               (documentSelected)="onSelectDocument($event)"
-              (addDocument)="onAddDocument($event)"
+              (addDocument)="onAddDocument()"
+              (search)="onSearch($event)"
+              [pagination]="page$ | async"
+              (pageChange)="onPageChange($event)"
+              (refresh)="refreshSearch($event)"
             >
             </smi-documentation-standards-table>
+            <smi-spinner data-qa="documentation-standards-spinner" *ngIf="!(isLoading$ | async)"></smi-spinner>
           </div>
           <div class="col">
             <smi-right-hand-side [title]="'Document Standard'" [appCanEdit]="[Roles.ADMIN, Roles.ARCHITECT]" (add)="onAddDocument()"></smi-right-hand-side>

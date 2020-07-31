@@ -57,12 +57,25 @@
     </mat-form-field>
   </div>
   <mat-form-field class="applicable-to" matTooltip="Select where this tag should be available">
-    <mat-select placeholder="Applicable To" formControlName="applicableTo" multiple
-                [(value)]="selectedApplicableTo">
+    <mat-select placeholder="Applicable To" formControlName="applicableTo" multiple [(value)]="selectedApplicableTo">
+      <div class="search-container">
+        <input placeholder="Search" (keydown)="$event.stopPropagation()" #search />
+        <button mat-icon-button class="clear" (click)="this.search.value = ''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
       <mat-select-trigger>
-        {{isEverywhereSelected ? tagApplicableTo.everywhere : selectedApplicableTo.join(', ')}}
+        {{ isEverywhereSelected ? tagApplicableTo.everywhere : selectedApplicableTo.join(', ') }}
       </mat-select-trigger>
-      <mat-option *ngFor="let comp of applicableTo" [value]="comp" (click)="selectedOption(comp)" [disabled]="currentComponentType === comp">{{comp}}</mat-option>
+      <mat-option 
+        *ngFor="let comp of applicableTo" 
+        [value]="comp" 
+        (click)="selectedOption(comp)" 
+        [disabled]="currentComponentType === comp"
+        [class.hide]="filter(comp)"
+      >
+        {{comp}}
+      </mat-option>
     </mat-select>
   </mat-form-field>
 </form>

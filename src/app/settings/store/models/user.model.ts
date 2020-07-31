@@ -153,3 +153,31 @@ export interface Page {
   totalPages: number;
   number: number;
 }
+
+export interface Favourites {
+  id: string;
+  favouriteType: string;
+  name: string;
+  radioSummary: {
+    risks: {
+      count: number;
+      state: string;
+    },
+    assumptions: {
+      count: number;
+      state: string;
+    },
+    dependencies: {
+      count: number;
+      state: string;
+    },
+    issues: {
+      count: number;
+      state: string;
+    },
+    opportunities: {
+      count: number;
+      state: string;
+    }
+  };
+}

@@ -25,7 +25,8 @@ import {
   MatSliderModule,
   MatBadgeModule,
   MatChipsModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { RadioTableComponent } from './components/radio-table/radio-table.component';
 import { RadioModalComponent } from './containers/radio-modal/radio-modal.component';
@@ -52,7 +53,6 @@ import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confi
 import { DeleteRadioModalComponent } from './containers/delete-radio-modal/delete-radio-modal.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { TagListModule } from '@app/architecture/components/tag-list/tag-list.module';
-import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
 import { RiskMatrixChartComponent } from './components/risk-matrix-chart/risk-matrix-chart.component';
 import { RadioViewNameDialogComponent } from './components/radio-view-name-dialog/radio-view-name-dialog.component';
 import { AnalysisFilterComponent } from './components/analysis-filter/analysis-filter.component';
@@ -89,6 +89,7 @@ import { RadioFilterService } from './services/radio-filter.service';
     MatBadgeModule,
     MatChipsModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
     StoreModule.forFeature('radioFeature', reducer),
     EffectsModule.forFeature([RadioEffects]),
     CKEditorModule
@@ -120,7 +121,6 @@ import { RadioFilterService } from './services/radio-filter.service';
     ConfirmModalComponent,
     AssociateModalComponent,
     DeleteRadioModalComponent,
-    AlphabeticalOrderPipe,
     RiskMatrixChartComponent,
     RadioViewNameDialogComponent,
     AnalysisFilterComponent

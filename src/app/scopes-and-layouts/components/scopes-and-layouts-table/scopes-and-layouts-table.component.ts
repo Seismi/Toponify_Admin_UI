@@ -41,6 +41,7 @@ export class ScopesAndLayoutsTableComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<ScopeEntity>;
   public page: Page;
 
+  @Output() refresh = new EventEmitter<string>();
   @Output() select = new EventEmitter<ScopeEntity>();
   @Output() add = new EventEmitter<void>();
   @Output() setFavoriteLayout = new EventEmitter<string>();

@@ -90,10 +90,34 @@ export class ScopeEffects {
   addScopeNodes$ = this.actions$.pipe(
     ofType<ScopeActions.AddScopeNodes>(ScopeActionTypes.AddScopeNodes),
     map(action => action.payload),
-    switchMap((payload: { scopeId: string, data: string[] }) => {
+    switchMap((payload: { scopeId: string; data: string[] }) => {
       return this.scopeService.addScopeNodes(payload.scopeId, payload.data).pipe(
         switchMap((resp: any) => [new ScopeActions.AddScopeNodesSuccess(resp)]),
         catchError((error: HttpErrorResponse) => of(new ScopeActions.AddScopeNodesFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  setScopeAsFavourite$ = this.actions$.pipe(
+    ofType<ScopeActions.SetScopeAsFavourite>(ScopeActionTypes.SetScopeAsFavourite),
+    map(action => action.payload),
+    switchMap((id: string) => {
+      return this.scopeService.setScopeAsFavourite(id).pipe(
+        map(_ => new ScopeActions.SetScopeAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new ScopeActions.SetScopeAsFavouriteFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  unsetScopeAsFavourite$ = this.actions$.pipe(
+    ofType<ScopeActions.UnsetScopeAsFavourite>(ScopeActionTypes.UnsetScopeAsFavourite),
+    map(action => action.payload),
+    switchMap((id: string) => {
+      return this.scopeService.unsetScopeAsFavourite(id).pipe(
+        map(_ => new ScopeActions.UnsetScopeAsFavouriteSuccess(id)),
+        catchError((error: HttpErrorResponse) => of(new ScopeActions.UnsetScopeAsFavouriteFailure(error)))
       );
     })
   );

@@ -1,6 +1,5 @@
 <app-model-container>
-  <smi-left-hand-pane [workPackageIsEditable]="workPackageIsEditable" [selectedLeftTab]="selectedLeftTab">
-  </smi-left-hand-pane>
+  <smi-left-hand-pane></smi-left-hand-pane>
   <app-drawer>
     <app-base-header>
       <app-toolbar-column [fillFreeSpace]="true"> </app-toolbar-column>
@@ -14,21 +13,31 @@
         <div class="row">
           <div class="col mat-elevation-z8">
             <mat-slide-toggle
+              *ngIf="selectedView === WorkPackageView.Table"
               data-qa="work-packages-archive-toggle"
               color="primary"
               (change)="showArchivedWorkPackages($event)"
             >
               Show archived
             </mat-slide-toggle>
-            <mat-tab-group [@.disabled]="true">
+            <mat-tab-group 
+              [@.disabled]="true" 
+              [selectedIndex]="selectedView" 
+              (selectedIndexChange)="onSelectedTabChange($event)"
+            >
               <mat-tab>
                 <ng-template mat-tab-label> <mat-icon>list</mat-icon> List </ng-template>
+                <smi-spinner data-qa="work-packages-spinner" *ngIf="isLoading"></smi-spinner>
                 <smi-workpackages-table
                   data-qa="work-packages-table"
                   [data]="workpackageEntities$ | async"
                   (workpackageSelected)="onSelectWorkpackage($event)"
                   (addWorkpackage)="onAddWorkPackage()"
                   [selectedRowIndex]="selectedRowIndex"
+                  (search)="onSearch($event)"
+                  [pagination]="page$ | async"
+                  (pageChange)="onPageChange($event)"
+                  (refresh)="refreshSearch($event)"
                 >
                 </smi-workpackages-table>
               </mat-tab>
@@ -36,9 +45,8 @@
                 <ng-template mat-tab-label> <mat-icon>device_hub</mat-icon> Diagram </ng-template>
                 <ng-template matTabContent>
                   <smi-workpackage-tree
-                    [checked]="checked"
                     (selectWorkpackage)="onSelectWorkpackage($event)"
-                    [workpackages$]="workpackageEntities$ | async"
+                    [workpackages$]="workpackageActive$ | async"
                   ></smi-workpackage-tree>
                 </ng-template>
               </mat-tab>

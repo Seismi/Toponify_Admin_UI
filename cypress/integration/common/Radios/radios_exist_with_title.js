@@ -6,6 +6,9 @@ When(
     radio = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(radio);
-    cy.findRadio(radio);
+    cy.findRadio(radio)
+      .contains('td', radio)
+      .click()
+      .wait('@GETRadio');
   }
 );

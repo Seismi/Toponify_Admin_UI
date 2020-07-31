@@ -4,6 +4,7 @@ import {
   DocumentationStandardActionsUnion,
   DocumentationStandardActionTypes
 } from '../actions/documentation-standards.actions';
+import { LoadingStatus } from '@app/architecture/store/models/node.model';
 
 export interface State {
   loading: boolean;
@@ -12,6 +13,8 @@ export interface State {
   page: Page;
   links: Links;
   error?: HttpErrorResponse | { message: string };
+  loadingDocumentStandards: LoadingStatus;
+  loadingDocumentStandard: LoadingStatus;
 }
 
 export const initialState: State = {
@@ -20,7 +23,9 @@ export const initialState: State = {
   selected: null,
   page: null,
   links: null,
-  error: null
+  error: null,
+  loadingDocumentStandards: null,
+  loadingDocumentStandard: null
 };
 
 export function reducer(state = initialState, action: DocumentationStandardActionsUnion): State {
@@ -28,7 +33,8 @@ export function reducer(state = initialState, action: DocumentationStandardActio
     case DocumentationStandardActionTypes.LoadDocumentationStandards: {
       return {
         ...initialState,
-        loading: true
+        loading: true,
+        loadingDocumentStandards: LoadingStatus.loading
       };
     }
 
@@ -38,11 +44,11 @@ export function reducer(state = initialState, action: DocumentationStandardActio
         loading: false,
         entities: action.payload.data,
         links: action.payload.links,
-        page: action.payload.page
+        page: action.payload.page,
+        loadingDocumentStandards: LoadingStatus.loaded
       };
     }
 
-    case DocumentationStandardActionTypes.LoadDocumentationStandard:
     case DocumentationStandardActionTypes.AddDocumentationStandard:
     case DocumentationStandardActionTypes.UpdateDocumentationStandard:
     case DocumentationStandardActionTypes.DeleteDocumentationStandard: {
@@ -52,11 +58,18 @@ export function reducer(state = initialState, action: DocumentationStandardActio
       };
     }
 
+    case DocumentationStandardActionTypes.LoadDocumentationStandard: {
+      return {
+        ...state,
+        loadingDocumentStandard: LoadingStatus.loading
+      };
+    }
+
     case DocumentationStandardActionTypes.LoadDocumentationStandardSuccess: {
       return {
         ...state,
-        loading: false,
-        selected: action.payload
+        selected: action.payload,
+        loadingDocumentStandard: LoadingStatus.loaded
       };
     }
 

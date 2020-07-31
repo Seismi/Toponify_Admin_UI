@@ -9,7 +9,8 @@ When(
     doc_standard_new = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(doc_standard_new); //add the branch to the work package name
-    cy.findDocumentationStandard(doc_standard)
+    cy.findDocumentationStandard(doc_standard, false)
+      .contains('td', doc_standard)
       .click()
       .wait('@GETCustomProperties*')
       .then(() => {
@@ -18,10 +19,10 @@ When(
           .then(() => {
             cy.get('[data-qa=documentation-standards-details-name]')
               .clear()
-              .type(doc_standard_new);
+              .paste(doc_standard_new);
             cy.get('[data-qa=documentation-standards-details-description]')
               .clear()
-              .type(doc_standard_new);
+              .paste(doc_standard_new);
             cy.get(`[data-qa=documentation-standards-details-type]`) // get the type drop down
               .click()
               .get('mat-option')

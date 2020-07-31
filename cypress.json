@@ -6,5 +6,5 @@
   "requestTimeout": 20000,
   "responseTimeout": 30000,
   "projectId": "fibtau",
-  "defaultCommandTimeout": 10000
+  "defaultCommandTimeout": 20000
 }

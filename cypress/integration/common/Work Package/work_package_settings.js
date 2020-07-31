@@ -26,11 +26,10 @@ module.exports = {
       method: 'PUT',
       name: 'WorkPackage'
     },
-    GetArchiveWorkPackages: {
-      api: `${api_version}/workpackages?includeArchived=*`,
-      //                        api: `${api_version}/workpackages*`,
+    GetWorkPackagePaging: {
+      api: `${api_version}/workpackages?*`,
       method: 'GET',
-      name: 'ArchiveWorkPackages'
+      name: 'WorkPackagePaging'
     },
     PostWorkPackage: {
       api: `${api_version}/workpackages`,
@@ -146,6 +145,11 @@ module.exports = {
       api: `${api_version}/radios`,
       method: 'GET',
       name: 'Radios'
+    },
+    GetWorkPackageActive: {
+      api: `${api_version}/workpackages/active`,
+      method: 'GET',
+      name: 'WorkPackageActive'
     }
   }
 };

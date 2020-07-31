@@ -10,17 +10,22 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { DiagramImageService } from '@app/architecture/services/diagram-image.service';
+import { dummyLinkId, linkCategories } from '@app/architecture/store/models/node-link.model';
+import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
-import {dummyLinkId, linkCategories} from '@app/architecture/store/models/node-link.model';
-import {layers, nodeCategories} from '@app/architecture/store/models/node.model';
-import { DiagramTemplatesService } from '../../services/diagram-templates.service';
+import { debounceTime } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
 import { DiagramChangesService } from '../../services/diagram-changes.service';
-import {CustomLinkShift, CustomNodeResize, GojsCustomObjectsService} from '../../services/gojs-custom-objects.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
-import {DiagramImageService} from '@app/architecture/services/diagram-image.service';
+import { DiagramTemplatesService } from '../../services/diagram-templates.service';
+import {
+  CustomLinkShift,
+  CustomNodeResize,
+  GojsCustomObjectsService
+} from '../../services/gojs-custom-objects.service';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -150,8 +155,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
     this.diagram.toolManager.relinkingTool.portGravity = 40;
-    this.diagram.toolManager.relinkingTool.linkValidation =
-      diagramChangesService.linkingValidation.bind(diagramChangesService);
+    this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation.bind(
+      diagramChangesService
+    );
     this.diagram.toolManager.resizingTool = new CustomNodeResize();
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
 
@@ -196,7 +202,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Set node templates
     this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
-    this.diagram.nodeTemplateMap.add(nodeCategories.transformation, diagramTemplatesService.getTransformationNodeTemplate());
+    this.diagram.nodeTemplateMap.add(
+      nodeCategories.transformation,
+      diagramTemplatesService.getTransformationNodeTemplate()
+    );
 
     // Set links templates
     this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());
@@ -204,6 +213,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramTemplatesService.getLinkMasterDataTemplate());
 
     this.diagram.linkTemplateMap.add(linkCategories.copy, diagramTemplatesService.getLinkCopyTemplate());
+
+    this.diagram.linkTemplateMap.add(linkCategories.warning, diagramTemplatesService.getLinkWarningTemplate());
 
     this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
 
@@ -235,7 +246,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       }
 
       if (deletedPart instanceof go.Node) {
-
         // Disallow deleting group member of shared node
         if (deletedPart.containingGroup && deletedPart.containingGroup.data.isShared) {
           return;
@@ -250,6 +260,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
+    // pipe(debounce(() => timer(500)))
     diagramChangesService.onUpdateDiagramLayout.subscribe(() => {
       this.updateDiagramLayout.emit();
     });
@@ -259,9 +270,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
     });
-    diagramChangesService.onUpdateGroupsAreaState.subscribe((data: { nodes: any[]; links: any[] }) => {
-      this.updateGroupArea.emit(data);
-    });
+
+    this.diagramChangesService.onUpdateGroupsAreaState
+      .pipe(debounceTime(500))
+      .subscribe((data: { nodes: any[]; links: any[] }) => {
+        this.updateGroupArea.emit(data);
+      });
   }
 
   // Zoom out diagram
@@ -361,10 +375,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       const setLayoutSetting = function(
         modelDataSetting: string,
         layoutSetting: string,
-        partType: 'components' | 'links'): void {
-        modelData[modelDataSetting] = layoutSetting in layoutSettings[partType] ?
-          layoutSettings[partType][layoutSetting] :
-          defaultLayoutSettings[modelDataSetting];
+        partType: 'components' | 'links'
+      ): void {
+        modelData[modelDataSetting] =
+          layoutSetting in layoutSettings[partType]
+            ? layoutSettings[partType][layoutSetting]
+            : defaultLayoutSettings[modelDataSetting];
       };
 
       if (layoutSettings) {
@@ -419,7 +435,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.workPackageIsEditable) {
       const toolManager = this.diagram.toolManager;
-      toolManager.relinkingTool.isEnabled = this.workPackageIsEditable;
+      toolManager.relinkingTool.isEnabled =
+        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
 
       this.diagram.selection.each(function(part) {
         // Remove tool-related adornments from selected link (if any) for disabled tools
@@ -432,11 +449,18 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         part.updateAdornments();
       });
 
-      this.gojsCustomObjectsService.diagramEditable = this.workPackageIsEditable;
-      this.diagramChangesService.diagramEditable = this.workPackageIsEditable;
+      this.gojsCustomObjectsService.diagramEditable =
+        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
+      this.diagramChangesService.diagramEditable =
+        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
+      this.gojsCustomObjectsService.diagramEditable =
+        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
+      this.diagramChangesService.diagramEditable =
+        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
+
       this.setLevel();
     }
 

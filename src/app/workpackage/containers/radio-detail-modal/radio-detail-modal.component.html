@@ -1,9 +1,15 @@
 <div mat-dialog-content>
+  <p class="header">{{ getTitle() }} <mat-icon (click)="onClose()">close</mat-icon></p>
   <p>
-    <mat-tab-group data-qa="radio-details-modal-tabs" mat-stretch-tabs class="stretched-tabs" [@.disabled]="true">
+    <mat-tab-group 
+      data-qa="radio-details-modal-tabs" 
+      mat-stretch-tabs
+      [@.disabled]="true"
+      (selectedTabChange)="onTabClick($event)"
+    >
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon">info</mat-icon>
+          <mat-icon class="tab-icon">info</mat-icon>
           Details
         </ng-template>
         <p class="detailsTab">
@@ -13,11 +19,10 @@
             [group]="radioDetailsForm"
             [isEditable]="false"
             [modalMode]="false"
-            (archiveRadio)="onArchiveRadio($event)"
+            (archiveRadio)="onArchiveRadio()"
             (saveRadio)="onSaveRadio()"
             [rows]="5"
             [editModal]="true"
-            (closeModal)="onClose()"
           >
           </smi-radio-detail>
         </p>
@@ -25,34 +30,37 @@
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon matTooltip="Relates To">device_hub</mat-icon>
+          <mat-icon class="tab-icon" matTooltip="Relates To">device_hub</mat-icon>
           Relates To
         </ng-template>
-        <p class="properties-tab">
+        <p>
           <smi-relates-to-table
             data-qa="radio-relates-to-table"
             [data]="radio?.relatesTo"
             (unlinkRelatesTo)="onUnlinkRelatesTo($event)"
             (addRelatesTo)="onAddRelatesTo()"
+            [isEditable]="isEditable"
           ></smi-relates-to-table>
         </p>
+        <button *ngIf="!isEditable" class="edit" mat-raised-button color="primary" (click)="onEdit()">Edit</button>
+        <button *ngIf="isEditable" class="edit" mat-raised-button (click)="onCancel()">Cancel</button>
       </mat-tab>
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>comment</mat-icon>
+          <mat-icon class="tab-icon">comment</mat-icon>
           Discussions
         </ng-template>
         <p class="discussion-tab">
           <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies"> </smi-chatbox>
         </p>
         <p>
-          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply($event)"> </smi-reply-text>
+          <smi-reply-text [rows]="4" [group]="radioDetailsForm" (sendReply)="onSendReply()"> </smi-reply-text>
         </p>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon>insert_drive_file</mat-icon>
+          <mat-icon class="tab-icon">insert_drive_file</mat-icon>
           Documentation Standards
         </ng-template>
         <p class="properties-tab">
