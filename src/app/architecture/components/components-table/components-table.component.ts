@@ -1,6 +1,7 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { NodeDetail, GroupInfo } from '@app/architecture/store/models/node.model';
+import { GroupInfo } from '@app/architecture/store/models/node.model';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'smi-components-table',
@@ -17,17 +18,9 @@ export class ComponentsTableComponent {
     if (!data) {
       data = [];
     } else {
-      data = JSON.parse(JSON.stringify(data));
+      data = cloneDeep(data);
     }
-
-    data.sort((a: GroupInfo, b: GroupInfo) => {
-      if (!a.sortOrder || a.sortOrder === 0) {
-        return 1;
-      }
-      return a.sortOrder - b.sortOrder;
-    });
-
-    this.dataSource = new MatTableDataSource<GroupInfo>(data);
+    this.setTableData(data);
   }
 
   @Output() add = new EventEmitter<void>();
@@ -59,56 +52,40 @@ export class ComponentsTableComponent {
   }
 
   public handleMoveUpElement(element: GroupInfo): void {
-    let data = JSON.parse(JSON.stringify(this.dataSource.data));
+    let data = cloneDeep(this.dataSource.data);
 
     if (!element.sortOrder || element.sortOrder === 0) {
-      let order = 1;
-      data = data.map(el => {
-        if (el.sortOrder && el.sortOrder > 0) {
-          order = ++el.sortOrder;
-          return { ...el, sortOrder: el.sortOrder };
-        } else {
-          return { ...el, sortOrder: order++ };
-        }
-      });
+      data = this.setMissingOrder(data);
     }
-
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].id === element.id) {
-        if (data[i - 1]) {
-          data[i - 1].sortOrder = data[i].sortOrder;
-          data[i].sortOrder -= 1;
-          break;
-        }
-      }
-    }
-
-    data.sort((a: GroupInfo, b: GroupInfo) => {
-      if (!a.sortOrder || a.sortOrder === 0) {
-        return 1;
-      }
-      return a.sortOrder - b.sortOrder;
-    });
-
-    this.dataSource = new MatTableDataSource<GroupInfo>(data);
+    data = this.reorderListAccordingToMovedElement(element, data);
+    this.setTableData(data);
     this.changeOrder.emit(data);
   }
 
   public handleMoveDownElement(element: GroupInfo): void {
-    let data = JSON.parse(JSON.stringify(this.dataSource.data));
+    let data = cloneDeep(this.dataSource.data);
 
     if (!element.sortOrder || element.sortOrder === 0) {
-      let order = 1;
-      data = data.map(el => {
-        if (el.sortOrder && el.sortOrder > 0) {
-          order = ++el.sortOrder;
-          return { ...el, sortOrder: el.sortOrder };
-        } else {
-          return { ...el, sortOrder: order++ };
-        }
-      });
+      data = this.setMissingOrder(data);
     }
+    data = this.reorderListAccordingToMovedElement(element, data);
+    this.setTableData(data);
+    this.changeOrder.emit(data);
+  }
 
+  private setMissingOrder(data: Array<GroupInfo>): Array<GroupInfo> {
+    let order = 1;
+    return data.map(el => {
+      if (el.sortOrder && el.sortOrder > 0) {
+        order = ++el.sortOrder;
+        return { ...el, sortOrder: el.sortOrder };
+      } else {
+        return { ...el, sortOrder: order++ };
+      }
+    });
+  }
+
+  private reorderListAccordingToMovedElement(element: GroupInfo, data: GroupInfo[]): GroupInfo[] {
     for (let i = 0; i < data.length; i++) {
       if (data[i].id === element.id) {
         if (data[i + 1]) {
@@ -118,15 +95,16 @@ export class ComponentsTableComponent {
         }
       }
     }
+    return data;
+  }
 
+  private setTableData(data: GroupInfo[]): void {
     data.sort((a: GroupInfo, b: GroupInfo) => {
       if (!a.sortOrder || a.sortOrder === 0) {
         return 1;
       }
       return a.sortOrder - b.sortOrder;
     });
-
     this.dataSource = new MatTableDataSource<GroupInfo>(data);
-    this.changeOrder.emit(data);
   }
 }
