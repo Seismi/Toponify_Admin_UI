@@ -55,8 +55,8 @@ export class HomeComponent implements OnInit {
     this.store.dispatch(new LoadMyRadios({}));
     this.myRadios$ = this.store.pipe(select(getMyRadios));
 
-    this.store.dispatch(new LoadMyLayouts({}));
-    this.myLayouts$ = this.store.pipe(select(getMyLayouts));
+    // this.store.dispatch(new LoadMyLayouts({}));
+    // this.myLayouts$ = this.store.pipe(select(getMyLayouts));
 
     this.store.dispatch(new LoadMyProfile());
     this.actions.pipe(ofType(HomePageActionTypes.LoadMyProfileSuccess)).subscribe((action: any) => {
