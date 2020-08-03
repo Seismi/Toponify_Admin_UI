@@ -10,7 +10,6 @@ import { NotificationActionsUnion, NotificationActionTypes } from '@app/core/sto
 export interface State {
   workpackages: WorkPackageEntity[];
   radios: RadioEntity[];
-  layouts: LayoutDetails[];
   favourites: Favourites[];
   profile: UserDetails;
   loading: boolean;
@@ -22,7 +21,6 @@ export interface State {
 export const initialState: State = {
   workpackages: [],
   radios: [],
-  layouts: [],
   favourites: [],
   profile: null,
   links: null,
@@ -90,31 +88,6 @@ export function reducer(state = initialState, action: HomePageActionsUnion | Not
     }
 
     case HomePageActionTypes.LoadMyRadiosFailure: {
-      return {
-        ...state,
-        error: action.payload,
-        loading: false
-      };
-    }
-
-    case HomePageActionTypes.LoadMyLayouts: {
-      return {
-        ...state,
-        loadingHomePage: LoadingStatus.loading
-      };
-    }
-
-    case HomePageActionTypes.LoadMyLayoutsSuccess: {
-      return {
-        ...state,
-        layouts: action.payload.data,
-        links: action.payload.links,
-        loading: false,
-        loadingHomePage: LoadingStatus.loaded
-      };
-    }
-
-    case HomePageActionTypes.LoadMyLayoutsFailure: {
       return {
         ...state,
         error: action.payload,
