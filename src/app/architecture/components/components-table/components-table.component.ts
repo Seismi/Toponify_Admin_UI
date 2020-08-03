@@ -57,7 +57,15 @@ export class ComponentsTableComponent {
     if (!element.sortOrder || element.sortOrder === 0) {
       data = this.setMissingOrder(data);
     }
-    data = this.reorderListAccordingToMovedElement(element, data);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].id === element.id) {
+        if (data[i - 1]) {
+          data[i - 1].sortOrder = data[i].sortOrder;
+          data[i].sortOrder -= 1;
+          break;
+        }
+      }
+    }
     this.setTableData(data);
     this.changeOrder.emit(data);
   }
@@ -68,7 +76,15 @@ export class ComponentsTableComponent {
     if (!element.sortOrder || element.sortOrder === 0) {
       data = this.setMissingOrder(data);
     }
-    data = this.reorderListAccordingToMovedElement(element, data);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].id === element.id) {
+        if (data[i + 1]) {
+          data[i + 1].sortOrder = data[i].sortOrder;
+          data[i].sortOrder += 1;
+          break;
+        }
+      }
+    }
     this.setTableData(data);
     this.changeOrder.emit(data);
   }
@@ -83,19 +99,6 @@ export class ComponentsTableComponent {
         return { ...el, sortOrder: order++ };
       }
     });
-  }
-
-  private reorderListAccordingToMovedElement(element: GroupInfo, data: GroupInfo[]): GroupInfo[] {
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].id === element.id) {
-        if (data[i + 1]) {
-          data[i + 1].sortOrder = data[i].sortOrder;
-          data[i].sortOrder += 1;
-          break;
-        }
-      }
-    }
-    return data;
   }
 
   private setTableData(data: GroupInfo[]): void {
