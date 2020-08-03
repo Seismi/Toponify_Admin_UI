@@ -22,6 +22,11 @@ enum Days {
   Saturday = 'Saturday'
 }
 
+enum UserStatus {
+  active = 'active',
+  disabled = 'disabled'
+}
+
 @Component({
   selector: 'smi-my-user-form',
   templateUrl: 'my-user-form.component.html',
@@ -50,6 +55,7 @@ export class MyUserFormComponent {
   @Input() userTeam: TeamEntity[];
   @Input() userRole: RolesEntity[];
 
+  @Input() user: UserDetails;
   @Input() value: UserDetails;
   @Input() teams: TeamEntity[];
   @Input() roles: RolesEntity[];
@@ -80,6 +86,7 @@ export class MyUserFormComponent {
   @Output() addTeam = new EventEmitter<void>();
   @Output() addRole = new EventEmitter<void>();
   @Output() remove = new EventEmitter<{id: string, type: string}>();
+  @Output() resetPassword = new EventEmitter<void>();
 
   onRemove(id: string, type: string): void {
     this.remove.emit({id, type});
@@ -122,4 +129,13 @@ export class MyUserFormComponent {
       return;
     }
   }
+
+  getResetButton(): boolean {
+    return  !this.myUserPage &&
+            !this.isEditable &&
+            this.userRoles &&
+            this.userRoles.includes(Roles.ADMIN) &&
+            this.user.userStatus === UserStatus.active;
+  }
+
 }

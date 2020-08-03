@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
-import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, DeleteUserRole, AddUserRole } from '@app/settings/store/actions/user.actions';
+import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, DeleteUserRole, AddUserRole, ResetPassword } from '@app/settings/store/actions/user.actions';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
@@ -220,6 +220,15 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
             })
           );
         }
+      }
+    });
+  }
+
+  resetPassword(): void {
+    this.store.dispatch(new ResetPassword({ email: this.user.email }));
+    this.actions.pipe(ofType(UserActionTypes.ResetPasswordSuccess)).subscribe((action) => {
+      if (action) {
+        alert('Password reset. User will receive a new password by email.');
       }
     });
   }

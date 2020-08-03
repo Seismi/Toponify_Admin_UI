@@ -111,6 +111,14 @@
         Edit
       </button>
       <button
+        mat-button
+        *ngIf="getResetButton()"
+        (click)="resetPassword.emit()"
+        data-qa="settings-user-reset-password"
+      >
+        Reset Password
+      </button>
+      <button
         mat-raised-button
         class="status-btn"
         *ngIf="!myUserPage && !isEditable"
