@@ -113,7 +113,7 @@ export class DiagramChangesService {
           disableClose: false,
           width: 'auto',
           data: {
-            name: node.name
+            name: 'New '
           }
         });
 
