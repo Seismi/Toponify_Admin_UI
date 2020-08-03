@@ -8,11 +8,11 @@ When('the user updates the name to {string}, the description to {string}', funct
   cy.get('[data-qa=spinner]').should('not.be.visible');
   cy.get('[data-qa=reports-details-name]')
     .clear()
-    .type(name)
+    .paste(name)
     .should('have.value', name);
 
   cy.get('[data-qa=reports-details-description]')
     .clear()
-    .type(description)
+    .paste(description)
     .should('have.value', description);
 });

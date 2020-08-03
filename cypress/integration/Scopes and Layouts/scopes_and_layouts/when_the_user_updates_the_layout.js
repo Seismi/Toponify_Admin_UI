@@ -27,7 +27,7 @@ When('the user updates the layout called {string} to be {string} against the sco
               .then(() => {
                 cy.get('[data-qa=scopes-and-layouts-details-name]')
                   .clear()
-                  .type(newLayout)
+                  .paste(newLayout)
                   .should('have.value', newLayout)
                   .then(() => {
                     cy.get('[data-qa=scopes-and-layouts-save]').click();

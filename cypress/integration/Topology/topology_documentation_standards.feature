@@ -30,7 +30,7 @@ Feature: Topology Documentation Standards
     And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
     And the user clicks on the system's right hand side documentation standard button
 
-  @documentation_standards
+  @topology @documentation_standards
   Scenario: the user should be able to enter values against documentation standards and systems stored on the topology
     When the user enters date 01/01/2020 into field 'Regression Test Documentation Standard Date'
     And the user clicks to 'save' the valid change

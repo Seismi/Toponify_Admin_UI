@@ -10,7 +10,7 @@ When('the user creates a new scope called {string}', function(scope) {
     .then(() => {
       cy.get('[data-qa=scopes-and-layouts-details-name]')
         .clear()
-        .type(scope)
+        .paste(scope)
         .should('have.value', scope)
         .then(() => {
           cy.get('[data-qa=scopes-and-layouts-modal-save]')

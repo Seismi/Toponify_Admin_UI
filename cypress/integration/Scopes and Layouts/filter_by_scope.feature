@@ -6,11 +6,10 @@ Feature: Filtering by scope
     Given a valid user is logged in
     And the user selects Scopes and Layouts menu item
     And the scope called 'Created Automated Regression Test Scope' does not exist
+    And the user creates a new scope called 'Created Automated Regression Test Scope'
     And the user selects Work Package menu item
     And the work package 'Created Automated Regression Test Work Package' does not exist
     And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
-    And the user selects Scopes and Layouts menu item
-    And the user creates a new scope called 'Created Automated Regression Test Scope'
     And the user selects Topology menu item
     And the "System View" layer is selected
 
