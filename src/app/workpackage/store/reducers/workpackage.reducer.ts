@@ -88,14 +88,16 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.LoadWorkPackageBaselineAvailability:
     case WorkPackageActionTypes.GetWorkpackageAvailability: {
       return {
-        ...state
+        ...state,
+        loading: true
       };
     }
 
     case WorkPackageActionTypes.GetWorkpackageAvailabilitySuccess: {
       return {
         ...state,
-        avaialabilities: action.payload
+        avaialabilities: action.payload,
+        loading: false
       };
     }
 

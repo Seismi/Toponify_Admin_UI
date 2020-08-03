@@ -5,6 +5,8 @@ import { getSelectedLeftDrawerTab } from '@app/core/store/selectors/layout.selec
 import { Subscription } from 'rxjs';
 import { MatDrawer } from '@angular/material';
 import { SelectLeftDrawerTab } from '@app/core/store/actions/layout.actions';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer'; 
+import { workpackageLoading } from '@app/workpackage/store/selectors/workpackage.selector';
 
 enum LeftHandPaneTab {
   notifications = 'notifications',
@@ -20,10 +22,14 @@ export class AppDrawerComponent implements OnInit, OnDestroy {
   public LeftHandPaneTab = LeftHandPaneTab;
   public selectedTab = null;
   private subscription: Subscription | null = null;
+  public isLoading: boolean;
   @ViewChild('drawer') drawer: MatDrawer;
   @Input() tabTpls: TemplateRef<any>;
 
-  constructor(private layoutStore: Store<LayoutState>) {}
+  constructor(
+    private store: Store<WorkPackageState>,
+    private layoutStore: Store<LayoutState>
+  ) {}
 
   ngOnInit() {
     this.subscription = this.layoutStore.pipe(select(getSelectedLeftDrawerTab)).subscribe(tab => {
@@ -38,6 +44,8 @@ export class AppDrawerComponent implements OnInit, OnDestroy {
     if (!this.tabTpls) {
       this.layoutStore.dispatch(new SelectLeftDrawerTab(null));
     }
+
+    this.subscription = this.store.pipe(select(workpackageLoading)).subscribe((loading) => this.isLoading = loading);
   }
 
   handleCloseDrawer(): void {
