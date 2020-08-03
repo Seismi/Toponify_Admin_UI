@@ -1,10 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { WorkPackageActionsUnion, WorkPackageActionTypes } from '../actions/workpackage.actions';
-import { Links, Page, WorkPackageDetail, WorkPackageEntity } from '../models/workpackage.models';
+import { Links, Page, WorkPackageDetail, WorkPackageEntity, WorkPackagesActive } from '../models/workpackage.models';
 
 export interface State {
   editId: string;
   entities: WorkPackageEntity[];
+  active: WorkPackagesActive[];
   avaialabilities: any[] | null;
   baseline: any[];
   page: Page;
@@ -19,6 +20,7 @@ export interface State {
 export const initialState: State = {
   editId: null,
   entities: [],
+  active: [],
   avaialabilities: null,
   baseline: [],
   page: null,
@@ -86,16 +88,14 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.LoadWorkPackageBaselineAvailability:
     case WorkPackageActionTypes.GetWorkpackageAvailability: {
       return {
-        ...state,
-        loading: true
+        ...state
       };
     }
 
     case WorkPackageActionTypes.GetWorkpackageAvailabilitySuccess: {
       return {
         ...state,
-        avaialabilities: action.payload,
-        loading: false
+        avaialabilities: action.payload
       };
     }
 
@@ -103,8 +103,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.GetWorkpackageAvailabilityFailure: {
       return {
         ...state,
-        error: action.payload,
-        loading: false
+        error: action.payload
       };
     }
 
@@ -138,6 +137,26 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
         ...state,
         error: action.payload,
         loading: false
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackagesActive: {
+      return {
+        ...state
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackagesActiveSuccess: {
+      return {
+        ...state,
+        active: action.payload.data
+      };
+    }
+
+    case WorkPackageActionTypes.LoadWorkPackagesFailure: {
+      return {
+        ...state,
+        error: action.payload
       };
     }
 
@@ -246,7 +265,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.AddOwner: {
       return {
         ...state,
-        loading: true,
         loadingDetails: true
       };
     }
@@ -262,7 +280,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
           }
           return entity;
         }),
-        loading: false,
         loadingDetails: false
       };
     }
@@ -272,7 +289,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         error: action.payload,
-        loading: false
+        loadingDetails: false
       };
     }
 
@@ -280,7 +297,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.DeleteOwner: {
       return {
         ...state,
-        loading: true
+        loadingDetails: true
       };
     }
 
@@ -288,7 +305,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
     case WorkPackageActionTypes.DeleteOwnerSuccess: {
       return {
         ...state,
-        loading: false,
+        loadingDetails: false,
         selectedWorkPackage: action.payload,
         entities: state.entities.map(entity => {
           if (entity.id === action.payload.id) {
@@ -304,7 +321,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         error: action.payload,
-        loading: false
+        loadingDetails: false
       };
     }
 
@@ -320,6 +337,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         selectedWorkPackage: action.payload,
+        loading: false,
         loadingDetails: false
       };
     }

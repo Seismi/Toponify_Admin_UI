@@ -1,6 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, Input, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
-import { ScopeEntity, Page } from '@app/scope/store/models/scope.model';
+import { ScopeEntity, Page, defaultScopeId } from '@app/scope/store/models/scope.model';
 
 @Component({
   selector: 'smi-scopes-and-layouts-table',
@@ -9,6 +9,7 @@ import { ScopeEntity, Page } from '@app/scope/store/models/scope.model';
 })
 export class ScopesAndLayoutsTableComponent implements AfterViewInit {
   public selectedRowIndex: string | number = -1;
+  public defaultScopeId = defaultScopeId;
 
   @Input() title: string;
   @Input() defaultLayoutId: string;
@@ -41,6 +42,8 @@ export class ScopesAndLayoutsTableComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<ScopeEntity>;
   public page: Page;
 
+  @Output() setScopeAsFavorite = new EventEmitter<string>();
+  @Output() unsetScopeAsFavorite = new EventEmitter<string>();
   @Output() refresh = new EventEmitter<string>();
   @Output() select = new EventEmitter<ScopeEntity>();
   @Output() add = new EventEmitter<void>();

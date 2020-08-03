@@ -11,3 +11,11 @@
   padding: 10px 8px;
   border-radius: 5px;
 }
+
+span {
+  float: right;
+  mat-icon {
+    position: relative;
+    right: -15px;
+  }
+}

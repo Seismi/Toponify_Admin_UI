@@ -23,7 +23,9 @@ import {
   LoadWorkPackageBaselineAvailability,
   AddWorkPackageBaseline,
   DeleteWorkPackageBaseline,
-  LoadWorkPackages
+  LoadWorkPackages,
+  LoadWorkPackagesActive,
+  LoadWorkPackagesActiveSuccess
 } from '@app/workpackage/store/actions/workpackage.actions';
 import { select, Store } from '@ngrx/store';
 import { State as WorkPackageState } from '../../../workpackage/store/reducers/workpackage.reducer';
@@ -31,7 +33,8 @@ import {
   getSelectedWorkPackage,
   getWorkPackageBaselineAvailability,
   getAllWorkPackages,
-  workpackageDetailsLoading
+  workpackageDetailsLoading,
+  getWorkPackagesActive
 } from '@app/workpackage/store/selectors/workpackage.selector';
 import { Subscription } from 'rxjs';
 import { WorkPackageDetailService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail.service';
@@ -42,7 +45,8 @@ import {
   WorkPackageDetail,
   WorkPackageEntity,
   Baseline,
-  currentArchitecturePackageId
+  currentArchitecturePackageId,
+  WorkPackagesActive
 } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageValidatorService } from '@app/workpackage/components/workpackage-detail/services/workpackage-detail-validator.service';
 import { FormGroup } from '@angular/forms';
@@ -99,6 +103,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(new LoadWorkPackagesActive());
     this.subscriptions.push(
       this.store.pipe(select(workpackageDetailsLoading)).subscribe((loading) => this.isLoading = loading)
     );
@@ -308,7 +313,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
     this.dialog.open(RadioDetailModalComponent, {
       disableClose: false,
       width: '900px',
-      height: 'auto',
+      height: '950px',
       data: {
         radio: radio
       }
@@ -422,18 +427,18 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onMoveObjective(objective: Objective) {
     this.store
       .pipe(
-        select(getAllWorkPackages),
+        select(getWorkPackagesActive),
         take(1),
         map(workpackages => workpackages.filter(wp => wp.status === 'draft'))
       )
-      .subscribe((workPackages: WorkPackageEntity[]) => {
+      .subscribe((workPackages: WorkPackagesActive[]) => {
         const dialogRef = this.dialog.open(MoveObjectiveModalComponent, {
           disableClose: false,
           width: '500px',
           data: workPackages
         });
 
-        dialogRef.afterClosed().subscribe((selectedWorkpackage: WorkPackageEntity) => {
+        dialogRef.afterClosed().subscribe((selectedWorkpackage: WorkPackagesActive) => {
           if (selectedWorkpackage) {
             this.store.dispatch(
               new AddObjective({ data: objective, workPackageId: selectedWorkpackage.id, objectiveId: objective.id })
@@ -474,6 +479,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
             baselineId: data.value[0].id
           })
         );
+      } else {
+        this.isLoading = false;
       }
     });
   }

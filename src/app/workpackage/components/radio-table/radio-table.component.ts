@@ -2,6 +2,7 @@ import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntity } from '@app/radio/store/models/radio.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'smi-radios-table',
@@ -18,6 +19,8 @@ export class RadiosTableComponent {
       this.dataSource.paginator = this.paginator;
     }
   }
+
+  constructor(private router: Router) { }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -42,5 +45,9 @@ export class RadiosTableComponent {
 
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  goToRadioPage(radioId: string): void {
+    this.router.navigate([`/radio/${radioId}`]);
   }
 }

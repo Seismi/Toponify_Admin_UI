@@ -10,6 +10,7 @@ import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpa
   styleUrls: ['./relates-to-table.component.scss']
 })
 export class RelatesToTableComponent {
+  @Input() isEditable = true;
   @Input()
   set data(data: RadioDetail[]) {
     if (data) {
