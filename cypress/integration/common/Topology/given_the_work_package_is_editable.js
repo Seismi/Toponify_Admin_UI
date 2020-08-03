@@ -17,7 +17,7 @@ Given('the work package {string} is editable on the {string} menu', function(wor
     //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   } else if (work_package_menu === 'Attributes And Rules') {
     work_package_menu = 'rules-and-attributes-work-package-table';
-    wait_for = ['@GETSelectorAvailabilityQuery'];
+    wait_for = ['@GETSelectorAvailabilityQuery', '@GETAttributes'];
   } else {
     work_package_menu = 'left-hand-pane-work-package-table';
     wait_for = ['@GETNodesQuery', '@GETNodeLinksQuery', '@GETSelectorAvailabilityQuery'];

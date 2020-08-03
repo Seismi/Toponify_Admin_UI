@@ -43,6 +43,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/attributes/*`,
       method: 'PUT',
       name: 'AttributeAndRule'
+    },
+    GetAttributeTags: {
+      api: `${api_version}/workpackages/*/attributes/*/tags`,
+      method: 'GET',
+      name: 'AttributeTags'
     }
   }
 };

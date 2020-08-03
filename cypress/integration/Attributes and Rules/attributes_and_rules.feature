@@ -27,7 +27,7 @@ Feature: Attributes and Rules CRUD
     Then the 'attribute' called 'Automated Regression Test Attribute' should exist in the attributes and rules table immediately
     And the user updates category 'rule', title 'Automated Regression Test Rule', description 'Automated Regression Test Rule Description'
     And the user cancel update
-    Then the user checks if attribute 'Automated Regression Test Rule' 'not' exist in the table
+    Then the attribute or rule 'Automated Regression Test Attribute' does not exist in the table
 
   @attributes_and_rules
   Scenario: Update attribute and confirm
@@ -35,18 +35,18 @@ Feature: Attributes and Rules CRUD
     Then the 'attribute' called 'Automated Regression Test Attribute' should exist in the attributes and rules table immediately
     And the user updates category 'rule', title 'Automated Regression Test Rule', description 'Automated Regression Test Rule Description'
     And the user confirm update
-    Then the user checks if attribute 'Automated Regression Test Rule' '' exist in the table
+    Then the attribute 'Automated Regression Test Rule' should exist in the table
 
   @attributes_and_rules
   Scenario: Delete attribute and cancel
     When the user creates a new 'attribute' called 'Automated Regression Test Attribute' with description 'Automated Regression Test Attribute Description'
     Then the 'attribute' called 'Automated Regression Test Attribute' should exist in the attributes and rules table immediately
     And the user deletes the attribute and cancel
-    Then the user checks if attribute 'Automated Regression Test Attribute' '' exist in the table
+    Then the attribute 'Automated Regression Test Rule' should exist in the table
 
   @attributes_and_rules
   Scenario: Delete attribute and confirm
     When the user creates a new 'attribute' called 'Automated Regression Test Attribute' with description 'Automated Regression Test Attribute Description'
     Then the 'attribute' called 'Automated Regression Test Attribute' should exist in the attributes and rules table immediately
     And the user deletes the attribute and confirm
-    Then the user checks if attribute 'Automated Regression Test Attribute' 'not' exist in the table
+    Then the attribute or rule 'Automated Regression Test Attribute' does not exist in the table

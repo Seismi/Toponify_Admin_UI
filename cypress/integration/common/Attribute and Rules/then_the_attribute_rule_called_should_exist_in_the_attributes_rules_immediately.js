@@ -6,5 +6,5 @@ Then('the {string} called {string} should exist in the attributes and rules tabl
     .concat(name);
   cy.selectRow('rules-and-attributes-table', name)
     .click()
-    .wait(['@GETAttributes', '@GETAttributeAndRule']);
+    .wait(['@GETAttributes', '@GETAttributeAndRule', '@GETAttributeTags']);
 });
