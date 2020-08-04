@@ -1,5 +1,5 @@
 import { ViewActionsUnion, ViewActionTypes } from '../actions/view.actions';
-import {LinkLayoutSettingsEntity, NodeLink, NodeLinkDetail, RoutesEntityEntity} from '../models/node-link.model';
+import { LinkLayoutSettingsEntity, NodeLink, NodeLinkDetail, RoutesEntityEntity } from '../models/node-link.model';
 import { NodeActionsUnion, NodeActionTypes, SetDraft } from '../actions/node.actions';
 import {
   Error,
@@ -13,12 +13,20 @@ import {
   GroupAreaSizesEntity,
   OwnersEntity,
   Tag,
-  NodeLayoutSettingsEntity, WorkPackageGroupMembersApiResponse, TagsHttpParams
+  NodeLayoutSettingsEntity,
+  WorkPackageGroupMembersApiResponse,
+  TagsHttpParams
 } from '../models/node.model';
 import { WorkpackageActionsUnion, WorkpackageActionTypes } from '../actions/workpackage.actions';
-import { WorkPackageNodeActionsUnion, WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
+import {
+  WorkPackageNodeActionsUnion,
+  WorkPackageNodeActionTypes
+} from '@app/workpackage/store/actions/workpackage-node.actions';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
-import { WorkPackageLinkActionsUnion, WorkPackageLinkActionTypes } from '@app/workpackage/store/actions/workpackage-link.actions';
+import {
+  WorkPackageLinkActionsUnion,
+  WorkPackageLinkActionTypes
+} from '@app/workpackage/store/actions/workpackage-link.actions';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { Page } from '@app/radio/store/models/radio.model';
@@ -29,7 +37,7 @@ export interface State {
   zoomLevel: number;
   viewLevel: Level;
   draft: {
-    [key: string]: any
+    [key: string]: any;
   };
   entities: Node[];
   descendants: DescendantsEntity[];
@@ -48,8 +56,8 @@ export interface State {
     id: string;
   };
   tags: {
-    data: Tag[],
-    page: TagsHttpParams
+    data: Tag[];
+    page: TagsHttpParams;
   };
   loadingLinks: LoadingStatus;
   loadingNodes: LoadingStatus;
@@ -595,7 +603,6 @@ export function reducer(
       };
     }
 
-
     case NodeActionTypes.RemoveAllDraft: {
       return {
         ...state,
@@ -604,7 +611,7 @@ export function reducer(
     }
 
     case NodeActionTypes.UpdatePartsLayoutSuccess: {
-      const newDraft = { ...state.draft};
+      const newDraft = { ...state.draft };
       delete newDraft[action.payload];
       return {
         ...state,
@@ -638,7 +645,6 @@ export function reducer(
       const { layoutId, data } = action.payload;
       const nodeIndex = state.entities.findIndex(n => n.id === data.id);
       if (nodeIndex > -1) {
-
         let updatedState = replaceNodeLayoutSetting(
           state,
           nodeIndex,
@@ -658,7 +664,6 @@ export function reducer(
         );
 
         return updatedState;
-
       } else {
         return {
           ...state
@@ -672,17 +677,9 @@ export function reducer(
         function(updatedState, group) {
           const nodeIndex = updatedState.entities.findIndex(g => g.id === group.id);
           if (nodeIndex > -1) {
-            return replaceNodeLayoutSetting(
-              updatedState,
-              nodeIndex,
-              group.id,
-              layoutId,
-              group.areaSize,
-              'areaSize'
-            );
+            return replaceNodeLayoutSetting(updatedState, nodeIndex, group.id, layoutId, group.areaSize, 'areaSize');
           }
-        }
-        ,
+        },
         {
           ...state
         }
@@ -850,7 +847,7 @@ export function reducer(
     case NodeActionTypes.SetGroupMemberIds: {
       return {
         ...state,
-        groupMemberIds: getNestedMembers(state, action.payload).map((n) => n.id )
+        groupMemberIds: getNestedMembers(state, action.payload).map(n => n.id)
       };
     }
 
@@ -858,7 +855,7 @@ export function reducer(
       if (action.payload) {
         return {
           ...state,
-          groupMemberIds: getNestedMembers(state, action.payload).map((n) => n.id )
+          groupMemberIds: getNestedMembers(state, action.payload).map(n => n.id)
         };
       } else {
         return {
@@ -943,6 +940,46 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.UpdateNodeChildrenSuccess: {
+      const { descendants, nodeId } = action.payload;
+      return {
+        ...state,
+        entities: state.entities.map(node => {
+          if (node.id === nodeId) {
+            return {
+              ...node,
+              descendants
+            };
+          }
+          return node;
+        }),
+        selectedNode: {
+          ...state.selectedNode,
+          descendants
+        }
+      };
+    }
+
+    case NodeActionTypes.UpdateNodeGroupMembersSuccess: {
+      const { members, nodeId } = action.payload;
+      return {
+        ...state,
+        entities: state.entities.map(node => {
+          if (node.id === nodeId) {
+            return {
+              ...node,
+              members
+            };
+          }
+          return node;
+        }),
+        selectedNode: {
+          ...state.selectedNode,
+          members
+        }
+      };
+    }
+
     default: {
       return state;
     }
@@ -1003,7 +1040,8 @@ function replaceNodeLayoutSetting(
   };
 }
 
-function replaceLinkRoute(state: State,
+function replaceLinkRoute(
+  state: State,
   linkIndex: number,
   linkId: string,
   layoutId: string,
@@ -1068,7 +1106,6 @@ function getNestedMembers(state: State, group: NodeDetail): Node[] {
 
     // Loop through a node's sequence of containing groups
     do {
-
       // Check if node is a direct member of the provided group
       if (currentGroup.group === group.id) {
         return true;
