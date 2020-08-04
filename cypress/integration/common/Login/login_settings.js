@@ -14,11 +14,6 @@ module.exports = {
       method: 'GET',
       name: 'navigateMyRadios'
     },
-    GetRoles: {
-      api: `${api_version}/navigate/mylayouts`,
-      method: 'GET',
-      name: 'navigateMyLayouts'
-    },
     login: {
       api: `${api_version}/users/login`,
       method: 'POST',
