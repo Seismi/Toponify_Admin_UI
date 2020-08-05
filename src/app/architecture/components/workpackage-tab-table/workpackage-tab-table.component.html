@@ -37,6 +37,17 @@
                 <label> {{ element.edit ? 'Close' : 'Edit' }} </label>
               </ng-container>
 
+              <ng-container>
+                <mat-slide-toggle 
+                  [checked]="element.selected"
+                  [disabled]="!element.selected"
+                  color="primary"
+                  (change)="switchOff($event)"
+                >
+                  Switch off
+                </mat-slide-toggle>
+              </ng-container>
+
               <ng-template #elseBlock>
                 <span style="opacity: 0.2;">
                   <mat-icon>{{ element.edit ? 'close' : 'edit' }}</mat-icon>

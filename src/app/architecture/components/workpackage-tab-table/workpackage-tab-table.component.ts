@@ -1,10 +1,14 @@
 import { Component, EventEmitter, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatSlideToggleChange } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { workpackageLoading } from '@app/workpackage/store/selectors/workpackage.selector';
+import { SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
+import { RouterReducerState } from '@ngrx/router-store';
+import { RouterStateUrl } from '@app/core/store';
+import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 
 @Component({
   selector: 'smi-workpackage-tab-table',
@@ -28,16 +32,17 @@ export class WorkPackageTabTableComponent implements OnInit, OnDestroy {
 
   @Input() canSelectWorkpackage: boolean;
 
-  constructor(private store: Store<WorkPackageState>) { }
+  constructor(
+    private store: Store<WorkPackageState>,
+    private routerStore: Store<RouterReducerState<RouterStateUrl>>,
+  ) { }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['workpackage'];
 
   @Output() selectWorkPackage = new EventEmitter<{ id: string; newState: boolean }>();
-
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
-
   @Output() setWorkpackageEditMode = new EventEmitter();
 
   ngOnInit(): void {
@@ -75,5 +80,14 @@ export class WorkPackageTabTableComponent implements OnInit, OnDestroy {
   onSearch(filterValue: string): void {
     this.filterValue = filterValue;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  switchOff($event: MatSlideToggleChange): void {
+    if (!$event.checked) {
+      const params = {
+        workpackages: []
+      };
+      this.routerStore.dispatch(new UpdateQueryParams(params));
+    }
   }
 }
