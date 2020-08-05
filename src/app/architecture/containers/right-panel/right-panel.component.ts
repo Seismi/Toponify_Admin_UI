@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AttributesEntity, NodeLink, OwnersEntityOrTeamEntityOrApproversEntity
+import {
+  AttributesEntity,
+  NodeLink,
+  OwnersEntityOrTeamEntityOrApproversEntity
 } from '@app/architecture/store/models/node-link.model';
 import {
   CustomPropertyValuesEntity,
@@ -101,6 +104,8 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() handleRadioPageChange = new EventEmitter<any>();
   @Output() selectedTabChange = new EventEmitter<Number>();
 
+  @Output() changeOrder = new EventEmitter<GroupInfo[]>();
+
   constructor(
     public gojsCustomObjectsService: GojsCustomObjectsService,
     private changeDetectorRef: ChangeDetectorRef
@@ -122,7 +127,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   }
 
   onSelectedTabChange(index: number) {
-      this.selectedTabChange.emit(index);
+    this.selectedTabChange.emit(index);
   }
 
   onSaveNode(): void {
@@ -286,10 +291,15 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   }
 
   getDisableDataTable(): boolean {
-    return ![Level.system, Level.data].includes(this.currentFilterLevel as Level) || this.part.data.isShared ? true : false;
+    return ![Level.system, Level.data].includes(this.currentFilterLevel as Level) || this.part.data.isShared
+      ? true
+      : false;
   }
 
   getDisableDimensionsTable(): boolean {
-    return ![Level.data].includes(this.currentFilterLevel as Level) || this.part.data.category !== nodeCategories.dataStructure;
+    return (
+      ![Level.data].includes(this.currentFilterLevel as Level) ||
+      this.part.data.category !== nodeCategories.dataStructure
+    );
   }
 }
