@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { getUserSelected, getUserRolesEntities, getUsers } from '@app/settings/store/selectors/user.selector';
-import { RolesEntity } from '@app/settings/store/models/user.model';
+import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
@@ -20,6 +20,7 @@ import { map, take } from 'rxjs/operators';
 import { AddMember, DeleteMember, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 import { ResetPasswordModalComponent } from '../reset-password-modal/reset-password-modal.component';
+import { getMyProfile } from '@app/home/store/selectors/home.selectors';
 
 @Component({
   selector: 'app-all-users-details',
@@ -28,6 +29,7 @@ import { ResetPasswordModalComponent } from '../reset-password-modal/reset-passw
   providers: [MyUserFormService, MyUserFormValidatorService]
 })
 export class AllUsersDetailsComponent implements OnInit, OnDestroy {
+  public loggedInUser: UserDetails;
   public team: TeamEntity[];
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
@@ -51,7 +53,8 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(
         TeamActionTypes.AddMemberSuccess,
-        TeamActionTypes.DeleteMemberSuccess)).subscribe(_ => {
+        TeamActionTypes.DeleteMemberSuccess,
+        UserActionTypes.UpdateUserSuccess)).subscribe(_ => {
           this.store.dispatch(new LoadUser(this.user.id));
         })
     );
@@ -104,6 +107,10 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
           this.snackBar.open('To see changes to roles, the user must refresh the page in his local browser');
         }
       })
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getMyProfile)).subscribe(profile => (this.loggedInUser = profile))
     );
   }
 

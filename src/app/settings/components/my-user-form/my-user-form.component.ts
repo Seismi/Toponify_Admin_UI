@@ -63,6 +63,7 @@ export class MyUserFormComponent {
   @Input() administrators: string[];
   @Input() userRoles: string[];
   @Input() userTeams: TeamEntity[];
+  @Input() loggedInUser: UserDetails;
 
   @Input() set team(team: any) {
     this.teams = team;
@@ -130,12 +131,15 @@ export class MyUserFormComponent {
     }
   }
 
-  getResetButton(): boolean {
+  getStatus(): boolean {
+    return this.user ? this.user.userStatus === UserStatus.active : true;
+  }
+
+  getResetButton(): boolean[] {
     return  !this.myUserPage &&
             !this.isEditable &&
-            this.userRoles &&
-            this.userRoles.includes(Roles.ADMIN) &&
-            this.user.userStatus === UserStatus.active;
+            this.user && this.user.userStatus === UserStatus.active &&
+            this.loggedInUser.roles.map(role => role.name.includes(Roles.ADMIN));
   }
 
 }
