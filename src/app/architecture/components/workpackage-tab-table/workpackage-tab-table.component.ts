@@ -1,14 +1,20 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
+import { Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { workpackageLoading } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-workpackage-tab-table',
   templateUrl: './workpackage-tab-table.component.html',
   styleUrls: ['./workpackage-tab-table.component.scss']
 })
-export class WorkPackageTabTableComponent {
+export class WorkPackageTabTableComponent implements OnInit, OnDestroy {
   private filterValue: string;
+  public isLoading: boolean;
+  public subscription: Subscription;
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
@@ -22,6 +28,8 @@ export class WorkPackageTabTableComponent {
 
   @Input() canSelectWorkpackage: boolean;
 
+  constructor(private store: Store<WorkPackageState>) { }
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public dataSource: MatTableDataSource<WorkPackageEntity>;
   public displayedColumns: string[] = ['workpackage'];
@@ -31,6 +39,14 @@ export class WorkPackageTabTableComponent {
   @Output() selectColour = new EventEmitter<{ colour: string; id: string }>();
 
   @Output() setWorkpackageEditMode = new EventEmitter();
+
+  ngOnInit(): void {
+    this.subscription = this.store.pipe(select(workpackageLoading)).subscribe(loading => (this.isLoading = loading));
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   onSelect(id: string, newState: boolean, ev, workpackage: any): void {
     ev.preventDefault();

@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <div class="search-container">
+  <div class="search-container" *ngIf="dataSource.data.length">
     <input placeholder="Search" data-qa="topology-work-packages-quick-search" (keyup)="onSearch($event.target.value)">
   </div>
   <table mat-table [dataSource]="dataSource">
@@ -61,4 +61,6 @@
     <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
   </table>
   <br>
+  <p class="message" *ngIf="!dataSource.data.length">No active work packages. To create a new work package, <a routerLink="/work-packages">click here</a></p>
 </div>
+<smi-spinner *ngIf="isLoading"></smi-spinner>
