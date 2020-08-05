@@ -25,11 +25,6 @@ export class HomePageService {
     return this.http.get<RadioEntitiesResponse>(`/navigate/myradios`, { params: params });
   }
 
-  getMyLayouts(queryParams: LayoutEntitiesHttpParams): Observable<GetLayoutEntitiesApiResponse> {
-    const params = toHttpParams(queryParams);
-    return this.http.get<GetLayoutEntitiesApiResponse>(`/navigate/mylayouts`, { params: params });
-  }
-
   getMyProfile(): Observable<UserApiResponse> {
     return this.http.get<UserApiResponse>(`/navigate/myprofile`);
   }
