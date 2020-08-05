@@ -96,7 +96,14 @@ export enum NodeActionTypes {
   DissociateTagFailure = '[Node] Dissociate Tag Fail',
   ReloadNodesData = '[Node] Reload Nodes Data',
   SetDraft = '[Node] Set draft',
-  RemoveAllDraft = '[Node] Remove all draft'
+  RemoveAllDraft = '[Node] Remove all draft',
+  UpdateNodeGroupMembers = '[Node] Update Node Group Members',
+  UpdateNodeGroupMembersSuccess = '[Node] Update Node Group Members Success',
+  UpdateNodeGroupMembersFailure = '[Node] Update Node Group Members Failure',
+  UpdateNodeChildren = '[Node] Update Node Children',
+  UpdateNodeChildrenSuccess = '[Node] Update Node Children Success',
+  UpdateNodeChildrenFailure = '[Node] Update Node Children Failure',
+  
 }
 
 export class SetDraft implements Action {
@@ -503,6 +510,36 @@ export class ReloadNodesData implements Action {
   readonly type = NodeActionTypes.ReloadNodesData;
 }
 
+export class UpdateNodeGroupMembers implements Action {
+  readonly type = NodeActionTypes.UpdateNodeGroupMembers;
+  constructor(public payload: any) {}
+}
+
+export class UpdateNodeGroupMembersSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodeGroupMembersSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateNodeGroupMembersFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodeGroupMembersFailure;
+  constructor(public payload: Error) {}
+}
+
+export class UpdateNodeChildren implements Action {
+  readonly type = NodeActionTypes.UpdateNodeChildren;
+  constructor(public payload: any) {}
+}
+
+export class UpdateNodeChildrenSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodeChildrenSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateNodeChildrenFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodeChildrenFailure;
+  constructor(public payload: Error) {}
+}
+
 export type NodeActionsUnion =
   | SetDraft
   | RemoveAllDraft
@@ -584,4 +621,10 @@ export type NodeActionsUnion =
   | DeleteTag
   | DeleteTagSuccess
   | DeleteTagFailure
-  | ReloadNodesData;
+  | ReloadNodesData
+  | UpdateNodeGroupMembers
+  | UpdateNodeGroupMembersSuccess
+  | UpdateNodeGroupMembersFailure
+  | UpdateNodeChildren
+  | UpdateNodeChildrenSuccess
+  | UpdateNodeChildrenFailure;

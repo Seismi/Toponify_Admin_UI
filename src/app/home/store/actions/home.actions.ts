@@ -17,10 +17,6 @@ export enum HomePageActionTypes {
   LoadMyRadiosSuccess = '[HomePage] Load My Radios Success',
   LoadMyRadiosFailure = '[HomePage] Load My Radios Failure',
 
-  LoadMyLayouts = '[HomePage] Load My Layouts',
-  LoadMyLayoutsSuccess = '[HomePage] Load My Layouts Success',
-  LoadMyLayoutsFailure = '[HomePage] Load My Layouts Failure',
-
   LoadMyProfile = '[HomePage] Load My Profile',
   LoadMyProfileSuccess = '[HomePage] Load My Profile Success',
   LoadMyProfileFailure = '[HomePage] Load My Profile Failure',
@@ -57,21 +53,6 @@ export class LoadMyRadiosSuccess implements Action {
 
 export class LoadMyRadiosFailure implements Action {
   readonly type = HomePageActionTypes.LoadMyRadiosFailure;
-  constructor(public payload: HttpErrorResponse | { message: string }) {}
-}
-
-export class LoadMyLayouts implements Action {
-  readonly type = HomePageActionTypes.LoadMyLayouts;
-  constructor(public payload: LayoutEntitiesHttpParams) {}
-}
-
-export class LoadMyLayoutsSuccess implements Action {
-  readonly type = HomePageActionTypes.LoadMyLayoutsSuccess;
-  constructor(public payload: GetLayoutEntitiesApiResponse) {}
-}
-
-export class LoadMyLayoutsFailure implements Action {
-  readonly type = HomePageActionTypes.LoadMyLayoutsFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
@@ -112,9 +93,6 @@ export type HomePageActionsUnion =
   | LoadMyRadios
   | LoadMyRadiosSuccess
   | LoadMyRadiosFailure
-  | LoadMyLayouts
-  | LoadMyLayoutsSuccess
-  | LoadMyLayoutsFailure
   | LoadMyProfile
   | LoadMyProfileSuccess
   | LoadMyProfileFailure
