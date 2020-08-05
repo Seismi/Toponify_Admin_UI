@@ -168,6 +168,14 @@ export class NodeService {
     return this.http.put<any>(`/layouts/${layoutId}/positionDetails`, { data: data}, httpOptions);
   }
 
+  updateNodeGroupMembers(nodeId: string, workPackageId: string, data: any): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/groupMembers`, {data: data}, httpOptions)
+  }
+
+  updateNodeChildren(nodeId: string, workPackageId: string, data: any): Observable<any> {
+    return this.http.put<any>(`/workpackages/${workPackageId}/nodes/${nodeId}/children`, {data: data}, httpOptions)
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     let httpParams = new HttpParams();

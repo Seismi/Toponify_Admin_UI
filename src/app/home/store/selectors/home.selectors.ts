@@ -14,11 +14,6 @@ export const getMyRadios = createSelector(
   state => state.radios
 );
 
-export const getMyLayouts = createSelector(
-  getHomePageState,
-  state => state.layouts
-);
-
 export const getMyProfile = createSelector(
   getHomePageState,
   state => state.profile
