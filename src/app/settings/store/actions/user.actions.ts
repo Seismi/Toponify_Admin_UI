@@ -52,7 +52,11 @@ export enum UserActionTypes {
 
   DeleteUserRole = '[User] Delete User Role',
   DeleteUserRoleSuccess = '[User] Delete User Role Success',
-  DeleteUserRoleFailure = '[User] Delete User Role Failure'
+  DeleteUserRoleFailure = '[User] Delete User Role Failure',
+
+  ResetPassword = '[User] Reset Password',
+  ResetPasswordSuccess = '[User] Reset Password Success',
+  ResetPasswordFailure = '[User] Reset Password Failure'
 }
 
 export class LoadUsers implements Action {
@@ -217,6 +221,21 @@ export class DeleteUserRoleSuccess implements Action {
 
 export class DeleteUserRoleFailure implements Action {
   readonly type = UserActionTypes.DeleteUserRoleFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class ResetPassword implements Action {
+  readonly type = UserActionTypes.ResetPassword;
+  constructor(public payload: { email: string }) {}
+}
+
+export class ResetPasswordSuccess implements Action {
+  readonly type = UserActionTypes.ResetPasswordSuccess;
+  constructor(public payload: { email: string }) {}
+}
+
+export class ResetPasswordFailure implements Action {
+  readonly type = UserActionTypes.ResetPasswordFailure;
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
