@@ -16,9 +16,10 @@ import isEqual from 'lodash.isequal';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Roles } from '@app/core/directives/by-role.directive';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { AddMember, DeleteMember, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { ResetPasswordModalComponent } from '../reset-password-modal/reset-password-modal.component';
 
 @Component({
   selector: 'app-all-users-details',
@@ -226,10 +227,15 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
 
   resetPassword(): void {
     this.store.dispatch(new ResetPassword({ email: this.user.email }));
-    this.actions.pipe(ofType(UserActionTypes.ResetPasswordSuccess)).subscribe((action) => {
-      if (action) {
-        alert('Password reset. User will receive a new password by email.');
-      }
+    this.actions
+      .pipe(
+        take(1),
+        ofType(UserActionTypes.ResetPasswordSuccess)
+      )
+      .subscribe((action) => {
+        if (action) {
+          this.dialog.open(ResetPasswordModalComponent);
+        }
     });
   }
 }
