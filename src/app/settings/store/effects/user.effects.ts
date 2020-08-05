@@ -156,4 +156,16 @@ export class UserEffects {
       );
     })
   );
+
+  @Effect()
+  resetPassword$ = this.actions$.pipe(
+    ofType<UserActions.ResetPassword>(UserActionTypes.ResetPassword),
+    map(action => action.payload),
+    switchMap((payload: { email: string }) => {
+      return this.userService.resetPassword(payload.email).pipe(
+        switchMap((response: { data: { email: string }}) => [new UserActions.ResetPasswordSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new UserActions.ResetPasswordFailure(error)))
+      );
+    })
+  );
 }
