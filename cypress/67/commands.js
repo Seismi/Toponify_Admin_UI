@@ -192,7 +192,7 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
     .clear({ force: true }) //clear the box
     .paste(name)
     .should('have.value', name) // type the name
-    .wait(2000)
+    .wait(1000)
     .then(() => {
       if (wait) {
         cy.wait('@GETWorkPackagePaging');
@@ -210,7 +210,7 @@ Cypress.Commands.add('findReport', name => {
   cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
     .clear({ force: true }) //clear the box
     .paste(name) // type the name
-    .wait(2000)
+    .wait(2677000)
     .wait('@GETReportsFilterQuery.all')
     .then(() => {
       return cy
@@ -237,7 +237,8 @@ Cypress.Commands.add('findWorkPackageRadio', name => {
   cy.get(`[data-qa=work-packages-radio-table-quick-search]`) // get the quick packages search
     .clear({ force: true }) //clear the box
     .paste(name)
-    .should('have.value', name); //type the name
+    .should('have.value', name)
+    .wait(1000); //type the name
   return cy
     .get(`[data-qa=work-packages-radio-table]`) // get the work packages table
     .find('table>tbody'); // find the table
@@ -331,7 +332,6 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
       cy.root()
         .get('[data-qa=left-hand-pane-work-packages]')
         .click();
-      //  .wait('@PUTLayoutNodes');
     });
 });
 
@@ -363,7 +363,7 @@ Cypress.Commands.add('findScope', name => {
     .clear({ force: true }) //clear the box
     .paste(name)
     .should('have.value', name) // type the name
-    .wait(3000)
+    .wait(1000)
     .wait('@GETScopes.all')
     .then(() => {
       return cy
@@ -378,7 +378,7 @@ Cypress.Commands.add('findSystem', (table, name) => {
     .clear({ force: true }) //clear the box
     .paste(name)
     .should('have.value', name) // type the name
-    //    .wait(3000)
+    .wait(2000)
     //.wait(['@GETNodesQuery','@GETNodeLinksQuery'])
     .then(() => {
       return cy
@@ -403,6 +403,7 @@ Cypress.Commands.add('findRadio', radio => {
         .wait('@POSTradiosAdvancedSearch')
         .then(() => {
           cy.get('[data-qa=spinner]').should('not.be.visible');
+          cy.get('[data-qa=details-spinner]').should('not.be.visible');
           return cy.get(`[data-qa=radio-table]`).find('table>tbody');
         });
     });
@@ -430,7 +431,8 @@ Cypress.Commands.add('findDocumentationStandard', (name, wait) => {
     .scrollIntoView()
     .clear({ force: true })
     .paste(name) // type the name
-    .should('have.value', name);
+    .should('have.value', name)
+    .wait(1000);
   if (wait) {
     cy.wait('@GETCustomProperties');
   }

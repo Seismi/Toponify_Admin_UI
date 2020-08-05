@@ -7,7 +7,11 @@ When('the user cancels the creation of the radio', () => {
 When('confirms the creation of the radio', () => {
   cy.get(`[data-qa=radio-modal-save]`)
     .click()
-    .wait(['@POSTRadios', '@GETRadioTags']);
+    .wait(['@POSTRadios', '@GETRadioTags'])
+    .get('[data-qa=details-spinner]')
+    .should('not.be.visible')
+    .get('[data-qa=spinner]')
+    .should('not.be.visible');
 });
 
 When('the user clicks on create new radio at the button of the radio table', () => {
