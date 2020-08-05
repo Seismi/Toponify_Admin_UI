@@ -153,6 +153,7 @@ Cypress.Commands.add('selectDetailsPaneTab', posinset => {
 
 Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
   let currentSetting, currentSearchTerm, wait;
+  cy.log('findWorkPackage');
   cy.get('[data-qa=work-packages-archive-toggle]')
     .find('label>div>input')
     .then(result => {
@@ -469,8 +470,9 @@ Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
 });
 
 Cypress.Commands.add('deleteWorkPackage', name => {
+  cy.log('findWorkPackage');
   cy.selectRow('work-packages-table', name)
-    .wait('@GETWorkPackage')
+    .wait(['@GETWorkPackage', '@GETWorkPackageActive'])
     .then(() => {
       cy.selectDetailsPaneTab(workPackage['tabs']['Details']).then(() => {
         cy.get('tbody>tr') // get the table body

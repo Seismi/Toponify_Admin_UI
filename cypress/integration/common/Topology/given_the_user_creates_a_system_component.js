@@ -9,17 +9,13 @@ Given('the user creates a new {string} system with name {string}', function(comp
     .selectDropDownNoClick('topology-components-or-link-modal-category', component_type)
     .get('[data-qa=topology-components-or-link-modal-name]')
     .paste(name)
-    .should('have.value', name)
-    .get('[data-qa=topology-components-or-link-modal-save]')
-    .click()
-    //.wait(10000)
+    .should('have.value', name);
+  cy.get('[data-qa=topology-components-or-link-modal-save]').click();
+  //.wait(10000)
 
-    .wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesQuery', '@GETNodeLinksQuery'], {
-      requestTimeout: 25000,
-      responseTimeout: 25000
-    })
-    .get('[data-qa=details-spinner]')
-    .should('not.be.visible')
-    .get('[data-qa=spinner]')
-    .should('not.be.visible');
+  cy.wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesQuery', '@GETNodeLinksQuery']);
+  //cy.get('[data-qa=spinner]')
+  //.should('not.be.visible')
+  //cy.get('[data-qa=spinner]')
+  //.should('not.be.visible');
 });
