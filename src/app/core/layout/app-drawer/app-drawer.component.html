@@ -3,8 +3,8 @@
     <smi-left-hand-pane-content (close)="handleCloseDrawer()">
       <ng-container *ngIf="tabTpls" [ngTemplateOutlet]="tabTpls[selectedTab]"></ng-container>
       <smi-menu *ngIf="selectedTab === LeftHandPaneTab.menu"></smi-menu>
-      <div class="notifications-container">
-        <smi-notification-pane *ngIf="selectedTab === LeftHandPaneTab.notifications"></smi-notification-pane>
+      <div class="notifications-container" *ngIf="selectedTab === LeftHandPaneTab.notifications">
+        <smi-notification-pane></smi-notification-pane>
       </div>
     </smi-left-hand-pane-content>
     <smi-spinner *ngIf="isLoading"></smi-spinner>
