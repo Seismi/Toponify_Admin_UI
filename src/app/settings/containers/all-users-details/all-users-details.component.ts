@@ -3,12 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
-import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, DeleteUserRole, AddUserRole } from '@app/settings/store/actions/user.actions';
+import { LoadUser, UpdateUser, LoadUserRoles, UserActionTypes, DeleteUserRole, AddUserRole, ResetPassword } from '@app/settings/store/actions/user.actions';
 import { FormGroup } from '@angular/forms';
 import { MyUserFormService } from '@app/settings/components/my-user-form/services/my-user-form.service';
 import { MyUserFormValidatorService } from '@app/settings/components/my-user-form/services/my-user-form-validator.service';
 import { getUserSelected, getUserRolesEntities, getUsers } from '@app/settings/store/selectors/user.selector';
-import { RolesEntity } from '@app/settings/store/models/user.model';
+import { RolesEntity, UserDetails } from '@app/settings/store/models/user.model';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { Actions, ofType } from '@ngrx/effects';
@@ -16,9 +16,11 @@ import isEqual from 'lodash.isequal';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Roles } from '@app/core/directives/by-role.directive';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { AddMember, DeleteMember, TeamActionTypes } from '@app/settings/store/actions/team.actions';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { ResetPasswordModalComponent } from '../reset-password-modal/reset-password-modal.component';
+import { getMyProfile } from '@app/home/store/selectors/home.selectors';
 
 @Component({
   selector: 'app-all-users-details',
@@ -27,6 +29,7 @@ import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/d
   providers: [MyUserFormService, MyUserFormValidatorService]
 })
 export class AllUsersDetailsComponent implements OnInit, OnDestroy {
+  public loggedInUser: UserDetails;
   public team: TeamEntity[];
   public role: RolesEntity[];
   public subscriptions: Subscription[] = [];
@@ -50,7 +53,8 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.actions.pipe(ofType(
         TeamActionTypes.AddMemberSuccess,
-        TeamActionTypes.DeleteMemberSuccess)).subscribe(_ => {
+        TeamActionTypes.DeleteMemberSuccess,
+        UserActionTypes.UpdateUserSuccess)).subscribe(_ => {
           this.store.dispatch(new LoadUser(this.user.id));
         })
     );
@@ -103,6 +107,10 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
           this.snackBar.open('To see changes to roles, the user must refresh the page in his local browser');
         }
       })
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getMyProfile)).subscribe(profile => (this.loggedInUser = profile))
     );
   }
 
@@ -221,6 +229,20 @@ export class AllUsersDetailsComponent implements OnInit, OnDestroy {
           );
         }
       }
+    });
+  }
+
+  resetPassword(): void {
+    this.store.dispatch(new ResetPassword({ email: this.user.email }));
+    this.actions
+      .pipe(
+        take(1),
+        ofType(UserActionTypes.ResetPasswordSuccess)
+      )
+      .subscribe((action) => {
+        if (action) {
+          this.dialog.open(ResetPasswordModalComponent);
+        }
     });
   }
 }
