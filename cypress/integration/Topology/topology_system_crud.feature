@@ -11,11 +11,11 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system @focus
   Scenario Outline: Add system to the System View and check that they save to the table
     Given the user selects Topology menu item
-    #And the "System View" layer is selected
-    #And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
-    #And the "Topology" "Systems" Tab is selected
-    #When the user creates a new '<component_type>' system with name '<name>'
-    #Then the 'system' '<name>' should exist in the table immediately
+    And the "System View" layer is selected
+    And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
+    And the "Topology" "Systems" Tab is selected
+    When the user creates a new '<component_type>' system with name '<name>'
+    Then the 'system' '<name>' should exist in the table immediately
     #And the 'system' '<name>' should exist on the canvas immediately
     #And the user selects the 'system' '<name>' in the 'systems' table
     #And the user clicks on the system's right hand side details button

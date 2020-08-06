@@ -14,8 +14,6 @@ Given('the user creates a new {string} system with name {string}', function(comp
   //.wait(10000)
 
   cy.wait(['@POSTWorkPackageNodesScopeQuery', '@GETNodesQuery', '@GETNodeLinksQuery']);
-  //cy.get('[data-qa=spinner]')
-  //.should('not.be.visible')
-  //cy.get('[data-qa=spinner]')
-  //.should('not.be.visible');
+  cy.get('[data-qa=spinner]').should('not.be.visible');
+  cy.get('[data-qa=details-spinner]').should('not.be.visible');
 });
