@@ -111,7 +111,7 @@ export class DiagramChangesService {
         const node = Object.assign({}, part.data);
         const dialogRef = this.dialog.open(EditNameModalComponent, {
           disableClose: false,
-          width: 'auto',
+          width: '500px',
           data: {
             name: node.name
           }
@@ -147,7 +147,7 @@ export class DiagramChangesService {
               addWorkPackageNodeParams.node.parentId = nodeId;
             }
 
-            if (!node.isTemporary) {
+            if (data && data.name && !node.isTemporary) {
               this.workpackageStore.dispatch(new AddWorkPackageNode(addWorkPackageNodeParams));
             }
           });
