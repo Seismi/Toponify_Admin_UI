@@ -26,7 +26,7 @@
                 </mat-button-toggle>
                 <mat-button-toggle
                   data-qa="topology-work-packages-select-work-package"
-                  [disabled]="!canSelect(element)"
+                  [ngClass]="{ disabled: !canSelect(element) }"
                   [checked]="element.selected"
                   (click)="onSelect(element.id, !element.selected, $event, element)"
                 >
