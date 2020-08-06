@@ -197,10 +197,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
             params = { workpackages: [...urlWorkpackages] };
           }
         } else {
-          if (index !== -1) {
-            urlWorkpackages.splice(index, 1);
-          }
-          params = { workpackages: [...urlWorkpackages] };
+          this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
         }
         this.routerStore.dispatch(new UpdateQueryParams(params));
       });

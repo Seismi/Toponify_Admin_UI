@@ -1,14 +1,17 @@
 import { Component, EventEmitter, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { MatPaginator, MatTableDataSource, MatSlideToggleChange } from '@angular/material';
+import { MatPaginator, MatTableDataSource, MatButtonToggleChange } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { workpackageLoading } from '@app/workpackage/store/selectors/workpackage.selector';
+import { workpackageLoading, getAvailableWorkPackageIds } from '@app/workpackage/store/selectors/workpackage.selector';
 import { SetWorkpackageEditMode } from '@app/workpackage/store/actions/workpackage.actions';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
+import { getWorkPackagesQueryParams } from '@app/core/store/selectors/route.selectors';
+import { take, withLatestFrom } from 'rxjs/operators';
+import { Params } from '@angular/router';
 
 @Component({
   selector: 'smi-workpackage-tab-table',
@@ -34,7 +37,7 @@ export class WorkPackageTabTableComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<WorkPackageState>,
-    private routerStore: Store<RouterReducerState<RouterStateUrl>>,
+    private routerStore: Store<RouterReducerState<RouterStateUrl>>
   ) { }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -82,12 +85,26 @@ export class WorkPackageTabTableComponent implements OnInit, OnDestroy {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  switchOff($event: MatSlideToggleChange): void {
-    if (!$event.checked) {
-      const params = {
-        workpackages: []
-      };
-      this.routerStore.dispatch(new UpdateQueryParams(params));
-    }
+  switchOff(workpackage: { id: string }): void {
+    this.routerStore
+      .select(getWorkPackagesQueryParams)
+      .pipe(
+        take(1)
+      )
+      .subscribe(workpackages => {
+        let urlWorkpackages: string[];
+        let params: Params;
+        if (typeof workpackages === 'string') {
+          urlWorkpackages = [workpackages];
+        } else {
+          urlWorkpackages = workpackages ? [...workpackages] : [];
+        }
+        const index = urlWorkpackages.findIndex(id => id === workpackage.id);
+        if (index !== -1) {
+          urlWorkpackages.splice(index, 1);
+        }
+        params = { workpackages: [...urlWorkpackages] };
+        this.routerStore.dispatch(new UpdateQueryParams(params));
+    });
   }
 }

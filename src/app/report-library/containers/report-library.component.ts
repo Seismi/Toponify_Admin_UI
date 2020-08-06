@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { State as ReportState } from '../store/reducers/report.reducer';
 import { AddReport, LoadReports } from '../store/actions/report.actions';
@@ -23,7 +23,7 @@ import { Params, Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { ReportModalComponent } from './report-modal/report-modal.component';
 import { getWorkPackagesQueryParams, getScopeQueryParams } from '@app/core/store/selectors/route.selectors';
-import { take, distinctUntilChanged, withLatestFrom, debounceTime } from 'rxjs/operators';
+import { take, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { RouterStateUrl } from '@app/core/store';
 import { RouterReducerState } from '@ngrx/router-store';
@@ -33,7 +33,6 @@ import { LoadScopes, LoadScope } from '@app/scope/store/actions/scope.actions';
 import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/scope.selector';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import isEqual from 'lodash.isequal';
-import { TableData } from '@app/radio/store/models/radio.model';
 import { GetReportLibraryRequestQueryParams } from '../services/report.service';
 
 @Component({
@@ -216,10 +215,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
             params = { workpackages: [...urlWorkpackages] };
           }
         } else {
-          if (index !== -1) {
-            urlWorkpackages.splice(index, 1);
-          }
-          params = { workpackages: [...urlWorkpackages] };
+          this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
         }
         this.routerStore.dispatch(new UpdateQueryParams(params));
       });

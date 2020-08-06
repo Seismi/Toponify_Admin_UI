@@ -16,44 +16,31 @@
             open_in_new
           </mat-icon>
             <div class="actions">
-              <mat-checkbox
-                data-qa="topology-work-packages-select-work-package"
-                class="checkbox"
-                [disabled]="!canSelect(element)"
-                [checked]="element.selected"
-                (click)="onSelect(element.id, !element.selected, $event, element)"
-              >
-              </mat-checkbox>
-              <label>Display</label>
-
-              <ng-container *ngIf="canEdit(element); else elseBlock">
-                <mat-icon
-                  *ngIf="!element.edit"
+              <mat-button-toggle-group>
+                <mat-button-toggle
+                  data-qa="topology-work-packages-off"
+                  (change)="switchOff(element)"
+                  checked=true
+                >
+                  Off
+                </mat-button-toggle>
+                <mat-button-toggle
+                  data-qa="topology-work-packages-select-work-package"
+                  [disabled]="!canSelect(element)"
+                  [checked]="element.selected"
+                  (click)="onSelect(element.id, !element.selected, $event, element)"
+                >
+                  Display
+                </mat-button-toggle>
+                <mat-button-toggle
+                  [checked]="element.edit"
+                  [ngClass]="{ disabled: !canEdit(element) }"
                   (click)="onSetWorkpackageEditMode(element)"
                   matTooltip="Edit content of work package"
-                  >edit</mat-icon
                 >
-                <mat-icon *ngIf="element.edit" (click)="onSetWorkpackageEditMode(element)">close</mat-icon>
-                <label> {{ element.edit ? 'Close' : 'Edit' }} </label>
-              </ng-container>
-
-              <ng-container>
-                <mat-slide-toggle 
-                  [checked]="element.selected"
-                  [disabled]="!element.selected"
-                  color="primary"
-                  (change)="switchOff($event)"
-                >
-                  Switch off
-                </mat-slide-toggle>
-              </ng-container>
-
-              <ng-template #elseBlock>
-                <span style="opacity: 0.2;">
-                  <mat-icon>{{ element.edit ? 'close' : 'edit' }}</mat-icon>
-                  <label> {{ element.edit ? 'Close' : 'Edit' }} </label>
-                </span>
-              </ng-template>
+                  Edit
+                </mat-button-toggle>
+              </mat-button-toggle-group>
 
               <smi-color-picker
                 style="margin-right: 5px;"
