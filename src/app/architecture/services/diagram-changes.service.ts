@@ -121,6 +121,9 @@ export class DiagramChangesService {
           if (data && data.name) {
             part.data.name = data.name;
             node.name = data.name;
+          } else {
+            part.diagram.remove(part);
+            return;
           }
 
           this.workpackages.forEach(workpackage => {
