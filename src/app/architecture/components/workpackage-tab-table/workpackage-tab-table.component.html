@@ -33,6 +33,7 @@
                   Display
                 </mat-button-toggle>
                 <mat-button-toggle
+                  data-qa="topology-work-packages-edit"
                   [checked]="element.edit"
                   [ngClass]="{ disabled: !canEdit(element) }"
                   (click)="onSetWorkpackageEditMode(element)"
