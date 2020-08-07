@@ -5,7 +5,11 @@ import {
   LoadDocumentationStandards,
   AddDocumentationStandard
 } from '../../store/actions/documentation-standards.actions';
-import { getDocumentStandards, getDocumentStandardPage, getDocumentStandardsLoadingStatus } from '../../store/selectors/documentation-standards.selector';
+import {
+  getDocumentStandards,
+  getDocumentStandardPage,
+  getDocumentStandardsLoadingStatus
+} from '../../store/selectors/documentation-standards.selector';
 import { Observable, Subject } from 'rxjs';
 import { DocumentStandard, DocumentStandardsApiRequest } from '../../store/models/documentation-standards.model';
 import { Router } from '@angular/router';
@@ -27,7 +31,7 @@ export class DocumentationStandardsComponent implements OnInit {
   private documentStandardParams: DocumentStandardsApiRequest = {
     textFilter: '',
     page: 0,
-    size: 10,
+    size: 10
   };
 
   search$ = new Subject<string>();
@@ -37,33 +41,25 @@ export class DocumentationStandardsComponent implements OnInit {
     return this.store.select(getDocumentStandardsLoadingStatus);
   }
 
-  constructor(private store: Store<DocumentationStandardState>, private router: Router, public dialog: MatDialog) { }
+  constructor(private store: Store<DocumentationStandardState>, private router: Router, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
     this.documentStandards$ = this.store.pipe(select(getDocumentStandards));
 
-    this.search$
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged()
-      )
-      .subscribe(textFilter => {
-        this.documentStandardParams = {
-          textFilter: textFilter,
-          page: 0,
-          size: this.documentStandardParams.size,
-        }
-        this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
-      });
+    this.search$.pipe(debounceTime(500), distinctUntilChanged()).subscribe(textFilter => {
+      this.documentStandardParams = {
+        textFilter: textFilter,
+        page: 0,
+        size: this.documentStandardParams.size,
+        ...(this.documentStandardParams.sortBy && { sortBy: this.documentStandardParams.sortBy }),
+        ...(this.documentStandardParams.sortOrder && { sortOrder: this.documentStandardParams.sortOrder })
+      };
+      this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
+    });
 
-    this.page$ = this.store.pipe(
-      select(
-        getDocumentStandardPage)
-    )
-
+    this.page$ = this.store.pipe(select(getDocumentStandardPage));
   }
-
 
   onSelectDocument(documentStandard: DocumentStandard): void {
     this.router.navigate(['documentation-standards', documentStandard.id], { queryParamsHandling: 'preserve' });
@@ -91,6 +87,8 @@ export class DocumentationStandardsComponent implements OnInit {
       textFilter: textFilter,
       page: 0,
       size: this.documentStandardParams.size,
+      ...(this.documentStandardParams.sortBy && { sortBy: this.documentStandardParams.sortBy }),
+      ...(this.documentStandardParams.sortOrder && { sortOrder: this.documentStandardParams.sortOrder })
     };
     this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
   }
@@ -100,7 +98,19 @@ export class DocumentationStandardsComponent implements OnInit {
       textFilter: this.documentStandardParams.textFilter,
       page: page.pageIndex,
       size: page.pageSize,
-    }
-    this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams))
+      ...(this.documentStandardParams.sortBy && { sortBy: this.documentStandardParams.sortBy }),
+      ...(this.documentStandardParams.sortOrder && { sortOrder: this.documentStandardParams.sortOrder })
+    };
+    this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
+  }
+
+  handleTableSortChange(sort: { sortOrder: string; sortBy: string }) {
+    this.documentStandardParams = {
+      textFilter: this.documentStandardParams.textFilter,
+      page: this.documentStandardParams.page,
+      size: this.documentStandardParams.size,
+      ...(sort.sortOrder && { sortBy: sort.sortBy, sortOrder: sort.sortOrder })
+    };
+    this.store.dispatch(new LoadDocumentationStandards(this.documentStandardParams));
   }
 }

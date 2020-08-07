@@ -20,13 +20,18 @@
               (search)="onSearch($event)"
               [pagination]="page$ | async"
               (pageChange)="onPageChange($event)"
+              (sortChange)="handleTableSortChange($event)"
               (refresh)="refreshSearch($event)"
             >
             </smi-documentation-standards-table>
             <smi-spinner data-qa="documentation-standards-spinner" *ngIf="!(isLoading$ | async)"></smi-spinner>
           </div>
           <div class="col">
-            <smi-right-hand-side [title]="'Document Standard'" [appCanEdit]="[Roles.ADMIN, Roles.ARCHITECT]" (add)="onAddDocument()"></smi-right-hand-side>
+            <smi-right-hand-side
+              [title]="'Document Standard'"
+              [appCanEdit]="[Roles.ADMIN, Roles.ARCHITECT]"
+              (add)="onAddDocument()"
+            ></smi-right-hand-side>
             <router-outlet></router-outlet>
           </div>
         </div>
