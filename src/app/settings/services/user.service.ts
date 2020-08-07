@@ -74,6 +74,10 @@ export class UserService {
     return this.http.delete<UserDetailResponse>(`/users/${userId}/roles/${roleId}`);
   }
 
+  resetPassword(email: string): Observable<{data: { email: string}}> {
+    return this.http.put<{data: { email: string}}>(`/users/password/reset`, { data: email }, httpOptions);
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());

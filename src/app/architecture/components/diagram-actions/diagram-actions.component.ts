@@ -6,6 +6,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { defaultLayoutId } from '@app/layout/store/models/layout.model';
 
 @Component({
   selector: 'smi-diagram-actions',
@@ -60,5 +61,11 @@ export class DiagramActionsComponent {
 
   exitSourceOrTargetView(): void {
     this.routerStore.dispatch(new UpdateQueryParams({ filterLevel: Level.data, id: null }));
+  }
+
+  getWarning(): string {
+    const message1 = 'Warning - Create a new layout to save positions.';
+    const message2 = 'Warning - Unsaved changes to positions.';
+    return this.selectedLayout && this.selectedLayout.id === defaultLayoutId ? message1 : this.allowSave ? message2 : null;
   }
 }

@@ -104,12 +104,21 @@
       <button
         mat-raised-button
         color="primary"
-        *ngIf="!isEditable; else elseBlock"
+        *ngIf="!isEditable && getStatus(); else elseBlock"
         (click)="onEdit()"
         data-qa="settings-user-edit"
       >
         Edit
       </button>
+      <button
+        mat-button
+        *ngIf="getResetButton()"
+        (click)="resetPassword.emit()"
+        data-qa="settings-user-reset-password"
+      >
+        Reset Password
+      </button>
+      <span class="warning" *ngIf="!getStatus() && !myUserPage">Deactivated. User can no longer log in.</span>
       <button
         mat-raised-button
         class="status-btn"
@@ -130,8 +139,8 @@
       Change Password
     </button>
     <ng-template #elseBlock>
-      <button mat-raised-button color="primary" (click)="onSave()" data-qa="settings-user-save">Save</button>
-      <button mat-raised-button (click)="onCancel()" data-qa="settings-user-cancel">Cancel</button>
+      <button *ngIf="isEditable" mat-raised-button color="primary" (click)="onSave()" data-qa="settings-user-save">Save</button>
+      <button *ngIf="isEditable" mat-raised-button (click)="onCancel()" data-qa="settings-user-cancel">Cancel</button>
     </ng-template>
 
     <div style="margin-top: 20px;" *ngIf="!modalMode">
