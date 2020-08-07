@@ -306,19 +306,12 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
     .click()
     .get(`[data-qa=${work_package_menu}]`)
     .within(() => {
-      cy.get('div>div>input')
+      cy.get('[data-qa=topology-work-packages-quick-search]')
         .clear()
         .paste(work_package)
         .should('have.value', work_package)
-        .get('table>tbody')
-        .find('tr:first>td>div>div>mat-icon')
-        .then(wp => {
-          if (wp[0].textContent === 'edit') {
-            cy.get('table>tbody')
-              .find('tr:first>td>div>div>mat-icon')
-              .click()
-              .wait(wait_for);
-          }
+        .then(() => {
+          cy.get('[data-qa=topology-work-packages-edit]').click();
         });
     })
     .then(result => {
@@ -334,7 +327,7 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
   cy.get('[data-qa=left-hand-pane-work-packages]').click();
   cy.get(`[data-qa=${work_package_menu}]`)
     .within(() => {
-      cy.get('div>div>input')
+      cy.get('[data-qa=topology-work-packages-quick-search]')
         .clear()
         .paste(work_package)
         .should('have.value', work_package)
