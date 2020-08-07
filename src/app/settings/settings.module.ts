@@ -57,6 +57,7 @@ import { OrganisationService } from './services/organisation.service';
 import { OrganisationEffects } from './store/effects/organisation.effects';
 import { EmailModalComponent } from './containers/email-modal/email-modal.component';
 import { DomainsTableComponent } from './components/domains-table/domains-table.component';
+import { ResetPasswordModalComponent } from './containers/reset-password-modal/reset-password-modal.component';
 
 @NgModule({
   imports: [
@@ -112,14 +113,16 @@ import { DomainsTableComponent } from './components/domains-table/domains-table.
     RolesOrTeamsTableComponent,
     AccountsTableComponent,
     EmailModalComponent,
-    DomainsTableComponent
+    DomainsTableComponent,
+    ResetPasswordModalComponent
   ],
   entryComponents: [
     ChangePasswordModalComponent,
     UserModalComponent,
     TeamModalComponent,
     MemberModalComponent,
-    EmailModalComponent
+    EmailModalComponent,
+    ResetPasswordModalComponent
   ],
   providers: [UserService, TeamService, OrganisationService]
 })
