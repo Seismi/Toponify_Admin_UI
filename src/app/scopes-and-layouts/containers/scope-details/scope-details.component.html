@@ -24,6 +24,7 @@
             (select)="onLayoutSelect($event)" 
             (add)="onAddLayout()"
             [showPagination]=false
+            (sortChange)="handleTableSortChange($event)"
           >
           </smi-scopes-and-layouts-table>
           <br>
