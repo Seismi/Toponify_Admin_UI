@@ -188,10 +188,9 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
     .clear({ force: true }) //clear the box
     .paste(name)
     .should('have.value', name) // type the name
-    .wait(1000)
     .then(() => {
       if (wait) {
-        cy.wait('@GETWorkPackagePaging');
+        cy.wait('@GETWorkPackagePaging', { requestTimeout: 5000 });
         cy.get('[data-qa=spinner]').should('not.be.visible');
       }
     })
@@ -206,8 +205,7 @@ Cypress.Commands.add('findReport', name => {
   cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
     .clear({ force: true }) //clear the box
     .paste(name) // type the name
-    .wait(2677000)
-    .wait('@GETReportsFilterQuery.all')
+    .wait('@GETReportsFilterQuery.all', { requestTimeout: 5000 })
     .then(() => {
       return cy
         .get(`[data-qa="reports-table"]`) // get the work packages table
@@ -307,28 +305,25 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
   cy.get('[data-qa=left-hand-pane-work-packages]')
     .click()
     .get(`[data-qa=${work_package_menu}]`)
-    .within(() => {
-      cy.get('div>div>input')
-        .clear({ force: true })
-        .paste(work_package)
-        .should('have.value', work_package)
-        .get('table>tbody')
-        .find('tr:first>td>div>div>mat-icon')
-        .then(wp => {
-          if (wp[0].textContent === 'edit') {
-            cy.get('table>tbody')
-              .find('tr:first>td>div>div>mat-icon')
-              .click()
-              .wait(wait_for);
-          }
-        });
-    })
-    .then(result => {
-      cy.get('[data-qa=spinner]').should('not.be.visible');
-      cy.root()
-        .get('[data-qa=left-hand-pane-work-packages]')
-        .click();
+    .find('div>div>input')
+    .clear({ force: true })
+    .paste(work_package)
+    .should('have.value', work_package)
+    .get('table>tbody')
+    .find('tr:first>td>div>div>mat-icon')
+    .then(wp => {
+      if (wp[0].textContent === 'edit') {
+        cy.get('table>tbody')
+          .find('tr:first>td>div>div>mat-icon')
+          .click();
+        cy.wait(wait_for, { requestTimeout: 40000 });
+        cy.get('[data-qa=spinner]').should('not.be.visible');
+        cy.get('[data-qa=left-hand-pane-work-packages]').click();
+        cy.get('[data-qa="left-hand-pane-work-package-table"]').should('not.be.visible');
+      }
     });
+  /*    .then(() => {
+    });*/
 });
 
 Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wait_for, action) => {
@@ -374,12 +369,11 @@ Cypress.Commands.add('findSystem', (table, name) => {
     .clear({ force: true }) //clear the box
     .paste(name)
     .should('have.value', name) // type the name
-    .wait(2000)
-    //.wait(['@GETNodesQuery','@GETNodeLinksQuery'])
     .then(() => {
-      return cy
-        .get(`[data-qa=${table}]`) // get the work packages table
-        .find('table>tbody'); // find the table
+      cy.get(`[data-qa=${table}]`) // get the work packages table
+        .contains('td', name)
+        .should('be.visible');
+      return cy.get(`[data-qa=${table}]`).find('table>tbody'); // find the table
     });
 });
 
@@ -472,7 +466,7 @@ Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
 Cypress.Commands.add('deleteWorkPackage', name => {
   cy.log('findWorkPackage');
   cy.selectRow('work-packages-table', name)
-    .wait(['@GETWorkPackage', '@GETWorkPackageActive'])
+    .wait(['@GETWorkPackage', '@GETWorkPackageActive'], { requestTimeout: 5000 })
     .then(() => {
       cy.selectDetailsPaneTab(workPackage['tabs']['Details']).then(() => {
         cy.get('tbody>tr') // get the table body
@@ -849,10 +843,12 @@ Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) =
     .then(() => {
       cy.get(`[data-qa=work-packages-modal-save]`)
         .click()
-        .wait(['@POSTWorkPackage', '@GETWorkPackage', '@GETWorkPackageActive'], {
+        .wait('@POSTWorkPackage')
+        .wait('@GETWorkPackage', {
           requestTimeout: 20000,
           responseTimeout: 40000
         });
+      cy.get('[data-qa=details-spinner]').should('not.be.visible');
     });
 });
 
