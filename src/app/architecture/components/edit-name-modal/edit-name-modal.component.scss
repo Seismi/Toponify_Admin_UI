@@ -4,6 +4,14 @@
   padding-bottom: 17px;
 }
 
+button:nth-child(1) {
+  background-color: #ddd;
+}
+
 button:focus {
   outline: none;
+}
+
+.mat-form-field {
+  width: 100%;
 }
