@@ -497,6 +497,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.workpackageStore
         .pipe(
           select(getSelectedWorkpackageIds),
+          filter(wps => wps !== null),
           distinctUntilChanged(isEqual),
           withLatestFrom(this.layoutStore.select(getLayoutSelected))
         )

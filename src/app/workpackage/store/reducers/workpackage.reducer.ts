@@ -80,7 +80,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       }
       return {
         ...state,
-        selectedWorkPackageIds: [...workPackages],
+        selectedWorkPackageIds: workPackages ? [...workPackages] : state.selectedWorkPackageIds,
         editId: resetEdit ? null : state.editId
       };
     }
