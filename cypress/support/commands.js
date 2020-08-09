@@ -205,7 +205,8 @@ Cypress.Commands.add('findReport', name => {
   cy.get(`[data-qa=reports-quick-search]`) // get the quick packages search
     .clear({ force: true }) //clear the box
     .paste(name) // type the name
-    .wait('@GETReportsFilterQuery.all', { requestTimeout: 5000 })
+    .wait(3000)
+    .wait('@GETReportsFilterQuery', { requestTimeout: 5000 })
     .then(() => {
       return cy
         .get(`[data-qa="reports-table"]`) // get the work packages table
@@ -367,8 +368,8 @@ Cypress.Commands.add('findSystem', (table, name) => {
   cy.get(`[data-qa=${table}]`)
     .find(`[data-qa=topology-table-quick-search]`) // get the quick packages search
     .clear({ force: true }) //clear the box
-    .paste(name)
-    .should('have.value', name) // type the name
+    .type(name)
+    .should('have.value', name) // type the name#
     .then(() => {
       cy.get(`[data-qa=${table}]`) // get the work packages table
         .contains('td', name)
@@ -632,7 +633,7 @@ Cypress.Commands.add('checkTopologyTable', (component, component_type, test) => 
   let table = component_type === 'system' ? 'components' : 'links';
   cy.get('[data-qa=topology-table-quick-search]')
     .clear({ force: true })
-    .paste(component)
+    .type(component)
     .should('have.value', component);
   cy.get(`[data-qa=topology-table-${table}]`)
     .find('table>tbody')
