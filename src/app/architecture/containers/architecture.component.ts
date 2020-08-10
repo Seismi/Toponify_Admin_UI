@@ -1467,11 +1467,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
     this.workpackageId = workpackage.id;
-    if (!workpackage.edit) {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
-    } else {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
-    }
+    this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 

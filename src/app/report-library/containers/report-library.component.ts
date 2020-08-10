@@ -223,11 +223,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   onSelectEditWorkpackage(workpackage: any) {
     this.workpackageId = workpackage.id;
-    if (!workpackage.edit) {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
-    } else {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
-    }
+    this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
     this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 

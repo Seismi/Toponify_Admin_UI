@@ -8,7 +8,6 @@ Given('the user selects the {string} {string} in the {string} table', function(t
     .concat(' | ')
     .concat(system); // prefix name with branch
 
-  cy.wait(['@GETNodesQuery', '@GETNodeLinksQuery']);
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
   cy.findSystem(`topology-table-${types}`, system)
     //cy.selectTableFirstRow(system, 'topology-table-quick-search', `topology-table-${types}`)
