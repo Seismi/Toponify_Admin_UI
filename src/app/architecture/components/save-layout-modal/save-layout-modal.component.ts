@@ -22,27 +22,23 @@ export class SaveLayoutModalComponent implements OnDestroy {
     public dialogRef: MatDialogRef<SaveLayoutModalComponent>,
     private store: Store<LayoutState>,
     private actions: Actions,
-    @Inject(MAT_DIALOG_DATA) public data: { name: string, draft: any, scope: any, layout: any }
+    @Inject(MAT_DIALOG_DATA) public data: { name: string; draft: any; scope: any; layout: any }
   ) {
     this.nameForm = this.fb.group({
       name: [data.name, Validators.required]
     });
 
     this.subscriptions.push(
-      this.actions
-        .pipe(ofType(LayoutActionTypes.AddLayoutSuccess))
-        .subscribe((_action: any) => {
-          this.processing = false;
-          this.dialogRef.close(this.nameForm.value);
-        })
+      this.actions.pipe(ofType(LayoutActionTypes.AddLayoutSuccess)).subscribe((_action: any) => {
+        this.processing = false;
+        this.dialogRef.close(this.nameForm.value);
+      })
     );
 
     this.subscriptions.push(
-      this.actions
-        .pipe(ofType(LayoutActionTypes.AddLayoutFailure))
-        .subscribe((_error: any) => {
-          this.processing = false;
-        })
+      this.actions.pipe(ofType(LayoutActionTypes.AddLayoutFailure)).subscribe((_error: any) => {
+        this.processing = false;
+      })
     );
   }
 
@@ -60,13 +56,15 @@ export class SaveLayoutModalComponent implements OnDestroy {
             name: this.nameForm.value.name,
             scope: this.data.scope
           },
-          positionDetails: this.data.draft ? this.data.draft.data.positionDetails : {
-            workPackages: [],
-            positions: {
-              nodes: [],
-              nodeLinks: []
-            }
-          }
+          positionDetails: this.data.draft
+            ? this.data.draft.data.positionDetails
+            : {
+                workPackages: [],
+                positions: {
+                  nodes: [],
+                  nodeLinks: []
+                }
+              }
         })
       );
     }

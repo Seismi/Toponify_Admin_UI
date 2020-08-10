@@ -436,6 +436,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
     );
 
+    // TODO:
     this.subscriptions.push(
       this.routerStore
         .select(getWorkPackagesQueryParams)
@@ -514,10 +515,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // On workpackage availability being changed
     this.subscriptions.push(
       this.workpackageStore
-        .pipe(
-          select(getSelectedFromAvailabilities)
-          // distinctUntilChanged(isEqual)
-        )
+        .pipe(select(getSelectedFromAvailabilities), distinctUntilChanged(isEqual))
         .pipe(withLatestFrom(this.layoutStore.select(getLayoutSelected)), distinctUntilChanged(isEqual))
         .subscribe(([selectedWorkpackageIdsAccordingSelectedLayout, selectedLayout]) => {
           if (selectedLayout) {
