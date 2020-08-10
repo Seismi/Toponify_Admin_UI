@@ -634,8 +634,11 @@ export class GojsCustomObjectsService {
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
             const node = (object.part as go.Adornment).adornedObject as go.Node;
+            const newState = node.data.middleExpanded !== middleOptions.children
+                           ? middleOptions.children
+                           : middleOptions.none;
             event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.groupList);
+            event.diagram.model.setDataProperty(node.data, 'middleExpanded', newState);
 
             diagramChangesService.nodeExpandChanged(node);
 
@@ -643,7 +646,10 @@ export class GojsCustomObjectsService {
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
-          function() {return 'Show as List'; }
+          function(object: go.GraphObject) {
+            const node = (object.part as go.Adornment).adornedObject as go.Node;
+            return node.data.middleExpanded === middleOptions.children ? 'Hide List' : 'Show as List';
+          }
         ),
         makeSubMenuButton(
           4,
