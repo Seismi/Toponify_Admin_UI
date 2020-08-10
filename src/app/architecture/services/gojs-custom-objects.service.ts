@@ -157,6 +157,22 @@ export class CustomNodeResize extends go.ResizingTool {
   }
 }
 
+export class CustomCommandHandler extends go.CommandHandler {
+  constructor() {
+    super();
+  }
+
+  public doKeyDown(): void {
+    const diagram = this.diagram;
+    const input = diagram.lastInput;
+    if (['Up', 'Down', 'Left', 'Right'].includes(input.key) && diagram.allowMove) {
+      // const
+    } else {
+      super.doKeyDown();
+    }
+  }
+}
+
 // Customised link that only updates its route when a tool that can affect link route is active
 export class CustomLink extends go.Link {
   constructor() {
