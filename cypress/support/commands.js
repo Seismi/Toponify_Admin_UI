@@ -302,9 +302,10 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
         .paste(work_package)
         .should('have.value', work_package)
         .then(() => {
-          cy.get('[data-qa=topology-work-packages-edit]')
-            .click()
-            .wait(wait_for);
+          cy.get('[data-qa=topology-work-packages-edit]').click();
+          if (wait_for) {
+            cy.wait(wait_for);
+          }
         });
     })
     .then(result => {
