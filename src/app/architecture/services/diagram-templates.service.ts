@@ -639,8 +639,8 @@ export class DiagramTemplatesService {
           new go.Binding('text', 'name'),
           new go.Binding('visible', 'linkName').ofModel()
         ),
-        this.getRadioAlertIndicators(),
-        this.getTagIconsRow()
+        this.getTagIconsRow(),
+        this.getRadioAlertIndicators()
       )
     );
   }
