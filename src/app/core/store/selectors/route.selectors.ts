@@ -26,9 +26,10 @@ export const getScopeQueryParams: MemoizedSelector<Params, any> = createSelector
 
 export const getWorkPackagesQueryParams: MemoizedSelector<Params, any> = createSelector(getRouterState, state => {
   const { url, queryParams } = state.state;
-  if (url.indexOf('topology') === -1) {
+  if (url.includes('/auth/login')) {
     return null;
   }
+  
   if (!queryParams) {
     return [];
   }
