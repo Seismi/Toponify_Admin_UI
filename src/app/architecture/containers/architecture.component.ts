@@ -1454,13 +1454,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             params = { workpackages: [...urlWorkpackages] };
           }
         } else {
-          if (index !== -1) {
-            urlWorkpackages.splice(index, 1);
-          }
-          params = { workpackages: [...urlWorkpackages] };
+          this.onExitWorkPackageEditMode();
         }
         // Lets ensure, any unvalid wp are removed from url
-        params.workpackages = params.workpackages.filter(id => selectableWorkpackages.find(wid => id === wid));
+        // params.workpackages = params.workpackages.filter(id => selectableWorkpackages.find(wid => id === wid));
 
         this.routerStore.dispatch(new UpdateQueryParams(params));
         this.workpackageSelected$.next();
@@ -1470,11 +1467,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
     this.workpackageId = workpackage.id;
-    if (!workpackage.edit) {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
-    } else {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
-    }
+    this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 

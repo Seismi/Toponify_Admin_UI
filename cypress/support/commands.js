@@ -273,25 +273,16 @@ Cypress.Commands.add('setUpRoutes', (page, settings) => {
 
 Cypress.Commands.add('editWorkPackageTopology', work_package => {
   cy.get('[data-qa=left-hand-pane-work-packages]').click();
-  cy.get('[data-qa=left-hand-pane-work-package-table]')
-    .within(() => {
-      cy.get('div>div>input')
-        .clear()
-        .paste(work_package)
-        .should('have.value', work_package)
+  cy.get('[data-qa=topology-work-packages-quick-search]')
+    .clear()
+    .paste(work_package)
+    .should('have.value', work_package)
+    .then(() => {
+      cy.get('[data-qa=topology-work-packages-edit]')
+        .click()
         .then(() => {
-          cy.get('table>tbody')
-            .find('tr:first>td>div>div>mat-icon')
-            .then(wp => {
-              console.log(wp[0].textContent);
-              if (wp[0].textContent === 'edit') {
-                cy.get('table>tbody')
-                  .find('tr:first>td>div>div>mat-icon')
-                  .click();
-                cy.wait(['@GETNodesQuery', '@GETNodeLinksQuery', '@GETSelectorAvailabilityQuery']);
-                cy.get('[data-qa=spinner]').should('not.be.visible');
-              }
-            });
+          cy.wait(['@GETNodesQuery', '@GETNodeLinksQuery', '@GETSelectorAvailabilityQuery']);
+          cy.get('[data-qa=spinner]').should('not.be.visible');
         });
     })
     .then(result => {
@@ -306,18 +297,14 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
     .click()
     .get(`[data-qa=${work_package_menu}]`)
     .within(() => {
-      cy.get('div>div>input')
+      cy.get('[data-qa=topology-work-packages-quick-search]')
         .clear()
         .paste(work_package)
         .should('have.value', work_package)
-        .get('table>tbody')
-        .find('tr:first>td>div>div>mat-icon')
-        .then(wp => {
-          if (wp[0].textContent === 'edit') {
-            cy.get('table>tbody')
-              .find('tr:first>td>div>div>mat-icon')
-              .click()
-              .wait(wait_for);
+        .then(() => {
+          cy.get('[data-qa=topology-work-packages-edit]').click();
+          if (wait_for) {
+            cy.wait(wait_for);
           }
         });
     })
@@ -334,7 +321,7 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
   cy.get('[data-qa=left-hand-pane-work-packages]').click();
   cy.get(`[data-qa=${work_package_menu}]`)
     .within(() => {
-      cy.get('div>div>input')
+      cy.get('[data-qa=topology-work-packages-quick-search]')
         .clear()
         .paste(work_package)
         .should('have.value', work_package)
