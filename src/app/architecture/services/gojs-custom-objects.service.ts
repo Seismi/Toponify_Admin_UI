@@ -12,6 +12,8 @@ import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selecto
 
 const $ = go.GraphObject.make;
 
+let currentService;
+
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
   return {
@@ -166,9 +168,86 @@ export class CustomCommandHandler extends go.CommandHandler {
     const diagram = this.diagram;
     const input = diagram.lastInput;
     if (['Up', 'Down', 'Left', 'Right'].includes(input.key) && diagram.allowMove) {
-      // const
+      const nodesToMove = new go.Set<go.Node>();
+      const selectedNodes = new go.Set<go.Node>();
+      diagram.selection.each(function(selectedPart: go.Part): void {
+        if (selectedPart instanceof go.Node) {
+          selectedNodes.add(selectedPart);
+        }
+      });
+      selectedNodes.each(function(node: go.Node): void {
+        const containingGroups = new go.Set<go.Group>();
+        for (let grp = node; grp.containingGroup; grp = grp.containingGroup) {
+          containingGroups.add(grp.containingGroup);
+        }
+        if (!selectedNodes.containsAny(containingGroups)) {
+          nodesToMove.add(node);
+        }
+      });
+
+      let vChange = 0;
+      let hChange = 0;
+
+      if (input.key === 'Up') {
+        vChange = -1;
+      } else if (input.key === 'Down') {
+        vChange = 1;
+      } else if (input.key === 'Left') {
+        hChange = -1;
+      } else {
+        hChange = 1;
+      }
+
+      if (diagram.grid && !input.control) {
+        vChange = vChange * diagram.grid.gridCellSize.height;
+        hChange = hChange * diagram.grid.gridCellSize.width;
+      }
+
+      const canMove = nodesToMove.all(function(node: go.Node): boolean {
+        const newBounds = node.getDocumentBounds().copy().offset(hChange, vChange);
+        if (!currentService.diagramChangesService.isUnoccupied(newBounds, node)) {
+          return false;
+        } else if (node.containingGroup) {
+          const groupMemberArea = node.containingGroup.findObject('Group member area').getDocumentBounds();
+          if (!groupMemberArea.containsRect(newBounds)) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      if (!canMove) {
+        return;
+      }
+
+      nodesToMove.each(function(node: go.Node): void {
+        node.moveTo(node.position.x + hChange, node.position.y + vChange);
+      });
+
     } else {
       super.doKeyDown();
+    }
+  }
+
+  public doKeyUp(): void {
+    const diagram = this.diagram;
+    const input = diagram.lastInput;
+
+    if (['Up', 'Down', 'Left', 'Right'].includes(input.key) && diagram.allowMove) {
+      const effectiveSelection = new go.Set<go.Part>();
+
+      diagram.selection.each(function(part: go.Part): void {
+        if (part instanceof go.Node) {
+          effectiveSelection.add(part);
+        }
+        if (part instanceof go.Group) {
+          effectiveSelection.addAll(part.findSubGraphParts());
+        }
+      });
+
+      currentService.diagramChangeService.updatePosition({ subject: effectiveSelection });
+    } else {
+      super.doKeyUp();
     }
   }
 }
@@ -292,6 +371,7 @@ export class GojsCustomObjectsService {
     public diagramLevelService: DiagramLevelService
   ) {
     this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+    currentService = this;
   }
 
   // Context menu for when the background is right-clicked

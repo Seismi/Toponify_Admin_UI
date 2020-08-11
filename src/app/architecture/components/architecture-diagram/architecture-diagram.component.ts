@@ -22,6 +22,7 @@ import { DiagramChangesService } from '../../services/diagram-changes.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
 import { DiagramTemplatesService } from '../../services/diagram-templates.service';
 import {
+  CustomCommandHandler,
   CustomLinkShift,
   CustomNodeResize,
   GojsCustomObjectsService
@@ -160,6 +161,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     );
     this.diagram.toolManager.resizingTool = new CustomNodeResize();
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
+    this.diagram.commandHandler = new CustomCommandHandler();
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
     this.diagram.toolManager.draggingTool.doActivate = function(): void {
