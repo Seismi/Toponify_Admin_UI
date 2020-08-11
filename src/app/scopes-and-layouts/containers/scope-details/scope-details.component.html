@@ -13,24 +13,20 @@
 </div>
 <mat-tab-group data-qa="scopes-and-layouts-tabs" mat-stretch-tabs [@.disabled]="true">
   <mat-tab label="Layouts">
-    <div class="col-xl">
-      <div style="display: flex;">
-        <div class="col-md-6">
-          <smi-scopes-and-layouts-table
-            data-qa="scopes-and-layouts-layout-table" 
-            [data]="scope?.layouts" 
-            [defaultLayoutId]="scope?.defaultLayout"
-            (setFavoriteLayout)="onSetFavoriteLayout($event)" 
-            (select)="onLayoutSelect($event)" 
-            (add)="onAddLayout()"
-            [showPagination]=false
-          >
-          </smi-scopes-and-layouts-table>
-          <br>
-        </div>
-        <div class="col-md-6">
-          <router-outlet></router-outlet>
-        </div>
+    <div class="col">
+      <smi-scopes-and-layouts-table
+        data-qa="scopes-and-layouts-layout-table" 
+        [data]="scope?.layouts" 
+        [defaultLayoutId]="scope?.defaultLayout"
+        (setFavoriteLayout)="onSetFavoriteLayout($event)" 
+        (select)="onLayoutSelect($event)" 
+        (add)="onAddLayout()"
+        [showPagination]=true
+        (sortChange)="handleTableSortChange($event)"
+      >
+      </smi-scopes-and-layouts-table>
+      <div class="col-md-6">
+        <router-outlet></router-outlet>
       </div>
     </div>
   </mat-tab>

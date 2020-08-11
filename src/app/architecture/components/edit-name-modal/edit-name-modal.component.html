@@ -1,9 +1,10 @@
 <h1 mat-dialog-title>Edit name of added node</h1>
-<form (ngSubmit)="onSubmit()" [formGroup]="nameForm">
+<form [formGroup]="nameForm">
   <mat-form-field>
-    <input data-qa="topology-edit-name-modal-name" matInput placeholder="Name" formControlName="name" />
+    <input matInput data-qa="topology-edit-name-modal-name" (focus)="$event.target.select()" placeholder="Name" formControlName="name" />
   </mat-form-field>
   <div mat-dialog-actions>
-    <button data-qa="topology-edit-name-modal-save" mat-button>Save</button>
+    <button data-qa="topology-edit-name-modal-save" mat-button (click)="onSubmit()">Save</button>
+    <button data-qa="topology-edit-name-modal-cancel" mat-button (click)="onCancel()">Cancel</button>
   </div>
 </form>

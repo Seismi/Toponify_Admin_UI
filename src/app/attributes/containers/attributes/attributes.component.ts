@@ -197,10 +197,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
             params = { workpackages: [...urlWorkpackages] };
           }
         } else {
-          if (index !== -1) {
-            urlWorkpackages.splice(index, 1);
-          }
-          params = { workpackages: [...urlWorkpackages] };
+          this.store.dispatch(new SetWorkpackageEditMode({ id: this.workpackageId, newState: false }));
         }
         this.routerStore.dispatch(new UpdateQueryParams(params));
       });
@@ -208,11 +205,7 @@ export class AttributesComponent implements OnInit, OnDestroy {
 
   onSelectEditWorkpackage(workpackage: any): void {
     this.workpackageId = workpackage.id;
-    if (!workpackage.edit) {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: workpackage.id }));
-    } else {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
-    }
+    this.routerStore.dispatch(new UpdateQueryParams({ workpackages: workpackage.id }));
     this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
