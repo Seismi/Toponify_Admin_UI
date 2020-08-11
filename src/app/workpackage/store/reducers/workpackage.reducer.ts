@@ -111,7 +111,6 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         baseline: action.payload,
-        loading: false
       };
     }
 

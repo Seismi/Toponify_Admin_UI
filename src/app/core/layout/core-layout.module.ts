@@ -62,6 +62,7 @@ import { NotificationPaneComponent } from '../components/notification-pane/notif
 import { SearchPipe } from '@app/pipes/search.pipe';
 import { ProfileActionsComponent } from './header/profile-actions/profile-actions.component';
 import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
+import { SpinnerModule } from '../components/spinner/spinner.module';
 
 @NgModule({
   imports: [
@@ -89,7 +90,8 @@ import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatSidenavModule,
-    MatBadgeModule
+    MatBadgeModule,
+    SpinnerModule
   ],
   exports: [
     MainLayoutComponent,
