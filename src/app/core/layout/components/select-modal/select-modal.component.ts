@@ -2,11 +2,14 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA, MatAutocompleteTrigger, MatDialog } from '@angular/material';
 import { combineLatest, Observable } from 'rxjs';
 import { FormControl, Validators } from '@angular/forms';
-import { map, startWith, tap } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { NewChildrenModalComponent } from '@app/architecture/containers/new-children-modal/new-children-modal.component';
-import { AddWorkPackageNode } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { AddWorkPackageNode, AddWorkPackageNodeGroup } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { Store } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { Actions, ofType } from '@ngrx/effects';
+import { WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
+import { ComponentsOrLinksModalComponent } from '@app/architecture/containers/components-or-links-modal/components-or-links-modal.component';
 
 @Component({
   selector: 'smi-select-modal',
@@ -28,6 +31,7 @@ export class SelectModalComponent implements OnInit {
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
   constructor(
+    private actions: Actions,
     private store: Store<WorkPackageState>,
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<SelectModalComponent>,
@@ -44,7 +48,9 @@ export class SelectModalComponent implements OnInit {
       parentId?: string;
       nodeId: string,
       workPackageId: string,
-      scopeId: string
+      scopeId: string,
+      createNew: boolean,
+      currentFilterLevel: string
     }
   ) {
     this.title = data.title;
@@ -66,6 +72,18 @@ export class SelectModalComponent implements OnInit {
     this.filteredOptions$ = combineLatest(this.searchControl.valueChanges.pipe(startWith('')), this.options$).pipe(
       map(([value, options]) => options.filter(option => option.name.toLowerCase().includes(value.toLowerCase())))
     );
+
+    this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: any) => {
+      if (action) {
+        this.store.dispatch(
+          new AddWorkPackageNodeGroup({
+            workPackageId: this.data.workPackageId,
+            systemId: this.data.nodeId,
+            groupId: action.payload.data.id
+          })
+        );
+      }
+    });
   }
 
   onConfirm() {
@@ -173,4 +191,33 @@ export class SelectModalComponent implements OnInit {
       }
     });
   }
+
+  onCreateNew(): void {
+    this.dialogRef.close();
+    const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
+      disableClose: false,
+      width: '500px',
+      data: {
+        workPackageId: this.data.workPackageId,
+        level: this.data.currentFilterLevel.toLowerCase()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if (data && data.node) {
+        this.store.dispatch(
+          new AddWorkPackageNode({
+            workpackageId: this.data.workPackageId,
+            node: {
+              ...data.node,
+              layer: this.data.currentFilterLevel.toLowerCase()
+            },
+            scope: this.data.scopeId
+          })
+        );
+      }
+    });
+  }
+
+
 }
