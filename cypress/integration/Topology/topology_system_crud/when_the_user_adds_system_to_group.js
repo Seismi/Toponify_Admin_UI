@@ -7,12 +7,10 @@ when('the user adds system {string} to group {string}', function(system, group) 
       cy.selectDropDownNoClick('select-modal-search', group).then(() => {
         cy.get('[data-qa=select-modal-confirm')
           .click()
-          .wait([
-            '@GETNodeLinksQuery',
-            '@GETNodesWorkPackageQuery2',
-            '@GETWorkPackageNodeTags',
-            '@POSTWorkPackageNodesGroupSet'
-          ]);
+          .wait('@POSTWorkPackageNodesGroupSet')
+          .wait(['@GETNodeLinksQuery', '@GETNodesWorkPackageQuery2', '@GETNodesQuery', '@GETWorkPackageNodeTags'], {
+            requestTimeout: 15000
+          });
         cy.get('[data-qa=spinner]').should('not.be.visible');
       });
     });

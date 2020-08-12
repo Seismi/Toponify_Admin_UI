@@ -25,6 +25,11 @@
         Data Set Targets
         <mat-icon matChipRemove (click)="exitSourceOrTargetView()">cancel</mat-icon>
       </mat-chip>
+
+      <mat-chip *ngIf="groupName" data-qa="topology-group-name">
+        Displaying Grouped Items
+        <mat-icon matChipRemove (click)="displayingGroupName()">cancel</mat-icon>
+      </mat-chip>
     </mat-chip-list>
   </div>
 

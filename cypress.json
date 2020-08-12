@@ -3,8 +3,8 @@
   "baseUrl": "http://localhost:4202/",
   "viewportWidth": 1920,
   "viewportHeight": 1080,
-  "requestTimeout": 20000,
   "responseTimeout": 30000,
   "projectId": "fibtau",
-  "defaultCommandTimeout": 20000
+  "defaultCommandTimeout": 20000,
+  "pageLoadTimeout": 120000
 }

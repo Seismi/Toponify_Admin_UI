@@ -81,7 +81,8 @@ Feature: Create new report
     When the user reloads the Reports page
     Then the new report 'Created Automated Regression Test Report' should not exist in the reports table
 
-  @reports
+  #https://toponify.atlassian.net/browse/TOP-944
+  @reports @known_failure
   Scenario: Create a new report then switch to current architecture and test if still visible
     When the user creates a new report with the name 'Created Automated Regression Test Report', description 'Automated Regression Test Report description' and selects system 'Automated Regression Test Transactional System'
     And the user confirms the creation of the report

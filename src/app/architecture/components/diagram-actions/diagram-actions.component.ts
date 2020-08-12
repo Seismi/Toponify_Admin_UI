@@ -26,6 +26,7 @@ export class DiagramActionsComponent {
   @Input() selectedPart;
   @Input() clickedOnLink: boolean;
   @Input() selectedNode: NodeDetail;
+  @Input() groupName: string | null;
 
   constructor(private routerStore: Store<RouterReducerState<RouterStateUrl>>) { }
 
@@ -67,5 +68,15 @@ export class DiagramActionsComponent {
     const message1 = 'Warning - Create a new layout to save positions.';
     const message2 = 'Warning - Unsaved changes to positions.';
     return this.selectedLayout && this.selectedLayout.id === defaultLayoutId ? message1 : this.allowSave ? message2 : null;
+  }
+
+  displayingGroupName(): void {
+    this.routerStore.dispatch(
+      new UpdateQueryParams({
+        filterLevel: this.filterLevel as Level,
+        id: null,
+        groupName: null
+      })
+    );
   }
 }

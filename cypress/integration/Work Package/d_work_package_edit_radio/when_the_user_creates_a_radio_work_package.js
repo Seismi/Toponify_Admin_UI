@@ -28,7 +28,8 @@ When(
         );
         cy.get('[data-qa=radio-modal-save]')
           .click()
-          .wait(['@POSTRadios', '@GETWorkPackage']);
+          .wait('@POSTRadios')
+          .wait('@GETWorkPackage');
       });
     cy.get('[data-qa=details-spinner]').should('not.be.visible');
   }
