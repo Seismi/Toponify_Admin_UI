@@ -10,5 +10,6 @@ When(
       .contains('td', radio)
       .click()
       .wait('@GETRadio');
+    cy.get('[data-qa=details-spinner]').should('not.be.visible');
   }
 );
