@@ -795,14 +795,14 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
 Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) => {
   cy.get(`[data-qa=work-packages-create-new]`)
     .click()
-    .wait(['@GETWorkPackagePaging', '@GETTeams'])
+    .wait(['@GETTeams'])
     .then(() => {
       cy.populateWorkPackageDetails(name, description, baseline, owner);
     })
     .then(() => {
       cy.get(`[data-qa=work-packages-modal-save]`)
         .click()
-        .wait(['@POSTWorkPackage', '@GETWorkPackage', '@GETWorkPackageActive'], {
+        .wait(['@POSTWorkPackage', '@GETWorkPackage', '@GETWorkPackagePaging'], {
           requestTimeout: 20000,
           responseTimeout: 40000
         });
