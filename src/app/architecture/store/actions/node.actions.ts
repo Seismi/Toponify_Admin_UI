@@ -103,7 +103,7 @@ export enum NodeActionTypes {
   UpdateNodeChildren = '[Node] Update Node Children',
   UpdateNodeChildrenSuccess = '[Node] Update Node Children Success',
   UpdateNodeChildrenFailure = '[Node] Update Node Children Failure',
-  
+
 }
 
 export class SetDraft implements Action {
