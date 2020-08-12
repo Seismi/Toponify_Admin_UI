@@ -326,9 +326,15 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
         .paste(work_package)
         .should('have.value', work_package)
         .then(() => {
-          cy.get('[data-qa=topology-work-packages-select-work-package]')
-            .click({ force: true })
-            .wait(wait_for);
+          if (action === 'check') {
+            cy.get('[data-qa=topology-work-packages-select-work-package]')
+              .click({ force: true })
+              .wait(wait_for);
+          } else {
+            cy.get('[data-qa=topology-work-packages-off]')
+              .click()
+              .wait('@GETSelectorAvailabilityQuery');
+          }
         });
     })
     .then(result => {
