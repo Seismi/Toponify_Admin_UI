@@ -29,6 +29,8 @@ export interface ScopeEntitiesHttpParams {
   textFilter?: string;
   page?: number;
   size?: number;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export interface ScopeDetails {

@@ -981,11 +981,13 @@ export class DiagramChangesService {
       // Update node's layout in usage or map view
       member.invalidateLayout();
     } else {
-      // Update back end with new layout info for updated groups and links
-      this.onUpdateGroupsAreaState.next({
-        groups: groupData,
-        links: linkData
-      });
+      if (groupData.length + linkData.length > 0) {
+        // Update back end with new layout info for updated groups and links
+        this.onUpdateGroupsAreaState.next({
+          groups: groupData,
+          links: linkData
+        });
+      }
     }
 
     this.onUpdateDiagramLayout.next({});
