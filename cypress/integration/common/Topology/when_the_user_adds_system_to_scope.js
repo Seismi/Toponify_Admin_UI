@@ -5,6 +5,8 @@ When('the user adds the system {string} to the scope {string}', function(system,
     .concat(' | ')
     .concat(scope); // add the branch to the name
 
+  cy.get('[data-qa=details-spinner]').should('not.be.visible');
+
   cy.get('[data-qa=topology-scopes-table-add-to-existing]').click();
 
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
@@ -17,7 +19,8 @@ When('the user adds the system {string} to the scope {string}', function(system,
     .click({ force: true })
     .get('[data-qa=add-scope-modal-save]')
     .click()
-    //    .wait(['@POSTScopesNodes', '@GETNodesScopes'], { requestTimeout: 25000, responseTimeout: 25000 });
+    .wait('@POSTScopesNodes', { requestTimeout: 10000 })
+    .wait('@GETNodesScopes', { requestTimeout: 10000 })
     .get('[data-qa=details-spinner]')
     .should('not.be.visible');
 });

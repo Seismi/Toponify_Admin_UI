@@ -16,7 +16,9 @@ When('the user clicks to {string} the move of the objective', function(button) {
   cy.get(`[data-qa=work-packages-move-objectives-modal-${button}]`) // find the correct work button
     .click()
     .then(() => {
-      if (button === 'confirm') cy.wait(['@POSTworkPackageObjectives', '@DELETEworkPackageObjectives']); // wait for the required API routes to complete
+      if (button === 'confirm') {
+        cy.wait('@POSTworkPackageObjectives').wait('@DELETEworkPackageObjectives');
+      } // wait for the required API routes to complete
     });
 });
 
