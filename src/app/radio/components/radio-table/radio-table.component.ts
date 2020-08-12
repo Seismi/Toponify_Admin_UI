@@ -48,7 +48,6 @@ export class RadioTableComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.paginator.page.subscribe(nextPage => {
-      // debugger;
       this.pageChange.emit(nextPage);
     });
   }
