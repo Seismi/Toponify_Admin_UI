@@ -193,6 +193,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/nodes/*/group/set/*`,
       method: 'POST',
       name: 'WorkPackageNodesGroupSet'
+    },
+    PUTWorkPackageNodelink: {
+      api: `${api_version}/workpackages/*/nodelinks/*`,
+      method: 'PUT',
+      name: 'WorkPackageNodelink'
     }
   }
 };

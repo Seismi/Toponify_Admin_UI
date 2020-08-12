@@ -65,21 +65,30 @@ th.mat-header-cell {
 
 .actions {
   margin-left: 1px;
+  margin-top: 5px;
 }
 
-label {
-  left: 5px;
-  bottom: 3px;
-  margin-right: 15px;
-  color: rgba(0,0,0,.54);
-  font: inherit;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  font-size: 12px !important;
+.message {
+  width: 300px;
+  margin: auto;
+  margin-top: 10px;
+  text-align: center;
 }
 
-.checkbox {
-  position: relative; 
-  top: 2.5px;
-  margin-right: 5px;
+mat-button-toggle-group {
+  margin-right: 10px;
+}
+
+::ng-deep .mat-button-toggle-label-content {
+  line-height: 30px !important;
+}
+
+::ng-deep .mat-button-toggle-checked:nth-child(n+2) {
+  background-color: #1C63CE !important;
+  color: #fff !important; 
+}
+
+.disabled {
+  pointer-events: none;
+  color: #ddd;
 }

@@ -15,7 +15,7 @@ When('the user moves the {string} objective to the work package {string}', (obje
     .get(`[data-qa=work-packages-objectives-table-move]`) // find the move button
     .click()
     .then(() => {
-      cy.wait(2000);
+      cy.wait(5000);
       cy.selectDropDownNoClick('work-packages-move-objectives-modal-select', work_package);
     });
 });

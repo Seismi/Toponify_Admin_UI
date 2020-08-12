@@ -10,35 +10,32 @@ Then(
     title = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(title); // append the branch to the name
-    cy.reload()
-      .wait(['@GETWorkPackagePaging', '@GETWorkPackage', '@GETUsers'])
-      .then(() => {
-        cy.findWorkPackage(work_package, false).then(() => {
-          cy.selectRow('work-packages-table', work_package) // select the correct row
-            .then(() => {
-              cy.selectDetailsPaneTab(workPackage['tabs']['Radio']).then(() => {
-                cy.findWorkPackageRadio(title)
-                  .find('tr') // find the first cell
-                  .contains('td', title)
-                  .get('[data-qa=work-packages-radio-table-open]')
-                  .click()
-                  .wait(['@GETUsers', '@GETRadio'])
-                  .then(() => {
-                    cy.assertRadioDetails(
-                      title,
-                      category,
-                      status,
-                      assigned,
-                      severity,
-                      probability,
-                      actioned,
-                      description,
-                      mitigation
-                    );
-                  });
+
+    cy.findWorkPackage(work_package, false).then(() => {
+      cy.selectRow('work-packages-table', work_package) // select the correct row
+        .then(() => {
+          cy.selectDetailsPaneTab(workPackage['tabs']['Radio']).then(() => {
+            cy.findWorkPackageRadio(title)
+              .find('tr') // find the first cell
+              .contains('td', title)
+              .get('[data-qa=work-packages-radio-table-open]')
+              .click()
+              .wait(['@GETUsers', '@GETRadio'])
+              .then(() => {
+                cy.assertRadioDetails(
+                  title,
+                  category,
+                  status,
+                  assigned,
+                  severity,
+                  probability,
+                  actioned,
+                  description,
+                  mitigation
+                );
               });
-            });
+          });
         });
-      });
+    });
   }
 );

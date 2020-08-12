@@ -44,7 +44,9 @@ export class ScopesAndLayoutsComponent implements OnInit {
       this.scopeParams = {
         textFilter: textFilter,
         page: 0,
-        size: this.scopeParams.size
+        size: this.scopeParams.size,
+        ...(this.scopeParams.sortBy && { sortBy: this.scopeParams.sortBy }),
+        ...(this.scopeParams.sortOrder && { sortOrder: this.scopeParams.sortOrder })
       };
       this.store.dispatch(new LoadScopes(this.scopeParams));
     });
@@ -64,16 +66,20 @@ export class ScopesAndLayoutsComponent implements OnInit {
     this.scopeParams = {
       textFilter: this.scopeParams.textFilter,
       page: page.pageIndex,
-      size: page.pageSize
+      size: page.pageSize,
+      ...(this.scopeParams.sortBy && { sortBy: this.scopeParams.sortBy }),
+      ...(this.scopeParams.sortOrder && { sortOrder: this.scopeParams.sortOrder })
     };
-    this.store.dispatch(new LoadScopes(this.scopeParams))
+    this.store.dispatch(new LoadScopes(this.scopeParams));
   }
 
   refreshSearch(textFilter: string): void {
     this.scopeParams = {
       textFilter: textFilter,
       page: 0,
-      size: this.scopeParams.size
+      size: this.scopeParams.size,
+      ...(this.scopeParams.sortBy && { sortBy: this.scopeParams.sortBy }),
+      ...(this.scopeParams.sortOrder && { sortOrder: this.scopeParams.sortOrder })
     };
     this.store.dispatch(new LoadScopes(this.scopeParams));
   }
@@ -106,6 +112,16 @@ export class ScopesAndLayoutsComponent implements OnInit {
 
   unsetScopeAsFavorite(scopeId: string): void {
     this.store.dispatch(new UnsetScopeAsFavourite(scopeId));
+  }
+
+  handleTableSortChange(sort: { sortOrder: string; sortBy: string }) {
+    this.scopeParams = {
+      textFilter: this.scopeParams.textFilter,
+      page: this.scopeParams.page,
+      size: this.scopeParams.size,
+      ...(sort.sortOrder && { sortBy: sort.sortBy, sortOrder: sort.sortOrder })
+    };
+    this.store.dispatch(new LoadScopes(this.scopeParams));
   }
 
 }
