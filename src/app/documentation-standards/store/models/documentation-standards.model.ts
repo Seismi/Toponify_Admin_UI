@@ -1,5 +1,5 @@
 export interface DocumentStandardsApiResponse {
-  data?: (DocumentStandard)[] | null;
+  data?: DocumentStandard[] | null;
   links: Links;
   page: Page;
 }
@@ -15,7 +15,7 @@ export interface DocumentStandard {
   name: string;
   value?: string;
   description: string;
-  levels?: (string)[] | null;
+  levels?: string[] | null;
 }
 export interface Links {
   first: string;
@@ -34,4 +34,6 @@ export interface DocumentStandardsApiRequest {
   page: number;
   size: number;
   textFilter: string;
+  sortBy?: string;
+  sortOrder?: string;
 }

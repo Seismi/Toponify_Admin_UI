@@ -34,6 +34,10 @@ export class AppDrawerComponent implements OnInit, OnDestroy {
         this.drawer.close();
       }
     });
+
+    if (!this.tabTpls) {
+      this.layoutStore.dispatch(new SelectLeftDrawerTab(null));
+    }
   }
 
   handleCloseDrawer(): void {

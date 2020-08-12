@@ -39,7 +39,9 @@ import {
   UpdateLinks,
   UpdateNodeExpandedState,
   UpdateNodeLocations,
-  UpdatePartsLayout
+  UpdatePartsLayout,
+  UpdateNodeGroupMembers,
+  UpdateNodeChildren
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -53,7 +55,8 @@ import {
   NodeExpandedStateApiRequest,
   NodeReports,
   Tag,
-  TagApplicableTo
+  TagApplicableTo,
+  GroupInfo
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -182,35 +185,49 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import { Link, Node as goNode } from 'gojs';
 import isEqual from 'lodash.isequal';
-import {BehaviorSubject, combineLatest, merge, Observable, Subject, Subscription, timer} from 'rxjs';
-import {delay, distinctUntilChanged, filter, map, shareReplay, take, tap, withLatestFrom, debounce} from 'rxjs/operators';
-import {RadioDetailModalComponent} from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
-import {LayoutSettingsService} from '../components/analysis-tab/services/layout-settings.service';
-import {ArchitectureDiagramComponent} from '../components/architecture-diagram/architecture-diagram.component';
-import {ObjectDetailsValidatorService} from '../components/object-details-form/services/object-details-form-validator.service';
-import {ObjectDetailsService} from '../components/object-details-form/services/object-details-form.service';
-import {SaveLayoutModalComponent} from '../components/save-layout-modal/save-layout-modal.component';
-import {SwitchViewTabsComponent} from '../components/switch-view-tabs/switch-view-tabs.component';
-import {DeleteLinkModalComponent} from '../containers/delete-link-modal/delete-link-modal.component';
-import {DeleteNodeModalComponent} from '../containers/delete-node-modal/delete-node-modal.component';
-import {DiagramLevelService, Level} from '../services/diagram-level.service';
-import {State as NodeState, State as ViewState} from '../store/reducers/architecture.reducer';
-import {getViewLevel} from '../store/selectors/view.selector';
-import {getNodeScopes, getPotentialGroupMembers, getPotentialWorkPackageNodes} from '../store/selectors/workpackage.selector';
-import {AddExistingAttributeModalComponent} from './add-existing-attribute-modal/add-existing-attribute-modal.component';
-import {NodeScopeModalComponent} from './add-scope-modal/add-scope-modal.component';
-import {ComponentsOrLinksModalComponent} from './components-or-links-modal/components-or-links-modal.component';
-import {autoLayoutId, NodeDetailTab} from '@app/architecture/store/models/layout.model';
-import {DeleteAttributeModalComponent} from './delete-attribute-modal/delete-attribute-modal.component';
-import {LayoutSettingsModalComponent} from './layout-settings-modal/layout-settings-modal.component';
-import {NotificationState} from '@app/core/store/reducers/notification.reducer';
-import {getNotificationOpen} from '@app/core/store/selectors/notification.selectors';
-import {NotificationPanelOpen} from '@app/core/store/actions/notification.actions';
-import {LeftPanelComponent} from './left-panel/left-panel.component';
-import {NewChildrenModalComponent} from './new-children-modal/new-children-modal.component';
-import {RadioConfirmModalComponent} from './radio-confirm-modal/radio-confirm-modal.component';
-import {MatCheckboxChange, MatDialog} from '@angular/material';
-import {DiagramTemplatesService} from '@app/architecture/services/diagram-templates.service';
+import { BehaviorSubject, combineLatest, merge, Observable, Subject, Subscription, timer } from 'rxjs';
+import {
+  delay,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  take,
+  tap,
+  withLatestFrom,
+  debounce
+} from 'rxjs/operators';
+import { RadioDetailModalComponent } from '../../workpackage/containers/radio-detail-modal/radio-detail-modal.component';
+import { LayoutSettingsService } from '../components/analysis-tab/services/layout-settings.service';
+import { ArchitectureDiagramComponent } from '../components/architecture-diagram/architecture-diagram.component';
+import { ObjectDetailsValidatorService } from '../components/object-details-form/services/object-details-form-validator.service';
+import { ObjectDetailsService } from '../components/object-details-form/services/object-details-form.service';
+import { SaveLayoutModalComponent } from '../components/save-layout-modal/save-layout-modal.component';
+import { SwitchViewTabsComponent } from '../components/switch-view-tabs/switch-view-tabs.component';
+import { DeleteLinkModalComponent } from '../containers/delete-link-modal/delete-link-modal.component';
+import { DeleteNodeModalComponent } from '../containers/delete-node-modal/delete-node-modal.component';
+import { DiagramLevelService, Level } from '../services/diagram-level.service';
+import { State as NodeState, State as ViewState } from '../store/reducers/architecture.reducer';
+import { getViewLevel } from '../store/selectors/view.selector';
+import {
+  getNodeScopes,
+  getPotentialGroupMembers,
+  getPotentialWorkPackageNodes
+} from '../store/selectors/workpackage.selector';
+import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
+import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
+import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
+import { autoLayoutId, NodeDetailTab } from '@app/architecture/store/models/layout.model';
+import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
+import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
+import { NotificationState } from '@app/core/store/reducers/notification.reducer';
+import { getNotificationOpen } from '@app/core/store/selectors/notification.selectors';
+import { NotificationPanelOpen } from '@app/core/store/actions/notification.actions';
+import { LeftPanelComponent } from './left-panel/left-panel.component';
+import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
+import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
+import { MatCheckboxChange, MatDialog } from '@angular/material';
+import { DiagramTemplatesService } from '@app/architecture/services/diagram-templates.service';
 import * as go from 'gojs';
 
 enum Events {
@@ -419,6 +436,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.workpackageStore.select(getEditWorkpackage).subscribe(id => (this.workpackageId = id))
     );
 
+    // TODO:
     this.subscriptions.push(
       this.routerStore
         .select(getWorkPackagesQueryParams)
@@ -458,7 +476,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.scopes$ = this.scopeStore.pipe(select(getScopeEntities));
     this.selectedScope$ = this.scopeStore.pipe(select(getScopeSelected));
     this.scopeDetails$ = this.scopeStore.pipe(select(getScopeSelected));
-    
 
     // Layouts
     this.layoutStore.dispatch(new LoadLayouts({}));
@@ -474,16 +491,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
 
-    this.workpackage$ = this.workpackageStore.pipe(
-      select(getWorkPackageEntities),
-      shareReplay()
-    );
+    this.workpackage$ = this.workpackageStore.pipe(select(getWorkPackageEntities), shareReplay());
 
     // On workpackage selected
     this.subscriptions.push(
       this.workpackageStore
         .pipe(
           select(getSelectedWorkpackageIds),
+          filter(wps => wps !== null),
           distinctUntilChanged(isEqual),
           withLatestFrom(this.layoutStore.select(getLayoutSelected))
         )
@@ -500,14 +515,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // On workpackage availability being changed
     this.subscriptions.push(
       this.workpackageStore
-        .pipe(
-          select(getSelectedFromAvailabilities)
-          // distinctUntilChanged(isEqual)
-        )
-        .pipe(
-          withLatestFrom(this.layoutStore.select(getLayoutSelected)),
-          distinctUntilChanged(isEqual)
-        )
+        .pipe(select(getSelectedFromAvailabilities), distinctUntilChanged(isEqual))
+        .pipe(withLatestFrom(this.layoutStore.select(getLayoutSelected)), distinctUntilChanged(isEqual))
         .subscribe(([selectedWorkpackageIdsAccordingSelectedLayout, selectedLayout]) => {
           if (selectedLayout) {
             this.routerStore.dispatch(
@@ -890,8 +899,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });*/
 
     this.nodeScopes$ = this.workpackageStore.pipe(select(getNodeScopes));
-
-    
   }
 
   ngOnDestroy() {
@@ -979,7 +986,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       if (part) {
         // Load node scopes
-        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === NodeDetailTab.Scopes && this.showOrHideRightPane ) {
+        if (
+          this.selectedNode &&
+          this.selectedNode.id !== this.nodeId &&
+          this.selectedRightTab === NodeDetailTab.Scopes &&
+          this.showOrHideRightPane
+        ) {
           this.workpackageStore.dispatch(new LoadWorkPackageNodeScopes({ nodeId: this.nodeId }));
         }
 
@@ -988,8 +1000,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
         //TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
-        if (this.selectedNode && this.selectedNode.id !== this.nodeId && this.selectedRightTab === NodeDetailTab.Reports && this.showOrHideRightPane){
-          this.getNodeReports(workPackageIds); 
+        if (
+          this.selectedNode &&
+          this.selectedNode.id !== this.nodeId &&
+          this.selectedRightTab === NodeDetailTab.Reports &&
+          this.showOrHideRightPane
+        ) {
+          this.getNodeReports(workPackageIds);
         }
       }
     }
@@ -1418,10 +1435,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSelectWorkPackage(selection: { id: string; newState: boolean }) {
     this.routerStore
       .select(getWorkPackagesQueryParams)
-      .pipe(
-        take(1),
-        withLatestFrom(this.workpackageStore.select(getAvailableWorkPackageIds))
-      )
+      .pipe(take(1), withLatestFrom(this.workpackageStore.select(getAvailableWorkPackageIds)))
       .subscribe(([workpackages, selectableWorkpackages]) => {
         let urlWorkpackages: string[];
         let params: Params;
@@ -1439,13 +1453,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             params = { workpackages: [...urlWorkpackages] };
           }
         } else {
-          if (index !== -1) {
-            urlWorkpackages.splice(index, 1);
-          }
-          params = { workpackages: [...urlWorkpackages] };
+          this.onExitWorkPackageEditMode();
         }
         // Lets ensure, any unvalid wp are removed from url
-        params.workpackages = params.workpackages.filter(id => selectableWorkpackages.find(wid => id === wid));
+        // params.workpackages = params.workpackages.filter(id => selectableWorkpackages.find(wid => id === wid));
 
         this.routerStore.dispatch(new UpdateQueryParams(params));
         this.workpackageSelected$.next();
@@ -1455,11 +1466,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   // FIXME: set proper type of workpackage
   onSelectEditWorkpackage(workpackage: any) {
     this.workpackageId = workpackage.id;
-    if (!workpackage.edit) {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
-    } else {
-      this.routerStore.dispatch(new UpdateQueryParams({ workpackages: null }));
-    }
+    this.routerStore.dispatch(new UpdateQueryParams({ workpackages: this.workpackageId }));
     this.workpackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
@@ -1664,9 +1671,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
     this.diagramComponent.updateDiagramArea();
     this.realignTabUnderline();
-    
+
     if (index === NodeDetailTab.Reports) {
-      const workPackageIds = this.getWorkPackageIds() 
+      const workPackageIds = this.getWorkPackageIds();
       this.getNodeReports(workPackageIds);
     }
 
@@ -1678,7 +1685,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSelectedTabChange(index: number) {
     this.selectedRightTab = index;
     if (index === NodeDetailTab.Reports) {
-      const workPackageIds = this.getWorkPackageIds() 
+      const workPackageIds = this.getWorkPackageIds();
       this.getNodeReports(workPackageIds);
     }
     if (index === NodeDetailTab.Scopes) {
@@ -2214,23 +2221,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onUpdateAvailableTags() {
-    this.store
-      .pipe(
-        select(getAvailableTags),
-        take(1)
-      )
-      .subscribe(tags => {
-        if (!this.workpackageId) {
-          return;
-        }
-        this.store.dispatch(
-          new LoadAvailableTags({
-            workpackageId: this.workpackageId,
-            nodeId: this.selectedNode.id,
-            type: this.clickedOnLink ? 'link' : 'node'
-          })
-        );
-      });
+    this.store.pipe(select(getAvailableTags), take(1)).subscribe(tags => {
+      if (!this.workpackageId) {
+        return;
+      }
+      this.store.dispatch(
+        new LoadAvailableTags({
+          workpackageId: this.workpackageId,
+          nodeId: this.selectedNode.id,
+          type: this.clickedOnLink ? 'link' : 'node'
+        })
+      );
+    });
   }
 
   onAddTag(tagId: string) {
@@ -2545,5 +2547,34 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         enabled: false
       }
     };
+  }
+
+  handleOrderChange(data: GroupInfo[]) {
+    const mappedData = data.map(item => ({
+      id: item.id,
+      sortOrder: item.sortOrder
+    }));
+
+    if (data[0].layer === this.selectedNode.layer) {
+      this.nodeStore.dispatch(
+        new UpdateNodeGroupMembers({
+          layer: this.selectedNode.layer,
+          nodeId: this.selectedNode.id,
+          workpackageId: this.workpackageId,
+          data: mappedData,
+          members: data
+        })
+      );
+    } else {
+      this.nodeStore.dispatch(
+        new UpdateNodeChildren({
+          layer: this.selectedNode.layer,
+          nodeId: this.selectedNode.id,
+          workpackageId: this.workpackageId,
+          data: mappedData,
+          descendants: data
+        })
+      );
+    }
   }
 }

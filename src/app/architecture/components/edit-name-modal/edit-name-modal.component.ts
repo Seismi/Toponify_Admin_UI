@@ -25,4 +25,8 @@ export class EditNameModalComponent {
       this.dialogRef.close(this.nameForm.value);
     }
   }
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
 }

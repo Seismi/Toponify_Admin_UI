@@ -4,9 +4,6 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { HomePageService } from '@app/home/services/home.service';
 import {
   HomePageActionTypes,
-  LoadMyLayouts,
-  LoadMyLayoutsFailure,
-  LoadMyLayoutsSuccess,
   LoadMyProfile,
   LoadMyProfileFailure,
   LoadMyProfileSuccess,
@@ -27,7 +24,6 @@ import {
   WorkPackageEntitiesResponse
 } from '@app/workpackage/store/models/workpackage.models';
 import { RadioEntitiesHttpParams, RadioEntitiesResponse } from '@app/radio/store/models/radio.model';
-import { GetLayoutEntitiesApiResponse, LayoutEntitiesHttpParams } from '@app/layout/store/models/layout.model';
 import { UserApiResponse, Favourites } from '@app/settings/store/models/user.model';
 
 @Injectable()
@@ -54,18 +50,6 @@ export class HomePageEffects {
       return this.homePageService.getMyRadios(payload).pipe(
         switchMap((response: RadioEntitiesResponse) => [new LoadMyRadiosSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new LoadMyRadiosFailure(error)))
-      );
-    })
-  );
-
-  @Effect()
-  loadMyLayouts$ = this.actions$.pipe(
-    ofType<LoadMyLayouts>(HomePageActionTypes.LoadMyLayouts),
-    map(action => action.payload),
-    switchMap((payload: LayoutEntitiesHttpParams) => {
-      return this.homePageService.getMyLayouts(payload).pipe(
-        switchMap((response: GetLayoutEntitiesApiResponse) => [new LoadMyLayoutsSuccess(response)]),
-        catchError((error: HttpErrorResponse) => of(new LoadMyLayoutsFailure(error)))
       );
     })
   );

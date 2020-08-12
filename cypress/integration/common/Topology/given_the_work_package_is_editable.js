@@ -21,7 +21,6 @@ Given('the work package {string} is editable on the {string} menu', function(wor
   } else {
     work_package_menu = 'left-hand-pane-work-package-table';
     wait_for = ['@GETNodesQuery', '@GETNodeLinksQuery', '@GETSelectorAvailabilityQuery'];
-    //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   }
   cy.editWorkPackage(work_package, work_package_menu, wait_for);
   //cy.get('[data-qa=object-details-delete]').should('not.be.visible');

@@ -165,6 +165,6 @@ Feature: Topology Systems CRUD Feature
     And the "Topology" "Interfaces" Tab is selected
     And the 'interface' '<name>' should not exist in 'Interfaces' table in the 'Created Automated Regression Test Work Package' work package after reload
 
-  Examples:
-    |name|interface_type|source_name|source_type|target_name|target_type|
-    |Automated Regression Test (Transaction to Reporting)|data|Automated Regression Test Transaction System|transactional|Automate Regression Test Reporting System|reporting|
+    Examples:
+      |name|interface_type|source_name|source_type|target_name|target_type|
+      |Automated Regression Test (Transaction to Reporting)|data|Automated Regression Test Transaction System|transactional|Automate Regression Test Reporting System|reporting|

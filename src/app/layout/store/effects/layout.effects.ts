@@ -52,12 +52,12 @@ export class LayoutEffects {
     switchMap((payload: any) => {
       return this.layoutService.addLayout(payload).pipe(
         switchMap((resp: AddLayoutApiResponse) => [
-          new LayoutActions.LoadLayout(resp.data.id),
+          new LayoutActions.AddLayoutSuccess(resp),
           new ScopeActions.UpdateScope({
             id: payload.layoutDetails.scope.id,
             data: { id: payload.layoutDetails.scope.id, name: payload.layoutDetails.scope.name }
           }),
-          new LayoutActions.AddLayoutSuccess(resp),
+          new LayoutActions.LoadLayout(resp.data.id)
         ]),
         catchError((error: HttpErrorResponse) => {
           return of(new LayoutActions.AddLayoutFailure(error));
