@@ -1219,6 +1219,9 @@ export class DiagramChangesService {
       if (node.isMemberOf(part)) {
         return null;
       }
+      if (diagram.selection.contains(part) ) {
+        return null;
+      }
       return part;
     }
 
