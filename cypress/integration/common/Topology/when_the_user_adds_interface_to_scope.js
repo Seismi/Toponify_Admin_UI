@@ -9,5 +9,6 @@ When('the user adds the interface {string} to the scope {string}', function(link
   cy.selectDropDownNoClick('add-scope-modal-name', scope);
   cy.get('[data-qa=add-scope-modal-save]')
     .click()
-    .wait(['@POSTScopesNodes', '@GETNodesScopes']);
+    .wait('@POSTScopesNodes')
+    .wait('@GETNodesScopes');
 });

@@ -6,6 +6,7 @@ Then(
     title = Cypress.env('BRANCH')
       .concat(' | ')
       .concat(title); // prefix the branch to objective
+    cy.get('[data-qa=spinner]').should('not.be.visible');
     cy.assertRadioDetails(title, category, status, assigned, 1, 2, actioned, description, mitigation);
   }
 );

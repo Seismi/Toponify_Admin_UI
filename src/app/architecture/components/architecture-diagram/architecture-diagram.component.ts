@@ -15,7 +15,7 @@ import { dummyLinkId, linkCategories } from '@app/architecture/store/models/node
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import * as go from 'gojs';
 import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
-import { debounceTime } from 'rxjs/operators';
+import {distinctUntilChanged} from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
 import { DiagramChangesService } from '../../services/diagram-changes.service';
@@ -274,8 +274,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     });
 
     this.diagramChangesService.onUpdateGroupsAreaState
-      .pipe(debounceTime(500))
-      .subscribe((data: { nodes: any[]; links: any[] }) => {
+      .pipe(distinctUntilChanged(function(prev, curr): boolean {
+        return JSON.stringify(prev) === JSON.stringify(curr);
+      }))
+      .subscribe((data: { groups: any[]; links: any[] }) => {
         this.updateGroupArea.emit(data);
       });
   }

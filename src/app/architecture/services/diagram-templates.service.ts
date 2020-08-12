@@ -544,6 +544,60 @@ export class DiagramTemplatesService {
     );
   }
 
+  // Get a panel containing a row of tag icons
+  getTagIconsRow(): go.Panel {
+    return $(go.Panel,
+      'Horizontal',
+      {
+        column: 1,
+        row: 0,
+      },
+      // Panel to contain tag icons
+      $(go.Panel,
+        'Horizontal',
+        {
+          itemTemplate: this.getTitleTagIconTemplate()
+        },
+        new go.Binding('itemArray', 'tags',
+          function(tags: Tag[]): Tag[] {
+            let iconTags = tags.concat();
+
+            // Filter out any tags without an icon
+            iconTags = iconTags.filter(
+              function(tag: Tag): boolean {
+                return !!tag.iconName;
+              }
+            );
+            // Restrict tag icons in title row to a maximum of five
+            iconTags = iconTags.slice(0, 5);
+
+            return iconTags;
+          }
+        )
+      ),
+      // Ellipsis to indicate that there are additional tags
+      //  icons associated with the node
+      $(go.TextBlock,
+        '...',
+        textFont('bold 18px'),
+        {
+          margin: new go.Margin(0, 0, 0, 4)
+        },
+        // Should only be visible if there are more than five
+        //  tags with icons against the  node
+        new go.Binding('visible', 'tags',
+          function(tags: Tag[]): boolean {
+            return tags.filter(
+              function (tag: Tag): boolean {
+                return !!tag.iconName;
+              }
+            ).length > 5;
+          }
+        )
+      )
+    );
+  }
+
   // Get name and RADIO alert label for links
   getLinkLabel(): go.Panel {
     return $(
@@ -567,9 +621,12 @@ export class DiagramTemplatesService {
             return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
           }, false);
 
+          const anyTagsWithIcons = link.data.tags && link.data.tags.some(function(tag) {return !!tag.iconName; });
+
           return (
             (link.diagram.model.modelData.linkName && link.data.name !== '') ||
-            (link.diagram.model.modelData.linkRadio && anyRadios)
+            (link.diagram.model.modelData.linkRadio && anyRadios) ||
+            anyTagsWithIcons
           );
         }
       }).ofObject(),
@@ -582,6 +639,7 @@ export class DiagramTemplatesService {
           new go.Binding('text', 'name'),
           new go.Binding('visible', 'linkName').ofModel()
         ),
+        this.getTagIconsRow(),
         this.getRadioAlertIndicators()
       )
     );
@@ -683,56 +741,7 @@ export class DiagramTemplatesService {
           })
         ) : {}
       ),
-      $(go.Panel,
-        'Horizontal',
-        {
-          column: 1,
-          row: 0,
-        },
-        // Panel to contain tag icons
-        $(go.Panel,
-          'Horizontal',
-          {
-            itemTemplate: this.getTitleTagIconTemplate()
-          },
-          new go.Binding('itemArray', 'tags',
-            function(tags: Tag[]): Tag[] {
-              let iconTags = tags.concat();
-
-              // Filter out any tags without an icon
-              iconTags = iconTags.filter(
-                function(tag: Tag): boolean {
-                  return !!tag.iconName;
-                }
-              );
-              // Restrict tag icons in title row to a maximum of five
-              iconTags = iconTags.slice(0, 5);
-
-              return iconTags;
-            }
-          )
-        ),
-        // Ellipsis to indicate that there are additional tag
-        //  icons associated with the node
-        $(go.TextBlock,
-          '...',
-          textFont('bold 18px'),
-          {
-            margin: new go.Margin(0, 0, 0, 4)
-          },
-          // Should only be visible if there are more than five
-          //  tags with icons against the  node
-          new go.Binding('visible', 'tags',
-            function(tags: Tag[]): boolean {
-              return tags.filter(
-                function (tag: Tag): boolean {
-                  return !!tag.iconName;
-                }
-              ).length > 5;
-            }
-          )
-        )
-      ),
+      this.getTagIconsRow(),
       $(
         go.TextBlock,
         textFont('bold italic 20px'),
