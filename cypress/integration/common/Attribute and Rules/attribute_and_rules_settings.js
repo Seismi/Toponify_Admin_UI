@@ -48,6 +48,11 @@ module.exports = {
       api: `${api_version}/workpackages/*/attributes/*/tags`,
       method: 'GET',
       name: 'AttributeTags'
+    },
+    DeleteAttribute: {
+      api: `${api_version}/workpackages/*/attributes/*/deleteRequest`,
+      method: 'POST',
+      name: 'DeleteAttribute'
     }
   }
 };

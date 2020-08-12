@@ -14,6 +14,6 @@ And('the user deletes the attribute and confirm', () => {
     .then(() => {
       cy.get('[data-qa=delete-modal-yes]')
         .click()
-        .wait('@GETAttributes');
+        .wait('@POSTDeleteAttribute');
     });
 });
