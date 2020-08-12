@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <div class="search-container">
+  <div class="search-container" *ngIf="dataSource.data.length">
     <input placeholder="Search" data-qa="topology-work-packages-quick-search" (keyup)="onSearch($event.target.value)">
   </div>
   <table mat-table [dataSource]="dataSource">
@@ -16,33 +16,32 @@
             open_in_new
           </mat-icon>
             <div class="actions">
-              <mat-checkbox
-                data-qa="topology-work-packages-select-work-package"
-                class="checkbox"
-                [disabled]="!canSelect(element)"
-                [checked]="element.selected"
-                (click)="onSelect(element.id, !element.selected, $event, element)"
-              >
-              </mat-checkbox>
-              <label>Display</label>
-
-              <ng-container *ngIf="canEdit(element); else elseBlock">
-                <mat-icon
-                  *ngIf="!element.edit"
+              <mat-button-toggle-group>
+                <mat-button-toggle
+                  data-qa="topology-work-packages-off"
+                  (change)="switchOff(element)"
+                  checked=true
+                >
+                  Off
+                </mat-button-toggle>
+                <mat-button-toggle
+                  data-qa="topology-work-packages-select-work-package"
+                  [ngClass]="{ disabled: !canSelect(element) }"
+                  [checked]="element.selected"
+                  (click)="onSelect(element.id, !element.selected, $event, element)"
+                >
+                  Display
+                </mat-button-toggle>
+                <mat-button-toggle
+                  data-qa="topology-work-packages-edit"
+                  [checked]="element.edit"
+                  [ngClass]="{ disabled: !canEdit(element) }"
                   (click)="onSetWorkpackageEditMode(element)"
                   matTooltip="Edit content of work package"
-                  >edit</mat-icon
                 >
-                <mat-icon *ngIf="element.edit" (click)="onSetWorkpackageEditMode(element)">close</mat-icon>
-                <label> {{ element.edit ? 'Close' : 'Edit' }} </label>
-              </ng-container>
-
-              <ng-template #elseBlock>
-                <span style="opacity: 0.2;">
-                  <mat-icon>{{ element.edit ? 'close' : 'edit' }}</mat-icon>
-                  <label> {{ element.edit ? 'Close' : 'Edit' }} </label>
-                </span>
-              </ng-template>
+                  Edit
+                </mat-button-toggle>
+              </mat-button-toggle-group>
 
               <smi-color-picker
                 style="margin-right: 5px;"
@@ -61,4 +60,6 @@
     <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
   </table>
   <br>
+  <p class="message" *ngIf="!dataSource.data.length">No active work packages. To create a new work package, <a routerLink="/work-packages">click here</a></p>
 </div>
+<smi-spinner *ngIf="isLoading"></smi-spinner>

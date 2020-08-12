@@ -1,15 +1,17 @@
-import { Component, ViewChild, Output, EventEmitter, Input, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { ScopeEntity, Page, defaultScopeId } from '@app/scope/store/models/scope.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'smi-scopes-and-layouts-table',
   templateUrl: './scopes-and-layouts-table.component.html',
   styleUrls: ['./scopes-and-layouts-table.component.scss']
 })
-export class ScopesAndLayoutsTableComponent implements AfterViewInit {
+export class ScopesAndLayoutsTableComponent implements AfterViewInit, OnDestroy {
   public selectedRowIndex: string | number = -1;
   public defaultScopeId = defaultScopeId;
+  public subscriptions: Subscription[] = [];
 
   @Input() title: string;
   @Input() defaultLayoutId: string;
@@ -19,7 +21,6 @@ export class ScopesAndLayoutsTableComponent implements AfterViewInit {
   set data(data: ScopeEntity[]) {
     if (data) {
       this.dataSource = new MatTableDataSource<ScopeEntity>(data);
-      this.dataSource.sort = this.sort;
     }
   }
 
@@ -30,7 +31,6 @@ export class ScopesAndLayoutsTableComponent implements AfterViewInit {
   @Input()
   set pagination(pagination: Page) {
     if (pagination) {
-      console.log(pagination)
       this.page = pagination;
     }
   }
@@ -56,11 +56,29 @@ export class ScopesAndLayoutsTableComponent implements AfterViewInit {
     length: number;
   }>();
 
+  @Output() sortChange = new EventEmitter<{
+    sortOrder: string;
+    sortBy: string;
+  }>();
+
   ngAfterViewInit() {
-    console.log('here');
     this.paginator.page.subscribe(nextPage => {
       this.pageChange.emit(nextPage);
     });
+
+    this.subscriptions.push(
+      this.sort.sortChange.subscribe(data => {
+        const { active, direction } = data;
+        this.sortChange.emit({
+          sortOrder: direction,
+          sortBy: active
+        });
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   onSelectRow(row: ScopeEntity): void {
