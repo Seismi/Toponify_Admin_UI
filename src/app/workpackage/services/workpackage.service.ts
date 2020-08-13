@@ -14,7 +14,6 @@ import {
 import 'rxjs/add/observable/of';
 import { CustomPropertyValuesEntity } from '@app/architecture/store/models/node.model';
 
-
 interface WorkpackageAvailabilityQuery {
   // Array of work package Ids
   workPackageQuery: string[];

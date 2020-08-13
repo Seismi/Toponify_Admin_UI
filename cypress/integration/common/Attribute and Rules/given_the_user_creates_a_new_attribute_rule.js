@@ -32,6 +32,7 @@ function createAttributeAndRule(name, description, category) {
     .then(() => {
       cy.get('[data-qa=rule-and-attribute-modal-save]')
         .click()
-        .wait(['@POSTWorkPackagesNodesAttributes', '@POSTWorkPackageAttributes', '@GETWorkPackageNodeTags']);
+        .wait(['@POSTWorkPackagesNodesAttributes', '@POSTWorkPackageAttributes'])
+        .wait('@GETWorkPackageNodeTags');
     });
 }
