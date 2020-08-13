@@ -489,7 +489,8 @@ export class GojsCustomObjectsService {
       text: string,
       subMenuNames: string[],
       visible_predicate?: (object: go.Part, event: object) => boolean,
-      text_predicate?: (object: go.GraphObject, event: object) => string
+      text_predicate?: (object: go.GraphObject, event: object) => string,
+      enabled_predicate?: (object: go.Part, event: object) => boolean
     ): go.Part {
       return $('ContextMenuButton',
         {
@@ -498,7 +499,10 @@ export class GojsCustomObjectsService {
         $(go.TextBlock,
           text_predicate
             ? new go.Binding('text', '', text_predicate).ofObject()
-            : { text: text }
+            : { text: text },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : disabledTextColour;
+          }).ofObject(text)
         ),
         {
           mouseEnter: function(event: go.InputEvent, object: go.Part): void {
@@ -512,6 +516,8 @@ export class GojsCustomObjectsService {
                 button.visible = false;
               }
             });
+
+            if (!object.isEnabled) {return; }
 
             // Show any submenu buttons assigned to this menu button
             subMenuNames.forEach(function(buttonName: string): void {
@@ -537,6 +543,9 @@ export class GojsCustomObjectsService {
                 return false;
               }
             }).ofObject()
+          : {},
+        enabled_predicate
+          ? new go.Binding('isEnabled', '', enabled_predicate).ofObject()
           : {}
       );
     }
@@ -574,7 +583,7 @@ export class GojsCustomObjectsService {
             const anyStatusHidden = event.diagram.selection.any(
               function (part: go.Part): boolean {
                 if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return part.data.bottomExpanded;
+                  return !part.data.bottomExpanded;
                 }
                 return false;
               }
@@ -598,7 +607,7 @@ export class GojsCustomObjectsService {
             const anyStatusHidden = event.diagram.selection.any(
               function (part: go.Part): boolean {
                 if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return part.data.bottomExpanded;
+                  return !part.data.bottomExpanded;
                 }
                 return false;
               }
@@ -677,7 +686,7 @@ export class GojsCustomObjectsService {
 
             const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
               if (part instanceof go.Group) {
-                return !part.isSubGraphExpanded;
+                return part.data.middleExpanded !== middleOptions.groupList;
               }
               return false;
             });
@@ -700,7 +709,7 @@ export class GojsCustomObjectsService {
 
             const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
               if (part instanceof go.Group) {
-                return !part.isSubGraphExpanded;
+                return part.data.middleExpanded !== middleOptions.groupList;
               }
               return false;
             });
@@ -811,22 +820,37 @@ export class GojsCustomObjectsService {
           'Show as List (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            const newState = node.data.middleExpanded !== middleOptions.children ?
-              middleOptions.children : middleOptions.none;
+            const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return part.data.middleExpanded !== middleOptions.children;
+              }
+              return false;
+            });
 
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', newState);
-            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
+            const newState = anyHidden ? middleOptions.children : middleOptions.none;
 
-            diagramChangesService.nodeExpandChanged(node);
+            event.diagram.selection.each(function(part: go.Part): void {
+
+              if (part instanceof go.Node && part.data.category !== nodeCategories.transformation) {
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', newState);
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', true);
+
+                diagramChangesService.nodeExpandChanged(part);
+              }
+            });
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            return node.data.middleExpanded === middleOptions.children ? 'Hide List' : 'Show as List';
+            const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return part.data.middleExpanded !== middleOptions.children;
+              }
+              return false;
+            });
+            return anyHidden ? 'Show as List' : 'Hide List';
           }
         ),
         makeSubMenuButton(4,
@@ -837,7 +861,9 @@ export class GojsCustomObjectsService {
 
             diagramLevelService.changeLevelWithFilter.call(this, event, node);
           }.bind(this),
-          null,
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.selection.count === 1;
+          },
           function() {return 'Display'; }
         ),
         makeSubMenuButton(
@@ -848,6 +874,9 @@ export class GojsCustomObjectsService {
             thisService.addDataSetSource.next();
           },
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            if (event.diagram.selection.count !== 1) {
+              return false;
+            }
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             return thisService.diagramEditable &&
               ![nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category);
@@ -873,7 +902,12 @@ export class GojsCustomObjectsService {
             'Use across Levels',
             'View Sources',
             'View Targets'
-          ]
+          ],
+          null,
+          null,
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            return event.diagram.selection.count === 1;
+          }
         ),
         // --Analysis submenu buttons--
         makeSubMenuButton(
