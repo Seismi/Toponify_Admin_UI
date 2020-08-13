@@ -1951,7 +1951,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               nodes.filter(node => !invalidContainingGroupIds.has(node.id) && node.category !== 'transformation')
             )
           ),
-        selectedIds: []
+        selectedIds: [],
+        createNew: true,
+        workPackageId: this.workpackageId,
+        scopeId: this.scope.id,
+        nodeId: this.nodeId,
+        currentFilterLevel: this.currentFilterLevel
       }
     });
 
