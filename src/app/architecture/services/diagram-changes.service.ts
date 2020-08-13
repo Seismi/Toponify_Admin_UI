@@ -445,16 +445,10 @@ export class DiagramChangesService {
       throw new Error('Invalid nodes type');
     }
 
-    const selectedPartKey: string | null = diagram.selection.count === 1 ? diagram.selection.first().key : null;
-
     diagram.model.nodeDataArray = JSON.parse(JSON.stringify(nodes));
 
     if (diagram.layout.isValidLayout) {
       diagram.layout.isValidLayout = false;
-    }
-
-    if (selectedPartKey) {
-      diagram.select(diagram.findPartForKey(selectedPartKey));
     }
   }
 
@@ -470,18 +464,12 @@ export class DiagramChangesService {
       throw new Error('Invalid nodesIds type');
     }
 
-    const selectedPartKey: string | null = diagram.selection.count === 1 ? diagram.selection.first().key : null;
-
     const sourceProp = diagram.model.linkFromKeyProperty;
     const targetProp = diagram.model.linkToKeyProperty;
 
     const linkArray = links.filter(link => nodesIds.includes(link[sourceProp]) && nodesIds.includes(link[targetProp]));
 
     (diagram.model as go.GraphLinksModel).linkDataArray = JSON.parse(JSON.stringify(linkArray));
-
-    if (selectedPartKey) {
-      diagram.select(diagram.findPartForKey(selectedPartKey));
-    }
 
     // Ensure bounds of all nodes with any connected links.
     //  This makes sure that links can route correctly if a reroute is necessary.
@@ -558,6 +546,30 @@ export class DiagramChangesService {
     if (diagram.layout.isValidLayout) {
       diagram.layout.isValidLayout = false;
     }
+  }
+
+  // Selects all parts in the diagram corresponding to an id
+  //  in the given array. Used to reselect previously selected
+  //  parts when the diagram's nodes or links are refreshed.
+  preserveSelection(diagram: go.Diagram, selectionIds: string[]) {
+    const previouslySelected = new go.Set<go.Part>();
+
+    const newParts = new go.Set<go.Part>();
+    newParts.addAll(diagram.nodes);
+    newParts.addAll(diagram.links);
+
+    newParts.each(function(part: go.Part) {
+      const wasSelected = selectionIds.some(
+        function(key: string): boolean {
+          return part.key === key;
+        }
+      );
+      if (wasSelected) {
+        previouslySelected.add(part);
+      }
+    });
+
+    diagram.selectCollection(previouslySelected);
   }
 
   linkingValidation(

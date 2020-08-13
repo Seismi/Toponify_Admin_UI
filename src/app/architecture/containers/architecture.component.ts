@@ -255,6 +255,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   @Input() attributesView = false;
   @Input() allowMove = false;
   public selectedPart = null;
+  public selectionUnchanged = false;
+  public allSelectedParts: string[] = [];
 
   showOrHideLeftPane = false;
   layoutSettings;
@@ -970,6 +972,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   partsSelected(parts: go.Part[]) {
+
+    // Determine if selection has changed
+    const previousSelectedParts = this.allSelectedParts.concat();
+    this.allSelectedParts = parts.map(function(part: go.Part): string {return part.key as string; });
+    if (JSON.stringify(previousSelectedParts) === JSON.stringify(this.allSelectedParts)) {
+      this.selectionUnchanged = true;
+    }
+
     if (parts.length < 2) {
       const part = parts[0];
 
@@ -1061,8 +1071,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       workPackageQuery: workpackageIds
     };
 
-    // Do not attempt to load data for disconnected node links that have not been added to the database yet
-    if (!this.part.data.isTemporary) {
+    // Do not attempt to load data for disconnected node links that have not been added to the database yet,
+    //  or if the selection has not changed
+    if (!this.part.data.isTemporary && !this.selectionUnchanged) {
       this.part instanceof goNode
         ? this.nodeStore.dispatch(new LoadNode({ id: this.nodeId, queryParams: queryParams }))
         : this.nodeStore.dispatch(new LoadNodeLink({ id: this.nodeId, queryParams: queryParams }));

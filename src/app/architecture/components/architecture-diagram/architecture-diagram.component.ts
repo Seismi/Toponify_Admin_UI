@@ -492,6 +492,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       const nodeKeyProp = this.diagram.model.nodeKeyProperty as string;
 
+      const prevSelectedIds = this.diagram.selection.toArray().map(
+        function(part: go.Part): string {return part.key as string; }
+      );
+
       if (nodesHasBeenChanged) {
         this.diagramChangesService.updateNodes(this.diagram, this.nodes);
 
@@ -508,6 +512,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
 
         this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
+      }
+      if (nodesHasBeenChanged || linksHasBeenChanged) {
+        // Preserve selection on update node or link arrays
+        this.diagramChangesService.preserveSelection(this.diagram, prevSelectedIds);
       }
     }
 
