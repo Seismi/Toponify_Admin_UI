@@ -13,6 +13,7 @@
 const login = require('../integration/common/Login/login_settings');
 const workPackage = require('../integration/common/Work Package/work_package_settings');
 const documentationStandards = require('../integration/common/Documentation Standards/documentation_standards_settings');
+const attributesOrRules = require('../integration/common/Attribute and Rules/attribute_and_rules_settings');
 
 Cypress.Commands.add('login', usertype => {
   cy.setUpRoutes('Login', login);
@@ -329,9 +330,15 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
         .paste(work_package)
         .should('have.value', work_package)
         .then(() => {
-          cy.get('[data-qa=topology-work-packages-select-work-package]')
-            .click({ force: true })
-            .wait(wait_for);
+          if (action === 'check') {
+            cy.get('[data-qa=topology-work-packages-select-work-package]')
+              .click({ force: true })
+              .wait(wait_for);
+          } else {
+            cy.get('[data-qa=topology-work-packages-off]')
+              .click()
+              .wait('@GETSelectorAvailabilityQuery');
+          }
         });
     })
     .then(result => {
@@ -804,6 +811,39 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .find(`td`) //check if a cell has value
     .eq(1)
     .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
+});
+
+Cypress.Commands.add('findAttributeOrRule', attr => {
+  cy.get('[data-qa=rules-and-attributes-quick-search]')
+    .clear()
+    .paste(attr);
+  return cy.get(`[data-qa=rules-and-attributes-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('createAttributeAndRule', (name, description, category) => {
+  cy.selectDropDownNoClick('rule-and-attribute-details-category', category)
+    .then(() => {
+      cy.get('[data-qa=rule-and-attribute-details-name]')
+        .should('be.visible')
+        .paste(name)
+        .should('have.value', name);
+    })
+    .then(() => {
+      cy.get('[data-qa=rule-and-attribute-details-description]')
+        .should('be.visible')
+        .paste(description)
+        .should('have.value', description);
+    });
+});
+
+Cypress.Commands.add('assertAttributesForm', (category, title, description) => {
+  cy.selectDropDownNoClick('attributes-and-rules-details-category', category);
+  cy.get('[data-qa=attributes-and-rules-details-name]')
+    .clear()
+    .paste(title);
+  cy.get('[data-qa=attributes-and-rules-details-description]')
+    .clear()
+    .paste(description);
 });
 
 Cypress.Commands.add('selectMenuItem', (dataqa, wait_for) => {

@@ -3,21 +3,31 @@
     <mat-form-field>
       <div class="input-wrapper">
         <label>Ref.</label>
-        <input matInput formControlName="reference" [ngClass]="{ editable: workPackageIsEditable }" />
+        <input 
+          data-qa="attributes-and-rules-details-reference" 
+          matInput 
+          formControlName="reference" 
+          [ngClass]="{ editable: workPackageIsEditable }" 
+        />
       </div>
     </mat-form-field>
 
     <mat-form-field>
       <div class="input-wrapper">
         <label>Name</label>
-        <input matInput formControlName="name" [ngClass]="{ editable: workPackageIsEditable }" />
+        <input 
+          data-qa="attributes-and-rules-details-name" 
+          matInput 
+          formControlName="name" 
+          [ngClass]="{ editable: workPackageIsEditable }" 
+        />
       </div>
     </mat-form-field>
 
     <mat-form-field>
       <div class="input-wrapper">
         <label>Category</label>
-        <mat-select formControlName="category" [ngClass]="{ editable: workPackageIsEditable }">
+        <mat-select data-qa="attributes-and-rules-details-category" formControlName="category" [ngClass]="{ editable: workPackageIsEditable }">
           <mat-option *ngFor="let category of categories" [value]="category">
             {{ category }}
           </mat-option>
@@ -26,14 +36,20 @@
     </mat-form-field>
 
     <mat-form-field>
-      <textarea matInput placeholder="Description" rows="4" formControlName="description"
-        [ngClass]="{ editable: workPackageIsEditable }"></textarea>
+      <textarea
+        data-qa="attributes-and-rules-details-description"
+        matInput 
+        placeholder="Description" 
+        rows="4" 
+        formControlName="description"
+        [ngClass]="{ editable: workPackageIsEditable }">
+      </textarea>
     </mat-form-field>
 
     <div *ngIf="workPackageIsEditable" style="margin-bottom: 15px;">
-      <button mat-flat-button color="primary" (click)="save.emit()">Save</button>
-      <button mat-flat-button (click)="onCancel()">Cancel</button>
-      <button mat-flat-button color="warn" (click)="delete.emit()">Delete</button>
+      <button mat-flat-button color="primary" (click)="save.emit()" data-qa="attributes-and-rules-save">Save</button>
+      <button mat-flat-button (click)="onCancel()" data-qa="attributes-and-rules-cancel">Cancel</button>
+      <button mat-flat-button color="warn" (click)="delete.emit()" data-qa="attributes-and-rules-delete">Delete</button>
     </div>
 
     <smi-tag-list

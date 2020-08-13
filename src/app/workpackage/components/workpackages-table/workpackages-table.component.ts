@@ -57,7 +57,6 @@ export class WorkPackagesTableComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.paginator.page.subscribe(nextPage => {
-      // debugger;
       this.pageChange.emit(nextPage);
     });
   }
