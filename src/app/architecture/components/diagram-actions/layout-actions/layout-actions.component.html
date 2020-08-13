@@ -11,6 +11,7 @@
   [selectedLayout]="selectedLayout"
   (addLayout)="addLayout.emit()"
   [data]="layouts"
+  [allowSave]="allowSave"
 >
 </smi-layouts-dropdown>
 <mat-icon data-qa="topology-layout-actions-layout-settings" (click)="layoutSettings.emit()" [ngClass]="{ disable: selectedLayout?.id === '00000000-0000-0000-0000-000000000000' }" matTooltip="Layout Settings">settings_applications</mat-icon>
