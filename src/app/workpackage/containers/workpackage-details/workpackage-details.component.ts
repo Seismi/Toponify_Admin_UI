@@ -103,7 +103,6 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.store.dispatch(new LoadWorkPackagesActive());
     this.subscriptions.push(
       this.store.pipe(select(workpackageDetailsLoading)).subscribe((loading) => this.isLoading = loading)
     );
@@ -425,28 +424,19 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   }
 
   onMoveObjective(objective: Objective) {
-    this.store
-      .pipe(
-        select(getWorkPackagesActive),
-        take(1),
-        map(workpackages => workpackages.filter(wp => wp.status === 'draft'))
-      )
-      .subscribe((workPackages: WorkPackagesActive[]) => {
-        const dialogRef = this.dialog.open(MoveObjectiveModalComponent, {
-          disableClose: false,
-          width: '500px',
-          data: workPackages
-        });
+    const dialogRef = this.dialog.open(MoveObjectiveModalComponent, {
+      disableClose: false,
+      width: '500px'
+    });
 
-        dialogRef.afterClosed().subscribe((selectedWorkpackage: WorkPackagesActive) => {
-          if (selectedWorkpackage) {
-            this.store.dispatch(
-              new AddObjective({ data: objective, workPackageId: selectedWorkpackage.id, objectiveId: objective.id })
-            );
-            this.store.dispatch(new DeleteObjective({ workPackageId: this.workpackageId, objectiveId: objective.id }));
-          }
-        });
-      });
+    dialogRef.afterClosed().subscribe((selectedWorkpackage: WorkPackagesActive) => {
+      if (selectedWorkpackage) {
+        this.store.dispatch(
+          new AddObjective({ data: objective, workPackageId: selectedWorkpackage.id, objectiveId: objective.id })
+        );
+        this.store.dispatch(new DeleteObjective({ workPackageId: this.workpackageId, objectiveId: objective.id }));
+      }
+    });
   }
 
   onArchiveWorkPackage(): void {
