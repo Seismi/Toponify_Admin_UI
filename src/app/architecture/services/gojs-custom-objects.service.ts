@@ -292,6 +292,8 @@ export class CustomCommandHandler extends go.CommandHandler {
         }
       });
 
+      currentService.arrowKeyMoveSource.next();
+
       // Update position in the store for moved nodes and connected links
       currentService.diagramChangesService.updatePosition({ subject: effectiveSelection, diagram: diagram });
     } else {
@@ -404,6 +406,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a shared copy of an existing node should be made into the master
   private setAsMasterSource = new Subject();
   public setAsMaster$ = this.setAsMasterSource.asObservable();
+  // Observable to flag that the last action performed was moving parts using the arrow keys
+  private arrowKeyMoveSource = new Subject();
+  public arrowKeyMove$ = this.arrowKeyMoveSource.asObservable();
 
   public diagramEditable: boolean;
   private currentLevel;
