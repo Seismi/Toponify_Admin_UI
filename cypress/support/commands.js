@@ -13,6 +13,7 @@
 const login = require('../integration/common/Login/login_settings');
 const workPackage = require('../integration/common/Work Package/work_package_settings');
 const documentationStandards = require('../integration/common/Documentation Standards/documentation_standards_settings');
+const attributesOrRules = require('../integration/common/Attribute and Rules/attribute_and_rules_settings');
 
 Cypress.Commands.add('login', usertype => {
   cy.setUpRoutes('Login', login);
@@ -190,6 +191,7 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
     .should('have.value', name) // type the name
     .then(() => {
       if (wait) {
+        cy.wait(2000);
         cy.wait('@GETWorkPackagePaging', { requestTimeout: 5000 });
         cy.get('[data-qa=spinner]').should('not.be.visible');
       }
@@ -329,9 +331,15 @@ Cypress.Commands.add('displayWorkPackage', (work_package, work_package_menu, wai
         .paste(work_package)
         .should('have.value', work_package)
         .then(() => {
-          cy.get('[data-qa=topology-work-packages-select-work-package]')
-            .click({ force: true })
-            .wait(wait_for);
+          if (action === 'check') {
+            cy.get('[data-qa=topology-work-packages-select-work-package]')
+              .click({ force: true })
+              .wait(wait_for);
+          } else {
+            cy.get('[data-qa=topology-work-packages-off]')
+              .click()
+              .wait('@GETSelectorAvailabilityQuery');
+          }
         });
     })
     .then(result => {
@@ -460,7 +468,7 @@ Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
 Cypress.Commands.add('deleteWorkPackage', name => {
   cy.log('findWorkPackage');
   cy.selectRow('work-packages-table', name)
-    .wait(['@GETWorkPackage', '@GETWorkPackageActive'], { requestTimeout: 5000 })
+    .wait(['@GETWorkPackage'], { requestTimeout: 5000 })
     .then(() => {
       cy.selectDetailsPaneTab(workPackage['tabs']['Details']).then(() => {
         cy.get('tbody>tr') // get the table body
@@ -806,6 +814,39 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
 });
 
+Cypress.Commands.add('findAttributeOrRule', attr => {
+  cy.get('[data-qa=rules-and-attributes-quick-search]')
+    .clear()
+    .paste(attr);
+  return cy.get(`[data-qa=rules-and-attributes-table]`).find('table>tbody');
+});
+
+Cypress.Commands.add('createAttributeAndRule', (name, description, category) => {
+  cy.selectDropDownNoClick('rule-and-attribute-details-category', category)
+    .then(() => {
+      cy.get('[data-qa=rule-and-attribute-details-name]')
+        .should('be.visible')
+        .paste(name)
+        .should('have.value', name);
+    })
+    .then(() => {
+      cy.get('[data-qa=rule-and-attribute-details-description]')
+        .should('be.visible')
+        .paste(description)
+        .should('have.value', description);
+    });
+});
+
+Cypress.Commands.add('assertAttributesForm', (category, title, description) => {
+  cy.selectDropDownNoClick('attributes-and-rules-details-category', category);
+  cy.get('[data-qa=attributes-and-rules-details-name]')
+    .clear()
+    .paste(title);
+  cy.get('[data-qa=attributes-and-rules-details-description]')
+    .clear()
+    .paste(description);
+});
+
 Cypress.Commands.add('selectMenuItem', (dataqa, wait_for) => {
   cy.get(`[data-qa=main-menu-open]`) // get the main menu
     .click()
@@ -830,15 +871,14 @@ Cypress.Commands.add('saveDocumentationChange', (action, wait_for) => {
 Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) => {
   cy.get(`[data-qa=work-packages-create-new]`)
     .click()
-    .wait(['@GETWorkPackagePaging', '@GETTeams'])
+    .wait(['@GETTeams'])
     .then(() => {
       cy.populateWorkPackageDetails(name, description, baseline, owner);
     })
     .then(() => {
       cy.get(`[data-qa=work-packages-modal-save]`)
         .click()
-        .wait('@POSTWorkPackage')
-        .wait('@GETWorkPackage', {
+        .wait(['@POSTWorkPackage', '@GETWorkPackage', '@GETWorkPackagePaging'], {
           requestTimeout: 20000,
           responseTimeout: 40000
         });
