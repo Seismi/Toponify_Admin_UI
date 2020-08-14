@@ -62,6 +62,8 @@ export interface WorkPackageEntitiesHttpParams {
   textFilter?: string;
   page?: number;
   size?: number;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export interface WorkPackageApiRequest {

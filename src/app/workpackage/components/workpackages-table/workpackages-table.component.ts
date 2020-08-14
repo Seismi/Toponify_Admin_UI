@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { WorkPackageDetail, WorkPackageEntity, TableData, Page } from '@app/workpackage/store/models/workpackage.models';
 import { Roles } from '@app/core/directives/by-role.directive';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'smi-workpackages-table',
   templateUrl: './workpackages-table.component.html',
   styleUrls: ['./workpackages-table.component.scss']
 })
-export class WorkPackagesTableComponent implements AfterViewInit {
+export class WorkPackagesTableComponent implements AfterViewInit, OnDestroy  {
+  private subscriptions: Subscription[] = [];
   public Roles = Roles;
   public filterValue: string;
 
@@ -20,7 +22,6 @@ export class WorkPackagesTableComponent implements AfterViewInit {
   set data(data: WorkPackageEntity[]) {
     if (data) {
       this.dataSource = new MatTableDataSource<WorkPackageEntity>(data);
-      this.dataSource.sort = this.sort;
     }
   }
 
@@ -54,11 +55,26 @@ export class WorkPackagesTableComponent implements AfterViewInit {
 
   @Output() search = new EventEmitter<string>();
 
+  @Output() sortChange = new EventEmitter<{
+    sortOrder: string;
+    sortBy: string;
+  }>();
+
 
   ngAfterViewInit() {
     this.paginator.page.subscribe(nextPage => {
       this.pageChange.emit(nextPage);
     });
+
+    this.subscriptions.push(
+      this.sort.sortChange.subscribe(data => {
+        const { active, direction } = data;
+        this.sortChange.emit({
+          sortOrder: direction,
+          sortBy: active
+        });
+      })
+    );
   }
 
   onSelectRow(row: WorkPackageDetail): void {
@@ -81,5 +97,9 @@ export class WorkPackagesTableComponent implements AfterViewInit {
   onSearch(filterValue: string): void {
     this.search.emit(filterValue.trim().toLowerCase());
     this.paginator.firstPage();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }
