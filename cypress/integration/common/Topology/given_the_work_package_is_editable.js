@@ -8,12 +8,7 @@ Given('the work package {string} is editable on the {string} menu', function(wor
 
   if (work_package_menu === 'reports') {
     work_package_menu = 'reports-work-package-table';
-    wait_for = [
-      '@GETReportsWorkPackageQuery',
-      '@GETReportsScopeQuery',
-      '@GETSelectorAvailabilityQuery',
-      '@GETReportsScopeQuery'
-    ];
+    wait_for = ['@GETSelectorAvailabilityQuery', '@GETReportsFilterQuery'];
     //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   } else if (work_package_menu === 'Attributes And Rules') {
     work_package_menu = 'rules-and-attributes-work-package-table';
