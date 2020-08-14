@@ -38,14 +38,6 @@ export class WorkPackageModalComponent implements OnInit {
   public isEditable = true;
   public newBaselineData = [];
   loading$: Observable<boolean>;
-  search$ = new Subject<string>();
-  page$: Observable<any>;
-  private workPackageParams: WorkPackageEntitiesHttpParams = {
-    textFilter: '',
-    page: 0,
-    size: 10,
-    includeArchived: false
-  };
 
   constructor(
     private dialog: MatDialog,
@@ -57,28 +49,10 @@ export class WorkPackageModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.workPackageStore.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
     this.baseline$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.loading$ = this.workPackageStore.pipe(select(workpackageLoading));
-
-    this.search$
-    .pipe(
-      debounceTime(500),
-      distinctUntilChanged()
-    )
-    .subscribe(textFilter => {
-      this.workPackageParams = {
-        textFilter: textFilter,
-        page: 0,
-        size: this.workPackageParams.size,
-        includeArchived: this.workPackageParams.includeArchived
-      };
-      this.workPackageStore.dispatch(new LoadWorkPackages(this.workPackageParams));
-    });
-
-    this.page$ = this.workPackageStore.pipe(select(getWorkPackagesPage));
   }
 
   get workPackageDetailForm(): FormGroup {
@@ -95,20 +69,6 @@ export class WorkPackageModalComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
-  }
-
-  onSearch(textFilter: string): void {
-    this.search$.next(textFilter);
-  }
-
-  onPageChange(page) {
-    this.workPackageParams = {
-      textFilter: this.workPackageParams.textFilter,
-      page: page.pageIndex,
-      size: page.pageSize,
-      includeArchived: this.workPackageParams.includeArchived
-    };
-    this.workPackageStore.dispatch(new LoadWorkPackages(this.workPackageParams));
   }
 
   onAddBaseline(): void {

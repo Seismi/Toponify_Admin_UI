@@ -191,6 +191,7 @@ Cypress.Commands.add('findWorkPackage', (name, includeArchived) => {
     .should('have.value', name) // type the name
     .then(() => {
       if (wait) {
+        cy.wait(2000);
         cy.wait('@GETWorkPackagePaging', { requestTimeout: 5000 });
         cy.get('[data-qa=spinner]').should('not.be.visible');
       }
@@ -467,7 +468,7 @@ Cypress.Commands.add('deleteDocumentationStandard', doc_standard => {
 Cypress.Commands.add('deleteWorkPackage', name => {
   cy.log('findWorkPackage');
   cy.selectRow('work-packages-table', name)
-    .wait(['@GETWorkPackage', '@GETWorkPackageActive'], { requestTimeout: 5000 })
+    .wait(['@GETWorkPackage'], { requestTimeout: 5000 })
     .then(() => {
       cy.selectDetailsPaneTab(workPackage['tabs']['Details']).then(() => {
         cy.get('tbody>tr') // get the table body
@@ -870,15 +871,14 @@ Cypress.Commands.add('saveDocumentationChange', (action, wait_for) => {
 Cypress.Commands.add('createWorkPackage', (name, description, baseline, owner) => {
   cy.get(`[data-qa=work-packages-create-new]`)
     .click()
-    .wait(['@GETWorkPackagePaging', '@GETTeams'])
+    .wait(['@GETTeams'])
     .then(() => {
       cy.populateWorkPackageDetails(name, description, baseline, owner);
     })
     .then(() => {
       cy.get(`[data-qa=work-packages-modal-save]`)
         .click()
-        .wait('@POSTWorkPackage')
-        .wait('@GETWorkPackage', {
+        .wait(['@POSTWorkPackage', '@GETWorkPackage', '@GETWorkPackagePaging'], {
           requestTimeout: 20000,
           responseTimeout: 40000
         });
