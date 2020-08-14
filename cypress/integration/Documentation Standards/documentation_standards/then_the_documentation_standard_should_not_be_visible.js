@@ -5,8 +5,8 @@ Then('the documentation standard {string} should not be visible', function(doc_s
     .concat(' | ')
     .concat(doc_standard); //add the branch to the work package name
   cy.get(`[data-qa=documentation-standards-table-quick-search]`) // search for the documentation standard
-    .clear()
-    .paste(doc_standard)
+    .clear({ force: true })
+    .type(doc_standard)
     .then(() => {
       cy.get('[data-qa=work-packages-documentation-standards-table]')
         .find('table>tbody') //find the body

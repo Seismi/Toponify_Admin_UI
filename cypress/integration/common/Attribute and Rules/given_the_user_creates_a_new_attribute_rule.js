@@ -1,37 +1,30 @@
-import { Given } from 'cypress-cucumber-preprocessor/steps';
+import { When } from 'cypress-cucumber-preprocessor/steps';
 
-Given('the user creates a new {string} called {string} with description {string}', function(
-  attRule,
-  name,
-  description
-) {
+When('the user creates a new {string} called {string} with description {string}', (attRule, name, description) => {
   name = Cypress.env('BRANCH')
     .concat(' | ')
-    .concat(name); // append the branch name to the test work package to differentiate between branch test
-  cy.get('[data-qa=topology-attributes-and-rules-table-create-new]')
+    .concat(name);
+  cy.get('[data-qa=rules-and-attributes-create-new]')
     .click()
     .then(() => {
-      createAttributeAndRule(name, description, attRule);
+      cy.createAttributeAndRule(name, description, attRule);
+      cy.get('[data-qa=rule-and-attribute-modal-save]')
+        .click()
+        .wait(['@POSTWorkPackageAttributes']);
     });
 });
 
-function createAttributeAndRule(name, description, category) {
-  cy.selectDropDownNoClick('rule-and-attribute-details-category', category)
-    .then(() => {
-      cy.get('[data-qa=rule-and-attribute-details-name]')
-        .should('be.visible')
-        .paste(name)
-        .should('have.value', name);
-    })
-    .then(() => {
-      cy.get('[data-qa=rule-and-attribute-details-description]')
-        .should('be.visible')
-        .paste(description)
-        .should('have.value', description);
-    })
-    .then(() => {
-      cy.get('[data-qa=rule-and-attribute-modal-save]')
-        .click()
-        .wait(['@POSTWorkPackagesNodesAttributes', '@POSTWorkPackageAttributes', '@GETWorkPackageNodeTags']);
-    });
-}
+When(
+  'the user creates a new {string} called {string} with description {string} and cancels',
+  (attRule, name, description) => {
+    name = Cypress.env('BRANCH')
+      .concat(' | ')
+      .concat(name);
+    cy.get('[data-qa=rules-and-attributes-create-new]')
+      .click()
+      .then(() => {
+        cy.createAttributeAndRule(name, description, attRule);
+        cy.get('[data-qa=rule-and-attribute-modal-cancel]').click();
+      });
+  }
+);

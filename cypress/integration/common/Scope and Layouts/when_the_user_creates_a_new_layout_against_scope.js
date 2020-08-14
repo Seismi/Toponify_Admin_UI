@@ -15,7 +15,8 @@ When('the user creates a new layout called {string} against the scope called {st
         .then(() => {
           cy.get('[data-qa=scopes-and-layouts-modal-save]')
             .click()
-            .wait(['@GETLayout', '@POSTLayouts']);
+            .wait('@POSTLayouts')
+            .wait('@GETLayout');
         });
     });
 });

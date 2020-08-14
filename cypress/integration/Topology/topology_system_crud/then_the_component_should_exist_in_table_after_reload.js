@@ -10,7 +10,9 @@ Then('the {string} {string} should exist in {string} table in the {string} work 
   work_package = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(work_package); // prefix the name with branch
-  cy.editWorkPackageTopology(work_package).then(() => {
+  const work_package_menu = 'left-hand-pane-work-package-table';
+  const wait_for = null;
+  cy.editWorkPackage(work_package, work_package_menu, wait_for).then(() => {
     cy.get(`[aria-posinset=${pages['tabs'][tab]}]`)
       .click()
       .then(() => {

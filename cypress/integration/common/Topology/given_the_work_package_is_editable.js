@@ -15,10 +15,12 @@ Given('the work package {string} is editable on the {string} menu', function(wor
       '@GETReportsScopeQuery'
     ];
     //cy.editWorkPackage(work_package, work_package_menu, wait_for);
+  } else if (work_package_menu === 'Attributes And Rules') {
+    work_package_menu = 'rules-and-attributes-work-package-table';
+    wait_for = ['@GETSelectorAvailabilityQuery', '@GETAttributes'];
   } else {
     work_package_menu = 'left-hand-pane-work-package-table';
     wait_for = ['@GETNodesQuery', '@GETNodeLinksQuery', '@GETSelectorAvailabilityQuery'];
-    //cy.editWorkPackage(work_package, work_package_menu, wait_for);
   }
   cy.editWorkPackage(work_package, work_package_menu, wait_for);
   //cy.get('[data-qa=object-details-delete]').should('not.be.visible');
