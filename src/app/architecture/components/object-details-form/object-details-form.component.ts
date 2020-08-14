@@ -76,6 +76,8 @@ export class ObjectDetailsFormComponent {
   @Output() switchSourceAndTarget = new EventEmitter<void>();
 
   onSave(): void {
+    this.group.markAsPristine();
+    this.group.markAsUntouched();
     this.save.emit();
   }
 
