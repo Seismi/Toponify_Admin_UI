@@ -976,9 +976,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     // Determine if selection has changed
     const previousSelectedParts = this.allSelectedParts.concat();
     this.allSelectedParts = parts.map(function(part: go.Part): string {return part.key as string; });
-    if (JSON.stringify(previousSelectedParts) === JSON.stringify(this.allSelectedParts)) {
-      this.selectionUnchanged = true;
-    }
+    this.selectionUnchanged = (JSON.stringify(previousSelectedParts) === JSON.stringify(this.allSelectedParts))
 
     if (parts.length < 2) {
       const part = parts[0];
