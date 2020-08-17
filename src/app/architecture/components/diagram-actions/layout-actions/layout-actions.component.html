@@ -5,7 +5,7 @@
 <mat-icon data-qa="topology-layout-actions-layout" (click)="editLayout.emit()" [ngClass]="{ disable: dependenciesView }" matTooltip="Edit layout of objects in the canvas">{{ !allowMove ? 'brush' : 'close' }}</mat-icon>
 <mat-icon data-qa="topology-layout-actions-download-image" style="margin-right: 20px;" (click)="downloadImage.emit()" matTooltip="Download image of the layout">get_app</mat-icon>
 <mat-icon data-qa="topology-layout-actions-save" *ngIf="allowSave" (click)="saveLayout.emit()" matTooltip="Save">save</mat-icon>
-<mat-icon data-qa="topology-layout-actions-save-as" *ngIf="allowSaveAs" (click)="saveAsLayout.emit()" matTooltip="Save as">file_copy</mat-icon>
+<mat-icon data-qa="topology-layout-actions-save-as" *ngIf="allowSaveAs" (click)="saveAsLayout.emit()" matTooltip="Save as New layout">file_copy</mat-icon>
 <smi-layouts-dropdown
   (selectLayout)="selectLayout.emit($event)"
   [selectedLayout]="selectedLayout"
