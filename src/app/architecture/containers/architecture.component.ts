@@ -759,8 +759,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
-      function() {
-        this.onAddToGroup();
+      function(nodes: go.Set<go.Group>): void {
+        this.onAddToGroup(nodes);
       }.bind(this)
     );
 
@@ -1943,19 +1943,37 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAddToGroup() {
-    const ids = new Set(this.selectedNode.descendants.map(({ id }) => id));
+  onAddToGroup(sourceNodes: go.Set<go.Group>) {
+
+    // If one node selected then display the node name in the modal
+    const sourceLabel = sourceNodes.count === 1
+      ? '"' + sourceNodes.first().data.name + '"'
+      : 'selected nodes';
+
+    // get group IDs for groups that are not valid containers of any of the selected nodes
+    const invalidContainingGroupIds = new go.Set<string>();
+    sourceNodes.each(function(node: go.Group): void {
+      // Prevent attempt to insert node under itself
+      invalidContainingGroupIds.add(node.data.id);
+      // Prevent attempt to insert node as nested group member of itself
+      node.findSubGraphParts().each(function(subGraphPart: go.Group): void {
+        if (subGraphPart instanceof go.Group) {
+          invalidContainingGroupIds.add(subGraphPart.data.id);
+        }
+      });
+    });
+
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        title: `Add "${this.selectedNode.name}" to...`,
+        title: `Add ${sourceLabel} to...`,
         placeholder: 'Components',
         options$: this.store
           .pipe(select(getNodeEntities))
           .pipe(
             map(nodes =>
-              nodes.filter(node => !node.group.length && !ids.has(node.id) && node.category !== 'transformation')
+              nodes.filter(node => !invalidContainingGroupIds.has(node.id) && node.category !== 'transformation')
             )
           ),
         selectedIds: [],
@@ -1969,13 +1987,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        this.workpackageStore.dispatch(
-          new AddWorkPackageNodeGroup({
-            workPackageId: this.workpackageId,
-            systemId: this.nodeId,
-            groupId: data.value[0].id
-          })
-        );
+        sourceNodes.each(function(node: go.Group): void {
+          this.workpackageStore.dispatch(
+            new AddWorkPackageNodeGroup({
+              workPackageId: this.workpackageId,
+              systemId: node.data.id,
+              groupId: data.value[0].id
+            })
+          );
+        }.bind(this));
       }
     });
   }
