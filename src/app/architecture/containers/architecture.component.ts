@@ -250,11 +250,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private addNewSubItemRef;
   private addNewSharedSubItemRef;
   private setAsMasterRef;
+  private arrowKeyMoveRef;
   public dependenciesView;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
   public selectedPart = null;
+  // public selectionUnchanged = false;
+  // public allSelectedParts: string[] = [];
 
   showOrHideLeftPane = false;
   layoutSettings;
@@ -330,6 +333,9 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public loadingStatus = LoadingStatus;
   public byId = false;
   public filterLevel: string;
+
+  // Flag to indicate that the last action taken was to move parts using the arrow keys
+  private partsMovedByArrows = false;
 
   workpackageSelected$ = new Subject();
 
@@ -764,6 +770,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }.bind(this)
     );
 
+    this.arrowKeyMoveRef = this.gojsCustomObjectsService.arrowKeyMove$.subscribe(
+      function() {
+        this.partsMovedByArrows = true;
+      }.bind(this)
+    );
+
     this.zoomRef = this.gojsCustomObjectsService.zoom$.subscribe(
       function(zoomType: 'In' | 'Out') {
         if (zoomType === 'In') {
@@ -970,6 +982,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   partsSelected(parts: go.Part[]) {
+
+    // Determine if selection has changed
+    /*
+    (awaiting changes in TOP-955 before this check can be implemented)
+    const previousSelectedParts = this.allSelectedParts.concat();
+    this.allSelectedParts = parts.map(function(part: go.Part): string {return part.key as string; });
+    this.selectionUnchanged = (JSON.stringify(previousSelectedParts) === JSON.stringify(this.allSelectedParts))
+    */
+
     if (parts.length < 2) {
       const part = parts[0];
 
@@ -1061,12 +1082,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       workPackageQuery: workpackageIds
     };
 
-    // Do not attempt to load data for disconnected node links that have not been added to the database yet
-    if (!this.part.data.isTemporary) {
+    // Do not attempt to load data for disconnected node links that have not been added to the database yet.
+    // Also do not reload user moving parts via the arrow keys (prevents too many requests being sent)
+    if (!this.part.data.isTemporary && !this.partsMovedByArrows /*!this.selectionUnchanged*/) {
       this.part instanceof goNode
         ? this.nodeStore.dispatch(new LoadNode({ id: this.nodeId, queryParams: queryParams }))
         : this.nodeStore.dispatch(new LoadNodeLink({ id: this.nodeId, queryParams: queryParams }));
     }
+
+    // Reset flag
+    this.partsMovedByArrows = false;
   }
 
   // FIXME: should be removed as createObject/node/link handled inside change service

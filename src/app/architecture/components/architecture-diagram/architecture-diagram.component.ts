@@ -22,6 +22,7 @@ import { DiagramChangesService } from '../../services/diagram-changes.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
 import { DiagramTemplatesService } from '../../services/diagram-templates.service';
 import {
+  CustomCommandHandler,
   CustomLinkShift,
   CustomNodeResize,
   GojsCustomObjectsService
@@ -160,6 +161,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     );
     this.diagram.toolManager.resizingTool = new CustomNodeResize();
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
+    this.diagram.commandHandler = new CustomCommandHandler();
 
     // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
     this.diagram.toolManager.draggingTool.doActivate = function(): void {
@@ -490,6 +492,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       const nodeKeyProp = this.diagram.model.nodeKeyProperty as string;
 
+      const prevSelectedIds = this.diagram.selection.toArray().map(
+        function(part: go.Part): string {return part.key as string; }
+      );
+
       if (nodesHasBeenChanged) {
         this.diagramChangesService.updateNodes(this.diagram, this.nodes);
 
@@ -506,6 +512,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
 
         this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
+      }
+      if (nodesHasBeenChanged || linksHasBeenChanged) {
+        // Preserve selection on update node or link arrays
+        this.diagramChangesService.preserveSelection(this.diagram, prevSelectedIds);
       }
     }
 
