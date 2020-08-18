@@ -10,6 +10,7 @@ import { MatSelectChange } from '@angular/material';
 export class LayoutsDropdownComponent {
   public layouts;
   @Input() selectedLayout: ScopeDetails;
+  @Input() allowSave: boolean;
 
   @Input()
   set data(data: ScopeDetails[]) {

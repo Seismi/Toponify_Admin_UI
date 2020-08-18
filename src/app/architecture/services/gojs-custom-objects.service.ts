@@ -12,6 +12,8 @@ import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selecto
 
 const $ = go.GraphObject.make;
 
+let currentService;
+
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
   return {
@@ -157,6 +159,149 @@ export class CustomNodeResize extends go.ResizingTool {
   }
 }
 
+export class CustomCommandHandler extends go.CommandHandler {
+  constructor() {
+    super();
+  }
+
+  public doKeyDown(): void {
+    const diagram = this.diagram;
+    const input = diagram.lastInput;
+
+    // Handle node positioning from pressing the arrow keys
+    if (['Up', 'Down', 'Left', 'Right'].includes(input.key) && diagram.allowMove) {
+      const nodesToMove = new go.Set<go.Node>();
+      const selectedNodes = new go.Set<go.Node>();
+
+      diagram.selection.each(function(selectedPart: go.Part): void {
+        if (selectedPart instanceof go.Node) {
+          selectedNodes.add(selectedPart);
+        }
+      });
+
+      // Only include selected nodes that do not have any containing node selected,
+      //  as group member nodes are automatically kept aligned with their containing
+      //  groups on move.
+      selectedNodes.each(function(node: go.Node): void {
+        const containingGroups = new go.Set<go.Group>();
+        for (let grp = node; grp.containingGroup; grp = grp.containingGroup) {
+          containingGroups.add(grp.containingGroup);
+        }
+        if (!selectedNodes.containsAny(containingGroups)) {
+          nodesToMove.add(node);
+        }
+      });
+
+      // Get vertical and horizontal change in node position depending on which arrow
+      //  keys are pressed
+      let vChange = 0;
+      let hChange = 0;
+
+      if (input.key === 'Up') {
+        vChange = -1;
+      } else if (input.key === 'Down') {
+        vChange = 1;
+      } else if (input.key === 'Left') {
+        hChange = -1;
+      } else {
+        hChange = 1;
+      }
+
+      // Move amount equal to the grid cell size on each keypress.
+      //  If control held down, move only one unit.
+      if (diagram.grid && !input.control) {
+        vChange = vChange * diagram.grid.gridCellSize.height;
+        hChange = hChange * diagram.grid.gridCellSize.width;
+      }
+
+      // Check attempted move is valid for all nodes to be moved
+      const canMove = nodesToMove.all(function(node: go.Node): boolean {
+        const newBounds = node.getDocumentBounds().copy().offset(hChange, vChange);
+        // Check space to move node to is unoccupied
+        if (!currentService.diagramChangesService.isUnoccupied(newBounds, node)) {
+          return false;
+        } else if (node.containingGroup) {
+          const groupMemberArea = node.containingGroup.findObject('Group member area').getDocumentBounds();
+          // Check node is not being moved outside of its group
+          if (!groupMemberArea.containsRect(newBounds)) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Abort move if any node move not valid
+      if (!canMove) {
+        return;
+      }
+
+      // Move the nodes
+      nodesToMove.each(function(node: go.Node): void {
+        node.moveTo(node.position.x + hChange, node.position.y + vChange);
+      });
+
+      // Get all nodes affected by the move, explicitly or implicitly
+      const affectedNodes = new go.Set<go.Node>();
+      // Selected nodes
+      affectedNodes.addAll(selectedNodes);
+      // Group member nodes
+      selectedNodes.each(function(node: go.Node): void {
+        if (node instanceof go.Group) {
+          node.findSubGraphParts().each(function (part: go.Part): void {
+            if (part instanceof go.Node) {
+              affectedNodes.add(part);
+            }
+          });
+        }
+      });
+
+      // Get any links connected to nodes affected by the move
+      const linksToUpdate = new go.Set<go.Link>();
+      affectedNodes.each(function(node: go.Node): void {
+        linksToUpdate.addAll(node.findLinksConnected());
+      });
+
+      // Update link routes for links connected to affected nodes
+      linksToUpdate.each(function(link: go.Link): void {
+        link.data.updateRoute = true;
+        link.updateRoute();
+      });
+
+    } else {
+      super.doKeyDown();
+    }
+  }
+
+  public doKeyUp(): void {
+    const diagram = this.diagram;
+    const input = diagram.lastInput;
+
+    // Handle nodes moved using the arrow keys
+    if (['Up', 'Down', 'Left', 'Right'].includes(input.key) && diagram.allowMove) {
+      const effectiveSelection = new go.Set<go.Part>();
+
+      // Get all nodes affected by the move
+      diagram.selection.each(function(part: go.Part): void {
+        // selected nodes
+        if (part instanceof go.Node) {
+          effectiveSelection.add(part);
+        }
+        // Subgraph parts
+        if (part instanceof go.Group) {
+          effectiveSelection.addAll(part.findSubGraphParts());
+        }
+      });
+
+      currentService.arrowKeyMoveSource.next();
+
+      // Update position in the store for moved nodes and connected links
+      currentService.diagramChangesService.updatePosition({ subject: effectiveSelection, diagram: diagram });
+    } else {
+      super.doKeyUp();
+    }
+  }
+}
+
 // Customised link that only updates its route when a tool that can affect link route is active
 export class CustomLink extends go.Link {
   constructor() {
@@ -261,6 +406,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a shared copy of an existing node should be made into the master
   private setAsMasterSource = new Subject();
   public setAsMaster$ = this.setAsMasterSource.asObservable();
+  // Observable to flag that the last action performed was moving parts using the arrow keys
+  private arrowKeyMoveSource = new Subject();
+  public arrowKeyMove$ = this.arrowKeyMoveSource.asObservable();
 
   public diagramEditable: boolean;
   private currentLevel;
@@ -276,6 +424,7 @@ export class GojsCustomObjectsService {
     public diagramLevelService: DiagramLevelService
   ) {
     this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+    currentService = this;
   }
 
   // Context menu for when the background is right-clicked
