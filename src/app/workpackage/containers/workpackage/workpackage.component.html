@@ -38,6 +38,7 @@
                   [pagination]="page$ | async"
                   (pageChange)="onPageChange($event)"
                   (refresh)="refreshSearch($event)"
+                  (sortChange)="handleTableSortChange($event)"
                 >
                 </smi-workpackages-table>
               </mat-tab>

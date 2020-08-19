@@ -12,6 +12,8 @@ import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selecto
 
 const $ = go.GraphObject.make;
 
+let currentService;
+
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
   return {
@@ -157,6 +159,149 @@ export class CustomNodeResize extends go.ResizingTool {
   }
 }
 
+export class CustomCommandHandler extends go.CommandHandler {
+  constructor() {
+    super();
+  }
+
+  public doKeyDown(): void {
+    const diagram = this.diagram;
+    const input = diagram.lastInput;
+
+    // Handle node positioning from pressing the arrow keys
+    if (['Up', 'Down', 'Left', 'Right'].includes(input.key) && diagram.allowMove) {
+      const nodesToMove = new go.Set<go.Node>();
+      const selectedNodes = new go.Set<go.Node>();
+
+      diagram.selection.each(function(selectedPart: go.Part): void {
+        if (selectedPart instanceof go.Node) {
+          selectedNodes.add(selectedPart);
+        }
+      });
+
+      // Only include selected nodes that do not have any containing node selected,
+      //  as group member nodes are automatically kept aligned with their containing
+      //  groups on move.
+      selectedNodes.each(function(node: go.Node): void {
+        const containingGroups = new go.Set<go.Group>();
+        for (let grp = node; grp.containingGroup; grp = grp.containingGroup) {
+          containingGroups.add(grp.containingGroup);
+        }
+        if (!selectedNodes.containsAny(containingGroups)) {
+          nodesToMove.add(node);
+        }
+      });
+
+      // Get vertical and horizontal change in node position depending on which arrow
+      //  keys are pressed
+      let vChange = 0;
+      let hChange = 0;
+
+      if (input.key === 'Up') {
+        vChange = -1;
+      } else if (input.key === 'Down') {
+        vChange = 1;
+      } else if (input.key === 'Left') {
+        hChange = -1;
+      } else {
+        hChange = 1;
+      }
+
+      // Move amount equal to the grid cell size on each keypress.
+      //  If control held down, move only one unit.
+      if (diagram.grid && !input.control) {
+        vChange = vChange * diagram.grid.gridCellSize.height;
+        hChange = hChange * diagram.grid.gridCellSize.width;
+      }
+
+      // Check attempted move is valid for all nodes to be moved
+      const canMove = nodesToMove.all(function(node: go.Node): boolean {
+        const newBounds = node.getDocumentBounds().copy().offset(hChange, vChange);
+        // Check space to move node to is unoccupied
+        if (!currentService.diagramChangesService.isUnoccupied(newBounds, node)) {
+          return false;
+        } else if (node.containingGroup) {
+          const groupMemberArea = node.containingGroup.findObject('Group member area').getDocumentBounds();
+          // Check node is not being moved outside of its group
+          if (!groupMemberArea.containsRect(newBounds)) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Abort move if any node move not valid
+      if (!canMove) {
+        return;
+      }
+
+      // Move the nodes
+      nodesToMove.each(function(node: go.Node): void {
+        node.moveTo(node.position.x + hChange, node.position.y + vChange);
+      });
+
+      // Get all nodes affected by the move, explicitly or implicitly
+      const affectedNodes = new go.Set<go.Node>();
+      // Selected nodes
+      affectedNodes.addAll(selectedNodes);
+      // Group member nodes
+      selectedNodes.each(function(node: go.Node): void {
+        if (node instanceof go.Group) {
+          node.findSubGraphParts().each(function (part: go.Part): void {
+            if (part instanceof go.Node) {
+              affectedNodes.add(part);
+            }
+          });
+        }
+      });
+
+      // Get any links connected to nodes affected by the move
+      const linksToUpdate = new go.Set<go.Link>();
+      affectedNodes.each(function(node: go.Node): void {
+        linksToUpdate.addAll(node.findLinksConnected());
+      });
+
+      // Update link routes for links connected to affected nodes
+      linksToUpdate.each(function(link: go.Link): void {
+        link.data.updateRoute = true;
+        link.updateRoute();
+      });
+
+    } else {
+      super.doKeyDown();
+    }
+  }
+
+  public doKeyUp(): void {
+    const diagram = this.diagram;
+    const input = diagram.lastInput;
+
+    // Handle nodes moved using the arrow keys
+    if (['Up', 'Down', 'Left', 'Right'].includes(input.key) && diagram.allowMove) {
+      const effectiveSelection = new go.Set<go.Part>();
+
+      // Get all nodes affected by the move
+      diagram.selection.each(function(part: go.Part): void {
+        // selected nodes
+        if (part instanceof go.Node) {
+          effectiveSelection.add(part);
+        }
+        // Subgraph parts
+        if (part instanceof go.Group) {
+          effectiveSelection.addAll(part.findSubGraphParts());
+        }
+      });
+
+      currentService.arrowKeyMoveSource.next();
+
+      // Update position in the store for moved nodes and connected links
+      currentService.diagramChangesService.updatePosition({ subject: effectiveSelection, diagram: diagram });
+    } else {
+      super.doKeyUp();
+    }
+  }
+}
+
 // Customised link that only updates its route when a tool that can affect link route is active
 export class CustomLink extends go.Link {
   constructor() {
@@ -261,6 +406,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that a shared copy of an existing node should be made into the master
   private setAsMasterSource = new Subject();
   public setAsMaster$ = this.setAsMasterSource.asObservable();
+  // Observable to flag that the last action performed was moving parts using the arrow keys
+  private arrowKeyMoveSource = new Subject();
+  public arrowKeyMove$ = this.arrowKeyMoveSource.asObservable();
 
   public diagramEditable: boolean;
   private currentLevel;
@@ -276,6 +424,7 @@ export class GojsCustomObjectsService {
     public diagramLevelService: DiagramLevelService
   ) {
     this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
+    currentService = this;
   }
 
   // Context menu for when the background is right-clicked
@@ -489,7 +638,8 @@ export class GojsCustomObjectsService {
       text: string,
       subMenuNames: string[],
       visible_predicate?: (object: go.Part, event: object) => boolean,
-      text_predicate?: (object: go.GraphObject, event: object) => string
+      text_predicate?: (object: go.GraphObject, event: object) => string,
+      enabled_predicate?: (object: go.Part, event: object) => boolean
     ): go.Part {
       return $('ContextMenuButton',
         {
@@ -498,7 +648,10 @@ export class GojsCustomObjectsService {
         $(go.TextBlock,
           text_predicate
             ? new go.Binding('text', '', text_predicate).ofObject()
-            : { text: text }
+            : { text: text },
+          new go.Binding('stroke', 'isEnabled', function(enabled) {
+            return enabled ? 'black' : disabledTextColour;
+          }).ofObject(text)
         ),
         {
           mouseEnter: function(event: go.InputEvent, object: go.Part): void {
@@ -512,6 +665,8 @@ export class GojsCustomObjectsService {
                 button.visible = false;
               }
             });
+
+            if (!object.isEnabled) {return; }
 
             // Show any submenu buttons assigned to this menu button
             subMenuNames.forEach(function(buttonName: string): void {
@@ -537,6 +692,9 @@ export class GojsCustomObjectsService {
                 return false;
               }
             }).ofObject()
+          : {},
+        enabled_predicate
+          ? new go.Binding('isEnabled', '', enabled_predicate).ofObject()
           : {}
       );
     }
@@ -571,24 +729,51 @@ export class GojsCustomObjectsService {
           'Show Status',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', !node.data.bottomExpanded);
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.none);
+            const anyStatusHidden = event.diagram.selection.any(
+              function (part: go.Part): boolean {
+                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+                  return !part.data.bottomExpanded;
+                }
+                return false;
+              }
+            );
 
-            diagramChangesService.nodeExpandChanged(node);
+            event.diagram.selection.each(function(part: go.Part): void {
+              if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', anyStatusHidden);
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', middleOptions.none);
+
+                diagramChangesService.nodeExpandChanged(part);
+              }
+            });
           },
           null,
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
             return event.diagram.allowMove;
           },
           function(object: go.GraphObject, event: go.DiagramEvent): string {
-            const node = (object.part as go.Adornment).adornedPart as go.Node;
-            return node.data.bottomExpanded ? 'Hide Status' : 'Show Status';
+
+            const anyStatusHidden = event.diagram.selection.any(
+              function (part: go.Part): boolean {
+                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+                  return !part.data.bottomExpanded;
+                }
+                return false;
+              }
+            );
+            return anyStatusHidden ? 'Show Status' : 'Hide Status';
           }
         ),
-        makeButton(1, 'Show Details', function(event: go.DiagramEvent, object: go.Part): void {
-          thisService.showDetailTabSource.next();
-        }),
+        makeButton(1,
+          'Show Details',
+          function(event: go.DiagramEvent, object: go.Part): void {
+            thisService.showDetailTabSource.next();
+          },
+          null,
+          function(object: go.Part, event: go.DiagramEvent): boolean {
+            return event.diagram.selection.count === 1;
+          }
+        ),
         makeMenuButton(
           2,
           'Grouped Components',
@@ -610,22 +795,37 @@ export class GojsCustomObjectsService {
           'Expand',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Group;
-            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
+            const anyCollapsed = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return !part.isSubGraphExpanded;
+              }
+              return false;
+            });
 
-            const newState = node.isSubGraphExpanded ? middleOptions.none : middleOptions.group;
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', newState);
+            event.diagram.selection.each(function(part: go.Part): void {
+              if (part instanceof go.Group) {
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', false);
 
-            diagramChangesService.nodeExpandChanged(node);
+                const newState = anyCollapsed ? middleOptions.group : middleOptions.none;
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', newState);
+
+                diagramChangesService.nodeExpandChanged(part);
+              }
+            });
 
           }.bind(this),
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
-          function(object: go.GraphObject) {
+          function(object: go.GraphObject, event: go.DiagramEvent) {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Group;
-            return node.isSubGraphExpanded ? 'Collapse' : 'Expand';
+            const anyCollapsed = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return !part.isSubGraphExpanded;
+              }
+              return false;
+            });
+            return anyCollapsed ? 'Expand' : 'Collapse';
           }
         ),
         makeSubMenuButton(
@@ -633,22 +833,36 @@ export class GojsCustomObjectsService {
           'Show as List (groups)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            const newState = node.data.middleExpanded !== middleOptions.groupList
-                           ? middleOptions.groupList
-                           : middleOptions.none;
-            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', newState);
+            const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return part.data.middleExpanded !== middleOptions.groupList;
+              }
+              return false;
+            });
 
-            diagramChangesService.nodeExpandChanged(node);
+            event.diagram.selection.each(function(part: go.Part): void {
+              if (part instanceof go.Group) {
+                const newState = anyHidden ? middleOptions.groupList : middleOptions.none;
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', true);
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', newState);
+
+                diagramChangesService.nodeExpandChanged(part);
+              }
+            });
 
           }.bind(this),
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
-          function(object: go.GraphObject) {
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            return node.data.middleExpanded === middleOptions.groupList ? 'Hide List' : 'Show as List';
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+
+            const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return part.data.middleExpanded !== middleOptions.groupList;
+              }
+              return false;
+            });
+            return anyHidden ? 'Show as List' : 'Hide List';
           }
         ),
         makeSubMenuButton(
@@ -660,7 +874,9 @@ export class GojsCustomObjectsService {
             diagramLevelService.displayGroupMembers.call(this, event, node);
 
           }.bind(this),
-          null,
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.selection.count === 1;
+          },
           function() {return 'Display'; }
         ),
         makeSubMenuButton(
@@ -677,6 +893,11 @@ export class GojsCustomObjectsService {
 
           }.bind(this),
           function(object: go.GraphObject, event: go.DiagramEvent) {
+
+            if (event.diagram.selection.count !== 1) {
+              return false;
+            }
+
             const node = (object.part as go.Adornment).adornedObject as go.Node;
 
             return thisService.diagramEditable &&
@@ -689,7 +910,15 @@ export class GojsCustomObjectsService {
           'Add to Group',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
-            this.addSystemToGroupSource.next(node.data);
+            const selectedNodes = new go.Set<go.Group>();
+
+            // Ignore links and transformation nodes when adding to new group
+            event.diagram.selection.each(function(part: go.Part): void {
+              if (part instanceof go.Group) {
+                selectedNodes.add(part);
+              }
+            });
+            this.addSystemToGroupSource.next(selectedNodes);
           }.bind(this),
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -700,6 +929,12 @@ export class GojsCustomObjectsService {
           },
           function(object: go.GraphObject): string {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
+
+            if (thisService.currentLevel === Level.system
+              && node.diagram.selection.count > 1) {
+              return 'Add/Move to Group';
+            }
+
             return node.data.group ? 'Move to Group' : 'Add to Group';
           }
         ),
@@ -734,22 +969,37 @@ export class GojsCustomObjectsService {
           'Show as List (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            const newState = node.data.middleExpanded !== middleOptions.children ?
-              middleOptions.children : middleOptions.none;
+            const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return part.data.middleExpanded !== middleOptions.children;
+              }
+              return false;
+            });
 
-            event.diagram.model.setDataProperty(node.data, 'middleExpanded', newState);
-            event.diagram.model.setDataProperty(node.data, 'bottomExpanded', true);
+            const newState = anyHidden ? middleOptions.children : middleOptions.none;
 
-            diagramChangesService.nodeExpandChanged(node);
+            event.diagram.selection.each(function(part: go.Part): void {
+
+              if (part instanceof go.Node && part.data.category !== nodeCategories.transformation) {
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', newState);
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', true);
+
+                diagramChangesService.nodeExpandChanged(part);
+              }
+            });
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
 
-            const node = (object.part as go.Adornment).adornedObject as go.Node;
-            return node.data.middleExpanded === middleOptions.children ? 'Hide List' : 'Show as List';
+            const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
+              if (part instanceof go.Group) {
+                return part.data.middleExpanded !== middleOptions.children;
+              }
+              return false;
+            });
+            return anyHidden ? 'Show as List' : 'Hide List';
           }
         ),
         makeSubMenuButton(4,
@@ -760,7 +1010,9 @@ export class GojsCustomObjectsService {
 
             diagramLevelService.changeLevelWithFilter.call(this, event, node);
           }.bind(this),
-          null,
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.selection.count === 1;
+          },
           function() {return 'Display'; }
         ),
         makeSubMenuButton(
@@ -771,6 +1023,9 @@ export class GojsCustomObjectsService {
             thisService.addDataSetSource.next();
           },
           function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            if (event.diagram.selection.count !== 1) {
+              return false;
+            }
             const node = (object.part as go.Adornment).adornedObject as go.Node;
             return thisService.diagramEditable &&
               ![nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category);
@@ -796,7 +1051,12 @@ export class GojsCustomObjectsService {
             'Use across Levels',
             'View Sources',
             'View Targets'
-          ]
+          ],
+          null,
+          null,
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            return event.diagram.selection.count === 1;
+          }
         ),
         // --Analysis submenu buttons--
         makeSubMenuButton(

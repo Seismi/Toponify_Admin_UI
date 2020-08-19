@@ -81,7 +81,10 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
         textFilter: textFilter,
         page: 0,
         size: this.workPackageParams.size,
-        includeArchived: this.workPackageParams.includeArchived
+        includeArchived: this.workPackageParams.includeArchived,
+        ...(this.workPackageParams.sortBy && { sortBy: this.workPackageParams.sortBy }),
+        ...(this.workPackageParams.sortOrder && { sortOrder: this.workPackageParams.sortOrder })
+
       }
       this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     });
@@ -129,9 +132,26 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.actions.pipe(ofType(WorkPackageActionTypes.AddWorkPackageSuccess)).subscribe((action: any) => {
-      this.selectedRowIndex = action.payload.id;
-      this.onSelectWorkpackage(action.payload);
+    this.actions
+      .pipe(
+        ofType(
+          WorkPackageActionTypes.AddWorkPackageSuccess,
+          WorkPackageActionTypes.DeleteWorkPackageSuccess
+        )
+      )
+      .subscribe((action: any) => {
+        if (action.payload.id) {
+          this.selectedRowIndex = action.payload.id;
+          this.onSelectWorkpackage(action.payload);
+        }
+
+        this.workPackageParams = {
+          textFilter: this.workPackageParams.textFilter,
+          page: 0,
+          size: this.workPackageParams.size,
+          includeArchived: this.workPackageParams.includeArchived
+        };
+        this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     });
   }
 
@@ -156,7 +176,9 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
       textFilter: this.workPackageParams.textFilter,
       page: page.pageIndex,
       size: page.pageSize,
-      includeArchived: this.workPackageParams.includeArchived
+      includeArchived: this.workPackageParams.includeArchived,
+      ...(this.workPackageParams.sortBy && { sortBy: this.workPackageParams.sortBy }),
+      ...(this.workPackageParams.sortOrder && { sortOrder: this.workPackageParams.sortOrder })
     } 
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams))
   }
@@ -202,7 +224,19 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
       textFilter: textFilter,
       page: 0,
       size: this.workPackageParams.size,
-      includeArchived: this.workPackageParams.includeArchived
+      includeArchived: this.workPackageParams.includeArchived,
+      ...(this.workPackageParams.sortBy && { sortBy: this.workPackageParams.sortBy }),
+      ...(this.workPackageParams.sortOrder && { sortOrder: this.workPackageParams.sortOrder })
+    };
+    this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
+  }
+
+  handleTableSortChange(sort: { sortOrder: string; sortBy: string }) {
+    this.workPackageParams = {
+      textFilter: this.workPackageParams.textFilter,
+      page: this.workPackageParams.page,
+      size: this.workPackageParams.size,
+      ...(sort.sortOrder && { sortBy: sort.sortBy, sortOrder: sort.sortOrder })
     };
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
   }

@@ -83,6 +83,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   selectedOwnerIndex: any = -1;
   availableTags$: Observable<Tag[]>;
   scope: ScopeEntity;
+  workPackageStore$: Subscription;
 
   constructor(
     private radioStore: Store<RadioState>,
@@ -103,7 +104,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.route.params.subscribe(params => {
         this.reportId = params['reportId'];
-        this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
+        this.workPackageStore$ = this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
           this.getReport(workPackageIds);
         });
@@ -155,6 +156,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.workPackageStore$.unsubscribe();
   }
 
   get reportDetailForm(): FormGroup {
