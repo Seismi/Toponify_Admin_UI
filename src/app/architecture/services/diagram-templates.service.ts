@@ -598,7 +598,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get name and RADIO alert label for links
+  // Get name and RADIO alert label for links (and also transformation nodes)
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
@@ -633,11 +633,17 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Vertical',
-        $(
-          go.TextBlock,
-          textFont('bold 14px'),
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'linkName').ofModel()
+        $(go.Panel,
+          'Auto',
+          $(
+            go.TextBlock,
+            textFont('bold 14px'),
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'linkName').ofModel(),
+          ),
+          new go.Binding('visible', 'category', function(category: string): boolean  {
+            return category === nodeCategories.transformation;
+          })
         ),
         this.getTagIconsRow(),
         this.getRadioAlertIndicators()
@@ -1033,7 +1039,8 @@ export class DiagramTemplatesService {
       this.getStandardNodeOptions(false),
       {
         contextMenu: null,
-        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
+        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
+        selectionObjectName: 'shape'
       },
       new go.Binding(
         'movable',
@@ -1058,19 +1065,39 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
         return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
-      $(go.Shape,
-        this.getStandardNodeShapeOptions(),
-        {
-          desiredSize: new go.Size(60.3, 53.6)
-        },
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        )
+      $(go.Panel,
+        'Vertical',
+        $(go.Panel,
+          'Auto',
+          {
+            margin: 10
+          },
+          $(go.Shape,
+            this.getStandardNodeShapeOptions(),
+            {
+              name: 'shape',
+              desiredSize: new go.Size(60.3, 53.6)
+            },
+            // Bind stroke to multicoloured brush based on work packages impacted by
+            new go.Binding(
+              'stroke',
+              'impactedByWorkPackages',
+              function(impactedPackages, shape) {
+                return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+              }.bind(this)
+            )
+          ),
+          $(go.Picture,
+            {
+              source: 'assets/node-icons/transformation.svg',
+              alignment: go.Spot.Center,
+              maxSize: new go.Size(82, 82),
+              imageStretch: go.GraphObject.Uniform
+            }
+          ),
+          this.getDependencyExpandButton(true)
+        ),
+        !forPalette ? this.getLinkLabel() : {}
       ),
       // Dummy panel with no size and no contents.
       // Used to ensure node usage view lays out nodes vertically aligned.
@@ -1078,16 +1105,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.TopCenter,
         desiredSize: new go.Size(0, 0),
         name: 'location panel'
-      }),
-      $(go.Picture,
-        {
-          source: 'assets/node-icons/transformation.svg',
-          alignment: go.Spot.Center,
-          maxSize: new go.Size(82, 82),
-          imageStretch: go.GraphObject.Uniform
-        }
-      ),
-      this.getDependencyExpandButton(true)
+      })
     );
   }
 
