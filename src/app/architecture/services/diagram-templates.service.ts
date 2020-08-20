@@ -237,6 +237,16 @@ export class DiagramTemplatesService {
   getTitleTagIconTemplate(): go.Panel {
     return $(go.Panel,
       'Auto',
+      $(go.Shape, {fill: null, stroke: null }),
+      $(go.Shape,
+        'Circle',
+        {
+          desiredSize: new go.Size(28, 28),
+          stroke: null,
+          fill: null
+        },
+        new go.Binding('fill', 'backgroundColour')
+      ),
       $(go.Picture,
         {
           desiredSize: new go.Size(25, 25)
