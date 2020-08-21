@@ -260,6 +260,28 @@ export class DiagramTemplatesService {
     );
   }
 
+  getWorkpackageIconTemplate() {
+    return $(go.Panel,
+      'Auto',
+      $(go.Shape, {fill: null, stroke: null }),
+      $(go.Shape,
+        'Circle',
+        {
+          desiredSize: new go.Size(26, 26),
+          stroke: null,
+          fill: null
+        },
+        new go.Binding('fill', 'displayColour')
+      ),
+      $(go.Picture,
+        {
+          desiredSize: new go.Size(23, 23),
+          source: `assets/node-icons/work-package-white.svg`
+        }
+      )
+    );
+  }
+
   // Get button for revealing the next level of dependencies
   getDependencyExpandButton(forTransformation = false): go.Panel {
     return $(
@@ -541,9 +563,11 @@ export class DiagramTemplatesService {
       go.Panel,
       'Horizontal',
       {
-        alignment: go.Spot.Center,
-        alignmentFocus: go.Spot.Center,
-        visible: false
+        alignment: go.Spot.LeftCenter,
+        alignmentFocus: go.Spot.LeftCenter,
+        visible: false,
+        row: 0,
+        column: 0
       },
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
       ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
@@ -602,6 +626,50 @@ export class DiagramTemplatesService {
                 return !!tag.iconName;
               }
             ).length > 5;
+          }
+        )
+      )
+    );
+  }
+
+  getWorkpackageImpactIcons(): go.Panel {
+    return $(go.Panel,
+      'Horizontal',
+      {
+        alignment: go.Spot.RightCenter,
+        alignmentFocus: go.Spot.RightCenter,
+        column: 1,
+        row: 0,
+      },
+      // Panel to contain workpackage icons
+      $(go.Panel,
+        'Horizontal',
+        {
+          itemTemplate: this.getWorkpackageIconTemplate()
+        },
+        new go.Binding('itemArray', 'impactedByWorkPackages',
+          function(workpackages: any[]): any[] {
+            let workpackgeIcons = workpackages.concat();
+            // Restrict workpackage icons in the row to a maximum of five
+            workpackgeIcons = workpackgeIcons.slice(0, 5);
+
+            return workpackgeIcons;
+          }
+        )
+      ),
+      // Ellipsis to indicate that there are additional workpackage
+      //  icons associated with the node
+      $(go.TextBlock,
+        '...',
+        textFont('bold 18px'),
+        {
+          margin: new go.Margin(0, 0, 0, 4)
+        },
+        // Should only be visible if there are more than five
+        //  tags with icons against the  node
+        new go.Binding('visible', 'impactedByWorkPackages',
+          function(workpackages: any[]): boolean {
+            return workpackages.length > 5;
           }
         )
       )
@@ -978,18 +1046,14 @@ export class DiagramTemplatesService {
         ),
         new go.Binding('visible', 'tags').ofModel()
       ),
-      $(
-        go.Panel,
-        'Spot',
-        {
-          alignment: go.Spot.BottomCenter,
-          alignmentFocus: go.Spot.BottomCenter
-        },
-        $(go.Panel, '', {
-          desiredSize: new go.Size(nodeWidth - 10, 30)
-        }),
+      $(go.Panel,
+        'Table',
+        $(go.RowColumnDefinition, {row: 0, height: 30}),
+        $(go.RowColumnDefinition, {column: 0, width: (nodeWidth - 10) / 2}),
+        $(go.RowColumnDefinition, {column: 1, separatorStrokeWidth: 2, separatorStroke: 'black', width: (nodeWidth - 10) / 2}),
         this.getRadioAlertIndicators(),
-        isGroup ? {} : this.getBottomExpandButton()
+        this.getWorkpackageImpactIcons(),
+        // isGroup ? {} : this.getBottomExpandButton()
       )
     );
   }
