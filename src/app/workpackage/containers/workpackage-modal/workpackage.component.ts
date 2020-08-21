@@ -86,8 +86,7 @@ export class WorkPackageModalComponent implements OnInit {
               workpackages.filter(wp => !this.baselineData.map(b => b.id).includes(wp.id))
             )
           ),
-        selectedIds: this.baselineData ? this.baselineData.map(baseline => baseline.id) : [],
-        multi: true
+        selectedIds: this.baselineData ? this.baselineData.map(baseline => baseline.id) : []
       }
     });
     dialogRef.afterClosed().subscribe(data => {
