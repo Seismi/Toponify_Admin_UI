@@ -10,6 +10,7 @@ import { State as WorkPackageState } from '@app/workpackage/store/reducers/workp
 import { Actions, ofType } from '@ngrx/effects';
 import { WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
 import { ComponentsOrLinksModalComponent } from '@app/architecture/containers/components-or-links-modal/components-or-links-modal.component';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Component({
   selector: 'smi-select-modal',
@@ -74,7 +75,7 @@ export class SelectModalComponent implements OnInit {
     );
 
     this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: any) => {
-      if (action) {
+      if (action.payload && this.data.currentFilterLevel === Level.system) {
         this.store.dispatch(
           new AddWorkPackageNodeGroup({
             workPackageId: this.data.workPackageId,
