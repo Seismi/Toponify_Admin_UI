@@ -75,7 +75,7 @@ export class UserService {
   }
 
   resetPassword(email: string): Observable<{data: { email: string}}> {
-    return this.http.put<{data: { email: string}}>(`/users/password/reset`, { data: email }, httpOptions);
+    return this.http.put<{data: { email: string}}>(`/users/password/reset`, { data: { email } }, httpOptions);
   }
 
   // TODO: move into sharable service
