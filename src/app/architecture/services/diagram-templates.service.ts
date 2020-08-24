@@ -577,7 +577,8 @@ export class DiagramTemplatesService {
         alignmentFocus: go.Spot.LeftCenter,
         visible: false,
         row: 0,
-        column: 0
+        column: 0,
+        height: 25
       },
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
       ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
@@ -596,6 +597,7 @@ export class DiagramTemplatesService {
         margin: new go.Margin(0, 0, 2, 0),
         column: 1,
         row: 0,
+        height: 30
       },
       // Panel to contain tag icons
       $(go.Panel,
@@ -650,7 +652,8 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         column: 1,
-        row: 0
+        row: 0,
+        height: 26
       },
       // Panel to contain workpackage icons
       $(go.Panel,
@@ -1067,7 +1070,7 @@ export class DiagramTemplatesService {
             column: 1,
             separatorStrokeWidth: 2,
             separatorStroke: 'black',
-            width: nodeWidth / 2 - (isGroup ? 0 : 29)
+            width: nodeWidth / 2 - (isGroup ? 0 : 30)
           }
         ),
         this.getRadioAlertIndicators(),
@@ -1172,7 +1175,7 @@ export class DiagramTemplatesService {
       $(go.Panel,
         'Vertical',
         {
-          desiredSize: new go.Size(145, 120)
+          desiredSize: new go.Size(145, 145)
         },
         $(go.Picture,
           {
@@ -1182,7 +1185,8 @@ export class DiagramTemplatesService {
           }
         ),
         this.getTagIconsRow(4),
-        this.getRadioAlertIndicators()
+        this.getRadioAlertIndicators(),
+        this.getWorkpackageImpactIcons()
       ),
       this.getDependencyExpandButton(true)
     );
