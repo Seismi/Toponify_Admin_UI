@@ -10,6 +10,7 @@ import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {Subject} from 'rxjs';
+import {NodeColoursDark, NodeColoursLight} from '@app/architecture/store/models/layout.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -193,7 +194,7 @@ export class DiagramTemplatesService {
         margin: new go.Margin(0, 5, 0, 0)
       },
       $(go.Shape, 'RoundedRectangle', {
-        fill: 'white',
+        fill: 'transparent',
         height: 27
       },
       new go.Binding('fill', 'backgroundColour')
@@ -578,7 +579,7 @@ export class DiagramTemplatesService {
         visible: false,
         row: 0,
         column: 0,
-        height: 25
+        height: 27
       },
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
       ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
@@ -849,6 +850,13 @@ export class DiagramTemplatesService {
           toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', 'name')))
         },
         new go.Binding('text', 'name'),
+        new go.Binding(
+          'stroke',
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
         new go.Binding('opacity', 'name', function(name: boolean): number {
           return name ? 1 : 0;
         }).ofModel()
@@ -1063,13 +1071,19 @@ export class DiagramTemplatesService {
       ),
       $(go.Panel,
         'Table',
+        new go.Binding(
+          'defaultColumnSeparatorStroke',
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
         $(go.RowColumnDefinition, {row: 0, height: 30}),
         $(go.RowColumnDefinition, {column: 0, width: nodeWidth / 2}),
         $(go.RowColumnDefinition,
           {
             column: 1,
             separatorStrokeWidth: 2,
-            separatorStroke: 'black',
             width: nodeWidth / 2 - (isGroup ? 0 : 30)
           }
         ),
@@ -1156,13 +1170,19 @@ export class DiagramTemplatesService {
       }.bind(this)),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
-        // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
+        new go.Binding(
+          'fill',
+          'colour',
+          function(colour) {
+            return NodeColoursLight[colour];
+          }
         )
       ),
       // Dummy panel with no size and no contents.
@@ -1241,10 +1261,17 @@ export class DiagramTemplatesService {
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
+        new go.Binding(
+          'fill',
+          'colour',
+          function(colour) {
+            return NodeColoursLight[colour];
+          }
         ),
         new go.Binding('fromSpot', 'group', function(group) {
           if (group) {
@@ -1272,9 +1299,13 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Table',
-        {
-          defaultRowSeparatorStroke: 'black'
-        },
+        new go.Binding(
+          'stroke',
+          'defaultRowSeparatorStroke',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
         this.getTopSection(),
         this.getMiddleSection(),
         this.getBottomSection()
@@ -1401,13 +1432,19 @@ export class DiagramTemplatesService {
           return system ? 10 : 0;
         }),
         $(go.Shape,
-          // Bind stroke to multicoloured brush based on work packages impacted by
           new go.Binding(
             'stroke',
-            'impactedByWorkPackages',
-            function(impactedPackages, shape) {
-              return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-            }.bind(this)
+            'colour',
+            function(colour) {
+              return NodeColoursDark[colour];
+            }
+          ),
+          new go.Binding(
+            'fill',
+            'colour',
+            function(colour) {
+              return NodeColoursLight[colour];
+            }
           ),
           new go.Binding('fromSpot', 'group', function(group) {
             if (group) {
@@ -1434,9 +1471,13 @@ export class DiagramTemplatesService {
         $(
           go.Panel,
           'Table',
-          {
-            defaultRowSeparatorStroke: 'black'
-          },
+          new go.Binding(
+            'stroke',
+            'defaultRowSeparatorStroke',
+            function(colour) {
+              return NodeColoursDark[colour];
+            }
+          ),
           this.getTopSection(true),
           this.getMiddleSection(true),
           this.getBottomSection(true)

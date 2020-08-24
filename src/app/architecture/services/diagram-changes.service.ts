@@ -42,6 +42,7 @@ export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateNodeColour: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   public diagramEditable: boolean;
   private currentLevel: Level;
@@ -743,6 +744,19 @@ export class DiagramChangesService {
     });
   }
 
+  nodeColourChanged(node: go.Node): void {
+    this.onUpdateNodeColour.next(
+      {
+        node: {
+          id: node.data.id,
+          colour: node.data.colour
+        }
+      }
+    );
+
+    this.onUpdateDiagramLayout.next({});
+  }
+
   nodeExpandChanged(node) {
     const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
 
@@ -824,11 +838,11 @@ export class DiagramChangesService {
             part.move(newLocation, true);
           } else {
             /*
-                  For nodes that are already located in the group, change member node location back and
-                  forth between the current location and another point.
-                  This is to force GoJS to update the position of the node, as this does not appear to be
-                  done correctly when the parent group is moved.
-                */
+              For nodes that are already located in the group, change member node location back and
+              forth between the current location and another point.
+              This is to force GoJS to update the position of the node, as this does not appear to be
+              done correctly when the parent group is moved.
+            */
             const location = part.location.copy();
             part.move(location.copy().offset(1, 1));
             part.move(location, true);
