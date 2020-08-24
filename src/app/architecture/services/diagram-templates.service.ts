@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {layers, middleOptions, nodeCategories, Tag, TagColour} from '@app/architecture/store/models/node.model';
+import {layers, middleOptions, nodeCategories, Tag, TagColour, WorkPackageImpact} from '@app/architecture/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {CustomLink, defineRoundButton, GojsCustomObjectsService} from './gojs-custom-objects.service';
 import {DiagramLevelService, Level} from './diagram-level.service';
@@ -263,6 +263,14 @@ export class DiagramTemplatesService {
   getWorkpackageIconTemplate() {
     return $(go.Panel,
       'Auto',
+      {
+        toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', '',
+          function(data) {
+            const action = data.updateType ===  'add' ? 'created' : 'updated';
+            return `${action} in ${data.name}`;
+          }
+        )))
+      },
       $(go.Shape, {fill: null, stroke: null }),
       $(go.Shape,
         'Circle',
@@ -333,7 +341,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: (this.forPalette) ? false : true,
+        visible: !this.forPalette,
         click: function(event, button) {
           const node = button.part;
 
@@ -425,10 +433,12 @@ export class DiagramTemplatesService {
       'RoundButton',
       {
         name: 'BottomExpandButton',
+        column: 2,
         alignment: go.Spot.RightCenter,
+        margin: new go.Margin(0, 0, 0, 2),
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: (this.forPalette) ? false : true,
+        visible: !this.forPalette,
         click: function(event, button): void {
           const node = button.part;
 
@@ -632,14 +642,14 @@ export class DiagramTemplatesService {
     );
   }
 
-  getWorkpackageImpactIcons(): go.Panel {
+  getWorkpackageImpactIcons(maxIcons = 4): go.Panel {
     return $(go.Panel,
       'Horizontal',
       {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         column: 1,
-        row: 0,
+        row: 0
       },
       // Panel to contain workpackage icons
       $(go.Panel,
@@ -648,10 +658,10 @@ export class DiagramTemplatesService {
           itemTemplate: this.getWorkpackageIconTemplate()
         },
         new go.Binding('itemArray', 'impactedByWorkPackages',
-          function(workpackages: any[]): any[] {
+          function(workpackages: WorkPackageImpact[]): WorkPackageImpact[] {
             let workpackgeIcons = workpackages.concat();
-            // Restrict workpackage icons in the row to a maximum of five
-            workpackgeIcons = workpackgeIcons.slice(0, 5);
+            // Restrict workpackage icons in the row to a maximum (four by default)
+            workpackgeIcons = workpackgeIcons.slice(0, maxIcons);
 
             return workpackgeIcons;
           }
@@ -665,11 +675,11 @@ export class DiagramTemplatesService {
         {
           margin: new go.Margin(0, 0, 0, 4)
         },
-        // Should only be visible if there are more than five
-        //  tags with icons against the  node
+        // Should only be visible if there are more than the maximum number of
+        //  workpackage icons against the  node
         new go.Binding('visible', 'impactedByWorkPackages',
-          function(workpackages: any[]): boolean {
-            return workpackages.length > 5;
+          function(workpackages: WorkPackageImpact[]): boolean {
+            return workpackages.length > maxIcons;
           }
         )
       )
@@ -1029,6 +1039,7 @@ export class DiagramTemplatesService {
         'Horizontal',
         {
           maxSize: new go.Size(296, NaN),
+          height: 30,
           itemTemplate: this.getTagTemplate(),
           alignment: go.Spot.LeftCenter,
           margin: new go.Margin(3, 0, 3, 0)
@@ -1049,11 +1060,18 @@ export class DiagramTemplatesService {
       $(go.Panel,
         'Table',
         $(go.RowColumnDefinition, {row: 0, height: 30}),
-        $(go.RowColumnDefinition, {column: 0, width: (nodeWidth - 10) / 2}),
-        $(go.RowColumnDefinition, {column: 1, separatorStrokeWidth: 2, separatorStroke: 'black', width: (nodeWidth - 10) / 2}),
+        $(go.RowColumnDefinition, {column: 0, width: nodeWidth / 2}),
+        $(go.RowColumnDefinition,
+          {
+            column: 1,
+            separatorStrokeWidth: 2,
+            separatorStroke: 'black',
+            width: nodeWidth / 2 - (isGroup ? 0 : 29)
+          }
+        ),
         this.getRadioAlertIndicators(),
-        this.getWorkpackageImpactIcons(),
-        // isGroup ? {} : this.getBottomExpandButton()
+        this.getWorkpackageImpactIcons(isGroup ? 4 : 3),
+        isGroup ? {} : this.getBottomExpandButton()
       )
     );
   }
