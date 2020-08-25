@@ -3,7 +3,7 @@ import {LinkShiftingTool} from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from './diagram-level.service';
 import {Subject} from 'rxjs';
-import {layers, middleOptions, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
+import {colourOptions, layers, middleOptions, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
@@ -796,8 +796,8 @@ export class GojsCustomObjectsService {
           'Blue',
           function(event: go.DiagramEvent, object: go.GraphObject): void  {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'colour', 'blue');
-            diagramChangesService.nodeColourChanged(node);
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.blue);
+            diagramChangesService.onUpdateDiagramLayout.next({});
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
@@ -808,8 +808,8 @@ export class GojsCustomObjectsService {
           'Red',
           function(event: go.DiagramEvent, object: go.GraphObject): void  {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'colour', 'red');
-            diagramChangesService.nodeColourChanged(node);
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.red);
+            diagramChangesService.onUpdateDiagramLayout.next({});
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
@@ -820,8 +820,8 @@ export class GojsCustomObjectsService {
           'Green',
           function(event: go.DiagramEvent, object: go.GraphObject): void  {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'colour', 'green');
-            diagramChangesService.nodeColourChanged(node);
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.green);
+            diagramChangesService.onUpdateDiagramLayout.next({});
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
@@ -832,8 +832,8 @@ export class GojsCustomObjectsService {
           'Purple',
           function(event: go.DiagramEvent, object: go.GraphObject): void  {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'colour', 'purple');
-            diagramChangesService.nodeColourChanged(node);
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.purple);
+            diagramChangesService.onUpdateDiagramLayout.next({});
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
@@ -844,8 +844,8 @@ export class GojsCustomObjectsService {
           'Orange',
           function(event: go.DiagramEvent, object: go.GraphObject): void  {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'colour', 'orange');
-            diagramChangesService.nodeColourChanged(node);
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.orange);
+            diagramChangesService.onUpdateDiagramLayout.next({});
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;
@@ -856,8 +856,8 @@ export class GojsCustomObjectsService {
           'None',
           function(event: go.DiagramEvent, object: go.GraphObject): void  {
             const node = (object.part as go.Adornment).adornedPart as go.Node;
-            event.diagram.model.setDataProperty(node.data, 'colour', 'none');
-            diagramChangesService.nodeColourChanged(node);
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.none);
+            diagramChangesService.onUpdateDiagramLayout.next({});
           },
           function(object: go.GraphObject, event: go.DiagramEvent) {
             return event.diagram.allowMove;

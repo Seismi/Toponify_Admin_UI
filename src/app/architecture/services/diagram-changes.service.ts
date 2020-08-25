@@ -42,7 +42,6 @@ export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
-  public onUpdateNodeColour: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   public diagramEditable: boolean;
   private currentLevel: Level;
@@ -744,19 +743,6 @@ export class DiagramChangesService {
     });
   }
 
-  nodeColourChanged(node: go.Node): void {
-    this.onUpdateNodeColour.next(
-      {
-        node: {
-          id: node.data.id,
-          colour: node.data.colour
-        }
-      }
-    );
-
-    this.onUpdateDiagramLayout.next({});
-  }
-
   nodeExpandChanged(node) {
     const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
 
@@ -1063,7 +1049,8 @@ export class DiagramChangesService {
           locationCoordinates: node.location,
           middleExpanded: node.middleExpanded,
           bottomExpanded: node.bottomExpanded,
-          areaSize: node.areaSize
+          areaSize: node.areaSize,
+          colour: node.colour
         }
       };
     });

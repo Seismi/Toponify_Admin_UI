@@ -1071,6 +1071,7 @@ export class DiagramTemplatesService {
       ),
       $(go.Panel,
         'Table',
+        { defaultColumnSeparatorStroke: 'black' },
         new go.Binding(
           'defaultColumnSeparatorStroke',
           'colour',
@@ -1299,9 +1300,10 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Table',
+        { defaultRowSeparatorStroke: 'black' },
         new go.Binding(
-          'stroke',
           'defaultRowSeparatorStroke',
+          'colour',
           function(colour) {
             return NodeColoursDark[colour];
           }
@@ -1471,9 +1473,10 @@ export class DiagramTemplatesService {
         $(
           go.Panel,
           'Table',
+          { defaultRowSeparatorStroke: 'black' },
           new go.Binding(
-            'stroke',
             'defaultRowSeparatorStroke',
+            'colour',
             function(colour) {
               return NodeColoursDark[colour];
             }

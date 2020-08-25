@@ -17,6 +17,15 @@ export enum middleOptions {
   group = 'group'
 }
 
+export enum colourOptions {
+  blue = 'blue',
+  red = 'red',
+  green = 'green',
+  purple = 'purple',
+  orange = 'orange',
+  none = 'none'
+}
+
 export interface NodeExpandedStateApiRequest {
   data: {
     id: string;
@@ -161,6 +170,7 @@ export interface NodeLayoutSettingsEntity {
       middleExpanded?: middleOptions;
       bottomExpanded?: boolean;
       areaSize?: string;
+      colour?: colourOptions;
     };
   };
 }

@@ -56,7 +56,8 @@ import {
   NodeReports,
   Tag,
   TagApplicableTo,
-  GroupInfo
+  GroupInfo,
+  colourOptions
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -1319,57 +1320,66 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesSubscription = this.nodeStore
       .pipe(
         select(getNodeEntities),
-        // Get correct location, expanded state and group area size for nodes, based on selected layout
+        // Get correct location, expanded state, group area size and colour for nodes, based on selected layout
         map(nodes => {
           if (nodes === null) {
             return null;
           }
-          if (
-            this.currentFilterLevel &&
-            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
-          ) {
-            return nodes.map(function(node) {
-              return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
-            });
-          } else if (this.currentFilterLevel && [Level.sources, Level.targets].includes(this.currentFilterLevel)) {
-            return nodes.map(function(node) {
+
+          return nodes.map(function(node) {
+            let nodeLayout;
+
+            if (this.layout && 'id' in this.layout) {
+              nodeLayout = node.positionPerLayout.find(
+                function(layoutSettings) {
+                  return layoutSettings.layout.id === this.layout.id;
+                }.bind(this)
+              );
+            }
+
+            const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
+            const finalLayoutSettings: {
+              location?: string;
+              locationMissing?: boolean
+              middleExpanded?: middleOptions;
+              bottomExpanded?: boolean;
+              areaSize?: string;
+              colour?: colourOptions;
+            } = {};
+
+            finalLayoutSettings.colour = layoutProps && layoutProps.colour ? layoutProps.colour : null;
+
+            if (
+              this.currentFilterLevel &&
+              (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
+            ) {
+              finalLayoutSettings.middleExpanded = middleOptions.none;
+              finalLayoutSettings.bottomExpanded = false;
+            } else if (this.currentFilterLevel && [Level.sources, Level.targets].includes(this.currentFilterLevel)) {
+
               const hasMembers = nodes.some(function(member) {
                 return member.group === node.id;
               });
-              return {
-                ...node,
-                middleExpanded: hasMembers ? middleOptions.group : middleOptions.none,
-                bottomExpanded: hasMembers,
-                locationMissing: false
-              };
-            });
-          }
+              finalLayoutSettings.middleExpanded = hasMembers ? middleOptions.group : middleOptions.none;
+              finalLayoutSettings.bottomExpanded = hasMembers;
+              finalLayoutSettings.locationMissing = false;
+            } else {
+              finalLayoutSettings.middleExpanded = layoutProps && layoutProps.middleExpanded
+                ? layoutProps.middleExpanded : middleOptions.none;
+              finalLayoutSettings.bottomExpanded = layoutProps && layoutProps.bottomExpanded
+                ? layoutProps.bottomExpanded : false;
+              finalLayoutSettings.areaSize = layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null;
+              finalLayoutSettings.location = layoutProps && layoutProps.locationCoordinates
+                ? layoutProps.locationCoordinates : null;
+              finalLayoutSettings.locationMissing = !finalLayoutSettings.location;
+            }
 
-          return nodes.map(
-            function(node) {
-              let nodeLayout;
+            return {
+              ...node,
+              ...finalLayoutSettings
+            };
 
-              if (this.layout && 'id' in this.layout) {
-                nodeLayout = node.positionPerLayout.find(
-                  function(layoutSettings) {
-                    return layoutSettings.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-              }
-
-              const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
-
-              return {
-                ...node,
-                location: layoutProps && layoutProps.locationCoordinates ? layoutProps.locationCoordinates : null,
-                locationMissing: !(layoutProps && layoutProps.locationCoordinates),
-                middleExpanded:
-                  layoutProps && layoutProps.middleExpanded ? layoutProps.middleExpanded : middleOptions.none,
-                bottomExpanded: layoutProps ? !!layoutProps.bottomExpanded : false,
-                areaSize: layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null
-              };
-            }.bind(this)
-          );
+          }.bind(this));
         })
       )
       .subscribe(nodes => {
