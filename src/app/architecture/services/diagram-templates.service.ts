@@ -10,6 +10,7 @@ import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {Subject} from 'rxjs';
+import { linkCategories } from '../store/models/node-link.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -125,7 +126,13 @@ export class DiagramTemplatesService {
               go.Adornment,
               'Link',
               new go.Binding('locationSpot', '', function(linkData): go.Spot {
-                return (linkData.from || linkData.to) ? go.Spot.TopLeft : new go.Spot(0.5, 0, 1, 0);
+                if (linkData.from || linkData.to) {
+                  return go.Spot.TopLeft;
+                } else if (linkData.category === linkCategories.data) {
+                  return new go.Spot(0.5, 0, 10, 0);
+                } else if (linkData.category === linkCategories.masterData) {
+                  return new go.Spot(0.5, 0, 50, 0);
+                }
               }),
               $(go.Shape, {
                 isPanelMain: true,
@@ -655,6 +662,48 @@ export class DiagramTemplatesService {
     );
   }
 
+
+  getLinkLabelForPalette(): go.Panel {
+    return $(
+      go.Panel,
+      'Auto',
+      {
+        segmentIndex: 1,
+        segmentFraction: 0.5,
+        segmentOffset: new go.Point(-85, 0)
+      },
+      $(
+        go.TextBlock,
+        {
+          textAlign: 'center',
+          maxSize: new go.Size(200, NaN)
+        },
+        textFont('bold 24px'),
+        new go.Binding('text', 'label')
+      )
+    );
+  }
+
+  getLabelForTransformation(): go.Panel {
+    return $(
+      go.Panel,
+      'Auto',
+      {
+        width: 220,
+        padding: new go.Margin(30, 0, 0, 0)
+      },
+      $(go.TextBlock,
+        textFont('bold 24px'),
+        {
+          verticalAlignment: go.Spot.Bottom,
+          shadowVisible: false,
+          margin: new go.Margin(-55, 0, 0, 0)
+        },
+        new go.Binding('text', 'name')
+      )
+    );
+  }
+
   // Get top section of nodes, containing icons and name
   getTopSection(isGroup = false): go.Panel {
     return $(
@@ -1053,6 +1102,7 @@ export class DiagramTemplatesService {
         }.bind(this)
       ),
       forPalette ? {
+        ...this.getLabelForTransformation(),
         toolTip: $(
           'ToolTip',
           $(
@@ -1418,7 +1468,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? this.getLinkLabel() : {},
+      !forPalette ? this.getLinkLabel() : this.getLinkLabelForPalette(),
       $(
         go.Shape, // The 'to' arrowhead
         {
@@ -1506,7 +1556,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? this.getLinkLabel() : {},
+      !forPalette ? this.getLinkLabel() : this.getLinkLabelForPalette(),
       $(
         go.Shape, // The 'to' arrowhead
         {
