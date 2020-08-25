@@ -17,7 +17,7 @@ Then('the radio with title {string} should be immediately visible in the radio t
     .contains('tr', radio)
     .should('exist')
     .click();
-  cy.url().should('contain', 'http://localhost:4202/radio/');
+  cy.url().should('contain', Cypress.config().baseUrl + '/radio');
   //    .wait(['@GETRadio','@GETRadioTags'])
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
 });
