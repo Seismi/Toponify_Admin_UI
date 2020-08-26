@@ -38,8 +38,16 @@ export interface State {
   viewLevel: Level;
   draft: {
     [key: string]: any;
+    previous?: State['draft']
   };
   entities: Node[];
+  layoutHistory: {
+    nodes: { id: string; positionDetails: NodeLayoutSettingsEntity; }[];
+    links: { id: string; positionDetails: LinkLayoutSettingsEntity; }[];
+    previous?: State['layoutHistory']
+  } | null;
+  // initialNodesLayout: { nodeId: string; positionPerLayout: NodeLayoutSettingsEntity[]; }[];
+  // initialLinksLayout: { linkId: string; positionPerLayout: LinkLayoutSettingsEntity[]; }[];
   descendants: DescendantsEntity[];
   members: WorkPackageGroupMembersApiResponse['data'];
   selectedNode: NodeDetail;
@@ -70,6 +78,7 @@ export const initialState: State = {
   zoomLevel: 3,
   viewLevel: Level.system,
   entities: [],
+  layoutHistory: null,
   selectedNode: null,
   selectedNodeLink: null,
   links: [],
@@ -594,11 +603,31 @@ export function reducer(
     }
 
     case NodeActionTypes.SetDraft: {
+
+      const layoutId = action.payload.layoutId;
+
+      let currentNodePositions;
+      let currentLinkPositions;
+
+      if (layoutId in state.draft) {
+        currentNodePositions = state.draft[layoutId].nodes;
+        currentLinkPositions = state.draft[layoutId].link;
+      } else {
+        currentNodePositions = getNodeLayoutSettings(state, layoutId);
+        currentLinkPositions = getLinkLayoutSettings(state, layoutId);
+      }
+
       return {
         ...state,
         draft: {
           ...state.draft,
-          [action.payload.layoutId]: action.payload
+          [layoutId]: action.payload,
+          previous: state.draft
+        },
+        layoutHistory: {
+          nodes: state.draft[layoutId].nodes,
+          links: state.draft[layoutId].links,
+          previous: {...state.layoutHistory}
         }
       };
     }
@@ -606,16 +635,30 @@ export function reducer(
     case NodeActionTypes.RemoveAllDraft: {
       return {
         ...state,
-        draft: {}
+        draft: {},
+        layoutHistory: null
+      };
+    }
+
+    case NodeActionTypes.UndoLayoutChange: {
+      if (!state.draft.previous) {return {...state}; }
+
+
+
+      return {
+        ...state,
+        draft: {...state.draft.previous}
       };
     }
 
     case NodeActionTypes.UpdatePartsLayoutSuccess: {
       const newDraft = { ...state.draft };
       delete newDraft[action.payload];
+      delete newDraft.previous;
       return {
         ...state,
-        draft: newDraft
+        draft: newDraft,
+        layoutHistory: null
       };
     }
 
@@ -1038,6 +1081,24 @@ function replaceNodeLayoutSetting(
     ...state,
     entities
   };
+}
+
+function getNodeLayoutSettings(state: State, layoutId: string) {
+  return state.entities.map(function(node: Node) {
+    const nodeLayout = node.positionPerLayout.find(function(position): boolean {
+      return position.layout.id === layoutId;
+    });
+    return {id: node.id, positionDetails: nodeLayout};
+  });
+}
+
+function getLinkLayoutSettings(state: State, layoutId: string) {
+  state.links.map(function(link: NodeLink) {
+    const linkLayout = link.positionPerLayout.find(function(position): boolean {
+      return position.layout.id === layoutId;
+    });
+    return {id: link.id, positionDetails: linkLayout};
+  });
 }
 
 function replaceLinkRoute(

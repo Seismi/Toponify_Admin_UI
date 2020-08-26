@@ -97,6 +97,7 @@ export enum NodeActionTypes {
   ReloadNodesData = '[Node] Reload Nodes Data',
   SetDraft = '[Node] Set draft',
   RemoveAllDraft = '[Node] Remove all draft',
+  UndoLayoutChange = '[Node] Undo layout change',
   UpdateNodeGroupMembers = '[Node] Update Node Group Members',
   UpdateNodeGroupMembersSuccess = '[Node] Update Node Group Members Success',
   UpdateNodeGroupMembersFailure = '[Node] Update Node Group Members Failure',
@@ -113,6 +114,11 @@ export class SetDraft implements Action {
 
 export class RemoveAllDraft implements Action {
   readonly type = NodeActionTypes.RemoveAllDraft;
+  constructor() {}
+}
+
+export class UndoLayoutChange implements Action {
+  readonly type = NodeActionTypes.UndoLayoutChange;
   constructor() {}
 }
 
@@ -543,6 +549,7 @@ export class UpdateNodeChildrenFailure implements Action {
 export type NodeActionsUnion =
   | SetDraft
   | RemoveAllDraft
+  | UndoLayoutChange
   | LoadNodes
   | LoadNodesSuccess
   | LoadNodesFailure

@@ -9,6 +9,7 @@ import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
+import {UndoLayoutChange} from '@app/architecture/store/actions/node.actions';
 
 const $ = go.GraphObject.make;
 
@@ -267,6 +268,8 @@ export class CustomCommandHandler extends go.CommandHandler {
         link.updateRoute();
       });
 
+    } else if (input.key === 'Z' && input.control) {
+      currentService.store.dispatch(new UndoLayoutChange());
     } else {
       super.doKeyDown();
     }
