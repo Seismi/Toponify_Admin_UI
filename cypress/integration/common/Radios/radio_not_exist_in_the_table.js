@@ -10,6 +10,7 @@ Then('the radio with title {string} should not be immediately visible in the rad
 });
 
 Then('the radio with title {string} should be immediately visible in the radio table', radio => {
+  const url = Cypress.config().baseUrl;
   radio = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(radio);
@@ -17,7 +18,7 @@ Then('the radio with title {string} should be immediately visible in the radio t
     .contains('tr', radio)
     .should('exist')
     .click();
-  cy.url().should('contain', Cypress.config().baseUrl + '/radio');
+  cy.url().should('contain', `${url}radio/`);
   //    .wait(['@GETRadio','@GETRadioTags'])
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
 });
