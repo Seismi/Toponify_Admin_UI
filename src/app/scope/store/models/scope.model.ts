@@ -42,6 +42,7 @@ export interface ScopeDetails {
   include?: (Include)[] | null;
   layouts?: Layout;
   defaultLayout?: string;
+  userPrefLayout?: string;
   favourite?: boolean;
 }
 
