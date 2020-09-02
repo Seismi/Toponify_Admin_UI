@@ -1303,21 +1303,28 @@ export class DiagramTemplatesService {
         })
       ),
       $(go.Panel, 'Auto',
-        {
-          name: 'main content'
-        },
-        new go.Binding('margin', 'system', function (system) {
-          return system ? 10 : 0;
-        }),
+        // Shape to be the port to connect links to. Ensures that
+        //  links only try to connect to the node if dragged to
+        //  the edges
         $(go.Shape,
-          // Bind stroke to multicoloured brush based on work packages impacted by
-          new go.Binding(
-            'stroke',
-            'impactedByWorkPackages',
-            function(impactedPackages, shape) {
-              return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-            }.bind(this)
-          ),
+          'FramedRectangle',
+          {
+            parameter1: 0,
+            parameter2: 0,
+            stroke: null,
+            fill: null,
+            figure: 'FramedRectangle',
+            strokeWidth: 1,
+            portId: '',
+            fromLinkable: true,
+            toLinkable: true,
+            fromSpot: go.Spot.AllSides,
+            toSpot: go.Spot.AllSides,
+            fromLinkableSelfNode: false,
+            toLinkableSelfNode: false,
+            fromLinkableDuplicates: true,
+            toLinkableDuplicates: true
+          },
           new go.Binding('fromSpot', 'group', function(group) {
             if (group) {
               return go.Spot.LeftRightSides;
@@ -1330,25 +1337,49 @@ export class DiagramTemplatesService {
             } else {
               return go.Spot.AllSides;
             }
-          }),
-          this.getStandardNodeShapeOptions()
+          })
         ),
-        // Dummy panel with no size and no contents.
-        // Used to ensure node usage view lays out nodes vertically aligned.
-        $(go.Panel, {
-          alignment: go.Spot.TopCenter,
-          desiredSize: new go.Size(0, 0),
-          name: 'location panel'
-        }),
-        $(
-          go.Panel,
-          'Table',
+        $(go.Panel, 'Auto',
           {
-            defaultRowSeparatorStroke: 'black'
+            name: 'main content'
           },
-          this.getTopSection(true),
-          this.getMiddleSection(true),
-          this.getBottomSection(true)
+          new go.Binding('margin', 'system', function (system) {
+            return system ? 10 : 0;
+          }),
+          $(go.Shape,
+            'RoundedRectangle',
+            {
+              fill: 'white',
+              stroke: 'black',
+              strokeWidth: 1,
+              shadowVisible: true
+            },
+            // Bind stroke to multicoloured brush based on work packages impacted by
+            new go.Binding(
+              'stroke',
+              'impactedByWorkPackages',
+              function(impactedPackages, shape) {
+                return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+              }.bind(this)
+            )
+          ),
+          // Dummy panel with no size and no contents.
+          // Used to ensure node usage view lays out nodes vertically aligned.
+          $(go.Panel, {
+            alignment: go.Spot.TopCenter,
+            desiredSize: new go.Size(0, 0),
+            name: 'location panel'
+          }),
+          $(
+            go.Panel,
+            'Table',
+            {
+              defaultRowSeparatorStroke: 'black'
+            },
+            this.getTopSection(true),
+            this.getMiddleSection(true),
+            this.getBottomSection(true)
+          )
         )
       )
     );
