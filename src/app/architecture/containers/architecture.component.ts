@@ -861,7 +861,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(_ => {
-        this.onSaveLayout();
+        this.store.dispatch(
+          new UpdateLayout({
+            id: this.layout.id,
+            data: {
+              id: this.layout.id,
+              name: this.layout.name,
+              scope: {
+                id: this.scope.id
+              }
+            }
+          })
+        );
         this.layoutSettings = this.layout.settings;
         this.eventEmitter.next(Events.NodesLinksReload);
       })
