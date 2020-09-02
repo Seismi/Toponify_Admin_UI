@@ -15,6 +15,7 @@ export class LayoutActionsComponent {
   @Input() selectedLayout: ScopeDetails;
   @Input() layouts: ScopeDetails[];
   @Input() dependenciesView: boolean;
+  @Input() scope: ScopeDetails;
   @Output() zoomIn = new EventEmitter<void>();
   @Output() zoomOut = new EventEmitter<void>();
   @Output() showGrid = new EventEmitter<void>();
