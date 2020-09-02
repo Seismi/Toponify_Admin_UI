@@ -1,20 +1,23 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialog } from '@angular/material';
 import { FormGroup } from '@angular/forms';
-import { WorkPackageEntity, WorkPackageEntitiesHttpParams, WorkPackagesActive, currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
+import { WorkPackageEntity, WorkPackagesActive, currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
 import { WorkPackageDetailService } from '../../components/workpackage-detail/services/workpackage-detail.service';
 import { WorkPackageValidatorService } from '../../components/workpackage-detail/services/workpackage-detail-validator.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { TeamEntity } from '@app/settings/store/models/team.model';
 import { select, Store } from '@ngrx/store';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as WorkPackageState } from '../../store/reducers/workpackage.reducer';
-import { getAllWorkPackages, getWorkPackagesPage, workpackageLoading, getWorkPackagesActive } from '@app/workpackage/store/selectors/workpackage.selector';
-import { LoadWorkPackages, LoadWorkPackagesActive } from '@app/workpackage/store/actions/workpackage.actions';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { getAllWorkPackages, workpackageLoading, getWorkPackagesActive } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadWorkPackagesActive } from '@app/workpackage/store/actions/workpackage.actions';
+import { map } from 'rxjs/operators';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
+import { State as HomeState } from '@app/home/store/reducers/home.reducers';
+import { LoadMyProfile } from '@app/home/store/actions/home.actions';
+import { getMyProfile } from '@app/home/store/selectors/home.selectors';
 
 const CurrentStateWorkPackage = [
   {
@@ -29,7 +32,7 @@ const CurrentStateWorkPackage = [
   styleUrls: ['./workpackage.component.scss'],
   providers: [WorkPackageDetailService, WorkPackageValidatorService]
 })
-export class WorkPackageModalComponent implements OnInit {
+export class WorkPackageModalComponent implements OnInit, OnDestroy {
   public baselineData: WorkPackagesActive[] = CurrentStateWorkPackage;
   public owners$: Observable<TeamEntity[]>;
   public baseline$: Observable<WorkPackageEntity[]>;
@@ -38,8 +41,11 @@ export class WorkPackageModalComponent implements OnInit {
   public isEditable = true;
   public newBaselineData = [];
   loading$: Observable<boolean>;
+  public subscription: Subscription;
+  public defaultTeams: TeamEntity[];
 
   constructor(
+    private homeStore: Store<HomeState>,
     private dialog: MatDialog,
     private teamStore: Store<TeamState>,
     private workPackageStore: Store<WorkPackageState>,
@@ -49,10 +55,18 @@ export class WorkPackageModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.homeStore.dispatch(new LoadMyProfile());
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
     this.baseline$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.loading$ = this.workPackageStore.pipe(select(workpackageLoading));
+
+    this.subscription = this.homeStore.pipe(select(getMyProfile)).subscribe(profile => (this.defaultTeams = profile.team));
+    this.workPackageDetailService.workPackageDetailForm.controls['owners'].setValue(this.defaultTeams ? this.defaultTeams : null);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   get workPackageDetailForm(): FormGroup {
