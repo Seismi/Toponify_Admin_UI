@@ -1246,4 +1246,30 @@ export class GojsCustomObjectsService {
       )
     );
   }
+
+  // Override the doMouseMove method for the dragging tool.
+  // Implements scrolling when the mouse cursor is past the diagram
+  //  when parts are being dragged.
+  customDragMouseMove(draggingTool: go.DraggingTool): void {
+    draggingTool.doMouseMove = function(): void {
+      const diagram = draggingTool.diagram;
+
+      const viewRect = diagram.viewportBounds.copy();
+
+      // Get all parts being dragged
+      const partsDragging = draggingTool.draggedParts.iteratorKeys;
+
+      // Calculate smallest area that contains all the dragged parts
+      partsDragging.each(function(part: go.Part): void {
+        viewRect.unionRect(part.getDocumentBounds());
+      });
+
+      // Scroll the diagram to keep dragged parts in view
+      diagram.doAutoScroll(diagram.lastInput.viewPoint);
+      draggingTool.diagram.scrollToRect(viewRect);
+
+      // Do standard doMouseMove actions
+      go.DraggingTool.prototype.doMouseMove.call(draggingTool);
+    };
+  }
 }

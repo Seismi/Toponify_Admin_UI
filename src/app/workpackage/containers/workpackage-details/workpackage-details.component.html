@@ -49,6 +49,11 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Documentation of'"
+          [name]="workpackage?.name"
+        >
+        </smi-tabs-title>
         <smi-edit-documentation-standards-table
           [appCanEdit]="[Roles.ADMIN, Roles.ARCHITECT]"
           data-qa="work-packages-documentation-standards-table"
@@ -63,6 +68,11 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Objectives">assignment_turned_in</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'RADIOs related to'"
+          [name]="workpackage?.name"
+        >
+        </smi-tabs-title>
         <smi-objectives-table
           data-qa="work-packages-objectives-table"
           [data]="workpackage?.objectives"
@@ -76,6 +86,11 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="RADIO">track_changes</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'RADIOs related to'"
+          [name]="workpackage?.name"
+        >
+        </smi-tabs-title>
         <smi-radios-table
           data-qa="work-packages-radio-table"
           [data]="workpackage?.radios"
@@ -90,6 +105,11 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Changes">list</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Changes applied in'"
+          [name]="workpackage?.name"
+        >
+        </smi-tabs-title>
         <smi-change-table data-qa="work-packages-changes-table" [data]="workpackage?.changes"> </smi-change-table>
       </mat-tab>
     </mat-tab-group>

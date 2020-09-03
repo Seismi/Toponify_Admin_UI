@@ -44,12 +44,24 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Attributes & Rules">ballot</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Attributes and rules of'"
+          [reference]="report?.reference"
+          [name]="report?.name"
+        >
+        </smi-tabs-title>
         <smi-attributes-table-in-reports-page [data]="report?.attributes" data-qa="reports-attributes-and-rules-table"> </smi-attributes-table-in-reports-page>
       </mat-tab>
       <mat-tab>
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Documentation of'"
+          [reference]="report?.reference"
+          [name]="report?.name"
+        >
+        </smi-tabs-title>
         <smi-edit-documentation-standards-table
           data-qa="reports-documentation-standards-table" 
           [data]="report?.customPropertyValues" 
@@ -62,6 +74,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="RADIO">track_changes</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'RADIOs related to'"
+          [reference]="report?.reference"
+          [name]="report?.name"
+        >
+        </smi-tabs-title>
         <smi-related-radio-table
           data-qa="reports-radio-table"
           [data]="report?.relatedRadios"
@@ -74,6 +92,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Work Packages">business_center</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Work packages affecting'"
+          [reference]="report?.reference"
+          [name]="report?.name"
+        >
+        </smi-tabs-title>
         <smi-related-work-package-table
           data-qa="reports-related-work-package-table"
           [data]="report?.relatedWorkPackages"
