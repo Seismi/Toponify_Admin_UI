@@ -251,7 +251,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private addNewSharedSubItemRef;
   private setAsMasterRef;
   private arrowKeyMoveRef;
-  public dependenciesView;
 
   @Input() attributesView = false;
   @Input() allowMove = false;
@@ -2432,14 +2431,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onSeeDependencies() {
-    this.dependenciesView = true;
     this.allowMove = false;
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
     this.diagramChangesService.hideNonDependencies(part);
   }
 
   exitDependenciesView() {
-    this.dependenciesView = false;
     this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
   }
 
