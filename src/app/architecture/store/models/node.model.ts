@@ -1,3 +1,5 @@
+import {colourOptions} from '@app/architecture/store/models/layout.model';
+
 export interface NodesApiResponse {
   data?: Node[] | null;
 }
@@ -15,15 +17,6 @@ export enum middleOptions {
   children = 'children',
   groupList = 'group list',
   group = 'group'
-}
-
-export enum colourOptions {
-  blue = 'blue',
-  red = 'red',
-  green = 'green',
-  purple = 'purple',
-  orange = 'orange',
-  none = 'none'
 }
 
 export interface NodeExpandedStateApiRequest {

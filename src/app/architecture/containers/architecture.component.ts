@@ -57,7 +57,6 @@ import {
   Tag,
   TagApplicableTo,
   GroupInfo,
-  colourOptions
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -218,7 +217,7 @@ import {
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
-import { autoLayoutId, NodeDetailTab } from '@app/architecture/store/models/layout.model';
+import {autoLayoutId, colourOptions, NodeDetailTab} from '@app/architecture/store/models/layout.model';
 import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
 import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
 import { NotificationState } from '@app/core/store/reducers/notification.reducer';

@@ -1061,7 +1061,8 @@ export class DiagramChangesService {
         positionSettings: {
           route: link.route,
           fromSpot: link.fromSpot,
-          toSpot: link.toSpot
+          toSpot: link.toSpot,
+          colour: link.colour
         }
       };
     });
