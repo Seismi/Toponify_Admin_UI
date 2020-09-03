@@ -613,10 +613,14 @@ export class DiagramTemplatesService {
     return $(
       go.Panel,
       'Auto',
+      {
+        name: 'label'
+      },
       $(go.Shape, {
         figure: 'RoundedRectangle',
         fill: 'white',
-        opacity: 0.85
+        opacity: 0.85,
+        shadowVisible: false
       }),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
       new go.Binding('visible', '', function(link) {
@@ -644,15 +648,15 @@ export class DiagramTemplatesService {
         go.Panel,
         'Vertical',
         $(go.Panel,
-          'Auto',
+          'Vertical',
           $(
             go.TextBlock,
             textFont('bold 14px'),
             new go.Binding('text', 'name'),
-            new go.Binding('visible', 'linkName').ofModel(),
+            new go.Binding('visible', 'linkName').ofModel()
           ),
           new go.Binding('visible', 'category', function(category: string): boolean  {
-            return category === nodeCategories.transformation;
+            return category !== nodeCategories.transformation;
           })
         ),
         this.getTagIconsRow(),
@@ -1045,6 +1049,9 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
+      {
+        layerName: 'Foreground'
+      },
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(false),
       {
@@ -1079,9 +1086,6 @@ export class DiagramTemplatesService {
         'Vertical',
         $(go.Panel,
           'Auto',
-          {
-            margin: 10
-          },
           $(go.Shape,
             this.getStandardNodeShapeOptions(),
             {
@@ -1107,6 +1111,15 @@ export class DiagramTemplatesService {
           ),
           this.getDependencyExpandButton(true)
         ),
+        !forPalette ? $(go.Shape,
+          'LineV',
+          {
+            margin: -1.51,
+            height: 5,
+            strokeWidth: 3
+          },
+          new go.Binding('visible').ofObject('label')
+        ) : {},
         !forPalette ? this.getLinkLabel() : {}
       ),
       // Dummy panel with no size and no contents.
