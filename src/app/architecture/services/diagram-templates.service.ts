@@ -555,11 +555,10 @@ export class DiagramTemplatesService {
   }
 
   // Get a panel containing a row of tag icons
-  getTagIconsRow(maxIcons = 5): go.Panel {
+  getTagIconsRow(): go.Panel {
     return $(go.Panel,
       'Horizontal',
       {
-        margin: new go.Margin(0, 0, 2, 0),
         column: 1,
         row: 0,
       },
@@ -579,8 +578,8 @@ export class DiagramTemplatesService {
                 return !!tag.iconName;
               }
             );
-            // Restrict tag icons in title row to a maximum (5 by default)
-            iconTags = iconTags.slice(0, maxIcons);
+            // Restrict tag icons in title row to a maximum of five
+            iconTags = iconTags.slice(0, 5);
 
             return iconTags;
           }
@@ -602,7 +601,7 @@ export class DiagramTemplatesService {
               function (tag: Tag): boolean {
                 return !!tag.iconName;
               }
-            ).length > maxIcons;
+            ).length > 5;
           }
         )
       )
@@ -1071,6 +1070,9 @@ export class DiagramTemplatesService {
       }.bind(this)),
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
+        {
+          desiredSize: new go.Size(60.3, 53.6)
+        },
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
@@ -1087,20 +1089,13 @@ export class DiagramTemplatesService {
         desiredSize: new go.Size(0, 0),
         name: 'location panel'
       }),
-      $(go.Panel,
-        'Vertical',
+      $(go.Picture,
         {
-          desiredSize: new go.Size(145, 120)
-        },
-        $(go.Picture,
-          {
-            source: 'assets/node-icons/transformation.svg',
-            desiredSize: new go.Size(80, 60),
-            imageStretch: go.GraphObject.None
-          }
-        ),
-        this.getTagIconsRow(4),
-        this.getRadioAlertIndicators()
+          source: 'assets/node-icons/transformation.svg',
+          alignment: go.Spot.Center,
+          maxSize: new go.Size(82, 82),
+          imageStretch: go.GraphObject.Uniform
+        }
       ),
       this.getDependencyExpandButton(true)
     );
