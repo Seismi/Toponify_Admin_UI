@@ -1221,7 +1221,13 @@ export class DiagramChangesService {
     // nested function used by Layer.findObjectsIn, below
     // only consider Parts, and ignore the given Node, any Links, and Group members
     function navigate(obj: go.GraphObject): go.Part {
+
+      if (obj.name !== 'shape') {
+        return null;
+      }
+
       const part = obj.part;
+
       if (part === node) {
         return null;
       }

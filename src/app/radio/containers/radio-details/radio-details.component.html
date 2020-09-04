@@ -31,6 +31,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Relates To">device_hub</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Affected by'"
+          [reference]="radio?.reference"
+          [name]="radio?.title"
+        >
+        </smi-tabs-title>
         <smi-relates-to-table
           data-qa="radio-relates-to-table"
           [data]="radio?.relatesTo"
@@ -42,6 +48,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Discussions">comment</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Discussion about'"
+          [reference]="radio?.reference"
+          [name]="radio?.title"
+        >
+        </smi-tabs-title>
         <p class="discussion-tab">
           <smi-chatbox [group]="radioDetailsForm" [data]="radio?.replies" data-qa="radio-chatbox"></smi-chatbox>
         </p>
@@ -53,6 +65,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Documentation of'"
+          [reference]="radio?.reference"
+          [name]="radio?.title"
+        >
+        </smi-tabs-title>
         <smi-edit-documentation-standards-table
           data-qa="radio-documentation-standards-table"
           [data]="radio?.customPropertyValues"
