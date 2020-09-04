@@ -824,11 +824,11 @@ export class DiagramChangesService {
             part.move(newLocation, true);
           } else {
             /*
-                  For nodes that are already located in the group, change member node location back and
-                  forth between the current location and another point.
-                  This is to force GoJS to update the position of the node, as this does not appear to be
-                  done correctly when the parent group is moved.
-                */
+              For nodes that are already located in the group, change member node location back and
+              forth between the current location and another point.
+              This is to force GoJS to update the position of the node, as this does not appear to be
+              done correctly when the parent group is moved.
+            */
             const location = part.location.copy();
             part.move(location.copy().offset(1, 1));
             part.move(location, true);
@@ -1049,7 +1049,8 @@ export class DiagramChangesService {
           locationCoordinates: node.location,
           middleExpanded: node.middleExpanded,
           bottomExpanded: node.bottomExpanded,
-          areaSize: node.areaSize
+          areaSize: node.areaSize,
+          colour: node.colour
         }
       };
     });
