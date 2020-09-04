@@ -553,7 +553,11 @@ function makeSubMenuButton(
   );
 }
 
-function getColourChangeMenu() {
+function getColourChangeMenu(isGroup = true) {
+
+  // Offset for button position in non-group nodes, to account for group options button not being visible
+  const buttonOffset = isGroup ? 0 : 1;
+
   return [
     makeMenuButton(
       2,
@@ -576,75 +580,70 @@ function getColourChangeMenu() {
       2,
       'Blue',
       function(event: go.InputEvent, object: go.GraphObject): void  {
-        const part = (object.part as go.Adornment).adornedPart as go.Part;
-        event.diagram.model.setDataProperty(part.data, 'colour', colourOptions.blue);
-        currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        changeColours(event.diagram, colourOptions.blue);
       },
       function(object: go.GraphObject, event: go.InputEvent) {
         return event.diagram.allowMove;
       }
     ),
     makeSubMenuButton(
-      3,
+      3 + buttonOffset,
       'Red',
       function(event: go.InputEvent, object: go.GraphObject): void  {
-        const part = (object.part as go.Adornment).adornedPart as go.Part;
-        event.diagram.model.setDataProperty(part.data, 'colour', colourOptions.red);
-        currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        changeColours(event.diagram, colourOptions.red);
       },
       function(object: go.GraphObject, event: go.InputEvent) {
         return event.diagram.allowMove;
       }
     ),
     makeSubMenuButton(
-      4,
+      4 + buttonOffset,
       'Green',
       function(event: go.InputEvent, object: go.GraphObject): void  {
-        const part = (object.part as go.Adornment).adornedPart as go.Part;
-        event.diagram.model.setDataProperty(part.data, 'colour', colourOptions.green);
-        currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        changeColours(event.diagram, colourOptions.green);
       },
       function(object: go.GraphObject, event: go.InputEvent) {
         return event.diagram.allowMove;
       }
     ),
     makeSubMenuButton(
-      5,
+      5 + buttonOffset,
       'Purple',
       function(event: go.InputEvent, object: go.GraphObject): void  {
-        const part = (object.part as go.Adornment).adornedPart as go.Part;
-        event.diagram.model.setDataProperty(part.data, 'colour', colourOptions.purple);
-        currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        changeColours(event.diagram, colourOptions.purple);
       },
       function(object: go.GraphObject, event: go.InputEvent) {
         return event.diagram.allowMove;
       }
     ),
     makeSubMenuButton(
-      6,
+      6 + buttonOffset,
       'Orange',
       function(event: go.InputEvent, object: go.GraphObject): void  {
-        const part = (object.part as go.Adornment).adornedPart as go.Part;
-        event.diagram.model.setDataProperty(part.data, 'colour', colourOptions.orange);
-        currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        changeColours(event.diagram, colourOptions.orange);
       },
       function(object: go.GraphObject, event: go.InputEvent) {
         return event.diagram.allowMove;
       }
     ),
     makeSubMenuButton(
-      7,
+      7 + buttonOffset,
       'None',
       function(event: go.InputEvent, object: go.GraphObject): void  {
-        const part = (object.part as go.Adornment).adornedPart as go.Part;
-        event.diagram.model.setDataProperty(part.data, 'colour', colourOptions.none);
-        currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        changeColours(event.diagram, colourOptions.none);
       },
       function(object: go.GraphObject, event: go.InputEvent) {
         return event.diagram.allowMove;
       }
     )
   ];
+
+  function changeColours(diagram: go.Diagram, colour: colourOptions): void {
+    diagram.selection.each(function(part): void {
+      diagram.model.setDataProperty(part.data, 'colour', colour);
+    });
+    currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+  }
 }
 
 export function defineRoundButton() {
@@ -783,8 +782,8 @@ export class GojsCustomObjectsService {
           function(object) {
             const part = (object.part as go.Adornment).adornedObject as go.Link;
             const layer = part.data.layer;
-            // Can only expand link if layer is system or data
-            return layer === layers.system || layer === layers.data;
+            // Cannot expand from the reporting layer
+            return layer !== layers.reportingConcept;
           }
         ),
         // View detail for the link in the right hand panel
@@ -800,8 +799,8 @@ export class GojsCustomObjectsService {
   }
 
 
-  // Context menu for when a group button is clicked
-  getPartButtonMenu(fixedPosition = true): go.Adornment {
+  // Context menu for nodes
+  getPartButtonMenu(fixedPosition = true, isGroup = true): go.Adornment {
 
     const thisService = this;
     const diagramChangesService = this.diagramChangesService;
@@ -879,7 +878,7 @@ export class GojsCustomObjectsService {
             return event.diagram.selection.count === 1;
           }
         ),
-        ...getColourChangeMenu(),
+        ...getColourChangeMenu(isGroup),
         makeMenuButton(
           3,
           'Grouped Components',
@@ -1250,46 +1249,6 @@ export class GojsCustomObjectsService {
         )
       )
     );
-  }
-
-  // Create a linear gradient brush through the provided colours
-  // Inputs:
-  //    colours - array of colours to go through
-  //    fromSpot - spot where brush should start
-  //    toSpot - spot brush should end
-  createCustomBrush(colours: string[], fromSpot = go.Spot.Top, toSpot = go.Spot.Bottom): go.Brush {
-    // Replace any nulls in colours array with default black
-    colours = colours.map(function(colour) {
-      return colour || 'black';
-    });
-
-    // Parameters for brush
-    const newBrushParams: any = {};
-
-    // -- Triple up colours in array in order to ensure less gradual --
-    // -- transition between colours --
-    const temp: string[] = [];
-
-    colours.forEach(function(colour) {
-      temp.push(colour);
-      temp.push(colour);
-      temp.push(colour);
-    });
-
-    colours = temp;
-
-    // -- End of tripling up process --
-
-    // Distribute points for colours evenly across the brush
-    colours.forEach(function(colour, index) {
-      newBrushParams[String(index / (colours.length - 1))] = colour;
-    });
-
-    // Set start and end spots for the brush
-    newBrushParams.start = fromSpot;
-    newBrushParams.end = toSpot;
-
-    return $(go.Brush, 'Linear', newBrushParams);
   }
 
   // Set node dragComputation to this to prevent dragging one node to overlap another

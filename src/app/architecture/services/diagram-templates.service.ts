@@ -474,62 +474,6 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Calculate stroke for parts, based on impacted work packages
-  getStrokeForImpactedWorkPackages(impactedPackages, part: go.Part): go.BrushLike {
-    const allWorkpackages = part.diagram.model.modelData.workpackages;
-
-    // return black by default if part not impacted by any work packages
-    if (impactedPackages.length === 0) {
-      return 'black';
-    }
-
-    // get colours for work packages impacted by
-    const colours = allWorkpackages
-      .filter(function(workpackage) {
-        return impactedPackages.some(function(impactedPackage) {
-          return impactedPackage.id === workpackage.id;
-        });
-      })
-      .map(function(workpackage) {
-        return workpackage.displayColour;
-      });
-
-    // arguments to pass to createCustomBrush
-    const args = [colours];
-
-    // if part is a link then calculate start and end points of the
-    // brush based on the relative locations of the connected nodes
-    if (part instanceof go.Link) {
-      const fromLocation = part.fromNode ? part.fromNode.location : part.points.first();
-      const toLocation = part.toNode ? part.toNode.location : part.points.last();
-      let startAlign: string;
-      let endAlign: string;
-
-      // vertical brush direction
-      if (fromLocation.y < toLocation.y) {
-        startAlign = 'Top';
-        endAlign = 'Bottom';
-      } else {
-        startAlign = 'Bottom';
-        endAlign = 'Top';
-      }
-      // add horizontal brush direction
-      if (fromLocation.x < toLocation.x) {
-        startAlign = startAlign + 'Left';
-        endAlign = endAlign + 'Right';
-      } else {
-        startAlign = startAlign + 'Right';
-        endAlign = endAlign + 'Left';
-      }
-      // fromSpot
-      args.push(go.Spot[startAlign]);
-      // toSpot
-      args.push(go.Spot[endAlign]);
-    }
-
-    return this.gojsCustomObjectsService.createCustomBrush.apply(null, args);
-  }
-
   // Get alert indicator for RADIOs of the given type against nodes
   getRadioAlertIndicator(type: string): go.Panel {
     const radioColours = {
@@ -569,7 +513,7 @@ export class DiagramTemplatesService {
   }
 
   // Get the whole set of indicators for the different types of RADIOs
-  getRadioAlertIndicators(): go.Panel {
+  getRadioAlertIndicators(fixedHeight = true): go.Panel {
     return $(
       go.Panel,
       'Horizontal',
@@ -578,9 +522,9 @@ export class DiagramTemplatesService {
         alignmentFocus: go.Spot.LeftCenter,
         visible: false,
         row: 0,
-        column: 0,
-        height: 27
+        column: 0
       },
+      fixedHeight ? { height: 27 } : {},
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
       ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
         function(type) {
@@ -591,14 +535,14 @@ export class DiagramTemplatesService {
   }
 
   // Get a panel containing a row of tag icons
-  getTagIconsRow(): go.Panel {
+  getTagIconsRow(fixedHeight = true): go.Panel {
     return $(go.Panel,
       'Horizontal',
       {
         column: 1,
-        row: 0,
-        height: 30
+        row: 0
       },
+      fixedHeight ? { height: 30 } : {},
       // Panel to contain tag icons
       $(go.Panel,
         'Horizontal',
@@ -645,16 +589,16 @@ export class DiagramTemplatesService {
     );
   }
 
-  getWorkpackageImpactIcons(maxIcons = 4): go.Panel {
+  getWorkpackageImpactIcons(maxIcons = 4, fixedHeight = true): go.Panel {
     return $(go.Panel,
       'Horizontal',
       {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         column: 1,
-        row: 0,
-        height: 26
+        row: 0
       },
+      fixedHeight ? { height: 26 } : {},
       // Panel to contain workpackage icons
       $(go.Panel,
         'Horizontal',
@@ -691,7 +635,7 @@ export class DiagramTemplatesService {
   }
 
 
-  // Get name and RADIO alert label for links (and also transformation nodes)
+  // Get name, RADIO alert, tag and wokpackage impact icons label for links (and also transformation nodes)
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
@@ -718,12 +662,15 @@ export class DiagramTemplatesService {
             return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
           }, false);
 
+          const anyWorkpackageImpacts = link.data.impactedByWorkPackages && link.data.impactedByWorkPackages.length > 0;
+
           const anyTagsWithIcons = link.data.tags && link.data.tags.some(function(tag) {return !!tag.iconName; });
 
           return (
             (link.diagram.model.modelData.linkName && link.data.name !== '') ||
             (link.diagram.model.modelData.linkRadio && anyRadios) ||
-            anyTagsWithIcons
+            anyTagsWithIcons ||
+            anyWorkpackageImpacts
           );
         }
       }).ofObject(),
@@ -742,8 +689,9 @@ export class DiagramTemplatesService {
             return category !== nodeCategories.transformation;
           })
         ),
-        this.getTagIconsRow(),
-        this.getRadioAlertIndicators()
+        this.getTagIconsRow(false),
+        this.getRadioAlertIndicators(false),
+        this.getWorkpackageImpactIcons(5, false)
       )
     );
   }
@@ -1098,6 +1046,7 @@ export class DiagramTemplatesService {
             width: nodeWidth / 2 - (isGroup ? 0 : 30)
           }
         ),
+        $(go.RowColumnDefinition, {column: 2, separatorStroke: 'white'}),
         this.getRadioAlertIndicators(),
         this.getWorkpackageImpactIcons(isGroup ? 4 : 3),
         isGroup ? {} : this.getBottomExpandButton()
@@ -1154,9 +1103,8 @@ export class DiagramTemplatesService {
         layerName: 'Foreground'
       },
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      this.getStandardNodeOptions(false),
+      this.getStandardNodeOptions(forPalette),
       {
-        contextMenu: null,
         doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
         selectionObjectName: 'shape'
       },
@@ -1222,8 +1170,14 @@ export class DiagramTemplatesService {
           {
             margin: -1.51,
             height: 5,
-            strokeWidth: 3
+            strokeWidth: 3,
+            stroke: 'black'
           },
+          new go.Binding('stroke', 'colour',
+            function(colour) {
+              return NodeColoursDark[colour];
+            }
+          ),
           new go.Binding('visible').ofObject('label')
         ) : {},
         !forPalette ? this.getLinkLabel() : {}
@@ -1264,7 +1218,7 @@ export class DiagramTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false)
+            contextMenu: this.gojsCustomObjectsService.getPartButtonMenu(false, false)
           }
         : {
             toolTip: $(
@@ -1284,7 +1238,6 @@ export class DiagramTemplatesService {
       }.bind(this)),
       $(
         go.Shape,
-        // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
           'colour',
@@ -1563,18 +1516,17 @@ export class DiagramTemplatesService {
           stroke: 'black',
           strokeWidth: 2.5
         },
+        new go.Binding(
+          'stroke',
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
         // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
         new go.Binding('strokeWidth', 'dataLinks', function(dataLinks) {
           return dataLinks ? 2.5 : 0;
         }).ofModel(),
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        ),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
@@ -1651,18 +1603,17 @@ export class DiagramTemplatesService {
           strokeWidth: 2.5,
           strokeDashArray: [5, 5]
         },
+        new go.Binding(
+          'stroke',
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
         // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
         new go.Binding('strokeWidth', 'masterDataLinks', function(dataLinks) {
           return dataLinks ? 2.5 : 0;
         }).ofModel(),
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        ),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),

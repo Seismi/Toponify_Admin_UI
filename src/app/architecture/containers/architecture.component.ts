@@ -1417,45 +1417,54 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.linksSubscription = this.nodeStore
       .pipe(
         select(getNodeLinks),
-        // Get correct route for links, based on selected layout
+        // Get correct route and colour for links, based on selected layout
         map(links => {
           if (links === null) {
             return null;
           }
-          if (
-            this.currentFilterLevel &&
-            (this.currentFilterLevel.endsWith('map') ||
-              [Level.sources, Level.targets, Level.usage].includes(this.currentFilterLevel))
-          ) {
-            return links.map(function(link) {
-              return { ...link, routeMissing: true };
-            });
-          }
 
-          return links.map(
-            function(link) {
-              let linkLayout;
+          return links.map(function(link) {
+            let linkLayout;
 
-              if (this.layout && 'id' in this.layout) {
-                linkLayout = link.positionPerLayout.find(
-                  function(layoutSettings) {
-                    return layoutSettings.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-              }
+            if (this.layout && 'id' in this.layout) {
+              linkLayout = link.positionPerLayout.find(
+                function(layoutSettings) {
+                  return layoutSettings.layout.id === this.layout.id;
+                }.bind(this)
+              );
+            }
 
-              const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
+            const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
+            const finalLayoutSettings: {
+              fromSpot?: string;
+              toSpot?: string
+              route?: number[];
+              routeMissing?: boolean;
+              colour?: colourOptions;
+            } = {};
 
-              return {
-                ...link,
-                fromSpot:
-                  layoutProps && layoutProps.fromSpot ? layoutProps.fromSpot : go.Spot.stringify(go.Spot.Default),
-                toSpot: layoutProps && layoutProps.toSpot ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default),
-                route: layoutProps && layoutProps.route ? layoutProps.route : [],
-                routeMissing: !(layoutProps && layoutProps.route)
-              };
-            }.bind(this)
-          );
+            finalLayoutSettings.colour = layoutProps && layoutProps.colour ? layoutProps.colour : null;
+
+            if (
+              this.currentFilterLevel &&
+              (this.currentFilterLevel.endsWith('map') ||
+                [Level.sources, Level.targets, Level.usage].includes(this.currentFilterLevel))
+            ) {
+              finalLayoutSettings.routeMissing = true;
+            } else {
+              finalLayoutSettings.fromSpot = layoutProps && layoutProps.fromSpot
+                ? layoutProps.fromSpot : go.Spot.stringify(go.Spot.Default);
+              finalLayoutSettings.toSpot = layoutProps && layoutProps.toSpot
+                ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default);
+              finalLayoutSettings.route = layoutProps && layoutProps.route ? layoutProps.route : [];
+              finalLayoutSettings.routeMissing = !(layoutProps && layoutProps.route);
+            }
+
+            return {
+              ...link,
+              ...finalLayoutSettings
+            };
+          }.bind(this));
         })
       )
       .subscribe(links => {
