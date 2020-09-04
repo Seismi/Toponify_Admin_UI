@@ -591,11 +591,10 @@ export class DiagramTemplatesService {
   }
 
   // Get a panel containing a row of tag icons
-  getTagIconsRow(maxIcons = 5): go.Panel {
+  getTagIconsRow(): go.Panel {
     return $(go.Panel,
       'Horizontal',
       {
-        margin: new go.Margin(0, 0, 2, 0),
         column: 1,
         row: 0,
         height: 30
@@ -616,8 +615,8 @@ export class DiagramTemplatesService {
                 return !!tag.iconName;
               }
             );
-            // Restrict tag icons in title row to a maximum (5 by default)
-            iconTags = iconTags.slice(0, maxIcons);
+            // Restrict tag icons in title row to a maximum of five
+            iconTags = iconTags.slice(0, 5);
 
             return iconTags;
           }
@@ -639,7 +638,7 @@ export class DiagramTemplatesService {
               function (tag: Tag): boolean {
                 return !!tag.iconName;
               }
-            ).length > maxIcons;
+            ).length > 5;
           }
         )
       )
@@ -691,15 +690,20 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get name and RADIO alert label for links
+
+  // Get name and RADIO alert label for links (and also transformation nodes)
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
       'Auto',
+      {
+        name: 'label'
+      },
       $(go.Shape, {
         figure: 'RoundedRectangle',
         fill: 'white',
-        opacity: 0.85
+        opacity: 0.85,
+        shadowVisible: false
       }),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
       new go.Binding('visible', '', function(link) {
@@ -726,11 +730,17 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Vertical',
-        $(
-          go.TextBlock,
-          textFont('bold 14px'),
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'linkName').ofModel()
+        $(go.Panel,
+          'Vertical',
+          $(
+            go.TextBlock,
+            textFont('bold 14px'),
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'linkName').ofModel()
+          ),
+          new go.Binding('visible', 'category', function(category: string): boolean  {
+            return category !== nodeCategories.transformation;
+          })
         ),
         this.getTagIconsRow(),
         this.getRadioAlertIndicators()
@@ -1140,11 +1150,15 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
+      {
+        layerName: 'Foreground'
+      },
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(false),
       {
         contextMenu: null,
-        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
+        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
+        selectionObjectName: 'shape'
       },
       new go.Binding(
         'movable',
@@ -1169,22 +1183,50 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
         return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
-      $(go.Shape,
-        this.getStandardNodeShapeOptions(),
-        new go.Binding(
-          'stroke',
-          'colour',
-          function(colour) {
-            return NodeColoursDark[colour];
-          }
+      $(go.Panel,
+        'Vertical',
+        $(go.Panel,
+          'Auto',
+          $(go.Shape,
+            this.getStandardNodeShapeOptions(),
+            {
+              desiredSize: new go.Size(60.3, 53.6)
+            },
+            new go.Binding(
+              'stroke',
+              'colour',
+              function(colour) {
+                return NodeColoursDark[colour];
+              }
+            ),
+            new go.Binding(
+              'fill',
+              'colour',
+              function(colour) {
+                return NodeColoursLight[colour];
+              }
+            )
+          ),
+          $(go.Picture,
+            {
+              source: 'assets/node-icons/transformation.svg',
+              alignment: go.Spot.Center,
+              maxSize: new go.Size(82, 82),
+              imageStretch: go.GraphObject.Uniform
+            }
+          ),
+          this.getDependencyExpandButton(true)
         ),
-        new go.Binding(
-          'fill',
-          'colour',
-          function(colour) {
-            return NodeColoursLight[colour];
-          }
-        )
+        !forPalette ? $(go.Shape,
+          'LineV',
+          {
+            margin: -1.51,
+            height: 5,
+            strokeWidth: 3
+          },
+          new go.Binding('visible').ofObject('label')
+        ) : {},
+        !forPalette ? this.getLinkLabel() : {}
       ),
       // Dummy panel with no size and no contents.
       // Used to ensure node usage view lays out nodes vertically aligned.
@@ -1192,24 +1234,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.TopCenter,
         desiredSize: new go.Size(0, 0),
         name: 'location panel'
-      }),
-      $(go.Panel,
-        'Vertical',
-        {
-          desiredSize: new go.Size(145, 145)
-        },
-        $(go.Picture,
-          {
-            source: 'assets/node-icons/transformation.svg',
-            desiredSize: new go.Size(80, 60),
-            imageStretch: go.GraphObject.None
-          }
-        ),
-        this.getTagIconsRow(4),
-        this.getRadioAlertIndicators(),
-        this.getWorkpackageImpactIcons()
-      ),
-      this.getDependencyExpandButton(true)
+      })
     );
   }
 

@@ -842,8 +842,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.actions
         .pipe(
           ofType(
-            WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess,
-            WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess,
             LayoutActionTypes.LoadLayoutSuccess,
             WorkPackageNodeActionTypes.AddWorkPackageNodeRadioSuccess
           )
@@ -852,6 +850,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.layoutSettings = this.layout.settings;
           this.eventEmitter.next(Events.NodesLinksReload);
         })
+    );
+
+    this.subscriptions.push(
+      this.actions
+      .pipe(
+        ofType(
+          WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess,
+          WorkPackageLinkActionTypes.AddWorkPackageLinkSuccess
+        )
+      )
+      .subscribe(_ => {
+        this.store.dispatch(
+          new UpdateLayout({
+            id: this.layout.id,
+            data: {
+              id: this.layout.id,
+              name: this.layout.name,
+              scope: {
+                id: this.scope.id
+              }
+            }
+          })
+        );
+        this.layoutSettings = this.layout.settings;
+        this.eventEmitter.next(Events.NodesLinksReload);
+      })
     );
 
     this.subscriptions.push(
