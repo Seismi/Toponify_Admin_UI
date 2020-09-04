@@ -608,15 +608,19 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get name and RADIO alert label for links
+  // Get name and RADIO alert label for links (and also transformation nodes)
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
       'Auto',
+      {
+        name: 'label'
+      },
       $(go.Shape, {
         figure: 'RoundedRectangle',
         fill: 'white',
-        opacity: 0.85
+        opacity: 0.85,
+        shadowVisible: false
       }),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
       new go.Binding('visible', '', function(link) {
@@ -643,11 +647,17 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Vertical',
-        $(
-          go.TextBlock,
-          textFont('bold 14px'),
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'linkName').ofModel()
+        $(go.Panel,
+          'Vertical',
+          $(
+            go.TextBlock,
+            textFont('bold 14px'),
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'linkName').ofModel()
+          ),
+          new go.Binding('visible', 'category', function(category: string): boolean  {
+            return category !== nodeCategories.transformation;
+          })
         ),
         this.getTagIconsRow(),
         this.getRadioAlertIndicators()
@@ -1039,11 +1049,15 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
+      {
+        layerName: 'Foreground'
+      },
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(false),
       {
         contextMenu: null,
-        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
+        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
+        selectionObjectName: 'shape'
       },
       new go.Binding(
         'movable',
@@ -1068,19 +1082,45 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
         return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
-      $(go.Shape,
-        this.getStandardNodeShapeOptions(),
-        {
-          desiredSize: new go.Size(60.3, 53.6)
-        },
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        )
+      $(go.Panel,
+        'Vertical',
+        $(go.Panel,
+          'Auto',
+          $(go.Shape,
+            this.getStandardNodeShapeOptions(),
+            {
+              name: 'shape',
+              desiredSize: new go.Size(60.3, 53.6)
+            },
+            // Bind stroke to multicoloured brush based on work packages impacted by
+            new go.Binding(
+              'stroke',
+              'impactedByWorkPackages',
+              function(impactedPackages, shape) {
+                return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+              }.bind(this)
+            )
+          ),
+          $(go.Picture,
+            {
+              source: 'assets/node-icons/transformation.svg',
+              alignment: go.Spot.Center,
+              maxSize: new go.Size(82, 82),
+              imageStretch: go.GraphObject.Uniform
+            }
+          ),
+          this.getDependencyExpandButton(true)
+        ),
+        !forPalette ? $(go.Shape,
+          'LineV',
+          {
+            margin: -1.51,
+            height: 5,
+            strokeWidth: 3
+          },
+          new go.Binding('visible').ofObject('label')
+        ) : {},
+        !forPalette ? this.getLinkLabel() : {}
       ),
       // Dummy panel with no size and no contents.
       // Used to ensure node usage view lays out nodes vertically aligned.
@@ -1088,16 +1128,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.TopCenter,
         desiredSize: new go.Size(0, 0),
         name: 'location panel'
-      }),
-      $(go.Picture,
-        {
-          source: 'assets/node-icons/transformation.svg',
-          alignment: go.Spot.Center,
-          maxSize: new go.Size(82, 82),
-          imageStretch: go.GraphObject.Uniform
-        }
-      ),
-      this.getDependencyExpandButton(true)
+      })
     );
   }
 
