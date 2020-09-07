@@ -634,7 +634,6 @@ export class DiagramTemplatesService {
     );
   }
 
-
   // Get name, RADIO alert, tag and wokpackage impact icons label for links (and also transformation nodes)
   getLinkLabel(): go.Panel {
     return $(
