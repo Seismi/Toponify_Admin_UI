@@ -3,7 +3,7 @@ import {LinkShiftingTool} from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from './diagram-level.service';
 import {Subject} from 'rxjs';
-import {layers, middleOptions, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
+import {layers, bottomOptions, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 import {Store} from '@ngrx/store';
@@ -836,7 +836,7 @@ export class GojsCustomObjectsService {
             const anyStatusHidden = event.diagram.selection.any(
               function (part: go.Part): boolean {
                 if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.bottomExpanded;
+                  return !part.data.middleExpanded;
                 }
                 return false;
               }
@@ -844,8 +844,8 @@ export class GojsCustomObjectsService {
 
             event.diagram.selection.each(function(part: go.Part): void {
               if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
-                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', anyStatusHidden);
-                event.diagram.model.setDataProperty(part.data, 'middleExpanded', middleOptions.none);
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
 
                 diagramChangesService.nodeExpandChanged(part);
               }
@@ -860,7 +860,7 @@ export class GojsCustomObjectsService {
             const anyStatusHidden = event.diagram.selection.any(
               function (part: go.Part): boolean {
                 if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.bottomExpanded;
+                  return !part.data.middleExpanded;
                 }
                 return false;
               }
@@ -909,10 +909,10 @@ export class GojsCustomObjectsService {
 
             event.diagram.selection.each(function(part: go.Part): void {
               if (part instanceof go.Group) {
-                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', false);
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', true);
 
-                const newState = anyCollapsed ? middleOptions.group : middleOptions.none;
-                event.diagram.model.setDataProperty(part.data, 'middleExpanded', newState);
+                const newState = anyCollapsed ? bottomOptions.group : bottomOptions.none;
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', newState);
 
                 diagramChangesService.nodeExpandChanged(part);
               }
@@ -940,16 +940,16 @@ export class GojsCustomObjectsService {
 
             const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
               if (part instanceof go.Group) {
-                return part.data.middleExpanded !== middleOptions.groupList;
+                return part.data.bottomExpanded !== bottomOptions.groupList;
               }
               return false;
             });
 
             event.diagram.selection.each(function(part: go.Part): void {
               if (part instanceof go.Group) {
-                const newState = anyHidden ? middleOptions.groupList : middleOptions.none;
-                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', true);
-                event.diagram.model.setDataProperty(part.data, 'middleExpanded', newState);
+                const newState = anyHidden ? bottomOptions.groupList : bottomOptions.none;
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', true);
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', newState);
 
                 diagramChangesService.nodeExpandChanged(part);
               }
@@ -963,7 +963,7 @@ export class GojsCustomObjectsService {
 
             const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
               if (part instanceof go.Group) {
-                return part.data.middleExpanded !== middleOptions.groupList;
+                return part.data.bottomExpanded !== bottomOptions.groupList;
               }
               return false;
             });
@@ -1076,18 +1076,18 @@ export class GojsCustomObjectsService {
 
             const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
               if (part instanceof go.Group) {
-                return part.data.middleExpanded !== middleOptions.children;
+                return part.data.bottomExpanded !== bottomOptions.children;
               }
               return false;
             });
 
-            const newState = anyHidden ? middleOptions.children : middleOptions.none;
+            const newState = anyHidden ? bottomOptions.children : bottomOptions.none;
 
             event.diagram.selection.each(function(part: go.Part): void {
 
               if (part instanceof go.Node && part.data.category !== nodeCategories.transformation) {
-                event.diagram.model.setDataProperty(part.data, 'middleExpanded', newState);
-                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', true);
+                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', newState);
+                event.diagram.model.setDataProperty(part.data, 'middleExpanded', true);
 
                 diagramChangesService.nodeExpandChanged(part);
               }
@@ -1100,7 +1100,7 @@ export class GojsCustomObjectsService {
 
             const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
               if (part instanceof go.Group) {
-                return part.data.middleExpanded !== middleOptions.children;
+                return part.data.bottomExpanded !== bottomOptions.children;
               }
               return false;
             });

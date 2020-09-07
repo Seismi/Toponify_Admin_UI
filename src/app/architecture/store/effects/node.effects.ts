@@ -159,18 +159,6 @@ export class NodeEffects {
   );
 
   @Effect()
-  updateNodeExpandedState$ = this.actions$.pipe(
-    ofType<NodeActions.UpdateNodeExpandedState>(NodeActionTypes.UpdateNodeExpandedState),
-    map(action => action.payload),
-    switchMap((payload: { layoutId: string; data: NodeExpandedStateApiRequest['data'] }) => {
-      return this.nodeService.updateNodeExpandedState(payload.layoutId, payload.data).pipe(
-        switchMap((response: any) => [new NodeActions.UpdateNodeExpandedStateSuccess(response.data)]),
-        catchError((error: Error) => of(new NodeActions.UpdateNodeExpandedStateFailure(error)))
-      );
-    })
-  );
-
-  @Effect()
   UpdateGroupAreaSize$ = this.actions$.pipe(
     ofType<NodeActions.UpdateGroupAreaSize>(NodeActionTypes.UpdateGroupAreaSize),
     map(action => action.payload),

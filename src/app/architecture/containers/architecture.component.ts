@@ -49,7 +49,7 @@ import {
   DescendantsEntity,
   layers,
   LoadingStatus,
-  middleOptions,
+  bottomOptions,
   Node,
   NodeDetail,
   NodeExpandedStateApiRequest,
@@ -1364,8 +1364,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             const finalLayoutSettings: {
               location?: string;
               locationMissing?: boolean
-              middleExpanded?: middleOptions;
-              bottomExpanded?: boolean;
+              middleExpanded?: boolean;
+              bottomExpanded?: bottomOptions;
               areaSize?: string;
               colour?: colourOptions;
             } = {};
@@ -1376,21 +1376,21 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               this.currentFilterLevel &&
               (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
             ) {
-              finalLayoutSettings.middleExpanded = middleOptions.none;
-              finalLayoutSettings.bottomExpanded = false;
+              finalLayoutSettings.middleExpanded = false;
+              finalLayoutSettings.bottomExpanded = bottomOptions.none;
             } else if (this.currentFilterLevel && [Level.sources, Level.targets].includes(this.currentFilterLevel)) {
 
               const hasMembers = nodes.some(function(member) {
                 return member.group === node.id;
               });
-              finalLayoutSettings.middleExpanded = hasMembers ? middleOptions.group : middleOptions.none;
-              finalLayoutSettings.bottomExpanded = hasMembers;
+              finalLayoutSettings.middleExpanded = hasMembers;
+              finalLayoutSettings.bottomExpanded = hasMembers ? bottomOptions.group : bottomOptions.none;
               finalLayoutSettings.locationMissing = false;
             } else {
               finalLayoutSettings.middleExpanded = layoutProps && layoutProps.middleExpanded
-                ? layoutProps.middleExpanded : middleOptions.none;
+                ? layoutProps.middleExpanded : false;
               finalLayoutSettings.bottomExpanded = layoutProps && layoutProps.bottomExpanded
-                ? layoutProps.bottomExpanded : false;
+                ? layoutProps.bottomExpanded : bottomOptions.none;
               finalLayoutSettings.areaSize = layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null;
               finalLayoutSettings.location = layoutProps && layoutProps.locationCoordinates
                 ? layoutProps.locationCoordinates : null;

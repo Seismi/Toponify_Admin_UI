@@ -8,7 +8,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {layers, middleOptions} from '@app/architecture/store/models/node.model';
+import {layers, bottomOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -350,8 +350,8 @@ export class DiagramListenersService {
             containingNodes.forEach(function(node: go.Group, index: number): void {
               // Add delay to ensure each group expanded before expanding the next
               setTimeout(function() {
-                diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
-                diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.group);
+                diagram.model.setDataProperty(node.data, 'middleExpanded', true);
+                diagram.model.setDataProperty(node.data, 'bottomExpanded', bottomOptions.group);
                 this.diagramChangesService.nodeExpandChanged(node);
               }.bind(this), 150 * (index + 1));
             }.bind(this));

@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {layers, middleOptions, nodeCategories, Tag, TagColour, WorkPackageImpact} from '@app/architecture/store/models/node.model';
+import {layers, bottomOptions, nodeCategories, Tag, TagColour, WorkPackageImpact} from '@app/architecture/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {CustomLink, defineRoundButton, GojsCustomObjectsService} from './gojs-custom-objects.service';
 import {DiagramLevelService, Level} from './diagram-level.service';
@@ -329,9 +329,9 @@ export class DiagramTemplatesService {
   }
 
   // Get top button for expanding and collapsing node sections.
-  //  Expands bottom node section if not already expanded.
-  //  Otherwise, collapses middle section if expanded.
-  //  Otherwise, collapses bottom section.
+  //  Expands middle node section if not already expanded.
+  //  Otherwise, collapses bottom section if expanded.
+  //  Otherwise, collapses middle section.
   getTopExpandButton(): go.Panel {
     return $(
       'RoundButton',
@@ -348,10 +348,10 @@ export class DiagramTemplatesService {
 
           event.diagram.model.setDataProperty(
             node.data,
-            'bottomExpanded',
-            (node.data.middleExpanded === middleOptions.children) || !node.data.bottomExpanded
+            'middleExpanded',
+            (node.data.bottomExpanded === bottomOptions.children) || !node.data.middleExpanded
           );
-          event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.none);
+          event.diagram.model.setDataProperty(node.data, 'bottomExpanded', bottomOptions.none);
 
           this.diagramChangesService.nodeExpandChanged(node);
         }.bind(this)
@@ -367,7 +367,7 @@ export class DiagramTemplatesService {
         },
         // Grey out text when button disabled
         new go.Binding('text', '', function(data) {
-          return (data.middleExpanded === middleOptions.children) || data.bottomExpanded ? '-' : '+';
+          return (data.bottomExpanded === bottomOptions.children) || data.middleExpanded ? '-' : '+';
         }),
         new go.Binding('stroke', 'isEnabled', function(enabled) {
           return enabled ? 'black' : '#AAAFB4';
@@ -428,7 +428,7 @@ export class DiagramTemplatesService {
   }
 
   // Get bottom button for expanding and collapsing node sections.
-  // Expands the middle section of nodes when clicked.
+  // Expands the bottom section of nodes when clicked.
   getBottomExpandButton(): go.Panel {
     return $(
       'RoundButton',
@@ -443,7 +443,7 @@ export class DiagramTemplatesService {
         click: function(event, button): void {
           const node = button.part;
 
-          event.diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.children);
+          event.diagram.model.setDataProperty(node.data, 'bottomExpanded', bottomOptions.children);
 
           this.diagramChangesService.nodeExpandChanged(node);
         }.bind(this)
@@ -467,9 +467,9 @@ export class DiagramTemplatesService {
       new go.Binding('isEnabled', '', function(node: go.Node): boolean {
         return node.diagram.allowMove;
       }).ofObject(),
-      // Button not visible when middle node section is collapsed
-      new go.Binding('visible', 'middleExpanded', function(middleExpanded) {
-        return middleExpanded === middleOptions.none;
+      // Button not visible when bottom node section is collapsed
+      new go.Binding('visible', 'bottomExpanded', function(bottomExpanded) {
+        return bottomExpanded === bottomOptions.none;
       })
     );
   }
@@ -710,8 +710,8 @@ export class DiagramTemplatesService {
         margin: new go.Margin(5),
         maxSize: new go.Size(nodeWidth, 30)
       },
-      new go.Binding('maxSize', 'middleExpanded', function(middleExpanded) {
-        return middleExpanded !== middleOptions.group ?
+      new go.Binding('maxSize', 'bottomExpanded', function(bottomExpanded) {
+        return bottomExpanded !== bottomOptions.group ?
           new go.Size(nodeWidth, 30) : new go.Size(NaN, 60);
       }),
       $(go.RowColumnDefinition, { row: 0, height: 30}),
@@ -720,7 +720,6 @@ export class DiagramTemplatesService {
       $(go.RowColumnDefinition, { column: 2 }),
       $(go.RowColumnDefinition, { column: 3, width: 25 }),
       $(go.RowColumnDefinition, { column: 4 }),
-      $(go.RowColumnDefinition, { row: 1, height: 30}),
       this.getDependencyExpandButton(),
       $(go.Panel,
         'Horizontal',
@@ -819,37 +818,25 @@ export class DiagramTemplatesService {
           return name ? 1 : 0;
         }).ofModel()
       ),
-      isGroup ? this.getTopMenuButton() : this.getTopExpandButton(),
-      isGroup ? $(go.Panel,
-        'Auto',
-        {
-          row : 1,
-          columnSpan: 5,
-          alignment: go.Spot.Left
-        },
-        this.getRadioAlertIndicators(),
-        new go.Binding('visible', 'middleExpanded', function(expandedState) {
-          return expandedState === middleOptions.group;
-        })
-      ) : {},
+      isGroup ? this.getTopMenuButton() : this.getTopExpandButton()
     );
   }
 
-  // Get middle section of nodes, containing description, owners and descendants
-  getMiddleSection(isGroup = false): go.Panel {
+  // Get bottom section of nodes, containing descendants or group members
+  getBottomSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
       {
-        name: 'middle',
-        row: 1,
+        name: 'bottom',
+        row: 2,
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(5),
         visible: false
       },
-      new go.Binding('visible', 'middleExpanded',
-        function(middleExpanded) {
-          return middleExpanded !== middleOptions.none;
+      new go.Binding('visible', 'bottomExpanded',
+        function(bottomExpanded) {
+          return bottomExpanded !== bottomOptions.none;
         }.bind(this)
       ),
       // Do not show description for systems or data nodes
@@ -888,7 +875,7 @@ export class DiagramTemplatesService {
         }),
         new go.Binding('visible', '', function(node): boolean {
           return node.diagram.model.modelData.owners &&
-            node.data.middleExpanded !== middleOptions.group;
+            node.data.bottomExpanded !== bottomOptions.group;
         }).ofObject()
       ),
       $(
@@ -904,16 +891,21 @@ export class DiagramTemplatesService {
             alignment: go.Spot.TopLeft,
             stretch: go.GraphObject.Horizontal
           },
-          isGroup ? $(go.TextBlock, textFont('italic 18px'),
+          $(go.TextBlock, textFont('italic 18px'),
             {
               textAlign: 'center',
               stretch: go.GraphObject.Horizontal,
               margin: new go.Margin(0, 0, 2, 0)
             },
             new go.Binding('text', 'layer', function(layer) {
-              return layer === layers.system ? 'Data Sets' : 'Dimensions';
+              const descendantsLayer = {
+                [layers.system]: 'Data Sets',
+                [layers.data]: 'Dimensions',
+                [layers.dimension]: 'Reporting Concepts'
+              };
+              return descendantsLayer[layer];
             })
-          ) : {},
+          ),
           $(
             go.Panel,
             'Vertical',
@@ -929,9 +921,9 @@ export class DiagramTemplatesService {
             new go.Binding('itemArray', 'descendants'),
             new go.Binding('visible', 'nextLevel').ofModel()
           ),
-          new go.Binding('visible', 'middleExpanded',
-            function(middleExpanded) {
-              return middleExpanded === middleOptions.children;
+          new go.Binding('visible', 'bottomExpanded',
+            function(bottomExpanded) {
+              return bottomExpanded === bottomOptions.children;
             }
           )
         ),
@@ -964,9 +956,9 @@ export class DiagramTemplatesService {
             },
             new go.Binding('itemArray', 'members')
           ),
-          new go.Binding('visible', 'middleExpanded',
-            function (middleExpanded) {
-              return middleExpanded === middleOptions.groupList;
+          new go.Binding('visible', 'bottomExpanded',
+            function (bottomExpanded) {
+              return bottomExpanded === bottomOptions.groupList;
             }
           )
         ),
@@ -982,9 +974,9 @@ export class DiagramTemplatesService {
             minSize: new go.Size(nodeWidth + 20, 200)
           },
           new go.Binding('desiredSize', 'areaSize', go.Size.parse).makeTwoWay(go.Size.stringify),
-          new go.Binding('visible', 'middleExpanded',
-            function(middleExpanded) {
-              return middleExpanded === middleOptions.group;
+          new go.Binding('visible', 'bottomExpanded',
+            function(bottomExpanded) {
+              return bottomExpanded === bottomOptions.group;
             }
           )
         )
@@ -992,23 +984,23 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get bottom section of nodes, containing tags and RADIO Alert indicators
-  getBottomSection(isGroup = false): go.Panel {
+  // Get middle section of nodes, containing tags, RADIO Alert indicators and workpackage impact icons
+  getMiddleSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
       {
-        name: 'bottom',
-        row: 2,
+        name: 'middle',
+        row: 1,
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(2)
       },
-      new go.Binding('visible', 'bottomExpanded').makeTwoWay(),
+      new go.Binding('visible', 'middleExpanded').makeTwoWay(),
       $(
         go.Panel,
         'Horizontal',
         {
-          maxSize: new go.Size(296, NaN),
+          // maxSize: new go.Size(296, NaN),
           height: 30,
           itemTemplate: this.getTagTemplate(),
           alignment: go.Spot.LeftCenter,
@@ -1029,7 +1021,7 @@ export class DiagramTemplatesService {
       ),
       $(go.Panel,
         'Table',
-        { defaultColumnSeparatorStroke: 'black' },
+        { defaultColumnSeparatorStroke: 'black', stretch: go.GraphObject.Horizontal },
         new go.Binding(
           'defaultColumnSeparatorStroke',
           'colour',
@@ -1038,15 +1030,23 @@ export class DiagramTemplatesService {
           }
         ),
         $(go.RowColumnDefinition, {row: 0, height: 30}),
-        $(go.RowColumnDefinition, {column: 0, width: nodeWidth / 2}),
         $(go.RowColumnDefinition,
           {
-            column: 1,
-            separatorStrokeWidth: 2,
-            width: nodeWidth / 2 - (isGroup ? 0 : 30)
+            column: 0,
+            minimum: nodeWidth / 2,
+            stretch: go.GraphObject.Horizontal,
+            sizing: go.RowColumnDefinition.ProportionalExtra
           }
         ),
-        $(go.RowColumnDefinition, {column: 2, separatorStroke: 'white'}),
+        $(go.RowColumnDefinition,
+          {
+            sizing: go.RowColumnDefinition.ProportionalExtra,
+            column: 1,
+            separatorStrokeWidth: 2,
+            minimum: nodeWidth / 2 - (isGroup ? 0 : 30)
+          }
+        ),
+        $(go.RowColumnDefinition, {column: 2, separatorStroke: 'white', maximum: 30}),
         this.getRadioAlertIndicators(),
         this.getWorkpackageImpactIcons(isGroup ? 4 : 3),
         isGroup ? {} : this.getBottomExpandButton()
@@ -1345,9 +1345,9 @@ export class DiagramTemplatesService {
           return this.gojsCustomObjectsService.avoidNodeOverlap(part, newPoint, newPoint);
         }.bind(this)
       },
-      new go.Binding('isSubGraphExpanded', 'middleExpanded',
-        function(middleExpanded): boolean {
-          return middleExpanded === middleOptions.group;
+      new go.Binding('isSubGraphExpanded', 'bottomExpanded',
+        function(bottomExpanded): boolean {
+          return bottomExpanded === bottomOptions.group;
         }
       ),
       new go.Binding(
@@ -1357,8 +1357,8 @@ export class DiagramTemplatesService {
           return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
-      new go.Binding('resizable', 'middleExpanded', function(middleExpanded) {
-        return middleExpanded === middleOptions.group;
+      new go.Binding('resizable', 'bottomExpanded', function(bottomExpanded) {
+        return bottomExpanded === bottomOptions.group;
       }),
       !forPalette
         ? {

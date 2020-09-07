@@ -9,7 +9,7 @@ import {
   Node,
   NodeDetail,
   NodeReports,
-  middleOptions,
+  bottomOptions,
   GroupAreaSizesEntity,
   OwnersEntity,
   Tag,

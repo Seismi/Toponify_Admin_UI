@@ -12,7 +12,7 @@ export interface CustomPropertyApiRequest {
   data: CustomPropertyValuesEntity;
 }
 
-export enum middleOptions {
+export enum bottomOptions {
   none = 'none',
   children = 'children',
   groupList = 'group list',
@@ -22,8 +22,8 @@ export enum middleOptions {
 export interface NodeExpandedStateApiRequest {
   data: {
     id: string;
-    middleExpanded?: middleOptions;
-    bottomExpanded?: boolean;
+    middleExpanded?: boolean;
+    bottomExpanded?: bottomOptions;
   };
 }
 
@@ -147,8 +147,8 @@ export interface LocationsEntity {
 }
 export interface ExpandedStatesEntity {
   layout: Layout;
-  middleExpanded: middleOptions;
-  bottomExpanded: boolean;
+  middleExpanded: boolean;
+  bottomExpanded: bottomOptions;
 }
 export interface GroupAreaSizesEntity {
   layout: Layout;
@@ -160,8 +160,8 @@ export interface NodeLayoutSettingsEntity {
     id: string;
     positionSettings: {
       locationCoordinates?: string;
-      middleExpanded?: middleOptions;
-      bottomExpanded?: boolean;
+      middleExpanded?: boolean;
+      bottomExpanded?: bottomOptions;
       areaSize?: string;
       colour?: colourOptions;
     };
