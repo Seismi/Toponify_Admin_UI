@@ -116,7 +116,7 @@ export interface LinkLayoutSettingsEntity {
       route?: number[];
       fromSpot?: string;
       toSpot?: string;
-      colour?: colourOptions
+      colour?: colourOptions;
     }
   };
 }
