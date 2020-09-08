@@ -17,6 +17,15 @@ export enum middleOptions {
   group = 'group'
 }
 
+export enum colourOptions {
+  blue = 'blue',
+  red = 'red',
+  green = 'green',
+  purple = 'purple',
+  orange = 'orange',
+  none = 'none'
+}
+
 export interface NodeExpandedStateApiRequest {
   data: {
     id: string;
@@ -77,6 +86,16 @@ export enum endPointTypes {
   none = ''
 }
 
+export interface WorkPackageImpact {
+  id: string;
+  name: string;
+  description: string;
+  hasErrors: boolean;
+  status: string;
+  updateType: string;
+  displayColour: string;
+}
+
 export class Node {
   id: string;
   layer: string;
@@ -91,7 +110,6 @@ export class Node {
   owners?: OwnersEntity[] | null;
   descendants: DescendantsEntity[] = [];
   members?: [];
-  relatedRadioCount: number;
   relatedRadioCounts: {
     risks: number;
     issues: number;
@@ -99,7 +117,7 @@ export class Node {
     dependencies: number;
     opportunities: number;
   };
-  impactedByWorkPackages = [];
+  impactedByWorkPackages: WorkPackageImpact[] = [];
   tooltip?: string;
   sortOrder?: number;
   endPointType?: endPointTypes;
@@ -152,6 +170,7 @@ export interface NodeLayoutSettingsEntity {
       middleExpanded?: middleOptions;
       bottomExpanded?: boolean;
       areaSize?: string;
+      colour?: colourOptions;
     };
   };
 }

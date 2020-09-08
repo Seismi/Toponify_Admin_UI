@@ -3,7 +3,7 @@ import {LinkShiftingTool} from 'gojs/extensionsTS/LinkShiftingTool';
 import {forwardRef, Inject, Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from './diagram-level.service';
 import {Subject} from 'rxjs';
-import {layers, middleOptions, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
+import {colourOptions, layers, middleOptions, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
 import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
@@ -776,6 +776,95 @@ export class GojsCustomObjectsService {
         ),
         makeMenuButton(
           2,
+          'Change Colour',
+          [
+            'Blue',
+            'Red',
+            'Green',
+            'Purple',
+            'Orange',
+            'None'
+          ],
+          null,
+          null,
+          function(object: go.GraphObject, event: go.DiagramEvent): boolean {
+            return event.diagram.allowMove;
+          }
+        ),
+        makeSubMenuButton(
+          2,
+          'Blue',
+          function(event: go.DiagramEvent, object: go.GraphObject): void  {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.blue);
+            diagramChangesService.onUpdateDiagramLayout.next({});
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          }
+        ),
+        makeSubMenuButton(
+          3,
+          'Red',
+          function(event: go.DiagramEvent, object: go.GraphObject): void  {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.red);
+            diagramChangesService.onUpdateDiagramLayout.next({});
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          }
+        ),
+        makeSubMenuButton(
+          4,
+          'Green',
+          function(event: go.DiagramEvent, object: go.GraphObject): void  {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.green);
+            diagramChangesService.onUpdateDiagramLayout.next({});
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          }
+        ),
+        makeSubMenuButton(
+          5,
+          'Purple',
+          function(event: go.DiagramEvent, object: go.GraphObject): void  {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.purple);
+            diagramChangesService.onUpdateDiagramLayout.next({});
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          }
+        ),
+        makeSubMenuButton(
+          6,
+          'Orange',
+          function(event: go.DiagramEvent, object: go.GraphObject): void  {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.orange);
+            diagramChangesService.onUpdateDiagramLayout.next({});
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          }
+        ),
+        makeSubMenuButton(
+          7,
+          'None',
+          function(event: go.DiagramEvent, object: go.GraphObject): void  {
+            const node = (object.part as go.Adornment).adornedPart as go.Node;
+            event.diagram.model.setDataProperty(node.data, 'colour', colourOptions.none);
+            diagramChangesService.onUpdateDiagramLayout.next({});
+          },
+          function(object: go.GraphObject, event: go.DiagramEvent) {
+            return event.diagram.allowMove;
+          }
+        ),
+        makeMenuButton(
+          3,
           'Grouped Components',
             [
               'Expand',
@@ -791,7 +880,7 @@ export class GojsCustomObjectsService {
         ),
         // --Grouped components submenu buttons--
         makeSubMenuButton(
-          2,
+          3,
           'Expand',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
@@ -829,7 +918,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(
-          3,
+          4,
           'Show as List (groups)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
@@ -866,7 +955,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(
-          4,
+          5,
           'Display (groups)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
@@ -880,7 +969,7 @@ export class GojsCustomObjectsService {
           function() {return 'Display'; }
         ),
         makeSubMenuButton(
-          5,
+          6,
           'Add Sub-item',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
@@ -906,7 +995,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(
-          6,
+          7,
           'Add to Group',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -940,7 +1029,7 @@ export class GojsCustomObjectsService {
         ),
         // --End of group submenu buttons--
         makeMenuButton(
-          3,
+          4,
           'Data Nodes',
             [
               'Show as List (data nodes)',
@@ -965,7 +1054,7 @@ export class GojsCustomObjectsService {
         ),
         // --Data node submenu buttons--
         makeSubMenuButton(
-          3,
+          4,
           'Show as List (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
@@ -1002,7 +1091,8 @@ export class GojsCustomObjectsService {
             return anyHidden ? 'Show as List' : 'Hide List';
           }
         ),
-        makeSubMenuButton(4,
+        makeSubMenuButton(
+          5,
           'Display (data nodes)',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
 
@@ -1016,7 +1106,7 @@ export class GojsCustomObjectsService {
           function() {return 'Display'; }
         ),
         makeSubMenuButton(
-          5,
+          6,
           'Add data node',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -1044,7 +1134,7 @@ export class GojsCustomObjectsService {
         ),
         // --End of data node submenu buttons--
         makeMenuButton(
-          4,
+          5,
           'Analyse',
           [
             'Dependencies',
@@ -1060,7 +1150,7 @@ export class GojsCustomObjectsService {
         ),
         // --Analysis submenu buttons--
         makeSubMenuButton(
-          4,
+          5,
           'Dependencies',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const menuNode = (object.part as go.Adornment).adornedObject as go.Node;
@@ -1081,7 +1171,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(
-          5,
+          6,
           'Use across Levels',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -1093,7 +1183,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(
-          6,
+          7,
           'View Sources',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -1108,7 +1198,7 @@ export class GojsCustomObjectsService {
           }
         ),
         makeSubMenuButton(
-          7,
+          8,
           'View Targets',
           function(event: go.DiagramEvent, object: go.GraphObject): void {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -1122,7 +1212,8 @@ export class GojsCustomObjectsService {
           }
         ),
         // --End analysis submenu buttons--
-        makeButton(5,
+        makeButton(
+          6,
           'Set as Master',
           function(event: object, object: go.GraphObject) {
             const node = (object.part as go.Adornment).adornedObject as go.Node;
@@ -1200,7 +1291,7 @@ export class GojsCustomObjectsService {
 
     if (node.diagram instanceof go.Palette) { return snappedLoc; }
     // this assumes each node is fully rectangular
-    const bnds = node.actualBounds;
+    const bnds = node.selectionObject.getDocumentBounds();
     const loc = node.location;
     // use newLoc instead of snappedLoc if you want to ignore any grid snapping behavior
     // see if the area at the proposed location is unoccupied
