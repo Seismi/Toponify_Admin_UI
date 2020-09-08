@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {layers, middleOptions, nodeCategories, Tag, TagColour} from '@app/architecture/store/models/node.model';
+import {layers, middleOptions, nodeCategories, Tag, TagColour, WorkPackageImpact} from '@app/architecture/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {CustomLink, defineRoundButton, GojsCustomObjectsService} from './gojs-custom-objects.service';
 import {DiagramLevelService, Level} from './diagram-level.service';
@@ -10,6 +10,7 @@ import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {Subject} from 'rxjs';
+import {NodeColoursDark, NodeColoursLight} from '@app/architecture/store/models/layout.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -193,7 +194,7 @@ export class DiagramTemplatesService {
         margin: new go.Margin(0, 5, 0, 0)
       },
       $(go.Shape, 'RoundedRectangle', {
-        fill: 'white',
+        fill: 'transparent',
         height: 27
       },
       new go.Binding('fill', 'backgroundColour')
@@ -260,6 +261,36 @@ export class DiagramTemplatesService {
     );
   }
 
+  getWorkpackageIconTemplate() {
+    return $(go.Panel,
+      'Auto',
+      {
+        toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', '',
+          function(data) {
+            const action = data.updateType ===  'add' ? 'created' : 'updated';
+            return `${action} in ${data.name}`;
+          }
+        )))
+      },
+      $(go.Shape, {fill: null, stroke: null }),
+      $(go.Shape,
+        'Circle',
+        {
+          desiredSize: new go.Size(26, 26),
+          stroke: null,
+          fill: null
+        },
+        new go.Binding('fill', 'displayColour')
+      ),
+      $(go.Picture,
+        {
+          desiredSize: new go.Size(23, 23),
+          source: `assets/node-icons/work-package-white.svg`
+        }
+      )
+    );
+  }
+
   // Get button for revealing the next level of dependencies
   getDependencyExpandButton(forTransformation = false): go.Panel {
     return $(
@@ -311,7 +342,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: (this.forPalette) ? false : true,
+        visible: !this.forPalette,
         click: function(event, button) {
           const node = button.part;
 
@@ -403,10 +434,12 @@ export class DiagramTemplatesService {
       'RoundButton',
       {
         name: 'BottomExpandButton',
+        column: 2,
         alignment: go.Spot.RightCenter,
+        margin: new go.Margin(0, 0, 0, 2),
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: (this.forPalette) ? false : true,
+        visible: !this.forPalette,
         click: function(event, button): void {
           const node = button.part;
 
@@ -541,9 +574,12 @@ export class DiagramTemplatesService {
       go.Panel,
       'Horizontal',
       {
-        alignment: go.Spot.Center,
-        alignmentFocus: go.Spot.Center,
-        visible: false
+        alignment: go.Spot.LeftCenter,
+        alignmentFocus: go.Spot.LeftCenter,
+        visible: false,
+        row: 0,
+        column: 0,
+        height: 27
       },
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
       ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
@@ -561,6 +597,7 @@ export class DiagramTemplatesService {
       {
         column: 1,
         row: 0,
+        height: 30
       },
       // Panel to contain tag icons
       $(go.Panel,
@@ -608,15 +645,66 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get name and RADIO alert label for links
+
+  getWorkpackageImpactIcons(maxIcons = 4): go.Panel {
+    return $(go.Panel,
+      'Horizontal',
+      {
+        alignment: go.Spot.RightCenter,
+        alignmentFocus: go.Spot.RightCenter,
+        column: 1,
+        row: 0,
+        height: 26
+      },
+      // Panel to contain workpackage icons
+      $(go.Panel,
+        'Horizontal',
+        {
+          itemTemplate: this.getWorkpackageIconTemplate()
+        },
+        new go.Binding('itemArray', 'impactedByWorkPackages',
+          function(workpackages: WorkPackageImpact[]): WorkPackageImpact[] {
+            let workpackgeIcons = workpackages.concat();
+            // Restrict workpackage icons in the row to a maximum (four by default)
+            workpackgeIcons = workpackgeIcons.slice(0, maxIcons);
+
+            return workpackgeIcons;
+          }
+        )
+      ),
+      // Ellipsis to indicate that there are additional workpackage
+      //  icons associated with the node
+      $(go.TextBlock,
+        '...',
+        textFont('bold 18px'),
+        {
+          margin: new go.Margin(0, 0, 0, 4)
+        },
+        // Should only be visible if there are more than the maximum number of
+        //  workpackage icons against the  node
+        new go.Binding('visible', 'impactedByWorkPackages',
+          function(workpackages: WorkPackageImpact[]): boolean {
+            return workpackages.length > maxIcons;
+          }
+        )
+      )
+    );
+  }
+
+
+  // Get name and RADIO alert label for links (and also transformation nodes)
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
       'Auto',
+      {
+        name: 'label'
+      },
       $(go.Shape, {
         figure: 'RoundedRectangle',
         fill: 'white',
-        opacity: 0.85
+        opacity: 0.85,
+        shadowVisible: false
       }),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
       new go.Binding('visible', '', function(link) {
@@ -643,11 +731,17 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Vertical',
-        $(
-          go.TextBlock,
-          textFont('bold 14px'),
-          new go.Binding('text', 'name'),
-          new go.Binding('visible', 'linkName').ofModel()
+        $(go.Panel,
+          'Vertical',
+          $(
+            go.TextBlock,
+            textFont('bold 14px'),
+            new go.Binding('text', 'name'),
+            new go.Binding('visible', 'linkName').ofModel()
+          ),
+          new go.Binding('visible', 'category', function(category: string): boolean  {
+            return category !== nodeCategories.transformation;
+          })
         ),
         this.getTagIconsRow(),
         this.getRadioAlertIndicators()
@@ -767,6 +861,13 @@ export class DiagramTemplatesService {
           toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', 'name')))
         },
         new go.Binding('text', 'name'),
+        new go.Binding(
+          'stroke',
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
         new go.Binding('opacity', 'name', function(name: boolean): number {
           return name ? 1 : 0;
         }).ofModel()
@@ -961,6 +1062,7 @@ export class DiagramTemplatesService {
         'Horizontal',
         {
           maxSize: new go.Size(296, NaN),
+          height: 30,
           itemTemplate: this.getTagTemplate(),
           alignment: go.Spot.LeftCenter,
           margin: new go.Margin(3, 0, 3, 0)
@@ -978,17 +1080,27 @@ export class DiagramTemplatesService {
         ),
         new go.Binding('visible', 'tags').ofModel()
       ),
-      $(
-        go.Panel,
-        'Spot',
-        {
-          alignment: go.Spot.BottomCenter,
-          alignmentFocus: go.Spot.BottomCenter
-        },
-        $(go.Panel, '', {
-          desiredSize: new go.Size(nodeWidth - 10, 30)
-        }),
+      $(go.Panel,
+        'Table',
+        { defaultColumnSeparatorStroke: 'black' },
+        new go.Binding(
+          'defaultColumnSeparatorStroke',
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
+        $(go.RowColumnDefinition, {row: 0, height: 30}),
+        $(go.RowColumnDefinition, {column: 0, width: nodeWidth / 2}),
+        $(go.RowColumnDefinition,
+          {
+            column: 1,
+            separatorStrokeWidth: 2,
+            width: nodeWidth / 2 - (isGroup ? 0 : 30)
+          }
+        ),
         this.getRadioAlertIndicators(),
+        this.getWorkpackageImpactIcons(isGroup ? 4 : 3),
         isGroup ? {} : this.getBottomExpandButton()
       )
     );
@@ -1039,11 +1151,15 @@ export class DiagramTemplatesService {
     return $(
       go.Node,
       'Auto',
+      {
+        layerName: 'Foreground'
+      },
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(false),
       {
         contextMenu: null,
-        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
+        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
+        selectionObjectName: 'shape'
       },
       new go.Binding(
         'movable',
@@ -1068,19 +1184,50 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
         return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
-      $(go.Shape,
-        this.getStandardNodeShapeOptions(),
-        {
-          desiredSize: new go.Size(60.3, 53.6)
-        },
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        )
+      $(go.Panel,
+        'Vertical',
+        $(go.Panel,
+          'Auto',
+          $(go.Shape,
+            this.getStandardNodeShapeOptions(),
+            {
+              desiredSize: new go.Size(60.3, 53.6)
+            },
+            new go.Binding(
+              'stroke',
+              'colour',
+              function(colour) {
+                return NodeColoursDark[colour];
+              }
+            ),
+            new go.Binding(
+              'fill',
+              'colour',
+              function(colour) {
+                return NodeColoursLight[colour];
+              }
+            )
+          ),
+          $(go.Picture,
+            {
+              source: 'assets/node-icons/transformation.svg',
+              alignment: go.Spot.Center,
+              maxSize: new go.Size(82, 82),
+              imageStretch: go.GraphObject.Uniform
+            }
+          ),
+          this.getDependencyExpandButton(true)
+        ),
+        !forPalette ? $(go.Shape,
+          'LineV',
+          {
+            margin: -1.51,
+            height: 5,
+            strokeWidth: 3
+          },
+          new go.Binding('visible').ofObject('label')
+        ) : {},
+        !forPalette ? this.getLinkLabel() : {}
       ),
       // Dummy panel with no size and no contents.
       // Used to ensure node usage view lays out nodes vertically aligned.
@@ -1088,16 +1235,7 @@ export class DiagramTemplatesService {
         alignment: go.Spot.TopCenter,
         desiredSize: new go.Size(0, 0),
         name: 'location panel'
-      }),
-      $(go.Picture,
-        {
-          source: 'assets/node-icons/transformation.svg',
-          alignment: go.Spot.Center,
-          maxSize: new go.Size(82, 82),
-          imageStretch: go.GraphObject.Uniform
-        }
-      ),
-      this.getDependencyExpandButton(true)
+      })
     );
   }
 
@@ -1150,10 +1288,17 @@ export class DiagramTemplatesService {
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
           'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
+        new go.Binding(
+          'fill',
+          'colour',
+          function(colour) {
+            return NodeColoursLight[colour];
+          }
         ),
         new go.Binding('fromSpot', 'group', function(group) {
           if (group) {
@@ -1181,9 +1326,14 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Table',
-        {
-          defaultRowSeparatorStroke: 'black'
-        },
+        { defaultRowSeparatorStroke: 'black' },
+        new go.Binding(
+          'defaultRowSeparatorStroke',
+          'colour',
+          function(colour) {
+            return NodeColoursDark[colour];
+          }
+        ),
         this.getTopSection(),
         this.getMiddleSection(),
         this.getBottomSection()
@@ -1310,13 +1460,19 @@ export class DiagramTemplatesService {
           return system ? 10 : 0;
         }),
         $(go.Shape,
-          // Bind stroke to multicoloured brush based on work packages impacted by
           new go.Binding(
             'stroke',
-            'impactedByWorkPackages',
-            function(impactedPackages, shape) {
-              return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-            }.bind(this)
+            'colour',
+            function(colour) {
+              return NodeColoursDark[colour];
+            }
+          ),
+          new go.Binding(
+            'fill',
+            'colour',
+            function(colour) {
+              return NodeColoursLight[colour];
+            }
           ),
           new go.Binding('fromSpot', 'group', function(group) {
             if (group) {
@@ -1343,9 +1499,14 @@ export class DiagramTemplatesService {
         $(
           go.Panel,
           'Table',
-          {
-            defaultRowSeparatorStroke: 'black'
-          },
+          { defaultRowSeparatorStroke: 'black' },
+          new go.Binding(
+            'defaultRowSeparatorStroke',
+            'colour',
+            function(colour) {
+              return NodeColoursDark[colour];
+            }
+          ),
           this.getTopSection(true),
           this.getMiddleSection(true),
           this.getBottomSection(true)
