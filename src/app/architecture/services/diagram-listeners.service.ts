@@ -46,23 +46,6 @@ export class DiagramListenersService {
       this.diagramChangesService.updatePosition.bind(this.diagramChangesService)
     );
 
-    // Update brush direction for links connected to moved nodes
-    diagram.addDiagramListener('SelectionMoved', function(event) {
-      event.diagram.startTransaction('Recalculate link colours');
-      const linksToUpdate = new go.Set();
-
-      event.subject.each(function(part) {
-        if (part instanceof go.Node) {
-          linksToUpdate.addAll(part.linksConnected);
-        }
-      });
-
-      linksToUpdate.each(function(link: go.Link) {
-        link.updateTargetBindings('impactedByWorkPackages');
-      });
-      event.diagram.commitTransaction('Recalculate link colours');
-    });
-
     diagram.addDiagramListener('SelectionMoved', this.diagramLevelService.relayoutGroups);
 
     // After diagram layout, redo group layouts in map view to correct link paths

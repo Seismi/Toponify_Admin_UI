@@ -41,7 +41,8 @@ import {
   UpdateNodeLocations,
   UpdatePartsLayout,
   UpdateNodeGroupMembers,
-  UpdateNodeChildren
+  UpdateNodeChildren,
+  UpdateNodeColour
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -1219,7 +1220,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: { node: NodeExpandedStateApiRequest['data']; links: go.Link[] }): void {
+  handleUpdateNodeExpandState(data: { node: NodeExpandedStateApiRequest['data']; links: any[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === autoLayoutId) {
       return;
@@ -1236,7 +1237,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   handleUpdateGroupArea(data: {
     groups: { id: string; areaSize: string; locationCoordinates: string }[];
-    links: go.Link[];
+    links: any[];
   }): void {
     // Do not update back end if using default layout
     if (this.layout && this.layout.id === autoLayoutId) {
@@ -1251,6 +1252,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.layout && data && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
     }
+  }
+
+  handleUpdateNodeColour(data: { id: string; colour: colourOptions}): void {
+    // Do not update back end if using default layout
+    if (this.layout && this.layout.id === autoLayoutId) {
+      return;
+    }
+    this.store.dispatch(new UpdateNodeColour({ layoutId: this.layout.id, data: data }));
+  }
+
+  handleUpdateLinkColour(link: {
+    id: string;
+    points: number[];
+    toSpot: string;
+    fromSpot: string;
+    colour: colourOptions
+  }): void {
+    // Do not update back end if using default layout
+    if (this.layout && this.layout.id === autoLayoutId) {
+      return;
+    }
+    this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: [link] }));
   }
 
   handleUpdateDiagramLayout(): void {

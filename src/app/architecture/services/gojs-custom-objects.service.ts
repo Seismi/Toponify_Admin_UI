@@ -641,6 +641,11 @@ function getColourChangeMenu(isGroup = true) {
   function changeColours(diagram: go.Diagram, colour: colourOptions): void {
     diagram.selection.each(function(part): void {
       diagram.model.setDataProperty(part.data, 'colour', colour);
+      if (part instanceof go.Node) {
+        currentService.diagramChangesService.nodeColourChanged(part);
+      } else {
+        currentService.diagramChangesService.linkColourChanged(part);
+      }
     });
     currentService.diagramChangesService.onUpdateDiagramLayout.next({});
   }
