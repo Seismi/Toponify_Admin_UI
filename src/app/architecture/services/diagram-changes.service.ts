@@ -775,7 +775,6 @@ export class DiagramChangesService {
       // Update node's layout in map, usage sources or targets views
       node.findTopLevelPart().invalidateLayout();
     } else {
-      this.groupMemberSizeChanged(node);
 
       // Update expanded status of node in the back end
       this.onUpdateExpandState.next({
@@ -787,7 +786,7 @@ export class DiagramChangesService {
         links: linkData
       });
 
-      this.onUpdateDiagramLayout.next({});
+      this.groupMemberSizeChanged(node);
     }
   }
 

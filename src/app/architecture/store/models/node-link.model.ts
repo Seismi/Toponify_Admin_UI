@@ -112,6 +112,8 @@ export interface LinkLayoutSettingsEntity {
     id: string
     positionSettings: {
       route?: number[];
+      fromSpot?: string;
+      toSpot?: string;
     }
   };
 }
