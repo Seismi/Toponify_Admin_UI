@@ -1,3 +1,5 @@
+import {colourOptions} from '@app/architecture/store/models/layout.model';
+
 export interface NodesApiResponse {
   data?: Node[] | null;
 }
@@ -10,27 +12,18 @@ export interface CustomPropertyApiRequest {
   data: CustomPropertyValuesEntity;
 }
 
-export enum middleOptions {
+export enum bottomOptions {
   none = 'none',
   children = 'children',
   groupList = 'group list',
   group = 'group'
 }
 
-export enum colourOptions {
-  blue = 'blue',
-  red = 'red',
-  green = 'green',
-  purple = 'purple',
-  orange = 'orange',
-  none = 'none'
-}
-
 export interface NodeExpandedStateApiRequest {
   data: {
     id: string;
-    middleExpanded?: middleOptions;
-    bottomExpanded?: boolean;
+    middleExpanded?: boolean;
+    bottomExpanded?: bottomOptions;
   };
 }
 
@@ -154,8 +147,8 @@ export interface LocationsEntity {
 }
 export interface ExpandedStatesEntity {
   layout: Layout;
-  middleExpanded: middleOptions;
-  bottomExpanded: boolean;
+  middleExpanded: boolean;
+  bottomExpanded: bottomOptions;
 }
 export interface GroupAreaSizesEntity {
   layout: Layout;
@@ -167,8 +160,8 @@ export interface NodeLayoutSettingsEntity {
     id: string;
     positionSettings: {
       locationCoordinates?: string;
-      middleExpanded?: middleOptions;
-      bottomExpanded?: boolean;
+      middleExpanded?: boolean;
+      bottomExpanded?: bottomOptions;
       areaSize?: string;
       colour?: colourOptions;
     };

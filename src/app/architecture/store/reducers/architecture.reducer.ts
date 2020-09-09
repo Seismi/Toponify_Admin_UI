@@ -9,7 +9,7 @@ import {
   Node,
   NodeDetail,
   NodeReports,
-  middleOptions,
+  bottomOptions,
   GroupAreaSizesEntity,
   OwnersEntity,
   Tag,
@@ -31,6 +31,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { Page } from '@app/radio/store/models/radio.model';
 import { TagListComponent } from '@app/architecture/components/tag-list/tag-list.component';
+import {colourOptions} from '@app/architecture/store/models/layout.model';
 
 export interface State {
   reports: NodeReports[];
@@ -229,7 +230,8 @@ export function reducer(
               layoutId,
               link.points,
               link.fromSpot,
-              link.toSpot
+              link.toSpot,
+              link.colour
             );
           }
         },
@@ -675,6 +677,7 @@ export function reducer(
               link.positionSettings.route,
               link.positionSettings.fromSpot,
               link.positionSettings.toSpot,
+              link.positionSettings.colour
             );
           }
         },
@@ -790,6 +793,17 @@ export function reducer(
           ...state
         }
       );
+    }
+
+    case NodeActionTypes.UpdateNodeColour: {
+      const { layoutId, data } = action.payload;
+      const nodeIndex = state.entities.findIndex(g => g.id === data.id);
+      if (nodeIndex > -1) {
+        return replaceNodeLayoutSetting({...state}, nodeIndex, data.id, layoutId, data.colour, 'colour');
+      }
+      return {
+        ...state
+      };
     }
 
     case NodeActionTypes.UpdateNodeLocationsSuccess: {
@@ -1179,7 +1193,8 @@ function replaceLinkRoute(
   layoutId: string,
   route: number[],
   fromSpot: string,
-  toSpot: string
+  toSpot: string,
+  colour: colourOptions
 ): State {
   const updatedLayouts: LinkLayoutSettingsEntity[] = state.links[linkIndex].positionPerLayout.concat();
   const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: LinkLayoutSettingsEntity) {
@@ -1192,7 +1207,8 @@ function replaceLinkRoute(
       ...updatedLayout.layout.positionSettings,
       route: route,
       fromSpot: fromSpot,
-      toSpot: toSpot
+      toSpot: toSpot,
+      colour: colour
     };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });

@@ -18,6 +18,15 @@ export interface UpdateDiagramLayoutApiRequest {
   };
 }
 
+export enum colourOptions {
+  blue = 'blue',
+  red = 'red',
+  green = 'green',
+  purple = 'purple',
+  orange = 'orange',
+  none = 'none'
+}
+
 export enum NodeColoursDark {
   'blue' = '#112A46',
   'red' = '#5A181F',

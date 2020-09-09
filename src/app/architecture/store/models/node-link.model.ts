@@ -1,3 +1,5 @@
+import {colourOptions} from '@app/architecture/store/models/layout.model';
+
 export const dummyLinkId = '00000000-0000-0000-0000-000000000000';
 
 export interface NodeLinksApiResponse {
@@ -114,6 +116,7 @@ export interface LinkLayoutSettingsEntity {
       route?: number[];
       fromSpot?: string;
       toSpot?: string;
+      colour?: colourOptions;
     }
   };
 }
