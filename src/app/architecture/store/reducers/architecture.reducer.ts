@@ -677,6 +677,7 @@ export function reducer(
               link.positionSettings.route,
               link.positionSettings.fromSpot,
               link.positionSettings.toSpot,
+              link.positionSettings.colour
             );
           }
         },
