@@ -665,8 +665,8 @@ export function defineRoundButton() {
 @Injectable()
 export class GojsCustomObjectsService {
   // Observable to indicate that the detail tab should be displayed
-  private showDetailTabSource = new Subject();
-  public showDetailTab$ = this.showDetailTabSource.asObservable();
+  private showRightPanelTabSource = new Subject();
+  public showRightPanelTab$ = this.showRightPanelTabSource.asObservable();
   // Observable to indicate that a new scope should be created for the selected node
   private createScopeWithNodeSource = new Subject();
   public createScopeWithNode$ = this.createScopeWithNodeSource.asObservable();
@@ -798,7 +798,7 @@ export class GojsCustomObjectsService {
         makeButton(1,
           'View Detail',
           function() {
-            thisService.showDetailTabSource.next();
+            thisService.showRightPanelTabSource.next();
           }
         ),
         ...getColourChangeMenu()
@@ -879,7 +879,7 @@ export class GojsCustomObjectsService {
         makeButton(1,
           'Show Details',
           function(event: go.InputEvent, object: go.Part): void {
-            thisService.showDetailTabSource.next();
+            thisService.showRightPanelTabSource.next();
           },
           null,
           function(object: go.Part, event: go.InputEvent): boolean {
