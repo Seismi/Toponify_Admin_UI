@@ -245,7 +245,8 @@ enum Events {
 export class ArchitectureComponent implements OnInit, OnDestroy {
   private zoomRef;
   private showHideGridRef;
-  private showDetailTabRef;
+  private showRightPanelTabRef;
+  private showWorkpackageTabRef;
   private showHideRadioAlertRef;
   private addSystemToGroupRef;
   private addNewSubItemRef;
@@ -794,12 +795,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }.bind(this)
     );
 
-    // Observable to capture instruction to switch to the Detail tab from GoJS context menu
-    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(
-      function() {
+    // Observable to capture instruction to switch to a tab in the right hand panel
+    this.showRightPanelTabRef = this.gojsCustomObjectsService.showRightPanelTab$.subscribe(
+      function(tab: NodeDetailTab = NodeDetailTab.Details): void {
         // Show the right panel if hidden
         this.showOrHideRightPane = true;
-        this.selectedRightTab = 0;
+        this.selectedRightTab = tab;
         this.ref.detectChanges();
       }.bind(this)
     );
