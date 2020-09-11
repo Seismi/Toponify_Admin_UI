@@ -379,7 +379,7 @@ export class DiagramChangesService {
           this.workpackages.forEach(workpackage => {
             let layoutDetails;
 
-            if (this.layout) {
+            if (this.layout && this.layout.id !== autoLayoutId) {
               layoutDetails = {
                 layoutId: this.layout.id,
                 data: {
