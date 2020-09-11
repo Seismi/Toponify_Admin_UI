@@ -377,10 +377,35 @@ export class DiagramChangesService {
           }
         } else {
           this.workpackages.forEach(workpackage => {
+            let layoutDetails;
+
+            if (this.layout) {
+              layoutDetails = {
+                layoutId: this.layout.id,
+                data: {
+                  positionDetails: {
+                    workPackages: [{ id: workpackage.id, name: workpackage.name }],
+                    positions: {
+                      nodes: [],
+                      nodeLinks: [{
+                        id: link.data.id,
+                        positionSettings: {
+                          route: link.data.route,
+                          fromSpot: link.data.fromSpot,
+                          toSpot: link.data.toSpot
+                        }
+                      }]
+                    }
+                  }
+                }
+              };
+            }
+
             this.workpackageStore.dispatch(
               new AddWorkPackageLink({
                 workpackageId: workpackage.id,
-                link: Object.assign({}, link.data)
+                link: Object.assign({}, link.data),
+                newLayoutDetails: layoutDetails
               })
             );
           });

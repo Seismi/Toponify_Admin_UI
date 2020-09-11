@@ -1612,6 +1612,8 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'routeMissing', function(routeMissing) {
         return routeMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
+      new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
+      new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       this.getStandardLinkOptions(forPalette),
       {
         doubleClick: function(event: go.InputEvent, object: go.Link): void {

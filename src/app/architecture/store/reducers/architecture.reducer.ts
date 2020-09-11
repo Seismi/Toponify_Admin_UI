@@ -1141,6 +1141,15 @@ function replaceNodeLayoutSetting(
     const newPositionSettings = { ...updatedLayout.layout.positionSettings, [setting]: newValue };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
+  } else {
+    updatedLayouts.push({
+      layout: {
+        id: layoutId,
+        positionSettings: {
+          [setting]: newValue
+        }
+      }
+    });
   }
 
   const updatedNode = { ...state.entities[nodeIndex], positionPerLayout: updatedLayouts };
@@ -1212,6 +1221,18 @@ function replaceLinkRoute(
     };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
+  } else {
+    updatedLayouts.push({
+      layout: {
+        id: layoutId,
+        positionSettings: {
+          route: route,
+          fromSpot: fromSpot,
+          toSpot: toSpot,
+          colour: colour
+        }
+      }
+    });
   }
 
   const updatedLink = { ...state.links[linkIndex], positionPerLayout: updatedLayouts };
@@ -1235,6 +1256,13 @@ function replaceAllNodeLayoutSettings(state: State, nodeIndex: number, node: any
     const newPositionSettings = { ...updatedLayout.layout.positionSettings, ...node.positionSettings };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
+  } else {
+    updatedLayouts.push({
+      layout: {
+        id: layoutId,
+        positionSettings: node.positionSettings
+      }
+    });
   }
 
   const updatedNode = { ...state.entities[nodeIndex], positionPerLayout: updatedLayouts };

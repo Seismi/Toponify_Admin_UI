@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
+import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
 
 export enum WorkPackageLinkActionTypes {
   AddWorkPackageLink = '[WorkPackage] Add link',
@@ -43,7 +44,11 @@ export enum WorkPackageLinkActionTypes {
 
 export class AddWorkPackageLink implements Action {
   readonly type = WorkPackageLinkActionTypes.AddWorkPackageLink;
-  constructor(public payload: { workpackageId: string; link: any }) {}
+  constructor(public payload: {
+    workpackageId: string;
+    link: any;
+    newLayoutDetails?: UpdateDiagramLayoutApiRequest;
+  }) {}
 }
 
 export class AddWorkPackageLinkSuccess implements Action {
