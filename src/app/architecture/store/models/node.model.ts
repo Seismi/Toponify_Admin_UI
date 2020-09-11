@@ -138,6 +138,13 @@ export class Node {
       this.isShared = options.isShared || false;
       this.owners = [];
       this.impactedByWorkPackages = [];
+      this.relatedRadioCounts = {
+        risks: 0,
+        issues: 0,
+        assumptions: 0,
+        dependencies: 0,
+        opportunities: 0,
+      };
     }
   }
 }

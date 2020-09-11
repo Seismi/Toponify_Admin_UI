@@ -1,6 +1,14 @@
 import * as go from 'gojs';
 import 'gojs/extensions/Figures.js';
-import {layers, bottomOptions, nodeCategories, Tag, TagColour, WorkPackageImpact} from '@app/architecture/store/models/node.model';
+import {
+  layers,
+  bottomOptions,
+  nodeCategories,
+  Tag,
+  TagColour,
+  WorkPackageImpact,
+  GroupInfo
+} from '@app/architecture/store/models/node.model';
 import {Injectable} from '@angular/core';
 import {CustomLink, defineRoundButton, GojsCustomObjectsService} from './gojs-custom-objects.service';
 import {DiagramLevelService, Level} from './diagram-level.service';
@@ -10,7 +18,7 @@ import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {Subject} from 'rxjs';
-import {NodeColoursDark, NodeColoursLight} from '@app/architecture/store/models/layout.model';
+import {NodeColoursDark, NodeColoursLight, NodeDetailTab} from '@app/architecture/store/models/layout.model';
 
 function textFont(style?: string): Object {
   const font = getComputedStyle(document.body).getPropertyValue('--default-font');
@@ -265,17 +273,23 @@ export class DiagramTemplatesService {
     return $(go.Panel,
       'Auto',
       {
+        name: 'Workpackage Icon Panel',
         toolTip: $('ToolTip', $(go.TextBlock, new go.Binding('text', '',
           function(data) {
             const action = data.updateType ===  'add' ? 'created' : 'updated';
             return `${action} in ${data.name}`;
           }
-        )))
+        ))),
+        doubleClick: function(event: go.InputEvent): void {
+          this.gojsCustomObjectsService.showRightPanelTabSource.next(NodeDetailTab.WorkPackages);
+          event.handled = true;
+        }.bind(this)
       },
       $(go.Shape, {fill: null, stroke: null }),
       $(go.Shape,
         'Circle',
         {
+          name: 'Workpackage Icon Background',
           desiredSize: new go.Size(26, 26),
           stroke: null,
           fill: null
@@ -284,6 +298,7 @@ export class DiagramTemplatesService {
       ),
       $(go.Picture,
         {
+          name: 'Workpackage Icon',
           desiredSize: new go.Size(23, 23),
           source: `assets/node-icons/work-package-white.svg`
         }
@@ -386,8 +401,6 @@ export class DiagramTemplatesService {
     return $(
       'RoundButton',
       {
-        row: 0,
-        column: 3,
         name: 'TopMenuButton',
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
@@ -488,12 +501,18 @@ export class DiagramTemplatesService {
       go.Panel,
       'Auto',
       {
-        visible: false
+        name: 'Radio Alert Panel',
+        visible: false,
+        doubleClick: function(event: go.InputEvent): void {
+          this.gojsCustomObjectsService.showRightPanelTabSource.next(NodeDetailTab.Radio);
+          event.handled = true;
+        }.bind(this)
       },
       new go.Binding('visible', 'relatedRadioCounts', function(counts) {
         return counts[type] > 0;
       }),
       $(go.Shape, 'circle', {
+        name: 'Radio Alert Shape',
         fill: radioColours[type],
         desiredSize: new go.Size(25, 25),
         margin: new go.Margin(0, 1, 0, 1)
@@ -502,6 +521,7 @@ export class DiagramTemplatesService {
         go.TextBlock,
         textFont('12px'),
         {
+          name: 'Radio Alert Icon',
           textAlign: 'center',
           stroke: radioColours[type] === 'yellow' ? 'black' : 'white',
         },
@@ -513,7 +533,7 @@ export class DiagramTemplatesService {
   }
 
   // Get the whole set of indicators for the different types of RADIOs
-  getRadioAlertIndicators(fixedHeight = true): go.Panel {
+  getRadioAlertIndicators(forNode = true): go.Panel {
     return $(
       go.Panel,
       'Horizontal',
@@ -524,8 +544,20 @@ export class DiagramTemplatesService {
         row: 0,
         column: 0
       },
-      fixedHeight ? { height: 27 } : {},
+      forNode ? { height: 27 } : {},
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
+      (forNode && !this.forPalette) ? $(go.TextBlock,
+        'No RADIOs',
+        textFont('italic 16px'),
+        {
+          textAlign: 'left',
+          stroke: 'grey',
+          visible: false
+        },
+        new go.Binding('visible', 'relatedRadioCounts', function(radios): boolean {
+          return Object.keys(radios).every(function(key) {return radios[key] === 0; });
+        })
+      ) : {},
       ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
         function(type) {
           return this.getRadioAlertIndicator(type);
@@ -589,7 +621,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  getWorkpackageImpactIcons(maxIcons = 4, fixedHeight = true): go.Panel {
+  getWorkpackageImpactIcons(maxIcons = 4, forNode = true): go.Panel {
     return $(go.Panel,
       'Horizontal',
       {
@@ -598,7 +630,7 @@ export class DiagramTemplatesService {
         column: 1,
         row: 0
       },
-      fixedHeight ? { height: 26 } : {},
+      forNode ? { height: 26 } : {},
       // Panel to contain workpackage icons
       $(go.Panel,
         'Horizontal',
@@ -615,6 +647,20 @@ export class DiagramTemplatesService {
           }
         )
       ),
+      (forNode && !this.forPalette) ? $(go.TextBlock,
+        'Not Impacted',
+        textFont('italic 16px'),
+        {
+          textAlign: 'right',
+          stroke: 'grey',
+          visible: false
+        },
+        new go.Binding('visible', 'impactedByWorkPackages',
+          function(workpackages: WorkPackageImpact[]): boolean {
+            return workpackages.length === 0;
+          }
+        )
+      ) : {},
       // Ellipsis to indicate that there are additional workpackage
       //  icons associated with the node
       $(go.TextBlock,
@@ -714,10 +760,10 @@ export class DiagramTemplatesService {
           new go.Size(nodeWidth, 30) : new go.Size(NaN, 60);
       }),
       $(go.RowColumnDefinition, { row: 0, height: 30}),
-      $(go.RowColumnDefinition, { column: 0, maximum: 50}),
+      $(go.RowColumnDefinition, { column: 0, maximum: 25}),
       $(go.RowColumnDefinition, { column: 1 }),
       $(go.RowColumnDefinition, { column: 2 }),
-      $(go.RowColumnDefinition, { column: 3, width: 25 }),
+      $(go.RowColumnDefinition, { column: 3, maximum: 50 }),
       $(go.RowColumnDefinition, { column: 4 }),
       this.getDependencyExpandButton(),
       $(go.Panel,
@@ -777,18 +823,7 @@ export class DiagramTemplatesService {
               '.svg'
             ].join('');
           })
-        ),
-        // Icon to indicate that the group contains group members
-        isGroup ? $(go.Picture,
-          {
-            desiredSize: new go.Size(25, 25),
-            source: '/assets/node-icons/group.svg',
-            visible: false
-          },
-          new go.Binding('visible', 'members', function(groupMembers) {
-            return groupMembers.length > 0;
-          })
-        ) : {}
+        )
       ),
       this.getTagIconsRow(),
       $(
@@ -817,7 +852,32 @@ export class DiagramTemplatesService {
           return name ? 1 : 0;
         }).ofModel()
       ),
-      isGroup ? this.getTopMenuButton() : this.getTopExpandButton()
+      $(go.Panel,
+        'Horizontal',
+        {
+          row: 0,
+          column: 3
+        },
+        // Icon to indicate that the group contains group members
+        isGroup ? $(go.Picture,
+          {
+            desiredSize: new go.Size(25, 25),
+            source: '/assets/node-icons/group.svg',
+            visible: false,
+            toolTip: $('ToolTip',
+              $(go.TextBlock,
+                new go.Binding('text', 'members', function(members: GroupInfo[]): string {
+                  return `Contains ${members.length} group member${members.length > 1 ? 's' : ''}`;
+                })
+              )
+            )
+          },
+          new go.Binding('visible', 'members', function(groupMembers: GroupInfo[]): boolean {
+            return groupMembers.length > 0;
+          })
+        ) : {},
+        isGroup ? this.getTopMenuButton() : this.getTopExpandButton()
+      )
     );
   }
 
@@ -995,39 +1055,49 @@ export class DiagramTemplatesService {
         margin: new go.Margin(2)
       },
       new go.Binding('visible', 'middleExpanded').makeTwoWay(),
-      $(
-        go.Panel,
+      $(go.Panel,
         'Horizontal',
-        {
-          // maxSize: new go.Size(296, NaN),
-          height: 30,
-          itemTemplate: this.getTagTemplate(),
-          alignment: go.Spot.LeftCenter,
-          margin: new go.Margin(3, 0, 3, 0)
-        },
-        new go.Binding(
-          'itemArray',
-          'tags',
-          function(tags: Tag[]): Tag[] {
-            if (tags.length === 0) {
-              return tags;
+        {alignment: go.Spot.LeftCenter },
+        !this.forPalette ? $(go.TextBlock,
+          'No Tags',
+          textFont('italic 16px'),
+          {
+            textAlign: 'left',
+            visible: false,
+            stroke: 'grey'
+          },
+          new go.Binding('visible', 'tags',
+            function(tags: Tag[]): boolean {console.log(tags);
+              return tags.length === 0;
             }
-
-            return this.getTruncatedTags(tags);
-          }.bind(this)
-        ),
-        new go.Binding('visible', 'tags').ofModel()
+          )
+        ) : {},
+        $(
+          go.Panel,
+          'Horizontal',
+          {
+            // maxSize: new go.Size(296, NaN),
+            height: 30,
+            itemTemplate: this.getTagTemplate(),
+            // alignment: go.Spot.LeftCenter,
+            margin: new go.Margin(3, 0, 3, 0)
+          },
+          new go.Binding(
+            'itemArray',
+            'tags',
+            function(tags: Tag[]): Tag[] {
+              if (tags.length === 0) {
+                return tags;
+              }
+              return this.getTruncatedTags(tags);
+            }.bind(this)
+          ),
+          new go.Binding('visible', 'tags').ofModel()
+        )
       ),
       $(go.Panel,
         'Table',
-        { defaultColumnSeparatorStroke: 'black', stretch: go.GraphObject.Horizontal },
-        new go.Binding(
-          'defaultColumnSeparatorStroke',
-          'colour',
-          function(colour) {
-            return NodeColoursDark[colour];
-          }
-        ),
+        {stretch: go.GraphObject.Horizontal },
         $(go.RowColumnDefinition, {row: 0, height: 30}),
         $(go.RowColumnDefinition,
           {
@@ -1199,11 +1269,6 @@ export class DiagramTemplatesService {
       this.getStandardNodeOptions(forPalette),
       {
         doubleClick: function(event, node) {
-          // Do not proceed for double clicks on buttons on the node
-          if (event.targetObject.name.includes('Button') || forPalette) {
-            return;
-          }
-
           this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
         }.bind(this)
       },
@@ -1312,14 +1377,7 @@ export class DiagramTemplatesService {
         selectionObjectName: 'main content',
         resizeObjectName: 'Group member area',
         doubleClick: function(event, node) {
-
-          // Do not proceed for double clicks on buttons on the node
-          if (event.targetObject.name.includes('Button') || forPalette) {
-            return;
-          }
-
-          this.gojsCustomObjectsService.showDetailTabSource.next();
-
+          this.gojsCustomObjectsService.showRightPanelTabSource.next();
         }.bind(this),
         dragComputation: function(part, pt, gridpt) {
           // don't constrain top-level nodes
