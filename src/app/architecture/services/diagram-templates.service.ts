@@ -1067,7 +1067,7 @@ export class DiagramTemplatesService {
             stroke: 'grey'
           },
           new go.Binding('visible', 'tags',
-            function(tags: Tag[]): boolean {console.log(tags);
+            function(tags: Tag[]): boolean {
               return tags.length === 0;
             }
           )
