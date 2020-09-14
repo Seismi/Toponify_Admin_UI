@@ -1,7 +1,7 @@
 <div class="wrapper">
   <div class="block">
     <mat-chip-list>
-      <mat-chip *ngIf="dependenciesView" data-qa="topology-viewing-dependencies">
+      <mat-chip *ngIf="diagramChangeService.dependenciesView" data-qa="topology-viewing-dependencies">
         Viewing Dependencies
         <mat-icon matChipRemove (click)="exitDependenciesView.emit()">cancel</mat-icon>
       </mat-chip>
@@ -49,7 +49,6 @@
       (saveAsLayout)="saveAsLayout.emit()"
       [allowSave]="allowSave"
       [allowSaveAs]="allowSaveAs"
-      [dependenciesView]="dependenciesView"
       (layoutSettings)="layoutSettings.emit()"
       (selectLayout)="selectLayout.emit($event)"
       [selectedLayout]="selectedLayout"

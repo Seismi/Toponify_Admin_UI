@@ -56,6 +56,7 @@ import { SearchEffects } from './store/effects/search.effects';
 import { HostComponent } from './components/host/host.component';
 import { TableComponent } from './components/table/table.component';
 import { SpinnerModule } from '@app/core/components/spinner/spinner.module';
+import { TabsTitleComponent } from './components/tabs-title/tabs-title.component';
 
 @NgModule({
   imports: [
@@ -109,7 +110,8 @@ import { SpinnerModule } from '@app/core/components/spinner/spinner.module';
     CoreLayoutModule,
     HostComponent,
     TableComponent,
-    SpinnerModule
+    SpinnerModule,
+    TabsTitleComponent
   ],
   entryComponents: [DeleteModalComponent, SelectModalComponent],
   providers: [
@@ -121,6 +123,6 @@ import { SpinnerModule } from '@app/core/components/spinner/spinner.module';
       multi: true
     }
   ],
-  declarations: [ByRoleDirective, CanEditDirective, HostComponent, TableComponent]
+  declarations: [ByRoleDirective, CanEditDirective, HostComponent, TableComponent, TabsTitleComponent]
 })
 export class CoreModule {}

@@ -7,6 +7,7 @@ import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { defaultLayoutId } from '@app/layout/store/models/layout.model';
+import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 
 @Component({
   selector: 'smi-diagram-actions',
@@ -19,7 +20,6 @@ export class DiagramActionsComponent {
   @Input() allowMove: boolean;
   @Input() allowSave = false;
   @Input() allowSaveAs = false;
-  @Input() dependenciesView: boolean;
   @Input() filterLevel: string;
   @Input() selectedLayout: ScopeDetails;
   @Input() layouts: ScopeDetails[];
@@ -29,7 +29,10 @@ export class DiagramActionsComponent {
   @Input() groupName: string | null;
   @Input() scope: ScopeDetails;
 
-  constructor(private routerStore: Store<RouterReducerState<RouterStateUrl>>) { }
+  constructor(
+    public diagramChangeService: DiagramChangesService,
+    private routerStore: Store<RouterReducerState<RouterStateUrl>>
+  ) { }
 
   @Output() zoomIn = new EventEmitter<void>();
   @Output() zoomOut = new EventEmitter<void>();
