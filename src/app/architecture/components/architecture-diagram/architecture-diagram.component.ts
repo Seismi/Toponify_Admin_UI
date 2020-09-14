@@ -27,6 +27,7 @@ import {
   CustomNodeResize,
   GojsCustomObjectsService
 } from '../../services/gojs-custom-objects.service';
+import {colourOptions} from '@app/architecture/store/models/layout.model';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -119,6 +120,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   @Output()
   updateGroupArea = new EventEmitter();
+
+  @Output()
+  updateNodeColour = new EventEmitter();
+
+  @Output()
+  updateLinkColour = new EventEmitter();
 
   @Output()
   updateDiagramLayout = new EventEmitter();
@@ -273,6 +280,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     });
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
+    });
+    diagramChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
+      this.updateNodeColour.emit(data);
+    });
+    diagramChangesService.onUpdateLinkColour.subscribe((link: any) => {
+      this.updateLinkColour.emit(link);
     });
 
     this.diagramChangesService.onUpdateGroupsAreaState

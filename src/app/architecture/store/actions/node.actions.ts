@@ -13,7 +13,7 @@ import {
 import { NodeLink, NodeLinkDetail } from '../models/node-link.model';
 import { DescendantsEntity } from '@app/architecture/store/models/node.model';
 import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
-import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
+import {colourOptions, UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
 
 export enum NodeActionTypes {
   LoadNodes = '[Node] Load Nodes',
@@ -52,6 +52,9 @@ export enum NodeActionTypes {
   UpdateGroupAreaSize = '[Node] Update group area size',
   UpdateGroupAreaSizeSuccess = '[Node] Update group area size Success',
   UpdateGroupAreaSizeFailure = '[Node] Update group area size Fail',
+  UpdateNodeColour = '[Node] Update node colour',
+  UpdateNodeColourSuccess = '[Node] Update node colour Success',
+  UpdateNodeColourFailure = '[Node] Update node colour Fail',
   UpdateLinks = '[Node] Update links',
   UpdateLinksSuccess = '[Node] Update links Success',
   UpdateLinksFailure = '[Node] Update links Fail',
@@ -97,6 +100,7 @@ export enum NodeActionTypes {
   ReloadNodesData = '[Node] Reload Nodes Data',
   SetDraft = '[Node] Set draft',
   RemoveAllDraft = '[Node] Remove all draft',
+  UndoLayoutChange = '[Node] Undo layout change',
   UpdateNodeGroupMembers = '[Node] Update Node Group Members',
   UpdateNodeGroupMembersSuccess = '[Node] Update Node Group Members Success',
   UpdateNodeGroupMembersFailure = '[Node] Update Node Group Members Failure',
@@ -113,6 +117,11 @@ export class SetDraft implements Action {
 
 export class RemoveAllDraft implements Action {
   readonly type = NodeActionTypes.RemoveAllDraft;
+  constructor() {}
+}
+
+export class UndoLayoutChange implements Action {
+  readonly type = NodeActionTypes.UndoLayoutChange;
   constructor() {}
 }
 
@@ -293,6 +302,21 @@ export class UpdateGroupAreaSizeSuccess implements Action {
 
 export class UpdateGroupAreaSizeFailure implements Action {
   readonly type = NodeActionTypes.UpdateGroupAreaSizeFailure;
+  constructor(public payload: Error) {}
+}
+
+export class UpdateNodeColour implements Action {
+  readonly type = NodeActionTypes.UpdateNodeColour;
+  constructor(public payload: { layoutId: string; data: {id: string; colour: colourOptions; }}) {}
+}
+
+export class UpdateNodeColourSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodeColourSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateNodeColourFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodeColourFailure;
   constructor(public payload: Error) {}
 }
 
@@ -543,6 +567,7 @@ export class UpdateNodeChildrenFailure implements Action {
 export type NodeActionsUnion =
   | SetDraft
   | RemoveAllDraft
+  | UndoLayoutChange
   | LoadNodes
   | LoadNodesSuccess
   | LoadNodesFailure
@@ -579,6 +604,9 @@ export type NodeActionsUnion =
   | UpdateGroupAreaSize
   | UpdateGroupAreaSizeSuccess
   | UpdateGroupAreaSizeFailure
+  | UpdateNodeColour
+  | UpdateNodeColourSuccess
+  | UpdateNodeColourFailure
   | UpdateLinks
   | UpdateLinksSuccess
   | UpdateLinksFailure

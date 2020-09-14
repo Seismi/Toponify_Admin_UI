@@ -32,7 +32,7 @@ import {
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { AddWorkPackageMapViewTransformation } from '@app/workpackage/store/actions/workpackage.actions';
-import { autoLayoutId } from '@app/architecture/store/models/layout.model';
+import {autoLayoutId, colourOptions} from '@app/architecture/store/models/layout.model';
 import { defaultScopeId } from '@app/scope/store/models/scope.model';
 
 const $ = go.GraphObject.make;
@@ -42,6 +42,8 @@ export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateNodeColour: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateLinkColour: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   public diagramEditable: boolean;
   private currentLevel: Level;
@@ -283,7 +285,8 @@ export class DiagramChangesService {
               id: part.key,
               points: part.data.route,
               fromSpot: part.data.fromSpot,
-              toSpot: part.data.toSpot
+              toSpot: part.data.toSpot,
+              colour: part.data.colour
             });
           }
         } else {
@@ -744,7 +747,12 @@ export class DiagramChangesService {
   }
 
   nodeExpandChanged(node) {
-    const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
+    const linkData: {
+      id: string; points: number[];
+      fromSpot: string;
+      toSpot: string;
+      colour: colourOptions;
+    }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
@@ -761,7 +769,8 @@ export class DiagramChangesService {
           id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot
+          toSpot: link.data.toSpot,
+          colour: link.data.colour
         });
       }
     });
@@ -775,7 +784,6 @@ export class DiagramChangesService {
       // Update node's layout in map, usage sources or targets views
       node.findTopLevelPart().invalidateLayout();
     } else {
-      this.groupMemberSizeChanged(node);
 
       // Update expanded status of node in the back end
       this.onUpdateExpandState.next({
@@ -787,7 +795,7 @@ export class DiagramChangesService {
         links: linkData
       });
 
-      this.onUpdateDiagramLayout.next({});
+      this.groupMemberSizeChanged(node);
     }
   }
 
@@ -867,7 +875,12 @@ export class DiagramChangesService {
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
-    const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
+    const linkData: {
+      id: string; points: number[];
+      fromSpot: string;
+      toSpot: string;
+      colour: colourOptions;
+    }[] = [];
     const node = event.subject.part;
 
     // Make sure node bounds are up to date so links can route correctly
@@ -885,7 +898,8 @@ export class DiagramChangesService {
           id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot
+          toSpot: link.data.toSpot,
+          colour: link.data.colour
         });
       }
     });
@@ -974,7 +988,8 @@ export class DiagramChangesService {
           id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot
+          toSpot: link.data.toSpot,
+          colour: link.data.colour
         });
       }
     });
@@ -1003,6 +1018,27 @@ export class DiagramChangesService {
     }
 
     this.onUpdateDiagramLayout.next({});
+  }
+
+  nodeColourChanged(node: go.Node): void {
+    this.onUpdateNodeColour.next(
+      {
+        id: node.data.id,
+        colour: node.data.colour
+      }
+    );
+  }
+
+  linkColourChanged(link: go.Link): void {
+    this.onUpdateLinkColour.next(
+      {
+        id: link.data.id,
+        points: link.data.route,
+        fromSpot: link.data.fromSpot,
+        toSpot: link.data.toSpot,
+        colour: link.data.colour
+      }
+    );
   }
 
   // Display map view for a link
@@ -1061,7 +1097,8 @@ export class DiagramChangesService {
         positionSettings: {
           route: link.route,
           fromSpot: link.fromSpot,
-          toSpot: link.toSpot
+          toSpot: link.toSpot,
+          colour: link.colour
         }
       };
     });
@@ -1222,13 +1259,13 @@ export class DiagramChangesService {
     // only consider Parts, and ignore the given Node, any Links, and Group members
     function navigate(obj: go.GraphObject): go.Part {
 
-      if (obj.name !== 'shape') {
-        return null;
-      }
-
       const part = obj.part;
 
       if (part === node) {
+        return null;
+      }
+
+      if (obj.name !== 'shape' && part.category === nodeCategories.transformation) {
         return null;
       }
       if (part instanceof go.Link) {
