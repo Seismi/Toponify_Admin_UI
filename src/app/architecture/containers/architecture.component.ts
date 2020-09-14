@@ -41,7 +41,8 @@ import {
   UpdateNodeLocations,
   UpdatePartsLayout,
   UpdateNodeGroupMembers,
-  UpdateNodeChildren
+  UpdateNodeChildren,
+  UpdateNodeColour
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -49,14 +50,14 @@ import {
   DescendantsEntity,
   layers,
   LoadingStatus,
-  middleOptions,
+  bottomOptions,
   Node,
   NodeDetail,
   NodeExpandedStateApiRequest,
   NodeReports,
   Tag,
   TagApplicableTo,
-  GroupInfo
+  GroupInfo,
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -217,7 +218,7 @@ import {
 import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
-import { autoLayoutId, NodeDetailTab } from '@app/architecture/store/models/layout.model';
+import {autoLayoutId, colourOptions, NodeDetailTab} from '@app/architecture/store/models/layout.model';
 import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
 import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
 import { NotificationState } from '@app/core/store/reducers/notification.reducer';
@@ -244,7 +245,8 @@ enum Events {
 export class ArchitectureComponent implements OnInit, OnDestroy {
   private zoomRef;
   private showHideGridRef;
-  private showDetailTabRef;
+  private showRightPanelTabRef;
+  private showWorkpackageTabRef;
   private showHideRadioAlertRef;
   private addSystemToGroupRef;
   private addNewSubItemRef;
@@ -792,12 +794,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }.bind(this)
     );
 
-    // Observable to capture instruction to switch to the Detail tab from GoJS context menu
-    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(
-      function() {
+    // Observable to capture instruction to switch to a tab in the right hand panel
+    this.showRightPanelTabRef = this.gojsCustomObjectsService.showRightPanelTab$.subscribe(
+      function(tab: NodeDetailTab = NodeDetailTab.Details): void {
         // Show the right panel if hidden
         this.showOrHideRightPane = true;
-        this.selectedRightTab = 0;
+        this.selectedRightTab = tab;
         this.ref.detectChanges();
       }.bind(this)
     );
@@ -1218,7 +1220,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateNodeExpandState(data: { node: NodeExpandedStateApiRequest['data']; links: go.Link[] }): void {
+  handleUpdateNodeExpandState(data: { node: NodeExpandedStateApiRequest['data']; links: any[] }): void {
     // Do not update back end if using default layout
     if (this.layout.id === autoLayoutId) {
       return;
@@ -1235,7 +1237,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   handleUpdateGroupArea(data: {
     groups: { id: string; areaSize: string; locationCoordinates: string }[];
-    links: go.Link[];
+    links: any[];
   }): void {
     // Do not update back end if using default layout
     if (this.layout && this.layout.id === autoLayoutId) {
@@ -1250,6 +1252,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     if (this.layout && data && data.links && data.links.length > 0) {
       this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: data.links }));
     }
+  }
+
+  handleUpdateNodeColour(data: { id: string; colour: colourOptions}): void {
+    // Do not update back end if using default layout
+    if (this.layout && this.layout.id === autoLayoutId) {
+      return;
+    }
+    this.store.dispatch(new UpdateNodeColour({ layoutId: this.layout.id, data: data }));
+  }
+
+  handleUpdateLinkColour(link: {
+    id: string;
+    points: number[];
+    toSpot: string;
+    fromSpot: string;
+    colour: colourOptions
+  }): void {
+    // Do not update back end if using default layout
+    if (this.layout && this.layout.id === autoLayoutId) {
+      return;
+    }
+    this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: [link] }));
   }
 
   handleUpdateDiagramLayout(): void {
@@ -1342,57 +1366,66 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.nodesSubscription = this.nodeStore
       .pipe(
         select(getNodeEntities),
-        // Get correct location, expanded state and group area size for nodes, based on selected layout
+        // Get correct location, expanded state, group area size and colour for nodes, based on selected layout
         map(nodes => {
           if (nodes === null) {
             return null;
           }
-          if (
-            this.currentFilterLevel &&
-            (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
-          ) {
-            return nodes.map(function(node) {
-              return { ...node, middleExpanded: middleOptions.none, bottomExpanded: false };
-            });
-          } else if (this.currentFilterLevel && [Level.sources, Level.targets].includes(this.currentFilterLevel)) {
-            return nodes.map(function(node) {
+
+          return nodes.map(function(node) {
+            let nodeLayout;
+
+            if (this.layout && 'id' in this.layout) {
+              nodeLayout = node.positionPerLayout.find(
+                function(layoutSettings) {
+                  return layoutSettings.layout.id === this.layout.id;
+                }.bind(this)
+              );
+            }
+
+            const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
+            const finalLayoutSettings: {
+              location?: string;
+              locationMissing?: boolean
+              middleExpanded?: boolean;
+              bottomExpanded?: bottomOptions;
+              areaSize?: string;
+              colour?: colourOptions;
+            } = {};
+
+            finalLayoutSettings.colour = layoutProps && layoutProps.colour ? layoutProps.colour : null;
+
+            if (
+              this.currentFilterLevel &&
+              (this.currentFilterLevel.endsWith('map') || this.currentFilterLevel === Level.usage)
+            ) {
+              finalLayoutSettings.middleExpanded = false;
+              finalLayoutSettings.bottomExpanded = bottomOptions.none;
+            } else if (this.currentFilterLevel && [Level.sources, Level.targets].includes(this.currentFilterLevel)) {
+
               const hasMembers = nodes.some(function(member) {
                 return member.group === node.id;
               });
-              return {
-                ...node,
-                middleExpanded: hasMembers ? middleOptions.group : middleOptions.none,
-                bottomExpanded: hasMembers,
-                locationMissing: false
-              };
-            });
-          }
+              finalLayoutSettings.middleExpanded = hasMembers;
+              finalLayoutSettings.bottomExpanded = hasMembers ? bottomOptions.group : bottomOptions.none;
+              finalLayoutSettings.locationMissing = false;
+            } else {
+              finalLayoutSettings.middleExpanded = layoutProps && layoutProps.middleExpanded
+                ? layoutProps.middleExpanded : false;
+              finalLayoutSettings.bottomExpanded = layoutProps && layoutProps.bottomExpanded
+                ? layoutProps.bottomExpanded : bottomOptions.none;
+              finalLayoutSettings.areaSize = layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null;
+              finalLayoutSettings.location = layoutProps && layoutProps.locationCoordinates
+                ? layoutProps.locationCoordinates : null;
+              finalLayoutSettings.locationMissing = !finalLayoutSettings.location;
+            }
 
-          return nodes.map(
-            function(node) {
-              let nodeLayout;
+            return {
+              ...node,
+              ...finalLayoutSettings
+            };
 
-              if (this.layout && 'id' in this.layout) {
-                nodeLayout = node.positionPerLayout.find(
-                  function(layoutSettings) {
-                    return layoutSettings.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-              }
-
-              const layoutProps = nodeLayout ? nodeLayout.layout.positionSettings : null;
-
-              return {
-                ...node,
-                location: layoutProps && layoutProps.locationCoordinates ? layoutProps.locationCoordinates : null,
-                locationMissing: !(layoutProps && layoutProps.locationCoordinates),
-                middleExpanded:
-                  layoutProps && layoutProps.middleExpanded ? layoutProps.middleExpanded : middleOptions.none,
-                bottomExpanded: layoutProps ? !!layoutProps.bottomExpanded : false,
-                areaSize: layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null
-              };
-            }.bind(this)
-          );
+          }.bind(this));
         })
       )
       .subscribe(nodes => {
@@ -1407,45 +1440,54 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.linksSubscription = this.nodeStore
       .pipe(
         select(getNodeLinks),
-        // Get correct route for links, based on selected layout
+        // Get correct route and colour for links, based on selected layout
         map(links => {
           if (links === null) {
             return null;
           }
-          if (
-            this.currentFilterLevel &&
-            (this.currentFilterLevel.endsWith('map') ||
-              [Level.sources, Level.targets, Level.usage].includes(this.currentFilterLevel))
-          ) {
-            return links.map(function(link) {
-              return { ...link, routeMissing: true };
-            });
-          }
 
-          return links.map(
-            function(link) {
-              let linkLayout;
+          return links.map(function(link) {
+            let linkLayout;
 
-              if (this.layout && 'id' in this.layout) {
-                linkLayout = link.positionPerLayout.find(
-                  function(layoutSettings) {
-                    return layoutSettings.layout.id === this.layout.id;
-                  }.bind(this)
-                );
-              }
+            if (this.layout && 'id' in this.layout) {
+              linkLayout = link.positionPerLayout.find(
+                function(layoutSettings) {
+                  return layoutSettings.layout.id === this.layout.id;
+                }.bind(this)
+              );
+            }
 
-              const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
+            const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
+            const finalLayoutSettings: {
+              fromSpot?: string;
+              toSpot?: string
+              route?: number[];
+              routeMissing?: boolean;
+              colour?: colourOptions;
+            } = {};
 
-              return {
-                ...link,
-                fromSpot:
-                  layoutProps && layoutProps.fromSpot ? layoutProps.fromSpot : go.Spot.stringify(go.Spot.Default),
-                toSpot: layoutProps && layoutProps.toSpot ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default),
-                route: layoutProps && layoutProps.route ? layoutProps.route : [],
-                routeMissing: !(layoutProps && layoutProps.route)
-              };
-            }.bind(this)
-          );
+            finalLayoutSettings.colour = layoutProps && layoutProps.colour ? layoutProps.colour : null;
+
+            if (
+              this.currentFilterLevel &&
+              (this.currentFilterLevel.endsWith('map') ||
+                [Level.sources, Level.targets, Level.usage].includes(this.currentFilterLevel))
+            ) {
+              finalLayoutSettings.routeMissing = true;
+            } else {
+              finalLayoutSettings.fromSpot = layoutProps && layoutProps.fromSpot
+                ? layoutProps.fromSpot : go.Spot.stringify(go.Spot.Default);
+              finalLayoutSettings.toSpot = layoutProps && layoutProps.toSpot
+                ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default);
+              finalLayoutSettings.route = layoutProps && layoutProps.route ? layoutProps.route : [];
+              finalLayoutSettings.routeMissing = !(layoutProps && layoutProps.route);
+            }
+
+            return {
+              ...link,
+              ...finalLayoutSettings
+            };
+          }.bind(this));
         })
       )
       .subscribe(links => {
