@@ -377,10 +377,35 @@ export class DiagramChangesService {
           }
         } else {
           this.workpackages.forEach(workpackage => {
+            let layoutDetails;
+
+            if (this.layout && this.layout.id !== autoLayoutId) {
+              layoutDetails = {
+                layoutId: this.layout.id,
+                data: {
+                  positionDetails: {
+                    workPackages: [{ id: workpackage.id, name: workpackage.name }],
+                    positions: {
+                      nodes: [],
+                      nodeLinks: [{
+                        id: link.data.id,
+                        positionSettings: {
+                          route: link.data.route,
+                          fromSpot: link.data.fromSpot,
+                          toSpot: link.data.toSpot
+                        }
+                      }]
+                    }
+                  }
+                }
+              };
+            }
+
             this.workpackageStore.dispatch(
               new AddWorkPackageLink({
                 workpackageId: workpackage.id,
-                link: Object.assign({}, link.data)
+                link: Object.assign({}, link.data),
+                newLayoutDetails: layoutDetails
               })
             );
           });
@@ -482,7 +507,8 @@ export class DiagramChangesService {
       }
     });
 
-    /* Check for any links that do not have a valid route between source and target nodes.
+    /* Check for any links that do not have a valid route between source and target nodes
+       (or containing groups of the source/target nodes if the groups are collapsed).
        This can happen if the source or target nodes are moved in a work package where
        the link no longer exists.
     */
@@ -494,9 +520,22 @@ export class DiagramChangesService {
 
       // Only proceed if link is connected at both ends
       if (link.fromNode && link.toNode) {
+
+        let fromNode = link.fromNode;
+        let toNode = link.toNode;
+
+        // If source or target node is member of a collapsed group then need to check link
+        //  connects to the containing group instead.
+        while (fromNode.containingGroup && !fromNode.containingGroup.isSubGraphExpanded) {
+          fromNode = fromNode.containingGroup;
+        }
+        while (toNode.containingGroup && !toNode.containingGroup.isSubGraphExpanded) {
+          toNode = toNode.containingGroup;
+        }
+
         // Get bounding rectangles of the link's source and target node
-        const fromArea = link.fromNode.actualBounds.copy();
-        const toArea = link.toNode.actualBounds.copy();
+        const fromArea = fromNode.actualBounds.copy();
+        const toArea = toNode.actualBounds.copy();
 
         if ([fromArea.x, fromArea.y, toArea.x, toArea.y].some(isNaN)) {
           return;
