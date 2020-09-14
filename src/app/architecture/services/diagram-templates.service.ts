@@ -687,17 +687,13 @@ export class DiagramTemplatesService {
   getLabelForTransformation(): go.Panel {
     return $(
       go.Panel,
-      'Auto',
-      {
-        width: 220,
-        padding: new go.Margin(30, 0, 0, 0)
-      },
+      'Spot',
       $(go.TextBlock,
         textFont('bold 24px'),
         {
           verticalAlignment: go.Spot.Bottom,
           shadowVisible: false,
-          margin: new go.Margin(-55, 0, 0, 0)
+          margin: new go.Margin(-150, 0, 0, 0)
         },
         new go.Binding('text', 'name')
       )
@@ -1092,7 +1088,8 @@ export class DiagramTemplatesService {
       this.getStandardNodeOptions(false),
       {
         contextMenu: null,
-        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService)
+        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
+        selectionObjectName: 'Transformation'
       },
       new go.Binding(
         'movable',
@@ -1121,7 +1118,8 @@ export class DiagramTemplatesService {
       $(go.Shape,
         this.getStandardNodeShapeOptions(),
         {
-          desiredSize: new go.Size(60.3, 53.6)
+          desiredSize: new go.Size(60.3, 53.6),
+          name: 'Transformation'
         },
         // Bind stroke to multicoloured brush based on work packages impacted by
         new go.Binding(
