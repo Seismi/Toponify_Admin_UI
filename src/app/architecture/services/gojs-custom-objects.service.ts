@@ -46,6 +46,47 @@ export class CustomLinkShift extends LinkShiftingTool {
 
     LinkShiftingTool.prototype.doMouseUp.call(this);
   }
+
+  // Adjust doReshape method to connect the link to the linked node's containing
+  //  group if this group is collapsed.
+  doReshape(pt: go.Point): void {
+    const ad = this['_handle'].part as go.Adornment;
+    const link = ad.adornedObject.part as go.Link;
+    const fromEnd = ad.category === 'LinkShiftingFrom';
+    let connectedNode;
+    let port = null;
+    if (fromEnd) {
+      connectedNode = link.fromNode;
+      port = link.fromPort;
+    } else {
+      connectedNode = link.toNode;
+      port = link.toPort;
+    }
+
+    if (connectedNode === null) { return; }
+
+    // Use port on node's containing group if containing group is collapsed
+    while (connectedNode.containingGroup && !connectedNode.containingGroup.isSubGraphExpanded) {
+      connectedNode = connectedNode.containingGroup;
+      port = connectedNode.port;
+    }
+
+    if (port === null) { return; }
+    // support rotated ports
+    const portAng = port.getDocumentAngle();
+    const center = port.getDocumentPoint(go.Spot.Center);
+    const portB = new go.Rect(port.getDocumentPoint(go.Spot.TopLeft).subtract(center).rotate(-portAng).add(center),
+      port.getDocumentPoint(go.Spot.BottomRight).subtract(center).rotate(-portAng).add(center));
+    let lp = link.getLinkPointFromPoint(port.part, port, center, pt, fromEnd);
+    lp = lp.copy().subtract(center).rotate(-portAng).add(center);
+    const spot = new go.Spot(Math.max(0, Math.min(1, (lp.x - portB.x) / (portB.width || 1))),
+      Math.max(0, Math.min(1, (lp.y - portB.y) / (portB.height || 1))));
+    if (fromEnd) {
+      link.fromSpot = spot;
+    } else {
+      link.toSpot = spot;
+    }
+  }
 }
 
 // Custom resizing tool to resize system/data groups
