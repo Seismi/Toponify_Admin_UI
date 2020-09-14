@@ -5,10 +5,10 @@ Feature: Attributes and Rules CRUD
   Background:
     Given a valid user is logged in
     When the user selects Work Package menu item
-    And the work package 'Automated Regression Test Work Package' does not exist
-    And the user has created and selected a work package called 'Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
+    And the work package 'Created Automated Regression Test Work Package' does not exist
+    And the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     When the user selects Attributes and Rules menu item
-    And the work package 'Automated Regression Test Work Package' is editable on the 'Attributes And Rules' menu
+    And the work package 'Created Automated Regression Test Work Package' is editable on the 'Attributes And Rules' menu
     And the attribute or rule 'Automated Regression Test Attribute' does not exist in the table
 
   @attributes_and_rules
