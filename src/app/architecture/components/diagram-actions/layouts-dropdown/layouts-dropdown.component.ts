@@ -4,6 +4,7 @@ import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { State as ScopeState } from '@app/scope/store/reducers/scope.reducer';
 import { SetPreferredLayout, UnsetPreferredLayout } from '@app/scope/store/actions/scope.actions';
+import { ScopeService } from '@app/scope/services/scope.service';
 
 @Component({
   selector: 'smi-layouts-dropdown',
@@ -24,7 +25,7 @@ export class LayoutsDropdownComponent {
   @Output() selectLayout = new EventEmitter<string>();
   @Output() addLayout = new EventEmitter<void>();
 
-  constructor(private store: Store<ScopeState>) { }
+  constructor(private store: Store<ScopeState>, private scopeService: ScopeService) { }
 
   onSelect(selectChange: MatSelectChange): void {
     this.selectLayout.emit(selectChange.value);
@@ -36,6 +37,7 @@ export class LayoutsDropdownComponent {
 
   setPreferredLayout(layoutId: string): void {
     this.store.dispatch(new SetPreferredLayout({ scopeId: this.scope.id, layoutId: layoutId }));
+    this.scopeService.updateScope(this.scope.id, { ...this.scope, defaultLayout: layoutId }).subscribe();
   }
 
   unsetPreferredLayout(): void {
