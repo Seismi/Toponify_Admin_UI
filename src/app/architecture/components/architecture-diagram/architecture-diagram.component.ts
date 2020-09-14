@@ -27,6 +27,7 @@ import {
   CustomNodeResize,
   GojsCustomObjectsService
 } from '../../services/gojs-custom-objects.service';
+import {colourOptions} from '@app/architecture/store/models/layout.model';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -121,6 +122,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   updateGroupArea = new EventEmitter();
 
   @Output()
+  updateNodeColour = new EventEmitter();
+
+  @Output()
+  updateLinkColour = new EventEmitter();
+
+  @Output()
   updateDiagramLayout = new EventEmitter();
 
   get level() {
@@ -147,11 +154,13 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.undoManager.isEnabled = false;
     this.diagram.allowCopy = false;
     this.diagram.animationManager.isEnabled = false;
+    this.diagram.autoScrollRegion = new go.Margin(120, 200, 135, 200);
     this.diagram.toolManager.draggingTool = new GuidedDraggingTool();
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
+    gojsCustomObjectsService.customDragMouseMove(this.diagram.toolManager.draggingTool);
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
@@ -271,6 +280,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     });
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
+    });
+    diagramChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
+      this.updateNodeColour.emit(data);
+    });
+    diagramChangesService.onUpdateLinkColour.subscribe((link: any) => {
+      this.updateLinkColour.emit(link);
     });
 
     this.diagramChangesService.onUpdateGroupsAreaState
