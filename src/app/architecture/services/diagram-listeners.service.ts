@@ -8,7 +8,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
 import { take } from 'rxjs/operators';
-import {layers, middleOptions} from '@app/architecture/store/models/node.model';
+import {layers, bottomOptions} from '@app/architecture/store/models/node.model';
 
 const $ = go.GraphObject.make;
 
@@ -45,23 +45,6 @@ export class DiagramListenersService {
       'SelectionMoved',
       this.diagramChangesService.updatePosition.bind(this.diagramChangesService)
     );
-
-    // Update brush direction for links connected to moved nodes
-    diagram.addDiagramListener('SelectionMoved', function(event) {
-      event.diagram.startTransaction('Recalculate link colours');
-      const linksToUpdate = new go.Set();
-
-      event.subject.each(function(part) {
-        if (part instanceof go.Node) {
-          linksToUpdate.addAll(part.linksConnected);
-        }
-      });
-
-      linksToUpdate.each(function(link: go.Link) {
-        link.updateTargetBindings('impactedByWorkPackages');
-      });
-      event.diagram.commitTransaction('Recalculate link colours');
-    });
 
     diagram.addDiagramListener('SelectionMoved', this.diagramLevelService.relayoutGroups);
 
@@ -350,8 +333,8 @@ export class DiagramListenersService {
             containingNodes.forEach(function(node: go.Group, index: number): void {
               // Add delay to ensure each group expanded before expanding the next
               setTimeout(function() {
-                diagram.model.setDataProperty(node.data, 'bottomExpanded', false);
-                diagram.model.setDataProperty(node.data, 'middleExpanded', middleOptions.group);
+                diagram.model.setDataProperty(node.data, 'middleExpanded', true);
+                diagram.model.setDataProperty(node.data, 'bottomExpanded', bottomOptions.group);
                 this.diagramChangesService.nodeExpandChanged(node);
               }.bind(this), 150 * (index + 1));
             }.bind(this));
