@@ -14,7 +14,6 @@ export class LayoutActionsComponent {
   @Input() allowSaveAs = false;
   @Input() selectedLayout: ScopeDetails;
   @Input() layouts: ScopeDetails[];
-  @Input() dependenciesView: boolean;
   @Output() zoomIn = new EventEmitter<void>();
   @Output() zoomOut = new EventEmitter<void>();
   @Output() showGrid = new EventEmitter<void>();
@@ -27,5 +26,5 @@ export class LayoutActionsComponent {
   @Output() selectLayout = new EventEmitter<string>();
   @Output() addLayout = new EventEmitter<void>();
 
-  constructor(private diagramChangesService: DiagramChangesService) { }
+  constructor(public diagramChangesService: DiagramChangesService) { }
 }

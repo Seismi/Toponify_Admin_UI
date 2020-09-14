@@ -21,6 +21,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import {NodeDetailTab} from '@app/architecture/store/models/layout.model';
 
 @Component({
   selector: 'smi-right-panel',
@@ -112,11 +113,11 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Observable to capture instruction to switch to the Detail tab from GoJS context menu
-    this.showDetailTabRef = this.gojsCustomObjectsService.showDetailTab$.subscribe(
-      function() {
+    // Observable to capture instruction to switch to a tab from GoJS
+    this.showDetailTabRef = this.gojsCustomObjectsService.showRightPanelTab$.subscribe(
+      function(tab: NodeDetailTab = NodeDetailTab.Details) {
         // change selected tab to the "Details" tab
-        this.selectedRightTab = 0;
+        this.selectedRightTab = tab;
         this.changeDetectorRef.detectChanges();
       }.bind(this)
     );

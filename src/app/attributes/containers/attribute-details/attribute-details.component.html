@@ -27,6 +27,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Documentation of'"
+          [reference]="attribute?.reference"
+          [name]="attribute?.name"
+        >
+        </smi-tabs-title>
         <smi-edit-documentation-standards-table
           data-qa="rules-and-attributes-documentation-standards-table"
           [data]="attribute?.customProperties"
@@ -40,6 +46,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="RADIO">track_changes</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'RADIOs related to'"
+          [reference]="attribute?.reference"
+          [name]="attribute?.name"
+        >
+        </smi-tabs-title>
         <smi-related-radio-table
           data-qa="rules-and-attributes-radio-table"
           [data]="attribute?.relatedRadios"
@@ -52,6 +64,12 @@
         <ng-template mat-tab-label>
           <mat-icon matTooltip="Work Packages">business_center</mat-icon>
         </ng-template>
+        <smi-tabs-title
+          [title]="'Work packages affecting'"
+          [reference]="attribute?.reference"
+          [name]="attribute?.name"
+        >
+        </smi-tabs-title>
         <smi-related-work-package-table [data]="attribute?.relatedWorkPackages"></smi-related-work-package-table>
       </mat-tab>
     </mat-tab-group>
