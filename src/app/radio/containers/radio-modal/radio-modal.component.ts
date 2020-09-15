@@ -12,6 +12,7 @@ import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { getSelectedWorkpackages } from '@app/workpackage/store/selectors/workpackage.selector';
+import { LoadUsers } from '@app/settings/store/actions/user.actions';
 
 @Component({
   selector: 'smi-radio-modal',
@@ -39,6 +40,7 @@ export class RadioModalComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit() {
+    this.store.dispatch(new LoadUsers({}));
     this.users$ = this.store.pipe(select(getUsers));
     if (this.data.selectWorkPackages) {
       this.workpackages$ = this.store.pipe(select(getSelectedWorkpackages));
