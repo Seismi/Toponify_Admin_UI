@@ -121,4 +121,28 @@ export class ScopeEffects {
       );
     })
   );
+
+  @Effect()
+  setPreferredLayout$ = this.actions$.pipe(
+    ofType<ScopeActions.SetPreferredLayout>(ScopeActionTypes.SetPreferredLayout),
+    map(action => action.payload),
+    switchMap((payload: { scopeId: string, layoutId: string }) => {
+      return this.scopeService.setPreferredLayout(payload.scopeId, payload.layoutId).pipe(
+        switchMap((response: { data: ScopeDetails }) => [new ScopeActions.SetPreferredLayoutSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ScopeActions.SetPreferredLayoutFailure(error)))
+      );
+    })
+  );
+
+  @Effect()
+  unsetPreferredLayout$ = this.actions$.pipe(
+    ofType<ScopeActions.UnsetPreferredLayout>(ScopeActionTypes.UnsetPreferredLayout),
+    map(action => action.payload),
+    switchMap((payload: { scopeId: string }) => {
+      return this.scopeService.unsetPreferredLayout(payload.scopeId).pipe(
+        switchMap((response: { data: ScopeDetails }) => [new ScopeActions.UnsetPreferredLayoutSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ScopeActions.UnsetPreferredLayoutFailure(error)))
+      );
+    })
+  );
 }

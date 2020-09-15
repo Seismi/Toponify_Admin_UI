@@ -177,6 +177,14 @@ export function reducer(state = initialState, action: ScopeActionsUnion): State 
       };
     }
 
+    case ScopeActionTypes.SetPreferredLayoutSuccess:
+    case ScopeActionTypes.UnsetPreferredLayoutSuccess: {
+      return {
+        ...state,
+        selected: action.payload
+      };
+    }
+
     default: {
       return state;
     }

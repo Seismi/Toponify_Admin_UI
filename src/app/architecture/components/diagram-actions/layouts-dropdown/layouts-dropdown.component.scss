@@ -27,3 +27,13 @@ button {
 ::ng-deep .mat-form-field-wrapper {
   padding-bottom: 0;
 }
+
+span {
+  float: right;
+  mat-icon {
+    float: right;
+    position: relative;
+    right: -15px;
+    top: 5px;
+  }
+}

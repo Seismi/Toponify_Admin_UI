@@ -73,7 +73,6 @@
             (saveAsLayout)="onSaveAsLayout()"
             [allowSave]="!!draft"
             [allowSaveAs]="true"
-            [dependenciesView]="dependenciesView"
             (layoutSettings)="openLayoutSettingsModal()"
             [layouts]="scopeDetails$ | async"
             [selectedLayout]="selectedLayout$ | async"
@@ -85,6 +84,7 @@
             [clickedOnLink]="clickedOnLink"
             [selectedNode]="selectedNode"
             [groupName]="groupName"
+            [scope]="scope"
           >
           </smi-diagram-actions>
           <app-architecture-diagram
@@ -118,6 +118,8 @@
             (updateNodeLocation)="handleUpdateNodeLocation($event)"
             (updateNodeExpandState)="handleUpdateNodeExpandState($event)"
             (updateGroupArea)="handleUpdateGroupArea($event)"
+            (updateNodeColour)="handleUpdateNodeColour($event)"
+            (updateLinkColour)="handleUpdateLinkColour($event)"
             (updateDiagramLayout)="handleUpdateDiagramLayout()"
           >
           </app-architecture-diagram>

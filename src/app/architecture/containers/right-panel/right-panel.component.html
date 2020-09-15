@@ -57,6 +57,12 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Components">device_hub</mat-icon>
     </ng-template>
+    <smi-tabs-title
+      [title]="'Components of'"
+      [reference]="selectedNode?.reference"
+      [name]="selectedNode?.name"
+      >
+    </smi-tabs-title>
     <p class="components-tab">
       <smi-components-table
         data-qa="topology-components-table-systems"
@@ -114,6 +120,12 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Reports">bookmarks</mat-icon>
     </ng-template>
+    <smi-tabs-title
+      [title]="'Reports using'"
+      [reference]="selectedNode?.reference"
+      [name]="selectedNode?.name"
+    >
+    </smi-tabs-title>
     <smi-reports-tab data-qa="topology-reports-table" [data]="nodeReports"></smi-reports-tab>
   </mat-tab>
 
@@ -122,6 +134,12 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Attributes & Rules">ballot</mat-icon>
     </ng-template>
+    <smi-tabs-title
+      [title]="'Attributes and rules of'"
+      [reference]="selectedNode?.reference"
+      [name]="selectedNode?.name"
+    >
+    </smi-tabs-title>
     <smi-attributes-tab
       data-qa="topology-attributes-and-rules-table"
       [data]="attributes"
@@ -139,6 +157,12 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
     </ng-template>
+    <smi-tabs-title
+      [title]="'Documentation of'"
+      [reference]="selectedNode?.reference"
+      [name]="selectedNode?.name"
+    >
+    </smi-tabs-title>
     <smi-edit-documentation-standards-table
       data-qa="topology-documentation-standards-table"
       [data]="properties"
@@ -155,6 +179,12 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="RADIO">track_changes</mat-icon>
     </ng-template>
+    <smi-tabs-title
+      [title]="'RADIOs related to'"
+      [reference]="selectedNode?.reference"
+      [name]="selectedNode?.name"
+    >
+    </smi-tabs-title>
     <smi-related-radio-table
       data-qa="topology-related-radio-table"
       *ngIf="part?.isSelected"
@@ -180,6 +210,12 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Scopes">pages</mat-icon>
     </ng-template>
+    <smi-tabs-title
+      [title]="'Scopes containing'"
+      [reference]="selectedNode?.reference"
+      [name]="selectedNode?.name"
+    >
+    </smi-tabs-title>
     <smi-scope-table
       data-qa="topology-scopes-table"
       *ngIf="part?.isSelected && !multipleSelected"
@@ -220,6 +256,12 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Work Packages">business_center</mat-icon>
     </ng-template>
+    <smi-tabs-title
+      [title]="'Work packages affecting'"
+      [reference]="selectedNode?.reference"
+      [name]="selectedNode?.name"
+    >
+    </smi-tabs-title>
     <smi-related-work-package-table
       data-qa="topology-related-work-package-table"
       [data]="workpackages"
