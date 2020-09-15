@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { WorkPackageLinksService } from '@app/workpackage/services/workpackage-links.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import {forkJoin, of} from 'rxjs';
 import { catchError, map, mergeMap, switchMap, concatMap } from 'rxjs/operators';
 import { NodeLink, NodeLinkDetailApiResponse } from '@app/architecture/store/models/node-link.model';
 import {
@@ -45,17 +45,30 @@ import {
   DeleteWorkPackageLinkPropertyFailure
 } from '../actions/workpackage-link.actions';
 import {LoadMapView} from '@app/architecture/store/actions/node.actions';
+import {NodeService} from '@app/architecture/services/node.service';
 
 @Injectable()
 export class WorkPackageLinkEffects {
-  constructor(private actions$: Actions, private workpackageLinkService: WorkPackageLinksService) {}
+  constructor(private actions$: Actions,
+    private workpackageLinkService: WorkPackageLinksService,
+    private nodeService: NodeService
+  ) {}
 
   @Effect()
   addWorkpackageLink$ = this.actions$.pipe(
     ofType<AddWorkPackageLink>(WorkPackageLinkActionTypes.AddWorkPackageLink),
     map(action => action.payload),
-    mergeMap((payload: { workpackageId: string; link: any }) => {
-      return this.workpackageLinkService.addLink(payload.workpackageId, payload.link).pipe(
+    mergeMap((payload: { workpackageId: string; link: any; newLayoutDetails }) => {
+      const observables = [
+        this.workpackageLinkService.addLink(payload.workpackageId, payload.link)
+      ];
+      if (payload.newLayoutDetails) {
+        observables.push(this.nodeService.updatePartsLayout(
+          payload.newLayoutDetails.layoutId,
+          payload.newLayoutDetails.data
+        ));
+      }
+      return forkJoin(observables).pipe(
         switchMap((data: any) => [new AddWorkPackageLinkSuccess(data)]),
         catchError((error: HttpErrorResponse) => of(new AddWorkPackageLinkFailure(error)))
       );

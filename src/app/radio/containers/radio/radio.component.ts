@@ -150,7 +150,9 @@ export class RadioComponent implements OnInit, OnDestroy {
               })
             );
           }
-          this.onSelectRadio(action.payload);
+          if (this.selectedRadioIndex) {
+            this.onSelectRadio(action.payload);
+          }
         })
     );
   }

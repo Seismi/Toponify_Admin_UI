@@ -3,6 +3,7 @@ import { Action } from '@ngrx/store';
 import { WorkPackageNodeFindPotential, WorkPackageNodeScopes } from '../models/workpackage.models';
 import { GetWorkPackageNodeScopesQueryParams } from '@app/workpackage/services/workpackage-nodes.service';
 import {DescendantsEntity, layers, nodeCategories, NodeDetail} from '@app/architecture/store/models/node.model';
+import {UpdateDiagramLayoutApiRequest} from '@app/architecture/store/models/layout.model';
 
 export enum WorkPackageNodeActionTypes {
   AddWorkPackageNode = '[WorkPackage] Add node',
@@ -100,7 +101,12 @@ export enum WorkPackageNodeActionTypes {
 
 export class AddWorkPackageNode implements Action {
   readonly type = WorkPackageNodeActionTypes.AddWorkPackageNode;
-  constructor(public payload: { workpackageId: string; node: any; scope?: string, newLayoutDetails?: any }) {}
+  constructor(public payload: {
+    workpackageId: string;
+    node: any;
+    scope?: string;
+    newLayoutDetails?: UpdateDiagramLayoutApiRequest;
+  }) {}
 }
 
 export class AddWorkPackageNodeSuccess implements Action {

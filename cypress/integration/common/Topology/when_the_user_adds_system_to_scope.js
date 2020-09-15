@@ -4,6 +4,15 @@ When('the user adds the system {string} to the scope {string}', function(system,
   scope = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(scope); // add the branch to the name
+  cy.get('[data-qa=right-hand-pane-close]')
+    .click({ force: true })
+    .then(() => {
+      cy.get('[data-qa=right-hand-side-scopes]')
+        .click()
+        .wait(['@GETWorkPackageNodeTags', '@GETNodesScopes'])
+        .get('[data-qa=details-spinner]')
+        .should('not.be.visible');
+    });
 
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
 
@@ -11,13 +20,9 @@ When('the user adds the system {string} to the scope {string}', function(system,
 
   cy.get('[data-qa=details-spinner]').should('not.be.visible');
 
-  cy.get(`[data-qa=add-scope-modal-name]`)
-    .click()
-    .get('mat-option')
-    .contains(scope)
-    .should('exist')
-    .click({ force: true })
-    .get('[data-qa=add-scope-modal-save]')
+  cy.selectDropDownNoClick('add-scope-modal-name', scope);
+
+  cy.get('[data-qa=add-scope-modal-save]')
     .click()
     .wait('@POSTScopesNodes', { requestTimeout: 10000 })
     .wait('@GETNodesScopes', { requestTimeout: 10000 })
