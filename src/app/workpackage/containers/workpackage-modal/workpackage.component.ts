@@ -61,7 +61,9 @@ export class WorkPackageModalComponent implements OnInit, OnDestroy {
     this.baseline$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.loading$ = this.workPackageStore.pipe(select(workpackageLoading));
 
-    this.subscription = this.homeStore.pipe(select(getMyProfile)).subscribe(profile => (this.defaultTeams = profile.team));
+    this.subscription = this.homeStore.pipe(select(getMyProfile)).subscribe(profile =>
+      this.defaultTeams = profile.team.filter(team => !team.disabled)
+    );
     this.workPackageDetailService.workPackageDetailForm.controls['owners'].setValue(this.defaultTeams ? this.defaultTeams : null);
   }
 
