@@ -684,19 +684,14 @@ export class DiagramTemplatesService {
     );
   }
 
-  getLabelForTransformation(): go.Panel {
-    return $(
-      go.Panel,
-      'Spot',
-      $(go.TextBlock,
-        textFont('bold 24px'),
-        {
-          verticalAlignment: go.Spot.Bottom,
-          shadowVisible: false,
-          margin: new go.Margin(-150, 0, 0, 0)
-        },
-        new go.Binding('text', 'name')
-      )
+  getLabelForTransformation(): go.TextBlock {
+    return $(go.TextBlock,
+      textFont('bold 24px'),
+      {
+        shadowVisible: false,
+        margin: 10
+      },
+      new go.Binding('text', 'name')
     );
   }
 
@@ -1083,7 +1078,7 @@ export class DiagramTemplatesService {
   getTransformationNodeTemplate(forPalette: boolean = false): go.Node {
     return $(
       go.Node,
-      'Auto',
+      'Vertical',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(false),
       {
@@ -1099,7 +1094,6 @@ export class DiagramTemplatesService {
         }.bind(this)
       ),
       forPalette ? {
-        ...this.getLabelForTransformation(),
         toolTip: $(
           'ToolTip',
           $(
@@ -1115,37 +1109,41 @@ export class DiagramTemplatesService {
       new go.Binding('isLayoutPositioned', 'locationMissing', function(locationMissing) {
         return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
-      $(go.Shape,
-        this.getStandardNodeShapeOptions(),
-        {
-          desiredSize: new go.Size(60.3, 53.6),
-          name: 'Transformation'
-        },
-        // Bind stroke to multicoloured brush based on work packages impacted by
-        new go.Binding(
-          'stroke',
-          'impactedByWorkPackages',
-          function(impactedPackages, shape) {
-            return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-          }.bind(this)
-        )
+      $(go.Panel,
+        'Auto',
+        $(go.Shape,
+          this.getStandardNodeShapeOptions(),
+          {
+            desiredSize: new go.Size(60.3, 53.6),
+            name: 'Transformation'
+          },
+          // Bind stroke to multicoloured brush based on work packages impacted by
+          new go.Binding(
+            'stroke',
+            'impactedByWorkPackages',
+            function(impactedPackages, shape) {
+              return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
+            }.bind(this)
+          )
+        ),
+        // Dummy panel with no size and no contents.
+        // Used to ensure node usage view lays out nodes vertically aligned.
+        $(go.Panel, {
+          alignment: go.Spot.TopCenter,
+          desiredSize: new go.Size(0, 0),
+          name: 'location panel'
+        }),
+        $(go.Picture,
+          {
+            source: 'assets/node-icons/transformation.svg',
+            alignment: go.Spot.Center,
+            maxSize: new go.Size(82, 82),
+            imageStretch: go.GraphObject.Uniform
+          }
+        ),
+        this.getDependencyExpandButton(true)
       ),
-      // Dummy panel with no size and no contents.
-      // Used to ensure node usage view lays out nodes vertically aligned.
-      $(go.Panel, {
-        alignment: go.Spot.TopCenter,
-        desiredSize: new go.Size(0, 0),
-        name: 'location panel'
-      }),
-      $(go.Picture,
-        {
-          source: 'assets/node-icons/transformation.svg',
-          alignment: go.Spot.Center,
-          maxSize: new go.Size(82, 82),
-          imageStretch: go.GraphObject.Uniform
-        }
-      ),
-      this.getDependencyExpandButton(true)
+      forPalette ? this.getLabelForTransformation() : {}
     );
   }
 
