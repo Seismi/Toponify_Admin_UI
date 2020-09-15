@@ -412,6 +412,34 @@ export class CustomLink extends go.Link {
   }
 }
 
+// Custom relinking tool to handle reconnecting links that connect to a member of a collapsed group
+export class CustomRelinkingTool extends go.RelinkingTool {
+
+  // On mouse move, if the non-dragged end of the link is connected to a member of a collapsed
+  //  group then act as if the link were connected to the group.
+  doMouseMove(): void {
+    let otherNode = this.isForwards ? this['originalFromNode'] : this['originalToNode'];
+    const tempOtherNode = this.isForwards ? this['temporaryFromNode'] : this['temporaryToNode'];
+
+    // Determine first containing group to not be within a collapsed group
+    if (otherNode) {
+      otherNode = currentService.diagramChangesService.getFirstVisibleGroup(otherNode);
+      tempOtherNode.desiredSize = otherNode.desiredSize;
+      tempOtherNode.position = otherNode.position;
+    }
+
+    go.RelinkingTool.prototype.doMouseMove.call(this);
+  }
+
+  // Prevent link from becoming disconnected if no target node on mouse up
+  doMouseUp(): void {
+    if (!this.targetPort) {
+      this.doCancel();
+    }
+    go.RelinkingTool.prototype.doMouseUp.call(this);
+  }
+}
+
 // Standard highlighting for buttons when mouse cursor enters them
 function standardMouseEnter(e: object, btn: go.Part): void {
   if (!btn.isEnabledObject()) {
