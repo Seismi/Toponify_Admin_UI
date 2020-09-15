@@ -97,7 +97,8 @@ export class ArchitecturePaletteComponent implements OnInit {
 
           transformationNode.ensureBounds();
 
-          const transformationBounds = transformationNode.getDocumentBounds().copy();
+          const transformationBounds = transformationNode.findObject('Transformation')
+            .getDocumentBounds().copy();
           const halfHeight = transformationBounds.height / 2;
 
           // Calculate route for link going to transformation node, based on relative position
