@@ -40,7 +40,15 @@ export enum ScopeActionTypes {
 
   UnsetScopeAsFavourite = '[Scope] unset scope as favourite',
   UnsetScopeAsFavouriteSuccess = '[Scope] unset scope as favourite success',
-  UnsetScopeAsFavouriteFailure = '[Scope] unset scope as favourite failure'
+  UnsetScopeAsFavouriteFailure = '[Scope] unset scope as favourite failure',
+
+  SetPreferredLayout = '[Scope] Set Preferred Layout',
+  SetPreferredLayoutSuccess = '[Scope] Set Preferred Layout Success',
+  SetPreferredLayoutFailure = '[Scope] Set Preferred Layout Failure',
+
+  UnsetPreferredLayout = '[Scope] Unset Preferred Layout',
+  UnsetPreferredLayoutSuccess = '[Scope] Unset Preferred Layout Success',
+  UnsetPreferredLayoutFailure = '[Scope] Unset Preferred Layout Failure'
 }
 
 export class LoadScopes implements Action {
@@ -163,6 +171,36 @@ export class UnsetScopeAsFavouriteFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class SetPreferredLayout implements Action {
+  readonly type = ScopeActionTypes.SetPreferredLayout;
+  constructor(public payload: { scopeId: string, layoutId: string }) {}
+}
+
+export class SetPreferredLayoutSuccess implements Action {
+  readonly type = ScopeActionTypes.SetPreferredLayoutSuccess;
+  constructor(public payload: ScopeDetails) {}
+}
+
+export class SetPreferredLayoutFailure implements Action {
+  readonly type = ScopeActionTypes.SetPreferredLayoutFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
+export class UnsetPreferredLayout implements Action {
+  readonly type = ScopeActionTypes.UnsetPreferredLayout;
+  constructor(public payload: { scopeId: string }) {}
+}
+
+export class UnsetPreferredLayoutSuccess implements Action {
+  readonly type = ScopeActionTypes.UnsetPreferredLayoutSuccess;
+  constructor(public payload: ScopeDetails) {}
+}
+
+export class UnsetPreferredLayoutFailure implements Action {
+  readonly type = ScopeActionTypes.UnsetPreferredLayoutFailure;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ScopeActionsUnion =
   | LoadScopes
   | LoadScopesSuccess
@@ -187,4 +225,10 @@ export type ScopeActionsUnion =
   | SetScopeAsFavouriteSuccess
   | UnsetScopeAsFavourite
   | UnsetScopeAsFavouriteSuccess
-  | UnsetScopeAsFavouriteFailure;
+  | UnsetScopeAsFavouriteFailure
+  | SetPreferredLayout
+  | SetPreferredLayoutSuccess
+  | SetPreferredLayoutFailure
+  | UnsetPreferredLayout
+  | UnsetPreferredLayoutSuccess
+  | UnsetPreferredLayoutFailure;

@@ -8,7 +8,12 @@
     (selectionChange)="onSelect($event)"
     data-qa="topology-layout-actions-layout-dropdown"
   >
+  <mat-select-trigger>{{ getLabel() }}</mat-select-trigger>
     <mat-option *ngFor="let layout of layouts?.layouts" [value]="layout.id">
+      <span>
+        <mat-icon *ngIf="layout.id !== scope?.userPrefLayout" (click)="$event.stopPropagation(); setPreferredLayout(layout.id)">star_outline</mat-icon>
+        <mat-icon *ngIf="layout.id === scope?.userPrefLayout" (click)="$event.stopPropagation(); unsetPreferredLayout()">grade</mat-icon>
+      </span>
       {{ layout.name }}
     </mat-option>
     <button *ngIf="allowSave" mat-flat-button color="primary" (click)="addLayout.emit()">Create New</button>

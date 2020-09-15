@@ -27,6 +27,7 @@ export class DiagramActionsComponent {
   @Input() clickedOnLink: boolean;
   @Input() selectedNode: NodeDetail;
   @Input() groupName: string | null;
+  @Input() scope: ScopeDetails;
 
   constructor(
     public diagramChangeService: DiagramChangesService,

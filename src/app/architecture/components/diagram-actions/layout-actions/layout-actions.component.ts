@@ -14,6 +14,7 @@ export class LayoutActionsComponent {
   @Input() allowSaveAs = false;
   @Input() selectedLayout: ScopeDetails;
   @Input() layouts: ScopeDetails[];
+  @Input() scope: ScopeDetails;
   @Output() zoomIn = new EventEmitter<void>();
   @Output() zoomOut = new EventEmitter<void>();
   @Output() showGrid = new EventEmitter<void>();
