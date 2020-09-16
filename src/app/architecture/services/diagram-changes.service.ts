@@ -520,18 +520,10 @@ export class DiagramChangesService {
 
       // Only proceed if link is connected at both ends
       if (link.fromNode && link.toNode) {
-
-        let fromNode = link.fromNode;
-        let toNode = link.toNode;
-
         // If source or target node is member of a collapsed group then need to check link
         //  connects to the containing group instead.
-        while (fromNode.containingGroup && !fromNode.containingGroup.isSubGraphExpanded) {
-          fromNode = fromNode.containingGroup;
-        }
-        while (toNode.containingGroup && !toNode.containingGroup.isSubGraphExpanded) {
-          toNode = toNode.containingGroup;
-        }
+        const fromNode = this.getFirstVisibleGroup(link.fromNode);
+        const toNode = this.getFirstVisibleGroup(link.toNode);
 
         // Get bounding rectangles of the link's source and target node
         const fromArea = fromNode.actualBounds.copy();
@@ -581,7 +573,7 @@ export class DiagramChangesService {
           link.invalidateRoute();
         }
       }
-    });
+    }.bind(this));
 
     this.diagramLevelService.groupLayoutInitial = true;
 
@@ -1334,6 +1326,14 @@ export class DiagramChangesService {
       }
     }
     return true;
+  }
+
+  getFirstVisibleGroup(node: go.Group): go.Group {
+    let returnGroup = node;
+    while (returnGroup.containingGroup && !returnGroup.isVisible()) {
+      returnGroup = returnGroup.containingGroup;
+    }
+    return returnGroup;
   }
 
   // Update guide with instructions for current diagram state
