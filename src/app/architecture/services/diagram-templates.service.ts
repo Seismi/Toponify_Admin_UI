@@ -1416,7 +1416,15 @@ export class DiagramTemplatesService {
           const newPoint = new go.Point(x, y);
 
           return this.gojsCustomObjectsService.avoidNodeOverlap(part, newPoint, newPoint);
-        }.bind(this)
+        }.bind(this),
+        /*mouseDrop: function(event, group) {
+          if (group.data.layer === layers.system) {
+            const selection = event.diagram.selection;
+            if (selection.count === 1 && selection.first() instanceof go.Group) {
+              selection.first().data.group = group.data.id;
+            }
+          }
+        }*/
       },
       new go.Binding('isSubGraphExpanded', 'bottomExpanded',
         function(bottomExpanded): boolean {

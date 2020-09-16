@@ -420,12 +420,14 @@ export class CustomRelinkingTool extends go.RelinkingTool {
   doMouseMove(): void {
     let otherNode = this.isForwards ? this['originalFromNode'] : this['originalToNode'];
     const tempOtherNode = this.isForwards ? this['temporaryFromNode'] : this['temporaryToNode'];
+    const tempOtherPort = this.isForwards ? this['temporaryFromPort'] : this['temporaryToPort'];
 
     // Determine first containing group to not be within a collapsed group
     if (otherNode) {
       otherNode = currentService.diagramChangesService.getFirstVisibleGroup(otherNode);
-      tempOtherNode.desiredSize = otherNode.desiredSize;
       tempOtherNode.position = otherNode.position;
+      tempOtherNode.desiredSize = otherNode.getDocumentBounds().inflate(0.5, 0.5).size;
+      tempOtherPort.desiredSize = otherNode.getDocumentBounds().inflate(-0.5, -0.5).size;
     }
 
     go.RelinkingTool.prototype.doMouseMove.call(this);
@@ -1331,6 +1333,8 @@ export class GojsCustomObjectsService {
   // Set node dragComputation to this to prevent dragging one node to overlap another
   avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
 
+    const canDropIntoGroup = node.data.layer === layers.system && node.data.category !== nodeCategories.transformation;
+
     // Do not run when resizing nodes
     if (node.diagram.currentTool instanceof go.ResizingTool) {
       return newLoc;
@@ -1363,7 +1367,7 @@ export class GojsCustomObjectsService {
       // return the proposed new location point
       return new go.Point(rectangle.x + (loc.x - bnds.x), rectangle.y + (loc.y - bnds.y));
     }
-    if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
+    if (this.diagramChangesService.isUnoccupied(rectangle, node, canDropIntoGroup)) { return snappedLoc; }  // OK
     return loc;  // give up -- don't allow the node to be moved to the new location
   }
 
@@ -1413,6 +1417,46 @@ export class GojsCustomObjectsService {
       draggingTool.diagram.scrollToRect(viewRect);
 
       // Do standard doMouseMove actions
+      go.DraggingTool.prototype.doMouseMove.call(draggingTool);
+    };
+  }
+
+  customDoDropOnto(draggingTool: go.DraggingTool) {
+    draggingTool.doDropOnto = function(pt: go.Point, obj: go.GraphObject): void {
+      if (obj) {
+
+        if (draggingTool.copiedParts) {
+          const newParts = draggingTool.copiedParts.iteratorKeys;
+
+          const targetPart = obj instanceof go.Node ? obj : obj.part;
+
+          if (targetPart instanceof go.Group && newParts.count === 1) {
+            if (targetPart.data.layer === layers.system) {
+              const newPart = newParts.first();
+              if (newPart.data.layer === layers.system && newPart instanceof go.Group) {
+                newPart.data.group = targetPart.data.id;
+              }
+            }
+          }
+        }
+
+        if (draggingTool.draggedParts) {
+          const movedParts = draggingTool.draggedParts.iteratorKeys;
+
+          const targetPart = obj instanceof go.Node ? obj : obj.part;
+
+          if (targetPart instanceof go.Group && movedParts.count === 1) {
+            if (targetPart.data.layer === layers.system) {
+              const movedPart = movedParts.first();
+              if (movedPart.data.layer === layers.system && movedPart instanceof go.Group) {
+                // add to group
+              }
+            }
+          }
+        }
+      }
+
+      // Do standard doDropOnto actions
       go.DraggingTool.prototype.doMouseMove.call(draggingTool);
     };
   }

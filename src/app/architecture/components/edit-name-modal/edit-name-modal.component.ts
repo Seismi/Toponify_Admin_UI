@@ -13,7 +13,7 @@ export class EditNameModalComponent {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditNameModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { name: string }
+    @Inject(MAT_DIALOG_DATA) public data: { name: string, group: string }
   ) {
     this.nameForm = this.fb.group({
       name: [data.name, Validators.required]

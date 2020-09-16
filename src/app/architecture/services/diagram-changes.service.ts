@@ -1283,7 +1283,7 @@ export class DiagramChangesService {
   }
 
   // Check for any other nodes already occupying a given space
-  isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
+  isUnoccupied(rectangle: go.Rect, node: go.Node, ignoreGroups = false): boolean {
     const diagram = node.diagram;
 
     // nested function used by Layer.findObjectsIn, below
@@ -1293,6 +1293,10 @@ export class DiagramChangesService {
       const part = obj.part;
 
       if (part === node) {
+        return null;
+      }
+
+      if (part.data.isGroup && ignoreGroups) {
         return null;
       }
 

@@ -162,6 +162,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
     gojsCustomObjectsService.customDragMouseMove(this.diagram.toolManager.draggingTool);
+    gojsCustomObjectsService.customDoDropOnto(this.diagram.toolManager.draggingTool);
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool = (new CustomRelinkingTool());
