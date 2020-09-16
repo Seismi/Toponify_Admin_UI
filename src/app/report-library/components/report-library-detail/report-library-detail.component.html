@@ -24,11 +24,13 @@
       </mat-form-field>
 
       <mat-form-field *ngIf="modalMode">
-        <mat-select data-qa="reports-details-system" formControlName="system" placeholder="Systems">
-          <mat-option *ngFor="let system of systems" [value]="system">
+        <mat-label>Systems</mat-label>
+        <input matInput formControlName="system" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let system of filteredOptions$ | async | orderBy: 'name'" [value]="system">
             {{ system.name }}
           </mat-option>
-        </mat-select>
+        </mat-autocomplete>
       </mat-form-field>
     </div>
 
