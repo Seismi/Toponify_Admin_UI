@@ -16,6 +16,7 @@
         (selectWorkPackage)="onSelectWorkPackage($event)"
         (selectColour)="selectColourForWorkPackage($event)"
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+        [workpackageSelected$]="workpackageSelected$"
       >
       </smi-workpackage-tab-table>
     </ng-template>
