@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Links, Page, Report, ReportLibrary } from '../models/report.model';
+import { Links, Page, Report, ReportLibrary, DataNodes } from '../models/report.model';
 import { ReportActionsUnion, ReportActionTypes } from '../actions/report.actions';
 import { Tag } from '@app/architecture/store/models/node.model';
 
@@ -8,6 +8,7 @@ export interface State {
   entities: ReportLibrary[];
   selected: Report;
   availableTags: Tag[];
+  dataNodes: DataNodes[];
   page: Page;
   links: Links;
   error?: HttpErrorResponse | { message: string };
@@ -18,6 +19,7 @@ export const initialState: State = {
   entities: [],
   selected: null,
   availableTags: null,
+  dataNodes: [],
   page: null,
   links: null,
   error: null
@@ -220,6 +222,13 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       return {
         ...state,
         availableTags: action.payload
+      };
+    }
+
+    case ReportActionTypes.LoadDataNodesSuccess: {
+      return {
+        ...state,
+        dataNodes: action.payload
       };
     }
 
