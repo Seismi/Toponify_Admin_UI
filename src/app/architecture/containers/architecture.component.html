@@ -228,7 +228,7 @@
             [dimensions]="selectedNode?.dimensions"
             [reportingConcepts]="selectedNode?.reportingConcepts"
             [groupInfo]="selectedNode?.groupinfo"
-            (editGroup)="onAddToGroup()"
+            (editGroup)="onAddToGroup(selectedParts)"
             [clickedOnLink]="clickedOnLink"
             (addNewGroupMember)="onAddNewGroupMember()"
             (addDescendants)="onAddDescendant($event)"
