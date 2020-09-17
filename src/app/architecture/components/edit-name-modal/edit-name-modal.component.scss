@@ -4,6 +4,11 @@
   padding-bottom: 17px;
 }
 
+.mat-dialog-content {
+  position: relative;
+  top: -20px;
+}
+
 button:nth-child(1) {
   background-color: #ddd;
 }

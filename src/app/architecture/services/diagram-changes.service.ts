@@ -108,6 +108,8 @@ export class DiagramChangesService {
         part.data.id = part.data.displayId;
       }
 
+      const group = event.diagram.findNodeForKey(part.data.group);
+
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
         const node = Object.assign({}, part.data);
@@ -115,7 +117,8 @@ export class DiagramChangesService {
           disableClose: false,
           width: '500px',
           data: {
-            name: node.name
+            name: node.name,
+            group: group ? group.data.name : null
           }
         });
 
@@ -1285,6 +1288,7 @@ export class DiagramChangesService {
   // Check for any other nodes already occupying a given space
   isUnoccupied(rectangle: go.Rect, node: go.Node, ignoreGroups = false): boolean {
     const diagram = node.diagram;
+    const dragFromPalette = !!diagram.toolManager.draggingTool.copiedParts;
 
     // nested function used by Layer.findObjectsIn, below
     // only consider Parts, and ignore the given Node, any Links, and Group members
@@ -1312,7 +1316,7 @@ export class DiagramChangesService {
       if (node.isMemberOf(part)) {
         return null;
       }
-      if (diagram.selection.contains(part) ) {
+      if (diagram.selection.contains(part) && !dragFromPalette) {
         return null;
       }
       return part;

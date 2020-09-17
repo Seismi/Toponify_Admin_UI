@@ -756,6 +756,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that the system should be assigned to a new group
   private addSystemToGroupSource = new Subject();
   public addSystemToGroup$ = this.addSystemToGroupSource.asObservable();
+  // Observable to indicate that the system was dropped in a group
+  private setSystemGroupSource = new Subject();
+  public setSystemGroup$ = this.setSystemGroupSource.asObservable();
   // Observable to indicate that a new node should be added to the group as a new member
   private addNewSubItemSource = new Subject();
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
@@ -1333,7 +1336,11 @@ export class GojsCustomObjectsService {
   // Set node dragComputation to this to prevent dragging one node to overlap another
   avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
 
-    const canDropIntoGroup = node.data.layer === layers.system && node.data.category !== nodeCategories.transformation;
+    // Determine if node can be added to a group by drag and drop
+    const canDropIntoGroup = node.data.layer === layers.system
+      && node.data.category !== nodeCategories.transformation
+      && !node.containingGroup
+      && currentService.diagramEditable;
 
     // Do not run when resizing nodes
     if (node.diagram.currentTool instanceof go.ResizingTool) {
@@ -1421,40 +1428,42 @@ export class GojsCustomObjectsService {
     };
   }
 
-  customDoDropOnto(draggingTool: go.DraggingTool) {
+  // Override the doDropOnto method for the dragging tool.
+  // Implements adding a node to a group via drop.
+  customDoDropOnto(draggingTool: go.DraggingTool): void {
     draggingTool.doDropOnto = function(pt: go.Point, obj: go.GraphObject): void {
+      // Only perform additional checks if dragged node is over an object
       if (obj) {
 
-        if (draggingTool.copiedParts) {
-          const newParts = draggingTool.copiedParts.iteratorKeys;
+        const targetPart = obj.part || obj;
+        const fromPalette = !!draggingTool.copiedParts;
+        const droppedParts = fromPalette ? draggingTool.copiedParts : draggingTool.draggedParts;
 
-          const targetPart = obj instanceof go.Node ? obj : obj.part;
+        // Do not add node to group unless it is the only part being dragged
+        if (droppedParts && droppedParts.count === 1) {
+          const droppedPart = droppedParts.iteratorKeys.first();
 
-          if (targetPart instanceof go.Group && newParts.count === 1) {
-            if (targetPart.data.layer === layers.system) {
-              const newPart = newParts.first();
-              if (newPart.data.layer === layers.system && newPart instanceof go.Group) {
-                newPart.data.group = targetPart.data.id;
-              }
-            }
-          }
-        }
-
-        if (draggingTool.draggedParts) {
-          const movedParts = draggingTool.draggedParts.iteratorKeys;
-
-          const targetPart = obj instanceof go.Node ? obj : obj.part;
-
-          if (targetPart instanceof go.Group && movedParts.count === 1) {
-            if (targetPart.data.layer === layers.system) {
-              const movedPart = movedParts.first();
-              if (movedPart.data.layer === layers.system && movedPart instanceof go.Group) {
-                // add to group
-              }
+          // Check that dropped node and target node are groups in the system layer
+          if (targetPart instanceof go.Group
+            && targetPart.data.layer === layers.system
+            && droppedPart instanceof go.Group
+            && droppedPart.data.layer === layers.system
+          ) {
+            if (fromPalette) {
+              // If dragged from palette then set the group on the node's data.
+              // the node will be created with the correct group.
+              droppedPart.data.group = targetPart.data.id;
+            } else if (!droppedPart.containingGroup && currentService.diagramEditable) {
+              currentService.setSystemGroupSource.next({
+                memberId: droppedPart.data.id, groupId: targetPart.data.id
+              });
             }
           }
         }
       }
+
+      // Reset cursor on dropping node
+      draggingTool.diagram.currentCursor = draggingTool.diagram.defaultCursor;
 
       // Do standard doDropOnto actions
       go.DraggingTool.prototype.doMouseMove.call(draggingTool);

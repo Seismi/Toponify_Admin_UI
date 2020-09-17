@@ -1417,14 +1417,29 @@ export class DiagramTemplatesService {
 
           return this.gojsCustomObjectsService.avoidNodeOverlap(part, newPoint, newPoint);
         }.bind(this),
-        /*mouseDrop: function(event, group) {
-          if (group.data.layer === layers.system) {
-            const selection = event.diagram.selection;
-            if (selection.count === 1 && selection.first() instanceof go.Group) {
-              selection.first().data.group = group.data.id;
-            }
+        // Update cursor when dragging a node over the group.
+        // Indicates that node can be dropped to add it to the group.
+        mouseDragEnter: function(event, thisNode, previous) {
+          const draggingTool = event.diagram.toolManager.draggingTool;
+          const draggedParts = draggingTool.copiedParts || draggingTool.draggedParts;
+          const draggingSingleNode = (draggedParts && draggedParts.count === 1)
+            ? draggedParts.iteratorKeys.first() instanceof go.Group : false;
+
+          if (thisNode.data.layer === layers.system
+            && this.diagramChangesService.diagramEditable
+            && draggingSingleNode
+            && !draggedParts.iteratorKeys.first().containingGroup
+          ) {
+            event.diagram.currentCursor = `url(assets/cursors/cursor_plus.svg), default`;
           }
-        }*/
+        }.bind(this),
+        // Reset cursor on dragging node back outside of the node
+        mouseDragLeave: function(event, thisNode, next) {
+          if (next && next.part instanceof go.Group) {
+            return;
+          }
+          event.diagram.currentCursor = 'copy';
+        }
       },
       new go.Binding('isSubGraphExpanded', 'bottomExpanded',
         function(bottomExpanded): boolean {
@@ -1992,7 +2007,7 @@ export class DiagramTemplatesService {
                   return false;
                 }
 
-                return this.gojsCustomObjectsService.diagramEditable;
+                return this.diagramChangesService.diagramEditable;
               }.bind(this)),
               // Hide child button for grouped data nodes
               new go.Binding('visible', 'dataStructure', function(dataStructure) {
@@ -2025,7 +2040,7 @@ export class DiagramTemplatesService {
         },
         // Disable button if moves not allowed in diagram
         new go.Binding('isEnabled', '', function(data) {
-          return this.gojsCustomObjectsService.diagramEditable;
+          return this.diagramChangesService.diagramEditable;
         }.bind(this)),
         // Invisible when no data structure
         new go.Binding('visible', 'dataStructure', function(dataStructure) {
