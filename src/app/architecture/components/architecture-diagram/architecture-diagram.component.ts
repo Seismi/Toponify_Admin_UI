@@ -25,6 +25,7 @@ import {
   CustomCommandHandler,
   CustomLinkShift,
   CustomNodeResize,
+  CustomRelinkingTool,
   GojsCustomObjectsService
 } from '../../services/gojs-custom-objects.service';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
@@ -163,6 +164,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     gojsCustomObjectsService.customDragMouseMove(this.diagram.toolManager.draggingTool);
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
+    this.diagram.toolManager.relinkingTool = (new CustomRelinkingTool());
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
     this.diagram.toolManager.relinkingTool.portGravity = 40;
     this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation.bind(
