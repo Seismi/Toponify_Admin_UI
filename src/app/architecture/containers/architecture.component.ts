@@ -1413,7 +1413,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               finalLayoutSettings.locationMissing = false;
             } else {
               finalLayoutSettings.middleExpanded = layoutProps && layoutProps.middleExpanded
-                ? layoutProps.middleExpanded : false;
+                ? layoutProps.middleExpanded : true;
               finalLayoutSettings.bottomExpanded = layoutProps && layoutProps.bottomExpanded
                 ? layoutProps.bottomExpanded : bottomOptions.none;
               finalLayoutSettings.areaSize = layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null;
