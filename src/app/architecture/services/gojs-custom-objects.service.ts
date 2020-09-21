@@ -1437,25 +1437,22 @@ export class GojsCustomObjectsService {
 
         const targetPart = obj.part || obj;
         const fromPalette = !!draggingTool.copiedParts;
-        const droppedParts = fromPalette ? draggingTool.copiedParts : draggingTool.draggedParts;
+        const droppedNode = currentService.diagramChangesService.getGroupableDraggedNode(draggingTool);
 
-        // Do not add node to group unless it is the only part being dragged
-        if (droppedParts && droppedParts.count === 1) {
-          const droppedPart = droppedParts.iteratorKeys.first();
+        // Continue only if a valid dropped node is dragged
+        if (droppedNode) {
 
-          // Check that dropped node and target node are groups in the system layer
+          // Check that target node is a group in the system layer
           if (targetPart instanceof go.Group
             && targetPart.data.layer === layers.system
-            && droppedPart instanceof go.Group
-            && droppedPart.data.layer === layers.system
           ) {
             if (fromPalette) {
               // If dragged from palette then set the group on the node's data.
               // the node will be created with the correct group.
-              droppedPart.data.group = targetPart.data.id;
-            } else if (!droppedPart.containingGroup && currentService.diagramEditable) {
+              droppedNode.data.group = targetPart.data.id;
+            } else if (currentService.diagramEditable) {
               currentService.setSystemGroupSource.next({
-                memberId: droppedPart.data.id, groupId: targetPart.data.id
+                memberId: droppedNode.data.id, groupId: targetPart.data.id
               });
             }
           }

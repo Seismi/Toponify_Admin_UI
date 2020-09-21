@@ -1344,6 +1344,41 @@ export class DiagramChangesService {
     return returnGroup;
   }
 
+  // If dragging a node suitable for being grouped then return the node.
+  // Otherwise, return null.
+  getGroupableDraggedNode(draggingTool: go.DraggingTool): go.Node | null {
+    const draggedPartsMap = draggingTool.copiedParts || draggingTool.draggedParts;
+    if (draggedPartsMap) {
+      const draggedParts = draggedPartsMap.iteratorKeys;
+      const groupableParts = new go.Set<go.Group>();
+
+      // Find if any parts are valid to add to a group by dropping
+      draggedParts.each(function(part: go.Group): void {
+        if (part.isTopLevel
+          && part instanceof go.Group
+          && part.data.layer === layers.system
+        ) {
+          groupableParts.add(part);
+        }
+      });
+
+      // Only allow dropping node into group if it is the only groupable node being dragged
+      if (groupableParts.count === 1) {
+        const groupableNode = groupableParts.first();
+
+        // All other dragged parts must be nested members of the dragged group
+        if (draggedParts.all(function(part: go.Part): boolean {
+            return part === groupableNode
+              || part.findTopLevelPart() === groupableNode;
+          })
+        ) {
+          return groupableNode;
+        }
+      }
+    }
+    return null;
+  }
+
   // Update guide with instructions for current diagram state
   updateGuide(diagram: go.Diagram): void {
     const thisService = this;

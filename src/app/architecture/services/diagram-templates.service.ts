@@ -1421,14 +1421,11 @@ export class DiagramTemplatesService {
         // Indicates that node can be dropped to add it to the group.
         mouseDragEnter: function(event, thisNode, previous) {
           const draggingTool = event.diagram.toolManager.draggingTool;
-          const draggedParts = draggingTool.copiedParts || draggingTool.draggedParts;
-          const draggingSingleNode = (draggedParts && draggedParts.count === 1)
-            ? draggedParts.iteratorKeys.first() instanceof go.Group : false;
+          const groupableNode = this.diagramChangesService.getGroupableDraggedNode(draggingTool);
 
           if (thisNode.data.layer === layers.system
             && this.diagramChangesService.diagramEditable
-            && draggingSingleNode
-            && !draggedParts.iteratorKeys.first().containingGroup
+            && groupableNode
           ) {
             event.diagram.currentCursor = `url(assets/cursors/cursor_plus.svg), default`;
           }
