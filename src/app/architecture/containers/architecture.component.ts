@@ -334,6 +334,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public loadingStatus = LoadingStatus;
   public byId = false;
   public filterLevel: string;
+  public selectedParts;
 
   // Flag to indicate that the last action taken was to move parts using the arrow keys
   private partsMovedByArrows = false;
@@ -1031,6 +1032,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       this.part = part;
 
       if (part) {
+        this.selectedParts = new go.Set<go.Part>([part]);
         // Load node scopes
         if (
           this.selectedNode &&
