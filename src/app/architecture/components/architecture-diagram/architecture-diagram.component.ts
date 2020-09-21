@@ -283,6 +283,13 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
     });
+    diagramChangesService.onUpdateLinkLabelState.subscribe((link: any) => {
+      this.updateLinkLabelState.emit(link);
+    });
+    diagramChangesService.onUpdateTransformationNodeLabelState
+      .subscribe((data: { id: string, showLabel: boolean }) => {
+        this.updateTransformationNodeLabelState.emit(data);
+      });
     diagramChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
       this.updateNodeColour.emit(data);
     });

@@ -286,7 +286,8 @@ export class DiagramChangesService {
               points: part.data.route,
               fromSpot: part.data.fromSpot,
               toSpot: part.data.toSpot,
-              colour: part.data.colour
+              colour: part.data.colour,
+              showLabel: part.data.showLabel
             });
           }
         } else {

@@ -1393,6 +1393,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               bottomExpanded?: bottomOptions;
               areaSize?: string;
               colour?: colourOptions;
+              showLabel?: boolean
             } = {};
 
             finalLayoutSettings.colour = layoutProps && layoutProps.colour ? layoutProps.colour : null;
@@ -1420,6 +1421,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               finalLayoutSettings.location = layoutProps && layoutProps.locationCoordinates
                 ? layoutProps.locationCoordinates : null;
               finalLayoutSettings.locationMissing = !finalLayoutSettings.location;
+              finalLayoutSettings.showLabel = layoutProps && layoutProps.showLabel
+                ? layoutProps.showLabel : true;
             }
 
             return {
@@ -1466,6 +1469,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               route?: number[];
               routeMissing?: boolean;
               colour?: colourOptions;
+              showLabel?: boolean;
             } = {};
 
             finalLayoutSettings.colour = layoutProps && layoutProps.colour ? layoutProps.colour : null;
@@ -1483,6 +1487,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default);
               finalLayoutSettings.route = layoutProps && layoutProps.route ? layoutProps.route : [];
               finalLayoutSettings.routeMissing = !(layoutProps && layoutProps.route);
+              finalLayoutSettings.showLabel = layoutProps && layoutProps.showLabel
+                ? layoutProps.showLabel : true;
             }
 
             return {

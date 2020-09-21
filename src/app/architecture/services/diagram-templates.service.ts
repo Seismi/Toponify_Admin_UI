@@ -704,6 +704,10 @@ export class DiagramTemplatesService {
       }),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
       new go.Binding('visible', '', function(link) {
+        if (!link.data.showLabel) {
+          return false;
+        }
+
         if (link.findObject('shape').strokeWidth === 0) {
           return false;
         } else {
@@ -1662,7 +1666,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? {} /*this.getLinkLabel()*/ : this.getLinkLabelForPalette(),
+      forPalette ? this.getLinkLabelForPalette() : this.getLinkLabel(),
       $(
         go.Shape, // The 'to' arrowhead
         {
@@ -1751,7 +1755,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? this.getLinkLabel() : this.getLinkLabelForPalette(),
+      forPalette ? this.getLinkLabelForPalette() : this.getLinkLabel(),
       $(
         go.Shape, // The 'to' arrowhead
         {
