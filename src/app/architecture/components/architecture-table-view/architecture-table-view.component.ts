@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { Node } from '@app/architecture/store/models/node.model';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
@@ -38,6 +38,7 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   @Output() add = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('searchInput') searchInput: ElementRef;
 
   public dataSource: MatTableDataSource<Node | NodeLink>;
   public displayedColumns: string[];
@@ -79,7 +80,7 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
       changes.selectedItem.currentValue && (!changes.selectedItem.previousValue ||
       changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id)) {
       if (!this.filterValue) {
-        return;
+        this.filterValue = this.searchInput.nativeElement.value;
       }
       setTimeout(() => this.navigateToSelectedItem());
     }
