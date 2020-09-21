@@ -55,16 +55,17 @@ export class WorkPackageModalComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.homeStore.dispatch(new LoadMyProfile());
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
     this.baseline$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.loading$ = this.workPackageStore.pipe(select(workpackageLoading));
 
-    this.subscription = this.homeStore.pipe(select(getMyProfile)).subscribe(profile =>
-      this.defaultTeams = profile.team.filter(team => !team.disabled)
-    );
-    this.workPackageDetailService.workPackageDetailForm.controls['owners'].setValue(this.defaultTeams ? this.defaultTeams : null);
+    this.subscription = this.homeStore.pipe(select(getMyProfile)).subscribe((profile) => {
+      if (profile) {
+        this.defaultTeams = profile.team.filter(team => !team.disabled);
+        this.workPackageDetailService.workPackageDetailForm.controls['owners'].setValue(this.defaultTeams ? this.defaultTeams : null);
+      }
+    });
   }
 
   ngOnDestroy() {
