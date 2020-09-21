@@ -363,11 +363,11 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRemoveDataSet(dataSetId: string, reportId: string) {
+  onRemoveDataSet(dataSetId: string) {
     this.store.dispatch(
       new RemoveDataSetsFromReport({
         workPackageId: this.workpackageId,
-        reportId: reportId,
+        reportId: this.reportId,
         dataSetId: dataSetId
       })
     );
