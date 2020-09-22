@@ -120,6 +120,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   updateNodeExpandState = new EventEmitter();
 
   @Output()
+  updateLinkLabelState = new EventEmitter();
+
+  @Output()
+  updateTransformationNodeLabelState = new EventEmitter();
+
+  @Output()
   updateGroupArea = new EventEmitter();
 
   @Output()

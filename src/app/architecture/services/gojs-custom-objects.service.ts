@@ -636,7 +636,7 @@ function getShowStatusButton() {
           if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
             return !part.data.middleExpanded;
           } else {
-            return part.data.showLabel;
+            return !part.data.showLabel;
           }
         }
       );
@@ -649,7 +649,12 @@ function getShowStatusButton() {
           currentService.diagramChangesService.nodeExpandChanged(part);
         } else {
           event.diagram.model.setDataProperty(part.data, 'showLabel', anyStatusHidden);
-          // show link/transformation node label
+          if (part.category === nodeCategories.transformation) {
+            currentService.diagramChangesService.transformationNodeShowLabelChanged(part);
+          } else {
+            currentService.diagramChangesService.linkShowLabelChanged(part);
+          }
+          currentService.diagramChangesService.onUpdateDiagramLayout.next({});
         }
       });
     },
@@ -664,7 +669,7 @@ function getShowStatusButton() {
           if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
             return !part.data.middleExpanded;
           } else {
-            return part.data.showLabel;
+            return !part.data.showLabel;
           }
         }
       );

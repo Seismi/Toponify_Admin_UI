@@ -42,7 +42,8 @@ import {
   UpdatePartsLayout,
   UpdateNodeGroupMembers,
   UpdateNodeChildren,
-  UpdateNodeColour
+  UpdateNodeColour,
+  UpdateNodeLabelState
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
@@ -1269,13 +1270,40 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     points: number[];
     toSpot: string;
     fromSpot: string;
-    colour: colourOptions
+    colour: colourOptions;
+    showLabel: boolean;
   }): void {
     // Do not update back end if using default layout
     if (this.layout && this.layout.id === autoLayoutId) {
       return;
     }
     this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: [link] }));
+  }
+
+  handleUpdateLinkLabelState(link: {
+    id: string;
+    points: number[];
+    toSpot: string;
+    fromSpot: string;
+    colour: colourOptions;
+    showLabel: boolean;
+  }): void {
+    // Do not update back end if using default layout
+    if (this.layout && this.layout.id === autoLayoutId) {
+      return;
+    }
+    this.store.dispatch(new UpdateLinks({ layoutId: this.layout.id, links: [link] }));
+  }
+
+  handleUpdateTransformationNodeLabelState(data: {
+    id: string;
+    showLabel: boolean;
+  }): void {
+    // Do not update back end if using default layout
+    if (this.layout && this.layout.id === autoLayoutId) {
+      return;
+    }
+    this.store.dispatch(new UpdateNodeLabelState({ layoutId: this.layout.id, data: data }));
   }
 
   handleUpdateDiagramLayout(): void {
@@ -1413,7 +1441,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               finalLayoutSettings.bottomExpanded = hasMembers ? bottomOptions.group : bottomOptions.none;
               finalLayoutSettings.locationMissing = false;
             } else {
-              finalLayoutSettings.middleExpanded = layoutProps && layoutProps.middleExpanded
+              finalLayoutSettings.middleExpanded = layoutProps && 'middleExpanded' in layoutProps
                 ? layoutProps.middleExpanded : true;
               finalLayoutSettings.bottomExpanded = layoutProps && layoutProps.bottomExpanded
                 ? layoutProps.bottomExpanded : bottomOptions.none;
@@ -1421,7 +1449,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
               finalLayoutSettings.location = layoutProps && layoutProps.locationCoordinates
                 ? layoutProps.locationCoordinates : null;
               finalLayoutSettings.locationMissing = !finalLayoutSettings.location;
-              finalLayoutSettings.showLabel = layoutProps && layoutProps.showLabel
+              finalLayoutSettings.showLabel = layoutProps && 'showLabel' in layoutProps
                 ? layoutProps.showLabel : true;
             }
 
@@ -1487,7 +1515,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
                 ? layoutProps.toSpot : go.Spot.stringify(go.Spot.Default);
               finalLayoutSettings.route = layoutProps && layoutProps.route ? layoutProps.route : [];
               finalLayoutSettings.routeMissing = !(layoutProps && layoutProps.route);
-              finalLayoutSettings.showLabel = layoutProps && layoutProps.showLabel
+              finalLayoutSettings.showLabel = layoutProps && 'showLabel' in layoutProps
                 ? layoutProps.showLabel : true;
             }
 
