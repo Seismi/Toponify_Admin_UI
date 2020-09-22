@@ -163,7 +163,9 @@ export class CustomNodeResize extends go.ResizingTool {
     // If group is itself contained in a group then ensure that the group is not
     //  expanded outside the bounds of its containing group
     if (group.containingGroup) {
+      /* reference to resize object */
       const containingArea = group.containingGroup.resizeObject.getDocumentBounds();
+      /* reference to resize object */
       const groupContainingArea = group.resizeObject.getDocumentBounds();
       const groupArea = group.getDocumentBounds();
 
@@ -1326,45 +1328,6 @@ export class GojsCustomObjectsService {
         )
       )
     );
-  }
-
-  // Set node dragComputation to this to prevent dragging one node to overlap another
-  avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
-
-    // Do not run when resizing nodes
-    if (node.diagram.currentTool instanceof go.ResizingTool) {
-      return newLoc;
-    }
-
-    // Allow overlap for grouped nodes in map view so user can drag nodes to rearrange the order.
-    // Group layout will ensure there is ultimately no overlap.
-    if (this.currentLevel.endsWith('map') && node.data.category !== nodeCategories.transformation) {
-      return newLoc;
-    }
-
-    if (node.diagram instanceof go.Palette) { return snappedLoc; }
-    // this assumes each node is fully rectangular
-    const bnds = node.selectionObject.getDocumentBounds();
-    const loc = node.location;
-    // use newLoc instead of snappedLoc if you want to ignore any grid snapping behavior
-    // see if the area at the proposed location is unoccupied
-    const rectangle = new go.Rect(snappedLoc.x - (loc.x - bnds.x), snappedLoc.y - (loc.y - bnds.y), bnds.width, bnds.height);
-
-    rectangle.inflate(-0.5, -0.5);  // by default, deflate to avoid edge overlaps with "exact" fits
-    // when dragging a node from another Diagram, choose an unoccupied area
-    if (!(node.diagram.currentTool instanceof go.DraggingTool) &&
-      (!node['_temp'] || !node.layer.isTemporary)) {  // in Temporary Layer during external drag-and-drop
-      node['_temp'] = true;  // flag to avoid repeated searches during external drag-and-drop
-      while (!this.diagramChangesService.isUnoccupied(rectangle, node)) {
-        rectangle.x += 10;
-        rectangle.y += 2;
-      }
-      rectangle.inflate(0.5, 0.5);  // restore to actual size
-      // return the proposed new location point
-      return new go.Point(rectangle.x + (loc.x - bnds.x), rectangle.y + (loc.y - bnds.y));
-    }
-    if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
-    return loc;  // give up -- don't allow the node to be moved to the new location
   }
 
   // returns the gojs object containing a guide with instructions for users
