@@ -700,37 +700,11 @@ export class DiagramTemplatesService {
         figure: 'RoundedRectangle',
         fill: 'white',
         opacity: 0.85,
-        shadowVisible: false
+        shadowVisible: false,
+        visible: true
       }),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
-      new go.Binding('visible', '', function(link) {
-        if (!link.data.showLabel) {
-          return false;
-        }
-
-        if (link.findObject('shape').strokeWidth === 0) {
-          return false;
-        } else {
-          if (!link.data.relatedRadioCounts) {
-            return false;
-          }
-
-          const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
-            return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
-          }, false);
-
-          const anyWorkpackageImpacts = link.data.impactedByWorkPackages && link.data.impactedByWorkPackages.length > 0;
-
-          const anyTagsWithIcons = link.data.tags && link.data.tags.some(function(tag) {return !!tag.iconName; });
-
-          return (
-            (link.diagram.model.modelData.linkName && link.data.name !== '') ||
-            (link.diagram.model.modelData.linkRadio && anyRadios) ||
-            anyTagsWithIcons ||
-            anyWorkpackageImpacts
-          );
-        }
-      }).ofObject(),
+      new go.Binding('visible', 'showLabel'),
       $(
         go.Panel,
         'Vertical',
@@ -745,6 +719,23 @@ export class DiagramTemplatesService {
           new go.Binding('visible', 'category', function(category: string): boolean  {
             return category !== nodeCategories.transformation;
           })
+        ),
+        $(go.TextBlock,
+          textFont('italic 14px'),
+          {
+            text: 'No RADIOs',
+            stroke: 'grey',
+            textAlign: 'center'
+          },
+          new go.Binding('visible', 'relatedRadioCounts',
+            function(radioCounts): boolean {
+              return Object.keys(radioCounts).every(
+                function(key: string): boolean {
+                  return radioCounts[key] === 0;
+                }
+              );
+            }
+          )
         ),
         this.getTagIconsRow(false),
         this.getRadioAlertIndicators(false),
