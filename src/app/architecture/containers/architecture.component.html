@@ -130,7 +130,13 @@
             data-qa="topology-table-components"
             [data]="
               nodes
-                | layer: { byId: byId, descendantIds$: parentDescendantIds, groupMemberIds$: groupMemberIds }
+                | layer
+                  : { 
+                      byId: byId, 
+                      descendantIds$: parentDescendantIds, 
+                      groupMemberIds$: groupMemberIds,
+                      level: currentFilterLevel
+                    }
                 | async
             "
             [selectedItem]="selectedNode"
