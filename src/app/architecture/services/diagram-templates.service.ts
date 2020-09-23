@@ -43,8 +43,7 @@ function StandardGroupLayout() {
 go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
 
 StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
-  /* reference to resize object */
-  const memberArea = this.group.resizeObject;
+  const memberArea = this.group.findObject('Group member area');
   const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
@@ -175,6 +174,7 @@ export class DiagramTemplatesService {
       go.Panel,
       'Auto',
       {
+        name: 'fish',
         background: 'black'
       },
       $(
@@ -794,7 +794,7 @@ export class DiagramTemplatesService {
         stretch: go.GraphObject.Horizontal,
         margin: new go.Margin(5)
       },
-      $(go.RowColumnDefinition, { row: 0, height: 30}),
+      $(go.RowColumnDefinition, { row: 0, height: 30 }),
       $(go.RowColumnDefinition, { column: 0, maximum: 25}),
       $(go.RowColumnDefinition, { column: 1 }),
       $(go.RowColumnDefinition, { column: 2 }),
@@ -920,21 +920,29 @@ export class DiagramTemplatesService {
   getBottomSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
-      'Vertical',
+      'Auto',
       {
         name: 'bottom',
         row: 2,
         stretch: go.GraphObject.Horizontal,
-        margin: new go.Margin(5),
-        visible: false
+        margin: new go.Margin(5)
       },
-      new go.Binding('visible', 'bottomExpanded',
+      // Area for grouped nodes to appear in
+      $(go.Shape,
+        {
+          name: 'Group member area',
+          figure: 'rectangle',
+          stroke: null,
+          fill: null
+        }
+      ),
+      /*new go.Binding('visible', 'bottomExpanded',
         function(bottomExpanded) {
           return bottomExpanded !== bottomOptions.none;
         }.bind(this)
-      ),
+      ),*/
       // Do not show description for systems or data nodes
-      !isGroup ? $(
+      /*!isGroup ? $(
         go.TextBlock,
         textFont('16px'),
         {
@@ -969,7 +977,7 @@ export class DiagramTemplatesService {
           return node.diagram.model.modelData.owners &&
             node.data.bottomExpanded !== bottomOptions.group;
         }).ofObject()
-      ),
+      ),*/
       $(
         go.Panel,
         'Vertical',
@@ -980,6 +988,7 @@ export class DiagramTemplatesService {
         $(go.Panel,
           'Vertical',
           {
+            name: 'Descendants List',
             alignment: go.Spot.TopLeft,
             stretch: go.GraphObject.Horizontal
           },
@@ -1002,7 +1011,6 @@ export class DiagramTemplatesService {
             go.Panel,
             'Vertical',
             {
-              name: 'Descendants List',
               // padding: 3,
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
@@ -1023,6 +1031,7 @@ export class DiagramTemplatesService {
         $(go.Panel,
           'Vertical',
           {
+            name: 'Group Members List',
             alignment: go.Spot.TopLeft,
             defaultAlignment: go.Spot.Left,
             stretch: go.GraphObject.Horizontal
@@ -1039,7 +1048,6 @@ export class DiagramTemplatesService {
           $(go.Panel,
             'Vertical',
             {
-              name: 'Groups List',
               alignment: go.Spot.TopLeft,
               defaultAlignment: go.Spot.Left,
               stretch: go.GraphObject.Horizontal,
@@ -1053,16 +1061,6 @@ export class DiagramTemplatesService {
               return bottomExpanded === bottomOptions.groupList;
             }
           )
-        ),
-        // Area for grouped nodes to appear in
-        $(go.Shape,
-          {
-            name: 'Group member area',
-            figure: 'rectangle',
-            stroke: null,
-            fill: null,
-            stretch: go.GraphObject.UniformToFill
-          }
         )
       )
     );
@@ -1077,7 +1075,8 @@ export class DiagramTemplatesService {
         name: 'middle',
         row: 1,
         stretch: go.GraphObject.Horizontal,
-        margin: new go.Margin(2)
+        margin: new go.Margin(2),
+        // minSize: new go.Size(300, 65)
       },
       new go.Binding('visible', 'middleExpanded').makeTwoWay(),
       $(go.Panel,
@@ -1376,7 +1375,7 @@ export class DiagramTemplatesService {
         ),
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
         selectionObjectName: 'main content',
-        resizeObjectName: 'shape',
+        resizeObjectName: 'content table',
         doubleClick: function(event, node) {
           this.gojsCustomObjectsService.showRightPanelTabSource.next();
         }.bind(this),
@@ -1384,8 +1383,7 @@ export class DiagramTemplatesService {
           // don't constrain top-level nodes
           const grp = part.containingGroup;
           // try to stay within the background Shape of the Group
-          /* reference to resize object */
-          const back = grp.resizeObject;
+          const back = grp ? grp.findObject('Group member area') : null;
           if (back === null) { return pt; }
           const p1 = back.getDocumentPoint(go.Spot.TopLeft);
           const p2 = back.getDocumentPoint(go.Spot.BottomRight);
@@ -1515,8 +1513,7 @@ export class DiagramTemplatesService {
               fill: 'white',
               stroke: 'black',
               strokeWidth: 1,
-              shadowVisible: true,
-              minSize: new go.Size(300, NaN)
+              shadowVisible: true
             },
             new go.Binding(
               'stroke',
@@ -1544,8 +1541,27 @@ export class DiagramTemplatesService {
             go.Panel,
             'Table',
             {
-              defaultRowSeparatorStroke: 'black'
+              name: 'content table',
+              defaultRowSeparatorStroke: 'black',
+              minSize: new go.Size(310, 40)
             },
+            $(go.RowColumnDefinition, { row: 0, sizing: go.RowColumnDefinition.None}),
+            $(go.RowColumnDefinition, { row: 1, sizing: go.RowColumnDefinition.None}),
+            $(go.RowColumnDefinition, { row: 2, sizing: go.RowColumnDefinition.None}),
+            new go.Binding('minSize', '', function(data, table) {
+              let minHeight = 40;
+              if (data.middleExpanded) {
+                minHeight += 70;
+              }
+              if (data.bottomExpanded === bottomOptions.children) {
+                minHeight += 30 * data.descendants.length;
+                minHeight += 30;
+              } else if (data.bottomExpanded === bottomOptions.groupList) {
+                minHeight += 30 * data.members.length;
+                minHeight += 30;
+              }
+              return new go.Size(310, minHeight);
+            }),
             new go.Binding(
               'defaultRowSeparatorStroke',
               'colour',

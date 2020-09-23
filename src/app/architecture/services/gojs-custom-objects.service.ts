@@ -163,10 +163,8 @@ export class CustomNodeResize extends go.ResizingTool {
     // If group is itself contained in a group then ensure that the group is not
     //  expanded outside the bounds of its containing group
     if (group.containingGroup) {
-      /* reference to resize object */
-      const containingArea = group.containingGroup.resizeObject.getDocumentBounds();
-      /* reference to resize object */
-      const groupContainingArea = group.resizeObject.getDocumentBounds();
+      const containingArea = group.containingGroup.findObject('Group member area').getDocumentBounds();
+      const groupContainingArea = group.findObject('Group member area').getDocumentBounds();
       const groupArea = group.getDocumentBounds();
 
       // Constrain group member area size, accounting for the resulting size of the whole group
