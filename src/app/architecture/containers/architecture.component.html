@@ -146,6 +146,7 @@
             [view]="'system'"
             [workPackageIsEditable]="workPackageIsEditable"
             (add)="onAddComponentOrLink()"
+            [filterLevel]="currentFilterLevel"
           ></smi-architecture-table-view>
         </div>
         <div *ngIf="selectedView === ArchitectureView.Links">
@@ -159,6 +160,7 @@
             [view]="'link'"
             [workPackageIsEditable]="workPackageIsEditable"
             (add)="onAddComponentOrLink()"
+            [filterLevel]="currentFilterLevel"
           ></smi-architecture-table-view>
         </div>
       </app-model-content>

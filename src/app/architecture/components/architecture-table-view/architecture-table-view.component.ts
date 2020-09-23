@@ -6,6 +6,7 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 const SystemColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner'];
 const LinkColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target'];
@@ -20,6 +21,7 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   @Input() selectedItem: NodeDetail | NodeLinkDetail;
   @Input() view: 'system' | 'link';
   @Input() find: (id: string) => Observable<string>;
+  @Input() filterLevel: string;
   private filterValue: string;
 
   @Input()
@@ -126,4 +128,9 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+
+  disableCreateNewButton(): boolean {
+    return !this.workPackageIsEditable || [Level.sources, Level.targets, Level.usage].includes(this.filterLevel as Level);
+  }
+
 }
