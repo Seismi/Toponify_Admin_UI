@@ -16,6 +16,7 @@
         (selectWorkPackage)="onSelectWorkPackage($event)"
         (selectColour)="selectColourForWorkPackage($event)"
         (setWorkpackageEditMode)="onSelectEditWorkpackage($event)"
+        [workpackageSelected$]="workpackageSelected$"
       >
       </smi-workpackage-tab-table>
     </ng-template>
@@ -73,7 +74,6 @@
             (saveAsLayout)="onSaveAsLayout()"
             [allowSave]="!!draft"
             [allowSaveAs]="true"
-            [dependenciesView]="dependenciesView"
             (layoutSettings)="openLayoutSettingsModal()"
             [layouts]="scopeDetails$ | async"
             [selectedLayout]="selectedLayout$ | async"
@@ -85,6 +85,7 @@
             [clickedOnLink]="clickedOnLink"
             [selectedNode]="selectedNode"
             [groupName]="groupName"
+            [scope]="scope"
           >
           </smi-diagram-actions>
           <app-architecture-diagram
@@ -118,6 +119,8 @@
             (updateNodeLocation)="handleUpdateNodeLocation($event)"
             (updateNodeExpandState)="handleUpdateNodeExpandState($event)"
             (updateGroupArea)="handleUpdateGroupArea($event)"
+            (updateNodeColour)="handleUpdateNodeColour($event)"
+            (updateLinkColour)="handleUpdateLinkColour($event)"
             (updateDiagramLayout)="handleUpdateDiagramLayout()"
           >
           </app-architecture-diagram>
@@ -226,7 +229,7 @@
             [dimensions]="selectedNode?.dimensions"
             [reportingConcepts]="selectedNode?.reportingConcepts"
             [groupInfo]="selectedNode?.groupinfo"
-            (editGroup)="onAddToGroup()"
+            (editGroup)="onAddToGroup(selectedParts)"
             [clickedOnLink]="clickedOnLink"
             (addNewGroupMember)="onAddNewGroupMember()"
             (addDescendants)="onAddDescendant($event)"

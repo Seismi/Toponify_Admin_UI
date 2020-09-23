@@ -27,3 +27,9 @@ export const getReportAvailableTags = createSelector(
   getReportFeatureState,
   state => state.availableTags
 );
+
+export const getReportDataNodes = createSelector(
+  getReportFeatureState,
+  state => state.dataNodes
+);
+

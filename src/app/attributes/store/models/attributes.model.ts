@@ -66,6 +66,7 @@ export interface AttributeDetail {
   category: string;
   description: string;
   tags: Tag[];
+  reference: string;
   owners?: (Owners)[] | null;
   customProperties?: (CustomProperties)[] | null;
   related?: (RelatedEntity)[] | null;

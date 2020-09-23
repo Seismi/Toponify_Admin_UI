@@ -51,6 +51,14 @@ export class ScopeService {
     return this.http.delete<string>(`/scopes/${scopeId}/favourites`);
   }
 
+  setPreferredLayout(scopeId: string, layoutId: string): Observable<{ data: ScopeDetails }> {
+    return this.http.post<{ data: ScopeDetails }>(`/scopes/${scopeId}/layouts/${layoutId}/preferred`, httpOptions);
+  }
+
+  unsetPreferredLayout(scopeId: string): Observable<{ data: ScopeDetails }> {
+    return this.http.delete<{ data: ScopeDetails }>(`/scopes/${scopeId}/layouts/preferred`, httpOptions);
+  }
+
   // TODO: move into sharable service
   toHttpParams(obj: Object): HttpParams {
     return Object.getOwnPropertyNames(obj).reduce((p, key) => p.set(key, obj[key]), new HttpParams());

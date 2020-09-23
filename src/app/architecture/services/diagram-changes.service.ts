@@ -32,7 +32,7 @@ import {
 import { State as LayoutState } from '@app/layout/store/reducers/layout.reducer';
 import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { AddWorkPackageMapViewTransformation } from '@app/workpackage/store/actions/workpackage.actions';
-import { autoLayoutId } from '@app/architecture/store/models/layout.model';
+import {autoLayoutId, colourOptions} from '@app/architecture/store/models/layout.model';
 import { defaultScopeId } from '@app/scope/store/models/scope.model';
 
 const $ = go.GraphObject.make;
@@ -42,6 +42,8 @@ export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateNodeColour: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateLinkColour: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateDiagramLayout: BehaviorSubject<any> = new BehaviorSubject(null);
   public diagramEditable: boolean;
   private currentLevel: Level;
@@ -106,6 +108,8 @@ export class DiagramChangesService {
         part.data.id = part.data.displayId;
       }
 
+      const group = event.diagram.findNodeForKey(part.data.group);
+
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
         const node = Object.assign({}, part.data);
@@ -113,7 +117,8 @@ export class DiagramChangesService {
           disableClose: false,
           width: '500px',
           data: {
-            name: node.name
+            name: node.name,
+            group: group ? group.data.name : null
           }
         });
 
@@ -283,7 +288,8 @@ export class DiagramChangesService {
               id: part.key,
               points: part.data.route,
               fromSpot: part.data.fromSpot,
-              toSpot: part.data.toSpot
+              toSpot: part.data.toSpot,
+              colour: part.data.colour
             });
           }
         } else {
@@ -374,10 +380,35 @@ export class DiagramChangesService {
           }
         } else {
           this.workpackages.forEach(workpackage => {
+            let layoutDetails;
+
+            if (this.layout && this.layout.id !== autoLayoutId) {
+              layoutDetails = {
+                layoutId: this.layout.id,
+                data: {
+                  positionDetails: {
+                    workPackages: [{ id: workpackage.id, name: workpackage.name }],
+                    positions: {
+                      nodes: [],
+                      nodeLinks: [{
+                        id: link.data.id,
+                        positionSettings: {
+                          route: link.data.route,
+                          fromSpot: link.data.fromSpot,
+                          toSpot: link.data.toSpot
+                        }
+                      }]
+                    }
+                  }
+                }
+              };
+            }
+
             this.workpackageStore.dispatch(
               new AddWorkPackageLink({
                 workpackageId: workpackage.id,
-                link: Object.assign({}, link.data)
+                link: Object.assign({}, link.data),
+                newLayoutDetails: layoutDetails
               })
             );
           });
@@ -479,7 +510,8 @@ export class DiagramChangesService {
       }
     });
 
-    /* Check for any links that do not have a valid route between source and target nodes.
+    /* Check for any links that do not have a valid route between source and target nodes
+       (or containing groups of the source/target nodes if the groups are collapsed).
        This can happen if the source or target nodes are moved in a work package where
        the link no longer exists.
     */
@@ -491,9 +523,14 @@ export class DiagramChangesService {
 
       // Only proceed if link is connected at both ends
       if (link.fromNode && link.toNode) {
+        // If source or target node is member of a collapsed group then need to check link
+        //  connects to the containing group instead.
+        const fromNode = this.getFirstVisibleGroup(link.fromNode);
+        const toNode = this.getFirstVisibleGroup(link.toNode);
+
         // Get bounding rectangles of the link's source and target node
-        const fromArea = link.fromNode.actualBounds.copy();
-        const toArea = link.toNode.actualBounds.copy();
+        const fromArea = fromNode.actualBounds.copy();
+        const toArea = toNode.actualBounds.copy();
 
         if ([fromArea.x, fromArea.y, toArea.x, toArea.y].some(isNaN)) {
           return;
@@ -539,7 +576,7 @@ export class DiagramChangesService {
           link.invalidateRoute();
         }
       }
-    });
+    }.bind(this));
 
     this.diagramLevelService.groupLayoutInitial = true;
 
@@ -744,7 +781,12 @@ export class DiagramChangesService {
   }
 
   nodeExpandChanged(node) {
-    const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
+    const linkData: {
+      id: string; points: number[];
+      fromSpot: string;
+      toSpot: string;
+      colour: colourOptions;
+    }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
@@ -761,7 +803,8 @@ export class DiagramChangesService {
           id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot
+          toSpot: link.data.toSpot,
+          colour: link.data.colour
         });
       }
     });
@@ -775,7 +818,6 @@ export class DiagramChangesService {
       // Update node's layout in map, usage sources or targets views
       node.findTopLevelPart().invalidateLayout();
     } else {
-      this.groupMemberSizeChanged(node);
 
       // Update expanded status of node in the back end
       this.onUpdateExpandState.next({
@@ -787,7 +829,7 @@ export class DiagramChangesService {
         links: linkData
       });
 
-      this.onUpdateDiagramLayout.next({});
+      this.groupMemberSizeChanged(node);
     }
   }
 
@@ -824,11 +866,11 @@ export class DiagramChangesService {
             part.move(newLocation, true);
           } else {
             /*
-                  For nodes that are already located in the group, change member node location back and
-                  forth between the current location and another point.
-                  This is to force GoJS to update the position of the node, as this does not appear to be
-                  done correctly when the parent group is moved.
-                */
+              For nodes that are already located in the group, change member node location back and
+              forth between the current location and another point.
+              This is to force GoJS to update the position of the node, as this does not appear to be
+              done correctly when the parent group is moved.
+            */
             const location = part.location.copy();
             part.move(location.copy().offset(1, 1));
             part.move(location, true);
@@ -867,7 +909,12 @@ export class DiagramChangesService {
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
-    const linkData: { id: string; points: number[]; fromSpot: string; toSpot: string }[] = [];
+    const linkData: {
+      id: string; points: number[];
+      fromSpot: string;
+      toSpot: string;
+      colour: colourOptions;
+    }[] = [];
     const node = event.subject.part;
 
     // Make sure node bounds are up to date so links can route correctly
@@ -885,7 +932,8 @@ export class DiagramChangesService {
           id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot
+          toSpot: link.data.toSpot,
+          colour: link.data.colour
         });
       }
     });
@@ -974,7 +1022,8 @@ export class DiagramChangesService {
           id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot
+          toSpot: link.data.toSpot,
+          colour: link.data.colour
         });
       }
     });
@@ -1003,6 +1052,27 @@ export class DiagramChangesService {
     }
 
     this.onUpdateDiagramLayout.next({});
+  }
+
+  nodeColourChanged(node: go.Node): void {
+    this.onUpdateNodeColour.next(
+      {
+        id: node.data.id,
+        colour: node.data.colour
+      }
+    );
+  }
+
+  linkColourChanged(link: go.Link): void {
+    this.onUpdateLinkColour.next(
+      {
+        id: link.data.id,
+        points: link.data.route,
+        fromSpot: link.data.fromSpot,
+        toSpot: link.data.toSpot,
+        colour: link.data.colour
+      }
+    );
   }
 
   // Display map view for a link
@@ -1049,7 +1119,8 @@ export class DiagramChangesService {
           locationCoordinates: node.location,
           middleExpanded: node.middleExpanded,
           bottomExpanded: node.bottomExpanded,
-          areaSize: node.areaSize
+          areaSize: node.areaSize,
+          colour: node.colour
         }
       };
     });
@@ -1060,7 +1131,8 @@ export class DiagramChangesService {
         positionSettings: {
           route: link.route,
           fromSpot: link.fromSpot,
-          toSpot: link.toSpot
+          toSpot: link.toSpot,
+          colour: link.colour
         }
       };
     });
@@ -1214,14 +1286,25 @@ export class DiagramChangesService {
   }
 
   // Check for any other nodes already occupying a given space
-  isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
+  isUnoccupied(rectangle: go.Rect, node: go.Node, ignoreGroups = false): boolean {
     const diagram = node.diagram;
+    const dragFromPalette = !!diagram.toolManager.draggingTool.copiedParts;
 
     // nested function used by Layer.findObjectsIn, below
     // only consider Parts, and ignore the given Node, any Links, and Group members
     function navigate(obj: go.GraphObject): go.Part {
+
       const part = obj.part;
+
       if (part === node) {
+        return null;
+      }
+
+      if (part.data.isGroup && ignoreGroups) {
+        return null;
+      }
+
+      if (obj.name !== 'shape' && part.category === nodeCategories.transformation) {
         return null;
       }
       if (part instanceof go.Link) {
@@ -1233,7 +1316,7 @@ export class DiagramChangesService {
       if (node.isMemberOf(part)) {
         return null;
       }
-      if (diagram.selection.contains(part) ) {
+      if (diagram.selection.contains(part) && !dragFromPalette) {
         return null;
       }
       return part;
@@ -1251,6 +1334,49 @@ export class DiagramChangesService {
       }
     }
     return true;
+  }
+
+  getFirstVisibleGroup(node: go.Group): go.Group {
+    let returnGroup = node;
+    while (returnGroup.containingGroup && !returnGroup.isVisible()) {
+      returnGroup = returnGroup.containingGroup;
+    }
+    return returnGroup;
+  }
+
+  // If dragging a node suitable for being grouped then return the node.
+  // Otherwise, return null.
+  getGroupableDraggedNode(draggingTool: go.DraggingTool): go.Node | null {
+    const draggedPartsMap = draggingTool.copiedParts || draggingTool.draggedParts;
+    if (draggedPartsMap) {
+      const draggedParts = draggedPartsMap.iteratorKeys;
+      const groupableParts = new go.Set<go.Group>();
+
+      // Find if any parts are valid to add to a group by dropping
+      draggedParts.each(function(part: go.Group): void {
+        if (part.isTopLevel
+          && part instanceof go.Group
+          && part.data.layer === layers.system
+        ) {
+          groupableParts.add(part);
+        }
+      });
+
+      // Only allow dropping node into group if it is the only groupable node being dragged
+      if (groupableParts.count === 1) {
+        const groupableNode = groupableParts.first();
+
+        // All other dragged parts must be nested members of the dragged group
+        if (draggedParts.all(function(part: go.Part): boolean {
+            return part === groupableNode
+              || part.findTopLevelPart() === groupableNode;
+          })
+        ) {
+          return groupableNode;
+        }
+      }
+    }
+    return null;
   }
 
   // Update guide with instructions for current diagram state

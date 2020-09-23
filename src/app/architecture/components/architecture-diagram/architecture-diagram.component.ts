@@ -25,8 +25,10 @@ import {
   CustomCommandHandler,
   CustomLinkShift,
   CustomNodeResize,
+  CustomRelinkingTool,
   GojsCustomObjectsService
 } from '../../services/gojs-custom-objects.service';
+import {colourOptions} from '@app/architecture/store/models/layout.model';
 
 // FIXME: this solution is temp, while not clear how it should work
 export const viewLevelMapping = {
@@ -121,6 +123,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   updateGroupArea = new EventEmitter();
 
   @Output()
+  updateNodeColour = new EventEmitter();
+
+  @Output()
+  updateLinkColour = new EventEmitter();
+
+  @Output()
   updateDiagramLayout = new EventEmitter();
 
   get level() {
@@ -154,8 +162,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
     gojsCustomObjectsService.customDragMouseMove(this.diagram.toolManager.draggingTool);
+    gojsCustomObjectsService.customDoDropOnto(this.diagram.toolManager.draggingTool);
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
+    this.diagram.toolManager.relinkingTool = (new CustomRelinkingTool());
     this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
     this.diagram.toolManager.relinkingTool.portGravity = 40;
     this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation.bind(
@@ -273,6 +283,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     });
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
+    });
+    diagramChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
+      this.updateNodeColour.emit(data);
+    });
+    diagramChangesService.onUpdateLinkColour.subscribe((link: any) => {
+      this.updateLinkColour.emit(link);
     });
 
     this.diagramChangesService.onUpdateGroupsAreaState

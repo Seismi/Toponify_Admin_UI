@@ -9,7 +9,7 @@ import {
   Node,
   NodeDetail,
   NodeReports,
-  middleOptions,
+  bottomOptions,
   GroupAreaSizesEntity,
   OwnersEntity,
   Tag,
@@ -31,6 +31,7 @@ import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { Page } from '@app/radio/store/models/radio.model';
 import { TagListComponent } from '@app/architecture/components/tag-list/tag-list.component';
+import {colourOptions} from '@app/architecture/store/models/layout.model';
 
 export interface State {
   reports: NodeReports[];
@@ -40,11 +41,18 @@ export interface State {
     [key: string]: any;
   };
   entities: Node[];
+  initialNodeLayoutSettings: { id: string; positionPerLayout: NodeLayoutSettingsEntity[]; }[];
+  layoutHistory: {
+    nodes: { id: string; positionSettings: NodeLayoutSettingsEntity['layout']['positionSettings']; }[];
+    links: { id: string; positionSettings: LinkLayoutSettingsEntity['layout']['positionSettings']; }[];
+    previous?: State['layoutHistory']
+  } | null;
   descendants: DescendantsEntity[];
   members: WorkPackageGroupMembersApiResponse['data'];
   selectedNode: NodeDetail;
   selectedNodeLink: NodeLinkDetail;
   links: NodeLink[];
+  initialLinkLayoutSettings: { id: string; positionPerLayout: LinkLayoutSettingsEntity[]; }[];
   nodeScopes: WorkPackageNodeScopes[];
   availableScopes: WorkPackageNodeScopes[];
   error: Error;
@@ -70,9 +78,12 @@ export const initialState: State = {
   zoomLevel: 3,
   viewLevel: Level.system,
   entities: [],
+  initialNodeLayoutSettings: [],
+  layoutHistory: null,
   selectedNode: null,
   selectedNodeLink: null,
   links: [],
+  initialLinkLayoutSettings: [],
   descendants: [],
   members: [],
   nodeScopes: [],
@@ -219,7 +230,8 @@ export function reducer(
               layoutId,
               link.points,
               link.fromSpot,
-              link.toSpot
+              link.toSpot,
+              link.colour
             );
           }
         },
@@ -437,6 +449,7 @@ export function reducer(
       return {
         ...state,
         entities: [...action.payload],
+        initialNodeLayoutSettings: [...action.payload.map((p) => ({id: p.id, positionPerLayout: p.positionPerLayout}))],
         loadingNodes: LoadingStatus.loaded
       };
     }
@@ -568,6 +581,7 @@ export function reducer(
       return {
         ...state,
         links: [...action.payload],
+        initialLinkLayoutSettings: [...action.payload.map((p) => ({id: p.id, positionPerLayout: p.positionPerLayout}))],
         loadingLinks: LoadingStatus.loaded
       };
     }
@@ -594,11 +608,30 @@ export function reducer(
     }
 
     case NodeActionTypes.SetDraft: {
+
+      const layoutId = action.payload.layoutId;
+
+      let currentNodePositions;
+      let currentLinkPositions;
+
+      if (layoutId in state.draft) {
+        currentNodePositions = state.draft[layoutId].data.positionDetails.positions.nodes;
+        currentLinkPositions = state.draft[layoutId].data.positionDetails.positions.nodeLinks;
+      } else {
+        currentNodePositions = getInitialNodeLayoutSettings(state, action.payload.layoutId);
+        currentLinkPositions = getInitialLinkLayoutSettings(state, action.payload.layoutId);
+      }
+
       return {
         ...state,
         draft: {
           ...state.draft,
-          [action.payload.layoutId]: action.payload
+          [layoutId]: action.payload
+        },
+        layoutHistory: {
+          nodes: currentNodePositions,
+          links: currentLinkPositions,
+          previous: state.layoutHistory ? {...state.layoutHistory} : null
         }
       };
     }
@@ -610,12 +643,88 @@ export function reducer(
       };
     }
 
+    case NodeActionTypes.UndoLayoutChange: {
+      if (!state.layoutHistory) {return {...state}; }
+      const layoutId = Object.keys(state.draft)[0];
+      const prevHistory = state.layoutHistory.previous || null;
+
+      let newState = state.layoutHistory.nodes.reduce(
+        function(updatedState, node) {
+          const nodeIndex = updatedState.entities.findIndex(n => n.id === node.id);
+          if (nodeIndex > -1) {
+            return replaceAllNodeLayoutSettings(
+              updatedState,
+              nodeIndex,
+              node,
+              layoutId
+            );
+          }
+        },
+        {
+          ...state
+        }
+      );
+
+      newState = state.layoutHistory.links.reduce(
+        function(updatedState, link) {
+          const linkIndex = updatedState.links.findIndex(l => l.id === link.id);
+          if (linkIndex > -1) {
+            return replaceLinkRoute(
+              updatedState,
+              linkIndex,
+              link.id,
+              layoutId,
+              link.positionSettings.route,
+              link.positionSettings.fromSpot,
+              link.positionSettings.toSpot,
+              link.positionSettings.colour
+            );
+          }
+        },
+        {
+          ...newState
+        }
+      );
+
+      const newDraft = prevHistory ?
+        {
+          [layoutId]: {
+            layoutId: layoutId,
+            data: {
+              positionDetails: {
+                positions: {
+                  nodes: [...state.layoutHistory.nodes],
+                  nodeLinks: [...state.layoutHistory.links]
+                }
+              }
+            }
+          }
+        } : {};
+
+      return {
+        ...newState,
+        layoutHistory: prevHistory,
+        draft: newDraft
+      };
+    }
+
     case NodeActionTypes.UpdatePartsLayoutSuccess: {
       const newDraft = { ...state.draft };
       delete newDraft[action.payload];
+
+      const currentNodePositions = [...state.entities.map(
+        (n) => ({id: n.id, positionPerLayout: n.positionPerLayout})
+      )];
+      const currentLinkPositions = [...state.links.map(
+        (l) => ({id: l.id, positionPerLayout: l.positionPerLayout})
+      )];
+
       return {
         ...state,
-        draft: newDraft
+        draft: newDraft,
+        initialNodeLayoutSettings: currentNodePositions,
+        initialLinkLayoutSettings: currentLinkPositions,
+        layoutHistory: null
       };
     }
 
@@ -684,6 +793,17 @@ export function reducer(
           ...state
         }
       );
+    }
+
+    case NodeActionTypes.UpdateNodeColour: {
+      const { layoutId, data } = action.payload;
+      const nodeIndex = state.entities.findIndex(g => g.id === data.id);
+      if (nodeIndex > -1) {
+        return replaceNodeLayoutSetting({...state}, nodeIndex, data.id, layoutId, data.colour, 'colour');
+      }
+      return {
+        ...state
+      };
     }
 
     case NodeActionTypes.UpdateNodeLocationsSuccess: {
@@ -1021,6 +1141,15 @@ function replaceNodeLayoutSetting(
     const newPositionSettings = { ...updatedLayout.layout.positionSettings, [setting]: newValue };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
+  } else {
+    updatedLayouts.push({
+      layout: {
+        id: layoutId,
+        positionSettings: {
+          [setting]: newValue
+        }
+      }
+    });
   }
 
   const updatedNode = { ...state.entities[nodeIndex], positionPerLayout: updatedLayouts };
@@ -1040,6 +1169,32 @@ function replaceNodeLayoutSetting(
   };
 }
 
+function getInitialNodeLayoutSettings(state: State, layoutId: string) {
+  const nodeLayoutSettings = [];
+  state.initialNodeLayoutSettings.forEach(function(node: Node) {
+    const nodeLayout = node.positionPerLayout.find(function(position): boolean {
+      return position.layout.id === layoutId;
+    });
+    if (nodeLayout) {
+      nodeLayoutSettings.push({id: node.id, positionSettings: {...nodeLayout.layout.positionSettings}});
+    }
+  });
+  return nodeLayoutSettings;
+}
+
+function getInitialLinkLayoutSettings(state: State, layoutId: string) {
+  const linkLayoutSettings = [];
+  state.initialLinkLayoutSettings.forEach(function(link: NodeLink) {
+    const linkLayout = link.positionPerLayout.find(function(position): boolean {
+      return position.layout.id === layoutId;
+    });
+    if (linkLayout) {
+      linkLayoutSettings.push({id: link.id, positionSettings: {...linkLayout.layout.positionSettings}});
+    }
+  });
+  return linkLayoutSettings;
+}
+
 function replaceLinkRoute(
   state: State,
   linkIndex: number,
@@ -1047,7 +1202,8 @@ function replaceLinkRoute(
   layoutId: string,
   route: number[],
   fromSpot: string,
-  toSpot: string
+  toSpot: string,
+  colour: colourOptions
 ): State {
   const updatedLayouts: LinkLayoutSettingsEntity[] = state.links[linkIndex].positionPerLayout.concat();
   const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: LinkLayoutSettingsEntity) {
@@ -1060,10 +1216,23 @@ function replaceLinkRoute(
       ...updatedLayout.layout.positionSettings,
       route: route,
       fromSpot: fromSpot,
-      toSpot: toSpot
+      toSpot: toSpot,
+      colour: colour
     };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
+  } else {
+    updatedLayouts.push({
+      layout: {
+        id: layoutId,
+        positionSettings: {
+          route: route,
+          fromSpot: fromSpot,
+          toSpot: toSpot,
+          colour: colour
+        }
+      }
+    });
   }
 
   const updatedLink = { ...state.links[linkIndex], positionPerLayout: updatedLayouts };
@@ -1073,6 +1242,43 @@ function replaceLinkRoute(
   return {
     ...state,
     links
+  };
+}
+
+function replaceAllNodeLayoutSettings(state: State, nodeIndex: number, node: any, layoutId: string) {
+  const updatedLayouts: NodeLayoutSettingsEntity[] = state.entities[nodeIndex].positionPerLayout.concat();
+  const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: NodeLayoutSettingsEntity): boolean {
+    return layoutSettings.layout.id === layoutId;
+  });
+
+  if (layoutIndex > -1) {
+    const updatedLayout = updatedLayouts[layoutIndex];
+    const newPositionSettings = { ...updatedLayout.layout.positionSettings, ...node.positionSettings };
+    const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
+    updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
+  } else {
+    updatedLayouts.push({
+      layout: {
+        id: layoutId,
+        positionSettings: node.positionSettings
+      }
+    });
+  }
+
+  const updatedNode = { ...state.entities[nodeIndex], positionPerLayout: updatedLayouts };
+  const entities = [...state.entities];
+  entities[nodeIndex] = updatedNode;
+
+  if (state.selectedNode && state.selectedNode.id === node.id) {
+    return {
+      ...state,
+      entities,
+      selectedNode: updatedNode
+    };
+  }
+  return {
+    ...state,
+    entities
   };
 }
 
