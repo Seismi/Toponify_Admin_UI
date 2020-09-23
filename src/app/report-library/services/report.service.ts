@@ -93,7 +93,7 @@ export class ReportService {
 
   removeDataSet(workPackageId: string, reportId: string, datasetId: string): Observable<ReportDetailApiRespoonse> {
     return this.http.post<ReportDetailApiRespoonse>(
-      `/workpackages/${workPackageId}/reports/${reportId}/dataSets/${datasetId}/deleteRequest`,
+      `/workpackages/${workPackageId}/reports/${reportId}/dataNodes/${datasetId}/deleteRequest`,
       {}
     );
   }

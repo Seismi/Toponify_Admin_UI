@@ -6,7 +6,8 @@ import {
   ReportLibraryApiResponse,
   ReportDetailApiRequest,
   ReportEntityApiRequest,
-  ReportEntityApiResponse
+  ReportEntityApiResponse,
+  DataNodes
 } from '../models/report.model';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { GetReportLibraryRequestQueryParams, ReportService } from '../../services/report.service';
@@ -103,6 +104,18 @@ export class ReportEffects {
       return this.reportService.deleteOwner(payload.workPackageId, payload.reportId, payload.ownerId).pipe(
         switchMap((response: ReportDetailApiRespoonse) => [new ReportActions.DeleteOwnerSuccess(response.data)]),
         catchError((error: HttpErrorResponse) => of(new ReportActions.DeleteOwnerFail(error)))
+      );
+    })
+  );
+
+  @Effect()
+  loadDataNodes$ = this.actions$.pipe(
+    ofType<ReportActions.LoadDataNodes>(ReportActionTypes.LoadDataNodes),
+    map(action => action.payload),
+    mergeMap((payload: { workPackageId: string; reportId: string; }) => {
+      return this.reportService.getDataSets(payload.workPackageId, payload.reportId).pipe(
+        mergeMap((response: { data: DataNodes[] }) => [new ReportActions.LoadDataNodesSuccess(response.data)]),
+        catchError((error: HttpErrorResponse) => of(new ReportActions.LoadDataNodesFail(error)))
       );
     })
   );

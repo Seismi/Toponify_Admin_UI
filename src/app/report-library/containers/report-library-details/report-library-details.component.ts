@@ -21,9 +21,10 @@ import {
   LoadReportTags,
   DeleteReportTags,
   AddReportRadio,
-  LoadReports
+  LoadReports,
+  LoadDataNodes
 } from '@app/report-library/store/actions/report.actions';
-import { getReportSelected, getReportAvailableTags } from '@app/report-library/store/selecrtors/report.selectors';
+import { getReportSelected, getReportAvailableTags, getReportDataNodes } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
 import { FormGroup } from '@angular/forms';
 import { Dimension, Report } from '@app/report-library/store/models/report.model';
@@ -113,8 +114,8 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(
       this.store.pipe(select(getReportSelected)).subscribe(report => {
-        this.report = report;
         if (report) {
+          this.report = report;
           this.reportLibraryDetailService.updateForm({...report});
         }
       })
@@ -336,6 +337,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddDataSets(reportId: string) {
+    this.store.dispatch(new LoadDataNodes({ workPackageId: this.workpackageId, reportId: reportId }));
     const dialogRef = this.dialog.open(SelectModalComponent, {
       disableClose: false,
       width: 'auto',
@@ -344,10 +346,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         title: 'Select source data',
         placeholder: 'Components',
         multi: true,
-        options$: this.reportService.getDataSets(this.workpackageId, reportId).pipe(
-          take(1),
-          map(data => data.data.filter(dataSet => !this.report.dataSets.some(ds => ds.id === dataSet.id)))
-        ),
+        options$: this.store.pipe(select(getReportDataNodes)),
         selectedIds: []
       }
     });
@@ -364,11 +363,11 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRemoveDataSet(dataSetId: string, reportId: string) {
+  onRemoveDataSet(dataSetId: string) {
     this.store.dispatch(
       new RemoveDataSetsFromReport({
         workPackageId: this.workpackageId,
-        reportId: reportId,
+        reportId: this.reportId,
         dataSetId: dataSetId
       })
     );
@@ -464,12 +463,14 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '800px',
       data: {
-        selectedNode: this.report
+        selectedNode: this.report,
+        selectWorkPackages: true,
+        message: `This RADIO will be associated to the following work packages:`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio || data.selectedWorkPackages) {
+      if ((data && data.radio) || data && data.selectedWorkPackages) {
         this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio } }));
         this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
           const radioId = action.payload.id;
