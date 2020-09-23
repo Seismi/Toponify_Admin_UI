@@ -200,7 +200,7 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   }
 
   isFirst(): boolean {
-    if (this.nodes.length < 1) {
+    if (this.nodes.length < 1 || this.links.length < 1) {
       return false;
     }
     if (!this.selectedNode) {
