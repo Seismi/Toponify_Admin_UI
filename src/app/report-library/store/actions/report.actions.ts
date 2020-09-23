@@ -6,7 +6,8 @@ import {
   ReportDetailApiRequest,
   ReportEntityApiRequest,
   ReportEntityApiResponse,
-  ReportDetailApiRespoonse
+  ReportDetailApiRespoonse,
+  DataNodes
 } from '../models/report.model';
 import { GetReportLibraryRequestQueryParams } from '@app/report-library/services/report.service';
 import { Tag } from '@app/architecture/store/models/node.model';
@@ -39,6 +40,10 @@ export enum ReportActionTypes {
   DeleteOwner = '[Report] Delete Owner',
   DeleteOwnerSuccess = '[Report] Delete Owner Success',
   DeleteOwnerFail = '[Report] Delete Owner Fail',
+
+  LoadDataNodes = '[Report] Load Data Nodes',
+  LoadDataNodesSuccess = '[Report] Load Data Nodes Success',
+  LoadDataNodesFail = '[Report] Load Data Nodes Fail',
 
   AddDataSetsToReport = '[Report] Add Data Sets To Report',
   AddDataSetsToReportSuccess = '[Report] Add Data Sets To Report Success',
@@ -376,6 +381,21 @@ export class DeleteReportRadioFailure implements Action {
   constructor(public payload: HttpErrorResponse | { message: string }) {}
 }
 
+export class LoadDataNodes implements Action {
+  readonly type = ReportActionTypes.LoadDataNodes;
+  constructor(public payload: { workPackageId: string; reportId: string; }) {}
+}
+
+export class LoadDataNodesSuccess implements Action {
+  readonly type = ReportActionTypes.LoadDataNodesSuccess;
+  constructor(public payload: DataNodes[]) {}
+}
+
+export class LoadDataNodesFail implements Action {
+  readonly type = ReportActionTypes.LoadDataNodesFail;
+  constructor(public payload: HttpErrorResponse | { message: string }) {}
+}
+
 export type ReportActionsUnion =
   | LoadReports
   | LoadReportsSuccess
@@ -433,4 +453,7 @@ export type ReportActionsUnion =
   | AddReportRadioFailure
   | DeleteReportRadio
   | DeleteReportRadioSuccess
-  | DeleteReportRadioFailure;
+  | DeleteReportRadioFailure
+  | LoadDataNodes
+  | LoadDataNodesSuccess
+  | LoadDataNodesFail;
