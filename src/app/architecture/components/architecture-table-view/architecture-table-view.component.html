@@ -1,5 +1,5 @@
 <div class="search-container">
-  <input data-qa="topology-table-quick-search" (keyup)="onSearch($event.target.value)" placeholder="Search" />
+  <input data-qa="topology-table-quick-search" #searchInput (keyup)="onSearch($event.target.value)" placeholder="Search" />
 </div>
 <table mat-table [dataSource]="dataSource" [style.width.%]="100">
   <!-- Category Column -->

@@ -463,12 +463,14 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '800px',
       data: {
-        selectedNode: this.report
+        selectedNode: this.report,
+        selectWorkPackages: true,
+        message: `This RADIO will be associated to the following work packages:`
       }
     });
 
     dialogRef.afterClosed().subscribe(data => {
-      if (data && data.radio || data.selectedWorkPackages) {
+      if ((data && data.radio) || data && data.selectedWorkPackages) {
         this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio } }));
         this.actions.pipe(ofType(RadioActionTypes.AddRadioSuccess)).subscribe((action: any) => {
           const radioId = action.payload.id;
