@@ -108,6 +108,8 @@ export class DiagramChangesService {
         part.data.id = part.data.displayId;
       }
 
+      const group = event.diagram.findNodeForKey(part.data.group);
+
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
         const node = Object.assign({}, part.data);
@@ -115,7 +117,8 @@ export class DiagramChangesService {
           disableClose: false,
           width: '500px',
           data: {
-            name: node.name
+            name: node.name,
+            group: group ? group.data.name : null
           }
         });
 
@@ -520,18 +523,10 @@ export class DiagramChangesService {
 
       // Only proceed if link is connected at both ends
       if (link.fromNode && link.toNode) {
-
-        let fromNode = link.fromNode;
-        let toNode = link.toNode;
-
         // If source or target node is member of a collapsed group then need to check link
         //  connects to the containing group instead.
-        while (fromNode.containingGroup && !fromNode.containingGroup.isSubGraphExpanded) {
-          fromNode = fromNode.containingGroup;
-        }
-        while (toNode.containingGroup && !toNode.containingGroup.isSubGraphExpanded) {
-          toNode = toNode.containingGroup;
-        }
+        const fromNode = this.getFirstVisibleGroup(link.fromNode);
+        const toNode = this.getFirstVisibleGroup(link.toNode);
 
         // Get bounding rectangles of the link's source and target node
         const fromArea = fromNode.actualBounds.copy();
@@ -581,7 +576,7 @@ export class DiagramChangesService {
           link.invalidateRoute();
         }
       }
-    });
+    }.bind(this));
 
     this.diagramLevelService.groupLayoutInitial = true;
 
@@ -1291,8 +1286,9 @@ export class DiagramChangesService {
   }
 
   // Check for any other nodes already occupying a given space
-  isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
+  isUnoccupied(rectangle: go.Rect, node: go.Node, ignoreGroups = false): boolean {
     const diagram = node.diagram;
+    const dragFromPalette = !!diagram.toolManager.draggingTool.copiedParts;
 
     // nested function used by Layer.findObjectsIn, below
     // only consider Parts, and ignore the given Node, any Links, and Group members
@@ -1301,6 +1297,10 @@ export class DiagramChangesService {
       const part = obj.part;
 
       if (part === node) {
+        return null;
+      }
+
+      if (part.data.isGroup && ignoreGroups) {
         return null;
       }
 
@@ -1316,7 +1316,7 @@ export class DiagramChangesService {
       if (node.isMemberOf(part)) {
         return null;
       }
-      if (diagram.selection.contains(part) ) {
+      if (diagram.selection.contains(part) && !dragFromPalette) {
         return null;
       }
       return part;
@@ -1334,6 +1334,49 @@ export class DiagramChangesService {
       }
     }
     return true;
+  }
+
+  getFirstVisibleGroup(node: go.Group): go.Group {
+    let returnGroup = node;
+    while (returnGroup.containingGroup && !returnGroup.isVisible()) {
+      returnGroup = returnGroup.containingGroup;
+    }
+    return returnGroup;
+  }
+
+  // If dragging a node suitable for being grouped then return the node.
+  // Otherwise, return null.
+  getGroupableDraggedNode(draggingTool: go.DraggingTool): go.Node | null {
+    const draggedPartsMap = draggingTool.copiedParts || draggingTool.draggedParts;
+    if (draggedPartsMap) {
+      const draggedParts = draggedPartsMap.iteratorKeys;
+      const groupableParts = new go.Set<go.Group>();
+
+      // Find if any parts are valid to add to a group by dropping
+      draggedParts.each(function(part: go.Group): void {
+        if (part.isTopLevel
+          && part instanceof go.Group
+          && part.data.layer === layers.system
+        ) {
+          groupableParts.add(part);
+        }
+      });
+
+      // Only allow dropping node into group if it is the only groupable node being dragged
+      if (groupableParts.count === 1) {
+        const groupableNode = groupableParts.first();
+
+        // All other dragged parts must be nested members of the dragged group
+        if (draggedParts.all(function(part: go.Part): boolean {
+            return part === groupableNode
+              || part.findTopLevelPart() === groupableNode;
+          })
+        ) {
+          return groupableNode;
+        }
+      }
+    }
+    return null;
   }
 
   // Update guide with instructions for current diagram state

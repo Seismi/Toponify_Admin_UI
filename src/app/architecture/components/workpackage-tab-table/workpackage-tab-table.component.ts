@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatPaginator, MatTableDataSource, MatButtonToggleChange } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import { workpackageLoading, getAvailableWorkPackageIds } from '@app/workpackage/store/selectors/workpackage.selector';
@@ -22,6 +22,7 @@ export class WorkPackageTabTableComponent implements OnInit, OnDestroy {
   private filterValue: string;
   public isLoading: boolean;
   public subscription: Subscription;
+  @Input() workpackageSelected$ = new Subject();
   @Input()
   set data(data: WorkPackageEntity[]) {
     if (data) {
@@ -105,6 +106,7 @@ export class WorkPackageTabTableComponent implements OnInit, OnDestroy {
         }
         params = { workpackages: [...urlWorkpackages] };
         this.routerStore.dispatch(new UpdateQueryParams(params));
+        this.workpackageSelected$.next();
     });
   }
 }
