@@ -1452,11 +1452,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             let linkLayout;
 
             if (this.layout && 'id' in this.layout) {
-              linkLayout = link.positionPerLayout.find(
-                function(layoutSettings) {
-                  return layoutSettings.layout.id === this.layout.id;
-                }.bind(this)
-              );
+              linkLayout = 'positionPerLayout' in link
+                ? link.positionPerLayout.find(
+                    function(layoutSettings) {
+                      return layoutSettings.layout.id === this.layout.id;
+                    }.bind(this))
+                : null;
             }
 
             const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
