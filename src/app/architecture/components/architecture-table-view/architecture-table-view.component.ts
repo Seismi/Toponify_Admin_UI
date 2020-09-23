@@ -29,7 +29,9 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
     if (!data && data.some(obj => obj.hasOwnProperty(name))) {
       data = [];
     }
-    this.dataSource = new MatTableDataSource<Node | NodeLink>(data);
+    this.dataSource = new MatTableDataSource<Node | NodeLink>(
+      data.filter(node => node.category !== 'warning')
+    );
     this.dataSource.filter = this.filterValue;
     this.dataSource.paginator = this.paginator;
   }
