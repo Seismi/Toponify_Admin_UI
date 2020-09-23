@@ -25,11 +25,8 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   private filterValue: string;
 
   @Input()
-  set data(data: Node[] | NodeLink[]) {
-    if (!data) {
-      data = [];
-    }
-    if (!data[0]['name']) {
+  set data(data: any[]) {
+    if (!data && data.some(obj => obj.hasOwnProperty(name))) {
       data = [];
     }
     this.dataSource = new MatTableDataSource<Node | NodeLink>(data);
