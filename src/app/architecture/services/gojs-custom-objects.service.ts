@@ -422,12 +422,14 @@ export class CustomRelinkingTool extends go.RelinkingTool {
   doMouseMove(): void {
     let otherNode = this.isForwards ? this['originalFromNode'] : this['originalToNode'];
     const tempOtherNode = this.isForwards ? this['temporaryFromNode'] : this['temporaryToNode'];
+    const tempOtherPort = this.isForwards ? this['temporaryFromPort'] : this['temporaryToPort'];
 
     // Determine first containing group to not be within a collapsed group
     if (otherNode) {
       otherNode = currentService.diagramChangesService.getFirstVisibleGroup(otherNode);
-      tempOtherNode.desiredSize = otherNode.desiredSize;
       tempOtherNode.position = otherNode.position;
+      tempOtherNode.desiredSize = otherNode.getDocumentBounds().inflate(0.5, 0.5).size;
+      tempOtherPort.desiredSize = otherNode.getDocumentBounds().inflate(-0.5, -0.5).size;
     }
 
     go.RelinkingTool.prototype.doMouseMove.call(this);
@@ -756,6 +758,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that the system should be assigned to a new group
   private addSystemToGroupSource = new Subject();
   public addSystemToGroup$ = this.addSystemToGroupSource.asObservable();
+  // Observable to indicate that the system was dropped in a group
+  private setSystemGroupSource = new Subject();
+  public setSystemGroup$ = this.setSystemGroupSource.asObservable();
   // Observable to indicate that a new node should be added to the group as a new member
   private addNewSubItemSource = new Subject();
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
@@ -1376,6 +1381,45 @@ export class GojsCustomObjectsService {
       draggingTool.diagram.scrollToRect(viewRect);
 
       // Do standard doMouseMove actions
+      go.DraggingTool.prototype.doMouseMove.call(draggingTool);
+    };
+  }
+
+  // Override the doDropOnto method for the dragging tool.
+  // Implements adding a node to a group via drop.
+  customDoDropOnto(draggingTool: go.DraggingTool): void {
+    draggingTool.doDropOnto = function(pt: go.Point, obj: go.GraphObject): void {
+      // Only perform additional checks if dragged node is over an object
+      if (obj) {
+
+        const targetPart = obj.part || obj;
+        const fromPalette = !!draggingTool.copiedParts;
+        const droppedNode = currentService.diagramChangesService.getGroupableDraggedNode(draggingTool);
+
+        // Continue only if a valid dropped node is dragged
+        if (droppedNode) {
+
+          // Check that target node is a group in the system layer
+          if (targetPart instanceof go.Group
+            && targetPart.data.layer === layers.system
+          ) {
+            if (fromPalette) {
+              // If dragged from palette then set the group on the node's data.
+              // the node will be created with the correct group.
+              droppedNode.data.group = targetPart.data.id;
+            } else if (currentService.diagramEditable) {
+              currentService.setSystemGroupSource.next({
+                memberId: droppedNode.data.id, groupId: targetPart.data.id
+              });
+            }
+          }
+        }
+      }
+
+      // Reset cursor on dropping node
+      draggingTool.diagram.currentCursor = draggingTool.diagram.defaultCursor;
+
+      // Do standard doDropOnto actions
       go.DraggingTool.prototype.doMouseMove.call(draggingTool);
     };
   }

@@ -1400,7 +1400,27 @@ export class DiagramTemplatesService {
           const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
 
           return new go.Point(x, y);
-        }.bind(this)
+        }.bind(this),
+        // Update cursor when dragging a node over the group.
+        // Indicates that node can be dropped to add it to the group.
+        mouseDragEnter: function(event, thisNode, previous) {
+          const draggingTool = event.diagram.toolManager.draggingTool;
+          const groupableNode = this.diagramChangesService.getGroupableDraggedNode(draggingTool);
+
+          if (thisNode.data.layer === layers.system
+            && this.diagramChangesService.diagramEditable
+            && groupableNode
+          ) {
+            event.diagram.currentCursor = `url(assets/cursors/cursor_plus.svg), default`;
+          }
+        }.bind(this),
+        // Reset cursor on dragging node back outside of the node
+        mouseDragLeave: function(event, thisNode, next) {
+          if (next && next.part instanceof go.Group) {
+            return;
+          }
+          event.diagram.currentCursor = 'copy';
+        }
       },
       new go.Binding('isSubGraphExpanded', 'bottomExpanded',
         function(bottomExpanded): boolean {
@@ -1955,7 +1975,7 @@ export class DiagramTemplatesService {
                   return false;
                 }
 
-                return this.gojsCustomObjectsService.diagramEditable;
+                return this.diagramChangesService.diagramEditable;
               }.bind(this)),
               // Hide child button for grouped data nodes
               new go.Binding('visible', 'dataStructure', function(dataStructure) {
@@ -1988,7 +2008,7 @@ export class DiagramTemplatesService {
         },
         // Disable button if moves not allowed in diagram
         new go.Binding('isEnabled', '', function(data) {
-          return this.gojsCustomObjectsService.diagramEditable;
+          return this.diagramChangesService.diagramEditable;
         }.bind(this)),
         // Invisible when no data structure
         new go.Binding('visible', 'dataStructure', function(dataStructure) {
