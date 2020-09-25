@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>New</h1>
 <div mat-dialog-content>
-  <form [formGroup]="formGroup">
+  <form [formGroup]="group">
     <mat-form-field>
       <mat-label>Category</mat-label>
       <mat-select formControlName="category" data-qa="topology-components-or-link-modal-category">
@@ -11,21 +11,27 @@
 
     <mat-form-field *ngIf="data.link">
       <mat-label>Source</mat-label>
-      <mat-select formControlName="sourceId" data-qa="topology-components-or-link-modal-source">
-        <mat-option *ngFor="let node of nodes | orderBy: 'name'" [value]="node.id">
+      <input matInput formControlName="sourceId" [matAutocomplete]="sources" [(ngModel)]="searchSource">
+      <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchSource = ''" *ngIf="searchSource">close</mat-icon>
+      <mat-icon class="arrow_down" matSuffix *ngIf="!searchSource">keyboard_arrow_down</mat-icon>
+      <mat-autocomplete #sources="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let node of filteredSources$ | async | orderBy: 'name'" [value]="node">
           {{ node.name }}
         </mat-option>
-      </mat-select>
+      </mat-autocomplete>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
     <mat-form-field *ngIf="data.link">
       <mat-label>Target</mat-label>
-      <mat-select formControlName="targetId" data-qa="topology-components-or-link-modal-target">
-        <mat-option *ngFor="let node of nodes | orderBy: 'name'" [value]="node.id">
+      <input matInput formControlName="targetId" [matAutocomplete]="targets" [(ngModel)]="searchTarget">
+      <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchTarget = ''" *ngIf="searchTarget">close</mat-icon>
+      <mat-icon class="arrow_down" matSuffix *ngIf="!searchTarget">keyboard_arrow_down</mat-icon>
+      <mat-autocomplete #targets="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let node of filteredTargets$ | async | orderBy: 'name'" [value]="node">
           {{ node.name }}
         </mat-option>
-      </mat-select>
+      </mat-autocomplete>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
