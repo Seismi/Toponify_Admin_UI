@@ -39,7 +39,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   public selectedView: WorkPackageView = WorkPackageView.Table;
   public Roles = Roles;
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
-  public workpackageActive$: Observable<WorkPackagesActive[]>;
+  public workpackageActive$: Observable<WorkPackagesActive[] | WorkPackageEntity[]>;
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;

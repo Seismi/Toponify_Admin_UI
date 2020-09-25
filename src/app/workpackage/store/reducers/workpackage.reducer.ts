@@ -5,7 +5,7 @@ import { Links, Page, WorkPackageDetail, WorkPackageEntity, WorkPackagesActive }
 export interface State {
   editId: string;
   entities: WorkPackageEntity[];
-  active: WorkPackagesActive[];
+  active: any[];
   avaialabilities: any[] | null;
   baseline: any[];
   page: Page;
@@ -221,6 +221,12 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
         entities: state.entities.map(entity => {
           if (entity.id === updatedEntity.id) {
             return updatedEntity;
+          }
+          return entity;
+        }),
+        active: state.active.map(entity => {
+          if (entity.id === action.payload.id) {
+            return action.payload;
           }
           return entity;
         }),
