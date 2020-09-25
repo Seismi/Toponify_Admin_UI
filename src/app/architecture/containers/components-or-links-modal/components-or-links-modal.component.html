@@ -12,7 +12,9 @@
     <mat-form-field *ngIf="data.link">
       <mat-label>Source</mat-label>
       <mat-select formControlName="sourceId" data-qa="topology-components-or-link-modal-source">
-        <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
+        <mat-option *ngFor="let node of nodes | orderBy: 'name'" [value]="node.id">
+          {{ node.name }}
+        </mat-option>
       </mat-select>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
@@ -20,7 +22,9 @@
     <mat-form-field *ngIf="data.link">
       <mat-label>Target</mat-label>
       <mat-select formControlName="targetId" data-qa="topology-components-or-link-modal-target">
-        <mat-option *ngFor="let node of nodes" [value]="node.id">{{node.name}}</mat-option>
+        <mat-option *ngFor="let node of nodes | orderBy: 'name'" [value]="node.id">
+          {{ node.name }}
+        </mat-option>
       </mat-select>
       <mat-error>This field is required</mat-error>
     </mat-form-field>
