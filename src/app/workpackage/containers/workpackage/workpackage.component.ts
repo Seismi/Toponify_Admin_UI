@@ -21,6 +21,7 @@ import { Roles } from '@app/core/directives/by-role.directive';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { getWorkPackagesPage, workpackageLoading } from '../../store/selectors/workpackage.selector';
+import { WorkPackageTreeComponent } from '@app/workpackage/components/workpackage-tree/workpackage-tree.component';
 
 enum WorkPackageView {
   Table,
@@ -55,6 +56,8 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   isLoading: boolean;
   selectedTab: number;
 
+  @ViewChild(WorkPackageTreeComponent) diagram: WorkPackageTreeComponent;
+
   constructor(
     private actions: Actions,
     private store: Store<WorkPackageState>,
@@ -85,7 +88,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
         ...(this.workPackageParams.sortBy && { sortBy: this.workPackageParams.sortBy }),
         ...(this.workPackageParams.sortOrder && { sortOrder: this.workPackageParams.sortOrder })
 
-      }
+      };
       this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     });
 

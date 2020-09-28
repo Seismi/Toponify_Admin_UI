@@ -194,6 +194,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         entities: [...state.entities, addedEntity],
+        active: [...state.active, addedEntity],
         loading: false
       };
     }
@@ -254,6 +255,7 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       return {
         ...state,
         entities: state.entities.filter(entity => entity.id !== action.payload),
+        active: state.active.filter(entity => entity.id !== action.payload),
         loading: false
       };
     }
@@ -471,6 +473,11 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.SupersedeWorkpackage:
+    case WorkPackageActionTypes.ResetWorkpackage:
+    case WorkPackageActionTypes.MergeWorkpackage:
+    case WorkPackageActionTypes.RejectWorkpackage:
+    case WorkPackageActionTypes.ApproveWorkpackage:
     case WorkPackageActionTypes.SubmitWorkpackage: {
       return {
         ...state,
@@ -478,6 +485,11 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
       };
     }
 
+    case WorkPackageActionTypes.SupersedeWorkpackageSuccess:
+    case WorkPackageActionTypes.ResetWorkpackageSuccess:
+    case WorkPackageActionTypes.MergeWorkpackageSuccess:
+    case WorkPackageActionTypes.RejectWorkpackageSuccess:
+    case WorkPackageActionTypes.ApproveWorkpackageSuccess:
     case WorkPackageActionTypes.SubmitWorkpackageSuccess: {
       return {
         ...state,
@@ -488,148 +500,22 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
             return action.payload;
           }
           return entity;
-        })
-      };
-    }
-
-    case WorkPackageActionTypes.ApproveWorkpackage: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case WorkPackageActionTypes.ApproveWorkpackageSuccess: {
-      return {
-        ...state,
-        loading: false,
-        selectedWorkPackage: action.payload,
-        entities: state.entities.map(entity => {
+        }),
+        active: state.active.map(entity => {
           if (entity.id === action.payload.id) {
             return action.payload;
           }
           return entity;
-        })
+        }),
       };
     }
 
-    case WorkPackageActionTypes.ApproveWorkpackageFailure: {
-      return {
-        ...state,
-        error: action.payload,
-        loading: false
-      };
-    }
-
-    case WorkPackageActionTypes.RejectWorkpackage: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case WorkPackageActionTypes.RejectWorkpackageSuccess: {
-      return {
-        ...state,
-        loading: false,
-        selectedWorkPackage: action.payload,
-        entities: state.entities.map(entity => {
-          if (entity.id === action.payload.id) {
-            return action.payload;
-          }
-          return entity;
-        })
-      };
-    }
-
-    case WorkPackageActionTypes.RejectWorkpackageFailure: {
-      return {
-        ...state,
-        error: action.payload,
-        loading: false
-      };
-    }
-
-    case WorkPackageActionTypes.MergeWorkpackage: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case WorkPackageActionTypes.MergeWorkpackageSuccess: {
-      return {
-        ...state,
-        loading: false,
-        selectedWorkPackage: action.payload,
-        entities: state.entities.map(entity => {
-          if (entity.id === action.payload.id) {
-            return action.payload;
-          }
-          return entity;
-        })
-      };
-    }
-
-    case WorkPackageActionTypes.MergeWorkpackageFailure: {
-      return {
-        ...state,
-        error: action.payload,
-        loading: false
-      };
-    }
-
-    case WorkPackageActionTypes.ResetWorkpackage: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case WorkPackageActionTypes.ResetWorkpackageSuccess: {
-      return {
-        ...state,
-        loading: false,
-        selectedWorkPackage: action.payload,
-        entities: state.entities.map(entity => {
-          if (entity.id === action.payload.id) {
-            return action.payload;
-          }
-          return entity;
-        })
-      };
-    }
-
-    case WorkPackageActionTypes.ResetWorkpackageFailure: {
-      return {
-        ...state,
-        error: action.payload,
-        loading: false
-      };
-    }
-
-    case WorkPackageActionTypes.SupersedeWorkpackage: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
-
-    case WorkPackageActionTypes.SupersedeWorkpackageSuccess: {
-      return {
-        ...state,
-        loading: false,
-        selectedWorkPackage: action.payload,
-        entities: state.entities.map(entity => {
-          if (entity.id === action.payload.id) {
-            return action.payload;
-          }
-          return entity;
-        })
-      };
-    }
-
-    case WorkPackageActionTypes.SupersedeWorkpackageFailure: {
+    case WorkPackageActionTypes.SupersedeWorkpackageFailure:
+    case WorkPackageActionTypes.ResetWorkpackageFailure:
+    case WorkPackageActionTypes.MergeWorkpackageFailure:
+    case WorkPackageActionTypes.RejectWorkpackageFailure:
+    case WorkPackageActionTypes.ApproveWorkpackageFailure:
+    case WorkPackageActionTypes.SubmitWorkpackageFailure: {
       return {
         ...state,
         error: action.payload,
