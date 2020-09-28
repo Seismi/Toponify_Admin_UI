@@ -250,6 +250,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private showWorkpackageTabRef;
   private showHideRadioAlertRef;
   private addSystemToGroupRef;
+  private setSystemGroupRef;
   private addNewSubItemRef;
   private addNewSharedSubItemRef;
   private setAsMasterRef;
@@ -764,6 +765,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
       function(nodes: go.Set<go.Group>): void {
         this.onAddToGroup(nodes);
+      }.bind(this)
+    );
+
+    this.setSystemGroupRef = this.gojsCustomObjectsService.setSystemGroup$.subscribe(
+      function(data: { memberId: string, groupId: string}): void {
+        this.onDropInGroup(data.memberId, data.groupId);
       }.bind(this)
     );
 
@@ -2099,6 +2106,16 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         }.bind(this));
       }
     });
+  }
+
+  onDropInGroup(sourceNodeId, targetGroupId) {
+    this.workpackageStore.dispatch(
+      new AddWorkPackageNodeGroup({
+        workPackageId: this.workpackageId,
+        systemId: sourceNodeId,
+        groupId: targetGroupId
+      })
+    );
   }
 
   onSetAsMaster() {

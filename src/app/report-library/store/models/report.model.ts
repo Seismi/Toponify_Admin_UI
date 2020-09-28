@@ -84,6 +84,7 @@ export interface Report {
   name: string;
   description: string;
   owners?: (OwnersEntity)[] | null;
+  dataNodes?: (DataNodes)[] | null;
   dataSets?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity)[] | null;
   system?: (DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity) | null;
   dimensions?: Dimension[] | null;
@@ -92,6 +93,14 @@ export interface Report {
   customPropertyValues?: (CustomPropertyValues)[] | null;
   relatedRadios?: (RelatedRadios)[] | null;
   relatedWorkPackages?: (RelatedWorkPackages)[] | null;
+}
+
+export interface DataNodes {
+  id: string;
+  category: string;
+  name: string;
+  displayName: string;
+  description: string;
 }
 
 export interface RelatedWorkPackages {
