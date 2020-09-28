@@ -52,7 +52,7 @@
               (pageChange)="handlePageChange($event)"
               (filter)="handleFilter($event)"
               (refresh)="refreshSearch($event)"
-              [workpackages]="selectedWorkPackageEntities"
+              [workpackages]="workpackage$ | async"
             >
             </smi-report-library-table>
           </div>

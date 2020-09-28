@@ -43,13 +43,14 @@
     <ng-container matColumnDef="impactedBy">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Impacted By</th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon
-          *ngIf="element.impactedByWorkPackages.length !== 0"
-          matTooltip="{{ getWorkPackageName(element) }}"
-          [ngStyle]="{ 'color': getWorkPackageColour(element) }"
-        >
-          business_center
-        </mat-icon>
+        <button 
+          mat-icon-button
+          *ngFor="let wp of element.impactedByWorkPackages"
+          matTooltip="{{ wp.name }}"
+          [ngStyle]="{ 'background-color': getWorkPackageColour(wp) }"
+          >
+          <mat-icon>business_center</mat-icon>
+        </button>
       </td>
     </ng-container>
 

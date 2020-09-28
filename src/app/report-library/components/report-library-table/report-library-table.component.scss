@@ -74,9 +74,20 @@ td.mat-cell {
 }
 
 .mat-column-impactedBy {
-  width: 5%;
-  .mat-icon {
-    margin-left: 15px;
-    margin-top: 3px;
+  button {
+    width: 24px;
+    height: 24px;
+    line-height: 14px;
+    font-size: 24px;
+    outline: none;
+    margin-right: 3px;
+    &::ng-deep .mat-button-wrapper {
+        line-height: 14px;
+        padding: 0;
+          .mat-icon {
+            font-size: 16px;
+            color: #fff;
+          }
+    }
   }
 }
