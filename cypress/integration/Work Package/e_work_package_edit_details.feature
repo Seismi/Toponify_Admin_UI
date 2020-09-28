@@ -54,15 +54,15 @@ Feature: Work Package Edit Core Details Feature
   Scenario: Edit the work package owner and cancel
     Given the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
-    When the user adds owner 'Automated Regression Test Update Team (DO NOT DELETE)' to owners of work package 'Created Automated Regression Test Work Package' and clicks to 'cancel'
-    Then the details pane should reflect that 'Automated Regression Test Update Team (DO NOT DELETE)' has not been added as an owner of work package 'Created Automated Regression Test Work Package'
+    When the user adds owner 'Automated Regression Test Add Owner (DO NOT DELETE)' to owners of work package 'Created Automated Regression Test Work Package' and clicks to 'cancel'
+    Then the details pane should reflect that 'Automated Regression Test Add Owner (DO NOT DELETE)' has not been added as an owner of work package 'Created Automated Regression Test Work Package'
 
   @work_package
   Scenario: Edit the work package owner and confirm
     Given the user has created and selected a work package called 'Created Automated Regression Test Work Package', with a description 'Automated Regression Test Work Package Description', baseline 'Current State' and owner 'Automated Regression Test Team (DO NOT DELETE)'
     And the "Work Package" "Details" pane is open
-    When the user adds owner 'Automated Regression Test Update Team (DO NOT DELETE)' to owners of work package 'Created Automated Regression Test Work Package' and clicks to 'confirm'
-    Then the details pane should reflect that 'Automated Regression Test Update Team (DO NOT DELETE)' has been added as an owner of work package 'Created Automated Regression Test Work Package'
+    When the user adds owner 'Automated Regression Test Add Owner (DO NOT DELETE)' to owners of work package 'Created Automated Regression Test Work Package' and clicks to 'confirm'
+    Then the details pane should reflect that 'Automated Regression Test Add Owner (DO NOT DELETE)' has been added as an owner of work package 'Created Automated Regression Test Work Package'
 
   @work_package @workflow
   Scenario: Submit the work package
