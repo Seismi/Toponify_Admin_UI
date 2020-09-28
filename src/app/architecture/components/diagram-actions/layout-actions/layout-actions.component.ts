@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { ScopeDetails } from '@app/scope/store/models/scope.model';
 import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
+import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Component({
   selector: 'smi-layout-actions',
@@ -15,6 +16,7 @@ export class LayoutActionsComponent {
   @Input() selectedLayout: ScopeDetails;
   @Input() layouts: ScopeDetails[];
   @Input() scope: ScopeDetails;
+  @Input() filterLevel: string;
   @Output() zoomIn = new EventEmitter<void>();
   @Output() zoomOut = new EventEmitter<void>();
   @Output() showGrid = new EventEmitter<void>();
@@ -28,4 +30,8 @@ export class LayoutActionsComponent {
   @Output() addLayout = new EventEmitter<void>();
 
   constructor(public diagramChangesService: DiagramChangesService) { }
+
+  get sourceOrTargetView(): boolean {
+    return this.filterLevel === Level.sources || this.filterLevel === Level.targets;
+  }
 }
