@@ -636,6 +636,59 @@ function makeSubMenuButton(
   );
 }
 
+function getShowStatusButton() {
+  return makeButton(
+    0,
+    'Show Status',
+    function(event: go.InputEvent, object: go.GraphObject): void {
+
+      const anyStatusHidden = event.diagram.selection.any(
+        function (part: go.Part): boolean {
+          if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+            return !part.data.middleExpanded;
+          } else {
+            return !part.data.showLabel;
+          }
+        }
+      );
+
+      event.diagram.selection.each(function(part: go.Part): void {
+        if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
+          event.diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
+          event.diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
+
+          currentService.diagramChangesService.nodeExpandChanged(part);
+        } else {
+          event.diagram.model.setDataProperty(part.data, 'showLabel', anyStatusHidden);
+          if (part.category === nodeCategories.transformation) {
+            currentService.diagramChangesService.transformationNodeShowLabelChanged(part);
+          } else {
+            currentService.diagramChangesService.linkShowLabelChanged(part);
+          }
+          currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        }
+      });
+    },
+    null,
+    function(object: go.GraphObject, event: go.InputEvent): boolean {
+      return event.diagram.allowMove;
+    },
+    function(object: go.GraphObject, event: go.InputEvent): string {
+
+      const anyStatusHidden = event.diagram.selection.any(
+        function (part: go.Part): boolean {
+          if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+            return !part.data.middleExpanded;
+          } else {
+            return !part.data.showLabel;
+          }
+        }
+      );
+      return anyStatusHidden ? 'Show Status' : 'Hide Status';
+    }
+  );
+}
+
 function getColourChangeMenu(isGroup = true) {
 
   // Offset for button position in non-group nodes, to account for group options button not being visible
@@ -822,19 +875,6 @@ export class GojsCustomObjectsService {
           thisService.zoomSource.next('Out');
         }
       }),
-      // Toggle RADIO alert on nodes
-      $('ContextMenuButton', $(go.TextBlock, 'show / hide RADIO alert', {}), {
-        click: function(event, object) {
-          thisService.showHideRadioAlertSource.next();
-          const modelData = event.diagram.model.modelData;
-          event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
-
-          // Redo layout for node usage view after updating RADIO alert display setting
-          if (thisService.currentLevel === Level.usage) {
-            event.diagram.layout.isValidLayout = false;
-          }
-        }
-      }),
       $('ContextMenuButton', $(go.TextBlock, 'Reorganise'), {
         click: function(event, object) {
           thisService.diagramChangesService.reorganise(event.diagram);
@@ -864,7 +904,16 @@ export class GojsCustomObjectsService {
           alignment: new go.Spot(1, 0, -20, 0),
           alignmentFocus: go.Spot.TopLeft
         },
-        makeButton(0,
+        getShowStatusButton(),
+        // View detail for the link in the right hand panel
+        makeButton(1,
+          'View Detail',
+          function() {
+            thisService.showRightPanelTabSource.next();
+          }
+        ),
+        ...getColourChangeMenu(),
+        makeButton(3,
           'Expand',
           function(event, object) {
             const part = (object.part as go.Adornment).adornedObject;
@@ -876,15 +925,7 @@ export class GojsCustomObjectsService {
             // Cannot expand from the reporting layer
             return layer !== layers.reportingConcept;
           }
-        ),
-        // View detail for the link in the right hand panel
-        makeButton(1,
-          'View Detail',
-          function() {
-            thisService.showRightPanelTabSource.next();
-          }
-        ),
-        ...getColourChangeMenu()
+        )
       )
     );
   }
@@ -919,46 +960,7 @@ export class GojsCustomObjectsService {
           alignment: new go.Spot(1, 0, -20, 0),
           alignmentFocus: go.Spot.TopLeft
         },
-        makeButton(
-          0,
-          'Show Status',
-          function(event: go.InputEvent, object: go.GraphObject): void {
-
-            const anyStatusHidden = event.diagram.selection.any(
-              function (part: go.Part): boolean {
-                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.middleExpanded;
-                }
-                return false;
-              }
-            );
-
-            event.diagram.selection.each(function(part: go.Part): void {
-              if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
-                event.diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
-                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
-
-                diagramChangesService.nodeExpandChanged(part);
-              }
-            });
-          },
-          null,
-          function(object: go.GraphObject, event: go.InputEvent): boolean {
-            return event.diagram.allowMove;
-          },
-          function(object: go.GraphObject, event: go.InputEvent): string {
-
-            const anyStatusHidden = event.diagram.selection.any(
-              function (part: go.Part): boolean {
-                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.middleExpanded;
-                }
-                return false;
-              }
-            );
-            return anyStatusHidden ? 'Show Status' : 'Hide Status';
-          }
-        ),
+        getShowStatusButton(),
         makeButton(1,
           'Show Details',
           function(event: go.InputEvent, object: go.Part): void {
