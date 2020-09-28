@@ -12,6 +12,7 @@ export interface State {
   links: Links;
   loading: boolean;
   loadingDetails: boolean;
+  loadingActive: boolean;
   selectedWorkPackage: WorkPackageDetail;
   selectedWorkPackageIds: string[];
   error?: HttpErrorResponse | { message: string };
@@ -27,6 +28,7 @@ export const initialState: State = {
   links: null,
   loading: false,
   loadingDetails: false,
+  loadingActive: false,
   selectedWorkPackage: null,
   selectedWorkPackageIds: [],
   error: null
@@ -141,14 +143,16 @@ export function reducer(state = initialState, action: WorkPackageActionsUnion): 
 
     case WorkPackageActionTypes.LoadWorkPackagesActive: {
       return {
-        ...state
+        ...state,
+        loadingActive: true
       };
     }
 
     case WorkPackageActionTypes.LoadWorkPackagesActiveSuccess: {
       return {
         ...state,
-        active: action.payload.data
+        active: action.payload.data,
+        loadingActive: false
       };
     }
 

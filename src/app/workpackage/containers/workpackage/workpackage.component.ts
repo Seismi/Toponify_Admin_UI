@@ -21,7 +21,6 @@ import { Roles } from '@app/core/directives/by-role.directive';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { getWorkPackagesPage, workpackageLoading } from '../../store/selectors/workpackage.selector';
-import { WorkPackageTreeComponent } from '@app/workpackage/components/workpackage-tree/workpackage-tree.component';
 
 enum WorkPackageView {
   Table,
@@ -56,8 +55,6 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   isLoading: boolean;
   selectedTab: number;
 
-  @ViewChild(WorkPackageTreeComponent) diagram: WorkPackageTreeComponent;
-
   constructor(
     private actions: Actions,
     private store: Store<WorkPackageState>,
@@ -69,6 +66,8 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
     this.store.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
+    this.loading$ = this.store.pipe(select(fromWorkPackagesEntities.workpackageActiveLoading))
+      .subscribe(loading => this.isLoading = loading);
     this.loading$ = this.store.pipe(select(workpackageLoading)).subscribe((loading) => this.isLoading = loading);
 
     this.store.dispatch(new LoadWorkPackagesActive());
