@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewIni
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ReportLibrary } from '@app/report-library/store/models/report.model';
 import { TableData, Page } from '@app/radio/store/models/radio.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'smi-report-library-table',
@@ -9,6 +10,7 @@ import { TableData, Page } from '@app/radio/store/models/radio.model';
   styleUrls: ['report-library-table.component.scss']
 })
 export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
+  private subscriptions: Subscription[] = [];
   @Input()
   set reports(data: TableData<ReportLibrary[]>) {
     this.dataSource = new MatTableDataSource<ReportLibrary>(data.entities as any);
@@ -32,6 +34,11 @@ export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
     pageIndex: number;
     pageSize: number;
     length: number;
+  }>();
+
+  @Output() sortChange = new EventEmitter<{
+    sortOrder: string;
+    sortBy: string;
   }>();
 
   public page: Page;
@@ -65,8 +72,20 @@ export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.paginator.page.subscribe(nextPage => {
-      this.pageChange.emit(nextPage);
-    });
+    this.subscriptions.push(
+      this.paginator.page.subscribe(nextPage => {
+        this.pageChange.emit(nextPage);
+      })
+    );
+
+    this.subscriptions.push(
+      this.sort.sortChange.subscribe(data => {
+        const { active, direction } = data;
+        this.sortChange.emit({
+          sortOrder: direction,
+          sortBy: active
+        });
+      })
+    );
   }
 }

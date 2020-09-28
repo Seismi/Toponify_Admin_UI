@@ -192,6 +192,16 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     });
   }
 
+  handleTableSortChange(sort: { sortOrder: string; sortBy: string }): void {
+    const queryParams = {
+      textFilter: '',
+      page: 0,
+      size: 10,
+      ...(sort.sortOrder && { sortBy: sort.sortBy, sortOrder: sort.sortOrder })
+    };
+    this.store.dispatch(new LoadReports(queryParams));
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
