@@ -24,7 +24,7 @@ import {
   LoadReports,
   LoadDataNodes
 } from '@app/report-library/store/actions/report.actions';
-import { getReportSelected, getReportAvailableTags, getReportDataNodes } from '@app/report-library/store/selecrtors/report.selectors';
+import { getReportSelected, getReportAvailableTags, getReportDataNodes, getReportsDetailsLoading } from '@app/report-library/store/selecrtors/report.selectors';
 import { ReportLibraryDetailService } from '@app/report-library/components/report-library-detail/services/report-library.service';
 import { FormGroup } from '@angular/forms';
 import { Dimension, Report } from '@app/report-library/store/models/report.model';
@@ -85,6 +85,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   availableTags$: Observable<Tag[]>;
   scope: ScopeEntity;
   workPackageStore$: Subscription;
+  isLoading: boolean;
 
   constructor(
     private radioStore: Store<RadioState>,
@@ -101,6 +102,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.store.pipe(select(getReportsDetailsLoading)).subscribe(loading => this.isLoading = loading);
     this.availableTags$ = this.store.select(getReportAvailableTags);
     this.subscriptions.push(
       this.route.params.subscribe(params => {
