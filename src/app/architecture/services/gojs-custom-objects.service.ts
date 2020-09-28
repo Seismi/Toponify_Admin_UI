@@ -420,12 +420,14 @@ export class CustomRelinkingTool extends go.RelinkingTool {
   doMouseMove(): void {
     let otherNode = this.isForwards ? this['originalFromNode'] : this['originalToNode'];
     const tempOtherNode = this.isForwards ? this['temporaryFromNode'] : this['temporaryToNode'];
+    const tempOtherPort = this.isForwards ? this['temporaryFromPort'] : this['temporaryToPort'];
 
     // Determine first containing group to not be within a collapsed group
     if (otherNode) {
       otherNode = currentService.diagramChangesService.getFirstVisibleGroup(otherNode);
-      tempOtherNode.desiredSize = otherNode.desiredSize;
       tempOtherNode.position = otherNode.position;
+      tempOtherNode.desiredSize = otherNode.getDocumentBounds().inflate(0.5, 0.5).size;
+      tempOtherPort.desiredSize = otherNode.getDocumentBounds().inflate(-0.5, -0.5).size;
     }
 
     go.RelinkingTool.prototype.doMouseMove.call(this);
@@ -625,6 +627,59 @@ function makeSubMenuButton(
   );
 }
 
+function getShowStatusButton() {
+  return makeButton(
+    0,
+    'Show Status',
+    function(event: go.InputEvent, object: go.GraphObject): void {
+
+      const anyStatusHidden = event.diagram.selection.any(
+        function (part: go.Part): boolean {
+          if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+            return !part.data.middleExpanded;
+          } else {
+            return !part.data.showLabel;
+          }
+        }
+      );
+
+      event.diagram.selection.each(function(part: go.Part): void {
+        if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
+          event.diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
+          event.diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
+
+          currentService.diagramChangesService.nodeExpandChanged(part);
+        } else {
+          event.diagram.model.setDataProperty(part.data, 'showLabel', anyStatusHidden);
+          if (part.category === nodeCategories.transformation) {
+            currentService.diagramChangesService.transformationNodeShowLabelChanged(part);
+          } else {
+            currentService.diagramChangesService.linkShowLabelChanged(part);
+          }
+          currentService.diagramChangesService.onUpdateDiagramLayout.next({});
+        }
+      });
+    },
+    null,
+    function(object: go.GraphObject, event: go.InputEvent): boolean {
+      return event.diagram.allowMove;
+    },
+    function(object: go.GraphObject, event: go.InputEvent): string {
+
+      const anyStatusHidden = event.diagram.selection.any(
+        function (part: go.Part): boolean {
+          if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+            return !part.data.middleExpanded;
+          } else {
+            return !part.data.showLabel;
+          }
+        }
+      );
+      return anyStatusHidden ? 'Show Status' : 'Hide Status';
+    }
+  );
+}
+
 function getColourChangeMenu(isGroup = true) {
 
   // Offset for button position in non-group nodes, to account for group options button not being visible
@@ -754,6 +809,9 @@ export class GojsCustomObjectsService {
   // Observable to indicate that the system should be assigned to a new group
   private addSystemToGroupSource = new Subject();
   public addSystemToGroup$ = this.addSystemToGroupSource.asObservable();
+  // Observable to indicate that the system was dropped in a group
+  private setSystemGroupSource = new Subject();
+  public setSystemGroup$ = this.setSystemGroupSource.asObservable();
   // Observable to indicate that a new node should be added to the group as a new member
   private addNewSubItemSource = new Subject();
   public addNewSubItem$ = this.addNewSubItemSource.asObservable();
@@ -808,19 +866,6 @@ export class GojsCustomObjectsService {
           thisService.zoomSource.next('Out');
         }
       }),
-      // Toggle RADIO alert on nodes
-      $('ContextMenuButton', $(go.TextBlock, 'show / hide RADIO alert', {}), {
-        click: function(event, object) {
-          thisService.showHideRadioAlertSource.next();
-          const modelData = event.diagram.model.modelData;
-          event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
-
-          // Redo layout for node usage view after updating RADIO alert display setting
-          if (thisService.currentLevel === Level.usage) {
-            event.diagram.layout.isValidLayout = false;
-          }
-        }
-      }),
       $('ContextMenuButton', $(go.TextBlock, 'Reorganise'), {
         click: function(event, object) {
           thisService.diagramChangesService.reorganise(event.diagram);
@@ -850,7 +895,16 @@ export class GojsCustomObjectsService {
           alignment: new go.Spot(1, 0, -20, 0),
           alignmentFocus: go.Spot.TopLeft
         },
-        makeButton(0,
+        getShowStatusButton(),
+        // View detail for the link in the right hand panel
+        makeButton(1,
+          'View Detail',
+          function() {
+            thisService.showRightPanelTabSource.next();
+          }
+        ),
+        ...getColourChangeMenu(),
+        makeButton(3,
           'Expand',
           function(event, object) {
             const part = (object.part as go.Adornment).adornedObject;
@@ -862,15 +916,7 @@ export class GojsCustomObjectsService {
             // Cannot expand from the reporting layer
             return layer !== layers.reportingConcept;
           }
-        ),
-        // View detail for the link in the right hand panel
-        makeButton(1,
-          'View Detail',
-          function() {
-            thisService.showRightPanelTabSource.next();
-          }
-        ),
-        ...getColourChangeMenu()
+        )
       )
     );
   }
@@ -905,46 +951,7 @@ export class GojsCustomObjectsService {
           alignment: new go.Spot(1, 0, -20, 0),
           alignmentFocus: go.Spot.TopLeft
         },
-        makeButton(
-          0,
-          'Show Status',
-          function(event: go.InputEvent, object: go.GraphObject): void {
-
-            const anyStatusHidden = event.diagram.selection.any(
-              function (part: go.Part): boolean {
-                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.middleExpanded;
-                }
-                return false;
-              }
-            );
-
-            event.diagram.selection.each(function(part: go.Part): void {
-              if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
-                event.diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
-                event.diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
-
-                diagramChangesService.nodeExpandChanged(part);
-              }
-            });
-          },
-          null,
-          function(object: go.GraphObject, event: go.InputEvent): boolean {
-            return event.diagram.allowMove;
-          },
-          function(object: go.GraphObject, event: go.InputEvent): string {
-
-            const anyStatusHidden = event.diagram.selection.any(
-              function (part: go.Part): boolean {
-                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.middleExpanded;
-                }
-                return false;
-              }
-            );
-            return anyStatusHidden ? 'Show Status' : 'Hide Status';
-          }
-        ),
+        getShowStatusButton(),
         makeButton(1,
           'Show Details',
           function(event: go.InputEvent, object: go.Part): void {
@@ -1331,6 +1338,12 @@ export class GojsCustomObjectsService {
   // Set node dragComputation to this to prevent dragging one node to overlap another
   avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
 
+    // Determine if node can be added to a group by drag and drop
+    const canDropIntoGroup = node.data.layer === layers.system
+      && node.data.category !== nodeCategories.transformation
+      && !node.containingGroup
+      && currentService.diagramEditable;
+
     // Do not run when resizing nodes
     if (node.diagram.currentTool instanceof go.ResizingTool) {
       return newLoc;
@@ -1363,7 +1376,7 @@ export class GojsCustomObjectsService {
       // return the proposed new location point
       return new go.Point(rectangle.x + (loc.x - bnds.x), rectangle.y + (loc.y - bnds.y));
     }
-    if (this.diagramChangesService.isUnoccupied(rectangle, node)) { return snappedLoc; }  // OK
+    if (this.diagramChangesService.isUnoccupied(rectangle, node, canDropIntoGroup)) { return snappedLoc; }  // OK
     return loc;  // give up -- don't allow the node to be moved to the new location
   }
 
@@ -1413,6 +1426,45 @@ export class GojsCustomObjectsService {
       draggingTool.diagram.scrollToRect(viewRect);
 
       // Do standard doMouseMove actions
+      go.DraggingTool.prototype.doMouseMove.call(draggingTool);
+    };
+  }
+
+  // Override the doDropOnto method for the dragging tool.
+  // Implements adding a node to a group via drop.
+  customDoDropOnto(draggingTool: go.DraggingTool): void {
+    draggingTool.doDropOnto = function(pt: go.Point, obj: go.GraphObject): void {
+      // Only perform additional checks if dragged node is over an object
+      if (obj) {
+
+        const targetPart = obj.part || obj;
+        const fromPalette = !!draggingTool.copiedParts;
+        const droppedNode = currentService.diagramChangesService.getGroupableDraggedNode(draggingTool);
+
+        // Continue only if a valid dropped node is dragged
+        if (droppedNode) {
+
+          // Check that target node is a group in the system layer
+          if (targetPart instanceof go.Group
+            && targetPart.data.layer === layers.system
+          ) {
+            if (fromPalette) {
+              // If dragged from palette then set the group on the node's data.
+              // the node will be created with the correct group.
+              droppedNode.data.group = targetPart.data.id;
+            } else if (currentService.diagramEditable) {
+              currentService.setSystemGroupSource.next({
+                memberId: droppedNode.data.id, groupId: targetPart.data.id
+              });
+            }
+          }
+        }
+      }
+
+      // Reset cursor on dropping node
+      draggingTool.diagram.currentCursor = draggingTool.diagram.defaultCursor;
+
+      // Do standard doDropOnto actions
       go.DraggingTool.prototype.doMouseMove.call(draggingTool);
     };
   }

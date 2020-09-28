@@ -97,7 +97,7 @@ export class ArchitecturePaletteComponent implements OnInit {
 
           transformationNode.ensureBounds();
 
-          const transformationBounds = transformationNode.findObject('Transformation')
+          const transformationBounds = transformationNode.findObject('shape')
             .getDocumentBounds().copy();
           const halfHeight = transformationBounds.height / 2;
 
