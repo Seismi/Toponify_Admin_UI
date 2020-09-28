@@ -1439,12 +1439,12 @@ export class DiagramTemplatesService {
       {
         layout: $(StandardGroupLayout as any,
           {
-            wrappingColumn: 1,
             isOngoing: false,
             isInitial: true,
             alignment: go.GridLayout.Location,
-            spacing: new go.Size(NaN, 12)
-          },
+            spacing: new go.Size(12, 12),
+            wrappingWidth: 300
+          }
         ),
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
         selectionObjectName: 'main content',
@@ -1633,7 +1633,7 @@ export class DiagramTemplatesService {
                 }
               )
             ),
-            new go.Binding('minSize', '', function(data, table) {
+            new go.Binding('minSize', '', function(data) {
               let minHeight = 40;
               let minWidth = 310;
               if (data.middleExpanded) {

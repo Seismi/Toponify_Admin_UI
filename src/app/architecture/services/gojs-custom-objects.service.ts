@@ -120,45 +120,48 @@ export class CustomNodeResize extends go.ResizingTool {
 
     const group = this.adornedObject.part as go.Group;
 
-    // Determine which way/ways the group is being enlarged
-    //  based on alignment of the resizing handle being dragged
-    const draggedSides = {
-      top: this.handle.alignment.y === 0,
-      right: this.handle.alignment.x === 1,
-      bottom: this.handle.alignment.y === 1,
-      left: this.handle.alignment.x === 0
-    };
+    if (group.isSubGraphExpanded) {
 
-    // Get bounds of current group member area
-    const memberArea = this.adornedObject.panel.findObject('Group member area').getDocumentBounds();
-    const extra = 130;
+      // Determine which way/ways the group is being enlarged
+      //  based on alignment of the resizing handle being dragged
+      const draggedSides = {
+        top: this.handle.alignment.y === 0,
+        right: this.handle.alignment.x === 1,
+        bottom: this.handle.alignment.y === 1,
+        left: this.handle.alignment.x === 0
+      };
 
-    // For each direction the group is being enlarged in,
-    //  ensure that no grouped node would be left outside the group member area
-    group.memberParts.each(
-      function(node: go.Part) {
-        // Ignore links between nodes in the group
-        if (node instanceof go.Node) {
+      // Get bounds of current group member area
+      const memberArea = this.adornedObject.panel.findObject('Group member area').getDocumentBounds();
+      const extra = 130;
 
-          // Prevent the top side of the group being dragged too low
-          if (draggedSides.top) {
-            minSize.height = Math.max(minSize.height, extra + memberArea.bottom - node.actualBounds.top);
-          }
-          // Prevent the right side of the group being dragged too far left
-          if (draggedSides.right) {
-            minSize.width = Math.max(minSize.width, node.actualBounds.right - memberArea.left);
-          }
-          // Prevent the bottom side of the group being dragged too high
-          if (draggedSides.bottom) {
-            minSize.height = Math.max(minSize.height, extra + node.actualBounds.bottom - memberArea.top);
-          }
-          // Prevent the left side of the group being dragged too far right
-          if (draggedSides.left) {
-            minSize.width = Math.max(minSize.width, memberArea.right - node.actualBounds.left);
+      // For each direction the group is being enlarged in,
+      //  ensure that no grouped node would be left outside the group member area
+      group.memberParts.each(
+        function(node: go.Part) {
+          // Ignore links between nodes in the group
+          if (node instanceof go.Node) {
+
+            // Prevent the top side of the group being dragged too low
+            if (draggedSides.top) {
+              minSize.height = Math.max(minSize.height, extra + memberArea.bottom - node.actualBounds.top);
+            }
+            // Prevent the right side of the group being dragged too far left
+            if (draggedSides.right) {
+              minSize.width = Math.max(minSize.width, node.actualBounds.right - memberArea.left);
+            }
+            // Prevent the bottom side of the group being dragged too high
+            if (draggedSides.bottom) {
+              minSize.height = Math.max(minSize.height, extra + node.actualBounds.bottom - memberArea.top);
+            }
+            // Prevent the left side of the group being dragged too far right
+            if (draggedSides.left) {
+              minSize.width = Math.max(minSize.width, memberArea.right - node.actualBounds.left);
+            }
           }
         }
-      }
-    );
+      );
+    }
 
     return minSize;
   }
@@ -172,13 +175,35 @@ export class CustomNodeResize extends go.ResizingTool {
     // If group is itself contained in a group then ensure that the group is not
     //  expanded outside the bounds of its containing group
     if (group.containingGroup) {
+
+      // Determine which way/ways the group is being enlarged
+      //  based on alignment of the resizing handle being dragged
+      const draggedSides = {
+        top: this.handle.alignment.y === 0,
+        right: this.handle.alignment.x === 1,
+        bottom: this.handle.alignment.y === 1,
+        left: this.handle.alignment.x === 0
+      };
+
       const containingArea = group.containingGroup.findObject('Group member area').getDocumentBounds();
       const groupContainingArea = group.findObject('Group member area').getDocumentBounds();
       const groupArea = group.getDocumentBounds();
 
-      // Constrain group member area size, accounting for the resulting size of the whole group
-      maxSize.height = Math.max(maxSize.height,  containingArea.height + groupContainingArea.height - groupArea.height);
-      maxSize.width = Math.max(maxSize.width,  containingArea.width + groupContainingArea.width - groupArea.width);
+      if (draggedSides.top) {
+        maxSize.height = Math.min(maxSize.height, groupArea.bottom - containingArea.top);
+      }
+
+      if (draggedSides.right) {
+        maxSize.width = Math.min(maxSize.width, containingArea.right - groupArea.left);
+      }
+
+      if (draggedSides.bottom) {
+        maxSize.height = Math.min(maxSize.height, containingArea.bottom - groupArea.top);
+      }
+
+      if (draggedSides.left) {
+        maxSize.width = Math.min(maxSize.width, groupArea.right - containingArea.left);
+      }
     }
 
     return maxSize;

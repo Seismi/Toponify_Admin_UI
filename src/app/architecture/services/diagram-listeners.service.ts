@@ -110,7 +110,7 @@ export class DiagramListenersService {
 
                 // Place member underneath all correctly positioned members,
                 //  separated by a small gap
-                group.findSubGraphParts().each(function(part: go.Part) {
+                group.memberParts.each(function(part: go.Part) {
 
                   const partBounds = part.getDocumentBounds();
 

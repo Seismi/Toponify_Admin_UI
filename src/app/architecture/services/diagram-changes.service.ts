@@ -852,8 +852,9 @@ export class DiagramChangesService {
 
       const memberArea = group.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
+      const nonMemberSectionsHeight = group.resizeObject.getDocumentBounds().height - memberBounds.height;
 
-      group.findSubGraphParts().each(function(part: go.Part): void {
+      group.memberParts.each(function(part: go.Part): void {
         if (part instanceof go.Node) {
           // If member is located outside of the group and is not automatically laid out then reposition member
           if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
@@ -885,10 +886,10 @@ export class DiagramChangesService {
         }
       });
 
-      // Set height and width of group member area to match the area previously
+      // Set height and width of group to enclose the area previously
       //  calculated as necessary to enclose the members.
-      group.findObject('Group member area').height = memberBounds.height;
-      group.findObject('Group member area').width = memberBounds.width;
+      group.resizeObject.height = memberBounds.height + nonMemberSectionsHeight;
+      group.resizeObject.width = memberBounds.width;
     } else {
       // If group collapsed, just ensure bounds are correct
       group.ensureBounds();
@@ -946,7 +947,7 @@ export class DiagramChangesService {
       }
     });
 
-    if (this.currentLevel === Level.usage || this.currentLevel === Level.systemMap) {
+    if (this.currentLevel === Level.usage || this.currentLevel.includes('map')) {
       // Update node's layout in usage view
       node.findTopLevelPart().invalidateLayout();
     } else {
@@ -990,6 +991,7 @@ export class DiagramChangesService {
 
       const memberArea = currentGroup.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
+      const nonMemberSectionsHeight = currentGroup.resizeObject.getDocumentBounds().height - memberBounds.height;
 
       // If currently considered group is already large enough then exit loop
       if (memberBounds.containsRect(currentMinBounds)) {
@@ -1003,9 +1005,12 @@ export class DiagramChangesService {
       // Expand minimum required area to include current group member area
       currentMinBounds = currentMinBounds.unionRect(memberBounds);
 
-      // Expand group member area width and height to ensure it is large enough to enclose all group members
-      memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
-      memberArea.width =
+      // Expand group width and height to ensure it is large enough to enclose all group members
+      currentGroup.resizeObject.height = Math.max(
+        nonMemberSectionsHeight + currentMinBounds.bottom - memberBounds.top,
+        currentGroup.resizeObject.height
+      );
+      currentGroup.resizeObject.width =
         Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left);
 
       // Shift group horizontally in order to ensure group member area correctly encloses required bounds
