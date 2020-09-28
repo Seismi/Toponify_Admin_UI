@@ -861,19 +861,6 @@ export class GojsCustomObjectsService {
           thisService.zoomSource.next('Out');
         }
       }),
-      // Toggle RADIO alert on nodes
-      $('ContextMenuButton', $(go.TextBlock, 'show / hide RADIO alert', {}), {
-        click: function(event, object) {
-          thisService.showHideRadioAlertSource.next();
-          const modelData = event.diagram.model.modelData;
-          event.diagram.model.setDataProperty(modelData, 'showRadioAlerts', !modelData.showRadioAlerts);
-
-          // Redo layout for node usage view after updating RADIO alert display setting
-          if (thisService.currentLevel === Level.usage) {
-            event.diagram.layout.isValidLayout = false;
-          }
-        }
-      }),
       $('ContextMenuButton', $(go.TextBlock, 'Reorganise'), {
         click: function(event, object) {
           thisService.diagramChangesService.reorganise(event.diagram);

@@ -19,7 +19,11 @@ import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {Subject} from 'rxjs';
 import { linkCategories } from '../store/models/node-link.model';
-import {NodeColoursDark, NodeColoursLight, NodeDetailTab} from '@app/architecture/store/models/layout.model';
+import {colourOptions,
+  NodeColoursDark,
+  NodeColoursLight,
+  NodeDetailTab
+} from '@app/architecture/store/models/layout.model';
 
 
 function textFont(style?: string): Object {
@@ -696,13 +700,21 @@ export class DiagramTemplatesService {
       {
         name: 'label'
       },
-      $(go.Shape, {
-        figure: 'RoundedRectangle',
-        fill: 'white',
-        opacity: 0.85,
-        shadowVisible: false,
-        visible: true
-      }),
+      $(go.Shape,
+        {
+          figure: 'RoundedRectangle',
+          fill: 'white',
+          opacity: 0.85,
+          shadowVisible: false,
+          visible: true
+        },
+        new go.Binding('fill', 'colour', function(colour: colourOptions): NodeColoursLight {
+          return NodeColoursLight[colour];
+        }),
+        new go.Binding('stroke', 'colour', function(colour: colourOptions): NodeColoursDark {
+          return NodeColoursDark[colour];
+        })
+      ),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
       new go.Binding('visible', 'showLabel'),
       $(
