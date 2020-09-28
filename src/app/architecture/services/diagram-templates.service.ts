@@ -19,7 +19,11 @@ import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {Subject} from 'rxjs';
 import { linkCategories } from '../store/models/node-link.model';
-import {NodeColoursDark, NodeColoursLight, NodeDetailTab} from '@app/architecture/store/models/layout.model';
+import {colourOptions,
+  NodeColoursDark,
+  NodeColoursLight,
+  NodeDetailTab
+} from '@app/architecture/store/models/layout.model';
 
 
 function textFont(style?: string): Object {
@@ -696,37 +700,23 @@ export class DiagramTemplatesService {
       {
         name: 'label'
       },
-      $(go.Shape, {
-        figure: 'RoundedRectangle',
-        fill: 'white',
-        opacity: 0.85,
-        shadowVisible: false
-      }),
+      $(go.Shape,
+        {
+          figure: 'RoundedRectangle',
+          fill: 'white',
+          opacity: 0.85,
+          shadowVisible: false,
+          visible: true
+        },
+        new go.Binding('fill', 'colour', function(colour: colourOptions): NodeColoursLight {
+          return NodeColoursLight[colour];
+        }),
+        new go.Binding('stroke', 'colour', function(colour: colourOptions): NodeColoursDark {
+          return NodeColoursDark[colour];
+        })
+      ),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
-      new go.Binding('visible', '', function(link) {
-        if (link.findObject('shape').strokeWidth === 0) {
-          return false;
-        } else {
-          if (!link.data.relatedRadioCounts) {
-            return false;
-          }
-
-          const anyRadios = Object.keys(link.data.relatedRadioCounts).reduce(function(anyNonZero, key) {
-            return anyNonZero || link.data.relatedRadioCounts[key] !== 0;
-          }, false);
-
-          const anyWorkpackageImpacts = link.data.impactedByWorkPackages && link.data.impactedByWorkPackages.length > 0;
-
-          const anyTagsWithIcons = link.data.tags && link.data.tags.some(function(tag) {return !!tag.iconName; });
-
-          return (
-            (link.diagram.model.modelData.linkName && link.data.name !== '') ||
-            (link.diagram.model.modelData.linkRadio && anyRadios) ||
-            anyTagsWithIcons ||
-            anyWorkpackageImpacts
-          );
-        }
-      }).ofObject(),
+      new go.Binding('visible', 'showLabel'),
       $(
         go.Panel,
         'Vertical',
@@ -741,6 +731,23 @@ export class DiagramTemplatesService {
           new go.Binding('visible', 'category', function(category: string): boolean  {
             return category !== nodeCategories.transformation;
           })
+        ),
+        $(go.TextBlock,
+          textFont('italic 14px'),
+          {
+            text: 'No RADIOs',
+            stroke: 'grey',
+            textAlign: 'center'
+          },
+          new go.Binding('visible', 'relatedRadioCounts',
+            function(radioCounts): boolean {
+              return Object.keys(radioCounts).every(
+                function(key: string): boolean {
+                  return radioCounts[key] === 0;
+                }
+              );
+            }
+          )
         ),
         this.getTagIconsRow(false),
         this.getRadioAlertIndicators(false),
@@ -775,8 +782,10 @@ export class DiagramTemplatesService {
     return $(go.TextBlock,
       textFont('bold 24px'),
       {
+        textAlign: 'center',
         shadowVisible: false,
-        margin: 10
+        margin: 10,
+        width: 250
       },
       new go.Binding('text', 'name')
     );
@@ -1208,13 +1217,16 @@ export class DiagramTemplatesService {
   getTransformationNodeTemplate(forPalette: boolean = false): go.Node {
     return $(
       go.Node,
-      'Vertical',
+      'Auto',
+      {
+        layerName: 'Foreground'
+      },
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
-        contextMenu: null,
+        contextMenu: this.gojsCustomObjectsService.getLinkContextMenu(),
         doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
-        selectionObjectName: 'Transformation'
+        selectionObjectName: 'shape'
       },
       new go.Binding(
         'movable',
@@ -1240,40 +1252,63 @@ export class DiagramTemplatesService {
         return locationMissing || [Level.sources, Level.targets].includes(this.currentFilterLevel);
       }.bind(this)),
       $(go.Panel,
-        'Auto',
-        $(go.Shape,
-          this.getStandardNodeShapeOptions(),
+        'Vertical',
+        $(go.Panel,
+          'Auto',
+          $(go.Shape,
+            this.getStandardNodeShapeOptions(),
+            {
+              desiredSize: new go.Size(60.3, 53.6)
+            },
+            new go.Binding(
+              'stroke',
+              'colour',
+              function(colour) {
+                return NodeColoursDark[colour];
+              }
+            ),
+            new go.Binding(
+              'fill',
+              'colour',
+              function(colour) {
+                return NodeColoursLight[colour];
+              }
+            )
+          ),
+          $(go.Picture,
+            {
+              source: 'assets/node-icons/transformation.svg',
+              alignment: go.Spot.Center,
+              maxSize: new go.Size(82, 82),
+              imageStretch: go.GraphObject.Uniform
+            }
+          ),
+          this.getDependencyExpandButton(true)
+        ),
+        !forPalette ? $(go.Shape,
+          'LineV',
           {
-            desiredSize: new go.Size(60.3, 53.6),
-            name: 'Transformation'
+            margin: -1.51,
+            height: 5,
+            strokeWidth: 3,
+            stroke: 'black'
           },
-          // Bind stroke to multicoloured brush based on work packages impacted by
-          new go.Binding(
-            'stroke',
-            'impactedByWorkPackages',
-            function(impactedPackages, shape) {
-              return this.getStrokeForImpactedWorkPackages(impactedPackages, shape.part);
-            }.bind(this)
-          )
-        ),
-        // Dummy panel with no size and no contents.
-        // Used to ensure node usage view lays out nodes vertically aligned.
-        $(go.Panel, {
-          alignment: go.Spot.TopCenter,
-          desiredSize: new go.Size(0, 0),
-          name: 'location panel'
-        }),
-        $(go.Picture,
-          {
-            source: 'assets/node-icons/transformation.svg',
-            alignment: go.Spot.Center,
-            maxSize: new go.Size(82, 82),
-            imageStretch: go.GraphObject.Uniform
-          }
-        ),
-        this.getDependencyExpandButton(true)
+          new go.Binding('stroke', 'colour',
+            function(colour) {
+              return NodeColoursDark[colour];
+            }
+          ),
+          new go.Binding('visible').ofObject('label')
+        ) : {},
+        forPalette ? this.getLabelForTransformation() : this.getLinkLabel()
       ),
-      forPalette ? this.getLabelForTransformation() : {}
+      // Dummy panel with no size and no contents.
+      // Used to ensure node usage view lays out nodes vertically aligned.
+      $(go.Panel, {
+        alignment: go.Spot.TopCenter,
+        desiredSize: new go.Size(0, 0),
+        name: 'location panel'
+      })
     );
   }
 
@@ -1654,7 +1689,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? this.getLinkLabel() : this.getLinkLabelForPalette(),
+      forPalette ? this.getLinkLabelForPalette() : this.getLinkLabel(),
       $(
         go.Shape, // The 'to' arrowhead
         {
@@ -1743,7 +1778,7 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      !forPalette ? this.getLinkLabel() : this.getLinkLabelForPalette(),
+      forPalette ? this.getLinkLabelForPalette() : this.getLinkLabel(),
       $(
         go.Shape, // The 'to' arrowhead
         {

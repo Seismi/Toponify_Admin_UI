@@ -55,6 +55,9 @@ export enum NodeActionTypes {
   UpdateNodeColour = '[Node] Update node colour',
   UpdateNodeColourSuccess = '[Node] Update node colour Success',
   UpdateNodeColourFailure = '[Node] Update node colour Fail',
+  UpdateNodeLabelState = '[Node] Update node label state',
+  UpdateNodeLabelStateSuccess = '[Node] Update node label state Success',
+  UpdateNodeLabelStateFailure = '[Node] Update node label state Fail',
   UpdateLinks = '[Node] Update links',
   UpdateLinksSuccess = '[Node] Update links Success',
   UpdateLinksFailure = '[Node] Update links Fail',
@@ -317,6 +320,21 @@ export class UpdateNodeColourSuccess implements Action {
 
 export class UpdateNodeColourFailure implements Action {
   readonly type = NodeActionTypes.UpdateNodeColourFailure;
+  constructor(public payload: Error) {}
+}
+
+export class UpdateNodeLabelState implements Action {
+  readonly type = NodeActionTypes.UpdateNodeLabelState;
+  constructor(public payload: { layoutId: string; data: {id: string; showLabel: boolean; }}) {}
+}
+
+export class UpdateNodeLabelStateSuccess implements Action {
+  readonly type = NodeActionTypes.UpdateNodeLabelStateSuccess;
+  constructor(public payload: any) {}
+}
+
+export class UpdateNodeLabelStateFailure implements Action {
+  readonly type = NodeActionTypes.UpdateNodeLabelStateFailure;
   constructor(public payload: Error) {}
 }
 
@@ -607,6 +625,9 @@ export type NodeActionsUnion =
   | UpdateNodeColour
   | UpdateNodeColourSuccess
   | UpdateNodeColourFailure
+  | UpdateNodeLabelState
+  | UpdateNodeLabelStateSuccess
+  | UpdateNodeLabelStateFailure
   | UpdateLinks
   | UpdateLinksSuccess
   | UpdateLinksFailure
