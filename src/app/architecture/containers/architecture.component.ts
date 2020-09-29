@@ -59,6 +59,7 @@ import {
   Tag,
   TagApplicableTo,
   GroupInfo,
+  nodeCategories
 } from '@app/architecture/store/models/node.model';
 import {
   getAvailableTags,
@@ -231,6 +232,7 @@ import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-
 import { MatCheckboxChange, MatDialog } from '@angular/material';
 import { DiagramTemplatesService } from '@app/architecture/services/diagram-templates.service';
 import * as go from 'gojs';
+import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
 
 enum Events {
   NodesLinksReload = 0
@@ -1969,20 +1971,15 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           data: {}
         })
       );
-      const dialogRef = this.dialog.open(SelectModalComponent, {
+      const dialogRef = this.dialog.open(SingleSelectModalComponent, {
         disableClose: false,
         width: '500px',
         data: {
           title: `Add Children to "${parentData ? parentData.name : this.selectedNode.name}"`,
-          placeholder: 'Components',
+          label: 'Components',
           descendants: true,
-          nodeId: parentData ? parentData.id : this.nodeId,
-          workPackageId: this.workpackageId,
-          scopeId: this.scope.id,
-          options$: this.store.pipe(select(getPotentialWorkPackageNodes)),
-          selectedIds: [],
-          multi: true,
-          addingToMapGroup: !!parentData
+          addingToMapGroup: !!parentData,
+          options$: this.store.pipe(select(getPotentialWorkPackageNodes))
         }
       });
 
@@ -1992,6 +1989,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       } else {
         addDescendantAction = AddWorkPackageNodeDescendant;
       }
+
+      dialogRef.componentInstance.addDescendant.subscribe(() => {
+        const dialogRef2 = this.dialog.open(ComponentsOrLinksModalComponent, {
+          disableClose: false,
+          width: '500px',
+          data: {
+            workPackageId: this.workpackageId,
+            level: this.currentFilterLevel.toLowerCase()
+          }
+        });
+
+        dialogRef2.afterClosed().subscribe(data => {
+          if (data && data.node) {
+            this.store.dispatch(
+              new AddWorkPackageNode({
+                workpackageId: this.workpackageId,
+                node: {
+                  ...data.node,
+                  layer: this.currentFilterLevel.toLowerCase()
+                },
+                scope: this.scope.id
+              })
+            );
+          }
+        });
+      });
 
       dialogRef.afterClosed().subscribe(data => {
         if (data && data.value) {
@@ -2053,7 +2076,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   onAddToGroup(sourceNodes: go.Set<go.Group>) {
-
     // If one node selected then display the node name in the modal
     const sourceLabel = sourceNodes.count === 1
       ? '"' + sourceNodes.first().data.name + '"'
@@ -2072,26 +2094,59 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       });
     });
 
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         title: `Add ${sourceLabel} to...`,
-        placeholder: 'Components',
+        label: 'Components',
         options$: this.store
           .pipe(select(getNodeEntities))
           .pipe(
             map(nodes =>
-              nodes.filter(node => !invalidContainingGroupIds.has(node.id) && node.category !== 'transformation')
+              nodes.filter(node => !invalidContainingGroupIds.has(node.id) && node.category !== nodeCategories.transformation)
             )
           ),
-        selectedIds: [],
-        createNew: true,
-        workPackageId: this.workpackageId,
-        scopeId: this.scope.id,
-        nodeId: this.nodeId,
-        currentFilterLevel: this.currentFilterLevel
+        newComponent: true
       }
+    });
+
+    dialogRef.componentInstance.addNewComponent.subscribe(() => {
+      const dialogRef2 = this.dialog.open(NewChildrenModalComponent, {
+        disableClose: false,
+        width: '450px',
+        data: {
+          parentId: this.nodeId
+        }
+      });
+
+      dialogRef2
+        .afterClosed()
+        .pipe(take(1))
+        .subscribe(data => {
+          if (data && data.data) {
+            this.workpackageStore.dispatch(
+              new AddWorkPackageNode({
+                workpackageId: this.workpackageId,
+                node: data.data,
+                scope: this.scope.id
+              })
+            );
+
+            this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: any) => {
+              // if (action.payload && this.data.currentFilterLevel === Level.system) {
+              //   this.store.dispatch(
+              //     new AddWorkPackageNodeGroup({
+              //       workPackageId: this.data.workPackageId,
+              //       systemId: this.data.nodeId,
+              //       groupId: action.payload.data.id
+              //     })
+              //   );
+              // }
+              alert(action.payload.data.name);
+            });
+          }
+        });
     });
 
     dialogRef.afterClosed().subscribe(data => {
@@ -2101,7 +2156,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             new AddWorkPackageNodeGroup({
               workPackageId: this.workpackageId,
               systemId: node.data.id,
-              groupId: data.value[0].id
+              groupId: data.value.id
             })
           );
         }.bind(this));
@@ -2451,36 +2506,32 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
 
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
-        title: `Add Group member to "${this.selectedNode.name}"`,
-        placeholder: 'Components',
-        parentId: !this.mapView ? this.filterId : null,
-        nodeId: this.nodeId,
-        workPackageId: this.workpackageId,
-        scopeId: this.scope.id,
+        title: `Add Group member to "${this.part.data.name}"`,
+        label: 'Components',
         groupMembers: true,
-        options$: this.store.pipe(select(getPotentialGroupMembers)),
-        selectedIds: [],
-        multi: false
+        options$: this.store.pipe(select(getPotentialGroupMembers))
       }
     });
+
+    dialogRef.componentInstance.addGroupMember.subscribe(() => this.onAddNewGroupMember());
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
         this.workpackageStore.dispatch(
           new AddWorkPackageNode({
             workpackageId: this.workpackageId,
+            scope: this.scope.id,
             node: {
               layer: layers.data,
               isShared: true,
               group: this.nodeId,
               parentId: !this.mapView ? this.filterId : null,
-              masterId: data.value[0].id
-            },
-            scope: this.scope.id
+              masterId: data.value.id
+            }
           })
         );
       }

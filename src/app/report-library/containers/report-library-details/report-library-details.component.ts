@@ -59,6 +59,7 @@ import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-mod
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
 import { AddRadioEntity, RadioActionTypes } from '@app/radio/store/actions/radio.actions';
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
+import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
 
 @Component({
   selector: 'smi-report-library--details-component',
@@ -216,16 +217,15 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   onAddOwner() {
     const ids = new Set(this.report.owners.map(({ id }) => id));
     this.teamStore.dispatch(new LoadTeams({}));
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         title: `Select owner to add to owners`,
-        placeholder: 'Owners',
+        label: 'Owners',
         options$: this.teamStore.pipe(select(getTeamEntities)).pipe(
           map(data => data.filter(({ id }) => !ids.has(id)))
-        ),
-        selectedIds: []
+        )
       }
     });
 
@@ -235,7 +235,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
           new AddOwner({
             workPackageId: this.workpackageId,
             reportId: this.reportId,
-            ownerId: data.value[0].id
+            ownerId: data.value.id
           })
         );
       }
@@ -299,15 +299,14 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   onEditSourceSystem() {
     this.getNodesWithWorkPackageQuery(this.workpackageId);
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: false,
       width: 'auto',
       minWidth: '400px',
       data: {
         title: 'Select source system',
-        placeholder: 'Components',
-        options$: this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.system })),
-        selectedIds: this.report.system ? [this.report.system.id] : []
+        label: 'Components',
+        options$: this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.system }))
       }
     });
     dialogRef.afterClosed().subscribe(data => {
@@ -320,7 +319,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
               new UpdateReport({
                 workPackageId: editWpId,
                 reportId: this.report.id,
-                request: { data: { ...this.report, system: data.value[0] } }
+                request: { data: { ...this.report, system: data.value } }
               })
             );
           });

@@ -36,6 +36,7 @@ import { SelectModalComponent } from '@app/core/layout/components/select-modal/s
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { isEqual } from 'lodash';
+import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
 
 @Component({
   selector: 'app-attribute-details',
@@ -183,15 +184,13 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddRelatedAttribute(): void {
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         title: 'Add Attribute or Rule',
-        placeholder: 'Attributes and Rules',
-        options$: this.store.pipe(select(getAttributeEntities)),
-        selectedIds: [],
-        multi: false,
+        label: 'Attributes And Rules',
+        options$: this.store.pipe(select(getAttributeEntities))
       }
     });
 
@@ -201,7 +200,7 @@ export class AttributeDetailsComponent implements OnInit, OnDestroy {
           new AddRelated({
             workPackageId: this.workpackageId,
             attributeId: this.attributeId,
-            relatedAttributeId: data.value[0].id
+            relatedAttributeId: data.value.id
           })
         );
       }
