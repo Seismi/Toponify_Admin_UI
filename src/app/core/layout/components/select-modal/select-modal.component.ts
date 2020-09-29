@@ -1,16 +1,8 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatAutocompleteTrigger, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatAutocompleteTrigger } from '@angular/material';
 import { combineLatest, Observable } from 'rxjs';
 import { FormControl, Validators } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
-import { NewChildrenModalComponent } from '@app/architecture/containers/new-children-modal/new-children-modal.component';
-import { AddWorkPackageNode, AddWorkPackageNodeGroup } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { Store } from '@ngrx/store';
-import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { Actions, ofType } from '@ngrx/effects';
-import { WorkPackageNodeActionTypes } from '@app/workpackage/store/actions/workpackage-node.actions';
-import { ComponentsOrLinksModalComponent } from '@app/architecture/containers/components-or-links-modal/components-or-links-modal.component';
-import { Level } from '@app/architecture/services/diagram-level.service';
 
 @Component({
   selector: 'smi-select-modal',
@@ -27,14 +19,10 @@ export class SelectModalComponent implements OnInit {
   @ViewChild('searchInput') searchInput: ElementRef;
   public searchActive: boolean;
   private multi: boolean;
-  private addingToMapGroup: boolean;
   private options: { id: string; name: string; selected?: boolean }[];
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
 
   constructor(
-    private actions: Actions,
-    private store: Store<WorkPackageState>,
-    private dialog: MatDialog,
     public dialogRef: MatDialogRef<SelectModalComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -43,15 +31,6 @@ export class SelectModalComponent implements OnInit {
       multi: boolean;
       selectedIds: string[];
       placeholder: string;
-      descendants: boolean;
-      groupMembers: boolean;
-      addingToMapGroup?: boolean;
-      parentId?: string;
-      nodeId: string,
-      workPackageId: string,
-      scopeId: string,
-      createNew: boolean,
-      currentFilterLevel: string
     }
   ) {
     this.title = data.title;
@@ -66,31 +45,16 @@ export class SelectModalComponent implements OnInit {
       })
     );
     this.multi = !!data.multi;
-    this.addingToMapGroup = !!data.addingToMapGroup;
   }
 
   ngOnInit() {
     this.filteredOptions$ = combineLatest(this.searchControl.valueChanges.pipe(startWith('')), this.options$).pipe(
       map(([value, options]) => options.filter(option => option.name.toLowerCase().includes(value.toLowerCase())))
     );
-
-    this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: any) => {
-      if (action.payload && this.data.currentFilterLevel === Level.system) {
-        this.store.dispatch(
-          new AddWorkPackageNodeGroup({
-            workPackageId: this.data.workPackageId,
-            systemId: this.data.nodeId,
-            groupId: action.payload.data.id
-          })
-        );
-      }
-    });
   }
 
-  onConfirm() {
-    this.dialogRef.close({
-      value: this.selectedOptions
-    });
+  onConfirm(): void {
+    this.dialogRef.close({ value: this.selectedOptions });
   }
 
   onCancel(): void {
@@ -138,87 +102,4 @@ export class SelectModalComponent implements OnInit {
   onAutocompleteClose() {
     this.searchActive = !this.searchActive;
   }
-
-  onAddComponent(): void {
-
-    this.dialogRef.close();
-    const dialogRef = this.dialog.open(NewChildrenModalComponent, {
-      disableClose: false,
-      width: '450px',
-      data: {
-        parentId: this.data.nodeId,
-        addGroupMember: false,
-        addingToMapGroup: this.addingToMapGroup
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.data) {
-        this.store.dispatch(
-          new AddWorkPackageNode({
-            workpackageId: this.data.workPackageId,
-            node: data.data,
-            scope: this.data.scopeId
-          })
-        );
-      }
-    });
-  }
-
-  onAddGroupMember(): void {
-
-    this.dialogRef.close();
-    const dialogRef = this.dialog.open(NewChildrenModalComponent, {
-      disableClose: false,
-      width: '450px',
-      data: {
-        group: this.data.nodeId,
-        addGroupMember: true
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.data) {
-
-        data.data.parentId = this.data.parentId;
-
-        this.store.dispatch(
-          new AddWorkPackageNode({
-            workpackageId: this.data.workPackageId,
-            node: data.data,
-            scope: this.data.scopeId
-          })
-        );
-      }
-    });
-  }
-
-  onCreateNew(): void {
-    this.dialogRef.close();
-    const dialogRef = this.dialog.open(ComponentsOrLinksModalComponent, {
-      disableClose: false,
-      width: '500px',
-      data: {
-        workPackageId: this.data.workPackageId,
-        level: this.data.currentFilterLevel.toLowerCase()
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.node) {
-        this.store.dispatch(
-          new AddWorkPackageNode({
-            workpackageId: this.data.workPackageId,
-            node: {
-              ...data.node,
-              layer: this.data.currentFilterLevel.toLowerCase()
-            },
-            scope: this.data.scopeId
-          })
-        );
-      }
-    });
-  }
-
-
 }
