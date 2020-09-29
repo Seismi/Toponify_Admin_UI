@@ -1991,24 +1991,22 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
 
       dialogRef.componentInstance.addDescendant.subscribe(() => {
-        const dialogRef2 = this.dialog.open(ComponentsOrLinksModalComponent, {
+        const dialogRef2 = this.dialog.open(NewChildrenModalComponent, {
           disableClose: false,
-          width: '500px',
+          width: '450px',
           data: {
-            workPackageId: this.workpackageId,
-            level: this.currentFilterLevel.toLowerCase()
+            parentId: this.nodeId,
+            addGroupMember: false,
+            addingToMapGroup: !!parentData
           }
         });
 
         dialogRef2.afterClosed().subscribe(data => {
-          if (data && data.node) {
+          if (data && data.data) {
             this.store.dispatch(
               new AddWorkPackageNode({
                 workpackageId: this.workpackageId,
-                node: {
-                  ...data.node,
-                  layer: this.currentFilterLevel.toLowerCase()
-                },
+                node: data.data,
                 scope: this.scope.id
               })
             );
@@ -2112,41 +2110,42 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.componentInstance.addNewComponent.subscribe(() => {
-      const dialogRef2 = this.dialog.open(NewChildrenModalComponent, {
+      const dialogRef2 = this.dialog.open(ComponentsOrLinksModalComponent, {
         disableClose: false,
-        width: '450px',
+        width: '500px',
         data: {
-          parentId: this.nodeId
+          workPackageId: this.workpackageId,
+          level: this.currentFilterLevel.toLowerCase()
         }
       });
 
-      dialogRef2
-        .afterClosed()
-        .pipe(take(1))
-        .subscribe(data => {
-          if (data && data.data) {
-            this.workpackageStore.dispatch(
-              new AddWorkPackageNode({
-                workpackageId: this.workpackageId,
-                node: data.data,
-                scope: this.scope.id
-              })
-            );
+      dialogRef2.afterClosed().subscribe(data => {
+        if (data && data.node) {
+          this.store.dispatch(
+            new AddWorkPackageNode({
+              workpackageId: this.workpackageId,
+              node: {
+                ...data.node,
+                layer: this.currentFilterLevel.toLowerCase()
+              },
+              scope: this.scope.id
+            })
+          );
 
-            this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess)).subscribe((action: any) => {
-              // if (action.payload && this.data.currentFilterLevel === Level.system) {
-              //   this.store.dispatch(
-              //     new AddWorkPackageNodeGroup({
-              //       workPackageId: this.data.workPackageId,
-              //       systemId: this.data.nodeId,
-              //       groupId: action.payload.data.id
-              //     })
-              //   );
-              // }
-              alert(action.payload.data.name);
+          this.actions.pipe(ofType(WorkPackageNodeActionTypes.AddWorkPackageNodeSuccess))
+            .subscribe((action: any) => {
+              if (action.payload && this.currentFilterLevel === Level.system) {
+                this.store.dispatch(
+                  new AddWorkPackageNodeGroup({
+                    workPackageId: this.workpackageId,
+                    systemId: this.nodeId,
+                    groupId: action.payload.data.id
+                  })
+                );
+              }
             });
-          }
-        });
+        }
+      });
     });
 
     dialogRef.afterClosed().subscribe(data => {
