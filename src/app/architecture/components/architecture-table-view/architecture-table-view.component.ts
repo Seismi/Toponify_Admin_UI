@@ -8,8 +8,8 @@ import { Store } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { Level } from '@app/architecture/services/diagram-level.service';
 
-const SystemColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner'];
-const LinkColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target'];
+const SystemColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner', 'impactedBy'];
+const LinkColumns = ['category', 'reference', 'name', 'description', 'tags', 'radio', 'owner', 'source', 'target', 'impactedBy'];
 
 @Component({
   selector: 'smi-architecture-table-view',

@@ -108,6 +108,21 @@
     <td mat-cell *matCellDef="let element">{{ element.targetName }}</td>
   </ng-container>
 
+  <!-- Impacted By Column -->
+  <ng-container matColumnDef="impactedBy">
+    <th mat-header-cell *matHeaderCellDef>Impacted By</th>
+    <td mat-cell *matCellDef="let element">
+      <button 
+        mat-icon-button
+        *ngFor="let wp of element.impactedByWorkPackages"
+        matTooltip="{{ wp.name }}"
+        [ngStyle]="{ 'background-color': wp.displayColour }"
+      >
+      <mat-icon>business_center</mat-icon>
+    </button>
+    </td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{ highlight: selectedItem?.id == row.id }"
     (dblclick)="dblClick(row)" (click)="onSelect(row)"></tr>
