@@ -295,10 +295,7 @@ export class CustomCommandHandler extends go.CommandHandler {
       // Check attempted move is valid for all nodes to be moved
       const canMove = nodesToMove.all(function(node: go.Node): boolean {
         const newBounds = node.getDocumentBounds().copy().offset(hChange, vChange);
-        // Check space to move node to is unoccupied
-        if (!currentService.diagramChangesService.isUnoccupied(newBounds, node)) {
-          return false;
-        } else if (node.containingGroup) {
+        if (node.containingGroup) {
           const groupMemberArea = node.containingGroup.findObject('Group member area').getDocumentBounds();
           // Check node is not being moved outside of its group
           if (!groupMemberArea.containsRect(newBounds)) {

@@ -94,7 +94,7 @@ export class DiagramListenersService {
               const containingArea = group.findObject('Group member area');
               const memberBounds = containingArea.getDocumentBounds().copy();
               const nodeBounds = node.getDocumentBounds();
-
+              /*
               // Reposition members that lie outside of the containing group's bounds
               if (memberBounds.top > nodeBounds.top
                 || !memberBounds.intersectsRect(nodeBounds)) {
@@ -124,7 +124,7 @@ export class DiagramListenersService {
                 node.move(newLocation, true);
                 node.ensureBounds();
               }
-
+              */
               // Run process to resize containing groups if member is not correctly enclosed
               if (!memberBounds.containsRect(nodeBounds)) {
                 this.diagramChangesService.groupMemberSizeChanged(node);

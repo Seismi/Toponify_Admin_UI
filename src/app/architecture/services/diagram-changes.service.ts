@@ -1008,10 +1008,12 @@ export class DiagramChangesService {
       // Expand group width and height to ensure it is large enough to enclose all group members
       currentGroup.resizeObject.height = Math.max(
         nonMemberSectionsHeight + currentMinBounds.bottom - memberBounds.top,
-        currentGroup.resizeObject.height
+        currentGroup.resizeObject.getDocumentBounds().height
       );
-      currentGroup.resizeObject.width =
-        Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left);
+      currentGroup.resizeObject.width = Math.max(
+        Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left),
+        currentGroup.resizeObject.getDocumentBounds().width
+      );
 
       // Shift group horizontally in order to ensure group member area correctly encloses required bounds
       currentGroup.location = new go.Point(currentMinBounds.centerX, currentGroup.location.y);
@@ -1325,7 +1327,7 @@ export class DiagramChangesService {
   }
 
   // Check for any other nodes already occupying a given space
-  isUnoccupied(rectangle: go.Rect, node: go.Node, ignoreGroups = false): boolean {
+  isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
     const diagram = node.diagram;
     const dragFromPalette = !!diagram.toolManager.draggingTool.copiedParts;
 
@@ -1336,10 +1338,6 @@ export class DiagramChangesService {
       const part = obj.part;
 
       if (part === node) {
-        return null;
-      }
-
-      if (part.data.isGroup && ignoreGroups) {
         return null;
       }
 

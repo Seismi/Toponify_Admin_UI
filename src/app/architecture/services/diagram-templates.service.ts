@@ -24,6 +24,7 @@ import {colourOptions,
   NodeColoursLight,
   NodeDetailTab
 } from '@app/architecture/store/models/layout.model';
+import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
 
 
 function textFont(style?: string): Object {
@@ -39,17 +40,26 @@ const $ = go.GraphObject.make;
 defineRoundButton();
 
 // Custom layout for system/data groups.
-//   Based on GridLayout but with custom initialOrigin method.
+//   Based on PackedLayout.
 function StandardGroupLayout() {
-  go.GridLayout.call(this);
+  PackedLayout.call(this);
 }
 
-go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
+go.Diagram.inherit(StandardGroupLayout, PackedLayout);
 
 StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
   const memberArea = this.group.findObject('Group member area');
-  const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
+  const initialOriginLocal = new go.Point(memberArea.actualBounds.left + 5, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
+};
+
+StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
+  console.log('layout');
+  if (this.group && !this.group.isSubGraphExpanded) {
+    return;
+  }
+  this.size = this.group.findObject('Group member area').getDocumentBounds().size;
+  PackedLayout.prototype.doLayout.call(this, coll);
 };
 // End system/data group layout
 
@@ -1441,9 +1451,9 @@ export class DiagramTemplatesService {
           {
             isOngoing: false,
             isInitial: true,
-            alignment: go.GridLayout.Location,
-            spacing: new go.Size(12, 12),
-            wrappingWidth: 300
+            spacing: 12,
+            packShape: PackedLayout.Rectangular,
+            packMode: PackedLayout.Fit,
           }
         ),
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
