@@ -34,6 +34,7 @@ import { getScopeEntities, getScopeSelected } from '@app/scope/store/selectors/s
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import isEqual from 'lodash.isequal';
 import { GetReportLibraryRequestQueryParams } from '../services/report.service';
+import { LoadNodes } from '@app/architecture/store/actions/node.actions';
 
 @Component({
   selector: 'smi-report-library-component',
@@ -77,6 +78,8 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(new LoadNodes({ workPackageQuery: this.workpackageId ? [this.workpackageId] : [] }));
+
     this.reportEntities$ = this.store.pipe(select(getReportEntities));
 
     this.subscriptions.push(
@@ -230,10 +233,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   onAddReport() {
     const dialogRef = this.dialog.open(ReportModalComponent, {
       disableClose: false,
-      width: '500px',
-      data: {
-        workPackageId: this.selectedWorkPackageEntities[0].id
-      }
+      width: '500px'
     });
 
     dialogRef.afterClosed().subscribe(data => {

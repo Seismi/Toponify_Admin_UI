@@ -41,6 +41,8 @@ const $ = go.GraphObject.make;
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateLinkLabelState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateTransformationNodeLabelState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateNodeColour: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateLinkColour: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -108,6 +110,8 @@ export class DiagramChangesService {
         part.data.id = part.data.displayId;
       }
 
+      const group = event.diagram.findNodeForKey(part.data.group);
+
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
         const node = Object.assign({}, part.data);
@@ -115,7 +119,8 @@ export class DiagramChangesService {
           disableClose: false,
           width: '500px',
           data: {
-            name: node.name
+            name: node.name,
+            group: group ? group.data.name : null
           }
         });
 
@@ -286,7 +291,8 @@ export class DiagramChangesService {
               points: part.data.route,
               fromSpot: part.data.fromSpot,
               toSpot: part.data.toSpot,
-              colour: part.data.colour
+              colour: part.data.colour,
+              showLabel: part.data.showLabel
             });
           }
         } else {
@@ -783,6 +789,7 @@ export class DiagramChangesService {
       fromSpot: string;
       toSpot: string;
       colour: colourOptions;
+      showLabel: boolean
     }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
@@ -801,7 +808,8 @@ export class DiagramChangesService {
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot,
-          colour: link.data.colour
+          colour: link.data.colour,
+          showLabel: link.data.showLabel
         });
       }
     });
@@ -907,10 +915,12 @@ export class DiagramChangesService {
 
   groupAreaChanged(event: go.DiagramEvent): void {
     const linkData: {
-      id: string; points: number[];
+      id: string;
+      points: number[];
       fromSpot: string;
       toSpot: string;
       colour: colourOptions;
+      showLabel: boolean
     }[] = [];
     const node = event.subject.part;
 
@@ -930,7 +940,8 @@ export class DiagramChangesService {
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot,
-          colour: link.data.colour
+          colour: link.data.colour,
+          showLabel: link.data.showLabel
         });
       }
     });
@@ -1020,7 +1031,8 @@ export class DiagramChangesService {
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot,
-          colour: link.data.colour
+          colour: link.data.colour,
+          showLabel: link.data.showLabel
         });
       }
     });
@@ -1067,7 +1079,30 @@ export class DiagramChangesService {
         points: link.data.route,
         fromSpot: link.data.fromSpot,
         toSpot: link.data.toSpot,
-        colour: link.data.colour
+        colour: link.data.colour,
+        showLabel: link.data.showLabel
+      }
+    );
+  }
+
+  linkShowLabelChanged(link: go.Link): void {
+    this.onUpdateLinkLabelState.next(
+      {
+        id: link.data.id,
+        points: link.data.route,
+        fromSpot: link.data.fromSpot,
+        toSpot: link.data.toSpot,
+        colour: link.data.colour,
+        showLabel: link.data.showLabel
+      }
+    );
+  }
+
+  transformationNodeShowLabelChanged(node: go.Node): void {
+    this.onUpdateTransformationNodeLabelState.next(
+      {
+        id: node.data.id,
+        showLabel: node.data.showLabel
       }
     );
   }
@@ -1117,7 +1152,8 @@ export class DiagramChangesService {
           middleExpanded: node.middleExpanded,
           bottomExpanded: node.bottomExpanded,
           areaSize: node.areaSize,
-          colour: node.colour
+          colour: node.colour,
+          showLabel: node.showLabel
         }
       };
     });
@@ -1129,7 +1165,8 @@ export class DiagramChangesService {
           route: link.route,
           fromSpot: link.fromSpot,
           toSpot: link.toSpot,
-          colour: link.colour
+          colour: link.colour,
+          showLabel: link.showLabel
         }
       };
     });
@@ -1283,8 +1320,9 @@ export class DiagramChangesService {
   }
 
   // Check for any other nodes already occupying a given space
-  isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
+  isUnoccupied(rectangle: go.Rect, node: go.Node, ignoreGroups = false): boolean {
     const diagram = node.diagram;
+    const dragFromPalette = !!diagram.toolManager.draggingTool.copiedParts;
 
     // nested function used by Layer.findObjectsIn, below
     // only consider Parts, and ignore the given Node, any Links, and Group members
@@ -1293,6 +1331,10 @@ export class DiagramChangesService {
       const part = obj.part;
 
       if (part === node) {
+        return null;
+      }
+
+      if (part.data.isGroup && ignoreGroups) {
         return null;
       }
 
@@ -1308,7 +1350,7 @@ export class DiagramChangesService {
       if (node.isMemberOf(part)) {
         return null;
       }
-      if (diagram.selection.contains(part) ) {
+      if (diagram.selection.contains(part) && !dragFromPalette) {
         return null;
       }
       return part;
@@ -1334,6 +1376,41 @@ export class DiagramChangesService {
       returnGroup = returnGroup.containingGroup;
     }
     return returnGroup;
+  }
+
+  // If dragging a node suitable for being grouped then return the node.
+  // Otherwise, return null.
+  getGroupableDraggedNode(draggingTool: go.DraggingTool): go.Node | null {
+    const draggedPartsMap = draggingTool.copiedParts || draggingTool.draggedParts;
+    if (draggedPartsMap) {
+      const draggedParts = draggedPartsMap.iteratorKeys;
+      const groupableParts = new go.Set<go.Group>();
+
+      // Find if any parts are valid to add to a group by dropping
+      draggedParts.each(function(part: go.Group): void {
+        if (part.isTopLevel
+          && part instanceof go.Group
+          && part.data.layer === layers.system
+        ) {
+          groupableParts.add(part);
+        }
+      });
+
+      // Only allow dropping node into group if it is the only groupable node being dragged
+      if (groupableParts.count === 1) {
+        const groupableNode = groupableParts.first();
+
+        // All other dragged parts must be nested members of the dragged group
+        if (draggedParts.all(function(part: go.Part): boolean {
+            return part === groupableNode
+              || part.findTopLevelPart() === groupableNode;
+          })
+        ) {
+          return groupableNode;
+        }
+      }
+    }
+    return null;
   }
 
   // Update guide with instructions for current diagram state

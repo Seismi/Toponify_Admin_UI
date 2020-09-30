@@ -120,6 +120,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   updateNodeExpandState = new EventEmitter();
 
   @Output()
+  updateLinkLabelState = new EventEmitter();
+
+  @Output()
+  updateTransformationNodeLabelState = new EventEmitter();
+
+  @Output()
   updateGroupArea = new EventEmitter();
 
   @Output()
@@ -162,6 +168,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
     this.diagram.toolManager.draggingTool.dragsLink = true;
     gojsCustomObjectsService.customDragMouseMove(this.diagram.toolManager.draggingTool);
+    gojsCustomObjectsService.customDoDropOnto(this.diagram.toolManager.draggingTool);
     this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
     this.diagram.toolManager.linkingTool.isEnabled = false;
     this.diagram.toolManager.relinkingTool = (new CustomRelinkingTool());
@@ -283,6 +290,13 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
     });
+    diagramChangesService.onUpdateLinkLabelState.subscribe((link: any) => {
+      this.updateLinkLabelState.emit(link);
+    });
+    diagramChangesService.onUpdateTransformationNodeLabelState
+      .subscribe((data: { id: string, showLabel: boolean }) => {
+        this.updateTransformationNodeLabelState.emit(data);
+      });
     diagramChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
       this.updateNodeColour.emit(data);
     });

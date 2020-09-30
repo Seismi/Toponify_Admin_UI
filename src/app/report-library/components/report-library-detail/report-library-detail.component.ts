@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity,
@@ -6,13 +6,16 @@ import {
   OwnersEntity
 } from '@app/report-library/store/models/report.model';
 import { Tag, Node } from '@app/architecture/store/models/node.model';
+import { map, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'smi-report-library-detail',
   templateUrl: 'report-library-detail.component.html',
   styleUrls: ['report-library-detail.component.scss']
 })
-export class ReportLibraryDetailComponent {
+export class ReportLibraryDetailComponent implements OnInit {
+  filteredOptions$: Observable<Node[]>;
   public group: FormGroup;
   private values;
   @Input('group') set setGroup(group) {
@@ -46,6 +49,15 @@ export class ReportLibraryDetailComponent {
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateAvailableTags = new EventEmitter<void>();
 
+  ngOnInit() {
+    this.filteredOptions$ = this.group.get('system').valueChanges
+      .pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(name => name ? this._filter(name) : this.systems.slice())
+      );
+  }
+
   onSave(): void {
     this.saveReport.emit();
   }
@@ -72,5 +84,14 @@ export class ReportLibraryDetailComponent {
 
   onDimensionEdit(dimension: Dimension): void {
     this.dimensionEdit.emit(dimension);
+  }
+
+  displayFn(system: Node): string {
+    return system && system.name ? system.name : '';
+  }
+
+  private _filter(name: string): Node[] {
+    const filterValue = name.toLowerCase();
+    return this.systems.filter(system => system.name.toLowerCase().indexOf(filterValue) === 0);
   }
 }

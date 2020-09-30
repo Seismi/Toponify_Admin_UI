@@ -563,6 +563,9 @@ Cypress.Commands.add(
           });
       })
       .then(() => {
+        cy.selectDropDownNoClick('radio-detail-assigned-to', assigned);
+      })
+      .then(() => {
         if (actioned.length > 0) {
           cy.get('[data-qa=radio-detail-action-by')
             .clear({ force: true })

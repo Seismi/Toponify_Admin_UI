@@ -94,7 +94,7 @@
       [groupInfo]="groupInfo"
       (editGroup)="editGroup.emit()"
       (deleteNodeGroup)="deleteNodeGroup.emit()"
-      [workPackageIsEditable]="workPackageIsEditable"
+      [workPackageIsEditable]="workPackageIsEditable && !sourceOrTargetView"
       [layer]="part?.data?.layer"
     >
     </smi-group-info-table>
@@ -107,8 +107,10 @@
       <button data-qa="object-details-view-structure" class="view-structure" mat-flat-button color="primary" (click)="viewStructure.emit()">View Structure</button>
     </div>
     <br>
-    <button mat-flat-button color="primary">Make Master</button>
-    <button data-qa="object-details-see-sources" mat-flat-button color="primary" *ngIf="canBeShared()" (click)="onFindSources()">Find Sources</button>
-    <button data-qa="object-details-see-targets" mat-flat-button color="primary" *ngIf="canBeShared()" (click)="onFindTargets()">Find Targets</button>
+    <div *ngIf="!sourceOrTargetView">
+      <button mat-flat-button color="primary">Make Master</button>
+      <button data-qa="object-details-see-sources" mat-flat-button color="primary" *ngIf="canBeShared()" (click)="onFindSources()">Find Sources</button>
+      <button data-qa="object-details-see-targets" mat-flat-button color="primary" *ngIf="canBeShared()" (click)="onFindTargets()">Find Targets</button>
+    </div>
   </div>
 </form>

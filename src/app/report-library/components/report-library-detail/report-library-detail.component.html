@@ -24,11 +24,15 @@
       </mat-form-field>
 
       <mat-form-field *ngIf="modalMode">
-        <mat-select data-qa="reports-details-system" formControlName="system" placeholder="Systems">
-          <mat-option *ngFor="let system of systems" [value]="system">
+        <mat-label>Systems</mat-label>
+        <input matInput #input [(ngModel)]="searchField" formControlName="system" [matAutocomplete]="auto">
+        <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchField=''" *ngIf="searchField">close</mat-icon>
+        <mat-icon class="arrow_down" matSuffix *ngIf="!searchField">keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let system of filteredOptions$ | async | orderBy: 'name'" [value]="system">
             {{ system.name }}
           </mat-option>
-        </mat-select>
+        </mat-autocomplete>
       </mat-form-field>
     </div>
 
