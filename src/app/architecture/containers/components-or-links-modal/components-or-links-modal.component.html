@@ -36,7 +36,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput placeholder="Name" formControlName="name" [value]="nameValue" data-qa="topology-components-or-link-modal-name">
+      <input matInput placeholder="Name" formControlName="name" [(ngModel)]="nameValue" data-qa="topology-components-or-link-modal-name">
       <mat-error>This field is required</mat-error>
     </mat-form-field>
   </form>

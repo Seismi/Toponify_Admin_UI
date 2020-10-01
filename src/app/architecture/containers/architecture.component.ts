@@ -2276,7 +2276,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(
             new AddWorkPackageLink({
               workpackageId: this.workpackageId,
-              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+              link: {
+                ...data.node,
+                sourceId: data.node.sourceId.id,
+                targetId: data.node.targetId.id,
+                layer: this.currentFilterLevel.toLowerCase()
+              }
             })
           );
         }
