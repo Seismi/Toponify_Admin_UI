@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
+import { Level } from '@app/architecture/services/diagram-level.service';
 import { GroupInfo } from '@app/architecture/store/models/node.model';
 import { cloneDeep } from 'lodash';
 
@@ -9,6 +10,7 @@ import { cloneDeep } from 'lodash';
   styleUrls: ['./components-table.component.scss']
 })
 export class ComponentsTableComponent {
+  @Input() filterLevel: string;
   @Input() title: string;
   @Input() workPackageIsEditable: boolean;
   @Input() disabled: boolean;
@@ -109,5 +111,9 @@ export class ComponentsTableComponent {
       return a.sortOrder - b.sortOrder;
     });
     this.dataSource = new MatTableDataSource<GroupInfo>(data);
+  }
+
+  get sourceOrTargetView(): boolean {
+    return this.filterLevel === Level.sources || this.filterLevel === Level.targets;
   }
 }

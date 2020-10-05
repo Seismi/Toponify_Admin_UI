@@ -231,7 +231,8 @@ export function reducer(
               link.points,
               link.fromSpot,
               link.toSpot,
-              link.colour
+              link.colour,
+              link.showLabel
             );
           }
         },
@@ -677,7 +678,8 @@ export function reducer(
               link.positionSettings.route,
               link.positionSettings.fromSpot,
               link.positionSettings.toSpot,
-              link.positionSettings.colour
+              link.positionSettings.colour,
+              link.positionSettings.showLabel
             );
           }
         },
@@ -800,6 +802,17 @@ export function reducer(
       const nodeIndex = state.entities.findIndex(g => g.id === data.id);
       if (nodeIndex > -1) {
         return replaceNodeLayoutSetting({...state}, nodeIndex, data.id, layoutId, data.colour, 'colour');
+      }
+      return {
+        ...state
+      };
+    }
+
+    case NodeActionTypes.UpdateNodeLabelState: {
+      const { layoutId, data } = action.payload;
+      const nodeIndex = state.entities.findIndex(g => g.id === data.id);
+      if (nodeIndex > -1) {
+        return replaceNodeLayoutSetting({...state}, nodeIndex, data.id, layoutId, data.showLabel, 'showLabel');
       }
       return {
         ...state
@@ -1203,7 +1216,8 @@ function replaceLinkRoute(
   route: number[],
   fromSpot: string,
   toSpot: string,
-  colour: colourOptions
+  colour: colourOptions,
+  showLabel: boolean
 ): State {
   const updatedLayouts: LinkLayoutSettingsEntity[] = state.links[linkIndex].positionPerLayout.concat();
   const layoutIndex: number = updatedLayouts.findIndex(function(layoutSettings: LinkLayoutSettingsEntity) {
@@ -1217,7 +1231,8 @@ function replaceLinkRoute(
       route: route,
       fromSpot: fromSpot,
       toSpot: toSpot,
-      colour: colour
+      colour: colour,
+      showLabel: showLabel
     };
     const newLayout = { ...updatedLayout.layout, positionSettings: newPositionSettings };
     updatedLayouts.splice(layoutIndex, 1, { ...updatedLayout, layout: newLayout });
@@ -1229,7 +1244,8 @@ function replaceLinkRoute(
           route: route,
           fromSpot: fromSpot,
           toSpot: toSpot,
-          colour: colour
+          colour: colour,
+          showLabel: showLabel
         }
       }
     });

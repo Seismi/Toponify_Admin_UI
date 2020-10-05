@@ -68,7 +68,7 @@
   </smi-approvers-table>
 
   <mat-form-field *ngIf="modalMode">
-    <mat-select placeholder="Owners" formControlName="owners" multiple data-qa="work-packages-details-owners-selection">
+    <mat-select [compareWith]="compareFn" placeholder="Owners" formControlName="owners" multiple data-qa="work-packages-details-owners-selection">
       <mat-option *ngFor="let owner of owners" [value]="owner">
         {{ owner.name }}
       </mat-option>

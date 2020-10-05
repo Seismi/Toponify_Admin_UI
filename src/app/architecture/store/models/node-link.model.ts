@@ -117,6 +117,7 @@ export interface LinkLayoutSettingsEntity {
       fromSpot?: string;
       toSpot?: string;
       colour?: colourOptions;
+      showLabel?: boolean;
     }
   };
 }

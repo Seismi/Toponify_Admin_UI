@@ -21,6 +21,7 @@ import { Roles } from '@app/core/directives/by-role.directive';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { getWorkPackagesPage, workpackageLoading } from '../../store/selectors/workpackage.selector';
+import { LoadMyProfile } from '@app/home/store/actions/home.actions';
 
 enum WorkPackageView {
   Table,
@@ -39,7 +40,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   public selectedView: WorkPackageView = WorkPackageView.Table;
   public Roles = Roles;
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
-  public workpackageActive$: Observable<WorkPackagesActive[]>;
+  public workpackageActive$: Observable<WorkPackagesActive[] | WorkPackageEntity[]>;
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;
@@ -63,9 +64,12 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(new LoadMyProfile());
     this.store.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
+    this.loading$ = this.store.pipe(select(fromWorkPackagesEntities.workpackageActiveLoading))
+      .subscribe(loading => this.isLoading = loading);
     this.loading$ = this.store.pipe(select(workpackageLoading)).subscribe((loading) => this.isLoading = loading);
 
     this.store.dispatch(new LoadWorkPackagesActive());
@@ -85,7 +89,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
         ...(this.workPackageParams.sortBy && { sortBy: this.workPackageParams.sortBy }),
         ...(this.workPackageParams.sortOrder && { sortOrder: this.workPackageParams.sortOrder })
 
-      }
+      };
       this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     });
 
