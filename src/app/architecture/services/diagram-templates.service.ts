@@ -967,48 +967,6 @@ export class DiagramTemplatesService {
           fill: null
         }
       ),
-      /*new go.Binding('visible', 'bottomExpanded',
-        function(bottomExpanded) {
-          return bottomExpanded !== bottomOptions.none;
-        }.bind(this)
-      ),*/
-      // Do not show description for systems or data nodes
-      /*!isGroup ? $(
-        go.TextBlock,
-        textFont('16px'),
-        {
-          textAlign: 'center',
-          stroke: 'black',
-          stretch: go.GraphObject.Horizontal,
-          margin: new go.Margin(5, 0, 0, 0)
-        },
-        new go.Binding('text', 'description'),
-        new go.Binding('visible', 'description').ofModel()
-      ) : {},
-      $(
-        go.TextBlock,
-        textFont('italic 16px'),
-        {
-          textAlign: 'center',
-          stroke: 'black',
-          stretch: go.GraphObject.Horizontal,
-          margin: new go.Margin(5, 0, 0, 0)
-        },
-        new go.Binding('text', 'owners', function(owners: any[]): string {
-          return owners.length > 0
-            ? 'Owners - ' +
-                owners
-                  .map(function(owner): string {
-                    return owner.name;
-                  })
-                  .join(', ')
-            : '';
-        }),
-        new go.Binding('visible', '', function(node): boolean {
-          return node.diagram.model.modelData.owners &&
-            node.data.bottomExpanded !== bottomOptions.group;
-        }).ofObject()
-      ),*/
       $(
         go.Panel,
         'Vertical',
@@ -1672,12 +1630,17 @@ export class DiagramTemplatesService {
                 minHeight += 30.43 * data.members.length;
                 minHeight += 35;
               } else if (data.bottomExpanded === bottomOptions.group) {
-                minHeight += data.members.length * 42;
+
+                if ([Level.targets, Level.sources].includes(this.currentFilterLevel)) {
+                  minHeight += 42;
+                } else {
+                  minHeight += data.members.length * 42;
+                }
                 minHeight += 20;
                 minWidth += 20;
               }
               return new go.Size(minWidth, minHeight);
-            }),
+            }.bind(this)),
             new go.Binding('desiredSize', 'areaSize', go.Size.parse).makeTwoWay(go.Size.stringify),
             new go.Binding(
               'defaultRowSeparatorStroke',

@@ -186,23 +186,22 @@ export class CustomNodeResize extends go.ResizingTool {
       };
 
       const containingArea = group.containingGroup.findObject('Group member area').getDocumentBounds();
-      const groupContainingArea = group.findObject('Group member area').getDocumentBounds();
       const groupArea = group.getDocumentBounds();
 
       if (draggedSides.top) {
-        maxSize.height = Math.min(maxSize.height, groupArea.bottom - containingArea.top);
+        maxSize.height = Math.min(maxSize.height, groupArea.bottom - containingArea.top - 10);
       }
 
       if (draggedSides.right) {
-        maxSize.width = Math.min(maxSize.width, containingArea.right - groupArea.left);
+        maxSize.width = Math.min(maxSize.width, containingArea.right - groupArea.left - 10);
       }
 
       if (draggedSides.bottom) {
-        maxSize.height = Math.min(maxSize.height, containingArea.bottom - groupArea.top);
+        maxSize.height = Math.min(maxSize.height, containingArea.bottom - groupArea.top - 10);
       }
 
       if (draggedSides.left) {
-        maxSize.width = Math.min(maxSize.width, groupArea.right - containingArea.left);
+        maxSize.width = Math.min(maxSize.width, groupArea.right - containingArea.left - 10);
       }
     }
 
