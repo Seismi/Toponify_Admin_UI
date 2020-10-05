@@ -137,7 +137,20 @@ export class WorkPackageDiagramService {
       });
     });
 
-    return links;
+    /*
+      Update diagram to ignore the links between a work package and the “Current State”
+      if that work package has a link to any other work package.
+    */
+    const diagramLinks = links.reduce((acc, current) => {
+      const x = acc.find(item => item.to === current.to && current.from === currentArchitecturePackageId);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
+      }
+    }, []);
+
+    return diagramLinks;
   }
 
   // Get node template for nodes in workpackage tree diagram

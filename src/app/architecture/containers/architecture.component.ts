@@ -1490,11 +1490,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             let linkLayout;
 
             if (this.layout && 'id' in this.layout) {
-              linkLayout = link.positionPerLayout.find(
-                function(layoutSettings) {
-                  return layoutSettings.layout.id === this.layout.id;
-                }.bind(this)
-              );
+              linkLayout = 'positionPerLayout' in link
+                ? link.positionPerLayout.find(
+                    function(layoutSettings) {
+                      return layoutSettings.layout.id === this.layout.id;
+                    }.bind(this))
+                : null;
             }
 
             const layoutProps = linkLayout ? linkLayout.layout.positionSettings : null;
@@ -2310,7 +2311,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
           this.workpackageStore.dispatch(
             new AddWorkPackageLink({
               workpackageId: this.workpackageId,
-              link: { ...data.node, layer: this.currentFilterLevel.toLowerCase() }
+              link: {
+                ...data.node,
+                sourceId: data.node.sourceId.id,
+                targetId: data.node.targetId.id,
+                layer: this.currentFilterLevel.toLowerCase()
+              }
             })
           );
         }
