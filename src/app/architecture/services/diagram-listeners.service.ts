@@ -85,6 +85,9 @@ export class DiagramListenersService {
 
         // Check current level is system or data
         if (currentLevel && [Level.system, Level.data].includes(currentLevel)) {
+
+          const nodesToUpdate = new go.Set<go.Node>();
+
           event.diagram.nodes.each(function(node: go.Node): void {
 
             const group = node.containingGroup;
@@ -123,14 +126,18 @@ export class DiagramListenersService {
 
                 node.move(newLocation, true);
                 node.ensureBounds();
+                nodesToUpdate.add(node);
               }
 
               // Run process to resize containing groups if member is not correctly enclosed
-              if (!memberBounds.containsRect(nodeBounds)) {
+              if (!memberBounds.containsRect(node.getDocumentBounds())) {
                 this.diagramChangesService.groupMemberSizeChanged(node);
               }
             }
           }.bind(this));
+          if (nodesToUpdate.count > 0) {
+            this.diagramChangesService.updatePosition({ diagram: event. diagram, subject: nodesToUpdate});
+          }
         }
       }.bind(this)
     );
@@ -172,7 +179,9 @@ export class DiagramListenersService {
                 link.updateRoute();
               });
 
-              this.diagramChangesService.groupMemberSizeChanged(node);
+              if (node.containingGroup) {
+                this.diagramChangesService.groupMemberSizeChanged(node);
+              }
             }
           }.bind(this));
         }

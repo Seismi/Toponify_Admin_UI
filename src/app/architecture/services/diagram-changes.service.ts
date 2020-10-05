@@ -1063,10 +1063,10 @@ export class DiagramChangesService {
           groups: groupData,
           links: linkData
         });
+
+        this.onUpdateDiagramLayout.next({});
       }
     }
-
-    this.onUpdateDiagramLayout.next({});
   }
 
   nodeColourChanged(node: go.Node): void {
