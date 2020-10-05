@@ -21,7 +21,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
-  MatToolbarModule, MatChipsModule, MatSidenavModule, MatSlideToggleModule, MatButtonToggleModule
+  MatToolbarModule, MatChipsModule, MatSidenavModule, MatSlideToggleModule, MatButtonToggleModule, MatAutocompleteModule
 } from '@angular/material';
 import { CoreModule } from '@app/core/core.module';
 import { NodeService } from '@app/architecture/services/node.service';
@@ -123,7 +123,8 @@ import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-d
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatSlideToggleModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatAutocompleteModule
   ],
   exports: [ObjectDetailsFormComponent, WorkPackageTabTableComponent, CategoryTableComponent, TableCollapseComponent],
   declarations: [

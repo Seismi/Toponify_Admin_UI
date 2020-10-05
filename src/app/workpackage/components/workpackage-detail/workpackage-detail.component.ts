@@ -173,4 +173,8 @@ export class WorkPackageDetailComponent {
       return true;
     }
   }
+
+  compareFn(option: TeamEntity, option2: TeamEntity): boolean {
+    return option && option2 ? option.id === option2.id : option === option2;
+  }
 }
