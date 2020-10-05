@@ -76,7 +76,7 @@
       <button
         mat-icon-button
         color="warn"
-        *ngIf="workPackageIsEditable"
+        *ngIf="workPackageIsEditable && !sourceOrTargetView"
         (click)="delete.emit(element)"
         data-qa="topology-components-table-delete"
       >

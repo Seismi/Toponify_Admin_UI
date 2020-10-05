@@ -50,6 +50,7 @@ export interface OwnersEntityOrViewersEntity {
   id: string;
   name: string;
   type: string;
+  disabled: boolean;
 }
 
 export interface Include {

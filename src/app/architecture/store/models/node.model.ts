@@ -171,6 +171,7 @@ export interface NodeLayoutSettingsEntity {
       bottomExpanded?: bottomOptions;
       areaSize?: string;
       colour?: colourOptions;
+      showLabel?: boolean;
     };
   };
 }

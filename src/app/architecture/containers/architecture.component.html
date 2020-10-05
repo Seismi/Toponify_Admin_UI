@@ -121,6 +121,8 @@
             (updateGroupArea)="handleUpdateGroupArea($event)"
             (updateNodeColour)="handleUpdateNodeColour($event)"
             (updateLinkColour)="handleUpdateLinkColour($event)"
+            (updateLinkLabelState)="handleUpdateLinkLabelState($event)"
+            (updateTransformationNodeLabelState)="handleUpdateTransformationNodeLabelState($event)"
             (updateDiagramLayout)="handleUpdateDiagramLayout()"
           >
           </app-architecture-diagram>
@@ -130,7 +132,13 @@
             data-qa="topology-table-components"
             [data]="
               nodes
-                | layer: { byId: byId, descendantIds$: parentDescendantIds, groupMemberIds$: groupMemberIds }
+                | layer
+                  : { 
+                      byId: byId, 
+                      descendantIds$: parentDescendantIds, 
+                      groupMemberIds$: groupMemberIds,
+                      level: currentFilterLevel
+                    }
                 | async
             "
             [selectedItem]="selectedNode"
@@ -140,6 +148,7 @@
             [view]="'system'"
             [workPackageIsEditable]="workPackageIsEditable"
             (add)="onAddComponentOrLink()"
+            [filterLevel]="currentFilterLevel"
           ></smi-architecture-table-view>
         </div>
         <div *ngIf="selectedView === ArchitectureView.Links">
@@ -153,6 +162,7 @@
             [view]="'link'"
             [workPackageIsEditable]="workPackageIsEditable"
             (add)="onAddComponentOrLink()"
+            [filterLevel]="currentFilterLevel"
           ></smi-architecture-table-view>
         </div>
       </app-model-content>
