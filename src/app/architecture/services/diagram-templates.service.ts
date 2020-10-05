@@ -24,7 +24,7 @@ import {colourOptions,
   NodeColoursLight,
   NodeDetailTab
 } from '@app/architecture/store/models/layout.model';
-import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
+// import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
 
 
 function textFont(style?: string): Object {
@@ -39,20 +39,27 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
+/*
 // Custom layout for system/data groups.
 //   Based on PackedLayout.
 function StandardGroupLayout() {
   PackedLayout.call(this);
 }
+*/
 
-go.Diagram.inherit(StandardGroupLayout, PackedLayout);
+// Custom layout for system/data groups.
+function StandardGroupLayout() {
+  go.GridLayout.call(this);
+}
+
+go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
 
 StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
   const memberArea = this.group.findObject('Group member area');
-  const initialOriginLocal = new go.Point(memberArea.actualBounds.left + 5, memberArea.actualBounds.top + 12);
+  const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
-
+/*
 StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
   console.log('layout');
   if (this.group && !this.group.isSubGraphExpanded) {
@@ -61,6 +68,8 @@ StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | 
   this.size = this.group.findObject('Group member area').getDocumentBounds().size;
   PackedLayout.prototype.doLayout.call(this, coll);
 };
+*/
+
 // End system/data group layout
 
 const containerColour = '#F8C195';
@@ -1230,7 +1239,8 @@ export class DiagramTemplatesService {
       {
         contextMenu: this.gojsCustomObjectsService.getLinkContextMenu(),
         doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
-        selectionObjectName: 'shape'
+        selectionObjectName: 'shape',
+        resizable: false
       },
       new go.Binding(
         'movable',
@@ -1404,7 +1414,7 @@ export class DiagramTemplatesService {
           name: 'content table',
           defaultRowSeparatorStroke: 'black',
           desiredSize: new go.Size(310, 40),
-          minSize: new go.Size(310, 40)
+          minSize: new go.Size(310, 40),
         },
         new go.Binding('minSize', '', function(data, table) {
           let minHeight = 40;
@@ -1417,6 +1427,7 @@ export class DiagramTemplatesService {
           }
           return new go.Size(310, minHeight);
         }),
+        new go.Binding('desiredSize', 'areaSize', go.Size.parse).makeTwoWay(go.Size.stringify),
         $(go.RowColumnDefinition, { row: 0, sizing: go.RowColumnDefinition.None}),
         $(go.RowColumnDefinition, { row: 1, sizing: go.RowColumnDefinition.None}),
         $(go.RowColumnDefinition,
@@ -1449,11 +1460,16 @@ export class DiagramTemplatesService {
       {
         layout: $(StandardGroupLayout as any,
           {
+            wrappingColumn: 1,
             isOngoing: false,
             isInitial: true,
+            alignment: go.GridLayout.Location,
+            spacing: new go.Size(NaN, 12)
+            /*
             spacing: 12,
             packShape: PackedLayout.Rectangular,
             packMode: PackedLayout.Fit,
+            */
           }
         ),
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),

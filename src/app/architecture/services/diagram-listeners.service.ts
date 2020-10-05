@@ -94,7 +94,7 @@ export class DiagramListenersService {
               const containingArea = group.findObject('Group member area');
               const memberBounds = containingArea.getDocumentBounds().copy();
               const nodeBounds = node.getDocumentBounds();
-              /*
+
               // Reposition members that lie outside of the containing group's bounds
               if (memberBounds.top > nodeBounds.top
                 || !memberBounds.intersectsRect(nodeBounds)) {
@@ -124,7 +124,7 @@ export class DiagramListenersService {
                 node.move(newLocation, true);
                 node.ensureBounds();
               }
-              */
+
               // Run process to resize containing groups if member is not correctly enclosed
               if (!memberBounds.containsRect(nodeBounds)) {
                 this.diagramChangesService.groupMemberSizeChanged(node);
@@ -148,6 +148,11 @@ export class DiagramListenersService {
 
           // Check each node for overlap
           event.diagram.nodes.each(function(node: go.Node): void {
+
+            if (!node.isVisible()) {
+              return;
+            }
+
             if (!this.diagramChangesService.isUnoccupied(node.actualBounds, node)) {
               const rectangle = node.actualBounds.copy();
 
@@ -166,6 +171,8 @@ export class DiagramListenersService {
                 link.data.updateRoute = true;
                 link.updateRoute();
               });
+
+              this.diagramChangesService.groupMemberSizeChanged(node);
             }
           }.bind(this));
         }
@@ -308,6 +315,14 @@ export class DiagramListenersService {
       // Ensure instructions do not exceed screen space available
       instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
     });
+
+    // Update z order when selection changes to ensure selected nodes are in front
+    diagram.addDiagramListener(
+      'ChangedSelection',
+      function(event: go.DiagramEvent): void {
+        this.diagramChangesService.updateZOrder(event.diagram);
+      }.bind(this)
+    );
 
     // In node usage view, highlight the originating node with a blue shadow.
     // Also, ensure originating node is visible by expanding the chain of containing nodes.

@@ -1007,17 +1007,16 @@ export class DiagramChangesService {
 
       // Expand group width and height to ensure it is large enough to enclose all group members
       currentGroup.resizeObject.height = Math.max(
-        nonMemberSectionsHeight + currentMinBounds.bottom - memberBounds.top,
+        nonMemberSectionsHeight + currentMinBounds.bottom - memberBounds.top + 10,
         currentGroup.resizeObject.getDocumentBounds().height
       );
       currentGroup.resizeObject.width = Math.max(
-        Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left),
+        Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left) + 10,
         currentGroup.resizeObject.getDocumentBounds().width
       );
 
       // Shift group horizontally in order to ensure group member area correctly encloses required bounds
       currentGroup.location = new go.Point(currentMinBounds.centerX, currentGroup.location.y);
-
       // For next iteration, set minimum bounds equal to new bounds of current group
       currentGroup.ensureBounds();
       currentMinBounds = currentGroup.getDocumentBounds().copy();
@@ -1414,6 +1413,41 @@ export class DiagramChangesService {
       }
     }
     return null;
+  }
+
+  // Update z order to ensure that the last selected parts are on top, as well as keeping
+  //  group members further forward from their containing groups.
+  updateZOrder(diagram: go.Diagram): void {
+    let maxZ = 0;
+    // First assign all nodes a z order equal to how deeply nested in groups they are
+    diagram.nodes.each(function(node) {
+      node.zOrder = node.findSubGraphLevel();
+      // Track maximum z order assigned
+      maxZ = Math.max(0, node.zOrder);
+    });
+
+    // Assign selection (and members of selected groups) the largest z order
+    diagram.selection.each(function(part) {
+      // Selection z order
+      part.zOrder = maxZ + 1 + part.findSubGraphLevel();
+      if (part instanceof go.Group) {
+        part.findSubGraphParts().each(function(subPart) {
+          // Nested group member z order
+          subPart.zOrder = maxZ + 1 + subPart.findSubGraphLevel();
+        });
+      }
+    });
+
+    // Set z order for links
+    diagram.links.each(function(link) {
+      if (link.fromNode && link.toNode) {
+        // Connected links to have same z order as frontmost connected node
+        link.zOrder = Math.max(link.fromNode.zOrder, link.toNode.zOrder);
+      } else {
+        // Disconnected links always appear at the front
+        link.zOrder = maxZ * 2 + 2;
+      }
+    });
   }
 
   // Update guide with instructions for current diagram state

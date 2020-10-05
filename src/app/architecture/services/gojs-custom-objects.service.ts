@@ -174,7 +174,7 @@ export class CustomNodeResize extends go.ResizingTool {
 
     // If group is itself contained in a group then ensure that the group is not
     //  expanded outside the bounds of its containing group
-    if (group.containingGroup) {
+    if (group.containingGroup && group.containingGroup.category !== '') {
 
       // Determine which way/ways the group is being enlarged
       //  based on alignment of the resizing handle being dragged
