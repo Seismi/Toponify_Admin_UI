@@ -45,6 +45,7 @@
               <mat-tab label="Diagram">
                 <ng-template mat-tab-label> <mat-icon>device_hub</mat-icon> Diagram </ng-template>
                 <ng-template matTabContent>
+                  <smi-spinner data-qa="work-packages-diagram-spinner" *ngIf="isLoading"></smi-spinner>
                   <smi-workpackage-tree
                     (selectWorkpackage)="onSelectWorkpackage($event)"
                     [workpackages$]="workpackageActive$ | async"

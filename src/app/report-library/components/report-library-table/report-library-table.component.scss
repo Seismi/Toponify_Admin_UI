@@ -78,3 +78,22 @@ td.mat-cell {
   margin-right: 5px;
   padding: 7px 10px;
 }
+
+.mat-column-impactedBy {
+  button {
+    width: 24px;
+    height: 24px;
+    line-height: 14px;
+    font-size: 24px;
+    outline: none;
+    margin-right: 3px;
+    &::ng-deep .mat-button-wrapper {
+        line-height: 14px;
+        padding: 0;
+          .mat-icon {
+            font-size: 16px;
+            color: #fff;
+          }
+    }
+  }
+}
