@@ -41,6 +41,8 @@ const $ = go.GraphObject.make;
 export class DiagramChangesService {
   public onUpdatePosition: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateExpandState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateLinkLabelState: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onUpdateTransformationNodeLabelState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateGroupsAreaState: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateNodeColour: BehaviorSubject<any> = new BehaviorSubject(null);
   public onUpdateLinkColour: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -289,7 +291,8 @@ export class DiagramChangesService {
               points: part.data.route,
               fromSpot: part.data.fromSpot,
               toSpot: part.data.toSpot,
-              colour: part.data.colour
+              colour: part.data.colour,
+              showLabel: part.data.showLabel
             });
           }
         } else {
@@ -786,6 +789,7 @@ export class DiagramChangesService {
       fromSpot: string;
       toSpot: string;
       colour: colourOptions;
+      showLabel: boolean
     }[] = [];
 
     // Make sure node bounds are up to date so links can route correctly
@@ -804,7 +808,8 @@ export class DiagramChangesService {
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot,
-          colour: link.data.colour
+          colour: link.data.colour,
+          showLabel: link.data.showLabel
         });
       }
     });
@@ -910,10 +915,12 @@ export class DiagramChangesService {
 
   groupAreaChanged(event: go.DiagramEvent): void {
     const linkData: {
-      id: string; points: number[];
+      id: string;
+      points: number[];
       fromSpot: string;
       toSpot: string;
       colour: colourOptions;
+      showLabel: boolean
     }[] = [];
     const node = event.subject.part;
 
@@ -933,7 +940,8 @@ export class DiagramChangesService {
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot,
-          colour: link.data.colour
+          colour: link.data.colour,
+          showLabel: link.data.showLabel
         });
       }
     });
@@ -1023,7 +1031,8 @@ export class DiagramChangesService {
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot,
-          colour: link.data.colour
+          colour: link.data.colour,
+          showLabel: link.data.showLabel
         });
       }
     });
@@ -1048,10 +1057,10 @@ export class DiagramChangesService {
           groups: groupData,
           links: linkData
         });
+
+        this.onUpdateDiagramLayout.next({});
       }
     }
-
-    this.onUpdateDiagramLayout.next({});
   }
 
   nodeColourChanged(node: go.Node): void {
@@ -1070,7 +1079,30 @@ export class DiagramChangesService {
         points: link.data.route,
         fromSpot: link.data.fromSpot,
         toSpot: link.data.toSpot,
-        colour: link.data.colour
+        colour: link.data.colour,
+        showLabel: link.data.showLabel
+      }
+    );
+  }
+
+  linkShowLabelChanged(link: go.Link): void {
+    this.onUpdateLinkLabelState.next(
+      {
+        id: link.data.id,
+        points: link.data.route,
+        fromSpot: link.data.fromSpot,
+        toSpot: link.data.toSpot,
+        colour: link.data.colour,
+        showLabel: link.data.showLabel
+      }
+    );
+  }
+
+  transformationNodeShowLabelChanged(node: go.Node): void {
+    this.onUpdateTransformationNodeLabelState.next(
+      {
+        id: node.data.id,
+        showLabel: node.data.showLabel
       }
     );
   }
@@ -1120,7 +1152,8 @@ export class DiagramChangesService {
           middleExpanded: node.middleExpanded,
           bottomExpanded: node.bottomExpanded,
           areaSize: node.areaSize,
-          colour: node.colour
+          colour: node.colour,
+          showLabel: node.showLabel
         }
       };
     });
@@ -1132,7 +1165,8 @@ export class DiagramChangesService {
           route: link.route,
           fromSpot: link.fromSpot,
           toSpot: link.toSpot,
-          colour: link.colour
+          colour: link.colour,
+          showLabel: link.showLabel
         }
       };
     });

@@ -118,7 +118,7 @@
 <div class="table-footer">
   <div style="flex-grow: 1">
     <button data-qa="topology-table-create-new" mat-raised-button color="primary" class="add-btn"
-      [disabled]="!workPackageIsEditable" (click)="onAdd()">
+      [disabled]="disableCreateNewButton()" (click)="onAdd()">
       <mat-icon>add</mat-icon>Create New
     </button>
   </div>

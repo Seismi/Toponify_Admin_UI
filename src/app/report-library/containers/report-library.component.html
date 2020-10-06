@@ -54,6 +54,7 @@
               (filter)="handleFilter($event)"
               (refresh)="refreshSearch($event)"
               (sortChange)="handleTableSortChange($event)"
+              [workpackages]="workpackage$ | async"
             >
             </smi-report-library-table>
           </div>

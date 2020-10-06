@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { OwnersEntityOrTeamEntityOrApproversEntity } from '@app/architecture/store/models/node-link.model';
 import { Tag, TagApplicableTo, NodeDetail, layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import { Node } from 'gojs';
+import { Level } from '../../services/diagram-level.service';
 
 const systemCategories = [
   nodeCategories.transactional,
@@ -53,6 +54,7 @@ export class ObjectDetailsFormComponent {
   @Input() componentLayer: TagApplicableTo;
   @Input() groupInfo: NodeDetail;
   @Input() clickedOnLink: boolean;
+  @Input() filterLevel: string;
 
   constructor() {}
 
@@ -111,7 +113,7 @@ export class ObjectDetailsFormComponent {
   }
 
   nodeIsEditable(): boolean {
-    return (!this.workPackageIsEditable || this.nodeCategory === nodeCategories.copy) ? true : false;
+    return !this.workPackageIsEditable || this.nodeCategory === nodeCategories.copy || this.sourceOrTargetView;
   }
 
   onUpdateAvailableTags() {
@@ -159,13 +161,18 @@ export class ObjectDetailsFormComponent {
       ? false : this.clickedOnLink || this.nodeCategory === nodeCategories.transformation ? true : false;
   }
 
+  get sourceOrTargetView(): boolean {
+    return this.filterLevel === Level.sources || this.filterLevel === Level.targets;
+  }
+
   canBeShared(): boolean {
     return [nodeCategories.masterDataSet, nodeCategories.dataSet].includes(this.nodeCategory as nodeCategories);
   }
 
   getDisable(category?: nodeCategories): boolean {
     return this.part.data.layer === layers.data
-      && [nodeCategories.dataStructure, nodeCategories.transformation].includes(category || this.part.data.category) ? true : false;
+      && [nodeCategories.dataStructure, nodeCategories.transformation].includes(category || this.part.data.category)
+      && this.sourceOrTargetView;
   }
 
   disableIfShared(): boolean {
