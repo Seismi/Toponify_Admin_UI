@@ -194,6 +194,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   handleTableSortChange(sort: { sortOrder: string; sortBy: string }): void {
     const queryParams = {
+      workPackageQuery: this.workPackageIds,
       textFilter: '',
       page: 0,
       size: 10,
