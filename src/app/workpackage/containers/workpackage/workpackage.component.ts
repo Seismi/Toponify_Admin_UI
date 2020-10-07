@@ -40,7 +40,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
   public selectedView: WorkPackageView = WorkPackageView.Table;
   public Roles = Roles;
   public workpackageEntities$: Observable<WorkPackageEntity[]>;
-  public workpackageActive$: Observable<WorkPackagesActive[]>;
+  public workpackageActive$: Observable<WorkPackagesActive[] | WorkPackageEntity[]>;
   public selectedRowIndex: string | number;
   public workpackage: WorkPackageDetail;
   public checked: boolean;
@@ -68,6 +68,8 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
     this.store.dispatch(new LoadUsers({}));
     this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     this.workpackageEntities$ = this.store.pipe(select(fromWorkPackagesEntities.getAllWorkPackages));
+    this.loading$ = this.store.pipe(select(fromWorkPackagesEntities.workpackageActiveLoading))
+      .subscribe(loading => this.isLoading = loading);
     this.loading$ = this.store.pipe(select(workpackageLoading)).subscribe((loading) => this.isLoading = loading);
 
     this.store.dispatch(new LoadWorkPackagesActive());
@@ -87,7 +89,7 @@ export class WorkPackageComponent implements OnInit, OnDestroy {
         ...(this.workPackageParams.sortBy && { sortBy: this.workPackageParams.sortBy }),
         ...(this.workPackageParams.sortOrder && { sortOrder: this.workPackageParams.sortOrder })
 
-      }
+      };
       this.store.dispatch(new LoadWorkPackages(this.workPackageParams));
     });
 
