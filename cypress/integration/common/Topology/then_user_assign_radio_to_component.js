@@ -42,7 +42,9 @@ And('the user assign radio {string} to component with work package selected {str
     .concat(' | ')
     .concat(radio); // append the branch name to the test work package to differentiate between branch test
 
-  cy.get('[data-qa=related-radio-table-assign-radio]').click();
+  cy.get('[data-qa=related-radio-table-assign-radio]')
+    .click()
+    .wait('@GETRadios');
   cy.get('[data-qa=work-packages-radio-list-quick-search]')
     .clear()
     .paste(radio);
