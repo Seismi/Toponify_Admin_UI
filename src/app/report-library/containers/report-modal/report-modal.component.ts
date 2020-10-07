@@ -13,6 +13,8 @@ import { Node } from '@app/architecture/store/models/node.model';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 import { getNodeEntitiesBy } from '@app/architecture/store/selectors/node.selector';
 import { Level } from '@app/architecture/services/diagram-level.service';
+import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { GetNodesRequestQueryParams } from '@app/architecture/services/node.service';
 
 @Component({
   selector: 'smi-report-modal',
@@ -29,13 +31,24 @@ export class ReportModalComponent implements OnInit {
     private reportLibraryDetailService: ReportLibraryDetailService,
     public dialogRef: MatDialogRef<ReportModalComponent>,
     private teamStore: Store<TeamState>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA)
+      public data: {
+        workPackageIds: string[],
+        scope: string
+      }
+    ) { }
 
   get reportDetailForm(): FormGroup {
     return this.reportLibraryDetailService.reportDetailForm;
   }
 
   ngOnInit() {
+    const queryParams: GetNodesRequestQueryParams = {
+      workPackageQuery: this.data.workPackageIds,
+      scopeQuery: this.data.scope,
+      layerQuery: Level.system
+    };
+    this.nodeStore.dispatch(new LoadNodes(queryParams));
     this.teamStore.dispatch(new LoadTeams({}));
     this.owners$ = this.teamStore.pipe(select(getTeamEntities));
     this.systems$ = this.nodeStore.pipe(select(getNodeEntitiesBy, { layer: Level.system }));
