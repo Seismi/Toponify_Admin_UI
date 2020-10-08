@@ -80,6 +80,7 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
+      (this.filterValue && this.getPageIndex() === 1) &&
       changes.selectedItem &&
       changes.selectedItem.currentValue && (!changes.selectedItem.previousValue ||
       changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id)) {

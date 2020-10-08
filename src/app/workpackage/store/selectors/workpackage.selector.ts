@@ -33,12 +33,17 @@ export const workpackageSelectAllowed = createSelector(
 export const workpackageLoading = createSelector(
   getWorkPackageState,
   state => state.loading
-)
+);
 
 export const workpackageDetailsLoading = createSelector(
   getWorkPackageState,
   state => state.loadingDetails
-)
+);
+
+export const workpackageActiveLoading = createSelector(
+  getWorkPackageState,
+  state => state.loadingActive
+);
 
 export const getSelectedWorkPackage = createSelector(
   getWorkPackageState,
