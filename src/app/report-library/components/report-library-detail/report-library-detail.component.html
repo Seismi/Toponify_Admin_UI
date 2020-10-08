@@ -25,7 +25,7 @@
 
       <mat-form-field *ngIf="modalMode">
         <mat-label>Systems</mat-label>
-        <input matInput #input [(ngModel)]="searchField" formControlName="system" [matAutocomplete]="auto">
+        <input data-qa="reports-details-system" matInput #input [(ngModel)]="searchField" formControlName="system" [matAutocomplete]="auto">
         <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchField=''" *ngIf="searchField">close</mat-icon>
         <mat-icon class="arrow_down" matSuffix *ngIf="!searchField">keyboard_arrow_down</mat-icon>
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
