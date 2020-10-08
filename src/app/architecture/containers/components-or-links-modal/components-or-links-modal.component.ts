@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DoCheck, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Store, select } from '@ngrx/store';
 import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
@@ -6,6 +6,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Link } from 'gojs';
 import { getNodeEntities } from '@app/architecture/store/selectors/node.selector';
 import { Node } from '@app/architecture/store/models/node.model';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 
 const systemCategories = ['transactional', 'analytical', 'reporting', 'master data', 'file'];
 const dataNodeCategories = ['data structure', 'data set', 'master data set'];
@@ -17,10 +19,12 @@ const reportingConceptCategories = ['structure', 'list', 'key'];
   templateUrl: './components-or-links-modal.component.html',
   styleUrls: ['./components-or-links-modal.component.scss']
 })
-export class ComponentsOrLinksModalComponent implements OnInit {
-  public formGroup: FormGroup;
+export class ComponentsOrLinksModalComponent implements OnInit, DoCheck {
+  public group: FormGroup;
   public nodes: Node[];
-  public nameValue = '';
+  nameValue = '';
+  filteredSources$: Observable<Node[]>;
+  filteredTargets$: Observable<Node[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -33,25 +37,38 @@ export class ComponentsOrLinksModalComponent implements OnInit {
         level: string
       }
     ) {
-      this.formGroup = this.fb.group({
+      this.group = this.fb.group({
         category: [this.getCategories()[0], Validators.required],
         name: [null, (!this.data.link) ? Validators.required : null],
         sourceId: [null, (this.data.link) ? Validators.required : null],
         targetId: [null, (this.data.link) ? Validators.required : null]
       });
-
-      this.formGroup.valueChanges.subscribe(change => {
-        const selectionOptions = this.nodes.filter(node =>
-          [change.sourceId, change.targetId].includes(node.id)).map(node => node.name).join(' - ');
-        this.nameValue = selectionOptions;
-        if (change.sourceId && change.targetId && this.formGroup.value.name === null) {
-          return change.name = selectionOptions;
-        }
-      });
     }
 
+  ngDoCheck(): void {
+    const source = this.group.value.sourceId;
+    const target = this.group.value.targetId;
+    if (source && target) {
+      this.nameValue = `${source.name + ' - ' + target.name}`;
+    }
+  }
+
   ngOnInit(): void {
-    this.store.pipe(select(getNodeEntities)).subscribe(data => this.nodes = data);
+    this.store.pipe(select(getNodeEntities)).subscribe(data => (this.nodes = data));
+
+    this.filteredSources$ = this.group.get('sourceId').valueChanges
+      .pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(name => name ? this._filter(name) : this.nodes.slice())
+      );
+
+    this.filteredTargets$ = this.group.get('targetId').valueChanges
+      .pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value.name),
+        map(name => name ? this._filter(name) : this.nodes.slice())
+      );
   }
 
   getCategories(): string[] {
@@ -68,14 +85,23 @@ export class ComponentsOrLinksModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.formGroup.invalid) {
+    if (this.group.invalid) {
       return;
     }
-    this.dialogRef.close({ node: this.formGroup.value });
+    this.dialogRef.close({ node: this.group.value });
   }
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  displayFn(system: Node): string {
+    return system && system.name ? system.name : '';
+  }
+
+  private _filter(name: string): Node[] {
+    const filterValue = name.toLowerCase();
+    return this.nodes.filter(node => node.name.toLowerCase().indexOf(filterValue) === 0);
   }
 
 }

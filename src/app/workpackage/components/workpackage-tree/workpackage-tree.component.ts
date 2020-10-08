@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import * as go from 'gojs';
 import { WorkPackageDiagramService } from '@app/workpackage/services/workpackage-diagram.service';
 import { WorkPackageDetail, WorkPackagesActive } from '@app/workpackage/store/models/workpackage.models';
@@ -12,7 +12,7 @@ const $ = go.GraphObject.make;
   styleUrls: ['./workpackage-tree.component.scss'],
   providers: [WorkPackageDiagramService]
 })
-export class WorkPackageTreeComponent implements OnInit {
+export class WorkPackageTreeComponent implements OnInit, OnChanges {
   public diagram: go.Diagram;
 
   @Input() workpackages$: Observable<WorkPackagesActive[]>;
@@ -27,6 +27,12 @@ export class WorkPackageTreeComponent implements OnInit {
     this.diagram = new go.Diagram();
     this.diagram.initialContentAlignment = go.Spot.Center;
     this.diagram.allowSelect = true;
+  }
+
+  ngOnChanges(): void {
+    this.diagram.model.nodeDataArray = JSON.parse(JSON.stringify(this.workpackages$));
+    (this.diagram.model as go.GraphLinksModel).linkDataArray =
+      JSON.parse(JSON.stringify(this.workPackageDiagramService.getLinksForPackages(this.workpackages$)));
   }
 
   ngOnInit() {
