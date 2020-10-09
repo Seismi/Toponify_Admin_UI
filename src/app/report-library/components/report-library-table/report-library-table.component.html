@@ -23,7 +23,7 @@
 
     <!-- Description Column -->
     <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+      <th mat-header-cell *matHeaderCellDef>Description</th>
       <td mat-cell *matCellDef="let element">{{ element.description }}</td>
     </ng-container>
 
@@ -36,6 +36,33 @@
             <smi-tag [removable]="false" [tag]="tag"></smi-tag>
           </div>
         </mat-chip-list>
+      </td>
+    </ng-container>
+
+    <!-- RADIO Column -->
+    <ng-container matColumnDef="radio">
+      <th mat-header-cell *matHeaderCellDef>RADIO</th>
+      <td mat-cell *matCellDef="let element">
+        <span matTooltip="risks" [ngStyle]="{ 'background-color': 'orange' }" class="badge badge-pill"
+          *ngIf="element.relatedRadioCounts.risks > 0">
+          {{ element.relatedRadioCounts.risks }}
+        </span>
+        <span matTooltip="assumptions" [ngStyle]="{ 'background-color': 'yellow' }" class="badge badge-pill"
+          *ngIf="element.relatedRadioCounts.assumptions > 0">
+          {{ element.relatedRadioCounts.assumptions }}
+        </span>
+        <span matTooltip="dependencies" [ngStyle]="{ 'background-color': 'blue' }" class="badge badge-pill"
+          *ngIf="element.relatedRadioCounts.dependencies > 0">
+          {{ element.relatedRadioCounts.dependencies }}
+        </span>
+        <span matTooltip="issues" [ngStyle]="{ 'background-color': 'red' }" class="badge badge-pill"
+          *ngIf="element.relatedRadioCounts.issues > 0">
+          {{ element.relatedRadioCounts.issues }}
+        </span>
+        <span matTooltip="opportunities" [ngStyle]="{ 'background-color': 'green' }" class="badge badge-pill"
+          *ngIf="element.relatedRadioCounts.opportunities > 0">
+          {{ element.relatedRadioCounts.opportunities }}
+        </span>
       </td>
     </ng-container>
 

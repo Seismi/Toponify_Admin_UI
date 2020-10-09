@@ -4,7 +4,7 @@ import { State as ReportState } from '../store/reducers/report.reducer';
 import { AddReport, LoadReports } from '../store/actions/report.actions';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
 import { ReportLibrary } from '../store/models/report.model';
-import { getReportEntities } from '../store/selecrtors/report.selectors';
+import { getReportEntities, getReportsLoading } from '../store/selecrtors/report.selectors';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
 import {
@@ -58,6 +58,7 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   public scopeId = defaultScopeId;
   public workPackageIds: string[];
   public selectedWorkPackageEntities: WorkPackageEntity[];
+  public isLoading: boolean;
 
   private queryParams: BehaviorSubject<GetReportLibraryRequestQueryParams> = new BehaviorSubject<
     GetReportLibraryRequestQueryParams
@@ -78,12 +79,12 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.store.dispatch(new LoadNodes({ workPackageQuery: this.workpackageId ? [this.workpackageId] : [] }));
+    this.store.pipe(select(getReportsLoading)).subscribe(loading => this.isLoading = loading);
 
     this.reportEntities$ = this.store.pipe(select(getReportEntities));
 
     this.subscriptions.push(
-      this.queryParams.pipe(debounceTime(500)).subscribe(params => {
+      this.queryParams.pipe(distinctUntilChanged(isEqual), debounceTime(500)).subscribe(params => {
         this.store.dispatch(new LoadReports(params));
       })
     );
@@ -190,6 +191,17 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     });
   }
 
+  handleTableSortChange(sort: { sortOrder: string; sortBy: string }): void {
+    const queryParams = {
+      workPackageQuery: this.workPackageIds,
+      textFilter: '',
+      page: 0,
+      size: 10,
+      ...(sort.sortOrder && { sortBy: sort.sortBy, sortOrder: sort.sortOrder })
+    };
+    this.store.dispatch(new LoadReports(queryParams));
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
@@ -230,10 +242,14 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
-  onAddReport() {
+  onAddReport(): void {
     const dialogRef = this.dialog.open(ReportModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        workPackageIds: this.workPackageIds ? this.workPackageIds : [],
+        scope: this.scopeId
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {

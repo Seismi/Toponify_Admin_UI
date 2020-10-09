@@ -13,9 +13,14 @@ export const getReportSelected = createSelector(
   state => state.selected
 );
 
-export const getReportLoading = createSelector(
+export const getReportsLoading = createSelector(
   getReportFeatureState,
   state => state.loading
+);
+
+export const getReportsDetailsLoading = createSelector(
+  getReportFeatureState,
+  state => state.loadingDetails
 );
 
 export const getLayoutError = createSelector(
