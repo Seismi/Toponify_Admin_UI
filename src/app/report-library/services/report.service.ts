@@ -25,6 +25,8 @@ export interface GetReportLibraryRequestQueryParams {
   page?: number;
   size?: number;
   textFilter?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 @Injectable()

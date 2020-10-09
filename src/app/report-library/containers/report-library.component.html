@@ -42,6 +42,7 @@
       <div class="container">
         <div class="row">
           <div class="col">
+            <smi-spinner data-qa="reports-spinner" *ngIf="isLoading"></smi-spinner>
             <smi-report-library-table
               data-qa="reports-table"
               [reports]="reportEntities$ | async"
@@ -52,6 +53,7 @@
               (pageChange)="handlePageChange($event)"
               (filter)="handleFilter($event)"
               (refresh)="refreshSearch($event)"
+              (sortChange)="handleTableSortChange($event)"
               [workpackages]="workpackage$ | async"
             >
             </smi-report-library-table>
