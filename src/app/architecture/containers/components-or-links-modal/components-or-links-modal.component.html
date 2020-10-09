@@ -11,7 +11,7 @@
 
     <mat-form-field *ngIf="data.link">
       <mat-label>Source</mat-label>
-      <input matInput formControlName="sourceId" [matAutocomplete]="sources" [(ngModel)]="searchSource">
+      <input data-qa="topology-components-or-link-modal-source" matInput formControlName="sourceId" [matAutocomplete]="sources" [(ngModel)]="searchSource">
       <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchSource = ''" *ngIf="searchSource">close</mat-icon>
       <mat-icon class="arrow_down" matSuffix *ngIf="!searchSource">keyboard_arrow_down</mat-icon>
       <mat-autocomplete #sources="matAutocomplete" [displayWith]="displayFn">
@@ -24,7 +24,7 @@
 
     <mat-form-field *ngIf="data.link">
       <mat-label>Target</mat-label>
-      <input matInput formControlName="targetId" [matAutocomplete]="targets" [(ngModel)]="searchTarget">
+      <input data-qa="topology-components-or-link-modal-target" matInput formControlName="targetId" [matAutocomplete]="targets" [(ngModel)]="searchTarget">
       <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchTarget = ''" *ngIf="searchTarget">close</mat-icon>
       <mat-icon class="arrow_down" matSuffix *ngIf="!searchTarget">keyboard_arrow_down</mat-icon>
       <mat-autocomplete #targets="matAutocomplete" [displayWith]="displayFn">

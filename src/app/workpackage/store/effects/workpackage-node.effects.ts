@@ -177,13 +177,7 @@ export class WorkPackageNodeEffects {
     map(action => action.payload),
     mergeMap((payload: { workpackageId: string; nodeId: string; node: any }) => {
       return this.workpackageNodeService.updateNode(payload.workpackageId, payload.nodeId, payload.node).pipe(
-        switchMap((response: NodeDetailApiResponse) => {
-          const actions: Action[] = [new UpdateWorkPackageNodePropertySuccess(response.data)];
-          if (response.data.layer === layers.data && !response.data.isShared) {
-            actions.push(new ReloadNodesData());
-          }
-          return actions;
-        }),
+        switchMap((response: NodeDetailApiResponse) => [new UpdateWorkPackageNodeSuccess(response)]),
         catchError((error: HttpErrorResponse) => of(new UpdateWorkPackageNodeFailure(error)))
       );
     })
