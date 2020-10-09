@@ -395,7 +395,7 @@ export class DiagramLevelService {
 
     const linkLayer = level.endsWith('map') ? mapViewLinkLayers[level] : level.toLowerCase();
 
-    if (level !== Level.usage) {
+    if (![Level.usage, Level.sources, Level.targets].includes(level)) {
       paletteViewLinks.push({
         category: linkCategories.masterData,
         id: 'New master data link',
@@ -408,9 +408,7 @@ export class DiagramLevelService {
         tooltip: this.getToolTipForMasterDataLinks(level),
         label: 'New Master Data Interface'
       });
-    }
 
-    if (level !== Level.usage) {
 
       let transformationLayer;
 
