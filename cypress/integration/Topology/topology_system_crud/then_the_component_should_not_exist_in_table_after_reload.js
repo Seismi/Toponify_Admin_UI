@@ -9,12 +9,10 @@ Then('the {string} {string} should not exist in {string} table in the {string} w
 ) {
   work_package = Cypress.env('BRANCH')
     .concat(' | ')
-    .concat(work_package); // prefix the name with branch
-  cy.editWorkPackageTopology(work_package).then(() => {
-    cy.get(`[aria-posinset=${pages['tabs'][tab]}]`)
-      .click()
-      .then(() => {
-        cy.checkTopologyTable(component, component_type, 'not.exist');
-      });
-  });
+    .concat(work_package);
+  cy.get(`[aria-posinset=${pages['tabs'][tab]}]`)
+    .click()
+    .then(() => {
+      cy.checkTopologyTable(component, component_type, 'not.exist');
+    });
 });

@@ -66,7 +66,6 @@ export class AttributesComponent implements OnInit, OnDestroy {
     // Attributes And Rules
     this.subscriptions.push(
       this.store.pipe(select(fromAttributeEntities.getAttributeEntities)).subscribe(data => {
-        console.log('here');
         return (this.attribute = data);
       })
     );
