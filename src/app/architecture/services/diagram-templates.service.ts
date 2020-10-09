@@ -24,6 +24,7 @@ import {colourOptions,
   NodeColoursLight,
   NodeDetailTab
 } from '@app/architecture/store/models/layout.model';
+// import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
 
 
 function textFont(style?: string): Object {
@@ -38,8 +39,15 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
+/*
 // Custom layout for system/data groups.
-//   Based on GridLayout but with custom initialOrigin method.
+//   Based on PackedLayout.
+function StandardGroupLayout() {
+  PackedLayout.call(this);
+}
+*/
+
+// Custom layout for system/data groups.
 function StandardGroupLayout() {
   go.GridLayout.call(this);
 }
@@ -47,13 +55,23 @@ function StandardGroupLayout() {
 go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
 
 StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
-  const memberArea = this.group.resizeObject;
+  const memberArea = this.group.findObject('Group member area');
   const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
+/*
+StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
+  console.log('layout');
+  if (this.group && !this.group.isSubGraphExpanded) {
+    return;
+  }
+  this.size = this.group.findObject('Group member area').getDocumentBounds().size;
+  PackedLayout.prototype.doLayout.call(this, coll);
+};
+*/
+
 // End system/data group layout
 
-const nodeWidth = 300;
 const containerColour = '#F8C195';
 
 @Injectable()
@@ -80,13 +98,12 @@ export class DiagramTemplatesService {
       {
         selectionAdorned: true,
         isShadowed: true,
-        resizable: false,
+        resizable: true,
         // tslint:disable-next-line:no-bitwise
         layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized,
         portSpreading: go.Node.SpreadingEvenly,
         locationSpot: go.Spot.Top,
-        locationObjectName: 'location panel',
-        dragComputation: this.gojsCustomObjectsService.avoidNodeOverlap.bind(this.gojsCustomObjectsService)
+        locationObjectName: 'location panel'
       },
       !forPalette
         ? {
@@ -113,7 +130,8 @@ export class DiagramTemplatesService {
       toLinkableSelfNode: false,
       fromLinkableDuplicates: true,
       toLinkableDuplicates: true,
-      name: 'shape'
+      name: 'shape',
+      minSize: new go.Size(300, NaN)
     };
   }
 
@@ -179,7 +197,8 @@ export class DiagramTemplatesService {
       go.Panel,
       'Auto',
       {
-        background: 'black'
+        background: 'black',
+        stretch: go.GraphObject.Horizontal
       },
       $(
         go.Panel,
@@ -187,8 +206,7 @@ export class DiagramTemplatesService {
         {
           background: 'white',
           margin: new go.Margin(1),
-          padding: new go.Margin(7, 2, 1, 2),
-          width: nodeWidth - 10
+          padding: new go.Margin(7, 2, 1, 2)
         },
         $(
           go.TextBlock,
@@ -211,7 +229,7 @@ export class DiagramTemplatesService {
       go.Panel,
       'Auto',
       {
-        margin: new go.Margin(0, 5, 0, 0)
+        margin: new go.Margin(0, 5, 0, 5)
       },
       $(go.Shape, 'RoundedRectangle', {
         fill: 'transparent',
@@ -801,15 +819,9 @@ export class DiagramTemplatesService {
         row: 0,
         alignment: go.Spot.TopCenter,
         stretch: go.GraphObject.Horizontal,
-        minSize: new go.Size(nodeWidth, 30),
-        margin: new go.Margin(5),
-        maxSize: new go.Size(nodeWidth, 30)
+        margin: new go.Margin(5)
       },
-      new go.Binding('maxSize', 'bottomExpanded', function(bottomExpanded) {
-        return bottomExpanded !== bottomOptions.group ?
-          new go.Size(nodeWidth, 30) : new go.Size(NaN, 60);
-      }),
-      $(go.RowColumnDefinition, { row: 0, height: 30}),
+      $(go.RowColumnDefinition, { row: 0, height: 30 }),
       $(go.RowColumnDefinition, { column: 0, maximum: 25}),
       $(go.RowColumnDefinition, { column: 1 }),
       $(go.RowColumnDefinition, { column: 2 }),
@@ -935,69 +947,40 @@ export class DiagramTemplatesService {
   getBottomSection(isGroup = false): go.Panel {
     return $(
       go.Panel,
-      'Vertical',
+      'Auto',
       {
         name: 'bottom',
         row: 2,
-        stretch: go.GraphObject.Horizontal,
+        stretch: go.GraphObject.Fill,
+        alignment: go.Spot.TopCenter,
+        alignmentFocus: go.Spot.TopCenter,
         margin: new go.Margin(5),
-        visible: false
+        background: null
       },
-      new go.Binding('visible', 'bottomExpanded',
-        function(bottomExpanded) {
-          return bottomExpanded !== bottomOptions.none;
-        }.bind(this)
-      ),
-      // Do not show description for systems or data nodes
-      !isGroup ? $(
-        go.TextBlock,
-        textFont('16px'),
+      // Area for grouped nodes to appear in
+      $(go.Shape,
         {
-          textAlign: 'center',
-          stroke: 'black',
-          stretch: go.GraphObject.Horizontal,
-          maxSize: new go.Size(nodeWidth - 10, Infinity),
-          margin: new go.Margin(5, 0, 0, 0)
-        },
-        new go.Binding('text', 'description'),
-        new go.Binding('visible', 'description').ofModel()
-      ) : {},
-      $(
-        go.TextBlock,
-        textFont('italic 16px'),
-        {
-          textAlign: 'center',
-          stroke: 'black',
-          stretch: go.GraphObject.Horizontal,
-          maxSize: new go.Size(nodeWidth - 10, Infinity),
-          margin: new go.Margin(5, 0, 0, 0)
-        },
-        new go.Binding('text', 'owners', function(owners: any[]): string {
-          return owners.length > 0
-            ? 'Owners - ' +
-                owners
-                  .map(function(owner): string {
-                    return owner.name;
-                  })
-                  .join(', ')
-            : '';
-        }),
-        new go.Binding('visible', '', function(node): boolean {
-          return node.diagram.model.modelData.owners &&
-            node.data.bottomExpanded !== bottomOptions.group;
-        }).ofObject()
+          stretch: go.GraphObject.Fill,
+          name: 'Group member area',
+          figure: 'rectangle',
+          stroke: null,
+          fill: null
+        }
       ),
       $(
         go.Panel,
         'Vertical',
         {
-          stretch: go.GraphObject.Horizontal
+          alignment: go.Spot.TopCenter,
+          stretch: go.GraphObject.Horizontal,
+          margin: new go.Margin(0, 3, 0, 3)
         },
         // Descendants list
         $(go.Panel,
           'Vertical',
           {
-            alignment: go.Spot.TopLeft,
+            name: 'Descendants List',
+            alignment: go.Spot.TopCenter,
             stretch: go.GraphObject.Horizontal
           },
           $(go.TextBlock, textFont('italic 18px'),
@@ -1008,7 +991,7 @@ export class DiagramTemplatesService {
             },
             new go.Binding('text', 'layer', function(layer) {
               const descendantsLayer = {
-                [layers.system]: 'Data Sets',
+                [layers.system]: 'Data Nodes',
                 [layers.data]: 'Dimensions',
                 [layers.dimension]: 'Reporting Concepts'
               };
@@ -1019,10 +1002,9 @@ export class DiagramTemplatesService {
             go.Panel,
             'Vertical',
             {
-              name: 'Descendants List',
               // padding: 3,
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
+              alignment: go.Spot.TopCenter,
+              defaultAlignment: go.Spot.TopCenter,
               stretch: go.GraphObject.Horizontal,
               itemCategoryProperty: '',
               itemTemplate: this.getItemTemplate()
@@ -1040,8 +1022,9 @@ export class DiagramTemplatesService {
         $(go.Panel,
           'Vertical',
           {
-            alignment: go.Spot.TopLeft,
-            defaultAlignment: go.Spot.Left,
+            name: 'Group Members List',
+            alignment: go.Spot.TopCenter,
+            defaultAlignment: go.Spot.TopCenter,
             stretch: go.GraphObject.Horizontal
           },
           $(go.TextBlock, textFont('italic 18px'),
@@ -1056,9 +1039,8 @@ export class DiagramTemplatesService {
           $(go.Panel,
             'Vertical',
             {
-              name: 'Groups List',
-              alignment: go.Spot.TopLeft,
-              defaultAlignment: go.Spot.Left,
+              alignment: go.Spot.TopCenter,
+              defaultAlignment: go.Spot.TopCenter,
               stretch: go.GraphObject.Horizontal,
               itemCategoryProperty: '',
               itemTemplate: this.getItemTemplate()
@@ -1068,24 +1050,6 @@ export class DiagramTemplatesService {
           new go.Binding('visible', 'bottomExpanded',
             function (bottomExpanded) {
               return bottomExpanded === bottomOptions.groupList;
-            }
-          )
-        ),
-        // Area for grouped nodes to appear in
-        $(go.Shape,
-          {
-            name: 'Group member area',
-            figure: 'rectangle',
-            stroke: null,
-            fill: null,
-            stretch: go.GraphObject.Horizontal,
-            height: 200,
-            minSize: new go.Size(nodeWidth + 20, 200)
-          },
-          new go.Binding('desiredSize', 'areaSize', go.Size.parse).makeTwoWay(go.Size.stringify),
-          new go.Binding('visible', 'bottomExpanded',
-            function(bottomExpanded) {
-              return bottomExpanded === bottomOptions.group;
             }
           )
         )
@@ -1102,7 +1066,8 @@ export class DiagramTemplatesService {
         name: 'middle',
         row: 1,
         stretch: go.GraphObject.Horizontal,
-        margin: new go.Margin(2)
+        margin: new go.Margin(2),
+        // minSize: new go.Size(300, 65)
       },
       new go.Binding('visible', 'middleExpanded').makeTwoWay(),
       $(go.Panel,
@@ -1152,7 +1117,7 @@ export class DiagramTemplatesService {
         $(go.RowColumnDefinition,
           {
             column: 0,
-            minimum: nodeWidth / 2,
+            minimum: 135,
             stretch: go.GraphObject.Horizontal,
             sizing: go.RowColumnDefinition.ProportionalExtra
           }
@@ -1162,10 +1127,16 @@ export class DiagramTemplatesService {
             sizing: go.RowColumnDefinition.ProportionalExtra,
             column: 1,
             separatorStrokeWidth: 2,
-            minimum: nodeWidth / 2 - (isGroup ? 0 : 30)
+            minimum: 135
           }
         ),
-        $(go.RowColumnDefinition, {column: 2, separatorStroke: 'white', maximum: 30}),
+        $(go.RowColumnDefinition,
+          {
+            column: 2,
+            separatorStroke: 'transparent',
+            sizing: go.RowColumnDefinition.None
+          }
+        ),
         this.getRadioAlertIndicators(),
         this.getWorkpackageImpactIcons(isGroup ? 4 : 3),
         isGroup ? {} : this.getBottomExpandButton()
@@ -1183,7 +1154,7 @@ export class DiagramTemplatesService {
     tagGroup = createTempPanel.call(this, tagArray);
 
     // If size of tag section too big then...
-    if (tagGroup.naturalBounds.right > nodeWidth - 4) {
+    if (tagGroup.naturalBounds.right > 146 /* To be Updated */) {
       // ...add an ellipsis to the end of the tag list to show that some tags are not shown...
       tagArray.push({
         id: '00000000-0000-0000-0000-000000000000',
@@ -1198,7 +1169,7 @@ export class DiagramTemplatesService {
       do {
         tagArray.splice(-2, 1);
         tagGroup = createTempPanel.call(this, tagArray);
-      } while (tagGroup.naturalBounds.right > nodeWidth - 4);
+      } while (tagGroup.naturalBounds.right > 146 /* To be Updated */);
     }
 
     return tagArray;
@@ -1226,7 +1197,8 @@ export class DiagramTemplatesService {
       {
         contextMenu: this.gojsCustomObjectsService.getLinkContextMenu(),
         doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
-        selectionObjectName: 'shape'
+        selectionObjectName: 'shape',
+        resizable: false
       },
       new go.Binding(
         'movable',
@@ -1258,7 +1230,9 @@ export class DiagramTemplatesService {
           $(go.Shape,
             this.getStandardNodeShapeOptions(),
             {
-              desiredSize: new go.Size(60.3, 53.6)
+              desiredSize: new go.Size(60.3, 53.6),
+              minSize: new go.Size(60.3, 53.6),
+              name: 'shape'
             },
             new go.Binding(
               'stroke',
@@ -1319,8 +1293,9 @@ export class DiagramTemplatesService {
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
       this.getStandardNodeOptions(forPalette),
       {
+        resizeObjectName: 'content table',
         doubleClick: function(event, node) {
-          this.diagramLevelService.changeLevelWithFilter.call(this, event, node);
+          this.gojsCustomObjectsService.showRightPanelTabSource.next();
         }.bind(this)
       },
       new go.Binding(
@@ -1393,7 +1368,33 @@ export class DiagramTemplatesService {
       $(
         go.Panel,
         'Table',
-        { defaultRowSeparatorStroke: 'black' },
+        {
+          name: 'content table',
+          defaultRowSeparatorStroke: 'black',
+          desiredSize: new go.Size(310, 40),
+          minSize: new go.Size(310, 40),
+        },
+        new go.Binding('minSize', '', function(data, table) {
+          let minHeight = 40;
+          if (data.middleExpanded) {
+            minHeight += 70;
+          }
+          if (data.bottomExpanded === bottomOptions.children) {
+            minHeight += 30.43 * data.descendants.length;
+            minHeight += 35;
+          }
+          return new go.Size(310, minHeight);
+        }),
+        new go.Binding('desiredSize', 'areaSize', go.Size.parse).makeTwoWay(go.Size.stringify),
+        $(go.RowColumnDefinition, { row: 0, sizing: go.RowColumnDefinition.None}),
+        $(go.RowColumnDefinition, { row: 1, sizing: go.RowColumnDefinition.None}),
+        $(go.RowColumnDefinition,
+          {
+            row: 2,
+            sizing: go.RowColumnDefinition.ProportionalExtra,
+            stretch: go.GraphObject.Fill
+          }
+        ),
         new go.Binding(
           'defaultRowSeparatorStroke',
           'colour',
@@ -1422,20 +1423,24 @@ export class DiagramTemplatesService {
             isInitial: true,
             alignment: go.GridLayout.Location,
             spacing: new go.Size(NaN, 12)
-          },
+            /*
+            spacing: 12,
+            packShape: PackedLayout.Rectangular,
+            packMode: PackedLayout.Fit,
+            */
+          }
         ),
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
         selectionObjectName: 'main content',
-        resizeObjectName: 'Group member area',
+        resizeObjectName: 'content table',
         doubleClick: function(event, node) {
           this.gojsCustomObjectsService.showRightPanelTabSource.next();
         }.bind(this),
         dragComputation: function(part, pt, gridpt) {
           // don't constrain top-level nodes
           const grp = part.containingGroup;
-          if (grp === null) { return this.gojsCustomObjectsService.avoidNodeOverlap(part, pt, gridpt); }
           // try to stay within the background Shape of the Group
-          const back = grp.resizeObject;
+          const back = grp ? grp.findObject('Group member area') : null;
           if (back === null) { return pt; }
           const p1 = back.getDocumentPoint(go.Spot.TopLeft);
           const p2 = back.getDocumentPoint(go.Spot.BottomRight);
@@ -1448,9 +1453,8 @@ export class DiagramTemplatesService {
           // now limit the location appropriately
           const x = Math.max(p1.x, Math.min(pt.x, p2.x - b.width - 1));
           const y = Math.max(p1.y, Math.min(pt.y, p2.y - b.height - 1));
-          const newPoint = new go.Point(x, y);
 
-          return this.gojsCustomObjectsService.avoidNodeOverlap(part, newPoint, newPoint);
+          return new go.Point(x, y);
         }.bind(this),
         // Update cursor when dragging a node over the group.
         // Indicates that node can be dropped to add it to the group.
@@ -1485,9 +1489,6 @@ export class DiagramTemplatesService {
           return ![Level.usage, Level.sources, Level.targets].includes(this.currentFilterLevel);
         }.bind(this)
       ),
-      new go.Binding('resizable', 'bottomExpanded', function(bottomExpanded) {
-        return bottomExpanded === bottomOptions.group;
-      }),
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
@@ -1554,20 +1555,7 @@ export class DiagramTemplatesService {
             toLinkableSelfNode: false,
             fromLinkableDuplicates: true,
             toLinkableDuplicates: true
-          },
-          new go.Binding('fromSpot', 'group', function(group) {
-            if (group) {
-              return go.Spot.LeftRightSides;
-            } else {
-              return go.Spot.AllSides;
-            }
-          }),
-          new go.Binding('toSpot', 'group', function(group) {
-            if (group) {return go.Spot.LeftRightSides;
-            } else {
-              return go.Spot.AllSides;
-            }
-          })
+          }
         ),
         $(go.Panel, 'Auto',
           {
@@ -1609,7 +1597,51 @@ export class DiagramTemplatesService {
           $(
             go.Panel,
             'Table',
-            { defaultRowSeparatorStroke: 'black' },
+            {
+              name: 'content table',
+              defaultRowSeparatorStroke: 'black',
+              desiredSize: new go.Size(310, 40),
+              minSize: new go.Size(310, 40)
+            },
+            $(go.RowColumnDefinition, { row: 0, sizing: go.RowColumnDefinition.None}),
+            $(go.RowColumnDefinition, { row: 1, sizing: go.RowColumnDefinition.None}),
+            $(go.RowColumnDefinition,
+              {
+                row: 2,
+                sizing: go.RowColumnDefinition.ProportionalExtra,
+                stretch: go.GraphObject.Fill
+              },
+              new go.Binding('separatorStroke', 'bottomExpanded',
+                function(bottom: bottomOptions): go.BrushLike {
+                  return bottom === bottomOptions.group ? null : 'transparent';
+                }
+              )
+            ),
+            new go.Binding('minSize', '', function(data) {
+              let minHeight = 40;
+              let minWidth = 310;
+              if (data.middleExpanded) {
+                minHeight += 70;
+              }
+              if (data.bottomExpanded === bottomOptions.children) {
+                minHeight += 30.43 * data.descendants.length;
+                minHeight += 35;
+              } else if (data.bottomExpanded === bottomOptions.groupList) {
+                minHeight += 30.43 * data.members.length;
+                minHeight += 35;
+              } else if (data.bottomExpanded === bottomOptions.group) {
+
+                if ([Level.targets, Level.sources].includes(this.currentFilterLevel)) {
+                  minHeight += 42;
+                } else {
+                  minHeight += data.members.length * 42;
+                }
+                minHeight += 20;
+                minWidth += 20;
+              }
+              return new go.Size(minWidth, minHeight);
+            }.bind(this)),
+            new go.Binding('desiredSize', 'areaSize', go.Size.parse).makeTwoWay(go.Size.stringify),
             new go.Binding(
               'defaultRowSeparatorStroke',
               'colour',
