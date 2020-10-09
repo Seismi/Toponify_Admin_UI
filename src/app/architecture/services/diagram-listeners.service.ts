@@ -113,7 +113,7 @@ export class DiagramListenersService {
 
                 // Place member underneath all correctly positioned members,
                 //  separated by a small gap
-                group.findSubGraphParts().each(function(part: go.Part) {
+                group.memberParts.each(function(part: go.Part) {
 
                   const partBounds = part.getDocumentBounds();
 
@@ -178,6 +178,7 @@ export class DiagramListenersService {
                 link.data.updateRoute = true;
                 link.updateRoute();
               });
+
               if (node.containingGroup) {
                 this.diagramChangesService.groupMemberSizeChanged(node);
               }
@@ -323,6 +324,14 @@ export class DiagramListenersService {
       // Ensure instructions do not exceed screen space available
       instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
     });
+
+    // Update z order when selection changes to ensure selected nodes are in front
+    diagram.addDiagramListener(
+      'ChangedSelection',
+      function(event: go.DiagramEvent): void {
+        this.diagramChangesService.updateZOrder(event.diagram);
+      }.bind(this)
+    );
 
     // In node usage view, highlight the originating node with a blue shadow.
     // Also, ensure originating node is visible by expanding the chain of containing nodes.

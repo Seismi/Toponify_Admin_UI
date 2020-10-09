@@ -852,8 +852,9 @@ export class DiagramChangesService {
 
       const memberArea = group.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
+      const nonMemberSectionsHeight = group.resizeObject.getDocumentBounds().height - memberBounds.height;
 
-      group.findSubGraphParts().each(function(part: go.Part): void {
+      group.memberParts.each(function(part: go.Part): void {
         if (part instanceof go.Node) {
           // If member is located outside of the group and is not automatically laid out then reposition member
           if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
@@ -885,10 +886,10 @@ export class DiagramChangesService {
         }
       });
 
-      // Set height and width of group member area to match the area previously
+      // Set height and width of group to enclose the area previously
       //  calculated as necessary to enclose the members.
-      group.findObject('Group member area').height = memberBounds.height;
-      group.findObject('Group member area').width = memberBounds.width;
+      group.resizeObject.height = memberBounds.height + nonMemberSectionsHeight;
+      group.resizeObject.width = memberBounds.width;
     } else {
       // If group collapsed, just ensure bounds are correct
       group.ensureBounds();
@@ -946,7 +947,7 @@ export class DiagramChangesService {
       }
     });
 
-    if (this.currentLevel === Level.usage || this.currentLevel === Level.systemMap) {
+    if (this.currentLevel === Level.usage || this.currentLevel.includes('map')) {
       // Update node's layout in usage view
       node.findTopLevelPart().invalidateLayout();
     } else {
@@ -990,6 +991,7 @@ export class DiagramChangesService {
 
       const memberArea = currentGroup.findObject('Group member area');
       const memberBounds = memberArea.getDocumentBounds().copy();
+      const nonMemberSectionsHeight = currentGroup.resizeObject.getDocumentBounds().height - memberBounds.height;
 
       // If currently considered group is already large enough then exit loop
       if (memberBounds.containsRect(currentMinBounds)) {
@@ -1003,14 +1005,18 @@ export class DiagramChangesService {
       // Expand minimum required area to include current group member area
       currentMinBounds = currentMinBounds.unionRect(memberBounds);
 
-      // Expand group member area width and height to ensure it is large enough to enclose all group members
-      memberArea.height = Math.max(currentMinBounds.bottom - memberBounds.top, memberArea.height);
-      memberArea.width =
-        Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left);
+      // Expand group width and height to ensure it is large enough to enclose all group members
+      currentGroup.resizeObject.height = Math.max(
+        nonMemberSectionsHeight + currentMinBounds.bottom - memberBounds.top + 10,
+        currentGroup.resizeObject.getDocumentBounds().height
+      );
+      currentGroup.resizeObject.width = Math.max(
+        Math.max(memberBounds.right, currentMinBounds.right) - Math.min(memberBounds.left, currentMinBounds.left) + 10,
+        currentGroup.resizeObject.getDocumentBounds().width
+      );
 
       // Shift group horizontally in order to ensure group member area correctly encloses required bounds
       currentGroup.location = new go.Point(currentMinBounds.centerX, currentGroup.location.y);
-
       // For next iteration, set minimum bounds equal to new bounds of current group
       currentGroup.ensureBounds();
       currentMinBounds = currentGroup.getDocumentBounds().copy();
@@ -1320,7 +1326,7 @@ export class DiagramChangesService {
   }
 
   // Check for any other nodes already occupying a given space
-  isUnoccupied(rectangle: go.Rect, node: go.Node, ignoreGroups = false): boolean {
+  isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
     const diagram = node.diagram;
     const dragFromPalette = !!diagram.toolManager.draggingTool.copiedParts;
 
@@ -1331,10 +1337,6 @@ export class DiagramChangesService {
       const part = obj.part;
 
       if (part === node) {
-        return null;
-      }
-
-      if (part.data.isGroup && ignoreGroups) {
         return null;
       }
 
@@ -1411,6 +1413,41 @@ export class DiagramChangesService {
       }
     }
     return null;
+  }
+
+  // Update z order to ensure that the last selected parts are on top, as well as keeping
+  //  group members further forward from their containing groups.
+  updateZOrder(diagram: go.Diagram): void {
+    let maxZ = 0;
+    // First assign all nodes a z order equal to how deeply nested in groups they are
+    diagram.nodes.each(function(node) {
+      node.zOrder = node.findSubGraphLevel();
+      // Track maximum z order assigned
+      maxZ = Math.max(0, node.zOrder);
+    });
+
+    // Assign selection (and members of selected groups) the largest z order
+    diagram.selection.each(function(part) {
+      // Selection z order
+      part.zOrder = maxZ + 1 + part.findSubGraphLevel();
+      if (part instanceof go.Group) {
+        part.findSubGraphParts().each(function(subPart) {
+          // Nested group member z order
+          subPart.zOrder = maxZ + 1 + subPart.findSubGraphLevel();
+        });
+      }
+    });
+
+    // Set z order for links
+    diagram.links.each(function(link) {
+      if (link.fromNode && link.toNode) {
+        // Connected links to have same z order as frontmost connected node
+        link.zOrder = Math.max(link.fromNode.zOrder, link.toNode.zOrder);
+      } else {
+        // Disconnected links always appear at the front
+        link.zOrder = maxZ * 2 + 2;
+      }
+    });
   }
 
   // Update guide with instructions for current diagram state
