@@ -80,7 +80,6 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.pipe(select(getReportsLoading)).subscribe(loading => this.isLoading = loading);
-    this.store.dispatch(new LoadNodes({ workPackageQuery: this.workpackageId ? [this.workpackageId] : [] }));
 
     this.reportEntities$ = this.store.pipe(select(getReportEntities));
 
@@ -243,10 +242,14 @@ export class ReportLibraryComponent implements OnInit, OnDestroy {
     this.workPackageStore.dispatch(new SetWorkpackageEditMode({ id: workpackage.id, newState: !workpackage.edit }));
   }
 
-  onAddReport() {
+  onAddReport(): void {
     const dialogRef = this.dialog.open(ReportModalComponent, {
       disableClose: false,
-      width: '500px'
+      width: '500px',
+      data: {
+        workPackageIds: this.workPackageIds ? this.workPackageIds : [],
+        scope: this.scopeId
+      }
     });
 
     dialogRef.afterClosed().subscribe(data => {
