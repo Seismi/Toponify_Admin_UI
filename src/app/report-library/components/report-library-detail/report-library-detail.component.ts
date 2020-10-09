@@ -1,20 +1,24 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {
   DataSetsEntityOrDimensionsEntityOrReportingConceptsEntity,
   Dimension,
   OwnersEntity
 } from '@app/report-library/store/models/report.model';
-import { Tag, Node } from '@app/architecture/store/models/node.model';
+import { Tag, Node, LoadingStatus } from '@app/architecture/store/models/node.model';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { getLoadingNodesStatus } from '@app/architecture/store/selectors/node.selector';
+import { State as NodeState } from '@app/architecture/store/reducers/architecture.reducer';
 
 @Component({
   selector: 'smi-report-library-detail',
   templateUrl: 'report-library-detail.component.html',
   styleUrls: ['report-library-detail.component.scss']
 })
-export class ReportLibraryDetailComponent implements OnInit {
+export class ReportLibraryDetailComponent implements OnChanges {
+  public loadingStatus = LoadingStatus;
   filteredOptions$: Observable<Node[]>;
   public group: FormGroup;
   private values;
@@ -49,13 +53,21 @@ export class ReportLibraryDetailComponent implements OnInit {
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateAvailableTags = new EventEmitter<void>();
 
-  ngOnInit() {
-    this.filteredOptions$ = this.group.get('system').valueChanges
-      .pipe(
-        startWith(''),
-        map(value => typeof value === 'string' ? value : value.name),
-        map(name => name ? this._filter(name) : this.systems.slice())
-      );
+  get isLoading$(): Observable<LoadingStatus> {
+    return this.store.select(getLoadingNodesStatus);
+  }
+
+  constructor(private store: Store<NodeState>) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.systems && changes.systems.currentValue) {
+      this.filteredOptions$ = this.group.get('system').valueChanges
+        .pipe(
+          startWith(''),
+          map(value => typeof value === 'string' ? value : value.name),
+          map(name => name ? this._filter(name) : changes.systems.currentValue.slice())
+        );
+    }
   }
 
   onSave(): void {

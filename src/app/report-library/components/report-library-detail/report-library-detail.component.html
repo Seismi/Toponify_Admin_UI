@@ -25,9 +25,37 @@
 
       <mat-form-field *ngIf="modalMode">
         <mat-label>Systems</mat-label>
-        <input data-qa="reports-details-system" matInput #input [(ngModel)]="searchField" formControlName="system" [matAutocomplete]="auto">
-        <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchField=''" *ngIf="searchField">close</mat-icon>
-        <mat-icon class="arrow_down" matSuffix *ngIf="!searchField">keyboard_arrow_down</mat-icon>
+        <input
+          data-qa="reports-details-system"
+          matInput 
+          #input 
+          [(ngModel)]="searchField" 
+          formControlName="system" 
+          [matAutocomplete]="auto"
+          [readonly]="(isLoading$ | async) === loadingStatus.loading"
+        >
+        <mat-icon 
+          class="arrow_down"
+          matSuffix 
+          (click)="$event.stopPropagation(); searchField=''" 
+          *ngIf="searchField && (isLoading$ | async) === loadingStatus.loaded"
+        >
+          close
+        </mat-icon>
+        <mat-icon 
+          class="arrow_down" 
+          matSuffix
+          *ngIf="!searchField && (isLoading$ | async) === loadingStatus.loaded"
+        >
+          keyboard_arrow_down
+        </mat-icon>
+        <mat-spinner 
+          data-qa="reports-details-system-spinner" 
+          matSuffix 
+          diameter=20 
+          *ngIf="(isLoading$ | async) === loadingStatus.loading"
+        >
+        </mat-spinner>
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
           <mat-option *ngFor="let system of filteredOptions$ | async | orderBy: 'name'" [value]="system">
             {{ system.name }}

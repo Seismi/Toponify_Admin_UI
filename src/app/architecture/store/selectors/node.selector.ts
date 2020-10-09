@@ -124,6 +124,11 @@ export const getDraft = createSelector(
   state => state.draft
 );
 
+export const getLoadingNodesStatus = createSelector(
+  getNodeFeatureState,
+  state => state.loadingNodes
+);
+
 export const getNodeLoadingStatus = createSelector(
   getNodeFeatureState,
   state => state.loadingNode
