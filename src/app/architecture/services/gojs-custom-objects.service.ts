@@ -98,11 +98,13 @@ export class CustomNodeResize extends go.ResizingTool {
   doActivate() {
     go.ResizingTool.prototype.doActivate.call(this);
 
-    (this.adornedObject.part as go.Group).findSubGraphParts().each(
-      function(node) {
-        node.data.tempSavedPosition = node.position.copy();
-      }
-    );
+    if (this.adornedObject.part instanceof go.Group) {
+      this.adornedObject.part.findSubGraphParts().each(
+        function(node) {
+          node.data.tempSavedPosition = node.position.copy();
+        }
+      );
+    }
   }
 
   // Constrain minimum size to encompass all system/data group members
@@ -110,46 +112,56 @@ export class CustomNodeResize extends go.ResizingTool {
 
     // Default minimum size irrespective of group members
     const minSize = go.ResizingTool.prototype.computeMinSize.call(this);
+
+    // Use default minumum size if node is not a group
+    if (!(this.adornedObject.part instanceof go.Group)) {
+      return minSize;
+    }
+
     const group = this.adornedObject.part as go.Group;
 
-    // Determine which way/ways the group is being enlarged
-    //  based on alignment of the resizing handle being dragged
-    const draggedSides = {
-      top: this.handle.alignment.y === 0,
-      right: this.handle.alignment.x === 1,
-      bottom: this.handle.alignment.y === 1,
-      left: this.handle.alignment.x === 0
-    };
+    if (group.isSubGraphExpanded) {
 
-    // Get bounds of current group member area
-    const memberArea = this.adornedObject.getDocumentBounds();
+      // Determine which way/ways the group is being enlarged
+      //  based on alignment of the resizing handle being dragged
+      const draggedSides = {
+        top: this.handle.alignment.y === 0,
+        right: this.handle.alignment.x === 1,
+        bottom: this.handle.alignment.y === 1,
+        left: this.handle.alignment.x === 0
+      };
 
-    // For each direction the group is being enlarged in,
-    //  ensure that no grouped node would be left outside the group member area
-    group.memberParts.each(
-      function(node: go.Part) {
-        // Ignore links between nodes in the group
-        if (node instanceof go.Node) {
+      // Get bounds of current group member area
+      const memberArea = this.adornedObject.panel.findObject('Group member area').getDocumentBounds();
+      const extra = 130;
 
-          // Prevent the top side of the group being dragged too low
-          if (draggedSides.top) {
-            minSize.height = Math.max(minSize.height, memberArea.bottom - node.actualBounds.top);
-          }
-          // Prevent the right side of the group being dragged too far left
-          if (draggedSides.right) {
-            minSize.width = Math.max(minSize.width, node.actualBounds.right - memberArea.left);
-          }
-          // Prevent the bottom side of the group being dragged too high
-          if (draggedSides.bottom) {
-            minSize.height = Math.max(minSize.height, node.actualBounds.bottom - memberArea.top);
-          }
-          // Prevent the left side of the group being dragged too far right
-          if (draggedSides.left) {
-            minSize.width = Math.max(minSize.width, memberArea.right - node.actualBounds.left);
+      // For each direction the group is being enlarged in,
+      //  ensure that no grouped node would be left outside the group member area
+      group.memberParts.each(
+        function(node: go.Part) {
+          // Ignore links between nodes in the group
+          if (node instanceof go.Node) {
+
+            // Prevent the top side of the group being dragged too low
+            if (draggedSides.top) {
+              minSize.height = Math.max(minSize.height, extra + memberArea.bottom - node.actualBounds.top);
+            }
+            // Prevent the right side of the group being dragged too far left
+            if (draggedSides.right) {
+              minSize.width = Math.max(minSize.width, node.actualBounds.right - memberArea.left);
+            }
+            // Prevent the bottom side of the group being dragged too high
+            if (draggedSides.bottom) {
+              minSize.height = Math.max(minSize.height, extra + node.actualBounds.bottom - memberArea.top);
+            }
+            // Prevent the left side of the group being dragged too far right
+            if (draggedSides.left) {
+              minSize.width = Math.max(minSize.width, memberArea.right - node.actualBounds.left);
+            }
           }
         }
-      }
-    );
+      );
+    }
 
     return minSize;
   }
@@ -162,14 +174,35 @@ export class CustomNodeResize extends go.ResizingTool {
 
     // If group is itself contained in a group then ensure that the group is not
     //  expanded outside the bounds of its containing group
-    if (group.containingGroup) {
-      const containingArea = group.containingGroup.resizeObject.getDocumentBounds();
-      const groupContainingArea = group.resizeObject.getDocumentBounds();
+    if (group.containingGroup && group.containingGroup.category !== '') {
+
+      // Determine which way/ways the group is being enlarged
+      //  based on alignment of the resizing handle being dragged
+      const draggedSides = {
+        top: this.handle.alignment.y === 0,
+        right: this.handle.alignment.x === 1,
+        bottom: this.handle.alignment.y === 1,
+        left: this.handle.alignment.x === 0
+      };
+
+      const containingArea = group.containingGroup.findObject('Group member area').getDocumentBounds();
       const groupArea = group.getDocumentBounds();
 
-      // Constrain group member area size, accounting for the resulting size of the whole group
-      maxSize.height = Math.max(maxSize.height,  containingArea.height + groupContainingArea.height - groupArea.height);
-      maxSize.width = Math.max(maxSize.width,  containingArea.width + groupContainingArea.width - groupArea.width);
+      if (draggedSides.top) {
+        maxSize.height = Math.min(maxSize.height, groupArea.bottom - containingArea.top - 10);
+      }
+
+      if (draggedSides.right) {
+        maxSize.width = Math.min(maxSize.width, containingArea.right - groupArea.left - 10);
+      }
+
+      if (draggedSides.bottom) {
+        maxSize.height = Math.min(maxSize.height, containingArea.bottom - groupArea.top - 10);
+      }
+
+      if (draggedSides.left) {
+        maxSize.width = Math.min(maxSize.width, groupArea.right - containingArea.left - 10);
+      }
     }
 
     return maxSize;
@@ -177,28 +210,28 @@ export class CustomNodeResize extends go.ResizingTool {
 
   // Override standard resize in order to prevent grouped nodes from shifting position
   public resize(newr: go.Rect): void {
-    const memberLocations = [];
-
     // Perform standard resizing
     go.ResizingTool.prototype.resize.call(this, newr);
 
-    // Restore grouped node's positions from before the resizing
-    (this.adornedObject.part as go.Group).findSubGraphParts().each(
-      function(node) {
-        node.position = node.data.tempSavedPosition;
-    });
-
+    if (this.adornedObject.part instanceof go.Group) {
+      // Restore grouped node's positions from before the resizing
+      this.adornedObject.part.findSubGraphParts().each(
+        function (node) {
+          node.position = node.data.tempSavedPosition;
+        }
+      );
+    }
   }
 
   doDeactivate() {
-
-    // Remove temporary saved position from node data
-    (this.adornedObject.part as go.Group).findSubGraphParts().each(
-      function(node) {
-        delete node.data.tempSavedPosition;
-      }
-    );
-
+    if (this.adornedObject.part instanceof go.Group) {
+      // Remove temporary saved position from node data
+      this.adornedObject.part.findSubGraphParts().each(
+        function (node) {
+          delete node.data.tempSavedPosition;
+        }
+      );
+    }
     return go.ResizingTool.prototype.doDeactivate.call(this);
   }
 }
@@ -261,10 +294,7 @@ export class CustomCommandHandler extends go.CommandHandler {
       // Check attempted move is valid for all nodes to be moved
       const canMove = nodesToMove.all(function(node: go.Node): boolean {
         const newBounds = node.getDocumentBounds().copy().offset(hChange, vChange);
-        // Check space to move node to is unoccupied
-        if (!currentService.diagramChangesService.isUnoccupied(newBounds, node)) {
-          return false;
-        } else if (node.containingGroup) {
+        if (node.containingGroup) {
           const groupMemberArea = node.containingGroup.findObject('Group member area').getDocumentBounds();
           // Check node is not being moved outside of its group
           if (!groupMemberArea.containsRect(newBounds)) {
@@ -1333,51 +1363,6 @@ export class GojsCustomObjectsService {
         )
       )
     );
-  }
-
-  // Set node dragComputation to this to prevent dragging one node to overlap another
-  avoidNodeOverlap(node: go.Node, newLoc: go.Point, snappedLoc: go.Point): go.Point | null {
-
-    // Determine if node can be added to a group by drag and drop
-    const canDropIntoGroup = node.data.layer === layers.system
-      && node.data.category !== nodeCategories.transformation
-      && !node.containingGroup
-      && currentService.diagramEditable;
-
-    // Do not run when resizing nodes
-    if (node.diagram.currentTool instanceof go.ResizingTool) {
-      return newLoc;
-    }
-
-    // Allow overlap for grouped nodes in map view so user can drag nodes to rearrange the order.
-    // Group layout will ensure there is ultimately no overlap.
-    if (this.currentLevel.endsWith('map') && node.data.category !== nodeCategories.transformation) {
-      return newLoc;
-    }
-
-    if (node.diagram instanceof go.Palette) { return snappedLoc; }
-    // this assumes each node is fully rectangular
-    const bnds = node.selectionObject.getDocumentBounds();
-    const loc = node.location;
-    // use newLoc instead of snappedLoc if you want to ignore any grid snapping behavior
-    // see if the area at the proposed location is unoccupied
-    const rectangle = new go.Rect(snappedLoc.x - (loc.x - bnds.x), snappedLoc.y - (loc.y - bnds.y), bnds.width, bnds.height);
-
-    rectangle.inflate(-0.5, -0.5);  // by default, deflate to avoid edge overlaps with "exact" fits
-    // when dragging a node from another Diagram, choose an unoccupied area
-    if (!(node.diagram.currentTool instanceof go.DraggingTool) &&
-      (!node['_temp'] || !node.layer.isTemporary)) {  // in Temporary Layer during external drag-and-drop
-      node['_temp'] = true;  // flag to avoid repeated searches during external drag-and-drop
-      while (!this.diagramChangesService.isUnoccupied(rectangle, node)) {
-        rectangle.x += 10;
-        rectangle.y += 2;
-      }
-      rectangle.inflate(0.5, 0.5);  // restore to actual size
-      // return the proposed new location point
-      return new go.Point(rectangle.x + (loc.x - bnds.x), rectangle.y + (loc.y - bnds.y));
-    }
-    if (this.diagramChangesService.isUnoccupied(rectangle, node, canDropIntoGroup)) { return snappedLoc; }  // OK
-    return loc;  // give up -- don't allow the node to be moved to the new location
   }
 
   // returns the gojs object containing a guide with instructions for users
