@@ -716,6 +716,7 @@ Cypress.Commands.add('createReport', (name, description, system) => {
       cy.get('[data-qa=reports-details-description]')
         .paste(description)
         .should('have.value', description);
+      cy.get('[data-qa=reports-details-system-spinner]').should('not.be.visible');
       cy.selectDropDownNoClick('reports-details-system', system);
     });
 });

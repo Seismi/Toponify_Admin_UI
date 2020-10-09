@@ -18,7 +18,7 @@ import {
   MatCheckboxModule,
   MatTooltipModule,
   MatSidenavModule,
-  MatChipsModule
+  MatChipsModule, MatProgressSpinnerModule
 } from '@angular/material';
 import { ReportLibraryTableComponent } from './components/report-library-table/report-library-table.component';
 import { ReportLibraryDetailComponent } from './components/report-library-detail/report-library-detail.component';
@@ -67,6 +67,7 @@ import { TagModule } from '@app/architecture/components/tag-list/tag/tag.module'
     TagListModule,
     TagModule,
     MatChipsModule,
+    MatProgressSpinnerModule,
     StoreModule.forFeature('reportLibraryFeature', reducer),
     EffectsModule.forFeature([ReportEffects])
   ],
