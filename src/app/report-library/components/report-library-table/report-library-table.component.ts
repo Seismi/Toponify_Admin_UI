@@ -41,7 +41,7 @@ export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
   @Output() filter = new EventEmitter<string>();
 
   public dataSource: MatTableDataSource<ReportLibrary>;
-  public displayedColumns: string[] = ['name', 'description', 'tags', 'impactedBy'];
+  public displayedColumns: string[] = ['name', 'description', 'tags', 'radio', 'impactedBy'];
   public selectedRowId: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
