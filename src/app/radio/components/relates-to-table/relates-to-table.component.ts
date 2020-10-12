@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
-import {currentArchitecturePackageId, WorkPackageEntitiesHttpParams} from '@app/workpackage/store/models/workpackage.models';
+import { currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
+import { defaultLayoutId } from '@app/layout/store/models/layout.model';
 
 @Component({
   selector: 'smi-relates-to-table',
@@ -55,16 +56,17 @@ export class RelatesToTableComponent {
         return element.item.itemType;
       })();
 
-      const quesryParams = {
+      const queryParams = {
         filterLevel: filterLevel,
         selectedItem: element.item.id,
-        selectedType: selectedType
+        selectedType: selectedType,
+        layoutQuery: defaultLayoutId
       };
 
       if (element.workPackage.id !== currentArchitecturePackageId) {
-        quesryParams['workpackages'] = element.workPackage.id;
+        queryParams['workpackages'] = element.workPackage.id;
       }
-      this.router.navigate(['/topology'], { queryParams: quesryParams});
+      this.router.navigate(['/topology'], { queryParams });
       this.closeDialog.emit();
     } catch (err) {
       console.error(err);
