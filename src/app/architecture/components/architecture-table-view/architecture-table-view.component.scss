@@ -60,3 +60,23 @@ button {
     }
   }
 }
+
+.mat-column-impactedBy {
+  button {
+    width: 24px;
+    height: 24px;
+    line-height: 16px;
+    font-size: 24px;
+    outline: none;
+    margin-right: 3px;
+    margin-bottom: 5px;
+    &::ng-deep .mat-button-wrapper {
+      line-height: 16px;
+      padding: 0;
+        .mat-icon {
+          font-size: 16px;
+          color: #fff;
+        }
+    }
+  }
+}

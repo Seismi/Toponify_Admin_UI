@@ -5,6 +5,7 @@ import { Tag } from '@app/architecture/store/models/node.model';
 
 export interface State {
   loading: boolean;
+  loadingDetails: boolean;
   entities: ReportLibrary[];
   selected: Report;
   availableTags: Tag[];
@@ -16,6 +17,7 @@ export interface State {
 
 export const initialState: State = {
   loading: false,
+  loadingDetails: false,
   entities: [],
   selected: null,
   availableTags: null,
@@ -55,7 +57,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
     case ReportActionTypes.LoadReport: {
       return {
         ...state,
-        loading: true
+        loadingDetails: true
       };
     }
 
@@ -65,7 +67,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
     case ReportActionTypes.LoadReportSuccess: {
       return {
         ...state,
-        loading: false,
+        loadingDetails: false,
         selected: action.payload
       };
     }
@@ -75,7 +77,6 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
     case ReportActionTypes.LoadReportFail: {
       return {
         ...state,
-        loading: false,
         error: action.payload
       };
     }
@@ -107,7 +108,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
     case ReportActionTypes.UpdateReport: {
       return {
         ...state,
-        loading: true
+        loadingDetails: true
       };
     }
 
@@ -121,7 +122,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
           }
           return entity;
         }),
-        loading: false
+        loadingDetails: false
       };
     }
 
@@ -129,7 +130,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       return {
         ...state,
         error: action.payload,
-        loading: false
+        loadingDetails: false
       };
     }
 
@@ -165,7 +166,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
     case ReportActionTypes.AddOwner: {
       return {
         ...state,
-        loading: true
+        loadingDetails: true
       };
     }
 
@@ -181,21 +182,21 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       return {
         ...state,
         selected: action.payload,
-        loading: false
+        loadingDetails: false
       };
     }
 
     case ReportActionTypes.DeleteOwner: {
       return {
         ...state,
-        loading: true
+        loadingDetails: true
       };
     }
 
     case ReportActionTypes.DeleteOwnerSuccess: {
       return {
         ...state,
-        loading: false,
+        loadingDetails: false,
         selected: action.payload
       };
     }
@@ -214,7 +215,7 @@ export function reducer(state = initialState, action: ReportActionsUnion): State
       return {
         ...state,
         error: action.payload,
-        loading: false
+        loadingDetails: false
       };
     }
 

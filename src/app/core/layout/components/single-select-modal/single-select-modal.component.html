@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>{{ data.label }}</mat-label>
-    <input matInput [(ngModel)]="searchField" [formControl]="selectionControl" [matAutocomplete]="auto">
+    <input data-qa="single-select-modal-search" matInput [(ngModel)]="searchField" [formControl]="selectionControl" [matAutocomplete]="auto">
     <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchField=''" *ngIf="searchField">close</mat-icon>
     <mat-icon class="arrow_down" matSuffix *ngIf="!searchField">keyboard_arrow_down</mat-icon>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewIni
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Report, ReportLibrary } from '@app/report-library/store/models/report.model';
 import { TableData, Page } from '@app/radio/store/models/radio.model';
+import { Subscription } from 'rxjs';
 import { WorkPackageEntity, WorkPackagesActive } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
@@ -10,6 +11,7 @@ import { WorkPackageEntity, WorkPackagesActive } from '@app/workpackage/store/mo
   styleUrls: ['report-library-table.component.scss']
 })
 export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
+  private subscriptions: Subscription[] = [];
   @Input()
   set reports(data: TableData<ReportLibrary[]>) {
     this.dataSource = new MatTableDataSource<ReportLibrary>(data.entities as any);
@@ -36,12 +38,17 @@ export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
     length: number;
   }>();
 
+  @Output() sortChange = new EventEmitter<{
+    sortOrder: string;
+    sortBy: string;
+  }>();
+
   public page: Page;
 
   @Output() filter = new EventEmitter<string>();
 
   public dataSource: MatTableDataSource<ReportLibrary>;
-  public displayedColumns: string[] = ['name', 'description', 'tags', 'impactedBy'];
+  public displayedColumns: string[] = ['name', 'description', 'tags', 'radio', 'impactedBy'];
   public selectedRowId: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -67,9 +74,21 @@ export class ReportLibraryTableComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.paginator.page.subscribe(nextPage => {
-      this.pageChange.emit(nextPage);
-    });
+    this.subscriptions.push(
+      this.paginator.page.subscribe(nextPage => {
+        this.pageChange.emit(nextPage);
+      })
+    );
+
+    this.subscriptions.push(
+      this.sort.sortChange.subscribe(data => {
+        const { active, direction } = data;
+        this.sortChange.emit({
+          sortOrder: direction,
+          sortBy: active
+        });
+      })
+    );
   }
 
   getWorkPackageColour(workpackage: WorkPackagesActive): string {
