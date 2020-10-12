@@ -32,3 +32,14 @@ tr.mat-row {
     }
   }
 }
+
+td span {
+  cursor: pointer;
+  &:hover {
+    border-bottom: 1px solid grey;
+  }
+}
+
+.disabled {
+  pointer-events: none;
+}

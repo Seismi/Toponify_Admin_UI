@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
-import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpackage.models';
+import {currentArchitecturePackageId, WorkPackageEntitiesHttpParams} from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-relates-to-table',
@@ -10,6 +10,7 @@ import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpa
   styleUrls: ['./relates-to-table.component.scss']
 })
 export class RelatesToTableComponent {
+  public currentArchitecturePackageId = currentArchitecturePackageId;
   @Input() isEditable = true;
   @Input()
   set data(data: RadioDetail[]) {
@@ -72,5 +73,10 @@ export class RelatesToTableComponent {
 
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  goToWorkPackagePage(element: RelatesTo): void {
+    this.router.navigate([`/work-packages/${element.workPackage.id}`]);
+    this.closeDialog.emit();
   }
 }
