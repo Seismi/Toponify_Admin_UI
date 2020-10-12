@@ -24,6 +24,7 @@ export class RelatesToTableComponent {
   }
 
   @Output() unlinkRelatesTo = new EventEmitter<RelatesTo>();
+  @Output() closeDialog = new EventEmitter<void>();
   @Output() addRelatesTo = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -63,6 +64,7 @@ export class RelatesToTableComponent {
         quesryParams['workpackages'] = element.workPackage.id;
       }
       this.router.navigate(['/topology'], { queryParams: quesryParams});
+      this.closeDialog.emit();
     } catch (err) {
       console.error(err);
     }

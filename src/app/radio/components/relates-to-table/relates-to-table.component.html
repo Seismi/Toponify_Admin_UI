@@ -27,7 +27,7 @@
         <div class="name-cell">
           <span>{{ element.item.name }}</span>
           <div>
-            <button *ngIf="isEditable" mat-icon-button (click)="loadRelateTo(element)">
+            <button mat-icon-button (click)="loadRelateTo(element)">
               <mat-icon>launch</mat-icon>
             </button>
             <button *ngIf="isEditable" mat-icon-button (click)="onUnLink(element)"
