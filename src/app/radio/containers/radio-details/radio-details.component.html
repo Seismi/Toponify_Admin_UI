@@ -82,6 +82,6 @@
     </mat-tab-group>
   </p>
   <div class="wrapper" *ngIf="(isLoading$ | async) === loadingStatus.loading">
-    <mat-spinner></mat-spinner>
+    <mat-spinner data-qa="radio-details-spinner"></mat-spinner>
   </div>
 </app-model-container>
