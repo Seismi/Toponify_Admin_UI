@@ -2,10 +2,8 @@ import { Component, ViewChild, Input, Output, EventEmitter } from '@angular/core
 import { MatPaginator, MatTableDataSource } from '@angular/material';
 import { WorkPackageEntity } from '@app/workpackage/store/models/workpackage.models';
 import { Favourites } from '@app/settings/store/models/user.model';
-import { Level } from '@app/architecture/services/diagram-level.service';
 import { RadioTokenColours } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
-import { defaultScopeId } from '@app/scope/store/models/scope.model';
 
 type Button = 'systems' | 'data' | 'reports' | 'radios';
 
@@ -61,21 +59,9 @@ export class MyWorkpackagesTableComponent {
   }
 
   onOpen(favourite: Favourites, button: Button): void {
-    const queryParams: { [key: string]: any } = {
-      scope: defaultScopeId,
-      workpackages: [favourite.id]
-    };
     switch (button) {
-      case 'systems':
-        queryParams.filterLevel = Level.system;
-        this.goToTopology(queryParams);
-        break;
-      case 'data':
-        queryParams.filterLevel = Level.data;
-        this.goToTopology(queryParams);
-        break;
-      case 'reports':
-        this.router.navigate(['/report-library', favourite.id], { queryParams });
+      case 'radios':
+        this.router.navigate(['/radio']);
         break;
     }
   }
