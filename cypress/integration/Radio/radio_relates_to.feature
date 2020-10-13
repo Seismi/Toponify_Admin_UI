@@ -30,6 +30,6 @@ Feature: RADIO add relates to
   Scenario: Click on work package name and navigate to work package page
     Given the user clicks on the work package 'Created Automated Regression Test Work Package' and navigates to work package page
 
-  @radio @relates_to @focus
-  Scenario: Navigate to topology page
+  @radio @relates_to
+  Scenario: Open component in topology page
     Given the user selects relates to with work package name 'Created Automated Regression Test Work Package' and navigates to topology page
