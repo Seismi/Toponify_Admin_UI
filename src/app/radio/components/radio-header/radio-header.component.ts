@@ -123,6 +123,27 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
           }
         })
     );
+
+    this.subscriptions.push(
+      this.routerStore.pipe(select(getQueryParams)).subscribe(params => {
+        if (params.relatesToWorkPackages) {
+          this.store.dispatch(
+            new RadioFilter({
+              ...this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters),
+              status: {
+                enabled: true,
+                values: params.status
+              },
+              relatesToWorkPackages: {
+                enabled: true,
+                values: [{ id: params.relatesToWorkPackages }]
+              },
+              tableStyle: params.tableStyle
+            })
+          );
+        }
+      })
+    );
   }
 
   ngOnDestroy(): void {

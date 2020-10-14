@@ -76,17 +76,8 @@ export class RadioComponent implements OnInit, OnDestroy {
     this.store.dispatch(new LoadTags(this.tags));
     this.store.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
-    this.store.dispatch(
-      new LoadRadios({
-        page: String(0),
-        size: String(10)
-      })
-    );
     this.nodeStore.dispatch(new LoadNodes());
     this.radio$ = this.store.pipe(select(getRadioTableData));
-    // .pipe(
-    //   map(radios => radios.entities.filter(radio => (this.filterData === null ? radio.status !== 'closed' : radio)))
-    // );
 
     this.store.pipe(select(getRadioFilter)).subscribe(data => {
       if (data) {
@@ -100,15 +91,15 @@ export class RadioComponent implements OnInit, OnDestroy {
           this.store.dispatch(
             new SearchRadio({
               data: data,
-              page: '0',
-              size: '10'
+              page: String(0),
+              size: String(10)
             })
           );
         } else {
           this.store.dispatch(
             new LoadRadios({
-              page: '0',
-              size: '10'
+              page: String(0),
+              size: String(10)
             })
           );
         }
@@ -210,13 +201,6 @@ export class RadioComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
         this.store.dispatch(new RadioFilter(this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio)));
-        // this.store.dispatch(
-        //   new SearchRadio({
-        //     data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
-        //     page: String(0),
-        //     size: String(10)
-        //   })
-        // );
       }
     });
   }

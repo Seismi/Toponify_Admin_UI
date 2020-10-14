@@ -7,6 +7,11 @@ import { Router } from '@angular/router';
 
 type Button = 'systems' | 'data' | 'reports' | 'radios';
 
+enum TableStyles {
+  SIMPLE = 'Simple Table',
+  MANAGEMENT = 'Management Table'
+}
+
 @Component({
   selector: 'smi-my-workpackages-table',
   templateUrl: './my-workpackages-table.component.html',
@@ -59,9 +64,14 @@ export class MyWorkpackagesTableComponent {
   }
 
   onOpen(favourite: Favourites, button: Button): void {
+    const queryParams = {
+      status: ['new', 'open'],
+      tableStyle: TableStyles.MANAGEMENT,
+      relatesToWorkPackages: favourite.id
+    };
     switch (button) {
       case 'radios':
-        this.router.navigate(['/radio']);
+        this.router.navigate(['/radio'], { queryParams });
         break;
     }
   }
