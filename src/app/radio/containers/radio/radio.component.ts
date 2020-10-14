@@ -160,7 +160,6 @@ export class RadioComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(subs => subs.unsubscribe());
     this.store.dispatch(new RadioFilter(null));
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onSelectRadio(row: RadioEntity) {
