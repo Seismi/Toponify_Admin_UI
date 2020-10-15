@@ -4,5 +4,5 @@ When('the user confirms the delete of the report', function(name, description, s
   cy.get('[data-qa=report-delete-modal-yes]')
     .click()
     .wait('@POSTWorkPackageDeleteRequest')
-    .wait(['@GETReportsQuery', '@GETReportsFilterQuery']);
+    .wait(['@GETReportsQuery']);
 });
