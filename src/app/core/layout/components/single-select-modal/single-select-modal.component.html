@@ -1,0 +1,58 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>{{ data.label }}</mat-label>
+    <input data-qa="single-select-modal-search" matInput [(ngModel)]="searchField" [formControl]="selectionControl" [matAutocomplete]="auto">
+    <mat-icon class="arrow_down" matSuffix (click)="$event.stopPropagation(); searchField=''" *ngIf="searchField">close</mat-icon>
+    <mat-icon class="arrow_down" matSuffix *ngIf="!searchField">keyboard_arrow_down</mat-icon>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+        {{ data.descendants ? option.displayName : option.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <div style="flex-grow: 1">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      data-qa="single-select-modal-new"
+      mat-dialog-close 
+      (click)="addGroupMember.emit()" 
+      *ngIf="data.groupMembers"
+    >
+      New
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary"
+      data-qa="single-select-modal-new"
+      mat-dialog-close
+      (click)="addNewComponent.emit()"
+      *ngIf="data.newComponent"
+    >
+      New
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      data-qa="single-select-modal-new"
+      mat-dialog-close
+      (click)="addDescendant.emit()"
+      *ngIf="data.descendants"
+    >
+      New
+    </button>
+  </div>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onConfirm()"
+    data-qa="single-select-modal-confirm"
+    [disabled]="!selectionControl.valid"
+  >
+    Confirm
+  </button>
+  <button mat-raised-button (click)="onCancel()" data-qa="single-select-modal-cancel">Cancel</button>
+</div>
