@@ -659,6 +659,8 @@ export function reducer(
               node,
               layoutId
             );
+          } else {
+            return updatedState;
           }
         },
         {
@@ -681,6 +683,8 @@ export function reducer(
               link.positionSettings.colour,
               link.positionSettings.showLabel
             );
+          } else {
+            return updatedState;
           }
         },
         {
@@ -1190,6 +1194,8 @@ function getInitialNodeLayoutSettings(state: State, layoutId: string) {
     });
     if (nodeLayout) {
       nodeLayoutSettings.push({id: node.id, positionSettings: {...nodeLayout.layout.positionSettings}});
+    } else {
+      nodeLayoutSettings.push({id: node.id, positionSettings: { locationCoordinates: null }});
     }
   });
   return nodeLayoutSettings;
@@ -1203,6 +1209,8 @@ function getInitialLinkLayoutSettings(state: State, layoutId: string) {
     });
     if (linkLayout) {
       linkLayoutSettings.push({id: link.id, positionSettings: {...linkLayout.layout.positionSettings}});
+    } else {
+      linkLayoutSettings.push({id: link.id, positionSettings: { route: null }});
     }
   });
   return linkLayoutSettings;
