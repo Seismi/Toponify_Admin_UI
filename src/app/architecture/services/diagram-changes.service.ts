@@ -841,6 +841,10 @@ export class DiagramChangesService {
   // Ensure group members and any connected links are positioned correctly
   //  when a system/data group is expanded
   groupSubGraphExpandChanged(group: go.Group): void {
+    console.log('changed');
+    console.log(group.isSubGraphExpanded);
+    console.log(group.actualBounds.width);
+    console.log(group.location);
     if (group.isSubGraphExpanded) {
       // Run group layout to ensure member nodes are in the correct positions
       group.layout.isValidLayout = false;
@@ -889,7 +893,8 @@ export class DiagramChangesService {
       // Set height and width of group to enclose the area previously
       //  calculated as necessary to enclose the members.
       group.resizeObject.height = memberBounds.height + nonMemberSectionsHeight;
-      group.resizeObject.width = memberBounds.width;
+      group.resizeObject.width = memberBounds.width + 10;
+      group.ensureBounds();
     } else {
       // If group collapsed, just ensure bounds are correct
       group.ensureBounds();
@@ -912,6 +917,8 @@ export class DiagramChangesService {
       link.invalidateRoute();
       link.updateRoute();
     });
+    console.log(group.actualBounds.width);
+    console.log(group.location);
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {

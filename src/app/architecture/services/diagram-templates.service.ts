@@ -24,7 +24,7 @@ import {colourOptions,
   NodeColoursLight,
   NodeDetailTab
 } from '@app/architecture/store/models/layout.model';
-// import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
+import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
 
 
 function textFont(style?: string): Object {
@@ -39,36 +39,31 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
-/*
+
 // Custom layout for system/data groups.
 //   Based on PackedLayout.
 function StandardGroupLayout() {
   PackedLayout.call(this);
 }
-*/
 
-// Custom layout for system/data groups.
-function StandardGroupLayout() {
-  go.GridLayout.call(this);
-}
-
-go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
+go.Diagram.inherit(StandardGroupLayout, PackedLayout);
 
 StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
   const memberArea = this.group.findObject('Group member area');
-  const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
+  const initialOriginLocal = new go.Point(memberArea.actualBounds.left + 10, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
-/*
+
 StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
-  console.log('layout');
   if (this.group && !this.group.isSubGraphExpanded) {
     return;
   }
-  this.size = this.group.findObject('Group member area').getDocumentBounds().size;
+  const memberAreaSize = this.group.findObject('Group member area').getDocumentBounds().size;
+  this.size = new go.Size(Math.max(300, memberAreaSize.width - 20), Math.max(54, memberAreaSize.height - 24));
+  console.log(this.size);
   PackedLayout.prototype.doLayout.call(this, coll);
+  console.log(this.actualBounds);
 };
-*/
 
 // End system/data group layout
 
@@ -1374,7 +1369,7 @@ export class DiagramTemplatesService {
           desiredSize: new go.Size(310, 40),
           minSize: new go.Size(310, 40),
         },
-        new go.Binding('minSize', '', function(data, table) {
+        new go.Binding('minSize', '', function(data) {
           let minHeight = 40;
           if (data.middleExpanded) {
             minHeight += 70;
@@ -1418,16 +1413,11 @@ export class DiagramTemplatesService {
       {
         layout: $(StandardGroupLayout as any,
           {
-            wrappingColumn: 1,
             isOngoing: false,
             isInitial: true,
-            alignment: go.GridLayout.Location,
-            spacing: new go.Size(NaN, 12)
-            /*
             spacing: 12,
             packShape: PackedLayout.Rectangular,
-            packMode: PackedLayout.Fit,
-            */
+            packMode: PackedLayout.Fit
           }
         ),
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
@@ -1630,13 +1620,7 @@ export class DiagramTemplatesService {
                 minHeight += 30.43 * data.members.length;
                 minHeight += 35;
               } else if (data.bottomExpanded === bottomOptions.group) {
-
-                if ([Level.targets, Level.sources].includes(this.currentFilterLevel)) {
-                  minHeight += 42;
-                } else {
-                  minHeight += data.members.length * 42;
-                }
-                minHeight += 20;
+                minHeight += 62;
                 minWidth += 20;
               }
               return new go.Size(minWidth, minHeight);

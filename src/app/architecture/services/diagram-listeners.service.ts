@@ -46,7 +46,14 @@ export class DiagramListenersService {
       this.diagramChangesService.updatePosition.bind(this.diagramChangesService)
     );
 
-    diagram.addDiagramListener('SelectionMoved', this.diagramLevelService.relayoutGroups);
+    diagram.addDiagramListener(
+      'SelectionMoved',
+      function (event) {
+        if (this.currentLevel.endsWith('map')) {
+          this.diagramLevelService.relayoutGroups();
+        }
+      }.bind(this)
+    );
 
     // After diagram layout, redo group layouts in map view to correct link paths
     diagram.addDiagramListener(
@@ -101,8 +108,8 @@ export class DiagramListenersService {
               // Reposition members that lie outside of the containing group's bounds
               if (memberBounds.top > nodeBounds.top
                 || !memberBounds.intersectsRect(nodeBounds)) {
-
-                const newLocation = new go.Point();
+                console.log(node.data.name, nodeBounds, memberBounds);
+                /*const newLocation = new go.Point();
 
                 // Centre align member
                 newLocation.x = memberBounds.centerX;
@@ -126,7 +133,7 @@ export class DiagramListenersService {
 
                 node.move(newLocation, true);
                 node.ensureBounds();
-                nodesToUpdate.add(node);
+                nodesToUpdate.add(node);*/
               }
 
               // Run process to resize containing groups if member is not correctly enclosed
@@ -142,49 +149,23 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
-    // After diagram layout is completed, ensure that no nodes overlap
+    // After group layout is completed, warn about any overlapping member nodes
     diagram.addDiagramListener(
       'LayoutCompleted',
-      function(event: go.DiagramEvent): void {
+      function(event) {
+        event.diagram.nodes.each(function(node) {
+          if ((node.data.layer === layers.system || node.data.layer === layers.data)
+            && node instanceof go.Group
+            && node.isVisible()
+            && node.isSubGraphExpanded
+          ) {
+            const memberNodes = (new go.Set(node.memberParts)).retainAll(event.diagram.nodes);
+            /*if (this.diagramChangesService.anyOverlaps(memberNodes)) {
+              this.diagramChangesService.addOverlapWarning(node);
+            }*/
 
-        const currentLevel = this.currentLevel;
-
-        if (currentLevel && !currentLevel.endsWith('map') &&
-          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
-        ) {
-
-          // Check each node for overlap
-          event.diagram.nodes.each(function(node: go.Node): void {
-
-            if (!node.isVisible()) {
-              return;
-            }
-
-            if (!this.diagramChangesService.isUnoccupied(node.actualBounds, node)) {
-              const rectangle = node.actualBounds.copy();
-
-              // If node is found to overlap, look for unoccupied area to move node to
-              do {
-                // Move search area down until a space is found
-                rectangle.offset(0, 10);
-              } while (!this.diagramChangesService.isUnoccupied(rectangle, node));
-
-              // Move node to unoccupied area
-              node.moveTo(rectangle.left, rectangle.top);
-              node.ensureBounds();
-
-              // Reroute any links connected to the node
-              node.findLinksConnected().each(function(link: go.Link): void {
-                link.data.updateRoute = true;
-                link.updateRoute();
-              });
-
-              if (node.containingGroup) {
-                this.diagramChangesService.groupMemberSizeChanged(node);
-              }
-            }
-          }.bind(this));
-        }
+          }
+        }.bind(this));
       }.bind(this)
     );
 
