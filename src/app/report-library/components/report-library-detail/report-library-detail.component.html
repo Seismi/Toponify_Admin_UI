@@ -101,7 +101,7 @@
           <button mat-icon-button data-qa="reports-source-system-edit" (click)="onSourceEdit()" *ngIf="workPackageIsEditable">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button data-qa="reports-source-system-open" (click)="onGoToTopology()">
+          <button mat-icon-button data-qa="reports-source-system-open" (click)="onGoToTopology()" *ngIf="system && system.name">
             <mat-icon>launch</mat-icon>
           </button>
       </div>
