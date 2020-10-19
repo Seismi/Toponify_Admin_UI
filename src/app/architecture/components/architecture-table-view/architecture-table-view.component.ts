@@ -93,7 +93,7 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   getPageIndex(): number {
     if (this.selectedItem && !this.filterValue) {
       const arrIndex = this.dataSource.data.findIndex(item => item.id === this.selectedItem.id);
-      const page = (arrIndex + 1 || arrIndex - 1) / 10;
+      const page = (arrIndex + 1) / 10;
       if (page <= 1) {
         return 0;
       }
