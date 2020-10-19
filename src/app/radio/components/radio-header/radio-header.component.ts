@@ -132,13 +132,13 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
               ...this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters),
               status: {
                 enabled: true,
-                values: params.status
+                values: ['new', 'open']
               },
               relatesToWorkPackages: {
                 enabled: true,
                 values: [{ id: params.relatesToWorkPackages }]
               },
-              tableStyle: params.tableStyle
+              tableStyle: TableStyles.MANAGEMENT
             })
           );
         }
