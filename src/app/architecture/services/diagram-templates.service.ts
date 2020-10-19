@@ -58,11 +58,17 @@ StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | 
   if (this.group && !this.group.isSubGraphExpanded) {
     return;
   }
-  const memberAreaSize = this.group.findObject('Group member area').getDocumentBounds().size;
+  const memberAreaBounds = this.group.findObject('Group member area').getDocumentBounds();
+  const memberAreaSize = memberAreaBounds.size;
   this.size = new go.Size(Math.max(300, memberAreaSize.width - 20), Math.max(54, memberAreaSize.height - 24));
-  console.log(this.size);
+
+  this.group.memberParts.each(function(member) {
+    if (!memberAreaBounds.containsRect(member.getDocumentBounds())) {
+      member.isLayoutPositioned = true;
+    }
+  });
+
   PackedLayout.prototype.doLayout.call(this, coll);
-  console.log(this.actualBounds);
 };
 
 // End system/data group layout

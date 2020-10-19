@@ -841,10 +841,6 @@ export class DiagramChangesService {
   // Ensure group members and any connected links are positioned correctly
   //  when a system/data group is expanded
   groupSubGraphExpandChanged(group: go.Group): void {
-    console.log('changed');
-    console.log(group.isSubGraphExpanded);
-    console.log(group.actualBounds.width);
-    console.log(group.location);
     if (group.isSubGraphExpanded) {
       // Run group layout to ensure member nodes are in the correct positions
       group.layout.isValidLayout = false;
@@ -860,31 +856,16 @@ export class DiagramChangesService {
 
       group.memberParts.each(function(part: go.Part): void {
         if (part instanceof go.Node) {
-          // If member is located outside of the group and is not automatically laid out then reposition member
-          if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
-            const newLocation = new go.Point();
+          /*
+            For nodes that are already located in the group, change member node location back and
+            forth between the current location and another point.
+            This is to force GoJS to update the position of the node, as this does not appear to be
+            done correctly when the parent group is moved.
+          */
+          const location = part.location.copy();
+          part.move(location.copy().offset(1, 1));
+          part.move(location, true);
 
-            // Place member underneath all correctly positioned members,
-            //  centre aligned and separated by a small gap
-            newLocation.x = memberBounds.centerX;
-            newLocation.y = memberBounds.bottom + 12;
-
-            // Update the area required to contain the members
-            memberBounds.height = memberBounds.height + part.actualBounds.height + 12;
-            memberBounds.width = Math.max(memberBounds.width, part.actualBounds.width);
-
-            part.move(newLocation, true);
-          } else {
-            /*
-              For nodes that are already located in the group, change member node location back and
-              forth between the current location and another point.
-              This is to force GoJS to update the position of the node, as this does not appear to be
-              done correctly when the parent group is moved.
-            */
-            const location = part.location.copy();
-            part.move(location.copy().offset(1, 1));
-            part.move(location, true);
-          }
           // Try to ensure that each part has correct bounds after being moved
           part.ensureBounds();
         }
@@ -917,8 +898,8 @@ export class DiagramChangesService {
       link.invalidateRoute();
       link.updateRoute();
     });
-    console.log(group.actualBounds.width);
-    console.log(group.location);
+
+    // this.onUpdateDiagramLayout.next({});
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {

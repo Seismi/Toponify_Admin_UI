@@ -103,38 +103,6 @@ export class DiagramListenersService {
             if (group && group.isSubGraphExpanded) {
               const containingArea = group.findObject('Group member area');
               const memberBounds = containingArea.getDocumentBounds().copy();
-              const nodeBounds = node.getDocumentBounds();
-
-              // Reposition members that lie outside of the containing group's bounds
-              if (memberBounds.top > nodeBounds.top
-                || !memberBounds.intersectsRect(nodeBounds)) {
-                console.log(node.data.name, nodeBounds, memberBounds);
-                /*const newLocation = new go.Point();
-
-                // Centre align member
-                newLocation.x = memberBounds.centerX;
-
-                // Initialise new member location to be near the top of the member
-                //  area, in case group has no other members
-                newLocation.y = memberBounds.top + 12;
-
-                // Place member underneath all correctly positioned members,
-                //  separated by a small gap
-                group.memberParts.each(function(part: go.Part) {
-
-                  const partBounds = part.getDocumentBounds();
-
-                  if (part instanceof go.Node
-                    && memberBounds.containsRect(partBounds)
-                  ) {
-                    newLocation.y = Math.max(newLocation.y, partBounds.bottom + 12);
-                  }
-                });
-
-                node.move(newLocation, true);
-                node.ensureBounds();
-                nodesToUpdate.add(node);*/
-              }
 
               // Run process to resize containing groups if member is not correctly enclosed
               if (!memberBounds.containsRect(node.getDocumentBounds())) {
@@ -146,26 +114,6 @@ export class DiagramListenersService {
             this.diagramChangesService.updatePosition({ diagram: event. diagram, subject: nodesToUpdate});
           }
         }
-      }.bind(this)
-    );
-
-    // After group layout is completed, warn about any overlapping member nodes
-    diagram.addDiagramListener(
-      'LayoutCompleted',
-      function(event) {
-        event.diagram.nodes.each(function(node) {
-          if ((node.data.layer === layers.system || node.data.layer === layers.data)
-            && node instanceof go.Group
-            && node.isVisible()
-            && node.isSubGraphExpanded
-          ) {
-            const memberNodes = (new go.Set(node.memberParts)).retainAll(event.diagram.nodes);
-            /*if (this.diagramChangesService.anyOverlaps(memberNodes)) {
-              this.diagramChangesService.addOverlapWarning(node);
-            }*/
-
-          }
-        }.bind(this));
       }.bind(this)
     );
 
