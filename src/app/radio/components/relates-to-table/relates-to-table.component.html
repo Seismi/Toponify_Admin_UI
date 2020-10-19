@@ -35,7 +35,12 @@
         <div class="name-cell">
           <span>{{ element.item.name }}</span>
           <div>
-            <button data-qa="radio-relates-to-launch" mat-icon-button (click)="loadRelateTo(element)" *ngIf="element.workPackage.id !== currentArchitecturePackageId">
+            <button 
+              data-qa="radio-relates-to-launch" 
+              mat-icon-button 
+              (click)="loadRelateTo(element)" 
+              *ngIf="element.item.hasOwnProperty('name')"
+            >
               <mat-icon>launch</mat-icon>
             </button>
             <button *ngIf="isEditable" mat-icon-button (click)="onUnLink(element)"

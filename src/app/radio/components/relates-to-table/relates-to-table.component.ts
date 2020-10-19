@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
-import { currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
 import { defaultLayoutId } from '@app/layout/store/models/layout.model';
 
 @Component({
@@ -11,7 +10,6 @@ import { defaultLayoutId } from '@app/layout/store/models/layout.model';
   styleUrls: ['./relates-to-table.component.scss']
 })
 export class RelatesToTableComponent {
-  public currentArchitecturePackageId = currentArchitecturePackageId;
   @Input() isEditable = true;
   @Input()
   set data(data: RadioDetail[]) {
@@ -60,12 +58,10 @@ export class RelatesToTableComponent {
         filterLevel: filterLevel,
         selectedItem: element.item.id,
         selectedType: selectedType,
-        layoutQuery: defaultLayoutId
+        layoutQuery: defaultLayoutId,
+        workpackages: [element.workPackage.id]
       };
 
-      if (element.workPackage.id !== currentArchitecturePackageId) {
-        queryParams['workpackages'] = element.workPackage.id;
-      }
       this.router.navigate(['/topology'], { queryParams });
       this.closeDialog.emit();
     } catch (err) {
