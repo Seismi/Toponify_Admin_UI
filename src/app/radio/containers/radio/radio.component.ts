@@ -36,6 +36,8 @@ import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.act
 import { TagsHttpParams } from '@app/architecture/store/models/node.model';
 import { LoadingStatus } from '@app/architecture/store/models/node.model';
 import { getRadiosLoadingStatus } from '@app/radio/store/selectors/radio.selector';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { workpackageLoading } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-radio',
@@ -57,6 +59,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     page: 0,
     size: 100
   };
+  public workpackageLoading: boolean;
 
   get isLoading$(): Observable<LoadingStatus> {
     return this.store.select(getRadiosLoadingStatus);
@@ -69,21 +72,28 @@ export class RadioComponent implements OnInit, OnDestroy {
     private store: Store<RadioState>,
     public dialog: MatDialog,
     private router: Router,
-    private radioFilterService: RadioFilterService
+    private radioFilterService: RadioFilterService,
+    private workPackageStore: Store<WorkPackageState>
   ) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadTags(this.tags));
-    this.store.dispatch(new LoadWorkPackages({}));
+    this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
     this.nodeStore.dispatch(new LoadNodes());
     this.radio$ = this.store.pipe(select(getRadioTableData));
 
-    this.store.pipe(select(getRadioFilter)).subscribe(data => {
-      if (data) {
-        this.filterData = data;
-      }
-    });
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(workpackageLoading)).subscribe(loading => (this.workpackageLoading = loading))
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getRadioFilter)).subscribe(data => {
+        if (data) {
+          this.filterData = data;
+        }
+      })
+    );
 
     this.subscriptions.push(
       this.store.pipe(select(getMergedRadioFilters), distinctUntilChanged(isEqual)).subscribe(data => {
@@ -150,7 +160,6 @@ export class RadioComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subs => subs.unsubscribe());
-    this.store.dispatch(new RadioFilter(null));
   }
 
   onSelectRadio(row: RadioEntity) {
