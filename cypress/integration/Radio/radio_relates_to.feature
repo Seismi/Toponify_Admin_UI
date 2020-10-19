@@ -28,8 +28,10 @@ Feature: RADIO add relates to
   
   @radio @relates_to
   Scenario: Click on work package name and navigate to work package page
-    Given the user clicks on the work package 'Created Automated Regression Test Work Package' and navigates to work package page
+    Given the user clicks on the work package 'Created Automated Regression Test Work Package' in the /radio details
+    Then the user is redirected to the work package page and the work package 'Created Automated Regression Test Work Package' is shown in the details
 
   @radio @relates_to
   Scenario: Open component in topology page
-    Given the user selects relates to with work package name 'Created Automated Regression Test Work Package' and navigates to topology page
+    Given the user clicks on the relates to link icon with work package name 'Created Automated Regression Test Work Package'
+    Then the user is redirected to the topology page with selected component 'Automated Regression Test Transaction System'

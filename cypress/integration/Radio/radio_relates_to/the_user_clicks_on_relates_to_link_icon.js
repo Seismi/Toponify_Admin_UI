@@ -1,6 +1,6 @@
 import { Given } from 'cypress-cucumber-preprocessor/steps';
 
-Given('the user selects relates to with work package name {string} and navigates to topology page', workpackage => {
+Given('the user clicks on the relates to link icon with work package name {string}', workpackage => {
   workpackage = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(workpackage);

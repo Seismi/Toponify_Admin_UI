@@ -1,6 +1,6 @@
 import { And } from 'cypress-cucumber-preprocessor/steps';
 
-And('the user clicks on the work package {string} and navigates to work package page', workpackage => {
+And('the user clicks on the work package {string} in the /radio details', workpackage => {
   workpackage = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(workpackage);
