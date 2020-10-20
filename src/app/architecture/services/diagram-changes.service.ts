@@ -835,6 +835,7 @@ export class DiagramChangesService {
       });
 
       this.groupMemberSizeChanged(node);
+      this.onUpdateDiagramLayout.next({});
     }
   }
 
@@ -898,8 +899,6 @@ export class DiagramChangesService {
       link.invalidateRoute();
       link.updateRoute();
     });
-
-    // this.onUpdateDiagramLayout.next({});
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
@@ -953,6 +952,7 @@ export class DiagramChangesService {
     }
 
     this.groupMemberSizeChanged(node);
+    this.onUpdateDiagramLayout.next({});
   }
 
   // Ensures that all groups that have the given member as part of
