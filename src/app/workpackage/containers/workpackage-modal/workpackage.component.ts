@@ -18,6 +18,7 @@ import { SelectModalComponent } from '@app/core/layout/components/select-modal/s
 import { State as HomeState } from '@app/home/store/reducers/home.reducers';
 import { LoadMyProfile } from '@app/home/store/actions/home.actions';
 import { getMyProfile } from '@app/home/store/selectors/home.selectors';
+import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
 
 const CurrentStateWorkPackage = [
   {
@@ -39,7 +40,6 @@ export class WorkPackageModalComponent implements OnInit, OnDestroy {
   public workpackage: WorkPackageEntity;
   public modalMode = true;
   public isEditable = true;
-  public newBaselineData = [];
   loading$: Observable<boolean>;
   public subscription: Subscription;
   public defaultTeams: TeamEntity[];
@@ -90,27 +90,26 @@ export class WorkPackageModalComponent implements OnInit, OnDestroy {
 
   onAddBaseline(): void {
     this.workPackageStore.dispatch(new LoadWorkPackagesActive());
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: true,
       width: 'auto',
       minWidth: '400px',
       data: {
         title: 'Select work package to add to baseline',
-        placeholder: 'Work Packages',
+        label: 'Work Packages',
         options$: this.workPackageStore.pipe(select(getWorkPackagesActive))
           .pipe(
             map(workpackages =>
               workpackages.filter(wp => !this.baselineData.map(b => b.id).includes(wp.id))
             )
-          ),
-        selectedIds: this.baselineData ? this.baselineData.map(baseline => baseline.id) : []
+          )
       }
     });
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.value) {
-        data.value.forEach(element => this.newBaselineData.push(element));
-        const newData = this.baselineData.concat(this.newBaselineData);
-        return this.baselineData = newData.filter((v, i, a) => a.findIndex(t => (JSON.stringify(t) === JSON.stringify(v))) === i);
+        return this.baselineData = this.baselineData.concat({...data.value}).filter(
+          (v, i, a) => a.findIndex(t => (JSON.stringify(t) === JSON.stringify(v))) === i
+        );
       }
     });
   }

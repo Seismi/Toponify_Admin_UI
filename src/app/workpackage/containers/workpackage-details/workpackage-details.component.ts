@@ -72,6 +72,7 @@ import { LoadTeams } from '@app/settings/store/actions/team.actions';
 import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { State as TeamState } from '@app/settings/store/reducers/team.reducer';
 import { Roles } from '@app/core/directives/by-role.directive';
+import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
 
 @Component({
   selector: 'app-workpackage-details',
@@ -185,15 +186,14 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
   onAddOwner(): void {
     const ids = new Set(this.workpackage.owners.map(({ id }) => id));
     this.teamStore.dispatch(new LoadTeams({}));
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: true,
       width: 'auto',
       minWidth: '400px',
       data: {
         title: 'Select owner to add to owners',
-        placeholder: 'Owners',
-        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(map(data => data.filter(({ id }) => !ids.has(id)))),
-        selectedIds: []
+        label: 'Owners',
+        options$: this.teamStore.pipe(select(getTeamEntities)).pipe(map(data => data.filter(({ id }) => !ids.has(id))))
       }
     });
 
@@ -202,8 +202,8 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           new AddOwner({
             workPackageId: this.workpackageId,
-            ownerId: data.value[0].id,
-            owners: data.value[0]
+            ownerId: data.value.id,
+            owners: data.value
           })
         );
       }
@@ -450,15 +450,14 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
 
   onAddBaseline(): void {
     this.store.dispatch(new LoadWorkPackageBaselineAvailability({ workPackageId: this.workpackageId }));
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: true,
       width: 'auto',
       minWidth: '400px',
       data: {
         title: 'Select work package to add to baseline',
-        placeholder: 'Work Packages',
-        options$: this.store.pipe(select(getWorkPackageBaselineAvailability)),
-        selectedIds: []
+        label: 'Work Packages',
+        options$: this.store.pipe(select(getWorkPackageBaselineAvailability))
       }
     });
     dialogRef.afterClosed().subscribe(data => {
@@ -466,7 +465,7 @@ export class WorkpackageDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           new AddWorkPackageBaseline({
             workPackageId: this.workpackageId,
-            baselineId: data.value[0].id
+            baselineId: data.value.id
           })
         );
       } else {
