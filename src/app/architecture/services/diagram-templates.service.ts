@@ -825,7 +825,7 @@ export class DiagramTemplatesService {
       $(go.RowColumnDefinition, { column: 0, maximum: 25}),
       $(go.RowColumnDefinition, { column: 1 }),
       $(go.RowColumnDefinition, { column: 2 }),
-      $(go.RowColumnDefinition, { column: 3, maximum: 50 }),
+      $(go.RowColumnDefinition, { column: 3, maximum: 75 }),
       $(go.RowColumnDefinition, { column: 4 }),
       this.getDependencyExpandButton(),
       $(go.Panel,
@@ -833,7 +833,7 @@ export class DiagramTemplatesService {
         {
           column: 0,
           row: 0,
-          alignment: go.Spot.Left,
+          alignment: go.Spot.Left
         },
         // Node icon, to appear at the top left of the node
         $(
@@ -920,6 +920,45 @@ export class DiagramTemplatesService {
           row: 0,
           column: 3
         },
+        $(go.Panel,
+          'Auto',
+          {
+            margin: 1,
+            visible: false,
+            toolTip: $('ToolTip',
+              $(go.TextBlock, 'There are nodes hidden behind this node')
+            )
+          },
+          new go.Binding('visible', '', function(node: go.Node): boolean {
+            const diagram = node.diagram;
+            const nodeBounds = node.getDocumentBounds();
+            const surroundedNodes = new go.List<go.Part>();
+            diagram.findPartsIn(nodeBounds, false, true, surroundedNodes);
+
+            const selfIndex = surroundedNodes.indexOf(node);
+            surroundedNodes.removeRange(0, selfIndex);
+
+            return surroundedNodes.any(function(part) {
+              return part instanceof go.Node && !part.isMemberOf(node);
+            });
+          }).ofObject(),
+          $(go.Shape,
+            {
+              figure: 'triangle',
+              fill: 'red',
+              width: 20,
+              height: 20
+            }
+          ),
+          $(go.TextBlock,
+            textFont('bold 17px'),
+            {
+              textAlign: 'center',
+              text: '!',
+              margin: new go.Margin(0, 0, 5, 0)
+            }
+          )
+        ),
         // Icon to indicate that the group contains group members
         isGroup ? $(go.Picture,
           {
