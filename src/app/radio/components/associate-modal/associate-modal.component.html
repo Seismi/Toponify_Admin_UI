@@ -1,37 +1,62 @@
 <h1 mat-dialog-title>{{ title }}</h1>
-<mat-form-field>
-  <mat-label>Work package</mat-label>
-  <mat-select value="00000000-0000-0000-0000-000000000000" (selectionChange)="onSelectWorkPackage($event)"
-    data-qa="radio-associate-modal-work-package">
-    <mat-option value="00000000-0000-0000-0000-000000000000">
-      Current Architecture
-    </mat-option>
-    <mat-option *ngFor="let wp of workpackages$ | async" [value]="wp.id">
-      {{ wp.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-<mat-form-field>
-  <mat-label>Component</mat-label>
-  <mat-select (valueChange)="selectedNodeId = $event" data-qa="radio-associate-modal-components">
-    <input class="search" #searchInput placeholder="Search" (keydown)="$event.stopPropagation()" 
-      data-qa="radio-associate-modal-components-search" />
-    <button mat-button mat-icon-button (click)="searchInput.value = ''"
-      data-qa="radio-associate-modal-components-reset-search">
-      <mat-icon>close</mat-icon>
-    </button>
-    <mat-option
-      *ngFor="let node of nodes$ | async | orderBy: 'name'" [value]="node.id"
-      [class.hide]="filter(node)">
-      {{ node.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+  <mat-form-field>
+    <mat-label>Work Packages</mat-label>
+    <mat-select value="00000000-0000-0000-0000-000000000000" (selectionChange)="onSelectWorkPackage($event)"
+      data-qa="radio-associate-modal-work-package">
+      <mat-option value="00000000-0000-0000-0000-000000000000">
+        Current Architecture
+      </mat-option>
+      <mat-option *ngFor="let wp of workpackages$ | async" [value]="wp.id">
+        {{ wp.name }}
+      </mat-option>
+    </mat-select>
+    <mat-spinner data-qa="radio-associate-modal-work-package-spinner" matSuffix diameter=20 *ngIf="workpackageLoading"></mat-spinner>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Components</mat-label>
+    <input
+      data-qa="radio-associate-modal-components-search"
+      matInput 
+      #input 
+      [(ngModel)]="searchField" 
+      [formControl]="formControl" 
+      [matAutocomplete]="auto"
+      [readonly]="(isLoading$ | async) === loadingStatus.loading"
+    >
+    <mat-icon 
+      class="arrow_down"
+      matSuffix 
+      (click)="$event.stopPropagation(); searchField=''" 
+      *ngIf="searchField && (isLoading$ | async) === loadingStatus.loaded"
+    >
+      close
+    </mat-icon>
+    <mat-icon 
+      class="arrow_down" 
+      matSuffix
+      *ngIf="!searchField && (isLoading$ | async) === loadingStatus.loaded"
+    >
+      keyboard_arrow_down
+    </mat-icon>
+    <mat-spinner 
+      data-qa="radio-associate-modal-components-spinner" 
+      matSuffix 
+      diameter=20 
+      *ngIf="(isLoading$ | async) === loadingStatus.loading"
+    >
+    </mat-spinner>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      <mat-option *ngFor="let node of filteredOptions$ | async | orderBy: 'name'" [value]="node">
+        {{ node.name }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
 <div mat-dialog-actions>
   <button
     mat-raised-button
     color="primary"
-    [disabled]="!selectedNodeId"
+    [disabled]="!formControl.value"
     (click)="onConfirm()"
     data-qa="radio-associate-modal-confirm"
   >
