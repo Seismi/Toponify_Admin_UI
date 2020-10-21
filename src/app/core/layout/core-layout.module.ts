@@ -63,6 +63,7 @@ import { SearchPipe } from '@app/pipes/search.pipe';
 import { ProfileActionsComponent } from './header/profile-actions/profile-actions.component';
 import { AlphabeticalOrderPipe } from '@app/pipes/alphabetical-order.pipe';
 import { SpinnerModule } from '../components/spinner/spinner.module';
+import { SingleSelectModalComponent } from './components/single-select-modal/single-select-modal.component';
 
 @NgModule({
   imports: [
@@ -127,7 +128,8 @@ import { SpinnerModule } from '../components/spinner/spinner.module';
     AppDrawerComponent,
     NotificationPaneComponent,
     SearchPipe,
-    AlphabeticalOrderPipe
+    AlphabeticalOrderPipe,
+    SingleSelectModalComponent
   ],
   declarations: [
     NotificationIndicatorComponent,
@@ -167,9 +169,16 @@ import { SpinnerModule } from '../components/spinner/spinner.module';
     NotificationPaneComponent,
     SearchPipe,
     ProfileActionsComponent,
-    AlphabeticalOrderPipe
+    AlphabeticalOrderPipe,
+    SingleSelectModalComponent
   ],
-  entryComponents: [DeleteModalComponent, SelectModalComponent, DownloadCSVModalComponent, SelectModalComponent],
+  entryComponents: [
+    DeleteModalComponent,
+    SelectModalComponent,
+    DownloadCSVModalComponent,
+    SelectModalComponent,
+    SingleSelectModalComponent
+  ],
   providers: [ReportService]
 })
 export class CoreLayoutModule {}

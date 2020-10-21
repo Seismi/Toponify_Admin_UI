@@ -9,9 +9,9 @@ When('the user updates the source system to {string}', function(system) {
     .click()
     .wait('@GETNodesQuery');
 
-  cy.selectDropDownNoClick('select-modal-search', system);
+  cy.selectDropDownNoClick('single-select-modal-search', system);
 
-  cy.get('[data-qa=select-modal-confirm]')
+  cy.get('[data-qa=single-select-modal-confirm]')
     .click()
     .wait(['@PUTWorkPackageReports', '@GETReportsQuery', '@GETWorkPackageReportsTags']);
 });

@@ -6,13 +6,13 @@ import { LoadOrganisationName, LoadOrganisationDomain, LoadOrganisationLicenceIn
 import { OrganisationLicenceInfo, OrganisationName, OrganisationDomain, OrganisationAccountAdmins, OrganisationEmailDomains } from '@app/settings/store/models/organisation.model';
 import { Subscription, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
-import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 import { State as UserState } from '@app/settings/store/reducers/user.reducer';
 import { LoadUsers } from '@app/settings/store/actions/user.actions';
 import { getUsers } from '@app/settings/store/selectors/user.selector';
 import { map } from 'rxjs/operators';
 import { EmailModalComponent } from '../email-modal/email-modal.component';
+import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
 
 @Component({
   selector: 'smi-organisations',
@@ -60,17 +60,16 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 
   onAddAdmins(): void {
     this.userStore.dispatch(new LoadUsers({}));
-    const dialogRef = this.dialog.open(SelectModalComponent, {
+    const dialogRef = this.dialog.open(SingleSelectModalComponent, {
       disableClose: false,
       width: '500px',
       data: {
         title: `Add Account Administrators`,
-        placeholder: 'Administrators',
+        label: 'Administrators',
         options$: this.userStore.pipe(select(getUsers))
           .pipe(
             map(data => data.map(({ firstName: name, lastName, id }) => ({ name: name + ` ${lastName}`, lastName, id })))
-          ),
-        selectedIds: []
+          )
       }
     });
 
@@ -78,7 +77,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
       if (data && data.value) {
         this.store.dispatch(
           new AddOrganisationAccountAdmins({
-            userId: data.value[0].id
+            userId: data.value.id
           })
         );
       }
@@ -108,7 +107,7 @@ export class OrganisationsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.emailDomains) {
-        this.store.dispatch(new UpdateOrganisationEmailDomains({emailDomains: data.emailDomains.split(', ')}));
+        this.store.dispatch(new UpdateOrganisationEmailDomains({ emailDomains: data.emailDomains.split(', ') }));
       }
     });
   }
