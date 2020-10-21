@@ -3,6 +3,7 @@ import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
 import { defaultLayoutId } from '@app/layout/store/models/layout.model';
+import { currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-relates-to-table',
@@ -10,6 +11,7 @@ import { defaultLayoutId } from '@app/layout/store/models/layout.model';
   styleUrls: ['./relates-to-table.component.scss']
 })
 export class RelatesToTableComponent {
+  public currentArchitecturePackageId = currentArchitecturePackageId;
   @Input() isEditable = true;
   @Input()
   set data(data: RadioDetail[]) {
