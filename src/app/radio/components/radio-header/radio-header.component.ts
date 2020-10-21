@@ -134,7 +134,7 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
                 enabled: true,
                 values: ['new', 'open']
               },
-              relatesToWorkPackages: {
+              workpackages: {
                 enabled: true,
                 values: [{ id: params.relatesToWorkPackages }]
               },
