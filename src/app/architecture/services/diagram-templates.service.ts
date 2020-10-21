@@ -929,15 +929,19 @@ export class DiagramTemplatesService {
               $(go.TextBlock, 'There are nodes hidden behind this node')
             )
           },
+          // Warning visible if node hides other nodes
           new go.Binding('visible', '', function(node: go.Node): boolean {
             const diagram = node.diagram;
             const nodeBounds = node.getDocumentBounds();
+            // Get list of nodes that lie within the node's bounds
             const surroundedNodes = new go.List<go.Part>();
             diagram.findPartsIn(nodeBounds, false, true, surroundedNodes);
 
             const selfIndex = surroundedNodes.indexOf(node);
+            // Remove nodes that appear in front of the node from the list (and the node itself)
             surroundedNodes.removeRange(0, selfIndex);
 
+            // Ignore links and group members
             return surroundedNodes.any(function(part) {
               return part instanceof go.Node && !part.isMemberOf(node);
             });
