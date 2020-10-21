@@ -708,7 +708,7 @@ Cypress.Commands.add('createReport', (name, description, system) => {
   cy.get('[data-qa=reports-create-new]')
     .click()
     .then(() => {
-      cy.wait(['@GETTeams', '@GETReportsFilterQuery']);
+      cy.wait(['@GETTeams', '@GETNodesQuery']);
       cy.get('[data-qa=spinner]').should('not.be.visible');
       cy.get('[data-qa=reports-details-name]')
         .paste(name)
