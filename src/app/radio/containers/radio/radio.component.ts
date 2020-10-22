@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { LoadNodes, LoadTags } from '@app/architecture/store/actions/node.actions';
@@ -36,6 +36,8 @@ import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.act
 import { TagsHttpParams } from '@app/architecture/store/models/node.model';
 import { LoadingStatus } from '@app/architecture/store/models/node.model';
 import { getRadiosLoadingStatus } from '@app/radio/store/selectors/radio.selector';
+import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
+import { workpackageLoading } from '@app/workpackage/store/selectors/workpackage.selector';
 
 @Component({
   selector: 'smi-radio',
@@ -57,6 +59,7 @@ export class RadioComponent implements OnInit, OnDestroy {
     page: 0,
     size: 100
   };
+  public workpackageLoading: boolean;
 
   get isLoading$(): Observable<LoadingStatus> {
     return this.store.select(getRadiosLoadingStatus);
@@ -69,30 +72,28 @@ export class RadioComponent implements OnInit, OnDestroy {
     private store: Store<RadioState>,
     public dialog: MatDialog,
     private router: Router,
-    private radioFilterService: RadioFilterService
+    private radioFilterService: RadioFilterService,
+    private workPackageStore: Store<WorkPackageState>
   ) {}
 
   ngOnInit(): void {
     this.store.dispatch(new LoadTags(this.tags));
-    this.store.dispatch(new LoadWorkPackages({}));
+    this.workPackageStore.dispatch(new LoadWorkPackages({}));
     this.userStore.dispatch(new LoadUsers({}));
-    this.store.dispatch(
-      new LoadRadios({
-        page: String(0),
-        size: String(10)
-      })
-    );
     this.nodeStore.dispatch(new LoadNodes());
     this.radio$ = this.store.pipe(select(getRadioTableData));
-    // .pipe(
-    //   map(radios => radios.entities.filter(radio => (this.filterData === null ? radio.status !== 'closed' : radio)))
-    // );
 
-    this.store.pipe(select(getRadioFilter)).subscribe(data => {
-      if (data) {
-        this.filterData = data;
-      }
-    });
+    this.subscriptions.push(
+      this.workPackageStore.pipe(select(workpackageLoading)).subscribe(loading => (this.workpackageLoading = loading))
+    );
+
+    this.subscriptions.push(
+      this.store.pipe(select(getRadioFilter)).subscribe(data => {
+        if (data) {
+          this.filterData = data;
+        }
+      })
+    );
 
     this.subscriptions.push(
       this.store.pipe(select(getMergedRadioFilters), distinctUntilChanged(isEqual)).subscribe(data => {
@@ -100,15 +101,15 @@ export class RadioComponent implements OnInit, OnDestroy {
           this.store.dispatch(
             new SearchRadio({
               data: data,
-              page: '0',
-              size: '10'
+              page: String(0),
+              size: String(10)
             })
           );
         } else {
           this.store.dispatch(
             new LoadRadios({
-              page: '0',
-              size: '10'
+              page: String(0),
+              size: String(10)
             })
           );
         }
@@ -159,8 +160,6 @@ export class RadioComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(subs => subs.unsubscribe());
-    this.store.dispatch(new RadioFilter(null));
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onSelectRadio(row: RadioEntity) {
@@ -211,13 +210,6 @@ export class RadioComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(data => {
       if (data && data.radio) {
         this.store.dispatch(new RadioFilter(this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio)));
-        // this.store.dispatch(
-        //   new SearchRadio({
-        //     data: this.radioFilterService.transformFilterIntoAdvancedSearchData(data.radio),
-        //     page: String(0),
-        //     size: String(10)
-        //   })
-        // );
       }
     });
   }
