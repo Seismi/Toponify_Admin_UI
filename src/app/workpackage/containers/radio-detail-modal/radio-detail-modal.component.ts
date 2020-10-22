@@ -177,16 +177,11 @@ export class RadioDetailModalComponent implements OnInit, OnDestroy {
   }
 
   onAddRelatesTo() {
-    this.workPackageStore.dispatch(new LoadWorkPackages({}));
     const dialogRef = this.dialog.open(AssociateModalComponent, {
       disableClose: true,
       width: 'auto',
       data: {
-        title: `Associate to RADIO ${this.radio.title} to`,
-        workpackages$: this.workPackageStore.pipe(
-          select(getWorkPackageEntities),
-          map(data => data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded'))
-        )
+        title: `Associate to RADIO ${this.radio.title} to`
       }
     });
     dialogRef.afterClosed().subscribe((result: { workpackageId: string; nodeId: string }) => {

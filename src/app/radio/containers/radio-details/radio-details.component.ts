@@ -29,12 +29,7 @@ import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackag
 import { DeleteRadioPropertyModalComponent } from '../delete-property-modal/delete-property-modal.component';
 import { ConfirmModalComponent } from '@app/radio/components/confirm-modal/confirm-modal.component';
 import { AssociateModalComponent } from '@app/radio/components/associate-modal/associate-modal.component';
-import { getWorkPackageEntities } from '@app/workpackage/store/selectors/workpackage.selector';
-import { map, take } from 'rxjs/operators';
-import { State as WorkPackageState } from '@app/workpackage/store/reducers/workpackage.reducer';
-import { LoadWorkPackages } from '@app/workpackage/store/actions/workpackage.actions';
-import { DeleteRadioModalComponent } from '../delete-radio-modal/delete-radio-modal.component';
-import { LoadNodes } from '@app/architecture/store/actions/node.actions';
+import { take } from 'rxjs/operators';
 import { Tag, LoadingStatus } from '@app/architecture/store/models/node.model';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 
@@ -60,8 +55,7 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
-    private dialog: MatDialog,
-    private workpackageStore: Store<WorkPackageState>
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -228,17 +222,11 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
   }
 
   onAddRelatesTo() {
-    this.workpackageStore.dispatch(new LoadWorkPackages({}));
-    this.store.dispatch(new LoadNodes());
     const dialogRef = this.dialog.open(AssociateModalComponent, {
       disableClose: true,
       width: 'auto',
       data: {
-        title: `Associate to RADIO ${this.radio.title} to`,
-        workpackages$: this.workpackageStore.pipe(
-          select(getWorkPackageEntities),
-          map(data => data.filter(entity => entity.status !== 'merged' && entity.status !== 'superseded'))
-        )
+        title: `Associate to RADIO ${this.radio.title} to`
       }
     });
     dialogRef.afterClosed().subscribe((result: { workpackageId: string; nodeId: string }) => {
