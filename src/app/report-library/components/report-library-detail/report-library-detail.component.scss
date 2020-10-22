@@ -9,11 +9,6 @@
   width: 100%;
 }
 
-button {
-  margin-right: 8px;
-  margin-bottom: 15px;
-}
-
 .disabled {
   pointer-events: none;
 }
@@ -31,8 +26,6 @@ button {
   margin: 20px 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  min-height: 40px;
 }
 
 .arrow_down, mat-spinner {

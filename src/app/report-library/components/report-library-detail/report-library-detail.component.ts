@@ -52,6 +52,7 @@ export class ReportLibraryDetailComponent implements OnChanges {
   @Output() addTag = new EventEmitter<string>();
   @Output() removeTag = new EventEmitter<Tag>();
   @Output() updateAvailableTags = new EventEmitter<void>();
+  @Output() goToTopology = new EventEmitter<void>();
 
   get isLoading$(): Observable<LoadingStatus> {
     return this.store.select(getLoadingNodesStatus);
@@ -96,6 +97,10 @@ export class ReportLibraryDetailComponent implements OnChanges {
 
   onDimensionEdit(dimension: Dimension): void {
     this.dimensionEdit.emit(dimension);
+  }
+
+  onGoToTopology(): void {
+    this.goToTopology.emit();
   }
 
   displayFn(system: Node): string {

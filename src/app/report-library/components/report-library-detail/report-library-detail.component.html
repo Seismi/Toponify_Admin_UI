@@ -95,9 +95,14 @@
     </smi-report-owners-table>
 
       <div class="source-system" *ngIf="!modalMode" data-qa="reports-source-system">
+        <div style="flex-grow: 1">
           Source System - {{system ? system.name : ''}}
+        </div>
           <button mat-icon-button data-qa="reports-source-system-edit" (click)="onSourceEdit()" *ngIf="workPackageIsEditable">
             <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button data-qa="reports-source-system-open" (click)="onGoToTopology()" *ngIf="system && system.name">
+            <mat-icon>launch</mat-icon>
           </button>
       </div>
 
