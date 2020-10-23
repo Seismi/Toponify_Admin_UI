@@ -87,6 +87,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
   scope: ScopeEntity;
   workPackageStore$: Subscription;
   isLoading: boolean;
+  selectedWorkPackageIds: string[];
 
   constructor(
     private radioStore: Store<RadioState>,
@@ -110,6 +111,7 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
         this.reportId = params['reportId'];
         this.workPackageStore$ = this.workPackageStore.pipe(select(getSelectedWorkpackages)).subscribe(workpackages => {
           const workPackageIds = workpackages.map(item => item.id);
+          this.selectedWorkPackageIds = workPackageIds;
           this.getReport(workPackageIds);
         });
       })
@@ -165,6 +167,15 @@ export class ReportLibraryDetailsComponent implements OnInit, OnDestroy {
 
   get reportDetailForm(): FormGroup {
     return this.reportLibraryDetailService.reportDetailForm;
+  }
+
+  goToTopology(): void {
+    const queryParams = {
+      workpackages: this.selectedWorkPackageIds ? this.selectedWorkPackageIds : [],
+      selectedItem: this.report.system.id,
+      selectedType: 'node'
+    };
+    this.router.navigate(['/topology'], { queryParams });
   }
 
   onSaveReport() {

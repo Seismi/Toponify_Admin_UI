@@ -18,12 +18,12 @@
             <mat-chip matTooltip="{{ getTooltip(element.radioSummary.opportunities) }}" [ngStyle]="{ 'background-color': getChipColour(element.radioSummary.opportunities) }">O</mat-chip>
           </mat-chip-list>
         </div>
-        <!-- <div class="actions">
-          <button mat-raised-button color="primary" (click)="onOpen(element, 'systems')"><mat-icon>device_hub</mat-icon>Systems</button>
+        <div class="actions">
+          <!-- <button mat-raised-button color="primary" (click)="onOpen(element, 'systems')"><mat-icon>device_hub</mat-icon>Systems</button>
           <button mat-raised-button color="primary" (click)="onOpen(element, 'data')"><mat-icon>device_hub</mat-icon>Data</button>
-          <button mat-raised-button color="primary" (click)="onOpen(element, 'reports')"><mat-icon>bookmarks</mat-icon>Reports</button>
+          <button mat-raised-button color="primary" (click)="onOpen(element, 'reports')"><mat-icon>bookmarks</mat-icon>Reports</button> -->
           <button mat-raised-button color="primary" (click)="onOpen(element, 'radios')"><mat-icon>track_changes</mat-icon>RADIOs</button>
-        </div> -->
+        </div>
       </td>
     </ng-container>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
