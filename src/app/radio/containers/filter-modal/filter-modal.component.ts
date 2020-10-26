@@ -61,7 +61,7 @@ export class FilterModalComponent implements OnInit {
       status: this.filterData.status,
       type: this.filterData.type,
       assignedTo: this.filterData.assignedTo,
-      relatesToWorkPackages: this.filterData.relatesToWorkPackages,
+      workpackages: this.filterData.workpackages,
       relatesTo: this.filterData.relatesTo,
       from: this.filterData.from,
       to: this.filterData.to,

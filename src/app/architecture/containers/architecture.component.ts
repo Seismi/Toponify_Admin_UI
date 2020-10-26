@@ -528,12 +528,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.workpackageStore
         .pipe(select(getSelectedFromAvailabilities), distinctUntilChanged(isEqual))
-        .pipe(withLatestFrom(this.layoutStore.select(getLayoutSelected)), distinctUntilChanged(isEqual))
-        .subscribe(([selectedWorkpackageIdsAccordingSelectedLayout, selectedLayout]) => {
+        .pipe(
+          withLatestFrom(
+            this.layoutStore.select(getLayoutSelected),
+            this.routerStore.pipe(select(getWorkPackagesQueryParams))
+          ),
+          distinctUntilChanged(isEqual)
+        )
+        .subscribe(([selectedWorkpackageIdsAccordingSelectedLayout, selectedLayout, workPackageQuery]) => {
           if (selectedLayout) {
             this.routerStore.dispatch(
               new UpdateQueryParams({
-                workpackages: selectedWorkpackageIdsAccordingSelectedLayout
+                workpackages: !workPackageQuery.length ? selectedWorkpackageIdsAccordingSelectedLayout : workPackageQuery
               })
             );
           }
