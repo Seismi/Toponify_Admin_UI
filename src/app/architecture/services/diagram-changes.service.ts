@@ -796,7 +796,7 @@ export class DiagramChangesService {
     node.ensureBounds();
 
     // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-    node.linksConnected.each(function(link: go.Link): void {
+    /* node.linksConnected.each(function(link: go.Link): void {
       // ignore disconnected links
       if (link.toNode && link.fromNode) {
         node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
@@ -812,7 +812,7 @@ export class DiagramChangesService {
           showLabel: link.data.showLabel
         });
       }
-    });
+    }); */
 
     if (
       [Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage, Level.sources, Level.targets].includes(
@@ -907,11 +907,11 @@ export class DiagramChangesService {
     });
 
     // Reroute all necessary links
-    linksToReroute.each(function(link: go.Link): void {
+    /* linksToReroute.each(function(link: go.Link): void {
       link.data = Object.assign(link.data, { updateRoute: true });
       link.invalidateRoute();
       link.updateRoute();
-    });
+    });*/
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {

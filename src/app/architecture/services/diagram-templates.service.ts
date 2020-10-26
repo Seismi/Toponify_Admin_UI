@@ -1743,7 +1743,7 @@ export class DiagramTemplatesService {
   getLinkMasterDataTemplate(forPalette: boolean = false): CustomLink {
     return $(
       CustomLink,
-      new go.Binding('points', 'route').makeTwoWay(function(points) {
+      new go.Binding('points', 'route').makeTwoWay(function(points, data) {
         const PointArray = points.toArray();
         const Path = [];
 
@@ -1751,7 +1751,6 @@ export class DiagramTemplatesService {
           Path.push(PointArray[i].x);
           Path.push(PointArray[i].y);
         }
-
         return Path;
       }),
       forPalette ?

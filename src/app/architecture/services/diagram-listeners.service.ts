@@ -142,6 +142,23 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event: go.DiagramEvent): void {
+
+        const currentLevel = this.currentLevel;
+
+        if (currentLevel && !currentLevel.endsWith('map') &&
+          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
+        ) {
+          // get layout
+          // get layout route for each link
+          // if any routes empty/missing, update the layout with the calculated routes
+        }
+
+      }.bind(this)
+    );
+
     // After diagram layout is completed, ensure that no nodes overlap
     diagram.addDiagramListener(
       'LayoutCompleted',

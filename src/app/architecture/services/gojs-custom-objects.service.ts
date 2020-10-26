@@ -386,6 +386,7 @@ export class CustomLink extends go.Link {
 
   // Override computePoints method
   public computePoints(): boolean {
+
     // Failsafe - call ordinary computePoints process for any links that are partially disconnected and have no route
     if ((!this.fromNode || !this.toNode) && this.points.count === 0) {
       return go.Link.prototype.computePoints.call(this);
@@ -415,6 +416,34 @@ export class CustomLink extends go.Link {
       return go.Link.prototype.computePoints.call(this);
     }
 
+    if (toolManager.draggingTool.isActive) {
+      const draggedParts = new go.Set(toolManager.draggingTool.draggedParts.iteratorKeys);
+      const linkAffected = draggedParts.any(function(part: go.Part): boolean {
+        if (part instanceof go.Link) {
+          return part === this;
+        } else if (part instanceof go.Node) {
+          return  (new go.Set(part.findLinksConnected())).contains(this);
+        }
+      }.bind(this));
+
+      if (linkAffected) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+    } else if (toolManager.linkingTool.isActive) {
+      if (toolManager.linkingTool.originalLink === this) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+    } else if (toolManager.resizingTool.isActive) {
+      const resizingNode = toolManager.resizingTool.adornedObject.part as go.Node;
+
+      // Check if current link is connected to the node being resized
+      if (this.fromNode === resizingNode || this.toNode === resizingNode) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+    }
+
+    return true;
+    /*
     // Leave link route as it is if no tools active and link is not temporary
     if (
       !this.data.isTemporary &&
@@ -438,7 +467,7 @@ export class CustomLink extends go.Link {
     }
 
     // Call standard computePoints method
-    return go.Link.prototype.computePoints.call(this);
+    return go.Link.prototype.computePoints.call(this);*/
   }
 }
 
