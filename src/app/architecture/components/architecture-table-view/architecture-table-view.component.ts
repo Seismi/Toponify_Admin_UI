@@ -80,7 +80,6 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
-      (this.filterValue && this.getPageIndex() === 1) &&
       changes.selectedItem &&
       changes.selectedItem.currentValue && (!changes.selectedItem.previousValue ||
       changes.selectedItem.currentValue.id !== changes.selectedItem.previousValue.id)) {
@@ -92,9 +91,9 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   }
 
   getPageIndex(): number {
-    if (this.selectedItem) {
+    if (this.selectedItem && !this.filterValue) {
       const arrIndex = this.dataSource.data.findIndex(item => item.id === this.selectedItem.id);
-      const page = (arrIndex + 1) / 10;
+      const page = (arrIndex % 10 === 9 ? arrIndex - 1 : arrIndex + 1) / 10;
       if (page <= 1) {
         return 0;
       }
