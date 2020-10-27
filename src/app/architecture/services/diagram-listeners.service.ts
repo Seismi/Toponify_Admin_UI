@@ -151,9 +151,7 @@ export class DiagramListenersService {
         if (currentLevel && !currentLevel.endsWith('map') &&
           ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
         ) {
-          // get layout
-          // get layout route for each link
-          // if any routes empty/missing, update the layout with the calculated routes
+          this.diagramChangesService.saveCalculatedRoutes(event.diagram);
         }
 
       }.bind(this)

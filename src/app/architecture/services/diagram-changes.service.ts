@@ -319,6 +319,12 @@ export class DiagramChangesService {
           part.isSelected = false;
         }
       });
+    } else if (option === 'dataLinks' && !event.checked) {
+      diagram.selection.each(function(part) {
+        if (part instanceof go.Link && part.category === linkCategories.data) {
+          part.isSelected = false;
+        }
+      });
     }
 
     // Redo layout for node usage view after updating display options
@@ -456,14 +462,14 @@ export class DiagramChangesService {
       neighbourLinks.addAll(link.fromNode.findLinksBetween(link.toNode));
       // Do not include the reconnected link
       neighbourLinks.remove(link);
-
+      /*
       // Gojs does not normally calculate the new routes until later.
       //  Therefore, make Gojs update the routes now so that accurate
       //  routes can be added to the back end.
       neighbourLinks.each(function(NLink: go.Link) {
         NLink.invalidateRoute();
         NLink.updateRoute();
-      });
+      });*/
 
       // Update position of neighbouring links in back end
       this.updatePosition({ subject: neighbourLinks, diagram: link.diagram });
@@ -505,12 +511,10 @@ export class DiagramChangesService {
 
     (diagram.model as go.GraphLinksModel).linkDataArray = JSON.parse(JSON.stringify(linkArray));
 
-    // Ensure bounds of all nodes with any connected links.
+    // Ensure bounds of all nodes
     //  This makes sure that links can route correctly if a reroute is necessary.
     diagram.nodes.each(function(node) {
-      if (node.linksConnected.count > 0) {
         node.ensureBounds();
-      }
     });
 
     /* Check for any links that do not have a valid route between source and target nodes
@@ -532,8 +536,8 @@ export class DiagramChangesService {
         const toNode = this.getFirstVisibleGroup(link.toNode);
 
         // Get bounding rectangles of the link's source and target node
-        const fromArea = fromNode.actualBounds.copy();
-        const toArea = toNode.actualBounds.copy();
+        const fromArea = fromNode.port.getDocumentBounds().copy();
+        const toArea = toNode.port.getDocumentBounds().copy();
 
         if ([fromArea.x, fromArea.y, toArea.x, toArea.y].some(isNaN)) {
           return;
@@ -1448,6 +1452,40 @@ export class DiagramChangesService {
         link.zOrder = maxZ * 2 + 2;
       }
     });
+  }
+
+  saveCalculatedRoutes(diagram: go.Diagram): void {
+    const calculatedLinks = [];
+    diagram.links.each(function(link: go.Link): void {
+      const linkLayout = link.data.positionPerLayout
+        .find(function(layoutSettings: LinkLayoutSettingsEntity): boolean {
+          return layoutSettings.layout.id === this.layout.id;
+        }.bind(this));
+
+      const linkLayoutSettings = linkLayout ? linkLayout.layout.positionSettings : null;
+
+      if (!linkLayoutSettings
+        || !linkLayoutSettings.route
+        || linkLayoutSettings.route.length === 0
+      ) {
+        calculatedLinks.push({
+          id: link.key,
+          points: link.data.route,
+          fromSpot: link.data.fromSpot,
+          toSpot: link.data.toSpot,
+          colour: link.data.colour,
+          showLabel: link.data.showLabel
+        });
+      }
+
+    }.bind(this));
+
+    if (calculatedLinks.length > 0) {
+      this.onUpdatePosition.next({
+        nodes: [],
+        links: calculatedLinks
+      });
+    }
   }
 
   // Update guide with instructions for current diagram state

@@ -397,6 +397,10 @@ export class CustomLink extends go.Link {
       return true;
     }
 
+    if (this.data.isTemporary) {
+      go.Link.prototype.computePoints.call(this);
+    }
+
     const toolManager = this.diagram.toolManager;
     const linkShiftingTool = toolManager.mouseDownTools.toArray().find(function(tool) {
       return tool.name === 'LinkShifting';

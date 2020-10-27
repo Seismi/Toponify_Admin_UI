@@ -406,7 +406,8 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForMasterDataLinks(level),
-        label: 'New Master Data Interface'
+        label: 'New Master Data Interface',
+        tags: []
       });
 
 
@@ -529,7 +530,8 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tooltip: this.getToolTipForDataLinks(level),
-        label: 'New Data Interface'
+        label: 'New Data Interface',
+        tags: []
       });
     }
 
@@ -545,6 +547,7 @@ export class DiagramLevelService {
         layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
+        tags: [],
         tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
           this.getToolTipForMasterDataLinks(level)
       });
@@ -558,6 +561,7 @@ export class DiagramLevelService {
         layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
+        tags: [],
         tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
           this.getToolTipForMasterDataLinks(level)
       });
