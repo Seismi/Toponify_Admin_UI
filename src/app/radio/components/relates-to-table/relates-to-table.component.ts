@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { RadioDetail, RelatesTo } from '@app/radio/store/models/radio.model';
 import { Router } from '@angular/router';
-import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpackage.models';
+import { defaultLayoutId } from '@app/layout/store/models/layout.model';
+import { currentArchitecturePackageId } from '@app/workpackage/store/models/workpackage.models';
 
 @Component({
   selector: 'smi-relates-to-table',
@@ -10,6 +11,7 @@ import {currentArchitecturePackageId} from '@app/workpackage/store/models/workpa
   styleUrls: ['./relates-to-table.component.scss']
 })
 export class RelatesToTableComponent {
+  public currentArchitecturePackageId = currentArchitecturePackageId;
   @Input() isEditable = true;
   @Input()
   set data(data: RadioDetail[]) {
@@ -24,6 +26,7 @@ export class RelatesToTableComponent {
   }
 
   @Output() unlinkRelatesTo = new EventEmitter<RelatesTo>();
+  @Output() closeDialog = new EventEmitter<void>();
   @Output() addRelatesTo = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -53,16 +56,16 @@ export class RelatesToTableComponent {
         return element.item.itemType;
       })();
 
-      const quesryParams = {
+      const queryParams = {
         filterLevel: filterLevel,
         selectedItem: element.item.id,
-        selectedType: selectedType
+        selectedType: selectedType,
+        layoutQuery: defaultLayoutId,
+        workpackages: [element.workPackage.id]
       };
 
-      if (element.workPackage.id !== currentArchitecturePackageId) {
-        quesryParams['workpackages'] = element.workPackage.id;
-      }
-      this.router.navigate(['/topology'], { queryParams: quesryParams});
+      this.router.navigate(['/topology'], { queryParams });
+      this.closeDialog.emit();
     } catch (err) {
       console.error(err);
     }
@@ -70,5 +73,10 @@ export class RelatesToTableComponent {
 
   onSearch(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  goToWorkPackagePage(element: RelatesTo): void {
+    this.router.navigate([`/work-packages/${element.workPackage.id}`]);
+    this.closeDialog.emit();
   }
 }

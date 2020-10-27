@@ -219,7 +219,7 @@ export interface RadiosAdvancedSearch {
   type?: Type;
   raisedBy?: RaisedBy;
   assignedTo?: AssignedToValues;
-  relatesToWorkPackages?: AssignedToValues;
+  // relatesToWorkPackages?: AssignedToValues;
   workpackages?: WorkPackages;
   relatesTo?: RelatesToValues;
   dueDate?: DueDate;
@@ -250,7 +250,7 @@ interface RelatesToValues {
 
 interface WorkPackages {
   enabled: boolean;
-  includeBaseline: boolean;
+  includeBaseline?: boolean;
   values?: Values[] | null;
 }
 

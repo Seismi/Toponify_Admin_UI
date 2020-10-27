@@ -21,7 +21,7 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { select, Store } from '@ngrx/store';
 import isEqual from 'lodash.isequal';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { RadioViewNameDialogComponent } from '../radio-view-name-dialog/radio-view-name-dialog.component';
 import { RadioFilterService } from '@app/radio/services/radio-filter.service';
 
@@ -122,6 +122,27 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
             this.store.dispatch(new SetRadioAnalysisFilter(null));
           }
         })
+    );
+
+    this.subscriptions.push(
+      this.routerStore.pipe(select(getQueryParams), take(1)).subscribe(params => {
+        if (params.relatesToWorkPackages) {
+          this.store.dispatch(
+            new RadioFilter({
+              ...this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters),
+              status: {
+                enabled: true,
+                values: ['new', 'open']
+              },
+              workpackages: {
+                enabled: true,
+                values: [{ id: params.relatesToWorkPackages }]
+              },
+              tableStyle: TableStyles.MANAGEMENT
+            })
+          );
+        }
+      })
     );
   }
 
