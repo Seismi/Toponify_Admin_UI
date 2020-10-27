@@ -79,6 +79,7 @@
         *ngIf="workPackageIsEditable && !sourceOrTargetView"
         (click)="delete.emit(element)"
         data-qa="topology-components-table-delete"
+        [disabled]="disabled"
       >
         <mat-icon>link_off</mat-icon>
       </button>
