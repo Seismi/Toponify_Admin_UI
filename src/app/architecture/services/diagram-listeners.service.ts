@@ -262,6 +262,25 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
+    // On selection change, update visibility of hidden-node warning icon for any node
+    //  surrounding a newly selected node
+    diagram.addDiagramListener('ChangedSelection', function(event: go.DiagramEvent): void {
+      const nodesToUpdate = new go.Set<go.Part>();
+      const allNodes = event.diagram.nodes;
+
+      event.diagram.selection.each(function(part: go.Part): void {
+        if (part instanceof go.Node) {
+          event.diagram.findPartsAt(part.location, true, nodesToUpdate);
+        }
+      });
+
+      // Remove links and selected nodes from set of nodes to update
+      nodesToUpdate.retainAll(allNodes);
+      nodesToUpdate.removeAll(event.diagram.selection);
+
+      nodesToUpdate.each(function(node: go.Node): void {node.updateTargetBindings(); });
+    });
+
     // In node usage view, highlight the originating node with a blue shadow.
     // Also, ensure originating node is visible by expanding the chain of containing nodes.
     diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
