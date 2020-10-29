@@ -347,6 +347,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   ngOnInit() {
     this.diagramLevelService.initializeUrlFiltering();
     this.diagram.div = this.diagramRef.nativeElement;
+    this.diagram.allowDelete = false;
 
     this.partsSelectedRef = this.diagramListenersService.partsSelected$.subscribe(
       function(node) {
@@ -436,7 +437,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.allowMove) {
       this.diagram.allowMove = this.allowMove;
-      this.diagram.allowDelete = this.allowMove;
       this.diagram.allowReshape = this.allowMove;
       this.diagram.allowResize = this.allowMove;
       this.diagram.toolManager.resizingTool.isEnabled = this.allowMove;
@@ -470,8 +470,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.workPackageIsEditable) {
       const toolManager = this.diagram.toolManager;
-      toolManager.relinkingTool.isEnabled =
-        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
+      const allowEdit = this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
+
+      toolManager.relinkingTool.isEnabled = allowEdit;
 
       this.diagram.selection.each(function(part) {
         // Remove tool-related adornments from selected link (if any) for disabled tools
@@ -484,10 +485,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         part.updateAdornments();
       });
 
-      this.gojsCustomObjectsService.diagramEditable =
-        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
-      this.diagramChangesService.diagramEditable =
-        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
+      this.diagram.allowDelete = allowEdit;
+
+      this.gojsCustomObjectsService.diagramEditable = allowEdit;
+      this.diagramChangesService.diagramEditable = allowEdit;
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {

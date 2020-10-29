@@ -117,6 +117,7 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
+    // After diagram layout complete, save routes of links that have been calculated
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event: go.DiagramEvent): void {

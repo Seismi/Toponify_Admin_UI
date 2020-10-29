@@ -453,26 +453,6 @@ export class DiagramChangesService {
           );
         });
       }
-
-      /* When a link is newly connected between two nodes, other links between the same two nodes are
-         rerouted. Therefore, these links must have their routes updated in the back end. */
-
-      // Create set of links going between the same two nodes as the updated link
-      const neighbourLinks = new go.Set();
-      neighbourLinks.addAll(link.fromNode.findLinksBetween(link.toNode));
-      // Do not include the reconnected link
-      neighbourLinks.remove(link);
-      /*
-      // Gojs does not normally calculate the new routes until later.
-      //  Therefore, make Gojs update the routes now so that accurate
-      //  routes can be added to the back end.
-      neighbourLinks.each(function(NLink: go.Link) {
-        NLink.invalidateRoute();
-        NLink.updateRoute();
-      });*/
-
-      // Update position of neighbouring links in back end
-      this.updatePosition({ subject: neighbourLinks, diagram: link.diagram });
     }
   }
 
@@ -777,6 +757,31 @@ export class DiagramChangesService {
     });
     diagram.commitTransaction('Clear set positions');
     diagram.layout.isValidLayout = false;
+    diagram.layout.doLayout(diagram);
+
+    const linkRoutes = [];
+    const nodeLocations = [];
+
+    diagram.links.each(function(link: go.Link): void {
+      linkRoutes.push({
+        id: link.key,
+        points: link.data.route,
+        fromSpot: link.data.fromSpot,
+        toSpot: link.data.toSpot,
+        colour: link.data.colour,
+        showLabel: link.data.showLabel}
+      );
+    });
+
+    diagram.nodes.each(function(node: go.Node): void {
+      nodeLocations.push({ id: node.data.id, locationCoordinates: node.data.location });
+    });
+
+    this.onUpdatePosition.next({
+      nodes: nodeLocations,
+      links: linkRoutes
+    });
+
   }
 
   // Rerun the diagram's links
@@ -784,7 +789,28 @@ export class DiagramChangesService {
     diagram.links.each(link => {
       diagram.model.setDataProperty(link.data, 'updateRoute', true);
       link.invalidateRoute();
+      link.updateRoute();
     });
+
+    const linkRoutes = [];
+
+    diagram.links.each(function(link: go.Link): void {
+      linkRoutes.push({
+        id: link.key,
+        points: link.data.route,
+        fromSpot: link.data.fromSpot,
+        toSpot: link.data.toSpot,
+        colour: link.data.colour,
+        showLabel: link.data.showLabel}
+      );
+    });
+
+    this.onUpdatePosition.next(
+      {
+        nodes: [],
+        links: linkRoutes
+      }
+    );
   }
 
   nodeExpandChanged(node) {
@@ -796,27 +822,7 @@ export class DiagramChangesService {
       showLabel: boolean
     }[] = [];
 
-    // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
-
-    // Expanding/collapsing node sections changes node size, therefore link routes may need updating
-    /* node.linksConnected.each(function(link: go.Link): void {
-      // ignore disconnected links
-      if (link.toNode && link.fromNode) {
-        node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-        link.invalidateRoute();
-        link.updateRoute();
-
-        linkData.push({
-          id: link.data.id,
-          points: link.data.route,
-          fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot,
-          colour: link.data.colour,
-          showLabel: link.data.showLabel
-        });
-      }
-    }); */
 
     if (
       [Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage, Level.sources, Level.targets].includes(
@@ -896,13 +902,6 @@ export class DiagramChangesService {
         linksToReroute.addAll(part.linksConnected);
       }
     });
-
-    // Reroute all necessary links
-    /* linksToReroute.each(function(link: go.Link): void {
-      link.data = Object.assign(link.data, { updateRoute: true });
-      link.invalidateRoute();
-      link.updateRoute();
-    });*/
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
@@ -1442,8 +1441,11 @@ export class DiagramChangesService {
     });
   }
 
+  // For links without a saved route, save calculated route to current layout
   saveCalculatedRoutes(diagram: go.Diagram): void {
     const calculatedLinks = [];
+    const nodeLocations = [];
+
     diagram.links.each(function(link: go.Link): void {
       const linkLayout = link.data.positionPerLayout
         .find(function(layoutSettings: LinkLayoutSettingsEntity): boolean {
@@ -1465,12 +1467,15 @@ export class DiagramChangesService {
           showLabel: link.data.showLabel
         });
       }
-
     }.bind(this));
+
+    diagram.nodes.each(function(node: go.Node): void {
+      nodeLocations.push({ id: node.data.id, locationCoordinates: node.data.location });
+    });
 
     if (calculatedLinks.length > 0) {
       this.onUpdatePosition.next({
-        nodes: [],
+        nodes: nodeLocations,
         links: calculatedLinks
       });
     }

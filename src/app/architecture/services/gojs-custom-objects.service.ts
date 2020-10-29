@@ -398,20 +398,13 @@ export class CustomLink extends go.Link {
     }
 
     if (this.data.isTemporary) {
-      go.Link.prototype.computePoints.call(this);
+      return go.Link.prototype.computePoints.call(this);
     }
 
     const toolManager = this.diagram.toolManager;
-    const linkShiftingTool = toolManager.mouseDownTools.toArray().find(function(tool) {
+    const linkShiftingTool = toolManager.mouseDownTools.toArray().find(function (tool) {
       return tool.name === 'LinkShifting';
     });
-
-    // Array of tools that can affect link routes
-    const tools = [toolManager.draggingTool,
-      toolManager.linkingTool,
-      linkShiftingTool,
-      toolManager.resizingTool
-    ];
 
     // Always update route if "updateRoute" flag set or no route defined
     if (this.data.updateRoute || this.points.count === 0) {
@@ -420,58 +413,46 @@ export class CustomLink extends go.Link {
       return go.Link.prototype.computePoints.call(this);
     }
 
+    // Update route for links connected to dragged nodes
     if (toolManager.draggingTool.isActive) {
       const draggedParts = new go.Set(toolManager.draggingTool.draggedParts.iteratorKeys);
-      const linkAffected = draggedParts.any(function(part: go.Part): boolean {
+      const linkAffected = draggedParts.any(function (part: go.Part): boolean {
         if (part instanceof go.Link) {
           return part === this;
         } else if (part instanceof go.Node) {
-          return  (new go.Set(part.findLinksConnected())).contains(this);
+          return (new go.Set<go.Link>(part.findLinksConnected())).contains(this);
         }
       }.bind(this));
 
       if (linkAffected) {
         return go.Link.prototype.computePoints.call(this);
       }
+      // Update route for links that are being connected to a node
     } else if (toolManager.linkingTool.isActive) {
       if (toolManager.linkingTool.originalLink === this) {
         return go.Link.prototype.computePoints.call(this);
       }
+      // Update route for links that are having their endpoints shifted
+    } else if (linkShiftingTool.isActive) {
+      if ((linkShiftingTool['_handle'].part as go.Adornment).adornedObject.part === this) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+      // Update route for links that are connected to a node which is being resized
     } else if (toolManager.resizingTool.isActive) {
       const resizingNode = toolManager.resizingTool.adornedObject.part as go.Node;
 
       // Check if current link is connected to the node being resized
-      if (this.fromNode === resizingNode || this.toNode === resizingNode) {
+      //  (including links to nodes within the node if it is a collapsed group)
+      if (this.fromNode === resizingNode || this.toNode === resizingNode
+        || (!this.fromNode.isVisible() && this.fromNode.isMemberOf(resizingNode))
+        || (!this.toNode.isVisible() && this.toNode.isMemberOf(resizingNode))
+      ) {
         return go.Link.prototype.computePoints.call(this);
       }
     }
 
+    // Otherwise, leave link route as is
     return true;
-    /*
-    // Leave link route as it is if no tools active and link is not temporary
-    if (
-      !this.data.isTemporary &&
-      !tools.some(function(tool) {
-        return tool.isActive;
-      })
-    ) {
-      return true;
-    }
-
-    // Leave link route as is if resizing a node that the link is not connected to
-    if (toolManager.resizingTool.isActive) {
-
-      const resizingNode = toolManager.resizingTool.adornedObject.part as go.Node;
-
-      // Check if current link is connected to the node being resized
-      if (this.fromNode.data.id !== resizingNode.data.id &&
-        this.toNode.data.id !== resizingNode.data.id) {
-        return true;
-      }
-    }
-
-    // Call standard computePoints method
-    return go.Link.prototype.computePoints.call(this);*/
   }
 }
 
@@ -1246,10 +1227,7 @@ export class GojsCustomObjectsService {
           function(object: go.GraphObject, event: go.InputEvent) {
 
             const anyHidden = event.diagram.selection.any(function(part: go.Part): boolean {
-              if (part instanceof go.Group) {
                 return part.data.bottomExpanded !== bottomOptions.children;
-              }
-              return false;
             });
             return anyHidden ? 'Show as List' : 'Hide List';
           }
