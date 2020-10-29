@@ -15,9 +15,9 @@ When('the user adds work package {string} to baseline of work package {string} a
         .click()
         .wait('@GETWorkPackageAvailability')
         .then(() => {
-          cy.selectDropDownSearchable('select-modal-search', baseline) // find the baseline
+          cy.selectDropDownSearchable('single-select-modal-search', baseline) // find the baseline
             .then(() => {
-              cy.get(`[data-qa=select-modal-${button_action}]`)
+              cy.get(`[data-qa=single-select-modal-${button_action}]`)
                 .click()
                 .then(() => {
                   if (button_action === 'confirm') cy.wait('@POSTWorkPackageBaseline');
