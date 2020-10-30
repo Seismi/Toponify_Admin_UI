@@ -122,7 +122,7 @@ Feature: Work Package Edit Core Details Feature
     And the user clicks the 'approve' button on the work package
     And the user clicks the 'supersede' button on the work package
     And the user clicks the 'archive' button on the work package
-    And the user clicks the 'unarchive' button on the work package
+    And the user clicks the 'archive' button on the work package
     Then the work package called 'Created Automated Regression Test Work Package' should exist in the work packages table
 
   @work_package @workflow
