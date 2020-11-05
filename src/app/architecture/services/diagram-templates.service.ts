@@ -68,6 +68,15 @@ StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | 
     }
   });
 
+  // Do not attempt layout if no nodes need laying out - otherwise, an error occurs
+  if (this.group.memberParts.all(
+    function(member: go.Part): boolean {
+      return !member.isLayoutPositioned;
+    })
+  ) {
+    return;
+  }
+
   PackedLayout.prototype.doLayout.call(this, coll);
 };
 

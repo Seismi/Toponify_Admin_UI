@@ -748,14 +748,12 @@ export class DiagramChangesService {
 
   // Rerun the diagram's layout for all nodes and links
   reorganise(diagram) {
-    diagram.startTransaction('Clear set positions');
     diagram.nodes.each(function(node) {
       diagram.model.setDataProperty(node.data, 'locationMissing', true);
     });
     diagram.links.each(function(link) {
       diagram.model.setDataProperty(link.data, 'routeMissing', true);
     });
-    diagram.commitTransaction('Clear set positions');
     diagram.layout.isValidLayout = false;
     diagram.layout.doLayout(diagram);
 
@@ -775,11 +773,6 @@ export class DiagramChangesService {
 
     diagram.nodes.each(function(node: go.Node): void {
       nodeLocations.push({ id: node.data.id, locationCoordinates: node.data.location });
-    });
-
-    this.onUpdatePosition.next({
-      nodes: nodeLocations,
-      links: linkRoutes
     });
 
   }
@@ -833,6 +826,34 @@ export class DiagramChangesService {
       // Update node's layout in map, usage sources or targets views
       node.findTopLevelPart().invalidateLayout();
     } else {
+
+      if (node instanceof go.Group) {
+        // Set of links that may need rerouting after subgraph expanded/collapsed
+        const linksToReroute = new go.Set();
+
+        // Get any links that may need rerouting
+        node.findSubGraphParts().each(function(part: go.Part): void {
+          if (part instanceof go.Node) {
+            // Add links connected to member to set of links to be rerouted
+            linksToReroute.addAll(part.linksConnected);
+          }
+        });
+
+        // Reroute all necessary links
+        linksToReroute.each(function(link: go.Link): void {
+          link.data = Object.assign(link.data, { updateRoute: true });
+          link.invalidateRoute();
+          link.updateRoute();
+          linkData.push({
+            id: link.data.id,
+            points: link.data.route,
+            fromSpot: link.data.fromSpot,
+            toSpot: link.data.toSpot,
+            colour: link.data.colour,
+            showLabel: link.data.showLabel
+          });
+        });
+      }
 
       // Update expanded status of node in the back end
       this.onUpdateExpandState.next({
@@ -891,17 +912,6 @@ export class DiagramChangesService {
       // If group collapsed, just ensure bounds are correct
       group.ensureBounds();
     }
-
-    // Set of links that may need rerouting after subgraph expanded/collapsed
-    const linksToReroute = new go.Set();
-
-    // Get any links that may need rerouting
-    group.findSubGraphParts().each(function(part: go.Part): void {
-      if (part instanceof go.Node) {
-        // Add links connected to member to set of links to be rerouted
-        linksToReroute.addAll(part.linksConnected);
-      }
-    });
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
@@ -918,8 +928,22 @@ export class DiagramChangesService {
     // Make sure node bounds are up to date so links can route correctly
     node.ensureBounds();
 
+    const linksToUpdate = new go.Set<go.Link>(node.linksConnected);
+
+    if (node instanceof go.Group && !node.isSubGraphExpanded) {
+      node.findSubGraphParts().each(function(part: go.Part): void {
+        if (part instanceof go.Node) {
+          part.linksConnected.each(function(memberLink: go.Link): void {
+            if (memberLink.isVisible()) {
+              linksToUpdate.add(memberLink);
+            }
+          });
+        }
+      });
+    }
+
     // Changing group area changes node size, therefore link routes may need updating
-    node.linksConnected.each(function(link: go.Link): void {
+    linksToUpdate.each(function(link: go.Link): void {
       // ignore disconnected links
       if (link.toNode && link.fromNode) {
         node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
@@ -1441,10 +1465,10 @@ export class DiagramChangesService {
     });
   }
 
-  // For links without a saved route, save calculated route to current layout
+  // For links routed automatically, save calculated route to current layout
   saveCalculatedRoutes(diagram: go.Diagram): void {
     const calculatedLinks = [];
-    const nodeLocations = [];
+    const calculatedNodes = [];
 
     diagram.links.each(function(link: go.Link): void {
       const linkLayout = link.data.positionPerLayout
@@ -1454,10 +1478,20 @@ export class DiagramChangesService {
 
       const linkLayoutSettings = linkLayout ? linkLayout.layout.positionSettings : null;
 
-      if (!linkLayoutSettings
-        || !linkLayoutSettings.route
-        || linkLayoutSettings.route.length === 0
-      ) {
+      // Link route has been calculated if no route saved for the layout
+      //  or if the actual route differs from the saved route
+      let linkCalculated = true;
+
+      if (linkLayoutSettings && linkLayoutSettings.route) {
+        linkCalculated = link.data.route.length !== linkLayoutSettings.route.length
+          || link.data.route.some(
+            function(coordinate, index) {
+              return linkLayoutSettings.route[index] !== coordinate;
+            });
+      }
+
+      if (linkCalculated && link.isVisible()) {
+        link.data.test = true;
         calculatedLinks.push({
           id: link.key,
           points: link.data.route,
@@ -1470,12 +1504,33 @@ export class DiagramChangesService {
     }.bind(this));
 
     diagram.nodes.each(function(node: go.Node): void {
-      nodeLocations.push({ id: node.data.id, locationCoordinates: node.data.location });
-    });
+      const nodeLayout = node.data.positionPerLayout
+        .find(function(layoutSettings: NodeLayoutSettingsEntity): boolean {
+          return layoutSettings.layout.id === this.layout.id;
+        }.bind(this));
 
-    if (calculatedLinks.length > 0) {
+      const nodeLayoutSettings = nodeLayout ? nodeLayout.layout.positionSettings : null;
+
+      // node location has been calculated if no location saved for the layout
+      //  or if the actual location differs from the saved location
+      let nodeCalculated = true;
+
+      if (nodeLayoutSettings && nodeLayoutSettings.locationCoordinates) {
+        nodeCalculated = node.data.location !== nodeLayoutSettings.locationCoordinates;
+      }
+
+      if (nodeCalculated && node.isVisible()) {
+        node.data.test = true;
+        calculatedNodes.push({
+          id: node.key,
+          locationCoordinates: node.data.location
+        });
+      }
+    }.bind(this));
+
+    if (calculatedLinks.length + calculatedNodes.length > 0) {
       this.onUpdatePosition.next({
-        nodes: nodeLocations,
+        nodes: calculatedNodes,
         links: calculatedLinks
       });
     }

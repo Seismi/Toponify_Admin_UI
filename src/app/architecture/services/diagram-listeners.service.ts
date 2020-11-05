@@ -117,22 +117,6 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
-    // After diagram layout complete, save routes of links that have been calculated
-    diagram.addDiagramListener(
-      'LayoutCompleted',
-      function(event: go.DiagramEvent): void {
-
-        const currentLevel = this.currentLevel;
-
-        if (currentLevel && !currentLevel.endsWith('map') &&
-          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
-        ) {
-          this.diagramChangesService.saveCalculatedRoutes(event.diagram);
-        }
-
-      }.bind(this)
-    );
-
     // After a system or data group is automatically laid out, ensure that links to
     //  any grouped nodes are updated.
     diagram.addDiagramListener(
@@ -152,6 +136,25 @@ export class DiagramListenersService {
           link.updateRoute();
         });
 
+      }.bind(this)
+    );
+
+    // After diagram layout complete, save routes of links that have been calculated
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event: go.DiagramEvent): void {
+        const currentLevel = this.currentLevel;
+
+        if (currentLevel && !currentLevel.endsWith('map') &&
+          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
+        ) {
+          setTimeout(
+            function() {
+              this.diagramChangesService.saveCalculatedRoutes(event.diagram);
+            }.bind(this),
+            0
+          );
+        }
       }.bind(this)
     );
 

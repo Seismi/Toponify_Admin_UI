@@ -401,6 +401,11 @@ export class CustomLink extends go.Link {
       return go.Link.prototype.computePoints.call(this);
     }
 
+    // Avoid errors that occur for links that do not have their diagram property set
+    if (!this.diagram) {
+      return go.Link.prototype.computePoints.call(this);
+    }
+
     const toolManager = this.diagram.toolManager;
     const linkShiftingTool = toolManager.mouseDownTools.toArray().find(function (tool) {
       return tool.name === 'LinkShifting';
