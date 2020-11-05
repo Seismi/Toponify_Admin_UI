@@ -835,6 +835,7 @@ export class DiagramChangesService {
       });
 
       this.groupMemberSizeChanged(node);
+      this.onUpdateDiagramLayout.next({});
     }
   }
 
@@ -856,31 +857,16 @@ export class DiagramChangesService {
 
       group.memberParts.each(function(part: go.Part): void {
         if (part instanceof go.Node) {
-          // If member is located outside of the group and is not automatically laid out then reposition member
-          if (!memberBounds.containsRect(part.actualBounds) && !part.canLayout()) {
-            const newLocation = new go.Point();
+          /*
+            For nodes that are already located in the group, change member node location back and
+            forth between the current location and another point.
+            This is to force GoJS to update the position of the node, as this does not appear to be
+            done correctly when the parent group is moved.
+          */
+          const location = part.location.copy();
+          part.move(location.copy().offset(1, 1));
+          part.move(location, true);
 
-            // Place member underneath all correctly positioned members,
-            //  centre aligned and separated by a small gap
-            newLocation.x = memberBounds.centerX;
-            newLocation.y = memberBounds.bottom + 12;
-
-            // Update the area required to contain the members
-            memberBounds.height = memberBounds.height + part.actualBounds.height + 12;
-            memberBounds.width = Math.max(memberBounds.width, part.actualBounds.width);
-
-            part.move(newLocation, true);
-          } else {
-            /*
-              For nodes that are already located in the group, change member node location back and
-              forth between the current location and another point.
-              This is to force GoJS to update the position of the node, as this does not appear to be
-              done correctly when the parent group is moved.
-            */
-            const location = part.location.copy();
-            part.move(location.copy().offset(1, 1));
-            part.move(location, true);
-          }
           // Try to ensure that each part has correct bounds after being moved
           part.ensureBounds();
         }
@@ -889,7 +875,8 @@ export class DiagramChangesService {
       // Set height and width of group to enclose the area previously
       //  calculated as necessary to enclose the members.
       group.resizeObject.height = memberBounds.height + nonMemberSectionsHeight;
-      group.resizeObject.width = memberBounds.width;
+      group.resizeObject.width = memberBounds.width + 10;
+      group.ensureBounds();
     } else {
       // If group collapsed, just ensure bounds are correct
       group.ensureBounds();
@@ -965,6 +952,7 @@ export class DiagramChangesService {
     }
 
     this.groupMemberSizeChanged(node);
+    this.onUpdateDiagramLayout.next({});
   }
 
   // Ensures that all groups that have the given member as part of

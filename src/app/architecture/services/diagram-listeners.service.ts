@@ -46,7 +46,14 @@ export class DiagramListenersService {
       this.diagramChangesService.updatePosition.bind(this.diagramChangesService)
     );
 
-    diagram.addDiagramListener('SelectionMoved', this.diagramLevelService.relayoutGroups);
+    diagram.addDiagramListener(
+      'SelectionMoved',
+      function (event) {
+        if (this.currentLevel.endsWith('map')) {
+          this.diagramLevelService.relayoutGroups();
+        }
+      }.bind(this)
+    );
 
     // After diagram layout, redo group layouts in map view to correct link paths
     diagram.addDiagramListener(
@@ -96,38 +103,6 @@ export class DiagramListenersService {
             if (group && group.isSubGraphExpanded) {
               const containingArea = group.findObject('Group member area');
               const memberBounds = containingArea.getDocumentBounds().copy();
-              const nodeBounds = node.getDocumentBounds();
-
-              // Reposition members that lie outside of the containing group's bounds
-              if (memberBounds.top > nodeBounds.top
-                || !memberBounds.intersectsRect(nodeBounds)) {
-
-                const newLocation = new go.Point();
-
-                // Centre align member
-                newLocation.x = memberBounds.centerX;
-
-                // Initialise new member location to be near the top of the member
-                //  area, in case group has no other members
-                newLocation.y = memberBounds.top + 12;
-
-                // Place member underneath all correctly positioned members,
-                //  separated by a small gap
-                group.memberParts.each(function(part: go.Part) {
-
-                  const partBounds = part.getDocumentBounds();
-
-                  if (part instanceof go.Node
-                    && memberBounds.containsRect(partBounds)
-                  ) {
-                    newLocation.y = Math.max(newLocation.y, partBounds.bottom + 12);
-                  }
-                });
-
-                node.move(newLocation, true);
-                node.ensureBounds();
-                nodesToUpdate.add(node);
-              }
 
               // Run process to resize containing groups if member is not correctly enclosed
               if (!memberBounds.containsRect(node.getDocumentBounds())) {
@@ -138,52 +113,6 @@ export class DiagramListenersService {
           if (nodesToUpdate.count > 0) {
             this.diagramChangesService.updatePosition({ diagram: event. diagram, subject: nodesToUpdate});
           }
-        }
-      }.bind(this)
-    );
-
-    // After diagram layout is completed, ensure that no nodes overlap
-    diagram.addDiagramListener(
-      'LayoutCompleted',
-      function(event: go.DiagramEvent): void {
-
-        const currentLevel = this.currentLevel;
-
-        if (currentLevel && !currentLevel.endsWith('map') &&
-          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
-        ) {
-
-          // Check each node for overlap
-          event.diagram.nodes.each(function(node: go.Node): void {
-
-            if (!node.isVisible()) {
-              return;
-            }
-
-            if (!this.diagramChangesService.isUnoccupied(node.actualBounds, node)) {
-              const rectangle = node.actualBounds.copy();
-
-              // If node is found to overlap, look for unoccupied area to move node to
-              do {
-                // Move search area down until a space is found
-                rectangle.offset(0, 10);
-              } while (!this.diagramChangesService.isUnoccupied(rectangle, node));
-
-              // Move node to unoccupied area
-              node.moveTo(rectangle.left, rectangle.top);
-              node.ensureBounds();
-
-              // Reroute any links connected to the node
-              node.findLinksConnected().each(function(link: go.Link): void {
-                link.data.updateRoute = true;
-                link.updateRoute();
-              });
-
-              if (node.containingGroup) {
-                this.diagramChangesService.groupMemberSizeChanged(node);
-              }
-            }
-          }.bind(this));
         }
       }.bind(this)
     );
@@ -332,6 +261,25 @@ export class DiagramListenersService {
         this.diagramChangesService.updateZOrder(event.diagram);
       }.bind(this)
     );
+
+    // On selection change, update visibility of hidden-node warning icon for any node
+    //  surrounding a newly selected node
+    diagram.addDiagramListener('ChangedSelection', function(event: go.DiagramEvent): void {
+      const nodesToUpdate = new go.Set<go.Part>();
+      const allNodes = event.diagram.nodes;
+
+      event.diagram.selection.each(function(part: go.Part): void {
+        if (part instanceof go.Node) {
+          event.diagram.findPartsAt(part.location, true, nodesToUpdate);
+        }
+      });
+
+      // Remove links and selected nodes from set of nodes to update
+      nodesToUpdate.retainAll(allNodes);
+      nodesToUpdate.removeAll(event.diagram.selection);
+
+      nodesToUpdate.each(function(node: go.Node): void {node.updateTargetBindings(); });
+    });
 
     // In node usage view, highlight the originating node with a blue shadow.
     // Also, ensure originating node is visible by expanding the chain of containing nodes.

@@ -24,7 +24,7 @@ import {colourOptions,
   NodeColoursLight,
   NodeDetailTab
 } from '@app/architecture/store/models/layout.model';
-// import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
+import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
 
 
 function textFont(style?: string): Object {
@@ -39,36 +39,37 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
-/*
+
 // Custom layout for system/data groups.
 //   Based on PackedLayout.
 function StandardGroupLayout() {
   PackedLayout.call(this);
 }
-*/
 
-// Custom layout for system/data groups.
-function StandardGroupLayout() {
-  go.GridLayout.call(this);
-}
-
-go.Diagram.inherit(StandardGroupLayout, go.GridLayout);
+go.Diagram.inherit(StandardGroupLayout, PackedLayout);
 
 StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
   const memberArea = this.group.findObject('Group member area');
-  const initialOriginLocal = new go.Point(memberArea.actualBounds.centerX, memberArea.actualBounds.top + 12);
+  const initialOriginLocal = new go.Point(memberArea.actualBounds.left + 10, memberArea.actualBounds.top + 12);
   return memberArea.getDocumentPoint(initialOriginLocal);
 };
-/*
+
 StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
-  console.log('layout');
   if (this.group && !this.group.isSubGraphExpanded) {
     return;
   }
-  this.size = this.group.findObject('Group member area').getDocumentBounds().size;
+  const memberAreaBounds = this.group.findObject('Group member area').getDocumentBounds();
+  const memberAreaSize = memberAreaBounds.size;
+  this.size = new go.Size(Math.max(300, memberAreaSize.width - 20), Math.max(54, memberAreaSize.height - 24));
+
+  this.group.memberParts.each(function(member) {
+    if (!memberAreaBounds.containsRect(member.getDocumentBounds())) {
+      member.isLayoutPositioned = true;
+    }
+  });
+
   PackedLayout.prototype.doLayout.call(this, coll);
 };
-*/
 
 // End system/data group layout
 
@@ -825,7 +826,7 @@ export class DiagramTemplatesService {
       $(go.RowColumnDefinition, { column: 0, maximum: 25}),
       $(go.RowColumnDefinition, { column: 1 }),
       $(go.RowColumnDefinition, { column: 2 }),
-      $(go.RowColumnDefinition, { column: 3, maximum: 50 }),
+      $(go.RowColumnDefinition, { column: 3, maximum: 75 }),
       $(go.RowColumnDefinition, { column: 4 }),
       this.getDependencyExpandButton(),
       $(go.Panel,
@@ -833,7 +834,7 @@ export class DiagramTemplatesService {
         {
           column: 0,
           row: 0,
-          alignment: go.Spot.Left,
+          alignment: go.Spot.Left
         },
         // Node icon, to appear at the top left of the node
         $(
@@ -920,6 +921,49 @@ export class DiagramTemplatesService {
           row: 0,
           column: 3
         },
+        $(go.Panel,
+          'Auto',
+          {
+            margin: 1,
+            visible: false,
+            toolTip: $('ToolTip',
+              $(go.TextBlock, 'There are nodes hidden behind this node')
+            )
+          },
+          // Warning visible if node hides other nodes
+          new go.Binding('visible', '', function(node: go.Node): boolean {
+            const diagram = node.diagram;
+            const nodeBounds = node.getDocumentBounds();
+            // Get list of nodes that lie within the node's bounds
+            const surroundedNodes = new go.List<go.Part>();
+            diagram.findPartsIn(nodeBounds, false, true, surroundedNodes);
+
+            const selfIndex = surroundedNodes.indexOf(node);
+            // Remove nodes that appear in front of the node from the list (and the node itself)
+            surroundedNodes.removeRange(0, selfIndex);
+
+            // Ignore links and group members
+            return surroundedNodes.any(function(part) {
+              return part instanceof go.Node && !part.isMemberOf(node);
+            });
+          }).ofObject(),
+          $(go.Shape,
+            {
+              figure: 'triangle',
+              fill: 'red',
+              width: 20,
+              height: 20
+            }
+          ),
+          $(go.TextBlock,
+            textFont('bold 17px'),
+            {
+              textAlign: 'center',
+              text: '!',
+              margin: new go.Margin(0, 0, 5, 0)
+            }
+          )
+        ),
         // Icon to indicate that the group contains group members
         isGroup ? $(go.Picture,
           {
@@ -1374,7 +1418,7 @@ export class DiagramTemplatesService {
           desiredSize: new go.Size(310, 40),
           minSize: new go.Size(310, 40),
         },
-        new go.Binding('minSize', '', function(data, table) {
+        new go.Binding('minSize', '', function(data) {
           let minHeight = 40;
           if (data.middleExpanded) {
             minHeight += 70;
@@ -1418,16 +1462,11 @@ export class DiagramTemplatesService {
       {
         layout: $(StandardGroupLayout as any,
           {
-            wrappingColumn: 1,
             isOngoing: false,
             isInitial: true,
-            alignment: go.GridLayout.Location,
-            spacing: new go.Size(NaN, 12)
-            /*
             spacing: 12,
             packShape: PackedLayout.Rectangular,
-            packMode: PackedLayout.Fit,
-            */
+            packMode: PackedLayout.Fit
           }
         ),
         subGraphExpandedChanged: this.diagramChangesService.groupSubGraphExpandChanged.bind(this.diagramChangesService),
@@ -1630,13 +1669,7 @@ export class DiagramTemplatesService {
                 minHeight += 30.43 * data.members.length;
                 minHeight += 35;
               } else if (data.bottomExpanded === bottomOptions.group) {
-
-                if ([Level.targets, Level.sources].includes(this.currentFilterLevel)) {
-                  minHeight += 42;
-                } else {
-                  minHeight += data.members.length * 42;
-                }
-                minHeight += 20;
+                minHeight += 62;
                 minWidth += 20;
               }
               return new go.Size(minWidth, minHeight);
