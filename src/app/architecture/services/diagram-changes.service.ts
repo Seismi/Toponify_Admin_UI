@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { linkCategories, LinkLayoutSettingsEntity, NodeLink } from '@app/architecture/store/models/node-link.model';
+import { linkCategories, LinkLayoutSettingsEntity } from '@app/architecture/store/models/node-link.model';
 import {
   AddWorkPackageLink,
   AddWorkPackageMapViewLink,
@@ -22,7 +22,6 @@ import {
   getNodeIdQueryParams,
   getScopeQueryParams
 } from '@app/core/store/selectors/route.selectors';
-import { take } from 'rxjs/operators';
 import {
   endPointTypes,
   layers,
@@ -34,8 +33,6 @@ import { getLayoutSelected } from '@app/layout/store/selectors/layout.selector';
 import { AddWorkPackageMapViewTransformation } from '@app/workpackage/store/actions/workpackage.actions';
 import {autoLayoutId, colourOptions} from '@app/architecture/store/models/layout.model';
 import { defaultScopeId } from '@app/scope/store/models/scope.model';
-
-const $ = go.GraphObject.make;
 
 @Injectable()
 export class DiagramChangesService {

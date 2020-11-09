@@ -14,7 +14,7 @@ import { DiagramImageService } from '@app/architecture/services/diagram-image.se
 import { dummyLinkId, linkCategories } from '@app/architecture/store/models/node-link.model';
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import * as go from 'gojs';
-import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
+import { GuidedDraggingTool } from '@app/architecture/official-gojs-extensions/GuidedDraggingTool';
 import {distinctUntilChanged} from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
@@ -29,17 +29,6 @@ import {
   GojsCustomObjectsService
 } from '../../services/gojs-custom-objects.service';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
-
-// FIXME: this solution is temp, while not clear how it should work
-export const viewLevelMapping = {
-  [1]: Level.system,
-  [2]: Level.data,
-  [3]: Level.dimension,
-  [4]: Level.reportingConcept,
-  [8]: Level.systemMap,
-  [9]: Level.dataMap,
-  [10]: Level.usage
-};
 
 // Default display settings
 const standardDisplayOptions = {
@@ -162,60 +151,8 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.allowCopy = false;
     this.diagram.animationManager.isEnabled = false;
     this.diagram.autoScrollRegion = new go.Margin(120, 200, 135, 200);
-    this.diagram.toolManager.draggingTool = new GuidedDraggingTool();
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
-    this.diagram.toolManager.draggingTool.dragsLink = true;
-    gojsCustomObjectsService.customDragMouseMove(this.diagram.toolManager.draggingTool);
-    gojsCustomObjectsService.customDoDropOnto(this.diagram.toolManager.draggingTool);
-    this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
-    this.diagram.toolManager.linkingTool.isEnabled = false;
-    this.diagram.toolManager.relinkingTool = (new CustomRelinkingTool());
-    this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
-    this.diagram.toolManager.relinkingTool.portGravity = 40;
-    this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation.bind(
-      diagramChangesService
-    );
-    this.diagram.toolManager.resizingTool = new CustomNodeResize();
+
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
-    this.diagram.commandHandler = new CustomCommandHandler();
-
-    // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
-    this.diagram.toolManager.draggingTool.doActivate = function(): void {
-      go.DraggingTool.prototype.doActivate.call(this);
-
-      const draggedParts = this.draggedParts.toKeySet();
-
-      // Only use drag guidelines for nodes and not for links
-      this.isGuidelineEnabled = draggedParts.first() instanceof go.Node;
-
-      // If the only part being dragged is a link that is already connected, cancel the drag
-      if (draggedParts.count === 1 && draggedParts.first() instanceof go.Link) {
-        const draggedLink = draggedParts.first();
-
-        if (!draggedLink.data.isTemporary) {
-          go.DraggingTool.prototype.doCancel.call(this);
-
-          // Cancelling the drag loses the link's selection adornment. Therefore, reselect the link to get it back.
-          draggedLink.isSelected = false;
-          this.diagram.select(draggedLink);
-        }
-      }
-    };
-
-    // Override standard hideContextMenu method on context menu tool to also hide any opened sub-menus
-    this.diagram.toolManager.contextMenuTool.hideContextMenu = function(): void {
-      if (this.currentContextMenu) {
-        this.currentContextMenu.elements.each(function(button: go.Part): void {
-          if (button.column === 1) {
-            button.visible = false;
-          }
-        });
-      }
-      // After hiding submenus, perform standard hideContextMenu process
-      go.ContextMenuTool.prototype.hideContextMenu.call(this);
-    };
 
     // Set context menu
     this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
@@ -244,39 +181,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.groupTemplateMap.add('', diagramTemplatesService.getMapViewGroupTemplate());
 
     this.diagram.add(gojsCustomObjectsService.getInstructions());
-
-    // Override command handler delete method to emit delete event to angular
-    this.diagram.commandHandler.deleteSelection = function(): void {
-      // TEMP - no deletes for multiple parts for now
-      if (this.diagram.selection.count !== 1) {
-        return;
-      }
-
-      const deletedPart = this.diagram.selection.first();
-
-      // Disallow delete of dummy links in map view
-      if (deletedPart.data.id === dummyLinkId) {
-        return;
-      }
-
-      // Delete links that have not yet been connected to a node at both ends
-      if (deletedPart.data.isTemporary) {
-        go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
-        return;
-      }
-
-      if (deletedPart instanceof go.Node) {
-        // Disallow deleting group member of shared node
-        if (deletedPart.containingGroup && deletedPart.containingGroup.data.isShared) {
-          return;
-        }
-
-        this.nodeDeleteRequested.emit(deletedPart.data);
-      } else {
-        // part to be deleted is a link
-        this.linkDeleteRequested.emit(deletedPart.data);
-      }
-    }.bind(this);
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);

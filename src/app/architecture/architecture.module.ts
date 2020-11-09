@@ -82,6 +82,9 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
 import { LayoutSettingsModalComponent } from './containers/layout-settings-modal/layout-settings-modal.component';
 import { DiagramActionsComponent } from './components/diagram-actions/diagram-actions.component';
 import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-dropdown/layouts-dropdown.component';
+import {CustomToolsService} from '@app/architecture/services/custom-tools-service';
+import {CustomLayoutService} from '@app/architecture/services/custom-layout-service';
+import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
 
 @NgModule({
   imports: [
@@ -187,6 +190,9 @@ import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-d
   ],
   providers: [
     GojsCustomObjectsService,
+    CustomToolsService,
+    CustomLayoutService,
+    DiagramUtilitiesService,
     DiagramChangesService,
     DiagramListenersService,
     DiagramTemplatesService,

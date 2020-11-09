@@ -7,10 +7,7 @@ import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
-import { take } from 'rxjs/operators';
 import {layers, bottomOptions} from '@app/architecture/store/models/node.model';
-
-const $ = go.GraphObject.make;
 
 @Injectable()
 export class DiagramListenersService {

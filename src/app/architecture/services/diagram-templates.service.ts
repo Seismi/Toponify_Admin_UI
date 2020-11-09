@@ -1,5 +1,5 @@
 import * as go from 'gojs';
-import 'gojs/extensions/Figures.js';
+import '@app/architecture/official-gojs-extensions/Figures';
 import {
   layers,
   bottomOptions,
@@ -24,7 +24,7 @@ import {colourOptions,
   NodeColoursLight,
   NodeDetailTab
 } from '@app/architecture/store/models/layout.model';
-import {PackedLayout} from 'gojs/extensionsTS/PackedLayout';
+import {PackedLayout} from '@app/architecture/official-gojs-extensions/PackedLayout';
 
 
 function textFont(style?: string): Object {
@@ -39,48 +39,6 @@ const $ = go.GraphObject.make;
 // Create definition for button with round shape
 defineRoundButton();
 
-
-// Custom layout for system/data groups.
-//   Based on PackedLayout.
-function StandardGroupLayout() {
-  PackedLayout.call(this);
-}
-
-go.Diagram.inherit(StandardGroupLayout, PackedLayout);
-
-StandardGroupLayout.prototype.initialOrigin = function(): go.Point {
-  const memberArea = this.group.findObject('Group member area');
-  const initialOriginLocal = new go.Point(memberArea.actualBounds.left + 10, memberArea.actualBounds.top + 12);
-  return memberArea.getDocumentPoint(initialOriginLocal);
-};
-
-StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
-  if (this.group && !this.group.isSubGraphExpanded) {
-    return;
-  }
-  const memberAreaBounds = this.group.findObject('Group member area').getDocumentBounds();
-  const memberAreaSize = memberAreaBounds.size;
-  this.size = new go.Size(Math.max(300, memberAreaSize.width - 20), Math.max(54, memberAreaSize.height - 24));
-
-  this.group.memberParts.each(function(member) {
-    if (!memberAreaBounds.containsRect(member.getDocumentBounds())) {
-      member.isLayoutPositioned = true;
-    }
-  });
-
-  // Do not attempt layout if no nodes need laying out - otherwise, an error occurs
-  if (this.group.memberParts.all(
-    function(member: go.Part): boolean {
-      return !member.isLayoutPositioned;
-    })
-  ) {
-    return;
-  }
-
-  PackedLayout.prototype.doLayout.call(this, coll);
-};
-
-// End system/data group layout
 
 const containerColour = '#F8C195';
 
@@ -1002,7 +960,7 @@ export class DiagramTemplatesService {
   }
 
   // Get bottom section of nodes, containing descendants or group members
-  getBottomSection(isGroup = false): go.Panel {
+  getBottomSection(): go.Panel {
     return $(
       go.Panel,
       'Auto',
@@ -1698,7 +1656,7 @@ export class DiagramTemplatesService {
             ),
             this.getTopSection(true),
             this.getMiddleSection(true),
-            this.getBottomSection(true)
+            this.getBottomSection()
           )
         )
       )
