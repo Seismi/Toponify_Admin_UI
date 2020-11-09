@@ -360,8 +360,6 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
         this.modelChanged.emit(event);
       }.bind(this)
     );
-
-    this.setLevel();
   }
 
   ngOnDestroy(): void {
