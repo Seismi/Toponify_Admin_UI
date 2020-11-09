@@ -68,6 +68,15 @@ StandardGroupLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | 
     }
   });
 
+  // Do not attempt layout if no nodes need laying out - otherwise, an error occurs
+  if (this.group.memberParts.all(
+    function(member: go.Part): boolean {
+      return !member.isLayoutPositioned;
+    })
+  ) {
+    return;
+  }
+
   PackedLayout.prototype.doLayout.call(this, coll);
 };
 
@@ -711,7 +720,7 @@ export class DiagramTemplatesService {
     );
   }
 
-  // Get name, RADIO alert, tag and wokpackage impact icons label for links (and also transformation nodes)
+  // Get name, RADIO alert, tag and workpackage impact icons label for links (and also transformation nodes)
   getLinkLabel(): go.Panel {
     return $(
       go.Panel,
@@ -736,6 +745,11 @@ export class DiagramTemplatesService {
       ),
       // Only show link label if link is visible, diagram is set to show name/RADIO alerts and any exist to show
       new go.Binding('visible', 'showLabel'),
+      new go.Binding('opacity', 'strokeWidth',
+        function(strokeWidth) {
+          return strokeWidth !== 0 ? 1 : 0;
+        }
+      ).ofObject('shape'),
       $(
         go.Panel,
         'Vertical',
@@ -1754,7 +1768,11 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      forPalette ? this.getLinkLabelForPalette() : this.getLinkLabel(),
+      forPalette ? this.getLinkLabelForPalette()
+        : $(go.Panel, 'Auto',
+            this.getLinkLabel(),
+            new go.Binding('visible', 'dataLinks').ofModel()
+          ),
       $(
         go.Shape, // The 'to' arrowhead
         {
@@ -1784,7 +1802,6 @@ export class DiagramTemplatesService {
           Path.push(PointArray[i].x);
           Path.push(PointArray[i].y);
         }
-
         return Path;
       }),
       forPalette ?
@@ -1843,7 +1860,11 @@ export class DiagramTemplatesService {
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
       ),
-      forPalette ? this.getLinkLabelForPalette() : this.getLinkLabel(),
+      forPalette ? this.getLinkLabelForPalette()
+        : $(go.Panel, 'Auto',
+            this.getLinkLabel(),
+            new go.Binding('visible', 'dataLinks').ofModel()
+          ),
       $(
         go.Shape, // The 'to' arrowhead
         {
