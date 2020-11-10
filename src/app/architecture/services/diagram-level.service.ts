@@ -11,8 +11,10 @@ import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
 import {NodeToolTips} from '@app/core/node-tooltips';
 import {UpdateQueryParams} from '@app/core/store/actions/route.actions';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
+import {CustomLayoutService} from '@app/architecture/services/custom-layout-service';
 
 const $ = go.GraphObject.make;
+let thisService;
 
 // Levels in the diagram
 export enum Level {
@@ -63,7 +65,13 @@ export class DiagramLevelService {
   private paletteLinksSource = new BehaviorSubject([]);
   paletteLinks = this.paletteLinksSource.asObservable();
 
-  constructor(private store: Store<ArchitectureState>, public location: Location) {}
+  constructor(
+    private store: Store<ArchitectureState>,
+    public location: Location,
+    private customLayoutService: CustomLayoutService
+  ) {
+    thisService = this;
+  }
 
   public initializeUrlFiltering(): void {
     this.filterSubscription = this.filter.subscribe(filter => {
@@ -424,7 +432,7 @@ export class DiagramLevelService {
 
     // Settings and layout for map view
     if (level.endsWith('map')) {
-      diagram.layout = $(MapViewLayout as any, {
+      diagram.layout = $(thisService.customLayoutService.mapViewLayout, {
         isInitial: true,
         isOngoing: true
       });

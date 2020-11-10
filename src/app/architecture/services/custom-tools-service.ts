@@ -395,11 +395,11 @@ export class CustomRelinkingTool extends go.RelinkingTool {
 @Injectable()
 export class CustomToolsService {
   // Observable to flag that the last action performed was moving parts using the arrow keys
-  private arrowKeyMoveSource = new Subject();
+  public arrowKeyMoveSource = new Subject();
   public arrowKeyMove$ = this.arrowKeyMoveSource.asObservable();
 
   constructor(
-    private store: Store<RouterReducerState<RouterStateUrl>>,
+    public store: Store<RouterReducerState<RouterStateUrl>>,
   ) {
     thisService = this;
   }

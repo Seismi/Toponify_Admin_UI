@@ -20,12 +20,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
 import { DiagramChangesService } from '../../services/diagram-changes.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
-import { DiagramTemplatesService } from '../../services/diagram-templates.service';
+import { DiagramPartTemplatesService } from '../../services/diagram-part-templates.service';
 import {
-  CustomCommandHandler,
-  CustomLinkShift,
-  CustomNodeResize,
-  CustomRelinkingTool,
   GojsCustomObjectsService
 } from '../../services/gojs-custom-objects.service';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
@@ -131,7 +127,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   }
 
   constructor(
-    public diagramTemplatesService: DiagramTemplatesService,
+    public diagramPartTemplatesService: DiagramPartTemplatesService,
     public diagramLevelService: DiagramLevelService,
     public diagramChangesService: DiagramChangesService,
     public gojsCustomObjectsService: GojsCustomObjectsService,
@@ -158,27 +154,27 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
 
     // Set node templates
-    this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
+    this.diagram.nodeTemplate = diagramPartTemplatesService.getNodeTemplate();
     this.diagram.nodeTemplateMap.add(
       nodeCategories.transformation,
-      diagramTemplatesService.getTransformationNodeTemplate()
+      diagramPartTemplatesService.getTransformationNodeTemplate()
     );
 
     // Set links templates
-    this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.data, diagramPartTemplatesService.getLinkDataTemplate());
 
-    this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramTemplatesService.getLinkMasterDataTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramPartTemplatesService.getLinkMasterDataTemplate());
 
-    this.diagram.linkTemplateMap.add(linkCategories.copy, diagramTemplatesService.getLinkCopyTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.copy, diagramPartTemplatesService.getLinkCopyTemplate());
 
-    this.diagram.linkTemplateMap.add(linkCategories.warning, diagramTemplatesService.getLinkWarningTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.warning, diagramPartTemplatesService.getLinkWarningTemplate());
 
-    this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
+    this.diagram.linkTemplateMap.add('', diagramPartTemplatesService.getLinkParentChildTemplate());
 
     // Set group templates
-    this.diagram.groupTemplateMap.add(layers.system, diagramTemplatesService.getStandardGroupTemplate());
-    this.diagram.groupTemplateMap.add(layers.data, diagramTemplatesService.getStandardGroupTemplate());
-    this.diagram.groupTemplateMap.add('', diagramTemplatesService.getMapViewGroupTemplate());
+    this.diagram.groupTemplateMap.add(layers.system, diagramPartTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add(layers.data, diagramPartTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add('', diagramPartTemplatesService.getMapViewGroupTemplate());
 
     this.diagram.add(gojsCustomObjectsService.getInstructions());
 

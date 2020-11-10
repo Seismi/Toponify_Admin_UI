@@ -230,7 +230,7 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { MatCheckboxChange, MatDialog } from '@angular/material';
-import { DiagramTemplatesService } from '@app/architecture/services/diagram-templates.service';
+import { DiagramPartTemplatesService } from '@app/architecture/services/diagram-part-templates.service';
 import * as go from 'gojs';
 import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
 
@@ -396,7 +396,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private nodeService: NodeService,
     private attributeStore: Store<AttributeState>,
     private actions$: Actions,
-    private diagramTemplatesService: DiagramTemplatesService,
+    private diagramPartTemplatesService: DiagramPartTemplatesService,
     private notificationStore: Store<NotificationState>
   ) {}
 
@@ -478,7 +478,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     this.addChildSubscription = merge(
       this.gojsCustomObjectsService.addDataSet$,
-      this.diagramTemplatesService.addChild$
+      this.diagramPartTemplatesService.addChild$
     ).subscribe(data => {
       this.onAddDescendant(null, data);
     });

@@ -9,9 +9,9 @@ const disabledTextColour = '#707070';
 interface SimpleButtonArguments {
   text: string;
   action: (event: go.InputEvent, object?: go.GraphObject) => void;
-  visible_predicate?: (object: go.GraphObject, event: go.InputEvent) => boolean;
-  enabled_predicate?: (object: go.GraphObject, event: go.InputEvent) => boolean;
-  text_predicate?: (object: go.GraphObject, event: go.InputEvent) => string;
+  visiblePredicate?: (object: go.GraphObject, event: go.InputEvent) => boolean;
+  enabledPredicate?: (object: go.GraphObject, event: go.InputEvent) => boolean;
+  textPredicate?: (object: go.GraphObject, event: go.InputEvent) => string;
 }
 
 interface ButtonArguments extends SimpleButtonArguments {
@@ -22,6 +22,10 @@ interface MenuButtonArguments extends ButtonArguments {
   subMenuNames: string[];
 }
 
+interface ContextMenuParams extends SimpleButtonArguments {
+  subButtonArguments?: (SimpleButtonArguments & { name: string })[];
+}
+
 @Injectable()
 export class ContextMenuService {
 
@@ -29,10 +33,10 @@ export class ContextMenuService {
     thisService = this;
   }
 
-  crateSimpleContextMenu(buttonArguments: SimpleButtonArguments[]) {
+  crateSimpleContextMenu(buttonArguments: SimpleButtonArguments[]): go.Adornment {
 
     const menuButtons = buttonArguments.map(
-      function(buttonArg) {
+      function(buttonArg: SimpleButtonArguments): go.Panel {
         return $(
           'ContextMenuButton',
           $(go.TextBlock,
@@ -52,26 +56,26 @@ export class ContextMenuService {
     );
   }
 
-  createTwoLevelContextMenu(name: string, buttonArguments) {
+  createTwoLevelContextMenu(name: string, buttonArguments: ContextMenuParams[]): go.Adornment {
     const menuButtons = buttonArguments.map(
-      function(buttonArg, index) {
+      function(buttonArg: ContextMenuParams, index: number): go.Panel {
         if (buttonArg.subButtonArguments && buttonArg.subButtonArguments.length > 0) {
 
           const subMenuButtonNames = buttonArg.subButtonArguments.map(
             function(subButtonArg) {return subButtonArg.name; }
           );
 
-          thisService.makeMenuButton(
+          return thisService.makeMenuButton(<MenuButtonArguments>
             {
-              row: index + 1,
+              row: index,
               subMenuNames: subMenuButtonNames,
               ...buttonArg
             }
           );
         } else {
-          thisService.makeButton(
+          return thisService.makeButton(<ButtonArguments>
             {
-              row: index + 1,
+              row: index,
               ...buttonArg
             }
           );
@@ -81,14 +85,14 @@ export class ContextMenuService {
 
     const subMenuButtons = [];
 
-    buttonArguments.each(
+    buttonArguments.forEach(
       function(buttonArg, index) {
-        if (buttonArg.isMenuButton) {
-          const subButtons = buttonArg.subMenuArguments.map(
+        if (buttonArg.subButtonArguments && buttonArg.subButtonArguments.length > 0) {
+          const subButtons = buttonArg.subButtonArguments.map(
             function(subButtonArg, subIndex) {
               return thisService.makeSubMenubutton(
                 {
-                  row: index + subIndex + 1,
+                  row: index + subIndex,
                   ...subButtonArg
                 }
               );
@@ -118,82 +122,68 @@ export class ContextMenuService {
     );
   }
 
-  makeButton(
-    args: ButtonArguments
-  ): go.Part {
+  makeButton(args: ButtonArguments): go.Panel {
     return $(
       'ContextMenuButton',
       {
-        name: args.text
-      },
-      $(go.TextBlock,
-        args.text_predicate
-          ? new go.Binding('text', '', args.text_predicate).ofObject()
-          : { text: args.text },
-        new go.Binding('stroke', 'isEnabled', function(enabled) {
-          return enabled ? 'black' : disabledTextColour;
-        }).ofObject(args.text)
-      ),
-      {
-        click: function(event, object) {
+        name: args.text,
+        click: function(event, object): void {
           args.action(event, object);
           ((object.part as go.Adornment).adornedObject as go.Node)
             .removeAdornment('ButtonMenu');
         },
         column: 0,
         row: args.row,
-        mouseEnter: function(event: object, object: go.Part) {
+        mouseEnter: function(event: object, object: go.Panel) {
           thisService.standardMouseEnter(event, object);
           // Hide any open submenu when user mouses over button
-          object.panel.elements.each(function(button: go.Part) {
+          object.panel.elements.each(function(button: go.Panel): void {
             if (button.column === 1) {
               button.visible = false;
             }
           });
         }
       },
+      $(go.TextBlock,
+        args.textPredicate
+          ? new go.Binding('text', '', args.textPredicate).ofObject()
+          : { text: args.text },
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : disabledTextColour;
+        }).ofObject(args.text)
+      ),
       // Don't bother with binding GraphObject.visible if there's no predicate
-      args.visible_predicate
+      args.visiblePredicate
         ? new go.Binding('visible', '', function(
-        object: go.Part,
+        object: go.Panel,
         event: go.InputEvent
         ): boolean {
           if (object.diagram) {
-            return args.visible_predicate(object, event);
+            return args.visiblePredicate(object, event);
           } else {
             return false;
           }
         }).ofObject()
         : {},
-      args.enabled_predicate
-        ? new go.Binding('isEnabled', '', args.enabled_predicate).ofObject()
+      args.enabledPredicate
+        ? new go.Binding('isEnabled', '', args.enabledPredicate).ofObject()
         : {}
     );
   }
 
   makeMenuButton(
     args: MenuButtonArguments
-  ): go.Part {
+  ): go.Panel {
     return $('ContextMenuButton',
       {
-        name: args.text
-      },
-      $(go.TextBlock,
-        args.text_predicate
-          ? new go.Binding('text', '', args.text_predicate).ofObject()
-          : { text: args.text },
-        new go.Binding('stroke', 'isEnabled', function(enabled) {
-          return enabled ? 'black' : disabledTextColour;
-        }).ofObject(args.text)
-      ),
-      {
-        mouseEnter: function(event: go.InputEvent, object: go.Part): void {
+        name: args.text,
+        mouseEnter: function(event: go.InputEvent, object: go.Panel): void {
 
           const menu = object.part as go.Adornment;
 
           thisService.standardMouseEnter(event, object);
           // Hide any open submenu that is already open
-          object.panel.elements.each(function(button: go.Part): void {
+          object.panel.elements.each(function(button: go.Panel): void {
             if (button.column === 1) {
               button.visible = false;
             }
@@ -213,64 +203,70 @@ export class ContextMenuService {
         column: 0,
         row: args.row
       },
+      $(go.TextBlock,
+        args.textPredicate
+          ? new go.Binding('text', '', args.textPredicate).ofObject()
+          : { text: args.text },
+        new go.Binding('stroke', 'isEnabled', function(enabled: boolean): string {
+          return enabled ? 'black' : disabledTextColour;
+        }).ofObject(args.text)
+      ),
       // Don't bother with binding GraphObject.visible if there's no predicate
-      args.visible_predicate
+      args.visiblePredicate
         ? new go.Binding('visible', '', function(
-        object: go.Part,
-        event: object
+        object: go.Panel,
+        event: go.InputEvent
         ): boolean {
           if (object.diagram) {
-            return args.visible_predicate(object, event);
+            return args.visiblePredicate(object, event);
           } else {
             return false;
           }
         }).ofObject()
         : {},
-      args.enabled_predicate
-        ? new go.Binding('isEnabled', '', args.enabled_predicate).ofObject()
+      args.enabledPredicate
+        ? new go.Binding('isEnabled', '', args.enabledPredicate).ofObject()
         : {}
     );
   }
 
   // Button to appear when a menu button is moused over
   makeSubMenuButton(
-    args: MenuButtonArguments
-  ): go.Part {
+    args: ButtonArguments
+  ): go.Panel {
     return $('ContextMenuButton',
       {
-        name: name
-      },
-      $(go.TextBlock,
-        args.text_predicate
-          ? new go.Binding('text', '', args.text_predicate).ofObject()
-          : { text: name },
-        new go.Binding('stroke', 'isEnabled', function(enabled) {
-          return enabled ? 'black' : disabledTextColour;
-        }).ofObject(name)
-      ),
-      {
-        click: function(event, object) {
+        click: function(event: go.InputEvent, object: go.Panel): void {
           args.action(event, object);
           ((object.part as go.Adornment).adornedObject as go.Node)
             .removeAdornment('ButtonMenu');
         },
-        name: name,
+        mouseEnter: thisService.standardMouseEnter,
+        name: args.text,
         visible: false,
         column: 1,
         row: args.row
       },
-      args.enabled_predicate
-        ? new go.Binding('isEnabled', '', args.enabled_predicate).ofObject()
+      $(go.TextBlock,
+        args.textPredicate
+          ? new go.Binding('text', '', args.textPredicate).ofObject()
+          : { text: args.text },
+        new go.Binding('stroke', 'isEnabled', function(enabled) {
+          return enabled ? 'black' : disabledTextColour;
+        }).ofObject(name)
+      ),
+      args.enabledPredicate
+        ? new go.Binding('isEnabled', '', args.enabledPredicate).ofObject()
         : {},
-      args.visible_predicate
-        ? new go.Binding('height', '', function(object: go.GraphObject, event: object) {
-          return args.visible_predicate(object, event) ? 20 : 0;
+      args.visiblePredicate
+        ? new go.Binding('height', '', function(object: go.GraphObject, event: go.InputEvent) {
+          return args.visiblePredicate(object, event) ? 20 : 0;
         }).ofObject()
         : {}
     );
   }
 
-  standardMouseEnter(e: object, btn: go.Part): void {
+  standardMouseEnter(e: object, btn: go.Panel): void {
     if (!btn.isEnabledObject()) {
       return;
     }

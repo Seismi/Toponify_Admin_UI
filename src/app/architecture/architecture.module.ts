@@ -41,7 +41,7 @@ import { WorkPackageService } from '@app/workpackage/services/workpackage.servic
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';
 import { DiagramChangesService } from './services/diagram-changes.service';
 import { DiagramListenersService } from './services/diagram-listeners.service';
-import { DiagramTemplatesService } from './services/diagram-templates.service';
+import { DiagramPartTemplatesService } from './services/diagram-part-templates.service';
 import { DiagramLevelService } from './services/diagram-level.service';
 import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
@@ -195,7 +195,7 @@ import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilit
     DiagramUtilitiesService,
     DiagramChangesService,
     DiagramListenersService,
-    DiagramTemplatesService,
+    DiagramPartTemplatesService,
     DiagramLevelService,
     DiagramListenersService,
     DiagramImageService,
