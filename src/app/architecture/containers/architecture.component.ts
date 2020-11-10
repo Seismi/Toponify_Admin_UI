@@ -104,7 +104,7 @@ import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-mod
 import { AddRadioEntity, LoadRadios, RadioActionTypes, SearchRadio } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity, TableData, RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioEntities, getRadioTableData } from '@app/radio/store/selectors/radio.selector';
+import { getRadioTableData } from '@app/radio/store/selectors/radio.selector';
 import {
   AddScope,
   AddScopeNodes,
@@ -258,13 +258,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private setAsMasterRef;
   private arrowKeyMoveRef;
 
-  @Input() attributesView = false;
   @Input() allowMove = false;
   public selectedPart = null;
   // public selectionUnchanged = false;
   // public allSelectedParts: string[] = [];
+  // mapViewId$: Observable<string>;
 
-  showOrHideLeftPane = false;
   layoutSettings;
 
   private nodesSubscription: Subscription;
@@ -278,7 +277,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
 
   nodeScopes$: Observable<WorkPackageNodeScopes[]>;
-  customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
   owners$: Observable<TeamEntity[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
@@ -289,16 +287,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   mapView: boolean;
   viewLevel$: Observable<Level>;
   draft: any;
-  // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
-  // attributeSubscription: Subscription;
   clickedOnLink = false;
-  isEditable = false;
   nodeId: string;
   allowEditWorkPackages: string;
   workPackageIsEditable = false;
-  workpackageDetail: any;
   public selectedWorkPackages$: Observable<any>;
   filterServiceSubscription: Subscription;
   layout: LayoutDetails;
@@ -309,8 +303,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedLeftTab: number | string;
   multipleSelected: boolean;
   selectedMultipleNodes = [];
-  radioTab = true;
-  detailsTab = false;
   selectedWorkpackages = [];
   subscriptions: Subscription[] = [];
   sw: string[] = [];
@@ -328,7 +320,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private filterId: string;
   private mapViewSource: { id: string; isTransformation: string } | null;
   private filterLevelSubscription: Subscription;
-  private addDataSetSubscription: Subscription;
   private addChildSubscription: Subscription;
   public params: Params;
   public selectedWorkPackageEntities: WorkPackageEntity[];
@@ -350,8 +341,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
-  @ViewChild(LeftPanelComponent)
-  private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
   @ViewChild('drawer') drawer;
@@ -988,12 +977,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   setNodesLinks(layer: Level, id?: string, workpackageIds: string[] = [], scope?: string, isTransformation?: boolean) {
-    if (layer !== Level.attribute) {
-      this.attributesView = false;
-    } else {
-      this.attributesView = true;
-    }
-
     const queryParams: GetNodesRequestQueryParams = {
       workPackageQuery: workpackageIds
     };
@@ -1054,7 +1037,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       if (part) {
         this.selectedParts = new go.Set<go.Part>([part]);
-        // Load node scopes
         if (
           this.selectedNode &&
           this.selectedNode.id !== this.nodeId &&
@@ -1068,7 +1050,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
-        //TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
+        // TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
         if (
           this.selectedNode &&
           this.selectedNode.id !== this.nodeId &&
