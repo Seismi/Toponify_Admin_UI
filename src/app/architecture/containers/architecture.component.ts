@@ -1149,30 +1149,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  onSaveObjectDetails() {
+  onSaveObjectDetails(): void {
     if (this.clickedOnLink) {
-      const linkData = {
-        id: this.selectedPart.id,
-        category: this.objectDetailsForm.value.category,
-        layer: this.selectedPart.layer,
-        name: this.objectDetailsForm.value.name,
-        reference: this.objectDetailsForm.value.reference,
-        tags: this.objectDetailsForm.value.tags,
-        description: this.objectDetailsForm.value.description,
-        sourceId: this.selectedPart.sourceId,
-        targetId: this.selectedPart.targetId
-      };
+      const linkData = { ...this.selectedPart, ...this.objectDetailsForm.value };
       this.diagramChangesService.updatePartData(this.part, linkData);
     } else {
-      const nodeData = {
-        id: this.selectedPart.id,
-        layer: this.selectedPart.layer,
-        category: this.objectDetailsForm.value.category,
-        name: this.objectDetailsForm.value.name,
-        reference: this.objectDetailsForm.value.reference,
-        description: this.objectDetailsForm.value.description,
-        tags: this.objectDetailsForm.value.tags
-      };
+      const nodeData = { ...this.selectedPart, ...this.objectDetailsForm.value };
       this.diagramChangesService.updatePartData(this.part, nodeData);
     }
   }
@@ -1941,10 +1923,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title:
-          'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.',
-        confirmBtn: 'Yes',
-        cancelBtn: 'No'
+        title: 'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.'
       }
     });
 
@@ -2737,47 +2716,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   searchRadioData(): RadiosAdvancedSearch {
     return {
-      raisedByMe: {
-        enabled: false
-      },
-      assignedToMe: {
-        enabled: false
-      },
-      status: {
-        enabled: false
-      },
-      type: {
-        enabled: false
-      },
-      raisedBy: {
-        enabled: false
-      },
-      assignedTo: {
-        enabled: false
-      },
       workpackages: {
         enabled: true,
         includeBaseline: true,
-        values: [
-          {
-            id: '00000000-0000-0000-0000-000000000000'
-          }
-        ]
-      },
-      relatesTo: {
-        enabled: false
-      },
-      dueDate: {
-        enabled: false
-      },
-      severityRange: {
-        enabled: false
-      },
-      frequencyRange: {
-        enabled: false
-      },
-      text: {
-        enabled: false
+        values: [{ id: currentArchitecturePackageId }]
       }
     };
   }
