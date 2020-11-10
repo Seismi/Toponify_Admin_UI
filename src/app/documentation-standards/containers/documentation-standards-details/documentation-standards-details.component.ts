@@ -73,10 +73,7 @@ export class DocumentationStandardsDetailsComponent implements OnInit, OnDestroy
         data: {
           data: {
             id: this.documentStandard.id,
-            type: this.documentStandardsForm.value.type,
-            name: this.documentStandardsForm.value.name,
-            description: this.documentStandardsForm.value.description,
-            levels: this.documentStandardsForm.value.levels
+            ...this.documentStandardsForm.value
           }
         }
       })
