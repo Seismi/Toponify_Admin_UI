@@ -458,12 +458,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
     );
 
-    this.store.select(getNodeIdQueryParams).subscribe(nodeId => {
-      this.filterId = nodeId;
-    });
-    this.store.select(getMapViewQueryParams).subscribe(mapViewParams => {
-      this.mapViewSource = mapViewParams;
-    });
+    this.subscriptions.push(
+      this.store.select(getNodeIdQueryParams).subscribe(nodeId => (this.filterId = nodeId))
+    );
+
+    this.subscriptions.push(
+      this.store.select(getMapViewQueryParams).subscribe(mapViewParams => (this.mapViewSource = mapViewParams))
+    );
 
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       this.removeAllDraft();
@@ -609,9 +610,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
     );
 
-    this.workpackageStore
-      .pipe(select(workpackageSelectAllowed))
-      .subscribe(canSelect => (this.canSelectWorkpackages = canSelect));
+    this.subscriptions.push(
+      this.workpackageStore
+        .pipe(select(workpackageSelectAllowed))
+        .subscribe(canSelect => (this.canSelectWorkpackages = canSelect))
+    );
 
     // RADIO table on the right hand pane
     this.store.dispatch(new SearchRadio({ data: this.searchRadioData(), page: '0', size: '5' }));
@@ -720,12 +723,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     //   })
     // );
 
-    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
-      if (scope) {
-        this.scope = scope;
-        this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
-      }
-    });
+    this.subscriptions.push(
+      this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
+        if (scope) {
+          this.scope = scope;
+          this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
+        }
+      })
+    );
 
     this.routerStore
       .select(getScopeQueryParams)
