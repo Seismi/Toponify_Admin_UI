@@ -1,16 +1,17 @@
 const { When } = require('cypress-cucumber-preprocessor/steps');
 
-When('the user clicks the {string} button on the work package', function(action_button) {
-  action_button = action_button === 'unarchive' ? 'archive' : action_button; // archive button is used for both archive and unarchive
-
-  if (action_button === 'archive') {
-    cy.get(`[data-qa=work-packages-${action_button}]`) // get the relevant button
-      .click() // click it
-      //.wait(4000)
-      .wait(['@PUTWorkPackage', '@GETWorkPackagePaging']);
+When('the user clicks the {string} button on the work package', action_button => {
+  cy.get(`[data-qa=work-packages-${action_button}]`).click();
+  if (action_button === 'submit') {
+    cy.wait('@POSTsubmitWorkPackage');
+  } else if (action_button === 'reset') {
+    cy.wait('@POSTresetWorkPackage');
+  } else if (action_button === 'approve') {
+    cy.wait('@POSTapproveWorkPackage');
+  } else if (action_button === 'supersede') {
+    cy.wait('@POSTsupersedeWorkPackage');
   } else {
-    cy.get(`[data-qa=work-packages-${action_button}]`) // get the relevant button
-      .click() // click it
-      .wait(`@POST${action_button}WorkPackage`);
+    cy.wait('@PUTWorkPackage');
   }
+  cy.get('work-packages-spinner').should('not.be.visible');
 });
