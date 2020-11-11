@@ -139,6 +139,25 @@ export class DiagramListenersService {
       }.bind(this)
     );
 
+    // After diagram layout complete, save routes of links that have been calculated
+    diagram.addDiagramListener(
+      'LayoutCompleted',
+      function(event: go.DiagramEvent): void {
+        const currentLevel = this.currentLevel;
+
+        if (currentLevel && !currentLevel.endsWith('map') &&
+          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
+        ) {
+          setTimeout(
+            function() {
+              this.diagramChangesService.saveCalculatedRoutes(event.diagram);
+            }.bind(this),
+            0
+          );
+        }
+      }.bind(this)
+    );
+
     diagram.addDiagramListener('LayoutCompleted', initialFitToScreen);
 
     // Prevent fit to screen after user adds parts to an initially empty diagram
