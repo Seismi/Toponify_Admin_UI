@@ -11,20 +11,18 @@ import {
   ViewChild
 } from '@angular/core';
 import { DiagramImageService } from '@app/architecture/services/diagram-image.service';
-import { dummyLinkId, linkCategories } from '@app/architecture/store/models/node-link.model';
+import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import * as go from 'gojs';
-import { GuidedDraggingTool } from '@app/architecture/official-gojs-extensions/GuidedDraggingTool';
 import {distinctUntilChanged} from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
-import { DiagramChangesService } from '../../services/diagram-changes.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
 import { DiagramPartTemplatesService } from '../../services/diagram-part-templates.service';
-import {
-  GojsCustomObjectsService
-} from '../../services/gojs-custom-objects.service';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
+import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
+import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
 
 // Default display settings
 const standardDisplayOptions = {
@@ -128,11 +126,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
   constructor(
     public diagramPartTemplatesService: DiagramPartTemplatesService,
+    public diagramLayoutChangesService: DiagramLayoutChangesService,
+    public diagramStructureChangesService: DiagramStructureChangesService,
     public diagramLevelService: DiagramLevelService,
-    public diagramChangesService: DiagramChangesService,
-    public gojsCustomObjectsService: GojsCustomObjectsService,
     public diagramListenersService: DiagramListenersService,
-    public diagramImageService: DiagramImageService
+    public diagramImageService: DiagramImageService,
+    public diagramUtilitiesService: DiagramUtilitiesService
   ) {
     // Lets init url filtering
     this.diagramLevelService.initializeUrlFiltering();
@@ -151,7 +150,7 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
 
     // Set context menu
-    this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
+    this.diagram.contextMenu = diagramPartTemplatesService.getBackgroundContextMenu();
 
     // Set node templates
     this.diagram.nodeTemplate = diagramPartTemplatesService.getNodeTemplate();
@@ -161,9 +160,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     );
 
     // Set links templates
-    this.diagram.linkTemplateMap.add(linkCategories.data, diagramPartTemplatesService.getLinkDataTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.data, diagramPartTemplatesService.getStandardLinkTemplate());
 
-    this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramPartTemplatesService.getLinkMasterDataTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramPartTemplatesService.getStandardLinkTemplate());
 
     this.diagram.linkTemplateMap.add(linkCategories.copy, diagramPartTemplatesService.getLinkCopyTemplate());
 
@@ -176,35 +175,35 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.groupTemplateMap.add(layers.data, diagramPartTemplatesService.getStandardGroupTemplate());
     this.diagram.groupTemplateMap.add('', diagramPartTemplatesService.getMapViewGroupTemplate());
 
-    this.diagram.add(gojsCustomObjectsService.getInstructions());
+    this.diagram.add(diagramPartTemplatesService.getInstructions());
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
-    // pipe(debounce(() => timer(500)))
-    diagramChangesService.onUpdateDiagramLayout.subscribe(() => {
+
+    diagramLayoutChangesService.onUpdateDiagramLayout.subscribe(() => {
       this.updateDiagramLayout.emit();
     });
-    diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
+    diagramLayoutChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeLocation.emit(data);
     });
-    diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
+    diagramLayoutChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
     });
-    diagramChangesService.onUpdateLinkLabelState.subscribe((link: any) => {
+    diagramLayoutChangesService.onUpdateLinkLabelState.subscribe((link: any) => {
       this.updateLinkLabelState.emit(link);
     });
-    diagramChangesService.onUpdateTransformationNodeLabelState
+    diagramLayoutChangesService.onUpdateTransformationNodeLabelState
       .subscribe((data: { id: string, showLabel: boolean }) => {
         this.updateTransformationNodeLabelState.emit(data);
       });
-    diagramChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
+    diagramLayoutChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
       this.updateNodeColour.emit(data);
     });
-    diagramChangesService.onUpdateLinkColour.subscribe((link: any) => {
+    diagramLayoutChangesService.onUpdateLinkColour.subscribe((link: any) => {
       this.updateLinkColour.emit(link);
     });
 
-    this.diagramChangesService.onUpdateGroupsAreaState
+    this.diagramLayoutChangesService.onUpdateGroupsAreaState
       .pipe(distinctUntilChanged(function(prev, curr): boolean {
         return JSON.stringify(prev) === JSON.stringify(curr);
       }))
@@ -335,11 +334,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.allowMove) {
       this.diagram.allowMove = this.allowMove;
+      this.diagramLayoutChangesService.layoutEditable = this.allowMove;
       this.diagram.allowReshape = this.allowMove;
       this.diagram.allowResize = this.allowMove;
       this.diagram.toolManager.resizingTool.isEnabled = this.allowMove;
       this.diagram.toolManager.linkReshapingTool.isEnabled = this.allowMove;
-      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(function(tool) {
+      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(function(tool: go.Tool): boolean {
         return tool.name === 'LinkShifting';
       });
       linkShiftingTool.isEnabled = this.allowMove;
@@ -385,14 +385,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       this.diagram.allowDelete = allowEdit;
 
-      this.gojsCustomObjectsService.diagramEditable = allowEdit;
-      this.diagramChangesService.diagramEditable = allowEdit;
+      this.diagramStructureChangesService.diagramEditable = allowEdit;
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
-      this.gojsCustomObjectsService.diagramEditable =
-        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
-      this.diagramChangesService.diagramEditable =
+      this.diagramStructureChangesService.diagramEditable =
         this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
 
       this.setLevel();
@@ -427,10 +424,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       );
 
       if (nodesHasBeenChanged) {
-        this.diagramChangesService.updateNodes(this.diagram, this.nodes);
+        this.diagramStructureChangesService.updateNodes(this.diagram, this.nodes);
 
         const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
-        this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
+        this.diagramStructureChangesService.updateLinks(this.diagram, this.links, nodeIds);
 
         this.diagram.startTransaction('Update link workpackage colours');
         this.diagram.links.each(function(link) {
@@ -441,11 +438,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       if (linksHasBeenChanged) {
         const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
 
-        this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
+        this.diagramStructureChangesService.updateLinks(this.diagram, this.links, nodeIds);
       }
       if (nodesHasBeenChanged || linksHasBeenChanged) {
         // Preserve selection on update node or link arrays
-        this.diagramChangesService.preserveSelection(this.diagram, prevSelectedIds);
+        this.diagramUtilitiesService.preserveSelection(this.diagram, prevSelectedIds);
       }
     }
 

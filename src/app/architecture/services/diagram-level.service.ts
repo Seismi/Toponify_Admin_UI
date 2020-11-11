@@ -6,7 +6,6 @@ import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {State as ArchitectureState} from '@app/architecture/store/reducers/architecture.reducer';
-import {Location} from '@angular/common';
 import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
 import {NodeToolTips} from '@app/core/node-tooltips';
 import {UpdateQueryParams} from '@app/core/store/actions/route.actions';
@@ -14,7 +13,7 @@ import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selecto
 import {CustomLayoutService} from '@app/architecture/services/custom-layout-service';
 
 const $ = go.GraphObject.make;
-let thisService;
+let thisService: DiagramLevelService;
 
 // Levels in the diagram
 export enum Level {
@@ -67,8 +66,8 @@ export class DiagramLevelService {
 
   constructor(
     private store: Store<ArchitectureState>,
-    public location: Location,
-    private customLayoutService: CustomLayoutService
+    private customLayoutService: CustomLayoutService,
+    public currentLevel: Level
   ) {
     thisService = this;
   }
@@ -86,8 +85,10 @@ export class DiagramLevelService {
 
     this.filterServiceSubscription = this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       if (filterLevel) {
+        thisService.currentLevel = filterLevel;
         return this.filter.next({ filterLevel: filterLevel });
       }
+      thisService.currentLevel = Level.system;
       return this.filter.next({ filterLevel: Level.system });
     });
   }

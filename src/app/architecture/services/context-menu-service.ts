@@ -1,17 +1,19 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
+import {ConstructorType} from 'gojs';
 
-let thisService;
+let thisService: ContextMenuService;
 
 const $ = go.GraphObject.make;
 const disabledTextColour = '#707070';
 
-interface SimpleButtonArguments {
+export interface SimpleButtonArguments {
   text: string;
-  action: (event: go.InputEvent, object?: go.GraphObject) => void;
-  visiblePredicate?: (object: go.GraphObject, event: go.InputEvent) => boolean;
-  enabledPredicate?: (object: go.GraphObject, event: go.InputEvent) => boolean;
-  textPredicate?: (object: go.GraphObject, event: go.InputEvent) => string;
+  action?: (part: go.Part) => void;
+  visiblePredicate?: (part: go.Part) => boolean;
+  enabledPredicate?: (part: go.Part) => boolean;
+  textPredicate?: (part: go.Part) => string;
 }
 
 interface ButtonArguments extends SimpleButtonArguments {
@@ -23,17 +25,19 @@ interface MenuButtonArguments extends ButtonArguments {
 }
 
 interface ContextMenuParams extends SimpleButtonArguments {
-  subButtonArguments?: (SimpleButtonArguments & { name: string })[];
+  subButtonArguments?: (SimpleButtonArguments)[];
 }
 
 @Injectable()
 export class ContextMenuService {
 
-  constructor() {
+  constructor(
+    private diagramViewChangesService: DiagramViewChangesService
+  ) {
     thisService = this;
   }
 
-  crateSimpleContextMenu(buttonArguments: SimpleButtonArguments[]): go.Adornment {
+  createSimpleContextMenu(buttonArguments: SimpleButtonArguments[]): go.Adornment {
 
     const menuButtons = buttonArguments.map(
       function(buttonArg: SimpleButtonArguments): go.Panel {
@@ -46,7 +50,7 @@ export class ContextMenuService {
           {
             click: buttonArg.action
           }
-        );
+        )();
       }
     );
 
@@ -62,7 +66,7 @@ export class ContextMenuService {
         if (buttonArg.subButtonArguments && buttonArg.subButtonArguments.length > 0) {
 
           const subMenuButtonNames = buttonArg.subButtonArguments.map(
-            function(subButtonArg) {return subButtonArg.name; }
+            function(subButtonArg) {return subButtonArg.text; }
           );
 
           return thisService.makeMenuButton(<MenuButtonArguments>
@@ -90,7 +94,7 @@ export class ContextMenuService {
         if (buttonArg.subButtonArguments && buttonArg.subButtonArguments.length > 0) {
           const subButtons = buttonArg.subButtonArguments.map(
             function(subButtonArg, subIndex) {
-              return thisService.makeSubMenubutton(
+              return thisService.makeSubMenuButton(
                 {
                   row: index + subIndex,
                   ...subButtonArg
@@ -128,9 +132,9 @@ export class ContextMenuService {
       {
         name: args.text,
         click: function(event, object): void {
-          args.action(event, object);
-          ((object.part as go.Adornment).adornedObject as go.Node)
-            .removeAdornment('ButtonMenu');
+          const part = (object.part as go.Adornment).adornedObject as go.Part;
+          args.action(part);
+          part.removeAdornment('ButtonMenu');
         },
         column: 0,
         row: args.row,
@@ -159,7 +163,8 @@ export class ContextMenuService {
         event: go.InputEvent
         ): boolean {
           if (object.diagram) {
-            return args.visiblePredicate(object, event);
+            const part = (object.part as go.Adornment).adornedObject as go.Part;
+            return args.visiblePredicate(part);
           } else {
             return false;
           }
@@ -197,7 +202,7 @@ export class ContextMenuService {
           });
 
           // Ensure that opened submenus do not appear outside of diagram bounds
-          thisService.diagramChangesService.updateViewAreaForMenu(menu);
+          thisService.diagramViewChangesService.updateViewAreaForMenu(menu);
 
         },
         column: 0,
@@ -218,7 +223,8 @@ export class ContextMenuService {
         event: go.InputEvent
         ): boolean {
           if (object.diagram) {
-            return args.visiblePredicate(object, event);
+            const part = (object.part as go.Adornment).adornedObject as go.Part;
+            return args.visiblePredicate(part);
           } else {
             return false;
           }
@@ -237,9 +243,9 @@ export class ContextMenuService {
     return $('ContextMenuButton',
       {
         click: function(event: go.InputEvent, object: go.Panel): void {
-          args.action(event, object);
-          ((object.part as go.Adornment).adornedObject as go.Node)
-            .removeAdornment('ButtonMenu');
+          const part = (object.part as go.Adornment).adornedObject as go.Part;
+          args.action(part);
+          part.removeAdornment('ButtonMenu');
         },
         mouseEnter: thisService.standardMouseEnter,
         name: args.text,
@@ -260,7 +266,8 @@ export class ContextMenuService {
         : {},
       args.visiblePredicate
         ? new go.Binding('height', '', function(object: go.GraphObject, event: go.InputEvent) {
-          return args.visiblePredicate(object, event) ? 20 : 0;
+          const part = (object.part as go.Adornment).adornedObject as go.Part;
+          return args.visiblePredicate(part) ? 20 : 0;
         }).ofObject()
         : {}
     );

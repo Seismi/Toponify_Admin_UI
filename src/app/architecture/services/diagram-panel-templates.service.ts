@@ -12,14 +12,14 @@ import {
   WorkPackageImpact
 } from '@app/architecture/store/models/node.model';
 
-let thisService;
+let thisService: DiagramPanelTemplatesService;
 const $ = go.GraphObject.make;
 
 @Injectable()
 export class DiagramPanelTemplatesService {
 
   constructor(
-    public diagramUtilitiesService: DiagramUtilitiesService
+    private diagramUtilitiesService: DiagramUtilitiesService
   ) {
     thisService = this;
   }
@@ -102,7 +102,7 @@ export class DiagramPanelTemplatesService {
         ),
         $(
           go.TextBlock,
-          thisService.diagramUtilities.textFont('bold italic 20px'),
+          thisService.diagramUtilitiesService.textFont('bold italic 20px'),
           {
             wrap: go.TextBlock.None
           },
@@ -199,7 +199,7 @@ export class DiagramPanelTemplatesService {
           this.diagramChangesService.showDependencies(node);
         }.bind(this)
       },
-      $(go.TextBlock, thisService.diagramUtilities.textFont('bold 18px'), '+', {
+      $(go.TextBlock, thisService.diagramUtilitiesService.textFont('bold 18px'), '+', {
         alignment: go.Spot.Center,
         desiredSize: new go.Size(20, 20),
         textAlign: 'center',
@@ -219,7 +219,7 @@ export class DiagramPanelTemplatesService {
   //  Expands middle node section if not already expanded.
   //  Otherwise, collapses bottom section if expanded.
   //  Otherwise, collapses middle section.
-  getTopExpandButton(): go.Panel {
+  getTopExpandButton(forPalette = false): go.Panel {
     return $(
       'RoundButton',
       {
@@ -229,7 +229,7 @@ export class DiagramPanelTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: !this.forPalette,
+        visible: !forPalette,
         click: function(event, button) {
           const node = button.part;
 
@@ -245,7 +245,7 @@ export class DiagramPanelTemplatesService {
       },
       $(
         go.TextBlock,
-        thisService.diagramUtilities.textFont('bold 18px'),
+        thisService.diagramUtilitiesService.textFont('bold 18px'),
         {
           alignment: go.Spot.Center,
           desiredSize: new go.Size(25, 25),
@@ -271,7 +271,7 @@ export class DiagramPanelTemplatesService {
 
   // Get menu button for system/data nodes.
   //  When clicked, provides a menu with actions to take, relating to the node.
-  getTopMenuButton(): go.Panel {
+  getTopMenuButton(forPalette = false): go.Panel {
     return $(
       'RoundButton',
       {
@@ -279,7 +279,7 @@ export class DiagramPanelTemplatesService {
         alignment: go.Spot.RightCenter,
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: (!this.forPalette),
+        visible: (!forPalette),
         click: function(event, button) {
           const menu = this.gojsCustomObjectsService.getPartButtonMenu(true);
           event.diagram.select(button.part);
@@ -297,7 +297,7 @@ export class DiagramPanelTemplatesService {
       },
       $(
         go.TextBlock,
-        thisService.diagramUtilities.textFont('bold 18px'),
+        thisService.diagramUtilitiesService.textFont('bold 18px'),
         {
           alignment: go.Spot.Center,
           desiredSize: new go.Size(25, 25),
@@ -316,7 +316,7 @@ export class DiagramPanelTemplatesService {
 
   // Get bottom button for expanding and collapsing node sections.
   // Expands the bottom section of nodes when clicked.
-  getBottomExpandButton(): go.Panel {
+  getBottomExpandButton(forPalette = false): go.Panel {
     return $(
       'RoundButton',
       {
@@ -326,7 +326,7 @@ export class DiagramPanelTemplatesService {
         margin: new go.Margin(0, 0, 0, 2),
         alignmentFocus: go.Spot.RightCenter,
         desiredSize: new go.Size(25, 25),
-        visible: !this.forPalette,
+        visible: !forPalette,
         click: function(event, button): void {
           const node = button.part;
 
@@ -337,7 +337,7 @@ export class DiagramPanelTemplatesService {
       },
       $(
         go.TextBlock,
-        thisService.diagramUtilities.textFont('bold 18px'),
+        thisService.diagramUtilitiesService.textFont('bold 18px'),
         '+',
         {
           alignment: go.Spot.Center,
@@ -393,7 +393,7 @@ export class DiagramPanelTemplatesService {
       }),
       $(
         go.TextBlock,
-        thisService.diagramUtilities.textFont('12px'),
+        thisService.diagramUtilitiesService.textFont('12px'),
         {
           name: 'Radio Alert Icon',
           textAlign: 'center',
@@ -406,7 +406,7 @@ export class DiagramPanelTemplatesService {
     );
   }
   // Get the whole set of indicators for the different types of RADIOs
-  getRadioAlertIndicators(forNode = true): go.Panel {
+  getRadioAlertIndicators(forNode = true, forPalette = false): go.Panel {
     return $(
       go.Panel,
       'Horizontal',
@@ -419,9 +419,9 @@ export class DiagramPanelTemplatesService {
       },
       forNode ? { height: 27 } : {},
       new go.Binding('visible', 'showRadioAlerts').ofModel(),
-      (forNode && !this.forPalette) ? $(go.TextBlock,
+      (forNode && !forPalette) ? $(go.TextBlock,
         'No RADIOs',
-        thisService.diagramUtilities.textFont('italic 16px'),
+        thisService.diagramUtilitiesService.textFont('italic 16px'),
         {
           textAlign: 'left',
           stroke: 'grey',
@@ -451,7 +451,7 @@ export class DiagramPanelTemplatesService {
       $(go.Panel,
         'Horizontal',
         {
-          itemTemplate: thisService.diagramPanelTemplatesService.getTitleTagIconTemplate()
+          itemTemplate: thisService.getTitleTagIconTemplate()
         },
         new go.Binding('itemArray', 'tags',
           function(tags: Tag[]): Tag[] {
@@ -474,7 +474,7 @@ export class DiagramPanelTemplatesService {
       //  icons associated with the node
       $(go.TextBlock,
         '...',
-        thisService.diagramUtilities.textFont('bold 18px'),
+        thisService.diagramUtilitiesService.textFont('bold 18px'),
         {
           margin: new go.Margin(0, 0, 0, 4)
         },
@@ -493,7 +493,7 @@ export class DiagramPanelTemplatesService {
     );
   }
 
-  getWorkpackageImpactIcons(maxIcons = 4, forNode = true): go.Panel {
+  getWorkpackageImpactIcons(maxIcons = 4, forNode = true, forPalette = false): go.Panel {
     return $(go.Panel,
       'Horizontal',
       {
@@ -519,9 +519,9 @@ export class DiagramPanelTemplatesService {
           }
         )
       ),
-      (forNode && !this.forPalette) ? $(go.TextBlock,
+      (forNode && !forPalette) ? $(go.TextBlock,
         'Not Impacted',
-        thisService.diagramUtilities.textFont('italic 16px'),
+        thisService.diagramUtilitiesService.textFont('italic 16px'),
         {
           textAlign: 'right',
           stroke: 'grey',
@@ -537,7 +537,7 @@ export class DiagramPanelTemplatesService {
       //  icons associated with the node
       $(go.TextBlock,
         '...',
-        thisService.diagramUtilities.textFont('bold 18px'),
+        thisService.diagramUtilitiesService.textFont('bold 18px'),
         {
           margin: new go.Margin(0, 0, 0, 4)
         },
@@ -589,7 +589,7 @@ export class DiagramPanelTemplatesService {
           'Vertical',
           $(
             go.TextBlock,
-            thisService.diagramUtilities.textFont('bold 14px'),
+            thisService.diagramUtilitiesService.textFont('bold 14px'),
             new go.Binding('text', 'name'),
             new go.Binding('visible', 'linkName').ofModel()
           ),
@@ -598,7 +598,7 @@ export class DiagramPanelTemplatesService {
           })
         ),
         $(go.TextBlock,
-          thisService.diagramUtilities.textFont('italic 14px'),
+          thisService.diagramUtilitiesService.textFont('italic 14px'),
           {
             text: 'No RADIOs',
             stroke: 'grey',
@@ -636,7 +636,7 @@ export class DiagramPanelTemplatesService {
           textAlign: 'center',
           maxSize: new go.Size(200, NaN)
         },
-        thisService.diagramUtilities.textFont('bold 24px'),
+        thisService.diagramUtilitiesService.textFont('bold 24px'),
         new go.Binding('text', 'label')
       )
     );
@@ -644,7 +644,7 @@ export class DiagramPanelTemplatesService {
 
   getLabelForTransformation(): go.TextBlock {
     return $(go.TextBlock,
-      thisService.diagramUtilities.textFont('bold 24px'),
+      thisService.diagramUtilitiesService.textFont('bold 24px'),
       {
         textAlign: 'center',
         shadowVisible: false,
@@ -688,7 +688,7 @@ export class DiagramPanelTemplatesService {
     // Create a temporary part with the given tags
     function createTempPanel(array: Tag[]): go.Panel {
       const panel = $(go.Part, 'Horizontal', {
-        itemTemplate: thisService.diagramPanelTemplatesService.getTagTemplate(),
+        itemTemplate: thisService.getTagTemplate(),
         itemArray: array
       });
       panel.ensureBounds();
@@ -777,7 +777,7 @@ export class DiagramPanelTemplatesService {
       thisService.getTagIconsRow(),
       $(
         go.TextBlock,
-        thisService.diagramUtilities.textFont('bold italic 20px'),
+        thisService.diagramUtilitiesService.textFont('bold italic 20px'),
         {
           column: 2,
           row: 0,
@@ -842,7 +842,7 @@ export class DiagramPanelTemplatesService {
             }
           ),
           $(go.TextBlock,
-            thisService.diagramUtilities.textFont('bold 17px'),
+            thisService.diagramUtilitiesService.textFont('bold 17px'),
             {
               textAlign: 'center',
               text: '!',
@@ -876,7 +876,7 @@ export class DiagramPanelTemplatesService {
 
 
   // Get middle section of nodes, containing tags, RADIO Alert indicators and workpackage impact icons
-  getMiddleSection(isGroup = false): go.Panel {
+  getMiddleSection(isGroup = false, forPalette = false): go.Panel {
     return $(
       go.Panel,
       'Vertical',
@@ -891,9 +891,9 @@ export class DiagramPanelTemplatesService {
       $(go.Panel,
         'Horizontal',
         {alignment: go.Spot.LeftCenter },
-        !this.forPalette ? $(go.TextBlock,
+        !forPalette ? $(go.TextBlock,
           'No Tags',
-          thisService.diagramUtilities.textFont('italic 16px'),
+          thisService.diagramUtilitiesService.textFont('italic 16px'),
           {
             textAlign: 'left',
             visible: false,
@@ -1002,7 +1002,7 @@ export class DiagramPanelTemplatesService {
             alignment: go.Spot.TopCenter,
             stretch: go.GraphObject.Horizontal
           },
-          $(go.TextBlock, thisService.diagramUtilities.textFont('italic 18px'),
+          $(go.TextBlock, thisService.diagramUtilitiesService.textFont('italic 18px'),
             {
               textAlign: 'center',
               stretch: go.GraphObject.Horizontal,
@@ -1046,7 +1046,7 @@ export class DiagramPanelTemplatesService {
             defaultAlignment: go.Spot.TopCenter,
             stretch: go.GraphObject.Horizontal
           },
-          $(go.TextBlock, thisService.diagramUtilities.textFont('italic 18px'),
+          $(go.TextBlock, thisService.diagramUtilitiesService.textFont('italic 18px'),
             'Grouped Items',
             {
               textAlign: 'center',

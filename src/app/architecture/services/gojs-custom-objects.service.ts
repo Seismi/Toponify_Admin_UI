@@ -810,26 +810,4 @@ export class GojsCustomObjectsService {
     );
   }
 
-  // returns the gojs object containing a guide with instructions for users
-  getInstructions(): go.Part {
-
-    return $(go.Part,
-      'Horizontal',
-      {
-        name: 'Guide',
-        selectable: false,
-        layerName: 'Grid',
-        padding: 10
-      },
-      $(go.TextBlock,
-        textFont('italic 30px'),
-        {
-          name: 'instructions',
-          stroke: '#D6D6D6',
-          textAlign: 'center'
-        }
-      )
-    );
-  }
-
 }
