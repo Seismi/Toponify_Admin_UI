@@ -306,9 +306,7 @@ Cypress.Commands.add('editWorkPackage', (work_package, work_package_menu, wait_f
         .should('have.value', work_package)
         .then(() => {
           cy.get('[data-qa=topology-work-packages-edit]').click();
-          if (wait_for) {
-            cy.wait(wait_for);
-          }
+          cy.get('[data-qa=spinner]').should('not.be.visible');
         });
     })
     .then(result => {
@@ -372,9 +370,6 @@ Cypress.Commands.add('findSystem', (table, name) => {
     .type(name)
     .should('have.value', name) // type the name#
     .then(() => {
-      cy.get(`[data-qa=${table}]`) // get the work packages table
-        .contains('td', name)
-        .should('be.visible');
       return cy.get(`[data-qa=${table}]`).find('table>tbody'); // find the table
     });
 });
