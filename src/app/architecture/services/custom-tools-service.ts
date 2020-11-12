@@ -5,14 +5,15 @@ import {UndoLayoutChange} from '@app/architecture/store/actions/node.actions';
 import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
-import {DiagramLevelService} from '@app/architecture/services/diagram-level.service';
-import {GojsCustomObjectsService} from '@app/architecture/services/gojs-custom-objects.service';
-import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
-import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {GuidedDraggingTool} from '@app/architecture/official-gojs-extensions/GuidedDraggingTool';
-import {layers} from '@app/architecture/store/models/node.model';
+import {endPointTypes, layers, nodeCategories} from '@app/architecture/store/models/node.model';
 import {dummyLinkId} from '@app/architecture/store/models/node-link.model';
 import {Subject} from 'rxjs';
+import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
+import {DiagramPartTemplatesService} from '@app/architecture/services/diagram-part-templates.service';
+import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
+import {DiagramLevelService} from '@app/architecture/services/diagram-level.service';
 
 let thisService: CustomToolsService;
 
@@ -37,7 +38,7 @@ export class CustomLinkShift extends LinkShiftingTool {
     const link = ad.adornedObject.part as go.Link;
     const fromEnd = ad.category === 'LinkShiftingFrom';
     let connectedNode;
-    let port = null;
+    let port;
     if (fromEnd) {
       connectedNode = link.fromNode;
       port = link.fromPort;
@@ -54,7 +55,7 @@ export class CustomLinkShift extends LinkShiftingTool {
       port = connectedNode.port;
     }
 
-    if (port === null) { return; }
+    if (!port) { return; }
     // support rotated ports
     const portAng = port.getDocumentAngle();
     const center = port.getDocumentPoint(go.Spot.Center);
@@ -355,7 +356,7 @@ export class CustomCommandHandler extends go.CommandHandler {
       thisService.arrowKeyMoveSource.next();
 
       // Update position in the store for moved nodes and connected links
-      thisService.diagramChangesService.updatePosition({ subject: effectiveSelection, diagram: diagram });
+      thisService.diagramLayoutChangesService.updatePosition({ subject: effectiveSelection, diagram: diagram });
     } else {
       super.doKeyUp();
     }
@@ -374,7 +375,7 @@ export class CustomRelinkingTool extends go.RelinkingTool {
 
     // Determine first containing group to not be within a collapsed group
     if (otherNode) {
-      otherNode = thisService.diagramChangesService.getFirstVisibleGroup(otherNode);
+      otherNode = thisService.diagramUtilitiesService.getFirstVisibleGroup(otherNode);
       tempOtherNode.position = otherNode.position;
       tempOtherNode.desiredSize = otherNode.getDocumentBounds().inflate(0.5, 0.5).size;
       tempOtherPort.desiredSize = otherNode.getDocumentBounds().inflate(-0.5, -0.5).size;
@@ -400,6 +401,11 @@ export class CustomToolsService {
 
   constructor(
     public store: Store<RouterReducerState<RouterStateUrl>>,
+    public diagramLayoutChangesService: DiagramLayoutChangesService,
+    public diagramUtilitiesService: DiagramUtilitiesService,
+    private diagramPartTemplatesService: DiagramPartTemplatesService,
+    private diagramStructureChangesService: DiagramStructureChangesService,
+    private diagramLevelService: DiagramLevelService
   ) {
     thisService = this;
   }
@@ -426,14 +432,12 @@ export class CustomToolsService {
 
     relinkingTool.isUnconnectedLinkValid = true;
     relinkingTool.portGravity = 40;
-    relinkingTool.linkValidation = diagramChangesService.linkingValidation.bind(
-      diagramChangesService
-    );
+    relinkingTool.linkValidation = thisService.linkingValidation;
 
     toolManager.resizingTool = new CustomNodeResize();
 
     // Set context menu
-    diagram.contextMenu = thisService.getBackgroundContextMenu();
+    diagram.contextMenu = thisService.diagramPartTemplatesService.getBackgroundContextMenu();
 
     // Override command handler delete method to emit delete event to angular
     thisService.customDeleteSelection(commandHandler);
@@ -502,7 +506,7 @@ export class CustomToolsService {
 
         const targetPart = obj.part || obj;
         const fromPalette = !!draggingTool.copiedParts;
-        const droppedNode = thisService.diagramChangesService.getGroupableDraggedNode(draggingTool);
+        const droppedNode = thisService.diagramUtilitiesService.getGroupableDraggedNode(draggingTool);
 
         // Continue only if a valid dropped node is dragged
         if (droppedNode) {
@@ -515,8 +519,8 @@ export class CustomToolsService {
               // If dragged from palette then set the group on the node's data.
               // the node will be created with the correct group.
               droppedNode.data.group = targetPart.data.id;
-            } else if (/*!*/thisService.diagramEditable) {
-              /*!*/thisService.setSystemGroupSource.next({
+            } else if (thisService.diagramStructureChangesService.diagramEditable) {
+              thisService.diagramStructureChangesService.setSystemGroupSource.next({
                 memberId: droppedNode.data.id, groupId: targetPart.data.id
               });
             }
@@ -586,5 +590,56 @@ export class CustomToolsService {
         this.linkDeleteRequested.emit(deletedPart.data);
       }
     }.bind(this);
+  }
+
+  linkingValidation(
+    fromnode: go.Node,
+    fromport: go.GraphObject,
+    tonode: go.Node,
+    toport: go.GraphObject,
+    oldlink: go.Link
+  ): boolean {
+    // Ensure that links in map view go in the right direction
+    if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
+      if (fromnode && fromnode.containingGroup && fromnode.containingGroup.data.endPointType !== endPointTypes.source) {
+        return false;
+      }
+      if (tonode && tonode.containingGroup && tonode.containingGroup.data.endPointType !== endPointTypes.target) {
+        return false;
+      }
+    }
+
+    // Only validate links that are connected at both ends
+    if (!fromnode || !tonode) {
+      return true;
+    }
+
+    // Prevent links between two transformation nodes
+    if (
+      fromnode.data.category === nodeCategories.transformation &&
+      tonode.data.category === nodeCategories.transformation
+    ) {
+      return false;
+    }
+
+    // Prevent links to transformation node in more than one direction
+    if (
+      fromnode.data.category === nodeCategories.transformation ||
+      tonode.data.category === nodeCategories.transformation
+    ) {
+      const allLinks = tonode.findLinksTo(fromnode);
+      if (allLinks.count > 0) {
+        return false;
+      }
+    }
+
+    // Prevent links between equivalent nodes in map view
+    if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
+      if (fromnode.data.id === tonode.data.id) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

@@ -23,6 +23,7 @@ import {colourOptions} from '@app/architecture/store/models/layout.model';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
 import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
 import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
+import {DiagramPanelTemplatesService} from '@app/architecture/services/diagram-panel-templates.service';
 
 // Default display settings
 const standardDisplayOptions = {
@@ -125,14 +126,18 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   }
 
   constructor(
-    public diagramPartTemplatesService: DiagramPartTemplatesService,
-    public diagramLayoutChangesService: DiagramLayoutChangesService,
-    public diagramStructureChangesService: DiagramStructureChangesService,
-    public diagramLevelService: DiagramLevelService,
-    public diagramListenersService: DiagramListenersService,
-    public diagramImageService: DiagramImageService,
-    public diagramUtilitiesService: DiagramUtilitiesService
+    private diagramPartTemplatesService: DiagramPartTemplatesService,
+    private diagramLayoutChangesService: DiagramLayoutChangesService,
+    private diagramStructureChangesService: DiagramStructureChangesService,
+    private diagramLevelService: DiagramLevelService,
+    private diagramListenersService: DiagramListenersService,
+    private diagramImageService: DiagramImageService,
+    private diagramUtilitiesService: DiagramUtilitiesService,
+    private diagramPanelTemplatesService: DiagramPanelTemplatesService
   ) {
+
+    this.diagramPanelTemplatesService.defineRoundButton();
+
     // Lets init url filtering
     this.diagramLevelService.initializeUrlFiltering();
     (go as any).licenseKey =

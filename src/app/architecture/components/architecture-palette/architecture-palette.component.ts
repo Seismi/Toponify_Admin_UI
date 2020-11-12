@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
-import {layers, nodeCategories} from '@app/architecture/store/models/node.model';
+import {nodeCategories} from '@app/architecture/store/models/node.model';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
-import { DiagramPartTemplatesService } from '../..//services/diagram-templates.service';
+import { DiagramPartTemplatesService } from '../..//services/diagram-part-templates.service';
 import { DiagramLevelService } from '../../services/diagram-level.service';
 
 @Component({
@@ -64,11 +64,11 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.groupTemplateMap.add('data', diagramPartTemplatesService.getStandardGroupTemplate(true));
 
     // Set links templates
-    this.palette.linkTemplateMap.add(linkCategories.data, diagramPartTemplatesService.getLinkDataTemplate(true));
+    this.palette.linkTemplateMap.add(linkCategories.data, diagramPartTemplatesService.getStandardLinkTemplate(true));
 
     this.palette.linkTemplateMap.add(
       linkCategories.masterData,
-      diagramPartTemplatesService.getLinkMasterDataTemplate(true)
+      diagramPartTemplatesService.getStandardLinkTemplate(true)
     );
 
     // After palette parts laid out, arrange the transformation node links to connect to the
@@ -92,8 +92,8 @@ export class ArchitecturePaletteComponent implements OnInit {
           }
         });
 
-        // Only proceed if links attached to transformation node are found
-        if (toTransformationLink && fromTransformationLink) {
+        // Only proceed if transformation node with attached links is found
+        if (transformationNode && toTransformationLink && fromTransformationLink) {
 
           transformationNode.ensureBounds();
 

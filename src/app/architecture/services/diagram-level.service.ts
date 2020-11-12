@@ -94,26 +94,26 @@ export class DiagramLevelService {
   }
 
   // Display the next level of detail in the diagram, filtered to include only children of a specific node
-  //    object: node to display the children of
-  changeLevelWithFilter(_event: any, object: go.Node): void {
+  //   node: node to display the children of
+  changeLevelWithFilter(node: go.Node | { data: Node }): void {
     let newLevel: Level;
-    if (object.data.layer === layers.system) {
+    if (node.data.layer === layers.system) {
       newLevel = Level.data;
-    } else if (object.data.layer === layers.data) {
+    } else if (node.data.layer === layers.data) {
       newLevel = Level.dimension;
-    } else if (object.data.layer === layers.dimension) {
+    } else if (node.data.layer === layers.dimension) {
       newLevel = Level.reportingConcept;
     } else {
       return;
     }
-    this.store.dispatch(
-      new UpdateQueryParams({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name })
+    thisService.store.dispatch(
+      new UpdateQueryParams({ filterLevel: newLevel, id: node.data.id, parentName: node.data.name })
     );
   }
 
-  displayGroupMembers(_event: any, object: go.Node) {
-    this.store.dispatch(
-      new UpdateQueryParams({ filterLevel: Level.system, id: object.data.id, groupName: object.data.name })
+  displayGroupMembers(group: go.Group) {
+    thisService.store.dispatch(
+      new UpdateQueryParams({ filterLevel: Level.system, id: group.data.id, groupName: group.data.name })
     );
   }
 
@@ -143,29 +143,29 @@ export class DiagramLevelService {
     });
   }
 
-  displayUsageView(event, object) {
-    this.store.dispatch(
+  displayUsageView(node: go.Node): void {
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: Level.usage,
-        id: object.data.id
+        id: node.data.id
       })
     );
   }
 
-  displaySourcesView(event, object) {
-    this.store.dispatch(
+  displaySourcesView(node: go.Node): void {
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: Level.sources,
-        id: object.data.id
+        id: node.data.id
       })
     );
   }
 
-  displayTargetsView(event, object) {
-    this.store.dispatch(
+  displayTargetsView(node: go.Node): void {
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: Level.targets,
-        id: object.data.id
+        id: node.data.id
       })
     );
   }

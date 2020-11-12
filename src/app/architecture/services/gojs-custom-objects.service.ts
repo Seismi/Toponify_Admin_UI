@@ -1,4 +1,6 @@
+
 import * as go from 'gojs';
+
 import {LinkShiftingTool} from '@app/architecture/official-gojs-extensions/LinkShiftingTool';
 import {Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from './diagram-level.service';
@@ -11,7 +13,7 @@ import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
 import {UndoLayoutChange} from '@app/architecture/store/actions/node.actions';
-
+/*
 const $ = go.GraphObject.make;
 const disabledTextColour = '#707070';
 
@@ -23,7 +25,7 @@ function textFont(style?: string): Object {
     font: `${style} ${font}`
   };
 }
-
+*/
 // Customised link that only updates its route when a tool that can affect link route is active
 export class CustomLink extends go.Link {
   constructor() {
@@ -106,7 +108,7 @@ export class CustomLink extends go.Link {
     return true;
   }
 }
-
+/*
 function getShowStatusButton() {
   return makeButton(
     0,
@@ -811,3 +813,4 @@ export class GojsCustomObjectsService {
   }
 
 }
+*/

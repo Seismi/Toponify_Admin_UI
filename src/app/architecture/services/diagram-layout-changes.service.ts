@@ -545,8 +545,8 @@ export class DiagramLayoutChangesService {
     diagram.links.each(function(link: go.Link): void {
       const linkLayout = link.data.positionPerLayout
         .find(function(layoutSettings: LinkLayoutSettingsEntity): boolean {
-          return layoutSettings.layout.id === this.layout.id;
-        }.bind(this));
+          return layoutSettings.layout.id === thisService.layout.id;
+        });
 
       const linkLayoutSettings = linkLayout ? linkLayout.layout.positionSettings : null;
 
@@ -573,13 +573,13 @@ export class DiagramLayoutChangesService {
           showLabel: link.data.showLabel
         });
       }
-    }.bind(this));
+    });
 
     diagram.nodes.each(function(node: go.Node): void {
       const nodeLayout = node.data.positionPerLayout
         .find(function(layoutSettings: NodeLayoutSettingsEntity): boolean {
-          return layoutSettings.layout.id === this.layout.id;
-        }.bind(this));
+          return layoutSettings.layout.id === thisService.layout.id;
+        });
 
       const nodeLayoutSettings = nodeLayout ? nodeLayout.layout.positionSettings : null;
 

@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
 import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
-import {ConstructorType} from 'gojs';
 
 let thisService: ContextMenuService;
 
@@ -10,10 +9,10 @@ const disabledTextColour = '#707070';
 
 export interface SimpleButtonArguments {
   text: string;
-  action?: (part: go.Part) => void;
-  visiblePredicate?: (part: go.Part) => boolean;
-  enabledPredicate?: (part: go.Part) => boolean;
-  textPredicate?: (part: go.Part) => string;
+  action?: (target: go.Part | go.Diagram) => void;
+  visiblePredicate?: (target: go.Part | go.Diagram) => boolean;
+  enabledPredicate?: (target: go.Part | go.Diagram) => boolean;
+  textPredicate?: (target: go.Part | go.Diagram) => string;
 }
 
 interface ButtonArguments extends SimpleButtonArguments {
@@ -43,14 +42,16 @@ export class ContextMenuService {
       function(buttonArg: SimpleButtonArguments): go.Panel {
         return $(
           'ContextMenuButton',
+          {
+            click: function(event: go.InputEvent, object: go.GraphObject) {
+              buttonArg.action(event.diagram);
+            }
+          },
           $(go.TextBlock,
             buttonArg.text,
             {}
-          ),
-          {
-            click: buttonArg.action
-          }
-        )();
+          )
+        );
       }
     );
 

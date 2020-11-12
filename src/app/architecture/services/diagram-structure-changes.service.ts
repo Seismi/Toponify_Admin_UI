@@ -18,6 +18,7 @@ import {layers} from '@app/architecture/store/models/node.model';
 import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
 import {defaultScopeId} from '@app/scope/store/models/scope.model';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+import {Subject} from 'rxjs';
 
 let thisService: DiagramStructureChangesService;
 const $ = go.GraphObject.make;
@@ -25,14 +26,31 @@ const $ = go.GraphObject.make;
 @Injectable()
 export class DiagramStructureChangesService {
   public diagramEditable: boolean;
-  private currentLevel: Level;
+  // Observable to indicate that a shared copy of an existing node should be added to the group as a new member
+  public addNewSharedSubItemSource = new Subject();
+  public addNewSharedSubItem$ = this.addNewSharedSubItemSource.asObservable();
+  // Observable to indicate that a new node should be added to the group as a new member
+  public addNewSubItemSource = new Subject();
+  public addNewSubItem$ = this.addNewSubItemSource.asObservable();
+  // Observable to indicate that the system should be assigned to a new group
+  public addSystemToGroupSource = new Subject();
+  public addSystemToGroup$ = this.addSystemToGroupSource.asObservable();
+  // Observable to indicate that a new child node is to be added to a node
+  public addChildNodeSource = new Subject();
+  public addChildNode$ = this.addChildNodeSource.asObservable();
+  // Observable to indicate that a shared copy of an existing node should be made into the master
+  public setAsMasterSource = new Subject();
+  public setAsMaster$ = this.setAsMasterSource.asObservable();
+  // Observable to indicate that the system was dropped in a group
+  public setSystemGroupSource = new Subject();
+  public setSystemGroup$ = this.setSystemGroupSource.asObservable();
+
   private currentScope: string;
   private currentNodeId: string;
   private currentMapViewSource: { id: string; isTransformation: boolean };
 
   workpackages = [];
   selectedWorkpackages = [];
-  layout;
 
   constructor(
     public diagramLayoutChangesService: DiagramLayoutChangesService,
@@ -93,11 +111,11 @@ export class DiagramStructureChangesService {
           this.workpackages.forEach(workpackage => {
             const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node };
 
-            if (this.layout.id !== autoLayoutId) {
+            if (thisService.diagramLayoutChangesService.layout.id !== autoLayoutId) {
               const { nodeLayoutData, linkLayoutData } = thisService.diagramLayoutChangesService.getCurrentPartsLayoutData(event.diagram);
 
               addWorkPackageNodeParams.newLayoutDetails = {
-                layoutId: this.layout.id,
+                layoutId: thisService.diagramLayoutChangesService.layout.id,
                 data: {
                   positionDetails: {
                     workPackages: [{ id: workpackage.id, name: workpackage.name }],
@@ -214,7 +232,7 @@ export class DiagramStructureChangesService {
         link.data.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`;
 
         // If in map view, check if newly connected link connects to a transformation node
-        if (this.currentLevel.endsWith('map')) {
+        if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
           if (link.fromNode.data.isTemporary) {
             this.createMapViewTransformationLink(link.fromNode);
           } else if (link.toNode.data.isTemporary) {
@@ -240,10 +258,10 @@ export class DiagramStructureChangesService {
         } else {
           this.workpackages.forEach(workpackage => {
             let layoutDetails;
-
-            if (this.layout && this.layout.id !== autoLayoutId) {
+            const layout = thisService.diagramLayoutChangesService.layout;
+            if (layout && layout.id !== autoLayoutId) {
               layoutDetails = {
-                layoutId: this.layout.id,
+                layoutId: layout.id,
                 data: {
                   positionDetails: {
                     workPackages: [{ id: workpackage.id, name: workpackage.name }],
@@ -425,7 +443,7 @@ export class DiagramStructureChangesService {
   // If in node usage view, place the layer lanes around the displayed nodes
   placeNodeUsageLanes(event: go.DiagramEvent): void {
     // Only proceed if in node usage view
-    if (this.currentLevel === Level.usage) {
+    if (thisService.diagramLevelService.currentLevel === Level.usage) {
       // A map to map each layer to its lane
       const lanes = new go.Map<string, go.Part>();
 

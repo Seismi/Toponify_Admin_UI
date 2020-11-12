@@ -11,6 +11,8 @@ import {
   TagColour,
   WorkPackageImpact
 } from '@app/architecture/store/models/node.model';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
+import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
 
 let thisService: DiagramPanelTemplatesService;
 const $ = go.GraphObject.make;
@@ -19,7 +21,9 @@ const $ = go.GraphObject.make;
 export class DiagramPanelTemplatesService {
 
   constructor(
-    private diagramUtilitiesService: DiagramUtilitiesService
+    private diagramUtilitiesService: DiagramUtilitiesService,
+    private diagramViewChangesService: DiagramViewChangesService,
+    private diagramLayoutChangesService: DiagramLayoutChangesService
   ) {
     thisService = this;
   }
@@ -153,9 +157,9 @@ export class DiagramPanelTemplatesService {
           }
         ))),
         doubleClick: function(event: go.InputEvent): void {
-          this.gojsCustomObjectsService.showRightPanelTabSource.next(NodeDetailTab.WorkPackages);
+          thisService.diagramViewChangesService.showRightPanelTabSource.next(NodeDetailTab.WorkPackages);
           event.handled = true;
-        }.bind(this)
+        }
       },
       $(go.Shape, {fill: null, stroke: null }),
       $(go.Shape,
@@ -195,9 +199,9 @@ export class DiagramPanelTemplatesService {
         name: 'DependencyExpandButton',
         desiredSize: new go.Size(20, 20),
         click: function(event, button) {
-          const node = button.part;
-          this.diagramChangesService.showDependencies(node);
-        }.bind(this)
+          const node = button.part as go.Node;
+          thisService.diagramViewChangesService.showDependencies(node);
+        }
       },
       $(go.TextBlock, thisService.diagramUtilitiesService.textFont('bold 18px'), '+', {
         alignment: go.Spot.Center,
@@ -240,8 +244,8 @@ export class DiagramPanelTemplatesService {
           );
           event.diagram.model.setDataProperty(node.data, 'bottomExpanded', bottomOptions.none);
 
-          this.diagramChangesService.nodeExpandChanged(node);
-        }.bind(this)
+          thisService.diagramLayoutChangesService.nodeExpandChanged(node);
+        }
       },
       $(
         go.TextBlock,
@@ -281,7 +285,7 @@ export class DiagramPanelTemplatesService {
         desiredSize: new go.Size(25, 25),
         visible: (!forPalette),
         click: function(event, button) {
-          const menu = this.gojsCustomObjectsService.getPartButtonMenu(true);
+          const menu = this.diagramPartTemplateService.getNodeContextMenu();
           event.diagram.select(button.part);
           menu.adornedObject = button.part;
 
@@ -291,9 +295,9 @@ export class DiagramPanelTemplatesService {
           button.part.addAdornment('ButtonMenu', menu);
 
           // Ensure that menu does not appear outside of diagram bounds
-          this.diagramChangesService.updateViewAreaForMenu(menu);
+          thisService.diagramViewChangesService.updateViewAreaForMenu(menu);
 
-        }.bind(this)
+        }
       },
       $(
         go.TextBlock,
@@ -332,8 +336,8 @@ export class DiagramPanelTemplatesService {
 
           event.diagram.model.setDataProperty(node.data, 'bottomExpanded', bottomOptions.children);
 
-          this.diagramChangesService.nodeExpandChanged(node);
-        }.bind(this)
+          thisService.diagramLayoutChangesService.nodeExpandChanged(node);
+        }
       },
       $(
         go.TextBlock,
@@ -378,9 +382,9 @@ export class DiagramPanelTemplatesService {
         name: 'Radio Alert Panel',
         visible: false,
         doubleClick: function(event: go.InputEvent): void {
-          this.gojsCustomObjectsService.showRightPanelTabSource.next(NodeDetailTab.Radio);
+          thisService.diagramViewChangesService.showRightPanelTabSource.next(NodeDetailTab.Radio);
           event.handled = true;
-        }.bind(this)
+        }
       },
       new go.Binding('visible', 'relatedRadioCounts', function(counts) {
         return counts[type] > 0;
@@ -434,7 +438,7 @@ export class DiagramPanelTemplatesService {
       ...['risks', 'assumptions', 'dependencies', 'issues', 'opportunities'].map(
         function(type) {
           return thisService.getRadioAlertIndicator(type);
-        }.bind(this)
+        }
       )
     );
   }

@@ -42,57 +42,6 @@ export class DiagramUtilitiesService {
     diagram.selectCollection(previouslySelected);
   }
 
-  linkingValidation(
-    fromnode: go.Node,
-    fromport: go.GraphObject,
-    tonode: go.Node,
-    toport: go.GraphObject,
-    oldlink: go.Link
-  ): boolean {
-    // Ensure that links in map view go in the right direction
-    if (this.currentLevel.endsWith('map')) {
-      if (fromnode && fromnode.containingGroup && fromnode.containingGroup.data.endPointType !== endPointTypes.source) {
-        return false;
-      }
-      if (tonode && tonode.containingGroup && tonode.containingGroup.data.endPointType !== endPointTypes.target) {
-        return false;
-      }
-    }
-
-    // Only validate links that are connected at both ends
-    if (!fromnode || !tonode) {
-      return true;
-    }
-
-    // Prevent links between two transformation nodes
-    if (
-      fromnode.data.category === nodeCategories.transformation &&
-      tonode.data.category === nodeCategories.transformation
-    ) {
-      return false;
-    }
-
-    // Prevent links to transformation node in more than one direction
-    if (
-      fromnode.data.category === nodeCategories.transformation ||
-      tonode.data.category === nodeCategories.transformation
-    ) {
-      const allLinks = tonode.findLinksTo(fromnode);
-      if (allLinks.count > 0) {
-        return false;
-      }
-    }
-
-    // Prevent links between equivalent nodes in map view
-    if (this.currentLevel.endsWith('map')) {
-      if (fromnode.data.id === tonode.data.id) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   setBlueShadowHighlight(node: go.Node, highlight: boolean): void {
     node.shadowColor = highlight ? 'blue' : 'gray';
     node.shadowBlur = highlight ? 18 : 4;
@@ -145,7 +94,7 @@ export class DiagramUtilitiesService {
     return true;
   }
 
-  getFirstVisibleGroup(node: go.Group): go.Group {
+  getFirstVisibleGroup(node: go.Node): go.Node {
     let returnGroup = node;
     while (returnGroup.containingGroup && !returnGroup.isVisible()) {
       returnGroup = returnGroup.containingGroup;
@@ -188,17 +137,15 @@ export class DiagramUtilitiesService {
     return null;
   }
 
-  getMapViewSource(link: go.Link) {
-    let mapViewSource: go.Part;
-
+  getMapViewSource(link: go.Link): go.Part {
     // If link connects to a transformation node then use this node as the source of the map view.
     if (link.fromNode && link.fromNode.category === nodeCategories.transformation) {
-      mapViewSource = link.fromNode;
+      return link.fromNode;
     } else if (link.toNode && link.toNode.category === nodeCategories.transformation) {
-      mapViewSource = link.toNode;
+      return link.toNode;
       // Otherwise, use the link as the source of the map view.
     } else {
-      mapViewSource = link;
+      return link;
     }
   }
 

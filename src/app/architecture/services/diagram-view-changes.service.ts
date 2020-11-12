@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material';
 import * as go from 'gojs';
 import {linkCategories} from '@app/architecture/store/models/node-link.model';
 import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
+import {Subject} from 'rxjs';
 
 let thisService: DiagramViewChangesService;
 
@@ -12,10 +13,17 @@ export class DiagramViewChangesService {
   public diagramEditable: boolean;
   private currentLevel: Level;
   public dependenciesView = false;
-
-  workpackages = [];
-  selectedWorkpackages = [];
-  layout;
+  public showHideGridSource = new Subject();
+  public showHideGrid$ = this.showHideGridSource.asObservable();
+  // Observable to indicate that the diagram should be zoomed in or out
+  public zoomSource = new Subject();
+  public zoom$ = this.zoomSource.asObservable();
+  // Observable to indicate that the detail tab should be displayed
+  public showRightPanelTabSource = new Subject();
+  public showRightPanelTab$ = this.showRightPanelTabSource.asObservable();
+  // Observable to indicate that the radio alert should be toggled
+  public showHideRadioAlertSource = new Subject();
+  public showHideRadioAlert$ = this.showHideRadioAlertSource.asObservable();
 
   constructor(
     public diagramLevelService: DiagramLevelService,

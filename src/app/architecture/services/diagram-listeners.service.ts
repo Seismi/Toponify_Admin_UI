@@ -1,6 +1,5 @@
 import * as go from 'gojs';
 import { Injectable } from '@angular/core';
-import { DiagramChangesService } from './diagram-changes.service';
 import {DiagramLevelService, Level} from './diagram-level.service';
 import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
@@ -8,6 +7,10 @@ import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
 import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
 import {layers, bottomOptions} from '@app/architecture/store/models/node.model';
+import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
+import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+
+let thisService: DiagramListenersService;
 
 @Injectable()
 export class DiagramListenersService {
@@ -21,10 +24,12 @@ export class DiagramListenersService {
   private nodeId: string;
 
   constructor(
-    public diagramChangesService: DiagramChangesService,
-    public diagramLevelService: DiagramLevelService,
+    private diagramStructureChangesService: DiagramStructureChangesService,
+    private diagramLayoutChangesService: DiagramLayoutChangesService,
+    private diagramLevelService: DiagramLevelService,
     private store: Store<RouterReducerState<RouterStateUrl>>
   ) {
+    thisService = this;
     this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
     this.store.select(getNodeIdQueryParams).subscribe(id => (this.nodeId = id));
   }
@@ -35,12 +40,12 @@ export class DiagramListenersService {
 
     diagram.addDiagramListener(
       'ExternalObjectsDropped',
-      this.diagramChangesService.createObjects.bind(this.diagramChangesService)
+      this.diagramStructureChangesService.createObjects
     );
 
     diagram.addDiagramListener(
       'SelectionMoved',
-      this.diagramChangesService.updatePosition.bind(this.diagramChangesService)
+      this.diagramLayoutChangesService.updatePosition
     );
 
     diagram.addDiagramListener(
@@ -165,7 +170,7 @@ export class DiagramListenersService {
     // Place lanes to indicate node layers in node usage view
     diagram.addDiagramListener(
       'LayoutCompleted',
-      this.diagramChangesService.placeNodeUsageLanes.bind(this.diagramChangesService)
+      this.diagramStructureChangesService.placeNodeUsageLanes
     );
 
     // If diagram non-empty, fit diagram to screen
@@ -213,7 +218,7 @@ export class DiagramListenersService {
 
     diagram.addDiagramListener(
       'LinkRelinked',
-      this.diagramChangesService.updateLinkConnections.bind(this.diagramChangesService)
+      thisService.diagramStructureChangesService.updateLinkConnections
     );
 
     diagram.addDiagramListener(
@@ -221,13 +226,13 @@ export class DiagramListenersService {
       function(event: go.DiagramEvent) {
         event.subject = new go.Set([event.subject]);
 
-        this.updatePosition(event);
-      }.bind(this.diagramChangesService)
+        thisService.diagramLayoutChangesService.updatePosition(event);
+      }
     );
 
     diagram.addDiagramListener(
       'PartResized',
-      this.diagramChangesService.groupAreaChanged.bind(this.diagramChangesService)
+      this.diagramLayoutChangesService.groupAreaChanged
     );
 
     diagram.addModelChangedListener(this.handleModelChange.bind(this));
