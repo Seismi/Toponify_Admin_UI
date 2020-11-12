@@ -162,21 +162,23 @@
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Documentation Standards">insert_drive_file</mat-icon>
     </ng-template>
-    <smi-tabs-title
-      [title]="'Documentation of'"
-      [reference]="selectedNode?.reference"
-      [name]="selectedNode?.name"
-    >
-    </smi-tabs-title>
-    <smi-edit-documentation-standards-table
-      data-qa="topology-documentation-standards-table"
-      [data]="properties"
-      [isEditable]="workPackageIsEditable"
-      [nodeCategory]="nodeCategory"
-      (saveProperty)="onSaveProperty($event)"
-      (deleteProperty)="onDeleteProperty($event)"
-    >
-    </smi-edit-documentation-standards-table>
+      <p class="documetStandardsTab">
+        <smi-tabs-title 
+          [title]="'Documentation of'" 
+          [reference]="selectedNode?.reference" 
+          [name]="selectedNode?.name"
+        >
+        </smi-tabs-title>
+        <smi-edit-documentation-standards-table 
+          data-qa="topology-documentation-standards-table" 
+          [data]="properties"
+          [isEditable]="workPackageIsEditable" 
+          [nodeCategory]="nodeCategory" 
+          (saveProperty)="onSaveProperty($event)"
+          (deleteProperty)="onDeleteProperty($event)"
+        >
+        </smi-edit-documentation-standards-table>
+      </p>
   </mat-tab>
 
   <!-- RADIO TAB -->
