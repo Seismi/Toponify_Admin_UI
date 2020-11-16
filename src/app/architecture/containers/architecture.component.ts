@@ -750,7 +750,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subscribeForNodesLinksData();
+    // this.subscribeForNodesLinksData();
 
     this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
       function() {
