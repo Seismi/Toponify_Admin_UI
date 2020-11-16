@@ -23,6 +23,10 @@ interface MenuButtonArguments extends ButtonArguments {
   subMenuNames: string[];
 }
 
+interface SubMenuButtonArguments extends ButtonArguments {
+  fromMenuRow: number;
+}
+
 interface ContextMenuParams extends SimpleButtonArguments {
   subButtonArguments?: (SimpleButtonArguments)[];
 }
@@ -98,6 +102,7 @@ export class ContextMenuService {
               return thisService.makeSubMenuButton(
                 {
                   row: index + subIndex,
+                  fromMenuRow: index,
                   ...subButtonArg
                 }
               );
@@ -118,6 +123,7 @@ export class ContextMenuService {
       },
       $(go.Panel, 'Table',
         {
+          name: 'context menu table',
           alignment: new go.Spot(1, 0, -20, 0),
           alignmentFocus: go.Spot.TopLeft
         },
@@ -239,7 +245,7 @@ export class ContextMenuService {
 
   // Button to appear when a menu button is moused over
   makeSubMenuButton(
-    args: ButtonArguments
+    args: SubMenuButtonArguments
   ): go.Panel {
     return $('ContextMenuButton',
       {
@@ -254,13 +260,28 @@ export class ContextMenuService {
         column: 1,
         row: args.row
       },
+      new go.Binding('row', '', function(table) {
+
+        let row = args.row;
+
+        table.elements.each(function(element) {
+          if (element.column === 0 &&
+            element.row <= row &&
+            element.row >= args.fromMenuRow &&
+            !element.visible
+          ) {
+            row++;
+          }
+        });
+        return row;
+      }).ofObject('context menu table'),
       $(go.TextBlock,
         args.textPredicate
           ? new go.Binding('text', '', args.textPredicate).ofObject()
           : { text: args.text },
-        new go.Binding('stroke', 'isEnabled', function(enabled) {
+        new go.Binding('stroke', 'isEnabled', function(enabled: boolean): string {
           return enabled ? 'black' : disabledTextColour;
-        }).ofObject(name)
+        }).ofObject(args.text)
       ),
       args.enabledPredicate
         ? new go.Binding('isEnabled', '', args.enabledPredicate).ofObject()

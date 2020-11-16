@@ -7,7 +7,6 @@ import {DiagramLevelService, Level} from './diagram-level.service';
 import {Subject} from 'rxjs';
 import {layers, bottomOptions, nodeCategories} from '@app/architecture/store/models/node.model';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
-import {DiagramChangesService} from '@app/architecture/services/diagram-changes.service';
 import {Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';

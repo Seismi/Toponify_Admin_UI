@@ -9,6 +9,7 @@ import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/s
 import {layers, bottomOptions} from '@app/architecture/store/models/node.model';
 import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
 
 let thisService: DiagramListenersService;
 
@@ -20,48 +21,47 @@ export class DiagramListenersService {
   private modelChangedSource = new Subject();
   public modelChanged$ = this.modelChangedSource.asObservable();
 
-  private currentLevel: Level;
   private nodeId: string;
 
   constructor(
     private diagramStructureChangesService: DiagramStructureChangesService,
     private diagramLayoutChangesService: DiagramLayoutChangesService,
     private diagramLevelService: DiagramLevelService,
+    private diagramViewChangesService: DiagramViewChangesService,
     private store: Store<RouterReducerState<RouterStateUrl>>
   ) {
     thisService = this;
-    this.store.select(getFilterLevelQueryParams).subscribe(level => (this.currentLevel = level));
-    this.store.select(getNodeIdQueryParams).subscribe(id => (this.nodeId = id));
+    thisService.store.select(getNodeIdQueryParams).subscribe(id => (thisService.nodeId = id));
   }
 
   // Add all needed listeners to the diagram
   enableListeners(diagram: go.Diagram): void {
-    diagram.addDiagramListener('ChangedSelection', this.handleChangedSelection.bind(this));
+    diagram.addDiagramListener('ChangedSelection', thisService.handleChangedSelection);
 
     diagram.addDiagramListener(
       'ExternalObjectsDropped',
-      this.diagramStructureChangesService.createObjects
+      thisService.diagramStructureChangesService.createObjects
     );
 
     diagram.addDiagramListener(
       'SelectionMoved',
-      this.diagramLayoutChangesService.updatePosition
+      thisService.diagramLayoutChangesService.updatePosition
     );
 
     diagram.addDiagramListener(
       'SelectionMoved',
       function (event) {
-        if (this.currentLevel.endsWith('map')) {
-          this.diagramLevelService.relayoutGroups();
+        if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
+          thisService.diagramLevelService.relayoutGroups(event);
         }
-      }.bind(this)
+      }
     );
 
     // After diagram layout, redo group layouts in map view to correct link paths
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
-        const currentLevel = this.currentLevel;
+        const currentLevel = thisService.diagramLevelService.currentLevel;
 
         // Ensure links are updated in map view after group layout is performed
         if (currentLevel && currentLevel.endsWith('map')) {
@@ -71,18 +71,18 @@ export class DiagramListenersService {
           });
         }
 
-        if (currentLevel && currentLevel.endsWith('map') && this.diagramLevelService.groupLayoutInitial) {
+        if (currentLevel && currentLevel.endsWith('map') && thisService.diagramLevelService.groupLayoutInitial) {
           diagram.findTopLevelGroups().each(function(group) {
             group.invalidateLayout();
           });
           if (diagram.model.nodeDataArray.length !== 0) {
             // Indicate that the initial layout for the groups has been performed
-            this.diagramLevelService.groupLayoutInitial = false;
+            thisService.diagramLevelService.groupLayoutInitial = false;
             // Reset content alignment to the default after layout has been completed so that diagram can be scrolled
             diagram.contentAlignment = go.Spot.Default;
           }
         }
-      }.bind(this)
+      }
     );
 
     // After layout when in system or data view, check for system or data group nodes that are
@@ -90,7 +90,7 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
-        const currentLevel = this.currentLevel;
+        const currentLevel = thisService.diagramLevelService.currentLevel;
 
         // Check current level is system or data
         if (currentLevel && [Level.system, Level.data].includes(currentLevel)) {
@@ -108,15 +108,15 @@ export class DiagramListenersService {
 
               // Run process to resize containing groups if member is not correctly enclosed
               if (!memberBounds.containsRect(node.getDocumentBounds())) {
-                this.diagramChangesService.groupMemberSizeChanged(node);
+                thisService.diagramLayoutChangesService.groupMemberSizeChanged(node as go.Group);
               }
             }
-          }.bind(this));
+          });
           if (nodesToUpdate.count > 0) {
-            this.diagramChangesService.updatePosition({ diagram: event. diagram, subject: nodesToUpdate});
+            thisService.diagramLayoutChangesService.updatePosition({ diagram: event. diagram, subject: nodesToUpdate});
           }
         }
-      }.bind(this)
+      }
     );
 
     // After a system or data group is automatically laid out, ensure that links to
@@ -138,26 +138,26 @@ export class DiagramListenersService {
           link.updateRoute();
         });
 
-      }.bind(this)
+      }
     );
 
     // After diagram layout complete, save routes of links that have been calculated
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event: go.DiagramEvent): void {
-        const currentLevel = this.currentLevel;
+        const currentLevel = thisService.diagramLevelService.currentLevel;
 
         if (currentLevel && !currentLevel.endsWith('map') &&
           ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
         ) {
           setTimeout(
             function() {
-              this.diagramChangesService.saveCalculatedRoutes(event.diagram);
-            }.bind(this),
+              thisService.diagramLayoutChangesService.saveCalculatedRoutes(event.diagram);
+            },
             0
           );
         }
-      }.bind(this)
+      }
     );
 
     diagram.addDiagramListener('LayoutCompleted', initialFitToScreen);
@@ -170,7 +170,7 @@ export class DiagramListenersService {
     // Place lanes to indicate node layers in node usage view
     diagram.addDiagramListener(
       'LayoutCompleted',
-      this.diagramStructureChangesService.placeNodeUsageLanes
+      thisService.diagramStructureChangesService.placeNodeUsageLanes
     );
 
     // If diagram non-empty, fit diagram to screen
@@ -197,8 +197,8 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'LayoutCompleted',
       function (event: go.DiagramEvent): void {
-        const currentLevel = this.currentLevel;
-        const nodeId = this.nodeId;
+        const currentLevel = thisService.diagramLevelService.currentLevel;
+        const nodeId = thisService.nodeId;
 
         if ([Level.sources, Level.targets].includes(currentLevel)) {
           diagram.nodes.each(function(node) {
@@ -206,14 +206,14 @@ export class DiagramListenersService {
               node.containingGroup.layout.isValidLayout = false;
               node.diagram.layout.isValidLayout = false;
             } else if (node.location.isReal() && node.containingGroup) {
-              this.diagramChangesService.groupMemberSizeChanged(node);
+              thisService.diagramLayoutChangesService.groupMemberSizeChanged(node as go.Group);
               if (nodeId === node.data.id) {
-                this.diagramChangesService.setBlueShadowHighlight(node, true);
+                thisService.diagramViewChangesService.setBlueShadowHighlight(node, true);
               }
             }
-          }.bind(this));
+          });
         }
-      }.bind(this)
+      }
     );
 
     diagram.addDiagramListener(
@@ -232,10 +232,10 @@ export class DiagramListenersService {
 
     diagram.addDiagramListener(
       'PartResized',
-      this.diagramLayoutChangesService.groupAreaChanged
+      thisService.diagramLayoutChangesService.groupAreaChanged
     );
 
-    diagram.addModelChangedListener(this.handleModelChange.bind(this));
+    diagram.addModelChangedListener(thisService.handleModelChange);
 
     // Listeners to hide button menu on system and data nodes when user clicks outside menu
     diagram.addDiagramListener(
@@ -279,8 +279,8 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'ChangedSelection',
       function(event: go.DiagramEvent): void {
-        this.diagramChangesService.updateZOrder(event.diagram);
-      }.bind(this)
+        thisService.diagramViewChangesService.updateZOrder(event.diagram);
+      }
     );
 
     // On selection change, update visibility of hidden-node warning icon for any node
@@ -306,13 +306,13 @@ export class DiagramListenersService {
     // Also, ensure originating node is visible by expanding the chain of containing nodes.
     diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
       if (event.modelChange === 'nodeDataArray') {
-        const currentLevel = this.currentLevel;
-        const nodeId = this.nodeId;
+        const currentLevel = thisService.diagramLevelService.currentLevel;
+        const nodeId = thisService.nodeId;
 
         if (currentLevel && currentLevel === Level.usage && nodeId) {
           const usageNode = diagram.findNodeForKey(nodeId);
           if (usageNode) {
-            this.diagramChangesService.setBlueShadowHighlight(usageNode, true);
+            thisService.diagramViewChangesService.setBlueShadowHighlight(usageNode, true);
 
             // Get nested containing nodes
             const containingNodes = [];
@@ -328,28 +328,28 @@ export class DiagramListenersService {
               setTimeout(function() {
                 diagram.model.setDataProperty(node.data, 'middleExpanded', true);
                 diagram.model.setDataProperty(node.data, 'bottomExpanded', bottomOptions.group);
-                this.diagramChangesService.nodeExpandChanged(node);
-              }.bind(this), 150 * (index + 1));
-            }.bind(this));
+                thisService.diagramLayoutChangesService.nodeExpandChanged(node);
+              }, 150 * (index + 1));
+            });
           }
         }
       }
-    }.bind(this));
+    });
 
     // Update guide
     diagram.addModelChangedListener(function(event: go.ChangedEvent): void {
-      this.diagramChangesService.updateGuide(diagram);
-    }.bind(this));
+      thisService.diagramStructureChangesService.updateGuide(diagram);
+    });
   }
 
   handleChangedSelection(event: go.DiagramEvent): void {
     const parts = event.diagram.selection.toArray();
-    this.nodeSelectedSource.next(parts);
+    thisService.nodeSelectedSource.next(parts);
   }
 
   handleModelChange(event: go.ChangedEvent): void {
     if (event.isTransactionFinished) {
-      this.modelChangedSource.next(event);
+      thisService.modelChangedSource.next(event);
     }
   }
 }

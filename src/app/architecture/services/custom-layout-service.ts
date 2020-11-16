@@ -3,7 +3,7 @@ import {PackedLayout} from '@app/architecture/official-gojs-extensions/PackedLay
 import * as go from 'gojs';
 import {endPointTypes, nodeCategories} from '@app/architecture/store/models/node.model';
 
-let thisService;
+let thisService: CustomLayoutService;
 
 @Injectable()
 export class CustomLayoutService {

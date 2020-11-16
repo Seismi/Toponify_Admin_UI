@@ -19,9 +19,9 @@ import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/action
 import {defaultScopeId} from '@app/scope/store/models/scope.model';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
 import {Subject} from 'rxjs';
+import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
 
 let thisService: DiagramStructureChangesService;
-const $ = go.GraphObject.make;
 
 @Injectable()
 export class DiagramStructureChangesService {
@@ -53,8 +53,9 @@ export class DiagramStructureChangesService {
   selectedWorkpackages = [];
 
   constructor(
-    public diagramLayoutChangesService: DiagramLayoutChangesService,
-    public diagramLevelService: DiagramLevelService,
+    private diagramLayoutChangesService: DiagramLayoutChangesService,
+    private diagramLevelService: DiagramLevelService,
+    private diagramUtilitiesService: DiagramUtilitiesService,
     private store: Store<RouterReducerState<RouterStateUrl>>,
     public dialog: MatDialog,
     private workpackageStore: Store<WorkPackageState>
@@ -66,15 +67,15 @@ export class DiagramStructureChangesService {
   //  -event
   //    -subject: set of nodes to add to the database
   createObjects(event: go.DiagramEvent): void {
-    const nodeId = this.currentNodeId;
-    const scope = this.currentScope;
+    const nodeId = thisService.currentNodeId;
+    const scope = thisService.currentScope;
 
     const shortEditWorkpackage = {
-      id: this.workpackages[0].id,
-      name: this.workpackages[0].name,
-      description: this.workpackages[0].description,
-      hasErrors: this.workpackages[0].hasErrors,
-      status: this.workpackages[0].status
+      id: thisService.workpackages[0].id,
+      name: thisService.workpackages[0].name,
+      description: thisService.workpackages[0].description,
+      hasErrors: thisService.workpackages[0].hasErrors,
+      status: thisService.workpackages[0].status
     };
 
     event.subject.each((part: go.Part) => {
@@ -90,7 +91,7 @@ export class DiagramStructureChangesService {
       // Only add nodes here as new links are temporary until connected
       if (part instanceof go.Node) {
         const node = Object.assign({}, part.data);
-        const dialogRef = this.dialog.open(EditNameModalComponent, {
+        const dialogRef = thisService.dialog.open(EditNameModalComponent, {
           disableClose: false,
           width: '500px',
           data: {
@@ -108,7 +109,7 @@ export class DiagramStructureChangesService {
             return;
           }
 
-          this.workpackages.forEach(workpackage => {
+          thisService.workpackages.forEach(workpackage => {
             const addWorkPackageNodeParams: any = { workpackageId: workpackage.id, scope, node };
 
             if (thisService.diagramLayoutChangesService.layout.id !== autoLayoutId) {
@@ -133,7 +134,7 @@ export class DiagramStructureChangesService {
             }
 
             if (data && data.name && !node.isTemporary) {
-              this.workpackageStore.dispatch(new AddWorkPackageNode(addWorkPackageNodeParams));
+              thisService.workpackageStore.dispatch(new AddWorkPackageNode(addWorkPackageNodeParams));
             }
           });
         });
@@ -165,30 +166,30 @@ export class DiagramStructureChangesService {
     if (
       part.data.impactedByWorkPackages.every(
         function(workpackage) {
-          return workpackage.id !== this.workpackages[0].id;
+          return workpackage.id !== thisService.workpackages[0].id;
         }.bind(this)
       )
     ) {
       part.diagram.model.setDataProperty(
         part.data,
         'impactedByWorkPackages',
-        part.data.impactedByWorkPackages.concat([this.workpackages[0]])
+        part.data.impactedByWorkPackages.concat([thisService.workpackages[0]])
       );
     }
 
     // Update part data in backend
     if (part instanceof go.Node) {
-      this.workpackageStore.dispatch(
+      thisService.workpackageStore.dispatch(
         new UpdateWorkPackageNode({
-          workpackageId: this.workpackages[0].id,
+          workpackageId: thisService.workpackages[0].id,
           nodeId: data.id,
           node: data
         })
       );
     } else if (part instanceof go.Link) {
-      this.workpackageStore.dispatch(
+      thisService.workpackageStore.dispatch(
         new UpdateWorkPackageLink({
-          workpackageId: this.workpackages[0].id,
+          workpackageId: thisService.workpackages[0].id,
           linkId: data.id,
           link: data
         })
@@ -234,21 +235,21 @@ export class DiagramStructureChangesService {
         // If in map view, check if newly connected link connects to a transformation node
         if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
           if (link.fromNode.data.isTemporary) {
-            this.createMapViewTransformationLink(link.fromNode);
+            thisService.createMapViewTransformationLink(link.fromNode);
           } else if (link.toNode.data.isTemporary) {
-            this.createMapViewTransformationLink(link.toNode);
+            thisService.createMapViewTransformationLink(link.toNode);
           } else {
-            this.workpackages.forEach(workpackage => {
-              this.workpackageStore.dispatch(
+            thisService.workpackages.forEach(workpackage => {
+              thisService.workpackageStore.dispatch(
                 new AddWorkPackageMapViewLink({
                   workpackageId: workpackage.id,
                   link: Object.assign({}, link.data),
                   mapViewParams: {
-                    id: this.currentMapViewSource.id,
+                    id: thisService.currentMapViewSource.id,
                     queryParams: {
                       workPackageQuery: [workpackage.id],
-                      scope: this.currentScope,
-                      isTransformation: this.currentMapViewSource.isTransformation
+                      scope: thisService.currentScope,
+                      isTransformation: thisService.currentMapViewSource.isTransformation
                     }
                   }
                 })
@@ -256,7 +257,7 @@ export class DiagramStructureChangesService {
             });
           }
         } else {
-          this.workpackages.forEach(workpackage => {
+          thisService.workpackages.forEach(workpackage => {
             let layoutDetails;
             const layout = thisService.diagramLayoutChangesService.layout;
             if (layout && layout.id !== autoLayoutId) {
@@ -281,7 +282,7 @@ export class DiagramStructureChangesService {
               };
             }
 
-            this.workpackageStore.dispatch(
+            thisService.workpackageStore.dispatch(
               new AddWorkPackageLink({
                 workpackageId: workpackage.id,
                 link: Object.assign({}, link.data),
@@ -311,8 +312,8 @@ export class DiagramStructureChangesService {
           targetId: link.toNode.data.id
         };
 
-        this.workpackages.forEach(workpackage => {
-          this.workpackageStore.dispatch(
+        thisService.workpackages.forEach(workpackage => {
+          thisService.workpackageStore.dispatch(
             new UpdateWorkPackageLink({
               workpackageId: workpackage.id,
               linkId: link.data.id,
@@ -380,8 +381,8 @@ export class DiagramStructureChangesService {
       if (link.fromNode && link.toNode) {
         // If source or target node is member of a collapsed group then need to check link
         //  connects to the containing group instead.
-        const fromNode = this.getFirstVisibleGroup(link.fromNode);
-        const toNode = this.getFirstVisibleGroup(link.toNode);
+        const fromNode = thisService.diagramUtilitiesService.getFirstVisibleGroup(link.fromNode);
+        const toNode = thisService.diagramUtilitiesService.getFirstVisibleGroup(link.toNode);
 
         // Get bounding rectangles of the link's source and target node
         const fromArea = fromNode.port.getDocumentBounds().copy();
@@ -433,7 +434,7 @@ export class DiagramStructureChangesService {
       }
     }.bind(this));
 
-    this.diagramLevelService.groupLayoutInitial = true;
+    thisService.diagramLevelService.groupLayoutInitial = true;
 
     if (diagram.layout.isValidLayout) {
       diagram.layout.isValidLayout = false;
@@ -562,21 +563,21 @@ export class DiagramStructureChangesService {
     // Only proceed if at least one fully attached link is connected to the transformation node in both directions
     if (linksIn.length > 0 && linksOut.length > 0) {
       const params: any = {
-        workpackageId: this.workpackages[0].id,
-        scope: this.currentScope,
+        workpackageId: thisService.workpackages[0].id,
+        scope: thisService.currentScope,
         nodeData: node.data,
         linkData: [].concat(linksIn, linksOut),
         mapViewParams: {
-          id: this.currentMapViewSource.id,
+          id: thisService.currentMapViewSource.id,
           queryParams: {
-            workPackageQuery: [this.workpackages[0].id],
-            scope: this.currentScope,
-            isTransformation: this.currentMapViewSource.isTransformation
+            workPackageQuery: [thisService.workpackages[0].id],
+            scope: thisService.currentScope,
+            isTransformation: thisService.currentMapViewSource.isTransformation
           }
         }
       };
 
-      this.workpackageStore.dispatch(new AddWorkPackageMapViewTransformation(params));
+      thisService.workpackageStore.dispatch(new AddWorkPackageMapViewTransformation(params));
     }
   }
 

@@ -64,10 +64,11 @@ export class DiagramLevelService {
   private paletteLinksSource = new BehaviorSubject([]);
   paletteLinks = this.paletteLinksSource.asObservable();
 
+  public currentLevel: Level;
+
   constructor(
     private store: Store<ArchitectureState>,
-    private customLayoutService: CustomLayoutService,
-    public currentLevel: Level
+    private customLayoutService: CustomLayoutService
   ) {
     thisService = this;
   }
@@ -117,7 +118,7 @@ export class DiagramLevelService {
     );
   }
 
-  displayMapView(event: go.DiagramEvent, object: go.Part): void {
+  displayMapView(event: go.InputEvent, object: go.Part): void {
     // Indicate that the initial group layout is being performed and has not yet been completed
     this.groupLayoutInitial = true;
 
@@ -504,5 +505,22 @@ export class DiagramLevelService {
          );
        }
      );
+  }
+
+  // Display map view for a link
+  getMapViewForLink(event: go.InputEvent, object: go.Link): void {
+    let mapViewSource: go.Part;
+
+    // If link connects to a transformation node then use this node as the source of the map view.
+    if (object.fromNode && object.fromNode.category === nodeCategories.transformation) {
+      mapViewSource = object.fromNode;
+    } else if (object.toNode && object.toNode.category === nodeCategories.transformation) {
+      mapViewSource = object.toNode;
+      // Otherwise, use the link as the source of the map view.
+    } else {
+      mapViewSource = object;
+    }
+
+    thisService.displayMapView(event, mapViewSource);
   }
 }

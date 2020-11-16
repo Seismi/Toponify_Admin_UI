@@ -52,8 +52,8 @@ export class DiagramPartTemplatesService {
     private diagramPanelTemplatesService: DiagramPanelTemplatesService,
     private contextMenuService: ContextMenuService
   ) {
-    this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => (this.currentFilterLevel = filterLevel));
     thisService = this;
+    thisService.store.select(getFilterLevelQueryParams).subscribe(filterLevel => (thisService.currentFilterLevel = filterLevel));
   }
 
   // Get standard options used for nodes
@@ -166,10 +166,10 @@ export class DiagramPartTemplatesService {
         layerName: 'Foreground'
       },
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      this.getStandardNodeOptions(forPalette),
+      thisService.getStandardNodeOptions(forPalette),
       {
         contextMenu: thisService.getLinkContextMenu(),
-        doubleClick: (forPalette) ? undefined : this.diagramLevelService.displayMapView.bind(this.diagramLevelService),
+        doubleClick: (forPalette) ? undefined : thisService.diagramLevelService.displayMapView,
         selectionObjectName: 'shape',
         resizable: false
       },
@@ -201,7 +201,7 @@ export class DiagramPartTemplatesService {
         $(go.Panel,
           'Auto',
           $(go.Shape,
-            this.getStandardNodeShapeOptions(),
+            thisService.getStandardNodeShapeOptions(),
             {
               desiredSize: new go.Size(60.3, 53.6),
               minSize: new go.Size(60.3, 53.6),
@@ -265,7 +265,7 @@ export class DiagramPartTemplatesService {
       go.Node,
       'Auto',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      this.getStandardNodeOptions(forPalette),
+      thisService.getStandardNodeOptions(forPalette),
       {
         resizeObjectName: 'content table',
         doubleClick: function() {
@@ -282,7 +282,7 @@ export class DiagramPartTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: thisService.getNodeContextMenu()
+            contextMenu: thisService.getNodeContextMenu(false)
           }
         : {
             toolTip: $(
@@ -330,7 +330,7 @@ export class DiagramPartTemplatesService {
             return go.Spot.AllSides;
           }
         }),
-        this.getStandardNodeShapeOptions()
+        thisService.getStandardNodeShapeOptions()
       ),
       // Dummy panel with no size and no contents.
       // Used to ensure node usage view lays out nodes vertically aligned.
@@ -388,7 +388,7 @@ export class DiagramPartTemplatesService {
       go.Group,
       'Vertical',
       new go.Binding('location', 'location', go.Point.parse).makeTwoWay(go.Point.stringify),
-      this.getStandardNodeOptions(forPalette),
+      thisService.getStandardNodeOptions(forPalette),
       {
         layout: $(thisService.customLayoutService.standardGroupLayout,
           {
@@ -429,10 +429,10 @@ export class DiagramPartTemplatesService {
         // Indicates that node can be dropped to add it to the group.
         mouseDragEnter: function(event, thisNode, previous) {
           const draggingTool = event.diagram.toolManager.draggingTool;
-          const groupableNode = this.diagramChangesService.getGroupableDraggedNode(draggingTool);
+          const groupableNode = thisService.diagramUtilitiesService.getGroupableDraggedNode(draggingTool);
 
           if (thisNode.data.layer === layers.system
-            && this.diagramChangesService.diagramEditable
+            && thisService.diagramStructureChangesService.diagramEditable
             && groupableNode
           ) {
             event.diagram.currentCursor = `url(assets/cursors/cursor_plus.svg), default`;
@@ -461,7 +461,7 @@ export class DiagramPartTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: thisService.getNodeContextMenu()
+            contextMenu: thisService.getNodeContextMenu(true)
           }
         : {
             toolTip: $(
@@ -659,7 +659,7 @@ export class DiagramPartTemplatesService {
       }.bind(this)),
       new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
-      this.getStandardLinkOptions(forPalette),
+      thisService.getStandardLinkOptions(forPalette),
       {
         doubleClick: function(event: go.InputEvent, object: go.Link): void {
           if (forPalette) {
@@ -667,7 +667,7 @@ export class DiagramPartTemplatesService {
           }
 
           if (object.data.layer !== layers.reportingConcept) {
-            this.diagramChangesService.getMapViewForLink.call(this.diagramChangesService, event, object);
+            thisService.diagramLevelService.getMapViewForLink(event, object);
           }
         }.bind(this)
       },
@@ -692,7 +692,7 @@ export class DiagramPartTemplatesService {
         // On hide, set width to 0 instead of disabling visibility, so that link routes still calculate
         new go.Binding('strokeWidth', '', function(link: go.Link): number {
           const linkVisibleProp = link.category === linkCategories.data ? 'dataLinks' : 'masterDataLinks';
-          return link.diagram.model[linkVisibleProp] ? 2.5 : 0;
+          return link.diagram.model.modelData[linkVisibleProp] ? 2.5 : 0;
         }).ofObject(),
         // If link is in palette then give it a transparent background for easier selection
         forPalette ? { areaBackground: 'transparent' } : {}
@@ -723,7 +723,7 @@ export class DiagramPartTemplatesService {
   getLinkCopyTemplate(): CustomLink {
     return $(
       CustomLink,
-      this.getStandardLinkOptions(false),
+      thisService.getStandardLinkOptions(false),
       {
         relinkableFrom: false,
         relinkableTo: false,
@@ -836,7 +836,7 @@ export class DiagramPartTemplatesService {
           // Function to compare nodes for ordering during layout
           comparer: function(a, b) {
             // Only perform this comparison for initial layout. This prevents users' reordering of nodes from being overridden.
-            if (this.diagramLevelService.groupLayoutInitial) {
+            if (thisService.diagramLevelService.groupLayoutInitial) {
               if (isNaN(a.data.sortOrder) || isNaN(b.data.sortOrder)) {
                 return 0;
               } else if (a.data.sortOrder < b.data.sortOrder) {
@@ -939,8 +939,8 @@ export class DiagramPartTemplatesService {
                 alignment: go.Spot.BottomCenter,
                 margin: new go.Margin(15, 5, 0, 5),
                 click: function(event: go.InputEvent, button: go.Panel): void {
-                  this.addChildSource.next(button.part.data);
-                }.bind(this)
+                  thisService.addChildSource.next(button.part.data);
+                }
               },
               // Disable button if moves not allowed in diagram
               new go.Binding('isEnabled', '', function(data): boolean {
@@ -951,8 +951,8 @@ export class DiagramPartTemplatesService {
                   return false;
                 }
 
-                return this.diagramChangesService.diagramEditable;
-              }.bind(this)),
+                return thisService.diagramStructureChangesService.diagramEditable;
+              }),
               // Hide child button for grouped data nodes
               new go.Binding('visible', 'dataStructure', function(dataStructure) {
                 return !dataStructure;
@@ -979,12 +979,12 @@ export class DiagramPartTemplatesService {
           margin: new go.Margin(15, 5, 10, 5),
           visible: false,
           click: function(event: go.InputEvent, button: go.Panel): void {
-            this.addChildSource.next(button.part.data.dataStructure);
+            thisService.addChildSource.next(button.part.data.dataStructure);
           }.bind(this)
         },
         // Disable button if moves not allowed in diagram
         new go.Binding('isEnabled', '', function(): boolean {
-          return this.diagramChangesService.diagramEditable;
+          return thisService.diagramStructureChangesService.diagramEditable;
         }.bind(this)),
         // Invisible when no data structure
         new go.Binding('visible', 'dataStructure', function(dataStructure): boolean {
@@ -1042,14 +1042,10 @@ export class DiagramPartTemplatesService {
     return thisService.contextMenuService.createSimpleContextMenu(buttons);
   }
 
-  getNodeContextMenu() {
+  getNodeContextMenu(isGroup = false) {
 
     const editingLayout = function(): boolean {
       return thisService.diagramLayoutChangesService.layoutEditable;
-    };
-
-    const editingStructure = function(): boolean {
-      return thisService.diagramStructureChangesService.diagramEditable;
     };
 
     function colourChangeButtonArgs(colour: string): SimpleButtonArguments {
@@ -1062,74 +1058,76 @@ export class DiagramPartTemplatesService {
       };
     }
 
-    return thisService.contextMenuService.createTwoLevelContextMenu(
-      'buttonMenu',
-      [
-        {
-          text: 'Show Status',
-          action: function(node: go.Node): void {
-            const diagram = node.diagram;
-            const anyStatusHidden = diagram.selection.any(
-              function (part: go.Part): boolean {
-                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.middleExpanded;
-                } else {
-                  return !part.data.showLabel;
-                }
-              }
-            );
+    const buttons = [];
 
-            diagram.selection.each(function(part: go.Part): void {
-              if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
-                diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
-                diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
-
-                thisService.diagramLayoutChangesService.nodeExpandChanged(part);
+    buttons.push(
+      {
+        text: 'Show Status',
+        action: function(node: go.Node): void {
+          const diagram = node.diagram;
+          const anyStatusHidden = diagram.selection.any(
+            function (part: go.Part): boolean {
+              if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+                return !part.data.middleExpanded;
               } else {
-                diagram.model.setDataProperty(part.data, 'showLabel', anyStatusHidden);
-                if (part.category === nodeCategories.transformation) {
-                  thisService.diagramLayoutChangesService.transformationNodeShowLabelChanged(part as go.Node);
-                } else {
-                  thisService.diagramLayoutChangesService.linkShowLabelChanged(part as go.Link);
-                }
-                thisService.diagramLayoutChangesService.onUpdateDiagramLayout.next({});
+                return !part.data.showLabel;
               }
-            });
-          },
-          enabledPredicate: editingLayout,
-          textPredicate: function(node: go.Node): string {
-            const anyStatusHidden = node.diagram.selection.any(
-              function (part: go.Part): boolean {
-                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
-                  return !part.data.middleExpanded;
-                } else {
-                  return !part.data.showLabel;
-                }
+            }
+          );
+
+          diagram.selection.each(function(part: go.Part): void {
+            if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
+              diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
+              diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
+
+              thisService.diagramLayoutChangesService.nodeExpandChanged(part);
+            } else {
+              diagram.model.setDataProperty(part.data, 'showLabel', anyStatusHidden);
+              if (part.category === nodeCategories.transformation) {
+                thisService.diagramLayoutChangesService.transformationNodeShowLabelChanged(part as go.Node);
+              } else {
+                thisService.diagramLayoutChangesService.linkShowLabelChanged(part as go.Link);
               }
-            );
-            return anyStatusHidden ? 'Show Status' : 'Hide Status';
-          }
+              thisService.diagramLayoutChangesService.onUpdateDiagramLayout.next({});
+            }
+          });
         },
-        {
-          text: 'View Detail',
-          action: function(node: go.Node): void {
-            thisService.diagramViewChangesService.showRightPanelTabSource.next();
-          },
-          enabledPredicate: function(node: go.Node): boolean {
-            return node.diagram.selection.count === 1;
-          }
-        },
-        {
-          text: 'Change Colour',
-          subButtonArguments: [
-            'Blue',
-            'Red',
-            'Green',
-            'Purple',
-            'Orange',
-            'None'
-          ].map(colourChangeButtonArgs)
-        },
+        enabledPredicate: editingLayout,
+        textPredicate: function(node: go.Node): string {
+          const anyStatusHidden = node.diagram.selection.any(
+            function (part: go.Part): boolean {
+              if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+                return !part.data.middleExpanded;
+              } else {
+                return !part.data.showLabel;
+              }
+            }
+          );
+          return anyStatusHidden ? 'Show Status' : 'Hide Status';
+        }
+      },
+      {
+        text: 'View Detail',
+        action: function(): void {
+          thisService.diagramViewChangesService.showRightPanelTabSource.next();
+        }
+      },
+      {
+        text: 'Change Colour',
+        subButtonArguments: [
+          'Blue',
+          'Red',
+          'Green',
+          'Purple',
+          'Orange',
+          'None'
+        ].map(colourChangeButtonArgs),
+        enabledPredicate: editingLayout
+      }
+    );
+
+    if (isGroup) {
+      buttons.push(
         {
           text: 'Grouped Components',
           subButtonArguments: [
@@ -1258,162 +1256,170 @@ export class DiagramPartTemplatesService {
               }
             }
           ]
+        }
+      );
+    }
+
+    buttons.push(
+      {
+        text: 'Child Nodes',
+        visiblePredicate: function(node: go.Node): boolean {
+          return node.data.layer !== 'reporting concept';
         },
-        {
-          text: 'Child Nodes',
-          visiblePredicate: function(node: go.Node): boolean {
-            return node.data.layer !== 'reporting concept';
-          },
-          textPredicate: function(node: go.Node): string {
-            if (node.data.layer === layers.data) {
-                return 'Dimensions';
-            } else if (node.data.layer === layers.dimension) {
-              return 'Reporting Layer';
-            } else {
-              return 'Data Nodes';
-            }
-          },
-          subButtonArguments: [
-            {
-              text: 'Show as List (child nodes)',
-              action: function(node: go.Node): void {
-                const diagram = node.diagram;
-                const anyHidden = diagram.selection.any(function(part: go.Part): boolean {
-                  if (part instanceof go.Group) {
-                    return part.data.bottomExpanded !== bottomOptions.children;
-                  }
-                  return false;
-                });
-
-                const newState = anyHidden ? bottomOptions.children : bottomOptions.none;
-
-                diagram.selection.each(function(part: go.Part): void {
-
-                  if (part instanceof go.Node && part.data.category !== nodeCategories.transformation) {
-                    diagram.model.setDataProperty(part.data, 'bottomExpanded', newState);
-                    diagram.model.setDataProperty(part.data, 'middleExpanded', true);
-
-                    thisService.diagramLayoutChangesService.nodeExpandChanged(part);
-                  }
-                });
-
-              },
-              enabledPredicate: editingLayout,
-              textPredicate: function(node: go.Node): string {
-                const anyHidden = node.diagram.selection.any(function(part: go.Part): boolean {
-                  return part.data.bottomExpanded !== bottomOptions.children;
-                });
-                return anyHidden ? 'Show as List' : 'Hide List';
-              }
-            },
-            {
-              text: 'Display (child nodes)',
-              action: function(node: go.Node): void {
-                thisService.diagramLevelService.changeLevelWithFilter(node.data);
-              },
-              enabledPredicate: function(node: go.Node): boolean {
-                return node.diagram.selection.count === 1;
-              },
-              textPredicate: function(node: go.Node): string {
-                return 'Display';
-              }
-            },
-            {
-              text: 'Add child node',
-              action: function(): void {
-                thisService.diagramStructureChangesService.addChildNodeSource.next();
-              },
-              enabledPredicate: function(node: go.Node): boolean {
-                if (node.diagram.selection.count !== 1) {
-                  return false;
-                }
-                return thisService.diagramStructureChangesService.diagramEditable &&
-                  ![nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category);
-              },
-              textPredicate: function(node: go.Node): string {
-                if (node.data.layer === layers.system) {
-                  return 'Add data node';
-                } else if (node.data.layer === layers.data) {
-                  return 'Add dimension';
-                } else {
-                  return 'Add reporting concept';
-                }
-              }
-            }
-          ]
-        },
-        {
-          text: 'Analyse',
-          enabledPredicate: function(node: go.Node): boolean {
-            return node.diagram.selection.count === 1;
-          },
-          subButtonArguments: [
-            {
-              text: 'Dependencies',
-              action: function(menuNode: go.Node): void {
-                const anyHidden: boolean = menuNode.diagram.nodes.any(function(node: go.Node): boolean {
-                  return !node.visible;
-                });
-
-                if (anyHidden) {
-                  thisService.diagramViewChangesService.showAllNodes(menuNode.diagram);
-                } else {
-                  thisService.diagramViewChangesService.hideNonDependencies(menuNode);
-                }
-
-              },
-              enabledPredicate: function(): boolean {
-                return !thisService.diagramLevelService.currentLevel.endsWith('map');
-              }
-            },
-            {
-              text: 'Use Across Levels',
-              action: function(node: go.Node): void {
-                thisService.diagramLevelService.displayUsageView(node);
-              },
-              enabledPredicate: function(node: go.Node): boolean {
-                return !thisService.diagramLevelService.currentLevel.endsWith('map');
-              }
-            },
-            {
-              text: 'View Sources',
-              action: function(node: go.Node): void {
-                thisService.diagramLevelService.displaySourcesView(node);
-              },
-              visiblePredicate: function(node: go.Node): boolean {
-                return [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category)
-                  && node.data.isShared;
-              }
-            },
-            {
-              text: 'View targets',
-              action: function(node: go.Node): void {
-                thisService.diagramLevelService.displayTargetsView(node);
-              },
-              visiblePredicate: function(node: go.Node): boolean {
-                return [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category)
-                  && node.data.isShared;
-              }
-            }
-          ]
-        },
-        {
-          text: 'Set as Master',
-          action: function(node: go.Node): void {
-            thisService.diagramStructureChangesService.setAsMasterSource.next(node.data);
-          },
-          visiblePredicate: function(node: go.Node): boolean {
-            return node.data.layer === layers.data;
-          },
-          enabledPredicate: function(node: go.Node): boolean {
-            return thisService.diagramStructureChangesService.diagramEditable &&
-              node.data.category !== nodeCategories.dataStructure &&
-              node.data.isShared &&
-              !node.containingGroup.data.isShared;
+        textPredicate: function(node: go.Node): string {
+          if (node.data.layer === layers.data) {
+            return 'Dimensions';
+          } else if (node.data.layer === layers.dimension) {
+            return 'Reporting Layer';
+          } else {
+            return 'Data Nodes';
           }
         },
-      ]
+        subButtonArguments: [
+          {
+            text: 'Show as List (child nodes)',
+            action: function(node: go.Node): void {
+              const diagram = node.diagram;
+              const anyHidden = diagram.selection.any(function(part: go.Part): boolean {
+                if (part instanceof go.Group) {
+                  return part.data.bottomExpanded !== bottomOptions.children;
+                }
+                return false;
+              });
+
+              const newState = anyHidden ? bottomOptions.children : bottomOptions.none;
+
+              diagram.selection.each(function(part: go.Part): void {
+
+                if (part instanceof go.Node && part.data.category !== nodeCategories.transformation) {
+                  diagram.model.setDataProperty(part.data, 'bottomExpanded', newState);
+                  diagram.model.setDataProperty(part.data, 'middleExpanded', true);
+
+                  thisService.diagramLayoutChangesService.nodeExpandChanged(part);
+                }
+              });
+
+            },
+            enabledPredicate: editingLayout,
+            textPredicate: function(node: go.Node): string {
+              const anyHidden = node.diagram.selection.any(function(part: go.Part): boolean {
+                return part.data.bottomExpanded !== bottomOptions.children;
+              });
+              return anyHidden ? 'Show as List' : 'Hide List';
+            }
+          },
+          {
+            text: 'Display (child nodes)',
+            action: function(node: go.Node): void {
+              thisService.diagramLevelService.changeLevelWithFilter(node.data);
+            },
+            enabledPredicate: function(node: go.Node): boolean {
+              return node.diagram.selection.count === 1;
+            },
+            textPredicate: function(node: go.Node): string {
+              return 'Display';
+            }
+          },
+          {
+            text: 'Add child node',
+            action: function(): void {
+              thisService.diagramStructureChangesService.addChildNodeSource.next();
+            },
+            enabledPredicate: function(node: go.Node): boolean {
+              if (node.diagram.selection.count !== 1) {
+                return false;
+              }
+              return thisService.diagramStructureChangesService.diagramEditable &&
+                ![nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category);
+            },
+            textPredicate: function(node: go.Node): string {
+              if (node.data.layer === layers.system) {
+                return 'Add data node';
+              } else if (node.data.layer === layers.data) {
+                return 'Add dimension';
+              } else {
+                return 'Add reporting concept';
+              }
+            }
+          }
+        ]
+      }
     );
+
+    buttons.push(
+      {
+        text: 'Analyse',
+        enabledPredicate: function(node: go.Node): boolean {
+          return node.diagram.selection.count === 1;
+        },
+        subButtonArguments: [
+          {
+            text: 'Dependencies',
+            action: function(menuNode: go.Node): void {
+              const anyHidden: boolean = menuNode.diagram.nodes.any(function(node: go.Node): boolean {
+                return !node.visible;
+              });
+
+              if (anyHidden) {
+                thisService.diagramViewChangesService.showAllNodes(menuNode.diagram);
+              } else {
+                thisService.diagramViewChangesService.hideNonDependencies(menuNode);
+              }
+
+            },
+            enabledPredicate: function(): boolean {
+              return !thisService.diagramLevelService.currentLevel.endsWith('map');
+            }
+          },
+          {
+            text: 'Use Across Levels',
+            action: function(node: go.Node): void {
+              thisService.diagramLevelService.displayUsageView(node);
+            },
+            enabledPredicate: function(node: go.Node): boolean {
+              return !thisService.diagramLevelService.currentLevel.endsWith('map');
+            }
+          },
+          {
+            text: 'View Sources',
+            action: function(node: go.Node): void {
+              thisService.diagramLevelService.displaySourcesView(node);
+            },
+            visiblePredicate: function(node: go.Node): boolean {
+              return [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category)
+                && node.data.isShared;
+            }
+          },
+          {
+            text: 'View targets',
+            action: function(node: go.Node): void {
+              thisService.diagramLevelService.displayTargetsView(node);
+            },
+            visiblePredicate: function(node: go.Node): boolean {
+              return [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(node.data.category)
+                && node.data.isShared;
+            }
+          }
+        ]
+      },
+      {
+        text: 'Set as Master',
+        action: function(node: go.Node): void {
+          thisService.diagramStructureChangesService.setAsMasterSource.next(node.data);
+        },
+        visiblePredicate: function(node: go.Node): boolean {
+          return node.data.layer === layers.data;
+        },
+        enabledPredicate: function(node: go.Node): boolean {
+          return thisService.diagramStructureChangesService.diagramEditable &&
+            node.data.category !== nodeCategories.dataStructure &&
+            node.data.isShared &&
+            !node.containingGroup.data.isShared;
+        }
+      }
+    );
+
+    return thisService.contextMenuService.createTwoLevelContextMenu('buttonMenu', buttons);
   }
 
   getLinkContextMenu(): go.Adornment {
@@ -1423,12 +1429,13 @@ export class DiagramPartTemplatesService {
         text: colour,
         action: function(link: go.Part): void {
           thisService.diagramLayoutChangesService.changeColours(link.diagram, colourOptions[colour.toLowerCase()]);
-        }
+        },
+        enabledPredicate: editingLayout
       };
     }
 
     const editingLayout = function(link: go.Part): boolean {
-      return link.diagram.allowMove;
+      return thisService.diagramLayoutChangesService.layoutEditable;
     };
 
     return thisService.contextMenuService.createTwoLevelContextMenu(
@@ -1481,7 +1488,8 @@ export class DiagramPartTemplatesService {
             'Purple',
             'Orange',
             'None'
-          ].map(colourChangeButtonArgs)
+          ].map(colourChangeButtonArgs),
+          enabledPredicate: editingLayout
         },
         {
           text: 'Expand',

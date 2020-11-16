@@ -42,11 +42,6 @@ export class DiagramUtilitiesService {
     diagram.selectCollection(previouslySelected);
   }
 
-  setBlueShadowHighlight(node: go.Node, highlight: boolean): void {
-    node.shadowColor = highlight ? 'blue' : 'gray';
-    node.shadowBlur = highlight ? 18 : 4;
-  }
-
   // Check for any other nodes already occupying a given space
   isUnoccupied(rectangle: go.Rect, node: go.Node): boolean {
     const diagram = node.diagram;

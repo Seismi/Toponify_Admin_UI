@@ -24,6 +24,8 @@ import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-la
 import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
 import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
 import {DiagramPanelTemplatesService} from '@app/architecture/services/diagram-panel-templates.service';
+import {CustomLayoutService} from '@app/architecture/services/custom-layout-service';
+import {CustomLinkShift, CustomToolsService} from '@app/architecture/services/custom-tools-service';
 
 // Default display settings
 const standardDisplayOptions = {
@@ -133,7 +135,9 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     private diagramListenersService: DiagramListenersService,
     private diagramImageService: DiagramImageService,
     private diagramUtilitiesService: DiagramUtilitiesService,
-    private diagramPanelTemplatesService: DiagramPanelTemplatesService
+    private diagramPanelTemplatesService: DiagramPanelTemplatesService,
+    private customLayoutService: CustomLayoutService,
+    private customToolsService: CustomToolsService
   ) {
 
     this.diagramPanelTemplatesService.defineRoundButton();
@@ -154,8 +158,14 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
 
+    this.customToolsService.enableCustomTools(this.diagram);
+
+    this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
+
     // Set context menu
     this.diagram.contextMenu = diagramPartTemplatesService.getBackgroundContextMenu();
+
+    this.customLayoutService.defineCustomLayouts();
 
     // Set node templates
     this.diagram.nodeTemplate = diagramPartTemplatesService.getNodeTemplate();

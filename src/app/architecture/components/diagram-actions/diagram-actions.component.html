@@ -1,11 +1,11 @@
 <div class="wrapper">
   <div class="block">
     <mat-chip-list>
-      <mat-chip *ngIf="diagramChangeService.dependenciesView" data-qa="topology-viewing-dependencies">
+      <mat-chip *ngIf="diagramViewChangeService.dependenciesView" data-qa="topology-viewing-dependencies">
         Viewing Dependencies
         <mat-icon matChipRemove (click)="exitDependenciesView.emit()">cancel</mat-icon>
       </mat-chip>
-      
+
       <mat-chip *ngIf="filterLevel === Level.usage" data-qa="topology-showing-usage-across-levels">
         Showing Usage Across Levels
         <mat-icon matChipRemove (click)="exitUsageView()">cancel</mat-icon>

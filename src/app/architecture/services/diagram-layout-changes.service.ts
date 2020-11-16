@@ -6,6 +6,11 @@ import * as go from 'gojs';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
 import {NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
 import {LinkLayoutSettingsEntity} from '@app/architecture/store/models/node-link.model';
+import {select, Store} from '@ngrx/store';
+import {State as LayoutState} from '@app/layout/store/reducers/layout.reducer';
+import {State as WorkPackageState} from '@app/workpackage/store/reducers/workpackage.reducer';
+import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/store/selectors/workpackage.selector';
+import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 
 let thisService: DiagramLayoutChangesService;
 
@@ -26,10 +31,19 @@ export class DiagramLayoutChangesService {
   layoutEditable = false;
 
   constructor(
-    public diagramLevelService: DiagramLevelService,
-    public dialog: MatDialog,
+    private diagramLevelService: DiagramLevelService,
+    private dialog: MatDialog,
+    private layoutStore: Store<LayoutState>,
+    private workpackageStore: Store<WorkPackageState>
   ) {
     thisService = this;
+    thisService.workpackageStore
+      .pipe(select(getEditWorkpackages))
+      .subscribe(workpackages => (thisService.workpackages = workpackages));
+    thisService.workpackageStore
+      .pipe(select(getSelectedWorkpackages))
+      .subscribe(workpackages => (thisService.selectedWorkpackages = workpackages));
+    thisService.layoutStore.pipe(select(getLayoutSelected)).subscribe(layout => (thisService.layout = layout));
   }
 
   // Update position of links or nodes in the back end

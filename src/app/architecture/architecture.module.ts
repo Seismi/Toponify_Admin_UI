@@ -87,6 +87,7 @@ import {DiagramPanelTemplatesService} from '@app/architecture/services/diagram-p
 import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
 import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
+import {ContextMenuService} from '@app/architecture/services/context-menu-service';
 
 @NgModule({
   imports: [
@@ -192,6 +193,7 @@ import {DiagramViewChangesService} from '@app/architecture/services/diagram-view
   ],
   providers: [
     CustomToolsService,
+    ContextMenuService,
     CustomLayoutService,
     DiagramUtilitiesService,
     DiagramStructureChangesService,
