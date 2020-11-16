@@ -757,7 +757,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subscribeForNodesLinksData();
+    // this.subscribeForNodesLinksData();
 
     this.addNewSubItemRef = this.diagramStructureChangesService.addNewSubItem$.subscribe(
       function() {
