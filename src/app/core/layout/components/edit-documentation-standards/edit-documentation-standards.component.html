@@ -1,5 +1,10 @@
 <div class="search-container">
-  <input placeholder="Search" [(ngModel)]="searchString" (keydown)="$event.stopPropagation()" />
+  <input 
+    data-qa="documentation-standards-table-quick-search"
+    placeholder="Search" 
+    [(ngModel)]="searchString" 
+    (keydown)="$event.stopPropagation()" 
+  />
 </div>
 <mat-card *ngFor="let element of data | searchPipe: searchString; let i = index">
   <mat-card-content>
