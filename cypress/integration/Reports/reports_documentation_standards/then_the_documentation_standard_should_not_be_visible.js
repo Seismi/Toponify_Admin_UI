@@ -8,9 +8,6 @@ Then('the documentation standard {string} should not be visible', function(doc_s
     .clear({ force: true })
     .type(doc_standard)
     .then(() => {
-      cy.get('[data-qa=reports-documentation-standards-table]')
-        .find('table>tbody') //find the body
-        .contains('tr', doc_standard) // and the row which contains
-        .should('not.exist');
+      cy.get('[data-qa=documentation-standards-card]').should('not.exist');
     });
 });

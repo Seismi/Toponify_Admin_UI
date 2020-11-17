@@ -6,7 +6,7 @@
     (keydown)="$event.stopPropagation()" 
   />
 </div>
-<mat-card *ngFor="let element of data | searchPipe: searchString; let i = index">
+<mat-card data-qa="documentation-standards-card" *ngFor="let element of data | searchPipe: searchString; let i = index">
   <mat-card-content>
     <div class="content">
       <div class="name">
