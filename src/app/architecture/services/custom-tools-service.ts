@@ -221,6 +221,7 @@ export class CustomNodeResize extends go.ResizingTool {
 }
 
 
+// Custom command handler to handle keyboard commands
 export class CustomCommandHandler extends go.CommandHandler {
   constructor() {
     super();
@@ -327,6 +328,7 @@ export class CustomCommandHandler extends go.CommandHandler {
       });
 
     } else if (input.key === 'Z' && input.control) {
+      // Ctrl+Z sends command to undo the last layout change
       thisService.store.dispatch(new UndoLayoutChange());
     } else {
       super.doKeyDown();
@@ -393,6 +395,12 @@ export class CustomRelinkingTool extends go.RelinkingTool {
   }
 }
 
+
+/*
+This service defines any custom/customised tools used by the diagram.
+Tools enable different ways of interacting with the diagram.
+*/
+
 @Injectable()
 export class CustomToolsService {
   // Observable to flag that the last action performed was moving parts using the arrow keys
@@ -410,6 +418,7 @@ export class CustomToolsService {
     thisService = this;
   }
 
+  // Set up all custom tools and settings
   enableCustomTools(diagram: go.Diagram): void {
 
     const toolManager = diagram.toolManager;
@@ -417,6 +426,7 @@ export class CustomToolsService {
     const relinkingTool = new CustomRelinkingTool();
     const commandHandler = new CustomCommandHandler();
 
+    // Custom dragging tool with guidelines
     toolManager.draggingTool = draggingTool;
     draggingTool.horizontalGuidelineColor = 'blue';
     draggingTool.verticalGuidelineColor = 'blue';
@@ -426,10 +436,13 @@ export class CustomToolsService {
     thisService.customDragMouseMove(diagram.toolManager.draggingTool);
     thisService.customDoDropOnto(diagram.toolManager.draggingTool);
 
+    // Link shifting tool to move link endpoints on source or target node
     toolManager.mouseDownTools.add(new CustomLinkShift());
 
+    // Drag/drop new links from palette rather using than the standard linking tool
     toolManager.linkingTool.isEnabled = false;
 
+    // Settings for relinking links
     relinkingTool.isUnconnectedLinkValid = true;
     relinkingTool.portGravity = 40;
     relinkingTool.linkValidation = thisService.linkingValidation;
@@ -552,10 +565,6 @@ export class CustomToolsService {
     };
   }
 
-  getBackgroundContextMenu() {
-    /* To be completed */
-  }
-
   customDeleteSelection(commandHandler: go.CommandHandler): void {
 
     // Override command handler delete method to emit delete event to angular
@@ -592,6 +601,7 @@ export class CustomToolsService {
     }.bind(this);
   }
 
+  // Stops invalid links being created
   linkingValidation(
     fromnode: go.Node,
     fromport: go.GraphObject,
@@ -600,7 +610,7 @@ export class CustomToolsService {
     oldlink: go.Link
   ): boolean {
     // Ensure that links in map view go in the right direction
-    if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
+    if (thisService.diagramLevelService.isInMapView()) {
       if (fromnode && fromnode.containingGroup && fromnode.containingGroup.data.endPointType !== endPointTypes.source) {
         return false;
       }
@@ -634,7 +644,7 @@ export class CustomToolsService {
     }
 
     // Prevent links between equivalent nodes in map view
-    if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
+    if (thisService.diagramLevelService.isInMapView()) {
       if (fromnode.data.id === tonode.data.id) {
         return false;
       }

@@ -5,13 +5,18 @@ import { Subject } from 'rxjs/Subject';
 import { Store } from '@ngrx/store';
 import { RouterReducerState } from '@ngrx/router-store';
 import { RouterStateUrl } from '@app/core/store';
-import {getFilterLevelQueryParams, getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
+import {getNodeIdQueryParams} from '@app/core/store/selectors/route.selectors';
 import {layers, bottomOptions} from '@app/architecture/store/models/node.model';
 import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
 import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
 
 let thisService: DiagramListenersService;
+
+/*
+This service provides any diagram listeners needed to trigger actions in
+ response to specific changes in the diagram.
+*/
 
 @Injectable()
 export class DiagramListenersService {
@@ -51,7 +56,7 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'SelectionMoved',
       function (event) {
-        if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
+        if (thisService.diagramLevelService.isInMapView()) {
           thisService.diagramLevelService.relayoutGroups(event);
         }
       }
@@ -61,17 +66,15 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event) {
-        const currentLevel = thisService.diagramLevelService.currentLevel;
-
         // Ensure links are updated in map view after group layout is performed
-        if (currentLevel && currentLevel.endsWith('map')) {
+        if (thisService.diagramLevelService.isInMapView()) {
           event.diagram.links.each(function(link) {
             link.data = Object.assign({}, link.data, { updateRoute: true });
             link.invalidateRoute();
           });
         }
 
-        if (currentLevel && currentLevel.endsWith('map') && thisService.diagramLevelService.groupLayoutInitial) {
+        if (thisService.diagramLevelService.isInMapView() && thisService.diagramLevelService.groupLayoutInitial) {
           diagram.findTopLevelGroups().each(function(group) {
             group.invalidateLayout();
           });
@@ -145,11 +148,7 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'LayoutCompleted',
       function(event: go.DiagramEvent): void {
-        const currentLevel = thisService.diagramLevelService.currentLevel;
-
-        if (currentLevel && !currentLevel.endsWith('map') &&
-          ![Level.usage, Level.sources, Level.targets].includes(currentLevel)
-        ) {
+        if (thisService.diagramLevelService.isInStandardLevel()) {
           setTimeout(
             function() {
               thisService.diagramLayoutChangesService.saveCalculatedRoutes(event.diagram);
@@ -197,10 +196,9 @@ export class DiagramListenersService {
     diagram.addDiagramListener(
       'LayoutCompleted',
       function (event: go.DiagramEvent): void {
-        const currentLevel = thisService.diagramLevelService.currentLevel;
         const nodeId = thisService.nodeId;
 
-        if ([Level.sources, Level.targets].includes(currentLevel)) {
+        if (thisService.diagramLevelService.isInEndPointView()) {
           diagram.nodes.each(function(node) {
             if (!node.location.isReal() && node.containingGroup && node.containingGroup.location.isReal()) {
               node.containingGroup.layout.isValidLayout = false;
@@ -267,12 +265,12 @@ export class DiagramListenersService {
       if (guide) {
         guide.position = diagram.transformViewToDoc(new go.Point(0, 0));
         guide.scale = 1 / diagram.scale;
+
+        const instructions = guide.findObject('instructions');
+
+        // Ensure instructions do not exceed screen space available
+        instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
       }
-
-      const instructions = guide.findObject('instructions');
-
-      // Ensure instructions do not exceed screen space available
-      instructions.width = Math.max(100, diagram.viewportBounds.width - 10);
     });
 
     // Update z order when selection changes to ensure selected nodes are in front

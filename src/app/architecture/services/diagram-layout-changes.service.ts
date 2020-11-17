@@ -4,7 +4,7 @@ import {DiagramLevelService, Level} from '@app/architecture/services/diagram-lev
 import {MatDialog} from '@angular/material';
 import * as go from 'gojs';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
-import {NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
+import {bottomOptions, nodeCategories, NodeLayoutSettingsEntity} from '@app/architecture/store/models/node.model';
 import {LinkLayoutSettingsEntity} from '@app/architecture/store/models/node-link.model';
 import {select, Store} from '@ngrx/store';
 import {State as LayoutState} from '@app/layout/store/reducers/layout.reducer';
@@ -13,6 +13,11 @@ import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/sto
 import {getLayoutSelected} from '@app/layout/store/selectors/layout.selector';
 
 let thisService: DiagramLayoutChangesService;
+
+/*
+This service handles changes to the layout i.e. any visual change to the diagram/nodes/links
+ that can be saved by the user.
+*/
 
 @Injectable()
 export class DiagramLayoutChangesService {
@@ -51,7 +56,7 @@ export class DiagramLayoutChangesService {
   //    -subject: set of parts to update the positions of
   updatePosition(event: any): void {
     // Do not update positions for map view
-    if (this.diagramLevelService.currentLevel.endsWith('map')) {
+    if (thisService.diagramLevelService.isInMapView()) {
       return;
     }
 
@@ -110,15 +115,15 @@ export class DiagramLayoutChangesService {
           // Part is a node
           nodes.push({ id: part.key, locationCoordinates: part.data.location });
         }
-      }.bind(this)
+      }
     );
 
-    this.onUpdatePosition.next({
+    thisService.onUpdatePosition.next({
       nodes: nodes,
       links: links
     });
 
-    this.onUpdateDiagramLayout.next({});
+    thisService.onUpdateDiagramLayout.next({});
   }
 
   // Rerun the diagram's layout for all nodes and links
@@ -159,20 +164,9 @@ export class DiagramLayoutChangesService {
       link.updateRoute();
     });
 
-    const linkRoutes = [];
+    const linkRoutes = thisService.updateLinkRoutes(diagram.links);
 
-    diagram.links.each(function(link: go.Link): void {
-      linkRoutes.push({
-        id: link.key,
-        points: link.data.route,
-        fromSpot: link.data.fromSpot,
-        toSpot: link.data.toSpot,
-        colour: link.data.colour,
-        showLabel: link.data.showLabel}
-      );
-    });
-
-    this.onUpdatePosition.next(
+    thisService.onUpdatePosition.next(
       {
         nodes: [],
         links: linkRoutes
@@ -181,56 +175,40 @@ export class DiagramLayoutChangesService {
   }
 
   nodeExpandChanged(node) {
-    const linkData: {
-      id: string; points: number[];
-      fromSpot: string;
-      toSpot: string;
-      colour: colourOptions;
-      showLabel: boolean
+    let linkData: {
+      id: string;
+      points?: number[];
+      fromSpot?: string;
+      toSpot?: string;
+      colour?: colourOptions;
+      showLabel?: boolean
     }[] = [];
 
     node.ensureBounds();
 
-    if (
-      [Level.systemMap, Level.dataMap, Level.dimensionMap, Level.usage, Level.sources, Level.targets].includes(
-        this.diagramLevelService.currentLevel
-      )
-    ) {
-      this.groupMemberSizeChanged(node);
+    if (!thisService.diagramLevelService.isInStandardLevel()) {
+      thisService.groupMemberSizeChanged(node);
       // Update node's layout in map, usage sources or targets views
       node.findTopLevelPart().invalidateLayout();
     } else {
 
       if (node instanceof go.Group) {
         // Set of links that may need rerouting after subgraph expanded/collapsed
-        const linksToReroute = new go.Set();
+        const linksToReroute = new go.Set<go.Link>();
 
         // Get any links that may need rerouting
-        node.findSubGraphParts().each(function(part: go.Part): void {
+        node.findSubGraphParts().each(function (part: go.Part): void {
           if (part instanceof go.Node) {
             // Add links connected to member to set of links to be rerouted
             linksToReroute.addAll(part.linksConnected);
           }
         });
 
-        // Reroute all necessary links
-        linksToReroute.each(function(link: go.Link): void {
-          link.data = Object.assign(link.data, { updateRoute: true });
-          link.invalidateRoute();
-          link.updateRoute();
-          linkData.push({
-            id: link.data.id,
-            points: link.data.route,
-            fromSpot: link.data.fromSpot,
-            toSpot: link.data.toSpot,
-            colour: link.data.colour,
-            showLabel: link.data.showLabel
-          });
-        });
+        linkData = (thisService.updateLinkRoutes(linksToReroute));
       }
 
       // Update expanded status of node in the back end
-      this.onUpdateExpandState.next({
+      thisService.onUpdateExpandState.next({
         node: {
           id: node.data.id,
           middleExpanded: node.data.middleExpanded,
@@ -239,8 +217,8 @@ export class DiagramLayoutChangesService {
         links: linkData
       });
 
-      this.groupMemberSizeChanged(node);
-      this.onUpdateDiagramLayout.next({});
+      thisService.groupMemberSizeChanged(node);
+      thisService.onUpdateDiagramLayout.next({});
     }
   }
 
@@ -289,14 +267,6 @@ export class DiagramLayoutChangesService {
   }
 
   groupAreaChanged(event: go.DiagramEvent): void {
-    const linkData: {
-      id: string;
-      points: number[];
-      fromSpot: string;
-      toSpot: string;
-      colour: colourOptions;
-      showLabel: boolean
-    }[] = [];
     const node = event.subject.part;
 
     // Make sure node bounds are up to date so links can route correctly
@@ -316,31 +286,14 @@ export class DiagramLayoutChangesService {
       });
     }
 
-    // Changing group area changes node size, therefore link routes may need updating
-    linksToUpdate.each(function(link: go.Link): void {
-      // ignore disconnected links
-      if (link.toNode && link.fromNode) {
-        node.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-        link.invalidateRoute();
-        link.updateRoute();
+    const linkData = thisService.updateLinkRoutes(linksToUpdate);
 
-        linkData.push({
-          id: link.data.id,
-          points: link.data.route,
-          fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot,
-          colour: link.data.colour,
-          showLabel: link.data.showLabel
-        });
-      }
-    });
-
-    if (this.diagramLevelService.currentLevel === Level.usage || this.diagramLevelService.currentLevel.includes('map')) {
+    if (thisService.diagramLevelService.currentLevel === Level.usage || thisService.diagramLevelService.isInMapView()) {
       // Update node's layout in usage view
       node.findTopLevelPart().invalidateLayout();
     } else {
       // Update group area of node in the back end
-      this.onUpdateGroupsAreaState.next({
+      thisService.onUpdateGroupsAreaState.next({
         groups: [
           {
             id: node.data.id,
@@ -352,15 +305,15 @@ export class DiagramLayoutChangesService {
       });
     }
 
-    this.groupMemberSizeChanged(node);
-    this.onUpdateDiagramLayout.next({});
+    thisService.groupMemberSizeChanged(node);
+    thisService.onUpdateDiagramLayout.next({});
   }
 
   // Ensures that all groups that have the given member as part of
   //  their subgraph are large enough to enclose the member
   groupMemberSizeChanged(member: go.Group): void {
-    const nestedGroups = new go.Set();
-    const linksToUpdate = new go.Set();
+    const nestedGroups = new go.Set<go.Group>();
+    const linksToUpdate = new go.Set<go.Link>();
 
     let currentGroup = member;
     let currentMinBounds = member.getDocumentBounds().copy();
@@ -411,26 +364,7 @@ export class DiagramLayoutChangesService {
       currentMinBounds = currentGroup.getDocumentBounds().copy();
     }
 
-    const linkData = [];
-
-    // Update routes of any links connected to any of the resized groups
-    linksToUpdate.each(function(link: go.Link) {
-      // ignore disconnected links
-      if (link.toNode && link.fromNode) {
-        link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-        link.invalidateRoute();
-        link.updateRoute();
-
-        linkData.push({
-          id: link.data.id,
-          points: link.data.route,
-          fromSpot: link.data.fromSpot,
-          toSpot: link.data.toSpot,
-          colour: link.data.colour,
-          showLabel: link.data.showLabel
-        });
-      }
-    });
+    const linkData = thisService.updateLinkRoutes(linksToUpdate);
 
     // Construct array of group size/location data
     const groupData = [];
@@ -442,18 +376,18 @@ export class DiagramLayoutChangesService {
       });
     });
 
-    if (this.diagramLevelService.currentLevel === Level.usage || this.diagramLevelService.currentLevel === Level.systemMap) {
+    if (thisService.diagramLevelService.currentLevel === Level.usage || thisService.diagramLevelService.currentLevel === Level.systemMap) {
       // Update node's layout in usage or map view
       member.invalidateLayout();
     } else {
       if (groupData.length + linkData.length > 0) {
         // Update back end with new layout info for updated groups and links
-        this.onUpdateGroupsAreaState.next({
+        thisService.onUpdateGroupsAreaState.next({
           groups: groupData,
           links: linkData
         });
 
-        this.onUpdateDiagramLayout.next({});
+        thisService.onUpdateDiagramLayout.next({});
       }
     }
   }
@@ -471,7 +405,7 @@ export class DiagramLayoutChangesService {
   }
 
   nodeColourChanged(node: go.Node): void {
-    this.onUpdateNodeColour.next(
+    thisService.onUpdateNodeColour.next(
       {
         id: node.data.id,
         colour: node.data.colour
@@ -480,7 +414,7 @@ export class DiagramLayoutChangesService {
   }
 
   linkColourChanged(link: go.Link): void {
-    this.onUpdateLinkColour.next(
+    thisService.onUpdateLinkColour.next(
       {
         id: link.data.id,
         points: link.data.route,
@@ -493,7 +427,7 @@ export class DiagramLayoutChangesService {
   }
 
   linkShowLabelChanged(link: go.Link): void {
-    this.onUpdateLinkLabelState.next(
+    thisService.onUpdateLinkLabelState.next(
       {
         id: link.data.id,
         points: link.data.route,
@@ -506,7 +440,7 @@ export class DiagramLayoutChangesService {
   }
 
   transformationNodeShowLabelChanged(node: go.Node): void {
-    this.onUpdateTransformationNodeLabelState.next(
+    thisService.onUpdateTransformationNodeLabelState.next(
       {
         id: node.data.id,
         showLabel: node.data.showLabel
@@ -612,36 +546,71 @@ export class DiagramLayoutChangesService {
           locationCoordinates: node.data.location
         });
       }
-    }.bind(this));
+    });
 
     if (calculatedLinks.length + calculatedNodes.length > 0) {
-      this.onUpdatePosition.next({
+      thisService.onUpdatePosition.next({
         nodes: calculatedNodes,
         links: calculatedLinks
       });
     }
   }
 
-  updateLinkRoutes(links: go.Set<go.Link>) {
+  updateLinkRoutes(links: go.Set<go.Link>): {
+    id: string
+    points?: number[];
+    fromSpot?: string;
+    toSpot?: string;
+    colour?: colourOptions;
+    showLabel?: boolean;
+  }[] {
     const linkData = [];
     links.each(function(link: go.Link): void {
+      if (link.fromNode && link.toNode) {
+        link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
+        link.invalidateRoute();
+        link.updateRoute();
 
-      link.diagram.model.setDataProperty(link.data, 'updateRoute', true);
-      link.invalidateRoute();
-      link.updateRoute();
-
-      linkData.push({
-        id: link.data.id,
-        positionSettings: {
+        linkData.push({
+          id: link.data.id,
           points: link.data.route,
           fromSpot: link.data.fromSpot,
           toSpot: link.data.toSpot,
           colour: link.data.colour,
           showLabel: link.data.showLabel
-        }
-      });
+        });
+      }
     });
 
-    thisService.updatePosition({nodes: [], links: linkData});
+    return linkData;
+  }
+
+  changeStatusForSelection(diagram: go.Diagram): void {
+    const anyStatusHidden = diagram.selection.any(
+      function (part: go.Part): boolean {
+        if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+          return !part.data.middleExpanded;
+        } else {
+          return !part.data.showLabel;
+        }
+      }
+    );
+
+    diagram.selection.each(function(part: go.Part): void {
+      if (part instanceof go.Node && part.category !== nodeCategories.transformation) {
+        diagram.model.setDataProperty(part.data, 'middleExpanded', anyStatusHidden);
+        diagram.model.setDataProperty(part.data, 'bottomExpanded', bottomOptions.none);
+
+        thisService.nodeExpandChanged(part);
+      } else {
+        diagram.model.setDataProperty(part.data, 'showLabel', anyStatusHidden);
+        if (part.category === nodeCategories.transformation) {
+          thisService.transformationNodeShowLabelChanged(part as go.Node);
+        } else {
+          thisService.linkShowLabelChanged(part as go.Link);
+        }
+        thisService.onUpdateDiagramLayout.next({});
+      }
+    });
   }
 }

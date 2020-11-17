@@ -31,6 +31,12 @@ interface ContextMenuParams extends SimpleButtonArguments {
   subButtonArguments?: (SimpleButtonArguments)[];
 }
 
+/*
+This service handles the creation of customised context menus for use in the diagram.
+ It provides an interface through which a context menu can be built just by providing
+ needed parameters to determine how the menu buttons should act.
+*/
+
 @Injectable()
 export class ContextMenuService {
 
@@ -40,6 +46,7 @@ export class ContextMenuService {
     thisService = this;
   }
 
+  // Returns context menu with a vertical list of buttons
   createSimpleContextMenu(buttonArguments: SimpleButtonArguments[]): go.Adornment {
 
     const menuButtons = buttonArguments.map(
@@ -47,14 +54,20 @@ export class ContextMenuService {
         return $(
           'ContextMenuButton',
           {
-            click: function(event: go.InputEvent, object: go.GraphObject) {
+            name: buttonArg.text,
+            click: function(event: go.InputEvent, object: go.GraphObject): void {
               buttonArg.action(event.diagram);
             }
           },
           $(go.TextBlock,
             buttonArg.text,
-            {}
-          )
+            new go.Binding('stroke', 'isEnabled', function(enabled: boolean): string {
+              return enabled ? 'black' : disabledTextColour;
+            }).ofObject(buttonArg.text)
+          ),
+          buttonArg.enabledPredicate
+            ? new go.Binding('isEnabled', '', buttonArg.enabledPredicate).ofObject()
+            : {}
         );
       }
     );
@@ -65,13 +78,16 @@ export class ContextMenuService {
     );
   }
 
-  createTwoLevelContextMenu(name: string, buttonArguments: ContextMenuParams[]): go.Adornment {
+  // Returns a context menu with the option of having submenus that branch from the main menu
+  createTwoLevelContextMenu(name: string, buttonArguments: ContextMenuParams[], fixedPosition = false): go.Adornment {
+
+    // Create buttons for the main list of the context menu
     const menuButtons = buttonArguments.map(
       function(buttonArg: ContextMenuParams, index: number): go.Panel {
         if (buttonArg.subButtonArguments && buttonArg.subButtonArguments.length > 0) {
 
           const subMenuButtonNames = buttonArg.subButtonArguments.map(
-            function(subButtonArg) {return subButtonArg.text; }
+            function(subButtonArg: SimpleButtonArguments): string {return subButtonArg.text; }
           );
 
           return thisService.makeMenuButton(<MenuButtonArguments>
@@ -94,11 +110,12 @@ export class ContextMenuService {
 
     const subMenuButtons = [];
 
+    // Create buttons for submenus opened from a button on the primary menu of the context menu
     buttonArguments.forEach(
-      function(buttonArg, index) {
+      function(buttonArg: ContextMenuParams, index: number) {
         if (buttonArg.subButtonArguments && buttonArg.subButtonArguments.length > 0) {
           const subButtons = buttonArg.subButtonArguments.map(
-            function(subButtonArg, subIndex) {
+            function(subButtonArg: SimpleButtonArguments, subIndex: number) {
               return thisService.makeSubMenuButton(
                 {
                   row: index + subIndex,
@@ -121,6 +138,15 @@ export class ContextMenuService {
         zOrder: 1,
         isInDocumentBounds: true
       },
+      // Use placeholder to ensure menu placed relative to node.
+      //  Otherwise, menu appears at the mouse cursor.
+      fixedPosition ?
+        $(go.Placeholder,
+          {
+            background: null,
+            isActionable: true,
+          }) :
+        {},
       $(go.Panel, 'Table',
         {
           name: 'context menu table',
@@ -133,12 +159,13 @@ export class ContextMenuService {
     );
   }
 
+  // Return a regular button for a context menu
   makeButton(args: ButtonArguments): go.Panel {
     return $(
       'ContextMenuButton',
       {
         name: args.text,
-        click: function(event, object): void {
+        click: function(event: go.InputEvent, object: go.GraphObject): void {
           const part = (object.part as go.Adornment).adornedObject as go.Part;
           args.action(part);
           part.removeAdornment('ButtonMenu');
@@ -159,7 +186,7 @@ export class ContextMenuService {
         args.textPredicate
           ? new go.Binding('text', '', args.textPredicate).ofObject()
           : { text: args.text },
-        new go.Binding('stroke', 'isEnabled', function(enabled) {
+        new go.Binding('stroke', 'isEnabled', function(enabled: boolean): string {
           return enabled ? 'black' : disabledTextColour;
         }).ofObject(args.text)
       ),
@@ -183,6 +210,7 @@ export class ContextMenuService {
     );
   }
 
+  // Return a button to open a submenu from the context menu
   makeMenuButton(
     args: MenuButtonArguments
   ): go.Panel {
@@ -260,11 +288,14 @@ export class ContextMenuService {
         column: 1,
         row: args.row
       },
-      new go.Binding('row', '', function(table) {
+      // This row binding calculates an offset necessary to ensure that no submenu button
+      //  lies on the same table row as a hidden button from the main menu. Otherwise,
+      //  there can exist rows with gaps in the main menu instead of buttons.
+      new go.Binding('row', '', function(table: go.Panel): number {
 
         let row = args.row;
 
-        table.elements.each(function(element) {
+        table.elements.each(function(element: go.GraphObject): void {
           if (element.column === 0 &&
             element.row <= row &&
             element.row >= args.fromMenuRow &&
@@ -286,8 +317,11 @@ export class ContextMenuService {
       args.enabledPredicate
         ? new go.Binding('isEnabled', '', args.enabledPredicate).ofObject()
         : {},
+      // Visible predicate sets button height to zero when evaluated to false.
+      // Cannot use the "visible" property here as that is already used by the menu button
+      //  to show/hide the submenu buttons.
       args.visiblePredicate
-        ? new go.Binding('height', '', function(object: go.GraphObject, event: go.InputEvent) {
+        ? new go.Binding('height', '', function(object: go.GraphObject, event: go.InputEvent): number {
           const part = (object.part as go.Adornment).adornedObject as go.Part;
           return args.visiblePredicate(part) ? 20 : 0;
         }).ofObject()

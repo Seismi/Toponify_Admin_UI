@@ -5,6 +5,11 @@ import {endPointTypes, nodeCategories} from '@app/architecture/store/models/node
 
 let thisService: CustomLayoutService;
 
+/*
+This service provides the definitions for any custom layouts used by the diagram
+ or group nodes.
+*/
+
 @Injectable()
 export class CustomLayoutService {
 
@@ -15,12 +20,15 @@ export class CustomLayoutService {
     thisService = this;
   }
 
+  // Create the definitions of custom gojs layouts
   defineCustomLayouts() {
-    this.defineStandardGroupLayout();
-    this.defineMapViewLayout();
+    thisService.defineStandardGroupLayout();
+    thisService.defineMapViewLayout();
   }
 
-  defineStandardGroupLayout() {
+  // Layout for arranging grouped nodes within system/data groups.
+  // Based on PackedLayout, attempts to make the best use of space.
+  defineStandardGroupLayout(): void {
     function StandardGroupLayout() {
       PackedLayout.call(this);
     }
@@ -41,7 +49,7 @@ export class CustomLayoutService {
       const memberAreaSize = memberAreaBounds.size;
       this.size = new go.Size(Math.max(300, memberAreaSize.width - 20), Math.max(54, memberAreaSize.height - 24));
 
-      this.group.memberParts.each(function(member) {
+      this.group.memberParts.each(function(member: go.Part): void {
         if (!memberAreaBounds.containsRect(member.getDocumentBounds())) {
           member.isLayoutPositioned = true;
         }
@@ -59,9 +67,11 @@ export class CustomLayoutService {
       PackedLayout.prototype.doLayout.call(this, coll);
     };
 
-    this.standardGroupLayout = StandardGroupLayout;
+    thisService.standardGroupLayout = StandardGroupLayout;
   }
 
+  // Diagram layout to arrange parts when in map view.
+  // Lays nodes out in three columns: source nodes, transformation nodes and target nodes.
   defineMapViewLayout() {
     function MapViewLayout() {
       go.Layout.call(this);
@@ -223,7 +233,7 @@ export class CustomLayoutService {
       this.diagram.commitTransaction('Map View Layout');
     };
 
-    this.mapViewLayout = MapViewLayout;
+    thisService.mapViewLayout = MapViewLayout;
   }
 
 }

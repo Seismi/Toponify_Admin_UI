@@ -1,8 +1,13 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import {endPointTypes, layers, nodeCategories} from '@app/architecture/store/models/node.model';
+import {layers, nodeCategories} from '@app/architecture/store/models/node.model';
 
 let thisService;
+
+/*
+This service provides a set of convenience functions for use with the diagram,
+ extending the functionality of the out of the box gojs methods.
+*/
 
 @Injectable()
 export class DiagramUtilitiesService {

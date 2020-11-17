@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import {endPointTypes, layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
+import {layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
 import {linkCategories, RoutesEntityEntity} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
@@ -36,9 +36,13 @@ const mapViewLinkLayers = {
   [Level.dimensionMap]: layers.reportingConcept
 };
 
-// Define custom layout for top level nodes in map view
 
-// End map view layout
+/*
+This service handles the different levels that may be viewed in the diagram,
+ including tracking the currently viewed level, implementing the
+ functionality to switch between levels and configuring the model to be used
+ when viewing the level.
+*/
 
 @Injectable()
 export class DiagramLevelService {
@@ -74,23 +78,23 @@ export class DiagramLevelService {
   }
 
   public initializeUrlFiltering(): void {
-    this.filterSubscription = this.filter.subscribe(filter => {
-      this.store.dispatch(new SetViewLevel(filter.filterLevel));
+    thisService.filterSubscription = thisService.filter.subscribe(filter => {
+      thisService.store.dispatch(new SetViewLevel(filter.filterLevel));
       if (!filter.filterNodeIds && filter.filterLevel === Level.system) {
-        this.historyOfFilters = {};
+        thisService.historyOfFilters = {};
       }
-      this.historyOfFilters[filter.filterLevel] = {
+      thisService.historyOfFilters[filter.filterLevel] = {
         ...(filter.filterNodeIds && { filterNodeIds: filter.filterNodeIds })
       };
     });
 
-    this.filterServiceSubscription = this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+    thisService.filterServiceSubscription = thisService.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       if (filterLevel) {
         thisService.currentLevel = filterLevel;
-        return this.filter.next({ filterLevel: filterLevel });
+        return thisService.filter.next({ filterLevel: filterLevel });
       }
       thisService.currentLevel = Level.system;
-      return this.filter.next({ filterLevel: Level.system });
+      return thisService.filter.next({ filterLevel: Level.system });
     });
   }
 
@@ -120,9 +124,9 @@ export class DiagramLevelService {
 
   displayMapView(event: go.InputEvent, object: go.Part): void {
     // Indicate that the initial group layout is being performed and has not yet been completed
-    this.groupLayoutInitial = true;
+    thisService.groupLayoutInitial = true;
 
-    this.store.dispatch(
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: object.data.layer + ' map',
         id: object.data.id,
@@ -172,11 +176,11 @@ export class DiagramLevelService {
   }
 
   public destroyUrlFiltering() {
-    if (this.filterSubscription) {
-      this.filterSubscription.unsubscribe();
+    if (thisService.filterSubscription) {
+      thisService.filterSubscription.unsubscribe();
     }
-    if (this.filterServiceSubscription) {
-      this.filterServiceSubscription.unsubscribe();
+    if (thisService.filterServiceSubscription) {
+      thisService.filterServiceSubscription.unsubscribe();
     }
   }
 
@@ -230,7 +234,7 @@ export class DiagramLevelService {
         layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
-        tooltip: this.getToolTipForMasterDataLinks(level),
+        tooltip: thisService.getToolTipForMasterDataLinks(level),
         label: 'New Master Data Interface',
         tags: []
       });
@@ -354,7 +358,7 @@ export class DiagramLevelService {
         layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
-        tooltip: this.getToolTipForDataLinks(level),
+        tooltip: thisService.getToolTipForDataLinks(level),
         label: 'New Data Interface',
         tags: []
       });
@@ -373,8 +377,8 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tags: [],
-        tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
-          this.getToolTipForMasterDataLinks(level)
+        tooltip: level === Level.systemMap ? thisService.getToolTipForDataLinks(level) :
+          thisService.getToolTipForMasterDataLinks(level)
       });
       // Output link from transformation node
       paletteViewLinks.push({
@@ -387,8 +391,8 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tags: [],
-        tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
-          this.getToolTipForMasterDataLinks(level)
+        tooltip: level === Level.systemMap ? thisService.getToolTipForDataLinks(level) :
+          thisService.getToolTipForMasterDataLinks(level)
       });
     }
 
@@ -425,7 +429,7 @@ export class DiagramLevelService {
     });
 
     if (level === Level.usage) {
-      this.createNodeUsageLanes(diagram);
+      thisService.createNodeUsageLanes(diagram);
     }
 
     if ([Level.sources, Level.targets].includes(level)) {
@@ -454,8 +458,32 @@ export class DiagramLevelService {
       });
     }
 
-    this.paletteNodesSource.next(paletteViewNodes);
-    this.paletteLinksSource.next(paletteViewLinks);
+    thisService.paletteNodesSource.next(paletteViewNodes);
+    thisService.paletteLinksSource.next(paletteViewLinks);
+  }
+
+  isInMapView(): boolean {
+    return [
+      Level.systemMap,
+      Level.dataMap,
+      Level.dimensionMap
+    ].includes(thisService.currentLevel);
+  }
+
+  isInStandardLevel(): boolean {
+    return [
+      Level.system,
+      Level.data,
+      Level.dimension,
+      Level.reportingConcept
+    ].includes(thisService.currentLevel);
+  }
+
+  isInEndPointView(): boolean {
+    return [
+      Level.sources,
+      Level.targets
+    ].includes(thisService.currentLevel);
   }
 
   // Create parts to represent swim lanes to indicate layers when in node usage view

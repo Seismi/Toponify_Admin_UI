@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from '@app/architecture/services/diagram-level.service';
-import {Store} from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import {RouterReducerState} from '@ngrx/router-store';
 import {RouterStateUrl} from '@app/core/store';
 import {MatDialog} from '@angular/material';
@@ -20,8 +20,98 @@ import {defaultScopeId} from '@app/scope/store/models/scope.model';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
 import {Subject} from 'rxjs';
 import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
+import {getMapViewQueryParams, getNodeIdQueryParams, getScopeQueryParams} from '@app/core/store/selectors/route.selectors';
+import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/store/selectors/workpackage.selector';
 
 let thisService: DiagramStructureChangesService;
+
+// Customised link that only updates its route when a tool that can affect link route is active
+export class CustomLink extends go.Link {
+  constructor() {
+    super();
+  }
+
+  // Override computePoints method
+  public computePoints(): boolean {
+
+    // Failsafe - call ordinary computePoints process for any links that are partially disconnected and have no route
+    if ((!this.fromNode || !this.toNode) && this.points.count === 0) {
+      return go.Link.prototype.computePoints.call(this);
+    }
+
+    // Leave link route as is if link is disconnected - prevents bug where links dragged from palette were flipping
+    if (!this.fromNode && !this.toNode) {
+      return true;
+    }
+
+    if (this.data.isTemporary) {
+      return go.Link.prototype.computePoints.call(this);
+    }
+
+    // Avoid errors that occur for links that do not have their diagram property set
+    if (!this.diagram) {
+      return go.Link.prototype.computePoints.call(this);
+    }
+
+    const toolManager = this.diagram.toolManager;
+    const linkShiftingTool = toolManager.mouseDownTools.toArray().find(function (tool) {
+      return tool.name === 'LinkShifting';
+    });
+
+    // Always update route if "updateRoute" flag set or no route defined
+    if (this.data.updateRoute || this.points.count === 0) {
+      // Reset "updateRoute" flag
+      this.diagram.model.setDataProperty(this.data, 'updateRoute', false);
+      return go.Link.prototype.computePoints.call(this);
+    }
+
+    // Update route for links connected to dragged nodes
+    if (toolManager.draggingTool.isActive) {
+      const draggedParts = new go.Set(toolManager.draggingTool.draggedParts.iteratorKeys);
+      const linkAffected = draggedParts.any(function (part: go.Part): boolean {
+        if (part instanceof go.Link) {
+          return part === this;
+        } else if (part instanceof go.Node) {
+          return (new go.Set<go.Link>(part.findLinksConnected())).contains(this);
+        }
+      }.bind(this));
+
+      if (linkAffected) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+      // Update route for links that are being connected to a node
+    } else if (toolManager.linkingTool.isActive) {
+      if (toolManager.linkingTool.originalLink === this) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+      // Update route for links that are having their endpoints shifted
+    } else if (linkShiftingTool.isActive) {
+      if ((linkShiftingTool['_handle'].part as go.Adornment).adornedObject.part === this) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+      // Update route for links that are connected to a node which is being resized
+    } else if (toolManager.resizingTool.isActive) {
+      const resizingNode = toolManager.resizingTool.adornedObject.part as go.Node;
+
+      // Check if current link is connected to the node being resized
+      //  (including links to nodes within the node if it is a collapsed group)
+      if (this.fromNode === resizingNode || this.toNode === resizingNode
+        || (!this.fromNode.isVisible() && this.fromNode.isMemberOf(resizingNode))
+        || (!this.toNode.isVisible() && this.toNode.isMemberOf(resizingNode))
+      ) {
+        return go.Link.prototype.computePoints.call(this);
+      }
+    }
+
+    // Otherwise, leave link route as is
+    return true;
+  }
+}
+
+/*
+This service handles any structural changes to the diagram i.e. creation of nodes/links
+ and updates of their (non layout specific) properties.
+*/
 
 @Injectable()
 export class DiagramStructureChangesService {
@@ -61,6 +151,26 @@ export class DiagramStructureChangesService {
     private workpackageStore: Store<WorkPackageState>
   ) {
     thisService = this;
+
+    thisService.workpackageStore
+      .pipe(select(getEditWorkpackages))
+      .subscribe(workpackages => (this.workpackages = workpackages));
+    thisService.workpackageStore
+      .pipe(select(getSelectedWorkpackages))
+      .subscribe(workpackages => (thisService.selectedWorkpackages = workpackages));
+
+    thisService.store.select(getScopeQueryParams).subscribe(scope => {
+      thisService.currentScope = scope;
+    });
+
+    thisService.store.select(getNodeIdQueryParams).subscribe(nodeId => {
+      this.currentNodeId = nodeId;
+    });
+
+    thisService.store.select(getMapViewQueryParams).subscribe(mapViewParams => {
+      this.currentMapViewSource = mapViewParams;
+    });
+
   }
 
   // Add newly created nodes to the back end
@@ -159,7 +269,7 @@ export class DiagramStructureChangesService {
         ) {
           part.diagram.model.setDataProperty(part.data, property, data[property]);
         }
-      }.bind(this)
+      }
     );
 
     // Add currently editing workpackage to array of workpackages impacted by if not there already
@@ -167,7 +277,7 @@ export class DiagramStructureChangesService {
       part.data.impactedByWorkPackages.every(
         function(workpackage) {
           return workpackage.id !== thisService.workpackages[0].id;
-        }.bind(this)
+        }
       )
     ) {
       part.diagram.model.setDataProperty(
@@ -233,7 +343,7 @@ export class DiagramStructureChangesService {
         link.data.name = `${link.fromNode.data.name} - ${link.toNode.data.name}`;
 
         // If in map view, check if newly connected link connects to a transformation node
-        if (thisService.diagramLevelService.currentLevel.endsWith('map')) {
+        if (thisService.diagramLevelService.isInMapView()) {
           if (link.fromNode.data.isTemporary) {
             thisService.createMapViewTransformationLink(link.fromNode);
           } else if (link.toNode.data.isTemporary) {
@@ -432,7 +542,7 @@ export class DiagramStructureChangesService {
           link.invalidateRoute();
         }
       }
-    }.bind(this));
+    });
 
     thisService.diagramLevelService.groupLayoutInitial = true;
 

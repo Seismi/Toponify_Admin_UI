@@ -17,6 +17,11 @@ import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-la
 let thisService: DiagramPanelTemplatesService;
 const $ = go.GraphObject.make;
 
+/*
+This service provides reusable templates for panels to be used
+ in the definition of nodes and links in the diagram.
+*/
+
 @Injectable()
 export class DiagramPanelTemplatesService {
 
@@ -275,7 +280,7 @@ export class DiagramPanelTemplatesService {
 
   // Get menu button for system/data nodes.
   //  When clicked, provides a menu with actions to take, relating to the node.
-  getTopMenuButton(forPalette = false): go.Panel {
+  getTopMenuButton(forPalette = false, menu: go.Adornment): go.Panel {
     return $(
       'RoundButton',
       {
@@ -285,7 +290,6 @@ export class DiagramPanelTemplatesService {
         desiredSize: new go.Size(25, 25),
         visible: (!forPalette),
         click: function(event, button) {
-          const menu = this.diagramPartTemplateService.getNodeContextMenu();
           event.diagram.select(button.part);
           menu.adornedObject = button.part;
 
@@ -515,11 +519,11 @@ export class DiagramPanelTemplatesService {
         },
         new go.Binding('itemArray', 'impactedByWorkPackages',
           function(workpackages: WorkPackageImpact[]): WorkPackageImpact[] {
-            let workpackgeIcons = workpackages.concat();
+            let workpackageIcons = workpackages.concat();
             // Restrict workpackage icons in the row to a maximum (four by default)
-            workpackgeIcons = workpackgeIcons.slice(0, maxIcons);
+            workpackageIcons = workpackageIcons.slice(0, maxIcons);
 
-            return workpackgeIcons;
+            return workpackageIcons;
           }
         )
       ),
@@ -701,7 +705,7 @@ export class DiagramPanelTemplatesService {
   }
 
   // Get top section of nodes, containing icons and name
-  getTopSection(isGroup = false): go.Panel {
+  getTopSection(isGroup = false, menu?: go.Adornment): go.Panel {
     return $(
       go.Panel,
       'Table',
@@ -872,7 +876,7 @@ export class DiagramPanelTemplatesService {
             return groupMembers.length > 0;
           })
         ) : {},
-        isGroup ? thisService.getTopMenuButton() : thisService.getTopExpandButton()
+        isGroup ? thisService.getTopMenuButton(false, menu) : thisService.getTopExpandButton()
       )
     );
   }

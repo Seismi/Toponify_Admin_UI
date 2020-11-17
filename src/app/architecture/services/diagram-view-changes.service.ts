@@ -1,17 +1,18 @@
 import {Injectable} from '@angular/core';
 import {DiagramLevelService, Level} from '@app/architecture/services/diagram-level.service';
-import {MatDialog} from '@angular/material';
 import * as go from 'gojs';
 import {linkCategories} from '@app/architecture/store/models/node-link.model';
-import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
 import {Subject} from 'rxjs';
 
 let thisService: DiagramViewChangesService;
 
+/*
+This service handles any changes to the look of the diagram that do not
+ persist between sessions.
+*/
+
 @Injectable()
 export class DiagramViewChangesService {
-  public diagramEditable: boolean;
-  private currentLevel: Level;
   public dependenciesView = false;
   public showHideGridSource = new Subject();
   public showHideGrid$ = this.showHideGridSource.asObservable();
@@ -26,9 +27,7 @@ export class DiagramViewChangesService {
   public showHideRadioAlert$ = this.showHideRadioAlertSource.asObservable();
 
   constructor(
-    public diagramLevelService: DiagramLevelService,
-    public diagramUtilitiesService: DiagramUtilitiesService,
-    public dialog: MatDialog,
+    private diagramLevelService: DiagramLevelService
   ) {
     thisService = this;
   }
@@ -51,7 +50,7 @@ export class DiagramViewChangesService {
     }
 
     // Redo layout for node usage view after updating display options
-    if (this.currentLevel === Level.usage) {
+    if (thisService.diagramLevelService.currentLevel === Level.usage) {
       diagram.layout.isValidLayout = false;
     } else {
       // Update the route of links after display change
@@ -60,7 +59,7 @@ export class DiagramViewChangesService {
           // Set data property to indicate that link route should be updated
           diagram.model.setDataProperty(link.data, 'updateRoute', true);
           link.updateRoute();
-        }.bind(this)
+        }
       );
     }
   }
@@ -72,10 +71,10 @@ export class DiagramViewChangesService {
     // Highlight specified node with a thicker blue shadow
     thisService.setBlueShadowHighlight(depNode, true);
 
-    const nodesToStayVisible = this.getNodesToShowDependencies(depNode);
+    const nodesToStayVisible = thisService.getNodesToShowDependencies(depNode);
 
     if (nodesToStayVisible) {
-      this.dependenciesView = true;
+      thisService.dependenciesView = true;
     }
 
     // Hide all non-directly-dependent nodes
@@ -102,7 +101,7 @@ export class DiagramViewChangesService {
   showDependencies(depNode: go.Node): void {
     depNode.diagram.startTransaction('Show Dependencies');
 
-    const nodesToShow = this.getNodesToShowDependencies(depNode);
+    const nodesToShow = thisService.getNodesToShowDependencies(depNode);
 
     nodesToShow.each(function(node) {
       node.visible = true;
@@ -154,7 +153,7 @@ export class DiagramViewChangesService {
       }
     );
 
-    this.dependenciesView = false;
+    thisService.dependenciesView = false;
 
     // Update bindings so that nodes no longer show the button to expand dependency levels
     diagram.nodes.each(function(node) {
