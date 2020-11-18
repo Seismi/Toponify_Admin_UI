@@ -469,7 +469,7 @@ export class DiagramPartTemplatesService {
       !forPalette
         ? {
             // Enable context menu for nodes not in the palette
-            contextMenu: thisService.getNodeContextMenu(true)
+            contextMenu: thisService.getNodeContextMenu(false)
           }
         : {
             toolTip: $(
