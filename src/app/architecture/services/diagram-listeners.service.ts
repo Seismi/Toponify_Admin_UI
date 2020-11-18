@@ -50,7 +50,10 @@ export class DiagramListenersService {
 
     diagram.addDiagramListener(
       'SelectionMoved',
-      thisService.diagramLayoutChangesService.updatePosition
+      function(event: go.DiagramEvent): void {
+        event.subject = event.diagram.selection; // Fix issue where event subject sometimes not correct
+        thisService.diagramLayoutChangesService.updatePosition(event);
+      }
     );
 
     diagram.addDiagramListener(

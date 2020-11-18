@@ -54,7 +54,7 @@ export class DiagramLayoutChangesService {
   // Update position of links or nodes in the back end
   //  -event
   //    -subject: set of parts to update the positions of
-  updatePosition(event: any): void {
+  updatePosition(event: { diagram: go.Diagram, subject: go.Set<go.Part>}): void {
     // Do not update positions for map view
     if (thisService.diagramLevelService.isInMapView()) {
       return;
