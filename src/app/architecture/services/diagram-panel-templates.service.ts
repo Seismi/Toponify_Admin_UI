@@ -280,7 +280,7 @@ export class DiagramPanelTemplatesService {
 
   // Get menu button for system/data nodes.
   //  When clicked, provides a menu with actions to take, relating to the node.
-  getTopMenuButton(forPalette = false, menu: go.Adornment): go.Panel {
+  getTopMenuButton(forPalette = false, menuFunction: () => go.Adornment): go.Panel {
     return $(
       'RoundButton',
       {
@@ -291,6 +291,8 @@ export class DiagramPanelTemplatesService {
         visible: (!forPalette),
         click: function(event, button) {
           event.diagram.select(button.part);
+
+          const menu = menuFunction();
           menu.adornedObject = button.part;
 
           button.part.adornments.first().zOrder = 0;
@@ -705,7 +707,7 @@ export class DiagramPanelTemplatesService {
   }
 
   // Get top section of nodes, containing icons and name
-  getTopSection(isGroup = false, menu?: go.Adornment): go.Panel {
+  getTopSection(forPalette = false, isGroup = false, menuFunction?: () => go.Adornment): go.Panel {
     return $(
       go.Panel,
       'Table',
@@ -876,7 +878,7 @@ export class DiagramPanelTemplatesService {
             return groupMembers.length > 0;
           })
         ) : {},
-        isGroup ? thisService.getTopMenuButton(false, menu) : thisService.getTopExpandButton()
+        isGroup ? thisService.getTopMenuButton(forPalette, menuFunction) : thisService.getTopExpandButton()
       )
     );
   }

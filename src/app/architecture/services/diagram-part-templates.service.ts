@@ -620,7 +620,11 @@ export class DiagramPartTemplatesService {
                 return NodeColoursDark[colour];
               }
             ),
-            thisService.diagramPanelTemplatesService.getTopSection(true, thisService.getNodeContextMenu(true)),
+            thisService.diagramPanelTemplatesService.getTopSection(
+              forPalette,
+              true,
+              thisService.getNodeContextMenu.bind(thisService, true)
+            ),
             thisService.diagramPanelTemplatesService.getMiddleSection(true),
             thisService.diagramPanelTemplatesService.getBottomSection()
           )
