@@ -443,6 +443,7 @@ export class CustomToolsService {
     toolManager.linkingTool.isEnabled = false;
 
     // Settings for relinking links
+    toolManager.relinkingTool = relinkingTool;
     relinkingTool.isUnconnectedLinkValid = true;
     relinkingTool.portGravity = 40;
     relinkingTool.linkValidation = thisService.linkingValidation;
