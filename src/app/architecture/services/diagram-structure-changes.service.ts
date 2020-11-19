@@ -18,7 +18,7 @@ import {layers} from '@app/architecture/store/models/node.model';
 import {AddWorkPackageMapViewTransformation} from '@app/workpackage/store/actions/workpackage.actions';
 import {defaultScopeId} from '@app/scope/store/models/scope.model';
 import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
 import {getMapViewQueryParams, getNodeIdQueryParams, getScopeQueryParams} from '@app/core/store/selectors/route.selectors';
 import {getEditWorkpackages, getSelectedWorkpackages} from '@app/workpackage/store/selectors/workpackage.selector';
@@ -134,6 +134,9 @@ export class DiagramStructureChangesService {
   // Observable to indicate that the system was dropped in a group
   public setSystemGroupSource = new Subject();
   public setSystemGroup$ = this.setSystemGroupSource.asObservable();
+
+  public onRequestNodeDelete: BehaviorSubject<any> = new BehaviorSubject(null);
+  public onRequestLinkDelete: BehaviorSubject<any> = new BehaviorSubject(null);
 
   private currentScope: string;
   private currentNodeId: string;

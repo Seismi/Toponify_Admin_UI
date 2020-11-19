@@ -225,6 +225,14 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       .subscribe((data: { groups: any[]; links: any[] }) => {
         this.updateGroupArea.emit(data);
       });
+
+    this.diagramStructureChangesService.onRequestNodeDelete.subscribe((node: any) => {
+      this.nodeDeleteRequested.emit(node);
+    });
+
+    this.diagramStructureChangesService.onRequestLinkDelete.subscribe((link: any) => {
+      this.linkDeleteRequested.emit(link);
+    });
   }
 
   // Zoom out diagram

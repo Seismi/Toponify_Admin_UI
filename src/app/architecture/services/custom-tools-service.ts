@@ -454,6 +454,7 @@ export class CustomToolsService {
     diagram.contextMenu = thisService.diagramPartTemplatesService.getBackgroundContextMenu();
 
     // Override command handler delete method to emit delete event to angular
+    diagram.commandHandler = commandHandler;
     thisService.customDeleteSelection(commandHandler);
 
   }
@@ -594,12 +595,12 @@ export class CustomToolsService {
           return;
         }
 
-        this.nodeDeleteRequested.emit(deletedPart.data);
+        thisService.diagramStructureChangesService.onRequestNodeDelete.next(deletedPart.data);
       } else {
         // part to be deleted is a link
-        this.linkDeleteRequested.emit(deletedPart.data);
+        thisService.diagramStructureChangesService.onRequestLinkDelete.next(deletedPart.data);
       }
-    }.bind(this);
+    };
   }
 
   // Stops invalid links being created
