@@ -323,7 +323,7 @@ export class ContextMenuService {
       args.visiblePredicate
         ? new go.Binding('height', '', function(object: go.GraphObject, event: go.InputEvent): number {
           const part = (object.part as go.Adornment).adornedObject as go.Part;
-          return args.visiblePredicate(part) ? 20 : 0;
+          return args.visiblePredicate(part) ? 19 : 0;
         }).ofObject()
         : {}
     );

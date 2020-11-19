@@ -1148,9 +1148,6 @@ export class DiagramPartTemplatesService {
                 return false;
               });
               return anyCollapsed ? 'Expand' : 'Collapse';
-            },
-            visiblePredicate: function(node: go.Node) {
-              return node instanceof go.Group;
             }
           },
           {
@@ -1244,7 +1241,10 @@ export class DiagramPartTemplatesService {
               return group.data.group ? 'Move to Group' : 'Add to Group';
             }
           }
-        ]
+        ],
+        visiblePredicate: function(node: go.Node) {
+          return node instanceof go.Group;
+        }
       },
       {
         text: 'Child Nodes',
