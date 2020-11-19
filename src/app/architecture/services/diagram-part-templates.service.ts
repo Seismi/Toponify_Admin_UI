@@ -1427,7 +1427,19 @@ export class DiagramPartTemplatesService {
           action: function(link: go.Part): void {
             thisService.diagramLayoutChangesService.changeStatusForSelection(link.diagram);
           },
-          enabledPredicate: editingLayout
+          enabledPredicate: editingLayout,
+          textPredicate: function(link: go.Link): string {
+            const anyStatusHidden = link.diagram.selection.any(
+              function (part: go.Part): boolean {
+                if ((part instanceof go.Node) && part.category !== nodeCategories.transformation) {
+                  return !part.data.middleExpanded;
+                } else {
+                  return !part.data.showLabel;
+                }
+              }
+            );
+            return anyStatusHidden ? 'Show Status' : 'Hide Status';
+          }
         },
         {
           text: 'View Detail',
