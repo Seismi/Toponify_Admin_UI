@@ -1296,7 +1296,7 @@ export class DiagramPartTemplatesService {
           {
             text: 'Display (child nodes)',
             action: function(node: go.Node): void {
-              thisService.diagramLevelService.changeLevelWithFilter(node.data);
+              thisService.diagramLevelService.changeLevelWithFilter(node);
             },
             enabledPredicate: function(node: go.Node): boolean {
               return node.diagram.selection.count === 1;
