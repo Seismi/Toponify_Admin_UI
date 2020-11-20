@@ -11,11 +11,19 @@ And(
 );
 
 And('the user checks if documentation standards exist with title {string}', title => {
+  title = Cypress.env('BRANCH')
+    .concat(' | ')
+    .concat(title);
   cy.selectDetailsPaneTab(4).then(() => {
-    cy.get('[data-qa=radio-documentation-standards-table]')
-      .find('table>tbody')
-      .get('td')
-      .contains(title);
+    cy.get(`[data-qa=documentation-standards-table-quick-search]`)
+      .clear()
+      .type(title)
+      .then(() => {
+        cy.get('[data-qa=documentation-standards-card]')
+          .find('.name')
+          .contains(title)
+          .should('exist');
+      });
   });
 });
 

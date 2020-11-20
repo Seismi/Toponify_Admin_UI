@@ -735,7 +735,7 @@ Cypress.Commands.add('deleteDocumentStandard', title => {
     .paste(title);
 });
 
-Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
+Cypress.Commands.add('addDocStandard', (value, doc_standard) => {
   doc_standard = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
@@ -744,19 +744,23 @@ Cypress.Commands.add('addDocStandard', (value, doc_standard, table) => {
     .paste(doc_standard)
     .should('have.value', doc_standard)
     .wait(1000); //enter the documentation standard
-  cy.get(`[data-qa=${table}]`) //get the doc standard table
-    .find('table>tbody') //find the body
-    .contains('tr', doc_standard) // and the row which contains
-    .should('have.length', 1) //confirm there is only one documentation standard
-    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
-    .click()
-    .get(`[data-qa=documentation-standards-table-value]`) // get the value field
-    .clear({ force: true })
-    .type(value)
-    .should('have.value', value.toString()); // type the value
+  cy.get(`[data-qa=documentation-standards-card]`)
+    .find('.name')
+    .contains(doc_standard)
+    .should('exist')
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-table-edit]')
+        .click()
+        .then(() => {
+          cy.get('[data-qa=documentation-standards-table-value]')
+            .clear({ force: true })
+            .type(value)
+            .should('have.value', value.toString());
+        });
+    });
 });
 
-Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard, table) => {
+Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard) => {
   doc_standard = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
@@ -765,16 +769,20 @@ Cypress.Commands.add('addDocStandardBoolean', (value, doc_standard, table) => {
     .paste(doc_standard)
     .should('have.value', doc_standard)
     .wait(1000); //enter the documentation standard  ;
-  cy.get(`[data-qa=${table}]`) //get the doc standard table
-    .find('table>tbody') //find the body
-    .contains('tr', doc_standard) // and the row which contains
-    .should('have.length', 1) //confirm there is only one documentation standard
-    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
-    .click();
-  cy.selectDropDown('documentation-standards-table-type', value); // select the value
+  cy.get(`[data-qa=documentation-standards-card]`)
+    .find('.name')
+    .contains(doc_standard)
+    .should('exist')
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-table-edit]')
+        .click()
+        .then(() => {
+          cy.selectDropDown('documentation-standards-table-type', value);
+        });
+    });
 });
 
-Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
+Cypress.Commands.add('addDocStandardDate', (value, doc_standard) => {
   doc_standard = Cypress.env('BRANCH')
     .concat(' | ')
     .concat(doc_standard); // prefix branch to doc standard name
@@ -783,19 +791,23 @@ Cypress.Commands.add('addDocStandardDate', (value, doc_standard, table) => {
     .paste(doc_standard)
     .should('have.value', doc_standard)
     .wait(2000); //enter the documentation standard
-  cy.get(`[data-qa=${table}]`) //get the doc standard table
-    .find('table>tbody') //find the body
-    .contains('tr', doc_standard) // and the row which contains
-    .should('have.length', 1) //confirm there is only one documentation standard
-    .find(`[data-qa=documentation-standards-table-edit]`) // get the edit button
-    .click()
-    .get(`[data-qa=documentation-standards-table-date]`) // get the value field
-    .clear({ force: true })
-    .paste(value)
-    .should('have.value', value.toString()); // type the value
+  cy.get(`[data-qa=documentation-standards-card]`)
+    .find('.name')
+    .contains(doc_standard)
+    .should('exist')
+    .then(() => {
+      cy.get('[data-qa=documentation-standards-table-edit]')
+        .click()
+        .then(() => {
+          cy.get(`[data-qa=documentation-standards-table-date]`)
+            .clear({ force: true })
+            .paste(value)
+            .should('have.value', value.toString());
+        });
+    });
 });
 
-Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) => {
+Cypress.Commands.add('documentationStandardTest', (doc_standard, value) => {
   //Tests the value in a documentation standard test
   doc_standard = Cypress.env('BRANCH')
     .concat(' | ')
@@ -805,12 +817,10 @@ Cypress.Commands.add('documentationStandardTest', (doc_standard, value, table) =
     .paste(doc_standard)
     .should('have.length', 1) //enter the documentation standard
     .should('have.value', doc_standard);
-  cy.get(`[data-qa=${table}]`) //get the table
-    .find('table>tbody') // find the table body
-    .contains('tr', doc_standard) // row that contains documentation standard
-    .find(`td`) //check if a cell has value
-    .eq(1)
-    .shouldHaveTrimmedText(value); // trims leading and trailing spaces for strings
+  cy.get(`[data-qa=documentation-standards-card]`)
+    .find('.right')
+    .contains(value)
+    .shouldHaveTrimmedText(value);
 });
 
 Cypress.Commands.add('findAttributeOrRule', attr => {
