@@ -8,9 +8,9 @@ Then('the documentation standard {string} should be visible', function(doc_stand
     .clear()
     .paste(doc_standard)
     .then(() => {
-      cy.get('[data-qa=work-packages-documentation-standards-table]')
-        .find('table>tbody') //find the body
-        .contains('tr', doc_standard) // and the row which contains
+      cy.get('[data-qa=documentation-standards-card]')
+        .find('.name')
+        .contains(doc_standard)
         .should('exist');
     });
 });

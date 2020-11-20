@@ -1,17 +1,18 @@
-table {
-  width: 100%;
-  tr.mat-header-row {
-    height: 35px;
-  }
-  th.mat-column-name {
-    width: 40%;
-  }
-  th.mat-column-edit {
-    width: 48px;
-  }
-  th.mat-column-delete {
-    width: 5%;
-  }
+mat-card {
+  margin: 12px;
+}
+
+.content {
+  display: flex;
+}
+
+.name {
+  flex-grow: 1;
+  width: 70%;
+}
+
+.right {
+  text-align: right;
 }
 
 .mat-icon {

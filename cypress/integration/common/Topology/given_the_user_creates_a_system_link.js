@@ -28,8 +28,8 @@ When('the user creates a new {string} interface with name {string} between {stri
             .then(() => {
               cy.get('[data-qa=topology-components-or-link-modal-save]')
                 .click()
-                .wait('@POSTWorkPackagesNodeLinks')
-                .wait(['@GETNodesQuery', '@GETNodeLinksQuery']);
+                .wait(5000)
+                .wait(['@GETNodesQuery', '@GETNodeLinksQuery', '@POSTWorkPackagesNodeLinks']);
               cy.get('[data-qa=spinner]').should('not.be.visible');
             });
         });
