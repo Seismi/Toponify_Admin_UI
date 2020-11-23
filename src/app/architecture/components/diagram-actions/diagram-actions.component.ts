@@ -7,7 +7,7 @@ import { RouterStateUrl } from '@app/core/store';
 import { UpdateQueryParams } from '@app/core/store/actions/route.actions';
 import { NodeDetail } from '@app/architecture/store/models/node.model';
 import { defaultLayoutId } from '@app/layout/store/models/layout.model';
-import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
 
 @Component({
   selector: 'smi-diagram-actions',
@@ -30,7 +30,7 @@ export class DiagramActionsComponent {
   @Input() scope: ScopeDetails;
 
   constructor(
-    public diagramChangeService: DiagramChangesService,
+    public diagramViewChangeService: DiagramViewChangesService,
     private routerStore: Store<RouterReducerState<RouterStateUrl>>
   ) { }
 

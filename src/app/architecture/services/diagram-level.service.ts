@@ -1,18 +1,19 @@
 import {Injectable} from '@angular/core';
 import * as go from 'gojs';
-import {endPointTypes, layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
+import {layers, Node, nodeCategories} from '@app/architecture/store/models/node.model';
 import {linkCategories, RoutesEntityEntity} from '@app/architecture/store/models/node-link.model';
 import * as uuid from 'uuid/v4';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {State as ArchitectureState} from '@app/architecture/store/reducers/architecture.reducer';
-import {Location} from '@angular/common';
 import {SetViewLevel} from '@app/architecture/store/actions/view.actions';
 import {NodeToolTips} from '@app/core/node-tooltips';
 import {UpdateQueryParams} from '@app/core/store/actions/route.actions';
 import {getFilterLevelQueryParams} from '@app/core/store/selectors/route.selectors';
+import {CustomLayoutService} from '@app/architecture/services/custom-layout-service';
 
 const $ = go.GraphObject.make;
+let thisService: DiagramLevelService;
 
 // Levels in the diagram
 export enum Level {
@@ -29,200 +30,19 @@ export enum Level {
   targets = 'targets'
 }
 
-// Numbers associated to each level in the data store
-export const viewLevelNum = {
-  [Level.system]: 1,
-  [Level.data]: 2,
-  [Level.dimension]: 3,
-  [Level.reportingConcept]: 4,
-  [Level.attribute]: 5,
-  [Level.systemMap]: 8,
-  [Level.dataMap]: 9,
-  [Level.usage]: 10
-};
-
-export const lessDetailOrderMapping = {
-  [Level.reportingConcept]: Level.dimension,
-  [Level.dimension]: Level.data,
-  [Level.systemMap]: Level.system,
-  [Level.dataMap]: Level.data,
-  [Level.dimensionMap]: Level.dimension,
-  [Level.data]: Level.system
-};
-
-export const moreDetailOrderMapping = {
-  [Level.system]: Level.data,
-  [Level.data]: Level.dimension,
-  [Level.dimension]: Level.reportingConcept
-};
-
 const mapViewLinkLayers = {
   [Level.systemMap]: layers.data,
   [Level.dataMap]: layers.dimension,
   [Level.dimensionMap]: layers.reportingConcept
 };
 
-// Define custom layout for top level nodes in map view
-function MapViewLayout() {
-  go.Layout.call(this);
-}
-go.Diagram.inherit(MapViewLayout, go.Layout);
 
-MapViewLayout.prototype.doLayout = function(coll: go.Diagram | go.Group | go.Iterable<go.Part>): void {
-  const allParts = this.collectParts(coll);
-
-  // Lists of source groups, target groups and transformation nodes
-  const sourceGroups = new go.List<go.Group>();
-  const targetGroups = new go.List<go.Group>();
-  const transformationNodes = new go.List<go.Node>();
-
-  let greatestSourceWidth = 0;
-  let greatestTargetWidth = 0;
-
-  // Populate node lists
-  allParts.each(function(part: go.Part) {
-    if (part.data.endPointType === endPointTypes.source) {
-      sourceGroups.add(part as go.Group);
-    } else if (part.data.endPointType === endPointTypes.target) {
-      targetGroups.add(part as go.Group);
-    } else if (part.category === nodeCategories.transformation && !part.data.isTemporary) {
-      transformationNodes.add(part as go.Node);
-    }
-  });
-
-  this.diagram.startTransaction('Map View Layout');
-
-  // Set initial location to place nodes as the origin
-  const nextLocation = new go.Point(0, 0);
-
-  // Sort source groups so that groups without any linked members appear at the bottom
-  sourceGroups.sort(function(a: go.Group, b: go.Group): number {
-    const aLinks = a.findExternalLinksConnected().count;
-    const bLinks = b.findExternalLinksConnected().count;
-
-    if (aLinks === 0 && bLinks !== 0) {
-      return 1;
-    } else if (bLinks === 0 && aLinks !== 0) {
-      return -1;
-    } else {
-      return 0;
-    }
-  });
-
-  // Place source groups in a descending list
-  sourceGroups.each(function(source: go.Group): void {
-    source.move(nextLocation.copy(), true);
-    // Set location of next source group to be below the previously set group with a small gap
-    nextLocation.offset(0, source.actualBounds.height + 15);
-  });
-
-  // Function to return the number of member nodes connected between a given source and target group.
-  //   Includes member nodes directly linked as well as nodes connected through a transformation node
-  function countConnections(source: go.Group, target: go.Group): number {
-    // Initialise connections count
-    let totalConnections = 0;
-    // For each node linked to a target member node...
-    target.findExternalNodesConnected().each(function(node: go.Node): void {
-      // ...if node is a member of the source group then increment count of connections
-      if (node.containingGroup && node.containingGroup.key === source.key) {
-        totalConnections++;
-        // ...if node is transformation node then increase connection count by number of linked source group members
-      } else if (node.category === nodeCategories.transformation) {
-        node.findNodesInto().each(function(node2: go.Node): void {
-          if (node2.containingGroup && node2.containingGroup.key === source.key) {
-            totalConnections++;
-          }
-        });
-      }
-    });
-    return totalConnections;
-  }
-
-  // Sort target groups according to number of connections to each source group
-  targetGroups.sort(function(a: go.Group, b: go.Group): number {
-
-    // Sort by connections to first source group, then each subsequent source group in order
-    for (let i = 0; i < sourceGroups.count; i++) {
-      const sourceGroup = sourceGroups.elt(i);
-
-      const aLinks = countConnections(sourceGroup, a);
-      const bLinks = countConnections(sourceGroup, b);
-
-      // If one target group has more connections then use this to order them.
-      //   Otherwise, continue and attempt to order using connections to subsequent source group.
-      if (aLinks !== bLinks) {
-        return bLinks - aLinks;
-      }
-    }
-
-    // If both target groups have equal numbers of connections to all source groups
-    //   then neither group has priority in ordering
-    return 0;
-  });
-
-  sourceGroups.each(function(group: go.Group) {
-    greatestSourceWidth = Math.max(group.actualBounds.width, greatestSourceWidth);
-  });
-
-  targetGroups.each(function(group: go.Group) {
-    greatestTargetWidth = Math.max(group.actualBounds.width, greatestTargetWidth);
-  });
-
-  // Set initial location for target groups.
-  // Place to the right of source groups.
-  nextLocation.setTo(greatestSourceWidth / 2 + greatestTargetWidth / 2 + 300, 0);
-
-  // Place target groups in a descending list
-  targetGroups.each(function(target: go.Group): void {
-    target.move(nextLocation.copy(), true);
-    // Set location of next target group to be below the previously set group with a small gap
-    nextLocation.offset(0, target.actualBounds.height + 15);
-  });
-
-  // Sort transformation nodes depending on vertical distance of linked nodes
-  transformationNodes.sort(function(a: go.Node, b: go.Node): number {
-
-    // Function to return average height of nodes linked to the given node
-    function getAverageLinkedHeight(node) {
-      let totalLinkedHeight = 0;
-      // Sum the Y co-ordinate values of connected nodes
-      node.findNodesConnected().each(function(connectedNode: go.Node) {
-        totalLinkedHeight += connectedNode.location.y;
-      });
-      // Divide total by number of connections to work out the average
-      return totalLinkedHeight / node.findNodesConnected().count;
-    }
-
-    const averageHeightA = getAverageLinkedHeight(a);
-    const averageHeightB = getAverageLinkedHeight(b);
-
-    // Sort based on difference between the averages for the two nodes
-    return averageHeightA - averageHeightB;
-  });
-
-  // Calculate suitable gap between transformation nodes to ensure an even spread
-  //    Determine available vertical space adjacent to the source and target groups
-  const lowestGroupPoint = Math.max(
-    // Set to 0 in case no source or target groups found
-    sourceGroups.last() ? sourceGroups.last().actualBounds.bottom : 0,
-    targetGroups.last() ? targetGroups.last().actualBounds.bottom : 0
-  );
-  //    Get a suitable gap between each node based on available space and number of transformation nodes
-  const step = lowestGroupPoint / (transformationNodes.count + 1);
-
-  // Set initial location for transformation nodes.
-  // Place in between source and target groups.
-  nextLocation.setTo(greatestSourceWidth / 2 + 150, step - 27);
-
-  transformationNodes.each(function(trans: go.Node): void {
-    trans.move(nextLocation.copy(), true);
-    // Set location of the next node to be below the previous node, separated by the predetermined gap
-    nextLocation.offset(0, step);
-  });
-
-  this.diagram.commitTransaction('Map View Layout');
-};
-// End map view layout
+/*
+This service handles the different levels that may be viewed in the diagram,
+ including tracking the currently viewed level, implementing the
+ functionality to switch between levels and configuring the model to be used
+ when viewing the level.
+*/
 
 @Injectable()
 export class DiagramLevelService {
@@ -248,56 +68,65 @@ export class DiagramLevelService {
   private paletteLinksSource = new BehaviorSubject([]);
   paletteLinks = this.paletteLinksSource.asObservable();
 
-  constructor(private store: Store<ArchitectureState>, public location: Location) {}
+  public currentLevel: Level;
+
+  constructor(
+    private store: Store<ArchitectureState>,
+    private customLayoutService: CustomLayoutService
+  ) {
+    thisService = this;
+  }
 
   public initializeUrlFiltering(): void {
-    this.filterSubscription = this.filter.subscribe(filter => {
-      this.store.dispatch(new SetViewLevel(filter.filterLevel));
+    thisService.filterSubscription = thisService.filter.subscribe(filter => {
+      thisService.store.dispatch(new SetViewLevel(filter.filterLevel));
       if (!filter.filterNodeIds && filter.filterLevel === Level.system) {
-        this.historyOfFilters = {};
+        thisService.historyOfFilters = {};
       }
-      this.historyOfFilters[filter.filterLevel] = {
+      thisService.historyOfFilters[filter.filterLevel] = {
         ...(filter.filterNodeIds && { filterNodeIds: filter.filterNodeIds })
       };
     });
 
-    this.filterServiceSubscription = this.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+    thisService.filterServiceSubscription = thisService.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       if (filterLevel) {
-        return this.filter.next({ filterLevel: filterLevel });
+        thisService.currentLevel = filterLevel;
+        return thisService.filter.next({ filterLevel: filterLevel });
       }
-      return this.filter.next({ filterLevel: Level.system });
+      thisService.currentLevel = Level.system;
+      return thisService.filter.next({ filterLevel: Level.system });
     });
   }
 
   // Display the next level of detail in the diagram, filtered to include only children of a specific node
-  //    object: node to display the children of
-  changeLevelWithFilter(_event: any, object: go.Node): void {
+  //   node: node to display the children of
+  changeLevelWithFilter(node: go.Node | { data: Node }): void {
     let newLevel: Level;
-    if (object.data.layer === layers.system) {
+    if (node.data.layer === layers.system) {
       newLevel = Level.data;
-    } else if (object.data.layer === layers.data) {
+    } else if (node.data.layer === layers.data) {
       newLevel = Level.dimension;
-    } else if (object.data.layer === layers.dimension) {
+    } else if (node.data.layer === layers.dimension) {
       newLevel = Level.reportingConcept;
     } else {
       return;
     }
-    this.store.dispatch(
-      new UpdateQueryParams({ filterLevel: newLevel, id: object.data.id, parentName: object.data.name })
+    thisService.store.dispatch(
+      new UpdateQueryParams({ filterLevel: newLevel, id: node.data.id, parentName: node.data.name })
     );
   }
 
-  displayGroupMembers(_event: any, object: go.Node) {
-    this.store.dispatch(
-      new UpdateQueryParams({ filterLevel: Level.system, id: object.data.id, groupName: object.data.name })
+  displayGroupMembers(group: go.Group) {
+    thisService.store.dispatch(
+      new UpdateQueryParams({ filterLevel: Level.system, id: group.data.id, groupName: group.data.name })
     );
   }
 
-  displayMapView(event: go.DiagramEvent, object: go.Part): void {
+  displayMapView(event: go.InputEvent, object: go.Part): void {
     // Indicate that the initial group layout is being performed and has not yet been completed
-    this.groupLayoutInitial = true;
+    thisService.groupLayoutInitial = true;
 
-    this.store.dispatch(
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: object.data.layer + ' map',
         id: object.data.id,
@@ -319,39 +148,39 @@ export class DiagramLevelService {
     });
   }
 
-  displayUsageView(event, object) {
-    this.store.dispatch(
+  displayUsageView(node: go.Node): void {
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: Level.usage,
-        id: object.data.id
+        id: node.data.id
       })
     );
   }
 
-  displaySourcesView(event, object) {
-    this.store.dispatch(
+  displaySourcesView(node: go.Node): void {
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: Level.sources,
-        id: object.data.id
+        id: node.data.id
       })
     );
   }
 
-  displayTargetsView(event, object) {
-    this.store.dispatch(
+  displayTargetsView(node: go.Node): void {
+    thisService.store.dispatch(
       new UpdateQueryParams({
         filterLevel: Level.targets,
-        id: object.data.id
+        id: node.data.id
       })
     );
   }
 
   public destroyUrlFiltering() {
-    if (this.filterSubscription) {
-      this.filterSubscription.unsubscribe();
+    if (thisService.filterSubscription) {
+      thisService.filterSubscription.unsubscribe();
     }
-    if (this.filterServiceSubscription) {
-      this.filterServiceSubscription.unsubscribe();
+    if (thisService.filterServiceSubscription) {
+      thisService.filterServiceSubscription.unsubscribe();
     }
   }
 
@@ -405,7 +234,7 @@ export class DiagramLevelService {
         layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
-        tooltip: this.getToolTipForMasterDataLinks(level),
+        tooltip: thisService.getToolTipForMasterDataLinks(level),
         label: 'New Master Data Interface',
         tags: []
       });
@@ -529,7 +358,7 @@ export class DiagramLevelService {
         layer: linkLayer,
         isTemporary: true,
         impactedByWorkPackages: [],
-        tooltip: this.getToolTipForDataLinks(level),
+        tooltip: thisService.getToolTipForDataLinks(level),
         label: 'New Data Interface',
         tags: []
       });
@@ -548,8 +377,8 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tags: [],
-        tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
-          this.getToolTipForMasterDataLinks(level)
+        tooltip: level === Level.systemMap ? thisService.getToolTipForDataLinks(level) :
+          thisService.getToolTipForMasterDataLinks(level)
       });
       // Output link from transformation node
       paletteViewLinks.push({
@@ -562,8 +391,8 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tags: [],
-        tooltip: level === Level.systemMap ? this.getToolTipForDataLinks(level) :
-          this.getToolTipForMasterDataLinks(level)
+        tooltip: level === Level.systemMap ? thisService.getToolTipForDataLinks(level) :
+          thisService.getToolTipForMasterDataLinks(level)
       });
     }
 
@@ -600,7 +429,7 @@ export class DiagramLevelService {
     });
 
     if (level === Level.usage) {
-      this.createNodeUsageLanes(diagram);
+      thisService.createNodeUsageLanes(diagram);
     }
 
     if ([Level.sources, Level.targets].includes(level)) {
@@ -609,7 +438,7 @@ export class DiagramLevelService {
 
     // Settings and layout for map view
     if (level.endsWith('map')) {
-      diagram.layout = $(MapViewLayout as any, {
+      diagram.layout = $(thisService.customLayoutService.mapViewLayout, {
         isInitial: true,
         isOngoing: true
       });
@@ -629,8 +458,32 @@ export class DiagramLevelService {
       });
     }
 
-    this.paletteNodesSource.next(paletteViewNodes);
-    this.paletteLinksSource.next(paletteViewLinks);
+    thisService.paletteNodesSource.next(paletteViewNodes);
+    thisService.paletteLinksSource.next(paletteViewLinks);
+  }
+
+  isInMapView(): boolean {
+    return [
+      Level.systemMap,
+      Level.dataMap,
+      Level.dimensionMap
+    ].includes(thisService.currentLevel);
+  }
+
+  isInStandardLevel(): boolean {
+    return [
+      Level.system,
+      Level.data,
+      Level.dimension,
+      Level.reportingConcept
+    ].includes(thisService.currentLevel);
+  }
+
+  isInEndPointView(): boolean {
+    return [
+      Level.sources,
+      Level.targets
+    ].includes(thisService.currentLevel);
   }
 
   // Create parts to represent swim lanes to indicate layers when in node usage view
@@ -680,5 +533,22 @@ export class DiagramLevelService {
          );
        }
      );
+  }
+
+  // Display map view for a link
+  getMapViewForLink(event: go.InputEvent, object: go.Link): void {
+    let mapViewSource: go.Part;
+
+    // If link connects to a transformation node then use this node as the source of the map view.
+    if (object.fromNode && object.fromNode.category === nodeCategories.transformation) {
+      mapViewSource = object.fromNode;
+    } else if (object.toNode && object.toNode.category === nodeCategories.transformation) {
+      mapViewSource = object.toNode;
+      // Otherwise, use the link as the source of the map view.
+    } else {
+      mapViewSource = object;
+    }
+
+    thisService.displayMapView(event, mapViewSource);
   }
 }
