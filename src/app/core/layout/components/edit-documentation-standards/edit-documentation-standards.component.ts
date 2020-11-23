@@ -1,14 +1,10 @@
-import { Component, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { NodeDetail } from '@app/architecture/store/models/node.model';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CustomPropertiesEntity } from '@app/workpackage/store/models/workpackage.models';
 import { FormGroup, Validators } from '@angular/forms';
 import { DocumentStandard } from '@app/documentation-standards/store/models/documentation-standards.model';
 import { EditDocumentationStandardsFormService } from './form/services/form.service';
 import { EditDocumentationStandardsFormValidatorService } from './form/services/form-validator.service';
-import { Roles } from '@app/core/directives/by-role.directive';
-
-const columns: string[] = ['name', 'value', 'edit', 'delete'];
+import { NodeDetail } from '@app/architecture/store/models/node.model';
 
 @Component({
   selector: 'smi-edit-documentation-standards-table',
@@ -17,26 +13,13 @@ const columns: string[] = ['name', 'value', 'edit', 'delete'];
   providers: [EditDocumentationStandardsFormService, EditDocumentationStandardsFormValidatorService]
 })
 export class EditDocumentationStandardsTableComponent {
-  public Roles = Roles;
   @Input() group: FormGroup;
   @Input() isEditable = true;
   @Input() nodeCategory: string;
-  public index: number;
-
   @Input() canEdit = true;
+  @Input() data: NodeDetail[];
 
-  @Input()
-  set data(data: NodeDetail[]) {
-    if (data) {
-      this.dataSource = new MatTableDataSource<NodeDetail>(data);
-      this.dataSource.paginator = this.paginator;
-    }
-  }
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  public dataSource: MatTableDataSource<NodeDetail>;
-  public displayedColumns: string[] = columns;
+  public index: number;
 
   constructor(private editDocumentationStandardsFormService: EditDocumentationStandardsFormService) {}
 
@@ -74,13 +57,7 @@ export class EditDocumentationStandardsTableComponent {
   }
 
   nodeIsEditable(): boolean {
-    if (!this.isEditable || this.nodeCategory === 'copy') {
-      return true;
-    }
-    return false;
+    return (!this.isEditable || this.nodeCategory === 'copy');
   }
 
-  onSearch(filterValue: string): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
 }
