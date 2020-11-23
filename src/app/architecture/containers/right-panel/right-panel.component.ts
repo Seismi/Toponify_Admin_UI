@@ -19,9 +19,9 @@ import {
 import { RadioDetail } from '@app/radio/store/models/radio.model';
 import { WorkPackageNodeScopes } from '@app/workpackage/store/models/workpackage.models';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
-import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { Level } from '@app/architecture/services/diagram-level.service';
 import {NodeDetailTab} from '@app/architecture/store/models/layout.model';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
 
 @Component({
   selector: 'smi-right-panel',
@@ -108,13 +108,13 @@ export class RightPanelComponent implements OnInit, OnDestroy {
   @Output() changeOrder = new EventEmitter<GroupInfo[]>();
 
   constructor(
-    public gojsCustomObjectsService: GojsCustomObjectsService,
+    public diagramViewChangesService: DiagramViewChangesService,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     // Observable to capture instruction to switch to a tab from GoJS
-    this.showDetailTabRef = this.gojsCustomObjectsService.showRightPanelTab$.subscribe(
+    this.showDetailTabRef = this.diagramViewChangesService.showRightPanelTab$.subscribe(
       function(tab: NodeDetailTab = NodeDetailTab.Details) {
         // change selected tab to the "Details" tab
         this.selectedRightTab = tab;
