@@ -11,35 +11,21 @@ import {
   ViewChild
 } from '@angular/core';
 import { DiagramImageService } from '@app/architecture/services/diagram-image.service';
-import { dummyLinkId, linkCategories } from '@app/architecture/store/models/node-link.model';
+import { linkCategories } from '@app/architecture/store/models/node-link.model';
 import { layers, nodeCategories } from '@app/architecture/store/models/node.model';
 import * as go from 'gojs';
-import { GuidedDraggingTool } from 'gojs/extensionsTS/GuidedDraggingTool';
 import {distinctUntilChanged} from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { DiagramLevelService, Level } from '../..//services/diagram-level.service';
-import { DiagramChangesService } from '../../services/diagram-changes.service';
 import { DiagramListenersService } from '../../services/diagram-listeners.service';
-import { DiagramTemplatesService } from '../../services/diagram-templates.service';
-import {
-  CustomCommandHandler,
-  CustomLinkShift,
-  CustomNodeResize,
-  CustomRelinkingTool,
-  GojsCustomObjectsService
-} from '../../services/gojs-custom-objects.service';
+import { DiagramPartTemplatesService } from '../../services/diagram-part-templates.service';
 import {colourOptions} from '@app/architecture/store/models/layout.model';
-
-// FIXME: this solution is temp, while not clear how it should work
-export const viewLevelMapping = {
-  [1]: Level.system,
-  [2]: Level.data,
-  [3]: Level.dimension,
-  [4]: Level.reportingConcept,
-  [8]: Level.systemMap,
-  [9]: Level.dataMap,
-  [10]: Level.usage
-};
+import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
+import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
+import {DiagramPanelTemplatesService} from '@app/architecture/services/diagram-panel-templates.service';
+import {CustomLayoutService} from '@app/architecture/services/custom-layout-service';
+import {CustomLinkShift, CustomToolsService} from '@app/architecture/services/custom-tools-service';
 
 // Default display settings
 const standardDisplayOptions = {
@@ -142,13 +128,20 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
   }
 
   constructor(
-    public diagramTemplatesService: DiagramTemplatesService,
-    public diagramLevelService: DiagramLevelService,
-    public diagramChangesService: DiagramChangesService,
-    public gojsCustomObjectsService: GojsCustomObjectsService,
-    public diagramListenersService: DiagramListenersService,
-    public diagramImageService: DiagramImageService
+    private diagramPartTemplatesService: DiagramPartTemplatesService,
+    private diagramLayoutChangesService: DiagramLayoutChangesService,
+    private diagramStructureChangesService: DiagramStructureChangesService,
+    private diagramLevelService: DiagramLevelService,
+    private diagramListenersService: DiagramListenersService,
+    private diagramImageService: DiagramImageService,
+    private diagramUtilitiesService: DiagramUtilitiesService,
+    private diagramPanelTemplatesService: DiagramPanelTemplatesService,
+    private customLayoutService: CustomLayoutService,
+    private customToolsService: CustomToolsService
   ) {
+
+    this.diagramPanelTemplatesService.defineRoundButton();
+
     // Lets init url filtering
     this.diagramLevelService.initializeUrlFiltering();
     (go as any).licenseKey =
@@ -162,155 +155,84 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
     this.diagram.allowCopy = false;
     this.diagram.animationManager.isEnabled = false;
     this.diagram.autoScrollRegion = new go.Margin(120, 200, 135, 200);
-    this.diagram.toolManager.draggingTool = new GuidedDraggingTool();
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).horizontalGuidelineColor = 'blue';
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).verticalGuidelineColor = 'blue';
-    (this.diagram.toolManager.draggingTool as GuidedDraggingTool).centerGuidelineColor = 'green';
-    this.diagram.toolManager.draggingTool.dragsLink = true;
-    gojsCustomObjectsService.customDragMouseMove(this.diagram.toolManager.draggingTool);
-    gojsCustomObjectsService.customDoDropOnto(this.diagram.toolManager.draggingTool);
-    this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
-    this.diagram.toolManager.linkingTool.isEnabled = false;
-    this.diagram.toolManager.relinkingTool = (new CustomRelinkingTool());
-    this.diagram.toolManager.relinkingTool.isUnconnectedLinkValid = true;
-    this.diagram.toolManager.relinkingTool.portGravity = 40;
-    this.diagram.toolManager.relinkingTool.linkValidation = diagramChangesService.linkingValidation.bind(
-      diagramChangesService
-    );
-    this.diagram.toolManager.resizingTool = new CustomNodeResize();
+
     this.diagram.model.modelData = Object.assign({}, standardDisplayOptions);
-    this.diagram.commandHandler = new CustomCommandHandler();
 
-    // Override standard doActivate method on dragging tool to disable guidelines when dragging a link
-    this.diagram.toolManager.draggingTool.doActivate = function(): void {
-      go.DraggingTool.prototype.doActivate.call(this);
+    this.customToolsService.enableCustomTools(this.diagram);
 
-      const draggedParts = this.draggedParts.toKeySet();
-
-      // Only use drag guidelines for nodes and not for links
-      this.isGuidelineEnabled = draggedParts.first() instanceof go.Node;
-
-      // If the only part being dragged is a link that is already connected, cancel the drag
-      if (draggedParts.count === 1 && draggedParts.first() instanceof go.Link) {
-        const draggedLink = draggedParts.first();
-
-        if (!draggedLink.data.isTemporary) {
-          go.DraggingTool.prototype.doCancel.call(this);
-
-          // Cancelling the drag loses the link's selection adornment. Therefore, reselect the link to get it back.
-          draggedLink.isSelected = false;
-          this.diagram.select(draggedLink);
-        }
-      }
-    };
-
-    // Override standard hideContextMenu method on context menu tool to also hide any opened sub-menus
-    this.diagram.toolManager.contextMenuTool.hideContextMenu = function(): void {
-      if (this.currentContextMenu) {
-        this.currentContextMenu.elements.each(function(button: go.Part): void {
-          if (button.column === 1) {
-            button.visible = false;
-          }
-        });
-      }
-      // After hiding submenus, perform standard hideContextMenu process
-      go.ContextMenuTool.prototype.hideContextMenu.call(this);
-    };
+    this.diagram.toolManager.mouseDownTools.add(new CustomLinkShift());
 
     // Set context menu
-    this.diagram.contextMenu = gojsCustomObjectsService.getBackgroundContextMenu();
+    this.diagram.contextMenu = diagramPartTemplatesService.getBackgroundContextMenu();
+
+    this.customLayoutService.defineCustomLayouts();
 
     // Set node templates
-    this.diagram.nodeTemplate = diagramTemplatesService.getNodeTemplate();
+    this.diagram.nodeTemplate = diagramPartTemplatesService.getNodeTemplate();
     this.diagram.nodeTemplateMap.add(
       nodeCategories.transformation,
-      diagramTemplatesService.getTransformationNodeTemplate()
+      diagramPartTemplatesService.getTransformationNodeTemplate()
     );
 
     // Set links templates
-    this.diagram.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.data, diagramPartTemplatesService.getStandardLinkTemplate());
 
-    this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramTemplatesService.getLinkMasterDataTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.masterData, diagramPartTemplatesService.getStandardLinkTemplate());
 
-    this.diagram.linkTemplateMap.add(linkCategories.copy, diagramTemplatesService.getLinkCopyTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.copy, diagramPartTemplatesService.getLinkCopyTemplate());
 
-    this.diagram.linkTemplateMap.add(linkCategories.warning, diagramTemplatesService.getLinkWarningTemplate());
+    this.diagram.linkTemplateMap.add(linkCategories.warning, diagramPartTemplatesService.getLinkWarningTemplate());
 
-    this.diagram.linkTemplateMap.add('', diagramTemplatesService.getLinkParentChildTemplate());
+    this.diagram.linkTemplateMap.add('', diagramPartTemplatesService.getLinkParentChildTemplate());
 
     // Set group templates
-    this.diagram.groupTemplateMap.add(layers.system, diagramTemplatesService.getStandardGroupTemplate());
-    this.diagram.groupTemplateMap.add(layers.data, diagramTemplatesService.getStandardGroupTemplate());
-    this.diagram.groupTemplateMap.add('', diagramTemplatesService.getMapViewGroupTemplate());
+    this.diagram.groupTemplateMap.add(layers.system, diagramPartTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add(layers.data, diagramPartTemplatesService.getStandardGroupTemplate());
+    this.diagram.groupTemplateMap.add('', diagramPartTemplatesService.getMapViewGroupTemplate());
 
-    this.diagram.add(gojsCustomObjectsService.getInstructions());
-
-    // Override command handler delete method to emit delete event to angular
-    this.diagram.commandHandler.deleteSelection = function(): void {
-      // TEMP - no deletes for multiple parts for now
-      if (this.diagram.selection.count !== 1) {
-        return;
-      }
-
-      const deletedPart = this.diagram.selection.first();
-
-      // Disallow delete of dummy links in map view
-      if (deletedPart.data.id === dummyLinkId) {
-        return;
-      }
-
-      // Delete links that have not yet been connected to a node at both ends
-      if (deletedPart.data.isTemporary) {
-        go.CommandHandler.prototype.deleteSelection.call(this.diagram.commandHandler);
-        return;
-      }
-
-      if (deletedPart instanceof go.Node) {
-        // Disallow deleting group member of shared node
-        if (deletedPart.containingGroup && deletedPart.containingGroup.data.isShared) {
-          return;
-        }
-
-        this.nodeDeleteRequested.emit(deletedPart.data);
-      } else {
-        // part to be deleted is a link
-        this.linkDeleteRequested.emit(deletedPart.data);
-      }
-    }.bind(this);
+    this.diagram.add(diagramPartTemplatesService.getInstructions());
 
     // Define all needed diagram listeners
     diagramListenersService.enableListeners(this.diagram);
-    // pipe(debounce(() => timer(500)))
-    diagramChangesService.onUpdateDiagramLayout.subscribe(() => {
+
+    diagramLayoutChangesService.onUpdateDiagramLayout.subscribe(() => {
       this.updateDiagramLayout.emit();
     });
-    diagramChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
+    diagramLayoutChangesService.onUpdatePosition.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeLocation.emit(data);
     });
-    diagramChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
+    diagramLayoutChangesService.onUpdateExpandState.subscribe((data: { nodes: any[]; links: any[] }) => {
       this.updateNodeExpandState.emit(data);
     });
-    diagramChangesService.onUpdateLinkLabelState.subscribe((link: any) => {
+    diagramLayoutChangesService.onUpdateLinkLabelState.subscribe((link: any) => {
       this.updateLinkLabelState.emit(link);
     });
-    diagramChangesService.onUpdateTransformationNodeLabelState
+    diagramLayoutChangesService.onUpdateTransformationNodeLabelState
       .subscribe((data: { id: string, showLabel: boolean }) => {
         this.updateTransformationNodeLabelState.emit(data);
       });
-    diagramChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
+    diagramLayoutChangesService.onUpdateNodeColour.subscribe((data: { id: string, colour: colourOptions }) => {
       this.updateNodeColour.emit(data);
     });
-    diagramChangesService.onUpdateLinkColour.subscribe((link: any) => {
+    diagramLayoutChangesService.onUpdateLinkColour.subscribe((link: any) => {
       this.updateLinkColour.emit(link);
     });
 
-    this.diagramChangesService.onUpdateGroupsAreaState
+    this.diagramLayoutChangesService.onUpdateGroupsAreaState
       .pipe(distinctUntilChanged(function(prev, curr): boolean {
         return JSON.stringify(prev) === JSON.stringify(curr);
       }))
       .subscribe((data: { groups: any[]; links: any[] }) => {
         this.updateGroupArea.emit(data);
       });
+
+    this.diagramStructureChangesService.onRequestNodeDelete.subscribe((node: any) => {
+      this.nodeDeleteRequested.emit(node);
+    });
+
+    this.diagramStructureChangesService.onRequestLinkDelete.subscribe((link: any) => {
+      this.linkDeleteRequested.emit(link);
+    });
   }
 
   // Zoom out diagram
@@ -435,11 +357,12 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
     if (changes.allowMove) {
       this.diagram.allowMove = this.allowMove;
+      this.diagramLayoutChangesService.layoutEditable = this.allowMove;
       this.diagram.allowReshape = this.allowMove;
       this.diagram.allowResize = this.allowMove;
       this.diagram.toolManager.resizingTool.isEnabled = this.allowMove;
       this.diagram.toolManager.linkReshapingTool.isEnabled = this.allowMove;
-      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(function(tool) {
+      const linkShiftingTool = this.diagram.toolManager.mouseDownTools.toArray().find(function(tool: go.Tool): boolean {
         return tool.name === 'LinkShifting';
       });
       linkShiftingTool.isEnabled = this.allowMove;
@@ -485,14 +408,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
 
       this.diagram.allowDelete = allowEdit;
 
-      this.gojsCustomObjectsService.diagramEditable = allowEdit;
-      this.diagramChangesService.diagramEditable = allowEdit;
+      this.diagramStructureChangesService.diagramEditable = allowEdit;
     }
 
     if (changes.viewLevel && changes.viewLevel.currentValue !== changes.viewLevel.previousValue) {
-      this.gojsCustomObjectsService.diagramEditable =
-        this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
-      this.diagramChangesService.diagramEditable =
+      this.diagramStructureChangesService.diagramEditable =
         this.workPackageIsEditable && ![Level.sources, Level.targets].includes(this.viewLevel);
 
       this.setLevel();
@@ -527,10 +447,10 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       );
 
       if (nodesHasBeenChanged) {
-        this.diagramChangesService.updateNodes(this.diagram, this.nodes);
+        this.diagramStructureChangesService.updateNodes(this.diagram, this.nodes);
 
         const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
-        this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
+        this.diagramStructureChangesService.updateLinks(this.diagram, this.links, nodeIds);
 
         this.diagram.startTransaction('Update link workpackage colours');
         this.diagram.links.each(function(link) {
@@ -541,11 +461,11 @@ export class ArchitectureDiagramComponent implements OnInit, OnChanges, OnDestro
       if (linksHasBeenChanged) {
         const nodeIds = this.nodes.map((node: any) => node[nodeKeyProp]);
 
-        this.diagramChangesService.updateLinks(this.diagram, this.links, nodeIds);
+        this.diagramStructureChangesService.updateLinks(this.diagram, this.links, nodeIds);
       }
       if (nodesHasBeenChanged || linksHasBeenChanged) {
         // Preserve selection on update node or link arrays
-        this.diagramChangesService.preserveSelection(this.diagram, prevSelectedIds);
+        this.diagramUtilitiesService.preserveSelection(this.diagram, prevSelectedIds);
       }
     }
 

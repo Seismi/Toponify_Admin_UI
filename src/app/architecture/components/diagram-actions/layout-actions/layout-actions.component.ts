@@ -1,10 +1,10 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { ScopeDetails } from '@app/scope/store/models/scope.model';
-import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
 import { Level } from '@app/architecture/services/diagram-level.service';
 import { Store } from '@ngrx/store';
 import { State as ArchitectureState } from '@app/architecture/store/reducers/architecture.reducer';
 import { UndoLayoutChange } from '@app/architecture/store/actions/node.actions';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
 
 @Component({
   selector: 'smi-layout-actions',
@@ -33,7 +33,7 @@ export class LayoutActionsComponent {
   @Output() addLayout = new EventEmitter<void>();
 
   constructor(
-    public diagramChangesService: DiagramChangesService,
+    public diagramViewChangesService: DiagramViewChangesService,
     private store: Store<ArchitectureState>
   ) { }
 

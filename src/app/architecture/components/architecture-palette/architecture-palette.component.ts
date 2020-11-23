@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as go from 'gojs';
-import {layers, nodeCategories} from '@app/architecture/store/models/node.model';
+import {nodeCategories} from '@app/architecture/store/models/node.model';
 import { linkCategories } from '@app/architecture/store/models/node-link.model';
-import { DiagramTemplatesService } from '../..//services/diagram-templates.service';
+import { DiagramPartTemplatesService } from '../..//services/diagram-part-templates.service';
 import { DiagramLevelService } from '../../services/diagram-level.service';
 
 @Component({
@@ -17,7 +17,7 @@ export class ArchitecturePaletteComponent implements OnInit {
   private paletteRef: ElementRef;
 
   constructor(
-    private diagramTemplatesService: DiagramTemplatesService,
+    private diagramPartTemplatesService: DiagramPartTemplatesService,
     private diagramLevelService: DiagramLevelService
   ) {
     this.palette = new go.Palette();
@@ -33,7 +33,7 @@ export class ArchitecturePaletteComponent implements OnInit {
     this.palette.allowHorizontalScroll = false;
     this.palette.toolManager.toolTipDuration = 20000;
     this.palette.toolManager.draggingTool.dragsLink = true;
-    this.diagramTemplatesService.forPalette = true;
+    this.diagramPartTemplatesService.forPalette = true;
     (this.palette.model as go.GraphLinksModel).linkKeyProperty = 'id';
     this.palette.model.modelData = {
       name: true,
@@ -56,19 +56,19 @@ export class ArchitecturePaletteComponent implements OnInit {
 
     // Set node templates
 
-    this.palette.nodeTemplate = diagramTemplatesService.getNodeTemplate(true);
-    this.palette.nodeTemplateMap.add('transformation', diagramTemplatesService.getTransformationNodeTemplate(true));
+    this.palette.nodeTemplate = diagramPartTemplatesService.getNodeTemplate(true);
+    this.palette.nodeTemplateMap.add('transformation', diagramPartTemplatesService.getTransformationNodeTemplate(true));
 
     // Set group template
-    this.palette.groupTemplateMap.add('system', diagramTemplatesService.getStandardGroupTemplate(true));
-    this.palette.groupTemplateMap.add('data', diagramTemplatesService.getStandardGroupTemplate(true));
+    this.palette.groupTemplateMap.add('system', diagramPartTemplatesService.getStandardGroupTemplate(true));
+    this.palette.groupTemplateMap.add('data', diagramPartTemplatesService.getStandardGroupTemplate(true));
 
     // Set links templates
-    this.palette.linkTemplateMap.add(linkCategories.data, diagramTemplatesService.getLinkDataTemplate(true));
+    this.palette.linkTemplateMap.add(linkCategories.data, diagramPartTemplatesService.getStandardLinkTemplate(true));
 
     this.palette.linkTemplateMap.add(
       linkCategories.masterData,
-      diagramTemplatesService.getLinkMasterDataTemplate(true)
+      diagramPartTemplatesService.getStandardLinkTemplate(true)
     );
 
     // After palette parts laid out, arrange the transformation node links to connect to the
@@ -92,8 +92,8 @@ export class ArchitecturePaletteComponent implements OnInit {
           }
         });
 
-        // Only proceed if links attached to transformation node are found
-        if (toTransformationLink && fromTransformationLink) {
+        // Only proceed if transformation node with attached links is found
+        if (transformationNode && toTransformationLink && fromTransformationLink) {
 
           transformationNode.ensureBounds();
 

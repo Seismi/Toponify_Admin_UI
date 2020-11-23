@@ -10,8 +10,6 @@ import {
 import { FormGroup } from '@angular/forms';
 import { Params } from '@angular/router';
 import { ArchitectureView } from '@app/architecture/components/switch-view-tabs/architecture-view.model';
-import { DiagramChangesService } from '@app/architecture/services/diagram-changes.service';
-import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { GetNodesRequestQueryParams, NodeService } from '@app/architecture/services/node.service';
 import {
   AssociateTag,
@@ -230,9 +228,13 @@ import { LeftPanelComponent } from './left-panel/left-panel.component';
 import { NewChildrenModalComponent } from './new-children-modal/new-children-modal.component';
 import { RadioConfirmModalComponent } from './radio-confirm-modal/radio-confirm-modal.component';
 import { MatCheckboxChange, MatDialog } from '@angular/material';
-import { DiagramTemplatesService } from '@app/architecture/services/diagram-templates.service';
+import { DiagramPartTemplatesService } from '@app/architecture/services/diagram-part-templates.service';
 import * as go from 'gojs';
 import { SingleSelectModalComponent } from '@app/core/layout/components/single-select-modal/single-select-modal.component';
+import {CustomToolsService} from '@app/architecture/services/custom-tools-service';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
+import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
 
 enum Events {
   NodesLinksReload = 0
@@ -387,16 +389,18 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     private radioStore: Store<RadioState>,
     private workpackageStore: Store<WorkPackageState>,
     private objectDetailsService: ObjectDetailsService,
-    private diagramChangesService: DiagramChangesService,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef,
-    public gojsCustomObjectsService: GojsCustomObjectsService,
+    private customToolsService: CustomToolsService,
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
     private nodeService: NodeService,
     private attributeStore: Store<AttributeState>,
     private actions$: Actions,
-    private diagramTemplatesService: DiagramTemplatesService,
+    private diagramPartTemplatesService: DiagramPartTemplatesService,
+    private diagramStructureChangesService: DiagramStructureChangesService,
+    private diagramLayoutChangesService: DiagramLayoutChangesService,
+    private diagramViewChangesService: DiagramViewChangesService,
     private notificationStore: Store<NotificationState>
   ) {}
 
@@ -476,10 +480,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         ![Level.sources, Level.targets].includes(this.currentFilterLevel);
     });
 
-    this.addChildSubscription = merge(
-      this.gojsCustomObjectsService.addDataSet$,
-      this.diagramTemplatesService.addChild$
-    ).subscribe(data => {
+    this.addChildSubscription = this.diagramPartTemplatesService.addChild$.subscribe(data => {
       this.onAddDescendant(null, data);
     });
 
@@ -585,7 +586,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             return;
           }
           const diagram = this.diagramComponent.diagram;
-          const { nodeLayoutData, linkLayoutData } = this.diagramChangesService.getCurrentPartsLayoutData(diagram);
+          const { nodeLayoutData, linkLayoutData } = this.diagramLayoutChangesService.getCurrentPartsLayoutData(diagram);
           if (this.layout) {
             this.store.dispatch(
               new UpdatePartsLayout({
@@ -758,43 +759,43 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
     // this.subscribeForNodesLinksData();
 
-    this.addNewSubItemRef = this.gojsCustomObjectsService.addNewSubItem$.subscribe(
+    this.addNewSubItemRef = this.diagramStructureChangesService.addNewSubItem$.subscribe(
       function() {
         this.onAddNewGroupMember();
       }.bind(this)
     );
 
-    this.addNewSharedSubItemRef = this.gojsCustomObjectsService.addNewSharedSubItem$.subscribe(
+    this.addNewSharedSubItemRef = this.diagramStructureChangesService.addNewSharedSubItem$.subscribe(
       function() {
         this.onAddNewSharedGroupMember();
       }.bind(this)
     );
 
-    this.addSystemToGroupRef = this.gojsCustomObjectsService.addSystemToGroup$.subscribe(
+    this.addSystemToGroupRef = this.diagramStructureChangesService.addSystemToGroup$.subscribe(
       function(nodes: go.Set<go.Group>): void {
         this.onAddToGroup(nodes);
       }.bind(this)
     );
 
-    this.setSystemGroupRef = this.gojsCustomObjectsService.setSystemGroup$.subscribe(
+    this.setSystemGroupRef = this.diagramStructureChangesService.setSystemGroup$.subscribe(
       function(data: { memberId: string, groupId: string}): void {
         this.onDropInGroup(data.memberId, data.groupId);
       }.bind(this)
     );
 
-    this.setAsMasterRef = this.gojsCustomObjectsService.setAsMaster$.subscribe(
+    this.setAsMasterRef = this.diagramStructureChangesService.setAsMaster$.subscribe(
       function() {
         this.onSetAsMaster();
       }.bind(this)
     );
 
-    this.arrowKeyMoveRef = this.gojsCustomObjectsService.arrowKeyMove$.subscribe(
+    this.arrowKeyMoveRef = this.customToolsService.arrowKeyMove$.subscribe(
       function() {
         this.partsMovedByArrows = true;
       }.bind(this)
     );
 
-    this.zoomRef = this.gojsCustomObjectsService.zoom$.subscribe(
+    this.zoomRef = this.diagramViewChangesService.zoom$.subscribe(
       function(zoomType: 'In' | 'Out') {
         if (zoomType === 'In') {
           this.onZoomIn();
@@ -804,7 +805,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }.bind(this)
     );
 
-    this.showHideGridRef = this.gojsCustomObjectsService.showHideGrid$.subscribe(
+    this.showHideGridRef = this.diagramViewChangesService.showHideGrid$.subscribe(
       function() {
         this.onShowGrid();
         this.ref.detectChanges();
@@ -812,7 +813,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
 
     // Observable to capture instruction to switch to a tab in the right hand panel
-    this.showRightPanelTabRef = this.gojsCustomObjectsService.showRightPanelTab$.subscribe(
+    this.showRightPanelTabRef = this.diagramViewChangesService.showRightPanelTab$.subscribe(
       function(tab: NodeDetailTab = NodeDetailTab.Details): void {
         // Show the right panel if hidden
         this.showOrHideRightPane = true;
@@ -821,7 +822,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       }.bind(this)
     );
 
-    this.showHideRadioAlertRef = this.gojsCustomObjectsService.showHideRadioAlert$.subscribe(
+    this.showHideRadioAlertRef = this.diagramViewChangesService.showHideRadioAlert$.subscribe(
       function() {
         this.ref.detectChanges();
       }.bind(this)
@@ -1063,7 +1064,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
         const workPackageIds = this.selectedWorkPackageEntities.map(item => item.id);
         this.setWorkPackage(workPackageIds);
-        //TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
+        // TODO: Move this to its own function or use a switch when we add other lazy loaded tabs
         if (
           this.selectedNode &&
           this.selectedNode.id !== this.nodeId &&
@@ -1157,7 +1158,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         sourceId: this.selectedPart.sourceId,
         targetId: this.selectedPart.targetId
       };
-      this.diagramChangesService.updatePartData(this.part, linkData);
+      this.diagramStructureChangesService.updatePartData(this.part, linkData);
     } else {
       const nodeData = {
         id: this.selectedPart.id,
@@ -1168,7 +1169,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         description: this.objectDetailsForm.value.description,
         tags: this.objectDetailsForm.value.tags
       };
-      this.diagramChangesService.updatePartData(this.part, nodeData);
+      this.diagramStructureChangesService.updatePartData(this.part, nodeData);
     }
   }
 
@@ -1328,7 +1329,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
 
     const diagram = this.diagramComponent.diagram;
-    const { nodeLayoutData, linkLayoutData } = this.diagramChangesService.getCurrentPartsLayoutData(diagram);
+    const { nodeLayoutData, linkLayoutData } = this.diagramLayoutChangesService.getCurrentPartsLayoutData(diagram);
 
     if (this.layout) {
       this.store.dispatch(
@@ -1562,7 +1563,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   displayOptionsChanged({ event, option }: { event: any; option: string }) {
     if (this.diagramComponent) {
-      this.diagramChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
+      this.diagramViewChangesService.updateDisplayOptions(event, option, this.diagramComponent.diagram);
     }
   }
 
@@ -1648,7 +1649,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         });
         this.radioStore.dispatch(new AddRadioEntity({ data: { ...data.radio, relatesTo: relatesTo } }));
         if (data.radio.status === 'open') {
-          this.diagramChangesService.updateRadioCount(this.part, data.radio.category);
+          this.diagramStructureChangesService.updateRadioCount(this.part, data.radio.category);
         }
         this.eventEmitter.next(Events.NodesLinksReload);
       }
@@ -2306,8 +2307,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedId = node.id;
   }
 
-  onChangeLevel(node: Node | NodeLink) {
-    this.diagramLevelService.changeLevelWithFilter(null, { data: node } as any);
+  onChangeLevel(node: Node) {
+    this.diagramLevelService.changeLevelWithFilter({ data: node });
   }
 
   realignTabUnderline(): void {
@@ -2590,11 +2591,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   onSeeDependencies() {
     this.allowMove = false;
     const part = this.diagramComponent.getNodeFromId(this.selectedNode.id);
-    this.diagramChangesService.hideNonDependencies(part);
+    this.diagramViewChangesService.hideNonDependencies(part);
   }
 
   exitDependenciesView() {
-    this.diagramChangesService.showAllNodes(this.diagramComponent.diagram);
+    this.diagramViewChangesService.showAllNodes(this.diagramComponent.diagram);
   }
 
   onFindSources() {

@@ -18,8 +18,5 @@
       "@env/*": ["src/environments/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "node_modules/gojs/extensionsTS/*"
-  ]
+  "include": ["src/**/*"]
 }

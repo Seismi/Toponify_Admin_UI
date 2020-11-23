@@ -39,11 +39,9 @@ import { LeftPanelComponent } from './containers/left-panel/left-panel.component
 import { RightPanelComponent } from './containers/right-panel/right-panel.component';
 import { WorkPackageService } from '@app/workpackage/services/workpackage.service';
 import { WorkPackageModule } from '@app/workpackage/workpackage.module';
-import { DiagramChangesService } from './services/diagram-changes.service';
 import { DiagramListenersService } from './services/diagram-listeners.service';
-import { DiagramTemplatesService } from './services/diagram-templates.service';
+import { DiagramPartTemplatesService } from './services/diagram-part-templates.service';
 import { DiagramLevelService } from './services/diagram-level.service';
-import { GojsCustomObjectsService } from '@app/architecture/services/gojs-custom-objects.service';
 import { RadioModule } from '@app/radio/radio.module';
 import { DocumentationStandardsModule } from '@app/documentation-standards/documentation-standards.module';
 import { AttributesTabComponent } from './components/attributes-tab/attributes-tab.component';
@@ -82,6 +80,14 @@ import { SaveLayoutModalComponent } from './components/save-layout-modal/save-la
 import { LayoutSettingsModalComponent } from './containers/layout-settings-modal/layout-settings-modal.component';
 import { DiagramActionsComponent } from './components/diagram-actions/diagram-actions.component';
 import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-dropdown/layouts-dropdown.component';
+import {CustomToolsService} from '@app/architecture/services/custom-tools-service';
+import {CustomLayoutService} from '@app/architecture/services/custom-layout-service';
+import {DiagramUtilitiesService} from '@app/architecture/services/diagram-utilities-service';
+import {DiagramPanelTemplatesService} from '@app/architecture/services/diagram-panel-templates.service';
+import {DiagramStructureChangesService} from '@app/architecture/services/diagram-structure-changes.service';
+import {DiagramLayoutChangesService} from '@app/architecture/services/diagram-layout-changes.service';
+import {DiagramViewChangesService} from '@app/architecture/services/diagram-view-changes.service';
+import {ContextMenuService} from '@app/architecture/services/context-menu-service';
 
 @NgModule({
   imports: [
@@ -186,10 +192,16 @@ import { LayoutsDropdownComponent } from './components/diagram-actions/layouts-d
     LayoutSettingsModalComponent,
   ],
   providers: [
-    GojsCustomObjectsService,
-    DiagramChangesService,
+    CustomToolsService,
+    ContextMenuService,
+    CustomLayoutService,
+    DiagramUtilitiesService,
+    DiagramStructureChangesService,
+    DiagramLayoutChangesService,
+    DiagramViewChangesService,
     DiagramListenersService,
-    DiagramTemplatesService,
+    DiagramPartTemplatesService,
+    DiagramPanelTemplatesService,
     DiagramLevelService,
     DiagramListenersService,
     DiagramImageService,
