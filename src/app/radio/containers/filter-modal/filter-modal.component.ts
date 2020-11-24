@@ -57,17 +57,7 @@ export class FilterModalComponent implements OnInit {
     this.workpackages$ = this.workPackageStore.pipe(select(getAllWorkPackages));
     this.nodes$ = this.nodeStore.pipe(select(getNodeEntities));
     this.users$ = this.userStore.pipe(select(getUsers));
-    this.filterRadioService.filterRadioForm.patchValue({
-      status: this.filterData.status,
-      type: this.filterData.type,
-      assignedTo: this.filterData.assignedTo,
-      workpackages: this.filterData.workpackages,
-      relatesTo: this.filterData.relatesTo,
-      from: this.filterData.from,
-      to: this.filterData.to,
-      text: this.filterData.text,
-      tags: this.filterData.tags
-    });
+    this.filterRadioService.filterRadioForm.patchValue({ ...this.filterData });
   }
 
   get filterRadioForm(): FormGroup {

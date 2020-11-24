@@ -139,15 +139,15 @@ export class RadioComponent implements OnInit, OnDestroy {
             this.store.dispatch(
               new SearchRadio({
                 data: this.filterData,
-                page: '0',
-                size: '10'
+                page: String(0),
+                size: String(10)
               })
             );
           } else {
             this.store.dispatch(
               new LoadRadios({
-                page: '0',
-                size: '10'
+                page: String(0),
+                size: String(10)
               })
             );
           }
@@ -180,17 +180,8 @@ export class RadioComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           new AddRadioEntity({
             data: {
-              title: data.radio.title,
-              status: data.radio.status,
-              category: data.radio.category,
-              description: data.radio.description,
-              assignedTo: data.radio.assignedTo,
-              author: data.radio.author,
-              relatesTo: [{ workPackage: { id: currentArchitecturePackageId } }],
-              actionBy: data.radio.actionBy,
-              mitigation: data.radio.mitigation,
-              severity: data.radio.severity,
-              frequency: data.radio.frequency
+              ...data.radio,
+              relatesTo: [{ workPackage: { id: currentArchitecturePackageId } }]
             }
           })
         );

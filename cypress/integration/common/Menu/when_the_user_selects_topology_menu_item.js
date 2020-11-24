@@ -22,6 +22,6 @@ When('the user selects Topology menu item', function() {
     .click();
   cy.get(`[data-qa=${settings['menu_selector']}]`) //get the menu selector
     .click()
-    .wait(wait, { requestTimeout: 10000 }); // wait for API Calls
+    .wait(wait, { requestTimeout: 15000 }); // wait for API Calls
   cy.get(['data-qa=spinner']).should('not.be.visible');
 });

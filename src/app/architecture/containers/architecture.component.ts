@@ -102,7 +102,7 @@ import { RadioModalComponent } from '@app/radio/containers/radio-modal/radio-mod
 import { AddRadioEntity, LoadRadios, RadioActionTypes, SearchRadio } from '@app/radio/store/actions/radio.actions';
 import { RadioDetail, RadioEntity, TableData, RadiosAdvancedSearch } from '@app/radio/store/models/radio.model';
 import { State as RadioState } from '@app/radio/store/reducers/radio.reducer';
-import { getRadioEntities, getRadioTableData } from '@app/radio/store/selectors/radio.selector';
+import { getRadioTableData } from '@app/radio/store/selectors/radio.selector';
 import {
   AddScope,
   AddScopeNodes,
@@ -260,13 +260,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private setAsMasterRef;
   private arrowKeyMoveRef;
 
-  @Input() attributesView = false;
   @Input() allowMove = false;
   public selectedPart = null;
   // public selectionUnchanged = false;
   // public allSelectedParts: string[] = [];
+  // mapViewId$: Observable<string>;
 
-  showOrHideLeftPane = false;
   layoutSettings;
 
   private nodesSubscription: Subscription;
@@ -280,7 +279,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   public eventEmitter: BehaviorSubject<any> = new BehaviorSubject(null);
 
   nodeScopes$: Observable<WorkPackageNodeScopes[]>;
-  customProperties: NodeDetail;
   nodesLinks$: Observable<any>;
   owners$: Observable<TeamEntity[]>;
   workpackage$: Observable<WorkPackageEntity[]>;
@@ -291,16 +289,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   mapView: boolean;
   viewLevel$: Observable<Level>;
   draft: any;
-  // mapViewId$: Observable<string>;
   part: any;
   showGrid: boolean;
-  // attributeSubscription: Subscription;
   clickedOnLink = false;
-  isEditable = false;
   nodeId: string;
   allowEditWorkPackages: string;
   workPackageIsEditable = false;
-  workpackageDetail: any;
   public selectedWorkPackages$: Observable<any>;
   filterServiceSubscription: Subscription;
   layout: LayoutDetails;
@@ -311,8 +305,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   selectedLeftTab: number | string;
   multipleSelected: boolean;
   selectedMultipleNodes = [];
-  radioTab = true;
-  detailsTab = false;
   selectedWorkpackages = [];
   subscriptions: Subscription[] = [];
   sw: string[] = [];
@@ -330,7 +322,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   private filterId: string;
   private mapViewSource: { id: string; isTransformation: string } | null;
   private filterLevelSubscription: Subscription;
-  private addDataSetSubscription: Subscription;
   private addChildSubscription: Subscription;
   public params: Params;
   public selectedWorkPackageEntities: WorkPackageEntity[];
@@ -352,8 +343,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   @ViewChild(ArchitectureDiagramComponent)
   private diagramComponent: ArchitectureDiagramComponent;
-  @ViewChild(LeftPanelComponent)
-  private leftPanelComponent: LeftPanelComponent;
   @ViewChild(SwitchViewTabsComponent)
   private switchViewTabsComponent: SwitchViewTabsComponent;
   @ViewChild('drawer') drawer;
@@ -462,12 +451,13 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
     );
 
-    this.store.select(getNodeIdQueryParams).subscribe(nodeId => {
-      this.filterId = nodeId;
-    });
-    this.store.select(getMapViewQueryParams).subscribe(mapViewParams => {
-      this.mapViewSource = mapViewParams;
-    });
+    this.subscriptions.push(
+      this.store.select(getNodeIdQueryParams).subscribe(nodeId => (this.filterId = nodeId))
+    );
+
+    this.subscriptions.push(
+      this.store.select(getMapViewQueryParams).subscribe(mapViewParams => (this.mapViewSource = mapViewParams))
+    );
 
     this.filterLevelSubscription = this.routerStore.select(getFilterLevelQueryParams).subscribe(filterLevel => {
       this.removeAllDraft();
@@ -610,9 +600,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
     );
 
-    this.workpackageStore
-      .pipe(select(workpackageSelectAllowed))
-      .subscribe(canSelect => (this.canSelectWorkpackages = canSelect));
+    this.subscriptions.push(
+      this.workpackageStore
+        .pipe(select(workpackageSelectAllowed))
+        .subscribe(canSelect => (this.canSelectWorkpackages = canSelect))
+    );
 
     // RADIO table on the right hand pane
     this.store.dispatch(new SearchRadio({ data: this.searchRadioData(), page: '0', size: '5' }));
@@ -721,12 +713,14 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     //   })
     // );
 
-    this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
-      if (scope) {
-        this.scope = scope;
-        this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
-      }
-    });
+    this.subscriptions.push(
+      this.scopeStore.pipe(select(getScopeSelected)).subscribe(scope => {
+        if (scope) {
+          this.scope = scope;
+          this.store.dispatch(new UpdateQueryParams({ scope: scope.id }));
+        }
+      })
+    );
 
     this.routerStore
       .select(getScopeQueryParams)
@@ -984,12 +978,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
   }
 
   setNodesLinks(layer: Level, id?: string, workpackageIds: string[] = [], scope?: string, isTransformation?: boolean) {
-    if (layer !== Level.attribute) {
-      this.attributesView = false;
-    } else {
-      this.attributesView = true;
-    }
-
     const queryParams: GetNodesRequestQueryParams = {
       workPackageQuery: workpackageIds
     };
@@ -1050,7 +1038,6 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
       if (part) {
         this.selectedParts = new go.Set<go.Part>([part]);
-        // Load node scopes
         if (
           this.selectedNode &&
           this.selectedNode.id !== this.nodeId &&
@@ -1145,30 +1132,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     return this.objectDetailsService.objectDetailsForm;
   }
 
-  onSaveObjectDetails() {
+  onSaveObjectDetails(): void {
     if (this.clickedOnLink) {
-      const linkData = {
-        id: this.selectedPart.id,
-        category: this.objectDetailsForm.value.category,
-        layer: this.selectedPart.layer,
-        name: this.objectDetailsForm.value.name,
-        reference: this.objectDetailsForm.value.reference,
-        tags: this.objectDetailsForm.value.tags,
-        description: this.objectDetailsForm.value.description,
-        sourceId: this.selectedPart.sourceId,
-        targetId: this.selectedPart.targetId
-      };
+      const linkData = { ...this.selectedPart, ...this.objectDetailsForm.value };
       this.diagramStructureChangesService.updatePartData(this.part, linkData);
     } else {
-      const nodeData = {
-        id: this.selectedPart.id,
-        layer: this.selectedPart.layer,
-        category: this.objectDetailsForm.value.category,
-        name: this.objectDetailsForm.value.name,
-        reference: this.objectDetailsForm.value.reference,
-        description: this.objectDetailsForm.value.description,
-        tags: this.objectDetailsForm.value.tags
-      };
+      const nodeData = { ...this.selectedPart, ...this.objectDetailsForm.value };
       this.diagramStructureChangesService.updatePartData(this.part, nodeData);
     }
   }
@@ -1937,10 +1906,7 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '500px',
       data: {
-        title:
-          'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.',
-        confirmBtn: 'Yes',
-        cancelBtn: 'No'
+        title: 'Are you sure you want to un-associate? Neither owners will be deleted but they will no longer be associated.'
       }
     });
 
@@ -2733,47 +2699,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
 
   searchRadioData(): RadiosAdvancedSearch {
     return {
-      raisedByMe: {
-        enabled: false
-      },
-      assignedToMe: {
-        enabled: false
-      },
-      status: {
-        enabled: false
-      },
-      type: {
-        enabled: false
-      },
-      raisedBy: {
-        enabled: false
-      },
-      assignedTo: {
-        enabled: false
-      },
       workpackages: {
         enabled: true,
         includeBaseline: true,
-        values: [
-          {
-            id: '00000000-0000-0000-0000-000000000000'
-          }
-        ]
-      },
-      relatesTo: {
-        enabled: false
-      },
-      dueDate: {
-        enabled: false
-      },
-      severityRange: {
-        enabled: false
-      },
-      frequencyRange: {
-        enabled: false
-      },
-      text: {
-        enabled: false
+        values: [{ id: currentArchitecturePackageId }]
       }
     };
   }
