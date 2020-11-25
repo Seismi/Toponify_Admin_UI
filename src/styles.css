@@ -64,3 +64,10 @@ p {
 .search-container > input:focus {
   outline: none;
 }
+
+.search-container > button {
+  position: absolute;
+  top: 11px;
+  right: 15px;
+  color: #6a6a6a;
+}
