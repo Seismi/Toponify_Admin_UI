@@ -61,6 +61,8 @@ export enum nodeCategories {
   file = 'file',
   reporting = 'reporting',
   masterData = 'master data',
+  manualProcessing = 'manual processing',
+  desktopApplication = 'desktop application',
   dataStructure = 'data structure',
   dataSet = 'data set',
   masterDataSet = 'master data set',

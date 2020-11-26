@@ -756,6 +756,8 @@ export class DiagramPanelTemplatesService {
               [nodeCategories.reporting]: 'reporting',
               [nodeCategories.masterData]: 'master-data',
               [nodeCategories.file]: 'files',
+              [nodeCategories.desktopApplication]: 'desktop-application',
+              [nodeCategories.manualProcessing]: 'manual-processing',
               [nodeCategories.dataStructure]: 'data-structure',
               [nodeCategories.dataSet]: 'data-set',
               [nodeCategories.masterDataSet]: 'master-data-set',
@@ -770,8 +772,9 @@ export class DiagramPanelTemplatesService {
 
             const sharedStatusImageSuffix =
               [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(data.category)
-                ? (data.isShared ? '-shared' : '-master')
-                : '';
+                && data.layer === layers.data
+                  ? (data.isShared ? '-shared' : '-master')
+                  : '';
 
             return [
               imageFolderPath,

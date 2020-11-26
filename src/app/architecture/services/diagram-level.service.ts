@@ -300,6 +300,27 @@ export class DiagramLevelService {
           layer: layers.system,
           category: nodeCategories.masterData,
           tooltip: NodeToolTips[4].Tooltip
+        }),
+        new Node({
+          id: 'New Manual Processing System',
+          name: 'New Manual Processing System',
+          layer: layers.system,
+          category: nodeCategories.manualProcessing,
+          tooltip: NodeToolTips[17].Tooltip
+        }),
+        new Node({
+          id: 'New Desktop Application System',
+          name: 'New Desktop Application System',
+          layer: layers.system,
+          category: nodeCategories.desktopApplication,
+          tooltip: NodeToolTips[18].Tooltip
+        }),
+        new Node({
+          id: 'New Data Set System',
+          name: 'New Data Set System',
+          layer: layers.system,
+          category: nodeCategories.dataSet,
+          tooltip: NodeToolTips[19].Tooltip
         })
       );
     } else if (level === Level.data) {
