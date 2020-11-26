@@ -132,9 +132,9 @@
             [data]="
               nodes
                 | layer
-                  : { 
-                      byId: byId, 
-                      descendantIds$: parentDescendantIds, 
+                  : {
+                      byId: byId,
+                      descendantIds$: parentDescendantIds,
                       groupMemberIds$: groupMemberIds,
                       level: currentFilterLevel
                     }
@@ -142,7 +142,6 @@
             "
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
-            (changeLevel)="onChangeLevel($event)"
             (download)="onDownload('node')"
             [view]="'system'"
             [workPackageIsEditable]="workPackageIsEditable"
@@ -156,7 +155,6 @@
             [data]="links | layer: { byId: false } | async"
             [selectedItem]="selectedNode"
             (selectNode)="onSelectNode($event)"
-            (changeLevel)="onChangeLevel($event)"
             (download)="onDownload('links')"
             [view]="'link'"
             [workPackageIsEditable]="workPackageIsEditable"
@@ -249,7 +247,6 @@
             (seeDependencies)="onSeeDependencies()"
             (findSources)="onFindSources()"
             (findTargets)="onFindTargets()"
-            (viewStructure)="onViewStructure()"
             [sourceObject]="selectedNode?.sourceObject"
             [targetObject]="selectedNode?.targetObject"
             (editSourceOrTarget)="onEditSourceOrTarget($event)"
