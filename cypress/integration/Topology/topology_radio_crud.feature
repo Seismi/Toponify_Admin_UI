@@ -15,7 +15,7 @@ Feature: Topology Radio CRUD Feature
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
     And the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
@@ -29,7 +29,7 @@ Feature: Topology Radio CRUD Feature
     And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
     And the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
@@ -40,7 +40,7 @@ Feature: Topology Radio CRUD Feature
   @topology @radio
   Scenario: Create RADIO to component and cancel
     When the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
@@ -53,7 +53,7 @@ Feature: Topology Radio CRUD Feature
   @topology @radio
   Scenario: Create RADIO to component and confirm
     When the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transaction System'
