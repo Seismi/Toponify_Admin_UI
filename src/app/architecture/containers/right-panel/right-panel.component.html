@@ -136,7 +136,7 @@
   </mat-tab>
 
   <!-- Attributes and Rules TAB -->
-  <mat-tab *ngIf="part?.isSelected && !multipleSelected">
+  <!-- <mat-tab *ngIf="part?.isSelected && !multipleSelected">
     <ng-template mat-tab-label>
       <mat-icon matTooltip="Attributes & Rules">ballot</mat-icon>
     </ng-template>
@@ -156,7 +156,7 @@
       (deleteAttribute)="onDeleteAttribute($event)"
     >
     </smi-attributes-tab>
-  </mat-tab>
+  </mat-tab> -->
 
   <!-- Documentation Standards TAB -->
   <mat-tab *ngIf="part?.isSelected && !multipleSelected">
