@@ -1,4 +1,4 @@
-@core
+@attributes_and_rules
 Feature: Attributes and Rules CRUD
   As a user, I want to ADD, DELETE, UPDATE and CREATE attributes or rules
 
