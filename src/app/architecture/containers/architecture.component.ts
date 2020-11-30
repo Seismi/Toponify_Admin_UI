@@ -45,7 +45,7 @@ import {
 } from '@app/architecture/store/actions/node.actions';
 import { NodeLink, NodeLinkDetail } from '@app/architecture/store/models/node-link.model';
 import {
-  AttributesEntity,
+  // AttributesEntity,
   DescendantsEntity,
   layers,
   LoadingStatus,
@@ -71,9 +71,10 @@ import {
   getSelectedNodeLink,
   getTopologyLoadingStatus
 } from '@app/architecture/store/selectors/node.selector';
-import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
-import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
-import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
+// DISABLE: Attributes and Rules
+// import { AttributeModalComponent } from '@app/attributes/containers/attribute-modal/attribute-modal.component';
+// import { AddAttribute, AttributeActionTypes } from '@app/attributes/store/actions/attributes.actions';
+// import { State as AttributeState } from '@app/attributes/store/reducers/attributes.reducer';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
 import { DownloadCSVModalComponent } from '@app/core/layout/components/download-csv-modal/download-csv-modal.component';
 import { SelectModalComponent } from '@app/core/layout/components/select-modal/select-modal.component';
@@ -121,10 +122,12 @@ import { getTeamEntities } from '@app/settings/store/selectors/team.selector';
 import { RadioListModalComponent } from '@app/workpackage/containers/radio-list-modal/radio-list-modal.component';
 import {
   AddWorkPackageLink,
-  AddWorkPackageLinkAttribute,
+  // DISABLE: Attributes and Rules
+  // AddWorkPackageLinkAttribute,
   AddWorkPackageLinkOwner,
   AddWorkPackageLinkRadio,
-  DeleteWorkPackageLinkAttribute,
+  // DISABLE: Attributes and Rules
+  // DeleteWorkPackageLinkAttribute,
   DeleteWorkpackageLinkOwner,
   DeleteWorkPackageLinkProperty,
   DeleteWorkpackageLinkSuccess,
@@ -135,13 +138,15 @@ import {
 import {
   AddWorkPackageMapViewNodeDescendant,
   AddWorkPackageNode,
-  AddWorkPackageNodeAttribute,
+  // DISABLE: Attributes and Rules
+  // AddWorkPackageNodeAttribute,
   AddWorkPackageNodeDescendant,
   AddWorkPackageNodeGroup,
   AddWorkpackageNodeOwner,
   AddWorkPackageNodeRadio,
   AddWorkPackageNodeScope,
-  DeleteWorkPackageNodeAttribute,
+  // DISABLE: Attributes and Rules
+  // DeleteWorkPackageNodeAttribute,
   DeleteWorkPackageNodeDescendant,
   DeleteWorkPackageNodeGroup,
   DeleteWorkpackageNodeOwner,
@@ -215,11 +220,13 @@ import {
   getPotentialGroupMembers,
   getPotentialWorkPackageNodes
 } from '../store/selectors/workpackage.selector';
-import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
+// DISABLE: Attributes and Rules
+// import { AddExistingAttributeModalComponent } from './add-existing-attribute-modal/add-existing-attribute-modal.component';
 import { NodeScopeModalComponent } from './add-scope-modal/add-scope-modal.component';
 import { ComponentsOrLinksModalComponent } from './components-or-links-modal/components-or-links-modal.component';
 import {autoLayoutId, colourOptions, NodeDetailTab} from '@app/architecture/store/models/layout.model';
-import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
+// DISABLE: Attributes and Rules
+// import { DeleteAttributeModalComponent } from './delete-attribute-modal/delete-attribute-modal.component';
 import { LayoutSettingsModalComponent } from './layout-settings-modal/layout-settings-modal.component';
 import { NotificationState } from '@app/core/store/reducers/notification.reducer';
 import { getNotificationOpen } from '@app/core/store/selectors/notification.selectors';
@@ -384,7 +391,8 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     public actions: Actions,
     private diagramLevelService: DiagramLevelService,
     private nodeService: NodeService,
-    private attributeStore: Store<AttributeState>,
+    // DISABLE: Attributes and Rules
+    // private attributeStore: Store<AttributeState>,
     private actions$: Actions,
     private diagramPartTemplatesService: DiagramPartTemplatesService,
     private diagramStructureChangesService: DiagramStructureChangesService,
@@ -913,27 +921,28 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
         })
     );
 
-    this.subscriptions.push(
-      this.actions.pipe(ofType(AttributeActionTypes.AddAttributeSuccess)).subscribe((action: any) => {
-        if (!this.clickedOnLink) {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageNodeAttribute({
-              workPackageId: this.getWorkPackageId(),
-              nodeId: this.nodeId,
-              attributeId: action.payload.id
-            })
-          );
-        } else {
-          this.workpackageStore.dispatch(
-            new AddWorkPackageLinkAttribute({
-              workPackageId: this.getWorkPackageId(),
-              nodeLinkId: this.nodeId,
-              attributeId: action.payload.id
-            })
-          );
-        }
-      })
-    );
+    // DISABLE: Attributes and Rules
+    // this.subscriptions.push(
+    //   this.actions.pipe(ofType(AttributeActionTypes.AddAttributeSuccess)).subscribe((action: any) => {
+    //     if (!this.clickedOnLink) {
+    //       this.workpackageStore.dispatch(
+    //         new AddWorkPackageNodeAttribute({
+    //           workPackageId: this.getWorkPackageId(),
+    //           nodeId: this.nodeId,
+    //           attributeId: action.payload.id
+    //         })
+    //       );
+    //     } else {
+    //       this.workpackageStore.dispatch(
+    //         new AddWorkPackageLinkAttribute({
+    //           workPackageId: this.getWorkPackageId(),
+    //           nodeLinkId: this.nodeId,
+    //           attributeId: action.payload.id
+    //         })
+    //       );
+    //     }
+    //   })
+    // );
 
     /*this.mapViewId$ = this.store.pipe(select(fromNode.getMapViewId));
     this.mapViewId$.subscribe(linkId => {
@@ -1693,88 +1702,91 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAddAttribute(): void {
-    const dialogRef = this.dialog.open(AttributeModalComponent, {
-      disableClose: false,
-      width: '500px'
-    });
+  // DISABLE: Attributes and Rules
+  // onAddAttribute(): void {
+  //   const dialogRef = this.dialog.open(AttributeModalComponent, {
+  //     disableClose: false,
+  //     width: '500px'
+  //   });
 
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.attribute) {
-        this.store.dispatch(
-          new AddAttribute({
-            workPackageId: this.workpackageId,
-            entity: { data: { ...data.attribute } }
-          })
-        );
-      }
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(data => {
+  //     if (data && data.attribute) {
+  //       this.store.dispatch(
+  //         new AddAttribute({
+  //           workPackageId: this.workpackageId,
+  //           entity: { data: { ...data.attribute } }
+  //         })
+  //       );
+  //     }
+  //   });
+  // }
 
-  onAddExistingAttribute(): void {
-    const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
-      disableClose: false,
-      width: '600px',
-      height: '590px',
-      data: {
-        workPackageIds: [this.workpackageId]
-      }
-    });
+  // DISABLE: Attributes and Rules
+  // onAddExistingAttribute(): void {
+  //   const dialogRef = this.dialog.open(AddExistingAttributeModalComponent, {
+  //     disableClose: false,
+  //     width: '600px',
+  //     height: '590px',
+  //     data: {
+  //       workPackageIds: [this.workpackageId]
+  //     }
+  //   });
 
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.attribute) {
-        if (!this.clickedOnLink) {
-          this.store.dispatch(
-            new AddWorkPackageNodeAttribute({
-              workPackageId: this.getWorkPackageId(),
-              nodeId: this.nodeId,
-              attributeId: data.attribute.id
-            })
-          );
-        } else {
-          this.store.dispatch(
-            new AddWorkPackageLinkAttribute({
-              workPackageId: this.getWorkPackageId(),
-              nodeLinkId: this.nodeId,
-              attributeId: data.attribute.id
-            })
-          );
-        }
-      }
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(data => {
+  //     if (data && data.attribute) {
+  //       if (!this.clickedOnLink) {
+  //         this.store.dispatch(
+  //           new AddWorkPackageNodeAttribute({
+  //             workPackageId: this.getWorkPackageId(),
+  //             nodeId: this.nodeId,
+  //             attributeId: data.attribute.id
+  //           })
+  //         );
+  //       } else {
+  //         this.store.dispatch(
+  //           new AddWorkPackageLinkAttribute({
+  //             workPackageId: this.getWorkPackageId(),
+  //             nodeLinkId: this.nodeId,
+  //             attributeId: data.attribute.id
+  //           })
+  //         );
+  //       }
+  //     }
+  //   });
+  // }
 
-  onDeleteAttribute(attribute: AttributesEntity): void {
-    const dialogRef = this.dialog.open(DeleteAttributeModalComponent, {
-      width: '500px',
-      data: {
-        type: attribute.category,
-        name: attribute.name
-      }
-    });
+  // DISABLE: Attributes and Rules
+  // onDeleteAttribute(attribute: AttributesEntity): void {
+  //   const dialogRef = this.dialog.open(DeleteAttributeModalComponent, {
+  //     width: '500px',
+  //     data: {
+  //       type: attribute.category,
+  //       name: attribute.name
+  //     }
+  //   });
 
-    dialogRef.afterClosed().subscribe(data => {
-      if (data && data.attribute) {
-        if (!this.clickedOnLink) {
-          this.attributeStore.dispatch(
-            new DeleteWorkPackageNodeAttribute({
-              workPackageId: this.getWorkPackageId(),
-              nodeId: this.nodeId,
-              attributeId: attribute.id
-            })
-          );
-        } else {
-          this.attributeStore.dispatch(
-            new DeleteWorkPackageLinkAttribute({
-              workPackageId: this.getWorkPackageId(),
-              nodeLinkId: this.nodeId,
-              attributeId: attribute.id
-            })
-          );
-        }
-      }
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(data => {
+  //     if (data && data.attribute) {
+  //       if (!this.clickedOnLink) {
+  //         this.attributeStore.dispatch(
+  //           new DeleteWorkPackageNodeAttribute({
+  //             workPackageId: this.getWorkPackageId(),
+  //             nodeId: this.nodeId,
+  //             attributeId: attribute.id
+  //           })
+  //         );
+  //       } else {
+  //         this.attributeStore.dispatch(
+  //           new DeleteWorkPackageLinkAttribute({
+  //             workPackageId: this.getWorkPackageId(),
+  //             nodeLinkId: this.nodeId,
+  //             attributeId: attribute.id
+  //           })
+  //         );
+  //       }
+  //     }
+  //   });
+  // }
 
   openRightTab(index: number) {
     this.selectedRightTab = index;
