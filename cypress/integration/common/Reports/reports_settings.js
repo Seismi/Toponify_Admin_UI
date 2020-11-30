@@ -3,10 +3,9 @@ let api_version = '/api/v0.2';
 module.exports = {
   tabs: {
     Details: 1,
-    'Attributes and Rules': 2,
-    'Documentation Standards': 3,
-    Radio: 4,
-    Changes: 5
+    'Documentation Standards': 2,
+    Radio: 3,
+    Changes: 4
   },
   menu_selector: 'main-menu-reports',
   page_check: 'report-library',
