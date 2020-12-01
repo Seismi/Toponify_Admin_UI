@@ -13,7 +13,7 @@ Feature: Report Edit Documentation Standards Feature
     And the documentation standard 'Regression Test Documentation Standard URL' exists with type 'Hyperlink' against 'Reports' component
     And the user confirms the creation of the documentation standard
     And the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'work packages' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new 'transactional' system with name 'Automated Regression Test Transactional System'
