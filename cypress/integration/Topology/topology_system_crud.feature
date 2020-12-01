@@ -11,7 +11,7 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system
   Scenario Outline: Add system to the System View and check that they save to the table
     Given the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     When the user creates a new '<component_type>' system with name '<name>'
@@ -39,7 +39,7 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system
   Scenario Outline: Update System Component via table and check results are correctly saved
     Given the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<type>' system with name '<name>'
@@ -60,7 +60,7 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system
   Scenario Outline: Delete System Component via table and check system is correctly deleted
     Given the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<type>' system with name '<name>'
@@ -77,7 +77,7 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system
   Scenario Outline: Add group and system to the System View and check that they save to the grouped systems table
     Given the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<group_type>' system with name '<group_name>'
@@ -104,7 +104,7 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system
   Scenario Outline: Add interfaces to the System View and check that they save to the table and canvas
     Given the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<source_type>' system with name '<source_name>'
@@ -125,7 +125,7 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system
   Scenario Outline: Update interface via table and check results are correctly saved
     Given the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<source_type>' system with name '<source_name>'
@@ -149,7 +149,7 @@ Feature: Topology Systems CRUD Feature
   @topology @topology_system
   Scenario Outline: Delete interface via table and check results are correctly saved
     Given the user selects Topology menu item
-    And the "System View" layer is selected
+    # And the "System View" layer is selected
     And the work package 'Created Automated Regression Test Work Package' is editable on the 'Work Package' menu
     And the "Topology" "Systems" Tab is selected
     And the user creates a new '<source_type>' system with name '<source_name>'
