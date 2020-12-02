@@ -89,16 +89,61 @@ export class DiagramLevelService {
     });
 
     thisService.filterServiceSubscription = thisService.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      /*
+      if (filterLevel) {
+        thisService.currentLevel = filterLevel;
+        return thisService.filter.next({ filterLevel: filterLevel });
+      }
+     */
       thisService.currentLevel = Level.system;
       return thisService.filter.next({ filterLevel: Level.system });
     });
   }
+
+  /*
+  // Display the next level of detail in the diagram, filtered to include only children of a specific node
+  //   node: node to display the children of
+  changeLevelWithFilter(node: go.Node | { data: Node }): void {
+    let newLevel: Level;
+    if (node.data.layer === layers.system) {
+      newLevel = Level.data;
+    } else if (node.data.layer === layers.data) {
+      newLevel = Level.dimension;
+    } else if (node.data.layer === layers.dimension) {
+      newLevel = Level.reportingConcept;
+    } else {
+      return;
+    }
+    thisService.store.dispatch(
+      new UpdateQueryParams({ filterLevel: newLevel, id: node.data.id, parentName: node.data.name })
+    );
+  }
+  */
 
   displayGroupMembers(group: go.Group) {
     thisService.store.dispatch(
       new UpdateQueryParams({ filterLevel: Level.system, id: group.data.id, groupName: group.data.name })
     );
   }
+
+  /*
+  displayMapView(event: go.InputEvent, object: go.Part): void {
+    // Indicate that the initial group layout is being performed and has not yet been completed
+    thisService.groupLayoutInitial = true;
+
+    thisService.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: object.data.layer + ' map',
+        id: object.data.id,
+        parentName: object.data.name,
+        isTransformation: object instanceof go.Node
+      })
+    );
+
+    // Ensure that diagram content is initially centered while layouts are performed
+    event.diagram.contentAlignment = go.Spot.Center;
+  }
+  */
 
   // Perform layout for groups that nodes belong to
   relayoutGroups(event) {
@@ -108,6 +153,35 @@ export class DiagramLevelService {
       }
     });
   }
+
+  /*
+  displayUsageView(node: go.Node): void {
+    thisService.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.usage,
+        id: node.data.id
+      })
+    );
+  }
+
+  displaySourcesView(node: go.Node): void {
+    thisService.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.sources,
+        id: node.data.id
+      })
+    );
+  }
+
+  displayTargetsView(node: go.Node): void {
+    thisService.store.dispatch(
+      new UpdateQueryParams({
+        filterLevel: Level.targets,
+        id: node.data.id
+      })
+    );
+  }
+  */
 
   public destroyUrlFiltering() {
     if (thisService.filterSubscription) {
@@ -487,4 +561,23 @@ export class DiagramLevelService {
        }
      );
   }
+
+  /*
+  // Display map view for a link
+  getMapViewForLink(event: go.InputEvent, object: go.Link): void {
+    let mapViewSource: go.Part;
+
+    // If link connects to a transformation node then use this node as the source of the map view.
+    if (object.fromNode && object.fromNode.category === nodeCategories.transformation) {
+      mapViewSource = object.fromNode;
+    } else if (object.toNode && object.toNode.category === nodeCategories.transformation) {
+      mapViewSource = object.toNode;
+      // Otherwise, use the link as the source of the map view.
+    } else {
+      mapViewSource = object;
+    }
+
+    thisService.displayMapView(event, mapViewSource);
+  }
+ */
 }

@@ -2287,6 +2287,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedId = node.id;
   }
 
+  /*
+  onChangeLevel(node: Node) {
+    this.diagramLevelService.changeLevelWithFilter({ data: node });
+  }
+  */
+
   realignTabUnderline(): void {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
   }
@@ -2591,6 +2597,12 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
       })
     );
   }
+
+  /*
+  onViewStructure() {
+    this.diagramLevelService.displayMapView.call(this.diagramLevelService, this.part, this.part);
+  }
+  */
 
   onEditSourceOrTarget(type: 'source' | 'target') {
     const dialogRef = this.dialog.open(SelectModalComponent, {
