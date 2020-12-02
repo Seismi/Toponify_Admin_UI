@@ -365,7 +365,8 @@ export enum TagIcon {
   tag_external = 'tag_external',
   tag_process = 'tag_process',
   tag_timer = 'tag_timer',
-  tag_user = 'tag_user'
+  tag_user = 'tag_user',
+  none = 'none'
 }
 
 // id	string($UUID)
