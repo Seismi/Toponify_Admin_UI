@@ -447,6 +447,19 @@ export class CustomToolsService {
     relinkingTool.isUnconnectedLinkValid = true;
     relinkingTool.portGravity = 40;
     relinkingTool.linkValidation = thisService.linkingValidation;
+    // Function to correct issues when connecting new links via drag and drop
+    relinkingTool.portTargeted = function(
+      node: go.Node,
+      port: go.GraphObject,
+      tempNode: go.Node,
+      tempPort: go.GraphObject,
+      toEnd: boolean
+    ): void {
+      if (node && diagram.currentTool.name !== 'Relinking') {
+        tempNode.position = node.position.copy();
+        tempNode.desiredSize = node.getDocumentBounds().size.copy();
+      }
+    };
 
     toolManager.resizingTool = new CustomNodeResize();
 
@@ -493,19 +506,21 @@ export class CustomToolsService {
     draggingTool.doMouseMove = function(): void {
       const diagram = draggingTool.diagram;
 
-      const viewRect = diagram.viewportBounds.copy();
+      if (draggingTool.draggedParts) {
+        const viewRect = diagram.viewportBounds.copy();
 
-      // Get all parts being dragged
-      const partsDragging = draggingTool.draggedParts.iteratorKeys;
+        // Get all parts being dragged
+        const partsDragging = draggingTool.draggedParts.iteratorKeys;
 
-      // Calculate smallest area that contains all the dragged parts
-      partsDragging.each(function(part: go.Part): void {
-        viewRect.unionRect(part.getDocumentBounds());
-      });
+        // Calculate smallest area that contains all the dragged parts
+        partsDragging.each(function(part: go.Part): void {
+          viewRect.unionRect(part.getDocumentBounds());
+        });
 
-      // Scroll the diagram to keep dragged parts in view
-      diagram.doAutoScroll(diagram.lastInput.viewPoint);
-      draggingTool.diagram.scrollToRect(viewRect);
+        // Scroll the diagram to keep dragged parts in view
+        diagram.doAutoScroll(diagram.lastInput.viewPoint);
+        draggingTool.diagram.scrollToRect(viewRect);
+      }
 
       // Do standard doMouseMove actions
       go.DraggingTool.prototype.doMouseMove.call(draggingTool);
