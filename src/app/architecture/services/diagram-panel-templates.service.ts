@@ -105,7 +105,7 @@ export class DiagramPanelTemplatesService {
           ),
           new go.Binding('visible', 'iconName',
             function(iconName) {
-              return !!iconName;
+              return !!iconName && iconName !== 'none';
             }
           )
         ),
@@ -470,7 +470,7 @@ export class DiagramPanelTemplatesService {
             // Filter out any tags without an icon
             iconTags = iconTags.filter(
               function(tag: Tag): boolean {
-                return !!tag.iconName;
+                return !!tag.iconName && tag.iconName !== 'none';
               }
             );
             // Restrict tag icons in title row to a maximum of five
@@ -675,7 +675,7 @@ export class DiagramPanelTemplatesService {
     tagGroup = createTempPanel.call(this, tagArray);
 
     // If size of tag section too big then...
-    if (tagGroup.naturalBounds.right > 146 /* To be Updated */) {
+    if (tagGroup.naturalBounds.right >  300) {
       // ...add an ellipsis to the end of the tag list to show that some tags are not shown...
       tagArray.push({
         id: '00000000-0000-0000-0000-000000000000',
@@ -690,7 +690,7 @@ export class DiagramPanelTemplatesService {
       do {
         tagArray.splice(-2, 1);
         tagGroup = createTempPanel.call(this, tagArray);
-      } while (tagGroup.naturalBounds.right > 146 /* To be Updated */);
+      } while (tagGroup.naturalBounds.right > 300);
     }
 
     return tagArray;
@@ -756,6 +756,8 @@ export class DiagramPanelTemplatesService {
               [nodeCategories.reporting]: 'reporting',
               [nodeCategories.masterData]: 'master-data',
               [nodeCategories.file]: 'files',
+              [nodeCategories.desktopApplication]: 'desktop-application',
+              [nodeCategories.manualProcessing]: 'manual-processing',
               [nodeCategories.dataStructure]: 'data-structure',
               [nodeCategories.dataSet]: 'data-set',
               [nodeCategories.masterDataSet]: 'master-data-set',
@@ -770,8 +772,9 @@ export class DiagramPanelTemplatesService {
 
             const sharedStatusImageSuffix =
               [nodeCategories.dataSet, nodeCategories.masterDataSet].includes(data.category)
-                ? (data.isShared ? '-shared' : '-master')
-                : '';
+                && data.layer === layers.data
+                  ? (data.isShared ? '-shared' : '-master')
+                  : '';
 
             return [
               imageFolderPath,

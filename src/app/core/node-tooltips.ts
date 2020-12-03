@@ -93,5 +93,20 @@ export const NodeToolTips = [
     Layer: 'Any',
     Object: 'Transformation',
     Tooltip: 'Add a transformation to document changes in data between a source and a target. Transformations can have multiple sources or targets.'
+  },
+  {
+    Layer: 'System',
+    Object: 'Manual Processing',
+    Tooltip: 'A set of operations done by users to process or analyse the data.'
+  },
+  {
+    Layer: 'System',
+    Object: 'Desktop Application',
+    Tooltip: 'An application running on a desktop of one or multiple users (for example Excel).'
+  },
+  {
+    Layer: 'System',
+    Object: 'Data Set',
+    Tooltip: 'Data Set - A collection of data, that can be stored in tabular or other forms.'
   }
 ];
