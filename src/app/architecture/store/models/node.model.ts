@@ -61,6 +61,8 @@ export enum nodeCategories {
   file = 'file',
   reporting = 'reporting',
   masterData = 'master data',
+  manualProcessing = 'manual processing',
+  desktopApplication = 'desktop application',
   dataStructure = 'data structure',
   dataSet = 'data set',
   masterDataSet = 'master data set',
@@ -363,7 +365,8 @@ export enum TagIcon {
   tag_external = 'tag_external',
   tag_process = 'tag_process',
   tag_timer = 'tag_timer',
-  tag_user = 'tag_user'
+  tag_user = 'tag_user',
+  none = 'none'
 }
 
 // id	string($UUID)

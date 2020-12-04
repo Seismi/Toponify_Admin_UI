@@ -12,15 +12,15 @@
       <mat-error>This field is required</mat-error>
     </mat-form-field>
 
-    <!-- Filtering Components -->
-    <mat-form-field *ngIf="!modalMode && !layoutDetails">
+    <!-- DISABLE Filtering Components -->
+    <!-- <mat-form-field *ngIf="!modalMode && !layoutDetails">
       <mat-label>Filtering Components</mat-label>
       <mat-select data-qa="scopes-and-layouts-details-filtering-components" [ngClass]="{ editable: isEditable }" formControlName="layerFilter">
         <mat-option *ngFor="let layerFilter of layerFilter" [value]="layerFilter">
           {{ layerFilter }}
         </mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
   </div>
 
   <!-- Form Actions -->

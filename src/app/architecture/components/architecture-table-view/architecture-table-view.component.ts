@@ -112,8 +112,9 @@ export class ArchitectureTableViewComponent implements OnInit, OnChanges {
   }
 
   dblClick(row: Node | NodeLink) {
-    this.isSingleClick = false;
-    this.changeLevel.emit(row);
+    // DISABLE
+    // this.isSingleClick = false;
+    // this.changeLevel.emit(row);
   }
 
   downloadCSV() {
