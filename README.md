@@ -78,6 +78,12 @@ List of available tags:
 ####TODO - update project code
 ####TODO - include a simpler npm script to run code.
 
+### TEAMS
+
+Teams flagged as design authorities are asked to approve all work packages regardless of the systems they impact.
+
+To remove team from work package creation please remove user from that team. You can do that in /settings > teams > (select your team) > remove user from members table
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
