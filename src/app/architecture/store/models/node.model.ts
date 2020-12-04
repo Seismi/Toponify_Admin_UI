@@ -61,6 +61,8 @@ export enum nodeCategories {
   file = 'file',
   reporting = 'reporting',
   masterData = 'master data',
+  manualProcessing = 'manual processing',
+  desktopApplication = 'desktop application',
   dataStructure = 'data structure',
   dataSet = 'data set',
   masterDataSet = 'master data set',
@@ -347,13 +349,13 @@ export enum TagColour {
 export enum TagApplicableTo {
   everywhere = 'everywhere',
   systems = 'systems',
-  system_links = 'system links',
-  data_nodes = 'data nodes',
-  data_links = 'data links',
-  dimensions = 'dimensions',
-  dimension_links = 'dimension links',
-  reporting_concepts = 'reporting concepts',
-  reporting_concept_links = 'reporting concept links',
+  // system_links = 'system links',
+  // data_nodes = 'data nodes',
+  // data_links = 'data links',
+  // dimensions = 'dimensions',
+  // dimension_links = 'dimension links',
+  // reporting_concepts = 'reporting concepts',
+  // reporting_concept_links = 'reporting concept links',
   reports = 'reports',
   RADIO = 'radios'
 }
@@ -363,7 +365,8 @@ export enum TagIcon {
   tag_external = 'tag_external',
   tag_process = 'tag_process',
   tag_timer = 'tag_timer',
-  tag_user = 'tag_user'
+  tag_user = 'tag_user',
+  none = 'none'
 }
 
 // id	string($UUID)
