@@ -11,24 +11,27 @@ const systemCategories = [
   nodeCategories.reporting,
   nodeCategories.masterData,
   nodeCategories.file,
-  nodeCategories.transformation
-];
-const dataNodeCategories = [
-  nodeCategories.dataStructure,
+  nodeCategories.transformation,
+  nodeCategories.manualProcessing,
   nodeCategories.dataSet,
-  nodeCategories.masterDataSet,
-  nodeCategories.transformation
+  nodeCategories.desktopApplication
 ];
-const dimensionCategories = [
-  nodeCategories.dimension,
-  nodeCategories.transformation
-];
-const reportingCategories = [
-  nodeCategories.list,
-  nodeCategories.structure,
-  nodeCategories.key,
-  nodeCategories.transformation
-];
+// const dataNodeCategories = [
+//   nodeCategories.dataStructure,
+//   nodeCategories.dataSet,
+//   nodeCategories.masterDataSet,
+//   nodeCategories.transformation
+// ];
+// const dimensionCategories = [
+//   nodeCategories.dimension,
+//   nodeCategories.transformation
+// ];
+// const reportingCategories = [
+//   nodeCategories.list,
+//   nodeCategories.structure,
+//   nodeCategories.key,
+//   nodeCategories.transformation
+// ];
 
 @Component({
   selector: 'smi-object-details-form',
@@ -100,16 +103,17 @@ export class ObjectDetailsFormComponent {
   }
 
   getCategories(): string[] {
-    switch (this.part.data.layer as layers) {
-      case layers.system:
-        return this.part instanceof Node ? systemCategories : [nodeCategories.masterData, nodeCategories.data];
-      case layers.data:
-        return this.part instanceof Node ? dataNodeCategories : [nodeCategories.masterData, nodeCategories.data];
-      case layers.dimension:
-        return this.part instanceof Node ? dimensionCategories : [nodeCategories.masterData];
-      case layers.reportingConcept:
-        return this.part instanceof Node ? reportingCategories : [nodeCategories.masterData];
-    }
+    return this.part instanceof Node ? systemCategories : [nodeCategories.masterData, nodeCategories.data];
+    // switch (this.part.data.layer as layers) {
+    //   case layers.system:
+    //     return this.part instanceof Node ? systemCategories : [nodeCategories.masterData, nodeCategories.data];
+    //   case layers.data:
+    //     return this.part instanceof Node ? dataNodeCategories : [nodeCategories.masterData, nodeCategories.data];
+    //   case layers.dimension:
+    //     return this.part instanceof Node ? dimensionCategories : [nodeCategories.masterData];
+    //   case layers.reportingConcept:
+    //     return this.part instanceof Node ? reportingCategories : [nodeCategories.masterData];
+    // }
   }
 
   nodeIsEditable(): boolean {
