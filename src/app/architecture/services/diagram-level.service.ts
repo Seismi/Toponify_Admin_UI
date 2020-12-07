@@ -89,15 +89,18 @@ export class DiagramLevelService {
     });
 
     thisService.filterServiceSubscription = thisService.store.select(getFilterLevelQueryParams).subscribe(filterLevel => {
+      /*
       if (filterLevel) {
         thisService.currentLevel = filterLevel;
         return thisService.filter.next({ filterLevel: filterLevel });
       }
+     */
       thisService.currentLevel = Level.system;
       return thisService.filter.next({ filterLevel: Level.system });
     });
   }
 
+  /*
   // Display the next level of detail in the diagram, filtered to include only children of a specific node
   //   node: node to display the children of
   changeLevelWithFilter(node: go.Node | { data: Node }): void {
@@ -115,6 +118,7 @@ export class DiagramLevelService {
       new UpdateQueryParams({ filterLevel: newLevel, id: node.data.id, parentName: node.data.name })
     );
   }
+  */
 
   displayGroupMembers(group: go.Group) {
     thisService.store.dispatch(
@@ -122,6 +126,7 @@ export class DiagramLevelService {
     );
   }
 
+  /*
   displayMapView(event: go.InputEvent, object: go.Part): void {
     // Indicate that the initial group layout is being performed and has not yet been completed
     thisService.groupLayoutInitial = true;
@@ -138,6 +143,7 @@ export class DiagramLevelService {
     // Ensure that diagram content is initially centered while layouts are performed
     event.diagram.contentAlignment = go.Spot.Center;
   }
+  */
 
   // Perform layout for groups that nodes belong to
   relayoutGroups(event) {
@@ -148,6 +154,7 @@ export class DiagramLevelService {
     });
   }
 
+  /*
   displayUsageView(node: go.Node): void {
     thisService.store.dispatch(
       new UpdateQueryParams({
@@ -174,6 +181,7 @@ export class DiagramLevelService {
       })
     );
   }
+  */
 
   public destroyUrlFiltering() {
     if (thisService.filterSubscription) {
@@ -213,6 +221,9 @@ export class DiagramLevelService {
   //    diagram: the diagram object
   //    level: the level to change to
   changeLevel(diagram: go.Diagram, level: Level): void {
+
+    level = Level.system;
+
     // Clear clipboard to prevent parts being copied to the wrong view
     diagram.commandHandler.copyToClipboard(null);
 
@@ -242,14 +253,21 @@ export class DiagramLevelService {
 
       let transformationLayer;
 
+      // @ts-ignore
       if (level === Level.systemMap) {
         transformationLayer = layers.data;
-      } else if (level === Level.dataMap) {
-        transformationLayer = layers.dimension;
-      } else if (level === Level.dimensionMap) {
-        transformationLayer = layers.reportingConcept;
       } else {
-        transformationLayer = level;
+        // @ts-ignore
+        if (level === Level.dataMap) {
+          transformationLayer = layers.dimension;
+        } else {
+          // @ts-ignore
+          if (level === Level.dimensionMap) {
+            transformationLayer = layers.reportingConcept;
+          } else {
+            transformationLayer = level;
+          }
+        }
       }
 
       paletteViewNodes.push(
@@ -389,6 +407,7 @@ export class DiagramLevelService {
     if (level.endsWith('map')) {
       // Input link to transformation node
       paletteViewLinks.push({
+        // @ts-ignore
         category: level === Level.systemMap ? linkCategories.data : linkCategories.masterData,
         id: 'New link to transformation',
         name: 'New link to transformation',
@@ -398,11 +417,13 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tags: [],
+        // @ts-ignore
         tooltip: level === Level.systemMap ? thisService.getToolTipForDataLinks(level) :
           thisService.getToolTipForMasterDataLinks(level)
       });
       // Output link from transformation node
       paletteViewLinks.push({
+        // @ts-ignore
         category: level === Level.systemMap ? linkCategories.data : linkCategories.masterData,
         id: 'New link from transformation',
         name: 'New link from transformation',
@@ -412,6 +433,7 @@ export class DiagramLevelService {
         isTemporary: true,
         impactedByWorkPackages: [],
         tags: [],
+        // @ts-ignore
         tooltip: level === Level.systemMap ? thisService.getToolTipForDataLinks(level) :
           thisService.getToolTipForMasterDataLinks(level)
       });
@@ -430,7 +452,9 @@ export class DiagramLevelService {
           return data.layer;
         }
       },
+      // @ts-ignore
       linkFromKeyProperty: level.endsWith('map') ? 'sourceDisplayId' : level === Level.usage ? 'parentId' : 'sourceId',
+      // @ts-ignore
       linkToKeyProperty: level.endsWith('map') ? 'targetDisplayId' : level === Level.usage ? 'childId' : 'targetId',
       modelData: diagram.model.modelData,
       // Ensure new key is generated when copying from the palette
@@ -449,6 +473,7 @@ export class DiagramLevelService {
       }
     });
 
+    // @ts-ignore
     if (level === Level.usage) {
       thisService.createNodeUsageLanes(diagram);
     }
@@ -467,6 +492,7 @@ export class DiagramLevelService {
       // Settings and layout for non-map views
     } else {
       diagram.layout = $(go.LayeredDigraphLayout, {
+        // @ts-ignore
         setsPortSpots: level === Level.usage,
         // Prevent rearranging diagram automatically unless in usage, sources or targets view
         isOngoing: [Level.usage, Level.sources, Level.targets].includes(level),
@@ -475,6 +501,7 @@ export class DiagramLevelService {
         isRouting: true,
         layerSpacing: 60,
         // Arrange nodes from top down in node usage view
+        // @ts-ignore
         direction: level === Level.usage ? 90 : 0
       });
     }
@@ -556,6 +583,7 @@ export class DiagramLevelService {
      );
   }
 
+  /*
   // Display map view for a link
   getMapViewForLink(event: go.InputEvent, object: go.Link): void {
     let mapViewSource: go.Part;
@@ -572,4 +600,5 @@ export class DiagramLevelService {
 
     thisService.displayMapView(event, mapViewSource);
   }
+ */
 }
