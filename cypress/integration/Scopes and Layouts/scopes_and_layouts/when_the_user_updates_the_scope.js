@@ -21,10 +21,7 @@ When('the user updates the scope called {string} to have name {string} and filte
           cy.get('[data-qa=scopes-and-layouts-details-name]')
             .clear()
             .paste(newScope)
-            .should('have.value', newScope)
-            .then(() => {
-              cy.selectDropDown('scopes-and-layouts-details-filtering-components', component);
-            });
+            .should('have.value', newScope);
         })
         .then(() => {
           cy.get('[data-qa=scopes-and-layouts-save]')

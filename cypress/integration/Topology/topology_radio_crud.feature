@@ -12,7 +12,7 @@ Feature: Topology Radio CRUD Feature
   @topology @radio
   Scenario: Assign RADIO to component and cancel
     And the user clicks on create new radio at the button of the radio table
-    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
+    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
     And the user selects Topology menu item
     # And the "System View" layer is selected
@@ -26,7 +26,7 @@ Feature: Topology Radio CRUD Feature
   @topology @radio
   Scenario: Assign RADIO to component and confirm
     And the user clicks on create new radio at the button of the radio table
-    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
+    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
     And the user selects Topology menu item
     # And the "System View" layer is selected
@@ -47,7 +47,7 @@ Feature: Topology Radio CRUD Feature
     And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
     And the user clicks on the system's right hand side radio button
     And the user click on create new radio button
-    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
+    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And the user cancels the radio creation
 
   @topology @radio
@@ -60,7 +60,7 @@ Feature: Topology Radio CRUD Feature
     And the user selects the 'system' 'Automated Regression Test Transaction System' in the 'systems' table
     And the user clicks on the system's right hand side radio button
     And the user click on create new radio button
-    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
+    And the user creates a radio with title 'Automatic Regression Test Risk 1', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And the user confirm the radio creation
     And the user clicks on the radio
     And the user edits the description to 'Automatic regression test description change'
