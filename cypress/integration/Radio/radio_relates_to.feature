@@ -20,7 +20,7 @@ Feature: RADIO add relates to
     When the user selects Radios menu item
     And the radio 'Created Automatic Regression Test' does not exist
     And the user clicks on create new radio at the button of the radio table
-    And the user creates a radio with title 'Created Automatic Regression Test', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated (DO NOT DELETE) Regression-Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
+    And the user creates a radio with title 'Created Automatic Regression Test', category 'risk', status 'new', description 'Automatic Regression Test Risk 1 Description' which is assigned to 'Automated Test' and should be actioned by '' and mitigation resolution '' and have severity 1 and probability 2
     And confirms the creation of the radio
     Then the radio with title 'Created Automatic Regression Test' should be immediately visible in the radio table
     And the user selects relates to tab
