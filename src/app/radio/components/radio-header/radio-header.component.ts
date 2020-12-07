@@ -89,6 +89,12 @@ export class RadioHeaderComponent implements OnInit, OnDestroy {
         if (TableStyles.SIMPLE === tableStyle) {
           this.store.dispatch(new SetRadioAnalysisFilter(null));
           this.store.dispatch(new RadioFilter(this.getFilteredActiveFilters()));
+        } else {
+          if (!this.activeFilters.hasOwnProperty('status')) {
+            this.store.dispatch(new RadioFilter(
+              this.radioFilterService.transformFilterIntoAdvancedSearchData(this.activeFilters)
+            ));
+          }
         }
       })
     );
