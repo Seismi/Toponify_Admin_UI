@@ -94,6 +94,7 @@
       [availableTags]="availableTags"
       [editMode]="true"
       [workPackageIsEditable]="isEditable"
+      (createTag)="createTag.emit($event)"
       (addTag)="addTag.emit($event)"
       (removeTag)="removeTag.emit($event)"
       (updateAvailableTags)="updateAvailableTags.emit()"

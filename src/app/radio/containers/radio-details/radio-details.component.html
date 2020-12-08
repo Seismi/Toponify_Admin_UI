@@ -18,6 +18,7 @@
             (deleteRadio)="onDeleteRadio()"
             [tags]="radio?.tags"
             [availableTags]="availableTags$ | async"
+            (createTag)="onCreateTag($event)"
             (updateAvailableTags)="onUpdateAvailableTags()"
             (addTag)="onAddTag($event)"
             (removeTag)="onRemoveTag($event)"

@@ -102,6 +102,7 @@ export class RadioDetailComponent implements DoCheck {
   @Output() archiveRadio = new EventEmitter<void>();
   @Output() saveRadio = new EventEmitter<void>();
   @Output() deleteRadio = new EventEmitter<void>();
+  @Output() createTag = new EventEmitter<Tag>();
   @Output() addTag = new EventEmitter<string>();
   @Output() updateAvailableTags = new EventEmitter<void>();
   @Output() removeTag = new EventEmitter<Tag>();
