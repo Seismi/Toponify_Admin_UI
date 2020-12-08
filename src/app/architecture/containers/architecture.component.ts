@@ -1437,8 +1437,10 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
             } else {
               finalLayoutSettings.middleExpanded = layoutProps && 'middleExpanded' in layoutProps
                 ? layoutProps.middleExpanded : true;
-              finalLayoutSettings.bottomExpanded = layoutProps && layoutProps.bottomExpanded
-                ? layoutProps.bottomExpanded : bottomOptions.none;
+              finalLayoutSettings.bottomExpanded = layoutProps &&
+                layoutProps.bottomExpanded &&
+                layoutProps.bottomExpanded !== bottomOptions.children
+                  ? layoutProps.bottomExpanded : bottomOptions.none;
               finalLayoutSettings.areaSize = layoutProps && layoutProps.areaSize ? layoutProps.areaSize : null;
               finalLayoutSettings.location = layoutProps && layoutProps.locationCoordinates
                 ? layoutProps.locationCoordinates : null;
@@ -2285,9 +2287,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     this.selectedId = node.id;
   }
 
+  /*
   onChangeLevel(node: Node) {
     this.diagramLevelService.changeLevelWithFilter({ data: node });
   }
+  */
 
   realignTabUnderline(): void {
     this.switchViewTabsComponent.architectureTableTabs.realignInkBar();
@@ -2594,9 +2598,11 @@ export class ArchitectureComponent implements OnInit, OnDestroy {
     );
   }
 
+  /*
   onViewStructure() {
     this.diagramLevelService.displayMapView.call(this.diagramLevelService, this.part, this.part);
   }
+  */
 
   onEditSourceOrTarget(type: 'source' | 'target') {
     const dialogRef = this.dialog.open(SelectModalComponent, {
