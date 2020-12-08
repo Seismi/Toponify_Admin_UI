@@ -174,7 +174,7 @@ export class DiagramPartTemplatesService {
       thisService.getStandardNodeOptions(forPalette),
       {
         contextMenu: thisService.getLinkContextMenu(),
-        doubleClick: (forPalette) ? undefined : thisService.diagramLevelService.displayMapView,
+        // doubleClick: (forPalette) ? undefined : thisService.diagramLevelService.displayMapView,
         selectionObjectName: 'shape',
         resizable: false
       },
@@ -672,6 +672,7 @@ export class DiagramPartTemplatesService {
       new go.Binding('fromSpot', 'fromSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       new go.Binding('toSpot', 'toSpot', go.Spot.parse).makeTwoWay(go.Spot.stringify),
       thisService.getStandardLinkOptions(forPalette),
+      /*
       {
         doubleClick: function(event: go.InputEvent, object: go.Link): void {
           if (forPalette) {
@@ -683,6 +684,7 @@ export class DiagramPartTemplatesService {
           }
         }
       },
+      */
       $(
         go.Shape,
         {
@@ -1246,6 +1248,7 @@ export class DiagramPartTemplatesService {
           return node instanceof go.Group;
         }
       },
+      /*
       {
         text: 'Child Nodes',
         visiblePredicate: function(node: go.Node): boolean {
@@ -1329,6 +1332,7 @@ export class DiagramPartTemplatesService {
           }
         ]
       },
+      */
       {
         text: 'Analyse',
         enabledPredicate: function(node: go.Node): boolean {
@@ -1352,7 +1356,8 @@ export class DiagramPartTemplatesService {
             enabledPredicate: function(): boolean {
               return !thisService.diagramLevelService.isInMapView();
             }
-          },
+          }
+          /*,
           {
             text: 'Use Across Levels',
             action: function(node: go.Node): void {
@@ -1382,6 +1387,7 @@ export class DiagramPartTemplatesService {
                 && node.data.isShared;
             }
           }
+          */
         ]
       },
       {
@@ -1458,7 +1464,8 @@ export class DiagramPartTemplatesService {
             'None'
           ].map(colourChangeButtonArgs),
           enabledPredicate: editingLayout
-        },
+        }
+        /*,
         {
           text: 'Expand',
           action: function(link: go.Part): void {
@@ -1469,6 +1476,7 @@ export class DiagramPartTemplatesService {
             return link.data.layer !== layers.reportingConcept;
           }
         }
+        */
       ]
     );
   }
