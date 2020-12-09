@@ -14,3 +14,9 @@
 .diagram-container {
   height: calc(100% - 64px);
 }
+
+@media only screen and (max-width: 1420px) {
+  .col {
+    min-width: 100%;
+  }
+}

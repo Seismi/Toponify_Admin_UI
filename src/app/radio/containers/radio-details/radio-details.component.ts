@@ -32,6 +32,9 @@ import { AssociateModalComponent } from '@app/radio/components/associate-modal/a
 import { take } from 'rxjs/operators';
 import { Tag, LoadingStatus } from '@app/architecture/store/models/node.model';
 import { DeleteModalComponent } from '@app/core/layout/components/delete-modal/delete-modal.component';
+import { CreateTag } from '@app/architecture/store/actions/node.actions';
+import { Actions, ofType } from '@ngrx/effects';
+import { NodeActionTypes } from '@app/architecture/store/actions/node.actions';
 
 @Component({
   selector: 'app-radio-details',
@@ -55,7 +58,8 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<RadioState>,
     private radioDetailService: RadioDetailService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private actions: Actions
   ) {}
 
   ngOnInit() {
@@ -87,6 +91,19 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
             createdOn: new Date(radio.createdOn).toLocaleDateString(),
             lastUpdatedOn: new Date(radio.lastUpdatedOn).toLocaleDateString()
           });
+        }
+      })
+    );
+
+    this.subscriptions.push(
+      this.actions.pipe(ofType(NodeActionTypes.CreateTagSuccess)).subscribe((action: { payload: { tag: Tag }}) => {
+        if (action.payload.tag) {
+          this.store.dispatch(
+            new AddRadioTags({
+              radioId: this.radioId,
+              tagIds: [{ id: action.payload.tag.id }]
+            })
+          );
         }
       })
     );
@@ -253,6 +270,10 @@ export class RadioDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/radio'], { queryParamsHandling: 'preserve' });
       }
     });
+  }
+
+  onCreateTag(tag: Tag): void {
+    this.store.dispatch(new CreateTag({ tag }));
   }
 
   onUpdateAvailableTags(): void {
