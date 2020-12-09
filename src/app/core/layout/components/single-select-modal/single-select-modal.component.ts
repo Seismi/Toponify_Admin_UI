@@ -15,6 +15,7 @@ interface Option {
   styleUrls: ['./single-select-modal.component.scss']
 })
 export class SingleSelectModalComponent implements OnInit {
+  public searchField;
   public selectionControl = new FormControl('', Validators.required);
   public filteredOptions$: Observable<Option[]>;
   public options$: Observable<Option[]>;
