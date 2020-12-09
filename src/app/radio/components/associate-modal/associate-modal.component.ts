@@ -18,6 +18,7 @@ import { getAllWorkPackages, workpackageLoading } from '@app/workpackage/store/s
   styleUrls: ['./associate-modal.component.scss']
 })
 export class AssociateModalComponent implements OnInit, OnDestroy {
+  public searchField;
   public title: string;
   public workpackages$: Observable<WorkPackageEntity[]>;
   public nodes: Node[];

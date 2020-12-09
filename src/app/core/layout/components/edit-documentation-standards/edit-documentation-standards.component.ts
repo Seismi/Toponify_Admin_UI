@@ -13,6 +13,7 @@ import { NodeDetail } from '@app/architecture/store/models/node.model';
   providers: [EditDocumentationStandardsFormService, EditDocumentationStandardsFormValidatorService]
 })
 export class EditDocumentationStandardsTableComponent {
+  public searchString;
   @Input() group: FormGroup;
   @Input() isEditable = true;
   @Input() nodeCategory: string;
