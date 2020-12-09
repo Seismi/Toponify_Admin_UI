@@ -368,6 +368,17 @@ export class CustomCommandHandler extends go.CommandHandler {
 // Custom relinking tool to handle reconnecting links that connect to a member of a collapsed group
 export class CustomRelinkingTool extends go.RelinkingTool {
 
+  // Correct issues with link path on previously dragged link
+  doActivate(): void {
+    go.RelinkingTool.prototype.doActivate.call(this);
+    if (!this.originalFromNode) {
+      this.temporaryFromNode.position = this.originalLink.points.first().copy();
+    }
+    if (!this.originalToNode) {
+      this.temporaryToNode.position = this.originalLink.points.last().copy();
+    }
+  }
+
   // On mouse move, if the non-dragged end of the link is connected to a member of a collapsed
   //  group then act as if the link were connected to the group.
   doMouseMove(): void {
@@ -384,6 +395,25 @@ export class CustomRelinkingTool extends go.RelinkingTool {
     }
 
     go.RelinkingTool.prototype.doMouseMove.call(this);
+
+    // Ensure target port is correctly highlighted
+    if (this.targetPort) {
+      const tempTargetNode = this.isForwards ? this.temporaryToNode : this.temporaryFromNode;
+      const tempTargetPort = this.isForwards ? this.temporaryToPort : this.temporaryFromPort;
+
+      tempTargetNode.position = this.targetPort.part.position.copy();
+      tempTargetNode.desiredSize = this.targetPort.part.getDocumentBounds().inflate(0.5, 0.5).size;
+      tempTargetPort.desiredSize = this.targetPort.part.getDocumentBounds().inflate(-0.5, -0.5).size;
+    }
+
+    // If not targeting a port then ensure temporary node at cursor position so temporary link routes correctly
+    if (!this.targetPort) {
+      if (this.isForwards) {
+        this.temporaryToNode.position = this.diagram.lastInput.documentPoint.copy();
+      } else {
+        this.temporaryFromNode.position = this.diagram.lastInput.documentPoint.copy();
+      }
+    }
   }
 
   // Prevent link from becoming disconnected if no target node on mouse up
@@ -447,6 +477,19 @@ export class CustomToolsService {
     relinkingTool.isUnconnectedLinkValid = true;
     relinkingTool.portGravity = 40;
     relinkingTool.linkValidation = thisService.linkingValidation;
+    // Function to correct issues when connecting new links via drag and drop
+    relinkingTool.portTargeted = function(
+      node: go.Node,
+      port: go.GraphObject,
+      tempNode: go.Node,
+      tempPort: go.GraphObject,
+      toEnd: boolean
+    ): void {
+      if (node && diagram.currentTool.name !== 'Relinking') {
+        tempNode.position = node.position.copy();
+        tempNode.desiredSize = node.getDocumentBounds().size.copy();
+      }
+    };
 
     toolManager.resizingTool = new CustomNodeResize();
 
@@ -493,19 +536,21 @@ export class CustomToolsService {
     draggingTool.doMouseMove = function(): void {
       const diagram = draggingTool.diagram;
 
-      const viewRect = diagram.viewportBounds.copy();
+      if (draggingTool.draggedParts) {
+        const viewRect = diagram.viewportBounds.copy();
 
-      // Get all parts being dragged
-      const partsDragging = draggingTool.draggedParts.iteratorKeys;
+        // Get all parts being dragged
+        const partsDragging = draggingTool.draggedParts.iteratorKeys;
 
-      // Calculate smallest area that contains all the dragged parts
-      partsDragging.each(function(part: go.Part): void {
-        viewRect.unionRect(part.getDocumentBounds());
-      });
+        // Calculate smallest area that contains all the dragged parts
+        partsDragging.each(function(part: go.Part): void {
+          viewRect.unionRect(part.getDocumentBounds());
+        });
 
-      // Scroll the diagram to keep dragged parts in view
-      diagram.doAutoScroll(diagram.lastInput.viewPoint);
-      draggingTool.diagram.scrollToRect(viewRect);
+        // Scroll the diagram to keep dragged parts in view
+        diagram.doAutoScroll(diagram.lastInput.viewPoint);
+        draggingTool.diagram.scrollToRect(viewRect);
+      }
 
       // Do standard doMouseMove actions
       go.DraggingTool.prototype.doMouseMove.call(draggingTool);
@@ -547,7 +592,7 @@ export class CustomToolsService {
       draggingTool.diagram.currentCursor = draggingTool.diagram.defaultCursor;
 
       // Do standard doDropOnto actions
-      go.DraggingTool.prototype.doMouseMove.call(draggingTool);
+      go.DraggingTool.prototype.doDropOnto.call(draggingTool);
     };
   }
 
