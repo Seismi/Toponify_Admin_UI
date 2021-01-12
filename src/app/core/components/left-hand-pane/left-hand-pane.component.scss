@@ -1,0 +1,16 @@
+:host {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-width: 55px;
+  background-color: #0747A6;
+  justify-content: center;
+  padding: 25px 0px;
+}
+
+button {
+  outline: none;
+  mat-icon {
+    color: #F4F5F7;
+  }
+}

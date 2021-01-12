@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { LoginComponent } from './containers/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MatIconModule, MatGridListModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatIconModule, MatGridListModule, MatFormFieldModule, MatInputModule, MatCardModule } from '@angular/material';
 import { AuthService } from './services/auth.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthRoutingModule } from './auth.routing.module';
@@ -13,7 +13,7 @@ import { AuthEffects } from './store/effects/auth.effects';
 import { JWTInterceptor } from './services/jwt-interceptor.service';
 import { AuthenticationInterceptor } from './services/authentication-interceptor.service';
 import { AuthGuard } from './guards/auth.guard';
-import { ByRoleGuard } from '@app/core/guards/by-role.guard';
+import { CoreModule } from '@app/core/core.module';
 
 @NgModule({
   imports: [
@@ -25,13 +25,14 @@ import { ByRoleGuard } from '@app/core/guards/by-role.guard';
     CommonModule,
     ReactiveFormsModule,
     AuthRoutingModule,
+    MatCardModule,
+    CoreModule,
     StoreModule.forFeature('auth', reducers),
     EffectsModule.forFeature([AuthEffects])
   ],
   exports: [LoginComponent],
   declarations: [LoginComponent],
   providers: [
-    ByRoleGuard,
     AuthGuard,
     AuthService,
     {

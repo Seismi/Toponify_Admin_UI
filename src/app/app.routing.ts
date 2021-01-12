@@ -1,72 +1,32 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MainLayoutComponent } from './core/layout/app-layouts/main-layout.component';
 import { AuthGuard } from './auth/guards/auth.guard';
-import { ByRoleGuard } from './core/guards/by-role.guard';
-import { Roles } from './core/directives/by-role.directive';
+import { AppComponent } from './app.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: MainLayoutComponent,
+    component: AppComponent,
     canActivate: [AuthGuard],
-
     children: [
       {
         path: '',
-        redirectTo: 'home',
+        redirectTo: 'instances',
         pathMatch: 'full'
       },
       {
-        path: 'home',
-        loadChildren: './home/home.module#HomeModule'
+        path: 'instances',
+        loadChildren: './instances/instances.module#InstancesModule'
       },
       {
-        path: 'report-library',
-        loadChildren: './report-library/report-library.module#ReportLibraryModule'
+        path: 'customers',
+        loadChildren: './customers/customers.module#CustomersModule'
       },
       {
-        path: 'topology',
-        loadChildren: './architecture/architecture.module#ArchitectureModule'
-      },
-      {
-        path: 'documentation-standards',
-        loadChildren: './documentation-standards/documentation-standards.module#DocumentationStandardsModule'
-      },
-      {
-        path: 'work-packages',
-        loadChildren: './workpackage/workpackage.module#WorkPackageModule'
-      },
-      {
-        path: 'scopes-and-layouts',
-        loadChildren: './scopes-and-layouts/scopes-and-layouts.module#ScopesAndLayoutsModule'
-      },
-      {
-        path: 'settings',
-        loadChildren: './settings/settings.module#SettingsModule',
-        canActivate: [ByRoleGuard],
-        data: {
-          roles: [Roles.ADMIN, Roles.ARCHITECT, Roles.MEMBER]
-        }
-      },
-      {
-        path: 'radio',
-        loadChildren: './radio/radio.module#RadioModule'
-      },
-      // DISABLE: Attributes and Rules
-      // {
-      //   path: 'attributes-and-rules',
-      //   loadChildren: './attributes/attributes.module#AttributesModule'
-      // }
+        path: 'users',
+        loadChildren: './users/users.module#UsersModule'
+      }
     ]
-  },
-  {
-    path: 'error/:type',
-    loadChildren: './core/error/error.module#ErrorModule'
-  },
-  {
-    path: 'error',
-    loadChildren: './core/error/error.module#ErrorModule'
   },
   {
     path: 'auth',
@@ -74,19 +34,14 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'home',
+    redirectTo: 'instances',
     pathMatch: 'full'
   }
 ];
 
 @NgModule({
-  // https://angular.io/guide/router#preloading-background-loading-of-feature-areas
   imports: [
-    RouterModule.forRoot(routes, {
-      // enableTracing: true,
-      paramsInheritanceStrategy: 'always'
-      /*preloadingStrategy: PreloadAllModules*/
-    })
+    RouterModule.forRoot(routes, { paramsInheritanceStrategy: 'always' })
   ],
   exports: [RouterModule]
 })

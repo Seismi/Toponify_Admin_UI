@@ -1,7 +1,0 @@
-<div mat-dialog-content>
-  <smi-users-list [data]="users$ | async" (memberSelect)="onSelectMember($event)"> </smi-users-list>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onSave()" data-qa="setting-team-members-modal-save">Save</button>
-  <button mat-button (click)="onCancel()" data-qa="setting-team-members-modal-cancel">Cancel</button>
-</div>

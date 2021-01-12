@@ -1,15 +1,13 @@
 import { LayoutActionsUnion, LayoutActionTypes } from '../actions/layout.actions';
 
 export interface LayoutState {
-  selectedLeftDrawerTab: any;
-  rightDrawerOpen: boolean;
+  selectedLeftDrawerTab: string;
   leftDrawerOpen: boolean;
 }
 
 export const initialState: LayoutState = {
-  leftDrawerOpen: false,
-  rightDrawerOpen: false,
-  selectedLeftDrawerTab: null
+  selectedLeftDrawerTab: null,
+  leftDrawerOpen: false
 };
 
 export function reducer(state = initialState, action: LayoutActionsUnion): LayoutState {
@@ -17,23 +15,13 @@ export function reducer(state = initialState, action: LayoutActionsUnion): Layou
     case LayoutActionTypes.OpenLeftDrawer:
       return {
         ...state,
-        leftDrawerOpen: true,
-        rightDrawerOpen: false
-      };
-
-    case LayoutActionTypes.OpenRightDrawer:
-      return {
-        ...state,
-        leftDrawerOpen: false,
-        rightDrawerOpen: true
+        leftDrawerOpen: true
       };
 
     case LayoutActionTypes.CloseLeftDrawer:
-    case LayoutActionTypes.CloseRightDrawer:
       return {
         ...state,
-        leftDrawerOpen: false,
-        rightDrawerOpen: false
+        leftDrawerOpen: false
       };
 
     case LayoutActionTypes.SelectLeftDrawerTab:
@@ -49,4 +37,3 @@ export function reducer(state = initialState, action: LayoutActionsUnion): Layou
 }
 
 export const getLeftDrawerOpen = (state: LayoutState) => state.leftDrawerOpen;
-export const getRightDrawerOpen = (state: LayoutState) => state.rightDrawerOpen;

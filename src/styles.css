@@ -1,10 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/cdk/overlay-prebuilt.css';
 
-:root {
-  --default-font: 'Roboto', sans-serif;
-}
-
 html,
 body {
   height: 100%;
@@ -13,61 +9,5 @@ body {
 body {
   padding: 0;
   margin: 0;
-  font-family: var(--default-font);
-}
-
-a {
-  cursor: pointer;
-}
-
-p {
-  margin-bottom: 0;
-}
-
-.mat-pseudo-checkbox-checked::after {
-  top: 3.2px !important;
-  left: 2px !important;
-}
-
-.mat-checkbox-checked.mat-accent .mat-checkbox-background,
-.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
-  background-color: #3f51b5 !important;
-}
-
-.mat-tab-label,
-.mat-tab-label-active {
-  min-width: 0px !important;
-}
-
-.mat-select-placeholder {
-  color: black !important;
-}
-
-.mat-autocomplete-panel > .mat-option {
-  min-height: 45px;
-}
-
-.search-container {
-  width: 100%;
-  padding: 10px;
-  background-color: #eee;
-}
-
-.search-container > input {
-  width: 100%;
-  height: 40px;
-  padding: 7px 10px;
-  border-radius: 5px;
-  border: solid 1px #eee;
-}
-
-.search-container > input:focus {
-  outline: none;
-}
-
-.search-container > button {
-  position: absolute;
-  top: 11px;
-  right: 15px;
-  color: #6a6a6a;
+  font-family: 'Roboto', sans-serif;
 }

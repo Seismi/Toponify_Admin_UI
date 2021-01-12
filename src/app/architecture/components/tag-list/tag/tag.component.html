@@ -1,8 +1,0 @@
-<mat-chip
-  [removable]="removable"
-  [ngStyle]="{backgroundColor: tag.backgroundColour, color: tag.textColour}"
-  (removed)="onRemove(tag)">
-  <mat-icon *ngIf="tag.iconName && !['none'].includes(tag.iconName)" [svgIcon]="tag.iconName"></mat-icon>
-  {{tag.name}}
-  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-</mat-chip>

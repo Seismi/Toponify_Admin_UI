@@ -13,11 +13,14 @@ import { getLoginPageError } from '@app/auth/store/reducers';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
-  loading = false;
-  error: any;
+  public loginForm: FormGroup;
+  public error: any;
 
-  constructor(private store: Store<fromAuth.State>, private route: ActivatedRoute, private formBuilder: FormBuilder) {}
+  constructor(
+    private store: Store<fromAuth.State>,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder
+  ) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -26,8 +29,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onSubmit() {
-    const returnUrl: string = this.route.snapshot.queryParams['returnUrl'] || '/home';
+  onSumbit(): void {
+    const returnUrl: string = this.route.snapshot.queryParams['returnUrl'] || '/instances';
     const authenticate: Authenticate = {
       username: this.loginForm.controls.username.value,
       password: this.loginForm.controls.password.value,

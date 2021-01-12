@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { environment } from '@env/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
@@ -21,15 +20,6 @@ export class JWTInterceptor implements HttpInterceptor {
       } else {
         this.router.navigate(['auth/login']);
         return EMPTY;
-      }
-    } else if (token) {
-      if (!request.url.includes('assets/node-icons') && !request.url.includes('assets/tag-icons')) {
-        request = request.clone({
-          url: environment.api + request.url,
-          setHeaders: {
-            Authorization: `Bearer ${token}`
-          }
-        });
       }
     }
     return next.handle(request);

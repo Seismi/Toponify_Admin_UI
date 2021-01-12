@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Action } from '@ngrx/store';
-import { Authenticate, User } from '../models/user.model';
+import { Authenticate } from '../models/user.model';
 
 export enum AuthActionTypes {
   Login = '[Auth] Login',

@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  width: 100%;
+  mat-drawer-container {
+    height: 100%;
+    background-color: #fff;
+    mat-drawer {
+      background-color: #f4f5f7;
+    }
+  }
+}

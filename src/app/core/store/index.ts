@@ -1,6 +1,4 @@
 import * as fromLayout from '../store/reducers/layout.reducer';
-import * as fromError from '../store/reducers/error.reducer';
-import * as fromNotifications from '../store/reducers/notification.reducer';
 
 /**
  * Every reducer module's default export is the reducer function itself. In
@@ -23,11 +21,10 @@ import { Params } from '@angular/router';
  * As mentioned, we treat each reducer like a table in a database. This means
  * our top level state interface is just a map of keys to inner state types.
  */
+
 export interface State {
-  layout: fromLayout.LayoutState;
   router: RouterReducerState<RouterStateUrl>;
-  error: fromError.ErrorState;
-  notifications: fromNotifications.NotificationState;
+  layout: fromLayout.LayoutState;
 }
 
 export interface RouterStateUrl {
@@ -42,18 +39,13 @@ export interface RouterStateUrl {
  * and the current or initial state and return a new immutable state.
  */
 export const reducers: ActionReducerMap<State> = {
-  layout: fromLayout.reducer,
   router: routerReducer,
-  error: fromError.reducer,
-  notifications: fromNotifications.reducer
+  layout: fromLayout.reducer
 };
 
 // console.log all actions
 export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
   return function(state: State, action: any): State {
-    // console.log('state', state);
-    // console.log('action', action);
-
     return reducer(state, action);
   };
 }
@@ -65,18 +57,13 @@ export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
  */
 export const metaReducers: MetaReducer<State>[] = !environment.production ? [logger, storeFreeze] : [];
 
+
 /**
  * Layout Reducers
- */
-
+*/
 export const getLayoutState = createFeatureSelector<State, fromLayout.LayoutState>('layout');
 
 export const getLeftDrawer = createSelector(
   getLayoutState,
   fromLayout.getLeftDrawerOpen
-);
-
-export const getRightDrawer = createSelector(
-  getLayoutState,
-  fromLayout.getRightDrawerOpen
 );
